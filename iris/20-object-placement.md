@@ -1,9 +1,9 @@
 ---
-title: Object Placement
-description: Iris documentation: Object Placement
+title: "Object Placement"
+description: "Iris documentation: Object Placement"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

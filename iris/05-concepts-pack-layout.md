@@ -1,9 +1,9 @@
 ---
-title: Concepts & Pack Layout
-description: Iris documentation: Concepts & Pack Layout
+title: "Concepts & Pack Layout"
+description: "Iris documentation: Concepts & Pack Layout"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

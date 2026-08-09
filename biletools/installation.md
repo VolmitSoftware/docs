@@ -1,9 +1,9 @@
 ---
-title: BileTools — Installation
-description: Requirements and setup
+title: "BileTools — Installation"
+description: "Requirements and setup"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: biletools, installation
+tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

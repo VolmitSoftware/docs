@@ -1,9 +1,9 @@
 ---
-title: API - Getting Started
-description: Wormholes documentation: API - Getting Started
+title: "API - Getting Started"
+description: "Wormholes documentation: API - Getting Started"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

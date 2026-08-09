@@ -1,9 +1,9 @@
 ---
-title: Random Teleport Portals
-description: Wormholes documentation: Random Teleport Portals
+title: "Random Teleport Portals"
+description: "Wormholes documentation: Random Teleport Portals"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

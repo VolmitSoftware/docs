@@ -1,9 +1,9 @@
 ---
-title: Concepts
-description: Wormholes documentation: Concepts
+title: "Concepts"
+description: "Wormholes documentation: Concepts"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

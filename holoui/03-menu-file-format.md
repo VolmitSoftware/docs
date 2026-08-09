@@ -1,9 +1,9 @@
 ---
-title: Menu File Format
-description: HoloUI documentation: Menu File Format
+title: "Menu File Format"
+description: "HoloUI documentation: Menu File Format"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: holoui
+tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

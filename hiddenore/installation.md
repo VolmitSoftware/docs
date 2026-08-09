@@ -1,9 +1,9 @@
 ---
-title: HiddenOre — Installation
-description: Requirements and first-run setup
+title: "HiddenOre — Installation"
+description: "Requirements and first-run setup"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: hiddenore, installation
+tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

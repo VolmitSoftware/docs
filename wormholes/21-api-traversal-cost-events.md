@@ -1,9 +1,9 @@
 ---
-title: API - Traversal Cost & Events
-description: Wormholes documentation: API - Traversal Cost & Events
+title: "API - Traversal Cost & Events"
+description: "Wormholes documentation: API - Traversal Cost & Events"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

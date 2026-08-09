@@ -1,9 +1,9 @@
 ---
-title: Projection Modes & Settings
-description: Wormholes documentation: Projection Modes & Settings
+title: "Projection Modes & Settings"
+description: "Wormholes documentation: Projection Modes & Settings"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

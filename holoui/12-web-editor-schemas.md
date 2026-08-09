@@ -1,9 +1,9 @@
 ---
-title: Web Editor & Schemas
-description: HoloUI documentation: Web Editor & Schemas
+title: "Web Editor & Schemas"
+description: "HoloUI documentation: Web Editor & Schemas"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: holoui
+tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

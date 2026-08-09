@@ -1,9 +1,9 @@
 ---
-title: Components & Hitboxes
-description: HoloUI documentation: Components & Hitboxes
+title: "Components & Hitboxes"
+description: "HoloUI documentation: Components & Hitboxes"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: holoui
+tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

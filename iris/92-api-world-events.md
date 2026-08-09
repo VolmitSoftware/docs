@@ -1,9 +1,9 @@
 ---
-title: API - World Events
-description: Iris documentation: API - World Events
+title: "API - World Events"
+description: "Iris documentation: API - World Events"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

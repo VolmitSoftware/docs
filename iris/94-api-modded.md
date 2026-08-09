@@ -1,9 +1,9 @@
 ---
-title: API - Modded
-description: Iris documentation: API - Modded
+title: "API - Modded"
+description: "Iris documentation: API - Modded"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

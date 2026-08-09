@@ -1,9 +1,9 @@
 ---
-title: Pocket Dimensions
-description: Wormholes documentation: Pocket Dimensions
+title: "Pocket Dimensions"
+description: "Wormholes documentation: Pocket Dimensions"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

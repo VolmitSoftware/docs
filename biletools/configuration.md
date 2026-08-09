@@ -1,9 +1,9 @@
 ---
-title: BileTools — Configuration
-description: Every config.yml key with its shipped default
+title: "BileTools — Configuration"
+description: "Every config.yml key with its shipped default"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: biletools, configuration
+tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

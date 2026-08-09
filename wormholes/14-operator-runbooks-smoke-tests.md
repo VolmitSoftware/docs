@@ -1,9 +1,9 @@
 ---
-title: Operator Runbooks & Smoke Tests
-description: Wormholes documentation: Operator Runbooks & Smoke Tests
+title: "Operator Runbooks & Smoke Tests"
+description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: Container Previews
-description: HoloUI documentation: Container Previews
+title: "Container Previews"
+description: "HoloUI documentation: Container Previews"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: holoui
+tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

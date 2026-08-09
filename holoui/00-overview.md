@@ -1,9 +1,9 @@
 ---
-title: Overview
-description: HoloUI documentation: Overview
+title: "Overview"
+description: "HoloUI documentation: Overview"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: holoui
+tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

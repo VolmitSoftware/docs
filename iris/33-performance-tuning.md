@@ -1,9 +1,9 @@
 ---
-title: Performance Tuning
-description: Iris documentation: Performance Tuning
+title: "Performance Tuning"
+description: "Iris documentation: Performance Tuning"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: BileTools — Remote Deploy
-description: Pushing plugin jars to other servers, and the security model
+title: "BileTools — Remote Deploy"
+description: "Pushing plugin jars to other servers, and the security model"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: biletools
+tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

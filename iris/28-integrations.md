@@ -1,9 +1,9 @@
 ---
-title: Integrations
-description: Iris documentation: Integrations
+title: "Integrations"
+description: "Iris documentation: Integrations"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

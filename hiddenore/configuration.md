@@ -1,9 +1,9 @@
 ---
-title: HiddenOre — Configuration
-description: Every config.yml key explained
+title: "HiddenOre — Configuration"
+description: "Every config.yml key explained"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: hiddenore, configuration
+tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

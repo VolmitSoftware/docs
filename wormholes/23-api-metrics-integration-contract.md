@@ -1,9 +1,9 @@
 ---
-title: API - Metrics & Integration Contract
-description: Wormholes documentation: API - Metrics & Integration Contract
+title: "API - Metrics & Integration Contract"
+description: "Wormholes documentation: API - Metrics & Integration Contract"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: Portal Types Menus & Settings
-description: Wormholes documentation: Portal Types Menus & Settings
+title: "Portal Types Menus & Settings"
+description: "Wormholes documentation: Portal Types Menus & Settings"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

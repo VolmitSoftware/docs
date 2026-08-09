@@ -1,9 +1,9 @@
 ---
-title: Runtime Architecture
-description: Wormholes documentation: Runtime Architecture
+title: "Runtime Architecture"
+description: "Wormholes documentation: Runtime Architecture"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

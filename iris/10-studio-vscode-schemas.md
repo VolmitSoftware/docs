@@ -1,9 +1,9 @@
 ---
-title: Studio & VSCode Schemas
-description: Iris documentation: Studio & VSCode Schemas
+title: "Studio & VSCode Schemas"
+description: "Iris documentation: Studio & VSCode Schemas"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: iris
+tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

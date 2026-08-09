@@ -1,9 +1,9 @@
 ---
-title: HiddenOre — Commands & Permissions
-description: The /hiddenore command tree and permission node
+title: "HiddenOre — Commands & Permissions"
+description: "The /hiddenore command tree and permission node"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: hiddenore, commands, permissions
+tags: "hiddenore, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

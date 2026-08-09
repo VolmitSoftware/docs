@@ -1,9 +1,9 @@
 ---
-title: PlaceholderAPI
-description: Wormholes documentation: PlaceholderAPI
+title: "PlaceholderAPI"
+description: "Wormholes documentation: PlaceholderAPI"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
