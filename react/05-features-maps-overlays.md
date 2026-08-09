@@ -1,9 +1,9 @@
 ---
-title: Features - Maps & Overlays
-description: React documentation: Features - Maps & Overlays
+title: "Features - Maps & Overlays"
+description: "React documentation: Features - Maps & Overlays"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

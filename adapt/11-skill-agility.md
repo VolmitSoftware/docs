@@ -1,9 +1,9 @@
 ---
-title: Skill - Agility
-description: Adapt documentation: Skill - Agility
+title: "Skill - Agility"
+description: "Adapt documentation: Skill - Agility"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

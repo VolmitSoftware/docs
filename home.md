@@ -1,9 +1,9 @@
 ---
-title: Volmit Software
-description: Documentation for Iris, Adapt, React, Wormholes, HoloUI, HiddenOre and BileTools
+title: "Volmit Software"
+description: "Documentation for Iris, Adapt, React, Wormholes, HoloUI, HiddenOre and BileTools"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: index
+tags: "index"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

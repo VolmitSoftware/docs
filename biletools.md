@@ -1,9 +1,9 @@
 ---
-title: BileTools
-description: BileTools plugin hot-reload and deployment utility
+title: "BileTools"
+description: "BileTools plugin hot-reload and deployment utility"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: biletools
+tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: Integrations
-description: Adapt documentation: Integrations
+title: "Integrations"
+description: "Adapt documentation: Integrations"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: Items, Orbs & Bound Objects
-description: Adapt documentation: Items, Orbs & Bound Objects
+title: "Items, Orbs & Bound Objects"
+description: "Adapt documentation: Items, Orbs & Bound Objects"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: Skill - Crafting
-description: Adapt documentation: Skill - Crafting
+title: "Skill - Crafting"
+description: "Adapt documentation: Skill - Crafting"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

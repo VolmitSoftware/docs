@@ -1,9 +1,9 @@
 ---
-title: API - PlaceholderAPI
-description: React documentation: API - PlaceholderAPI
+title: "API - PlaceholderAPI"
+description: "React documentation: API - PlaceholderAPI"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

@@ -1,9 +1,9 @@
 ---
-title: Samplers & Metrics
-description: React documentation: Samplers & Metrics
+title: "Samplers & Metrics"
+description: "React documentation: Samplers & Metrics"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

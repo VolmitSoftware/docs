@@ -1,9 +1,9 @@
 ---
-title: Localization
-description: React documentation: Localization
+title: "Localization"
+description: "React documentation: Localization"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

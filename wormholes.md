@@ -1,9 +1,9 @@
 ---
-title: Wormholes
-description: Wormholes through-portal projection and traversal
+title: "Wormholes"
+description: "Wormholes through-portal projection and traversal"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: wormholes
+tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

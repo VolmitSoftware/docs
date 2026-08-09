@@ -1,9 +1,9 @@
 ---
-title: Skill - Blocking
-description: Adapt documentation: Skill - Blocking
+title: "Skill - Blocking"
+description: "Adapt documentation: Skill - Blocking"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

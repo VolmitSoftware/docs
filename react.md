@@ -1,9 +1,9 @@
 ---
-title: React
-description: React performance monitoring and optimisation for Paper and Folia
+title: "React"
+description: "React performance monitoring and optimisation for Paper and Folia"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

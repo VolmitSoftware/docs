@@ -1,9 +1,9 @@
 ---
-title: Incident Mode & Playbooks
-description: React documentation: Incident Mode & Playbooks
+title: "Incident Mode & Playbooks"
+description: "React documentation: Incident Mode & Playbooks"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

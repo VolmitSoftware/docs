@@ -1,9 +1,9 @@
 ---
-title: API - Ability Use Policy
-description: Adapt documentation: API - Ability Use Policy
+title: "API - Ability Use Policy"
+description: "Adapt documentation: API - Ability Use Policy"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

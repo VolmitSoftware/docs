@@ -1,9 +1,9 @@
 ---
-title: HiddenOre
-description: HiddenOre mining economy and anti-xray plugin
+title: "HiddenOre"
+description: "HiddenOre mining economy and anti-xray plugin"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: hiddenore
+tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

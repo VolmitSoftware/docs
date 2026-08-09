@@ -1,3 +1,13 @@
+---
+title: "Repository readme"
+description: "How this documentation repository is structured"
+published: true
+date: 2026-08-09T00:00:00.000Z
+tags: "meta"
+editor: markdown
+dateCreated: 2026-08-09T00:00:00.000Z
+---
+
 # Volmit Software Documentation
 
 Source for the Volmit Software documentation wiki, synced bi-directionally with Wiki.js.

@@ -1,9 +1,9 @@
 ---
-title: Skill - Rift
-description: Adapt documentation: Skill - Rift
+title: "Skill - Rift"
+description: "Adapt documentation: Skill - Rift"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

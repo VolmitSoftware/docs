@@ -1,9 +1,9 @@
 ---
-title: API - Player Data, XP & World
-description: Adapt documentation: API - Player Data, XP & World
+title: "API - Player Data, XP & World"
+description: "Adapt documentation: API - Player Data, XP & World"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

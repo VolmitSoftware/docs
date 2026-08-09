@@ -1,9 +1,9 @@
 ---
-title: API - Getting Started
-description: Adapt documentation: API - Getting Started
+title: "API - Getting Started"
+description: "Adapt documentation: API - Getting Started"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: adapt
+tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---

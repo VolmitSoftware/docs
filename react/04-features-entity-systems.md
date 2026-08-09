@@ -1,9 +1,9 @@
 ---
-title: Features - Entity Systems
-description: React documentation: Features - Entity Systems
+title: "Features - Entity Systems"
+description: "React documentation: Features - Entity Systems"
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: react
+tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
