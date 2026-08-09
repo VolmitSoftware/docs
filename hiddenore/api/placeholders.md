@@ -1,6 +1,6 @@
 ---
-title: HiddenOre API — Placeholders
-description: HiddenOre developer API: placeholders
+title: HiddenOre — API — Placeholders
+description: HiddenOre api — placeholders
 published: true
 date: 2026-08-09T00:00:00.000Z
 tags: hiddenore, api

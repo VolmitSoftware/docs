@@ -8,14 +8,14 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-This page documents `plugins/HiddenOre/config.yml`. Values shown are the shipped defaults.
+`plugins/HiddenOre/config.yml`. Values shown are the shipped defaults.
 
 ## Top level
 
 | Key | Default | Effect |
 |---|---|---|
-| `auto_pickup_drops` | `false` | Send hidden drops straight to the player's inventory instead of the ground |
-| `suppress_block_drop_on_custom_drop` | `true` | When a hidden reward fires, suppress the block's normal drop |
+| `auto_pickup_drops` | `false` | Send hidden drops straight to the player's inventory |
+| `suppress_block_drop_on_custom_drop` | `true` | Suppress the block's normal drop when a reward fires |
 
 ## Ore removal
 
@@ -39,20 +39,16 @@ ore-removal:
 
 | Key | Effect |
 |---|---|
-| `enabled` | Master switch. While `false`, world generation is untouched |
-| `global.default` | When `true`, all ores are stripped from generation by default |
+| `enabled` | Master switch. While `false`, generation is untouched |
+| `global.default` | When `true`, all ores are stripped from generation |
 | `global.<ORE>` | Per-ore exception to `default` |
-| `exceptions.<world key>` | Per-world override block, keyed by fully qualified world key |
+| `exceptions.<world key>` | Per-world override, keyed by fully qualified world key |
 
-Accepted ore keys:
-
-`COAL_ORE`, `COPPER_ORE`, `IRON_ORE`, `GOLD_ORE`, `DIAMOND_ORE`, `REDSTONE_ORE`, `LAPIS_ORE`,
-`EMERALD_ORE`, `DEEPSLATE_COAL_ORE`, `DEEPSLATE_COPPER_ORE`, `DEEPSLATE_IRON_ORE`,
-`DEEPSLATE_GOLD_ORE`, `DEEPSLATE_DIAMOND_ORE`, `DEEPSLATE_REDSTONE_ORE`, `DEEPSLATE_LAPIS_ORE`,
-`DEEPSLATE_EMERALD_ORE`, `NETHER_GOLD_ORE`, `NETHER_QUARTZ_ORE`, `ANCIENT_DEBRIS`
-
-> Ore removal applies at generation time. Enabling it does not remove ore from chunks that
-> already exist.
+Accepted ore keys: `COAL_ORE`, `COPPER_ORE`, `IRON_ORE`, `GOLD_ORE`, `DIAMOND_ORE`,
+`REDSTONE_ORE`, `LAPIS_ORE`, `EMERALD_ORE`, `DEEPSLATE_COAL_ORE`, `DEEPSLATE_COPPER_ORE`,
+`DEEPSLATE_IRON_ORE`, `DEEPSLATE_GOLD_ORE`, `DEEPSLATE_DIAMOND_ORE`, `DEEPSLATE_REDSTONE_ORE`,
+`DEEPSLATE_LAPIS_ORE`, `DEEPSLATE_EMERALD_ORE`, `NETHER_GOLD_ORE`, `NETHER_QUARTZ_ORE`,
+`ANCIENT_DEBRIS`
 
 ## Managed blocks
 
@@ -69,26 +65,16 @@ still behaves like vanilla when no reward fires.
 
 ## Veins
 
-```yaml
-veins:
-  generation: seeded
-  allow_placed_blocks: false
-  discovery_sound:
-    sound: "BLOCK_BEACON_POWER_SELECT"
-    volume: 1.0
-    pitch: 1.0
-```
-
 | Key | Default | Effect |
 |---|---|---|
-| `generation` | `seeded` | `seeded` or `pure_random` — see [Overview](/hiddenore) |
-| `allow_placed_blocks` | `false` | Whether player-placed blocks can pay out |
-| `discovery_sound.sound` | `BLOCK_BEACON_POWER_SELECT` | Sound played on a hit |
-| `discovery_sound.volume` | `1.0` | |
-| `discovery_sound.pitch` | `1.0` | |
+| `veins.generation` | `seeded` | `seeded` or `pure_random` |
+| `veins.allow_placed_blocks` | `false` | Whether player-placed blocks can pay out |
+| `veins.discovery_sound.sound` | `BLOCK_BEACON_POWER_SELECT` | Sound played on a hit |
+| `veins.discovery_sound.volume` | `1.0` | |
+| `veins.discovery_sound.pitch` | `1.0` | |
 
 `allow_placed_blocks: false` closes the place-and-remine exploit. Player-placed blocks are
-tracked persistently and survive both piston movement and server restarts.
+tracked persistently and survive piston movement and restarts.
 
 ## Drops
 
@@ -111,27 +97,22 @@ drops:
 | Key | Effect |
 |---|---|
 | `item` | The item to award |
-| `veins_per_chunk` | Average veins per chunk; fractional values are allowed |
+| `veins_per_chunk` | Average veins per chunk; fractional allowed |
 | `vein_min_size` / `vein_max_size` | Blocks per vein |
 | `min_y` / `max_y` | Vertical band the rule applies in |
 | `fortune_multiplier` | Whether Fortune scales the drop |
 | `tool_tiers` | Pickaxe tiers that can trigger this rule |
 | `exp_drop` | Experience awarded |
 
-### Safety limits
-
-HiddenOre enforces hard caps:
+### Enforced limits
 
 - 64 veins per chunk for a single rule
 - 256 blocks per vein
 - 1,024 worst-case target blocks across all item rules
 - `exp_drop` no greater than 1,000
 
-### Order sensitivity
-
-> Under `veins.generation: seeded`, vein positions are derived from the order of this list.
-> **Reordering, inserting, or deleting an entry reshuffles every undiscovered vein in the
-> world.** Already-discovered positions stay discovered, so the practical effect is a
-> discontinuity in what players find. Back up worlds before editing the list on a live server.
->
-> Appending a new rule to the **end** of the list is the least disruptive edit.
+> Under `seeded`, vein positions derive from this list's order. Reordering, inserting or
+> deleting an entry reshuffles every undiscovered vein. Already-discovered positions stay
+> discovered, so the practical effect is a discontinuity in what players find. Appending to
+> the end is the least disruptive edit.
+{.is-danger}

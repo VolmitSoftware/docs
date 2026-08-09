@@ -1,6 +1,6 @@
 ---
-title: HiddenOre API — API Overview
-description: HiddenOre developer API: api overview
+title: HiddenOre — API Overview
+description: HiddenOre api overview
 published: true
 date: 2026-08-09T00:00:00.000Z
 tags: hiddenore, api

@@ -1,6 +1,6 @@
 ---
-title: HiddenOre API — Service
-description: HiddenOre developer API: service
+title: HiddenOre — API — Service
+description: HiddenOre api — service
 published: true
 date: 2026-08-09T00:00:00.000Z
 tags: hiddenore, api
