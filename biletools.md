@@ -1,6 +1,6 @@
 ---
 title: BileTools
-description: BileTools developer utility — overview
+description: BileTools plugin hot-reload and deployment utility
 published: true
 date: 2026-08-09T00:00:00.000Z
 tags: biletools
@@ -8,43 +8,34 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-BileTools is a development utility. Its purpose is removing the reload step from the plugin
-development loop.
+# BileTools
 
-**Root command:** `/biletools` (aliases `bile`, `bi`, `b`, `volmit`, `vomit`, `vom`)
-**Folia:** supported
+A development utility. It watches the plugins directory and reloads any jar that changes on
+disk, so a build in your IDE lands in the running server without a restart. It also does
+plugman-style lifecycle commands and optional remote deployment.
 
-## What it does
-
-- **Hot reload on write.** Any plugin jar modified while the server is running — by a Maven
-  build, a Gradle export, or a drag-and-drop — is automatically reloaded. Hit build in your
-  IDE and it is already in game.
-- **Hot drop.** New jars added to the plugins folder are loaded without a restart.
-- **Plugman equivalent.** Load, unload, reload, install, and uninstall plugins by command.
-
-## Compatibility
-
-| Runtime | Support | Notes |
-|---|---|---|
-| Paper | Primary | Public PluginManager load path; hot-unload is best-effort |
-| Purpur | Primary | Paper-family, same load and unload paths |
-| Leaf | Primary | Paper-family fork, treated like Paper |
-| Folia | Supported | GlobalRegionScheduler only; hot-reload is best-effort |
-| Canvas | Supported | Folia fork, same regionized scheduling rules |
-| Spigot | Best-effort | `paper-plugin.yml`-only jars are rejected; dual-descriptor jars load via `plugin.yml` |
-
-- `api-version`: `26.2`
-- Compile target: Paper API `26.2`
-- Runtime JVM: Java 25+
-- Lifecycle mutations always run on the global/main thread, never on plugin-ops or network threads
-
-## Where to go next
-
-| Page | Covers |
+| | |
 |---|---|
-| [Installation](/biletools/installation) | Setup and the production warning |
-| [Commands & Permissions](/biletools/commands) | The `/bile` tree |
+| Command | `/biletools` (`bile`, `bi`, `b`, `volmit`, `vomit`, `vom`) |
+| Folia | Supported |
+| Permission | `bile.use` |
+| Runtime | Java 25+, Paper API 26.2 |
+
+> BileTools can load, unload and **delete** plugin jars, and its remote-deploy listener accepts
+> jars over a socket. Treat `bile.use` as equivalent to console access. This belongs on a
+> development server.
+{.is-danger}
+
+- [Installation *Requirements, install, first build*](/biletools/installation)
+- [Commands & Permissions *The `/bile` tree*](/biletools/commands)
+- [Configuration *Every `config.yml` key and default*](/biletools/configuration)
+- [Hot Reload Behaviour *What works, what is best-effort, and why*](/biletools/hot-reload)
+- [Remote Deploy *Master/slave jar distribution, and its security model*](/biletools/remote-deploy)
+{.links-list}
 
 ## Support
 
-[Discord](https://discord.gg/volmit) · [Source](https://github.com/VolmitSoftware/BileTools)
+- [Discord *Support and development chat*](https://volmitsoftware.com/discord)
+- [Source *github.com/VolmitSoftware/BileTools*](https://github.com/VolmitSoftware/BileTools)
+- [Releases *Download built jars*](https://github.com/VolmitSoftware/BileTools/releases/)
+{.links-list}

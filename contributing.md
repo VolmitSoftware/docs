@@ -8,27 +8,31 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-This wiki is backed by a Git repository. Edits made in Wiki.js sync out to the repository, and
-merged changes on the default branch sync back in.
+# Contributing
 
-## Editing through Wiki.js
+This wiki is backed by a Git repository and syncs bi-directionally with
+[VolmitSoftware/docs](https://github.com/VolmitSoftware/docs).
 
-If you have an account with edit rights, use the pencil icon on any page. Your change is
-committed to the repository on the next sync.
+## Editing
 
-## Editing through pull request
+**Through Wiki.js** — use the pencil icon on any page. Your change commits on the next sync.
 
-1. Fork [VolmitSoftware/docs](https://github.com/VolmitSoftware/docs).
-2. Edit the relevant `.md` file. The file path maps directly to the page path —
-   `iris/commands.md` is `/iris/commands`.
-3. Open a pull request.
+**Through a pull request** — fork the repo, edit the `.md` file, open a PR. File paths map
+directly to page paths: `iris/commands.md` is `/iris/commands`.
 
-Once merged, the change appears in the wiki on the next sync.
+## Where content comes from
+
+Most pages are **ported from `docs/` directories inside the plugin repositories**. Iris, Adapt,
+React, Wormholes and HoloUI each maintain their own documentation alongside the code.
+
+> Editing a ported page here will be overwritten the next time the docs are re-imported from
+> upstream. Fix those pages in the plugin repository instead, then re-run the import.
+{.is-warning}
+
+Pages written specifically for this wiki — the BileTools set, HiddenOre's operator pages, and
+the plugin landing pages — can be edited here directly.
 
 ## Frontmatter
-
-Every page begins with a frontmatter block. Keep it intact — Wiki.js uses it for the page
-title, description, and tags.
 
 ```
 ---
@@ -42,20 +46,19 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 ```
 
-Only `title`, `description`, and `tags` should be edited by hand. Leave `date` and
-`dateCreated` alone; Wiki.js maintains them.
+Edit only `title`, `description` and `tags`. Leave the dates alone.
 
 ## Conventions
 
-- **Link internally with absolute paths.** `/iris/commands`, not `iris/commands.md`.
-- **Command syntax:** `<required>`, `[optional]`.
-- **Destructive operations get a callout.** Anything that deletes player data, purges
-  entities, or reshuffles world state should carry a `>` blockquote warning.
-- **Do not document behaviour you have not verified.** If a config key's effect is unclear
-  from the source, say so rather than guessing.
+- Absolute internal links: `/iris/commands`, not `iris/commands.md`
+- Command syntax: `<required>`, `[optional]`
+- Destructive operations get a `{.is-warning}` or `{.is-danger}` callout
+- Wiki.js extras available: `{.links-list}`, `{.grid-list}`, `{.tabset}`, `{.dense}`,
+  and `{.is-info}` / `{.is-success}` / `{.is-warning}` / `{.is-danger}`
+- Do not document behaviour you have not verified against the source
 
-## Pages generated from source
+## Source branches
 
-The command and permission tables were extracted from the plugin sources — `plugin.yml`
-files and the annotated command classes. When a command changes upstream, the corresponding
-table here needs regenerating rather than hand-editing, or the two will drift.
+Iris, Adapt and React are documented from their **`unification`** branch, not `master`.
+The `master` branches are older and target much earlier Minecraft versions. HoloUI, HiddenOre,
+BileTools and Wormholes are documented from `master`.

@@ -1,18 +1,17 @@
 ---
 title: BileTools — Commands & Permissions
-description: BileTools command tree and permission node
+description: The /bile command tree
 published: true
 date: 2026-08-09T00:00:00.000Z
-tags: biletools, commands
+tags: biletools, commands, permissions
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-BileTools registers the root command `/biletools`, with the aliases `bile`, `bi`, `b`, `volmit`, `vomit`, and `vom`.
-
-Argument notation: `<required>`, `[optional]`.
-
 ## Commands
+
+Root command `/biletools`, aliases `bile`, `bi`, `b`, `volmit`, `vomit`, `vom`.
+Notation: `<required>`, `[optional]`.
 
 | Command | Description |
 |---|---|
@@ -21,47 +20,24 @@ Argument notation: `<required>`, `[optional]`.
 | `/bile reload <plugin>` | Reload an installed plugin |
 | `/bile uninstall <plugin>` | Delete a plugin jar from the plugins directory |
 | `/bile install <plugin> [version]` | Install a plugin from the Bile library |
-| `/bile library [plugin]` | List library plugins or versions for one plugin |
+| `/bile library [plugin]` | List library plugins, or versions for one plugin |
 
 ### Parameters
 
-**`/bile load`**
+| Command | Parameter | Default | Notes |
+|---|---|---|---|
+| `load` / `unload` / `reload` / `uninstall` | `plugin` | *required* | Tab-completes from installed plugins |
+| `install` | `plugin` | *required* | Tab-completes from the Bile library |
+| `install` | `version` | `latest` | Tab-completes from available library versions |
+| `library` | `plugin` | `*` | Omit or pass `*` to list everything |
+{.dense}
 
-| Parameter | Default | Description |
-|---|---|---|
-| `plugin` | *required* | Installed plugin name |
+> `/bile uninstall` deletes the jar from disk. With `archive-plugins: true` (the default) a
+> copy is archived first, but this is still a destructive filesystem operation.
+{.is-warning}
 
-**`/bile unload`**
-
-| Parameter | Default | Description |
-|---|---|---|
-| `plugin` | *required* | Installed plugin name |
-
-**`/bile reload`**
-
-| Parameter | Default | Description |
-|---|---|---|
-| `plugin` | *required* | Installed plugin name |
-
-**`/bile uninstall`**
-
-| Parameter | Default | Description |
-|---|---|---|
-| `plugin` | *required* | Installed plugin name |
-
-**`/bile install`**
-
-| Parameter | Default | Description |
-|---|---|---|
-| `plugin` | *required* | Library plugin name |
-| `version` | `latest` | Library plugin version |
-
-**`/bile library`**
-
-| Parameter | Default | Description |
-|---|---|---|
-| `plugin` | `*` | Library plugin name |
-
+Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and `watcher.only`
+filters. Those only govern automatic watcher-driven reloads.
 
 ## Permissions
 
@@ -69,5 +45,5 @@ Argument notation: `<required>`, `[optional]`.
 |---|---|---|
 | `bile.use` | `op` | Gives access to BileTools |
 
-A single node covers the whole command tree. Because BileTools can load, unload, and delete
-plugin jars, treat `bile.use` as equivalent to server-operator access and do not grant it broadly.
+One node covers the entire command tree. There is no read-only subset, and no separate node
+for the destructive `uninstall` subcommand.

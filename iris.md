@@ -1,6 +1,6 @@
 ---
 title: Iris
-description: Iris world generation engine — overview
+description: Iris world generation engine for Paper and Folia
 published: true
 date: 2026-08-09T00:00:00.000Z
 tags: iris
@@ -8,37 +8,104 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Iris replaces vanilla world generation with its own engine. Worlds are described by data
-packs — dimensions, regions, biomes, objects, jigsaw structures — and Iris assembles them at
-generation time.
+# Iris
 
-**Root command:** `/iris` (aliases `ir`, `irs`)
-**Load order:** `STARTUP` — Iris must be present before worlds load
-**Authors:** cyberpwn, NextdoorPsycho
+Iris replaces vanilla world generation entirely. Dimensions, regions, biomes, objects and
+jigsaw structures are authored as JSON data packs; Iris assembles them at generation time.
 
-## What it does
-
-- **Data-pack driven generation.** Dimensions, regions, biomes, and objects are JSON files.
-  Editing one and reloading regenerates the world without a restart in Studio mode.
-- **Studio mode.** `/iris studio open` spins up a scratch world bound to a project. `/iris studio vscode`
-  opens the project in an editor with schema completion for every Iris file type.
-- **Object system.** `.iob` objects with their own placement rules, plus conversion from
-  WorldEdit `.schem` files via `/iris object convert`.
-- **Jigsaw structures.** Piece/pool/structure definitions assembled at generation time,
-  editable in-game through `/iris jigsaw`.
-- **Pregeneration.** Three pregenerators — `pregen`, `lazypregen`, and `turbopregen` — trading
-  throughput against server impact.
-- **World management.** Create, load, unload, evacuate, and remove Iris worlds at runtime.
-
-## Where to go next
-
-| Page | Covers |
+| | |
 |---|---|
-| [Installation](/iris/installation) | Requirements, install, first world |
-| [Commands](/iris/commands) | The complete `/iris` tree |
-| [Developer API](/iris/api) | `IrisToolbelt` — accessing Iris from your own plugin |
+| Command | `/iris` (`ir`, `irs`) |
+| Load | `STARTUP` — before any world loads |
+| Folia | Supported |
+| Permissions | `iris.all`, `iris.treefeller` |
+| Integrations | WorldEdit, ItemsAdder, Nexo, CraftEngine, MMOItems, MythicMobs, MythicCrucible, EcoItems, ExecutableItems, SCore, MythicLib, eco, KGenerators, PlaceholderAPI |
+
+> Iris declares `loadbefore: Multiverse-Core`. If you run Multiverse, Iris must initialise
+> first or Multiverse will claim Iris worlds with the vanilla generator.
+{.is-warning}
+
+## Permissions
+
+| Node | Default | Covers |
+|---|---|---|
+| `iris.all` | `op` | The full `/iris` tree — worlds, studio, pregen, packs, developer tools |
+| `iris.treefeller` | `op` | Lets survival players fell Iris-managed trees with an axe |
+
+`iris.all` is deliberately coarse. There is no per-subcommand node, so anyone holding it can
+create, unload, evacuate and delete worlds. Grant it to administrators only, and use
+`iris.treefeller` for the one player-facing feature.
+
+### Getting started
+
+- [Overview](/iris/00-overview)
+- [Installation & Platforms](/iris/01-installation-platforms)
+- [Getting Started](/iris/02-getting-started)
+- [Configuration](/iris/03-configuration)
+- [Commands & Permissions](/iris/04-commands-permissions)
+{.links-list}
+
+### Concepts and worlds
+
+- [Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [Worlds & Lifecycle](/iris/06-worlds-lifecycle)
+- [Pregeneration](/iris/07-pregeneration)
+- [Localization](/iris/08-localization)
+- [PlaceholderAPI](/iris/09-placeholderapi)
+- [Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+{.links-list}
+
+### Authoring a pack
+
+- [Dimensions](/iris/11-dimensions)
+- [Regions](/iris/12-regions)
+- [Biomes](/iris/13-biomes)
+- [Generators & Noise](/iris/14-generators-noise)
+- [Caves & Carving](/iris/15-caves-carving)
+- [Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
+- [Structures Overview](/iris/18-structures-overview)
+- [Objects](/iris/19-objects)
+- [Object Placement](/iris/20-object-placement)
+- [Jigsaw Structures](/iris/21-jigsaw-structures)
+- [Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [Pack Management](/iris/25-pack-management)
+{.links-list}
+
+### Examples and operations
+
+- [Example - Minimal Dimension](/iris/26-example-minimal-dimension)
+- [Example - Configuring Overworld](/iris/27-example-configuring-overworld)
+- [Integrations](/iris/28-integrations)
+- [Client HUD & Protocol](/iris/29-client-hud-protocol)
+- [Platform Differences](/iris/30-platform-differences)
+- [Operator Runbooks & Smoke Tests](/iris/31-operator-runbooks-smoke-tests)
+- [Determinism & Goldenhash](/iris/32-determinism-goldenhash)
+- [Performance Tuning](/iris/33-performance-tuning)
+{.links-list}
+
+### Maintainer
+
+- [Maintainer - MC Version Bump](/iris/85-maintainer-mc-version-bump)
+- [Maintainer - Release Checklist](/iris/86-maintainer-release-checklist)
+- [Maintainer - Release Readiness](/iris/87-maintainer-release-readiness)
+{.links-list}
+
+### Developer API
+
+- [API - Getting Started](/iris/90-api-getting-started)
+- [API - Terrain](/iris/91-api-terrain)
+- [API - World Events](/iris/92-api-world-events)
+- [API - Tree Feller](/iris/93-api-tree-feller)
+- [API - Modded](/iris/94-api-modded)
+{.links-list}
+
 
 ## Support
 
-[Discord](https://discord.gg/volmit) · [Source](https://github.com/VolmitSoftware/Iris) ·
-[Dimension packs](https://github.com/IrisDimensions)
+- [Discord *Support and development chat*](https://volmitsoftware.com/discord)
+- [Source *github.com/VolmitSoftware/Iris*](https://github.com/VolmitSoftware/Iris)
+- [Dimension packs *github.com/IrisDimensions*](https://github.com/IrisDimensions)
+{.links-list}
