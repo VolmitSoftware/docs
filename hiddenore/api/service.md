@@ -1,13 +1,12 @@
 ---
-title: "HiddenOre — API — Service"
-description: "HiddenOre api — service"
+title: "service"
+description: "HiddenOre documentation: service"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 `art.arcane.hiddenore.api.HiddenOreService` is the read side of HiddenOre. It answers four kinds of question:
 which materials HiddenOre manages, where a block came from, where the hidden veins are in a seeded world, and
 whether the calling thread is allowed to ask about a given position at all. It never mutates world state, never

@@ -2,13 +2,12 @@
 title: "Portal Types Menus & Settings"
 description: "Wormholes documentation: Portal Types Menus & Settings"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Each local frame portal has a home menu and nested type, orientation, destination, settings, cost, and cosmetics screens. Defaults below match a newly constructed portal (`LocalPortalSettings` constructor). Concepts: [Concepts](/wormholes/02-concepts). Construction: [Building Portals](/wormholes/03-building-portals).
+Each local frame portal has a home menu and nested type, orientation, destination, settings, cost, and cosmetics screens. Defaults below match a newly constructed portal (`LocalPortalSettings` constructor). Concepts: [02 - Concepts](/wormholes/02-concepts). Construction: [03 - Building Portals](/wormholes/03-building-portals).
 
 ## Default settings
 
@@ -73,7 +72,7 @@ Ops always pass. Cycle mode in Settings.
 
 ## Home menu
 
-Opens via wand look-click or sneak empty-hand right-click on the frame ([Building Portals](/wormholes/03-building-portals)). Requires owner or admin.
+Opens via wand look-click or sneak empty-hand right-click on the frame ([03 - Building Portals](/wormholes/03-building-portals)). Requires owner or admin.
 
 | Control | Action |
 |---------|--------|
@@ -102,7 +101,7 @@ Blocked for RTP, mirror mode, and managed dimensional portals.
 | Choose destination | Open destination list (local gateways + remotes) |
 | Import | Chat prompt for peer invite code |
 
-Cross-server handoff detail: [Cross-Server Networking](/wormholes/10-cross-server-networking).
+Cross-server handoff detail: [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
 ## Type menu
 
@@ -113,9 +112,9 @@ Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
 | Portal / Wormhole / Gateway / RTP | Sets type and disables mirror mode if it was on |
 | Mirror | Enables mirror mode (travel locked; tunnel cleared) |
 
-RTP editor entry lives on the home destination control when type is RTP ([Random Teleport Portals](/wormholes/06-random-teleport-portals)).
+RTP editor entry lives on the home destination control when type is RTP ([06 - Random Teleport Portals](/wormholes/06-random-teleport-portals)).
 
-Menu descriptions (localized): Portal = basic linkable; Wormhole = linkable with viewport projection; Gateway = cross-network; RTP = local random teleport; Mirror = reflect local world with travel locked. Runtime projection capability is still ON/OFF for all types ([Concepts](/wormholes/02-concepts)).
+Menu descriptions (localized): Portal = basic linkable; Wormhole = linkable with viewport projection; Gateway = cross-network; RTP = local random teleport; Mirror = reflect local world with travel locked. Runtime projection capability is still ON/OFF for all types ([02 - Concepts](/wormholes/02-concepts)).
 
 ## Settings menu
 
@@ -143,7 +142,7 @@ Custom quality expands the window to show depth, full-refresh ticks, entity inte
 | Vanilla item | Capture held item template; set quantity | Quantity adjustable ±1 / ±8 |
 | Vault | Chat amount | Soft-depend Vault economy available |
 
-Invalid stored travel cost loads as free and logs a warning. Third-party `TraversalCostProvider` is separate ([API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events)) and gated by `traversalApiEnabled`.
+Invalid stored travel cost loads as free and logs a warning. Third-party `TraversalCostProvider` is separate ([21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events)) and gated by `traversalApiEnabled`.
 
 ## Orientation menu
 

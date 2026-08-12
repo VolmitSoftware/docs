@@ -2,12 +2,11 @@
 title: "Features - Governors & Mechanics"
 description: "React documentation: Features - Governors & Mechanics"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Pressure-aware governors and world mechanics: activation/view ranges, hoppers, redstone, farms, furnaces, pathfinding, random ticks, quarantine, and incident mode. Config: `plugins/React/feature/<id>.toml`. Base `enabled` defaults to `true`.
 
 Most governors engage only after sustained tick or incident thresholds and release through configured hysteresis.
@@ -358,7 +357,7 @@ Accelerates leaf decay around break/decay events with radius scan and optional f
 
 ### `incident-mode`
 
-Enters a sustained incident state from high incident score or tick time (after startup grace), then rate-limits spawner/natural spawns, portals, hopper moves, and redstone until calm. See also [Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
+Enters a sustained incident state from high incident score or tick time (after startup grace), then rate-limits spawner/natural spawns, portals, hopper moves, and redstone until calm. See also [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
 
 - **Class:** `FeatureIncidentMode` · **Listener:** yes
 

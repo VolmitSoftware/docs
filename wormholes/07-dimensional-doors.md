@@ -2,13 +2,12 @@
 title: "Dimensional Doors"
 description: "Wormholes documentation: Dimensional Doors"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Dimensional Doors are survival vanilla doors and trapdoors that carry a durable identity in item PDC. Placed endpoints present a portal surface when their saved OpenState matches the physical block state; travelers that meet that surface transit on the same server. See [Pocket Dimensions](/wormholes/08-pocket-dimensions) for PERSONAL/PUBLIC destinations; PAIR links two endpoints and does not allocate a pocket.
+Dimensional Doors are survival vanilla doors and trapdoors that carry a durable identity in item PDC. Placed endpoints present a portal surface when their saved OpenState matches the physical block state; travelers that meet that surface transit on the same server. See [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) for PERSONAL/PUBLIC destinations; PAIR links two endpoints and does not allocate a pocket.
 
 ## Kinds
 
@@ -168,10 +167,10 @@ Default `type` is `pair`. Overflow drops at the player’s feet.
 
 When set `false` while running: new entries stop; active travelers and pocket occupants may finish through return routes; recipes, protection, and portal displays shut down after drain; existing blocks behave as ordinary doors; saved door and pocket identities remain for re-enable.
 
-**Pocket datapack / world:** first install or update of the bundled `wormholes:pockets` dimension requires a **full server restart** so registries load (`/reload` is insufficient). Until restart, doors that need pockets stay dormant. See [Pocket Dimensions](/wormholes/08-pocket-dimensions) and [Installation & Configuration](/wormholes/01-installation-configuration).
+**Pocket datapack / world:** first install or update of the bundled `wormholes:pockets` dimension requires a **full server restart** so registries load (`/reload` is insufficient). Until restart, doors that need pockets stay dormant. See [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) and [01 - Installation & Configuration](/wormholes/01-installation-configuration).
 
 ## Related
 
-- Pocket layout, rescue, and bindings: [Pocket Dimensions](/wormholes/08-pocket-dimensions)
-- Commands and permission nodes: [Commands & Permissions](/wormholes/09-commands-permissions)
-- Concepts overview: [Concepts](/wormholes/02-concepts)
+- Pocket layout, rescue, and bindings: [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions)
+- Commands and permission nodes: [09 - Commands & Permissions](/wormholes/09-commands-permissions)
+- Concepts overview: [02 - Concepts](/wormholes/02-concepts)

@@ -2,12 +2,11 @@
 title: "Actions Catalog"
 description: "React documentation: Actions Catalog"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Operator-invoked actions queue one-shot cleanup or lag-response jobs. Every action TOML contains inherited `enabled = true`; command/API invocation parameters are separate objects created for each ticket and are not persisted to TOML.
 
 List actions with `/react action audit` (aliases `list`, `ls`). Disabling an action prevents new tickets from running.

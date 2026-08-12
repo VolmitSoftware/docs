@@ -2,12 +2,11 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Root command is `/react` (alias `/re`). Use `/react help [page]` or `/react ? [page]` for generated command help. Permission root is `react.use`; `react.*` grants the full tree including shorthands.
 
 ## Permissions (`plugin.yml`)
@@ -68,7 +67,7 @@ The source also declares `c` for config, but `chunk` declares the same alias and
 | `incident-playbook` | `aip` | Queue full incident mitigation sequence |
 | `audit` | `list`, `ls` | List actions and enabled state |
 
-Parameters vary by action (world, radius, max entities/chunks, ages). Defaults come from each action’s TOML — see [Actions Catalog](/react/09-actions-catalog).
+Parameters vary by action (world, radius, max entities/chunks, ages). Defaults come from each action’s TOML — see [09 - Actions Catalog](/react/09-actions-catalog).
 
 ## `/react chunk` (`c`)
 
@@ -128,7 +127,7 @@ Example: `/react bridge status`.
 | `run [full=true] [json=true]` | `r` | Validation suite; `full` is currently report metadata and does not reduce the checks; JSON reports go to `plugins/React/test-reports/` |
 | `loadtest <confirm> [players=1000] [duration=600]` | `load` | Two-pass synthetic load test on world 0; `confirm=true` is required |
 
-Both test commands mutate their test world. `run` queues cleanup actions around world spawn, creates and removes map-frame fixtures, and spawns falling sand; `loadtest` generates heavy synthetic load and currently does not bound `players` or `duration`. Run them only in a disposable isolated server or after backing up the target world. See [Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
+Both test commands mutate their test world. `run` queues cleanup actions around world spawn, creates and removes map-frame fixtures, and spawns falling sand; `loadtest` generates heavy synthetic load and currently does not bound `players` or `duration`. Run them only in a disposable isolated server or after backing up the target world. See [15 - Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
 
 ## Shorthand commands (tweak `shorthands`)
 
@@ -144,4 +143,4 @@ When the `shorthands` tweak is enabled (`enabled = true` in TOML; constructor de
 | `/rl` | `react.shorthands.rl` | Invokes server `/reload` |
 | custom map keys | `react.shorthands.custom` or per-entry permission | Operator-defined shortcuts |
 
-Configure in `plugins/React/tweak/shorthands.toml`. See [Tweaks Catalog](/react/08-tweaks-catalog).
+Configure in `plugins/React/tweak/shorthands.toml`. See [08 - Tweaks Catalog](/react/08-tweaks-catalog).

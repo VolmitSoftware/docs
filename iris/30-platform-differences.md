@@ -2,13 +2,24 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
+Iris runs the same generation core on Bukkit-family servers and on Fabric, Forge, and NeoForge. Terrain output is identical; everything around it differs, and this page is the reference matrix for those differences. Shared configuration is `settings.json`; mod loaders add `modded.json`. Related detail lives in [01 - Installation & Platforms](/iris/01-installation-platforms), [03 - Configuration](/iris/03-configuration), and [04 - Commands & Permissions](/iris/04-commands-permissions).
 
-Iris runs the same generation core on Bukkit-family servers and on Fabric, Forge, and NeoForge. Adapters differ in world lifecycle, command surface, permissions, datapacks, and optional tools. Shared config is `settings.json`; mod loaders add `modded.json`. See [Installation & Platforms](/iris/01-installation-platforms), [Configuration](/iris/03-configuration), and [Commands & Permissions](/iris/04-commands-permissions).
+## What actually differs
+
+Five categories cover almost everything an operator runs into:
+
+- **Command syntax.** Bukkit uses VolmLib Director, where optional arguments are `key=value` in any order. Mod loaders use Brigadier, where arguments are positional and options are bare literals. The same feature reads very differently on each.
+- **World lifecycle.** Bukkit creates named worlds and can stage an exact replacement of a configured vanilla slot on restart. Mod loaders register dimension ids and enable or disable them.
+- **Authoring tools that need Bukkit.** Anything built on NMS, WorldEdit, or inventory GUIs is Bukkit-only: Jigsaw Studio, structure import and capture, vanilla import, schematic conversion, and the Studio loot and entity GUIs. Packs authored there run fine everywhere.
+- **Permissions.** Bukkit gates the entire `/iris` tree behind one permission. Mod loaders gate mutating commands at gamemaster level but leave inspection open to any player.
+- **File locations.** Both platforms have an Iris data directory, but the modded side splits it: settings live under one root and packs under another.
+
+Terrain, biomes, objects, jigsaw runtime, caves, and structures behave the same on all four. If generated terrain differs between platforms, that is a determinism defect, not a platform difference — see [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
 
 ## Artifacts and entry points
 
@@ -28,80 +39,103 @@ Core engine: `core/`. Shared modded logic: `adapters/modded-common/`. SPI: `spi/
 | Settings | `plugins/Iris/settings.json` | `<configDir>/iris/settings.json` |
 | Packs | `plugins/Iris/packs/` | `<configDir>/irisworldgen/packs/` |
 | Mod config | — | `<configDir>/irisworldgen/modded.json` |
-| World datapacks | world `datapacks/` + Iris ingest | world `datapacks/`; dimension-type pack name `iris` under `data/irisworldgen/dimension_type/` |
-| Dump / developer files | under plugin data folder | under mod data folder |
-| Persistent dynamic-world registry | `worlds.json` in plugin data | `<world-root>/iris/iris-dimensions.json` |
+| GoldenHash baselines | `plugins/Iris/golden/` | `<configDir>/irisworldgen/golden/` |
+| Studio pack exports | `plugins/Iris/packs/exports/` | `<configDir>/irisworldgen/exports/` |
+| Generated datapack | world `datapacks/` + Iris ingest | `<configDir>/irisworldgen/generated/datapack/`; dimension-type pack name `iris` under `data/irisworldgen/dimension_type/` |
+| Parity / developer dumps | under plugin data folder | `<configDir>/iris/parity/` |
+| Persistent dynamic-world registry | `plugins/Iris/worlds.json` | `<world-root>/iris/iris-dimensions.json` |
 
-Hotload: Bukkit file-watch engine; modded 3s poll. Same invalidate/reload/locale path.
+On mod loaders only `settings.json` and the parity dumps use the `iris/` root; every pack, config, and generated artifact uses `irisworldgen/`. Both roots sit under the loader config directory.
+
+Hotload is polled on both platforms, at different rates:
+
+| Watcher | Bukkit | Modded |
+|---------|--------|--------|
+| Pack / studio content | 1 s scan over the shared reactive folder | 250 ms scan, 1 s check latch, 2 s hold-off after recent generation |
+| `settings.json` | Reloaded through the same reactive path | Dedicated 3 s poll |
+
+Both use the same invalidate, reload, and locale path once a change is detected.
 
 ## World model
 
 | Concern | Bukkit | Modded |
 |---------|--------|--------|
-| Create | `/iris create` → managed world name, generator Iris, optional main-world | `/iris create` or `/iris world enable` → dimension id + pack injection |
-| Load / unload | `/iris load` (`import`), `/iris unload` | `/iris world disable` unloads; no separate load command |
-| Remove / delete | `/iris remove` optional folder delete | `/iris world delete` wipes chunk/mantle data |
-| Primary / main world | create `main=true` and Bukkit yml registration paths | `modded.json` primary + `routePlayersToPrimaryWorld`; `/iris world mainworld`, `replace-overworld` |
-| Evacuate | `/iris evacuate <world>` | `/iris evacuate [dimension]` → primary/overworld fallback |
-| Studio world | Transient studio world via StudioSVC | Studio dimension under `irisworldgen:studio_*` |
-| Folia | Regionized schedulers; pregen `runtimeSchedulerMode` forces `FOLIA` when regionized | N/A (not Bukkit Folia) |
+| Create | `/iris create` → managed world name, generator Iris, optional main-world; on Paper-family servers `overwrite=true` stages replacement of an existing exact Iris or vanilla slot for the next restart | `/iris create` or `/iris world enable` → dimension id plus pack injection |
+| Load / unload | `/iris load` (alias `import`), `/iris unload` | `/iris world disable` unloads; there is no separate load command |
+| Remove / delete | `/iris remove`, optionally deleting the folder | `/iris world delete` wipes chunk and mantle data |
+| Primary / main world | `main=true` for a new level root, or name the configured main world with `overwrite=true` for journaled in-place replacement | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`; `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |
+| Evacuate | `/iris evacuate <world>` — world argument required, player-only origin | `/iris evacuate [dimension]` — defaults to the sender's current level; destination is always the vanilla overworld, and evacuating the overworld itself is refused |
+| Studio world | Transient studio world via StudioSVC; `/iris jigsaw` can select the Jigsaw Studio generator for one activation | Studio dimension under `irisworldgen:studio_*`; no Jigsaw Studio authoring tree |
+| Folia | Regionized schedulers; pregen `runtimeSchedulerMode` always resolves to `FOLIA` on a regionized runtime | Not applicable |
 
-Default pack bootstrap still downloads the IrisDimensions overworld release into `packs/overworld` when missing (shared provisioner).
+Startup installs the IrisDimensions Overworld and Underworld beta releases into `packs/overworld` and `packs/underworld` when missing. Paper bootstrap publishes both in one rollback scope before compiling the aggregate datapack; legacy Bukkit and modded startup use the same managed release sources.
 
-Modded startup quarantines a corrupt persistent-dimension registry as `iris-dimensions.json.broken-<timestamp>` and continues without those dynamic worlds. Recovery details are in [Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+Modded startup quarantines a corrupt persistent-dimension registry as `iris-dimensions.json.broken-<timestamp>` and continues without those dynamic worlds. Recovery: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+
+Exact vanilla-slot replacement requires a full Paper-family plugin bootstrap. Without it the staging call fails outright, which is why the feature is Paper/Purpur/Leaf/Folia only.
 
 ## Commands and permissions
 
 | Concern | Bukkit | Modded |
 |---------|--------|--------|
-| Parser | VolmLib Director; `key=value` optionals | Brigadier; ordered args and flag literals |
-| Root aliases | `iris`, `ir`, `irs` | same + redirects |
-| Staff gate | `iris.all` (declared in `plugin.yml` and `paper-plugin.yml`, default `op`) | `LEVEL_GAMEMASTERS` for mutations |
-| Public inspect | same gate as staff (`iris.all` required for all `/iris`) | `LEVEL_ALL` for version/info/height/metrics/what/help |
-| Tree feller | `iris.treefeller` (plugin.yml, default op) | `irisworldgen:treefeller` (Fabric); Forge/NeoForge PermissionAPI node |
-| Help | Director mini-menu | `ModdedCommandHelp` sections + clickable pages |
+| Parser | VolmLib Director; `key=value` optionals in any order | Brigadier; positional arguments and bare flag literals |
+| Root aliases | `iris`, `ir`, `irs` | `iris`, with `ir` and `irs` registered as redirects |
+| Staff gate | `iris.all` (declared in `plugin.yml` and `paper-plugin.yml`, default `op`) — required for every `/iris` subcommand | `LEVEL_GAMEMASTERS` for anything that mutates, downloads, opens Studio, or starts a pregen |
+| Open to any player | Nothing | `LEVEL_ALL`: `help`, `version`, `info`, `worlds`, `height`, `metrics` (alias `measure`), and the whole `what` subtree |
+| Deliberately gated reads | — | `seed` and `accesslist` stay at gamemaster level even though `worlds` shows similar output without the seed field |
+| Tree feller | `iris.treefeller` (`plugin.yml` and `paper-plugin.yml`, default `op`) | Fabric `irisworldgen:treefeller`; Forge and NeoForge PermissionAPI node `irisworldgen.treefeller`, defaulting to gamemaster level |
+| Help | Director mini-menu | `ModdedCommandHelp` sections with clickable pages |
 
-Full command tables and stubs: [Commands & Permissions](/iris/04-commands-permissions).
+Full command tables and stubs: [04 - Commands & Permissions](/iris/04-commands-permissions).
 
 ## Feature matrix
 
 | Feature | Bukkit | Fabric | Forge | NeoForge |
 |---------|--------|--------|-------|----------|
 | Core terrain / biomes / objects / jigsaw | yes | yes | yes | yes |
-| Pack validate / cleanup / download | yes | yes | yes | yes |
+| Saved planar/spatial Iris jigsaw runtime | yes | yes | yes | yes |
+| Jigsaw Studio (`/iris jigsaw` authoring tree) | yes | not registered | not registered | not registered |
+| Pack validate / cleanup / restore / status | yes | yes | yes | yes |
+| Pack download (`/iris download`, root-level on both) | yes | yes | yes | yes |
+| Exact restart replacement of configured Overworld/Nether/End slots | Paper/Purpur/Leaf/Folia | no | no | no |
 | Pregen | yes (Paper-like / Folia modes) | yes (`moddedPregenInFlight`) | yes | yes |
-| Studio open/close/vscode/package | yes | yes | yes | yes |
+| Studio open / close / vscode / package | yes | yes | yes | yes |
+| Studio importvanilla | yes | message: run on Bukkit | same | same |
+| Studio loot GUI / entity spawn / profile / objects report | yes | message only | message only | message only |
 | Object wand / paste / save / undo | yes | yes | yes | yes |
+| Object contract / shift selection | yes | yes | yes | yes |
 | Object expand selection | no | yes | yes | yes |
-| Object WorldEdit import | yes (WorldEdit soft depend) | no (stub) | no | no |
-| Object studio world | yes | no (stub) | no | no |
-| Schematic convert | yes | no (stub) | no | no |
-| Structure import / capture | yes (NMS) | message only | message only | message only |
+| Object WorldEdit import (`we`) | yes (WorldEdit soft depend) | message only | message only | message only |
+| Object studio world | yes | message only | message only | message only |
+| Schematic convert (`.schem` → `.iob`) | yes | message only | message only | message only |
+| Structure import / capture | yes (v26 NMS binding) | message only | message only | message only |
 | Structure list / info / place / verify | yes | yes | yes | yes |
-| Datapack Modrinth ingest/remove | yes | message only | message only | message only |
-| Dimension-type datapack install/status | N/A / different path | yes | yes | yes |
-| Studio loot GUI / entity spawn / profile / objects report | yes | no (stub) | no | no |
-| Studio importvanilla | yes | message (run on Bukkit) | message | message |
+| Datapack Modrinth ingest / list / remove | yes | message only | message only | message only |
+| Dimension-type datapack install / status | not applicable | yes | yes | yes |
 | PlaceholderAPI | soft depend | no | no | no |
 | Multiverse-Core | soft depend / loadbefore | no | no | no |
-| Item plugins (ItemsAdder, Mythic, etc.) | paper soft deps | loader-specific / limited | limited | limited |
-| Public API package `art.arcane.iris.api` | plugin jar | see [API - Modded](/iris/94-api-modded) | same | same |
+| Item plugins (ItemsAdder, Mythic, and similar) | paper soft deps | loader-specific / limited | limited | limited |
+| Public API package `art.arcane.iris.api` | plugin jar | see [94 - API - Modded](/iris/94-api-modded) | same | same |
 | Client HUD / protocol | optional client mod | optional client mod | optional | optional |
-| Tree feller | settings + `iris.treefeller` | settings + platform permission | same | same |
-| Auto Spigot/Paper timeout config | yes | no | no | no |
+| Tree feller | settings + `iris.treefeller` | settings + loader permission | same | same |
+| Auto Spigot/Paper timeout and watchdog config | yes | no | no | no |
 | Custom biome restart prompts | yes (`iris.all` / op) | different datapack flow | same | same |
 
-## Settings that are platform-sensitive
+"Message only" means the command exists and prints an explanation of where to run it instead — it is not a silent failure.
 
-| Setting | Notes |
-|---------|-------|
-| `pregen.runtimeSchedulerMode` | Resolves using Bukkit/Folia detection; regionized always Folia |
-| `pregen.paperLikeBackendMode` | Bukkit Paper-like pregen ticket vs service |
-| `pregen.moddedPregenInFlight` | Modded pregen concurrency budget |
-| `autoConfiguration.*` | Spigot/Paper server.properties/watchdog (Bukkit) |
-| `world.worldEditWandCUI` | WorldEdit present on Bukkit |
-| `general.autoIngestDatapacks` / `autoImportDatapackStructures` | Bukkit datapack ingest pipeline primary consumer |
-| `gui.useServerLaunchedGuis` | Both; host implementation differs (`BukkitGuiHost` vs `ModdedGuiHost`) |
+Jigsaw pack resources are shared runtime data; only the in-game authoring surface is Bukkit-only. Bukkit exposes one global Studio project and world and one owning Jigsaw session: non-owner block, inventory, interaction, and mutating-command changes are cancelled across that Studio world, while autosave and graph-operation barriers serialize the owner's changes. On Folia a save schedules every intersecting chunk snapshot on its owning region and writes only after the complete capture validates. These protections have automated coverage but still need the live multi-region runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks). A strict `VANILLA_PORTABLE` export targets unmodded Minecraft 26.2 and is a separate compatibility gate.
+
+## Platform-sensitive settings
+
+| Setting | Where it matters |
+|---------|------------------|
+| `pregen.runtimeSchedulerMode` | Bukkit only; resolved from Bukkit/Folia detection, and a regionized runtime always resolves to Folia |
+| `pregen.paperLikeBackendMode` | Bukkit only; ticket versus service chunk acquisition |
+| `pregen.moddedPregenInFlight` | Mod loaders only; concurrent pregen chunk budget |
+| `autoConfiguration.*` | Bukkit only; Spigot keep-alive, Paper watchdog, custom-biome restart |
+| `world.worldEditWandCUI` | Bukkit only; requires WorldEdit |
+| `general.autoIngestDatapacks` / `general.autoImportDatapackStructures` | Bukkit datapack ingest pipeline is the primary consumer |
+| `gui.useServerLaunchedGuis` | Both, but the host implementation differs (`BukkitGuiHost` versus `ModdedGuiHost`) |
 
 `modded.json` keys exist only on mod loaders.
 
@@ -109,40 +143,48 @@ Full command tables and stubs: [Commands & Permissions](/iris/04-commands-permis
 
 | Integration | Bukkit | Modded |
 |-------------|--------|--------|
-| WorldEdit | soft depend; object `we` | not wired |
+| WorldEdit | soft depend; object `we` import | not wired |
 | Multiverse-Core | load order / link | not used |
 | PlaceholderAPI | `%iris_…%` | no |
-| MythicMobs / item plugins | paper-plugin optional deps | not the Bukkit pipeline |
+| MythicMobs and item plugins | paper-plugin optional deps | not the Bukkit pipeline |
 | Tree feller | plugin permission | loader permission node |
 
-See [Integrations](/iris/28-integrations), [PlaceholderAPI](/iris/09-placeholderapi).
+See [28 - Integrations](/iris/28-integrations) and [09 - PlaceholderAPI](/iris/09-placeholderapi).
 
-## NMS / version binding
+## NMS and version binding
 
-- Bukkit plugin binds to a specific Paper/CraftBukkit revision (v26 NMS module in-tree).
-- Structure import/capture and vanilla import studio paths require that NMS binding.
-- Mod adapters use Minecraft mappings for the same game version line without the Bukkit plugin APIs.
+- The Bukkit plugin binds to a specific Paper/CraftBukkit revision (the in-tree v26 NMS module).
+- Structure import and capture, and the vanilla import studio path, require that binding. This is why they cannot be ported to mod loaders as-is.
+- Mod adapters use Minecraft mappings for the same game version line, without the Bukkit plugin APIs.
 
 ## Determinism and parity
 
-Goldenhash and genhash exist on both surfaces (command placement differs: Bukkit under `developer`, modded often at root). Use disposable worlds; mantle reset options exist on Bukkit goldenhash. See [Determinism & Goldenhash](/iris/32-determinism-goldenhash).
+GoldenHash exists on both surfaces; only the command placement differs (Bukkit under `developer`, modded at the root). Use disposable worlds. Bukkit exposes mantle-reset and deep-dump options that modded does not, and modded always resets mantle. Cross-platform comparisons always emit a Minecraft-version warning because the two platforms report the version string differently. Full procedure: [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
 
-## Operator checklist when moving packs between platforms
+## Moving a pack between platform families
 
-1. Copy `packs/<key>/` between data folders.
-2. Structure/vanilla imports that need Bukkit: run import on Bukkit, then copy the pack to the mod server.
-3. Align `settings.json` keys that matter for generation (`generator`, `performance`, `treeFeller`); ignore Bukkit-only autoConfiguration if unused.
-4. On modded, set `modded.json` primary/main-world if you need overworld replacement.
-5. Re-run `/iris pack validate` and `/iris datapack status` (modded) or ingest (Bukkit) after moves.
+1. Freeze the pack bytes and seed. Validate and package on the source platform.
+2. Finish anything Bukkit-only first: structure and vanilla imports, schematic conversion, WorldEdit imports, and Jigsaw Studio work. Complete the atomic saves before copying.
+3. Copy only `packs/<key>/` into the destination packs root. Never copy a Bukkit world folder into a modded world or the reverse.
+4. Restart so destination registries and forced datapacks are built before any world is created.
+5. Align the `settings.json` keys that affect generation (`generator`, `performance`, `treeFeller`). Bukkit-only `autoConfiguration` keys can be ignored.
+6. On mod loaders, set `modded.json` `primaryWorld` if you need overworld replacement.
+7. Re-run `/iris pack validate`, then `/iris datapack status` on modded or the ingest flow on Bukkit.
+8. Create a disposable world with the same seed and run the same small GoldenHash inputs plus the platform's fresh-install runbook.
+
+The move passes when validation, world creation, restart, and the deterministic comparison all pass. Matching screenshots are useful context, but the hash comparison is what counts.
 
 ## Related
 
-- [Installation & Platforms](/iris/01-installation-platforms)
-- [Configuration](/iris/03-configuration)
-- [Commands & Permissions](/iris/04-commands-permissions)
-- [Worlds & Lifecycle](/iris/06-worlds-lifecycle)
-- [Pregeneration](/iris/07-pregeneration)
-- [Native Structures & Datapacks](/iris/22-native-structures-datapacks)
-- [Integrations](/iris/28-integrations)
-- [Client HUD & Protocol](/iris/29-client-hud-protocol)
-- [API - Modded](/iris/94-api-modded)
+- [01 - Installation & Platforms](/iris/01-installation-platforms)
+- [03 - Configuration](/iris/03-configuration)
+- [04 - Commands & Permissions](/iris/04-commands-permissions)
+- [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)
+- [07 - Pregeneration](/iris/07-pregeneration)
+- [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
+- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [28 - Integrations](/iris/28-integrations)
+- [29 - Client HUD & Protocol](/iris/29-client-hud-protocol)
+- [31 - Operator Runbooks](/iris/31-operator-runbooks)
+- [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
+- [94 - API - Modded](/iris/94-api-modded)

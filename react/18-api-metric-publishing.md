@@ -2,12 +2,11 @@
 title: "API - Metric Publishing"
 description: "React documentation: API - Metric Publishing"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 The `art.arcane.react.api.metric` package lets another plugin publish numbers to React monitors, maps, sampler graphs, and PlaceholderAPI. React creates and manages a sampler from each accepted metric declaration.
 
 The integration has three parts:

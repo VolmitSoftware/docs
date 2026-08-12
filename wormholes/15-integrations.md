@@ -2,15 +2,14 @@
 title: "Integrations"
 description: "Wormholes documentation: Integrations"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes soft-depends on PlaceholderAPI, Iris, and Vault, and detects WorldGuard reflectively for RTP destination admission. PacketEvents and bStats are internal runtime dependencies, not separate server plugins. React and other monitors read Wormholes through VolmLib `IntegrationServiceContract` without a hard dependency either way.
 
-Public third-party surfaces are summarized in [API - Getting Started](/wormholes/20-api-getting-started). Operator PlaceholderAPI keys are in [PlaceholderAPI](/wormholes/12-placeholderapi).
+Public third-party surfaces are summarized in [20 - API - Getting Started](/wormholes/20-api-getting-started). Operator PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
 
 ## Soft dependencies
 
@@ -26,7 +25,7 @@ None of these are required to enable Wormholes.
 
 ## WorldGuard
 
-WorldGuard is not declared as a soft dependency; the RTP environment looks it up by plugin name and invokes its API reflectively. For each player's prepared RTP destination, WorldGuard bypass allows access and `Flags.ENTRY` decides normal access. Missing WorldGuard allows the destination; installed-but-disabled or incompatible reflective paths surface as an RTP integration failure. See [Random Teleport Portals](/wormholes/06-random-teleport-portals).
+WorldGuard is not declared as a soft dependency; the RTP environment looks it up by plugin name and invokes its API reflectively. For each player's prepared RTP destination, WorldGuard bypass allows access and `Flags.ENTRY` decides normal access. Missing WorldGuard allows the destination; installed-but-disabled or incompatible reflective paths surface as an RTP integration failure. See [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals).
 
 ## Vault travel costs
 
@@ -37,7 +36,7 @@ Portals can require a travel cost of type **vanilla item** or **Vault economy** 
 - Reserve withdraws with reason `Wormholes portal travel for <uuid>`; commit finalizes the charge; refund reverses it if traversal aborts after reserve.
 - Messages cover insufficient funds, Vault unavailable, and failed transactions. Selecting Vault mode in the menu without Vault + economy is rejected with a notice.
 
-Vault costs are the built-in per-portal price path. Third-party plugins that price or veto travel should use `TraversalCostProvider` ([API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events)); that path is independent of the portal menu cost types.
+Vault costs are the built-in per-portal price path. Third-party plugins that price or veto travel should use `TraversalCostProvider` ([21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events)); that path is independent of the portal menu cost types.
 
 ## Iris
 
@@ -47,11 +46,11 @@ No Iris world-gen or pack APIs are exposed to third parties through Wormholes.
 
 ## PlaceholderAPI
 
-See [PlaceholderAPI](/wormholes/12-placeholderapi) for keys, selection, and formats; [API - PlaceholderAPI](/wormholes/22-api-placeholderapi) for integrator notes. Expansion identifier: `wormholes`.
+See [12 - PlaceholderAPI](/wormholes/12-placeholderapi) for keys, selection, and formats; [22 - API - PlaceholderAPI](/wormholes/22-api-placeholderapi) for integrator notes. Expansion identifier: `wormholes`.
 
 ## React / IntegrationServiceContract
 
-Wormholes registers VolmLib `art.arcane.volmlib.integration.IntegrationServiceContract` at `ServicePriority.Normal` with `pluginId()` `wormholes`. Typed consumers must share the registered VolmLib class identity; React can also adapt equivalent registrations reflectively across plugin classloaders. Full metric keys, acquisition rules, unavailable reasons, and protocol details: [API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
+Wormholes registers VolmLib `art.arcane.volmlib.integration.IntegrationServiceContract` at `ServicePriority.Normal` with `pluginId()` `wormholes`. Typed consumers must share the registered VolmLib class identity; React can also adapt equivalent registrations reflectively across plugin classloaders. Full metric keys, acquisition rules, unavailable reasons, and protocol details: [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
 
 No direct React API dependency exists inside Wormholes.
 
@@ -74,4 +73,4 @@ Wormholes starts its relocated bStats client with plugin ID **33193**. The chart
 
 ## What has no soft-depend integration
 
-Projection internals, portal CRUD, wire protocol, RTP destination selection, and dimensional-door pocket APIs are not exposed. See "What has no API" in [API - Getting Started](/wormholes/20-api-getting-started).
+Projection internals, portal CRUD, wire protocol, RTP destination selection, and dimensional-door pocket APIs are not exposed. See "What has no API" in [20 - API - Getting Started](/wormholes/20-api-getting-started).

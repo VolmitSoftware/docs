@@ -2,12 +2,11 @@
 title: "Container Previews"
 description: "HoloUI documentation: Container Previews"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 A container preview is a holographic card HoloUi draws in front of a player who looks at a container, built from client-side display entities that only that player sees. Previews are not menus: they open no menu session, fire no menu events, and share no types with the menu API. Every preview is described by a JSON *preview document*; the shipped defaults are extracted to `plugins/holoui/previews/` on first start and hot reloaded from there. This document covers the player-facing model, the complete document format, the compile pipeline, the state variable catalog, and access control.
 
 | Path | Contains |

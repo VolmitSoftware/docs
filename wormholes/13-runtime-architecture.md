@@ -2,13 +2,12 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Wormholes boots as a Paper/Folia Java plugin (`art.arcane.wormholes.Wormholes`), loads schema-2 TOML settings, then constructs managers for portals, projection, RTP, dimensional doors, and optional cross-server networking. This document describes enable order, storage layout, Folia scheduling, hot reload, and soft dependency load order. Operator procedures live in [Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests); config keys in [Installation & Configuration](/wormholes/01-installation-configuration).
+Wormholes boots as a Paper/Folia Java plugin (`art.arcane.wormholes.Wormholes`), loads schema-2 TOML settings, then constructs managers for portals, projection, RTP, dimensional doors, and optional cross-server networking. This document describes enable order, storage layout, Folia scheduling, hot reload, and soft dependency load order. Operator procedures live in [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests); config keys in [01 - Installation & Configuration](/wormholes/01-installation-configuration).
 
 ## Boot and enable order
 
@@ -103,7 +102,7 @@ Paper plugin dependencies (optional, `load: BEFORE`, join-classpath):
 | Iris | Terrain/probe integration for RTP and worldgen-aware features where present. |
 | Vault | Economy for travel costs via `VaultEconomy`. |
 
-Wormholes load: paper metadata `load: STARTUP` (legacy `plugin.yml` uses `POSTWORLD`). Soft depends are not required; missing plugins skip their integrations. See [Integrations](/wormholes/15-integrations).
+Wormholes load: paper metadata `load: STARTUP` (legacy `plugin.yml` uses `POSTWORLD`). Soft depends are not required; missing plugins skip their integrations. See [15 - Integrations](/wormholes/15-integrations).
 
 ## Major runtime components
 
@@ -119,8 +118,8 @@ Wormholes load: paper metadata `load: STARTUP` (legacy `plugin.yml` uses `POSTWO
 
 ## Cross-references
 
-- Installation and TOML: [Installation & Configuration](/wormholes/01-installation-configuration)
-- Projection settings: [Projection Modes & Settings](/wormholes/05-projection-modes-settings)
-- RTP: [Random Teleport Portals](/wormholes/06-random-teleport-portals)
-- Networking: [Cross-Server Networking](/wormholes/10-cross-server-networking)
-- Operator checklists: [Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests)
+- Installation and TOML: [01 - Installation & Configuration](/wormholes/01-installation-configuration)
+- Projection settings: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings)
+- RTP: [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals)
+- Networking: [10 - Cross-Server Networking](/wormholes/10-cross-server-networking)
+- Operator checklists: [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests)

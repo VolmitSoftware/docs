@@ -2,12 +2,11 @@
 title: "Commands & Permissions"
 description: "Wormholes documentation: Commands & Permissions"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes exposes a single root command through the Director framework (`CommandWormholes` and nested `CommandAdmin`, `CommandNetwork`, `CommandServer`). `WormholesCommandService` opens the admin command path when the sender has **any** admin command leaf (or `wormholes.admin`); each handler still checks its own permission. Public `help` / `info` remain available without admin rights.
 
 ## Root
@@ -120,7 +119,7 @@ Sanitization lowercases the name, keeps ASCII `a-z`, `0-9`, `.`, `-`, and `_`, c
 
 ## Related docs
 
-- [Installation & Configuration](/wormholes/01-installation-configuration) — reload targets
-- [Cross-Server Networking](/wormholes/10-cross-server-networking) — network/server command workflows
-- [Dimensional Doors](/wormholes/07-dimensional-doors) — door items and access bypass
-- [Building Portals](/wormholes/03-building-portals) — wand / rune construction
+- [01 - Installation & Configuration](/wormholes/01-installation-configuration) — reload targets
+- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) — network/server command workflows
+- [07 - Dimensional Doors](/wormholes/07-dimensional-doors) — door items and access bypass
+- [03 - Building Portals](/wormholes/03-building-portals) — wand / rune construction

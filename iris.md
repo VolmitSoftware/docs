@@ -81,7 +81,7 @@ create, unload, evacuate and delete worlds. Grant it to administrators only, and
 - [Integrations](/iris/28-integrations)
 - [Client HUD & Protocol](/iris/29-client-hud-protocol)
 - [Platform Differences](/iris/30-platform-differences)
-- [Operator Runbooks & Smoke Tests](/iris/31-operator-runbooks-smoke-tests)
+- [Operator Runbooks](/iris/31-operator-runbooks)
 - [Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [Performance Tuning](/iris/33-performance-tuning)
 {.links-list}

@@ -2,20 +2,19 @@
 title: "API - Getting Started"
 description: "Wormholes documentation: API - Getting Started"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes exposes three supported third-party surfaces: traversal pricing/veto (`TraversalCostProvider` and traversal events), PlaceholderAPI keys, and runtime metrics via VolmLib `IntegrationServiceContract`. Projection, portal CRUD, the cross-server wire protocol, RTP destination selection, and dimensional-door pocket worlds have no public API.
 
 | Goal | Surface | Doc |
 |------|---------|-----|
-| Charge, refund, or refuse a traversal | `TraversalCostProvider` via Bukkit `ServicesManager` | [API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
-| Watch or cancel traversals without money | `WormholesPortalTraverseEvent` / `WormholesPortalTraversedEvent` | [API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
-| Nearby portal name/state/distance on a board | `%wormholes_…%` | [PlaceholderAPI](/wormholes/12-placeholderapi), [API - PlaceholderAPI](/wormholes/22-api-placeholderapi) |
-| Portal counts, peer health, transfer volume as numbers | `IntegrationServiceContract` | [API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract) |
+| Charge, refund, or refuse a traversal | `TraversalCostProvider` via Bukkit `ServicesManager` | [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
+| Watch or cancel traversals without money | `WormholesPortalTraverseEvent` / `WormholesPortalTraversedEvent` | [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
+| Nearby portal name/state/distance on a board | `%wormholes_…%` | [12 - PlaceholderAPI](/wormholes/12-placeholderapi), [22 - API - PlaceholderAPI](/wormholes/22-api-placeholderapi) |
+| Portal counts, peer health, transfer volume as numbers | `IntegrationServiceContract` | [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract) |
 
 Plugin name: `Wormholes`. Command: `/wormholes` (aliases `/wh`, `/wormhole`). Permissions under `wormholes.*`. Nothing in this API set requires a permission.
 
@@ -116,7 +115,7 @@ Folia has region and entity ownership; there is no global main thread.
 | Surface | Thread |
 |---------|--------|
 | Provider `quote` / `reserve` / `commit` | Region thread owning the portal |
-| Provider `refund` | Same, except `EXPIRED` (next evaluation's portal region) and `SERVER_SHUTDOWN` (unload thread) — see [API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
+| Provider `refund` | Same, except `EXPIRED` (next evaluation's portal region) and `SERVER_SHUTDOWN` (unload thread) — see [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
 | `WormholesPortalTraverseEvent` | Portal region thread, inline |
 | `WormholesPortalTraversedEvent` | Traveler entity scheduler |
 | Placeholder resolve | Caller thread; Wormholes resolvers are non-blocking snapshot reads |

@@ -2,12 +2,11 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Heatmaps, pie maps, list maps, and pressure overlays on Minecraft maps. Open with `/react map`. Config: `plugins/React/feature/<id>.toml`.
 
 Most chunk heatmaps share `FeatureChunkHeatmapBase` (implements `ReactRenderer` and `ChunkGridExporter` for grid export). Pie charts share `FeatureIrisChunkSharePieBase`. List maps implement `ReactRenderer` directly.
@@ -155,4 +154,4 @@ Requires capability `iris` (not secret). Scores chunks only in worlds with an Ir
 - **Class:** `FeatureIrisGenerationPressureOverlay`
 - **Notes:** Config: base heatmap keys only.
 
-See [Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations) for registration vs activation gating.
+See [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations) for registration vs activation gating.

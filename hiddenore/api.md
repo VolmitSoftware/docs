@@ -1,13 +1,12 @@
 ---
-title: "HiddenOre — API Overview"
-description: "HiddenOre api overview"
+title: "HiddenOre API"
+description: "HiddenOre documentation: HiddenOre API"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 HiddenOre replaces visible ore distribution with rewards hidden behind ordinary blocks. Its API lets another
 plugin **ask what a block is** (was it placed by a player, or has it simply never been recorded?), **find the
 hidden veins** a seeded world holds, **refuse** a reward before it is computed, and **edit** the reward before

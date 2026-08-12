@@ -2,13 +2,12 @@
 title: "Pocket Dimensions"
 description: "Wormholes documentation: Pocket Dimensions"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Personal and Public dimensional doors allocate persistent rooms in a single shared void world. Pair doors never use pockets; they link two placed endpoints. Return doors are structure-built exits for pocket rooms. See [Dimensional Doors](/wormholes/07-dimensional-doors) for door kinds, access, and transit eligibility.
+Personal and Public dimensional doors allocate persistent rooms in a single shared void world. Pair doors never use pockets; they link two placed endpoints. Return doors are structure-built exits for pocket rooms. See [07 - Dimensional Doors](/wormholes/07-dimensional-doors) for door kinds, access, and transit eligibility.
 
 ## World
 
@@ -87,6 +86,6 @@ Pocket `spaceId` is derived as `nameUUID("wormholes:pocket:" + kind + ":" + bind
 
 ## Related
 
-- Door kinds, OpenState, access, recipes, config: [Dimensional Doors](/wormholes/07-dimensional-doors)
-- Install and TOML: [Installation & Configuration](/wormholes/01-installation-configuration)
-- Runtime boot and managers: [Runtime Architecture](/wormholes/13-runtime-architecture)
+- Door kinds, OpenState, access, recipes, config: [07 - Dimensional Doors](/wormholes/07-dimensional-doors)
+- Install and TOML: [01 - Installation & Configuration](/wormholes/01-installation-configuration)
+- Runtime boot and managers: [13 - Runtime Architecture](/wormholes/13-runtime-architecture)

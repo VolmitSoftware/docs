@@ -128,7 +128,7 @@ Full command syntax is in [Commands & Permissions](/adapt/04-commands-permission
 
 - [Runtime Architecture](/adapt/38-runtime-architecture)
 - [Velocity & Cross-Server](/adapt/39-velocity-cross-server)
-- [Operator Runbooks & Smoke Tests](/adapt/40-operator-runbooks-smoke-tests)
+- [Operator Runbooks](/adapt/40-operator-runbooks)
 {.links-list}
 
 ### Developer API

@@ -2,13 +2,12 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Samplers are React's measurement units. They feed monitors, map renderers, and PlaceholderAPI; every sampler also implements the React map-renderer contract. The complete meaning and unit table for every built-in id is in [API - PlaceholderAPI](/react/19-api-placeholderapi).
+Samplers are React's measurement units. They feed monitors, map renderers, and PlaceholderAPI; every sampler also implements the React map-renderer contract. The complete meaning and unit table for every built-in id is in [19 - API - PlaceholderAPI](/react/19-api-placeholderapi).
 
 ## Observation model
 
@@ -240,7 +239,7 @@ This tree registers **146** sampler ids (excluding internal `unknown`).
 
 ## Convenience PlaceholderAPI keys
 
-Short keys such as `%react_tps%` and `%react_mspt%` map to specific samplers. Full table: [API - PlaceholderAPI](/react/19-api-placeholderapi). Any sampler is also `%react_sampler.<id>%`.
+Short keys such as `%react_tps%` and `%react_mspt%` map to specific samplers. Full table: [19 - API - PlaceholderAPI](/react/19-api-placeholderapi). Any sampler is also `%react_sampler.<id>%`.
 
 ## Cross-plugin prefixes
 
@@ -261,4 +260,4 @@ React registers `plugin-<normalized-plugin-name>` for each enabled plugin except
 
 ## Publishing your own metrics
 
-See [API - Metric Publishing](/react/18-api-metric-publishing). Do not implement React’s internal `Sampler` type from outside the plugin.
+See [18 - API - Metric Publishing](/react/18-api-metric-publishing). Do not implement React’s internal `Sampler` type from outside the plugin.

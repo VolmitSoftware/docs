@@ -2,76 +2,155 @@
 title: "Skills Catalog"
 description: "Adapt documentation: Skills Catalog"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
+Adapt ships 23 skill lines. Each one watches something you already do in Minecraft, pays experience for it, and turns that experience into knowledge you spend on adaptations. Adaptations are the actual perks: a few hundred small changes to how the game treats you, from silk-touch glass to a bow that curves its arrows around corners.
 
-Adapt has twenty-three skill lines. Earn XP on a line, spend knowledge and ability power to learn adaptations, then use those adaptations in normal play. Each skill doc explains **how the skill works** and **how every adaptation activates**.
+Nothing is unlocked by default. You choose which lines to push and which adaptations inside them to buy, so two players on the same server can end up with completely different toolkits. Levels come from play, not from grinding a menu, and the lines that pay best are the ones matching how you already spend your time.
 
-## How to use any skill
+This page is the index. Each line has its own numbered doc, `11` through `33`, in the same order they are listed below, and those docs cover every adaptation in detail. Start here to find the line you want, then go read its doc.
 
-1. Open Adapt via the activator block (default bookshelf) or `/adapt gui`.
-2. Choose a skill line and perform its activities for XP and knowledge.
-3. Learn adaptations from that skill's menu.
-4. Activate each adaptation as documented in that skill's usage reference.
+## How any skill works
 
-| Doc | Skill id | Display name | Adaptations | Icon |
-|-----|----------|--------------|-------------|------|
-| [Skill - Agility](/adapt/11-skill-agility) | `agility` | Agility | 13 | `FEATHER` |
-| [Skill - Architect](/adapt/12-skill-architect) | `architect` | Architect | 12 | `IRON_BARS` |
-| [Skill - Axes](/adapt/13-skill-axes) | `axes` | Axes | 11 + 1 Iris-conditional | `GOLDEN_AXE` |
-| [Skill - Blocking](/adapt/14-skill-blocking) | `blocking` | Blocking | 14 | `SHIELD` |
-| [Skill - Brewing](/adapt/15-skill-brewing) | `brewing` | Brewing | 13 | `LINGERING_POTION` |
-| [Skill - Chronos](/adapt/16-skill-chronos) | `chronos` | Chronos | 13 | `CLOCK` |
-| [Skill - Crafting](/adapt/17-skill-crafting) | `crafting` | Crafting | 14 | `CRAFTING_TABLE` |
-| [Skill - Discovery](/adapt/18-skill-discovery) | `discovery` | Discovery | 14 | `FILLED_MAP` |
-| [Skill - Enchanting](/adapt/19-skill-enchanting) | `enchanting` | Enchanting | 14 | `KNOWLEDGE_BOOK` |
-| [Skill - Excavation](/adapt/20-skill-excavation) | `excavation` | Excavation | 12 | `DIAMOND_SHOVEL` |
-| [Skill - Herbalism](/adapt/21-skill-herbalism) | `herbalism` | Herbalism | 15 | `WHEAT` |
-| [Skill - Hunter](/adapt/22-skill-hunter) | `hunter` | Hunter | 14 | `BONE` |
-| [Skill - Kinetics](/adapt/23-skill-kinetics) | `kinetics` | Kinetics | 18 | `MACE` |
-| [Skill - Nether](/adapt/24-skill-nether) | `nether` | Nether | 14 | `NETHER_STAR` |
-| [Skill - Pickaxes](/adapt/25-skill-pickaxes) | `pickaxe` | Pickaxes | 13 | `NETHERITE_PICKAXE` |
-| [Skill - Ranged](/adapt/26-skill-ranged) | `ranged` | Ranged | 12 | `CROSSBOW` |
-| [Skill - Rift](/adapt/27-skill-rift) | `rift` | Rift | 13 | `ENDER_EYE` |
-| [Skill - Seaborne](/adapt/28-skill-seaborne) | `seaborne` | Seaborne | 14 | `TRIDENT` |
-| [Skill - Stealth](/adapt/29-skill-stealth) | `stealth` | Stealth | 14 | `WITHER_ROSE` |
-| [Skill - Swords](/adapt/30-skill-swords) | `swords` | Swords | 14 | `DIAMOND_SWORD` |
-| [Skill - Taming](/adapt/31-skill-taming) | `taming` | Taming | 14 | `LEAD` |
-| [Skill - TragOul](/adapt/32-skill-tragoul) | `tragoul` | TragOul | 14 | `CRIMSON_ROOTS` |
-| [Skill - Unarmed](/adapt/33-skill-unarmed) | `unarmed` | Unarmed | 12 | `FIRE_CHARGE` |
+1. Open the Adapt menu with the activator block, a bookshelf by default, or run `/adapt gui`.
+2. Pick a line and go do the thing it tracks. Chop wood for Axes, place blocks for Architect, take hits for TragOul. Experience arrives on its own.
+3. Levels pay out knowledge. Open that line's menu and spend knowledge to learn adaptations and raise their levels. Knowledge is the only currency; there is nothing else to buy them with.
+4. Use what you bought. Many adaptations are passive and start working the moment you learn them. The rest need a gesture, and the skill doc spells out each one.
 
-Adapt declares **312 adaptation types**. The active catalog contains 311 without Iris and 312 when Iris Feller is available.
+Every adaptation also needs its skill and itself enabled in config, the matching `adapt.use` permission, and permission from whatever protection plugin or region policy covers where you are standing.
 
-## Skill ids
+## The skill lines
 
-- `agility` — Agility ([Skill - Agility](/adapt/11-skill-agility))
-- `architect` — Architect ([Skill - Architect](/adapt/12-skill-architect))
-- `axes` — Axes ([Skill - Axes](/adapt/13-skill-axes))
-- `blocking` — Blocking ([Skill - Blocking](/adapt/14-skill-blocking))
-- `brewing` — Brewing ([Skill - Brewing](/adapt/15-skill-brewing))
-- `chronos` — Chronos ([Skill - Chronos](/adapt/16-skill-chronos))
-- `crafting` — Crafting ([Skill - Crafting](/adapt/17-skill-crafting))
-- `discovery` — Discovery ([Skill - Discovery](/adapt/18-skill-discovery))
-- `enchanting` — Enchanting ([Skill - Enchanting](/adapt/19-skill-enchanting))
-- `excavation` — Excavation ([Skill - Excavation](/adapt/20-skill-excavation))
-- `herbalism` — Herbalism ([Skill - Herbalism](/adapt/21-skill-herbalism))
-- `hunter` — Hunter ([Skill - Hunter](/adapt/22-skill-hunter))
-- `kinetics` — Kinetics ([Skill - Kinetics](/adapt/23-skill-kinetics))
-- `nether` — Nether ([Skill - Nether](/adapt/24-skill-nether))
-- `pickaxe` — Pickaxes ([Skill - Pickaxes](/adapt/25-skill-pickaxes))
-- `ranged` — Ranged ([Skill - Ranged](/adapt/26-skill-ranged))
-- `rift` — Rift ([Skill - Rift](/adapt/27-skill-rift))
-- `seaborne` — Seaborne ([Skill - Seaborne](/adapt/28-skill-seaborne))
-- `stealth` — Stealth ([Skill - Stealth](/adapt/29-skill-stealth))
-- `swords` — Swords ([Skill - Swords](/adapt/30-skill-swords))
-- `taming` — Taming ([Skill - Taming](/adapt/31-skill-taming))
-- `tragoul` — TragOul ([Skill - TragOul](/adapt/32-skill-tragoul))
-- `unarmed` — Unarmed ([Skill - Unarmed](/adapt/33-skill-unarmed))
+### Agility (`agility`)
 
-## Quick usage index (all adaptations)
+Movement. Sprint, swim, climb, and stay airborne to level it, then spend it on wall jumps, air dashes, slides, and rolls that turn a lethal fall into a hungry one.
+
+### Architect (`architect`)
+
+Building. Levels from placing blocks, and pays back with builders wands, chalk guides drawn in the air, self-dissolving scaffolds, wool elevators, and an undo for your own fresh mistakes.
+
+### Axes (`axes`)
+
+Chopping and axe combat. Fell a whole tree from the base log, vein-mine wood and leaves, throw your axe as a spinning projectile, and shred armor off whatever you hit.
+
+### Blocking (`blocking`)
+
+Shields. Level by blocking hits, then unlock counters, reflected projectiles, perfect guards that negate a hit outright, and recipes for chainmail, saddles, and horse armor.
+
+### Brewing (`brewing`)
+
+Potions. Level by brewing, then run stands hotter, stretch potion durations, and unlock a long list of bottled effects vanilla never gave you.
+
+### Chronos (`chronos`)
+
+Time. Level by moving, sleeping, and just surviving, faster if you carry a clock. Rewind to a saved moment, freeze projectiles in a stasis bubble, and speed up the furnaces and crops around you.
+
+### Crafting (`crafting`)
+
+The crafting grid. Level by crafting, then salvage items back into components, craft in bulk, carry portable workstations, and stamp your gear with a signature villagers respect.
+
+### Discovery (`discovery`)
+
+Exploring and collecting experience. Pays for seeing things for the first time, reveals structures and hidden chests, and puts names, health bars, and damage numbers on what you are looking at.
+
+### Enchanting (`enchanting`)
+
+The enchanting table, anvil, and grindstone. Cheaper anvil work, rerolled offers you can preview before committing, enchantments recovered onto books, and gear soul-linked so it survives your death.
+
+### Excavation (`excavation`)
+
+Shovels and soft ground. Haste that lasts long enough to finish the block, ore glowing through the dirt, whole planes dug at once, burrows straight down, and treasure in the gravel.
+
+### Herbalism (`herbalism`)
+
+Farming and gathering. Growth auras, harvest-and-replant in one click, composting cascades that mature a whole field, and a hunger bar that soaks damage before your health does.
+
+### Hunter (`hunter`)
+
+Killing mobs. Most of what it gives you triggers when you take a hit, not when you land one, and it pays for those boons in hunger.
+
+### Kinetics (`kinetics`)
+
+Momentum, maces, and spears. Higher jumps, springier landings, meteor dives into a mace smash, shockwaves, and spears that hit harder the faster you charge.
+
+### Nether (`nether`)
+
+Surviving the Nether. Fire and wither resistance, walking on lava, better piglin bartering, faster mining in netherrack, and striders that actually behave.
+
+### Pickaxes (`pickaxe`)
+
+Mining. Vein-mine ore, autosmelt what you break, see ore through stone, get haste in deepslate and obsidian, and carry a pickaxe that refuses to break.
+
+### Ranged (`ranged`)
+
+Bows and crossbows. Farther and faster shots, piercing, ricochets off walls, a dotted trajectory preview, and arrows that lock on and curve to find their mark.
+
+### Rift (`rift`)
+
+Ender items and teleporting. Blink to where you are looking, bind a recall gate, open containers from anywhere, and survive a lethal hit by blinking out of it.
+
+### Seaborne (`seaborne`)
+
+Water. Longer breath, faster swimming, night vision under the surface, trident mastery, ink clouds, and salvage from underwater wrecks.
+
+### Stealth (`stealth`)
+
+Sneaking and striking unseen. Backstab damage while undetected, shadow decoys that pull aggro, smoke pellets, trap sense, and clean assassinations on non-boss mobs.
+
+### Swords (`swords`)
+
+Sword combat. Bleed and poison on your strikes, dual-wield stances, ripostes off a block, sprinting lunges, and extra damage against anything already hurt.
+
+### Taming (`taming`)
+
+Pets. Tougher, faster, harder-hitting companions, a pack that focuses what you mark, mounted combat bonuses, and pets that dive in front of arrows for you.
+
+### TragOul (`tragoul`)
+
+Blood. Level by taking damage and living at low health. Thorns, life siphoned from every hit, corpse explosions, raised skeletal servants, and a killing blow that leaves you at 1 HP instead.
+
+### Unarmed (`unarmed`)
+
+Fists. Combo chains, disarms that knock the weapon out of a player's hand, shockwave claps, grapples that let you throw people, and damage that climbs as your armor drops.
+
+## Reference
+
+### Skill index
+
+| Doc | Skill id | Display name | Adaptations | Icon | Color |
+|-----|----------|--------------|-------------|------|-------|
+| [11 - Skill - Agility](/adapt/11-skill-agility) | `agility` | Agility | 13 | `FEATHER` | `GREEN` |
+| [12 - Skill - Architect](/adapt/12-skill-architect) | `architect` | Architect | 12 | `SMITHING_TABLE` | `AQUA` |
+| [13 - Skill - Axes](/adapt/13-skill-axes) | `axes` | Axes | 11 plus 1 Iris-conditional | `GOLDEN_AXE` | `YELLOW` |
+| [14 - Skill - Blocking](/adapt/14-skill-blocking) | `blocking` | Blocking | 14 | `SHIELD` | `DARK_GRAY` |
+| [15 - Skill - Brewing](/adapt/15-skill-brewing) | `brewing` | Brewing | 13 | `LINGERING_POTION` | `LIGHT_PURPLE` |
+| [16 - Skill - Chronos](/adapt/16-skill-chronos) | `chronos` | Chronos | 13 | `CLOCK` | `AQUA` |
+| [17 - Skill - Crafting](/adapt/17-skill-crafting) | `crafting` | Crafting | 14 | `CRAFTING_TABLE` | `YELLOW` |
+| [18 - Skill - Discovery](/adapt/18-skill-discovery) | `discovery` | Discovery | 14 | `FILLED_MAP` | `AQUA` |
+| [19 - Skill - Enchanting](/adapt/19-skill-enchanting) | `enchanting` | Enchanting | 14 | `KNOWLEDGE_BOOK` | `LIGHT_PURPLE` |
+| [20 - Skill - Excavation](/adapt/20-skill-excavation) | `excavation` | Excavation | 12 | `DIAMOND_SHOVEL` | `YELLOW` |
+| [21 - Skill - Herbalism](/adapt/21-skill-herbalism) | `herbalism` | Herbalism | 15 | `WHEAT` | `GREEN` |
+| [22 - Skill - Hunter](/adapt/22-skill-hunter) | `hunter` | Hunter | 14 | `BONE` | `RED` |
+| [23 - Skill - Kinetics](/adapt/23-skill-kinetics) | `kinetics` | Kinetics | 18 | `MACE` | `GOLD` |
+| [24 - Skill - Nether](/adapt/24-skill-nether) | `nether` | Nether | 14 | `NETHER_STAR` | `DARK_GRAY` |
+| [25 - Skill - Pickaxes](/adapt/25-skill-pickaxes) | `pickaxe` | Pickaxes | 13 | `NETHERITE_PICKAXE` | `GOLD` |
+| [26 - Skill - Ranged](/adapt/26-skill-ranged) | `ranged` | Ranged | 12 | `CROSSBOW` | `DARK_GREEN` |
+| [27 - Skill - Rift](/adapt/27-skill-rift) | `rift` | Rift | 13 | `ENDER_EYE` | `DARK_PURPLE` |
+| [28 - Skill - Seaborne](/adapt/28-skill-seaborne) | `seaborne` | Seaborne | 14 | `TRIDENT` | `BLUE` |
+| [29 - Skill - Stealth](/adapt/29-skill-stealth) | `stealth` | Stealth | 14 | `WITHER_ROSE` | `DARK_GRAY` |
+| [30 - Skill - Swords](/adapt/30-skill-swords) | `swords` | Swords | 14 | `DIAMOND_SWORD` | `YELLOW` |
+| [31 - Skill - Taming](/adapt/31-skill-taming) | `taming` | Taming | 14 | `LEAD` | `GOLD` |
+| [32 - Skill - TragOul](/adapt/32-skill-tragoul) | `tragoul` | TragOul | 14 | `CRIMSON_ROOTS` | `AQUA` |
+| [33 - Skill - Unarmed](/adapt/33-skill-unarmed) | `unarmed` | Unarmed | 12 | `FIRE_CHARGE` | `YELLOW` |
+
+Adapt declares 312 adaptation types. 311 are registered on a plain server; the twelfth Axes entry, Iris Feller, only registers when the Iris tree-feller link is available.
+
+`SkillArchitect` sets its icon twice, ending on `SMITHING_TABLE`, so that is what shows in the menu rather than the `IRON_BARS` it sets first.
+
+### Adaptation quick usage index
 
 | Skill | Adaptation id | Name | Usage summary |
 |-------|---------------|------|---------------|
@@ -339,7 +418,7 @@ Adapt declares **312 adaptation types**. The active catalog contains 311 without
 | Swords (`swords`) | `sword-dual-wield` | Dual Wield Stance | Holding a sword in each hand grants bonus melee damage. Matching swords grant the higher bonus. |
 | Swords (`swords`) | `sword-executioners-edge` | Executioner's Edge | Sword strikes deal extra damage to low-health targets. |
 | Swords (`swords`) | `sword-riposte-window` | Riposte Window | Blocking with a shield arms a short riposte for your next strike. |
-| Swords (`swords`) | `sword-crimson-cyclone` | Crimson Cyclone | Land a sword crit to unleash a bleeding area slash around your target. |
+| Swords (`swords`) | `sword-crimson-cyclone` | Crimson Cyclone | Land a sword crit to set off a bleeding area slash around your target. |
 | Swords (`swords`) | `sword-lunge-strike` | Lunge Strike | Sprint-attack with a sword to lunge into the blow with extra reach. |
 | Swords (`swords`) | `sword-blade-flow` | Blade Flow | Chain sword hits to build attack-speed stacks. Taking damage breaks the flow. |
 | Swords (`swords`) | `sword-duelists-focus` | Duelist's Focus | Deal more damage and take less while exactly one hostile is engaged with you; the focused attacker briefly glows when the defense activates. |
@@ -390,6 +469,6 @@ Adapt declares **312 adaptation types**. The active catalog contains 311 without
 
 ## See also
 
-- [Player Usage](/adapt/03-player-usage)
-- [Concepts](/adapt/02-concepts)
-- Skill docs `11`–`33`
+- [03 - Player Usage](/adapt/03-player-usage)
+- [02 - Concepts](/adapt/02-concepts)
+- Skill docs 11 through 33

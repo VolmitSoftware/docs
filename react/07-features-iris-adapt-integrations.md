@@ -2,19 +2,18 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Capability-gated surge guards and multi-plugin incident coordination. Iris/Adapt **map** overlays are in [Features - Maps & Overlays](/react/05-features-maps-overlays).
+Capability-gated surge guards and multi-plugin incident coordination. Iris/Adapt **map** overlays are in [05 - Features - Maps & Overlays](/react/05-features-maps-overlays).
 
 Use `/react integration status` for live capability status. Global `integrationSecretsEnabled` (default `false`) gates **secret** feature bundles.
 
 ## Integration model
 
-- `IntegrationController` / `ReactIntegrationService` discover peer plugins and publish mirrored metrics (`iris-`, `adapt-`, `wormholes-`, `holoui-`, `hiddenore-`, `biletools-` — see [Samplers & Metrics](/react/10-samplers-metrics)).
+- `IntegrationController` / `ReactIntegrationService` discover peer plugins and publish mirrored metrics (`iris-`, `adapt-`, `wormholes-`, `holoui-`, `hiddenore-`, `biletools-` — see [10 - Samplers & Metrics](/react/10-samplers-metrics)).
 - `CapabilityGatedFeature` declares `requiredCapabilities()` and optional `isSecretBundle()`.
 - `ReactCapabilityFeature.autoRegister()`:
   - secret + `!integrationSecretsEnabled` → do not register

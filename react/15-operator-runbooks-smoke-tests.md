@@ -2,12 +2,11 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "React documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 These checks separate build, startup, reload, platform, and gameplay evidence. Commands that create fixtures, purge data, or generate synthetic load belong only on a disposable isolated server or a restored backup.
 
 ## Build gate

@@ -2,13 +2,12 @@
 title: "Installation & Configuration"
 description: "Wormholes documentation: Installation & Configuration"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Install the shaded Wormholes jar into `plugins/`, start once so `plugins/Wormholes/` is created, then edit `config/wormholes.toml` (`schema = 2`). Soft depends are optional; missing plugins skip their bridges. Changes to the consolidated config hot-reload via file watch or `/wh reload` (see [Commands & Permissions](/wormholes/09-commands-permissions)).
+Install the shaded Wormholes jar into `plugins/`, start once so `plugins/Wormholes/` is created, then edit `config/wormholes.toml` (`schema = 2`). Soft depends are optional; missing plugins skip their bridges. Changes to the consolidated config hot-reload via file watch or `/wh reload` (see [09 - Commands & Permissions](/wormholes/09-commands-permissions)).
 
 ## Requirements
 
@@ -25,7 +24,7 @@ Install the shaded Wormholes jar into `plugins/`, start once so `plugins/Wormhol
 1. Place the shaded jar in `plugins/`.
 2. Start the server. Wormholes creates the data folder and writes `config/wormholes.toml` if missing.
 3. Edit `plugins/Wormholes/config/wormholes.toml`. Unsupported or schema-less files are rejected; `schema = 2` is required.
-4. Apply config changes with `/wormholes reload` or the config file watcher. Direct edits to `languages/*.toml` require `/wormholes reload` (or a config change); Dimensional Doors pack/registry changes require a full server restart (see [Dimensional Doors](/wormholes/07-dimensional-doors)).
+4. Apply config changes with `/wormholes reload` or the config file watcher. Direct edits to `languages/*.toml` require `/wormholes reload` (or a config change); Dimensional Doors pack/registry changes require a full server restart (see [07 - Dimensional Doors](/wormholes/07-dimensional-doors)).
 
 ## Data folder layout
 
@@ -43,7 +42,7 @@ plugins/Wormholes/
   wormholes-stats.txt       default stats snapshot path (overridable)
 ```
 
-Peers are not listed under `[network]` in TOML. Import/export writes routes and trust under `routes/` and `trust/` (see [Cross-Server Networking](/wormholes/10-cross-server-networking)).
+Peers are not listed under `[network]` in TOML. Import/export writes routes and trust under `routes/` and `trust/` (see [10 - Cross-Server Networking](/wormholes/10-cross-server-networking)).
 
 ## Config path and schema
 
@@ -121,7 +120,7 @@ Config values are clamped when applied to runtime. Canonical rewriting happens b
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `language` | `en_US` | Active locale name; see [Localization](/wormholes/11-localization) |
+| `language` | `en_US` | Active locale name; see [11 - Localization](/wormholes/11-localization) |
 | `language-fallbacks` | `""` | Comma-separated fallback locales; code English always final |
 | `enable-particles` | `true` | Independent global particle switch |
 | `replace-nether-and-end-portals` | `true` | Auto-link vanilla Nether/End frames as Wormholes portals |
@@ -160,11 +159,11 @@ Config values are clamped when applied to runtime. Canonical rewriting happens b
 | `traversal-api-provider-fault-limit` | Session quarantine threshold |
 | `traversal-api-slow-provider-millis` | Slow-call warning threshold |
 
-API surface details: [API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
+API surface details: [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
 
 ## `[network]`
 
-Cross-server networking. Default `enabled = false`. Import/export auto-sets `enabled = true` and starts the network when needed (see [Cross-Server Networking](/wormholes/10-cross-server-networking)).
+Cross-server networking. Default `enabled = false`. Import/export auto-sets `enabled = true` and starts the network when needed (see [10 - Cross-Server Networking](/wormholes/10-cross-server-networking)).
 
 | Key | Default | Notes |
 |-----|---------|--------|
@@ -255,7 +254,7 @@ Non-positive Hz disables that distance band. Positive rates above 20 Hz still sc
 | `initial-resend-passes` | `1` | Full sends after view create (raise only to diagnose packet loss) |
 | `max-projected-cells` | `250000` | Hard scan ceiling; budget drops lateral pad first then depth; `0` disables (not recommended) |
 
-Projection behavior detail: [Projection Modes & Settings](/wormholes/05-projection-modes-settings).
+Projection behavior detail: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
 ## `[render]`
 
@@ -286,7 +285,7 @@ Destructive wipe of config, routes, trust, identity, portals, and doors: `/wormh
 
 ## Related docs
 
-- [Commands & Permissions](/wormholes/09-commands-permissions) — reload, debug, stats, network commands
-- [Cross-Server Networking](/wormholes/10-cross-server-networking) — network keys in operation
-- [Localization](/wormholes/11-localization) — `language` / overrides
-- [API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) — traversal API contract
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — reload, debug, stats, network commands
+- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) — network keys in operation
+- [11 - Localization](/wormholes/11-localization) — `language` / overrides
+- [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) — traversal API contract

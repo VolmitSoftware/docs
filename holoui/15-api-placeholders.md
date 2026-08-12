@@ -2,12 +2,11 @@
 title: "API - Placeholders"
 description: "HoloUI documentation: API - Placeholders"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 HoloUi publishes a `%holoui_…%` PlaceholderAPI expansion with three keys, so a scoreboard, tab list, hologram or another plugin's configured text can ask whether a player has a holographic menu open and which one it is. This document covers that expansion for external consumers, and the separate question of what happens to placeholders written inside HoloUi's own JSON.
 
 ---
@@ -52,7 +51,7 @@ It is the session's menu id — the same string as `HoloMenuHandle#menuId()` and
 
 The value passes through `PlaceholderValues.text`, which strips every `%` and every `§` (along with the character following a `§`) and returns `---` when the input, or the stripped result, is null or empty.
 
-Container previews are not menus. They never set `menu.open` or `menu.id`; see [Container Previews](/holoui/09-container-previews).
+Container previews are not menus. They never set `menu.open` or `menu.id`; see [09 - Container Previews](/holoui/09-container-previews).
 
 ---
 
@@ -110,7 +109,7 @@ It is a pure local registration. It downloads nothing, contacts no PlaceholderAP
 
 ## Placeholders inside HoloUi JSON
 
-Only two fields in a menu definition receive placeholder expansion. Actions, commands, item icons, image icons and component ids are never expanded, and preview documents never call PlaceholderAPI at all. [Expressions & Placeholders](/holoui/07-expressions-placeholders) covers both substitution systems in full.
+Only two fields in a menu definition receive placeholder expansion. Actions, commands, item icons, image icons and component ids are never expanded, and preview documents never call PlaceholderAPI at all. [07 - Expressions & Placeholders](/holoui/07-expressions-placeholders) covers both substitution systems in full.
 
 | Field | Class | Substitution |
 |---|---|---|
@@ -125,11 +124,11 @@ Only two fields in a menu definition receive placeholder expansion. Actions, com
 
 | Site | Expanded |
 |---|---|
-| Text icon of a non-toggle component | During `MenuSession#open` → `MenuComponent#open` → `createIcon()`, once per session |
-| Toggle `condition`, and the toggle's `trueIcon` / `falseIcon` | During the `ToggleComponent` constructor, which runs inside the `MenuSession` constructor |
-| `HoloMenuHandle#setText` / `setIcon` | On each call, against the string you pass |
+| Visible text icon | During construction and every resolved `refreshTicks`; omission is `10`, `0` disables later refreshes |
+| Toggle `condition` | During the `ToggleComponent` constructor, once per session |
+| `HoloMenuHandle#setText` / text `setIcon` | When applied, then on later refresh intervals using the replacement source |
 
-There is no refresh timer. A value read at open stays frozen for that session unless pushed through the handle.
+Only text containing a paired `%name%` token performs periodic work. A changed resolved value updates display metadata in place when line count is stable; a changed line count respawns that text icon, and either change refreshes automatic hitbox geometry. API text uses the 10-tick default because `HoloIcon.Text` has no refresh-interval field.
 
 ### Toggle conditions
 
@@ -172,4 +171,4 @@ public final class MenuQuery {
 }
 ```
 
-If you opened the menu yourself, `HoloMenuHandle#menuId()` and `HoloMenuHandle#state()` describe your own session precisely, including the `PENDING` window no placeholder can express. To surface external data inside a container preview, register a `PreviewStateProvider`; see [API - Previews](/holoui/16-api-previews).
+If you opened the menu yourself, `HoloMenuHandle#menuId()` and `HoloMenuHandle#state()` describe your own session precisely, including the `PENDING` window no placeholder can express. To surface external data inside a container preview, register a `PreviewStateProvider`; see [16 - API - Previews](/holoui/16-api-previews).

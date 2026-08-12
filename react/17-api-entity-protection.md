@@ -2,12 +2,11 @@
 title: "API - Entity Protection"
 description: "React documentation: API - Entity Protection"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 The `art.arcane.react.api.protect` package lets another plugin exclude owned entities from selected React operations. It supports compiled provider rules, direct per-entity claims, and a limited per-decision guard event.
 
 Provider rules and direct claims cover different ownership models:

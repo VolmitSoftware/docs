@@ -2,12 +2,11 @@
 title: "NMS Bridges & Platform Notes"
 description: "React documentation: NMS Bridges & Platform Notes"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 React has two separate NMS integration systems: a reflective descriptor registry and a compiled, version-tagged instrumentation bridge. Features fail passive or remain measurement-only when their required path is unavailable.
 
 ## Reflective descriptor registry

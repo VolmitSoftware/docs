@@ -2,12 +2,11 @@
 title: "Localization"
 description: "HoloUI documentation: Localization"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 HoloUI resolves every user-facing string through a typed message catalog declared in code and overlaid by YAML locale files. One locale is active per server, selected by the `locale` key in `plugins/holoui/language.yml`; seventeen translations ship with the plugin, and server owners override individual messages in the same file. This page covers the fallback chain, message formatting, placeholder rules, hot reload behavior, and the test gate that keeps locale data complete.
 
 ## Locale selection

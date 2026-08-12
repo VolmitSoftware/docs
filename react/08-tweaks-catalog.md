@@ -2,12 +2,11 @@
 title: "Tweaks Catalog"
 description: "React documentation: Tweaks Catalog"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Lightweight event and NMS accelerations. Config: `plugins/React/tweak/<id>.toml`. Base `enabled` defaults to `true` on `ReactTweak` except **`shorthands`**, which forces `enabled = false` in its constructor until you enable it in TOML.
 
 Several tweaks fail closed or passive to vanilla when required NMS bridges are missing. Inspect with `/react bridge status`.
@@ -38,7 +37,7 @@ Trims overcrowded livestock-style clusters. Honors `PURGE` protection. Config fi
 
 ### `entity-hardstop`
 
-Hard-caps per-chunk entity population by cancelling spawns/breeds/drops once count ≥ limit. Spawn denial is the `SPAWN_CAP` protection operation path (see [API - Entity Protection](/react/17-api-entity-protection)).
+Hard-caps per-chunk entity population by cancelling spawns/breeds/drops once count ≥ limit. Spawn denial is the `SPAWN_CAP` protection operation path (see [17 - API - Entity Protection](/react/17-api-entity-protection)).
 
 - **Class:** `TweakEntityHardstop` · **Listener:** yes
 
@@ -124,7 +123,7 @@ Short-circuits fire spread/fade/burn into `FastWorld` set/break ops.
 Queues bounded extra vanilla fluid ticks via NMS bridges; optional drain acceleration. **Fail-passive** without fluid bridges or after consecutive bridge failures.
 
 - **Class:** `TweakFastFluids` · **Listener:** yes
-- **Notes:** Clamps: `extraVanillaTicksPerEvent` 0–4, `maxExtraVanillaTicksPerServerTick` 16–4096, `maxBurstTicksPerLocationPerServerTick` 1–16. See [Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
+- **Notes:** Clamps: `extraVanillaTicksPerEvent` 0–4, `maxExtraVanillaTicksPerServerTick` 16–4096, `maxBurstTicksPerLocationPerServerTick` 1–16. See [15 - Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -221,7 +220,7 @@ Experimental empty-server hibernation. When its safety gate is enabled and the s
 Registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor).
 
 - **Class:** `TweakShorthands` · **Listener:** no
-- **Permissions:** `react.shorthands.*` and children — see [Commands & Permissions](/react/02-commands-permissions).
+- **Permissions:** `react.shorthands.*` and children — see [02 - Commands & Permissions](/react/02-commands-permissions).
 
 | Field | Type | Default | Description |
 |---|---|---|---|

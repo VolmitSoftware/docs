@@ -2,15 +2,16 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 `art.arcane.iris.api.terrain` answers what the Iris generator says about a coordinate: whether a world is Iris-generated, which biome and region the pack places, surface height, and whether that surface is land, shore, ocean, or void. It reads the **generator**, not the world: no chunk load, no forced generation, no placed-block read, and no knowledge of player edits. Reads are non-blocking noise evaluation over a shared per-chunk cache.
 
-Build and service acquisition: [API - Getting Started](/iris/90-api-getting-started). Service: `IrisTerrainService`, registered at `ServicePriority.Normal` for Iris's enabled lifetime.
+Reach for it when you need the pack's intent for a coordinate without paying to generate it: picking a base or settlement site, rendering a map or minimap, planning a pregen region, gating a feature on "is this an Iris world", or labelling a HUD with the pack biome. If you need the blocks a player can actually see — including objects, structures, and edits — you want Bukkit's world API instead.
+
+Build and service acquisition: [90 - API - Getting Started](/iris/90-api-getting-started). Service: `IrisTerrainService`, registered at `ServicePriority.Normal` for Iris's enabled lifetime.
 
 ```java
 package com.example.integration;
@@ -149,6 +150,8 @@ Constructor rejects with `IllegalArgumentException`:
 - `maxBlockX < minBlockX` or `maxBlockZ < minBlockZ`,
 - `strideBlocks < 1`.
 
+Null `fields` throws `NullPointerException`.
+
 `fields` is defensively copied on construction and on every `fields()` call. `fields()` allocates a fresh `EnumSet` each call — hoist it out of loops.
 
 `columnCount()` and `chunkCount()` saturate at `Long.MAX_VALUE` on overflow.
@@ -183,9 +186,11 @@ Every column produces one `accept`. Placeholders for unrequested fields are not 
 |---|---|---|---|
 | `SURFACE_HEIGHT` | `surfaceHeight` | absolute world Y of topmost terrain | `-1` |
 | `SURFACE_KIND` | `kind` | `LAND`, `SHORE`, `OCEAN`, or `VOID` | `IrisSurfaceKind.UNKNOWN` |
-| `BIOME_KEY` | `biomeKey` | biome load key | `null` |
+| `BIOME_KEY` | `biomeKey` | surface biome load key | `null` |
 
 `-1` is a legal absolute Y in worlds with negative min height — **never treat `-1` as absent**. Branch on your field set. `biomeKey` may be `null` even when requested if the column has no biome.
+
+The sink's `biomeKey` is the **surface** biome — the same value `surfaceBiomeKey` returns for that column, never a cave biome. There is no 3D equivalent of `biomeKey(world, x, y, z)` in a column walk.
 
 Fewer fields cost less. `SURFACE_KIND` alone skips the biome stream for void-floor and at-or-below-fluid columns. `BIOME_KEY` pays for the biome stream every column.
 
@@ -326,6 +331,8 @@ public final class SettlementSiteFinder {
 
 `Best` needs no synchronisation: the sink runs inline on the `sampleColumns` caller thread.
 
+`Player#getScheduler()` is Paper/Folia only. On Spigot, hop back with `Bukkit.getScheduler().runTask(plugin, () -> player.sendMessage(result))`.
+
 ---
 
 ## The minimum: one coordinate
@@ -376,7 +383,7 @@ All height fields are absolute world Y, comparable with `surfaceHeight` and `blo
 
 `studio` worlds exist briefly for pack authoring; skip them for persistence.
 
-`seed` reproduces the entire world offline. Iris does not expose it via PlaceholderAPI ([PlaceholderAPI](/iris/09-placeholderapi)). Do not put it where players can read it.
+`seed` reproduces the entire world offline. Iris does not expose it via PlaceholderAPI ([09 - PlaceholderAPI](/iris/09-placeholderapi)). Do not put it where players can read it.
 
 ---
 
@@ -440,4 +447,4 @@ No on/off switch for the terrain API. Answers for every world with a live Iris e
 
 `SURFACE_HEIGHT` and `SURFACE_KIND` share the height sample when both are requested.
 
-Write a `default` arm when switching enums: [API - Getting Started](/iris/90-api-getting-started).
+Write a `default` arm when switching enums: [90 - API - Getting Started](/iris/90-api-getting-started).

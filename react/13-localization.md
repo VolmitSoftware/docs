@@ -2,12 +2,11 @@
 title: "Localization"
 description: "React documentation: Localization"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 React uses a typed code-owned English catalog, optional bundled locale overlays, and an optional server-local override. Locale changes and override edits can hotload without restarting React.
 
 ## Server locale selection

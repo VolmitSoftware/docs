@@ -2,12 +2,11 @@
 title: "Expressions & Placeholders"
 description: "HoloUI documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 HoloUi contains two independent substitution systems. The expression language is used only by container preview documents in `plugins/holoui/previews/*.json`; PlaceholderAPI substitution happens in menu JSON in exactly two fields. They never meet: an expression cannot read a PlaceholderAPI placeholder, and no menu JSON field is parsed as an expression.
 
 ## Scope of each system
@@ -18,7 +17,7 @@ Menu definition files (`plugins/holoui/menus/*.json`) contain no expression lang
 
 | Menu JSON field | Component / icon | Substitution | When |
 |---|---|---|---|
-| text icon `text` | text icon (`TextIconData`) | `setPlaceholders(player, line)` on each `\n`-separated line | Icon construction |
+| text icon `text` | text icon (`TextIconData`) | `setPlaceholders(player, line)` on each `\n`-separated line | Icon construction, then every `refreshTicks` while visible; omission is `10`, `0` disables refresh |
 | toggle `condition` | toggle component | `setPlaceholders(player, condition)`, then compared with `equalsIgnoreCase` against `expectedValue` | Toggle component construction only |
 
 Nothing else is expanded. Actions, commands, item icons, image icons, and component ids are passed through verbatim. See [03 - Menu File Format.md](/holoui/03-menu-file-format), [05 - Icons.md](/holoui/05-icons), and [06 - Actions.md](/holoui/06-actions).
@@ -239,7 +238,7 @@ See [04 - Components & Hitboxes.md](/holoui/04-components-hitboxes) for the rest
 
 ## Text icon expansion
 
-A text icon splits its `text` on `\n` first and expands each line separately, during icon construction — once per session. There is no refresh timer: a value read at open stays frozen for that session unless it is pushed through the plugin API (`setText` / `setIcon` re-expand on each call; see [14 - API - Menus.md](/holoui/14-api-menus)).
+A text icon splits its `text` on `\n` and expands each line separately during construction. Text containing a paired `%name%` token then expands again every `refreshTicks` while visible: omission is `10` ticks, the accepted range is `0` through `1200`, and `0` keeps the initial value. Static text is detected and incurs no periodic expansion. Changed text metadata is updated in place; a changed line count respawns that icon, and either path rebuilds its automatic click geometry. API `setText` / `setIcon` updates replace the source used by subsequent refreshes; see [14 - API - Menus.md](/holoui/14-api-menus).
 
 ## Runtime notes
 

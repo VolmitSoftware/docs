@@ -2,12 +2,11 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 React exposes live metrics through a per-player HUD, filled-map renderers, and inventory configuration interfaces. Player monitor choices persist separately from the global defaults, while map repair and delivery are controlled by `core/map.toml`.
 
 ## Action-bar monitor

@@ -2,12 +2,11 @@
 title: "Projection Modes & Settings"
 description: "Wormholes documentation: Projection Modes & Settings"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Through-portal projection sends destination or mirror block data and optional entity packets to an observer near a portal so the other side appears without crossing. Looking toward the aperture is required only when foveated unrendering is enabled; by default, the portal's view AABB determines interest. Per-portal mode and render mode combine with global `[projection]` and `[render]` keys in `plugins/Wormholes/config/wormholes.toml` (schema 2).
 
 ## What projection does for a viewer
@@ -139,7 +138,7 @@ Effective range drives the view AABB and is exposed in the portal menu as “glo
 
 The primary block and entity depth comes from the portal's `networkViewDepth` setting (default 64), including settings replicated from the linked gateway. The global `depthBlocks` value extends the search bound for recursive portal candidates; `recursivePortalDepth` limits how many nested portal steps may be sampled. Recursive sampling follows portals that are open and projecting, masks cycles and non-traversable hits, and does not turn a closed or unlinked portal into a view.
 
-Local tunnels sample the destination world directly. Cross-server gateways use the replicated remote block and entity stream; cells not yet present in that stream use the portal's configured `networkViewFallbackBlock` (air by default). Remote subscriptions, heartbeat, grace, and compression are described in [Cross-Server Networking](/wormholes/10-cross-server-networking).
+Local tunnels sample the destination world directly. Cross-server gateways use the replicated remote block and entity stream; cells not yet present in that stream use the portal's configured `networkViewFallbackBlock` (air by default). Remote subscriptions, heartbeat, grace, and compression are described in [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
 ## Surface and entity rendering
 
@@ -165,7 +164,7 @@ Related transition mask: `arrivalTransitionMask` default **true**, `arrivalTrans
 | `/wh admin freeze [seconds]` | `wormholes.admin.projection` | Freeze all projections for 5–300 s (default 30). `0` resumes. |
 | `/wh admin flush` | `wormholes.admin.projection` | Revert every observer’s projected blocks to ground truth and rebuild. |
 
-See [Commands & Permissions](/wormholes/09-commands-permissions) and [Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests).
+See [09 - Commands & Permissions](/wormholes/09-commands-permissions) and [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests).
 
 ## Behavior notes
 

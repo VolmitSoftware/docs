@@ -2,12 +2,11 @@
 title: "Cross-Server Networking"
 description: "Wormholes documentation: Cross-Server Networking"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes links servers by exchanging pasteable codes, storing routes under `routes/` and public keys under `trust/`, then running a version-matched sideband peer protocol. Player handoff is admission-gated and rate-limited before the client is transferred. Eligible non-player entities use a separate snapshot-and-ack path.
 
 ## Enable and auto-enable
@@ -19,7 +18,7 @@ Wormholes links servers by exchanging pasteable codes, storing routes under `rou
 
 Manual enable: set `enabled = true` in `plugins/Wormholes/config/wormholes.toml` and reload or restart. Codes also enable networking without a separate edit (see `ImportExportService`).
 
-Other network keys: [Installation & Configuration](/wormholes/01-installation-configuration) (`[network]` and nested tables).
+Other network keys: [01 - Installation & Configuration](/wormholes/01-installation-configuration) (`[network]` and nested tables).
 
 ## Codes
 
@@ -180,7 +179,7 @@ For an entity-transfer denial check, add a Bukkit entity type name to `entity-tr
 
 ## Related docs
 
-- [Installation & Configuration](/wormholes/01-installation-configuration) — full `[network]` key tables
-- [Commands & Permissions](/wormholes/09-commands-permissions) — permission nodes for network/server
-- [Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings) — gateway link UI
-- [Runtime Architecture](/wormholes/13-runtime-architecture) — managers and storage
+- [01 - Installation & Configuration](/wormholes/01-installation-configuration) — full `[network]` key tables
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — permission nodes for network/server
+- [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings) — gateway link UI
+- [13 - Runtime Architecture](/wormholes/13-runtime-architecture) — managers and storage

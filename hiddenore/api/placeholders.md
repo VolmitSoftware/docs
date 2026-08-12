@@ -1,13 +1,12 @@
 ---
-title: "HiddenOre — API — Placeholders"
-description: "HiddenOre api — placeholders"
+title: "placeholders"
+description: "HiddenOre documentation: placeholders"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 HiddenOre registers a PlaceholderAPI expansion under the identifier `hiddenore`. It publishes three keys, and
 they answer questions about the **server's configuration**, not about a player, a block or a vein. Any consumer
 that can resolve a PlaceholderAPI string — a scoreboard plugin, a chat format, a hologram, a GUI item name, or

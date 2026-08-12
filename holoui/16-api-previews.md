@@ -2,15 +2,14 @@
 title: "API - Previews"
 description: "HoloUI documentation: API - Previews"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
+Container previews expose two integration points in `art.arcane.holoui.api`: `PreviewStateProvider`, which contributes named variables that preview documents read, and `HoloUiContainerPreviewAccessEvent`, the last gate before HoloUi builds a preview for a viewer. This document defines those public contracts and links to the canonical built-in variable and access-control references in [09 - Container Previews](/holoui/09-container-previews).
 
-Container previews expose two integration points in `art.arcane.holoui.api`: `PreviewStateProvider`, which contributes named variables that preview documents read, and `HoloUiContainerPreviewAccessEvent`, the last gate before HoloUi builds a preview for a viewer. This document defines those public contracts and links to the canonical built-in variable and access-control references in [Container Previews](/holoui/09-container-previews).
-
-The preview document format and expression language they feed are covered in [Container Previews](/holoui/09-container-previews).
+The preview document format and expression language they feed are covered in [09 - Container Previews](/holoui/09-container-previews).
 
 ---
 
@@ -137,7 +136,7 @@ Compile-time name checking (`PreviewDocumentParser.checkVariableName`):
 
 A document referencing `myplugin.charge` therefore compiles with a warning even when your plugin is absent. At render, an unresolved name throws `unknown variable: myplugin.charge`; that element is skipped and the rest of the document still draws, with the message logged at most once per document per 60 seconds.
 
-Preview expressions never resolve PlaceholderAPI placeholders — the lexer has no `%…%` form, and a bare `%` is the modulo operator. `PreviewStateProvider` is the supported route for getting external data into a preview. See [API - Placeholders](/holoui/15-api-placeholders) for where placeholders do apply, and [Expressions & Placeholders](/holoui/07-expressions-placeholders) for the expression grammar.
+Preview expressions never resolve PlaceholderAPI placeholders — the lexer has no `%…%` form, and a bare `%` is the modulo operator. `PreviewStateProvider` is the supported route for getting external data into a preview. See [15 - API - Placeholders](/holoui/15-api-placeholders) for where placeholders do apply, and [07 - Expressions & Placeholders](/holoui/07-expressions-placeholders) for the expression grammar.
 
 ---
 

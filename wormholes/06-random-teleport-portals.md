@@ -2,12 +2,11 @@
 title: "Random Teleport Portals"
 description: "Wormholes documentation: Random Teleport Portals"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 An RTP portal is a frame portal whose type is `RTP`. Instead of a fixed linked destination, it samples a safe landing in a configured world and radius band, then projects and teleports travelers to that destination under rotation, lease, and allocation rules. Configuration lives on the portal JSON under `rtp` (`RtpSettings`); the in-game path is Type → RTP, then **Random Destination** on the portal home menu.
 
 ## Switch type and open the editor
@@ -127,7 +126,7 @@ When WorldGuard is installed and enabled, the RTP service reflectively checks th
 
 ## PlaceholderAPI RTP states
 
-Keys (portal-scoped; see [PlaceholderAPI](/wormholes/12-placeholderapi)):
+Keys (portal-scoped; see [12 - PlaceholderAPI](/wormholes/12-placeholderapi)):
 
 | Key | Values |
 |-----|--------|
@@ -144,7 +143,7 @@ Priority in `WormholesPortalSnapshot.rtpState`:
 
 ## Cross-references
 
-- Portal types and menus: [Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)
-- Projection of RTP destinations: [Projection Modes & Settings](/wormholes/05-projection-modes-settings)
-- Commands: [Commands & Permissions](/wormholes/09-commands-permissions)
-- Smoke checklist: [Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests)
+- Portal types and menus: [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)
+- Projection of RTP destinations: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings)
+- Commands: [09 - Commands & Permissions](/wormholes/09-commands-permissions)
+- Smoke checklist: [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests)

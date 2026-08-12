@@ -2,12 +2,11 @@
 title: "API - Getting Started"
 description: "HoloUI documentation: API - Getting Started"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 `art.arcane.holoui.api` is HoloUi's public Java API. It lets another Bukkit plugin describe a
 holographic display-entity menu in code, open it for one player, mutate it while it is on screen,
 receive clicks, close it, observe every menu on the server through Bukkit events, and contribute

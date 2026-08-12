@@ -2,15 +2,14 @@
 title: "API - Metrics & Integration Contract"
 description: "Wormholes documentation: API - Metrics & Integration Contract"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes registers VolmLib `art.arcane.volmlib.integration.IntegrationServiceContract` with Bukkit `ServicesManager` at `ServicePriority.Normal`. React and other monitors sample Wormholes without either plugin hard-depending on the other. Handshake, heartbeat, and sample shapes are defined by VolmLib; this page records what Wormholes contributes.
 
-Descriptor / soft-depend notes for Wormholes itself: [API - Getting Started](/wormholes/20-api-getting-started). Soft depends and operator integrations: [Integrations](/wormholes/15-integrations).
+Descriptor / soft-depend notes for Wormholes itself: [20 - API - Getting Started](/wormholes/20-api-getting-started). Soft depends and operator integrations: [15 - Integrations](/wormholes/15-integrations).
 
 ## Contract identity
 
@@ -140,4 +139,4 @@ All keys begin with `wormholes.` and are declared in VolmLib `IntegrationMetricS
 
 ## Scoreboard alternative
 
-A subset of the same runtime facts is available as PlaceholderAPI strings without VolmLib compile deps — see [PlaceholderAPI](/wormholes/12-placeholderapi) (`portals`, projections, peers, transfers, failures). Use the integration contract when you need typed numeric samples and domain tags for monitoring.
+A subset of the same runtime facts is available as PlaceholderAPI strings without VolmLib compile deps — see [12 - PlaceholderAPI](/wormholes/12-placeholderapi) (`portals`, projections, peers, transfers, failures). Use the integration contract when you need typed numeric samples and domain tags for monitoring.

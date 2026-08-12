@@ -2,12 +2,11 @@
 title: "Concepts"
 description: "Wormholes documentation: Concepts"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes models frame portals as typed apertures with optional destination tunnels, optional through-portal projection, and separate travel/access policy. Local portals live on this server; remote gateway portals are peer-replicated for cross-server pairing. Dimensional Doors and pocket worlds are a survival product path that does not use the same construction menus as frame portals.
 
 ## Portal types
@@ -19,7 +18,7 @@ Wormholes models frame portals as typed apertures with optional destination tunn
 | `GATEWAY` | Cross-server capable type. Pairs with other gateway locals and remote gateways; uses export/import codes. |
 | `RTP` | Random teleport portal. No destination tunnel; destination is sampled by the RTP service. |
 
-`LocalPortal.supportsProjections()` is `true` for every type. A normal portal projects only when projection mode is `ON`, the portal is open, its surface does not block projection, and it has either a tunnel or mirror mode; an RTP portal also needs an authorized READY destination view for that observer. Menu copy may describe `PORTAL` as “basic” and `WORMHOLE` as “viewport projection,” but both types can project under the same conditions. See [Projection Modes & Settings](/wormholes/05-projection-modes-settings).
+`LocalPortal.supportsProjections()` is `true` for every type. A normal portal projects only when projection mode is `ON`, the portal is open, its surface does not block projection, and it has either a tunnel or mirror mode; an RTP portal also needs an authorized READY destination view for that observer. Menu copy may describe `PORTAL` as “basic” and `WORMHOLE` as “viewport projection,” but both types can project under the same conditions. See [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
 RTP cannot be linked as a tunnel destination. Switching a portal to `RTP` clears tunnel, mirror mode, and dimensional pair identity; switching away from `RTP` also clears the tunnel. RTP construction by rune is unsupported (wand left-click on an RTP rune is rejected).
 
@@ -33,7 +32,7 @@ RTP cannot be linked as a tunnel destination. Switching a portal to `RTP` clears
 - **PanOptic** — full aperture sample; no buried-cell culling / observer occlusion path used by Venticular.
 - **Venticular** — uses buried-cell culling and observer occlusion (`usesBuriedCellCulling` / `usesObserverOcclusion`).
 
-Projection detail, budgets, and global ranges: [Projection Modes & Settings](/wormholes/05-projection-modes-settings).
+Projection detail, budgets, and global ranges: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
 ## Tunnels and destinations
 
@@ -73,7 +72,7 @@ Travel is stored as two booleans (`outgoingTraversalsEnabled`, `incomingTraversa
 | `INBOUND` | no | yes |
 | `LOCKED` | no | no |
 
-Default for a new portal is both directions enabled (`BOTH`). Mirror mode and managed dimensional kinds override or freeze this control in the menu. Vanilla-managed nether/end portals keep fixed travel rules (see [Building Portals](/wormholes/03-building-portals) and vanilla replace).
+Default for a new portal is both directions enabled (`BOTH`). Mirror mode and managed dimensional kinds override or freeze this control in the menu. Vanilla-managed nether/end portals keep fixed travel rules (see [03 - Building Portals](/wormholes/03-building-portals) and vanilla replace).
 
 ## Local vs remote portals
 
@@ -93,15 +92,15 @@ A portal is a gateway when `type == GATEWAY`. Remote entries are only gateway-ty
 | Menus | Full portal home/settings/type menus | Compact access + OpenState UI on sneak empty-hand |
 | Config gate | Always available | `dimensionalDoorsEnabled` (default true) |
 
-Doors do not become frame `PortalType` entries. Details: [Dimensional Doors](/wormholes/07-dimensional-doors).
+Doors do not become frame `PortalType` entries. Details: [07 - Dimensional Doors](/wormholes/07-dimensional-doors).
 
 ## Pocket dimensions (summary)
 
-Personal and public dimensional doors resolve into a shared pocket void dimension with a return door. Layout, rescue, and retention are covered in [Pocket Dimensions](/wormholes/08-pocket-dimensions). Pair doors link two overworld endpoints without a pocket.
+Personal and public dimensional doors resolve into a shared pocket void dimension with a return door. Layout, rescue, and retention are covered in [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions). Pair doors link two overworld endpoints without a pocket.
 
 ## Traversal kinds (API)
 
-Public `TraversalKind` values for cost providers and events ([API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events)):
+Public `TraversalKind` values for cost providers and events ([21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events)):
 
 | Kind | Meaning |
 |------|---------|
@@ -114,7 +113,7 @@ When `traversalApiEnabled` is false in main config, third-party cost providers a
 
 ## Access policy (frame portals)
 
-Per-portal permission node: `wormholes.portal.<sanitizedName>` (see [Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
+Per-portal permission node: `wormholes.portal.<sanitizedName>` (see [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
 
 | `PortalPermissionMode` | Rule (non-op players) |
 |------------------------|------------------------|

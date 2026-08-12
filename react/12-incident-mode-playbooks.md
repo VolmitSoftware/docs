@@ -2,12 +2,11 @@
 title: "Incident Mode & Playbooks"
 description: "React documentation: Incident Mode & Playbooks"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 The `incident-score` sampler combines eight pressure signals into a 0–100 value. `incident-mode` applies event-rate limits while that pressure is sustained, while `action-incident-playbook` queues a separate set of cleanup and recovery actions.
 
 ## Incident score
@@ -41,7 +40,7 @@ During each one-second rate window it allows the configured number of events, th
 | Hopper inventory moves | 120 | Cancel excess moves | Yes, 14 blocks by default |
 | Redstone transitions | 220 | Restore the old current | Yes, 14 blocks by default |
 
-The complete field/default table is in [Features - Governors & Mechanics](/react/06-features-governors-mechanics). Incident mode is its own limiter; other governors continue to evaluate their own pressure gates.
+The complete field/default table is in [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics). Incident mode is its own limiter; other governors continue to evaluate their own pressure gates.
 
 ## Action `action-incident-playbook`
 
@@ -55,8 +54,8 @@ The playbook attempts to queue registered quarantine, trim, hopper-normalization
 | 1 medium | 28 chunks, score 80, player radius 56 | 600 total, 12/chunk, age 5 min | 20 chunks, 25 updates/chunk, 48 merges | 32 chunks, radius 1 |
 | 2 severe | 42 chunks, score 60, player radius 48 | 1,000 total, 16/chunk, age 3 min | 32 chunks, 18 updates/chunk, 64 merges | 48 chunks, radius 2 |
 
-The action defaults and full parameter objects are documented in [Actions Catalog](/react/09-actions-catalog).
+The action defaults and full parameter objects are documented in [09 - Actions Catalog](/react/09-actions-catalog).
 
 ## Trinity coordination
 
-The secret `feature-trinity-incident-mode` requires registered Iris and Adapt capabilities. Its trigger and dependent-feature behavior are documented in [Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).
+The secret `feature-trinity-incident-mode` requires registered Iris and Adapt capabilities. Its trigger and dependent-feature behavior are documented in [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).

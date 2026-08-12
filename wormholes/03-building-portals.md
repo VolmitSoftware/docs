@@ -2,12 +2,11 @@
 title: "Building Portals"
 description: "Wormholes documentation: Building Portals"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Frame portals are coplanar apertures built with the Portal Wand (box select) or by placing and activating matching runes. Construction always produces a flat structure; a non-flat rune set is rejected before its blocks are consumed. Surface skins, menu access, and optional vanilla nether/end replacement attach after the portal exists.
 
 ## Tools and recipes
@@ -64,7 +63,7 @@ Permission: `wormholes.admin.items`.
 | `/wormholes wand rune=wormhole count=N` | Wormhole runes |
 | `/wormholes wand rune=gateway count=N` | Gateway runes |
 
-Aliases: `/wh`, `/wormhole`. Full command list: [Commands & Permissions](/wormholes/09-commands-permissions).
+Aliases: `/wh`, `/wormhole`. Full command list: [09 - Commands & Permissions](/wormholes/09-commands-permissions).
 
 ## Wand box construction
 
@@ -72,7 +71,7 @@ Aliases: `/wh`, `/wormhole`. Full command list: [Commands & Permissions](/wormho
 2. **Left-click** a block for corner A; **right-click** a block for corner B (or the reverse order).
 3. Selection must be one cell thick on one axis (flat wall/floor/ceiling plane). Max **4096** cells.
 4. With a valid complete selection, **left-click** the selection (block inside the box or aim at the selection pane within 64 blocks) to open the portal.
-5. Construction always creates `PortalType.PORTAL` owned by the player UUID. Change type later in the type menu ([Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
+5. Construction always creates `PortalType.PORTAL` owned by the player UUID. Change type later in the type menu ([04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
 
 Selection UI: light-blue pane while valid; red when invalid (not flat or too large). Changing world, dropping/swapping off the wand, or changing hotbar away from the wand clears the selection.
 
@@ -108,7 +107,7 @@ While looking at a portal, operators and owners may:
 | Lava bucket | `minecraft:lava` |
 | Any block material | That block’s `BlockData` string |
 
-Empty hand does not apply a skin. Opaque skins **block projection** through the surface; transparent/non-occluding skins (glass, ice, water, slime, honey, barrier, etc.) do not. Clear skins via the settings cosmetics control. See [Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings).
+Empty hand does not apply a skin. Opaque skins **block projection** through the surface; transparent/non-occluding skins (glass, ice, water, slime, honey, barrier, etc.) do not. Clear skins via the settings cosmetics control. See [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings).
 
 ## Menu access
 
@@ -139,7 +138,7 @@ Set `replaceNetherAndEndPortals = false` to leave vanilla portals alone.
 | `wormholes.gateway` | op | Create/modify gateway portals |
 | `wormholes.admin.items` | op | `/wormholes wand` supplies |
 
-See [Commands & Permissions](/wormholes/09-commands-permissions) for the full tree.
+See [09 - Commands & Permissions](/wormholes/09-commands-permissions) for the full tree.
 
 ## Quick path
 
@@ -148,4 +147,4 @@ See [Commands & Permissions](/wormholes/09-commands-permissions) for the full tr
 3. Open the menu (wand look-click or sneak empty-hand right-click on the frame).
 4. Set type if needed, pick a destination (or RTP editor / gateway codes), then walk through.
 
-Related: types and settings in [Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings); projection in [Projection Modes & Settings](/wormholes/05-projection-modes-settings).
+Related: types and settings in [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings); projection in [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).

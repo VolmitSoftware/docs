@@ -2,15 +2,14 @@
 title: "Features - Entity Systems"
 description: "React documentation: Features - Entity Systems"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Entity-side features for stacking, sleep, trim, items, spawns, vehicles, portals, and explosions. Config: `plugins/React/feature/<id>.toml`. Base field `enabled` defaults to `true`.
 
-Stacking, trim, and sleep honor the protection API ([API - Entity Protection](/react/17-api-entity-protection)): `STACK`, `TRIM`, and `SLEEP` respectively.
+Stacking, trim, and sleep honor the protection API ([17 - API - Entity Protection](/react/17-api-entity-protection)): `STACK`, `TRIM`, and `SLEEP` respectively.
 
 ### `mob-stacking`
 

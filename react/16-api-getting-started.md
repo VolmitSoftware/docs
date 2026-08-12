@@ -2,12 +2,11 @@
 title: "API - Getting Started"
 description: "React documentation: API - Getting Started"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 React exposes third-party Java APIs for entity protection and metric publishing, plus read-only PlaceholderAPI keys. This document covers dependency setup, current relocation boundaries, and the distinction between public API and internal runtime types.
 
 | You want to…                                            | Read                                 |

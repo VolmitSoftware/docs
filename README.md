@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,22 +19,22 @@ File paths map directly to wiki page paths. `iris.md` is `/iris`; `iris/commands
 
 ## Where content comes from
 
-Most pages are **ported from `docs/` directories in the plugin repositories** — Iris, Adapt,
-React, Wormholes and HoloUI each maintain docs alongside their code. Editing those pages here
-will be overwritten on the next import; fix them upstream instead.
+**This repository is the single source of truth for all plugin documentation.** The plugin
+repositories carry no `docs/` trees; every page — numbered plugin docs, landing pages, the
+BileTools set, HiddenOre's operator pages, `home.md` — is written and maintained here directly.
 
-Pages written for this wiki (the BileTools set, HiddenOre's operator pages, all plugin landing
-pages, `home.md`) are edited here directly.
+Each plugin repo's `AGENTS.md` requires that any change altering a feature, command,
+permission, setting, config shape, schema, or API surface updates the matching page here in
+the same workstream. Pages document the modern Minecraft 26.2 branches of each plugin.
 
-## Source branches
+## Page format
 
-| Plugin | Branch |
-|---|---|
-| Iris, Adapt, React | `unification` |
-| HoloUI, HiddenOre, BileTools, Wormholes | `master` |
-
-The `master` branches of Iris, Adapt and React are older and target much earlier Minecraft
-versions. Do not document from them.
+Numbered plugin pages live at `<plugin>/NN-slug.md` (newcomer reading order; API pages keep
+the highest numbers; HiddenOre and VolmLib nest API pages under `<plugin>/api/`). Every page
+carries Wiki.js YAML frontmatter (title, description, published, date, tags, editor,
+dateCreated) and no leading H1 — the title renders from frontmatter. Cross-references are
+absolute wiki paths such as `[04 - Commands & Permissions](/adapt/04-commands-permissions)`.
+Bump `date` when editing a page.
 
 ## Contributing
 

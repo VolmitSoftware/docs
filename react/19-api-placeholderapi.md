@@ -2,12 +2,11 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 React registers read-only `%react_…%` keys for scoreboards, holograms, tab lists, chat formats, signs, and other PlaceholderAPI consumers. The expansion identifier is `react`.
 
 ```

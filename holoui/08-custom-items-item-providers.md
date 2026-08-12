@@ -2,12 +2,11 @@
 title: "Custom Items & Item Providers"
 description: "HoloUI documentation: Custom Items & Item Providers"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 A HoloUi menu icon can draw an item that belongs to another plugin — an ItemsAdder ruby, an MMOItems
 sword, a HeadDatabase head — instead of a vanilla `Material`. Ten adapters resolve a foreign item id
 into a Bukkit `ItemStack` on the server at the moment the icon is built, and the stack is sent to the
@@ -358,4 +357,4 @@ until the server stops cleanly; add it by hand to use it before then. See
 
 ## Related preview access control
 
-Custom item providers do not participate in container-preview authorization. The permission, physical-openability, lock, WorldGuard, and access-event sequence is documented once in [Container Previews](/holoui/09-container-previews); the public `HoloUiContainerPreviewAccessEvent` contract is in [API - Previews](/holoui/16-api-previews).
+Custom item providers do not participate in container-preview authorization. The permission, physical-openability, lock, WorldGuard, and access-event sequence is documented once in [09 - Container Previews](/holoui/09-container-previews); the public `HoloUiContainerPreviewAccessEvent` contract is in [16 - API - Previews](/holoui/16-api-previews).

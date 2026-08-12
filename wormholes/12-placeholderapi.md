@@ -2,15 +2,14 @@
 title: "PlaceholderAPI"
 description: "Wormholes documentation: PlaceholderAPI"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Wormholes registers a PlaceholderAPI expansion under the identifier `wormholes`. Server keys describe plugin-wide state; player keys describe the one portal selected for that player from a published snapshot. Values are plain strings; there is no Wormholes compile dependency for consumers.
 
-For integrator lifecycle, threading, and compile notes see [API - PlaceholderAPI](/wormholes/22-api-placeholderapi).
+For integrator lifecycle, threading, and compile notes see [22 - API - PlaceholderAPI](/wormholes/22-api-placeholderapi).
 
 ## Dependency
 

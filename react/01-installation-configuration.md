@@ -2,12 +2,11 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Install the React shaded jar into `plugins/`, start the server once so the data folder is created, then edit TOML configs and reload or restart as required. React targets modern Paper/Purpur/Folia with `folia-supported: true`.
 
 ## Requirements
@@ -97,9 +96,9 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 ## Other controller configuration
 
 - `core/config-input.toml`: `sessionTimeoutSeconds = 45` controls the in-game config editor's text-input timeout and is clamped to at least five seconds.
-- `core/map.toml` controls map repair, redraw, packet delivery, and megamap behavior; see [Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
+- `core/map.toml` controls map repair, redraw, packet delivery, and megamap behavior; see [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
 
 
 ## Localization
 
-Server English is code-owned under `art.arcane.react.localization`. Bundled locales ship as TOML resources. Select locale with `language`; override selected keys via `languages/overrides/<locale>.toml`. See [Localization](/react/13-localization).
+Server English is code-owned under `art.arcane.react.localization`. Bundled locales ship as TOML resources. Select locale with `language`; override selected keys via `languages/overrides/<locale>.toml`. See [13 - Localization](/react/13-localization).

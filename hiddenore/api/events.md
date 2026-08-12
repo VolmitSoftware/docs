@@ -1,13 +1,12 @@
 ---
-title: "HiddenOre — API — Events"
-description: "HiddenOre api — events"
+title: "events"
+description: "HiddenOre documentation: events"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 HiddenOre fires two events during a mining reward, and the difference between them is deliberate:
 
 | Event                    | Cancellable | Fires                                     | You use it to                                  |

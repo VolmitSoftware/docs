@@ -2,13 +2,12 @@
 title: "API - Traversal Cost & Events"
 description: "Wormholes documentation: API - Traversal Cost & Events"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-`art.arcane.wormholes.api.traversal` lets another plugin price, charge for, or veto a portal traversal. It depends only on Bukkit types, `java.*`, and its own types (no VolmLib, Adventure, or shaded types on the compile surface). Descriptor and `apiJar` setup: [API - Getting Started](/wormholes/20-api-getting-started).
+`art.arcane.wormholes.api.traversal` lets another plugin price, charge for, or veto a portal traversal. It depends only on Bukkit types, `java.*`, and its own types (no VolmLib, Adventure, or shaded types on the compile surface). Descriptor and `apiJar` setup: [20 - API - Getting Started](/wormholes/20-api-getting-started).
 
 | Goal | Use |
 |------|-----|
@@ -19,7 +18,7 @@ Events never move money. Only a registered `TraversalCostProvider` holds value.
 
 ## Dependency
 
-Same as [API - Getting Started](/wormholes/20-api-getting-started): soft-depend Wormholes; Paper needs `join-classpath: true`; compile against `Wormholes-*-api.jar` with `compileOnly`.
+Same as [20 - API - Getting Started](/wormholes/20-api-getting-started): soft-depend Wormholes; Paper needs `join-classpath: true`; compile against `Wormholes-*-api.jar` with `compileOnly`.
 
 ## Lifecycle
 

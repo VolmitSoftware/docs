@@ -2,12 +2,11 @@
 title: "Localization"
 description: "Wormholes documentation: Localization"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 Canonical English is the typed Java catalog in `WormholesMessages` (and related Director keys). Wormholes does **not** ship an `en_US.toml` bundle. Non-English locales load from jar resources and optional data-folder overlays; missing keys fall through to code-owned English.
 
 ## Config
@@ -110,12 +109,12 @@ Validation rejects unknown message keys, text/lines/plural shape mismatches, wro
 
 | Trigger | Behavior |
 |---------|----------|
-| `/wormholes reload` | Reloads config and language (`wormholes.admin.reload` + root gate; see [Commands & Permissions](/wormholes/09-commands-permissions)) |
+| `/wormholes reload` | Reloads config and language (`wormholes.admin.reload` + root gate; see [09 - Commands & Permissions](/wormholes/09-commands-permissions)) |
 | `config/wormholes.toml` hotload | Reloads the selected language after the config load succeeds |
 | Direct `languages/*.toml` edit | Not watched; use `/wormholes reload` or touch the config file |
 | Language rejected | Last valid language remains; config may still apply; console reports the cause |
 
 ## Related docs
 
-- [Installation & Configuration](/wormholes/01-installation-configuration) — `language` / `language-fallbacks` defaults
-- [Commands & Permissions](/wormholes/09-commands-permissions) — reload command
+- [01 - Installation & Configuration](/wormholes/01-installation-configuration) — `language` / `language-fallbacks` defaults
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — reload command

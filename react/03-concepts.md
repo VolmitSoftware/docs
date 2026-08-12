@@ -2,12 +2,11 @@
 title: "Concepts"
 description: "React documentation: Concepts"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
 React content is registered into four primary catalogs: **features**, **tweaks**, **actions**, and **samplers**. Every registered object has a stable string id and may have a TOML config under `plugins/React/<category>/<id>.toml`; features, tweaks, and actions have an `enabled` flag, while samplers do not.
 
 ## Categories
@@ -46,15 +45,15 @@ Missing files are created from Java field defaults. Fields are documented with `
 
 ## Protection
 
-Entity mutation paths (stack, trim, purge, sleep, despawn) consult the protection controller. Third parties declare rules via `ReactProtection` / `ReactProtectionProvider` — see [API - Entity Protection](/react/17-api-entity-protection). React does not call plugins per-entity for protection decisions on the hot path.
+Entity mutation paths (stack, trim, purge, sleep, despawn) consult the protection controller. Third parties declare rules via `ReactProtection` / `ReactProtectionProvider` — see [17 - API - Entity Protection](/react/17-api-entity-protection). React does not call plugins per-entity for protection decisions on the hot path.
 
 ## NMS bridges
 
-Some features/tweaks require version-specific NMS hooks from `bridge-api`. If a bridge does not resolve, the component fails closed or passive to vanilla behavior and logs once. Operators check `/react bridge status`. Details: [NMS Bridges & Platform Notes](/react/14-nms-bridges-platform-notes).
+Some features/tweaks require version-specific NMS hooks from `bridge-api`. If a bridge does not resolve, the component fails closed or passive to vanilla behavior and logs once. Operators check `/react bridge status`. Details: [14 - NMS Bridges & Platform Notes](/react/14-nms-bridges-platform-notes).
 
 ## Incident score
 
-Sampler `incident-score` aggregates pressure. Feature `incident-mode` and action `action-incident-playbook` use it for automated or operator-driven response. See [Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
+Sampler `incident-score` aggregates pressure. Feature `incident-mode` and action `action-incident-playbook` use it for automated or operator-driven response. See [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
 
 
 ## Naming

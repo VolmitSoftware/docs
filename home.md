@@ -23,6 +23,9 @@ so they match what the jar does rather than what a changelog claimed.
 - [**BileTools** *Dev utility. Rebuild a jar and it is already reloaded in game.*](/biletools)
 {.links-list}
 
+[VolmLib](/volmlib), the shared library the suite is built on, is documented for plugin
+developers under [/volmlib/api](/volmlib/api).
+
 ## Compatibility
 
 Every plugin targets the same modern baseline.

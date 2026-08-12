@@ -2,13 +2,12 @@
 title: "API - PlaceholderAPI"
 description: "Wormholes documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-Wormholes publishes `%wormholes_…%` through PlaceholderAPI without requiring a Wormholes compile dependency. Full operator key tables, selection rules, vocabularies, formats, and failure matrix are in [PlaceholderAPI](/wormholes/12-placeholderapi). This page covers integrator lifecycle, threading, and compile notes only.
+Wormholes publishes `%wormholes_…%` through PlaceholderAPI without requiring a Wormholes compile dependency. Full operator key tables, selection rules, vocabularies, formats, and failure matrix are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi). This page covers integrator lifecycle, threading, and compile notes only.
 
 ## Compile and dependency
 
@@ -72,4 +71,4 @@ The list call reduces consumer-side repetition but is still not an atomic snapsh
 
 ## Not an API jar surface
 
-Placeholder types live under `art.arcane.wormholes.papi` and VolmLib helpers; they are **not** in `Wormholes-*-api.jar`. Integrators only need PlaceholderAPI at runtime. For numeric metrics without string parsing, use [API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
+Placeholder types live under `art.arcane.wormholes.papi` and VolmLib helpers; they are **not** in `Wormholes-*-api.jar`. Integrators only need PlaceholderAPI at runtime. For numeric metrics without string parsing, use [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
