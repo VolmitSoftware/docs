@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "Adapt documentation: Skill - TragOul"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,7 +35,7 @@ Whoever hits you takes a flat chunk of damage back. Projectiles count, and the r
 
 ### Globe of Pain (`tragoul-globe`)
 
-Your melee hit stops being single target. The damage is split evenly across the mob you hit and the other valid mobs nearby, and each of them also takes a per-level bonus on top. Against a crowd, each mob takes less than your normal hit, but everything gets hit at once.
+Your melee hit stops being single target. The damage is split evenly across the mob you hit and the other valid mobs nearby, and each of them also takes a per-level bonus on top. Against a crowd, each mob takes less than your normal hit, but everything gets hit at once. Armor, Resistance, protection effects, and damage listeners then process that share independently for each target, so displayed or observed health loss can differ between them.
 
 ### Will of Pain (`tragoul-healing`)
 
@@ -49,7 +49,7 @@ Each connecting lance costs you real health, mitigated by armor and effects like
 
 ### Blood Pact (`tragoul-blood-pact`)
 
-Take a big enough hit and you might be rewarded for it. On a proc you get a handful of random potion effects drawn from speed, regeneration, resistance, fire resistance, absorption, jump boost, and night vision. Larger hits and higher levels give you more of them at once.
+Take a big enough hit and you might be rewarded for it. On a proc you get a handful of random buffs drawn from speed, regeneration, resistance, fire resistance, absorption, jump boost, and night vision. Larger hits and higher levels give you more of them at once. Speed and Jump Boost are hidden transient attributes rather than potion effects, so those two have no HUD icon and cannot be removed with milk.
 
 ### Bone Harvest (`tragoul-bone-harvest`)
 

@@ -2,7 +2,7 @@
 title: "Volmit Software"
 description: "Documentation for Iris, Adapt, React, Wormholes, HoloUI, HiddenOre and BileTools"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "index"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,7 +59,7 @@ descriptors: Paper reads `paper-plugin.yml` and bootstraps at `STARTUP`, Spigot 
 | [Iris](/iris/04-commands-permissions) | 2 | `iris.all` covers the whole tree; `iris.treefeller` is the one player-facing node |
 | [Adapt](/adapt/04-commands-permissions) | 13 | Per-feature: gui, boost, mutations, clear, determine, configurator |
 | [React](/react/02-commands-permissions) | 10 | `react.use` plus seven opt-in shorthand nodes |
-| [Wormholes](/wormholes/09-commands-permissions) | 12 | Grouped tree; `wormholes.portals` defaults to **true** |
+| [Wormholes](/wormholes/09-commands-permissions) | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` | Grouped tree; `wormholes.portals` defaults to **true** |
 | [HoloUI](/holoui/02-commands-permissions) | 12 | One node per subcommand |
 | [HiddenOre](/hiddenore/commands) | 1 | `hiddenore.admin` |
 | [BileTools](/biletools/commands) | 1 | `bile.use`, equivalent to console access |

@@ -20,7 +20,7 @@ Wormholes models frame portals as typed apertures with optional destination tunn
 
 `LocalPortal.supportsProjections()` is `true` for every type. A normal portal projects only when projection mode is `ON`, the portal is open, its surface does not block projection, and it has either a tunnel or mirror mode; an RTP portal also needs an authorized READY destination view for that observer. Menu copy may describe `PORTAL` as “basic” and `WORMHOLE` as “viewport projection,” but both types can project under the same conditions. See [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
-RTP cannot be linked as a tunnel destination. Switching a portal to `RTP` clears tunnel, mirror mode, and dimensional pair identity; switching away from `RTP` also clears the tunnel. RTP construction by rune is unsupported (wand left-click on an RTP rune is rejected).
+RTP cannot be linked as a tunnel destination. Switching a portal to `RTP` or away from `RTP` force-closes it, clears the tunnel, and leaves it closed until RTP is READY or a new tunnel is set. There is no RTP rune product; wand and rune construction create `PORTAL`, `WORMHOLE`, or `GATEWAY` only.
 
 ## Projection mode vs render mode
 
@@ -46,8 +46,8 @@ A tunnel binds a portal to a destination. Tunnel kinds in storage:
 
 Linking rules (operator-relevant):
 
-- Non-gateway locals only list other non-gateway locals that are generic destinations (not managed dimensional portals).
-- Gateways only list other gateway locals, plus remote `GATEWAY` entries when the remote registry is live.
+- Destination lists are same-class portals in any loaded world (non-gateway vs gateway). Same-world links store `LOCAL`; cross-world same-server links store `DIMENSIONAL`. Gateways also list remote `GATEWAY` entries when the remote registry is live (`UNIVERSAL`).
+- Links are one-way: setting A’s destination to B does not create B→A.
 - Mirror mode rejects destination linking and clears any existing tunnel when enabled.
 - Managed dimensional portals (`DimensionalPortalKind` ≠ `NONE`) refuse manual re-linking.
 
@@ -90,7 +90,7 @@ A portal is a gateway when `type == GATEWAY`. Remote entries are only gateway-ty
 | Construction | Wand box or coplanar runes; menus | Crafted door/trapdoor items |
 | Surface | Block aperture with optional surface skin | Vanilla door/trapdoor threshold while OpenState matches |
 | Menus | Full portal home/settings/type menus | Compact access + OpenState UI on sneak empty-hand |
-| Config gate | Always available | `dimensionalDoorsEnabled` (default true) |
+| Config gate | Always available | `[main] dimensional-doors-enabled` (default true) |
 
 Doors do not become frame `PortalType` entries. Details: [07 - Dimensional Doors](/wormholes/07-dimensional-doors).
 

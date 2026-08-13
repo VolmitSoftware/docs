@@ -37,7 +37,7 @@ Enable and teardown order are documented in [13 - Runtime Architecture](/wormhol
 | `commands` | Director root, admin, network, and server command handlers and parameter completion | [09 - Commands & Permissions](/wormholes/09-commands-permissions) |
 | `config` / `config.toml` | Schema-2 TOML loading, canonical writes, and typed main/network/projection/render settings | [01 - Installation & Configuration](/wormholes/01-installation-configuration) |
 | `door` | Dimensional item identity, recipes, placement, visuals, access, OpenState, object/living transit, pockets, rescue, persistence, and protection | [07 - Dimensional Doors](/wormholes/07-dimensional-doors), [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) |
-| `geometry` | Portal frames, structure planes, directions, transforms, and plane normalization | [02 - Concepts](/wormholes/02-concepts), [03 - Building Portals](/wormholes/03-building-portals) |
+| `geometry` | Portal look/traversal raycast (`Raycast`) | [02 - Concepts](/wormholes/02-concepts), [03 - Building Portals](/wormholes/03-building-portals) |
 | `localization` | Typed message catalog, bundled/owner locale merging, validation, and audience rendering | [11 - Localization](/wormholes/11-localization) |
 | `network` | Identities, trust, routes, codes, peer lifecycle, protocol, compression, player admission/handoff, entity transfer, diagnostics | [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) |
 | `network.replication` | Remote-view chunk tracking, hashes, bulk/delta replication, resync, and statistics | [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings) |

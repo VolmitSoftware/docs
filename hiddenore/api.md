@@ -137,7 +137,9 @@ for an integration that wants events and no service at all.
 4. **During play**, the service answers questions and the two events fire on the region thread that owns the
    broken block.
 5. **A configuration reload** (`/hiddenore reload`, or the config file watcher noticing an edit) validates and
-   swaps the runtime record in one assignment. Your `HiddenOreService` reference stays valid and keeps working
+   swaps the runtime record in one assignment. The watcher uses operating-system events when they arrive and
+   also compares `config.yml` and `language.yml` signatures about once a second, so a silent bind-mount
+   watcher still picks up a finished save. Your `HiddenOreService` reference stays valid and keeps working
    — but its *answers* change: `isSeeded()` can flip, a material can stop being managed, and the seeded vein
    layout is recomputed. If the new configuration is invalid the reload is rejected, the previous runtime stays
    live, and nothing you hold changes.

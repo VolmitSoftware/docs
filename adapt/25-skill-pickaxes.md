@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Adapt documentation: Skill - Pickaxes"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,11 +53,11 @@ Iron, gold, and copper ore come out of the ground as ingots instead of raw chunk
 
 ### Pickaxe Drop-To-Inventory (`pickaxe-drop-to-inventory`)
 
-Blocks you break with a pickaxe put their drops straight into your inventory instead of on the ground. Anything that does not fit falls at your feet. It works on its own once learned.
+Blocks you break with a pickaxe put their drops straight into your inventory instead of on the ground. Anything that does not fit falls at your feet. It only runs for an actively learned level; with every adaptation unlearned, this path cannot transport ore. Nearby vanilla pickup or another magnet-style pickup listener can still make an ordinary drop appear immediate.
 
 ### Pickaxe Silk-Spawner (`pickaxe-silk-spawner`)
 
-Spawners drop as spawners, keeping the mob type they were set to. The pickaxe has to be the right tool for the block.
+Spawners drop as spawners, keeping only the mob type they were set to. Each item is rebuilt from a fresh default spawner state, so two drops with the same mob type share canonical metadata and can stack; transient per-block spawn timers and other custom block state are intentionally not copied. The pickaxe has to be the right tool for the block.
 
 1. At level 1, break the spawner with a Silk Touch pickaxe.
 2. At level 2, sneaking while you break it is enough, no Silk Touch needed.
@@ -98,7 +98,7 @@ Your pickaxe stops at 1 durability instead of shattering. On top of that, each d
 
 ### Repair Rhythm (`pickaxe-repair-rhythm`)
 
-Every block you break with a pickaxe has a chance to give a point or two of durability back. It only triggers on a damaged tool, and it stacks well with Unbreakable Pact for a pickaxe that basically maintains itself. It works on its own once learned.
+Every block you break with a pickaxe has a chance to cancel that block's durability wear and then give one or two additional durability points back. The repair commits after vanilla's item-damage step, so a one-point proc is visible instead of being immediately offset by the same block's wear. It only triggers on a damaged tool, and it stacks well with Unbreakable Pact for a pickaxe that basically maintains itself. It works on its own once learned.
 
 ### Gem Polish (`pickaxe-gem-polish`)
 
@@ -261,7 +261,7 @@ Converted ores: iron ore to iron ingot, gold ore to gold ingot, copper ore to co
 | Milestone | `challenge_pickaxe_dti_25k` at 25000 items, 500 XP |
 | Menu lore | Whenever an item is dropped from a block you break it goes into your inventory if it can. |
 
-Each drop must pass a simulated pickup event before it is pulled out of the block's drop list. A denied pickup stays on the normal world-drop path. Overflow that does not fit is dropped at the player's feet.
+Each drop must pass a simulated pickup event before it is pulled out of the block's drop list. A denied pickup stays on the normal world-drop path. Overflow that does not fit is dropped at the player's feet. The central block-action guard requires an active learned adaptation level, so this handler does nothing after Drop-To-Inventory is unlearned or disabled.
 
 ### Pickaxe Silk-Spawner
 
@@ -280,7 +280,7 @@ Each drop must pass a simulated pickup event before it is pulled out of the bloc
 | Milestones | `challenge_pickaxe_spawner_10` at 10 spawners, 500 XP; `challenge_pickaxe_spawner_50` at 50 spawners, 2000 XP |
 | Menu lore | Level 1: Makes Spawners breakable with silk touch. Level 2+: Makes Spawners breakable while sneaking. |
 
-Gate in code: a Silk Touch pickaxe works at any level; without Silk Touch the level must be 2 or higher and the player must be sneaking. The dropped item carries the spawner's block state, so the mob type is preserved.
+Gate in code: a Silk Touch pickaxe works at any level; without Silk Touch the level must be 2 or higher and the player must be sneaking. The dropped item starts from a fresh default spawner state and copies only `CreatureSpawner#getSpawnedType`; identical mob types therefore have identical stackable metadata rather than retaining transient live-block state.
 
 ### Quarry Sense
 
@@ -428,12 +428,12 @@ Ignore chance is `min(maxIgnoreChance, level * ignoreChancePerLevel)`. When the 
 | Cost factor | 0.6 |
 | Tick interval (ms) | 7561 |
 | Config file | `plugins/Adapt/adapt/adaptations/pickaxe-repair-rhythm.toml` |
-| Listened events | `BlockBreakEvent` (`on`, NORMAL) |
+| Listened events | `BlockBreakEvent` (`on`, MONITOR, cancelled events ignored) to arm the proc; `PlayerItemDamageEvent` (`on`, HIGHEST) to commit after vanilla wear, with a one-tick fallback when no wear event fires |
 | Stats | `pickaxe.repair-rhythm.durability-restored` |
 | Milestone | `challenge_pickaxe_rhythm_5k` at 5000 durability, 500 XP |
 | Menu lore | Each broken block can restore 1-2 durability; chance to repair per broken block |
 
-Repair chance is `min(maxChance, chanceBase + level * chancePerLevel)`. It fires on any block broken with a pickaxe, not only stone, and does nothing if the tool is already at full durability.
+Repair chance is `min(maxChance, chanceBase + level * chancePerLevel)`. It fires on any block broken with a pickaxe, not only stone, and does nothing if the tool is already at full durability. A successful proc cancels that block's durability damage and restores the configured 1-2 additional points from the preexisting damage. The deferred fallback repairs the same held item and slot when another effect cancelled vanilla wear before a `PlayerItemDamageEvent` could commit it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

@@ -2,7 +2,7 @@
 title: "Skills Catalog"
 description: "Adapt documentation: Skills Catalog"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -195,7 +195,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Blocking (`blocking`) | `blocking-chainarmorer` | Chains of Mephistopheles | Unlocks chainmail armor recipes. |
 | Blocking (`blocking`) | `blocking-saddlecrafter` | Craftable Saddle | Craft a Saddle with Leather. |
 | Blocking (`blocking`) | `blocking-horsearmorer` | Craftable Horse Armor | Unlocks horse armor recipes. |
-| Blocking (`blocking`) | `blocking-counter-guard` | Counter Guard | Each blocked hit builds shield stacks. Your next proc consumes stacks to reflect damage to the attacker. |
+| Blocking (`blocking`) | `blocking-counter-guard` | Counter Guard | Each blocked hit builds shield stacks, shown briefly as current/max on the action bar. Your next proc consumes stacks to reflect damage. |
 | Blocking (`blocking`) | `blocking-bastion-stance` | Bastion Stance | While sneaking and actively blocking with a shield, reduce knockback and incoming projectile pressure. |
 | Blocking (`blocking`) | `blocking-mirror-block` | Mirror Block | Blocking with a shield can reflect incoming projectiles with reduced follow-up force. |
 | Blocking (`blocking`) | `blocking-bulwark-bash` | Bulwark Bash | Sprint-jump and land a shielded crit to trigger a bash shockwave. |
@@ -203,7 +203,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Blocking (`blocking`) | `blocking-perfect-guard` | Perfect Guard | Raise your shield the instant before a hit lands to negate it entirely and stagger the attacker. |
 | Blocking (`blocking`) | `blocking-tempered-guard` | Tempered Guard | Blocked hits can temper your gear, restoring a sliver of shield and armor durability. |
 | Blocking (`blocking`) | `blocking-shieldbearers-resolve` | Shieldbearer's Resolve | When an axe disables your shield, brace with resistance and recover the shield faster. |
-| Blocking (`blocking`) | `blocking-phalanx-crafter` | Phalanx Crafter | Craft banner-faced shields directly, and reinforce shields with netherite for bonus durability. |
+| Blocking (`blocking`) | `blocking-phalanx-crafter` | Phalanx Crafter | Craft shields directly, then reinforce one with netherite for 1,200 durability and a preserved or default banner face. |
 | Blocking (`blocking`) | `blocking-interpose` | Interpose | Sneak-block near a wounded ally to redirect part of the damage they take onto your shield. |
 | Brewing (`brewing`) | `brewing-lingering` | Lingering Brew | Brewed potions last longer. |
 | Brewing (`brewing`) | `brewing-super-heated` | Super Heated Brew | Brewing stands work faster the hotter they are. |
@@ -231,7 +231,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Chronos (`chronos`) | `chronos-hourglass-guard` | Hourglass Guard | A killing blow instead leaves you at half a heart, granting brief invulnerability and slowing nearby enemies, on a long cooldown. |
 | Chronos (`chronos`) | `chronos-pocket-watch` | Pocket Watch | Sneak while falling with a clock in your inventory to drift in slow motion for a limited, level scaled duration each airtime. |
 | Chronos (`chronos`) | `chronos-deja-vu` | Deja Vu | Your body remembers recent pain; taking the same kind of damage again within a short window hurts noticeably less. |
-| Crafting (`crafting`) | `crafting-deconstruction` | Deconstruction | Deconstruct blocks & items into salvageable base components. |
+| Crafting (`crafting`) | `crafting-deconstruction` | Deconstruction | Return half of a crafted item's most-used recipe component with shears. |
 | Crafting (`crafting`) | `crafting-xp` | Crafting XP | Gain passive XP when crafting. |
 | Crafting (`crafting`) | `crafting-leather` | Craftable Leather | Craft Leather from Rotten Flesh. |
 | Crafting (`crafting`) | `crafting-skulls` | Craftable Skulls | Unlocks recipes for mob skulls. |
@@ -267,7 +267,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Enchanting (`enchanting`) | `enchanting-bookshelf-attunement` | Bookshelf Attunement | Gain virtual bookshelf power to improve enchanting table offer quality. |
 | Enchanting (`enchanting`) | `enchanting-grindstone-recovery` | Grindstone Recovery | Disenchanting can recover one removed enchantment onto a book with bonus XP. |
 | Enchanting (`enchanting`) | `enchanting-curse-cleansing` | Curse Cleansing | Sneak while taking a grindstone result to remove curses from the original item first, preserve every other property, and gain Enchanting XP. |
-| Enchanting (`enchanting`) | `enchanting-tome-rebinding` | Tome Rebinding | Sneak-right-click a multi-enchant book in an anvil to split it into single-enchant books. Lossy at low levels, lossless at max. |
+| Enchanting (`enchanting`) | `enchanting-tome-rebinding` | Tome Rebinding | Shift-right-click a multi-enchant book in an anvil to split it into single-enchant books. Lossy at low levels, lossless at max. |
 | Enchanting (`enchanting`) | `enchanting-soul-link` | Soul Link | Sneak-right-click an anvil to soul-link an enchanted item so it survives death, gated by an XP level buffer. |
 | Enchanting (`enchanting`) | `enchanting-arcane-siphon` | Arcane Siphon | Killing mobs in enchanted gear grants bonus XP and can siphon a book of their enchantments. |
 | Enchanting (`enchanting`) | `enchanting-rune-sight` | Rune Sight | Reveal the enchantments behind enchanting-table offers before you commit. One at first, the full list at max. |
@@ -350,7 +350,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Pickaxes (`pickaxe`) | `pickaxe-veinminer` | Veinminer | Break connected vanilla ore veins and clusters. |
 | Pickaxes (`pickaxe`) | `pickaxe-autosmelt` | Autosmelt | Automatically smelts supported vanilla ores when mined. |
 | Pickaxes (`pickaxe`) | `pickaxe-drop-to-inventory` | Pickaxe Drop-To-Inventory | Blocks you break send their drops straight into your inventory. |
-| Pickaxes (`pickaxe`) | `pickaxe-silk-spawner` | Pickaxe Silk-Spawner | Allows spawners to drop when broken under the documented conditions. |
+| Pickaxes (`pickaxe`) | `pickaxe-silk-spawner` | Pickaxe Silk-Spawner | Drops a canonical, stackable spawner item that preserves its mob type under the documented break conditions. |
 | Pickaxes (`pickaxe`) | `pickaxe-quarry-sense` | Quarry Sense | Sneak-right-click a block with an iron+ pickaxe to reveal nearby ores as private glowing block displays. |
 | Pickaxes (`pickaxe`) | `pickaxe-tunnel-bore` | Tunnel Bore | Sneak and mine stone-type blocks to bore out a whole tunnel face at once. |
 | Pickaxes (`pickaxe`) | `pickaxe-deep-core` | Deep Core | Mining deepslate grants Haste so it digs like normal stone. |
@@ -388,12 +388,12 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Seaborne (`seaborne`) | `seaborne-speed` | Dolphin's Grace | Gain passive water speed; sprint-swimming also applies Dolphin's Grace for a level-scaled duration. |
 | Seaborne (`seaborne`) | `seaborne-fishers-fantasy` | Fisher's Fantasy | Fishing can grant additional XP and fish. |
 | Seaborne (`seaborne`) | `seaborne-turtles-vision` | Turtle's Vision | While underwater, you gain Night Vision. |
-| Seaborne (`seaborne`) | `seaborne-turtles-mining-speed` | Turtle Miner | Gain Haste III while mining underwater after Water Breathing expires; the effect stacks with Aqua Affinity. |
+| Seaborne (`seaborne`) | `seaborne-turtles-mining-speed` | Turtle Miner | Gain an attribute-based underwater mining boost that stacks with Aqua Affinity and compensates for the floating penalty. |
 | Seaborne (`seaborne`) | `seaborne-tidecaller` | Tidecaller | Surge forward with a water burst while in water or rain, triggered by sneaking or an attack swing depending on server settings. |
 | Seaborne (`seaborne`) | `seaborne-pressure-diver` | Pressure Diver | Gain depth-based protection underwater and partially suppress mining fatigue pressure. |
 | Seaborne (`seaborne`) | `seaborne-coral-gardener` | Coral Gardener | Coral you place survives out of water far longer, bonemeal grows coral, and reef blocks grant bonus XP. |
 | Seaborne (`seaborne`) | `seaborne-deep-salvager` | Deep Salvager | Underwater containers appear as private aqua glowing block displays and reward bonus treasure the first time you open them submerged. |
-| Seaborne (`seaborne`) | `seaborne-ink-veil` | Ink Veil | Taking damage underwater bursts an ink cloud that blinds hostiles and briefly hides you from drowned and guardians. |
+| Seaborne (`seaborne`) | `seaborne-ink-veil` | Ink Veil | Taking damage underwater bursts a visible ink cloud, blinds hostiles, and temporarily blocks drowned and guardian targeting. |
 | Seaborne (`seaborne`) | `seaborne-trident-mastery` | Trident Mastery | Tridents deal bonus damage and home back to you faster after a throw. |
 | Seaborne (`seaborne`) | `seaborne-fish-whisperer` | Fish Whisperer | Fish school toward you, dolphins and axolotls assist your hunts, and you fish with a permanent Luck of the Sea tier. |
 | Seaborne (`seaborne`) | `seaborne-hydro-jet` | Hydro Jet | Tap sneak while swimming to burst forward on a jet of water. Costs hunger and consumes a charge. |

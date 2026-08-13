@@ -40,7 +40,7 @@ For each requested locale (primary, then each fallback), overlays are applied in
 
 ## Bundled locales
 
-Seventeen non-English complete bundles ship under `src/main/resources/languages/` (jar `/languages/`):
+Seventeen non-English bundles ship under `src/main/resources/languages/` (jar `/languages/`). Each covers the typed catalog, including Director keys:
 
 | Locale id | File |
 |-----------|------|

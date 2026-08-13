@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Wormholes through-portal projection and traversal"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ gateways.
 |---|---|
 | Command | `/wormholes` (`wh`, `wormhole`) |
 | Folia | Supported (via `paper-plugin.yml`) |
-| Permissions | 12 nodes in a grouped tree |
+| Permissions | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` |
 | Integrations | PlaceholderAPI, Iris, Vault |
 
 > Wormholes ships two descriptors that disagree on load order. Paper reads

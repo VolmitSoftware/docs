@@ -53,7 +53,7 @@ HoloUi carries the SlimJar loader and dependency metadata in its jar. PacketEven
 2. Start the server. During construction, before `onLoad`, the plugin logs `Loading Dependencies...`, resolves the libraries declared with `slim(...)` in `build.gradle`, then logs `Dependencies loaded!`. Resolution uses the repository metadata embedded by SlimJar, including CodeMC for PacketEvents and Maven Central for the other current libraries. The first start of a dependency set requires network access; subsequent starts reuse the downloaded cache.
 3. `onEnable` creates `plugins/holoui/` and its contents.
 
-The jar ships no default menus, so `menus/` is created empty. The 13 shipped preview documents are extracted into `previews/` on every start when missing.
+The jar ships no default menu files, so `menus/` is created empty. `/holoui menus create <id>` writes the shipped blank hologram there. The 13 shipped preview documents are extracted into `previews/` on every start when missing.
 
 ## Data folder layout
 
@@ -103,7 +103,7 @@ Values are stored as JSON scalars. There is no list or enum value type, which is
 
 `settings.json` is checked every 5 ticks by the `ConfigManager` task chain. On a detected modification the file is reparsed and change listeners fire. A key absent from the JSON object is assigned its default. At shutdown, the file is rewritten with every value the running server actually held.
 
-A value that cannot be parsed is rejected and the key keeps the value the server is already running with. Every other key in the same file still reloads. Each rejection logs one line, `settings.json: <key> = <value> rejected (<exception>), keeping <value>.`, and a file whose root is not a JSON object logs `settings.json: root is not a json object, keeping the last good values.` Reporting happens once per detected modification, not once per tick, and neither case interrupts the 5-tick task.
+A value that cannot be parsed is rejected and the key keeps the value the server is already running with. Every other key in the same file still reloads. Each rejection logs one line, `settings.json: <key> = <value> was rejected; keeping <value>.`, with the throwable attached as a stack, and a file whose root is not a JSON object logs `settings.json: root is not a json object, keeping the last good values.` Reporting happens once per detected modification, not once per tick, and neither case interrupts the 5-tick task.
 
 ### Runtime notes
 

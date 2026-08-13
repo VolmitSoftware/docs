@@ -27,8 +27,8 @@ Manual verification checklists for install, portals, projection, RTP, dimensiona
 | 1 | Use `/wh wand` or `/wh wand rune=<portal|wormhole|gateway> count=<n>` with `wormholes.admin.items`. | Wand and required runes are in inventory. |
 | 2 | Build frame A; complete construction so a portal is created. | Portal appears; saved under `plugins/Wormholes/portals/`. |
 | 3 | Build frame B in the same or another loaded world. | Second portal exists. |
-| 4 | Open portal A menu → link/connect to portal B (tunnel). | Bidirectional or configured one-way tunnel valid; both menus show destination. |
-| 5 | Walk through A → B and return. | Teleport succeeds; cooldown respects `[main] teleport-cooldown-millis` (default 1000 ms). |
+| 4 | Open portal A menu → link A to B (tunnel). Link B to A separately if return travel is required. | A shows B as destination. B does not automatically show A; bidirectional travel needs the reverse link. |
+| 5 | Walk through A → B. After linking B → A, walk back. | A→B teleports. Return works only after the reverse link. Cooldown respects `[main] teleport-cooldown-millis` (default 1000 ms). |
 | 6 | Fully restart the server/plugin. | Portals reload from JSON and the link remains. `/wh reload` does not reconstruct portal persistence. |
 
 See [03 - Building Portals](/wormholes/03-building-portals) and [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings).
@@ -37,7 +37,7 @@ See [03 - Building Portals](/wormholes/03-building-portals) and [04 - Portal Typ
 
 | Step | Action | Pass criteria |
 |------|--------|---------------|
-| 1 | On a linked portal, ensure **Projection** is **ON** and type supports projection (for example wormhole/gateway as configured). | Menu shows ON. |
+| 1 | On a linked portal of any type, ensure **Projection** is **ON**. Every type can project. | Menu shows ON. |
 | 2 | Leave **Render mode** at default Venticular; optionally compare PanOptic later. | Destination geometry appears through the aperture when standing in the view volume. |
 | 3 | Stand outside the activation/view range (global default range 48 when activation range is 0), then walk into range facing the portal. | Projection starts when inside view AABB; stops after leaving and grace expires (`[projection] interest-grace-ticks`, default 5). |
 | 4 | If testing blackout: enable blackout background and cycle color. | A far-plane display seal uses the chosen concrete color without replacing the sampled view. |
@@ -116,7 +116,7 @@ Details: [10 - Cross-Server Networking](/wormholes/10-cross-server-networking). 
 | 2 | Perform a projection or network action. | Additional diagnostic lines appear when enabled. |
 | 3 | `/wh debug` again. | Telemetry quieted. |
 
-`[main] verbose-logging` / debug telemetry also sync on reload (`WormholesDiagnosticsRuntime`).
+`/wh debug` is a runtime override. Reload clears that override so debug follows `[main] verbose-logging` again (`DebugTelemetryService.onSettingsReloaded`).
 
 ## Stats snapshot
 

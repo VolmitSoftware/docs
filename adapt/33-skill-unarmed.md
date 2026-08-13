@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Adapt documentation: Skill - Unarmed"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -105,7 +105,7 @@ The grab expires on its own after a few seconds. Each throw adds exhaustion, so 
 
 ### Second Wind (`unarmed-second-wind`)
 
-Killing a mob bare-handed gives back some hunger and saturation and starts a short regeneration burst. It has its own cooldown so a fast kill chain does not turn into infinite food.
+Killing a non-player mob with a direct bare-hand hit gives back some hunger and saturation and starts a short regeneration burst. Adapt reads the death's authoritative damage source, so a qualifying killing punch is not lost when Bukkit's older last-damage event is stale. It has its own cooldown so a fast kill chain does not turn into infinite food.
 
 ### Meditation (`unarmed-meditation`)
 
@@ -496,7 +496,7 @@ Bosses cannot be grabbed. The cooldown is marked on the hurl, not the grab, and 
 | Tick interval (ms) | 4960 |
 | Config file | `plugins/Adapt/adapt/adaptations/unarmed-second-wind.toml` |
 
-Listened events: `EntityDeathEvent` (a non-player mob you killed bare-handed).
+Listened events: `EntityDeathEvent` (a non-player mob whose direct and causing damage-source entity are both the bare-handed player). Projectiles, indirect damage, weapons, and friendly targets do not qualify.
 
 Menu lore: "Hunger Restored", "Regeneration Duration".
 

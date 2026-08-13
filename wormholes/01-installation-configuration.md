@@ -32,7 +32,7 @@ Install the shaded Wormholes jar into `plugins/`, start once so `plugins/Wormhol
 plugins/Wormholes/
   config/wormholes.toml     consolidated settings (schema 2)
   portals/                  saved local portal files
-  doors/                    dimensional door / pocket state
+  doors/                    dimensional door / pocket state (`state.json` plus `state.json.tickets/`)
   languages/                optional per-locale TOML overrides
   routes/peers.properties   learned peer routes (not in wormholes.toml)
   trust/peers.properties    trusted peer public keys
@@ -147,8 +147,8 @@ Config values are clamped when applied to runtime. Canonical rewriting happens b
 | `arrival-transition-mask` | `true` | Transition mask at arrival |
 | `arrival-transition-mask-ticks` | `25` | Mask duration |
 | `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
-| `chunk-send-rate-target` | `1000.0` | Target chunks/sec send; Paper default 75 |
-| `chunk-load-rate-target` | `1000.0` | Target chunks/sec load; Paper default 100 |
+| `chunk-send-rate-target` | `1000.0` | Target chunks/sec send; Paper default 75; `<=0` or `>10000` is unlimited |
+| `chunk-load-rate-target` | `1000.0` | Target chunks/sec load; Paper default 100; `<=0` or `>10000` is unlimited |
 
 ### Traversal API-related main keys
 
@@ -188,7 +188,7 @@ Static `[[peers]]` are not written into this file. Peers live in `routes/peers.p
 | `compression-level` | `3` | Runtime clamp 1–22 |
 | `compression-dict-train-bytes` | `10485760` | Dictionary corpus budget; runtime minimum 65536 bytes |
 | `compression-dict-target-size` | `65536` | Dictionary size target |
-| `compression-retrain-interval-sec` | `600` | Retrain interval; runtime minimum 30 s |
+| `compression-retrain-interval-sec` | `600` | Retrain interval; runtime minimum 30 s; applies on reload (reschedules the dictionary retrain task) |
 | `uds-enabled` | `true` | Unix domain sockets when available |
 | `uds-dir` | `""` | Empty uses `plugins/Wormholes/uds`; a relative override resolves from the JVM working directory |
 
@@ -244,13 +244,13 @@ Non-positive Hz disables that distance band. Positive rates above 20 Hz still sc
 | `recursive-portal-depth` | `3` | Nested portal recursion (runtime min 3) |
 | `stable-cell-resample-interval-ticks` | `4` | Stable cell resample |
 | `client-view-distance-cap` | `true` | Cap to client view distance |
-| `foveated-unrendering` | `false` | Foveated unrender when interest lost |
+| `foveated-unrendering` | `false` | Look/side interest filter (`observer-interest-dot` and `side-grace-dot`); off means any observer inside the view AABB is interested |
 | `observer-interest-dot` | `-0.2` | Look-toward interest threshold |
 | `side-grace-dot` | `0.12` | Portal-side grace |
 | `max-projectors-per-tick` | `24` | Global projector budget |
 | `max-portals-per-observer-tick` | `4` | Per-observer portal budget |
 | `max-new-observer-scans-per-tick` | `64` | New observer scan budget |
-| `interest-grace-ticks` | `5` | Interest grace |
+| `interest-grace-ticks` | `5` | Ticks a projector stays open after live interest is lost (unrender-on-loss delay) |
 | `initial-resend-passes` | `1` | Full sends after view create (raise only to diagnose packet loss) |
 | `max-projected-cells` | `250000` | Hard scan ceiling; budget drops lateral pad first then depth; `0` disables (not recommended) |
 
@@ -269,7 +269,7 @@ Projection behavior detail: [05 - Projection Modes & Settings](/wormholes/05-pro
 | `entity-spoof-range` | `48.0` | Spoof range |
 | `entity-candidate-cache-ticks` | `3` | Candidate cache TTL |
 | `max-spoofed-entities` | `24` | Cap per view |
-| `capture-zone-radius` | `8.0` | Capture zone radius |
+| `capture-zone-radius` | `8.0` | Capture zone radius; applies on reload (every local portal rebuilds its capture AABB) |
 
 ## Hot reload
 

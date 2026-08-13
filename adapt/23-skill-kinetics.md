@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Adapt documentation: Skill - Kinetics"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Anvils get special treatment. Kinetics keeps a ledger of who placed which anvil,
 
 ## Adaptations
 
-Everything below needs the same conditions: the adaptation learned at level 1 or higher, the Kinetics skill and that adaptation both enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and any protection plugin on your server allowing the action where you are standing. Several of these lean on modern attributes (gravity, bounciness, friction, air drag, scale) and silently do nothing if the running server version does not have them.
+Everything below needs the same conditions: the adaptation learned at level 1 or higher, the Kinetics skill and that adaptation both enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and any protection plugin on your server allowing the action where you are standing. Several of these lean on modern attributes (gravity, bounciness, air drag, scale) and silently do nothing if the running server version does not have them. Surface Skate falls back to bounded ground-velocity damping when the friction attribute is unavailable.
 
 "Spear" means any of the seven spear items, wooden through netherite. "Mace" means the vanilla mace.
 
@@ -41,7 +41,7 @@ Landing on something soft (slime, honey, a bed, hay, powder snow, sponge) cuts m
 
 ### Surface Skate (`kinetics-surface-skate`)
 
-Sprint and the ground goes slick, so you carry speed through turns and slide when you stop steering. Sneak and it goes the other way, gripping harder than normal ground, which is what you want on a ledge. Both modes turn off the moment you stop sprinting or sneaking.
+Sprint and the ground goes slick, so you carry speed through turns and slide when you stop steering. Sneak and it goes the other way, gripping harder than normal ground, which is what you want on a ledge. Both modes are ground-only and turn off the moment you stop sprinting or sneaking. Servers without the friction attribute use the same settings through a bounded velocity fallback that cannot accelerate you from rest or amplify external knockback.
 
 **How to use it**
 
@@ -61,7 +61,7 @@ While falling, sneaking flips you between two midair modes: dive, which cuts air
 
 ### Heavy Frame (`kinetics-heavy-frame`)
 
-Sneak while holding a mace or a spear and you plant your feet: heavy knockback resistance, blast resistance, and a movement speed penalty for as long as you hold it. It is a stance for holding a doorway or eating a creeper. Stand up or switch to a different item and it drops immediately.
+Sneak while holding a mace or a spear and you plant your feet: heavy knockback resistance, blast resistance, and a movement speed penalty for as long as you hold it. This is a passive transient-attribute stance, not a potion effect, so there is no status icon. A short chain sound and particle ring confirm entry and exit. Stand up or switch to a different item and it drops immediately.
 
 **How to use it**
 
@@ -81,7 +81,7 @@ Three persistent body forms you switch between with a gesture. Titan makes you b
 
 ### Meteor Cadence (`kinetics-meteor-cadence`)
 
-Hold sneak while falling with a mace and you drop like a rock: extra gravity, less air drag, and a hard downward push added every tick up to a terminal speed. Fall distance is what powers a mace smash, so this is the setup move for everything else in the mace family. Releasing sneak or touching ground ends it.
+Hold sneak while falling with a mace and you drop like a rock: extra gravity, less air drag, and a hard downward push added every tick up to a terminal speed. Fall distance is what powers vanilla mace smash damage, so this is a setup move rather than a separate damage source. Releasing sneak or touching ground ends it.
 
 **How to use it**
 
@@ -121,7 +121,7 @@ Spear hits scale with how fast you are actually moving. Below a minimum speed th
 
 ### Impale Pin (`kinetics-impale-pin`)
 
-Land a spear hit in the sweet band, not point-blank and not at the edge of your reach, and the target gets hit with heavy Slowness. Higher levels widen the band, raise the slowness tier, and hold the pin longer. The same target cannot be re-pinned for a couple of seconds.
+Land a spear hit in the sweet band, not point-blank and not at the edge of your reach, and the target gets hit with heavy Slowness plus a chain-and-particle confirmation. Distance is measured from your eye to the nearest point on the target's hitbox, so elevation and large mobs do not distort the range check. Higher levels widen the band, raise the slowness tier, and hold the pin longer. The same target cannot be re-pinned for a couple of seconds.
 
 **How to use it**
 
@@ -131,7 +131,7 @@ Land a spear hit in the sweet band, not point-blank and not at the edge of your 
 
 ### Lunge Conductor (`kinetics-lunge-conductor`)
 
-Your spear lunges hit with more power and carry you farther forward. The forward assist is applied when the lunge resolves, with the upward part capped so it does not turn into a launch. There is a cooldown, so this improves deliberate lunges rather than spam.
+Your spear lunges hit with more power and carry you farther forward. Adapt raises Paper's native lunge power, snapshots your facing, then adds a horizontal-only assist one tick later so the native impulse cannot overwrite it; existing vertical motion is preserved. By default only one lunge every 2.5 seconds is boosted, and intervening lunges remain vanilla.
 
 ### Mounted Shock (`kinetics-mounted-shock`)
 
@@ -308,7 +308,7 @@ Soft landing surfaces are slime, honey, any bed, hay bale, powder snow, sponge, 
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-surface-skate.toml` |
 
-Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`. The learner-bound tick reconciles both modifiers against your current state. Both are `MULTIPLY_SCALAR_1` modifiers on the friction attribute, negative for slide and positive for grip.
+Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, and `PlayerMoveEvent`. When available, slide and grip are `MULTIPLY_SCALAR_1` modifiers on the friction attribute and the learner-bound tick reconciles them against current state. When that attribute is absent, the move handler derives the current block's slipperiness, applies the same configured friction delta only while grounded, preserves vertical velocity, and bounds sliding to observed movement so it cannot inject speed from rest or grow knockback indefinitely.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -357,6 +357,8 @@ Dive applies negative air drag and positive gravity; hang applies the opposite. 
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerItemHeldEvent`. The learner-bound tick reconciles the stance so it cannot get stuck on.
 
+The stance uses transient `KNOCKBACK_RESISTANCE`, `EXPLOSION_KNOCKBACK_RESISTANCE`, and `MOVEMENT_SPEED` modifiers rather than a potion effect. Entry and exit each emit one private chain sound and particle ring.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `kbResistBase` | `0.3` | Knockback resistance added while planted, at level 0. |
@@ -404,6 +406,8 @@ Fixed values not exposed in config: the combat scalar is 0.2 up for Titan and 0.
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-meteor-cadence.toml` |
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerMoveEvent`. Requires you to be airborne, moving downward, sneaking, and holding a mace. Modifiers are refreshed in 8-tick slices and the velocity push is applied at most once per game tick.
+
+Meteor Cadence never applies damage itself. The faster descent builds fall distance for the native mace smash, whose ordinary hit and damage rules remain authoritative.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -575,7 +579,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Tick interval (ms) | 9999 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-impale-pin.toml` |
 
-Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand. The tick only clears expired per-target cooldowns.
+Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand. Sweet-range distance is measured from the attacker's eye to the nearest point of the target bounding box. A successful pin emits a chain sound, critical ring, and colored dust burst; the tick only clears expired per-target cooldowns.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -601,7 +605,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Tick interval (ms) | 9999 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-lunge-conductor.toml` |
 
-Listened events: `EntityLungeEvent` twice, once at `HIGHEST` (`on`, raises lunge power) and once at `MONITOR` (`finalizeLunge`, marks the cooldown and applies the forward velocity assist). The upward component of the assist is capped at 0.4.
+Listened events: `EntityLungeEvent` twice, once at `HIGHEST` (`on`, raises lunge power) and once at `MONITOR` (`finalizeLunge`, snapshots facing and marks the cooldown). The horizontal-only velocity assist runs on the player's owning scheduler one tick later, after the native impulse, and leaves vertical velocity unchanged. Only cooldown-ready events receive either boost; intervening lunges use vanilla power and distance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

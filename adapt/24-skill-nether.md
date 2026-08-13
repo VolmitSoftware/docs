@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Adapt documentation: Skill - Nether"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -85,7 +85,7 @@ Striders you ride stop shivering and move faster, including when they step out o
 
 ### Crimson Feast (`nether-crimson-feast`)
 
-Nether flora becomes food. Right-click while holding a crimson or warped fungus, roots, nether sprouts, weeping vines, or twisting vines to eat it for food and saturation. On top of that, eating anything at all while in the Nether gives you fire resistance for a few seconds. Both halves pay XP.
+Nether flora becomes food. Right-click while holding a crimson or warped fungus, roots, nether sprouts, weeping vines, or twisting vines to eat it for food and saturation. Adapt consumes these normally inedible items itself, including vanilla's pre-cancelled right-click-air interaction. On top of that, eating anything at all while in the Nether gives you fire resistance for a few seconds. Both halves pay XP.
 
 **How to use it**
 
@@ -96,7 +96,7 @@ Nether flora becomes food. Right-click while holding a crimson or warped fungus,
 
 ### Ashwalker (`nether-ashwalker`)
 
-Magma blocks stop hurting you from the moment you learn it. From level 2 up, campfires stop hurting you too. At max level, soul fire does most of its damage to somebody else: the damage is cut hard and the burn is capped short. You earn XP for every point it takes off. Works on its own once learned.
+Magma blocks stop hurting you from the moment you learn it. From level 2 up, campfires stop hurting you too. Those immune hits are reduced to zero, cancelled, and clear your fire ticks so they do not produce vanilla hurt feedback; Ashwalker's own extinguish sound is silent by default and configurable. At max level, soul fire is only reduced rather than cancelled, so its remaining hit feedback is intentional. You earn XP for every point it takes off. Works on its own once learned.
 
 ### Wither Harvest (`nether-wither-harvest`)
 
@@ -491,7 +491,7 @@ Milestones: `challenge_nether_strider_500` and `challenge_nether_strider_5k` on 
 | Tick interval (ms) | 3000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-crimson-feast.toml` |
 
-Listened events: `PlayerInteractEvent` (receives cancelled events; main hand right-click with eligible flora) and `PlayerItemConsumeEvent` (any food, Nether only). Eating flora is blocked at a full food bar unless you are sneaking, and the flora item is consumed except in creative. The fire resistance grant only happens in a Nether-environment world, so eating flora elsewhere still feeds you but gives no buff.
+Listened events: `PlayerInteractEvent` at HIGHEST (receives vanilla's cancelled right-click-air event; main hand right-click with eligible flora) and `PlayerItemConsumeEvent` (any food, Nether only). A protection plugin denying the clicked block still prevents the custom bite. Eating flora is blocked at a full food bar unless you are sneaking, and the flora item is consumed except in creative. The fire resistance grant only happens in a Nether-environment world, so eating flora elsewhere still feeds you but gives no buff.
 
 Eligible flora: `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, `TWISTING_VINES`.
 
@@ -522,13 +522,14 @@ Milestones: `challenge_nether_feast_100` and `challenge_nether_feast_2500` on `n
 | Tick interval (ms) | 4000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-ashwalker.toml` |
 
-Listened events: `EntityDamageEvent`, ignoring anything that is an `EntityDamageByEntityEvent`. `HOT_FLOOR` (magma blocks) is cancelled outright at any level. `CAMPFIRE` damage, and `FIRE`/`FIRE_TICK` damage traced to a lit campfire under or at your feet, is cancelled from `campfireUnlockLevel` up. Soul fire is only reduced at max level.
+Listened events: `EntityDamageEvent`, ignoring anything that is an `EntityDamageByEntityEvent`. `HOT_FLOOR` (magma blocks) is set to zero and cancelled outright at any level. `CAMPFIRE` damage, and `FIRE`/`FIRE_TICK` damage traced to a lit campfire under or at your feet, is set to zero and cancelled from `campfireUnlockLevel` up. Full immunity clears current fire ticks. Soul fire is only reduced at max level.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `campfireUnlockLevel` | `2` | Adaptation level required before campfire burns are cancelled. |
 | `soulFireReduction` | `0.8` | Fraction of soul fire damage removed at max level, 0 to 1. |
 | `soulFireMaxFireTicks` | `20` | Burn ticks you are clamped to after soul fire damage. |
+| `immunitySoundVolume` | `0.0` | Volume of Ashwalker's extinguish cue after fully cancelling magma or campfire damage, clamped to 0-1; 0 is silent. |
 | `xpPerNegatedDamage` | `3` | Nether XP per point of damage cancelled or reduced. |
 
 Milestones: `challenge_nether_ash_200` and `challenge_nether_ash_5k` on `nether.ashwalker.damage-negated` (200 for 300 XP, 5000 for 1000 XP).

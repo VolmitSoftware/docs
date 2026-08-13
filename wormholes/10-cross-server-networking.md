@@ -154,6 +154,18 @@ Destination admission requires a live open exit with inbound traversal enabled a
 
 Players never use this snapshot path. Their profile, capacity, transfer-method, and client-handoff rules remain the player path described above.
 
+## Server connect and list
+
+Permission: `wormholes.admin.network`. Player-only for connect.
+
+| Command | Effect |
+|---------|--------|
+| `/wormholes server connect <name>` | Transfer yourself to a linked server (`ServerConnectService`) |
+| `/wh server <name>` | Same connect path when the second argument has no `=` |
+| `/wormholes server list` | Linked servers with ready/offline plus game address |
+
+Unknown names are rejected. A peer that is not reachable reports not-ready and points at `/wh network status`.
+
 ## Operator workflow
 
 1. On server A: `/wormholes server export` → copy `WHS1.…`
@@ -168,7 +180,7 @@ Players never use this snapshot path. Their profile, capacity, transfer-method, 
 
 | Command | Use |
 |---------|-----|
-| `/wormholes network status` | Listen address or outbound-only, fingerprint, peer state + RTT + last error |
+| `/wormholes network status` | Listen address or outbound-only, fingerprint, peer state + RTT + last error. Auto-runs doctor when any listed peer is not `CONNECTED`. |
 | `/wormholes network doctor` | Free-form diagnostic lines when peers fail to connect |
 | `/wormholes debug` | Toggle one-second projection/network/queue/peer/handoff telemetry to **console** on both servers while reproducing a failed handoff; toggle again to stop |
 | `/wormholes stats` | Path to live snapshot file (network/view state) |

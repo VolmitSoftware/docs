@@ -295,8 +295,8 @@ Bounding boxes (`CollisionPlane`), used by clickable components for hit testing,
 | Icon | Centre | Width | Height |
 | --- | --- | --- | --- |
 | `TextMenuIcon` | `anchor - (0, 0.325 * uiScale * scaleY, 0)` | `max(plainLength * NAMETAG_SIZE * uiScale * scaleX / 2)` over lines | `lineCount * NAMETAG_SIZE * uiScale * scaleY` |
-| `TextImageMenuIcon` | same | same rule | `(lineCount - 1) * lineHeight` |
-| `AnimatedTextImageMenuIcon` | same | same rule over frame 0 | `(frame0LineCount - 1) * lineHeight` |
+| `TextImageMenuIcon` | same | same rule | `lineCount * lineHeight` |
+| `AnimatedTextImageMenuIcon` | same | same rule over frame 0 | `frame0LineCount * lineHeight` |
 | `ItemMenuIcon` | `anchor - (0, 0.05 * uiScale, 0)` | `0.75 * uiScale * scaleX` | `0.75 * uiScale * scaleY` |
 | `BlockMenuIcon` | `anchor - transform-local (0, 0.05, 0)` | `0.75 * uiScale * scaleX` | `0.75 * uiScale * scaleY` |
 | `EntityMenuIcon` | `anchor + transform-local (0, height / 2, 0)` | `width * uiScale` | `height * uiScale` |

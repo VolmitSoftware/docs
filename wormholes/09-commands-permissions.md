@@ -25,7 +25,9 @@ Handlers still require their own node (for example reload needs `wormholes.admin
 
 ## Command tree
 
-### Public (no `wormholes.admin`)
+### Public (none of the six admin-command leaves)
+
+The public path runs when the sender has **none** of `wormholes.admin`, `wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`, `wormholes.admin.projection`, or `wormholes.admin.reset`. Lacking only `wormholes.admin` is not enough if a leaf is granted.
 
 | Syntax | Permission | Effect |
 |--------|------------|--------|
@@ -40,7 +42,7 @@ Handlers still require their own node (for example reload needs `wormholes.admin
 | `/wormholes wand rune=<portal\|wormhole\|gateway> [count=1]` | player | `wormholes.admin.items` | Give 1–64 runes of that type |
 | `/wormholes door [type=pair]` | player | `wormholes.admin.items` | Give Dimensional Door item; requires doors enabled |
 | `/wormholes reload` | both | `wormholes.admin.reload` | Reload config + language |
-| `/wormholes debug` | both | `wormholes.admin` | Toggle verbose logs + one-second console telemetry (silent in-game) |
+| `/wormholes debug` | both | `wormholes.admin` | Toggle verbose logs + one-second console telemetry (silent in-game). Reload clears this override so it matches `[main] verbose-logging`. |
 | `/wormholes stats [now=false]` | both | `wormholes.admin` | Print stats snapshot path; `now=true` force-writes |
 | `/wormholes info` | both | public or admin | Building instructions |
 
@@ -60,7 +62,7 @@ Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`, `persona
 | Syntax | Permission | Effect |
 |--------|------------|--------|
 | `network import <code>` | `wormholes.admin.network` | Import portal or server code; saves route/trust; does not auto-link a portal from chat (link via gateway menu) |
-| `network status` | `wormholes.admin.network` | Local listen mode, public key fingerprint, peer CONNECTED/CONNECTING/WAITING/error |
+| `network status` | `wormholes.admin.network` | Local listen mode, public key fingerprint, peer CONNECTED/CONNECTING/WAITING/error. Auto-runs doctor when any listed peer is not `CONNECTED`. |
 | `network doctor` | `wormholes.admin.network` | Diagnostic lines for connection failures |
 
 ### `/wormholes server` (`CommandServer`)

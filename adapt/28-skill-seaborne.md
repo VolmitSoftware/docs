@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Adapt documentation: Skill - Seaborne"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,15 +37,15 @@ Works on its own once learned. Just fish.
 
 ### Turtle's Vision (`seaborne-turtles-vision`)
 
-Gives you Night Vision the whole time you are in water, and takes it away when you surface. It only removes the effect if it was the one that applied it, so a Night Vision potion you drank yourself is left alone.
+Gives you Night Vision the whole time you are in water, and takes it away when you surface. By default Adapt applies a hidden-particle 30-second effect and refreshes it before it reaches five seconds, so the displayed duration is expected to stay high rather than count down to zero. It only removes the effect if it was the one that applied it, so a Night Vision potion you drank yourself is left alone.
 
 Passive. Learn it and swim.
 
 ### Turtle Miner (`seaborne-turtles-mining-speed`)
 
-Adds a flat 40 percent to your submerged mining speed attribute, which is what makes mining underwater feel less like chewing rock. It stacks on top of Aqua Affinity rather than replacing it.
+Adds 40 percent to submerged mining speed and stacks with Aqua Affinity rather than replacing it. Floating normally carries a separate vanilla one-fifth airborne mining penalty; Turtle Miner now compensates for that penalty while you are off the ground, so it works at the same effective rate whether you stand on the seabed or float.
 
-Passive, single level. The menu lore says the effect waits for your Water Breathing to wear off; the code does not check that, so it is always on.
+Passive, single level. It uses attributes rather than a Haste potion and has no Water Breathing prerequisite.
 
 ### Tidecaller (`seaborne-tidecaller`)
 
@@ -65,7 +65,7 @@ Operators can turn either trigger off, require sneak for the swing trigger, rest
 
 Rewards going deep. Once your eyes are far enough below sea level, you get Resistance and Water Breathing on a rolling refresh, and incoming damage is scaled down on top of that. Go deeper still and the Resistance steps up a tier. The required depth shrinks as you level, so higher levels get the buff nearer the surface.
 
-It also fights mining fatigue. While the buff is up it adds a submerged mining speed modifier sized to partly cancel whatever Mining Fatigue amplifier you are carrying, which is what makes elder guardian territory workable.
+It also fights actual Mining Fatigue. While the buff is up it adds a submerged mining speed modifier sized to partly cancel the amplifier you are carrying. It does not counter the normal underwater or floating penalties; Turtle Miner and Aqua Affinity handle those.
 
 Passive. It arms itself when you dive and clears when you surface.
 
@@ -96,7 +96,7 @@ Opening one of those containers while you are in water and the container is touc
 
 ### Ink Veil (`seaborne-ink-veil`)
 
-When you take damage while in water, you burst an ink cloud. You get Invisibility, every hostile in the cloud gets Blindness, and drowned, guardians, and elder guardians that were targeting you drop their target. It fires on its own, so it works as a panic button you do not have to press. The cooldown shortens as you level, down to a floor of three seconds.
+When you take damage while in water, a visible squid-ink cloud expands around you and nearby hostiles get Blindness. Drowned, guardians, and elder guardians drop you as their target and cannot reacquire you during the short concealment window. The player is not given Invisibility, so held items and equipment do not remain visible as a chest-like silhouette. The cooldown shortens as you level, down to a floor of three seconds.
 
 Passive. Learn it and take a hit underwater.
 
@@ -285,7 +285,7 @@ No adaptation-specific config knobs.
 | Tick interval (ms) | 3000 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-turtles-vision.toml` |
 
-Menu stat line: Gain Night Vision while underwater after your water breathing effect wears off. No Water Breathing check exists in the code, so the menu line does not match runtime behavior.
+Menu stat line: Gain continuously refreshed Night Vision while underwater.
 
 Listened events:
 
@@ -296,7 +296,11 @@ Applies `NIGHT_VISION` at amplifier 0 for `600` ticks, refreshed once the remain
 
 Milestone: `challenge_seaborne_vision_72k` on `seaborne.turtles-vision.time-underwater` at 72000, reward 400.
 
-No adaptation-specific config knobs.
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `nightVisionDurationTicks` | `600` | Duration of the hidden-particle Night Vision refresh, clamped from 20 to 6000 ticks. |
+| `nightVisionRefreshThresholdTicks` | `500` | Remaining duration at which Adapt reapplies its effect, clamped below the configured duration. |
+| `refreshIntervalMillis` | `3000` | Underwater-state check interval, clamped from 250 to 10000 ms and applied immediately on hot reload. |
 
 ### Turtle Miner
 
@@ -311,17 +315,26 @@ No adaptation-specific config knobs.
 | Tick interval (ms) | 3000 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-turtles-mining-speed.toml` |
 
-Menu stat line: Haste 3 is applied underwater while mining (stacks with AquaAffinity) after your water breathing effect wears off.
+Menu stat line: Boosts submerged mining speed, stacks with Aqua Affinity, and compensates for the floating mining penalty.
 
 Listened events:
 
 - `BlockBreakEvent` (`MONITOR`, ignore cancelled) - counts blocks broken while in water and plays effects
+- `BlockDamageEvent` (`MONITOR`, ignore cancelled) - activates the mining modifiers immediately when mining starts
+- `PlayerMoveEvent` (`MONITOR`, ignore cancelled) - immediately clears compensation on landing or surfacing; block damage and passive refresh reapply it when floating
+- `PlayerQuitEvent` (`MONITOR`) - clears local managed state; the shared attribute service removes the transient modifiers
 
-Applies `SUBMERGED_MINING_SPEED` under the `mining` slot as a `MULTIPLY_SCALAR_1` modifier of `0.4` for `160` ticks, refreshed on every tick pulse. The modifier is applied regardless of whether the player is currently in water, and no Haste potion effect and no Water Breathing check exist in the code, so the menu stat line above does not match runtime behavior.
+While the player is in water, applies the configured `SUBMERGED_MINING_SPEED` multiplier. When that player is also off the ground, a separate `BLOCK_BREAK_SPEED` multiplier compensates for vanilla's airborne penalty. Both transient modifiers clear on surfacing, unlearning, disable, or disconnect.
 
 Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-underwater` at 2500 (reward 300); `challenge_seaborne_mining_25k` at 25000 (reward 1000).
 
-No adaptation-specific config knobs.
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `underwaterMiningSpeedMultiplier` | `1.4` | Effective submerged-mining multiplier, clamped from 1 to 10. |
+| `compensateFloatingPenalty` | `true` | Also counter vanilla's separate airborne mining penalty while floating underwater. |
+| `floatingMiningSpeedMultiplier` | `5.0` | Effective floating compensation multiplier, clamped from 1 to 10. Five cancels vanilla's one-fifth penalty. |
+| `attributeDurationTicks` | `160` | Duration of each refreshed modifier, clamped from 20 to 1200 ticks. |
+| `refreshIntervalMillis` | `3000` | Passive state-refresh interval, clamped from 250 to 10000 ms and applied immediately on hot reload. |
 
 ### Tidecaller
 
@@ -416,8 +429,8 @@ Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blo
 | `fatigueTrimChanceFactor` | `0.45` | Extra chance term gained at max level. Total is clamped to 1. |
 | `fatigueTrimAmountBase` | `1` | Mining Fatigue amplifier levels cancelled per second, before level scaling. |
 | `fatigueTrimAmountFactor` | `1` | Extra amplifier levels cancelled at max level. |
-| `effectTicks` | `60` | Duration in ticks of each Resistance and Water Breathing refresh, and the basis for the refresh cadence. |
-| `fatigueReplaceTicks` | `80` | Maximum ticks the mining speed counter-modifier lasts, clamped to the remaining Mining Fatigue duration and a floor of 20. |
+| `effectTicks` | `60` | Duration in ticks of each Resistance and Water Breathing refresh, clamped from 20 to 1200, and the basis for the refresh cadence. |
+| `fatigueCounterDurationTicks` | `80` | Maximum ticks the mining-speed counter lasts, clamped to the remaining Mining Fatigue duration and from 20 to 1200. Zero disables it. |
 | `xpPerDepthPulse` | `6` | Skill XP granted per depth pulse. |
 | `xpPulseCooldownMillis` | `3000` | Milliseconds between depth XP pulses. |
 
@@ -507,21 +520,25 @@ Menu stat lines: Ink Cloud Size (blocks); Ink Burst Cooldown.
 Listened events:
 
 - `EntityDamageEvent` (`MONITOR`, ignore cancelled) - fires the burst when the damaged player is in water
+- `EntityTargetLivingEntityEvent` (`HIGHEST`, ignore cancelled) - blocks drowned and guardian retargeting during concealment
+- `PlayerQuitEvent` (`MONITOR`) - clears concealment state
 
-Applies `INVISIBILITY` to the player and `BLINDNESS` to up to `24` nearby `Monster` entities. Drowned, guardians, and elder guardians targeting the player have their target cleared. The burst does not cancel or reduce the incoming damage.
+Emits an expanding `SQUID_INK` cloud and applies `BLINDNESS` to a bounded number of nearby `Monster` entities. Drowned, guardians, and elder guardians targeting the player have their target cleared and are prevented from reacquiring the player during the concealment lease. The player is not made invisible, and the burst does not cancel or reduce the incoming damage.
 
 Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 100 (reward 300); `challenge_seaborne_ink_1k` at 1000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `cloudSizeBase` | `4` | Cloud radius in blocks, before level scaling. |
-| `cloudSizeFactor` | `4` | Extra cloud radius gained at max level. |
-| `cooldownMillisBase` | `12000` | Milliseconds between bursts, before level scaling. |
-| `cooldownMillisReduction` | `8000` | Milliseconds removed from the cooldown at max level. The result floors at 3000 ms. |
-| `invisTicksBase` | `40` | Invisibility duration in ticks, before level scaling. |
-| `invisTicksFactor` | `40` | Extra invisibility ticks gained at max level. |
-| `blindTicksBase` | `60` | Blindness duration in ticks applied to hostiles, before level scaling. |
-| `blindTicksFactor` | `60` | Extra blindness ticks gained at max level. |
+| `cloudSizeBase` | `4` | Cloud radius in blocks, before level scaling; the final radius is clamped from 0.5 to 16. |
+| `cloudSizeFactor` | `4` | Extra cloud radius gained at max level; the final radius is clamped from 0.5 to 16. |
+| `cooldownMillisBase` | `12000` | Milliseconds between bursts, before level scaling; the final cooldown is clamped from 3000 to 3600000 ms. |
+| `cooldownMillisReduction` | `8000` | Milliseconds removed from the cooldown at max level; the final cooldown is clamped from 3000 to 3600000 ms. |
+| `concealmentTicksBase` | `40` | Drowned/guardian anti-target duration in ticks, before level scaling; the final duration is clamped from 1 to 1200. |
+| `concealmentTicksFactor` | `40` | Extra concealment ticks gained at max level; the final duration is clamped from 1 to 1200. |
+| `blindTicksBase` | `60` | Blindness duration in ticks applied to hostiles, before level scaling; the final duration is clamped from 1 to 1200. |
+| `blindTicksFactor` | `60` | Extra blindness ticks gained at max level; the final duration is clamped from 1 to 1200. |
+| `maxAffectedHostiles` | `24` | Maximum nearby monsters blinded by one burst, clamped from 0 to 128. |
+| `cloudVisualTicks` | `10` | Number of ticks over which the visible ink cloud expands, clamped from 1 to 40. |
 | `burstXp` | `10` | Skill XP granted per burst. |
 
 ### Trident Mastery

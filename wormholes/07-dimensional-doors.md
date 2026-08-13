@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Wormholes documentation: Dimensional Doors"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,7 +37,7 @@ Each placed endpoint stores an OpenState. New placements default to `OPEN`.
 | `CLOSED` | Physical block is closed | Contact with the closed surface triggers transit; surface stays shut | Yes |
 
 - Toggle OpenState from the access UI (applies to doors and trapdoors).
-- Under `OPEN`, living travelers claim the door’s single armed open cycle and close the source behind them. Objects never claim that cycle, so a volley can pass while the door stays open.
+- Under `OPEN`, living travelers claim the door’s single armed open cycle and close the source behind them. If redstone holds the block open, the cycle stays consumed until the door is actually observed closed, then re-arms on the next open. Objects never claim that cycle, so a volley can pass while the door stays open.
 - Under `CLOSED`, the shut surface is a contact pad: nothing crosses while the block stands open; contact pads never swing open for arrivals and never consume an open cycle.
 - Destination behavior: a hinged door with OpenState `OPEN` may be auto-opened by the server for an arriving living traveler and later closed only if the server opened it; a player-opened door is left alone. Trapdoor destinations are not auto-swung for arrival. OpenState `CLOSED` destinations stay shut.
 - Trapdoor through-mapping is straight (drop in the top of one → exit under the far plate still falling; climb up through the bottom → land on top of the far plate). Hinged doors mirror onto the matching face (front-to-front / back-to-back).
@@ -97,7 +97,7 @@ Pair and Public support object travel; Personal and Return stay player-only. Pai
 
 ## Recipes
 
-All product recipes require the exact **Wormhole Rune** item (`R`). Shift-crafting identity products is blocked so one craft cannot mint bulk identities. Identity is minted on the actual craft click.
+All product recipes require the exact **Wormhole Rune** item (`R`). Shift-crafting identity products is blocked so one craft cannot mint bulk identities.
 
 ```text
 Entangled pair       Personal door       Public dimension door
@@ -124,21 +124,22 @@ Trapdoor products use the same shapes with trapdoor `D`. Defaults:
 | Public door / trapdoor | Pale oak door / pale oak trapdoor |
 | Return (structure) | Crimson door |
 
-**Ingredient vs product:** hinged-door recipes accept any vanilla door, including iron and copper; trapdoor recipes accept only hand-openable wooden trapdoors. The minted product always uses the default wooden material above, not the ingredient material, so every dimensional product remains hand-openable. Return doors have no recipe.
+**Ingredient vs product:** hinged-door recipes accept any vanilla door, including iron and copper; trapdoor recipes accept only hand-openable wooden trapdoors. The minted product always uses the default wooden material above, not the ingredient material. Return doors have no recipe. Crafters cannot mint identities or apply skins (`CrafterCraftEvent` is cancelled for those recipes). Identity is minted only on a player craft click.
 
 **Pair kit:** craft yields a bundle. Right-click air or block unpacks linked A/B items and registers the pair; creative and survival consume the kit on unpack.
 
 ## Reskin
 
-Shapeless craft: one dimensional door/trapdoor item + one ordinary hand-openable door/trapdoor of the **same form**.
+Shapeless craft: one dimensional door/trapdoor item + one ordinary door/trapdoor of the **same form**.
 
 - Result keeps the same identity (pair link, personal mapping, or public `itemId`) and adopts the ordinary item’s material.
-- Iron and copper doors/trapdoors cannot be skins; dimensional products must stay player-operable (`Tag.WOODEN_DOORS` / `Tag.WOODEN_TRAPDOORS`).
+- Any vanilla hinged door is a valid skin, including iron and copper. OpenState `OPEN` still requires the physical door to be open, so an iron or copper skin needs redstone (or a Closed contact pad) to transit.
+- Trapdoor skins stay hand-openable wooden trapdoors only (`Tag.WOODEN_TRAPDOORS`). Iron and copper trapdoors are refused.
 - Door cannot reskin into trapdoor or reverse.
 - Same material as current skin is invalid.
 - Shift-craft of skin recipes is blocked.
 
-**Legacy:** placed Public doors that are still iron blocks are converted at runtime to the Pale Oak Public Door default without changing destination identity. Trapdoors never carried the iron skin era.
+Placed iron or copper dimensional doors are left as they are. Startup does not retarget them to Pale Oak.
 
 ## Admin grant
 
@@ -155,7 +156,7 @@ Default `type` is `pair`. Overflow drops at the player’s feet.
 | Action | Behavior |
 |--------|----------|
 | Place in Creative | Held dimensional door item is consumed (same as survival identity consumption for kits/doors) |
-| Break Pair / Personal / Public | Always drops that exact identity item (including Creative); block vanilla drops are suppressed |
+| Break Pair / Personal / Public | Access-gated (`canUseDoor`); denied breaks are cancelled. Allowed breaks drop that exact identity item (including Creative); block vanilla drops are suppressed |
 | Break material | Uses live block material if still player-operable for that form; otherwise the kind’s default material |
 | Return door break | Cancelled; exit is anchored |
 

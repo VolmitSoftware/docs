@@ -15,7 +15,7 @@ HoloUi ships alongside a browser-based menu editor kept in a separate repository
 
 - `menus/<id>.json` for `plugins/holoui/menus/`
 - `images.zip`, pixel-art icon sources laid out for `plugins/holoui/images/`
-- Container preview documents for `plugins/holoui/previews/`
+- Container preview documents for `plugins/holoui/previews/`, including every shipped in-game card offered as an In-game template
 
 The editor application runs in the browser and requires no editor account. Its ordinary workspace is local browser storage; an optional capability-scoped relay is contacted only when the user opens a `#/sync/…` link. The editor is deployed to `https://holoui.volmitsoftware.com`; the plugin neither ships nor hosts it. `/holoui builder` prints a link to `HuiSettings.BUILDER_URL`, while `/holoui edit <menu>` can create a constrained round-trip session or an explicit confirmation-first one-way import fallback. See [01 - Installation & Configuration](/holoui/01-installation-configuration) and [02 - Commands & Permissions](/holoui/02-commands-permissions).
 
@@ -134,10 +134,10 @@ The repositories share selected byte-identical test fixtures, each replayed by a
 | Expression vectors | `src/test/resources/expr_test_vectors.json` | `test/fixtures/expr_test_vectors.json` | `ExprVectorsTest` (Java) and `preview_expr_vectors_test.dart` (Dart); both also enforce a minimum vector count. |
 | Preview variable catalog | `src/test/resources/preview-variables.json` | `web/assets/catalog/preview-variables.json` | `VariableCatalogSyncTest` pins the plugin copy against `PreviewStateAdapters.catalog()`. |
 | Preview goldens | `src/test/resources/golden/*.json`, emitted by `GoldenSerializer` | `test/fixtures/golden/` (`chest_27`, `furnace_smelting`, `locked`) | `preview_card_scene_test.dart` replays them against the editor's renderer. |
-| Selected shipped preview documents | `src/main/resources/previews/` (`chest`, `furnace`, `locked`) | `test/fixtures/previews/` (`chest`, `furnace`, `locked`) | The three listed documents are copied byte for byte. |
+| Shipped preview documents | `src/main/resources/previews/` (all 13: `beehive`, `brewing_stand`, `cauldron`, `chest`, `chiseled_bookshelf`, `dispenser`, `ender_chest`, `furnace`, `hopper`, `jukebox`, `locked`, `minecart`, `shelf`) | `test/fixtures/previews/` and `lib/config/shipped_preview_json.dart` | `preview_templates_test.dart` requires the plugin file, the fixture, and the embedded editor copy to be byte-identical. The templates dialog offers each as an In-game card. |
 | Editor-sync canonical project | `src/test/resources/editor-sync-canonical-v1.json` | `test/fixtures/editor-sync-canonical-v1.json` | Java and Dart canonicalizers both require revision `sha256:7e322c580c650ebd93ab4e19dc4b550bbd3f11436d694b38b96143996f8727d0`, including numeric-value and Unicode edge cases. |
 
-The listed editor copies are compared byte for byte. The other ten shipped preview documents do not currently have editor-side byte-for-byte copies. Do not hand-edit a shared fixture; re-copy it from the plugin.
+The listed editor copies are compared byte for byte. Do not hand-edit a shared fixture; re-copy it from the plugin. The exact JSON of each shipped preview is also on [09 - Container Previews](/holoui/09-container-previews).
 
 The editor also generates `preview-lang-en.json` from this repository's `HoloMessages.java` via its `tool/extract_preview_lang.dart`, which must be re-run when `holoui.preview.*` keys move. See [10 - Localization](/holoui/10-localization).
 

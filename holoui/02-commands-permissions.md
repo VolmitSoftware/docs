@@ -67,6 +67,7 @@ Director's argument mapper determines what HoloUI accepts:
 | `/holoui previews list` | none | `holoui.command.previews` | yes | yes |
 | `/holoui previews reset [name=<document>\|<document>]` | `name` (String, optional, default `*`; bare name rewritten to `name=`) | `holoui.command.previews.reset` | yes | yes |
 | `/holoui previews dump <name>` | `name` (String, required) | `holoui.command.previews.dump` | yes | yes |
+| `/holoui menus create <menu>` | new nested menu id | `holoui.command.menus` | yes | yes |
 | `/holoui menus addrow <menu> <text>` | loaded menu id and MiniMessage text | `holoui.command.menus` | yes | yes |
 | `/holoui menus insertrow <menu> <row> <text>` | loaded menu id, one-based row, text | `holoui.command.menus` | yes | yes |
 | `/holoui menus setrow <menu> <row> <text>` | loaded menu id, one-based row, text | `holoui.command.menus` | yes | yes |
@@ -318,7 +319,7 @@ Player senders have the dump scheduled onto the region thread owning the player,
 3. The document is built once and elements are counted by type, reported through `holoui.message.previews.dump.result` with `{name}`, `{total}`, `{panels}`, `{cells}`, `{slots}`, and `{labels}`.
 4. With no errors, sends `holoui.message.previews.dump.no_errors`. Otherwise up to 3 lines of `holoui.message.previews.dump.error_line` are sent, followed by `holoui.message.previews.dump.error_more` ("+{count} more (see console log)") when more remain.
 
-Omitting `name` fails at argument mapping with Director's missing-argument message plus the usage line. Preview documents are covered in [09 - Container Previews](/holoui/09-container-previews).
+Omitting `name` fails at argument mapping with Director's missing-argument message `Missing argument "{parameter}" ({type})`. Usage is appended only for unexpected or unknown arguments, not for a missing required parameter. Preview documents are covered in [09 - Container Previews](/holoui/09-container-previews).
 
 ### `/holoui menus`
 
@@ -328,6 +329,7 @@ Rows are the entries of the menu's `components` array and commands number them f
 
 | Command | Behavior |
 |---|---|
+| `menus create <menu>` | Creates a new menu file from the shipped blank hologram baseline: a title, a hint line, and a Close button that uses native `navigate` `close`. Existing ids and symbolic-link paths are rejected. |
 | `menus addrow <menu> <text>` | Appends a `decoration` with a text icon and a collision-free `row-N` component id. Its offset follows the last valid row by `-0.25` Y, or starts at `[0,0,0]`. |
 | `menus insertrow <menu> <row> <text>` | Inserts before the given row, accepting `size + 1` as append. Its offset is the midpoint of valid neighbours, or 0.25 blocks beyond the one valid neighbour. Existing rows are not moved. |
 | `menus setrow <menu> <row> <text>` | Changes the single `icon` of a `button` or `decoration`. An existing text icon retains style, refresh interval, and unknown fields; another icon type is replaced by a text icon. Toggle rows are rejected because they have two state icons. |
@@ -361,7 +363,7 @@ Property matching ignores case, hyphens, and underscores. `textShadow`, `alignme
 
 Each mutation captures the loaded source's SHA-256 revision, runs through one serialized asynchronous write queue, rereads the file before replacement, validates the candidate with the runtime parser, and writes and flushes a same-directory temporary file. Existing menus are replaced with an atomic move; copies are published with atomic no-clobber file creation so a concurrently created target is never replaced. An external edit or a second command based on a stale snapshot returns `holoui.message.menu.content.revision_conflict` instead of overwriting. The published revision shown in feedback is the first 12 hexadecimal characters of the source hash.
 
-Publication occurs only after the persisted bytes are reread and parsed successfully. Open personal sessions using the menu are closed with `DEFINITION_RELOADED`; every board view currently on that menu is rebuilt on its viewer's entity scheduler. Unknown JSON keys outside the field intentionally changed by the command survive the rewrite. `menus copy` is the supported in-game file copy; there is no chat-based raw JSON import/export command. `/holoui edit <menu>` can create a constrained round-trip session, with the confirmation-first one-way import retained as its explicit fallback.
+Publication occurs only after the persisted bytes are reread and parsed successfully. Open personal sessions using the menu are closed with `DEFINITION_RELOADED`; every board view currently on that menu is rebuilt on its viewer's entity scheduler. Unknown JSON keys outside the field intentionally changed by the command survive the rewrite. `menus create` writes the shipped blank hologram. `menus copy` is the supported in-game file copy; there is no chat-based raw JSON import/export command. `/holoui edit <menu>` can create a constrained round-trip session, with the confirmation-first one-way import retained as its explicit fallback.
 
 ### `/holoui boards`
 
@@ -405,7 +407,7 @@ Content, visibility, and follow commands:
 | `boards style <id> <row> <property> <value>` | Runs the corresponding `menus style` mutation against the board's visible root menu. |
 | `boards image <id> <path>` | Runs the corresponding whole-menu `menus image` replacement against the board's visible root menu. |
 | `boards editweb\|webedit <id>` | Opens a round-trip project containing the board, its root and reachable submenu menus, and their referenced confined images. Requires `holoui.command.boards.editweb`; live sync also requires `holoui.command.sync`, otherwise the command emits a one-way copy of the root menu. |
-| `boards ranges <id> <view> <interaction>` | Sets finite positive ranges; interaction cannot exceed view. |
+| `boards ranges <id> <view> <interaction>` | Sets finite positive ranges; `viewRange` is capped at `256`, `interactionRange` at `32`, and interaction cannot exceed view. |
 | `boards visibility <id> <public|permission|hidden> <viewPermission|-> <interactPermission|->` | Sets the mode and both permission fields; only `permission` accepts a view permission, and `hidden` accepts neither. |
 | `boards permissions <id> <viewPermission|-> <interactPermission|->` | Changes permissions and derives `permission` mode when a view node is present, otherwise public unless the existing hidden board remains permissionless. |
 | `boards follow <id> <onlinePlayer> <fixed|yaw|full>` | Preserves the current effective pose while converting storage to a player-relative transform. `fixed` translates only; `yaw` also rotates horizontal offset and yaw; `full` additionally follows pitch. |
@@ -493,12 +495,12 @@ Completion delegates to the Director engine after the `holoui.command` gate. Any
 | Input | Suggestions |
 |-------|-------------|
 | `/holoui <TAB>` | `back`, `boards`, `builder`, `close`, `edit`, `import`, `items`, `list`, `menus`, `move`, `open`, `previews`, `sync` |
-| `/holoui sync <TAB>` | `list`, `pull`, `revoke`, `status` |
+| `/holoui sync <TAB>` | `list`, `pull`, `poll`, `revoke`, `status` |
 | `/holoui sync status\|pull\|revoke <TAB>` | full ids for active editor sync sessions |
 | `/holoui items <TAB>` | `export`, `status` |
 | `/holoui previews <TAB>` | `dump`, `list`, `reset` |
-| `/holoui menus <TAB>` | `addrow`, `copy`, `image`, `insertrow`, `offsetrow`, `removerow`, `seticon`, `setrow`, `style` |
-| `/holoui boards <TAB>` | `addrow`, `align`, `cancel`, `copy`, `create`, `delete`, `edit`, `editweb`, `follow`, `image`, `info`, `insertrow`, `list`, `menu`, `move`, `movehere`, `near`, `offsetrow`, `permissions`, `ranges`, `reload`, `removerow`, `rename`, `rotate`, `save`, `scale`, `seticon`, `setrow`, `style`, `tp`, `unfollow`, `visibility` |
+| `/holoui menus <TAB>` | `addrow`, `copy`, `create`, `image`, `insertrow`, `offsetrow`, `removerow`, `seticon`, `setrow`, `style` |
+| `/holoui boards <TAB>` | primary names plus aliases: `addrow`, `align`, `cancel`, `copy`, `create`, `delete`, `remove`, `edit`, `editweb`, `webedit`, `follow`, `image`, `info`, `insertrow`, `list`, `menu`, `root`, `move`, `movehere`, `tphere`, `near`, `offsetrow`, `permissions`, `ranges`, `reload`, `removerow`, `rename`, `rotate`, `save`, `scale`, `seticon`, `setrow`, `style`, `tp`, `unfollow`, `visibility` |
 | `/holoui open <TAB>` | bare `*` plus every configured menu id |
 | `/holoui open sh<TAB>` | matching menu ids as bare values, such as `shop` |
 | `/holoui open menu=<TAB>` | `menu=*` plus `menu=<id>` for every configured menu id |
@@ -510,7 +512,7 @@ Completion delegates to the Director engine after the `holoui.command` gate. Any
 | `/holoui boards <action> <TAB>` where `action` accepts a board | published board ids from `BoardService` |
 | `/holoui boards follow <id> <TAB>` | online player names, then enum rotation values |
 | `/holoui boards align <id> <reference> <TAB>` | `x`, `y`, `z`, `xy`, `xz`, `yz`, `xyz` |
-| `/holoui import <TAB>` | `apply`, `preview` (plus preview aliases accepted when typed) |
+| `/holoui import <TAB>` | `apply`, `preview`, `dry-run`, `dryrun` |
 | `/holoui import preview <TAB>`, `/holoui import apply <TAB>` | `decent-holograms`, `fancy-holograms`, `gholo`, `holographic-displays` |
 | `/holoui previews reset <TAB>` | positional completion is normalized through `name=`; because `name` has no custom value handler, it has no document-name candidates |
 | `/holoui previews reset ch<TAB>` | the positional prefix is accepted and normalized, but no candidate is produced because `name` has no custom value handler |
@@ -552,7 +554,7 @@ Children are sorted case-insensitively by name, `totalPages` is `ceil(entries / 
 4. Hover text per entry listing names and aliases, the description, a usage note, and a generated example such as `/holoui previews dump name=<String>`, with defaults substituted where present.
 5. A footer bar with `〈 Page N` and `Page N ❭` buttons wired to `<path> help=<index>` and `<path> help=<index+2>`.
 
-The root has thirteen entries and therefore spans two pages. The `boards` group has 32 entries and spans four pages; `menus` has exactly one nine-entry page, while `items`, `previews`, and `sync` remain below the page size.
+The root has thirteen entries and therefore spans two pages. The `boards` group has 32 entries and spans four pages; `menus` has ten entries and spans two pages, while `items`, `previews`, and `sync` remain below the page size.
 
 ### Delivery
 

@@ -67,7 +67,7 @@ Changes under `images/` trigger a visual refresh of open sessions on the same ca
 
 ### Parse failures
 
-A zero-byte file logs `Menu config "<id>.json" is empty, ignoring.` and is skipped. Any other failure — malformed JSON, an unknown `type` discriminator — logs a stack trace and leaves the previously registered definition, if any, in place. A failed file never partially registers.
+A zero-byte file logs `Menu config "<id>.json" is empty, ignoring.` and is skipped. Any other failure — malformed JSON, an unknown `type` discriminator, or a compact-constructor rejection — logs a stack trace and leaves the previously registered definition, if any, in place. A failed file never partially registers. Compact constructors reject the file at `MenuDocumentParser.parse` for invalid hitbox width/height pairs or sizes, unpaired `blockLight`/`skyLight`, `refreshTicks` outside `0`–`1200`, and entity width/height outside `(0, 64]`. `ConfigManager.loadConfig` then skips that file.
 
 ## Parsing behavior
 
@@ -77,7 +77,7 @@ Menu files are parsed with `art.arcane.volmlib.util.bukkit.json.BukkitJson`, a G
 - Unknown JSON keys are silently ignored. A `"$schema"` key added for editor tooling is harmless.
 - Collection-typed keys accept a single object in place of a one-element array, via `SingleCollectionTypeFactory`. `"components": {…}` parses the same as `"components": [{…}]`. This applies to `components`, `actions`, `trueActions` and `falseActions`.
 
-There is no load-time validation. The plugin does not check menu files against `holoui.schema.json` or against anything else. A file that parses as JSON registers. Structural problems — a missing `offset`, a missing `components`, a component with no `data` — surface as an exception when a player opens the menu, not when the file is loaded.
+The plugin does not check menu files against `holoui.schema.json`. Load-time validation is the compact constructors invoked by `MenuDocumentParser.parse`: a file that is valid JSON can still be rejected and skipped. Remaining structural problems — a missing `offset`, a missing `components`, a component with no `data` — surface as an exception when a player opens the menu, not when the file is loaded.
 
 ## Top-level keys
 
@@ -374,9 +374,9 @@ Because the schema is advisory rather than enforced:
 | `itemStack` icon type | absent (intentional; API-only) | present in `MenuIconType`, not deserializable from JSON |
 | `components` cardinality | `type: array` | array, or a single object via `SingleCollectionTypeFactory` |
 | single-object collections | not modelled | accepted for `components`, `actions`, `trueActions`, `falseActions` |
-| unknown keys | permitted; `additionalProperties` is unconstrained everywhere except `hitbox` | ignored |
+| unknown keys | permitted except `$defs/hitbox` and `$defs/iconDisplayStyle`, which set `additionalProperties: false` | ignored |
 
-`$defs/hitbox` is the only object in the schema that sets `additionalProperties: false`.
+`$defs/hitbox` and `$defs/iconDisplayStyle` are the objects that set `additionalProperties: false`.
 
 `HoloUiSchemaContractTest` structurally pins selected high-risk fields: `closeOnTeleport`, integer item counts, non-blank image/item paths, non-empty animation sources, optional integer animation speed, unrestricted integer `customModelValue`, the block icon discriminator and namespaced material key, and the entity icon discriminator and dimension bounds. It does not run a general JSON Schema validator or prove full parser equivalence.
 

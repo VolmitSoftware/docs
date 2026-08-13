@@ -125,7 +125,7 @@ All keys begin with `wormholes.` and are declared in VolmLib `IntegrationMetricS
 
 | Key | Type / unit | Meaning |
 |-----|-------------|---------|
-| `wormholes.peers-connected` | int / servers | Handshake-complete, non-disconnected peers |
+| `wormholes.peers-connected` | int / servers | READY wire peers (`PeerConnection.State.READY`); same count as `%wormholes_peers.connected%` |
 | `wormholes.peer-rtt-max-ms` | long / ms | Max RTT among connected peers |
 | `wormholes.wire-bytes-out-per-second` | double / bytes-per-second | Wire egress rate |
 | `wormholes.wire-bytes-in-per-second` | double / bytes-per-second | Wire ingress rate |

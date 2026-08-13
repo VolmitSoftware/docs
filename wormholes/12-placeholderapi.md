@@ -62,7 +62,7 @@ Ignore the player; same answer for everyone and for a no-player parse.
 | `%wormholes_portals%` | integer | Local registered portals. Remote portals not counted |
 | `%wormholes_projections.active%` | integer | Portals currently rendering a projection |
 | `%wormholes_projections.observers%` | integer | Distinct players with a projection frame in flight (one player on two portals counts once) |
-| `%wormholes_peers.connected%` | integer | Peers with completed handshake and live link |
+| `%wormholes_peers.connected%` | integer | READY wire peers (`PeerConnection.State.READY`); same count as `wormholes.peers-connected` |
 | `%wormholes_peers.link%` | enum | Cross-server link health (see vocabularies) |
 | `%wormholes_transfers.in-flight%` | integer | Player handoffs plus non-player entity transfers in progress |
 | `%wormholes_failures%` | integer | Cumulative internal failures since startup |

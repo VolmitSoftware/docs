@@ -2,7 +2,7 @@
 title: "HoloUI"
 description: "HoloUI holographic UI framework for Paper and Folia"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-12T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ single viewer. Menus are JSON files, authored by hand or in the web editor.
 |---|---|
 | Command | `/holoui` (`holo`, `hui`, `holou`, `hu`) |
 | Folia | Supported |
-| Permissions | 12 nodes, per subcommand |
+| Permissions | 20 declared nodes, plus runtime `holoui.open.<menuId>` |
 | Web editor | [holoui.volmitsoftware.com](https://holoui.volmitsoftware.com) |
 | Item providers | ItemsAdder, Oraxen, Nexo, MMOItems, MythicMobs, EcoItems, ExecutableItems, HeadDatabase, Slimefun, CraftEngine |
 

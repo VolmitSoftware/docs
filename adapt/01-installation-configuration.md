@@ -2,14 +2,14 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Adapt 2.0.0-26.2 is a single Bukkit jar that runs on Paper, Purpur, and Folia servers built against the Minecraft 26.1 API line, on Java 25. Drop the jar into `plugins/`, start the server once so it writes its defaults, then edit the TOML files under `plugins/Adapt/adapt/`.
 
-Most of what you will change is hot-reloadable. A watcher polls the config files every half second and applies valid edits to the running server, refreshing any Adapt menus that happen to be open. Broken TOML is rejected outright and the settings already in memory keep running, so a typo never takes the plugin down. The things that are not hot-reloadable are the ones Adapt only wires up while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
+Most of what you will change is hot-reloadable. A watcher drains filesystem events and also reconciles file signatures on a short interval, then applies a save only after the file has stayed stable for one extra poll. That covers editors that write a file in two steps and hosts where the operating-system watcher registers but never fires, which is common on Docker and Pterodactyl. Valid edits refresh any Adapt menus that happen to be open. Broken TOML is rejected outright and the settings already in memory keep running, so a typo never takes the plugin down. The things that are not hot-reloadable are the ones Adapt only wires up while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
 
 Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders, without Vault learning stays knowledge-only, and without a protection plugin Adapt never asks one for permission. Missing integrations are silent, not fatal. Settings live in three places: `adapt.toml` for global behavior, one file per skill and per adaptation under `adapt/skills/` and `adapt/adaptations/`, and `adapt/mutations.toml` for the experimental Mutation layer, which is off until you turn it on.
 
@@ -141,6 +141,8 @@ plugins/Adapt/
 | `loginBonus` | `true` | Enables the login bonus |
 | `welcomeMessage` | `true` | Sends the Adapt welcome message |
 | `advancements` | `true` | Registers and syncs Adapt advancements |
+| `advancementUnlockToasts` | `true` | Shows Adapt's advancement unlock popup. Disable it to suppress the popup and its client-controlled sound without suppressing the recorded grant |
+| `levelMilestoneSoundVolume` | `0.35` | Volume from 0 to 1 for Adapt's explicit paired sounds every ten skill levels; this cannot independently change Minecraft's built-in advancement-toast sound |
 | `preventHunterSkillsWhenHungerApplied` | `true` | Blocks Hunter passives while the player has the Hunger effect |
 
 Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_run_in` and `example:another_world`, neither of which matches a real world.
@@ -304,7 +306,7 @@ Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server t
 
 ### Reload matrix
 
-The watcher polls every 500 ms over `adapt.toml` and its legacy JSON peer, `models.toml` and its legacy peer, `mutations.toml`, everything directly inside `adapt/skills/` and `adapt/adaptations/`, and the locale override folder.
+The watcher drains events at a 500 ms cadence over `adapt.toml` and its legacy JSON peer, `models.toml` and its legacy peer, `mutations.toml`, everything directly inside `adapt/skills/` and `adapt/adaptations/`, and the locale override folder. Signature reconciliation still runs on a short interval when the operating-system watcher is silent.
 
 | Change | Hot reload | Restart required |
 |---|---|---|

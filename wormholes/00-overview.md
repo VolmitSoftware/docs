@@ -64,9 +64,10 @@ Docs `00`–`15` are for operators and players, doc `16` is for maintainers, and
 | Item | Value |
 |------|--------|
 | Java | 25 (compiled with `-parameters`, release 25) |
-| Folia | Supported (`folia-supported: true` in paper-plugin metadata) |
+| Servers | Paper, Purpur, and Folia **26.1.2–26.2** (`folia-supported: true` in paper-plugin metadata) |
+| Spigot | 26.2 compile (`compileSpigotCompatibility`) and runtime fallbacks; Paper/Folia keep native paths |
 | Soft depends | PlaceholderAPI, Iris, Vault (optional; load before Wormholes when present) |
-| Runtime library | `zstd-jni` is supplied by the legacy plugin library declaration (`com.github.luben:zstd-jni:1.5.7-11`), not shaded into the jar |
+| Runtime library | `zstd-jni` 1.5.7-11 via SlimJar plus `plugin.yml` `libraries`; not shaded into the jar |
 
 JVM tip: include `--enable-native-access=ALL-UNNAMED` on the server (and test) JVM so zstd-jni can load its native library without restricted-access warnings.
 

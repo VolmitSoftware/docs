@@ -71,7 +71,7 @@ Aliases: `/wh`, `/wormhole`. Full command list: [09 - Commands & Permissions](/w
 2. **Left-click** a block for corner A; **right-click** a block for corner B (or the reverse order).
 3. Selection must be one cell thick on one axis (flat wall/floor/ceiling plane). Max **4096** cells.
 4. With a valid complete selection, **left-click** the selection (block inside the box or aim at the selection pane within 64 blocks) to open the portal.
-5. Construction always creates `PortalType.PORTAL` owned by the player UUID. Change type later in the type menu ([04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
+5. The aperture is the live world blocks currently in that box (`world.getBlockAt` for every cell). Construction always creates `PortalType.PORTAL` owned by the player UUID. Change type later in the type menu ([04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
 
 Selection UI: light-blue pane while valid; red when invalid (not flat or too large). Changing world, dropping/swapping off the wand, or changing hotbar away from the wand clears the selection.
 
@@ -90,9 +90,9 @@ Wand interactions aimed at an existing portal open that portal’s menu instead 
 | Wormhole | `WORMHOLE` |
 | Gateway | `GATEWAY` |
 
-RTP runes are not a construction product: left-clicking a tracked RTP rune with the wand shows that RTP rune construction is unsupported.
+There is no RTP rune product. Wand and rune construction create `PORTAL`, `WORMHOLE`, or `GATEWAY` only; switch a finished portal to RTP from the type menu.
 
-Non-coplanar connected sets are rejected before consumption and the placed, tracked runes remain in the world. If construction fails after a valid set has been reserved and consumed, rollback restores or refunds the matching runes and releases their reservations. Breaking a placed rune in survival returns the matching rune item (except RTP); breaking with the wand is cancelled.
+Non-coplanar connected sets are rejected before consumption and the placed, tracked runes remain in the world. If construction fails after a valid set has been reserved and consumed, rollback restores or refunds the matching runes and releases their reservations. Breaking a placed rune in survival returns the matching rune item; breaking with the wand is cancelled.
 
 ## Surface skin
 
@@ -122,11 +122,11 @@ Destroy: home menu **Destroy** control, **shift-left-click** (not a normal left 
 
 ## Vanilla nether and end portals
 
-Config: `main.replaceNetherAndEndPortals` in `config/wormholes.toml` (default `true`). Hot-reloads with other main gameplay settings.
+Config: `[main] replace-nether-and-end-portals` in `config/wormholes.toml` (default `true`). Hot-reloads with other main gameplay settings.
 
-When enabled, lighting a vanilla nether portal (or related create reasons the replacer handles) converts the nether portal cells into managed Wormholes portals with dimensional pairing. End portal windows are similarly intercepted so vanilla portal events are cancelled when covered by the Wormholes index. Managed portals use `DimensionalPortalKind` (`NETHER`, `END_SOURCE`, `END_ARRIVAL`) and lock manual destination, type, and travel edits. Nether pairs travel both ways; an End source is outbound-only, while its fixed arrival receiver is inbound-only with projection off.
+When enabled, lighting a vanilla nether portal (or related create reasons the replacer handles) converts the nether portal cells into managed Wormholes portals with dimensional pairing. End portal windows are similarly intercepted so vanilla portal events are cancelled when covered by the Wormholes index. Travel is cancelled as soon as create or eye-place registers pending cells (`VanillaPortalIndex` pending coverage), before the pairing pass finishes. Managed portals use `DimensionalPortalKind` (`NETHER`, `END_SOURCE`, `END_ARRIVAL`) and lock manual destination, type, and travel edits. Nether pairs travel both ways; an End source is outbound-only, while its fixed arrival receiver is inbound-only with projection off.
 
-Set `replaceNetherAndEndPortals = false` to leave vanilla portals alone.
+Set `replace-nether-and-end-portals = false` to leave vanilla portals alone.
 
 ## Permissions used during build
 

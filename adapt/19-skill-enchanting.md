@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Adapt documentation: Skill - Enchanting"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,7 +35,7 @@ If the combined power would exceed your cap, nothing happens and your actionbar 
 
 ### Lapis Return (`enchanting-lapis-return`)
 
-Enchanting at a table sometimes drops lapis back at your feet. The amount dropped equals your adaptation level, so higher levels both refund more often and refund more. It works on its own once learned.
+After a table enchant commits, Lapis Return sometimes puts lapis directly into your inventory. Any overflow drops at your feet. The amount refunded equals your adaptation level, so higher levels both refund more often and refund more. It works on its own once learned.
 
 There is a 20 second window between refunds. The chance is rolled first and the cooldown is checked second, so a lucky roll inside that window is wasted.
 
@@ -94,7 +94,7 @@ How to use it:
 
 1. Put a multi-enchant book (two or more stored enchantments) in the left slot of an anvil.
 2. Make sure your cursor is empty.
-3. Sneak and right-click that left slot.
+3. Shift-right-click that left slot. The inventory's Shift+Right click gesture is authoritative; it does not depend on the server's world sneak flag while the screen is open.
 4. XP levels are deducted, the original book is consumed, and the single-enchant books go to your inventory.
 
 If you do not have the levels, the attempt fizzles and nothing is consumed.
@@ -115,7 +115,7 @@ Only one item is linked at a time, marking a new one replaces the old link. If y
 
 ### Arcane Siphon (`enchanting-arcane-siphon`)
 
-Killing a mob that is wearing or holding enchanted gear pays Enchanting XP per distinct enchantment on it, and sometimes drops an enchanted book carrying one of those enchantments. It works on its own once learned.
+Killing a non-player mob that is actually wearing or holding enchanted gear pays Enchanting XP per distinct enchantment on its helmet, chestplate, leggings, boots, main hand, or off hand, and sometimes drops an enchanted book carrying one of those enchantments. It works on its own once learned. A command-spawned mob qualifies, but the command must equip the item in one of those six slots and the death must be credited to the player; an enchanted item merely stored elsewhere or a `/kill` death does not count.
 
 Higher levels raise both the drop chance and the level the siphoned book rolls at, capped at the enchantment's vanilla maximum. Player kills do not count.
 
@@ -252,12 +252,12 @@ Power cap is `level + (level / maxPowerBonus1PerLevels)` once `level` exceeds `m
 | Cost factor | 0.9 |
 | Tick interval (ms) | 20999 |
 | Config file | `plugins/Adapt/adapt/adaptations/enchanting-lapis-return.toml` |
-| Listened events | `EnchantItemEvent` (HIGH) |
+| Listened events | `EnchantItemEvent` (`MONITOR`, cancelled events ignored) |
 | Menu stat line | Chance to drop free lapis when you enchant; the amount scales with your level |
 | Stat key | `enchanting.lapis-return.lapis-saved` |
 | Milestones | `challenge_enchanting_lapis_100` (100, reward 300), `challenge_enchanting_lapis_2500` (2500, reward 1000) |
 
-Refund chance is `min(maxRefundChance, refundChanceBase + levelPercent * refundChanceFactor)`. Dropped stack size equals the adaptation level. Hardcoded 20000 ms cooldown between refunds, checked after the roll.
+Refund chance is `min(maxRefundChance, refundChanceBase + levelPercent * refundChanceFactor)`. A successful refund adds a stack equal to the adaptation level directly to the player's inventory, dropping only overflow. Hardcoded 20000 ms cooldown between refunds, checked after the roll.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -437,7 +437,7 @@ Curses recognized are `BINDING_CURSE` and `VANISHING_CURSE`, on both direct ench
 | Stat key | `enchanting.tome-rebinding.books-split` |
 | Milestones | `challenge_enchanting_rebind_50` (50, reward 400), `challenge_enchanting_rebind_500` (500, reward 1200) |
 
-Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which reaches 0 at max level with the shipped defaults. A loss only happens when more than one enchantment remains. XP level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`. Skill XP is `skillXpOnSplit` per book produced.
+Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which reaches 0 at max level with the shipped defaults. A loss only happens when more than one enchantment remains. Activation is the anvil slot-0 `SHIFT_RIGHT` click with an empty cursor; the click type itself supplies the Shift requirement because the world sneak flag is unreliable while an inventory is open. XP level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`. Skill XP is `skillXpOnSplit` per book produced.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -494,7 +494,7 @@ The mark is a random token written to the item's persistent data under `adapt:so
 | Stat key | `enchanting.arcane-siphon.books-siphoned` |
 | Milestones | `challenge_enchanting_siphon_25` (25, reward 400), `challenge_enchanting_siphon_250` (250, reward 1200) |
 
-Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand; duplicate enchantments keep the highest level. Skill XP is `bonusXpPerEnchant * distinctEnchantCount` and is paid whether or not a book drops. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)`. Book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum.
+Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand; duplicate enchantments keep the highest level. Mob spawn method is irrelevant, but the killer must be the player and player victims are excluded. Skill XP is `bonusXpPerEnchant * distinctEnchantCount` and is paid whether or not a book drops. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)`; with shipped settings it ranges from 20% at adaptation level 1 to 50% at level 5. Book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

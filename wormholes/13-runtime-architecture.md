@@ -39,7 +39,7 @@ Order from `Wormholes.onEnable` (then network bootstrap):
    - `ProjectionWorldChangeTracker`
    - `ArrivalWarmer`
    - `BukkitRtpRuntime` via `BukkitRtpEnvironment`; wired into projection as RTP projection provider
-9. `doors.applySetting(settings)` — starts dimensional doors / pocket world when `dimensionalDoorsEnabled` and datapack ready.
+9. `doors.applySetting(settings)` — starts dimensional doors / pocket world when `[main] dimensional-doors-enabled` is true and the datapack is ready.
 10. Register listeners: block, effect, construction, wand, vanilla travel cost, portal skins, portal manager, traversable, projection, projection change, vanilla portal replacer, chat input.
 11. Repeating tasks: RTP attendance sweep (20t), arrival warmer sweep (40t), vanilla dimensional-frame validation (40t).
 12. `network.bootstrap(settings)` — remote registry, `NetworkManager`, import/export, portal sync, traversal service, remote view cache, view subscriptions, view server, message/peer sinks, transfer channel, network start.
@@ -61,14 +61,14 @@ Order from `Wormholes.onEnable` (then network bootstrap):
 |------|----------|
 | `config/wormholes.toml` | Consolidated settings schema **2**: `schema`, `quality`, `[main]`, `[network]`, `[projection]`, `[render]`. Written canonically on load/save. |
 | `portals/` | Local portal JSON files in a nested UUID layout (`portals/<segment>/<segment>/<uuid>.json`). |
-| `doors/` | Dimensional door store (`doors/state.json` and related door repository data). |
+| `doors/` | Dimensional door store: `doors/state.json` plus per-player return tickets under `doors/state.json.tickets/`. |
 | `languages/` | Optional per-locale TOML overrides (`<locale>.toml`). Bundled locales ship in the jar; English is code-catalog owned. |
 | `routes/` | Cross-server route data for imported peers/portals. |
 | `trust/` | Peer trust keys (`PeerTrustStore`). |
 | `identity/` | Local network identity material (reset deletes this tree). |
 | `dict/` | Persisted Zstd dictionaries and training state for the sideband transport. |
 | `uds/` | Default Unix-domain socket location when UDS transport is enabled and no custom directory is set. |
-| `wormholes-stats.txt` | Periodically overwritten operator snapshot unless `[network.stats] output-file` overrides it. |
+| `wormholes-stats.txt` | Periodically overwritten operator snapshot unless `[network.stats] path-override` overrides it. |
 
 Full plugin reset (`/wh admin deleteeverything`) deletes `config`, `identity`, `routes`, `trust`, `portals`, and `doors`, then rewrites a fresh door snapshot (preserving retired pocket slot counter) and reloads defaults. It refuses while players are inside or mid-transit in a pocket dimension.
 

@@ -37,12 +37,12 @@ Stored as `renderMode` on the portal JSON. Toggled from the portal settings menu
 
 **View AABB.** Each portal’s view volume is the portal structure area expanded by the effective activation range on every axis (`LocalPortalGate.computeView`). An observer must have their location inside that AABB to be considered for that portal.
 
-**Live interest.** When `foveatedUnrendering` is false (default), any observer inside the view AABB is interested. When true, interest also requires:
+**Live interest.** When `foveated-unrendering` is false (default), any observer inside the view AABB is interested. When true, interest also requires:
 
-- stable portal-side facing with absolute normal dot ≥ `sideGraceDot` (default `0.12`);
-- look direction toward the portal center with direction dot ≥ `observerInterestDot` (default `-0.2`).
+- stable portal-side facing with absolute normal dot ≥ `side-grace-dot` (default `0.12`);
+- look direction toward the portal center with direction dot ≥ `observer-interest-dot` (default `-0.2`).
 
-**Grace.** After live interest is established, `interestGraceTicks` (default `5`) keeps the projector open for that many projection ticks after interest is lost, so brief head turns do not tear down the view immediately. Grace only applies if a projector already exists for that portal/observer pair.
+**Grace.** After live interest is established, `interest-grace-ticks` (default `5`) keeps the projector open for that many projection ticks after interest is lost, so brief head turns do not tear down the view immediately. Grace only applies if a projector already exists for that portal/observer pair.
 
 ## Budgets
 
@@ -50,10 +50,10 @@ Global per-tick budgets (from `[projection]`, refreshed into `Settings`):
 
 | Key | Default | Clamp | Role |
 |-----|---------|-------|------|
-| `maxProjectorsPerTick` | `24` | 1–512 | Total block-update projector slots per tick across all observers. |
-| `maxPortalsPerObserverTick` | `4` | 1–64 | Cap on portals one observer may block-update in one frame. |
-| `maxNewObserverScansPerTick` | `64` | 1–4096 | How many players may be scanned as new/continuing observers per tick. |
-| `maxProjectedCells` | `250000` | 0–50000000 | Hard ceiling on candidate block positions scanned for one portal pass. `0` disables the ceiling (not recommended). |
+| `max-projectors-per-tick` | `24` | 1–512 | Total block-update projector slots per tick across all observers. |
+| `max-portals-per-observer-tick` | `4` | 1–64 | Cap on portals one observer may block-update in one frame. |
+| `max-new-observer-scans-per-tick` | `64` | 1–4096 | How many players may be scanned as new/continuing observers per tick. |
+| `max-projected-cells` | `250000` | 0–50000000 | Hard ceiling on candidate block positions scanned for one portal pass. `0` disables the ceiling (not recommended). |
 
 Budget fitting shortens lateral padding first; depth is reduced only if the aperture-aligned scan still exceeds the cell ceiling. An aperture that cannot fit even at zero depth stays empty rather than exceeding the ceiling.
 
@@ -70,12 +70,12 @@ Each color maps to `minecraft:<name>_concrete` (for example `BLACK` → black co
 
 | Key | Default | Clamp | Role |
 |-----|---------|-------|------|
-| `entitySpoofing` | `true` | — | Show destination-side entities in projections. |
-| `entitySpoofRange` | `48.0` | 1–256 | Range for spoofed entities. |
-| `entityUpdateIntervalTicks` | `1` | 1–20 | Entity refresh cadence. |
-| `entityCandidateCacheTicks` | `3` | 1–40 | Candidate cache lifetime. |
-| `maxSpoofedEntities` | `24` | 0–256 | Hard cap of spoofed entities per context. |
-| `captureZoneRadius` | `8.0` | 1–64 | Capture zone radius used by render capture logic. |
+| `entity-spoofing` | `true` | — | Show destination-side entities in projections. |
+| `entity-spoof-range` | `48.0` | 1–256 | Range for spoofed entities. |
+| `entity-update-interval-ticks` | `1` | 1–20 | Entity refresh cadence. |
+| `entity-candidate-cache-ticks` | `3` | 1–40 | Candidate cache lifetime. |
+| `max-spoofed-entities` | `24` | 0–256 | Hard cap of spoofed entities per context. |
+| `capture-zone-radius` | `8.0` | 1–64 | Capture zone radius used by render capture logic. Applies on reload. |
 
 ## Visual quality profiles
 
@@ -84,47 +84,47 @@ Top-level `quality` in `wormholes.toml`: `auto`, `performance`, `balanced`, or `
 | Profile | Effect |
 |---------|--------|
 | `AUTO` | No extra clamps; raw config values remain. |
-| `PERFORMANCE` | Forces `lightingFidelity` and `entitySpoofing` off; `range` ≤ 32; `depthBlocks` ≤ 48; `maxProjectorsPerTick` ≤ 12; `maxPortalsPerObserverTick` ≤ 2; `maxNewObserverScansPerTick` ≤ 32. |
-| `BALANCED` | `lightingRefreshIntervalTicks` ≥ 6; `entityUpdateIntervalTicks` ≥ 2; `maxSpoofedEntities` ≤ 16; `maxProjectorsPerTick` ≤ 20; `maxNewObserverScansPerTick` ≤ 64. |
-| `CINEMATIC` | `range` ≥ 64; `depthBlocks` ≥ 96; `maxProjectorsPerTick` ≥ 32; `maxNewObserverScansPerTick` ≥ 128; `lightingRefreshIntervalTicks` ≤ 2; `lightingMaxSectionsPerPass` ≥ 4; `entitySpoofRange` ≥ 64; `maxSpoofedEntities` ≥ 48. |
+| `PERFORMANCE` | Forces `lighting-fidelity` and `entity-spoofing` off; `range` ≤ 32; `depth-blocks` ≤ 48; `max-projectors-per-tick` ≤ 12; `max-portals-per-observer-tick` ≤ 2; `max-new-observer-scans-per-tick` ≤ 32. |
+| `BALANCED` | `lighting-refresh-interval-ticks` ≥ 6; `entity-update-interval-ticks` ≥ 2; `max-spoofed-entities` ≤ 16; `max-projectors-per-tick` ≤ 20; `max-new-observer-scans-per-tick` ≤ 64. |
+| `CINEMATIC` | `range` ≥ 64; `depth-blocks` ≥ 96; `max-projectors-per-tick` ≥ 32; `max-new-observer-scans-per-tick` ≥ 128; `lighting-refresh-interval-ticks` ≤ 2; `lighting-max-sections-per-pass` ≥ 4; `entity-spoof-range` ≥ 64; `max-spoofed-entities` ≥ 48. |
 
 ## Global `[projection]` keys (ProjectionConfig defaults)
 
 | Key | Default | Notes |
 |-----|---------|-------|
 | `range` | `48.0` | Global projection / effective activation range when per-portal range is `0`. Clamped 1–256 on load. |
-| `refreshIntervalTicks` | `1` | Block projection refresh interval. |
-| `nearPlanePadding` | `2.0` | Near-plane padding. |
-| `aperturePaddingBlocks` | `0.75` | How far the projected image extends past aperture edges. |
-| `frustumCullingRatio` | `0.2` | Frustum cull ratio. |
-| `depthBlocks` | `64` | Search distance used to find recursive portal candidates beyond the current view, not the primary portal's block depth. |
-| `recursivePortalDepth` | `3` | Recursive portal depth (minimum clamp 3). |
-| `stableCellResampleIntervalTicks` | `4` | Stable-cell resample interval. |
-| `clientViewDistanceCap` | `true` | Cap scans to client view distance. |
-| `foveatedUnrendering` | `false` | Enables look/side interest filters. |
-| `observerInterestDot` | `-0.2` | Look-at-portal threshold when foveated. |
-| `sideGraceDot` | `0.12` | Minimum absolute side-of-portal normal dot when foveated. |
-| `maxProjectorsPerTick` | `24` | See budgets. |
-| `maxPortalsPerObserverTick` | `4` | See budgets. |
-| `maxNewObserverScansPerTick` | `64` | See budgets. |
-| `interestGraceTicks` | `5` | Interest grace after losing live interest. |
-| `initialResendPasses` | `1` | Full startup projection sends after a view is created. |
-| `maxProjectedCells` | `250000` | See budgets. |
+| `refresh-interval-ticks` | `1` | Block projection refresh interval. |
+| `near-plane-padding` | `2.0` | Near-plane padding. |
+| `aperture-padding-blocks` | `0.75` | How far the projected image extends past aperture edges. |
+| `frustum-culling-ratio` | `0.2` | Frustum cull ratio. |
+| `depth-blocks` | `64` | Search distance used to find recursive portal candidates beyond the current view, not the primary portal's block depth. |
+| `recursive-portal-depth` | `3` | Recursive portal depth (minimum clamp 3). |
+| `stable-cell-resample-interval-ticks` | `4` | Stable-cell resample interval. |
+| `client-view-distance-cap` | `true` | Cap scans to client view distance. |
+| `foveated-unrendering` | `false` | Look/side interest filter (`observer-interest-dot` and `side-grace-dot`). |
+| `observer-interest-dot` | `-0.2` | Look-at-portal threshold when foveated. |
+| `side-grace-dot` | `0.12` | Minimum absolute side-of-portal normal dot when foveated. |
+| `max-projectors-per-tick` | `24` | See budgets. |
+| `max-portals-per-observer-tick` | `4` | See budgets. |
+| `max-new-observer-scans-per-tick` | `64` | See budgets. |
+| `interest-grace-ticks` | `5` | Interest grace after losing live interest. |
+| `initial-resend-passes` | `1` | Full startup projection sends after a view is created. |
+| `max-projected-cells` | `250000` | See budgets. |
 
 ## Global `[render]` keys (RenderConfig defaults)
 
 | Key | Default | Notes |
 |-----|---------|-------|
-| `lightingFidelity` | `false` | Send destination lighting with projected blocks. |
-| `entitySpoofing` | `true` | See entity spoofing. |
-| `lightingRefreshIntervalTicks` | `4` | Lighting refresh cadence. |
-| `lightingMaxSectionsPerPass` | `2` | Lighting sections per pass. |
-| `adaptiveLighting` | `true` | Adaptive lighting behavior. |
-| `entityUpdateIntervalTicks` | `1` | Entity update cadence. |
-| `entitySpoofRange` | `48.0` | Entity spoof range. |
-| `entityCandidateCacheTicks` | `3` | Candidate cache ticks. |
-| `maxSpoofedEntities` | `24` | Entity cap. |
-| `captureZoneRadius` | `8.0` | Capture zone radius. |
+| `lighting-fidelity` | `false` | Send destination lighting with projected blocks. |
+| `entity-spoofing` | `true` | See entity spoofing. |
+| `lighting-refresh-interval-ticks` | `4` | Lighting refresh cadence. |
+| `lighting-max-sections-per-pass` | `2` | Lighting sections per pass. |
+| `adaptive-lighting` | `true` | Adaptive lighting behavior. |
+| `entity-update-interval-ticks` | `1` | Entity update cadence. |
+| `entity-spoof-range` | `48.0` | Entity spoof range. |
+| `entity-candidate-cache-ticks` | `3` | Candidate cache ticks. |
+| `max-spoofed-entities` | `24` | Entity cap. |
+| `capture-zone-radius` | `8.0` | Capture zone radius. Applies on reload. |
 
 ## Per-portal activation range
 
@@ -136,7 +136,7 @@ Effective range drives the view AABB and is exposed in the portal menu as “glo
 
 ## Primary, recursive, and remote views
 
-The primary block and entity depth comes from the portal's `networkViewDepth` setting (default 64), including settings replicated from the linked gateway. The global `depthBlocks` value extends the search bound for recursive portal candidates; `recursivePortalDepth` limits how many nested portal steps may be sampled. Recursive sampling follows portals that are open and projecting, masks cycles and non-traversable hits, and does not turn a closed or unlinked portal into a view.
+The primary block and entity depth comes from the portal's `networkViewDepth` setting (default 64), including settings replicated from the linked gateway. The global `depth-blocks` value extends the search bound for recursive portal candidates; `recursive-portal-depth` limits how many nested portal steps may be sampled. Recursive sampling follows portals that are open and projecting, masks cycles and non-traversable hits, and does not turn a closed or unlinked portal into a view.
 
 Local tunnels sample the destination world directly. Cross-server gateways use the replicated remote block and entity stream; cells not yet present in that stream use the portal's configured `networkViewFallbackBlock` (air by default). Remote subscriptions, heartbeat, grace, and compression are described in [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
@@ -150,12 +150,12 @@ Entity projection covers players, living entities, and supported non-living enti
 
 These are separate systems:
 
-| System | Config keys (MainConfig / `[main]`) | Default | Behavior |
-|--------|-------------------------------------|---------|----------|
-| **Arrival warmer** | `arrivalPrewarmOnInterest`, `arrivalWarmRadiusChunks`, `arrivalWarmMaxRadiusChunks`, `arrivalWarmHoldMillis`, `arrivalWarmThrottleMillis` | prewarm **true**; radius **4**; max radius **10**; hold **5000** ms; throttle **1000** ms | When an observer is live-interested in a linked local destination, holds destination chunks via chunk leases so arrival geometry is warmer. Also used for imminent warm with view-distance-aware radius. |
-| **Chunk pre-send** | `chunkPreSendEnabled`, `chunkPreSendRadiusChunks`, `chunkPreSendMaxChunks`, `chunkPreSendBudgetMicros` | **enabled false**; radius **3**; max **32**; budget **2000** µs | At traversal commit, optionally pre-sends destination chunks to the traveler within a microsecond budget. Off by default until verified on a live server. |
+| System | Config keys (`[main]`) | Default | Behavior |
+|--------|------------------------|---------|----------|
+| **Arrival warmer** | `arrival-prewarm-on-interest`, `arrival-warm-radius-chunks`, `arrival-warm-max-radius-chunks`, `arrival-warm-hold-millis`, `arrival-warm-throttle-millis` | prewarm **true**; radius **4**; max radius **10**; hold **5000** ms; throttle **1000** ms | When an observer is live-interested in a linked local destination, holds destination chunks via chunk leases so arrival geometry is warmer. Also used for imminent warm with view-distance-aware radius. |
+| **Chunk pre-send** | `chunk-pre-send-enabled`, `chunk-pre-send-radius-chunks`, `chunk-pre-send-max-chunks`, `chunk-pre-send-budget-micros` | **enabled false**; radius **3**; max **32**; budget **2000** µs | At traversal commit, optionally pre-sends destination chunks to the traveler within a microsecond budget. Off by default until verified on a live server. |
 
-Related transition mask: `arrivalTransitionMask` default **true**, `arrivalTransitionMaskTicks` default **25**. Chunk send rate tuner (`chunkSendRateTuner`, targets) is a separate startup raise of Paper chunk send/load rates; it is not projection rendering.
+Related transition mask: `arrival-transition-mask` default **true**, `arrival-transition-mask-ticks` default **25**. Chunk send rate tuner (`chunk-send-rate-tuner`, targets) is a separate startup raise of Paper chunk send/load rates; it is not projection rendering. `chunk-send-rate-target` / `chunk-load-rate-target` of `<=0` or `>10000` is unlimited.
 
 ## Operator controls
 
@@ -172,7 +172,7 @@ See [09 - Commands & Permissions](/wormholes/09-commands-permissions) and [14 - 
 - Per-portal `activationRange` default **0** deliberately means “use global,” not zero blocks.
 - Default render mode is **VENTICULAR** (buried culling + observer occlusion), not PANOPTIC.
 - Default blackout is **off** with color **BLACK** if enabled later.
-- `foveatedUnrendering` defaults **false**; interest is then purely view-AABB based.
-- `chunkPreSendEnabled` defaults **false**; arrival prewarm on interest defaults **true**.
+- `foveated-unrendering` defaults **false**; interest is then purely view-AABB based.
+- `chunk-pre-send-enabled` defaults **false**; arrival prewarm on interest defaults **true**.
 - Quality profile `performance` forces `[render] entity-spoofing` and `lighting-fidelity` off in addition to its numeric clamps.
-- `maxProjectedCells = 0` disables the cell ceiling and can make a single pass extremely expensive.
+- `max-projected-cells = 0` disables the cell ceiling and can make a single pass extremely expensive.

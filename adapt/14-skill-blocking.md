@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Adapt documentation: Skill - Blocking"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -74,7 +74,7 @@ Also `permanent` by default.
 
 ### Counter Guard (`blocking-counter-guard`)
 
-Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on, so a long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow.
+Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on, so a long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow. Stack gains and confirmed spends briefly show `Counter Guard current/max` on the action bar.
 
 Works on its own once learned. Keep your shield up and stacks build themselves.
 
@@ -137,7 +137,7 @@ It negates melee and projectiles alike. If the source is a living attacker you a
 
 ### Tempered Guard (`blocking-tempered-guard`)
 
-Every hit you block with a shield rolls a chance to repair gear. It tries the shield first, then the first damaged armor piece it finds. It will not carry you through a long fight, but over a session it noticeably slows how fast your kit wears out.
+Whenever a blocked hit actually deals positive durability damage to your shield, Tempered Guard rolls a chance to repair gear. One tick later, after vanilla applies that shield wear, it repairs the shield first and then the first damaged armor piece it finds. It will not carry you through a long fight, but over a session it noticeably slows how fast your kit wears out.
 
 Works on its own once learned.
 
@@ -149,7 +149,7 @@ Works on its own once learned. It only fires when the attacker was actually swin
 
 ### Phalanx Crafter (`blocking-phalanx-crafter`)
 
-Two levels, two recipes. Level 1 adds an alternate shield recipe built from white wool, oak planks and one iron ingot. Level 2 lets you wrap an existing shield in netherite for a shield with far more durability and a gold name.
+Two levels, two recipes. Level 1 adds an alternate shield recipe built from white wool, oak planks and one iron ingot. Level 2 lets you wrap an existing shield in netherite for a shield with far more durability, a gold name, and a visible face.
 
 How to use it:
 
@@ -157,7 +157,7 @@ How to use it:
 2. For the shield, place three white wool across the top, oak planks either side of an iron ingot in the middle row, and one oak plank below the center.
 3. For the netherite version, reach level 2, then put a shield in the center of a crafting table with a netherite ingot above, below, left and right of it.
 
-Crafting the netherite recipe below level 2 is cancelled with a deny sound. The level 1 recipe produces a plain shield, not a banner-faced one, despite what the menu lore says.
+Crafting the netherite recipe below level 2 is cancelled with a deny sound. A custom banner face on the input shield is preserved. An otherwise plain white shield receives a black face with an orange border and light-gray rhombus so the reinforced result is visually distinct. The output is fully repaired and has 1,200 maximum durability.
 
 ### Interpose (`blocking-interpose`)
 
@@ -340,7 +340,7 @@ Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-h
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/blocking-counter-guard.toml` |
 
-Listened events: `EntityDamageByEntityEvent`.
+Listened events: `EntityDamageByEntityEvent`. Stack gains and confirmed spends queue a coalesced action-bar status showing the current and maximum stack counts.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -525,7 +525,7 @@ Listened events: `PlayerInteractEvent` (records the shield raise), `EntityDamage
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/blocking-tempered-guard.toml` |
 
-Listened events: `EntityDamageByEntityEvent`.
+Listened events: `PlayerItemDamageEvent` (`MONITOR`, cancelled events ignored). Only positive durability damage to a shield qualifies, and the repair is scheduled one tick later so it follows vanilla wear.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -576,9 +576,9 @@ Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so t
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/blocking-phalanx-crafter.toml` |
 
-Listened events: `CraftItemEvent`.
+Listened events: `PrepareItemCraftEvent` and `CraftItemEvent`.
 
-Recipes: `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, gives a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only, gives a shield with max durability 1200 named "Netherite-Reinforced Shield"). No adaptation-specific config keys.
+Recipes: `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, gives a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only, gives a fully repaired shield with max durability 1200 named "Netherite-Reinforced Shield"). The netherite preview and output clone the input shield, preserving any nonwhite base or patterned banner face; otherwise they apply a black base, orange border, and light-gray rhombus. No adaptation-specific config keys.
 
 ### Interpose
 

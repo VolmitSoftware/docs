@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Adapt documentation: Skill - Discovery"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ Works on its own once learned.
 
 ### Experimental Resistance (`discovery-xp-resist`)
 
-An emergency brake tied to your experience bar. It only fires when a hit would drop you below five hearts or kill you outright, and when it does it eats vanilla levels and cuts the damage. If you do not have the levels, it fails with a red puff and the hit lands in full. Higher adaptation levels both cut more damage and cost fewer levels.
+An emergency brake tied to your experience bar. It only fires when a committed hit would drop you below five hearts or kill you outright, and when it does it spends vanilla levels through the normal experience-cost path and cuts the damage. If you do not have the levels, it fails with a red puff and the hit lands in full. Higher adaptation levels both cut more damage and cost fewer levels.
 
 Works on its own once learned.
 
@@ -45,7 +45,7 @@ Right-clicking a villager has a chance to rewrite the trades in your favour, pai
 
 1. Learn it in the Adapt menu.
 2. Keep some vanilla levels banked.
-3. Right-click a villager. If it procs, the offers you open are the improved ones.
+3. Right-click a villager with your main hand. If it procs, the offers you open are improved by a temporary Hero of the Village session; Adapt validates the merchant after the screen has actually opened and restores your previous effect when it closes.
 
 ### Better Mending (`discovery-better-mending`)
 
@@ -61,7 +61,7 @@ Nothing happens if the item is undamaged, if you have no experience, or if the i
 
 ### Archaeologist (`discovery-archaeologist`)
 
-Brushing suspicious sand and gravel can pay out twice. On top of the vanilla find there is a chance for a bonus reward, and a smaller chance for a rare one. Both chances climb with level, and there is a cooldown between rewards that shrinks as you level.
+Brushing suspicious sand and suspicious gravel to completion can pay out twice. Those two vanilla suspicious blocks are the entire "strange/mysterious" set; ordinary sand and gravel do not qualify. On top of the vanilla find there is a chance for brick, clay, bone, flint, string, or coal, and a smaller rare roll for diamond, emerald, gold, or amethyst. Both chances climb with level, and there is a cooldown between rewards that shrinks as you level.
 
 **How to use it**
 
@@ -88,7 +88,7 @@ Works on its own once learned. Look at something.
 
 ### Trailblazer (`discovery-trailblazer`)
 
-Rewards the first time you set foot in each biome or structure type with a burst of skill XP and a short speed boost, so exploring actually moves you along. Structure discoveries pay considerably more than biome discoveries.
+Rewards the first time you set foot in each biome or structure type with a burst of skill XP and a short speed boost, so exploring actually moves you along. Structure discoveries pay considerably more than biome discoveries. The Discovery XP pool is flushed immediately, so the ordinary XP action-bar ticker appears at discovery time when the global `actionbarNotifyXp` setting is enabled.
 
 Works on its own once learned.
 
@@ -118,7 +118,7 @@ Already-appraised items just puff smoke.
 
 ### Sixth Sense (`discovery-sixth-sense`)
 
-A quiet nudge. When an unexplored structure comes within range, you get a private glowing direction line pointing at it. Structures you have already been close to stop triggering it, so it keeps pointing at things you have not seen.
+A quiet nudge. When an unexplored structure comes within range, you get a private six-block glowing direction line pointing toward it, not an outline on the structure or a line extending all the way to it. Structures you have already been within 20 blocks of stop triggering it. One of 16 structure families is searched every pulse; villages, pillager outposts, and other jigsaw structures are included, and each player advances through the families independently.
 
 Works on its own once learned.
 
@@ -271,9 +271,9 @@ Listened events:
 | Tick interval (ms) | 5215 |
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-xp-resist.toml` |
 
-Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. A successful save grants 5 Discovery XP.
+Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels` and deducted with Bukkit's synchronized level API. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
 
-Milestones: `challenge_discovery_xp_resist_25` and `challenge_discovery_xp_resist_250` on `discovery.xp-resist.saves` at 25 and 250, rewarding 500 and 2000. `challenge_discovery_xp_resist_clutch` is registered and localized but has no milestone threshold and no grant call anywhere in the code, so it is currently unobtainable.
+Milestones: `challenge_discovery_xp_resist_25` and `challenge_discovery_xp_resist_250` on `discovery.xp-resist.saves` at 25 and 250, rewarding 500 and 2000. `challenge_discovery_xp_resist_clutch` is granted the first time a qualifying save processes an original hit of at least 30 health points.
 
 Listened events:
 
@@ -307,8 +307,8 @@ Milestones: `challenge_discovery_villager_100` and `challenge_discovery_villager
 
 Listened events:
 
-- `PlayerInteractEntityEvent` (`on`): rolls the proc on a villager
-- `InventoryOpenEvent` (`on`): swaps in the adjusted merchant offers
+- `PlayerInteractEntityEvent` (`on`): rolls the proc on a main-hand villager interaction; offhand duplicates are ignored
+- `InventoryOpenEvent` (`on`): activates the trade session and schedules validation one tick later, after the merchant view opens
 - `PlayerTradeEvent` (`on`)
 - `InventoryCloseEvent` (`on`): restores the original offers
 
@@ -334,6 +334,8 @@ Listened events:
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-better-mending.toml` |
 
 Milestones: `challenge_discovery_mending_10k` and `challenge_discovery_mending_100k` on `discovery.better-mending.durability-restored` at 10000 and 100000, rewarding 400 and 1500.
+
+Available XP is Paper's current total experience-point value, and the post-cost level/progress state is written atomically. The cost is XP points, not XP levels. With shipped settings, repair efficiency is `2 + levelPercent * 4` durability per point, the maximum spend is `14 + levelPercent * 130` points, and cooldown is `max(6, round(38 - levelPercent * 26))` ticks.
 
 Listened events:
 
@@ -363,6 +365,8 @@ Listened events:
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-archaeologist.toml` |
 
 Brush completions arrive through a `BrushEventBridge` built by reflection at construction against `BlockBrushEvent`. When the server does not expose that event the bridge is null, and the right-click handler's queued pending brush plus its fallback window is what resolves the reward.
+
+Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is considered only after brushing completes. Common rewards are brick, clay balls, bones, flint, string, and coal; rare rewards are diamonds, emeralds, gold ingots, and amethyst shards.
 
 Milestones: `challenge_discovery_archaeologist_50` and `challenge_discovery_archaeologist_500` on `discovery.archaeologist.bonus-finds` at 50 and 500, rewarding 300 and 1000.
 
@@ -465,7 +469,7 @@ Listened events:
 
 Milestones: `challenge_discovery_trailblazer_25` and `challenge_discovery_trailblazer_100` on `discovery.trailblazer.discoveries` at 25 and 100, rewarding 400 and 1200.
 
-No event handlers. It runs entirely on its tick.
+No event handlers. It runs entirely on its tick. A first-visit award immediately flushes the Discovery XP pool through the normal notifier; the action-bar display still obeys the global `actionbarNotifyXp` switch.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -576,6 +580,8 @@ Milestones: `challenge_discovery_sixthsense_100` and `challenge_discovery_sixths
 Listened events:
 
 - `PlayerQuitEvent` (`on`)
+
+Each pulse searches one of 16 structure families using a per-player cursor. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. A successful result shows a private six-block direction line for 50 ticks; it does not outline the distant structure or provide a full line of sight.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

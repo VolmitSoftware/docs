@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Adapt documentation: Skill - Stealth"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,7 +48,7 @@ Passive. Learn it and sneak.
 
 Sneak and dropped items within range fly into your inventory. It keeps pulling on a repeating pulse for as long as you stay crouched, so you can walk a mob-farm floor without clicking anything.
 
-Every item goes through the normal Bukkit pickup event with your real remaining inventory space, so a plugin that cancels the pickup leaves the item on the ground untouched, and a full inventory is skipped rather than eaten.
+Every item goes through the normal Bukkit pickup event with your real remaining inventory space, so a plugin that cancels the pickup leaves the item on the ground untouched, and a full inventory is skipped rather than eaten. Item Snatch adds the same unchanged stack it found; it has no bundle or backpack conversion. Because it emits normal pickup events, another listener can still replace or transform the item before the pull commits.
 
 1. Learn Item Snatch.
 2. Stand near dropped items.
@@ -113,7 +113,7 @@ Everything living inside the cloud goes blind. Players inside go invisible and g
 
 ### Cutpurse (`stealth-cutpurse`)
 
-Hit a pillager, vindicator, piglin, or piglin brute while Stealth reports you undetected and you may roll its loot table and take a few stacks straight into your inventory. The mob lives. Each mob can only be picked once, ever, and the stolen items go to the ground if your inventory is full.
+Hit a pillager, vindicator, piglin, or piglin brute directly in melee while Stealth reports you undetected and you may roll its native mob loot table and take a few stacks straight into your inventory. The spawn method is irrelevant: natural, structure, spawner, and command-spawned mobs use the same path. The mob lives. It is marked as picked only after a successful, non-empty loot roll, and the stolen items go to the ground if your inventory is full. Structure chest loot is unrelated.
 
 Passive on top of the core check. Get behind the mob, hit it, keep the loot.
 
@@ -346,7 +346,7 @@ Listened events:
 - `PlayerToggleSneakEvent` (`MONITOR`, ignore cancelled) - snatches immediately and opens a repeating session
 - `PlayerQuitEvent` (`MONITOR`) - closes the session
 
-Each pulse inspects at most `128` nearby entities and takes at most `32` items, searching a box of radius by radius over 1.5 by radius around the player. Every candidate must pass a chest-access check, an inventory space check, and Bukkit's normal pickup event sequence; a cancelled pickup leaves the item entity untouched. Items are held for up to `5000` ms to avoid double pulls. On Folia the scan runs only when the whole footprint belongs to the current region. Milestones: `challenge_stealth_snatch_2500` on `stealth.snatch.items-snatched` at 2500 (reward 400); `challenge_stealth_snatch_25k` at 25000 (reward 1500).
+Each pulse inspects at most `128` nearby entities and takes at most `32` items, searching a box of radius by radius over 1.5 by radius around the player. Every candidate must pass a chest-access check, an inventory space check, and Bukkit's normal pickup event sequence; a cancelled pickup leaves the item entity untouched. Adapt then adds the unchanged original stack and contains no bundle or backpack conversion path, although another pickup listener may transform the event item. Items are held for up to `5000` ms to avoid double pulls. On Folia the scan runs only when the whole footprint belongs to the current region. Milestones: `challenge_stealth_snatch_2500` on `stealth.snatch.items-snatched` at 2500 (reward 400); `challenge_stealth_snatch_25k` at 25000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -575,7 +575,7 @@ Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - rolls the steal
 
-Eligible targets are `PILLAGER`, `VINDICATOR`, `PIGLIN`, and `PIGLIN_BRUTE`. The mob must not already carry the `cutpurse_picked` persistent key, and Stealth must report you undetected. On a success the mob's own loot table is rolled with `lootQuality` as luck, the first non-empty stacks up to the stack cap are taken, and the mob is stamped so it can never be picked again. Items that do not fit in your inventory drop at the mob's location. Milestones: `challenge_stealth_cutpurse_100` on `stealth.cutpurse.pockets-picked` at 100 (reward 400); `challenge_stealth_cutpurse_1k` at 1000 (reward 1500).
+Eligible targets are `PILLAGER`, `VINDICATOR`, `PIGLIN`, and `PIGLIN_BRUTE`. The hit must be direct melee, the mob must expose a native non-null loot table and must not already carry the `cutpurse_picked` persistent key, and Stealth must report you undetected. Spawn reason is not checked. On a successful chance roll the mob's own loot table is rolled with `lootQuality` as luck; only a non-empty result produces feedback and stamps the mob so it can never be picked again. The first non-empty stacks up to the stack cap are taken. Items that do not fit in your inventory drop at the mob's location. Milestones: `challenge_stealth_cutpurse_100` on `stealth.cutpurse.pockets-picked` at 100 (reward 400); `challenge_stealth_cutpurse_1k` at 1000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

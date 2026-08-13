@@ -68,7 +68,7 @@ Sanitization: lower-case portal name; keep `a-z`, `0-9`, `.`, `-`, `_`; other ch
 | `BLACKLIST` | Holding the node **blocks** use |
 | `WHITELIST` | Holding the node **allows** use |
 
-Ops always pass. Cycle mode in Settings.
+Ops always pass. Cycle mode in Settings. The whitelist/blacklist node is **players only**; non-player entities always pass the portal permission check.
 
 ## Home menu
 
@@ -91,15 +91,17 @@ Managed dimensional portals refuse destination and type changes with managed not
 
 Blocked for RTP, mirror mode, and managed dimensional portals.
 
-**Non-gateway:** lists other non-gateway local portals that are generic destinations (same world structure present). Left-click links or unlinks.
+**Non-gateway:** lists other non-gateway local portals that are generic destinations, in any loaded world. Left-click links or unlinks this portal only.
 
-**Gateway:** lists other local gateways, then remote gateway entries (server name, coords, open/closed). Gateway home destination control opens a pair menu:
+**Gateway:** lists other local gateways in any loaded world, then remote gateway entries (server name, coords, open/closed). Gateway home destination control opens a pair menu:
 
 | Pair control | Action |
 |--------------|--------|
 | Export | Print invite/export code to chat |
 | Choose destination | Open destination list (local gateways + remotes) |
 | Import | Chat prompt for peer invite code |
+
+Same-world links store `LOCAL`; cross-world same-server links store `DIMENSIONAL`; remotes store `UNIVERSAL`. Links are one-way: A→B does not create B→A.
 
 Cross-server handoff detail: [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
@@ -109,8 +111,8 @@ Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
 
 | Choice | Effect |
 |--------|--------|
-| Portal / Wormhole / Gateway / RTP | Sets type and disables mirror mode if it was on |
-| Mirror | Enables mirror mode (travel locked; tunnel cleared) |
+| Portal / Wormhole / Gateway / RTP | Sets type and disables mirror mode if it was on. Switching to or from `RTP` force-closes the portal until RTP is READY or a new tunnel is set. |
+| Mirror | Enables mirror mode (travel locked; tunnel cleared). Right-click rotates the mirror image clockwise; shift-right-click rotates counterclockwise. |
 
 RTP editor entry lives on the home destination control when type is RTP ([06 - Random Teleport Portals](/wormholes/06-random-teleport-portals)).
 
@@ -150,9 +152,10 @@ Invalid stored travel cost loads as free and logs a warning. Third-party `Traver
 |---------|--------|
 | Direction | Cycle facing |
 | Flip face | Invert portal face |
-| Rotate CW / CCW | Rotate frame up-vector / orientation |
+| Rotate CCW | Separate button; rotates the frame counter-clockwise |
+| Rotate CW | Separate button; rotates the frame clockwise |
 
-Affects which way travelers face and how projection maps space. Right-clicking the rotation control turns clockwise; shift-right-click turns counterclockwise.
+Affects which way travelers face and how projection maps space. Mirror image rotation is on the type-menu Mirror control (right / shift-right), not these buttons.
 
 ## Cosmetics and blackout
 
@@ -175,4 +178,4 @@ Blackout builds a concrete display seal from the farthest valid slice of the pro
 - All frame types can project; use projection mode OFF to disable the view. Construction and type changes require `wormholes.portals.portal` (PORTAL/RTP), `wormholes.portals.wormhole` (WORMHOLE), or `wormholes.gateway` (GATEWAY); traversal uses the portal's dynamic access policy instead.
 - Enabling mirror while type is RTP converts the portal to `PORTAL`.
 - RTP and gateway destination menus are mutually exclusive paths; RTP cannot tunnel-link.
-- Per-portal permission blacklist is the default: the node denies, it does not grant.
+- Per-portal permission blacklist is the default: the node denies, it does not grant. That policy applies to players only.

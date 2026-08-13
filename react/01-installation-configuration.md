@@ -78,11 +78,11 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 
 ## Reload
 
-- The hotload controller watches `config.toml`, locale overrides, and TOML files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. It applies delivered file changes without a full plugin reload.
+- The hotload controller watches `config.toml`, locale overrides, and TOML files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. Operating-system file events are applied when they arrive. Even when those events never show up — common on Docker and Pterodactyl bind mounts — the watcher still reconciles file signatures on a short interval and applies a save only after the file has stayed stable for one extra poll.
 - Feature and tweak changes deactivate and reactivate active components; enable-state changes activate or deactivate them. Sampler changes restart the sampler, action changes refresh its configuration, and core changes reload the matching controller.
 - Global changes refresh language, entity priority, and active player monitors. Changes to `metrics` and the startup `unsafeBytecode` decision still require a full server restart.
 - `/react reload` performs a complete React disable and enable lifecycle. If the old ticker cannot drain, React refuses to re-enable and requires a server restart.
-- Invalid component/controller TOML is copied to a sibling `.bak` file and replaced from current defaults. An invalid global-config or localization hotload is rejected and the current live snapshot remains active.
+- Invalid component, controller, global-config, or localization hotloads are rejected and the current live snapshot remains active. A half-written or unreadable component file is not rewritten from memory. Startup still copies an unreadable component file to a sibling `.bak` and replaces it from defaults.
 
 ## Hotload controller (`core/hotload.toml`)
 

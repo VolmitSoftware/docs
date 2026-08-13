@@ -231,11 +231,11 @@ When `hitbox` is absent or `hasCustomSize()` is false, the plane's dimensions an
 | Icon type | Plane width | Plane height | Plane centre |
 | --- | --- | --- | --- |
 | `text` | `max over lines of (plainTextLength * lineWidth / 2)` | `lineCount * lineHeight` | `location - (0, ((2 * NAMETAG_SIZE) - 4.5/40) * S * Y, 0)` = `location - (0, 0.325 * S * Y, 0)` |
-| `textImage` | same formula | `(lineCount - 1) * lineHeight` | same as `text` |
-| `animatedTextImage` | same formula, over the first frame | `(firstFrameLineCount - 1) * lineHeight` | same as `text` |
+| `textImage` | same formula | `lineCount * lineHeight` | same as `text` |
+| `animatedTextImage` | same formula, over the first frame | `firstFrameLineCount * lineHeight` | same as `text` |
 | `item` | `0.75 * S * X` | `0.75 * S * Y` | `location - (0, 0.05 * S, 0)` |
 
-For image icons the line length is the rendered row width in characters, so the plane width tracks image width. Text-image and animated-image heights are one line shorter than the text-icon formula.
+For image icons the line length is the rendered row width in characters, so the plane width tracks image width. Automatic text-image and animated-image heights use the same `lineCount * lineHeight` formula as text icons. A one-row image is one line tall, not zero.
 
 The plane is rebuilt on open, on icon change (including toggle swaps and API icon updates), and whenever the session transform changes through follow, manual movement or scale refresh. Each rebuild reads the current icon, records `planeOrigin` as the fresh bounding-box centre, applies the configured size when a custom size is present, and constructs the plane at the transform's current layout yaw. A custom `width` and `height` remain authored hitbox dimensions and do not multiply by icon style scale. Repositioning is a no-op when `hitbox` is `null`, which is why an unconfigured button and every toggle keep a plane centred exactly on the icon bounding box.
 
