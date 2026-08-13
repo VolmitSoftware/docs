@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "HoloUI documentation: Installation & Configuration"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,7 +53,7 @@ HoloUi carries the SlimJar loader and dependency metadata in its jar. PacketEven
 2. Start the server. During construction, before `onLoad`, the plugin logs `Loading Dependencies...`, resolves the libraries declared with `slim(...)` in `build.gradle`, then logs `Dependencies loaded!`. Resolution uses the repository metadata embedded by SlimJar, including CodeMC for PacketEvents and Maven Central for the other current libraries. The first start of a dependency set requires network access; subsequent starts reuse the downloaded cache.
 3. `onEnable` creates `plugins/holoui/` and its contents.
 
-The jar ships no default menu files, so `menus/` is created empty. `/holoui menus create <id>` writes the shipped blank hologram there. The 13 shipped preview documents are extracted into `previews/` on every start when missing.
+The jar ships no default menu files, so `menus/` is created empty. `/holoui menu create <id>` writes the shipped blank hologram there. The 13 shipped preview documents are extracted into `previews/` on every start when missing.
 
 ## Data folder layout
 
@@ -66,7 +66,7 @@ The jar ships no default menu files, so `menus/` is created empty. `/holoui menu
 | `plugins/holoui/settings.json` | `HuiSettings` | Plugin settings; see below |
 | `plugins/holoui/language.yml` | `HoloLocalization` | Locale selection and message overrides. Generated with a single key, `locale`, set to the English locale. See [10 - Localization](/holoui/10-localization) |
 | `plugins/holoui/preview-scales.json` | `PreviewScaleService` | Per-player container preview scale factors, written when a player finishes adjusting, on quit, and at shutdown |
-| `plugins/holoui/custom-items.json` | `CustomItemCatalogWriter` | Custom item catalog. Not created at boot; written only by `/holoui items export`, capped at 10000 items per provider. Consumed by the web editor ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)) |
+| `plugins/holoui/custom-items.json` | `CustomItemCatalogWriter` | Custom item catalog. Not created at boot; written only by `/holoui item export`, capped at 10000 items per provider. Consumed by the web editor ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)) |
 | `plugins/holoui/editor-sync-sessions.json` | `EditorSyncSessionStore` | Private server capabilities and base snapshots for active round-trip editor sessions. The file is atomically replaced, owner-restricted on POSIX stores, capped at 80 MiB, and must not be shared or published |
 | `plugins/holoui/editor-sync-transactions/` | `HoloUiProjectTransaction` | Incomplete durable multi-file publications. Startup recovery commits or rolls them back before menu and board services load |
 | `plugins/holoui/editor-sync-backups/` | `HoloUiProjectTransaction` | The newest 20 completed publication backups, retained for operator recovery |

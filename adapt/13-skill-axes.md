@@ -55,7 +55,7 @@ On Folia the click has to land directly on a block. An air click resolves its ta
 
 ### Axe Drop-To-Inventory (`axe-drop-to-inventory`)
 
-Logs and leaves you break with an axe go straight into your inventory instead of landing on the ground. Each item still runs through the normal pickup path, so anything a protection plugin blocks stays where it fell. If your inventory fills up mid-break, the overflow drops at your feet and you get a fail sound.
+Logs and leaves you break with an axe go straight into your inventory instead of landing on the ground. Each item still runs through the normal pickup path, so anything a protection plugin blocks stays where it fell. If your inventory fills up mid-break, the overflow drops at your feet and you get a fail sound. If another plugin has already cancelled and claimed the block-drop event, this adaptation leaves it alone instead of trying to transfer the same items again.
 
 Works on its own once learned. No gesture, no cooldown.
 

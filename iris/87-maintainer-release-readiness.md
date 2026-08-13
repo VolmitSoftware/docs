@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -277,7 +277,7 @@ Done when: every advertised server, loader, client, and content path completes t
 
 ### Confirmed release blockers and follow-ups
 
-- [ ] Keep the embedded managed Git sources anonymously downloadable: `IrisDimensions/overworld` branch `master` and `IrisDimensions/underworld` branch `main`. Replace these mappings with the planned public ZIP service when it is available.
+- [ ] Keep both embedded beta assets anonymously downloadable: `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` and `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip`. Underworld currently returns anonymous HTTP 404 because its repository is private; make the asset public before release, then replace both URLs with the planned ZIP service when available.
 - [x] Make modded GoldenHash metadata use the active Iris engine seed. Fabric, Forge, and NeoForge generated identical output from Iris seed `1337`, but filenames and headers recorded each vanilla level seed, preventing one captured baseline file from being reused directly across loaders.
 - [x] Correct the default overworld pack's slime spawn category from implicit `MISC` to explicit `MONSTER` in `biomes/vanilla/mangrove_swamp.json`, `biomes/swamp/cambian-drift.json`, `biomes/swamp/cambian-drift-extended.json`, `biomes/swamp/marsh.json`, and `biomes/swamp/marsh-rotten.json`. NeoForge exposes the bad category at startup; all loaders generate the same bad datapack entry, which can affect natural slime spawning and mob-cap accounting.
 - [x] Extend `PackValidator` to reject authored custom-biome spawn categories that disagree with the live entity category instead of allowing the bad datapack to reach loader validation.

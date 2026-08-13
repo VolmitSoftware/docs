@@ -2,7 +2,7 @@
 title: Iris — Commands
 description: Full /iris command tree
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: iris, commands
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ Argument notation: `<required>`, `[optional]`.
 | `/iris aura [h] [s]` | Set aura spins |
 | `/iris bitwise <value1> <operator>` | Bitwise calculations |
 | `/iris debug` | Toggle debug |
-| `/iris download [pack] [branch]` | Download a project. *(alias: dl)* |
+| `/iris download pack=overworld\|pack=underworld\|link=<zip-url>` | Download a project. *(alias: dl)* |
 | `/iris metrics` | Get metrics for your world *(alias: measure)* |
 | `/iris unloadWorld` | Unload an Iris World |
 | `/iris loadWorld` | Load an Iris World *(alias: import)* |
@@ -139,7 +139,6 @@ Argument notation: `<required>`, `[optional]`.
 
 | Command | Description |
 |---|---|
-| `/iris studio download [pack] [branch]` | Download a project. *(alias: dl)* |
 | `/iris studio open [dim]` | Open a new studio world *(alias: o)* |
 | `/iris studio vscode` | Open VSCode for a dimension *(alias: vsc, edit)* |
 | `/iris studio close` | Close an open studio project *(alias: x, c)* |

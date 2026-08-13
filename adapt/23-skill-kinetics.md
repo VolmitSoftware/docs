@@ -17,7 +17,7 @@ Anvils get special treatment. Kinetics keeps a ledger of who placed which anvil,
 
 ## Adaptations
 
-Everything below needs the same conditions: the adaptation learned at level 1 or higher, the Kinetics skill and that adaptation both enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and any protection plugin on your server allowing the action where you are standing. Several of these lean on modern attributes (gravity, bounciness, air drag, scale) and silently do nothing if the running server version does not have them. Surface Skate falls back to bounded ground-velocity damping when the friction attribute is unavailable.
+Everything below needs the same conditions: the adaptation learned at level 1 or higher, the Kinetics skill and that adaptation both enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and any protection plugin on your server allowing the action where you are standing. Several of these lean on modern attributes (gravity, bounciness, air drag, scale) and silently do nothing if the running server version does not have them. Surface Skate uses the native friction attribute when available and otherwise mirrors its percentage-based slide through bounded ground-velocity adjustment.
 
 "Spear" means any of the seven spear items, wooden through netherite. "Mace" means the vanilla mace.
 
@@ -41,13 +41,15 @@ Landing on something soft (slime, honey, a bed, hay, powder snow, sponge) cuts m
 
 ### Surface Skate (`kinetics-surface-skate`)
 
-Sprint and the ground goes slick, so you carry speed through turns and slide when you stop steering. Sneak and it goes the other way, gripping harder than normal ground, which is what you want on a ledge. Both modes are ground-only and turn off the moment you stop sprinting or sneaking. Servers without the friction attribute use the same settings through a bounded velocity fallback that cannot accelerate you from rest or amplify external knockback.
+Sprint on any ground surface and Surface Skate cancels a level-scaled percentage of that surface's normal friction loss. With the defaults, level 1 cancels 22% and level 5 cancels 50%, so stone, ice, soul sand, and every other supporting surface keep their own character while all become proportionally slicker. Pressing sneak while grounded applies a separate horizontal brake: its default 100% setting immediately sets X/Z motion to zero without changing Y motion. This is a one-time brake on the sneak press, not a movement lock while sneak remains held.
+
+Servers with the friction attribute use a native `MULTIPLY_SCALAR_1` modifier. Servers without it derive the supporting block's slipperiness and apply the same percentage through a bounded velocity fallback; the fallback cannot accelerate you from rest, increase existing knockback beyond observed movement, change vertical velocity, or run for teleports.
 
 **How to use it**
 
 1. Learn Surface Skate in the Adapt menu.
 2. Sprint to slide.
-3. Sneak to grip.
+3. Press sneak while grounded to brake immediately.
 
 ### Terminal Toggle (`kinetics-terminal-toggle`)
 
@@ -308,14 +310,15 @@ Soft landing surfaces are slime, honey, any bed, hay bale, powder snow, sponge, 
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-surface-skate.toml` |
 
-Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, and `PlayerMoveEvent`. When available, slide and grip are `MULTIPLY_SCALAR_1` modifiers on the friction attribute and the learner-bound tick reconciles them against current state. When that attribute is absent, the move handler derives the current block's slipperiness, applies the same configured friction delta only while grounded, preserves vertical velocity, and bounds sliding to observed movement so it cannot inject speed from rest or grow knockback indefinitely.
+Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, and `PlayerMoveEvent`. When available, sprint sliding is a `MULTIPLY_SCALAR_1` friction-attribute modifier and the learner-bound tick reconciles it against current sprint/sneak state. The configured slide percentage cancels that percentage of each surface's own friction loss rather than assigning every block one friction value. When the attribute is absent, the move handler derives the supporting block's slipperiness and applies the same formula only while grounded; it preserves vertical velocity, ignores teleports, and bounds sliding to observed movement so it cannot inject speed from rest or grow knockback indefinitely. Sneak braking is grounded and event-driven on both paths, changes only horizontal velocity, and is applied once when sneak is pressed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `slideFrictionBase` | `0.15` | Fraction of ground friction removed while sprinting, at level 0. |
-| `slideFrictionFactor` | `0.35` | Extra friction reduction across levels. |
-| `gripFrictionBase` | `0.2` | Fraction of extra ground friction added while sneaking, at level 0. |
-| `gripFrictionFactor` | `0.4` | Extra grip across levels. |
+| `slidePercentBase` | `0.15` | Base percentage of each surface's friction loss cancelled while sprinting. Clamped to `0`-`1`. |
+| `slidePercentFactor` | `0.35` | Additional percentage at max level. Clamped to `0` through `1 - slidePercentBase`, so the total never exceeds 100%. |
+| `sneakBrakePercent` | `1.0` | Horizontal velocity removed on a grounded sneak press. Clamped to `0`-`1`; `1.0` is a complete stop and `0` disables the brake. |
+
+The generated config is canonicalized on load. The previous `slideFrictionBase`, `slideFrictionFactor`, `gripFrictionBase`, and `gripFrictionFactor` keys are removed rather than retained as aliases.
 
 ### Terminal Toggle
 

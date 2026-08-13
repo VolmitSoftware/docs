@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Adapt documentation: Skill - Hunter"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,7 @@ Taking a hit gives you Resistance at an amplifier equal to your level, for half 
 
 ### Items Drop-To-Inventory (`hunter-drop-to-inventory`)
 
-Loot goes into your inventory instead of onto the ground. It works two ways. Any mob you kill sends its drops straight to you, whatever you are holding. Block drops only route to you while a sword is in your main hand, and they still have to pass the server's normal pickup checks first, so a protection plugin that denies the pickup leaves the item on the floor as usual. Anything that does not fit in your inventory drops at your feet. This one caps at level 1.
+Loot goes into your inventory instead of onto the ground. It works two ways. Any mob you kill sends its drops straight to you, whatever you are holding. Block drops only route to you while a sword is in your main hand, and they still have to pass the server's normal pickup checks first, so a protection plugin that denies the pickup leaves the item on the floor as usual. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again. Anything that does not fit in your inventory drops at your feet. This one caps at level 1.
 
 **How to use it**
 

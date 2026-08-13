@@ -522,7 +522,7 @@ Milestones: `challenge_nether_feast_100` and `challenge_nether_feast_2500` on `n
 | Tick interval (ms) | 4000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-ashwalker.toml` |
 
-Listened events: `EntityDamageEvent`, ignoring anything that is an `EntityDamageByEntityEvent`. `HOT_FLOOR` (magma blocks) is set to zero and cancelled outright at any level. `CAMPFIRE` damage, and `FIRE`/`FIRE_TICK` damage traced to a lit campfire under or at your feet, is set to zero and cancelled from `campfireUnlockLevel` up. Full immunity clears current fire ticks. Soul fire is only reduced at max level.
+Listened events: `EntityDamageEvent` at HIGHEST priority, with already-cancelled hits ignored. `HOT_FLOOR` (magma blocks) is set to zero and cancelled outright at any level. `CAMPFIRE` damage, and `FIRE`/`FIRE_TICK` damage traced first to the event's damaging block and then to a lit campfire under or at the player's feet, is set to zero and cancelled from `campfireUnlockLevel` up. Full immunity clears current fire ticks. Soul fire is reduced at max level and the configured fraction is clamped to 0-1.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

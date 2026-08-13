@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-12T23:30:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,37 +96,35 @@ The loop passes when the source closure validates, the package command produces 
 
 | Command | Syntax |
 |---------|--------|
-| Bukkit | `/iris download <pack> [branch=stable] [overwrite=false]` (alias `/iris dl`) |
-| Modded | `/iris download <pack> [branch] [overwrite]` (alias `/iris dl`) |
+| Bukkit and modded | `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<http(s)-zip-url>` (alias `/iris dl`) |
 
 | Param | Default | What it does |
 |-------|---------|--------------|
-| `pack` | required | A managed key, a repository short name under the `IrisDimensions` GitHub org, or a direct HTTP(S) `.zip` URL |
-| `branch` | `stable` | The Git ref to pull. Ignored for managed keys and direct URLs |
-| `overwrite` | `false` | Replace a pack that is already present. Without it, a present pack short-circuits before any network call. Alias `force` on Bukkit. Refused only while a loaded world is actively generating from that pack; unload its worlds first |
+| `pack` | mutually exclusive with `link` | Accepts exactly `overworld` or `underworld`; values are case-insensitive |
+| `link` | mutually exclusive with `pack` | Direct HTTP(S) URL whose path ends in `.zip` |
 
-`overworld` and `underworld` are managed packs whose Git sources are embedded in Iris for now.
+`overworld` and `underworld` are built-in packs whose beta-release URLs are embedded in Iris for now.
 
 | Pack | Source |
 |------|--------|
-| `overworld` | `IrisDimensions/overworld`, branch `master` |
-| `underworld` | `IrisDimensions/underworld`, branch `main` |
+| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` |
+| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip` |
 
-Anything else resolves to `IrisDimensions/<pack>/<branch>` and downloads the GitHub archive for that ref. Every download path shares one implicit default branch, `stable` — including the implicit downloads inside modded `/iris world create` and `/iris studio create`, which used to assume `master`. If the repository has no `stable` branch and you did not name one, Iris retries once against the repository's HEAD before failing. A direct URL bypasses repository resolution, must end in `.zip`, and must contain exactly one dimension key so Iris can choose the destination folder.
+There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
 
 A successful download performs registry-independent pack validation and atomically publishes the pack on disk, then asks the operator to restart. The next startup performs full validation after external datapacks are registered. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically.
 
 ### Install pipeline (`PackDownloader`)
 
-1. Take a per-key/per-ref lock, so concurrent manual commands cannot fetch the same pack twice.
-2. If the pack is already present and `overwrite` is off, return without touching the network.
+1. Take a per-key or per-URL lock, so concurrent manual commands cannot fetch the same pack twice.
+2. If a built-in pack is already present, return without touching the network. Direct links are fetched before their dimension key is known, but publication still refuses an existing target.
 3. Download the zip under hard limits: archive at most 512 MiB, at most 100,000 entries, at most 2 GiB total uncompressed, at most 256 MiB per file. Exceeding any of these aborts the install.
 4. Unpack into a temporary staging directory and identify one pack home containing `dimensions/`; repository metadata beside that directory is ignored.
-5. Open the staging tree with the datapack-compiler loader and pick the dimension. A plain download with no expected key requires exactly one dimension in the archive. A managed or listing-driven download names its expected key, requires exactly one dimension matching it, and keeps any additional dimension resources in the pack.
+5. Open the staging tree with the datapack-compiler loader and pick the dimension. A `link=` download uses the shortest key, then alphabetical order, when the archive has multiple dimensions. A built-in download names its expected key, requires exactly one dimension matching it, and keeps any additional dimension resources in the pack.
 6. Run `PackValidator.validateForDatapackBootstrap` against the staging tree. Structural blocking errors abort the install and print the errors; live-registry checks wait until the restart, after external datapacks are registered.
 7. Publish atomically into `packs/<key>/`, refusing symlinked targets and refusing a key that conflicts with a different folder's dimension key. The validation result is published to the registry as part of the same step.
 
-Each explicit download treats its target independently. An existing operator-edited or symlinked pack is retained unless the command explicitly requests a safe overwrite.
+Each explicit download treats its target independently. Existing complete packs and symbolic-link sources are retained; this command surface has no overwrite mode.
 
 ## Validate
 
@@ -234,25 +232,23 @@ One platform difference beyond that: Bukkit re-serializes from the loaded object
 
 | Command |
 |---------|
-| `/iris developer update-world world=<world> pack=<dimension> confirm=true [fresh-download=false]` |
+| `/iris developer update-world world=<world> pack=<dimension> confirm=true` |
 
-Aliases: the command group is `/iris developer` or `/iris dev`; the subcommand is `update-world` or `^world`. `pack` also accepts the alias `dimension`, `confirm` accepts `c`, and `fresh-download` accepts `fresh` or `new`.
+Aliases: the command group is `/iris developer` or `/iris dev`; the subcommand is `update-world` or `^world`. `pack` also accepts the alias `dimension`, and `confirm` accepts `c`.
 
 | Param | Default | What it does |
 |-------|---------|--------------|
 | `world` | contextual | The world whose `iris/pack` snapshot gets replaced |
 | `pack` | contextual | The source dimension, resolved from the live packs root |
 | `confirm` | `false` | Required. Without it the command only prints the warning and exits |
-| `fresh-download` | `false` | Re-download the pack from GitHub before installing |
 
 What it does:
 
 1. Refuse unless `confirm=true`.
-2. Optionally re-download the pack.
-3. Take a `PACK_MUTATION` / `PACK_PUBLISH` lease, so it can't race another pack publish. If the lease is busy it reports that and stops.
-4. Copy the pack into a staging directory next to the target, confirm the dimension loads from staging, then publish atomically over `<world>/iris/pack`.
-5. Invalidate the previous validation result for that exact root and validate the newly published snapshot. **If validation fails, the publication rolls back** and the world keeps its old pack.
-6. If an engine is still holding the old pack data, restart the server with the reason `"An active Iris world pack was replaced."`
+2. Take a `PACK_MUTATION` / `PACK_PUBLISH` lease, so it can't race another pack publish. If the lease is busy it reports that and stops.
+3. Copy the pack into a staging directory next to the target, confirm the dimension loads from staging, then publish atomically over `<world>/iris/pack`.
+4. Invalidate the previous validation result for that exact root and validate the newly published snapshot. **If validation fails, the publication rolls back** and the world keeps its old pack.
+5. If an engine is still holding the old pack data, restart the server with the reason `"An active Iris world pack was replaced."`
 
 This is unsafe for production without a backup for reasons the command can't fix: chunks that already exist keep their old terrain. Only future generation and pack-driven systems — loot, spawners, effects, block drops — see the new content. A pack change that alters terrain shape leaves a visible seam at the edge of the generated region. Prefer staging a new world whenever the pack's terrain contract changes.
 

@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -626,6 +626,6 @@ Third-party jigsaw templates using the legacy slab property `half=top|bottom`, o
 | `/iris jigsaw adopt apply <planId>` | | Bukkit player only; no active or opening Jigsaw Studio |
 | `/iris goto structure <key>` | `/iris find structure` | |
 | `/iris goto unregistered` | | |
-| `/iris developer update-world` | | `world=<w> pack=<dim> confirm=true [fresh-download=false]` — all keyed |
+| `/iris developer update-world` | | `world=<w> pack=<dim> confirm=true` — all keyed |
 
 Related dimension fields: `datapackImports`, `importedStructures`, `structures[]`. Settings in `plugins/Iris/settings.json`: `general.autoIngestDatapacks` (default true), `general.autoImportDatapackStructures` (default false).

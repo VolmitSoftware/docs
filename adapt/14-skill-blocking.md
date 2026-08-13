@@ -149,15 +149,34 @@ Works on its own once learned. It only fires when the attacker was actually swin
 
 ### Phalanx Crafter (`blocking-phalanx-crafter`)
 
-Two levels, two recipes. Level 1 adds an alternate shield recipe built from white wool, oak planks and one iron ingot. Level 2 lets you wrap an existing shield in netherite for a shield with far more durability, a gold name, and a visible face.
+Two levels unlock two shaped crafting-table recipes. Level 1 adds an alternate way to make an ordinary shield. Level 2 upgrades an existing shield into a Netherite-Reinforced Shield. The reinforced shield blocks exactly like a normal shield; its special benefit is 1,200 maximum durability instead of normal shield durability. It is fully repaired during the upgrade and keeps the input shield's enchantments and banner face, although its display name becomes gold.
 
 How to use it:
 
 1. Learn Phalanx Crafter.
-2. For the shield, place three white wool across the top, oak planks either side of an iron ingot in the middle row, and one oak plank below the center.
-3. For the netherite version, reach level 2, then put a shield in the center of a crafting table with a netherite ingot above, below, left and right of it.
+2. Use a crafting table and follow one of the shaped recipes below.
 
-Crafting the netherite recipe below level 2 is cancelled with a deny sound. A custom banner face on the input shield is preserved. An otherwise plain white shield receives a black face with an orange border and light-gray rhombus so the reinforced result is visually distinct. The output is fully repaired and has 1,200 maximum durability.
+Level 1 field shield (`W` = white wool, `P` = oak planks, `I` = iron ingot):
+
+```text
+WWW
+PIP
+.P.
+```
+
+This produces one ordinary shield.
+
+Level 2 reinforced shield (`N` = netherite ingot, `S` = any shield):
+
+```text
+.N.
+NSN
+.N.
+```
+
+This consumes four netherite ingots and the center shield, producing one fully repaired Netherite-Reinforced Shield with 1,200 maximum durability.
+
+Crafting the netherite recipe below level 2 is cancelled with a deny sound. Any existing banner base color or pattern on the input shield, including an explicitly white face, is preserved. A shield with no banner face receives a black face with an orange border and light-gray rhombus so the reinforced result is visually distinct.
 
 ### Interpose (`blocking-interpose`)
 
@@ -578,7 +597,7 @@ Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so t
 
 Listened events: `PrepareItemCraftEvent` and `CraftItemEvent`.
 
-Recipes: `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, gives a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only, gives a fully repaired shield with max durability 1200 named "Netherite-Reinforced Shield"). The netherite preview and output clone the input shield, preserving any nonwhite base or patterned banner face; otherwise they apply a black base, orange border, and light-gray rhombus. No adaptation-specific config keys.
+Recipes: `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, gives a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only, gives a fully repaired shield with max durability 1200 named "Netherite-Reinforced Shield"). The netherite preview and output clone the input shield, preserving any existing banner base color or pattern; a shield without banner metadata instead receives a black base, orange border, and light-gray rhombus. No adaptation-specific config keys.
 
 ### Interpose
 

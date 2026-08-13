@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -92,7 +92,7 @@ Root: `/iris studio`, aliases `std` and `s`. Implemented by `CommandStudio` and 
 |------------|---------|--------------|
 | `open <dimension> [seed=1337]` | `o` | Closes any open studio and opens the pack as a studio world. Blocked unless startup datapack validation is ready and the selected pack has a loadable validation result |
 | `close` | `x` | Closes the active studio project and world |
-| `create [name=studio] [template=<dimension>]` | `+` | Creates a pack under `packs/<name>` after startup validation is ready. With a template, that template must itself validate as loadable and is downloaded first if missing; without one, writes the starter skeleton below |
+| `create [name=studio] [template=<dimension>]` | `+` | Creates a pack under `packs/<name>` after startup validation is ready. A named template must already be installed and validate as loadable; without one, Iris writes the starter skeleton below |
 | `vscode [dimension=default]` | `vsc` | Opens the pack's VSCode workspace, generating it if missing |
 | `update [dimension=default]` | | Rewrites `<pack>/<name>.code-workspace` and queues regeneration of `.iris/schema/*` |
 | `version [dimension=default]` | | Prints the dimension's `version` field |
@@ -147,7 +147,7 @@ The starter region lists the same `starter` biome for land, sea and shore. The s
 
 Project names are lowercased and must match `a-z`, `0-9`, `_`, `-`, up to 64 characters. The name `studio` is reserved and auto-renamed to the next free suffix. If the target folder already exists, nothing is changed.
 
-With a template — `/iris studio create name=mypack template=overworld` — Iris downloads the template pack if it is not present, requires it to validate as loadable, and copies its tree into the new pack key.
+With a template — `/iris studio create name=mypack template=overworld` — Iris requires the template pack to already be installed and loadable, then copies its tree into the new pack key. Missing templates are never downloaded implicitly.
 
 ## Studio open workflow
 

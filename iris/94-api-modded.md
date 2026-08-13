@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -394,7 +394,7 @@ Pack install root is `config/irisworldgen/packs`, not `config/iris`. Per-level e
 
 `modded.json` keys: `defaultPack`, `primaryWorld`, `routePlayersToPrimaryWorld`, `mainWorldPack`, `mainWorldSeed`, `mainWorldAutoRestart`.
 
-Modded startup never downloads a pack. `/iris download overworld` and `/iris download underworld` resolve their embedded Git repository/ref mappings; other names resolve an IrisDimensions branch, and HTTP(S) `.zip` URLs install directly. Successful commands publish only to disk and ask for a manual restart before the forced datapack can expose the pack's dimension types, presets, and biomes.
+Modded startup never downloads a pack. `/iris download pack=overworld` and `/iris download pack=underworld` resolve hardcoded beta-release ZIP URLs; `/iris download link=<http(s)-zip-url>` installs a custom ZIP. No branch, listing, arbitrary-name, overwrite, or implicit-download form exists. Successful commands publish only to disk and ask for a manual restart before the forced datapack can expose the pack's dimension types, presets, and biomes.
 
 Forced datapack id is `iris_worldgen`; it contributes presets, dimension types, and biomes under the `irisworldgen` namespace (ids derived from pack/dimension names). Regenerated on pack change / studio hotload. Failure to inject (mixin/event not applied) logs once at startup:
 
@@ -416,7 +416,7 @@ That is a loader/environment problem, not a pack problem.
 | `/iris datapack status` | Active vs pack dimension-type heights |
 | `/iris datapack install` | Write pack dimension type override into world datapacks |
 | `/iris datapack list` | Configured and installed world datapacks |
-| `/iris download <pack>` | Install pack (`dl` alias) |
+| `/iris download pack=overworld\|pack=underworld\|link=<zip-url>` | Install pack (`dl` alias) |
 | `/iris version` | Version and loader |
 
 `/iris datapack ingest` (`pull`) and `remove` (`rm`) exist but always refuse on modded — the Modrinth tooling is Bukkit-only. Native/datapack structure placement still works: install into `<world>/datapacks/` and restart. Structures overview: [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).

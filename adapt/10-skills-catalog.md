@@ -203,7 +203,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Blocking (`blocking`) | `blocking-perfect-guard` | Perfect Guard | Raise your shield the instant before a hit lands to negate it entirely and stagger the attacker. |
 | Blocking (`blocking`) | `blocking-tempered-guard` | Tempered Guard | Blocked hits can temper your gear, restoring a sliver of shield and armor durability. |
 | Blocking (`blocking`) | `blocking-shieldbearers-resolve` | Shieldbearer's Resolve | When an axe disables your shield, brace with resistance and recover the shield faster. |
-| Blocking (`blocking`) | `blocking-phalanx-crafter` | Phalanx Crafter | Craft shields directly, then reinforce one with netherite for 1,200 durability and a preserved or default banner face. |
+| Blocking (`blocking`) | `blocking-phalanx-crafter` | Phalanx Crafter | Level 1 unlocks a wool/plank/iron shield recipe; level 2 surrounds a shield with four netherite ingots for 1,200 durability and a preserved or default banner face. |
 | Blocking (`blocking`) | `blocking-interpose` | Interpose | Sneak-block near a wounded ally to redirect part of the damage they take onto your shield. |
 | Brewing (`brewing`) | `brewing-lingering` | Lingering Brew | Brewed potions last longer. |
 | Brewing (`brewing`) | `brewing-super-heated` | Super Heated Brew | Brewing stands work faster the hotter they are. |
@@ -231,7 +231,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Chronos (`chronos`) | `chronos-hourglass-guard` | Hourglass Guard | A killing blow instead leaves you at half a heart, granting brief invulnerability and slowing nearby enemies, on a long cooldown. |
 | Chronos (`chronos`) | `chronos-pocket-watch` | Pocket Watch | Sneak while falling with a clock in your inventory to drift in slow motion for a limited, level scaled duration each airtime. |
 | Chronos (`chronos`) | `chronos-deja-vu` | Deja Vu | Your body remembers recent pain; taking the same kind of damage again within a short window hurts noticeably less. |
-| Crafting (`crafting`) | `crafting-deconstruction` | Deconstruction | Return half of a crafted item's most-used recipe component with shears. |
+| Crafting (`crafting`) | `crafting-deconstruction` | Deconstruction | Return half of a crafted item's most-used recipe component with shears; armor must be fully repaired. |
 | Crafting (`crafting`) | `crafting-xp` | Crafting XP | Gain passive XP when crafting. |
 | Crafting (`crafting`) | `crafting-leather` | Craftable Leather | Craft Leather from Rotten Flesh. |
 | Crafting (`crafting`) | `crafting-skulls` | Craftable Skulls | Unlocks recipes for mob skulls. |
@@ -240,14 +240,14 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Crafting (`crafting`) | `crafting-reconstruction` | Ore Reconstruction | Recraft ores from their base components. |
 | Crafting (`crafting`) | `crafting-bulk-artisan` | Bulk Artisan | Shift-click a craft result to pull extra ingredients from your inventory and craft a bigger batch at once. |
 | Crafting (`crafting`) | `crafting-thrifty-hands` | Thrifty Hands | Every craft has a chance to refund one of its ingredients. |
-| Crafting (`crafting`) | `crafting-masterwork` | Masterwork | Tools and armor you craft can roll bonus durability, with a chance for a minor attribute bonus at full level. |
-| Crafting (`crafting`) | `crafting-compactor` | Compactor | Sneak and swap hands while aiming at a Crafting Table to compact full stacks into blocks immediately. |
+| Crafting (`crafting`) | `crafting-masterwork` | Masterwork | Each crafted tool or armor piece independently rolls variable bonus durability, a minor beneficial enchantment, and a full-level attribute bonus. |
+| Crafting (`crafting`) | `crafting-compactor` | Compactor | Sneak and press swap hands while aiming at a Crafting Table to compact full stacks immediately, even with both hands empty. |
 | Crafting (`crafting`) | `crafting-tinkerer` | Tinkerer | Combine two damaged tools of the same type in the crafting grid to keep their best enchantments. |
 | Crafting (`crafting`) | `crafting-provisioner` | Provisioner | Crafting or cooking food has a chance to yield bonus portions. |
 | Crafting (`crafting`) | `crafting-signature` | Artisan's Signature | Items you craft carry your signature, and villagers offer better trades while you carry your signed goods. |
 | Discovery (`discovery`) | `discovery-unity` | Experimental Unity | Collecting Experience Orbs adds XP to random skills. |
 | Discovery (`discovery`) | `discovery-world-armor` | World Armor | Passive armor depending on nearby block hardness. |
-| Discovery (`discovery`) | `discovery-xp-resist` | Experimental Resistance | Consume experience to mitigate damage only when a hit would drop you below 5 hearts or kill you. |
+| Discovery (`discovery`) | `discovery-xp-resist` | Experimental Resistance | Spend an immediately visible vanilla-level charge to mitigate a hit whose effective damage would drop you below 5 hearts or kill you. |
 | Discovery (`discovery`) | `discovery-villager-att` | Villager Attraction | Improves villager trades at the cost of XP per interaction. |
 | Discovery (`discovery`) | `discovery-better-mending` | Better Mending | Sneak-left-click to spend your stored XP and directly mend the Mending item in your hand. |
 | Discovery (`discovery`) | `discovery-archaeologist` | Archaeologist | Brushing suspicious blocks can yield bonus archaeology rewards. |
@@ -256,8 +256,8 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Discovery (`discovery`) | `discovery-trailblazer` | Trailblazer | Your first visit to each biome or structure type grants a skill-XP burst and brief speed. |
 | Discovery (`discovery`) | `discovery-field-notes` | Field Notes | Your first kill of each mob species pays big XP and banks a small permanent damage bonus against that species. |
 | Discovery (`discovery`) | `discovery-polymath` | Polymath | Each skill you have leveled past a threshold adds a small global XP-gain bonus. |
-| Discovery (`discovery`) | `discovery-relic-appraiser` | Relic Appraiser | Sneak-right-click rare drops (heads, discs, armor trims, pottery sherds) to appraise them for Discovery XP; appraised items gain a lore tag. |
-| Discovery (`discovery`) | `discovery-sixth-sense` | Sixth Sense | A private glowing direction line hints when an unexplored structure is within range. |
+| Discovery (`discovery`) | `discovery-relic-appraiser` | Relic Appraiser | Appraise rare drops for Discovery XP plus XP in one random eligible skill; placed appraised heads and skulls retain their stamp when broken. |
+| Discovery (`discovery`) | `discovery-sixth-sense` | Sixth Sense | A compact HUD names the nearest supported structure within up to 500 blocks, shows direction and distance, and clears inside it. |
 | Discovery (`discovery`) | `discovery-keen-eye` | Keen Eye | Chests and spawners in your line of sight briefly appear as private glowing block displays. |
 | Enchanting (`enchanting`) | `enchanting-quick-enchant` | Quick-Click Enchant | Enchant items by clicking enchant books directly on them. |
 | Enchanting (`enchanting`) | `enchanting-lapis-return` | Lapis Return | Enchanting at a table has a chance to refund lapis, more at higher levels. |
@@ -267,9 +267,9 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Enchanting (`enchanting`) | `enchanting-bookshelf-attunement` | Bookshelf Attunement | Gain virtual bookshelf power to improve enchanting table offer quality. |
 | Enchanting (`enchanting`) | `enchanting-grindstone-recovery` | Grindstone Recovery | Disenchanting can recover one removed enchantment onto a book with bonus XP. |
 | Enchanting (`enchanting`) | `enchanting-curse-cleansing` | Curse Cleansing | Sneak while taking a grindstone result to remove curses from the original item first, preserve every other property, and gain Enchanting XP. |
-| Enchanting (`enchanting`) | `enchanting-tome-rebinding` | Tome Rebinding | Shift-right-click a multi-enchant book in an anvil to split it into single-enchant books. Lossy at low levels, lossless at max. |
+| Enchanting (`enchanting`) | `enchanting-tome-rebinding` | Tome Rebinding | Drop one multi-enchant book while aiming at an anvil to divide it into single-enchant books. Lossy at low levels, lossless at max. |
 | Enchanting (`enchanting`) | `enchanting-soul-link` | Soul Link | Sneak-right-click an anvil to soul-link an enchanted item so it survives death, gated by an XP level buffer. |
-| Enchanting (`enchanting`) | `enchanting-arcane-siphon` | Arcane Siphon | Killing mobs in enchanted gear grants bonus XP and can siphon a book of their enchantments. |
+| Enchanting (`enchanting`) | `enchanting-arcane-siphon` | Arcane Siphon | Killing an equipped enchanted entity grants bonus XP and can siphon a book; player victims qualify at maximum level. |
 | Enchanting (`enchanting`) | `enchanting-rune-sight` | Rune Sight | Reveal the enchantments behind enchanting-table offers before you commit. One at first, the full list at max. |
 | Enchanting (`enchanting`) | `enchanting-infusion-transfer` | Infusion Transfer | Right-click the base item in an anvil to move one enchantment onto it from the sacrifice item. |
 | Enchanting (`enchanting`) | `enchanting-echo-of-knowledge` | Echo of Knowledge | Hold an enchanted book while collecting XP to charge it and upgrade an enchantment within vanilla caps. |
@@ -317,7 +317,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Kinetics (`kinetics`) | `kinetics-moon-jump` | Moon Jump | Each level raises every jump by 0.5 blocks. Sneak-jump for an additional floaty, low-gravity hop. |
 | Kinetics (`kinetics`) | `kinetics-rubber-soul` | Rubber Soul | Your landings carry spring. Bouncy blocks send you higher, and every landing keeps more momentum. |
 | Kinetics (`kinetics`) | `kinetics-soft-catch` | Soft Catch | Soft and springy blocks break your fall, and a fresh bounce grants a grace window. |
-| Kinetics (`kinetics`) | `kinetics-surface-skate` | Surface Skate | Sprint to slide across the ground with lowered friction; sneak to grip hard. |
+| Kinetics (`kinetics`) | `kinetics-surface-skate` | Surface Skate | Sprint to cancel a level-scaled share of friction on every ground surface; press sneak while grounded to brake horizontal motion immediately. |
 | Kinetics (`kinetics`) | `kinetics-terminal-toggle` | Terminal Toggle | Sneak in midair to switch between a hard dive and a drifting hang. |
 | Kinetics (`kinetics`) | `kinetics-heavy-frame` | Heavy Frame | Plant your feet while sneaking with a mace or spear: heavy knockback resistance at the cost of speed. |
 | Kinetics (`kinetics`) | `kinetics-mass-shift` | Mass Shift | Sneak and swap hands: look up for persistent Titan form, down for persistent Pocket form, or level to return to normal. Titan grants 20% damage and health with Slowness I; Pocket trades 20% damage and health for Speed I. |
@@ -390,7 +390,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Seaborne (`seaborne`) | `seaborne-turtles-vision` | Turtle's Vision | While underwater, you gain Night Vision. |
 | Seaborne (`seaborne`) | `seaborne-turtles-mining-speed` | Turtle Miner | Gain an attribute-based underwater mining boost that stacks with Aqua Affinity and compensates for the floating penalty. |
 | Seaborne (`seaborne`) | `seaborne-tidecaller` | Tidecaller | Surge forward with a water burst while in water or rain, triggered by sneaking or an attack swing depending on server settings. |
-| Seaborne (`seaborne`) | `seaborne-pressure-diver` | Pressure Diver | Gain depth-based protection underwater and partially suppress mining fatigue pressure. |
+| Seaborne (`seaborne`) | `seaborne-pressure-diver` | Pressure Diver | Gain scaling absorption hearts and depth-based protection underwater while partially countering Mining Fatigue; it does not extend oxygen. |
 | Seaborne (`seaborne`) | `seaborne-coral-gardener` | Coral Gardener | Coral you place survives out of water far longer, bonemeal grows coral, and reef blocks grant bonus XP. |
 | Seaborne (`seaborne`) | `seaborne-deep-salvager` | Deep Salvager | Underwater containers appear as private aqua glowing block displays and reward bonus treasure the first time you open them submerged. |
 | Seaborne (`seaborne`) | `seaborne-ink-veil` | Ink Veil | Taking damage underwater bursts a visible ink cloud, blinds hostiles, and temporarily blocks drowned and guardian targeting. |
@@ -433,7 +433,7 @@ Adapt declares 312 adaptation types. 311 are registered on a plain server; the t
 | Taming (`taming`) | `tame-beast-recall` | Beast Recall | Sneak-right-click with a lead to recall your nearest tamed companion to a safe nearby spot. Each recall costs hunger. |
 | Taming (`taming`) | `tame-shared-pain` | Shared Pain | Spread a portion of your incoming damage across nearby owned companions without reducing them below their health floor. |
 | Taming (`taming`) | `tame-mounted-tactics` | Mounted Tactics | Gain mount-specific combat and handling bonuses while riding. |
-| Taming (`taming`) | `tame-fetch` | Fetch | Your tamed wolves gather nearby dropped items and bring them straight to you. |
+| Taming (`taming`) | `tame-fetch` | Fetch | Idle tamed wolves physically run to nearby drops, pick them up, and carry them back to you. |
 | Taming (`taming`) | `tame-alphas-command` | Alpha's Command | Sneak-left-click while holding a bone to raycast a target, mark it with a private red glow, and command nearby combat pets to focus it. Successful commands consume one bone. |
 | Taming (`taming`) | `tame-guardian-instinct` | Guardian Instinct | Nearby pets leap to intercept projectiles aimed at you, taking reduced damage themselves. |
 | Taming (`taming`) | `tame-stable-hand` | Stable Hand | Animals you tame or breed keep a permanent bias toward better speed, jump, health, and safe fall distance. |

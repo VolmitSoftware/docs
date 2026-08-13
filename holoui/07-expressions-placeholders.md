@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "HoloUI documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -223,7 +223,7 @@ Failures never take a frame down.
 | Live `repeat.count` above `1024` | Truncated to `1024`, `repeat count <n> exceeds 1024, truncated` |
 | Expansion crosses the 4096 element budget | Repeat truncated and later elements skipped, with a message naming the cap |
 
-Every render-time failure logs one `WARNING` line, throttled to one line per document name per 60 seconds — the alternative is a line every 4 ticks for as long as a player looks at the block. `/holoui previews dump` receives every message of that build unthrottled; see [09 - Container Previews.md](/holoui/09-container-previews) and [02 - Commands & Permissions.md](/holoui/02-commands-permissions).
+Every render-time failure logs one `WARNING` line, throttled to one line per document name per 60 seconds — the alternative is a line every 4 ticks for as long as a player looks at the block. `/holoui preview dump` receives every message of that build unthrottled; see [09 - Container Previews.md](/holoui/09-container-previews) and [02 - Commands & Permissions.md](/holoui/02-commands-permissions).
 
 ## Toggle conditions
 

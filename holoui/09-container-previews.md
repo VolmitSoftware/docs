@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "HoloUI documentation: Container Previews"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -148,7 +148,7 @@ A null, NaN or infinite value falls back to the default. `previewEnabled` treats
 
 ## 2. The preview document format
 
-One document per file. The file's base name is the document name used by `/holoui previews`, by log lines, and by tie-breaking.
+One document per file. The file's base name is the document name used by `/holoui preview`, by log lines, and by tie-breaking.
 
 ### 2.1 Top level
 
@@ -424,7 +424,7 @@ The expression grammar, operators, standard function library and text pipeline a
 | 4096 element budget exhausted | Repeat truncated, remaining elements skipped |
 | Anything else during build | Build returns an empty list, so no preview |
 
-A rejected document logs `previews/<name>.json: <message>` and is skipped. Build-time and render-time errors log at most one line per document per minute (`ERROR_LOG_INTERVAL_MS = 60_000`, keyed by document name), because the alternative is a log line every four ticks for as long as the player looks at the block. `/holoui previews dump` passes its own per-invocation `Consumer<String>` sink, which is never throttled.
+A rejected document logs `previews/<name>.json: <message>` and is skipped. Build-time and render-time errors log at most one line per document per minute (`ERROR_LOG_INTERVAL_MS = 60_000`, keyed by document name), because the alternative is a log line every four ticks for as long as the player looks at the block. `/holoui preview dump` passes its own per-invocation `Consumer<String>` sink, which is never throttled.
 
 An exception anywhere inside one template's expansion aborts that whole template — including the remaining instances of a repeat — reports `<type>: <message>`, and the build continues with the next element.
 
@@ -584,11 +584,11 @@ Full command reference is in "02 - Commands & Permissions.md". The preview-speci
 
 | Command | Permission (all `default: op`) | Does |
 |---------|-------------------------------|------|
-| `/holoui previews list` | `holoui.command.previews` | Lists every loaded document with `blocks=`, `entities=`, `special=`, `priority=` counts from `matchSummary()` |
-| `/holoui previews reset [name]` | `holoui.command.previews.reset` | Rewrites shipped defaults over disk; `name` defaults to `*`; runs async; a trailing `.json` is tolerated |
-| `/holoui previews dump <name>` | `holoui.command.previews.dump` | Builds the document once and prints element counts plus up to 3 build errors and a `+N more` tail |
+| `/holoui preview list` | `holoui.command.previews` | Lists every loaded document with `blocks=`, `entities=`, `special=`, `priority=` counts from `matchSummary()` |
+| `/holoui preview reset [name]` | `holoui.command.previews.reset` | Rewrites shipped defaults over disk; `name` defaults to `*`; runs async; a trailing `.json` is tolerated |
+| `/holoui preview dump <name>` | `holoui.command.previews.dump` | Builds the document once and prints element counts plus up to 3 build errors and a `+N more` tail |
 
-A bare `/holoui previews` is normalized to `/holoui previews list`. `list` counts every matcher — exact names and globs, base match and every variant — so `chest.json` reports a large block count.
+A bare `/holoui preview` is normalized to `/holoui preview list`. `list` counts every matcher — exact names and globs, base match and every variant — so `chest.json` reports a large block count.
 
 `dump` for a player uses `MenuSessionManager.lookedAtBlock(player)`; if that block matches the document it builds against the live block with that block's merged variant vars, otherwise it falls back to statics. Console and RCON always get a statics scope, so every `slot` element reports `slot: target has no inventory` — expected, not a document bug. The dump error sink is per invocation and unthrottled, so repeated dumps of the same broken document always show its errors.
 

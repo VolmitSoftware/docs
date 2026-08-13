@@ -2,7 +2,7 @@
 title: "Custom Items & Item Providers"
 description: "HoloUI documentation: Custom Items & Item Providers"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -106,7 +106,7 @@ Main-thread and fault warnings are emitted once per provider id, not once per fa
 ### Provider status
 
 `providerStatuses()` returns one row per **definition** — always ten rows, in declaration order —
-built on demand for `/holoui items status` and never on a menu path.
+built on demand for `/holoui item status` and never on a menu path.
 
 ```java
 record ProviderStatus(String id, String pluginName, boolean pluginPresent,
@@ -243,11 +243,11 @@ ready.
 
 | Command | Permission | Behavior |
 |---|---|---|
-| `/holoui items status` | `holoui.command.items` | One row per definition: id, plugin, and state (missing / inactive / loading / ready with id count). Rows come from `providerStatuses()`, which enumerates every ready provider |
-| `/holoui items export` | `holoui.command.items.export` | Writes the catalog. Refuses when an export is already running |
+| `/holoui item status` | `holoui.command.items` | One row per definition: id, plugin, and state (missing / inactive / loading / ready with id count). Rows come from `providerStatuses()`, which enumerates every ready provider |
+| `/holoui item export` | `holoui.command.items.export` | Writes the catalog. Refuses when an export is already running |
 
 Both abort with the `ITEMS_DISABLED` message when `customItems` is false. The status output appends a
-clickable `/holoui items export` line when the sender also holds the export permission.
+clickable `/holoui item export` line when the sender also holds the export permission.
 
 Counting ids is the one place enumeration cost is paid; it is never paid while a menu is open.
 
@@ -344,7 +344,7 @@ reported separately by the command as an empty export.
 
 | Key | Type | Default | Meaning |
 |---|---|---|---|
-| `customItems` | boolean | `true` | Master switch. False makes `resolve` return null, blocks provider activation, and disables both `/holoui items` subcommands |
+| `customItems` | boolean | `true` | Master switch. False makes `resolve` return null, blocks provider activation, and disables both `/holoui item` subcommands |
 | `customItemProviders` | string | `""` | Comma-separated allowlist, empty meaning every provider. Entries are trimmed and lowercased and are matched against **either** the provider id **or** the plugin name, so `ItemsAdder` and `itemsadder` are equally valid |
 
 Both entries call `ItemProviderRegistry.reload()` on change. The settings file is polled every 5

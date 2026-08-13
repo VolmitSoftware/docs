@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Both use the same invalidate, reload, and locale path once a change is detected.
 | Studio world | Transient studio world via StudioSVC; `/iris jigsaw` can select the Jigsaw Studio generator for one activation | Studio dimension under `irisworldgen:studio_*`; no Jigsaw Studio authoring tree |
 | Folia | Regionized schedulers; pregen `runtimeSchedulerMode` always resolves to `FOLIA` on a regionized runtime | Not applicable |
 
-Startup never downloads packs. Paper bootstrap compiles the aggregate datapack from installed and world-local packs and accepts an empty pack set; legacy Bukkit and modded startup likewise use only pack bytes already on disk. Operators install `overworld`, `underworld`, repository branches, or direct `.zip` URLs with `/iris download`, then restart manually.
+Startup never downloads packs. Paper bootstrap compiles the aggregate datapack from installed and world-local packs and accepts an empty pack set; legacy Bukkit and modded startup likewise use only pack bytes already on disk. Operators use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<zip-url>`, then restart manually.
 
 Modded startup quarantines a corrupt persistent-dimension registry as `iris-dimensions.json.broken-<timestamp>` and continues without those dynamic worlds. Recovery: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 

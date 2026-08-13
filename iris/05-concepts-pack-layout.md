@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -201,7 +201,7 @@ Presence on disk is a weaker notion than loadability: a pack "exists" if its dir
 
 Downloaded pack keys must match `[a-z0-9_-]+`, and the check applies both to a caller-supplied expected key and to the key Iris derives from the archive.
 
-An archive with no expected key must contain exactly one dimension; its load key becomes the install folder name. Managed-release and listing downloads carry an exact expected key, so their archive may hold extra dimensions — the expected key picks the folder name, and the whole pack is validated before publication.
+An archive installed through `link=` has no expected key. Iris uses its shortest dimension key, then alphabetical order, as the install folder name while preserving every dimension in the pack. The built-in `overworld` and `underworld` downloads carry their exact expected key, so the expected key picks the folder name and the whole pack is validated before publication.
 
 ## When a resource does not resolve
 

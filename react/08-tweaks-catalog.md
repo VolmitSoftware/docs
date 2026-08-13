@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "React documentation: Tweaks Catalog"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,7 +73,7 @@ Collapses bamboo/sugar cane/cactus/kelp columns on break/physics. Hard-coded `ma
 
 ### `fast-drops`
 
-Routes eligible item drops into player inventory and grants eligible XP directly to the player. The current toggle implementation is coupled: entity item routing checks `teleportBlockDrops`; entity XP is granted only when both `teleportEntityDrops` and `teleportEntityXP` are true; block XP is removed when `teleportBlockXP` is true but granted only when `teleportEntityXP` is also true. Configurations that disable either coupled toggle can therefore leave drops vanilla or discard XP.
+Routes eligible item drops into player inventory and grants eligible XP directly to the player. `teleportBlockDrops`, `teleportBlockXP`, `teleportEntityDrops`, and `teleportEntityXP` control only their named paths; disabling one no longer prevents or deletes another path's items or XP. Entity and block stacks are cloned before inventory insertion so the API cannot mutate the live source stack. For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer; it does not cancel the whole event and ignores an event another plugin already cancelled. This lets another drop-routing plugin, including Adapt's Drop-To-Inventory adaptations, own the event first without duplicate transfers or deleted items.
 
 - **Class:** `TweakFastDrops` · **Listener:** yes
 

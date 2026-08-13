@@ -53,7 +53,7 @@ Iron, gold, and copper ore come out of the ground as ingots instead of raw chunk
 
 ### Pickaxe Drop-To-Inventory (`pickaxe-drop-to-inventory`)
 
-Blocks you break with a pickaxe put their drops straight into your inventory instead of on the ground. Anything that does not fit falls at your feet. It only runs for an actively learned level; with every adaptation unlearned, this path cannot transport ore. Nearby vanilla pickup or another magnet-style pickup listener can still make an ordinary drop appear immediate.
+Blocks you break with a pickaxe put their drops straight into your inventory instead of on the ground. Anything that does not fit falls at your feet. It only runs for an actively learned level; with every adaptation unlearned, this path cannot transport ore. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again. Nearby vanilla pickup or another magnet-style pickup listener can still make an ordinary drop appear immediate.
 
 ### Pickaxe Silk-Spawner (`pickaxe-silk-spawner`)
 

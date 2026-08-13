@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 1. Drop the CraftBukkit-labelled plugin jar into `plugins/`.
 2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first.
 3. First boot writes `plugins/Iris/settings.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download.
-4. Run `/iris download overworld` and/or `/iris download underworld`, wait for validation and atomic installation to finish, then restart the server. The command does not restart or stop the process itself.
+4. Run `/iris download pack=overworld` and/or `/iris download pack=underworld`, wait for validation and atomic installation to finish, then restart the server. The command does not restart or stop the process itself.
 
 Then verify from the server console:
 
@@ -94,7 +94,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Installing the first pack
 
-Use `/iris download overworld`, `/iris download underworld`, or `/iris download <https://host/path/pack.zip>`. Managed names use Git sources embedded in Iris; a URL must be an HTTP or HTTPS `.zip` link and must contain exactly one dimension key so Iris can determine its install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack.
+Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to hardcoded GitHub beta-release ZIPs. A custom link must use HTTP or HTTPS and have a path ending in `.zip`; Iris uses the shortest dimension key, then alphabetical order, as the install folder when the archive contains multiple dimensions. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack.
 
 Before you create a world you care about, run the Bukkit fresh-install runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks).
 
@@ -198,9 +198,7 @@ Full key list: [03 - Configuration](/iris/03-configuration).
 | Plugin | Startup compiles only packs already present into the aggregate datapack. Zero packs is a valid startup state |
 | Mod | Startup writes the forced datapack only from packs already present. Zero packs is a valid startup state |
 
-Manual install is `/iris download <pack-or-url>` (alias `dl`). The managed names are embedded mappings: `overworld` resolves to `IrisDimensions/overworld` at `master`, and `underworld` resolves to `IrisDimensions/underworld` at `main`; both ignore the command's `branch` argument. An HTTP or HTTPS `.zip` URL is downloaded directly. Any other name resolves as `IrisDimensions/<pack>/<branch>`, with `branch` defaulting to `stable`.
-
-The managed-pack match is case-sensitive, so `/iris download Overworld` misses the special case and tries `IrisDimensions/Overworld/stable` instead. Use lowercase.
+Manual install is `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<http(s)-zip-url>` (alias `dl`). There is no repository listing, arbitrary pack-name lookup, branch selector, or overwrite option. Built-in pack values are normalized case-insensitively; custom ZIPs are selected only through `link=`.
 
 Successful downloads update only the pack directory and validation result. Iris does not rebuild the live registry datapack, stop the server, or schedule a restart; restart manually before creating or opening a world from the new bytes. See [25 - Pack Management](/iris/25-pack-management).
 
@@ -209,7 +207,7 @@ Successful downloads update only the pack directory and validation result. Iris 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `/iris version` does nothing | Wrong directory, wrong platform jar, a duplicate Iris jar, Java below 25, or an exception during enable | Stop the server, leave exactly one matching artifact in place, confirm Java 25, then fix the **first** Iris exception in the startup log — later ones are usually fallout |
-| `settings.json` exists but no world packs exist | This is the normal first-start state | Run `/iris download overworld`, `/iris download underworld`, or install a complete pack folder, then restart |
+| `settings.json` exists but no world packs exist | This is the normal first-start state | Run `/iris download pack=overworld`, `/iris download pack=underworld`, or install a complete pack folder, then restart |
 | Players are kicked at login with an Iris message | Startup validation hasn't passed | Read the reason in the kick text and the console. External datapack failures lock login; fix the datapack state and restart |
 | Pack validates, but modded heights and biomes are wrong | The forced datapack was generated after registries had already loaded | Restart once with the pack already on disk, then create a fresh disposable world to confirm |
 | A non-op can't run any Iris command | `iris.all` isn't granted | Grant `iris.all`. `iris.treefeller` only covers survival tree felling and grants no commands |

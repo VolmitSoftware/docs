@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -46,6 +46,10 @@ has no better word for "visible to the plugins in this repository", not because 
 promise. Only the surfaces documented in this directory are stable across VolmLib versions; anything else can
 change signature without notice, and the Volmit plugins update in lockstep because they build against the
 same source tree.
+
+## Director completion
+
+Director suggests canonical command names and keeps aliases executable without duplicating them in completion lists. Required parameters receive bare positional value candidates. Optional parameters with known handler, enum, or boolean values receive complete `name=value` candidates immediately; a bare `name=` candidate is used only when Director cannot know the value set. Typing an explicit `name=` also completes the value side as full tokens, so accepting a key never requires inserting and deleting a space to trigger its values.
 
 ---
 

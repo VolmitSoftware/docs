@@ -92,12 +92,12 @@ Splits an enchanted book carrying several enchantments into one book per enchant
 
 How to use it:
 
-1. Put a multi-enchant book (two or more stored enchantments) in the left slot of an anvil.
-2. Make sure your cursor is empty.
-3. Shift-right-click that left slot. The inventory's Shift+Right click gesture is authoritative; it does not depend on the server's world sneak flag while the screen is open.
-4. XP levels are deducted, the original book is consumed, and the single-enchant books go to your inventory.
+1. Hold exactly one multi-enchant book with two or more stored enchantments. Drop one item, not the whole stack.
+2. Look directly at an anvil, chipped anvil, or damaged anvil within 5 blocks.
+3. Press drop (`Q` by default). You do not open or click the anvil interface.
+4. XP levels are deducted. The dropped book divides in place into separate single-enchant books, retaining its movement and pickup delay.
 
-If you do not have the levels, the attempt fizzles and nothing is consumed.
+If you do not have the levels, the attempt fizzles and the original book drops normally. A dropped stack of two or more books is left unchanged so the split cannot consume extra copies.
 
 ### Soul Link (`enchanting-soul-link`)
 
@@ -115,9 +115,9 @@ Only one item is linked at a time, marking a new one replaces the old link. If y
 
 ### Arcane Siphon (`enchanting-arcane-siphon`)
 
-Killing a non-player mob that is actually wearing or holding enchanted gear pays Enchanting XP per distinct enchantment on its helmet, chestplate, leggings, boots, main hand, or off hand, and sometimes drops an enchanted book carrying one of those enchantments. It works on its own once learned. A command-spawned mob qualifies, but the command must equip the item in one of those six slots and the death must be credited to the player; an enchanted item merely stored elsewhere or a `/kill` death does not count.
+Killing a living entity that is actually wearing or holding enchanted gear pays Enchanting XP per distinct enchantment on its helmet, chestplate, leggings, boots, main hand, or off hand, and sometimes drops an enchanted book carrying one of those enchantments. It works on its own once learned. A command-spawned entity qualifies, but the command must equip the item in one of those six slots and the death must be credited to the player; an enchanted item merely stored elsewhere or a `/kill` death does not count.
 
-Higher levels raise both the drop chance and the level the siphoned book rolls at, capped at the enchantment's vanilla maximum. Player kills do not count.
+Higher levels raise both the drop chance and the level the siphoned book rolls at, capped at the enchantment's vanilla maximum. Player victims qualify only while Arcane Siphon is at its configured maximum level; normal PVP policy still applies.
 
 ### Rune Sight (`enchanting-rune-sight`)
 
@@ -432,12 +432,12 @@ Curses recognized are `BINDING_CURSE` and `VANISHING_CURSE`, on both direct ench
 | Cost factor | 0.7 |
 | Tick interval (ms) | 2100 |
 | Config file | `plugins/Adapt/adapt/adaptations/enchanting-tome-rebinding.toml` |
-| Listened events | `InventoryClickEvent` (HIGHEST, cancelled events ignored) |
+| Listened events | `PlayerDropItemEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Enchant Loss Chance; XP Level Cost |
 | Stat key | `enchanting.tome-rebinding.books-split` |
 | Milestones | `challenge_enchanting_rebind_50` (50, reward 400), `challenge_enchanting_rebind_500` (500, reward 1200) |
 
-Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which reaches 0 at max level with the shipped defaults. A loss only happens when more than one enchantment remains. Activation is the anvil slot-0 `SHIFT_RIGHT` click with an empty cursor; the click type itself supplies the Shift requirement because the world sneak flag is unreliable while an inventory is open. XP level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`. Skill XP is `skillXpOnSplit` per book produced.
+Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which reaches 0 at max level with the shipped defaults. A loss only happens when more than one enchantment remains. Activation is a `PlayerDropItemEvent` for exactly one multi-enchant book while the player ray-targets any anvil state within 5 blocks; larger dropped stacks remain unchanged. The original dropped entity becomes the first result and the other split books spawn beside it with matching motion and pickup delay. Stored enchantment levels are preserved, including levels above the normal vanilla maximum. XP level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`. Skill XP is `skillXpOnSplit` per book produced.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -489,12 +489,12 @@ The mark is a random token written to the item's persistent data under `adapt:so
 | Cost factor | 0.6 |
 | Tick interval (ms) | 2600 |
 | Config file | `plugins/Adapt/adapt/adaptations/enchanting-arcane-siphon.toml` |
-| Listened events | `EntityDeathEvent` (MONITOR, cancelled events ignored) |
+| Listened events | `EntityDeathEvent` (HIGH, cancelled events ignored) |
 | Menu stat lines | Book Drop Chance; Enchant Quality Bonus |
 | Stat key | `enchanting.arcane-siphon.books-siphoned` |
 | Milestones | `challenge_enchanting_siphon_25` (25, reward 400), `challenge_enchanting_siphon_250` (250, reward 1200) |
 
-Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand; duplicate enchantments keep the highest level. Mob spawn method is irrelevant, but the killer must be the player and player victims are excluded. Skill XP is `bonusXpPerEnchant * distinctEnchantCount` and is paid whether or not a book drops. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)`; with shipped settings it ranges from 20% at adaptation level 1 to 50% at level 5. Book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum.
+Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand; duplicate enchantments keep the highest level. Spawn method is irrelevant, but the killer must be the player. Player victims qualify only at the configured maximum Arcane Siphon level. Skill XP is `bonusXpPerEnchant * distinctEnchantCount` and is paid whether or not a book drops. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)`; with shipped settings it ranges from 20% at adaptation level 1 to 50% at level 5. Book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum. The HIGH priority adds the siphoned book before HIGHEST death-drop inventory routers process the drops.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

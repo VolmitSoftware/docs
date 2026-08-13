@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Adapt documentation: Skill - Taming"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -74,7 +74,7 @@ How to use it:
 
 ### Fetch (`tame-fetch`)
 
-Your tamed wolves collect dropped items around you and bring them back. With `realFetch` on, a wolf inside the walk radius physically trots to the drop, picks it up, and walks it to you. Drops farther out (or when a walk cannot start) are pulled to you directly instead.
+Your idle tamed wolves physically collect dropped items around you. A wolf must path to the drop, get within 1.5 blocks, pick it up, path back within 2 blocks of you, and then drop the carried stack at its own position. Fetch never teleports an item to you; if no eligible wolf can reach it, the item stays where it is.
 
 How to use it:
 
@@ -83,7 +83,7 @@ How to use it:
 3. Drop items or walk near loose drops.
 4. Wolves work automatically on their own pass, subject to the carry chance roll.
 
-A fetched item goes through the normal pickup event as if you had walked over it, so a protection plugin that would block your pickup blocks the fetch too. On Folia, wolf and item scans only run when the area belongs to the current region.
+A fetched item goes through the normal pickup event as if you had walked over it, so a protection plugin that would block your pickup blocks the fetch too. The source of the drop does not matter, so another player may throw the item, but a wolf still has to complete the physical trip. On Folia, wolf and item scans only run when the area belongs to the current region. On a platform without Paper's pathfinder API, Fetch leaves drops alone rather than silently falling back to teleportation.
 
 ### Alpha's Command (`tame-alphas-command`)
 
@@ -416,7 +416,7 @@ Menu lore: "Fetch Range", "Carry Chance".
 
 Milestones: `challenge_taming_fetch_1k` and `challenge_taming_fetch_10k` on `taming.fetch.items-fetched` at 1000 (reward 400) and 10000 (reward 1500).
 
-Hard limits in code: pickup range 1.5 blocks, delivery range 2 blocks, and a walked fetch is abandoned if the wolf ends up more than 11 blocks from you, because vanilla yanks pets back at that distance.
+Hard limits in code: pickup range 1.5 blocks, delivery range 2 blocks, and a fetch is abandoned if the wolf ends up more than 11 blocks from you, because vanilla yanks pets back at that distance. An aborted job returns any already-carried stack at the safest available owner or wolf location.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -427,11 +427,10 @@ Hard limits in code: pickup range 1.5 blocks, delivery range 2 blocks, and a wal
 | `maxCarryRate` | `0.9` | Ceiling on that chance, 0-1. |
 | `wolfSearchRadius` | `24.0` | Radius in blocks searched for your tamed wolves. |
 | `xpPerItemFetched` | `4` | Taming XP per delivered item. |
-| `maxWolves` | `6` | Tamed wolves counted around the owner, hard-capped at 12. |
+| `maxWolves` | `6` | Eligible idle wolves used around the owner, hard-capped at 12. |
 | `maxCarryPerTick` | `4` | Drops handled per owner per pass, hard-capped at 8. |
-| `realFetch` | `true` | True walks a wolf to the drop and back; false pulls every drop straight to you. |
 | `fetchWalkSpeed` | `1.15` | Pathfinding speed multiplier while walking a fetch, clamped to 0.1 - 4.0. |
-| `pathfindRadius` | `9.0` | Farthest drop a wolf will walk to, in blocks, clamped internally to 11. |
+| `pathfindRadius` | `9.0` | Farthest drop a wolf may physically fetch, in blocks, clamped internally to 11; farther drops remain untouched. |
 | `fetchDeadlineMillis` | `9000` | Milliseconds a walked fetch may run before it is abandoned, clamped to 1000 - 60000. |
 | `maintenanceIntervalTicks` | `5` | Ticks between re-issuing the wolf its path, clamped to 1 - 20. |
 

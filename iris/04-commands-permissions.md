@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged instead and the message tells you to restart before it exists. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
-If the pack is missing you get `Could not find or download dimension …` plus a `/iris download <pack>` hint — the world is not created.
+If the pack is missing, Iris identifies the exact supported download form — `pack=overworld`, `pack=underworld`, or `link=<zip-url>` — and does not create the world.
 
 ### Pregenerate an area
 
@@ -131,7 +131,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `loadWorld` | `import` | **Bukkit** | `<world>`, player origin | Load a managed Iris world |
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
-| `download` | `dl` | Both | `<pack-or-url> [branch=stable] [overwrite=false]` (`pack` alias `project`; `overwrite` alias `force`) | Install from an embedded managed Git source, an IrisDimensions repository branch, or a direct HTTP(S) `.zip`; restart manually before use |
+| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a hardcoded beta-release pack or direct ZIP; restart manually before use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics; player origin on Bukkit |
 | `reload` | | Both | — | Reload `settings.json` and locale; modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
@@ -367,7 +367,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
-| `enable` | `create` | `<dimension> <pack\|pack:dimensionKey> [seed\|random]` | Create/inject a persistent Iris dimension (downloads the pack if missing) |
+| `enable` | `create` | `<dimension> <pack\|pack:dimensionKey> [seed\|random]` | Create/inject a persistent Iris dimension; refuses if the pack is missing |
 | `replace-overworld` | | `<pack\|pack:dimensionKey> [seed\|random]` | Inject primary world routing |
 | `mainworld` | | `<pack\|pack:dimensionKey\|off> [seed\|random]` | Configure the main-world preset in `modded.json` |
 | `disable` | | `<dimension>` | Evacuate and unload; keep disk data |
@@ -384,7 +384,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | `EngineStatus` | | **Bukkit** | — | Loaded tectonic plate count |
 | `Sentry` | `sentry` (modded) | Both | — | Send a test exception to the error reporter |
 | `genhash` | | **Bukkit** | `[radius=4] [centerX=0] [centerZ=0]`, contextual `world` | Hash generated blocks in a fixed area. The center parameters are `centerX`/`centerZ` here, not the hyphenated `goldenhash` names |
-| `update-world` | `^world` | **Bukkit** | `[confirm=false] [fresh-download=false]`, contextual `world` and `pack` (`pack` alias `dimension`; `confirm` alias `c`; `fresh-download` aliases `fresh`, `new`) | Unsafe pack swap into a world |
+| `update-world` | `^world` | **Bukkit** | `[confirm=false]`, contextual `world` and `pack` (`pack` alias `dimension`; `confirm` alias `c`) | Unsafe pack swap into a world using an already-installed source pack |
 | `mantle` | | **Bukkit** | `[plate=false] [name=21474836474]` | Dump a mantle section or plate under the dump folder |
 | `packBenchmark` | | **Bukkit** | `[dimension=overworld] [radius=2048] [gui=false]` (`dimension` alias `pack`) | Pack benchmark |
 | `upgrade` | | **Bukkit** | `[version=latest]` | Data version upgrade helper |

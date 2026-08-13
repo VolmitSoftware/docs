@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -94,7 +94,7 @@ Alias `c`. You can't pass `seed` without also passing `pack`.
 
 The `pack:dimension` form has to be **quoted** — `"overworld:overworld"` — because Brigadier's unquoted string type doesn't accept a colon. Iris's own help text says the same thing.
 
-If the pack isn't installed, create prints a message, downloads `IrisDimensions/<pack>` on a background thread (from the `master` branch), then injects the dimension. Once that succeeds the dimension is live and gets re-injected on later startups.
+If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`, restart, and then run create again.
 
 ```text
 /iris create myworld overworld 1337
@@ -237,7 +237,7 @@ The studio group itself has aliases `std` and `s`. Default create name is `studi
 
 | Command | Aliases | Notes |
 |---|---|---|
-| `create` | `+` | Name defaults to `studio`, template defaults to **`example`**. This differs from the plugin, where omitting the template scaffolds a starter pack instead. The template pack is auto-downloaded (from `master`) if missing |
+| `create` | `+` | Name defaults to `studio`, template defaults to **`example`**. This differs from the plugin, where omitting the template scaffolds a starter pack instead. The template pack must already be installed |
 | `open` | `o` | Pack is required; seed defaults to `1337` |
 | `vscode` | `vsc` | Writes the workspace and opens it |
 | `update` | — | Regenerates the workspace schemas without opening anything |
@@ -284,7 +284,7 @@ The session is genuinely finished when you restart the server cleanly, the produ
 | Starting a pregen while one is running | Start fails | `/iris pregen stop` first |
 | `/iris pregen resume` expected to only resume | It's an alias of `pause`, which toggles | Check `/iris pregen status` instead of assuming |
 | Studio closed mid-edit | The studio world is discarded | Your edits are on disk in `packs/` and survive. Reopen the studio |
-| No pack exists after first boot | Normal: Iris never downloads packs during startup | Run `/iris download overworld`, `/iris download underworld`, or `/iris download <https://host/pack.zip>`, then restart. An offline install must contain each complete pack tree |
+| No pack exists after first boot | Normal: Iris never downloads packs during startup | Run `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/pack.zip`, then restart. An offline install must contain each complete pack tree |
 | Relying on `type=default` | Resolves through `generator.defaultWorldType`, which someone may have changed | Name the pack explicitly: `type=overworld` |
 
 ## Quick reference

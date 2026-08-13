@@ -2,7 +2,7 @@
 title: "Overview"
 description: "HoloUI documentation: Overview"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -50,10 +50,10 @@ Docs `01`-`10` cover operator and menu-author workflows, docs `11`-`12` cover ru
 ## First steps (operators)
 
 1. Install the jar and start once so `plugins/holoui/` is created ([01 - Installation & Configuration](/holoui/01-installation-configuration)).
-2. Create a baseline hologram with `/holoui menus create <id>`, or put a menu JSON under `plugins/holoui/menus/` ([03 - Menu File Format](/holoui/03-menu-file-format)). The command writes the shipped blank hologram: a title, a hint line, and a Close button. The same document is the editor's Blank hologram template. Image assets go in `plugins/holoui/images/`.
+2. Create a baseline hologram with `/holoui menu create <id>`, or put a menu JSON under `plugins/holoui/menus/` ([03 - Menu File Format](/holoui/03-menu-file-format)). The command writes the shipped blank hologram: a title, a hint line, and a Close button. The same document is the editor's Blank hologram template. Image assets go in `plugins/holoui/images/`.
 3. Grant `holoui.command`, the subcommand node you need, and `holoui.open.<menuId>` for each menu id ([02 - Commands & Permissions](/holoui/02-commands-permissions)).
-4. Open with `/holoui open <id>` or `/holoui open menu=<id>`. While it is open, `/holoui move` re-anchors that live session to your current position without changing its current direction. For a persistent placement, use `/holoui boards create <board> <menu>`; `/holoui menus` and the board row aliases persist content edits.
-5. Container previews are already on (`previewEnabled` defaults to `true`). Grant `holoui.preview` to viewers ([09 - Container Previews](/holoui/09-container-previews)). `/holoui builder` opens the web editor. `/holoui edit` and `/holoui boards editweb` create live sync links only when `editorSyncCreateToken` is set; otherwise they offer a one-way copy whose saves stay in the browser ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)). Export from the editor and copy the files into `plugins/holoui/` to get a new menu onto a default install.
+4. Open with `/holoui open <id>`. While it is open, `/holoui move` re-anchors that live session to your current position without changing its current direction. For a persistent placement, use `/holoui board create <id>` when the menu has the same id, or `/holoui board create <board> <menu>` otherwise. `/holoui menu` and the board row commands persist content edits.
+5. Container previews are already on (`previewEnabled` defaults to `true`). Grant `holoui.preview` to viewers ([09 - Container Previews](/holoui/09-container-previews)). `/holoui builder` opens the web editor. `/holoui edit` and `/holoui board web` create live sync links only when `editorSyncCreateToken` is set; otherwise they offer a one-way copy whose saves stay in the browser ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)). Export from the editor and copy the files into `plugins/holoui/` to get a new menu onto a default install.
 
 Plugin developers start at [13 - API - Getting Started](/holoui/13-api-getting-started).
 

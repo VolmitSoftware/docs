@@ -63,7 +63,9 @@ Operators can turn either trigger off, require sneak for the swing trigger, rest
 
 ### Pressure Diver (`seaborne-pressure-diver`)
 
-Rewards going deep. Once your eyes are far enough below sea level, you get Resistance and Water Breathing on a rolling refresh, and incoming damage is scaled down on top of that. Go deeper still and the Resistance steps up a tier. The required depth shrinks as you level, so higher levels get the buff nearer the surface.
+Rewards going deep. Once your eyes are far enough below sea level, you gain visible absorption hearts, refreshed Resistance, and direct incoming-damage reduction. Go deeper still and the Resistance steps up a tier. The required depth shrinks as you level, so higher levels get the protection nearer the surface. Pressure Diver does not grant Water Breathing; Organic Oxygen Tank remains the oxygen adaptation.
+
+The absorption capacity scales from two hearts at level 1 to six hearts at level 4 with the defaults. It fills when Pressure Diver first activates and only adds newly unlocked capacity if your level rises; the periodic depth refresh does not replace hearts already consumed by damage. Surfacing removes Pressure Diver's own absorption capacity without removing capacity supplied by another adaptation or effect.
 
 It also fights actual Mining Fatigue. While the buff is up it adds a submerged mining speed modifier sized to partly cancel the amplifier you are carrying. It does not counter the normal underwater or floating penalties; Turtle Miner and Aqua Affinity handle those.
 
@@ -403,7 +405,7 @@ Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` 
 | Tick interval (ms) | 20 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-pressure-diver.toml` |
 
-Menu stat lines: Minimum Depth Requirement; Depth Damage Reduction; Mining Fatigue Reduction Chance.
+Menu stat lines: Minimum Depth Requirement; Depth Damage Reduction; Mining Fatigue Reduction Chance; Depth Absorption Hearts.
 
 Listened events:
 
@@ -412,7 +414,7 @@ Listened events:
 - `BlockBreakEvent` (`MONITOR`, ignore cancelled) - counts blocks mined while the deep state is active
 - `PlayerQuitEvent` - clears depth state
 
-Depth is measured as world sea level minus eye Y. Meeting the depth threshold applies `RESISTANCE` at amplifier 0 and `WATER_BREATHING` at amplifier 0 for `effectTicks`; passing the deep threshold raises Resistance to amplifier 1. The depth threshold floors at 2 blocks and the deep threshold at 4 blocks. Refresh cadence is clamped to 250 ms to 750 ms, with a 250 ms entry check while shallow, and refresh work is batched at 128 players per tick.
+Depth is measured as world sea level minus eye Y. Meeting the depth threshold applies `RESISTANCE` at amplifier 0 for `effectTicks`, adds a namespaced `MAX_ABSORPTION` capacity modifier, and grants that new capacity as absorption health; passing the deep threshold raises Resistance to amplifier 1. It does not apply `WATER_BREATHING`. The absorption modifier composes with other Adapt modifiers, is removed on surfacing, and is not refilled by ordinary refresh pulses. The depth threshold floors at 2 blocks and the deep threshold at 4 blocks. Refresh cadence is clamped to 250 ms to 750 ms, with a 250 ms entry check while shallow, and refresh work is batched at 128 players per tick.
 
 Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blocks-mined` at 1000, reward 400.
 
@@ -425,11 +427,13 @@ Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blo
 | `damageReductionBase` | `0.12` | Damage reduction while deep, as a fraction 0-1, before level scaling. |
 | `damageReductionFactor` | `0.26` | Extra damage reduction fraction gained at max level. |
 | `maxDamageReduction` | `0.45` | Hard cap on the damage reduction fraction, 0-1. |
+| `absorptionHealthBase` | `4` | Absorption health points granted at level 1. Two health points display as one heart. |
+| `absorptionHealthFactor` | `8` | Additional absorption health points granted at level 4, for 12 points or six hearts total by default. |
 | `fatigueTrimChanceBase` | `0.2` | Chance term, 0-1, feeding the fatigue cancellation math, before level scaling. |
 | `fatigueTrimChanceFactor` | `0.45` | Extra chance term gained at max level. Total is clamped to 1. |
-| `fatigueTrimAmountBase` | `1` | Mining Fatigue amplifier levels cancelled per second, before level scaling. |
-| `fatigueTrimAmountFactor` | `1` | Extra amplifier levels cancelled at max level. |
-| `effectTicks` | `60` | Duration in ticks of each Resistance and Water Breathing refresh, clamped from 20 to 1200, and the basis for the refresh cadence. |
+| `fatigueTrimAmountBase` | `1` | Mining Fatigue amplifier steps represented by each conceptual trim proc, before level scaling. |
+| `fatigueTrimAmountFactor` | `1` | Extra amplifier steps per conceptual trim proc at max level. |
+| `effectTicks` | `60` | Duration in ticks of each Resistance refresh, clamped from 20 to 1200, and the basis for the refresh cadence. |
 | `fatigueCounterDurationTicks` | `80` | Maximum ticks the mining-speed counter lasts, clamped to the remaining Mining Fatigue duration and from 20 to 1200. Zero disables it. |
 | `xpPerDepthPulse` | `6` | Skill XP granted per depth pulse. |
 | `xpPulseCooldownMillis` | `3000` | Milliseconds between depth XP pulses. |

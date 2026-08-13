@@ -19,7 +19,7 @@ Everything below only runs when you have learned the adaptation to level 1 or hi
 
 ### Deconstruction (`crafting-deconstruction`)
 
-Shears that work backwards. Point them at an item lying on the ground and it returns half of the recipe's most-used component, accounting for repeated slots and recipes that craft more than one result. Large salvage outputs are split into legal stacks rather than rejected.
+Shears that work backwards. Point them at an item lying on the ground and it returns half of the recipe's most-used component, accounting for repeated slots and recipes that craft more than one result. Armor must be fully repaired; its enchantments and other metadata are ignored only while finding the original crafting recipe. Large salvage outputs are split into legal stacks rather than rejected.
 
 **How to use it**
 
@@ -104,13 +104,15 @@ Works on its own once learned.
 
 ### Masterwork (`crafting-masterwork`)
 
-Tools and armor you craft can come out better than they should. A masterwork roll adds a fraction of the item's base durability on top. `+264 Masterwork` is the extra maximum durability on an item with 528 base durability at the full 50-percent roll. At full level there is a further chance for a small attribute bonus: attack damage on a tool, armor on a piece of armor. Masterwork does not refund diamonds or other ingredients; that roll belongs to Thrifty Hands.
+Tools and armor you craft can come out better than they should. Every actual output rolls independently, including each item produced by one shift-click batch. A successful masterwork adds a randomized fraction of the item's base durability: with shipped settings the roll spans half to all of the durability bonus available at your level. At full level that means +25-50 percent, so `+264 Masterwork` is the upper durability roll for an item with 528 base durability rather than a fixed bonus.
+
+Each successful masterwork also has a 10-percent chance to gain one compatible, positive level-one vanilla enchantment. At full level it separately has a 15-percent chance for a small attribute bonus: +1 attack damage on a tool or +1 armor on armor. Normal outputs remain normal when the 75-percent full-level masterwork roll misses. Masterwork does not refund diamonds or other ingredients; that roll belongs to Thrifty Hands.
 
 Works on its own once learned.
 
 ### Compactor (`crafting-compactor`)
 
-A one-gesture way to squash loose materials into blocks. Look at a crafting table, sneak, tap swap hands, and each supported material with at least 64 plain units across the inventory gets compacted. Glowstone dust uses its vanilla 4:1 ratio; coal and every other supported material use 9:1, leaving any non-convertible remainder in the inventory.
+A one-gesture way to squash loose materials into blocks. Look at a crafting table, sneak, tap swap hands, and each supported material with at least 64 plain units across the inventory gets compacted. Neither hand needs to hold an item, so the gesture works with both hands empty. Glowstone dust uses its vanilla 4:1 ratio; coal and every other supported material use 9:1, leaving any non-convertible remainder in the inventory.
 
 **How to use it**
 
@@ -213,7 +215,7 @@ Written to `plugins/Adapt/adapt/skills/crafting.toml` on first load.
 
 Milestones: `challenge_crafting_decon_200` and `challenge_crafting_decon_5k` on `crafting.deconstruction.items-deconstructed` at 200 and 5000, rewarding 300 and 1000.
 
-For each recipe Adapt counts every occupied shaped or shapeless slot, chooses the material occupying the most slots, adjusts for the recipe's output count, and returns 50 percent. When an item has multiple eligible recipes, the recipe with the greatest total occupied-slot count wins. Recipes whose salvage is not worth less than the source are rejected. Outputs above the material's maximum stack size are emitted as multiple item entities.
+For each recipe Adapt counts every occupied shaped or shapeless slot, chooses the material occupying the most slots, adjusts for the recipe's output count, and returns 50 percent. Armor is eligible only at zero damage; Adapt uses a plain copy of fully repaired armor for recipe lookup so enchantments, Masterwork metadata, and other item metadata do not hide its vanilla recipe. When an item has multiple eligible recipes, the recipe with the greatest total occupied-slot count wins. Recipes whose salvage is not worth less than the source are rejected. Outputs above the material's maximum stack size are emitted as multiple item entities.
 
 Listened events:
 
@@ -280,7 +282,7 @@ Milestones: `challenge_crafting_skulls_10` and `challenge_crafting_skulls_100` o
 
 Listened events:
 
-- `CraftItemEvent` (`on`): taking a craft result
+- `CraftItemEvent` (`on`): taking a skull recipe result
 
 ### Backpacks
 
@@ -436,7 +438,9 @@ Milestones: `challenge_crafting_masterwork_50` and `challenge_crafting_masterwor
 
 Listened events:
 
-- `CraftItemEvent` (`on`): taking a craft result
+- `CraftItemEvent` (HIGHEST, cancelled events ignored): starts the roll and a shift-click batch.
+- `ItemCraftedEvent` (MONITOR): counts each actual output and arms the next independent batch roll.
+- `PrepareItemCraftEvent` (HIGHEST): supplies the cached roll for the next shift-crafted output without rerolling repeated preview callbacks.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -445,6 +449,8 @@ Listened events:
 | `rollChanceMax` | `0.75` | Ceiling on the masterwork roll chance. |
 | `bonusPercentBase` | `0.1` | Fraction of base durability added by a masterwork roll at level 1. |
 | `bonusPercentFactor` | `0.4` | Additional durability fraction gained across the level range. |
+| `bonusRollMinimumFraction` | `0.5` | Minimum fraction of the level-scaled maximum durability bonus used by each successful random roll, 0-1. |
+| `enchantmentChance` | `0.1` | Chance a successful masterwork also gains one compatible beneficial level-one enchantment, 0-1. |
 | `attributeChance` | `0.15` | Chance a full-level masterwork roll also grants an attribute bonus, 0-1. |
 | `attackDamageBonus` | `1.0` | Attack damage added by that bonus on a tool. |
 | `armorBonus` | `1.0` | Armor added by that bonus on an armor piece. |
@@ -462,7 +468,7 @@ Listened events:
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adapt/adaptations/crafting-compactor.toml` |
 
-Activation requires all four: sneaking, an active level above 0, no container open beyond the default inventory view, and a `CRAFTING_TABLE` as the exact target block within 5 blocks. Stored levels above 1 are normalized back down on join.
+Activation requires all four: sneaking, an active level above 0, no container open beyond the default inventory view, and a `CRAFTING_TABLE` as the exact target block within 5 blocks. The contents of the main and off hand are irrelevant. This exact gesture remains authoritative if another listener has already cancelled the shared swap-hands event. Stored levels above 1 are normalized back down on join.
 
 Supported conversions are iron, gold, coal, redstone, copper, lapis lazuli, raw iron, raw gold, raw copper, diamond, emerald, and netherite into their block forms at 9:1, plus glowstone dust into glowstone at 4:1. A material needs at least 64 plain units across the inventory before its convertible units are processed; those units may be split across slots.
 

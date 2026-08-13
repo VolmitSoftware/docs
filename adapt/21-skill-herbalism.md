@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Adapt documentation: Skill - Herbalism"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,7 +60,7 @@ Golden apples, enchanted golden apples, and golden carrots get a bigger visual, 
 
 Blocks you break with a hoe send their drops straight into your inventory. It works on its own once learned, and it is a single-level adaptation. Survival mode only.
 
-Each drop is run through a normal pickup attempt first, so protection plugins that block pickups still win. Items that do not fit are dropped at your feet with a failure sound.
+Each drop is run through a normal pickup attempt first, so protection plugins that block pickups still win. Items that do not fit are dropped at your feet with a failure sound. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again.
 
 ### Herbalist's Luck (`herbalism-luck`)
 

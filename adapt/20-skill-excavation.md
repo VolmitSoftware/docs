@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Adapt documentation: Skill - Excavation"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,7 +58,7 @@ The merge handler is wired to a shift-left-click that moves an item between inve
 
 Blocks you break with a shovel send their drops straight into your inventory instead of onto the ground. It works on its own once learned, and it is a single-level adaptation.
 
-Each drop is run through a normal pickup attempt first, so protection plugins that block pickups still win; anything they deny stays on the ground as usual. Items that do not fit in your inventory are dropped at your feet with a failure sound.
+Each drop is run through a normal pickup attempt first, so protection plugins that block pickups still win; anything they deny stays on the ground as usual. Items that do not fit in your inventory are dropped at your feet with a failure sound. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again.
 
 ### Seismic Ping (`excavation-seismic-ping`)
 

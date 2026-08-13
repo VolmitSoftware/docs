@@ -13,7 +13,7 @@ The plugin also watches whatever block you are looking at. Every half second it 
 
 The payouts are lopsided on purpose. A new block is worth a few points, a new mob or player is worth a lot more, and stepping into a dimension or world you have never visited is worth hundreds. Rare finds get their own particle flourish so you notice them.
 
-The 14 adaptations mostly turn curiosity into utility: a HUD that reads out what you are looking at, direction hints toward unexplored structures, a compass that points at the nearest structure, glowing chests through walls, and better archaeology brushing. A few convert experience into something else, either armor, damage resistance, cheaper villager trades, or faster mending.
+The 14 adaptations mostly turn curiosity into utility: a HUD that reads out what you are looking at, direction guidance toward nearby generated structures, a compass that points at the nearest structure, glowing chests through walls, and better archaeology brushing. A few convert experience into something else, either armor, damage resistance, cheaper villager trades, or faster mending.
 
 ## Adaptations
 
@@ -33,7 +33,7 @@ Works on its own once learned.
 
 ### Experimental Resistance (`discovery-xp-resist`)
 
-An emergency brake tied to your experience bar. It only fires when a committed hit would drop you below five hearts or kill you outright, and when it does it spends vanilla levels through the normal experience-cost path and cuts the damage. If you do not have the levels, it fails with a red puff and the hit lands in full. Higher adaptation levels both cut more damage and cost fewer levels.
+An emergency brake tied to your experience bar. It predicts the threshold from the hit's effective final damage, after armor and other reductions, and only fires when that hit would drop you below five hearts or kill you outright. It then spends vanilla levels through the normal experience-cost path and cuts the damage. The built-in charge authoritatively changes the server level, immediately updates the XP display, and shows a `-N XP Levels` notice. If you do not have the levels, it fails with a red puff and the hit lands in full. Higher adaptation levels both cut more damage and cost fewer levels.
 
 Works on its own once learned.
 
@@ -106,7 +106,7 @@ Works on its own once learned.
 
 ### Relic Appraiser (`discovery-relic-appraiser`)
 
-Turns rare junk into XP. Heads, music discs, armor trim templates, and pottery sherds can be appraised for Discovery XP scaled by how rare the category is. An appraised item is stamped so it cannot be appraised twice.
+Turns rare junk into XP. Heads, music discs, armor trim templates, and pottery sherds can be appraised for Discovery XP scaled by how rare the category is. Each successful appraisal also grants a bounded random XP payout to one enabled, permitted non-Discovery skill. An appraised item is stamped so it cannot be appraised twice; placing and breaking an appraised head or skull preserves the exact stamped item data and lore.
 
 **How to use it**
 
@@ -118,7 +118,7 @@ Already-appraised items just puff smoke.
 
 ### Sixth Sense (`discovery-sixth-sense`)
 
-A quiet nudge. When an unexplored structure comes within range, you get a private six-block glowing direction line pointing toward it, not an outline on the structure or a line extending all the way to it. Structures you have already been within 20 blocks of stop triggering it. One of 16 structure families is searched every pulse; villages, pillager outposts, and other jigsaw structures are included, and each player advances through the families independently.
+A compact navigator above the hotbar. It maintains the nearest supported generated structure within its level-scaled range, up to 500 blocks, and shows a structure symbol, its specific name or type, an eight-way compass direction, and rounded block distance. A short private direction line still appears when a nearer target is acquired. The cue clears while you are inside a supported generated structure's exact bounding box. One of 16 structure families is searched every pulse; villages, pillager outposts, and other jigsaw structures are included, and each player advances through the families independently. It does not alter vanilla XP.
 
 Works on its own once learned.
 
@@ -271,7 +271,7 @@ Listened events:
 | Tick interval (ms) | 5215 |
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-xp-resist.toml` |
 
-Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels` and deducted with Bukkit's synchronized level API. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
+The trigger predicts post-hit health from `EntityDamageEvent.getFinalDamage()`, so armor and the damage modifiers already committed to the event are part of the threshold decision. Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels`; the built-in charge uses Bukkit's authoritative level-accounting path, preserves bar progress, immediately pushes the new XP display, and shows a `-N XP Levels` notice. A registered ability cost provider may waive or replace that built-in charge, in which case no vanilla levels or vanilla-cost notice are applied. Already-cancelled damage events do not charge. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
 
 Milestones: `challenge_discovery_xp_resist_25` and `challenge_discovery_xp_resist_250` on `discovery.xp-resist.saves` at 25 and 250, rewarding 500 and 2000. `challenge_discovery_xp_resist_clutch` is granted the first time a qualifying save processes an original hit of at least 30 health points.
 
@@ -545,18 +545,24 @@ No event handlers. It refreshes on its tick.
 | Tick interval (ms) | 3300 |
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-relic-appraiser.toml` |
 
-An appraised item gets a persistent-data byte and a lore tag, and is refused on a second attempt.
+An appraised item gets a persistent-data byte and a lore tag, and is refused on a second attempt. A successful appraisal also chooses one enabled and permitted skill other than Discovery and grants it a random XP amount between the configured bounds. If no eligible skill exists, or both normalized bounds are zero, only the normal Discovery XP is granted.
+
+Appraised heads and skulls serialize one exact item into the placed tile state. When the block produces its matching normal drop, that drop is restored from the snapshot before Adapt's drop-routing adaptations run. This does not force a drop when vanilla or another plugin produced none.
 
 Milestones: `challenge_discovery_appraiser_50` and `challenge_discovery_appraiser_500` on `discovery.relic-appraiser.appraised` at 50 and 500, rewarding 300 and 1200.
 
 Listened events:
 
 - `PlayerInteractEvent` (`on`): sneak plus right-click, air or block, main hand only
+- `BlockPlaceEvent` (`on`, `MONITOR`, ignores cancelled): stores an appraised head or skull snapshot after placement commits
+- `BlockDropItemEvent` (`on`, `LOWEST`, ignores cancelled): restores the snapshot onto the matching committed block drop before drop routers
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `appraiseXpBase` | `60` | Discovery XP for an appraisal at level 0, before rarity weighting. |
 | `appraiseXpFactor` | `180` | Additional appraisal XP unlocked across the level range. |
+| `randomSkillXpMin` | `20` | Lower bound for the additional random non-Discovery skill XP payout. Values are clamped to `0`-`10000`. |
+| `randomSkillXpMax` | `60` | Upper bound for the additional random non-Discovery skill XP payout. Values are clamped to `0`-`10000` and reordered when necessary; both zero disables this payout. |
 | `discRarityWeight` | `1.5` | Rarity multiplier for music discs. |
 | `headRarityWeight` | `1.4` | Rarity multiplier for heads and skulls. |
 | `trimRarityWeight` | `1.25` | Rarity multiplier for armor trim templates. |
@@ -580,15 +586,16 @@ Milestones: `challenge_discovery_sixthsense_100` and `challenge_discovery_sixths
 Listened events:
 
 - `PlayerQuitEvent` (`on`)
+- `PlayerMoveEvent` (`onMove`): clears cached HUD state after the adaptation is unlearned or disabled.
 
-Each pulse searches one of 16 structure families using a per-player cursor. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. A successful result shows a private six-block direction line for 50 ticks; it does not outline the distant structure or provide a full line of sight.
+Each pulse searches one of 16 structure families using a per-player cursor and keeps the nearest valid cached result. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. Searches include generated structures whether visited or not, do not generate or load chunks, and use at most a 500-block configured radius. The maintained action-bar cue shows `{symbol} {structure} {direction} {distance}m`; directions are N, NE, E, SE, S, SW, W, or NW, and HUD arbitration can move the cue to a temporary boss-bar lane while the action bar is occupied. A newly acquired nearer result also shows the private six-block direction line for 50 ticks. Exact inside suppression checks supported generated-structure bounding boxes in the player's current chunk. No vanilla experience state is read or changed for the HUD.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `detectionRangeBase` | `48` | Structure detection radius in blocks at level 0. |
-| `detectionRangeFactor` | `112` | Additional detection radius in blocks across the level range. |
-| `exploredRadius` | `20` | Distance in blocks under which a structure counts as already reached, suppressing the pulse. |
-| `pulseIntervalMillis` | `4000` | Milliseconds between sense pulses for one player. |
+| `detectionRangeFactor` | `452` | Additional detection radius in blocks across the level range, reaching 500 at max level with the default ceiling. |
+| `maxDetectionRange` | `500` | Configured ceiling for the search and HUD radius; runtime hard-capped at 500 blocks. |
+| `pulseIntervalMillis` | `4000` | Milliseconds between structure searches for one player; runtime-clamped to 2000-60000. Cached HUD guidance refreshes on the 2000 ms adaptation tick between searches. |
 
 ### Keen Eye
 

@@ -2,12 +2,12 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The managed `overworld` pack is what most Iris servers generate from after an operator installs it with `/iris download overworld` and restarts. This is a guided build: you will fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises the parts of the workflow that actually bite — references, hotload, world snapshots, and rollback — without touching height or registries.
+The built-in `overworld` pack is what most Iris servers generate from after an operator installs it with `/iris download pack=overworld` and restarts. This is a guided build: you will fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises the parts of the workflow that actually bite — references, hotload, world snapshots, and rollback — without touching height or registries.
 
 Related: [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [14 - Generators & Noise](/iris/14-generators-noise), [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management), [04 - Commands & Permissions](/iris/04-commands-permissions), [02 - Getting Started](/iris/02-getting-started).
 
@@ -27,7 +27,7 @@ Prerequisites:
 
 A world created from a pack stores its own **copy** at `<world>/iris/pack/`. `StudioSVC.installIntoWorld` and `replaceIntoWorld` write that copy; normal world generation reads it and never looks at the global `packs/` tree again. Studio worlds are the exception — they run directly off `packs/<key>/`, which is why Studio is where authoring happens.
 
-Iris does not download packs at startup. `/iris download overworld` installs the embedded `IrisDimensions/overworld` Git source into `packs/`; restart afterward before opening Studio or creating a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
+Iris does not download packs at startup. `/iris download pack=overworld` installs the hardcoded Overworld beta-release ZIP into `packs/`; restart afterward before opening Studio or creating a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
 
 The pack's shape:
 
@@ -265,12 +265,9 @@ World creation installs the pack copy once. Changing `packs/` does **not** updat
 /iris dev update-world world=<world> pack=my-overworld confirm=true
 ```
 
-Optional `fresh-download=true` re-downloads the pack first. Behavior (`CommandDeveloper.updateWorld` → `StudioSVC.replaceIntoWorld`):
-
 1. Without `confirm=true` it prints the warning and does nothing.
-2. Optionally re-downloads the pack.
-3. Replaces `<world>/iris/pack/` with a fresh copy of the source pack.
-4. It is described as UNSAFE in the command itself. Already-generated chunks keep their old terrain; for most features only newly generated chunks use the new content. Back the world up first.
+2. Replaces `<world>/iris/pack/` with a fresh copy of the already-installed source pack.
+3. It is described as UNSAFE in the command itself. Already-generated chunks keep their old terrain; for most features only newly generated chunks use the new content. Back the world up first.
 
 ### Choosing between update-world and a new world
 
@@ -297,7 +294,7 @@ Never use `update-world` for a change to `dimensionHeight`, `logicalHeight`, `en
 1. Verify in Studio, not by reading JSON.
 2. Run pack validate and fix every broken key.
 3. Back up the target world folder.
-4. Run `update-world` with `confirm=true`, plus `fresh-download=true` if the source should be re-pulled.
+4. Run `update-world` with `confirm=true`; it copies the already-installed source pack.
 5. Explore **new** chunks; do not expect existing terrain to change.
 6. Record operator-facing changes in the workspace changelog when releasing.
 

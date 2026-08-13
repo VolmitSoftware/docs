@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "HoloUI documentation: Runtime Architecture"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -493,7 +493,7 @@ Writes use a same-directory temporary file, flush the file, replace the target w
 
 A non-following board stores its absolute world transform. A player-following board stores a target-relative offset and relative facing: `fixed` translates the absolute offset without target rotation, `yaw` rotates the horizontal offset and adds target yaw, and `full` also adds target pitch. `BoardRuntimeManager` samples each online target on its entity scheduler and publishes resolved absolute copies into a separate effective spatial index. The last scheduler-owned pose remains available while the target is offline, so the board keeps its last world pose and can be unfollowed or edited; sampling resumes when the target returns.
 
-Operator location reporting, near queries, teleport, staged previews, and transform mutations use the effective absolute pose. `/holoui boards follow` converts the current absolute pose to relative storage so enabling follow does not jump the board; `unfollow` materializes the current effective pose before clearing follow. World-space move, movehere, rotate, and align operations on a following board are re-encoded against a scheduler-captured target location. A `~` value is therefore relative to the current effective pose, not the persisted relative offset.
+Operator location reporting, near queries, teleport, staged previews, and transform mutations use the effective absolute pose. `/holoui board follow` converts the current absolute pose to relative storage so enabling follow does not jump the board; `unfollow` materializes the current effective pose before clearing follow. World-space `move`, `here`, `rotate`, and `align` operations on a following board are re-encoded against a scheduler-captured target location. A `~` value is therefore relative to the current effective pose, not the persisted relative offset.
 
 ### 10.2 Per-viewer board runtime
 
@@ -505,7 +505,7 @@ Definition create, update, delete, and reload notifications update the runtime i
 
 ### 10.3 Staged operator previews
 
-`/holoui boards edit` snapshots the published definition and revision plus its effective transform. Supported mutations update an in-memory per-player definition and a private runtime preview without disk writes; that preview is forced visible and interactable for the editor even outside published permissions and range. Save performs one revision-checked service update and clears the preview only after success. Cancel and player quit discard the staged state and clear its preview; plugin drain clears remaining command sessions before the board runtime shuts down.
+`/holoui board edit` snapshots the published definition and revision plus its effective transform. Supported mutations update an in-memory per-player definition and a private runtime preview without disk writes; that preview is forced visible and interactable for the editor even outside published permissions and range. Save performs one revision-checked service update and clears the preview only after success. Cancel and player quit discard the staged state and clear its preview; plugin drain clears remaining command sessions before the board runtime shuts down.
 
 ### 10.4 Persistent menu content writer
 
@@ -513,7 +513,7 @@ Definition create, update, delete, and reload notifications update the runtime i
 
 The optimistic revision is SHA-256 of the exact UTF-8 source last published by `ConfigManager`. `MenuDocumentRepository` compares that revision to disk before invoking a mutation and rereads the target immediately before replacement, so a watcher edit or queued command based on stale source cannot silently overwrite the newer document. Existing-menu writes use an atomic replacement; copies use atomic no-clobber file creation and fail if another writer creates the target. Paths use case-preserving slash ids with alphanumeric-start segments, reject traversal and symbolic links, and prepare only real nested directories. Mutations operate on a deep copy of the Gson tree, which preserves extension fields not intentionally replaced; the resulting source is parsed through the same `MenuDocumentParser` used by normal config loading before and after persistence.
 
-`MenuRowMutations` supplies the in-game content operations used by `/holoui menus` and the board-root aliases. Row numbers are one-based component-array indexes. Text insertion/removal and absolute or `~`-relative offsets share the same queue with icon replacement and display-style editing. `seticon` accepts text, image, animated image, item, block, custom-item, and entity data; a non-entity replacement carries forward the previous icon style, while entity icons reject style. `style` validates each property against its runtime range and treats `*` as removal. Whole-menu `image` replacement intentionally replaces the component list with one centered image decoration while preserving other top-level fields. Board-root forms resolve the published or staged root menu id and require the board command permission, but persist menu content immediately rather than joining the staged board-definition transaction.
+`MenuRowMutations` supplies the in-game content operations used by `/holoui menu` and the board-root aliases. Row numbers are one-based component-array indexes. Text insertion/removal and absolute or `~`-relative offsets share the same queue with icon replacement and display-style editing. `seticon` accepts text, image, animated image, item, block, custom-item, and entity data; a non-entity replacement carries forward the previous icon style, while entity icons reject style. `style` validates each property against its runtime range and treats `*` as removal. Whole-menu `image` replacement intentionally replaces the component list with one centered image decoration while preserving other top-level fields. Board-root forms resolve the published or staged root menu id and require the board command permission, but persist menu content immediately rather than joining the staged board-definition transaction.
 
 Image-backed command mutations call `ConfigManager.getImage` on the storage worker before changing JSON. Its canonical resolver requires a readable regular file beneath `plugins/holoui/images/`, and Apache Commons Imaging must decode it; absolute paths, traversal, symlink escapes, and missing files are rejected. The command path performs no URL fetch or avatar lookup. Animated values validate each comma-separated frame independently.
 

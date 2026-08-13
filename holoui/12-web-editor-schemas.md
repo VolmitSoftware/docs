@@ -2,7 +2,7 @@
 title: "Web Editor & Schemas"
 description: "HoloUI documentation: Web Editor & Schemas"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -75,7 +75,7 @@ The revision is SHA-256 of UTF-8 canonical JSON after removing only the root `ba
 
 Version 1 rejects projects beyond all applicable limits: 256 menus, 2 MiB UTF-8 per menu, 512 images, 512 KiB decoded bytes per image, 256 warnings of at most 512 characters, JSON depth 64, 200,000 nodes, 2,000,000 characters per string, and the configured 1–32 MiB canonical project cap. Images must be magic-validated PNG, JPEG, GIF, WebP, or BMP and decode to at most 64×64 and 4,096 pixels. Unique stored assets may total at most 262,144 decoded pixels; every repeated static-image use and every animated frame occurrence also counts toward independent runtime totals of 262,144 pixels and 4,096 rows. Missing image references are rejected. Board revisions must be integers no greater than JavaScript's safe maximum `9,007,199,254,740,991`.
 
-The server stores at most 32 active sessions and 64 MiB of canonical base plus pending snapshots; its store file is capped at 80 MiB. Outbound relay exchanges, including stalled or trickling response bodies, have a 20-second total deadline and their response bytes are capped before parsing. A publication is applied only after the exact base revision, identity, constraints, paths, formats, and runtime parsers validate. Menus, images, and the optional board are staged as one journaled transaction under the same persistence coordinator used by in-game menu/board writers and file watchers. `applied` is acknowledged only after disk commit, menu publication, board reload, and rebuilding the actual server snapshot; acknowledgement failures are retried idempotently. A conflict returns the current server snapshot, while rejected data makes no server change.
+The server stores at most 32 active sessions and 64 MiB of canonical base plus pending snapshots; its store file is capped at 80 MiB. Outbound relay exchanges, including stalled or trickling response bodies, have a 20-second total deadline and their response bytes are capped before parsing. **Publish to Server** appears beside Import and Export only while the tab owns a live `#/sync/…` capability; ordinary local workspaces and one-way `#/import/menu/…` handoffs do not show it. A publication is applied only after the exact base revision, identity, constraints, paths, formats, and runtime parsers validate. Menus, images, and the optional board are staged as one journaled transaction under the same persistence coordinator used by in-game menu/board writers and file watchers. For a board project, publishing durably saves the board definition and its project resources, updates the board service index, and notifies the runtime so current viewer sessions rebuild from the saved revision without a restart. `applied` is acknowledged only after disk commit, menu publication, board hot reload, and rebuilding the actual server snapshot; acknowledgement failures are retried idempotently. A conflict returns the current server snapshot, while rejected data makes no server change.
 
 ## Synchronization contract
 
@@ -143,7 +143,7 @@ The editor also generates `preview-lang-en.json` from this repository's `HoloMes
 
 ## Item catalog
 
-`/holoui items export` writes `plugins/holoui/custom-items.json` through `CustomItemCatalogWriter`. The document is version 1 and each entry carries `provider`, `id`, `name`, and `material`; ids are probed by actually resolving them, discarded on failure, sorted for deterministic output, and capped at 10000 per provider. The user imports the file into the editor through its settings dialog.
+`/holoui item export` writes `plugins/holoui/custom-items.json` through `CustomItemCatalogWriter`. The document is version 1 and each entry carries `provider`, `id`, `name`, and `material`; ids are probed by actually resolving them, discarded on failure, sorted for deterministic output, and capped at 10000 per provider. The user imports the file into the editor through its settings dialog.
 
 The catalog is optional. The editor uses it for id autocomplete, an approximate sprite, and a hint when a referenced id is not in the imported export. Without it, custom-item icons still export correctly. The editor also boots with a small bundled sample at `web/assets/catalog/custom-items.json`, loaded from a relative URL. See [08 - Custom Items & Item Providers](/holoui/08-custom-items-item-providers).
 

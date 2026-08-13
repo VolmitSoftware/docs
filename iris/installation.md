@@ -2,7 +2,7 @@
 title: Iris — Installation
 description: Requirements and first-world setup
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: iris, installation
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,7 +36,7 @@ take longer than subsequent ones and needs outbound network access.
 `dimension` defaults to `default`. To use a community pack, download it first:
 
 ```
-/iris download <pack>
+/iris download pack=overworld
 /iris create myworld overworld
 ```
 

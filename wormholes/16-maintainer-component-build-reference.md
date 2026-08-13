@@ -2,7 +2,7 @@
 title: "Maintainer Component & Build Reference"
 description: "Wormholes documentation: Maintainer Component & Build Reference"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,6 +58,7 @@ Enable and teardown order are documented in [13 - Runtime Architecture](/wormhol
 
 - Portal CRUD, menus, projection/render classes, RTP search, dimensional doors, and network/wire classes are implementation details; plugins must not compile against them.
 - `PortalTypeAccess` controls construction and type management only. Traversal authorization remains in the dynamic portal and door policies.
+- Paper chat prompts read the signed message through an ABI-neutral reflective boundary. The runtime jar verification rejects relocated Adventure types in Bukkit or Paper method descriptors, because those platform methods retain the server-owned `net.kyori` types.
 - World and entity access is scheduled through VolmLib's Folia-aware bridge. Network, disk, and heavy sampling work may run asynchronously, but game-state application returns to the owning region or entity.
 - Portal JSON, door state, routes, trust, identities, dictionaries, and the stats snapshot have different lifecycle and reset rules; see [13 - Runtime Architecture](/wormholes/13-runtime-architecture) before changing persistence.
 
@@ -67,7 +68,7 @@ Run tasks from `WormholesPlugin/` with Java 25.
 
 | Task | Result |
 |------|--------|
-| `./gradlew test` | JUnit suite with native access enabled for zstd |
+| `./gradlew test` | JUnit suite with native access enabled for zstd; builds and verifies the shaded runtime jar's platform method descriptors |
 | `./gradlew compileSpigotCompatibility` | Compiles supported source against Spigot API after excluding Paper-only bootstrap/listener/registrar classes |
 | `./gradlew check` | Unit tests plus Spigot compatibility compilation |
 | `./gradlew shadowJar` | Runtime plugin jar with configured relocations and SlimJar metadata |
