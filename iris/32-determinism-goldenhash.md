@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T23:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -119,6 +119,8 @@ The file ends with a full non-air block dump of the first generation, which is w
 - **Combined:** SHA-256 over the per-chunk lines sorted by packed chunk key, stored as `#combined=<hex>`.
 - **Not touched:** Minecraft region files. The scan generates into buffers only.
 - **Deleted when `reset-mantle` is true:** every file directly inside the engine's mantle data folder, after a `saveAll`. This is the whole world's mantle, not only the scanned square, despite what the in-game help text implies.
+- **Reset failure aborts the scan.** If any mantle region file cannot be deleted (or the IO layer cannot be invalidated), the command reports the failure and stops instead of capturing over a partial reset.
+- **Recapture note (2026-08):** marker selection in object placement, cave floor/ceiling markers, and floating-island placement ordering are now seed-deterministic (they previously drew from unseeded or iteration-order-dependent randomness). Golden files captured before this change for packs using those systems are not reproducible and must be recaptured.
 
 ### Golden file location and name
 

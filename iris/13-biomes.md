@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -261,7 +261,7 @@ The stacks:
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |
 | `lockLayersMax` | Depth cap, in blocks, for locked layers. Default `7`. |
 
-`caveCeilingLayers` reuses the per-layer thickness generators built from `layers`, so it must not have more entries than `layers` does. Give the biome at least as many surface layers as ceiling layers.
+`caveCeilingLayers` reuses the per-layer thickness generators built from `layers`, so it must not have more entries than `layers` does. `/iris pack validate` rejects a biome that violates this; at generation time any extra ceiling entries are skipped rather than crashing.
 
 Slabs and walls only appear when the dimension has `postProcessing`, `postProcessingSlabs` and `postProcessingWalls` enabled. See [11 - Dimensions](/iris/11-dimensions).
 
@@ -527,7 +527,7 @@ Needs `generators/flat.json` to exist. Everything else in the file has a working
 | Sea biome with positive `min`/`max` | It generates above water, then gets replaced by a land biome anyway |
 | Sea biome with a non-ocean `vanillaDerivative` | No native ocean structures generate there |
 | Empty `palette` on the first layer | No surface block; the rock palette shows through |
-| More `caveCeilingLayers` entries than `layers` entries | Ceiling generation fails at that biome |
+| More `caveCeilingLayers` entries than `layers` entries | Blocked by validation; the engine skips the extra entries if such a pack is forced through |
 | Expecting a `type` field on the biome | Role comes from the region list that selected it |
 | Expecting `slopeCondition` to thin a layer gradually | Out-of-range columns skip the layer entirely; there is no taper |
 | Judging changes in already-generated chunks | Biome and layer edits only apply to new chunks |

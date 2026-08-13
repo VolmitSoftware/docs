@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -166,7 +166,7 @@ An Iris structure and a native structure both arrive through the same `structure
 
 **Command shape.** On Bukkit, Director optional parameters are always `key=value` — `/iris structure verify overworld radius=200`, never a bare trailing number. The modded loaders use brigadier literals instead.
 
-**Validate before shipping.** `/iris pack validate pack=<pack>` on Bukkit (the argument is required there; pass `pack=` with an empty value to cover every pack). On a modded loader use `/iris pack validate <pack>`, or omit the pack to validate all of them. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
+**Validate before shipping.** `/iris pack validate` covers every pack on both platforms; check one with `pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a modded loader. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
 
 ## Proving a structure path works
 

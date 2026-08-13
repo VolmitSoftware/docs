@@ -2,7 +2,7 @@
 title: "Trees, Fungi, Coral, Crystals, Formations, Ruins"
 description: "Iris documentation: Trees, Fungi, Coral, Crystals, Formations, Ruins"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -430,8 +430,8 @@ Snippet key: `ruin-decorator`.
 |-------|--------------|
 | `treeTypes` | Bukkit `TreeType` names this placement replaces, matched case-insensitively |
 | `sizes` | `IrisTreeSize` entries (`width` by `depth`) describing the sapling footprints it applies to. Width and depth are matched either way round, so a 1x2 entry also matches 2x1 |
-| `anyTree` | Declared but never read at runtime. Matching is by `treeTypes` only |
-| `anySize` | Declared but never read at runtime. Matching is by `sizes` only |
+| `anyTree` | Removed; it was never read at runtime. Matching is by `treeTypes` only |
+| `anySize` | Removed; it was never read at runtime. Matching is by `sizes` only |
 
 Dimension `treeSettings` gates the whole feature:
 

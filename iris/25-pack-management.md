@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T23:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -75,7 +75,7 @@ Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted, and
 /iris studio package <key>
 ```
 
-Success is `exports/<key>.iris` plus a completion message. The source pack and every world snapshot are untouched. **Read the "What the package actually contains" section below before shipping** — neither compiler writes `spawners/` or `markers/`, so a pack that uses ambient spawning needs those folders added back by hand.
+Success is `exports/<key>.iris` plus a completion message. The source pack and every world snapshot are untouched.
 
 **6. Test on a disposable world.** Create a fresh world from the release pack, walk it, restart the server, and walk it again. For breaking pack changes, ship a new world rather than updating an old one.
 
@@ -101,30 +101,32 @@ The loop passes when the source closure validates, the package command produces 
 
 | Param | Default | What it does |
 |-------|---------|--------------|
-| `pack` | required | The folder key, or the repository short name under the `IrisDimensions` GitHub org |
-| `branch` | `stable` | The Git ref to pull. Ignored for the managed beta packs, which always use their release zip |
-| `overwrite` | `false` | Replace a pack that is already present. Without it, a present pack short-circuits before any network call. Alias `force` on Bukkit |
+| `pack` | required | A managed key, a repository short name under the `IrisDimensions` GitHub org, or a direct HTTP(S) `.zip` URL |
+| `branch` | `stable` | The Git ref to pull. Ignored for managed keys and direct URLs |
+| `overwrite` | `false` | Replace a pack that is already present. Without it, a present pack short-circuits before any network call. Alias `force` on Bukkit. Refused only while a loaded world is actively generating from that pack; unload its worlds first |
 
-`overworld` and `underworld` are **managed beta packs**: they resolve to fixed release zips rather than branch archives.
+`overworld` and `underworld` are managed packs whose Git sources are embedded in Iris for now.
 
 | Pack | Source |
 |------|--------|
-| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` |
-| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip` |
+| `overworld` | `IrisDimensions/overworld`, branch `master` |
+| `underworld` | `IrisDimensions/underworld`, branch `main` |
 
-Anything else resolves to `IrisDimensions/<pack>/<branch>` and downloads the GitHub archive for that ref.
+Anything else resolves to `IrisDimensions/<pack>/<branch>` and downloads the GitHub archive for that ref. Every download path shares one implicit default branch, `stable` — including the implicit downloads inside modded `/iris world create` and `/iris studio create`, which used to assume `master`. If the repository has no `stable` branch and you did not name one, Iris retries once against the repository's HEAD before failing. A direct URL bypasses repository resolution, must end in `.zip`, and must contain exactly one dimension key so Iris can choose the destination folder.
+
+A successful download performs registry-independent pack validation and atomically publishes the pack on disk, then asks the operator to restart. The next startup performs full validation after external datapacks are registered. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically.
 
 ### Install pipeline (`PackDownloader`)
 
-1. Take a per-key/per-ref lock, so a startup bootstrap and a manual command can't fetch the same pack twice.
+1. Take a per-key/per-ref lock, so concurrent manual commands cannot fetch the same pack twice.
 2. If the pack is already present and `overwrite` is off, return without touching the network.
 3. Download the zip under hard limits: archive at most 512 MiB, at most 100,000 entries, at most 2 GiB total uncompressed, at most 256 MiB per file. Exceeding any of these aborts the install.
-4. Unpack into a temporary staging directory and require exactly one pack home directory inside the archive.
+4. Unpack into a temporary staging directory and identify one pack home containing `dimensions/`; repository metadata beside that directory is ignored.
 5. Open the staging tree with the datapack-compiler loader and pick the dimension. A plain download with no expected key requires exactly one dimension in the archive. A managed or listing-driven download names its expected key, requires exactly one dimension matching it, and keeps any additional dimension resources in the pack.
-6. Run `PackValidator.validate` against the staging tree. Any blocking error aborts the install and prints the errors — nothing is published.
+6. Run `PackValidator.validateForDatapackBootstrap` against the staging tree. Structural blocking errors abort the install and print the errors; live-registry checks wait until the restart, after external datapacks are registered.
 7. Publish atomically into `packs/<key>/`, refusing symlinked targets and refusing a key that conflicts with a different folder's dimension key. The validation result is published to the registry as part of the same step.
 
-Startup treats the two managed packs independently: an operator who has edited or symlinked one of them keeps their version, and that doesn't stop the other from updating.
+Each explicit download treats its target independently. An existing operator-edited or symlinked pack is retained unless the command explicitly requests a safe overwrite.
 
 ## Validate
 
@@ -219,19 +221,14 @@ Written to the export:
 
 `dimensions/`, `regions/`, `biomes/`, `generators/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, the structure closure, `package.json`.
 
+The ambient-spawning graph is exported in full: `spawners/` and `markers/` are written, object placements on regions as well as biomes are followed (markers on those placements pull in their spawners), spawner entities are collected from both `spawns` and `initialSpawns`, and entity loot tables land in `loot/`. Adding spawner or marker files changes `package.json`'s hash, so re-exported packages hash differently than older ones.
+
 **Not written by either compiler:**
 
-- `spawners/` — spawner keys are resolved only to collect the entity keys they reference. The spawner JSON files themselves never reach the export, so a pack that uses ambient spawning produces an export whose `entitySpawners` references all dangle.
-- `markers/` — never collected or written.
 - `mods/` — never collected or written. Harmless, since nothing applies them (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)).
 - `expressions/`, `caves/`, `images/` and other folders outside the collected set.
 
-Platform differences beyond that:
-
-- Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle too.
-- Bukkit collects entity keys from both `spawns` and `initialSpawns`; modded collects from `spawns` only.
-
-If you distribute the `.iris` artifact, unpack it, add the missing folders, and validate the unpacked tree before you publish. If you distribute the source pack directory, none of this applies.
+One platform difference beyond that: Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle. Validate the unpacked tree before you publish an `.iris` artifact.
 
 ## Developer update-world (unsafe)
 
@@ -276,5 +273,5 @@ This is unsafe for production without a backup for reasons the command can't fix
 2. Validate until loadable: `/iris pack validate pack=<key>` on Bukkit, `/iris pack validate <key>` on modded.
 3. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
 4. Create a world with `/iris create …`, which copies the pack into the world, or open Studio for live editing.
-5. Package with `/iris studio package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then add back `spawners/` and `markers/` if the pack uses them.
+5. Package with `/iris studio package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded).
 6. Replace an existing world's snapshot only after a backup, with `/iris dev update-world world=<world> pack=<dimension> confirm=true`.

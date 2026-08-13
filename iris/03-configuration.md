@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ The modded split is real and easy to get wrong: the engine data folder is `<conf
 1. Start Iris once so it writes the current schema and defaults.
 2. Copy `settings.json` outside the server directory as a rollback file.
 3. Change one key. Keep its JSON type: quoted values such as `"false"` are strings, not booleans.
-4. Save the file, then run `/iris reload` or wait for the hotload poll (about 3 seconds on both platforms).
+4. Save the file, then run `/iris reload` or wait for the hotload poll (about 3 seconds on modded, about 6 seconds on Bukkit after the file stays stable).
 5. Confirm the console logs `Hotloaded settings.json` or the reload success message, with no parse error.
 6. Exercise the affected feature. If nothing changed, check the "Takes effect" column below — several keys are captured when a service, pool, or cache is constructed and need a restart.
 
@@ -76,7 +76,7 @@ That fragment shows the field location; do not replace a populated settings file
 | Load | Parse with Gson into `IrisSettings`. On failure, log `Configuration Error in settings.json!` and run on built-in defaults for that boot — the bad file is left untouched, because the rewrite never runs |
 | After a successful load | Rewrite `settings.json` as pretty JSON so new keys and migrated values persist. Comments and hand formatting are lost |
 | `/iris reload` | Invalidate the cached settings, re-read the file, reload the locale. On modded it also schedules a forced datapack regeneration. It does not restart services, reload packs, or rebuild engines |
-| Hotload (Bukkit) | `SettingsHotloadWatch` polls every 60 ticks (about 3 s) through the VolmLib `ConfigHotloadEngine`. A `lastModified` or size change triggers a read; the reload only runs if the normalized file content actually differs. Logs `Hotloaded settings.json` |
+| Hotload (Bukkit) | `SettingsHotloadWatch` polls every 60 ticks (about 3 s) through the VolmLib `ConfigHotloadEngine`. A `lastModified` or size change is held for one extra poll so a half-written save is not applied; the reload only runs if the normalized file content actually differs. Logs `Hotloaded settings.json` |
 | Hotload (modded) | `ModdedSettingsHotloadService` polls `lastModified` every 3 s. Because a load rewrites the file, a touch with no edit still produces one reload (it does not loop). Logs `Hotloaded settings.json` |
 | Locale refresh | Bukkit calls `IrisLanguage.update()` on every poll; modded calls it only when the file is unchanged, and calls a full `IrisLanguage.reload()` when it did change |
 | `forceSave()` | Only `/iris debug` writes settings back from memory |
@@ -94,7 +94,7 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | `gui` | `IrisSettingsGUI` | Server-launched desktop GUIs |
 | `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot/Paper server-file fixups, custom-biome restart |
 | `generator` | `IrisSettingsGenerator` | Default pack for world creation, leaf decay |
-| `concurrency` | `IrisSettingsConcurrency` | Nothing configurable — see below |
+| `concurrency` | (not serialized) | Nothing configurable — see below |
 | `studio` | `IrisSettingsStudio` | Studio world behavior |
 | `performance` | `IrisSettingsPerformance` | Mantle residency, loader caches, SIMD, engine service pool |
 | `pregen` | `IrisSettingsPregen` | Pregen scheduling, mantle backpressure, timeouts |
@@ -162,7 +162,6 @@ Iris edits a couple of server config files at boot so long chunk generation does
 |-----|---------|--------------|--------------|
 | `configureSpigotTimeoutTime` | `true` | **Restart** | Raises `timeout-time` in `spigot.yml` so a long generation stall does not kill the server |
 | `configurePaperWatchdogDelay` | `true` | **Restart** | Raises Paper's watchdog early-warning and timeout for the same reason |
-| `autoRestartOnCustomBiomeInstall` | `true` | **Restart** | When a datapack install registers new custom biomes and reports that a restart is required, Iris restarts the server itself instead of waiting for an admin |
 
 These keys are no-ops on mod loaders.
 
@@ -175,7 +174,7 @@ These keys are no-ops on mod loaders.
 
 ## `concurrency` — nothing to configure
 
-This object has no serialized fields. Gson writes `{}`, and anything you type inside it is silently discarded the next time Iris saves the file. The values are derived from CPU count at runtime:
+There is no `concurrency` block in `settings.json`; the values are derived from CPU count at runtime. Older files that still carry a `concurrency` key are ignored on load and dropped on the next rewrite:
 
 | Method | Result | Used by |
 |--------|--------|---------|
@@ -247,14 +246,12 @@ Requires permission `iris.treefeller` on Bukkit, or the platform tree-feller nod
 
 ## `studio` — authoring world behavior
 
-Only two of the four keys in this section do anything today.
-
 | Key | Default | What it does |
 |-----|---------|--------------|
 | `openVSCode` | `true` | Whether `/iris studio vscode` launches an editor after writing the workspace file. Set false on a headless box |
 | `entitySpawning` | `true` | Whether mobs spawn inside studio worlds. Has no effect on normal worlds |
-| `disableTimeAndWeather` | `true` | Nothing. Present in the settings model but not read by any code path today |
-| `autoStartDefaultStudio` | `false` | Nothing. Present in the settings model but not read by any code path today |
+| `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds (gamerules are set on studio open). Set false to let time and weather run while authoring |
+| `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot. Only useful on a dedicated authoring server |
 
 Studio workflow details: see [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
@@ -291,8 +288,7 @@ Path: `<configDir>/irisworldgen/modded.json`, written with defaults on first loa
 
 | Key | Default | What it does |
 |-----|---------|--------------|
-| `defaultPack` | `"overworld"` | Pack used by `/iris create` when none is given. A distinct non-managed value is also prefetched when auto-download is on |
-| `autoDownloadDefaultPack` | `true` | Downloads the managed Overworld and Underworld beta packs when missing, plus any distinct configured default. Set false on an air-gapped server and install packs by hand |
+| `defaultPack` | `"overworld"` | Pack used by `/iris create` when none is given. Iris never downloads it automatically |
 | `primaryWorld` | `""` | Iris dimension id used for player routing |
 | `routePlayersToPrimaryWorld` | `true` | Sends players to the primary world when one is set |
 | `mainWorldPack` | `""` | Pack (or `pack:dimensionKey`) for the main-world preset |

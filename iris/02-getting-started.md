@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -271,7 +271,7 @@ The session is genuinely finished when you restart the server cleanly, the produ
 |---|---|---|
 | Bukkit optional args passed positionally | Hard parse error, command does nothing | Write `seed=1337`, not a bare second token |
 | `/iris studio create mypack` | Fails — both params are optional so neither is positional | `/iris studio create name=mypack` |
-| `/iris pack validate` with no argument | Missing-argument error, not "validate everything" | Name the pack, or pass an explicitly empty `pack=` to do all of them |
+| `/iris pack validate` with no argument | Validates every installed pack | Name one with `pack=<key>` to check a single pack |
 | World named `iris` or `benchmark` | Create rejected | Pick another name, e.g. `irisworld` |
 | Editing `packs/<pack>` after creating a production world | **No effect** on that world, ever | Production engines read `<world>/iris/pack`. Push changes with `/iris developer update-world world=<world> pack=<dimension> confirm=true` and restart, or accept that only new chunks change. Studio reads the live pack |
 | Expecting pack edits to change existing chunks | Only newly generated chunks use the new config | Fly to unexplored terrain, pregen a fresh radius, or use a Studio world |
@@ -284,7 +284,7 @@ The session is genuinely finished when you restart the server cleanly, the produ
 | Starting a pregen while one is running | Start fails | `/iris pregen stop` first |
 | `/iris pregen resume` expected to only resume | It's an alias of `pause`, which toggles | Check `/iris pregen status` instead of assuming |
 | Studio closed mid-edit | The studio world is discarded | Your edits are on disk in `packs/` and survive. Reopen the studio |
-| Managed pack download blocked | Startup, create, or studio open fails with a missing pack | Allow HTTPS or run `/iris download overworld` and `/iris download underworld`. An offline install must contain each complete pack tree |
+| No pack exists after first boot | Normal: Iris never downloads packs during startup | Run `/iris download overworld`, `/iris download underworld`, or `/iris download <https://host/pack.zip>`, then restart. An offline install must contain each complete pack tree |
 | Relying on `type=default` | Resolves through `generator.defaultWorldType`, which someone may have changed | Name the pack explicitly: `type=overworld` |
 
 ## Quick reference

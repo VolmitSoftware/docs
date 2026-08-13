@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -105,7 +105,7 @@ Related: `world.globalPregenCache` (default `false`) — see [03 - Configuration
 
 ## Reference: derived concurrency
 
-The `concurrency` section in `settings.json` has no writable keys. The values are computed from CPU count at runtime and cannot be overridden from the file:
+There is no `concurrency` section in `settings.json`. The values are computed from CPU count at runtime and cannot be overridden from the file:
 
 - Generation burst pool: `max(2, availableProcessors)`
 - IO burst pool: `max(2, availableProcessors / 2)`

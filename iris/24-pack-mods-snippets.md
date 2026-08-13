@@ -2,7 +2,7 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -274,7 +274,7 @@ Schema registration alone doesn't prove there's a consumer. These are visible to
 | `mods/*.json` (`IrisMod`) | Parsed and registered, never applied. See above |
 | `potion-effect` / `IrisPotionEffect` | The snippet type exists, but no production field is typed as `IrisPotionEffect`. Use the `potionEffect`, `potionStrength`, and `potionTicks*` fields on `IrisEffect` instead |
 | `matter/` resources | A loader exists for Matter binaries, but no generation or runtime path reads pack `matter/` resources |
-| `IrisObjectPlacement.translateCenter` | Serialized and carried through placement copies, but no placement path reads the value |
+| `IrisObjectPlacement.translateCenter` | Removed; no placement path ever read the value. Old packs that still carry the key load fine |
 
 ## Related commands
 

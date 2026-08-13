@@ -68,7 +68,7 @@ Both use the same invalidate, reload, and locale path once a change is detected.
 | Studio world | Transient studio world via StudioSVC; `/iris jigsaw` can select the Jigsaw Studio generator for one activation | Studio dimension under `irisworldgen:studio_*`; no Jigsaw Studio authoring tree |
 | Folia | Regionized schedulers; pregen `runtimeSchedulerMode` always resolves to `FOLIA` on a regionized runtime | Not applicable |
 
-Startup installs the IrisDimensions Overworld and Underworld beta releases into `packs/overworld` and `packs/underworld` when missing. Paper bootstrap publishes both in one rollback scope before compiling the aggregate datapack; legacy Bukkit and modded startup use the same managed release sources.
+Startup never downloads packs. Paper bootstrap compiles the aggregate datapack from installed and world-local packs and accepts an empty pack set; legacy Bukkit and modded startup likewise use only pack bytes already on disk. Operators install `overworld`, `underworld`, repository branches, or direct `.zip` URLs with `/iris download`, then restart manually.
 
 Modded startup quarantines a corrupt persistent-dimension registry as `iris-dimensions.json.broken-<timestamp>` and continues without those dynamic worlds. Recovery: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 

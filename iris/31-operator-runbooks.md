@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -96,7 +96,7 @@ Prerequisites: a disposable server whose configured level name is `world`, a val
 1. Install the matching mod jar into `mods/`. Fabric needs Loader at or above the declared floor; Forge and NeoForge need theirs. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [30 - Platform Differences](/iris/30-platform-differences).
 2. Start the dedicated server, or singleplayer if you are also testing the client mod.
 
-   Expect: Iris boots, both managed beta packs install, and datapack and biome registration complete.
+   Expect: Iris boots without network access and reports no installed worldgen packs. Run `/iris download overworld` and `/iris download underworld`; each command installs on disk, leaves the process running, and asks for a restart. Restart once after both complete, then expect datapack and biome registration to complete.
 
 3. Create a world (arguments are positional here, not keyed):
 
@@ -112,11 +112,10 @@ Prerequisites: a disposable server whose configured level name is `world`, a val
 
 ## C. Pack validation
 
-1. Validate everything installed. On Bukkit the pack argument is required, so pass it with an empty value to cover every pack; on modded, omitting the pack validates all of them:
+1. Validate everything installed — a bare invocation covers every pack on both platforms:
 
    ```
-   /iris pack validate pack=      (Bukkit)
-   /iris pack validate            (modded)
+   /iris pack validate
    ```
 
    Single pack: `/iris pack validate pack=<pack>` on Bukkit, `/iris pack validate <pack>` on modded.

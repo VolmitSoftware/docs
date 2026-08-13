@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -207,7 +207,6 @@ Tune this group in Studio with a fixed seed and compare the same coordinates bet
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |
-| `rockZoom` | double | `5` | Declared but never read by the engine. Leave it alone; palette scaling comes from the palette's own `zoom` |
 
 ## Ores and deposits
 
@@ -395,8 +394,6 @@ These exist to help you look at the generator, not to ship. `studioMode` is appl
 | `explodeBiomePalettes` | boolean | `false` | Inserts air gaps between palette layers so you can count and identify them visually |
 | `explodeBiomePaletteSize` | int | `3` | Size of those gaps, 1 to 16 |
 | `debugSmartBore` | boolean | `false` | Fills the air volume objects carve for themselves with cobweb, making object footprints visible |
-| `disableExplorerMaps` | boolean | `false` | Declared but never read by the engine today |
-| `forceConvertTo320Height` | boolean | `false` | Declared but never read by the engine today |
 
 ## Annotations are editor hints, not runtime validation
 
@@ -465,7 +462,7 @@ The baseline passes when Studio opens clean, validation reports no blocking erro
 | Empty or unresolvable `regions` | No biome can be selected, so the dimension has nothing to place |
 | Region file exists but is not listed in `regions` | It never generates; nothing warns you |
 | Treating `fluidHeight` as an offset from the build floor | It is world Y. The engine converts it to internal Y by subtracting `dimensionHeight.min` |
-| `dimensionHeight` span or `min` not a multiple of 16 | Passes `pack validate`, then fails when Iris compiles the dimension type |
+| `dimensionHeight` span or `min` not a multiple of 16 | Blocked by `pack validate` (the same bounds the dimension-type compiler enforces) |
 | `logicalHeight` greater than `max - min` | Rejected when the dimension type is constructed |
 | Editing height, logical height, environment, or the dimension file name mid-Studio | Hotload is refused by the runtime contract; close and reopen |
 | Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |

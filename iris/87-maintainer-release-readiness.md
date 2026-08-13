@@ -266,7 +266,7 @@ Done when: every advertised server, loader, client, and content path completes t
 - [x] Make runtime splash/version identity match the artifact version; remove stale `4.0 RC.1.1.6` text.
 - [x] Correct README pregen syntax, including the required radius.
 - [ ] Document how to select an Iris world preset on each mod loader.
-- [ ] Distinguish automatic pack installation from automatic Iris main-world selection.
+- [x] Remove automatic pack installation; first startup is network-free and pack acquisition is an explicit `/iris download` operation followed by a manual restart.
 - [ ] Publish an accurate Bukkit-versus-modded Studio capability matrix.
 - [ ] Document intentional entity-spawn and tooling differences that remain.
 - [x] Remove tracked generated SIMD benchmark `.class` files and jar outputs.
@@ -277,7 +277,7 @@ Done when: every advertised server, loader, client, and content path completes t
 
 ### Confirmed release blockers and follow-ups
 
-- [ ] Publish and retain anonymously downloadable `beta` assets for both managed pack repositories before shipping a build that requires dual bootstrap. Runtime uses the mutable Overworld and Underworld beta release URLs; record each downloaded asset checksum for a release baseline, and move production installs to immutable release inputs when the beta streams are promoted.
+- [ ] Keep the embedded managed Git sources anonymously downloadable: `IrisDimensions/overworld` branch `master` and `IrisDimensions/underworld` branch `main`. Replace these mappings with the planned public ZIP service when it is available.
 - [x] Make modded GoldenHash metadata use the active Iris engine seed. Fabric, Forge, and NeoForge generated identical output from Iris seed `1337`, but filenames and headers recorded each vanilla level seed, preventing one captured baseline file from being reused directly across loaders.
 - [x] Correct the default overworld pack's slime spawn category from implicit `MISC` to explicit `MONSTER` in `biomes/vanilla/mangrove_swamp.json`, `biomes/swamp/cambian-drift.json`, `biomes/swamp/cambian-drift-extended.json`, `biomes/swamp/marsh.json`, and `biomes/swamp/marsh-rotten.json`. NeoForge exposes the bad category at startup; all loaders generate the same bad datapack entry, which can affect natural slime spawning and mob-cap accounting.
 - [x] Extend `PackValidator` to reject authored custom-biome spawn categories that disagree with the live entity category instead of allowing the bad datapack to reach loader validation.

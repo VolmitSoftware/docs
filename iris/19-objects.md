@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ Not stored:
 
 ### Format limits
 
-`.iob` V2 writes an `Iris V2 IOB;` header, then short-typed centered coordinates and a short-counted palette. That gives a working range of +/- 32,767 blocks per axis from the center and 32,767 distinct block states per object. Neither limit is checked on save — exceed either and the shorts wrap silently, so the file writes and then reads back wrong. Files written before V2 still load through a legacy reader, tried automatically when the V2 header is missing. Nothing caps the block count; the practical limits are memory and the wand's scan budget, which processes 30 ms of blocks per tick by default (`-Diris.ms_per_tick`).
+`.iob` V2 writes an `Iris V2 IOB;` header, then short-typed centered coordinates and a short-counted palette. That gives a working range of +/- 32,767 blocks per axis from the center and 32,767 distinct block states per object. Exceeding either limit fails the save with an error naming the object and the offending size or coordinate, before the existing file is touched — a failed save never truncates or corrupts a previous `.iob`. Files written before V2 still load through a legacy reader, tried automatically when the V2 header is missing. Nothing caps the block count; the practical limits are memory and the wand's scan budget, which processes 30 ms of blocks per tick by default (`-Diris.ms_per_tick`).
 
 ### Where objects live and how they are named
 

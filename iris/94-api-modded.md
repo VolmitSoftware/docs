@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -151,7 +151,7 @@ Types a mod can use:
 | `Boolean`, `Integer`, `Long` | Yes | Yes |
 | `String` | Yes | **No** — pregen's chunk cleanup deletes the `String` slice |
 
-`retainMantleDataForSlice(Class<?>)` records a canonical class name in a process-wide, irreversible set. It guards `Mantle.deleteChunkSlice`, which Iris does not currently call; the per-chunk cleanup that runs after generation deletes a fixed slice list and does not consult it. Declaring a type is therefore harmless insurance, not a guarantee — do not rely on it to keep `String` values through a pregen.
+`retainMantleDataForSlice(Class<?>)` records a canonical class name in a process-wide, irreversible set that both cleanup paths honor: the per-chunk trim after generation and pregeneration's forced cleanup skip retained slice types. Retained values persist into the mantle region files and unload with them, so region files grow with what you retain; the block-state slice can never be retained, and your mod owns deleting values it no longer needs.
 
 All three mantle accessors throw `IllegalStateException` if the engine mantle is already closed.
 
@@ -387,14 +387,14 @@ Paths relative to the loader config directory (`config/`):
 |---|---|
 | `config/irisworldgen/packs/<pack>/` | Installed packs (`dimensions/<dimension>.json` required) |
 | `config/irisworldgen/generated/datapack/iris/` | Generated forced datapack — Iris-owned |
-| `config/irisworldgen/modded.json` | Default pack, auto-download, primary world routing |
+| `config/irisworldgen/modded.json` | Default pack and primary world routing |
 | `config/iris/` | Engine data: `settings.json` and `worlds.json` |
 
 Pack install root is `config/irisworldgen/packs`, not `config/iris`. Per-level engine state that must travel with the save (`iris-dimensions.json`) lives in the world folder under `<world>/iris/`, not in `config/`. Missing pack at world open is a hard failure with the expected absolute path (no silent vanilla terrain).
 
-`modded.json` keys: `defaultPack`, `autoDownloadDefaultPack`, `primaryWorld`, `routePlayersToPrimaryWorld`, `mainWorldPack`, `mainWorldSeed`, `mainWorldAutoRestart`.
+`modded.json` keys: `defaultPack`, `primaryWorld`, `routePlayersToPrimaryWorld`, `mainWorldPack`, `mainWorldSeed`, `mainWorldAutoRestart`.
 
-When `autoDownloadDefaultPack` is enabled, startup installs missing packs on a daemon thread: the managed beta releases `overworld` and `underworld`, plus a configured non-managed `defaultPack`. Managed names always resolve to their release assets rather than the requested branch. A failure warns with a pointer to `/iris download <pack>`.
+Modded startup never downloads a pack. `/iris download overworld` and `/iris download underworld` resolve their embedded Git repository/ref mappings; other names resolve an IrisDimensions branch, and HTTP(S) `.zip` URLs install directly. Successful commands publish only to disk and ask for a manual restart before the forced datapack can expose the pack's dimension types, presets, and biomes.
 
 Forced datapack id is `iris_worldgen`; it contributes presets, dimension types, and biomes under the `irisworldgen` namespace (ids derived from pack/dimension names). Regenerated on pack change / studio hotload. Failure to inject (mixin/event not applied) logs once at startup:
 

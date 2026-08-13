@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -228,7 +228,7 @@ Snippet key: `cave-profile`. Valid on **dimension**, **region**, and **biome**.
 | `baseWeight` | double >= 0 | `1` | Contribution of the base field. All weights are normalised, so raising this is equivalent to lowering the others |
 | `detailWeight` | double >= 0 | `0.35` | Contribution of the detail field. Above about `0.5` the base layout stops being readable |
 | `warpStrength` | double >= 0 | `0` | Block distance the warp displaces samples. Small values (0.2 to 1) bend straight tunnels; large values scramble everything and cost a second noise lookup per sample |
-| `densityThreshold` | `IrisStyledRange` | `-0.2..0.2`, cellular iris double | The carve cutoff, itself noise-varied across the world so cave size differs region to region. Set `min` equal to `max` for a constant threshold |
+| `densityThreshold` | `IrisStyledRange` | `-0.2..0.2`, cellular iris double | The carve cutoff, itself noise-varied across the world so cave size differs region to region. Set `min` equal to `max` for a constant threshold. Writing `{}` is rejected by validation — it would resolve to the shared 16..32 default and hollow the whole vertical range |
 | `thresholdBias` | double 0..1 | `0.16` | Subtracted from the sampled threshold before the test. Lower it for more carved space, raise it for less. This is the single knob to reach for when caves are globally too big or too small |
 
 ### Sampling and cost

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,13 +51,13 @@ A transient studio world opens and you are teleported into it; saving any pack f
 ### Check a pack before you rely on it
 
 ```
-/iris pack validate pack=overworld     # Bukkit — pack is required, see the note below
+/iris pack validate                    # validates every pack; add pack=<key> for one
 /iris pack validate                    # modded — empty means every pack
 ```
 
 A clean pack reports no blocking errors; the all-packs form finishes with a broken-pack count out of the total scanned. `/iris pack status` reprints the last recorded result without revalidating. Warnings do not block world creation, blocking errors do. Detail: [25 - Pack Management](/iris/25-pack-management).
 
-**Bukkit quirk:** `/iris pack validate` and `/iris pack status` describe `pack` as optional ("leave empty for all"), but the parameter is declared with a blank default, which Director treats as *no* default. Both commands therefore reject a bare invocation with a missing-argument error, and the all-packs branch in the code is unreachable from Bukkit chat. Pass a pack name explicitly.
+`/iris pack validate` and `/iris pack status` treat an omitted pack (or `*`) as "all packs" on both platforms. One Bukkit note: because optional Director parameters never bind positionally, a single pack must be named with `pack=<key>` — a bare positional name is rejected.
 
 ### Other common goals
 
@@ -131,7 +131,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `loadWorld` | `import` | **Bukkit** | `<world>`, player origin | Load a managed Iris world |
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
-| `download` | `dl` | Both | `<pack> [branch=stable] [overwrite=false]` (`pack` alias `project`; `overwrite` alias `force`) | Download a pack; `overworld` and `underworld` resolve to managed beta release ZIPs |
+| `download` | `dl` | Both | `<pack-or-url> [branch=stable] [overwrite=false]` (`pack` alias `project`; `overwrite` alias `force`) | Install from an embedded managed Git source, an IrisDimensions repository branch, or a direct HTTP(S) `.zip`; restart manually before use |
 | `metrics` | `measure` | Both | — | Generation metrics; player origin on Bukkit |
 | `reload` | | Both | — | Reload `settings.json` and locale; modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
@@ -321,10 +321,10 @@ Bukkit has one global Studio project/world and the Jigsaw session belongs to one
 
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
-| `validate` | `v` | **Bukkit:** `<pack>` (required despite the "leave empty for all" description). **Modded:** `[pack]`; empty means all | Validate pack(s) and publish results |
+| `validate` | `v` | `[pack]` on both platforms; empty (or `*` on Bukkit) validates every pack | Validate pack(s) and publish results |
 | `cleanup` | `c` | **Bukkit:** `<pack> [mode=preview]`. **Modded:** `<pack> [apply]` | Preview or quarantine unused resources |
 | `restore` | `r` | same pattern as `cleanup` | Preview or restore the latest quarantine |
-| `status` | `s` | **Bukkit:** `<pack>` (required, same blank-default trap). **Modded:** `[pack]` | Startup-published validation status, including persisted unchanged results |
+| `status` | `s` | `[pack]` on both platforms; empty (or `*` on Bukkit) reports every pack | Startup-published validation status, including persisted unchanged results |
 
 See [25 - Pack Management](/iris/25-pack-management).
 
@@ -414,7 +414,7 @@ The modded developer group implements only `sentry` and `network`/`ip`; its help
 | Datapack status/install (dimension types) | — | yes |
 | `regen` / `goldenhash` | under `Developer` | root |
 | Pregen flags | `serial`, `gui`, center string | `sync`, `gui`, `nocache`, `at x z` |
-| `pack validate` / `status` with no pack | rejected (blank default is required) | validates all packs |
+| `pack validate` / `status` with no pack | validates/reports all packs | validates/reports all packs |
 | Tree feller permission | `iris.treefeller` | `irisworldgen:treefeller` via the loader permission API |
 
 ---

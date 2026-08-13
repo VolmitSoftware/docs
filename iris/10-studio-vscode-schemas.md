@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -72,8 +72,8 @@ Studio settings live in `settings.json` under `studio` (`IrisSettings.IrisSettin
 |-----|---------|---------|
 | `openVSCode` | `true` | When true and the JVM is not headless, `open`/`vscode` may launch the desktop opener on the pack's `*.code-workspace`. Set false on servers where a desktop launch would be pointless or unwanted |
 | `entitySpawning` | `true` | Only affects Studio worlds. False stops Iris ambient entity spawning there; production worlds always spawn regardless of this key |
-| `disableTimeAndWeather` | `true` | Present in the settings model but not read by any code path today |
-| `autoStartDefaultStudio` | `false` | Present in the settings model but not read by any code path today |
+| `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds. Set false to let them run while authoring |
+| `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot |
 
 ## Hotload rules
 
@@ -234,7 +234,7 @@ The dimension field `studioMode` swaps in a debug generator. It is applied by th
 | `NORMAL` | Default generation |
 | `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` | Lays every biome out in a grid of that cell size so palettes and decorators can be compared side by side |
 | `OBJECT_BUFFET` | Object studio generator; also forced automatically while an object studio session is active |
-| `REGION_BUFFET` | Installs no studio generator today and behaves exactly like `NORMAL` |
+| `REGION_BUFFET` | Deprecated alias of `NORMAL`; it installs no studio generator and will be removed in a future release |
 
 These are testing fields, not production world modes — the production engine mode is `mode.type` (see [11 - Dimensions](/iris/11-dimensions)). Remove `studioMode` before packaging.
 

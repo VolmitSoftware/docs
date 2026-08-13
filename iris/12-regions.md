@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -210,8 +210,8 @@ Deposit precedence across tiers: biome variants, then region variants, then dime
 
 | Field | Status |
 |-------|--------|
-| `riverStyle` | Accepted by the schema and the editor, never read at generation time. Rivers come from biomes (for example `temperate/sea/river`) with negative generator heights, not from this field. |
-| `lakeStyle` | Same. Setting it has no effect on generation. |
+| `riverStyle` | Removed. It was never read at generation time; rivers come from biomes (for example `temperate/sea/river`) with negative generator heights. Old packs that still carry the key load fine — it is ignored. |
+| `lakeStyle` | Removed, same reasoning. |
 
 They are still valid JSON and will not fail validation, so do not spend time tuning them.
 
@@ -252,6 +252,6 @@ Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terral
 | Empty `landBiomes` | Invalid region; land columns have no candidates |
 | Wrong biome key path | `temperate/plains` must be `biomes/temperate/plains.json`, case and folder included |
 | Tuning region `rarity` when the region never appears | Selection also depends on the dimension's `regionStyle` and `regionZoom`; measure first with `/iris studio regions` |
-| Expecting `riverStyle` / `lakeStyle` to do something | They are read by nothing; make rivers and lakes as sea biomes with negative generator heights |
+| Expecting `riverStyle` / `lakeStyle` to do something | The fields were removed (they were read by nothing); make rivers and lakes as sea biomes with negative generator heights |
 | Empty `seaBiomes` in a dimension whose terrain dips below `fluidHeight` | Sea columns have no candidate biome |
 | Comparing changes in already-generated chunks | Region and zoom changes only affect newly generated chunks; always fly to fresh terrain |

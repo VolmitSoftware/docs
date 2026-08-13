@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -97,7 +97,7 @@ Surface entries add uniform `+/- 0.005` jitter to `chance` before rolling; cave 
 }
 ```
 
-Always set `min` and `max`. The class defaults are 16 and 32, so a bare `"densityStyle": {}` asks for 16 to 32 attempts in every chunk that passes the chance roll.
+Always set `min` and `max`. The class defaults are 16 and 32, so a bare `"densityStyle": {}` would ask for 16 to 32 attempts in every chunk that passes the chance roll — `/iris pack validate` rejects a densityStyle that omits both, and warns when only one is set.
 
 ## 3. Where is it allowed to land?
 

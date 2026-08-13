@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -179,7 +179,7 @@ Worth reading before tuning rarities, because two of these steps surprise people
 
 2. **Source list.** Iris asks the object placement that owns the block for at most one table. Candidates are bucketed by how specifically they match: entries with an `exact` block-data filter that matches win outright; failing that, entries whose filter matches the block's material; failing that, entries with no filter. Within the winning bucket the pick is weighted by `weight`. `loot` and `vanillaLoot` entries compete in the same buckets. If the placement sets `overrideGlobalLoot` and a table was picked, that's the entire list.
 
-3. **Environment sources.** Otherwise the dimension, region, and surface biome each inject their tables in that order, and a cave biome injects too when the container is below terrain height and resolves to a different biome than the surface. `ADD` appends. `CLEAR` and `REPLACE` both wipe the list first and then append their own tables — despite the field description, `CLEAR` does not suppress its own tables. `FALLBACK` injects only when nothing already claimed the container, meaning neither the placement's `loot`/`vanillaLoot` nor a pre-existing vanilla loot table on the block.
+3. **Environment sources.** Otherwise the dimension, region, and surface biome each inject their tables in that order, and a cave biome injects too when the container is below terrain height and resolves to a different biome than the surface. `ADD` appends. `REPLACE` wipes the list first and then appends its own tables. `CLEAR` wipes the list and contributes nothing — any tables listed on a `CLEAR` reference are dead, and `/iris pack validate` warns about them. `FALLBACK` injects only when nothing already claimed the container, meaning neither the placement's `loot`/`vanillaLoot` nor a pre-existing vanilla loot table on the block.
 
 4. **Multiplier.** The multipliers from every contributing scope are multiplied together, and the resulting factor scales the *length of the table list*, not stack sizes. A factor of 0.5 randomly drops half the tables; a factor of 2 randomly duplicates entries until the list doubles. The list is capped at 256 sources and Iris throws rather than silently truncating past that.
 
@@ -250,7 +250,7 @@ The shape used by dimension, region, biome, and entity `loot` fields:
 |------|-----------|
 | `ADD` | Append these tables to whatever the outer scopes contributed. The default and the right choice most of the time |
 | `REPLACE` | Wipe the list, then append these. Use on a biome that should ignore the dimension's global tables |
-| `CLEAR` | Identical to `REPLACE` in code: wipe, then append these. The field description claims it also suppresses its own tables; it does not |
+| `CLEAR` | Wipes every parent table and adds nothing, even if tables are listed here (the validator warns about dead entries). Use it to make an area drop no Iris loot |
 | `FALLBACK` | Only contribute when nothing already claimed the container — no object `loot`, no object `vanillaLoot`, no native loot table on the block. This is how a pack ships a broad filler table without stepping on structure chests |
 
 Entities read only `tables` from this object. Setting `mode` or `multiplier` on an entity's `loot` has no effect.
@@ -458,7 +458,7 @@ On Folia, `CAVE` group spawners never fire on Bukkit — the cave-floor marker l
 | `rarity` | int >= 1 | `1` | Inverse weight. All eligible entries from all eligible spawners go into one pool and each entry gets `totalRarity / rarity` slots, so low numbers are common and high numbers are rare. Exactly one entry wins per chunk attempt |
 | `minSpawns` / `maxSpawns` | int >= 1 | `1` / `1` | Inclusive range of placement attempts once this entry wins. Each attempt can still fail the surface, light, or clearance check, so this is a ceiling not a guarantee |
 
-Modded applies `rarity` twice — once as the pool weight and again as a 1-in-N roll at each candidate position — so high-rarity entries spawn somewhat less often on Fabric/Forge/NeoForge than on Bukkit for the same numbers.
+Rarity is applied exactly once, as pool weighting, on both platforms. (Modded used to re-roll it per position on top of the pool weight, so modded spawn rates were far lower than Bukkit for the same numbers; that double application is gone.)
 
 Real Overworld spawner, `spawners/temperate/hostile.json`:
 

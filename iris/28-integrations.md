@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -66,7 +66,7 @@ In `paper-plugin.yml` the softdepends appear as `load: BEFORE, required: false` 
 | `/iris object we` | Checks WorldEdit is enabled, reads your current selection, and puts a **new Iris object wand into your inventory** already carrying those two corners |
 | Limitation | `position2` will not operate on a WorldEdit-only selection. Run `/iris object we` first so a real Iris wand exists |
 
-Two behaviors worth knowing. First, whether WorldEdit is present is cached the first time Iris asks, so a WorldEdit installed or enabled after that point is not picked up until restart. Second, if a reflective call throws, Iris logs `Could not get selection`, reports the error, and latches the cached answer to "no WorldEdit" for the rest of the process — a stack trace of that shape means the whole link is now off, not just that one call.
+Two behaviors worth knowing. First, only a *positive* WorldEdit detection is cached: if WorldEdit is absent or not yet enabled, Iris re-checks on each use, so enabling WorldEdit later is picked up without a restart. Second, if a reflective call throws, Iris logs `Could not get selection` (throttled to once a minute) and clears the cached answer, so the next call re-detects instead of turning the link off for the rest of the process.
 
 WorldEdit is not needed to import `.schem` files. Iris parses schematic NBT itself. See [19 - Objects](/iris/19-objects).
 

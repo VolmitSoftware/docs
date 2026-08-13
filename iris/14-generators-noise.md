@@ -2,7 +2,7 @@
 title: "Generators & Noise"
 description: "Iris documentation: Generators & Noise"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T23:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -196,7 +196,6 @@ Available as the `style` snippet, and accepted anywhere Iris configures noise: g
 | `exponent` | double 0.01562..64 | `1` | Power curve on the style output before anything else consumes it. |
 | `multiplier` | double >= 0.00001 | `1` | Only read when this style is somebody's `fracture` child. It scales the coordinate displacement applied to the parent, roughly plus or minus half this value. `18` gives noticeable swirls; `55` heavily distorts. |
 | `fracture` | `IrisGeneratorStyle` | `null` | Warps the coordinates fed into this style. This is the main tool for making cellular and vascular styles look organic instead of geometric. |
-| `axialFracturing` | boolean | `false` | Fractures each axis with a different coordinate order. Looks better on large regional noise, and costs two to three times as much. |
 | `cellularFrequency` | double | `0` | Above 0, post-processes the style into cells, so continuous noise becomes flat-valued patches. |
 | `cellularZoom` | double | `1` | Cell size after cellularising. Ignored when `cellularFrequency` is 0. |
 | `expression` | expression key | `null` | Use `expressions/<key>.json` as the noise source instead of `style`. |
@@ -287,7 +286,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 | `biomeZoom`, `landZoom`, `seaZoom` | Global biome size multipliers applied before the region's own zooms |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` height offsets added on top of every column, each with its own `generator` style and `min`/`max` |
 | `coordFractureDistance` / `coordFractureZoom` | Global coordinate warp, the source of the large-scale "Iris swirls" |
-| `rockZoom` / `rockPalette` / `fluidPalette` | Fill materials below the biome layers and in water; see [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
+| `rockPalette` / `fluidPalette` | Fill materials below the biome layers and in water; see [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
 
 ## Overworld examples
 
@@ -355,7 +354,7 @@ The shipping overworld uses neither `expression` nor `imageMap` in any generator
 - Share one generator across many biomes and vary `min`/`max` per biome. That is what makes a mountain range and its foothills look like the same landform.
 - Match `interpolator.horizontalScale` between neighbouring biomes you want to blend smoothly, and deliberately mismatch it where you want a visible change in character.
 - Give a generator its own `horizontalScale` if you want its shape kept independent; reuse an existing one only when you want the shapes averaged together.
-- Do not ship two generator files whose settings are byte-for-byte identical, including `seed`. Generators are deduplicated by content when they are bucketed, so only one key survives and biomes referencing the other key silently get a zero height band.
+- Do not ship two generator files whose settings are byte-for-byte identical, including `seed`. Generators are deduplicated by content when they are bucketed, so only one key survives and biomes referencing the other key silently get a zero height band. `/iris pack validate` warns when it finds content-identical generators that are both referenced.
 - Nested `fracture` multiplies cost. Keep fracture chains short on generators that run for every column, and reach for `cacheSize` before adding a third level.
 - `STATIC` is white noise. Use it for palette scatter, never for terrain relief.
 - `multiplicitive` and the deposit field `varience` are intentional code spellings. The JSON must match them exactly.

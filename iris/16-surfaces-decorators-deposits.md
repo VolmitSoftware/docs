@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -139,7 +139,6 @@ Dimension-level palettes:
 |-------|---------|--------------|
 | `rockPalette` | stone | Fills every land cell below the biome layer stack. Swap it for deepslate or a stone/granite/andesite blend to change the entire underground |
 | `fluidPalette` | water | Ocean and river columns, and cave aquifers when `allowFluid` is on. Setting it to lava turns every ocean and aquifer into lava with no other change |
-| `rockZoom` | `5` | Scale of the rock palette variation |
 
 ### Block data and reusable `blocks/*.json`
 

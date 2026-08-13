@@ -2,12 +2,12 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris ships as one Bukkit-family plugin jar and three self-contained mod jars (Fabric, Forge, NeoForge). This page gets the right artifact onto your server, tells you how to prove the install actually worked, and documents where Iris puts its files on each platform. Java 25 is required everywhere. On first boot Iris downloads the managed `overworld` and `underworld` beta packs if they aren't already present.
+Iris ships as one Bukkit-family plugin jar and three self-contained mod jars (Fabric, Forge, NeoForge). This page gets the right artifact onto your server, tells you how to prove the install actually worked, and documents where Iris puts its files on each platform. Java 25 is required everywhere. First boot never downloads a world pack; install one explicitly with `/iris download` and restart before creating an Iris world.
 
 Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is already installed and you just want a world, skip ahead.
 
@@ -16,7 +16,7 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 Whichever path you take, you're done when all three of these are true:
 
 1. Iris reached its enabled/ready state with no exception in the startup log.
-2. The data directory has a `settings.json` and loadable `packs/overworld/` and `packs/underworld/` directories.
+2. The data directory has a `settings.json`; after manual pack installation, the requested `packs/<key>/` directory is loadable.
 3. `/iris` prints help from the server console.
 
 On a modded client the Iris keybind category showing up is a nice extra signal, but it proves the client mod loaded — not that the server can generate chunks. Always check server-side.
@@ -33,7 +33,7 @@ Keep the old jar and the entire Iris data directory until the new build passes t
 | Fabric Loader | 0.19.3+ |
 | Forge | 65.x (built and tested against 26.2-65.0.4) |
 | NeoForge | 26.2.x (built and tested against 26.2.0.12-beta) |
-| Network | Outbound HTTPS to `github.com` on first boot, to fetch the IrisDimensions Overworld and Underworld beta release assets |
+| Network | None for startup. Outbound HTTP or HTTPS is required only when an operator runs `/iris download` |
 
 Before replacing an existing installation:
 
@@ -48,7 +48,8 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 
 1. Drop the CraftBukkit-labelled plugin jar into `plugins/`.
 2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first.
-3. First boot writes `plugins/Iris/settings.json` with defaults if it's absent, and provisions `overworld` and `underworld` into `plugins/Iris/packs/` from their IrisDimensions `beta` release ZIPs when missing.
+3. First boot writes `plugins/Iris/settings.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download.
+4. Run `/iris download overworld` and/or `/iris download underworld`, wait for validation and atomic installation to finish, then restart the server. The command does not restart or stop the process itself.
 
 Then verify from the server console:
 
@@ -60,7 +61,7 @@ Then verify from the server console:
 
 `/iris version` prints exactly one line — `Iris v<version> by Volmit Software`. That's the whole output; it does not report platform or Minecraft version, so use it only as a "the command tree is alive" check. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
 
-Pass an explicit pack name. `/iris pack validate` with no argument fails with a missing-argument error rather than validating everything, because the parameter is required. To validate every installed pack, pass the key with an empty value: `/iris pack validate pack=`.
+`/iris pack validate` with no argument validates every installed pack; name one with `pack=<key>` to check a single pack.
 
 A command responding is not proof the generator can produce chunks. Finish with the disposable-world walkthrough in [02 - Getting Started](/iris/02-getting-started).
 
@@ -91,9 +92,9 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 `folia-supported: true`, and engine work uses region-safe scheduling. The one behavioral difference that matters at install time: `/iris create` cannot build a live world at runtime on Folia. Instead it stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and prints a message telling you to restart. After the restart the world generates and loads on its own from that `bukkit.yml` entry — you do not need to run `/iris load`. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
-### If the first-boot download fails
+### Installing the first pack
 
-Fix network access and restart. Do not create an empty folder named `overworld` to silence the error: a folder without a `dimensions/*.json` inside it is treated as absent (and re-downloaded), and a partial pack is not a usable dimension. To install by hand later, use `/iris download overworld` and `/iris download underworld`.
+Use `/iris download overworld`, `/iris download underworld`, or `/iris download <https://host/path/pack.zip>`. Managed names use Git sources embedded in Iris; a URL must be an HTTP or HTTPS `.zip` link and must contain exactly one dimension key so Iris can determine its install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack.
 
 Before you create a world you care about, run the Bukkit fresh-install runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks).
 
@@ -102,7 +103,7 @@ Before you create a world you care about, run the Bukkit fresh-install runbook i
 1. Drop the matching mod jar into `mods/`.
 2. Start the dedicated server, or a client if you want singleplayer.
 3. The jar is self-contained — engine, SPI, and the required Fabric API modules are bundled. Mod id is `irisworldgen` on all three loaders.
-4. On first boot, if `autoDownloadDefaultPack` is true in `config/irisworldgen/modded.json` (it is by default), a daemon thread installs the managed `overworld` and `underworld` beta packs when missing, then a configured non-managed `defaultPack` if you've set one. Only after that does it write the forced worldgen datapack.
+4. First boot writes the forced worldgen datapack from packs already on disk. It performs no pack download. Install a pack with `/iris download`, then restart before selecting or creating its world type.
 
 Verify server-side:
 
@@ -157,7 +158,7 @@ Paths are relative to the game instance's `config/` directory.
 |---|---|
 | `config/irisworldgen/packs/<pack>/` | Installed packs. A pack counts as installed when `dimensions/<dimension>.json` exists |
 | `config/irisworldgen/generated/datapack/iris/` | The generated forced datapack (datapack id `iris_worldgen`), plus a hash sidecar used to detect staleness. Iris owns this; do not edit it |
-| `config/irisworldgen/modded.json` | Mod-side config: default pack, auto-download, primary-world routing, main-world override |
+| `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override |
 | `config/iris/` | Engine data directory — `settings.json` and per-world engine state |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.
@@ -168,8 +169,7 @@ Written with these defaults on first read. If the file is unparseable Iris logs 
 
 | Key | Default | What it does |
 |---|---|---|
-| `defaultPack` | `overworld` | The pack `/iris create` uses when you don't name one, and the extra pack auto-download will fetch beyond the two managed betas |
-| `autoDownloadDefaultPack` | `true` | Whether boot installs missing packs at all. Set false for air-gapped servers where you place pack folders by hand |
+| `defaultPack` | `overworld` | The pack `/iris create` uses when you do not name one. Iris never downloads it automatically |
 | `primaryWorld` | `""` | Dimension id players get routed into. Empty means no routing. Set by `/iris world replace-overworld` rather than by hand |
 | `routePlayersToPrimaryWorld` | `true` | Whether the routing above actually happens. Set false to keep a primary world configured but stop moving players into it |
 | `mainWorldPack` | `""` | Pack whose generator replaces the vanilla main world. Empty means the vanilla overworld is untouched |
@@ -180,35 +180,36 @@ Only `/iris world replace-overworld`, `/iris world disable|delete` on the primar
 
 ## Settings that affect install and first world
 
-`IrisSettings` is shared across every platform; only the file location differs. The three keys most likely to matter before your first world:
+`IrisSettings` is shared across every platform; only the file location differs. The four keys most likely to matter before your first world:
 
 | Key path | Default | When you'd change it |
 |---|---|---|
 | `generator.defaultWorldType` | `overworld` | Bukkit `/iris create` resolves `type=default` through this. Point it at your own pack so plain `/iris create <name>` produces your world instead of the stock overworld |
 | `general.language` | `en_US` | Server-side message locale. See [08 - Localization](/iris/08-localization) |
 | `studio.openVSCode` | `true` | Set false on a headless box so `/iris studio vscode` writes the workspace file without trying to launch an editor |
+| `studio.autoStartDefaultStudio` | `false` | Leave off for production. Turning it on opens a studio world at boot, which is only useful on a dedicated authoring server |
 
 Full key list: [03 - Configuration](/iris/03-configuration).
 
-## First-boot pack download
+## Pack download policy
 
 | Platform | What happens |
 |---|---|
-| Plugin | `DefaultPackBootstrapProvisioner` installs the Overworld and Underworld beta release assets into `packs/overworld` and `packs/underworld` independently, then compiles the aggregate datapack once |
-| Mod | If `autoDownloadDefaultPack` is on, a daemon thread installs both managed beta packs plus any distinct configured `defaultPack` into `config/irisworldgen/packs`, then regenerates the forced datapack |
+| Plugin | Startup compiles only packs already present into the aggregate datapack. Zero packs is a valid startup state |
+| Mod | Startup writes the forced datapack only from packs already present. Zero packs is a valid startup state |
 
-Manual install is `/iris download <pack>` (alias `dl`). The two managed packs are special-cased: `overworld` and `underworld` always come from their pinned beta release assets and **ignore the `branch` argument entirely**. Any other pack resolves as `IrisDimensions/<pack>/<branch>`, with `branch` defaulting to `stable`.
+Manual install is `/iris download <pack-or-url>` (alias `dl`). The managed names are embedded mappings: `overworld` resolves to `IrisDimensions/overworld` at `master`, and `underworld` resolves to `IrisDimensions/underworld` at `main`; both ignore the command's `branch` argument. An HTTP or HTTPS `.zip` URL is downloaded directly. Any other name resolves as `IrisDimensions/<pack>/<branch>`, with `branch` defaulting to `stable`.
 
 The managed-pack match is case-sensitive, so `/iris download Overworld` misses the special case and tries `IrisDimensions/Overworld/stable` instead. Use lowercase.
 
-One more branch inconsistency to be aware of on modded: when `/iris create` auto-downloads a pack that isn't installed, and when boot fetches a non-managed `defaultPack`, both use the `master` branch — not `stable`. Only the explicit `/iris download` command defaults to `stable`. Pin the branch explicitly if it matters. See [25 - Pack Management](/iris/25-pack-management).
+Successful downloads update only the pack directory and validation result. Iris does not rebuild the live registry datapack, stop the server, or schedule a restart; restart manually before creating or opening a world from the new bytes. See [25 - Pack Management](/iris/25-pack-management).
 
 ## When the install goes wrong
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `/iris version` does nothing | Wrong directory, wrong platform jar, a duplicate Iris jar, Java below 25, or an exception during enable | Stop the server, leave exactly one matching artifact in place, confirm Java 25, then fix the **first** Iris exception in the startup log — later ones are usually fallout |
-| `settings.json` exists but a managed pack is missing | The beta download failed or is still running | Restore outbound HTTPS or drop in the complete release pack, then restart. Do not create an empty pack folder to paper over it |
+| `settings.json` exists but no world packs exist | This is the normal first-start state | Run `/iris download overworld`, `/iris download underworld`, or install a complete pack folder, then restart |
 | Players are kicked at login with an Iris message | Startup validation hasn't passed | Read the reason in the kick text and the console. External datapack failures lock login; fix the datapack state and restart |
 | Pack validates, but modded heights and biomes are wrong | The forced datapack was generated after registries had already loaded | Restart once with the pack already on disk, then create a fresh disposable world to confirm |
 | A non-op can't run any Iris command | `iris.all` isn't granted | Grant `iris.all`. `iris.treefeller` only covers survival tree felling and grants no commands |

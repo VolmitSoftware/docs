@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-12T22:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -157,6 +157,8 @@ Modded pregen keeps its cache in the equivalent `<worldFolder>/iris/pregen`.
 ## Mantle and heap caps
 
 Pregen generates faster than chunks get saved, so Iris throttles itself against tectonic plate residency and heap use. These are the knobs that decide whether a large run finishes or thrashes.
+
+Pregen's per-chunk cleanup keeps retained mantle slices — marker spawn points and tree-feller materials survive in pregenerated chunks the same way they do in normally generated ones, so ambient marker spawning and custom tree drops work identically in pregenerated terrain. The retained data lives in the mantle region files, which grow accordingly.
 
 | Control | Default and rule | Why you would change it |
 |---|---|---|
