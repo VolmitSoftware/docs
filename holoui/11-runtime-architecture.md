@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "HoloUI documentation: Runtime Architecture"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,13 +46,14 @@ Because slimjar injects those libraries during construction, no class touched wh
 | 13 | `new ContainerProtectionService(this)`, then `activate()` | Container access checks for previews |
 | 14 | `new MenuSessionManager()` | Starts the two 1-tick tasks, registers the Bukkit listeners, seeds the debug tasks from the current settings |
 | 15 | `new BoardRuntimeManager(this, boardService)` | Atomically subscribes to the board-service snapshot, starts viewer/follow updates, and registers quit cleanup |
-| 16 | Construct and start `EditorSyncService` | Loads secure relay capabilities, quarantines invalid individual entries, and starts outbound polling. A corrupt root store disables only editor sync and leaves one-way handoffs available |
-| 17 | `PreviewScaleService.init(this)` | Loads `plugins/holoui/preview-scales.json`; registers `PlayerToggleSneakEvent`, `PlayerItemHeldEvent`, `PlayerQuitEvent` listeners |
-| 18 | `new HoloUiCommandService(this)`, then `register()` | Binds executor and tab completer to `holoui` and builds the Director runtime engine. If `getCommand("holoui")` returns null, logs `Failed to find command 'holoui'` and returns without registering |
-| 19 | `HoloUiMetrics.start(this, BSTATS_PLUGIN_ID)` | Guarded by `if (BSTATS_PLUGIN_ID > 0)`, a compile-time constant, so it always runs |
-| 20 | `new HoloUiIntegrationService()`, then `register()` | Registers `IntegrationServiceContract` at `ServicePriority.Normal` |
-| 21 | `new HoloUiServiceImpl(this)`, then `register()` | Public API service |
-| 22 | `new PlaceholderRegistration(getLogger())`; when `PlaceholderRegistration.isPlaceholderApiEnabled()`, `HoloUiPlaceholderInstaller.install(...)` | PAPI expansion installed only when PlaceholderAPI is enabled |
+| 16 | Construct `HologramCreationService` | Starts the dedicated atomic menu-plus-board creation worker used by `/holoui create` |
+| 17 | Construct and start `EditorSyncService` | Loads secure relay capabilities, quarantines invalid individual entries, and starts outbound polling. A corrupt root store disables only editor sync and leaves one-way handoffs available |
+| 18 | `PreviewScaleService.init(this)` | Loads `plugins/holoui/preview-scales.json`; registers `PlayerToggleSneakEvent`, `PlayerItemHeldEvent`, `PlayerQuitEvent` listeners |
+| 19 | `new HoloUiCommandService(this)`, then `register()` | Binds executor and tab completer to `holoui` and builds the Director runtime engine. If `getCommand("holoui")` returns null, logs `Failed to find command 'holoui'` and returns without registering |
+| 20 | `HoloUiMetrics.start(this, BSTATS_PLUGIN_ID)` | Guarded by `if (BSTATS_PLUGIN_ID > 0)`, a compile-time constant, so it always runs |
+| 21 | `new HoloUiIntegrationService()`, then `register()` | Registers `IntegrationServiceContract` at `ServicePriority.Normal` |
+| 22 | `new HoloUiServiceImpl(this)`, then `register()` | Public API service |
+| 23 | `new PlaceholderRegistration(getLogger())`; when `PlaceholderRegistration.isPlaceholderApiEnabled()`, `HoloUiPlaceholderInstaller.install(...)` | PAPI expansion installed only when PlaceholderAPI is enabled |
 
 One ordering constraint is recorded in source: `PreviewDocumentRegistry` is fully published before `MenuSessionManager` exists, because the session manager's raycast tick queries the registry.
 
@@ -67,25 +68,27 @@ One ordering constraint is recorded in source: `PreviewDocumentRegistry` is full
 3. `integrationService.unregister()` (also calls `HoloUiTelemetry.clear()`)
 4. `containerProtection.shutdown()`
 5. `commandService.shutdown()` — clears staged board edits and their previews
-6. `editorSyncService.shutdown()` — stops new polling, cancels active relay exchanges and any owning-scheduler publication future, and drains completion stages for at most 30 seconds; every session mutation is already persisted synchronously, while persistence work still active at the deadline is not interrupted and closes its daemon executor when finished
-7. `configManager.shutdown()` — drains the menu mutation worker and writes `settings.json`
-8. `boardRuntime.shutdown()` — stops board ticks and closes packet-only board views on their viewer schedulers
-9. `boardService.shutdown()` — rejects queued work and waits for active board disk I/O to quiesce
-10. `sessionManager.destroyAll()`
-11. `itemProviders.shutdown()`
-12. `PreviewScaleService.shutdown()` — persists `preview-scales.json`, releases HUD claims
-13. `hudLanes.shutdown()`
-14. `hudSlots.shutdown()`
-15. `PacketEvents.getAPI().terminate()` when the API is non-null
-16. `SpigotPacketEventsBuilder.clearBuildCache()`
-17. `metrics.shutdown()`
-18. unregister the outgoing `BungeeCord` channel
-19. `SchedulerUtils.cancelPluginTasks(this)`
-20. `INSTANCE = null` when `INSTANCE == this`
+6. `hologramCreationService.stopAccepting()` — rejects new one-command creations before another operation can queue behind editor synchronization
+7. `editorSyncService.shutdown()` — stops new polling, cancels active relay exchanges and any owning-scheduler publication future, and drains completion stages for at most 30 seconds; every session mutation is already persisted synchronously, while persistence work still active at the deadline is not interrupted and closes its daemon executor when finished
+8. `hologramCreationService.shutdown()` — waits for any already-active atomic menu-plus-board transaction to finish without interruption after editor sync has released the shared persistence gate
+9. `configManager.shutdown()` — drains the menu mutation worker and writes `settings.json`
+10. `boardRuntime.shutdown()` — stops board ticks and closes packet-only board views on their viewer schedulers
+11. `boardService.shutdown()` — rejects queued work and waits for active board disk I/O to quiesce
+12. `sessionManager.destroyAll()`
+13. `itemProviders.shutdown()`
+14. `PreviewScaleService.shutdown()` — persists `preview-scales.json`, releases HUD claims
+15. `hudLanes.shutdown()`
+16. `hudSlots.shutdown()`
+17. `PacketEvents.getAPI().terminate()` when the API is non-null
+18. `SpigotPacketEventsBuilder.clearBuildCache()`
+19. `metrics.shutdown()`
+20. unregister the outgoing `BungeeCord` channel
+21. `SchedulerUtils.cancelPluginTasks(this)`
+22. `INSTANCE = null` when `INSTANCE == this`
 
 Board and personal-session shutdown both complete while PacketEvents is active, so teardown can send the required destroy packets. Only after those holders are empty does PacketEvents terminate; repeating tasks are cancelled afterward. `PacketUtils` has no null check on `PacketEvents.getAPI()`, so this order is required.
 
-## 2. Session architecture
+## 2. Personal-menu session architecture
 
 ```
 MenuSessionManager
@@ -100,7 +103,7 @@ DisplayEntityManager (static)
   playerVisibility: Map<UUID, Player>
 ```
 
-`holders` is keyed by the `Player` instance, not by UUID, so a holder lives for exactly one login. Each holder carries at most one `MenuSession` and at most one `ContainerPreview`, under two separate locks; a menu and a container preview can be open at the same time and do not interact. `session` is `volatile`; `hasSession()` and the event-time click snapshot read it without locking, while every mutation path takes `sessionLock`.
+`holders` is keyed by the `Player` instance, not by UUID, so a holder lives for exactly one login. Each holder carries at most one personal `MenuSession` and at most one `ContainerPreview`, under two separate locks; a menu and a container preview can be open at the same time and do not interact. Persistent-board views are owned separately by `BoardRuntimeManager` and do not occupy this personal slot. `session` is `volatile`; `hasSession()` and the event-time click snapshot read it without locking, while every mutation path takes `sessionLock`.
 
 Each personal holder owns one active menu plus a root id and a history deque used by native submenu navigation. It does not keep inactive sessions alive: navigation constructs and opens the replacement transactionally, commits history only after success, then closes the previous session. An API menu and a config menu still compete for the same active slot.
 
@@ -146,7 +149,7 @@ Every target is re-resolved through `ConfigManager`, requires `holoui.open.<id>`
 
 Holder removal happens on quit and on tick-time dispatch failure only. A holder with no session and no preview stays in the map until the player disconnects.
 
-## 3. Tick loop and scheduling
+## 3. Personal-holder tick loop and scheduling
 
 Two independent 1-tick tasks are started in the `MenuSessionManager` constructor, plus two optional 2-tick debug tasks.
 
@@ -154,8 +157,8 @@ Two independent 1-tick tasks are started in the `MenuSessionManager` constructor
 | --- | --- | --- |
 | Session/preview tick | 1 tick | iterates `holders` |
 | Container-preview raycast (`listenToInventoryPreview`) | 1 tick | iterates `Bukkit.getOnlinePlayers()`, not `holders` |
-| Hitbox debug (`debugHitbox`) | 2 ticks | draws hitbox outlines for every open clickable component |
-| Position debug (`debugPosition`) | 2 ticks | draws the menu center and each component location |
+| Hitbox debug (`debugHitbox`) | 2 ticks | draws hitbox outlines for clickable components in personal holders |
+| Position debug (`debugPosition`) | 2 ticks | draws the personal menu center and each component location |
 
 `SchedulerUtils.scheduleSyncTask(plugin, 1L, task, false)` is a self-rescheduling loop, not `runTaskTimer`: it runs the body and then schedules the next delay. With `delayStart = false` the first iteration runs on the next tick. Cancellation is cooperative — the flag is checked at the top of each iteration — and an uncaught throwable from a body permanently stops that chain.
 
@@ -172,7 +175,7 @@ Per iteration of the session tick:
 
 `MenuComponent.tick()` is a no-op while `!open`. It first calls `currentIcon.tick()`, where animated images advance and text icons refresh PlaceholderAPI content at their configured interval. A changed text result increments the icon geometry revision; the component then reapplies the icon transform and calls `onIconChanged()` so clickables rebuild their plane before `onTick()` performs hover selection.
 
-`refreshVisuals()` — triggered by a `uiScale` or `previewScale` change, or by an image asset hot reload — closes every open component, refreshes the session transform's scale, reapplies component geometry, and reopens those components with brand-new display entities.
+`SessionHolder.refreshVisuals()` — triggered by a `uiScale` or `previewScale` change, or by an image asset hot reload — closes every open personal-menu component, refreshes the session transform's scale, reapplies component geometry, and reopens those components with brand-new display entities. `BoardRuntimeManager.refreshVisuals()` performs the equivalent rebuild separately for every open board view.
 
 ### 3.1 Scheduler per operation
 
@@ -335,7 +338,7 @@ Then, for the one winning component:
 
 The four delivered interaction values are `LEFT_CLICK`, `RIGHT_CLICK`, `SHIFT_LEFT_CLICK`, and `SHIFT_RIGHT_CLICK`. Configured actions may additionally bind `ANY`; omitted and explicit-null action triggers resolve to `ANY`. An exact binding matches only itself, while `ANY` matches all four interactions. The container-preview sneak controls in `PreviewScaleService` are separate from menu action binding.
 
-## 7. Close paths
+## 7. Personal-menu close paths
 
 `HoloCloseReason` has thirteen constants. The reason affects only the API handle's `onClosed` callback; visual teardown is identical for every reason.
 
@@ -489,9 +492,11 @@ The version-1 document shape is:
 
 Writes use a same-directory temporary file, flush the file, replace the target with `ATOMIC_MOVE`, and flush the containing directory; a failed write does not publish the candidate to the in-memory registry. `load()` scans nested JSON files in stable path order. A malformed, stale-revision, identity-changing, duplicate-UUID, missing-world-field, symlinked, or non-canonical file is reported in `BoardLoadResult.failures`; an id cannot claim the stable UUID of a different previously published board even if its file sorts first. When that id already has a valid in-memory definition, the last good value is retained. A cold start has no last-good value to recover, and removing a file removes its entry on the next load.
 
+Board copy duplicates only the board definition with a new id, UUID, and revision. It retains `rootMenuId` and does not create, rename, or delete any menu file, so the source and copy share menu content until one board is assigned another root. Board deletion likewise removes only the board JSON.
+
 ### 10.1 Effective transforms and follow storage
 
-A non-following board stores its absolute world transform. A player-following board stores a target-relative offset and relative facing: `fixed` translates the absolute offset without target rotation, `yaw` rotates the horizontal offset and adds target yaw, and `full` also adds target pitch. `BoardRuntimeManager` samples each online target on its entity scheduler and publishes resolved absolute copies into a separate effective spatial index. The last scheduler-owned pose remains available while the target is offline, so the board keeps its last world pose and can be unfollowed or edited; sampling resumes when the target returns.
+A non-following board stores its absolute world transform. A player-following board stores a target-relative offset and relative facing: `fixed` translates the absolute offset without target rotation, `yaw` rotates the horizontal offset and adds target yaw, and `full` also adds target pitch. `BoardRuntimeManager` samples each online target on its entity scheduler and publishes resolved absolute copies into a separate effective spatial index. The last scheduler-owned pose remains available while the target is offline, so the board keeps its last in-memory world pose and can be unfollowed or edited; sampling resumes when the target returns. Effective poses are not persisted. After a server restart, a following board whose target is offline has no effective index entry and is not rendered or available to effective-position operations until that player is online and sampled.
 
 Operator location reporting, near queries, teleport, staged previews, and transform mutations use the effective absolute pose. `/holoui board follow` converts the current absolute pose to relative storage so enabling follow does not jump the board; `unfollow` materializes the current effective pose before clearing follow. World-space `move`, `here`, `rotate`, and `align` operations on a following board are re-encoded against a scheduler-captured target location. A `~` value is therefore relative to the current effective pose, not the persisted relative offset.
 
@@ -513,11 +518,13 @@ Definition create, update, delete, and reload notifications update the runtime i
 
 The optimistic revision is SHA-256 of the exact UTF-8 source last published by `ConfigManager`. `MenuDocumentRepository` compares that revision to disk before invoking a mutation and rereads the target immediately before replacement, so a watcher edit or queued command based on stale source cannot silently overwrite the newer document. Existing-menu writes use an atomic replacement; copies use atomic no-clobber file creation and fail if another writer creates the target. Paths use case-preserving slash ids with alphanumeric-start segments, reject traversal and symbolic links, and prepare only real nested directories. Mutations operate on a deep copy of the Gson tree, which preserves extension fields not intentionally replaced; the resulting source is parsed through the same `MenuDocumentParser` used by normal config loading before and after persistence.
 
-`MenuRowMutations` supplies the in-game content operations used by `/holoui menu` and the board-root aliases. Row numbers are one-based component-array indexes. Text insertion/removal and absolute or `~`-relative offsets share the same queue with icon replacement and display-style editing. `seticon` accepts text, image, animated image, item, block, custom-item, and entity data; a non-entity replacement carries forward the previous icon style, while entity icons reject style. `style` validates each property against its runtime range and treats `*` as removal. Whole-menu `image` replacement intentionally replaces the component list with one centered image decoration while preserving other top-level fields. Board-root forms resolve the published or staged root menu id and require the board command permission, but persist menu content immediately rather than joining the staged board-definition transaction.
+`MenuRowMutations` supplies the in-game content operations used by `/holoui menu` and the board-root aliases. Row numbers are one-based component-array indexes. Text insertion/removal and absolute or `~`-relative offsets share the same queue with icon replacement and display-style editing. `seticon` accepts text, image, animated image, item, block, custom-item, and entity data; a non-entity replacement carries forward the previous icon style, while an entity replacement removes it. `style` validates each property against its runtime range, treats `*` as removal, and rejects entity rows. Whole-menu `image` replacement intentionally replaces the component list with one centered image decoration while preserving other top-level fields. Board-root forms resolve the published or staged root menu id and require the board command permission, but persist menu content immediately rather than joining the staged board-definition transaction.
 
 Image-backed command mutations call `ConfigManager.getImage` on the storage worker before changing JSON. Its canonical resolver requires a readable regular file beneath `plugins/holoui/images/`, and Apache Commons Imaging must decode it; absolute paths, traversal, symlink escapes, and missing files are rejected. The command path performs no URL fetch or avatar lookup. Animated values validate each comma-separated frame independently.
 
 The disk future is not the public completion point. `ConfigManager` schedules publication on the global scheduler, verifies that the in-memory revision is still the expected source (or already equals the just-written source when the folder watcher won the race), then replaces both definition and exact-source registries. Matching personal sessions are deliberately closed with `DEFINITION_RELOADED` on their per-player entity schedulers; this path does not reopen or rebuild them in place. `BoardRuntimeManager` does live-rebuild matching board views through their viewer schedulers. The folder watcher compares source revisions and suppresses a duplicate publication when it later observes the same atomic write.
+
+`HologramCreationService` is the root `/holoui create` path. The command handler captures the player's immutable world transform on the owning thread, then a dedicated daemon worker validates a same-id generated menu and board, acquires the shared external persistence lease, checks both targets for disk and registry collisions, and stages both files in one `HoloUiProjectTransaction`. `ConfigManager.publishExternalCreate` and `BoardService.publishExternalCreate` accept only persisted bytes that exactly match the staged definitions. If either runtime publication or final commit fails, transaction recovery removes both new files and the matching already-published runtime entries; unrelated revisions are never removed. If rollback or commit durability remains uncertain, the shared persistence coordinator rejects subsequent writes and watcher publication until startup recovery determines the durable result.
 
 ### 10.5 Legacy hologram import pipeline
 
@@ -537,7 +544,7 @@ The store preserves JSON nulls because null board permission and follow fields p
 
 Automatic polling runs on one daemon scheduler and never reads Bukkit world or entity state. `editorSyncEnabled=false` stops automatic and manual pulls. Transient failures use per-session exponential backoff up to five minutes; manual pull bypasses the delay. Revoke reserves the same in-flight slot as polling, so a capability cannot be applied after successful revocation. Shutdown atomically cancels active network exchanges, rejects late scheduler-publication registrations, and completes already-queued global publication futures exceptionally. It drains for at most 30 seconds; a persistence transaction still running at that deadline keeps its daemon worker only until its durability or recovery continuation finishes and is never interrupted by lifecycle teardown.
 
-`HoloUiPersistenceCoordinator` is the one fair persistence gate shared by `MenuMutationService`, `BoardService`, the menu/image watcher reads, and sync transactions. A sync publication revalidates its optimistic project hash and the exact current menu, image, and board bytes while holding the external write lease. `HoloUiProjectTransaction` then writes staged replacements, original backups, per-file hashes, and a prepared/publishing/published journal; every file and directory transition is flushed. Startup recovery runs before services load, rolls back every uncommitted journal, preserves any target changed independently after staging, archives committed backups, and retains the newest 20 archives.
+`HoloUiPersistenceCoordinator` is the one fair persistence gate shared by `MenuMutationService`, `BoardService`, the menu/image watcher reads, root hologram creation, and sync transactions. Board persistence, index replacement, listener notification, and runtime publication remain inside the same permit so a delayed reload cannot publish stale state after a newer transaction. A sync publication revalidates its optimistic project hash and the exact current menu, image, and board bytes while holding the external write lease. `HoloUiProjectTransaction` then writes staged replacements, original backups, per-file hashes, and a prepared/publishing/published journal; every file and directory transition is flushed. If recovery cannot prove a rollback or commit durable, the coordinator quarantines all participating writers and watcher reads until restart. Startup recovery runs before services load, rolls back every uncommitted journal, preserves any target changed independently after staging, archives committed backups, and retains the newest 20 archives.
 
 After disk publication, menu definitions are republished on the global scheduler and the board index is reloaded before the transaction receives a durable committed marker and the relay receives `applied`. The pending acknowledgement and rebuilt actual server snapshot are stored before the relay call, so an acknowledgement failure or restart retries idempotently without incrementing a board revision again. A commit-marker directory flush is retried; if durability remains uncertain, HoloUi sends no acknowledgement, pauses that session, preserves its journal and pending snapshot, and requires startup recovery to select commit or rollback. Conflicts return a freshly rebuilt current snapshot, while rejected editor data never changes the server base.
 

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "HoloUI documentation: Installation & Configuration"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ HoloUi is a single-jar Bukkit plugin that draws holographic menus and container 
 
 The data folder is `plugins/holoui/`, derived from `name`.
 
-The descriptor declares one command, `holoui`, with aliases `holo`, `hui`, `holou`, `hu`, and twenty permissions. The command itself declares no permission; access is gated per subcommand. See [02 - Commands & Permissions](/holoui/02-commands-permissions).
+The descriptor declares one command, `holoui`, with aliases `holo`, `hui`, `holou`, `hu`, and twenty permissions. The command entry itself has no `permission:` field; `HoloUiCommandService` first requires the root `holoui.command` node, then each handler checks its own command permission. See [02 - Commands & Permissions](/holoui/02-commands-permissions).
 
 ### depend / softdepend / load
 
@@ -53,7 +53,7 @@ HoloUi carries the SlimJar loader and dependency metadata in its jar. PacketEven
 2. Start the server. During construction, before `onLoad`, the plugin logs `Loading Dependencies...`, resolves the libraries declared with `slim(...)` in `build.gradle`, then logs `Dependencies loaded!`. Resolution uses the repository metadata embedded by SlimJar, including CodeMC for PacketEvents and Maven Central for the other current libraries. The first start of a dependency set requires network access; subsequent starts reuse the downloaded cache.
 3. `onEnable` creates `plugins/holoui/` and its contents.
 
-The jar ships no default menu files, so `menus/` is created empty. `/holoui menu create <id>` writes the shipped blank hologram there. The 13 shipped preview documents are extracted into `previews/` on every start when missing.
+The jar ships no default menu files, so `menus/` is created empty. `/holo create <id> [text]` creates a simple same-id menu and persistent board together; `/holoui menu create <id>` writes the richer shipped blank-menu baseline without placing a board. The 13 shipped preview documents are extracted into `previews/` on every start when missing.
 
 ## Data folder layout
 
@@ -68,24 +68,24 @@ The jar ships no default menu files, so `menus/` is created empty. `/holoui menu
 | `plugins/holoui/preview-scales.json` | `PreviewScaleService` | Per-player container preview scale factors, written when a player finishes adjusting, on quit, and at shutdown |
 | `plugins/holoui/custom-items.json` | `CustomItemCatalogWriter` | Custom item catalog. Not created at boot; written only by `/holoui item export`, capped at 10000 items per provider. Consumed by the web editor ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)) |
 | `plugins/holoui/editor-sync-sessions.json` | `EditorSyncSessionStore` | Private server capabilities and base snapshots for active round-trip editor sessions. The file is atomically replaced, owner-restricted on POSIX stores, capped at 80 MiB, and must not be shared or published |
-| `plugins/holoui/editor-sync-transactions/` | `HoloUiProjectTransaction` | Incomplete durable multi-file publications. Startup recovery commits or rolls them back before menu and board services load |
-| `plugins/holoui/editor-sync-backups/` | `HoloUiProjectTransaction` | The newest 20 completed publication backups, retained for operator recovery |
+| `plugins/holoui/editor-sync-transactions/` | `HoloUiProjectTransaction` | Incomplete durable multi-file editor-sync or one-command hologram publications. Startup recovery commits or rolls them back before menu and board services load |
+| `plugins/holoui/editor-sync-backups/` | `HoloUiProjectTransaction` | The newest 20 completed multi-file publication backups, retained for operator recovery |
 
 A menu's registry key is its case-preserving path relative to `menus/`, with `/` separators and the final `.json` removed; the same value is stamped as the menu id. In-game row editing and menu copy commands use those ids and persist through an asynchronous, revision-checked atomic writer; see [02 - Commands & Permissions](/holoui/02-commands-permissions).
 
 ## settings.json
 
-The file lives at `plugins/holoui/settings.json`. Each key is registered by `art.arcane.holoui.config.HuiSettings` with a type, a default, and an optional change listener. Values are read through accessors that clamp and sanitize; a null, `NaN`, or infinite number falls back to the default rather than propagating.
+The file lives at `plugins/holoui/settings.json`. Each key is registered by `art.arcane.holoui.config.HuiSettings` with a type, a default, and an optional change listener. The settings store retains the parsed scalar exactly; runtime accessors separately clamp or sanitize it. A null, `NaN`, or infinite numeric value therefore falls back at read time rather than replacing the stored scalar.
 
 ### Keys
 
-| Key | Type | Default | Range | Effect |
+| Key | Type | Default | Effective range or validation | Effect |
 | --- | --- | --- | --- | --- |
-| `debugHitbox` | boolean | `false` | — | Runs a 2-tick task that calls `highlightHitbox` on every `ClickableComponent` of every open session. See [04 - Components & Hitboxes](/holoui/04-components-hitboxes) |
-| `debugPosition` | boolean | `false` | — | Runs a 2-tick task drawing a `Color.YELLOW` particle at the session center and a `Color.ORANGE` particle at each component location |
-| `builderUrl` | string | `https://holoui.volmitsoftware.com` | Must start with `http://` or `https://`; must not contain any character `<= ' '` or any of `'`, `"`, `<`, `>`, `\` | Editor origin used by `/holoui builder`, live `#/sync/…` links, and one-way `#/import/menu/…` fallback links. A value failing validation is replaced with the default because it becomes a MiniMessage `click:open_url` target |
+| `debugHitbox` | boolean | `false` | — | Runs a 2-tick task that calls `highlightHitbox` on clickable components in personal menu sessions; board views are not included. See [04 - Components & Hitboxes](/holoui/04-components-hitboxes) |
+| `debugPosition` | boolean | `false` | — | Runs a 2-tick task drawing a `Color.YELLOW` particle at each personal-session center and a `Color.ORANGE` particle at its component locations; board views are not included |
+| `builderUrl` | string | `https://holoui.volmitsoftware.com` | Leading and trailing whitespace is trimmed; the result must start with `http://` or `https://` and contain no remaining character `<= ' '` or any of `'`, `"`, `<`, `>`, `\` | Editor origin used by `/holoui builder`, live `#/sync/…` links, and one-way `#/import/menu/…` fallback links. A value failing validation reads as the default because it becomes a MiniMessage `click:open_url` target |
 | `editorSyncEnabled` | boolean | `true` | — | Allows creation and automatic or manual pulling of round-trip editor sessions. Setting it false stops future pulls; list, status, and revoke remain available, and an already-committed in-flight publication may finish safely |
-| `editorSyncEndpoint` | string | `https://sync.holoui.volmitsoftware.com/v1` | Absolute HTTPS endpoint, or loopback-only HTTP, ending in `/v1`; no user info, query, fragment, traversal, whitespace, or more than 1,024 characters | Relay used for new sessions. Existing sessions retain the endpoint captured when they were created. An invalid value falls back to the default |
+| `editorSyncEndpoint` | string | `https://sync.holoui.volmitsoftware.com/v1` | Absolute HTTPS endpoint, or loopback-only HTTP, ending in `/v1`; no user info, query, fragment, traversal, whitespace, or more than 1,024 characters | Relay used for new sessions. Existing sessions retain the endpoint captured when they were created. An invalid raw value reads as the default |
 | `editorSyncCreateToken` | string | `""` | Empty, or 22–128 URL-safe `A-Z a-z 0-9 _ -` characters | Optional bearer credential sent only when creating a relay session. It is never placed in an editor URL or persisted in the session store. The official relay requires an operator-issued token; the empty default therefore falls back to the one-way editor handoff unless the configured relay permits anonymous creation |
 | `editorSyncSessionMinutes` | integer | `60` | `5`–`1440` | Expiry requested for newly created sync capabilities |
 | `editorSyncPollSeconds` | integer | `3` | `1`–`60` | Base automatic polling period. Changes require a plugin/server restart because the scheduled cadence is created when the service starts; relay failures back off per session to at most five minutes |
@@ -99,9 +99,11 @@ The file lives at `plugins/holoui/settings.json`. Each key is registered by `art
 
 Values are stored as JSON scalars. There is no list or enum value type, which is why `customItemProviders` is a comma-separated string rather than an array.
 
+The fourth column describes values returned to runtime code, not write-time rejection. Successfully parsed out-of-range numbers remain raw in the settings store and are clamped by the accessor; URL and token strings likewise remain raw while their accessor returns a sanitized value or fallback.
+
 ### Reload behavior
 
-`settings.json` is checked every 5 ticks by the `ConfigManager` task chain. On a detected modification the file is reparsed and change listeners fire. A key absent from the JSON object is assigned its default. At shutdown, the file is rewritten with every value the running server actually held.
+`settings.json` is checked every 5 ticks by the `ConfigManager` task chain. On a detected modification the file is reparsed and change listeners fire. A key absent from the JSON object is assigned its default. At shutdown, the file is rewritten with every parsed scalar held by the settings store, not the clamped or sanitized value returned by a runtime accessor.
 
 A value that cannot be parsed is rejected and the key keeps the value the server is already running with. Every other key in the same file still reloads. Each rejection logs one line, `settings.json: <key> = <value> was rejected; keeping <value>.`, with the throwable attached as a stack, and a file whose root is not a JSON object logs `settings.json: root is not a json object, keeping the last good values.` Reporting happens once per detected modification, not once per tick, and neither case interrupts the 5-tick task.
 
@@ -109,6 +111,7 @@ A value that cannot be parsed is rejected and the key keeps the value the server
 
 - **A freshly generated `settings.json` carries every key at its default.** Defaults are materialized before the first write, so the generated file is the authoritative listing of what can be set. A key added or edited by hand takes effect on the next 5-tick check.
 - **The shutdown rewrite emits every registered key.** Entries never read and never reloaded fall back to their default rather than disappearing. Any key not recognized by `HuiSettings` is dropped.
+- **Accessor fallback does not rewrite invalid-but-parseable input.** For example, `uiScale: 100` remains `100` in the file while runtime code reads `4.0`; an invalid `builderUrl`, sync endpoint, or create token likewise remains stored while its accessor returns the safe fallback. Fix the raw value in the file rather than expecting shutdown to normalize it.
 - **`debugHitbox` and `debugPosition` apply on boot and on live edit.** Boot loads `settings.json` without firing change listeners (other subsystems start later and read values themselves). `MenuSessionManager` construction calls `applyDebugSettings()` so a `true` value in the file arms the 2-tick debug tasks immediately. A live edit still fires the entry listeners and arms or cancels those tasks.
 - **A boolean set to an arbitrary string parses as `false` without a rejection.** Gson reads any non-`true` string as `false`, so the value is well-formed as far as the loader is concerned. A JSON `null` or a non-numeric double is rejected as described above.
 - **Disabling editor sync does not revoke remote capabilities.** It prevents new sessions and all future automatic or manual pulls. Use `/holoui sync revoke <session>` before or after disabling, or let the capability expire.
@@ -121,17 +124,17 @@ Every scheduled task is dispatched through VolmLib's `SchedulerUtils`, which rou
 
 | Watched path | Period | Detects | Behavior |
 | --- | --- | --- | --- |
-| `menus/` | 5 ticks | Modification | Reparse the file. On success, destroy every open session of that menu, notify each affected player, then replace the registry entry and log `Menu config "<name>" has been changed and re-registered.` |
-| `menus/` | 20 ticks | Creation, deletion | Created files are parsed and registered (`New menu config "<name>" detected and registered.`); deleted files destroy all sessions of that menu and drop the key (`Menu config "<name>" has been deleted and unregistered.`) |
-| `images/` | 5 ticks | Modification | Log `Image asset "<file>" changed and was hot reloaded.` and refresh visuals on open sessions |
-| `images/` | 20 ticks | Creation, deletion | Log the change and refresh visuals on open sessions |
+| `menus/` | 5 ticks | Modification | Reparse the file. On success, close matching personal sessions with `DEFINITION_RELOADED`, notify those players, replace the registry entry, and attempt to live-reload board views currently showing that menu; a view that cannot reopen closes. Then log `Menu config "<name>" has been changed and re-registered.` |
+| `menus/` | 20 ticks | Creation, deletion | Created files are parsed and registered (`New menu config "<name>" detected and registered.`). Deletion closes matching personal sessions and drops the key; a board view showing a deleted submenu returns home when possible, while a root or unrecoverable view closes. The deletion logs `Menu config "<name>" has been deleted and unregistered.` |
+| `images/` | 5 ticks | Modification | Log `Image asset "<file>" changed and was hot reloaded.` and refresh visuals in personal sessions and board views |
+| `images/` | 20 ticks | Creation, deletion | Log the change and refresh visuals in personal sessions and board views |
 | `settings.json` | 5 ticks | Modification | Reparse and fire change listeners |
 | `language.yml` | 5 ticks | Modification | Reload the locale overlay; a rejected reload is reported and the previous catalog stays live |
 | `previews/` | 5 ticks | Modification, creation, deletion | Recompile the affected `*.json` and republish the snapshot |
 
 Both `menus/` passes apply the same recursive filter as the boot scan. Regular non-symbolic `*.json` files under real, non-hidden directories are accepted case-insensitively and receive a slash-separated relative id; other extensions, hidden paths, directories themselves, symbolic links, and files outside the root are skipped. Creating or deleting a nested directory registers or unregisters its accepted descendants.
 
-Players with a session open on a reloaded menu receive a notice: a localized `CONFIG_RELOADED` message on the action bar, or on a boss bar lane when the action bar is claimed by something with higher priority, plus `ENTITY_EXPERIENCE_ORB_PICKUP` at volume `0.5`, pitch `1`.
+Players with a matching personal menu open receive a notice: a localized `CONFIG_RELOADED` message on the action bar, or on a boss bar lane when the action bar is claimed by something with higher priority, plus `ENTITY_EXPERIENCE_ORB_PICKUP` at volume `0.5`, pitch `1`. Board-view reloads do not send that notice.
 
 ### Runtime notes
 

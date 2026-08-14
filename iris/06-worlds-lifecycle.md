@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -44,6 +44,8 @@ On Folia, this stages files and prints a restart instruction — stop the server
 ```
 
 **Success looks like:** `release_candidate` appears in `/iris worlds` as a loaded Iris world, you spawn in it, and chunks generate as you fly.
+
+When a player runs the create command, Iris waits up to 60 seconds for the entry chunk, a safe position, and the automatic teleport. A failure or timeout is non-terminal: Iris cancels only that entry attempt, keeps the successfully created world loaded and registered, and does not request a restart. Wait for initial generation to settle and run `/iris tp release_candidate` again.
 
 Now prove it survives a restart, because a world that only works in the session that created it is not actually created:
 
@@ -103,6 +105,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | "busy" response | Another lifecycle operation holds the coordinator. It is one global mutex, so a pack download or publish blocks world create just as much as another create does | Wait for the running operation. Retrying concurrently will not help |
 | Startup validation pending / failed / restart-required on login or create | External datapack ingestion or dimension-pack validation has not reached a safe state | Fix the first logged failure, or complete the requested restart. Do not hand-create world folders or hand-edit `bukkit.yml` |
 | Folia create succeeded but teleport says no such world | Folia create only stages files and registration | Restart, then load or teleport |
+| Create reports that automatic teleport failed | The world was created, but the 60-second entry attempt failed, returned false, or did not finish | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
 | Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the `iris/pack` snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |
 | Unload hits its terminal timeout | Work did not drain in 150 s | Allow the restart. Do not force-delete the live directory |
 | Remove returns `DELETE_QUEUED` | Files were quarantined for startup deletion | Restart, confirm the target is gone, then reuse the name |
@@ -160,7 +163,8 @@ Create refuses to run on the primary thread. Before it takes a lifecycle lease i
 5. Build a `WorldCreator` with the Iris generator and `studio=false`.
 6. Create the world through `WorldLifecycleService` / NMS async create, with a 120-second timeout. A timeout triggers a server restart rather than leaving a half-created world.
 7. Register the world in `bukkit.yml` with the Iris generator, dimension key, and seed. Update the Multiverse link if Multiverse is present — that step has its own 30-second budget and also escalates to a restart.
-8. Run creation-time pregen if the caller attached a `PregenTask` through the API.
+8. For a player-issued create, request the entry chunk and safe location, then attempt the automatic teleport. This step has a 60-second limit; failure cancels the teleport only and retains the created world without requesting a restart.
+9. Run creation-time pregen if the caller attached a `PregenTask` through the API.
 
 Rollback phases carry the same 120-second budget.
 

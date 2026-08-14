@@ -2,7 +2,7 @@
 title: "API - Menus"
 description: "HoloUI documentation: API - Menus"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,6 +22,8 @@ There are two ways in, and they yield different handles:
 
 A handle from the `String` overload cannot mutate anything and never receives a click. It carries
 lifecycle only.
+
+Both overloads use the player's single personal-menu slot. They do not create, query, mutate, or close persistent world boards. Board views have their own per-viewer sessions and history; they share the public menu-open and menu-click events documented below, but never produce a `HoloMenuHandle` or invoke an API-menu click handler.
 
 ---
 
@@ -121,7 +123,7 @@ Component ids must be unique within a menu. The only throw site is the `HoloMenu
 `HoloMenuBuilder#component` performs no validation.
 
 A menu id that collides with a file in `plugins/holoui/menus/` is a live hazard: HoloUi closes every
-session whose id matches a changed or deleted file, compared case-insensitively, with
+personal session whose id exactly matches a changed or deleted file, with
 `HoloCloseReason.DEFINITION_RELOADED`, including API-built sessions. Namespace your ids
 (`exampleshop.store`, not `shop`).
 
@@ -391,7 +393,7 @@ Guarantees, implemented in `ApiHandleState` over a single `AtomicReference<Snaps
 | `RESPAWN`             | `CLOSED`        | The respawn point was out of range. Only reachable with `closeOnDeath(false)`              |
 | `TELEPORT`            | `CLOSED`        | The player teleported and `closeOnTeleport` was set, or landed out of range                |
 | `QUIT`                | `CLOSED`        | The player logged out, including before a `PENDING` open landed                            |
-| `DEFINITION_RELOADED` | `CLOSED`        | A JSON menu whose id matches this session's, case-insensitively, changed or was deleted    |
+| `DEFINITION_RELOADED` | `CLOSED`        | A JSON menu whose id exactly matches this session's changed or was deleted                 |
 | `OWNER_DISABLED`      | `CLOSED`        | The plugin that opened the menu was disabled                                               |
 | `DENIED`              | `FAILED`        | Unknown menu id, missing `holoui.open.<id>`, or a cancelled `HoloUiMenuOpenEvent`           |
 | `OPEN_FAILED`         | `FAILED`        | HoloUi was shut down, the scheduler refused the task, or the open threw                    |
@@ -583,15 +585,19 @@ public HandlerList getHandlers()
 public static HandlerList getHandlerList()
 ```
 
-Fired from `MenuSessionManager#createNewSession`, immediately before the session is created, on the
-player's region thread. It fires for every menu on the server: API opens, `/holoui open`, `/holoui back`
-and any other internal open path.
+Fired immediately before a menu session is created, on the player's region thread. Personal root
+opens use `MenuSessionManager#createNewSession`; personal `push`, `replace`, `back`, and `home`
+navigation fire from `MenuSessionManager#navigate`. Persistent-board root admission and board
+navigation fire separately from `BoardViewSession#openMenu`. These paths cover every personal and
+board menu open, including `/holoui open`, `/holoui back`, API opens, and native navigation.
 
 `getOwnerPluginName()` is the opening plugin's name, or `null` for a menu HoloUi opened itself.
 `getMenuId()` is the resolved definition id. A null `player` throws `NullPointerException`.
 
-Cancelling it means the session is never created, `createNewSession` returns `false`, and for an API
-open the handle terminates `FAILED` with `DENIED`.
+Cancelling it prevents that personal or board menu from opening. For a root API open,
+`createNewSession` returns `false` and the handle terminates `FAILED` with `DENIED`; a cancelled
+navigation leaves the current menu and history intact, while a cancelled board-root admission leaves
+that board view unopened and eligible for a later runtime retry.
 
 ### `HoloUiMenuClickEvent`
 

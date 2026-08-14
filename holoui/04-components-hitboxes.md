@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "HoloUI documentation: Components & Hitboxes"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -342,7 +342,6 @@ See [11 - Runtime Architecture](/holoui/11-runtime-architecture) for the session
 
 ## Runtime notes
 
-- The schema descriptions for `trueActions` and `falseActions` state "during a true state", which describes the opposite of the implemented behaviour. The lists belong to the state being entered.
 - Duplicate component `id` values do not reject the menu file. The first component with an id is used and later duplicates are ignored when a session opens.
 - A toggle's state is not written back to the placeholder in `condition`, and the condition is never re-evaluated while the menu is open. An externally changed placeholder does not update a live toggle.
 - Menu-level `offset` is not scaled by `uiScale`; component `offset` and hitbox geometry are.

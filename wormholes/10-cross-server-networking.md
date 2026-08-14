@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Wormholes documentation: Cross-Server Networking"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,12 +29,12 @@ Other network keys: [01 - Installation & Configuration](/wormholes/01-installati
 
 Encoding is URL-safe Base64 after the prefix. Invalid codes reject with a message naming both prefixes.
 
-### Import commands (equivalent)
+### Import
 
 | Command | Effect |
 |---------|--------|
 | `/wormholes server import <code>` | Accepts `WHS1.` or `WHP5.` |
-| `/wormholes network import <code>` | Same `importCode` path |
+| `/wormholes network import <code>` | Alias of `server import`; same `importCode` path |
 
 Import of a **server** code saves route + trust only. Import of a **portal** code from chat saves route + trust and reports the remote portal name; linking a local gateway to that remote portal is done through the portal Link UI (when import is invoked with a portal context from the UI, `linkRemote` is applied immediately).
 
@@ -169,7 +169,7 @@ Unknown names are rejected. A peer that is not reachable reports not-ready and p
 ## Operator workflow
 
 1. On server A: `/wormholes server export` → copy `WHS1.…`
-2. On server B: `/wormholes server import <code>` (or `network import`)
+2. On server B: `/wormholes server import <code>` (`network import` is an alias)
 3. Reverse export/import so both sides have routes and trust (one-way import creates a route on the importer only)
 4. Ensure `accepts-transfers=true` (or rely on auto-accept) on destinations that receive direct transfers
 5. Open the game port and the actual raw peer port reported by `/wormholes network status`. The listener tries configured `listen-port` through `listen-port + 50` when ports are busy; reserve the configured port or permit the reported bound port/range.

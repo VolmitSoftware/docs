@@ -2,16 +2,15 @@
 title: "HoloUI"
 description: "HoloUI holographic UI framework for Paper and Folia"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-# HoloUI
-
-In-world menus and container previews rendered as packet-only display entities, visible to a
-single viewer. Menus are JSON files, authored by hand or in the web editor.
+In-world personal menus, persistent world boards, and container previews rendered as packet-only
+display entities. Every rendered view is sent only to its viewer; menus are JSON files authored by
+hand, through in-game commands, or in the web editor.
 
 | | |
 |---|---|

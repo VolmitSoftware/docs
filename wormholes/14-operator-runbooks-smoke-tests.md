@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -91,7 +91,7 @@ Requires `wormholes.admin.network`. Export/import sets `[network] enabled = true
 | 1 | On server A: `/wh server export`. | Clickable/copyable server code in chat. |
 | 2 | On server B: `/wh server import <code>`. | Route/trust accepted; peer appears. |
 | 3 | `/wh server list` and `/wh network status` on both. | Peer listed; status CONNECTED when reachable (or doctor explains failure). |
-| 4 | Optional portal export: gateway portal menu **Export**, then `/wh network import <portal code>` on the other side; link via gateway Link menu. | Remote portal route stored; gateway can link. |
+| 4 | Optional portal export: gateway portal menu **Export**, then `/wh server import <portal code>` on the other side; link via gateway Link menu. | Remote portal route stored; gateway can link. |
 | 5 | `/wh network doctor` if not connected. | Diagnostics lines printed. |
 
 ## Cross-server gateway handoff and entity transfer

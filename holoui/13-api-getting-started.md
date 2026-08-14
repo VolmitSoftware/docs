@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "HoloUI documentation: API - Getting Started"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,8 @@ holographic display-entity menu in code, open it for one player, mutate it while
 receive clicks, close it, observe every menu on the server through Bukkit events, and contribute
 variables to container-preview documents. This document covers the dependency, the service lookup, the
 compatibility contract and the full type index; the per-feature documents are listed at the end.
+
+The service opens and manages one personal menu slot per player. Persistent world boards use the operator command and board-runtime surfaces rather than `HoloUiService` or `HoloMenuHandle`; the public open and click events still observe board menu views.
 
 ---
 
@@ -23,9 +25,10 @@ compatibility contract and the full type index; the per-feature documents are li
 | `HoloMenu`                          | record               | Immutable menu definition                                    |
 | `HoloMenuBuilder`                   | final class          | Builds a `HoloMenu`; reached through `HoloMenu.builder()`     |
 | `HoloComponent`                     | sealed interface     | One element of a menu: `Decoration` or `Button`               |
-| `HoloIcon`                          | sealed interface     | What a component draws: `Text`, `Item`, `Image`, `AnimatedImage` |
+| `HoloIcon`                          | sealed interface     | What a component draws: `Text`, `Item`, `Block`, `Image`, `AnimatedImage`, or `Entity` |
 | `HoloClickHandler`                  | functional interface | Button callback                                              |
 | `HoloClick`                         | record               | Click payload passed to a `HoloClickHandler`                  |
+| `HoloClickTrigger`                  | enum                 | Physical click binding; five constants including `ANY`        |
 | `HoloMenuHandle`                    | interface            | One open session: observe it, mutate it, close it             |
 | `HoloMenuState`                     | enum                 | `PENDING`, `OPEN`, `CLOSED`, `FAILED`                         |
 | `HoloCloseReason`                   | enum                 | Why a session ended; 13 constants                             |

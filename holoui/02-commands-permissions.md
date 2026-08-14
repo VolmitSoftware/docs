@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "HoloUI documentation: Commands & Permissions"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ HoloUI exposes a single root command, `/holoui`, dispatched through the VolmLib 
 `HoloUiCommandService.onCommand` runs the following steps:
 
 1. Checks `holoui.command`. Without it the sender receives `holoui.message.permission_denied` and nothing else runs.
-2. Normalizes arguments: bare `preview`/`previews` and `board`/`boards` become their `list` actions, while bare `menu`/`menus` becomes the root menu list. Bare `/holoui open <id>`, `/holoui preview reset <name>`, `/holoui board list <page>`, `/holoui board near <radius>`, and the optional menu in `/holoui board create <board> [menu]` are rewritten to keyed optional arguments. Multi-token row text, icon/style values, and image paths are joined into their final keyed parameter.
+2. Normalizes arguments: bare `preview`/`previews` and `board`/`boards` become their `list` actions, while bare `menu`/`menus` becomes the root menu list. Bare `/holoui open <id>`, `/holoui preview reset <name>`, `/holoui board list <page>`, `/holoui board near <radius>`, and the optional menu in `/holoui board create <board> [menu]` are rewritten to keyed optional arguments. Multi-token `/holoui create` text, row text, icon/style values, and image paths are joined into their final keyed parameter.
 3. Resolves help via `DirectorMiniMenu.resolveHelp(engine, args, 9)`. If a help page resolves, it is delivered — the MiniMessage page for `Player` senders, the plain console form for everyone else — and the command ends.
 4. Otherwise executes the Director invocation.
 5. On failure, sends `holoui.message.unknown_command` with the joined arguments if Director produced no message of its own.
@@ -45,12 +45,13 @@ Director's argument mapper determines what HoloUI accepts:
 - Arguments are re-tokenized before mapping and double quotes are honored, so `name="my doc"` is one token.
 - Subcommand and parameter-key matching is fuzzy: exact or alias match, then prefix, substring, and Levenshtein distance within `max(1, len/3)`. `men=shop` therefore resolves to `menu=shop`.
 
-`HoloUiCommandService.normalizeArgs` rewrites optional bare values before Director runs: `/holoui open shop` becomes `open menu=shop`, `/holoui preview reset chest` becomes `preview reset name=chest`, `/holoui board list 2` becomes `board list page=2`, `/holoui board near 24` becomes `board near radius=24`, and `/holoui board create welcome shops/welcome` keys the final menu value. Help tokens (`help`, `?`, `help=N`) and already-keyed forms are not rewritten.
+`HoloUiCommandService.normalizeArgs` rewrites optional bare values before Director runs: `/holoui create welcome Welcome to spawn` becomes `create welcome text=Welcome to spawn`, `/holoui open shop` becomes `open menu=shop`, `/holoui preview reset chest` becomes `preview reset name=chest`, `/holoui board list 2` becomes `board list page=2`, `/holoui board near 24` becomes `board near radius=24`, and `/holoui board create welcome shops/welcome` keys the final menu value. Help tokens (`help`, `?`, `help=N`) and already-keyed forms are not rewritten.
 
 ## Command index
 
 | Command | Arguments | Permission | Console | Player |
 |---------|-----------|------------|---------|--------|
+| `/holoui create <id> [text]` | new same-id hologram/menu id; optional multi-token text | `holoui.command.boards` | no | yes |
 | `/holoui list` | none | `holoui.command.list` | yes | yes |
 | `/holoui open [menu=<id>\|<id>]` | `menu` (String, optional, default `*`; bare id rewritten to `menu=`) | `holoui.command.open` and `holoui.open.<menuId>` | only the `*` form | yes |
 | `/holoui back` | none | `holoui.command.back` | no | yes |
@@ -115,6 +116,19 @@ Director's argument mapper determines what HoloUI accepts:
 Canonical command groups are singular: `item`, `preview`, `menu`, and `board`; the older plural spellings remain accepted aliases but are hidden from completion. Bare `preview` and `board` run their list actions, while bare `menu` runs the root menu list. Board aliases remain accepted for direct typing: `remove` for `delete`, `movehere` and `tphere` for `here`, `tp` for `teleport`, `root` for `menu`, and `editweb` and `webedit` for `web`. Import preview aliases are `dry-run` and `dryrun`. Every subcommand uses the default `origin = DirectorOrigin.BOTH`; player-only restrictions are enforced inside handler bodies.
 
 ## Command reference
+
+### `/holoui create`
+
+```
+/holoui create <id>
+/holo create <id> <text...>
+```
+
+Requires `holoui.command.boards` and a player sender. The id is canonicalized to a lowercase board path and must also satisfy the menu-id rules. HoloUi captures the player's current world, UUID, coordinates, yaw, and pitch; creates a public revision-1 board with roll `0`, scale `1`, and the standard ranges; and links it to a newly generated menu with the same id.
+
+The menu contains one non-interactive text decoration 1.7 blocks above the board anchor with a vertical billboard. Omitted or blank text becomes `&f<id>`; supplied trailing words are retained as one text value. The command does not require a pre-existing menu and never overwrites either file or either loaded registry entry.
+
+The menu and board are staged under one `HoloUiProjectTransaction`, published to both runtime registries, and then committed as one durable operation. A file collision fails before writing. A menu- or board-publication failure rolls the two files and any already-published runtime entry back together. If rollback or commit durability is uncertain, the shared persistence paths pause until startup recovery; HoloUi does not risk publishing newer state over an unresolved transaction. Disk work runs on the dedicated creation worker; feedback returns through the player's entity scheduler.
 
 ### `/holoui list`
 
@@ -380,7 +394,7 @@ Inspection and lifecycle commands:
 | `board create <id> [menu]` | Creates revision 1 at the player's feet, with the player's yaw/pitch, roll 0, scale 1, public visibility, and default ranges. When `menu` is omitted, the command uses an already-loaded menu with the same id as the board. |
 | `board delete|remove <id>` | Deletes the expected published revision. |
 | `board rename <id> <newId>` | Renames the expected published revision without changing its stable UUID. |
-| `board copy <id> <newId>` | Creates a new UUID at revision 1 from the visible published or staged definition. |
+| `board copy <id> <newId>` | Creates a new UUID at revision 1 from the visible published or staged board definition. It keeps the same `rootMenuId`; it does not copy the menu file. |
 
 Transform commands operate on the board's effective world pose. A bare number is absolute; `~` keeps the current value and `~<number>` adds to it. For a following board, `~` is relative to its current effective pose and the result is re-encoded as a target-relative transform before persistence.
 
@@ -416,6 +430,8 @@ Content, visibility, and follow commands:
 Every disk mutation uses the current published revision and runs through `BoardService`'s serialized async queue. A stale expected revision produces a conflict rather than overwriting newer data; Bukkit feedback returns through the sender's owning scheduler.
 
 `board edit <id>` starts one per-player staged session at the current published revision and forces a private, clickable preview for that editor even outside the published visibility and range. Transform, menu, visibility, range, permission, follow, and unfollow changes update that preview without writing disk. `board save` performs one optimistic update and clears the preview on success; a conflict leaves the staged session available for cancellation. `board cancel` discards it and restores the published view. Quit also discards the session. Rename and delete are blocked for the board being edited, while copy creates a separate board immediately.
+
+A copied board and its source share one root menu until `board menu` points one of them elsewhere. Any menu-content edit through either board therefore changes both boards, and deleting either board leaves the shared menu file intact. Follow targets are sampled only while online. After at least one live sample, an offline target leaves the board at its last in-memory pose; that pose is not persisted. After a server restart the definition remains stored and listable, but it has no effective pose, does not render, and effective-position commands report the target unavailable until that player is online and sampled again.
 
 Board content commands persist the referenced menu immediately through the menu write queue; they are not part of the staged board definition and are not reverted by `board cancel`. If the sender has staged a different root menu for that board, the command targets that staged root id. They require only `holoui.command.boards`, not `holoui.command.menus`.
 
@@ -470,7 +486,7 @@ An existing target board is always a conflict. An existing target menu with diff
 | `holoui.command.previews.reset` | yes | `op` | `/holoui preview reset`. |
 | `holoui.command.previews.dump` | yes | `op` | `/holoui preview dump`. |
 | `holoui.command.menus` | yes | `op` | Every `/holoui menu` content mutation and menu copy action. |
-| `holoui.command.boards` | yes | `op` | Every `/holoui board` inspection, mutation, reload, follow, teleport, and staged-edit action. |
+| `holoui.command.boards` | yes | `op` | `/holoui create`, plus every `/holoui board` inspection, mutation, reload, follow, teleport, and staged-edit action. |
 | `holoui.command.boards.editweb` | yes | `op` | `/holoui board web <board>` and its `webedit` alias. A live capability additionally requires `holoui.command.sync`. |
 | `holoui.command.import` | yes | `op` | Non-destructive `/holoui import preview`, `dry-run`, and `dryrun`. |
 | `holoui.command.import.apply` | yes | `op` | No-overwrite `/holoui import apply`. It is checked directly and does not depend on a permission-child declaration. |
@@ -489,12 +505,12 @@ Completion delegates to the Director engine after the `holoui.command` gate. Any
 
 - With no arguments typed, canonical root child names are suggested, sorted case-insensitively. Accepted aliases are not duplicated in completion.
 - On a group name, canonical child names are filtered by prefix, substring, or reverse substring. Aliases remain executable but are hidden from the list.
-- On an invocable node, required parameters offer bare positional values. Optional parameters with known values offer complete `name=value` candidates immediately, so accepting `key=` never requires a space/backspace cycle to reveal its values. An optional parameter with no known values still offers `name=`. HoloUI additionally rewrites the optional positional value for `open`, `preview reset`, `board list`, `board near`, and `board create` during completion, then removes the synthetic key from returned suggestions.
+- On an invocable node, required parameters offer bare positional values. Optional parameters with known values offer complete `name=value` candidates immediately, so accepting `key=` never requires a space/backspace cycle to reveal its values. An optional parameter with no known values still offers `name=`. HoloUI additionally rewrites the optional positional value for `open`, `preview reset`, `board list`, `board near`, and `board create` during completion, then removes the synthetic key from returned suggestions. Root `create` joins every token after the id as its optional text.
 - Value candidates come from the parameter's custom handler, then registered legacy handlers, then enum constants or `true`/`false` for booleans. HoloUI registers no legacy handlers, so plain `String` parameters without a custom handler produce no value suggestions.
 
 | Input | Suggestions |
 |-------|-------------|
-| `/holoui <TAB>` | `back`, `board`, `builder`, `close`, `edit`, `import`, `item`, `list`, `menu`, `move`, `open`, `preview`, `sync` |
+| `/holoui <TAB>` | `back`, `board`, `builder`, `close`, `create`, `edit`, `import`, `item`, `list`, `menu`, `move`, `open`, `preview`, `sync` |
 | `/holoui sync <TAB>` | `list`, `pull`, `revoke`, `status`; `poll` remains accepted as an alias |
 | `/holoui sync status\|pull\|revoke <TAB>` | full ids for active editor sync sessions |
 | `/holoui item <TAB>` | `export`, `status` |

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,6 +23,8 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Left at its default `default`, it resolves to `generator.defaultWorldType`. Bukkit refuses the names `iris` and `benchmark`, and refuses any name whose dimension folder already exists.
 
 When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged instead and the message tells you to restart before it exists. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
+
+For a player-issued Bukkit create, Iris also attempts to move that player into the new world after its entry chunk and safe position are ready. This automatic entry attempt has a 60-second limit. A timeout cancels only that teleport, reports that the world was created but automatic teleport failed, and does not roll back the world or restart the server; retry with `/iris tp tutorial`.
 
 If the pack is missing, Iris identifies the exact supported download form — `pack=overworld`, `pack=underworld`, or `link=<zip-url>` — and does not create the world.
 
@@ -151,6 +153,8 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `datapack` | `datapacks`, `dp` | Both | see Datapack | Datapack helpers |
 | `Developer` | `dev` | Both | see Developer | Diagnostics; the group name is registered with a capital `D`, but matching is case-insensitive |
 | `world` | `w` | **Modded** | see World | Runtime dimension enable/disable |
+
+Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer.
 
 ---
 

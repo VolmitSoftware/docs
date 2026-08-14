@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -41,6 +41,8 @@ fact drives the rest of this page.
 | `util.network`                     | Downloads, metered streams, download progress reporting                                              |
 | `integration`                        | The cross-plugin metric handshake types. Read the relocation rule below before you touch these        |
 
+`BSupport` material listings expose current Bukkit materials only. Legacy `Material` aliases are excluded before block-data inspection or item-name publication, so registry discovery does not initialize CraftLegacy support.
+
 Everything else under `art.arcane.volmlib` is scaffolding for the Volmit plugins. It is public because Java
 has no better word for "visible to the plugins in this repository", not because it carries a compatibility
 promise. Only the surfaces documented in this directory are stable across VolmLib versions; anything else can
@@ -50,6 +52,8 @@ same source tree.
 ## Director completion
 
 Director suggests canonical command names and keeps aliases executable without duplicating them in completion lists. Required parameters receive bare positional value candidates. Optional parameters with known handler, enum, or boolean values receive complete `name=value` candidates immediately; a bare `name=` candidate is used only when Director cannot know the value set. Typing an explicit `name=` also completes the value side as full tokens, so accepting a key never requires inserting and deleting a space to trigger its values.
+
+Normal `DirectorInvocation` execution treats its argument list as raw command-line fragments, joining and tokenizing quoted input before mapping parameters. A command adapter that has already normalized several raw fragments into one semantic argument must instead use `DirectorInvocation.pretokenized(sender, label, args)`. That factory preserves every supplied list element exactly, including embedded spaces and quotes, so a keyed trailing value such as `text=Say "hello" to everyone` cannot be split or rewritten a second time.
 
 ---
 

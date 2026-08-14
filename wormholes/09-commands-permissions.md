@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Wormholes documentation: Commands & Permissions"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -61,7 +61,7 @@ Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`, `persona
 
 | Syntax | Permission | Effect |
 |--------|------------|--------|
-| `network import <code>` | `wormholes.admin.network` | Import portal or server code; saves route/trust; does not auto-link a portal from chat (link via gateway menu) |
+| `network import <code>` | `wormholes.admin.network` | Alias of `server import`; same autodetection of `WHS1.` / `WHP5.` |
 | `network status` | `wormholes.admin.network` | Local listen mode, public key fingerprint, peer CONNECTED/CONNECTING/WAITING/error. Auto-runs doctor when any listed peer is not `CONNECTED`. |
 | `network doctor` | `wormholes.admin.network` | Diagnostic lines for connection failures |
 
@@ -71,12 +71,12 @@ Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`, `persona
 |--------|------------|--------|
 | `server connect <name>` | `wormholes.admin.network` | Transfer self to linked server (player only) |
 | `server export` | `wormholes.admin.network` | Export this server as click-to-copy code (console: raw code) |
-| `server import <code>` | `wormholes.admin.network` | Same import path as `network import` (server or portal code) |
+| `server import <code>` | `wormholes.admin.network` | Import a server (`WHS1.`) or portal (`WHP5.`) code; saves route/trust; does not auto-link a portal from chat (link via gateway menu) |
 | `server list` | `wormholes.admin.network` | Linked servers with ready/offline + game address |
 | `server remove <name>` | `wormholes.admin.network` | Delete route + trusted key for peer |
 | `/wormholes server <name>` | `wormholes.admin.network` | Shorthand for `server connect` when second arg has no `=` |
 
-`network import` and `server import` both call `ImportExportService.importCode` and are equivalent for code exchange.
+`server import` is the command for code exchange. `network import` is an alias of the same `ImportExportService.importCode` path and still accepts both code kinds.
 
 `deleteeverything` refuses while a player is inside or transiting a pocket dimension. On success it deletes `config/`, `identity/`, `routes/`, `trust/`, `portals/`, and `doors/`, preserves the retired pocket-slot counter, and regenerates default config and an empty door snapshot. Language overrides, dictionaries, UDS paths, and the stats snapshot are outside that deletion set.
 

@@ -2,7 +2,7 @@
 title: "Icons"
 description: "HoloUI documentation: Icons"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,7 +39,7 @@ Dispatch to the runtime class is an `instanceof` chain over the parsed record. D
 
 ## Display style
 
-Every JSON-authorable icon type except `entity` accepts the same optional `style` object. Omission, explicit `null`, and an empty object all resolve to the runtime defaults; an authored object is emitted with its resolved fields by the Java serializer. Entity icons use raw entity packets rather than display entities, so their schema rejects `style` and Gson ignores it if validation is bypassed.
+Every schema-authorable icon type except `entity` accepts the same optional `style` object. Omission, explicit `null`, and an empty object all resolve to the runtime defaults; an authored object is emitted with its resolved fields by the Java serializer. Entity icons use raw entity packets rather than display entities. The schema, editor, and in-game style command reject `style` on them, but the runtime does not validate menu files against the schema: Gson silently ignores a hand-written entity `style` member and the entity renders without it.
 
 ```json
 {
@@ -129,8 +129,8 @@ The other re-render points are:
 | Trigger | Mechanism |
 | --- | --- |
 | Component open | `MenuComponent.open` builds a new `TextMenuIcon` |
-| `refreshVisuals` | `SessionHolder.refreshVisuals` closes and reopens every open component. Fired by `uiScale`/`previewScale` changes and by image-asset add/change/delete (folder watcher: change poll every 5 ticks, create/delete poll every 20 ticks) |
-| Menu file change | The config watcher destroys and rebuilds sessions of that menu type |
+| `refreshVisuals` | `SessionHolder.refreshVisuals` closes and reopens every component in personal sessions, while `BoardRuntimeManager` performs the equivalent pass for board views. Fired by `uiScale`/`previewScale` changes and by image-asset add/change/delete (folder watcher: change poll every 5 ticks, create/delete poll every 20 ticks) |
+| Menu file change | The config watcher closes matching personal sessions; board views currently showing that menu attempt an in-place reload and close if it fails |
 | Toggle click | `ToggleComponent.onClick` swaps to the other pre-built icon |
 | API | `MenuComponent.applyIcon(HoloIcon.Text)` calls `TextMenuIcon.updateText` |
 

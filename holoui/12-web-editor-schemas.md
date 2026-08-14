@@ -2,7 +2,7 @@
 title: "Web Editor & Schemas"
 description: "HoloUI documentation: Web Editor & Schemas"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,17 +19,21 @@ HoloUi ships alongside a browser-based menu editor kept in a separate repository
 
 The editor application runs in the browser and requires no editor account. Its ordinary workspace is local browser storage; an optional capability-scoped relay is contacted only when the user opens a `#/sync/…` link. The editor is deployed to `https://holoui.volmitsoftware.com`; the plugin neither ships nor hosts it. `/holoui builder` prints a link to `HuiSettings.BUILDER_URL`, while `/holoui edit <menu>` can create a constrained round-trip session or an explicit confirmation-first one-way import fallback. See [01 - Installation & Configuration](/holoui/01-installation-configuration) and [02 - Commands & Permissions](/holoui/02-commands-permissions).
 
-## Workspace library and flow boards
+## Workspace library and menu flow maps
 
 The editor stores its library in browser storage as one versioned workspace document. Workspace version 2 gives every document a stable UUID independent of its display title and canonical runtime id, supports nested folders, preserves migrated version 1 documents in a protected `Unfiled` folder without silently evicting older documents, and reports duplicate runtime ids instead of renaming them.
 
 Menu and preview documents retain the existing runtime JSON import and export formats. Runtime ids preserve case and nested paths such as `shops/tools/Confirm`; each slash-separated segment starts with a letter or number, uses only letters, numbers, dots, underscores, or hyphens, and cannot be empty, `.` or `..`.
 
-`holoui-workspace.json` is the editor's portable, confirmation-first workspace bundle. It retains the workspace UUID, stable document UUIDs, nested folders, menu and preview JSON, editor-only flow-board metadata, and the browser image library; importing it replaces the current local workspace only after the user reviews its document, folder, and image counts.
+`holoui-workspace.json` is the editor's portable, confirmation-first workspace bundle. It retains the workspace UUID, stable document UUIDs, nested folders, menu and preview JSON, editor-only menu-flow-map metadata, and the browser image library; importing it replaces the current local workspace only after the user reviews its document, folder, and image counts.
 
-Flow boards are editor-only saved views containing a folder scope, canvas or list preference, and node positions; they are not HoloUi world boards, never enter a menu export, and do not change an exported menu's bytes.
+Menu flow maps are editor-only saved views containing a folder scope, canvas or list preference, and node positions; they are not HoloUi world boards, never enter a menu export, and do not change an exported menu's bytes.
 
-A flow board derives routes from native `navigate` actions and resolves runtime ids exactly and case-sensitively. It distinguishes local, external, dangling, ambiguous, and invalid routes, displays Back, Home, and Close sinks, marks cycles, orphans, invalid documents, and duplicate ids, and can open each represented menu for editing.
+A menu flow map derives routes from native `navigate` actions and resolves runtime ids exactly and case-sensitively. It distinguishes local, external, dangling, ambiguous, and invalid routes, displays Back, Home, and Close sinks, marks cycles, orphans, invalid documents, and duplicate ids, and can open each represented menu for editing.
+
+Renaming a menu runtime id is a checked workspace operation: it refuses case-insensitive collisions and unreadable menu documents, then rewrites typed navigation targets, a linked world board's `rootMenuId`, and sync-scope ids in one workspace save. Dropping menu or preview JSON onto the shell imports it as a new document with a unique runtime id; it does not replace the active document. The explicit Import dialog still previews and confirms replacement when that is the intended operation.
+
+At widths up to 1,024 pixels the Library and Inspector become mutually exclusive off-canvas drawers, leaving the editor surface at the viewport width. The narrow toolbar keeps document and view context visible, moves secondary commands into More, and retains labelled pane controls and coarse-pointer targets.
 
 The editor keeps the active document in `#/workspace/<workspace UUID>/document/<document UUID>`, and the Library can copy that local deep link. The one-way fallback uses `#/import/menu/<payload>`, where the payload is unpadded base64url of a gzip-compressed UTF-8 version 1 envelope containing `kind: "menu"`, `runtimeId`, and `json`; the fragment is decoded locally, validated, previewed, and added as a new document only after confirmation, never auto-applied or used to overwrite an existing document. `/holoui edit` builds this fallback from the exact source retained by `ConfigManager`; payloads over 48,000 URL characters are rejected with a file-export instruction.
 
@@ -41,7 +45,7 @@ A live link has this fragment form:
 #/sync/<sessionId>/<editorToken>?relay=<unpadded-base64url-relay-endpoint>
 ```
 
-The fragment prevents ordinary HTTP access logs and referrer requests from receiving the capabilities. The editor token authorizes browser reads and explicit publications; the distinct server token is stored only in `plugins/holoui/editor-sync-sessions.json` and is used by HoloUi for outbound polling, acknowledgement, and revocation. Treat a copied live link as a bearer capability. HoloUi never accepts an inbound web connection.
+The session id, editor token, and `relay` parameter are all inside the URL fragment, so ordinary HTTP access logs and referrer requests do not receive them. The editor token is the browser-side bearer credential for reading the session and explicitly publishing; the distinct server token is stored only in `plugins/holoui/editor-sync-sessions.json` and is used by HoloUi for outbound polling, acknowledgement, and revocation. Possession of the full live link grants the editor capability until expiry or revocation, so treat the entire link as a secret. HoloUi never accepts an inbound web connection.
 
 Session creation posts exactly `{ "protocol": 1, "expiresInSeconds": …, "snapshot": … }` to `<editorSyncEndpoint>/sessions`. `editorSyncCreateToken`, when configured, is sent only as that POST's bearer credential. The default official endpoint requires an operator-issued create token and no static secret is shipped in HoloUi, so the default empty setting safely produces the explicit one-way fallback unless a configured relay permits anonymous admission. Relay availability is not guaranteed by the plugin.
 
@@ -69,6 +73,8 @@ The immutable version-1 project shape is:
 
 `kind: "board"` additionally carries `board`, the exact strict `BoardDefinition` JSON, and `constraints.newMenuPrefix`. Its initial menu set is the root plus every loaded menu recursively reached by a typed `navigate` action in absent, `push`, or `replace` mode, or by a player-source canonical `holoui`, `holo`, `hui`, `holou`, or `hu open` command. Traversal is cycle-safe and does not interpret console commands. The board id and UUID, menu-session subject id, original constraints, schema version, and editor-visible board revision are immutable; the server owns the next persisted board revision.
 
+For a linked board, the Inspector provides typed root-menu, position, rotation, scale, follow target and rotation mode, audience, view/interact permission, and range controls. It validates the complete strict board definition before applying a workspace edit. The exact JSON remains available in a collapsed Advanced section; identity, schema version, and revision remain server-owned.
+
 For a menu session, only its original menu can change. Existing captured images can change and new images are confined to `sync/menus/<menuId>/`. A board session can change every captured menu or image and create menus only under the root menu's parent prefix and images only under `sync/<boardId>/`. Sync version 1 never deletes a menu, board, or image and never overwrites a pre-existing resource outside the captured base. Every resource in the current session base, including additions from an earlier publication, must remain in later publications. Captured resources may become unreferenced and remain; a new unreferenced resource is rejected.
 
 The revision is SHA-256 of UTF-8 canonical JSON after removing only the root `baseRevision`. Object keys are lexicographically ordered, array order is retained, strings use ordinary JSON escaping with literal Unicode, and finite numbers are canonicalized by IEEE-754 numeric value to the shared ECMAScript-style representation. The incoming publication request names the old optimistic server base; the edited snapshot has its own self-hash and may differ. After apply or conflict, HoloUi rebuilds the actual current project and returns that fresh snapshot and revision.
@@ -88,7 +94,7 @@ The Java parser defines the format. `art.arcane.holoui.config.*` is the authorit
 
 ## Schema files are documentation only
 
-`schema/holoui.schema.json` and `schema/holoui-preview.schema.json` are hand-maintained JSON Schema 2020-12 documents. No Gradle task generates them, and nothing on either side reads them at runtime. `HoloUiSchemaContractTest` structurally pins selected menu-schema fields, but it is not a general JSON Schema validation pass and does not prove full parser equivalence. The preview schema remains documentation-only.
+`schema/holoui.schema.json` and `schema/holoui-preview.schema.json` are hand-maintained JSON Schema 2020-12 authoring references. No Gradle task generates them, and neither the plugin nor editor loads them as an executable validator. `HoloUiSchemaContractTest` structurally pins selected fields in both schemas, including the per-element required fields in the preview schema, but it is not a general JSON Schema validation pass and does not prove full parser equivalence. `PreviewDocumentParser` is the executable runtime contract; the editor uses native preview codec and validation code that must mirror that parser rather than treating the schema as authority.
 
 `holoui.schema.json` recognizes the current menu and icon keys, but it is not an exact executable mirror of Gson binding or runtime coercion. A recent synchronization pass corrected these key-level differences:
 
@@ -99,7 +105,7 @@ The Java parser defines the format. `art.arcane.holoui.config.*` is the authorit
 | `customItem` | Added to the icon `type` enum with its `provider`, `item` and `count` keys from `CustomItemIconData`. |
 | `blockIcon` | Added the required namespaced Bukkit block material rendered as a packet-only block display with optional display style. |
 | `animatedTextImage.source` | Was documented as `path`; the `AnimatedImageData` record names it `source`. `speed` also carried a copy-pasted description. |
-| toggle `trueActions` / `falseActions` / `trueIcon` / `falseIcon` | Descriptions were inverted. `ToggleComponent.onClick()` runs `falseActions` when the state is true and `trueActions` when it is false: the lists name the state being entered. `falseIcon` also carried a copy-pasted description reading "in the true state". |
+| toggle `trueActions` / `falseActions` / `trueIcon` / `falseIcon` | The lists and icons name the state being entered. `ToggleComponent.onClick()` runs `falseActions` and shows `falseIcon` when leaving true, or runs `trueActions` and shows `trueIcon` when leaving false. |
 | `commandAction.source` | No longer required; an omitted source runs the command as the clicking player. |
 | `soundAction.source` / `volume` / `pitch` | Descriptions now name the defaults an omitted key takes: `master`, `1.0` and `1.0`. |
 | `soundAction.sound` | Description now states that an unknown key is logged when the component resolves its actions and the action is dropped, rather than failing the file. |
@@ -108,10 +114,10 @@ The Java parser defines the format. `art.arcane.holoui.config.*` is the authorit
 | `connectAction` | Added the validated proxy server name used by the fixed BungeeCord `Connect` plugin message. |
 | `navigationAction` | Added the native `push`, `replace`, `back`, `home`, and `close` page-stack modes and target requirement. |
 | action `trigger` | Added the optional nullable `any`, `left_click`, `right_click`, `shift_left_click`, and `shift_right_click` binding shared by every action type. Omission and null resolve to `any`. |
-| icon `style` | Added the validated display-style object for display-backed icons: billboard, text metadata, brightness, render range and culling, glow, entity shadow, and non-uniform scale. It is optional and also accepts explicit `null`; raw entity icons reject it. |
-| `entityIcon` | Added a validated packet-only spawnable living entity id with positive `width` and `height` no larger than 64; entity icons deliberately reject display `style`. |
+| icon `style` | Added the validated display-style object for display-backed icons: billboard, text metadata, brightness, render range and culling, glow, entity shadow, and non-uniform scale. It is optional and also accepts explicit `null`; the schema does not expose it on raw entity icons. |
+| `entityIcon` | Added a validated packet-only spawnable living entity id with positive `width` and `height` no larger than 64. The schema and editor reject display `style`; Gson ignores that unknown member if it appears in hand-written runtime JSON. |
 
-The contract test currently pins `closeOnTeleport`, integer item and custom-item counts, non-blank image/item/custom-item strings, non-empty animation sources, optional integer animation speed with no minimum, integer `customModelValue` with no minimum, the block icon discriminator and namespaced material key, the entity icon discriminator and dimension bounds, the action-trigger enum/default/nullable shape, and the icon-style reference, enum values, bounds, paired brightness fields, and nullable/optional shape. Broader parser behavior still differs where VolmLib's Gson accepts a single object for collection-typed fields that the schema describes as arrays.
+The contract test currently pins `closeOnTeleport`, integer item and custom-item counts, non-blank image/item/custom-item strings, non-empty animation sources, optional integer animation speed with no minimum, integer `customModelValue` with no minimum, the block icon discriminator and optionally namespaced material key, the entity icon discriminator and dimension bounds, the action-trigger enum/default/nullable shape, the icon-style reference, enum values, bounds, paired brightness fields, nullable/optional shape, and required fields for each preview element kind. Broader parser behavior still differs where VolmLib's Gson accepts a single object for collection-typed fields that the schema describes as arrays.
 
 Two icon spellings the schema still does not list are deliberate. `itemStack` is API-only — `MenuIconType` declares it with a null payload class, so it is unreachable from JSON. `fontImage` was removed from `MenuIconType` entirely.
 
@@ -127,7 +133,7 @@ Every action row exposes its own click-trigger selector, and action type convers
 
 ## Artifacts that cross the boundary
 
-The repositories share selected byte-identical test fixtures, each replayed by a named test on both sides.
+The repositories share selected contract artifacts, each replayed by named tests across the two sides. File fixtures are byte-identical unless a row states otherwise.
 
 | Artifact | Plugin path | Editor path | Enforced by |
 |---|---|---|---|
@@ -135,9 +141,10 @@ The repositories share selected byte-identical test fixtures, each replayed by a
 | Preview variable catalog | `src/test/resources/preview-variables.json` | `web/assets/catalog/preview-variables.json` | `VariableCatalogSyncTest` pins the plugin copy against `PreviewStateAdapters.catalog()`. |
 | Preview goldens | `src/test/resources/golden/*.json`, emitted by `GoldenSerializer` | `test/fixtures/golden/` (`chest_27`, `furnace_smelting`, `locked`) | `preview_card_scene_test.dart` replays them against the editor's renderer. |
 | Shipped preview documents | `src/main/resources/previews/` (all 13: `beehive`, `brewing_stand`, `cauldron`, `chest`, `chiseled_bookshelf`, `dispenser`, `ender_chest`, `furnace`, `hopper`, `jukebox`, `locked`, `minecart`, `shelf`) | `test/fixtures/previews/` and `lib/config/shipped_preview_json.dart` | `preview_templates_test.dart` requires the plugin file, the fixture, and the embedded editor copy to be byte-identical. The templates dialog offers each as an In-game card. |
+| Blank hologram baseline | `src/main/resources/baselines/blank-hologram.json` | `test/fixtures/menus/blank-hologram.json` and the `Blank hologram` entry in `lib/config/templates.dart` | `MenuBaselinesTest` parses and checks the plugin resource; `templates_test.dart` compares the plugin resource, editor fixture, and exported editor template JSON after trimming surrounding whitespace. |
 | Editor-sync canonical project | `src/test/resources/editor-sync-canonical-v1.json` | `test/fixtures/editor-sync-canonical-v1.json` | Java and Dart canonicalizers both require revision `sha256:7e322c580c650ebd93ab4e19dc4b550bbd3f11436d694b38b96143996f8727d0`, including numeric-value and Unicode edge cases. |
 
-The listed editor copies are compared byte for byte. Do not hand-edit a shared fixture; re-copy it from the plugin. The exact JSON of each shipped preview is also on [09 - Container Previews](/holoui/09-container-previews).
+The listed file copies are compared byte for byte except for the blank baseline's surrounding-whitespace-insensitive comparison. Do not hand-edit a shared fixture; re-copy it from the plugin. The exact JSON of each shipped preview is also on [09 - Container Previews](/holoui/09-container-previews).
 
 The editor also generates `preview-lang-en.json` from this repository's `HoloMessages.java` via its `tool/extract_preview_lang.dart`, which must be re-run when `holoui.preview.*` keys move. See [10 - Localization](/holoui/10-localization).
 
@@ -161,7 +168,7 @@ The editor deploys to Firebase Hosting from `.github/workflows/firebase-hosting.
 ## Checklist for changing the menu format
 
 1. Change the plugin first. The parser is the authority.
-2. Update `schema/holoui.schema.json` and `schema/holoui-preview.schema.json` by hand.
+2. Update the affected hand-maintained schema: `schema/holoui.schema.json` for menu changes and `schema/holoui-preview.schema.json` for preview-document changes.
 3. Update the affected pages: [03 - Menu File Format](/holoui/03-menu-file-format), [04 - Components & Hitboxes](/holoui/04-components-hitboxes), [05 - Icons](/holoui/05-icons), [06 - Actions](/holoui/06-actions), [09 - Container Previews](/holoui/09-container-previews), [08 - Custom Items & Item Providers](/holoui/08-custom-items-item-providers).
 4. Update plugin tests and run `./gradlew test`. Golden snapshots under `src/test/resources/golden/` are not re-derivable — never invent a regenerator or hand-edit them to "make tests pass"; a golden failure means the engine or document changed and must be fixed or the intentional change reviewed carefully. Update `src/test/resources/preview-variables.json` if the variable catalog changed, and extend `src/test/resources/expr_test_vectors.json` if expression semantics changed.
 5. Mirror the model and codec in the editor: `lib/model/` (`hui_menu.dart`, `hui_component.dart`, `hui_icons.dart`, `hui_actions.dart`, `json_codec.dart`), plus `lib/logic/validation.dart`, `lib/config/defaults.dart`, and `lib/config/field_docs.dart`.

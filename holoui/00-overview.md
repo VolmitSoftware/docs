@@ -2,7 +2,7 @@
 title: "Overview"
 description: "HoloUI documentation: Overview"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ HoloUi is a holographic UI framework for Paper and Folia servers. It renders in-
 - **Container previews** — looking at a chest, furnace, or other container shows a holographic content card, driven by JSON preview documents with live state variables. The thirteen shipped cards are in [09 - Container Previews](/holoui/09-container-previews) as their exact JSON and open as In-game templates in the web editor.
 - **Localization** — 17 bundled locales with per-key fallback and server-side overrides. See [10 - Localization](/holoui/10-localization).
 - **Public API** — other plugins build, open, and update menus through `HoloUiService`, obtained from the Bukkit `ServicesManager`. See [13 - API - Getting Started](/holoui/13-api-getting-started).
-- **Web editor and round-trip sync** — a browser-based multi-document menu builder with folders, flow boards, portable workspaces, constrained menu/board synchronization, and an explicit confirmation-first one-way fallback at `https://holoui.volmitsoftware.com`. See [12 - Web Editor & Schemas](/holoui/12-web-editor-schemas).
+- **Web editor and round-trip sync** — a browser-based multi-document menu builder with folders, menu flow maps, portable workspaces, constrained menu/board synchronization, and an explicit confirmation-first one-way fallback at `https://holoui.volmitsoftware.com`. See [12 - Web Editor & Schemas](/holoui/12-web-editor-schemas).
 
 ## Documentation Index
 
@@ -39,7 +39,7 @@ HoloUi is a holographic UI framework for Paper and Folia servers. It renders in-
 | [09 - Container Previews](/holoui/09-container-previews) | Preview trigger and scale model, preview document format, state variables, access control |
 | [10 - Localization](/holoui/10-localization) | Locale selection, fallback chain, overrides, validation gates |
 | [11 - Runtime Architecture](/holoui/11-runtime-architecture) | Boot lifecycle, sessions, persistent boards, content writes, imports, editor-sync persistence, packet rendering, threading, Folia, VolmLib integration metrics |
-| [12 - Web Editor & Schemas](/holoui/12-web-editor-schemas) | Editor workspaces, flow boards, round-trip and fallback handoffs, capability constraints, bundles, schemas, and cross-repo fixtures |
+| [12 - Web Editor & Schemas](/holoui/12-web-editor-schemas) | Editor workspaces, menu flow maps, round-trip and fallback handoffs, capability constraints, bundles, schemas, and cross-repo fixtures |
 | [13 - API - Getting Started](/holoui/13-api-getting-started) | Dependency setup, service acquisition, public type table, compatibility facts |
 | [14 - API - Menus](/holoui/14-api-menus) | Menu builder, handles, click handling, Bukkit events |
 | [15 - API - Placeholders](/holoui/15-api-placeholders) | The `%holoui_%` PlaceholderAPI expansion |
@@ -50,10 +50,10 @@ Docs `01`-`10` cover operator and menu-author workflows, docs `11`-`12` cover ru
 ## First steps (operators)
 
 1. Install the jar and start once so `plugins/holoui/` is created ([01 - Installation & Configuration](/holoui/01-installation-configuration)).
-2. Create a baseline hologram with `/holoui menu create <id>`, or put a menu JSON under `plugins/holoui/menus/` ([03 - Menu File Format](/holoui/03-menu-file-format)). The command writes the shipped blank hologram: a title, a hint line, and a Close button. The same document is the editor's Blank hologram template. Image assets go in `plugins/holoui/images/`.
-3. Grant `holoui.command`, the subcommand node you need, and `holoui.open.<menuId>` for each menu id ([02 - Commands & Permissions](/holoui/02-commands-permissions)).
-4. Open with `/holoui open <id>`. While it is open, `/holoui move` re-anchors that live session to your current position without changing its current direction. For a persistent placement, use `/holoui board create <id>` when the menu has the same id, or `/holoui board create <board> <menu>` otherwise. `/holoui menu` and the board row commands persist content edits.
-5. Container previews are already on (`previewEnabled` defaults to `true`). Grant `holoui.preview` to viewers ([09 - Container Previews](/holoui/09-container-previews)). `/holoui builder` opens the web editor. `/holoui edit` and `/holoui board web` create live sync links only when `editorSyncCreateToken` is set; otherwise they offer a one-way copy whose saves stay in the browser ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)). Export from the editor and copy the files into `plugins/holoui/` to get a new menu onto a default install.
+2. Stand where the hologram belongs and run `/holo create <id> [text]`. This atomically creates a same-id menu and persistent board, with the text 1.7 blocks above the command position. Omit `text` to show the id. Existing menu or board ids are never overwritten.
+3. Grant `holoui.command` and `holoui.command.boards` to operators. Board visibility is independent of `holoui.open.<menuId>`; grant that per-menu node when players must open the same menu personally or navigate to it as a non-root submenu ([02 - Commands & Permissions](/holoui/02-commands-permissions)).
+4. Use `/holoui board` to inspect persistent placements and `/holoui board edit <id>` for staged transform, follow, visibility, range, and permission changes. For a richer starting document, `/holoui menu create <id>` writes the three-component Blank hologram template; pair it with `/holoui board create <id>` or an explicitly named root menu. `/holoui menu` and the board row commands persist content edits.
+5. Container previews are already on (`previewEnabled` defaults to `true`). Grant `holoui.preview` to viewers ([09 - Container Previews](/holoui/09-container-previews)). `/holoui builder` opens the web editor. `/holoui edit` and `/holoui board web` attempt a live sync link; the official relay requires `editorSyncCreateToken`, while a configured private relay may allow anonymous admission. If creation is unavailable, HoloUi offers a one-way copy whose saves stay in the browser ([12 - Web Editor & Schemas](/holoui/12-web-editor-schemas)). Export from the editor and copy the files into `plugins/holoui/` to get a new menu onto a default install.
 
 Plugin developers start at [13 - API - Getting Started](/holoui/13-api-getting-started).
 

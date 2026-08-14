@@ -2,7 +2,7 @@
 title: "Menu File Format"
 description: "HoloUI documentation: Menu File Format"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,6 +46,8 @@ Ids are case sensitive. They are the key used by `/holoui open <id>` or `/holoui
 
 `id` is therefore not a menu key. `MenuDefinitionData` carries an `id` field, so a JSON `"id"` deserializes into it, but the loader immediately replaces it with the file base name. Setting it has no effect.
 
+The recursive file loader accepts any ordinary non-hidden file name ending in `.json`, but HoloUi's writers, persistent-board references, editor runtime ids, and sync publications use the portable authoring contract: at most 255 characters total, slash-separated segments of at most 64 characters, and every segment matching `[A-Za-z0-9][A-Za-z0-9._-]*`. Empty, `.`, `..`, absolute, backslash-separated, and traversal segments are rejected. Case is preserved. A hand-written file outside this contract can load as a personal menu, but command mutation, board assignment, and editor round trips can reject its id; use portable ids for authored content.
+
 ### Extension and directory layout
 
 Regular non-symbolic `*.json` files are discovered recursively without following symbolic links. The extension match is case insensitive, so `Shop.JSON` loads as `Shop`; other extensions, every symbolic-link file or directory, and files beneath any hidden path segment (a segment beginning with `.`) are ignored. Normalized-path checks also reject files outside `menus/`.
@@ -58,8 +60,8 @@ Two watchers run against `menus/`. Session lifecycle is covered in [11 - Runtime
 
 | Interval | Detects | Effect |
 |---|---|---|
-| 5 ticks | modified files | file is re-parsed, all open sessions of that id are destroyed, affected players receive a notice plus `ENTITY_EXPERIENCE_ORB_PICKUP`, the registry entry is replaced |
-| 20 ticks | created / deleted files | created files are parsed and registered; deleted files unregister the id and destroy its open sessions |
+| 5 ticks | modified files | file is re-parsed; matching personal sessions close with `DEFINITION_RELOADED` and receive a notice plus `ENTITY_EXPERIENCE_ORB_PICKUP`; the registry entry is replaced; board views currently showing the id attempt an in-place reload and close if it fails |
+| 20 ticks | created / deleted files | created files are parsed and registered; deleted files unregister the id and close matching personal sessions; a board view showing a deleted submenu returns to its root when possible, while a root or unrecoverable view closes |
 
 Both watchers apply the same recursive filter. Creating a nested directory registers its accepted descendants; deleting one unregisters every menu id beneath that path prefix.
 
@@ -85,7 +87,7 @@ The `vector3` type is a JSON array of exactly three numbers, `[x, y, z]`.
 
 | Key | Type | Required | Default | Meaning |
 |---|---|---|---|---|
-| `offset` | `vector3` | yes | none | Position of the menu center relative to the opening player. See [Offset semantics](#offset-semantics). |
+| `offset` | `vector3` | yes | none | Position of the menu center relative to the personal-session anchor or persistent board transform. See [Offset semantics](#offset-semantics). |
 | `components` | array of component | yes | none | The components that make up the menu. May also be given as a single component object. |
 | `lockPosition` | boolean | no | `false` | When true the player cannot move while the menu is open. `PlayerMoveEvent` has its destination X/Y/Z rewritten back to the origin and any non-zero velocity is zeroed. Rotation is unaffected. This freeze branch runs before the movement range check. |
 | `followPlayer` | boolean | no | `false` | When true the menu re-anchors and tracks the player's current yaw on every accepted move, including rotation-only moves. With `lockPosition`, translation is frozen but the menu still adopts the allowed look yaw. Respawn and allowed teleport handling re-anchor either mode; follow menus also adopt the destination yaw, while non-follow menus retain their current facing. |
@@ -96,6 +98,8 @@ The `vector3` type is a JSON array of exactly three numbers, `[x, y, z]`.
 `lockPosition` and `followPlayer` are separate axes: `lockPosition` constrains the player, `followPlayer` constrains the menu. A menu with neither set stays fixed in the world while the player is free to walk away from it, up to `maxDistance`. `/holoui move` can still re-anchor any open menu manually; it does not change either setting or write the new anchor into this file.
 
 Any world change invalidates the session regardless of `maxDistance`, because the range check requires the player's location and the menu center to share a world.
+
+These five lifecycle keys (`lockPosition`, `followPlayer`, `maxDistance`, `closeOnDeath`, and `closeOnTeleport`) govern personal sessions opened by command or API. A persistent board uses its board transform, follow target, visibility ranges, and viewer lifecycle instead, so those menu-level keys do not move, freeze, range-close, or death/teleport-close a board view. The menu `offset`, components, icons, actions, and navigation still define the content rendered on that board.
 
 ### Offset semantics
 
@@ -191,7 +195,7 @@ The JSON spelling is `decoration`; the constant is `DECO`.
 
 `customItem` is functional and declared in `holoui.schema.json`. See [08 - Custom Items & Item Providers.md](/holoui/08-custom-items-item-providers).
 
-Every JSON-authorable display icon except `entity` accepts an optional `style` object. It controls display-entity billboard, text flags and background, brightness, render range and culling, glow, shadows, opacity, and per-axis scale; absent or `null` uses the fixed, opaque, uniform runtime defaults. `block` uses a packet-only block display with the material's default state. Entity icons instead use raw packet entities and reject `style`; their explicit `width` and `height` define the editor footprint and automatic click plane. The complete field table and geometry rules are in "05 - Icons.md".
+Every schema-authorable display icon except `entity` accepts an optional `style` object. It controls display-entity billboard, text flags and background, brightness, render range and culling, glow, shadows, opacity, and per-axis scale; absent or `null` uses the fixed, opaque, uniform runtime defaults. `block` uses a packet-only block display with the material's default state. Entity icons instead use raw packet entities: the schema and editor reject `style`, while the Gson loader treats a hand-written `style` member as an unknown key and ignores it. Their explicit `width` and `height` define the editor footprint and automatic click plane. The complete field table and geometry rules are in "05 - Icons.md".
 
 Text icons also accept `refreshTicks`, an integer from `0` through `1200`. Omission refreshes PlaceholderAPI text every `10` ticks, while `0` keeps the value rendered at icon creation.
 
@@ -335,14 +339,14 @@ An unrecognized command source becomes `null` and therefore uses the `player` de
         "trueActions": [
           {
             "type": "command",
-            "command": "shop notify off",
+            "command": "shop notify on",
             "source": "player"
           }
         ],
         "falseActions": [
           {
             "type": "command",
-            "command": "shop notify on",
+            "command": "shop notify off",
             "source": "player"
           }
         ]

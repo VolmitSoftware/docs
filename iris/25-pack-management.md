@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -116,7 +116,7 @@ A successful download performs registry-independent pack validation and atomical
 
 ### Install pipeline (`PackDownloader`)
 
-1. Take a per-key or per-URL lock, so concurrent manual commands cannot fetch the same pack twice.
+1. Acquire the one server-wide download slot. If any explicit pack download is already active, Iris rejects the new request immediately before network or staging work; repeated requests for the same pack, requests for another pack, and direct-link requests are never queued.
 2. If a built-in pack is already present, return without touching the network. Direct links are fetched before their dimension key is known, but publication still refuses an existing target.
 3. Download the zip under hard limits: archive at most 512 MiB, at most 100,000 entries, at most 2 GiB total uncompressed, at most 256 MiB per file. Exceeding any of these aborts the install.
 4. Unpack into a temporary staging directory and identify one pack home containing `dimensions/`; repository metadata beside that directory is ignored.
@@ -124,7 +124,7 @@ A successful download performs registry-independent pack validation and atomical
 6. Run `PackValidator.validateForDatapackBootstrap` against the staging tree. Structural blocking errors abort the install and print the errors; live-registry checks wait until the restart, after external datapacks are registered.
 7. Publish atomically into `packs/<key>/`, refusing symlinked targets and refusing a key that conflicts with a different folder's dimension key. The validation result is published to the registry as part of the same step.
 
-Each explicit download treats its target independently. Existing complete packs and symbolic-link sources are retained; this command surface has no overwrite mode.
+Only one explicit pack download runs at a time on Bukkit and modded, and the slot is released after success or failure. Existing complete packs and symbolic-link sources are retained; this command surface has no overwrite mode.
 
 ## Validate
 
