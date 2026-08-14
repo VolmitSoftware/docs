@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Wormholes documentation: Dimensional Doors"
 published: true
-date: 2026-08-12T12:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -97,7 +97,7 @@ Pair and Public support object travel; Personal and Return stay player-only. Pai
 
 ## Recipes
 
-All product recipes require the exact **Wormhole Rune** item (`R`). Shift-crafting identity products is blocked so one craft cannot mint bulk identities.
+All product and reskin recipes require `wormholes.doors.craft`, which defaults to `op`. Without that permission, the crafting result is hidden and the craft click is rejected. Product recipes also require the exact **Wormhole Rune** item (`R`). Shift-crafting identity products is blocked so one craft cannot mint bulk identities.
 
 ```text
 Entangled pair       Personal door       Public dimension door
@@ -128,6 +128,8 @@ Trapdoor products use the same shapes with trapdoor `D`. Defaults:
 
 **Pair kit:** craft yields a bundle. Right-click air or block unpacks linked A/B items and registers the pair; creative and survival consume the kit on unpack.
 
+Placing any crafted or granted Pair, Personal, or Public door/trapdoor requires `wormholes.doors.place`, which defaults to `op`. `wormholes.admin` and ops also pass. Craft permission alone does not allow placement.
+
 ## Reskin
 
 Shapeless craft: one dimensional door/trapdoor item + one ordinary door/trapdoor of the **same form**.
@@ -155,7 +157,7 @@ Default `type` is `pair`. Overflow drops at the player’s feet.
 
 | Action | Behavior |
 |--------|----------|
-| Place in Creative | Held dimensional door item is consumed (same as survival identity consumption for kits/doors) |
+| Place in Creative | Requires `wormholes.doors.place`; held dimensional door item is consumed (same as survival identity consumption for kits/doors) |
 | Break Pair / Personal / Public | Access-gated (`canUseDoor`); denied breaks are cancelled. Allowed breaks drop that exact identity item (including Creative); block vanilla drops are suppressed |
 | Break material | Uses live block material if still player-operable for that form; otherwise the kind’s default material |
 | Return door break | Cancelled; exit is anchored |

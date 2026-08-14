@@ -36,7 +36,7 @@ Now create the real world. This is the step that freezes the pack:
 /iris create release_candidate type=overworld seed=1337
 ```
 
-On Folia, this stages files and prints a restart instruction — stop the server, start it again, and the world loads on boot. On every other Bukkit-family server the world is created immediately.
+On Folia, this stages files and automatically requests a controlled restart after staging succeeds. Wait for the server to return, then the world loads on boot. On every other Bukkit-family server the world is created immediately.
 
 ```text
 /iris worlds
@@ -154,12 +154,14 @@ Aliases and permissions: [04 - Commands & Permissions](/iris/04-commands-permiss
 
 Create refuses to run on the primary thread. Before it takes a lifecycle lease it requires startup datapack validation to be ready and the chosen pack to have a loadable validation result; then the `WORLD_MUTATION` / `WORLD_CREATE` lease must be free or the command fails busy. A refusal at any of those gates leaves no dimension folder and no registration behind.
 
+On an unchanged create, Iris reuses the compiler-input fingerprint already produced while recovering external datapacks instead of hashing the same inputs again. Compiler discovery enumerates the canonical Iris authoring-pack and world-snapshot roots directly; it does not recursively scan saved region, entity, POI, or other chunk-storage trees.
+
 ## What create actually does (non-Folia)
 
 1. Resolve the managed key and dimension. No directory is created yet.
 2. Require startup datapack readiness and a loadable validation result for the owning pack.
 3. Install datapacks for the dimension types. If the types are not loaded yet, queue a restart.
-4. Copy the pack into `<world>/iris/pack` through `StudioSVC.installIntoWorld` — staged into a temp directory, published atomically, then validated at that exact root. A validation failure rolls the publication back.
+4. Copy the pack into `<world>/iris/pack` through `StudioSVC.installIntoWorld` — staged into a temp directory and published atomically. Iris may reuse the source's exact validation result only when a strong content fingerprint of the copied snapshot matches the validated source; otherwise it runs full semantic validation at the new root. A validation failure rolls the publication back.
 5. Build a `WorldCreator` with the Iris generator and `studio=false`.
 6. Create the world through `WorldLifecycleService` / NMS async create, with a 120-second timeout. A timeout triggers a server restart rather than leaving a half-created world.
 7. Register the world in `bukkit.yml` with the Iris generator, dimension key, and seed. Update the Multiverse link if Multiverse is present — that step has its own 30-second budget and also escalates to a restart.
@@ -176,12 +178,14 @@ Folia cannot create worlds at runtime, so `/iris create` becomes a staging opera
 2. Acquire the `WORLD_CREATE` lease.
 3. Install datapacks if they changed.
 4. Abort if the dimension folder already exists.
-5. Stage the pack into the managed dimension root through `installIntoWorld`; the published snapshot must pass exact-root validation.
+5. Stage the pack into the managed dimension root through `installIntoWorld`; the published snapshot may reuse exact source validation only when its strong copied-content fingerprint matches, and otherwise receives full semantic validation at that root.
 6. Register the world in `bukkit.yml`.
 7. If `main=true`, promote the main-world files immediately under the same lease. A failure here rolls back `bukkit.yml` and deletes the staged folder.
-8. Tell the operator to restart. Generation and loading happen on the next boot.
+8. Report successful staging, release the lifecycle lease, and automatically request a controlled restart. Generation and loading happen on the next boot.
 
 `WorldLifecycleStaging` holds the staged generator and biome provider for the backend that picks them up at load.
+
+Iris dispatches the server's restart command only after the frozen pack, world files, `bukkit.yml` entry, and optional main-world promotion have all succeeded. The restart waits for active lifecycle work to drain and falls back to stopping the server if the restart command does not complete. Iris cannot launch a new JVM itself: configure a restart script or external supervisor, or start the stopped server manually. Failed staging does not request a restart. `overwrite=true` remains a manual, batchable restart boundary so several exact-slot replacements can be staged before one restart.
 
 ## Exact world-slot replacement
 
@@ -242,6 +246,8 @@ Load never downloads a pack. The world must already have `iris/pack` content and
 There are two timers in play: the inner `WorldLifecycleService` unload has its own 120-second budget, and the command wraps the whole sequence in the 150-second ceiling.
 
 `WorldUnloadEvent` stops Iris engine maintenance immediately, but Iris does not treat it as proof that Paper's chunk scheduler has drained. Generator close waits for the raw world-lifecycle backend to confirm a successful unload, and the 26.2 noise pipeline holds one generation lease through terrain generation and worldgen-heightmap priming.
+
+On a true server stop, Iris first drains Jigsaw Studio autosaves while Paper's region access is still available, then quiesces its own producers but keeps generators, generation-facing services, and shared pools alive while Paper closes the world and drains its chunk system. Destructive generator teardown and final Mantle persistence begin only after that authoritative boundary, so already-queued Paper generation cannot encounter a closed Mantle or a generator that has started rejecting generation stages.
 
 ## Evacuate
 

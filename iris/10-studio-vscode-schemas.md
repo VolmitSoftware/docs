@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -160,6 +160,8 @@ With a template — `/iris studio create name=mypack template=overworld` — Iri
 
 Both ordinary and Jigsaw Studio reuse Iris's startup-loaded datapack runtime only while its pinned compiler-input fingerprint still matches every live `dimensions`, `biomes`, and `snippet` JSON input, the compiler build, and the vanilla-height policy. A changed input, unavailable registry, failed startup recovery, or changed/failed external datapack ingest or removal invalidates reuse and falls back to recovery, compilation, publication, and the existing restart gate; a verified no-change ingest or recovery check restores the prior pin. Object, structure, jigsaw, pool, and ownership edits do not affect generated dimension types or custom biomes and therefore do not force that fallback.
 
+Compiler-input discovery resolves the canonical Iris authoring-pack and world-snapshot roots directly. It never searches saved region, entity, POI, or other chunk-storage trees for a nested `iris/pack`, so verification time scales with pack inputs rather than generated world size.
+
 Ordinary Studio still resolves and teleports through its standard safe entry, may launch the pack workspace, prepares the complete mantle radius, and preserves native structures for generation previews. On Paper 26.2, WorldInit publishes the filtered native-structure placement state once but leaves it uninitialized while native starts, locates, and object-collision volume queries are gated; injection verifies that Paper's canonical chunk-generator getter owns the new Iris generator before native structure state is published. After the exact FULL entry-chunk request and retention ticket settle and the standard safe-entry teleport step succeeds when applicable, the global scheduler claims that exact level, chunk map, generator, and state, starts its placement initialization, registers the exact concentric-ring futures, enables collision-volume queries, and then lowers the structure gate. The final Studio callback also returns to the server scheduler before applying game rules or committing a Jigsaw session. The ring searches finish in the background rather than delaying entry or extending Studio ready time, while normal close, full hotload, and complex hotload wait up to 120 seconds for their exact aggregate before mutating or sealing the engine; a synchronous partial-start failure permanently rejects those transitions for that engine because a complete drain cannot be proven.
 
 Jigsaw Studio publishes an initialized empty native-structure state even when no managed datapack scope exists, never retains or activates the filtered full state, and keeps starts, references, locates, and native collision-volume queries disabled. Its dedicated open kind also skips the standard-entry teleport, workspace launch, procedural generation-cache warm, complete mantle-radius preparation, and ordinary pack-file hotloader before sending the owner once through the selected workcell destination. Jigsaw graph transactions directly invalidate, reload, evaluate, and rematerialize their owned resources; close and reopen Jigsaw Studio to apply unrelated external pack edits.
@@ -224,6 +226,8 @@ Files under `.iris/schema/` are generated editor artifacts. They are safe to del
 | Successful hotload | The platform hook may refresh the workspace |
 
 Registry-backed enums are captured from the live server, so a schema generated on a server without a mod installed will not offer that mod's blocks. Regenerate after changing the server's mod or datapack set.
+
+On Bukkit-family servers, block and item enum discovery excludes legacy `Material` constants. Schemas therefore offer only current registry values and do not initialize CraftLegacy while the schema builder starts.
 
 ## Studio dimension modes (author testing)
 

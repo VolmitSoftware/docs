@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ The command itself has alias `c`.
 
 **Already exists.** Without `overwrite=true`, create aborts if the managed dimension folder is already there. That folder lives at `<level-root>/dimensions/iris/<name>`, not next to your server jar.
 
-**Folia.** Runtime creation is disabled. Iris stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and tells you to restart. After the restart the world generates and loads on its own from that registration — you don't need `/iris load`.
+**Folia.** Runtime creation is disabled. Iris stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and automatically requests a controlled restart after every staging step succeeds. After the server returns, the world generates and loads on its own from that registration — you don't need `/iris load`. Your host must provide a working restart script or supervisor; if the restart command cannot relaunch the JVM, Iris stops the server and the supervisor must start it again.
 
 **Everything else.** Create builds the world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world).
 
@@ -76,7 +76,7 @@ The command itself has alias `c`.
 /iris create myworld type=overworld seed=1337
 ```
 
-Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. On a non-Folia server `myworld` must appear under Iris worlds. On Folia, success is the staging-and-restart message; restart before continuing.
+Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. On a non-Folia server `myworld` must appear under Iris worlds. On Folia, wait for the automatic restart and reconnect before continuing.
 
 ### Mod
 
@@ -258,7 +258,7 @@ The Studio gate passes when the transient world opens, the workspace points at t
 
 1. Confirm the pack: `overworld` (or yours) exists under the platform packs directory.
 2. Create the world using the form for your platform.
-3. On Folia only: restart after the staging message. The world comes back on its own.
+3. On Folia only: wait for Iris's automatic restart request to complete. If the server stops without returning, start it through the host supervisor; the world then loads on its own.
 4. Teleport in and fly around a little to confirm chunks generate.
 5. Optional: `/iris pregen start 352 …` for a 45×45-chunk area.
 6. Optional: `/iris studio open <pack>` and use the VSCode schemas for block, item, and entity autocomplete — mod content is included in those schemas on mod loaders.

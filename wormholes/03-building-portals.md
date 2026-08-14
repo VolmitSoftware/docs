@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wormholes documentation: Building Portals"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,17 +128,19 @@ When enabled, lighting a vanilla nether portal (or related create reasons the re
 
 Set `replace-nether-and-end-portals = false` to leave vanilla portals alone.
 
+Conversion is player-authorized: lighting a Nether portal or inserting the completing Ender Eye produces a managed Wormholes portal only when that player may construct `PORTAL` portals. Otherwise the vanilla portal remains unmanaged. Automatic Nether counterpart creation is accepted only when the responsible player carries the same permission.
+
 ## Permissions used during build
 
 | Node | Default | Role |
 |------|---------|------|
-| `wormholes.portals` | true | Parent that grants both non-gateway type nodes |
-| `wormholes.portals.portal` | true | Construct and type-switch to Portal/RTP |
-| `wormholes.portals.wormhole` | true | Construct and type-switch to Wormhole |
+| `wormholes.portals` | op | Parent that grants both non-gateway type nodes |
+| `wormholes.portals.portal` | op | Construct and type-switch to Portal/RTP |
+| `wormholes.portals.wormhole` | op | Construct and type-switch to Wormhole |
 | `wormholes.gateway` | op | Create/modify gateway portals |
 | `wormholes.admin.items` | op | `/wormholes wand` supplies |
 
-See [09 - Commands & Permissions](/wormholes/09-commands-permissions) for the full tree.
+Non-operators cannot construct or type-switch frame portals unless a matching leaf or its parent is explicitly granted. See [09 - Commands & Permissions](/wormholes/09-commands-permissions) for the full tree.
 
 ## Quick path
 

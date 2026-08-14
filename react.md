@@ -2,7 +2,7 @@
 title: "React"
 description: "React performance monitoring and optimisation for Paper and Folia"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,10 +35,10 @@ optimisation second.
 | `react.shorthands.rl` | `op` | Allows using /rl when React Shorthands is enabled. |
 | `react.use` | `op` | Allows using the /react command root. |
 
-> The `react.shorthands.*` nodes gate a separate feature: React can register short aliases
-> like `/gms`, `/gmc`, `/more` and `/rl`. These only exist when React Shorthands is enabled in
-> config, and they will conflict with EssentialsX or CMI if you run those too. Check
-> [Installation & Configuration](/react/01-installation-configuration) before enabling.
+> The `react.shorthands.*` nodes gate a separate, default-disabled feature that can register
+> aliases such as `/gms`, `/gmc`, `/more` and `/rl`. If EssentialsX or CMI is installed, React
+> forces the entire shorthand tweak off and registers none of its built-in or custom commands,
+> regardless of `shorthands.toml`.
 {.is-warning}
 
 ### Getting started

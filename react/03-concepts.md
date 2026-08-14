@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "React documentation: Concepts"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ Missing files are created from Java field defaults. Fields are documented with `
 ## Enable model
 
 - Base classes `ReactFeature`, `ReactTweak`, and `ReactAction` define `enabled` (default `true` on the field).
-- Exception: tweak `shorthands` calls `setEnabled(false)` in its constructor so it stays off until you set `enabled = true` in TOML.
+- Exception: tweak `shorthands` calls `setEnabled(false)` in its constructor so it stays off until you set `enabled = true` in TOML. React still forces it off at activation when EssentialsX or CMI is installed, regardless of that configured value.
 - Some features call `setEnabled(false)` at runtime when required platform APIs or NMS bridges are missing (for example pathfinder budget without navigation bridges, dynamic view distance without Paper world distance setters, AFK view shedding without send-view-distance methods).
 - Disabling keeps the config file; the component does not activate or (for actions) appear in normal queues.
 - Capability-gated secret features additionally require peer plugins and `integrationSecretsEnabled`.

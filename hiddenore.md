@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "HiddenOre mining economy and anti-xray plugin"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,17 +30,18 @@ The pipeline excludes creative players, non-pickaxe breaks, unmanaged blocks, an
 block-break events. Rewards commit only after Bukkit completes an accepted block break, and
 `HiddenOreDropsEvent` fires before anything is delivered.
 
-**`seeded`** derives virtual vein positions from the world seed, chunk coordinates and rule
-order. No block is placed. Each position is recorded in chunk persistent data and pays out at
-most once, ever, including across restarts.
+**`seeded`** derives virtual vein positions from the world seed, chunk coordinates and each
+item rule's stable configuration identity. No block is placed. Each position is recorded in
+chunk persistent data and pays out at most once, ever, including across restarts.
 
 **`pure_random`** rolls fresh odds on every eligible break, tuned to the same per-chunk
 statistics. Nothing is pre-placed, so vein detection always comes up empty.
 
-> Seeded vein positions derive from the order of the `drops:` list. Reordering, inserting or
-> deleting an item rule reshuffles every undiscovered vein in the world. Appending to the end
-> is the safe edit. Back up worlds first.
-{.is-danger}
+Reordering `drops:` does not move seeded veins. Inserting or deleting an unrelated rule keeps
+each retained rule's pseudorandom layout stable; only positions where the rules directly
+overlap can change ownership. Changing a retained item rule changes that rule's identity and
+therefore its undiscovered vein layout only when the item or spatial generation fields change;
+Fortune, tool-tier, and experience changes leave positions intact.
 
 - [Installation *Requirements and first-run setup*](/hiddenore/installation)
 - [Commands & Permissions *`/hiddenore` and its one node*](/hiddenore/commands)

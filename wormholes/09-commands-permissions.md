@@ -84,7 +84,7 @@ Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`, `persona
 
 | Node | Default | Description / children |
 |------|---------|------------------------|
-| `wormholes.*` | op | All Wormholes nodes → `admin`, `portals`, `gateway` |
+| `wormholes.*` | op | All Wormholes nodes → `admin`, `portals`, `gateway`, `doors.craft`, `doors.place` |
 | `wormholes.admin` | op | All admin → `admin.reload`, `admin.items`, `admin.network`, `admin.projection`, `admin.reset`, `doors.bypass` |
 | `wormholes.admin.reload` | op | Reload configuration |
 | `wormholes.admin.items` | op | Spawn wand, runes, door items |
@@ -92,10 +92,12 @@ Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`, `persona
 | `wormholes.admin.projection` | op | Freeze / flush projections |
 | `wormholes.admin.reset` | op | deleteallportals / deleteeverything |
 | `wormholes.doors.bypass` | op | Bypass dimensional door access lists (also op / `wormholes.admin` pass access checks) |
+| `wormholes.doors.craft` | op | Craft and reskin Dimensional Door and trapdoor products |
+| `wormholes.doors.place` | op | Place Dimensional Door and trapdoor products as live portal endpoints |
 | `wormholes.gateway` | op | Create and type-switch to gateway portals |
-| `wormholes.portals` | true | Parent for non-gateway frame portal types → `portals.wormhole`, `portals.portal` |
-| `wormholes.portals.wormhole` | true | Create and type-switch to wormhole-type frame portals |
-| `wormholes.portals.portal` | true | Create and type-switch to portal-type and RTP frame portals |
+| `wormholes.portals` | op | Parent for non-gateway frame portal types → `portals.wormhole`, `portals.portal` |
+| `wormholes.portals.wormhole` | op | Create and type-switch to wormhole-type frame portals |
+| `wormholes.portals.portal` | op | Create and type-switch to portal-type and RTP frame portals |
 
 ### Frame portal type nodes (enforced)
 
@@ -107,7 +109,13 @@ Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`, `persona
 | `WORMHOLE` | `wormholes.portals.wormhole` |
 | `GATEWAY` | `wormholes.gateway` |
 
-`wormholes.admin` and ops always pass. These nodes do not gate departure or arrival; traversal uses the dynamic per-portal node below. Defaults let everyone construct Portal/Wormhole/RTP types and reserve Gateway management for ops.
+`wormholes.admin` and ops always pass. These nodes do not gate departure or arrival; traversal uses the dynamic per-portal node below. All construction nodes default to `op`, so a non-operator needs an explicit matching leaf or parent grant. Managed Nether/End replacement also checks `wormholes.portals.portal` on the responsible player before conversion.
+
+### Dimensional Door crafting node
+
+`wormholes.doors.craft` gates all Dimensional Door and trapdoor product recipes and their identity-preserving reskin recipes. It defaults to `op`; non-operators see no output for those recipes and craft clicks are rejected unless the node is explicitly granted. Automated Crafter blocks remain unable to mint or reskin Dimensional Door identities.
+
+`wormholes.doors.place` separately gates placing a Dimensional Door or trapdoor as a live endpoint. It also defaults to `op`; `wormholes.admin` passes both door gates. Granting craft alone lets a player make the item but not place it.
 
 ### Dynamic per-portal node
 

@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Wormholes through-portal projection and traversal"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ gateways.
 |---|---|
 | Command | `/wormholes` (`wh`, `wormhole`) |
 | Folia | Supported (via `paper-plugin.yml`) |
-| Permissions | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` |
+| Permissions | 14 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` |
 | Integrations | PlaceholderAPI, Iris, Vault |
 
 > Wormholes ships two descriptors that disagree on load order. Paper reads
@@ -26,10 +26,10 @@ gateways.
 > `POSTWORLD`. Worth knowing before debugging a load-order problem.
 {.is-info}
 
-> `wormholes.portals` and its two children default to **`true`**, so every player can build
-> wormhole-type and portal-type frame portals out of the box. Every other node defaults to
-> `op`. Revoke it explicitly if you want portal construction gated.
-{.is-warning}
+> All static permission nodes default to `op`. Non-operators need an explicit frame-portal
+> type permission to construct or change portals, `wormholes.doors.craft` to craft or
+> reskin Dimensional Doors, and `wormholes.doors.place` to place them.
+{.is-info}
 
 ### Getting started
 

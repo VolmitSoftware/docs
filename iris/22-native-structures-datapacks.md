@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -390,6 +390,8 @@ Minecraft builds worldgen registries at server start, so a **newly installed or 
 Cache reuse is a local validation decision and does not poll remote sources; run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts, so unchanged bootstrap recovery leaves the manifest stable and the next startup can reuse the cached fingerprint.
 
 Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
+
+Managed external-datapack fingerprints remain full-content hashes: Iris still reads every authored byte before accepting changed content and retains the per-entry `FileStore` boundary check, including same-device bind mounts. The tree walk now reuses the attributes it already collected and reads content in larger blocks instead of restating each entry during hashing.
 
 ### 2.3 Manual commands
 

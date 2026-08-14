@@ -2,7 +2,7 @@
 title: "HiddenOre — Configuration"
 description: "Every config.yml key explained"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -111,8 +111,10 @@ drops:
 - 1,024 worst-case target blocks across all item rules
 - `exp_drop` no greater than 1,000
 
-> Under `seeded`, vein positions derive from this list's order. Reordering, inserting or
-> deleting an entry reshuffles every undiscovered vein. Already-discovered positions stay
-> discovered, so the practical effect is a discontinuity in what players find. Appending to
-> the end is the least disruptive edit.
-{.is-danger}
+Under `seeded`, each item rule gets a stable identity from its material, vein count, size, and
+height range. Reordering `drops:` does not move veins. Inserting or deleting an unrelated rule
+leaves retained pseudorandom layouts unchanged except where the rules directly target the same
+block. Changing a spatial identity field changes that rule's undiscovered layout; changing
+only `fortune_multiplier`, `tool_tiers`, or `exp_drop` does not. Rules with identical spatial
+identities receive separate deterministic occurrence streams, so duplicates remain supported
+without making list order significant.

@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "React documentation: Tweaks Catalog"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -217,14 +217,14 @@ Experimental empty-server hibernation. When its safety gate is enabled and the s
 
 ### `shorthands`
 
-Registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor).
+Registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor). When EssentialsX (plugin name `Essentials`) or CMI is installed, React forces this tweak off before activation and registers no built-in or custom shorthand commands, even if the config enables it.
 
 - **Class:** `TweakShorthands` · **Listener:** no
 - **Permissions:** `react.shorthands.*` and children — see [02 - Commands & Permissions](/react/02-commands-permissions).
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `enabled` | boolean | `false` | Enables or disables this tweak. |
+| `enabled` | boolean | `false` | Enables or disables this tweak unless EssentialsX or CMI is installed; either plugin forces it off. |
 | `gms` | boolean | `true` | Register `/gms`. |
 | `gmsp` | boolean | `true` | Register `/gmsp`. |
 | `gmc` | boolean | `true` | Register `/gmc`. |

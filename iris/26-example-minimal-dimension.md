@@ -2,7 +2,7 @@
 title: "Example - Minimal Dimension"
 description: "Iris documentation: Example - Minimal Dimension"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -201,7 +201,7 @@ Validation checks that the dimension load key resolves, that every region key in
 
 **What you do.**
 
-1. Create: Bukkit `/iris create minimal-test type=minimal seed=1337`, modded `/iris create minimal-test minimal 1337`. On Folia, creation stages the world and requires the instructed restart before you can enter it.
+1. Create: Bukkit `/iris create minimal-test type=minimal seed=1337`, modded `/iris create minimal-test minimal 1337`. On Folia, creation stages the world and automatically requests a restart; wait for the supervised server to return before you enter it.
 2. Teleport: Bukkit `/iris tp minimal-test`, modded `/iris tp irisworldgen:minimal-test`.
 3. Generate ordinary new chunks and confirm the same flat grass result you saw in Studio.
 4. Stop the server cleanly, start it again, teleport back, and generate another new area.

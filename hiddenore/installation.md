@@ -2,7 +2,7 @@
 title: "HiddenOre — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,8 +25,11 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Two decisions to make first
 
-**Generation mode.** Switching between `seeded` and `pure_random` later is safe. Reordering
-the `drops:` list under `seeded` is not.
+**Generation mode.** Switching between `seeded` and `pure_random` later is safe. Seeded vein
+positions are stable across `drops:` reordering. Adding or removing an unrelated rule leaves
+retained pseudorandom layouts unchanged except where the rules directly overlap. Changing an
+item rule's material or spatial generation fields changes its undiscovered layout; changing
+only Fortune behavior, tool tiers, or experience does not.
 
 **Ore removal.** `ore-removal.enabled` is `false` by default, so vanilla ore still generates.
 Turning it on affects only newly generated chunks — existing terrain keeps its ore.

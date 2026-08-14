@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -131,7 +131,7 @@ Both test commands mutate their test world. `run` queues cleanup actions around 
 
 ## Shorthand commands (tweak `shorthands`)
 
-When the `shorthands` tweak is enabled (`enabled = true` in TOML; constructor default is **off**), optional bare commands register:
+When the `shorthands` tweak is enabled (`enabled = true` in TOML; constructor default is **off**), optional bare commands register. If EssentialsX (plugin name `Essentials`) or CMI is installed, React forces the entire tweak off before activation and registers none of its built-in or custom shorthand commands. The TOML setting cannot override this collision guard.
 
 | Command | Permission | Behavior |
 |---------|------------|----------|

@@ -22,7 +22,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Left at its default `default`, it resolves to `generator.defaultWorldType`. Bukkit refuses the names `iris` and `benchmark`, and refuses any name whose dimension folder already exists.
 
-When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged instead and the message tells you to restart before it exists. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
+When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged instead, Iris prints that staging succeeded, and then it automatically requests a controlled restart; reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
 For a player-issued Bukkit create, Iris also attempts to move that player into the new world after its entry chunk and safe position are ready. This automatic entry attempt has a 60-second limit. A timeout cancels only that teleport, reports that the world was created but automatic teleport failed, and does not roll back the world or restart the server; retry with `/iris tp tutorial`.
 

@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -135,7 +135,7 @@ If terrain is empty, confirm `generators/plain.json` still exists in the fork. I
 1. Remove `focus` and `focusRegion`, close Studio, and reopen on seed `1337`.
 2. Locate the biome naturally: `/iris find biome tutorial/meadow` (available on Bukkit and on mod loaders; `/iris goto biome <key>` is the same command on modded).
 3. Create a disposable world: Bukkit `/iris create overworld-test type=my-overworld seed=1337`, modded `/iris create overworld-test my-overworld 1337`.
-4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`. On Folia, honor the required restart immediately after the create command before teleporting.
+4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`. On Folia, wait for Iris's automatic restart request and for the supervised server to return before teleporting.
 5. Generate new chunks, stop the server cleanly, restart, and verify another new area.
 
 **Why.** Focus mode proves the biome renders; only unfocused generation proves it is actually reachable through region selection. The disposable world proves the pack snapshot works outside Studio, and the restart proves the generated dimension type and custom biomes survive a registry reload.

@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -90,7 +90,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Folia
 
-`folia-supported: true`, and engine work uses region-safe scheduling. The one behavioral difference that matters at install time: `/iris create` cannot build a live world at runtime on Folia. Instead it stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and prints a message telling you to restart. After the restart the world generates and loads on its own from that `bukkit.yml` entry — you do not need to run `/iris load`. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+`folia-supported: true`, and engine work uses region-safe scheduling. The one behavioral difference that matters at install time: `/iris create` cannot build a live world at runtime on Folia. Instead it stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, reports success, and automatically requests a controlled server restart. After the server returns, the world generates and loads on its own from that `bukkit.yml` entry — you do not need to run `/iris load`. The host still needs a working restart script or external supervisor capable of relaunching the JVM; if the restart command does not complete, Iris falls back to stopping the server and the supervisor must bring it back. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 ### Installing the first pack
 

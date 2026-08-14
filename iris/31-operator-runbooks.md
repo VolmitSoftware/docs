@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -36,9 +36,9 @@ GoldenHash file layout and interpretation: [32 - Determinism & Goldenhash](/iris
 1. Drop the CraftBukkit-family jar into `plugins/` on a Java 25 server (Paper, Purpur, Folia, Spigot, Leaf, or Canvas as advertised). See [01 - Installation & Platforms](/iris/01-installation-platforms).
 2. Start the server once.
 
-   Expect: Iris enables; the managed `overworld` and `underworld` beta packs download when absent; `settings.json` appears in the Iris data directory.
+   Expect: Iris enables without downloading packs; `settings.json` appears in the Iris data directory.
 
-   If Iris does not enable, check Java version and platform artifact before anything else. If the downloads fail, the server has no outbound access — install the packs manually ([25 - Pack Management](/iris/25-pack-management)).
+   If Iris does not enable, check Java version and platform artifact before anything else. If `overworld` is absent, run `/iris download pack=overworld`, wait for it to finish, and restart before continuing. Iris never downloads packs automatically; for offline installation, see [25 - Pack Management](/iris/25-pack-management).
 
 3. Create a world with a fixed seed and go to it:
 

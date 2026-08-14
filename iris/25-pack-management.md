@@ -19,7 +19,9 @@ A pack exists in up to three places at once, and confusing them is the usual sou
 - **The world snapshot**, at `<world>/iris/pack`. Every Iris world holds a full copy of the pack it was created with. It is frozen at creation time. Editing the authoring copy never touches an existing world.
 - **The export**, at `exports/<key>.iris`. A zip of the dimension's dependency closure, for handing to somebody else.
 
-Validation runs against a directory, not a key, so a pack can be valid in the workspace and stale in a world. Iris caches startup validation results and re-uses them only when the pack bytes, the visible pack set, the platform, and the relevant game registries all still match — otherwise it revalidates.
+Validation runs against a directory, not a key, so a pack can be valid in the workspace and stale in a world. Iris caches startup validation results and re-uses them only when the pack bytes, the visible pack set, the platform, and the relevant game registries all still match — otherwise it revalidates. Fresh validation rechecks the content fingerprint after parsing; if files keep changing, Iris retries once and then refuses the unstable result until writes stop.
+
+When Iris atomically copies a validated source pack into a new world snapshot, it may transfer that exact validation result only after a strong content fingerprint proves the copied tree matches the source. Root-level hidden metadata such as `.git/`, `.iris/`, and `.idea/`, plus `*.code-workspace` files, is not copied into production snapshots or included in that proof; hidden resources inside active pack folders remain covered. A mismatch or unreadable fingerprint runs the full semantic validator against the snapshot root instead.
 
 ## Walkthrough: take a pack from workspace to release
 

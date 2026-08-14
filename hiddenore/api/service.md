@@ -2,7 +2,7 @@
 title: "service"
 description: "HiddenOre documentation: service"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-14T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -230,7 +230,7 @@ about — a full-height chunk walk is 98,304 block reads, which is why the worke
 ## Veins
 
 A **hidden vein** is a position that pays out when mined. In `seeded` mode those positions are derived from the
-world seed, the chunk coordinates and the order of the `drops:` list, so they exist before anyone touches them
+world seed, the chunk coordinates and the stable configuration identity of each item rule, so they exist before anyone touches them
 and can be found, outlined and counted. In `pure_random` mode nothing is pre-placed and every vein query
 answers empty — always check `isSeeded()` first, or your feature will silently do nothing on half of the
 servers that install it.
@@ -297,8 +297,11 @@ A 128-block radius spans up to 17 by 17 chunks — 289 chunks of persistent-data
 block reads. Treat it as a scan, not a query.
 
 Vein layouts are computed on demand and cached per world, up to 4096 chunks, evicted least-recently-used, and
-recomputed after a configuration reload. Reordering, inserting or deleting entries in `drops:` reshuffles every
-undiscovered vein in the world.
+recomputed after a configuration reload. Reordering `drops:`, or inserting or deleting an unrelated rule,
+preserves each retained rule's pseudorandom layout. A newly added or removed rule can change ownership only at
+positions where the rules directly overlap. Changing a retained rule's own fields changes that rule's identity
+and undiscovered layout only when its material or spatial generation fields change; Fortune, tool-tier, and
+experience changes do not move positions. Identical spatial identities use separate deterministic streams.
 
 ### `isVeinConsumed(Block)`
 
@@ -545,7 +548,7 @@ methods. There is no fault counter on the read API — the cost of misuse is ent
 | `blocks`                            | `stone`, `deepslate`        | The managed materials. `isManagedBase` is exactly membership of this map's keys, and a block outside it is always `UNTRACKED` |
 | `veins.generation`                  | `seeded`                    | `seeded` or `pure_random`. `isSeeded()` reports it. In `pure_random`, all three vein methods answer empty |
 | `veins.allow_placed_blocks`         | `false`                     | When `false`, player-placed blocks are excluded from `veinAt`, `veinSiblings` and `veinsNear`. Placement records are written either way |
-| `drops`                             | eight item rules and one command rule | Rule order determines seeded vein positions. Reordering reshuffles every undiscovered vein |
+| `drops`                             | eight item rules and one command rule | Seeded item rules use stable material-and-spatial identities; list order does not affect layouts, and unrelated entries affect retained rules only at direct overlaps |
 | `drops[].veins_per_chunk`, `vein_min_size`, `vein_max_size` | per rule | How many vein positions exist and how large they are. Capped at 64 veins per chunk, 256 blocks per vein, and 1,024 worst-case target blocks per chunk across all item rules |
 | `drops[].min_y`, `max_y`            | `-64` / `320`               | The Y band a rule's veins occupy                                              |
 
