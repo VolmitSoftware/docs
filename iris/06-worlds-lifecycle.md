@@ -137,7 +137,7 @@ Only that exact current-format startup name is accepted. Iris does not migrate, 
 | Command | What it does |
 |---|---|
 | `/iris create <name> [type=default] [seed=1337]` | Create an absent managed `iris:*` world now, or stage it for Folia's next boot |
-| `/iris replace <target> [type=default]` | Stage a cold replacement of an existing safe Iris world or exact vanilla dimension slot; aliases `override`, `overwrite` |
+| `/iris replace <target> [type=default] [seed=preserve]` | Stage a cold replacement of an existing safe Iris world or exact vanilla dimension slot; aliases `override`, `overwrite` |
 | `/iris load <name>` / `/iris import <name>` | Reconcile a world that already exists on disk back into the server. Never downloads anything |
 | `/iris unload <world>` | Evacuate, unload, close the generator. The safe first half of removal |
 | `/iris remove <name> [delete=true]` | Unregister the world, and by default delete its files |
@@ -192,7 +192,7 @@ Iris dispatches the server's restart command only after the frozen pack, world f
 
 ## Exact world-slot replacement
 
-`/iris replace <target> [type=default]` puts Iris generation into a slot that already exists, including the vanilla Overworld, Nether, or End. The command aliases are `override` and `overwrite`. It preserves that canonical identity in place, uses lifecycle kind `WORLD_REPLACE`, and always stages for a full restart. There is no live generator swap or old/new chunk merge, and there is no seed parameter.
+`/iris replace <target> [type=default] [seed=preserve]` puts Iris generation into a slot that already exists, including the vanilla Overworld, Nether, or End. The command aliases are `override` and `overwrite`. It preserves that canonical identity in place, uses lifecycle kind `WORLD_REPLACE`, and always stages for a full restart. There is no live generator swap or old/new chunk merge.
 
 It requires a Paper-family early bootstrap, which plain Spigot never runs; on Spigot the command fails closed. The target dimension folder must already exist — ordinary create is still the path for a new world.
 
@@ -203,7 +203,7 @@ Accepted targets are safe `iris:*` keys and exactly three canonical vanilla slot
 
 Foreign namespaces, other `minecraft:*` keys, path traversal, symlinks, and special filesystem entries all fail closed.
 
-Every replacement preserves the authoritative seed stored in that target's Paper `world_gen_settings.dat`. Iris does not derive it from a command argument, another dimension, or the current value of `server.properties`.
+With the default `seed=preserve`, replacement preserves the authoritative seed stored in that target's Paper `world_gen_settings.dat`. An explicit `seed=<signed-64-bit-integer>` clones the target's complete current-format settings into the hidden stage and changes only `data.seed`; the retained live target and rollback backup are not modified. Iris never derives one dimension's seed from another dimension or rewrites the current value of `server.properties`.
 
 ### Shipping Overworld and Nether pair
 
@@ -220,23 +220,23 @@ Downloads are single-flight, so wait for the Overworld download to finish before
 After the server returns, stage both exact slots:
 
 ```text
-/iris replace minecraft:overworld type=overworld
-/iris replace minecraft:the_nether type=underworld
+/iris replace minecraft:overworld type=overworld seed=123456789
+/iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
 Restart once after both replacements report staged. A fresh install therefore has one dependency-registration restart followed by one replacement-publication restart; both replacements still publish together in the second cold reconcile.
 
-The `type=` values select the Iris pack/dimension; the replacement targets select the Minecraft identities being retained. There is no seed, main-world, overwrite, force, or portal-routing flag. `override` and `overwrite` are command aliases for `replace`, not behavior switches. After cold publication, vanilla portal mechanics continue to route between `minecraft:overworld` and `minecraft:the_nether`; a separately created or replaced `iris:*` world remains outside that canonical pair.
+The `type=` values select the Iris pack/dimension; the replacement targets select the Minecraft identities being retained; and each optional `seed=` applies only to that target. There is no main-world, overwrite, force, or portal-routing flag. `override` and `overwrite` are command aliases for `replace`, not behavior switches. After cold publication, vanilla portal mechanics continue to route between `minecraft:overworld` and `minecraft:the_nether`; a separately created or replaced `iris:*` world remains outside that canonical pair.
 
 ### How the transaction is made safe
 
-The stage copies and validates a fresh frozen pack on the same filesystem, fingerprints it, binds a journal to the canonical level root and logical world name, records the original target, authoritative world-generation seed, and existing `bukkit.yml` definition, then compare-and-swaps that one configuration entry without changing the seed. Several distinct slots can be queued before a single restart.
+The stage copies and validates a fresh frozen pack on the same filesystem, fingerprints it, binds a journal to the canonical level root and logical world name, records the original target, effective world-generation seed, and existing `bukkit.yml` definition, then compare-and-swaps that one configuration entry. Several distinct slots with independent effective seeds can be queued before a single restart.
 
 At the next boot, Paper's bootstrap reconciles each authorized transaction before Iris compiles its aggregate datapack and before Minecraft builds registries: it atomically moves the old dimension directory to a retained sibling backup and publishes the stage. The filesystem must support atomic replacement for the world directories, the journal, and `bukkit.yml`; without it Iris refuses rather than falling back to a destructive move.
 
-Publication retains Paper's per-world `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and `data/minecraft/world_gen_settings.dat` so the slot keeps its metadata and authoritative seed. Old `region`, `entities`, `poi`, and Iris runtime data are never merged — they stay in the backup, and the replacement starts from the staged snapshot.
+Publication retains Paper's per-world `data/paper/metadata.dat` and `data/paper/level_overrides.dat`. It uses a verified clone of `data/minecraft/world_gen_settings.dat`, preserving every current-format field while applying the selected seed to `data.seed`. Old `region`, `entities`, `poi`, and Iris runtime data are never merged — they stay in the backup, and the replacement starts from the staged snapshot.
 
-The backup is only eligible for deletion after `WorldLoad` proves the exact namespaced identity, Iris generator, selected dimension, seed, vanilla-slot environment, and an unchanged pack fingerprint. A failed check journals a rollback and requests another restart, after which cold bootstrap restores the retained directory and the prior `bukkit.yml` entry. A crash between any move, config write, or journal phase is retried idempotently. Conflicting manual configuration, changed roots or names, changed staged bytes, unsafe storage, or a duplicate or corrupt journal aborts early bootstrap and preserves the artifacts rather than guessing.
+The backup is only eligible for deletion after `WorldLoad` proves the exact namespaced identity, Iris generator, selected dimension, seed, vanilla-slot environment, and an unchanged pack fingerprint. A failed check journals a rollback and requests another restart, after which cold bootstrap restores the retained directory and the prior `bukkit.yml` entry. A crash between any move, config write, or journal phase is retried idempotently. Finder may create a regular `.DS_Store` file anywhere in the staged pack without invalidating the transaction; symbolic links, special files, and authored pack changes remain protected and fail closed. Conflicting manual configuration, changed roots or names, changed staged bytes, unsafe storage, or a duplicate or corrupt journal aborts early bootstrap and preserves the artifacts rather than guessing.
 
 ## Studio create
 
@@ -315,10 +315,10 @@ With `delete=true`, Iris records the exact quarantine name in a durable startup 
 The server's main world is the `minecraft:overworld` dimension inside the save root selected by `server.properties` `level-name`. To make Iris generate that existing main slot, stage this replacement and restart:
 
 ```text
-/iris replace minecraft:overworld type=overworld
+/iris replace minecraft:overworld type=overworld seed=123456789
 ```
 
-The replacement keeps `level-name` unchanged, so the save-wide player data, datapacks, global data, Nether, End, and custom dimensions remain in the same level root. Only the existing Overworld dimension folder and generator registration participate in the journaled replacement.
+The replacement keeps `level-name` unchanged, so the save-wide player data, datapacks, global data, Nether, End, and custom dimensions remain in the same level root. Only the existing Overworld dimension folder, staged seed, and generator registration participate in the journaled replacement. Omit `seed=` to preserve the current Overworld seed.
 
 Iris no longer promotes an `iris:*` world into another level root, copies save-wide data into a new root, or rewrites `server.properties`. The old `main` / `main-world` and `overwrite` / `force` parameters were removed from `/iris create`; `/iris overwrite` is now an alias of the separate replacement command. Selecting a fresh whole-save `level-name` is a server-provisioning operation and must be completed outside Iris before managing dimensions in that save.
 

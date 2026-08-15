@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -336,6 +336,8 @@ slot. `release()` withdraws the bid; one-shot notices skip it and let the TTL ho
 display window. `HudBossBarLane` renders fallback content as per-player boss bars keyed by lane id, with a
 per-lane staleness timeout so abandoned bars remove themselves.
 
-Everything here is safe from any thread: the metadata store is synchronized and the local session ledger is
-lock-free. Bids from a crashed or disabled plugin expire on their own; no service registration, election, or
-reflection is involved, so the package survives `minimize()` as long as call sites reference it directly.
+`resolve()`, `release()`, and visible boss-bar `show`/`hide` operations touch the Bukkit player and must run on
+that player's owning scheduler. An entity-scheduler retirement callback instead calls `HudSlotClaim.retire()`
+and `HudBossBarLane.retire(playerId, laneId)`: these UUID-only operations drop local claims and tracked bars
+without touching the retired player or its metadata. Bids from a crashed or disabled plugin also expire by
+TTL; no service registration, election, or reflection is involved.

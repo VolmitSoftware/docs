@@ -61,7 +61,7 @@ Both use the same invalidate, reload, and locale path once a change is detected.
 | Concern | Bukkit | Modded |
 |---------|--------|--------|
 | Create | `/iris create` → absent managed `iris:*` world with an explicit creation seed | `/iris create` or `/iris world enable` → dimension id plus pack injection |
-| Replace | `/iris replace` (aliases `override`, `overwrite`) → existing safe `iris:*` world or exact Overworld/Nether/End slot, preserving the target's saved world-generation seed and publishing on restart | Not available |
+| Replace | `/iris replace` (aliases `override`, `overwrite`) → existing safe `iris:*` world or exact Overworld/Nether/End slot, preserving the target's saved world-generation seed by default or accepting an explicit replacement seed, then publishing on restart | Not available |
 | Load / unload | `/iris load` (alias `import`), `/iris unload` | `/iris world disable` unloads; there is no separate load command |
 | Remove / delete | `/iris remove`, optionally deleting the folder | `/iris world delete` wipes chunk and mantle data |
 | Primary / main world | `/iris replace minecraft:overworld type=<pack>` replaces the selected save's existing main slot without changing `level-name`; fresh whole-save selection is external server provisioning | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`; `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |

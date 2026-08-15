@@ -475,6 +475,8 @@ Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`,
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
+On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads, or an empty ephemeral chunk when it explicitly requires a distant chunk; distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper's write-radius contract instead of widening it or suppressing Leaf/Paper diagnostics, and removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings from those structures.
+
 ### 3.2 `disabled` and `disabledExact` never block an explicit placement
 
 The placement injector generates planned starts without consulting either deny list, and it bypasses the structure's own biome filter. Both "disable the namespace, re-place explicitly" and "deny an exact key, replace it explicitly" are supported.

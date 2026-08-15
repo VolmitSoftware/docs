@@ -90,15 +90,15 @@ Prerequisites: a disposable Paper-family server with early plugin bootstrap (not
 4. Stage both exact vanilla slots:
 
    ```text
-   /iris replace minecraft:overworld type=overworld
-   /iris replace minecraft:the_nether type=underworld
+   /iris replace minecraft:overworld type=overworld seed=123456789
+   /iris replace minecraft:the_nether type=underworld seed=-987654321
    ```
 
-   Expect: both commands report staged after dependency registration. `bukkit.yml` names `Iris:overworld` for `world` and `Iris:underworld` for `world_nether`; exactly two replacement journals and two sibling stages exist; neither live target has moved; and `server.properties` `level-name` is unchanged. There is no `main`, `overwrite`, `force`, seed, or portal flag involved.
+   Expect: both commands report staged after dependency registration. `bukkit.yml` names `Iris:overworld` for `world` and `Iris:underworld` for `world_nether`; exactly two replacement journals and two sibling stages exist; neither live target has moved; and `server.properties` `level-name` and `level-seed` are unchanged. There is no `main`, `overwrite`, `force`, or portal flag involved. `seed` is optional per target; omitting it preserves that target's saved seed.
 
 5. Restart once after both replacements are staged.
 
-   Expect: the same cold reconcile publishes both transactions before aggregate-datapack compilation, registry creation, and Bukkit world loading. The worlds load as exact `minecraft:overworld` and `minecraft:the_nether`, using the `overworld` `NORMAL` dimension and `underworld` `NETHER` dimension respectively. Each retains its own authoritative saved seed and Paper metadata, has its own frozen `iris/pack`, contains none of the old `region`, `entities`, or `poi` files, and no longer contains either marker chunk.
+   Expect: the same cold reconcile publishes both transactions before aggregate-datapack compilation, registry creation, and Bukkit world loading. The worlds load as exact `minecraft:overworld` and `minecraft:the_nether`, using the `overworld` `NORMAL` dimension and `underworld` `NETHER` dimension respectively. Their authoritative seeds are `123456789` and `-987654321`, each retains its Paper metadata, each has its own frozen `iris/pack`, and neither contains the old `region`, `entities`, `poi`, or marker chunks.
 
 6. Watch both `WorldLoad` verifications and wait for cleanup.
 
