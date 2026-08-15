@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T18:07:57.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -192,6 +192,8 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 ### 1.1 Default: everything generates
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
+
+Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, reducing each ring task from 3,249 biome evaluations to 225. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks; `/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
 
 ### 1.2 Biome mapping for structure filters
 

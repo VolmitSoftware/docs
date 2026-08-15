@@ -2,12 +2,12 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-15T16:30:00.000Z
+date: 2026-08-15T18:07:57.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris throughput is bounded by four things: how many chunks the platform will let Iris generate at once, how much mantle stays resident in heap, how often pack resources are reloaded from disk, and whether the JVM has the incubator Vector API. This page is organized by the symptom you are looking at, not by settings file order. Every knob lives in `settings.json` under the Iris data directory ([03 - Configuration](/iris/03-configuration)); pregen operations are in [07 - Pregeneration](/iris/07-pregeneration). Any change here must leave GoldenHash unchanged ([32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)).
+Iris throughput is bounded by four things: how many chunks the platform will let Iris generate at once, how much mantle stays resident in heap, how often pack resources are reloaded from disk, and whether the JVM has the incubator Vector API. This page is organized by the symptom you are looking at, not by settings file order. Every knob lives in `settings.json` under the Iris data directory ([03 - Configuration](/iris/03-configuration)); pregen operations are in [07 - Pregeneration](/iris/07-pregeneration). Tuning must leave GoldenHash unchanged; a deliberate generation-contract change must be documented and re-baselined instead ([32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)).
 
 ## Before you turn any knob
 
@@ -34,6 +34,12 @@ Work through these in order. The first two are free; the rest trade something.
 6. **Give the process more heap before touching mantle caps.** Resident mantle plates are budgeted against process memory, so a bigger heap raises the effective plate count without any settings change.
 
 `performance.noiseCacheSize` is not worth tuning for pregen: starting a pregen raises it to at least 4096 in memory, hotloads the engine, and sets `iris.cache.fast` as a system property. Neither is lowered again for the life of the process. The Bukkit plugin already sets `iris.cache.fast` during startup; on mod loaders it only comes on with the first pregen, so pass `-Diris.cache.fast=true` on the JVM command line there if you want it covering ordinary generation too.
+
+## Symptom: the first chunks pause while strongholds initialize
+
+Minecraft 26.2 prepares its concentric stronghold rings before ordinary structure generation can settle. Iris answers that exact ring search at chunk-center granularity: 225 biome evaluations per task instead of 3,249 quart-column evaluations. Other biome searches keep their normal resolution. In a live shipping-Overworld test, an 81-chunk cold frontier fell from 27–33 seconds to 9–10 seconds with zero failed chunks.
+
+This is a current generation-contract change, not a migration. The same seed, pack, and Iris build remains deterministic, but stronghold ring coordinates can differ from earlier Iris builds because each candidate chunk now has one vote and the random selection sequence is shorter. Strongholds already stored in generated chunks remain physically present; current `/locate` results and Eyes of Ender follow the newly computed rings and may not lead back to those older starts. Iris does not retain or reconstruct the earlier ring layout.
 
 ## Symptom: TPS dips or chunk-load timeouts while generating
 
