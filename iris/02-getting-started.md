@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-15T00:00:00.000Z
+date: 2026-08-15T21:07:31.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -88,22 +88,21 @@ Every replacement is staged for cold publication. Stage as many distinct targets
 
 #### Install the shipping Overworld and Nether pair
 
-On a Paper-family server, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. The shipping Overworld declares the external Towns & Towers and Dungeons & Taverns datapacks, so register those dependencies before staging either replacement:
+On a Paper-family server, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. The shipping Overworld uses Minecraft's registered vanilla structures and declares no external datapacks:
 
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
-/iris datapack ingest restart=true
 ```
 
-Wait for each download to report success before starting the next command because downloads are single-flight. The ingest installs every `datapackImports` dependency declared by the two packs and restarts the server when the fresh datapacks require registry registration. After the server returns, stage both replacements:
+Wait for each download to report success before starting the next command because downloads are single-flight. After both downloads finish, manually restart the server once so their dimension types and custom biomes enter the live registries. After the server returns, stage both replacements:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both commands report staged. This produces two deliberate restart boundaries on a fresh install: one to register the Overworld's external datapacks, then one to publish both exact world replacements. Download validation alone is registry-independent and cannot prove that `nova_structures:*` or other external keys are live.
+Restart once after both commands report staged. This produces two deliberate restart boundaries on a fresh install: one to register the downloaded packs, then one to publish both exact world replacements. If you customize a pack with `datapackImports`, complete the separate ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging its replacement.
 
 The existing Overworld and Nether target directories must already be initialized, `allow-nether=true` must remain enabled, and `server.properties` `level-name` stays unchanged. The example deliberately gives the two replacement dimensions different seeds; omitting either `seed=` preserves that target's existing saved seed instead. After the restart, the worlds retain the exact `minecraft:overworld` and `minecraft:the_nether` identities, so ordinary Nether portals keep their canonical forward and return routing. An arbitrary `iris:*` world is separate and does not become a vanilla portal destination merely because it uses an Overworld- or Nether-shaped pack.
 

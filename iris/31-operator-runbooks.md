@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-15T00:00:00.000Z
+date: 2026-08-15T21:07:31.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -79,13 +79,9 @@ Prerequisites: a disposable Paper-family server with early plugin bootstrap (not
 
    Expect: `packs/underworld/dimensions/underworld.json` is published. Starting it while the first download is active must fail busy rather than queue; retry after the first completion. Do not restart manually yet.
 
-3. Install the shipping Overworld's declared external datapacks and request their registry restart:
+3. Manually restart the server once after both downloads complete.
 
-   ```text
-   /iris datapack ingest restart=true
-   ```
-
-   Expect: Iris resolves Towns & Towers and Dungeons & Taverns for Minecraft 26.2, installs them into the selected save's datapacks, and performs a controlled restart when they changed. After the server returns, full pack validation sees the referenced `nova_structures:*` keys. A replacement attempted before this restart must fail closed on the missing live keys; structural download success is not enough.
+   Expect: startup registers the downloaded packs' dimension types and custom biomes, then full pack validation succeeds without downloading or installing managed external datapacks. The shipping Overworld uses Minecraft's registered vanilla structures and has no `datapackImports` dependencies.
 
 4. Stage both exact vanilla slots:
 
@@ -94,7 +90,7 @@ Prerequisites: a disposable Paper-family server with early plugin bootstrap (not
    /iris replace minecraft:the_nether type=underworld seed=-987654321
    ```
 
-   Expect: both commands report staged after dependency registration. `bukkit.yml` names `Iris:overworld` for `world` and `Iris:underworld` for `world_nether`; exactly two replacement journals and two sibling stages exist; neither live target has moved; and `server.properties` `level-name` and `level-seed` are unchanged. There is no `main`, `overwrite`, `force`, or portal flag involved. `seed` is optional per target; omitting it preserves that target's saved seed.
+   Expect: both commands report staged after downloaded-pack registration. `bukkit.yml` names `Iris:overworld` for `world` and `Iris:underworld` for `world_nether`; exactly two replacement journals and two sibling stages exist; neither live target has moved; and `server.properties` `level-name` and `level-seed` are unchanged. There is no `main`, `overwrite`, `force`, or portal flag involved. `seed` is optional per target; omitting it preserves that target's saved seed.
 
 5. Restart once after both replacements are staged.
 
@@ -108,7 +104,7 @@ Prerequisites: a disposable Paper-family server with early plugin bootstrap (not
 
    Expect: the forward trip enters the exact `minecraft:the_nether` Iris Underworld and the return trip enters the exact `minecraft:overworld` Iris Overworld. Iris does not reroute portals to arbitrary `iris:*` worlds; canonical routing works here because both vanilla identities were replaced in place. Generate fresh chunks on both sides and confirm no fatal engine or portal-event stack trace.
 
-The fresh-install pathway has two required restart boundaries: dependency registration, then replacement publication. As a separate resilience check, a later ordinary restart should load the same two canonical identities without recreating a pending stage, backup, or journal.
+The fresh-install pathway has two required restart boundaries: downloaded-pack registration, then replacement publication. Custom packs that declare `datapackImports` need the separate ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before replacement staging. As a separate resilience check, a later ordinary restart should load the same two canonical identities without recreating a pending stage, backup, or journal.
 
 For rollback coverage, repeat on a fresh disposable instance with a deliberately corrupted staged pack or conflicting `bukkit.yml` value before the publication restart. Early Paper bootstrap must abort before registry and world loading, preserve the recoverable artifacts, and never guess a target. A failure after publication must journal a rollback, request the controlled restart, and restore the retained original directory and prior configuration before datapack compilation or world loading. If Iris silently proceeds past a corrupted stage, capture the journal and stage directories before touching anything; that is a blocking defect.
 

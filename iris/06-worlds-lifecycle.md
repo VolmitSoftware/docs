@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-15T00:00:00.000Z
+date: 2026-08-15T21:07:31.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -212,10 +212,9 @@ For the supported main-world route, initialize both vanilla target folders first
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
-/iris datapack ingest restart=true
 ```
 
-Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld before ingesting. The shipping Overworld declares Towns & Towers and Dungeons & Taverns in `datapackImports`. Ingest installs those external datapacks and restarts when their registry keys need to become live. Download validation is intentionally registry-independent; trying to replace before this boundary must fail if keys such as `nova_structures:*` are not registered.
+Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld to finish. The shipping Overworld declares no external datapacks and uses Minecraft's registered vanilla structures. Manually restart once so the downloaded packs' dimension types and custom biomes enter the live registries.
 
 After the server returns, stage both exact slots:
 
@@ -224,7 +223,7 @@ After the server returns, stage both exact slots:
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both replacements report staged. A fresh install therefore has one dependency-registration restart followed by one replacement-publication restart; both replacements still publish together in the second cold reconcile.
+Restart once after both replacements report staged. A fresh install therefore has one downloaded-pack registration restart followed by one replacement-publication restart; both replacements still publish together in the second cold reconcile. If a customized pack declares `datapackImports`, complete the optional workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging it.
 
 The `type=` values select the Iris pack/dimension; the replacement targets select the Minecraft identities being retained; and each optional `seed=` applies only to that target. There is no main-world, overwrite, force, or portal-routing flag. `override` and `overwrite` are command aliases for `replace`, not behavior switches. After cold publication, vanilla portal mechanics continue to route between `minecraft:overworld` and `minecraft:the_nether`; a separately created or replaced `iris:*` world remains outside that canonical pair.
 

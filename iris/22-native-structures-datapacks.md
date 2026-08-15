@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-15T18:07:57.000Z
+date: 2026-08-15T21:17:41.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ Command listings are Bukkit/Paper; modded loaders expose a reduced set.
 
 ## Pick a task
 
-The four things people actually want are separate workflows. None of them requires the others.
+The five things people actually want are separate workflows. None of them requires the others.
 
 | Goal | Go to |
 |---|---|
@@ -64,7 +64,7 @@ Field details are in 1.5.
 
 ## Task 2: Install a third-party datapack for one Iris dimension
 
-This Bukkit-family workflow keeps the datapack installed in Minecraft's global registry while Iris scopes the managed structure sets to the dimensions that declare the source.
+This Bukkit-family workflow keeps the datapack installed in Minecraft's global registry while Iris scopes the managed structure sets to the dimensions that declare the source. The built-in `overworld` pack declares no external datapacks; Towns & Towers and Dungeons & Taverns below are opt-in examples for customized packs.
 
 Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
 
@@ -92,6 +92,8 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
 **Success:** the declaring Iris world locates and naturally generates the structure; the nondeclaring Iris world and the vanilla world do neither. Restart without deleting the installed datapack and confirm the same result.
 
 If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart; it does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
+
+To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list, remove source-specific entries under `importedStructures` such as namespace or vanilla-family disables and adjustments, and remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot; if you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL. Restart before verifying the restored policy. Only newly generated chunks change; existing starts remain.
 
 ## Task 3: Turn a structure off
 
@@ -475,7 +477,7 @@ Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`,
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
-On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads, or an empty ephemeral chunk when it explicitly requires a distant chunk; distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper's write-radius contract instead of widening it or suppressing Leaf/Paper diagnostics, and removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings from those structures.
+On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. Statusless chunk access inside that region retains `WorldGenRegion`'s current-stage lookup instead of being converted into a `FULL`-status request; this lets ordinary native piece placement, including mineshaft supports, read the generation chunk without asking Paper for a status that is unavailable during FEATURES. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads, or an empty ephemeral chunk when it explicitly requires a distant chunk; distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper's write-radius contract instead of widening it or suppressing Leaf/Paper diagnostics, removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings, and prevents the unavailable-chunk exception that Leaf and Paper treat as an unrecoverable generation failure.
 
 ### 3.2 `disabled` and `disabledExact` never block an explicit placement
 

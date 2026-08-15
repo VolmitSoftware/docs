@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-15T00:00:00.000Z
+date: 2026-08-15T21:07:31.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -65,7 +65,7 @@ A clean pack reports no blocking errors; the all-packs form finishes with a brok
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
 |---|---|---|---|
-| Install the shipping Overworld and Nether pair | Download `overworld`, then `underworld`; run `/iris datapack ingest restart=true`; after return, stage both exact replacements and restart once | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Install the shipping Overworld and Nether pair | Download `overworld`, then `underworld`; restart once; stage both exact replacements and restart once | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Create an in-game jigsaw project | `/iris jigsaw create overworld village/demo` | Not available; author on Bukkit and copy the saved pack | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Inspect an Iris jigsaw graph | `/iris structure info overworld <structure>` | `/iris structure info <structure>` while in its Iris dimension | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Remove a disposable Iris world | Evacuate players, `/iris unloadWorld <world>`, then `/iris remove <world>` | `/iris world delete <dimension>` | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
@@ -157,7 +157,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 
 Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through its localized, HUD-arbitrated progress display and bounded chat/console updates; a direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters.
 
-The supported shipping-pair sequence is `/iris download pack=overworld`, wait for success, `/iris download pack=underworld`, wait for success, then `/iris datapack ingest restart=true`. The shipping Overworld declares external structure datapacks, and the download's registry-independent validation does not make their keys live. After the server returns, run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`, then restart once to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed.
+The supported shipping-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The shipping Overworld declares no external datapacks. Manually restart once so the downloaded packs' dimension types and custom biomes enter the live registries, then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must first follow [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
 ---
 
