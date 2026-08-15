@@ -385,15 +385,15 @@ Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>
 
 Ingest and recovery run synchronously inside Iris's startup admission gate when `general.autoIngestDatapacks` is enabled (default true). Players and every Iris world and Studio creation path stay locked until that phase is valid.
 
-A persisted manifest, configuration, and content fingerprint lets an unchanged boot skip remote resolution and full revalidation, and Iris refreshes that fingerprint after its own authorized post-start import maintenance. A change to the URL, the Minecraft or Iris version, the override policy, external manifest edits, staging, the transaction, installed content, or cache corruption invalidates reuse and runs the full fail-closed path.
+On startup, Iris checks the cheap persisted cache context before reading managed datapack trees. When that context matches, Iris confirms the exact local content fingerprint and skips remote resolution, semantic revalidation, copying, installation, and pack compilation. Iris refreshes the post-start fingerprint only when its authorized import maintenance mutates managed external-datapack state; a no-op maintenance pass retains the existing receipt. A change to the URL, the Minecraft or Iris version, the override policy, external manifest edits, staging, the transaction, installed content, or cache corruption invalidates reuse and runs the full fail-closed path.
 
 Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
 
-Cache reuse is a local validation decision and does not poll remote sources; run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts, so unchanged bootstrap recovery leaves the manifest stable and the next startup can reuse the cached fingerprint.
+Cache reuse is a local validation decision and does not poll remote sources; run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts, so unchanged bootstrap recovery leaves the manifest stable and the next startup can reuse the cached fingerprint. During a full ingest, Iris accepts an exact same-version, Iris-owned installed target in place when its content matches staging and the datapack requires no override stripping, avoiding a temporary copy and replacement.
 
 Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
 
-Managed external-datapack fingerprints remain full-content hashes: Iris still reads every authored byte before accepting changed content and retains the per-entry `FileStore` boundary check, including same-device bind mounts. The tree walk now reuses the attributes it already collected and reads content in larger blocks instead of restating each entry during hashing.
+Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks while restating each entry and rechecking its `FileStore` immediately before access, retaining the existing cross-volume boundary behavior, including same-device bind mounts.
 
 ### 2.3 Manual commands
 

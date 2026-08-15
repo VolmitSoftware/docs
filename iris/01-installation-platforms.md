@@ -69,7 +69,7 @@ A command responding is not proof the generator can produce chunks. Finish with 
 
 Iris blocks player login until external datapack validation and dimension-pack validation both complete. The kick message names the reason and tells you to check the console.
 
-The two gates behave differently. A failed or restart-pending **external datapack** state keeps login locked and blocks all Iris world creation until you fix it and restart — Iris tells you when a restart is what's required. Unchanged, already-validated datapacks and packs reuse their persisted results, so this costs nothing on a normal boot. A **dimension pack** with blocking errors does *not* lock the server: that one pack is refused for world and Studio creation, an error listing the reasons is printed at startup, and every healthy pack stays usable.
+The two gates behave differently. A failed or restart-pending **external datapack** state keeps login locked and blocks all Iris world creation until you fix it and restart — Iris tells you when a restart is what's required. Unchanged, already-validated datapacks and packs reuse their persisted results: Iris still reads the local authored bytes to confirm the exact fingerprint, but skips remote resolution, semantic revalidation, copying, installation, and pack compilation. A **dimension pack** with blocking errors does *not* lock the server: that one pack is refused for world and Studio creation, an error listing the reasons is printed at startup, and every healthy pack stays usable.
 
 ### Permissions
 
