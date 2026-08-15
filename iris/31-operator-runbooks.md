@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -47,7 +47,9 @@ GoldenHash file layout and interpretation: [32 - Determinism & Goldenhash](/iris
    /iris tp test-ow
    ```
 
-   Expect: the world is created and loaded as an Iris world, and you land in generated terrain.
+   Expect on Paper-family servers other than Folia: the world is created and loaded as an Iris world, and you land in generated terrain.
+
+   Expect on Folia: Iris publishes current Paper 26.2 per-dimension storage, prints the successful staging message, and requests a controlled restart. After the host relaunches the JVM, `iris:test-ow` loads with seed `1337`. The console must not print `World storage migration is required during startup` or `Starting Vanilla import` for that world; either message means the staged world was incomplete and is a blocking defect.
 
 4. Walk or fly a few hundred blocks.
 
@@ -64,18 +66,23 @@ Prerequisites: a disposable server whose configured level name is `world`, a val
 1. Stage the replacement:
 
    ```
-   /iris create world_nether type=<nether-pack> seed=1337 overwrite=true
+   /iris replace minecraft:the_nether type=<nether-pack>
    ```
 
    Expect: the command reports the replacement is staged. The loaded Nether and its files are unchanged, `bukkit.yml` now names `Iris:<dimension>`, and exactly one pending replacement journal plus one sibling stage exists.
 
-2. Optionally stage the configured main name with a `NORMAL` pack and the End alias with a `THE_END` pack.
+2. Optionally stage the exact Overworld and End keys with compatible packs before restarting:
 
-   Expect: each distinct slot gets its own transaction, and no live dimension folder is moved.
+   ```
+   /iris replace minecraft:overworld type=<normal-pack>
+   /iris replace minecraft:the_end type=<end-pack>
+   ```
+
+   Expect: each distinct slot gets its own transaction, no live dimension folder is moved, and all three replacements remain pending for one restart. `server.properties` `level-name` is unchanged.
 
 3. Restart normally.
 
-   Expect: Iris publishes before aggregate-datapack compilation and before Bukkit world loading. `minecraft:the_nether` loads with the selected Iris dimension, the prior Paper per-world metadata files, and the authoritative shared level seed. Its frozen `iris/pack` exists, no old `region`, `entities`, or `poi` file was merged into the target, and the marker chunk is gone.
+   Expect: Iris publishes before aggregate-datapack compilation and before Bukkit world loading. `minecraft:the_nether` loads with the selected Iris dimension, the prior Paper per-world metadata files, and the authoritative seed read from that target's saved `world_gen_settings.dat`. Its frozen `iris/pack` exists, no old `region`, `entities`, or `poi` file was merged into the target, and the marker chunk is gone.
 
 4. Watch the `WorldLoad` boundary.
 

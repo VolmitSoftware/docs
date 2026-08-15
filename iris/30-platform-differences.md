@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-15T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Iris runs the same generation core on Bukkit-family servers and on Fabric, Forge
 Five categories cover almost everything an operator runs into:
 
 - **Command syntax.** Bukkit uses VolmLib Director, where optional arguments are `key=value` in any order. Mod loaders use Brigadier, where arguments are positional and options are bare literals. The same feature reads very differently on each.
-- **World lifecycle.** Bukkit creates named worlds and can stage an exact replacement of a configured vanilla slot on restart. Mod loaders register dimension ids and enable or disable them.
+- **World lifecycle.** Bukkit creates managed `iris:*` worlds and can stage a cold replacement of an existing safe Iris world or exact vanilla slot on restart. Mod loaders register dimension ids and enable or disable them.
 - **Authoring tools that need Bukkit.** Anything built on NMS, WorldEdit, or inventory GUIs is Bukkit-only: Jigsaw Studio, structure import and capture, vanilla import, schematic conversion, and the Studio loot and entity GUIs. Packs authored there run fine everywhere.
 - **Permissions.** Bukkit gates the entire `/iris` tree behind one permission. Mod loaders gate mutating commands at gamemaster level but leave inspection open to any player.
 - **File locations.** Both platforms have an Iris data directory, but the modded side splits it: settings live under one root and packs under another.
@@ -43,7 +43,7 @@ Core engine: `core/`. Shared modded logic: `adapters/modded-common/`. SPI: `spi/
 | Studio pack exports | `plugins/Iris/packs/exports/` | `<configDir>/irisworldgen/exports/` |
 | Generated datapack | world `datapacks/` + Iris ingest | `<configDir>/irisworldgen/generated/datapack/`; dimension-type pack name `iris` under `data/irisworldgen/dimension_type/` |
 | Parity / developer dumps | under plugin data folder | `<configDir>/iris/parity/` |
-| Persistent dynamic-world registry | `plugins/Iris/worlds.json` | `<world-root>/iris/iris-dimensions.json` |
+| Persistent dynamic-world registry | `<level-root>/iris/worlds.json`, plus exact save-filtered `bukkit.yml` startup bindings | `<world-root>/iris/iris-dimensions.json` |
 
 On mod loaders only `settings.json` and the parity dumps use the `iris/` root; every pack, config, and generated artifact uses `irisworldgen/`. Both roots sit under the loader config directory.
 
@@ -60,10 +60,11 @@ Both use the same invalidate, reload, and locale path once a change is detected.
 
 | Concern | Bukkit | Modded |
 |---------|--------|--------|
-| Create | `/iris create` → managed world name, generator Iris, optional main-world; on Paper-family servers `overwrite=true` stages replacement of an existing exact Iris or vanilla slot for the next restart | `/iris create` or `/iris world enable` → dimension id plus pack injection |
+| Create | `/iris create` → absent managed `iris:*` world with an explicit creation seed | `/iris create` or `/iris world enable` → dimension id plus pack injection |
+| Replace | `/iris replace` (aliases `override`, `overwrite`) → existing safe `iris:*` world or exact Overworld/Nether/End slot, preserving the target's saved world-generation seed and publishing on restart | Not available |
 | Load / unload | `/iris load` (alias `import`), `/iris unload` | `/iris world disable` unloads; there is no separate load command |
 | Remove / delete | `/iris remove`, optionally deleting the folder | `/iris world delete` wipes chunk and mantle data |
-| Primary / main world | `main=true` for a new level root, or name the configured main world with `overwrite=true` for journaled in-place replacement | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`; `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |
+| Primary / main world | `/iris replace minecraft:overworld type=<pack>` replaces the selected save's existing main slot without changing `level-name`; fresh whole-save selection is external server provisioning | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`; `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |
 | Evacuate | `/iris evacuate <world>` — world argument required, player-only origin | `/iris evacuate [dimension]` — defaults to the sender's current level; destination is always the vanilla overworld, and evacuating the overworld itself is refused |
 | Studio world | Transient studio world via StudioSVC; `/iris jigsaw` can select the Jigsaw Studio generator for one activation | Studio dimension under `irisworldgen:studio_*`; no Jigsaw Studio authoring tree |
 | Folia | Regionized schedulers; pregen `runtimeSchedulerMode` always resolves to `FOLIA` on a regionized runtime | Not applicable |
@@ -72,7 +73,7 @@ Startup never downloads packs. Paper bootstrap compiles the aggregate datapack f
 
 Modded startup quarantines a corrupt persistent-dimension registry as `iris-dimensions.json.broken-<timestamp>` and continues without those dynamic worlds. Recovery: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
-Exact vanilla-slot replacement requires a full Paper-family plugin bootstrap. Without it the staging call fails outright, which is why the feature is Paper/Purpur/Leaf/Folia only.
+Cold replacement requires a full Paper-family plugin bootstrap. Without it the staging call fails outright, which is why replacement is Paper/Purpur/Leaf/Folia only. Several distinct targets can be staged and published with one manual restart.
 
 ## Commands and permissions
 
@@ -97,7 +98,7 @@ Full command tables and stubs: [04 - Commands & Permissions](/iris/04-commands-p
 | Jigsaw Studio (`/iris jigsaw` authoring tree) | yes | not registered | not registered | not registered |
 | Pack validate / cleanup / restore / status | yes | yes | yes | yes |
 | Pack download (`/iris download`, root-level on both) | yes | yes | yes | yes |
-| Exact restart replacement of configured Overworld/Nether/End slots | Paper/Purpur/Leaf/Folia | no | no | no |
+| Cold restart replacement of existing safe Iris or exact Overworld/Nether/End slots | Paper/Purpur/Leaf/Folia | no | no | no |
 | Pregen | yes (Paper-like / Folia modes) | yes (`moddedPregenInFlight`) | yes | yes |
 | Studio open / close / vscode / package | yes | yes | yes | yes |
 | Studio importvanilla | yes | message: run on Bukkit | same | same |

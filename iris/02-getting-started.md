@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ Director also matches command and parameter names fuzzily, so shortenings and ne
 ### Plugin
 
 ```text
-/iris create <name> [type=…] [seed=…] [main=true|false] [overwrite=true|false]
+/iris create <name> [type=…] [seed=…]
 ```
 
 | Parameter | Aliases | Default | What it does |
@@ -57,16 +57,14 @@ Director also matches command and parameter names fuzzily, so shortenings and ne
 | `name` | `world-name` | required | The world name. The only parameter that takes a positional value |
 | `type` | `dimension`, `pack` | `default` | Which pack/dimension to generate. The literal `default` is resolved at runtime through `generator.defaultWorldType` (stock value `overworld`), so it follows your config rather than being hardcoded |
 | `seed` | — | `1337` | World seed |
-| `main` | `main-world` | `false` | Promote this world to the server's main world. See below — it does not take effect until a restart |
-| `overwrite` | `force` | `false` | Replace an existing world in place instead of creating a new one. This is a staged, restart-to-publish operation, not something to reach for casually |
 
 The command itself has alias `c`.
 
-`main=true` on a non-Folia server registers a JVM shutdown hook. On shutdown it copies `data/`, `datapacks/`, and `players/` from the current level root along with the Iris dimension folder into a new level directory, then rewrites `server.properties` with the new `level-name` and `level-seed`. Nothing changes while the server is up. On Folia the promotion is applied inline during staging instead, and rolls back the `bukkit.yml` entry and the staged folder if it fails.
+Create has one purpose: make a new managed dimension. A normal bare name such as `myworld` becomes `iris:myworld`; create never changes a vanilla dimension slot or `server.properties`.
 
-**Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the name also has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected, as is any name that would collide with a vanilla world slot — your server's `level-name`, `<level-name>_nether`, or `<level-name>_the_end`. Those produce a different message about only Iris-managed worlds being changeable.
+**Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the logical name has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected. Names that collide with the selected save's Bukkit aliases — `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` — are also rejected, as are `minecraft:*` and foreign namespaced keys.
 
-**Already exists.** Without `overwrite=true`, create aborts if the managed dimension folder is already there. That folder lives at `<level-root>/dimensions/iris/<name>`, not next to your server jar.
+**Already exists.** Create aborts if the managed dimension folder is already there. That folder lives at `<level-root>/dimensions/iris/<name>`, not next to your server jar. Use the separate replacement command when replacing an existing safe slot is intentional.
 
 **Folia.** Runtime creation is disabled. Iris stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and automatically requests a controlled restart after every staging step succeeds. After the server returns, the world generates and loads on its own from that registration — you don't need `/iris load`. Your host must provide a working restart script or supervisor; if the restart command cannot relaunch the JVM, Iris stops the server and the supervisor must start it again.
 
@@ -77,6 +75,16 @@ The command itself has alias `c`.
 ```
 
 Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. On a non-Folia server `myworld` must appear under Iris worlds. On Folia, wait for the automatic restart and reconnect before continuing.
+
+#### Replace an existing Bukkit world
+
+```text
+/iris replace <target> [type=…]
+```
+
+`replace` has command aliases `override` and `overwrite`. It accepts an existing safe `iris:*` target or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`; it never creates a missing target. Friendly targets `main`/`overworld`, `nether`/`the_nether`, and `end`/`the_end` resolve to those three vanilla identities. The configured Bukkit names `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` resolve the same way and take priority if a level name happens to equal a friendly alias. Other bare names resolve to `iris:<name>`. Replacement has no seed option because it preserves the authoritative seed in that target's saved Paper world-generation settings.
+
+Every replacement is staged for cold publication. Stage as many distinct targets as needed, then restart once. To make Iris generate the currently selected server main world, replace `minecraft:overworld`; this keeps `server.properties` `level-name`, shared player data, datapacks, and the other dimensions in the same save root. The removed `main=true` and `overwrite=true` create options are not migration shortcuts. Selecting or constructing an entirely new `level-name` save is server provisioning outside Iris, not world promotion.
 
 ### Mod
 

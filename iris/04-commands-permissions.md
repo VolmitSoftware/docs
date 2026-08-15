@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Left at its default `default`, it resolves to `generator.defaultWorldType`. Bukkit refuses the names `iris` and `benchmark`, and refuses any name whose dimension folder already exists.
 
-When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged instead, Iris prints that staging succeeded, and then it automatically requests a controlled restart; reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
+When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged directly in Paper 26.2's current per-dimension format, Iris prints that staging succeeded, and then it automatically requests a controlled restart; reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
 For a player-issued Bukkit create, Iris also attempts to move that player into the new world after its entry chunk and safe position are ready. This automatic entry attempt has a 60-second limit. A timeout cancels only that teleport, reports that the world was created but automatic teleport failed, and does not roll back the world or restart the server; retry with `/iris tp tutorial`.
 
@@ -65,7 +65,7 @@ A clean pack reports no blocking errors; the all-packs form finishes with a brok
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
 |---|---|---|---|
-| Replace the vanilla Nether slot | `/iris create world_nether type=underworld seed=1337 overwrite=true`, then restart | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Replace the vanilla Nether slot | `/iris replace minecraft:the_nether type=underworld`, then restart | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Create an in-game jigsaw project | `/iris jigsaw create overworld village/demo` | Not available; author on Bukkit and copy the saved pack | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Inspect an Iris jigsaw graph | `/iris structure info overworld <structure>` | `/iris structure info <structure>` while in its Iris dimension | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Remove a disposable Iris world | Evacuate players, `/iris unloadWorld <world>`, then `/iris remove <world>` | `/iris world delete <dimension>` | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
@@ -124,7 +124,8 @@ Bukkit names below are the names Director actually registers. Where that differs
 | (empty) / help | | Both | `[section]` (modded) | Open help; modded supports a section path and page number |
 | `version` | | Both | — | Print Iris/platform/Minecraft version and engine count |
 | `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions and pack details; seed only for gamemasters |
-| `create` | `c` | Both | **Bukkit:** `<name> [type=default] [seed=1337] [main=false] [overwrite=false]` (`name` alias `world-name`; `type` aliases `dimension`,`pack`; `main` alias `main-world`; `overwrite` alias `force`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an Iris world/dimension; Bukkit `overwrite=true` stages an exact slot replacement for restart |
+| `create` | `c` | Both | **Bukkit:** `<name> [type=default] [seed=1337]` (`name` alias `world-name`; `type` aliases `dimension`,`pack`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension; Bukkit creation is confined to `iris:*` |
+| `replace` | `override`, `overwrite` | **Bukkit** | `<target> [type=default]` (`type` aliases `dimension`,`pack`) | Cold-replace an existing safe `iris:*` world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot while preserving its authoritative saved seed |
 | `teleport` | `tp` | Both | **Bukkit:** `<world> [player]` (defaults to the sender). **Modded:** `<dimension> [player]` | Teleport self or a named player into an Iris world/dimension |
 | `evacuate` | | Both | **Bukkit:** `<world>`, player origin. **Modded:** `[dimension]` | Move players out of an Iris world to fallback/primary |
 | `height` | | Both | — | Print world height; player origin on Bukkit |
@@ -158,7 +159,7 @@ Pack downloads are single-flight server-wide on Bukkit and modded. While one dow
 
 ---
 
-On Paper-family servers, `overwrite=true` is deliberately restart-only; Spigot rejects it because it has no pre-registry plugin bootstrap. The exact target dimension folder must already exist; use ordinary `/iris create` for a new world. The name may resolve to a safe `iris:*` world or exactly the configured main, `_nether`, or `_the_end` alias; arbitrary `minecraft:*` and foreign namespaces are rejected. Iris stages and validates a fresh pack snapshot, compare-and-swaps only that world's `bukkit.yml` generator and seed, and retains the existing dimension folder as a rollback backup until the restarted world proves its Iris identity, pack, dimension, environment, and seed. Multiple distinct slots may be staged before one restart. `main=true` is valid with overwrite only when the name is the configured main-world name. Exact vanilla slots preserve the authoritative seed shared by the existing level, regardless of the supplied `seed`; this keeps Overworld/Nether/End coordinate generation aligned, and Iris tells you which seed it used instead. Use ordinary new-main promotion when a new level seed is required.
+On Paper-family servers, `/iris replace` is deliberately restart-only; Spigot rejects it because it has no pre-registry plugin bootstrap. The exact target dimension folder must already exist; use ordinary `/iris create` for a new `iris:*` world. Accepted canonical targets are a safe `iris:*` key or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`; friendly and configured Bukkit world-name aliases resolve to those keys, while other bare names resolve to `iris:*`. Other `minecraft:*` and foreign namespaces are rejected. Iris stages and validates a fresh pack snapshot, compare-and-swaps only that world's `bukkit.yml` generator while preserving its saved Paper world-generation seed, and retains the existing dimension folder as a rollback backup until the restarted world proves its Iris identity, pack, dimension, environment, and seed. Multiple distinct slots may be staged before one restart. Replacing `minecraft:overworld` makes Iris the current main-world generator without changing `level-name`. The removed `main=true`, `main-world=true`, `overwrite=true`, and `force=true` create options are not accepted; selecting a fresh whole-save level root belongs to server provisioning.
 
 ---
 
