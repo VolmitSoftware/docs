@@ -10,9 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 # Volmit Software
 
-Seven Paper plugins. Command trees, permission nodes and config keys on these pages are
-extracted from the sources at [github.com/VolmitSoftware](https://github.com/VolmitSoftware),
-so they match what the jar does rather than what a changelog claimed.
+Below are links to Volmits actively maintained software documentation. Please feel free to suggest any changes to the wiki.
 
 - [**Iris** *World generation engine. Dimensions, biomes, caves and jigsaw structures authored as JSON packs, with a live studio and three pregenerators.*](/iris)
 - [**Adapt** *23 passive skill lines and 331 adaptations behind a bookshelf GUI, plus a mutations system.*](/adapt)
@@ -32,13 +30,13 @@ Every plugin targets the same modern baseline.
 
 | Plugin | Java | Paper API | Folia | Load | Root command |
 |---|---|---|---|---|---|
-| [Iris](/iris) | 25 | 26.1.2 / 26.2 | Yes | `STARTUP` | `/iris` `ir` `irs` |
-| [Adapt](/adapt) | 25 | 26.1.2 / 26.2 | Yes | default | `/adapt` |
-| [React](/react) | 25 | 26.1.2 / 26.2 | Yes | default | `/react` `re` |
-| [Wormholes](/wormholes) | 25 | 26.1.2 / 26.2 | Yes | `STARTUP` / `POSTWORLD` | `/wormholes` `wh` |
-| [HoloUI](/holoui) | 25 | 26.1.2 / 26.2 | Yes | default | `/holoui` `holo` `hui` |
-| [HiddenOre](/hiddenore) | 25 | 26.1.2 / 26.2 | Yes | `STARTUP` | `/hiddenore` |
-| [BileTools](/biletools) | 25 | 26.2 | Yes | default | `/biletools` `bile` |
+| [Iris](/iris) | 25 | 26.x+ | Yes | `STARTUP` | `/iris` `/ir` `/irs` |
+| [Adapt](/adapt) | 25 | 26.x+ | Yes | default | `/adapt` |
+| [React](/react) | 25 | 26.x+ | Yes | default | `/react` `/re` |
+| [Wormholes](/wormholes) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/wormholes` `/wh` |
+| [HoloUI](/holoui) | 25 | 26.x+ | Yes | default | `/holoui` `/holo` `/hui` |
+| [HiddenOre](/hiddenore) | 25 | 26.x+ | Yes | `STARTUP` | `/hiddenore` |
+| [BileTools](/biletools) | 21 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
 {.dense}
 
 > Iris, Adapt and React are documented from their `unification` branch. The `master` branches
