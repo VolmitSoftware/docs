@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-15T16:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -180,7 +180,7 @@ There is no `concurrency` block in `settings.json`; the values are derived from 
 |--------|--------|---------|
 | `getParallelism()` | `max(2, availableProcessors)` | Default `MultiBurst` pools, hybrid pregen thread count, locator searches |
 | `getIoParallelism()` | `max(2, availableProcessors / 2)` | The shared IO burst pool |
-| `getWorldGenThreads()` | `max(2, availableProcessors)` | Async pregen concurrency cap and the Moonrise worker-pool adjustment |
+| `getWorldGenThreads()` | `max(2, availableProcessors)` | Fallback input for async pregen concurrency when Iris cannot detect the active chunk-system worker pool |
 
 ## `performance` — caches, mantle residency, and the engine service pool
 
@@ -188,7 +188,7 @@ This is the memory-versus-rework group. Larger loader caches trade heap for fewe
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
-| `trimMantleInStudio` | `false` | Live | Lets the maintenance pass trim mantle in studio worlds. With the default `false`, studio engines skip the whole maintenance pass, which keeps edits responsive at the cost of growing memory during long authoring sessions |
+| `trimMantleInStudio` | `false` | Live | Enables routine mantle maintenance in studio worlds. With the default `false`, routine trimming stays off for responsive editing, but emergency maintenance still runs when heap crosses Iris's high-water threshold so Studio cannot disable memory-pressure recovery |
 | `mantleKeepAlive` | `30` | Live | Seconds a mantle plate stays resident before it is eligible for trimming. Scaled down automatically as reclaim pressure rises. Lower it when heap is tight, raise it if the same regions are reloaded repeatedly |
 | `noiseCacheSize` | `1024` | Mixed | Capacity of the noise sample caches. The terrain query API picks it up live; the engine's own caches need an engine hotload or restart. Pregen temporarily raises it to at least 4096 in memory and does not lower it again or persist the change |
 | `resourceLoaderCacheSize` | `1024` | **Restart / pack reload** | How many loaded pack resources stay cached per loader. Captured when a pack's `IrisData` is opened |
@@ -215,8 +215,8 @@ These keys bound how aggressively pregeneration pushes the server. They are read
 |-----|---------|------------|----------------------------------|
 | `runtimeSchedulerMode` | `AUTO` | Bukkit | `AUTO`, `PAPER_LIKE`, `FOLIA`. A regionized (Folia) runtime resolves to `FOLIA` before the setting is consulted, and off Folia a configured `FOLIA` is downgraded to `PAPER_LIKE`. Since `AUTO` also lands on `PAPER_LIKE` for every recognized and unrecognized fork, this key changes nothing in practice — the one exception is a non-regionized server that still identifies itself as Folia by name or version, where `AUTO` picks `FOLIA` and an explicit `PAPER_LIKE` does not |
 | `paperLikeBackendMode` | `AUTO` | Bukkit, non-Folia | `AUTO`, `TICKET`, `SERVICE`. `SERVICE` uses the service executor (`paper-service`); `TICKET` and `AUTO` both use the ticket executor (`paper-ticket`). Ignored entirely on Folia. Try `SERVICE` only if ticket-based chunk loading is producing timeouts |
-| `chunkLoadTimeoutSeconds` | `15` | Both | Clamped to `[5, 120]`. How long pregen waits for one chunk load before it counts as timed out. **On mod loaders the effective value is floored at 120**, so any value below that is ignored there |
-| `timeoutWarnIntervalMs` | `500` | Bukkit | Minimum 250. Rate-limits the "timed out async pregen chunk load" and failed-release warnings so a bad run does not flood the log. Not read on mod loaders |
+| `chunkLoadTimeoutSeconds` | `15` | Both | Clamped to `[5, 120]`. On Bukkit this is the slow-request warning and adaptive-throttle threshold: Iris keeps waiting for Paper's real chunk future and does not count the request as failed at this age. On mod loaders it remains a terminal timeout and the effective value is floored at 120, so any lower value is ignored there |
+| `timeoutWarnIntervalMs` | `500` | Bukkit | Minimum 250. Rate-limits slow-request and failed-release warnings so a bad run does not flood the log. Not read on mod loaders |
 | `saveIntervalMs` | `30000` | Both | Clamped to `[5000, 900000]`. How often a running pregen flushes progress. Lower it if you expect to lose the process and want a closer resume point; the cost is more IO |
 | `maxResidentTectonicPlates` | `96` | Both | Minimum 16. The mantle memory ceiling, and the first knob to lower on an out-of-memory pregen. The effective cap is also scaled by world height and by roughly 60% of the heap budget against a ~48 MB reference plate at height 384, with a floor of 16 — so on a small heap you may already be running below the configured number |
 | `mantleBackpressureWaitMs` | `25` | Both | Clamped to `[5, 1000]`. Sleep granularity while pregen waits for resident plates to drop below the cap |

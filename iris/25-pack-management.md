@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -114,7 +114,24 @@ The loop passes when the source closure validates, the package command produces 
 
 There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
 
-A successful download performs registry-independent pack validation and atomically publishes the pack on disk, then asks the operator to restart. The next startup performs full validation after external datapacks are registered. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically.
+A successful download performs registry-independent pack validation and atomically publishes the pack on disk, then asks the operator to restart. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically. Bootstrap validation proves the pack tree is structurally sound; it does not prove that external keys referenced through `datapackImports` exist in the current live registry.
+
+The shipping Overworld declares Towns & Towers and Dungeons & Taverns and references their registered structures. Use this deterministic Paper-family sequence:
+
+```text
+/iris download pack=overworld
+/iris download pack=underworld
+/iris datapack ingest restart=true
+```
+
+Wait for each download to complete before issuing the next command; the download slot never queues a second request. The ingest installs declared external datapacks and restarts the server when new registry content was published. After the server returns:
+
+```text
+/iris replace minecraft:overworld type=overworld
+/iris replace minecraft:the_nether type=underworld
+```
+
+Restart once after both replacements report staged. The first restart registers external dependencies; the second cold reconcile publishes both exact replacements together. Full replacement validation must reject an external structure key that is still absent rather than freezing a world pack that cannot load.
 
 ### Install pipeline (`PackDownloader`)
 

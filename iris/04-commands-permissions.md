@@ -65,7 +65,7 @@ A clean pack reports no blocking errors; the all-packs form finishes with a brok
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
 |---|---|---|---|
-| Replace the vanilla Nether slot | `/iris replace minecraft:the_nether type=underworld`, then restart | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Install the shipping Overworld and Nether pair | Download `overworld`, then `underworld`; run `/iris datapack ingest restart=true`; after return, stage both exact replacements and restart once | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Create an in-game jigsaw project | `/iris jigsaw create overworld village/demo` | Not available; author on Bukkit and copy the saved pack | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Inspect an Iris jigsaw graph | `/iris structure info overworld <structure>` | `/iris structure info <structure>` while in its Iris dimension | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Remove a disposable Iris world | Evacuate players, `/iris unloadWorld <world>`, then `/iris remove <world>` | `/iris world delete <dimension>` | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
@@ -134,7 +134,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `loadWorld` | `import` | **Bukkit** | `<world>`, player origin | Load a managed Iris world |
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
-| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a hardcoded beta-release pack or direct ZIP; restart manually before use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
+| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a hardcoded beta-release pack or direct ZIP; restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics; player origin on Bukkit |
 | `reload` | | Both | — | Reload `settings.json` and locale; modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
@@ -157,9 +157,11 @@ Bukkit names below are the names Director actually registers. Where that differs
 
 Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer.
 
+The supported shipping-pair sequence is `/iris download pack=overworld`, wait for success, `/iris download pack=underworld`, wait for success, then `/iris datapack ingest restart=true`. The shipping Overworld declares external structure datapacks, and the download's registry-independent validation does not make their keys live. After the server returns, run `/iris replace minecraft:overworld type=overworld` and `/iris replace minecraft:the_nether type=underworld`, then restart once to publish both replacements in one cold batch.
+
 ---
 
-On Paper-family servers, `/iris replace` is deliberately restart-only; Spigot rejects it because it has no pre-registry plugin bootstrap. The exact target dimension folder must already exist; use ordinary `/iris create` for a new `iris:*` world. Accepted canonical targets are a safe `iris:*` key or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`; friendly and configured Bukkit world-name aliases resolve to those keys, while other bare names resolve to `iris:*`. Other `minecraft:*` and foreign namespaces are rejected. Iris stages and validates a fresh pack snapshot, compare-and-swaps only that world's `bukkit.yml` generator while preserving its saved Paper world-generation seed, and retains the existing dimension folder as a rollback backup until the restarted world proves its Iris identity, pack, dimension, environment, and seed. Multiple distinct slots may be staged before one restart. Replacing `minecraft:overworld` makes Iris the current main-world generator without changing `level-name`. The removed `main=true`, `main-world=true`, `overwrite=true`, and `force=true` create options are not accepted; selecting a fresh whole-save level root belongs to server provisioning.
+On Paper-family servers, `/iris replace` is deliberately restart-only; Spigot rejects it because it has no pre-registry plugin bootstrap. The exact target dimension folder must already exist; use ordinary `/iris create` for a new `iris:*` world. Accepted canonical targets are a safe `iris:*` key or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`; friendly and configured Bukkit world-name aliases resolve to those keys, while other bare names resolve to `iris:*`. Other `minecraft:*` and foreign namespaces are rejected. Iris stages and validates a fresh pack snapshot, compare-and-swaps only that world's `bukkit.yml` generator while preserving its saved Paper world-generation seed, and retains the existing dimension folder as a rollback backup until the restarted world proves its Iris identity, pack, dimension, environment, and seed. Multiple distinct slots may be staged before one restart. Replacing both exact Overworld and Nether slots preserves vanilla portal routing between those canonical identities; replacing an arbitrary `iris:*` world does not add it to that route. Replacing `minecraft:overworld` makes Iris the current main-world generator without changing `level-name`. The removed `main=true`, `main-world=true`, `overwrite=true`, and `force=true` create options are not accepted; selecting a fresh whole-save level root belongs to server provisioning.
 
 ---
 

@@ -61,42 +61,56 @@ GoldenHash file layout and interpretation: [32 - Determinism & Goldenhash](/iris
 
 ## A.1 Exact vanilla-slot replacement (Paper-family)
 
-Prerequisites: a disposable server whose configured level name is `world`, a valid `NETHER` Iris pack, and a generated vanilla Nether containing a unique marker chunk. Before staging, hash the existing Nether `region`, `entities`, and `poi` files and keep copies of `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and `data/minecraft/world_gen_settings.dat`.
+Prerequisites: a disposable Paper-family server with early plugin bootstrap (not Spigot), `level-name=world`, `allow-nether=true`, and initialized `minecraft:overworld` and `minecraft:the_nether` target directories. Enter the vanilla Nether once first if its target does not exist. Put a unique marker in both vanilla worlds; hash their `region`, `entities`, and `poi` files; and keep copies of each target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and `data/minecraft/world_gen_settings.dat`.
 
-1. Stage the replacement:
+1. Download the shipping Overworld and wait for its completed success message:
 
-   ```
-   /iris replace minecraft:the_nether type=<nether-pack>
-   ```
-
-   Expect: the command reports the replacement is staged. The loaded Nether and its files are unchanged, `bukkit.yml` now names `Iris:<dimension>`, and exactly one pending replacement journal plus one sibling stage exists.
-
-2. Optionally stage the exact Overworld and End keys with compatible packs before restarting:
-
-   ```
-   /iris replace minecraft:overworld type=<normal-pack>
-   /iris replace minecraft:the_end type=<end-pack>
+   ```text
+   /iris download pack=overworld
    ```
 
-   Expect: each distinct slot gets its own transaction, no live dimension folder is moved, and all three replacements remain pending for one restart. `server.properties` `level-name` is unchanged.
+   Expect: `packs/overworld/dimensions/overworld.json` is published and validates structurally. Iris asks for a restart but does not restart or stop the server.
 
-3. Restart normally.
+2. Only after the first download completes, download Underworld and wait again:
 
-   Expect: Iris publishes before aggregate-datapack compilation and before Bukkit world loading. `minecraft:the_nether` loads with the selected Iris dimension, the prior Paper per-world metadata files, and the authoritative seed read from that target's saved `world_gen_settings.dat`. Its frozen `iris/pack` exists, no old `region`, `entities`, or `poi` file was merged into the target, and the marker chunk is gone.
+   ```text
+   /iris download pack=underworld
+   ```
 
-4. Watch the `WorldLoad` boundary.
+   Expect: `packs/underworld/dimensions/underworld.json` is published. Starting it while the first download is active must fail busy rather than queue; retry after the first completion. Do not restart manually yet.
 
-   Expect: the journal advances to committed cleanup only after identity, environment, seed, dimension, and pack-fingerprint verification all pass. Cleanup then removes the retained sibling backup and journal asynchronously, without stalling the world thread.
+3. Install the shipping Overworld's declared external datapacks and request their registry restart:
 
-5. Restart again and generate fresh Nether chunks.
+   ```text
+   /iris datapack ingest restart=true
+   ```
 
-   Expect: the vanilla identity and the Iris generator both persist, ordinary Nether portals still target `minecraft:the_nether`, and no pending stage, backup, or journal reappears.
+   Expect: Iris resolves Towns & Towers and Dungeons & Taverns for Minecraft 26.2, installs them into the selected save's datapacks, and performs a controlled restart when they changed. After the server returns, full pack validation sees the referenced `nova_structures:*` keys. A replacement attempted before this restart must fail closed on the missing live keys; structural download success is not enough.
 
-6. Repeat once with a deliberately corrupted staged pack or a conflicting `bukkit.yml` value before restart.
+4. Stage both exact vanilla slots:
 
-   Expect: early Paper bootstrap aborts before registry and world loading, preserves the recoverable artifacts, and never guesses a target. For a failure after publication, Iris journals a rollback, requests the controlled restart, and restores the retained original directory and prior configuration before datapack compilation or world loading.
+   ```text
+   /iris replace minecraft:overworld type=overworld
+   /iris replace minecraft:the_nether type=underworld
+   ```
 
-   If Iris silently proceeds past a corrupted stage, that is a blocking defect — capture the journal and stage directories before touching anything.
+   Expect: both commands report staged after dependency registration. `bukkit.yml` names `Iris:overworld` for `world` and `Iris:underworld` for `world_nether`; exactly two replacement journals and two sibling stages exist; neither live target has moved; and `server.properties` `level-name` is unchanged. There is no `main`, `overwrite`, `force`, seed, or portal flag involved.
+
+5. Restart once after both replacements are staged.
+
+   Expect: the same cold reconcile publishes both transactions before aggregate-datapack compilation, registry creation, and Bukkit world loading. The worlds load as exact `minecraft:overworld` and `minecraft:the_nether`, using the `overworld` `NORMAL` dimension and `underworld` `NETHER` dimension respectively. Each retains its own authoritative saved seed and Paper metadata, has its own frozen `iris/pack`, contains none of the old `region`, `entities`, or `poi` files, and no longer contains either marker chunk.
+
+6. Watch both `WorldLoad` verifications and wait for cleanup.
+
+   Expect: each journal advances only after Iris proves the exact namespaced identity, generator, selected dimension, environment, seed, and unchanged pack fingerprint. Cleanup then removes both retained backups and journals asynchronously.
+
+7. Build a Nether portal in the replacement Overworld and traverse it, then traverse the resulting Nether-side portal back.
+
+   Expect: the forward trip enters the exact `minecraft:the_nether` Iris Underworld and the return trip enters the exact `minecraft:overworld` Iris Overworld. Iris does not reroute portals to arbitrary `iris:*` worlds; canonical routing works here because both vanilla identities were replaced in place. Generate fresh chunks on both sides and confirm no fatal engine or portal-event stack trace.
+
+The fresh-install pathway has two required restart boundaries: dependency registration, then replacement publication. As a separate resilience check, a later ordinary restart should load the same two canonical identities without recreating a pending stage, backup, or journal.
+
+For rollback coverage, repeat on a fresh disposable instance with a deliberately corrupted staged pack or conflicting `bukkit.yml` value before the publication restart. Early Paper bootstrap must abort before registry and world loading, preserve the recoverable artifacts, and never guess a target. A failure after publication must journal a rollback, request the controlled restart, and restore the retained original directory and prior configuration before datapack compilation or world loading. If Iris silently proceeds past a corrupted stage, capture the journal and stage directories before touching anything; that is a blocking defect.
 
 ## B. Fresh install and first world (Fabric / Forge / NeoForge)
 

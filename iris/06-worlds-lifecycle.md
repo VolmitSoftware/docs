@@ -205,6 +205,29 @@ Foreign namespaces, other `minecraft:*` keys, path traversal, symlinks, and spec
 
 Every replacement preserves the authoritative seed stored in that target's Paper `world_gen_settings.dat`. Iris does not derive it from a command argument, another dimension, or the current value of `server.properties`.
 
+### Shipping Overworld and Nether pair
+
+For the supported main-world route, initialize both vanilla target folders first and keep `allow-nether=true`, then run these commands on Paper, Purpur, Leaf, or Folia:
+
+```text
+/iris download pack=overworld
+/iris download pack=underworld
+/iris datapack ingest restart=true
+```
+
+Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld before ingesting. The shipping Overworld declares Towns & Towers and Dungeons & Taverns in `datapackImports`. Ingest installs those external datapacks and restarts when their registry keys need to become live. Download validation is intentionally registry-independent; trying to replace before this boundary must fail if keys such as `nova_structures:*` are not registered.
+
+After the server returns, stage both exact slots:
+
+```text
+/iris replace minecraft:overworld type=overworld
+/iris replace minecraft:the_nether type=underworld
+```
+
+Restart once after both replacements report staged. A fresh install therefore has one dependency-registration restart followed by one replacement-publication restart; both replacements still publish together in the second cold reconcile.
+
+The `type=` values select the Iris pack/dimension; the replacement targets select the Minecraft identities being retained. There is no seed, main-world, overwrite, force, or portal-routing flag. `override` and `overwrite` are command aliases for `replace`, not behavior switches. After cold publication, vanilla portal mechanics continue to route between `minecraft:overworld` and `minecraft:the_nether`; a separately created or replaced `iris:*` world remains outside that canonical pair.
+
 ### How the transaction is made safe
 
 The stage copies and validates a fresh frozen pack on the same filesystem, fingerprints it, binds a journal to the canonical level root and logical world name, records the original target, authoritative world-generation seed, and existing `bukkit.yml` definition, then compare-and-swaps that one configuration entry without changing the seed. Several distinct slots can be queued before a single restart.

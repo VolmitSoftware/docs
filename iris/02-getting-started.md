@@ -86,6 +86,27 @@ Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds
 
 Every replacement is staged for cold publication. Stage as many distinct targets as needed, then restart once. To make Iris generate the currently selected server main world, replace `minecraft:overworld`; this keeps `server.properties` `level-name`, shared player data, datapacks, and the other dimensions in the same save root. The removed `main=true` and `overwrite=true` create options are not migration shortcuts. Selecting or constructing an entirely new `level-name` save is server provisioning outside Iris, not world promotion.
 
+#### Install the shipping Overworld and Nether pair
+
+On a Paper-family server, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. The shipping Overworld declares the external Towns & Towers and Dungeons & Taverns datapacks, so register those dependencies before staging either replacement:
+
+```text
+/iris download pack=overworld
+/iris download pack=underworld
+/iris datapack ingest restart=true
+```
+
+Wait for each download to report success before starting the next command because downloads are single-flight. The ingest installs every `datapackImports` dependency declared by the two packs and restarts the server when the fresh datapacks require registry registration. After the server returns, stage both replacements:
+
+```text
+/iris replace minecraft:overworld type=overworld
+/iris replace minecraft:the_nether type=underworld
+```
+
+Restart once after both commands report staged. This produces two deliberate restart boundaries on a fresh install: one to register the Overworld's external datapacks, then one to publish both exact world replacements. Download validation alone is registry-independent and cannot prove that `nova_structures:*` or other external keys are live.
+
+The existing Overworld and Nether target directories must already be initialized, `allow-nether=true` must remain enabled, and `server.properties` `level-name` stays unchanged. After the restart, the worlds retain the exact `minecraft:overworld` and `minecraft:the_nether` identities, so ordinary Nether portals keep their canonical forward and return routing. An arbitrary `iris:*` world is separate and does not become a vanilla portal destination merely because it uses an Overworld- or Nether-shaped pack.
+
 ### Mod
 
 ```text

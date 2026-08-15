@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-15T16:15:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -86,7 +86,7 @@ The dimension argument comes after the radius, `at <x> <z>` after that, and `gui
 |---|---|---|
 | Start reports an active job | There is one pregen job server-wide, not one per world | Check `/iris pregen status`; finish or stop it, and wait for closure before retrying |
 | Total chunk count is not what you expected | Bounds are inclusive and round outward to whole chunks, so the area is slightly larger than `radius × 2` | Recompute: chunks per axis is `ceil(radius/16) - floor(-radius/16) + 1` centered on your center chunk |
-| Failed count climbing | Chunk load timeout, a generation exception, disk failure, or a lifecycle interruption | Stop, fix the first logged failure, confirm ordinary generation works, then retry the same small area |
+| Failed count climbing | A real chunk-future exception, disk failure, or lifecycle interruption | Stop, fix the first logged failure, confirm ordinary generation works, then retry the same small area. A Bukkit slow-request warning by itself does not increment this count |
 | `serial=true` rejected | Strict serial generation needs a Paper-compatible server | Use the normal method, or run the diagnostic on Paper |
 | Desktop GUI never opens | The server is headless, or `gui.useServerLaunchedGuis` is off | Use `gui=false` and watch status, console, or the client HUD |
 | Progress repeatedly stalls | Heap high-water or mantle plate backpressure is engaging | Stop the job before tuning. Lower resident plates and in-flight work before raising anything heap-sensitive |
@@ -137,7 +137,7 @@ Bounds are inclusive on both edges: the minimum block floors to a chunk, the max
 
 `HybridPregenMethod` delegates to `AsyncOrMedievalPregenMethod`, which picks `AsyncPregenMethod` on Paper and `MedievalPregenMethod` elsewhere. Region-at-a-time generation is not supported on this path; it is always chunk by chunk.
 
-The `threadCount` argument is vestigial — `AsyncPregenMethod` ignores it and recomputes concurrency from the server's worker pool, CPU count, and world-gen thread settings, and `MedievalPregenMethod` takes no thread count at all. Tune concurrency through the settings in [33 - Performance Tuning](/iris/33-performance-tuning), not by expecting that parameter to do something.
+The `threadCount` argument is vestigial — `AsyncPregenMethod` ignores it. A detected Paper, Moonrise, or Folia worker pool is authoritative; CPU count and the world-gen thread setting are fallback inputs only when no pool size can be detected. `MedievalPregenMethod` takes no thread count at all. Tune concurrency through the settings in [33 - Performance Tuning](/iris/33-performance-tuning), not by expecting that parameter to do something.
 
 ## Cache
 
@@ -179,8 +179,8 @@ Full settings reference: [03 - Configuration](/iris/03-configuration). Tuning gu
 |---|---|---|
 | `runtimeSchedulerMode` | `AUTO` | Whether Iris treats the server as Folia or Paper-like. This is what decides if the pregen cache wrapper is available. `AUTO` probes the server; a regionized server always resolves to `FOLIA`, and configuring `FOLIA` on a non-regionized server is forced back to `PAPER_LIKE` |
 | `paperLikeBackendMode` | `AUTO` | Which Paper-like lifecycle backend loads chunks. `AUTO` resolves to `TICKET` |
-| `chunkLoadTimeoutSeconds` | `15`, clamped 5–120 | How long a single chunk load may take before it counts as a failure. Raise it on slow storage; a rising failed count with a low value here is usually I/O, not corruption. Modded pregen floors this at 120 seconds regardless of the setting |
-| `timeoutWarnIntervalMs` | `500`, minimum 250 | How often stalled loads warn. Purely log volume |
+| `chunkLoadTimeoutSeconds` | `15`, clamped 5–120 | On Bukkit, how old a still-pending Paper chunk request must be before Iris warns and lowers adaptive admission. The original future remains authoritative and may complete normally; it is not failed or omitted. On mod loaders this remains a terminal timeout and is floored at 120 seconds |
+| `timeoutWarnIntervalMs` | `500`, minimum 250 | How often slow or failed loads warn. Purely log volume |
 | `moddedPregenInFlight` | `0` | In-flight chunk budget for modded pregen. `0` auto-resolves to `max(16, min(48, cpu × 2))`; an explicit value is capped at 512 and floored at 8 |
 
 ## Pause, stop, and status
@@ -205,7 +205,7 @@ GUI toggles live at `settings.gui.useServerLaunchedGuis` and `settings.gui.maxim
 
 ## Performance profile
 
-Starting a pregen applies `PregenPerformanceProfile` to the engine before the job is constructed. It raises the noise cache to at least 4096 entries and enables the fast cache path, then rebuilds the biome complex if anything actually changed. The studio `profile` command applies the same profile while measuring pack cost, so pregen and profiling numbers are comparable.
+Starting a pregen applies `PregenPerformanceProfile` before the job is constructed. It raises the noise cache to at least 4096 entries and enables the fast cache path, then rebuilds the biome complex if anything actually changed. On a live Bukkit world, that rebuild first drains the generator's active Paper stages, holds queued stages until the replacement runtime is ready, and then admits them into the new generation session. Pack benchmarks apply the profile before creating their disposable world, so the benchmark engine starts with the final cache profile instead of hotloading beneath its initial spawn work. The studio `profile` command applies the same profile while measuring pack cost, so pregen and profiling numbers are comparable.
 
 ## Operator notes
 

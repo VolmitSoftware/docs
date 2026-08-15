@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-15T16:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ Work through these in order. The first two are free; the rest trade something.
 
 1. **Check whether the platform is the limit, not Iris.** On Fabric, Forge, and NeoForge without a parallel chunk system, pregen runs through the vanilla main-thread chunk pipeline and throughput is capped there regardless of settings. Iris logs this at pregen start and names the fix: install C2ME on Fabric, or run Paper if you want Bukkit-level throughput. No Iris setting recovers that gap.
 2. **Confirm SIMD is on.** On Bukkit, the startup log prints one of `SIMD: vector kernels enabled (…)`, `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector …`, or `SIMD: vector kernels disabled (performance.simdKernels=false)`. If you see the scalar message, add the JVM flag and restart. See the SIMD section for what it actually accelerates and how small that surface is. Mod loaders never print this line, so check the JVM flag directly there.
-3. **Leave concurrency alone unless it is warning at you.** Bukkit pregen concurrency is derived, not configured: Iris sizes it from the detected chunk-system worker pool (or CPU count) times 8, clamped to 16–128 on Paper-like servers and 64–192 on Folia. Raising it is not an option, and the adaptive limiter already lowers it when mantle backpressure engages. The only concurrency lever on Bukkit is `serial=true`, which drops to one chunk in flight — use it for profiling and determinism isolation, never for throughput.
+3. **Leave concurrency alone unless it is warning at you.** Bukkit pregen concurrency is derived, not configured: a detected Paper, Moonrise, or Folia chunk-system worker count is authoritative; Iris uses CPU and configured world-gen threads only if detection is unavailable. The worker count is multiplied by 8 and clamped to 16–128 on Paper-like servers or 64–192 on Folia. Raising it is not an option, and the adaptive limiter lowers it when requests stay pending or mantle backpressure engages. The only concurrency lever on Bukkit is `serial=true`, which drops to one chunk in flight — use it for profiling and determinism isolation, never for throughput.
 4. **On mod loaders, size `pregen.moddedPregenInFlight` to the chunk system.** Default `0` resolves to `clamp(16, cpu*2, 48)`, and whatever value comes out is floored at 8. Raise it only if the loader has a parallel chunk system and the CPU is not saturated; lower it if you see chunk-load timeouts. Positive values are capped at 512.
 5. **Raise the object cache if the same objects keep reloading.** `performance.objectLoaderCacheSize` (default 4096) bounds the loader caches for `.iob` objects, matter objects, and images. Object-heavy packs on large pregens hit this. The tradeoff is retained heap, so only do this if heap has room — see the memory section.
 6. **Give the process more heap before touching mantle caps.** Resident mantle plates are budgeted against process memory, so a bigger heap raises the effective plate count without any settings change.
@@ -43,8 +43,8 @@ Generation competing with the server tick shows up as timeout warnings, region s
 |---|---|---|
 | Run pregen with `serial=true` (Bukkit, Paper-compatible) or `sync` (modded) | One chunk in flight at a time; the tick thread stops competing with a wide generation front | Much slower pregen; this is an isolation tool, not a production mode |
 | Lower `pregen.moddedPregenInFlight` (modded only) | Fewer concurrent chunk generations, so the chunk system keeps headroom for player chunks | Proportionally slower pregen |
-| Raise `pregen.chunkLoadTimeoutSeconds` (default 15, clamped 5–120) | Iris waits longer before declaring a chunk load stuck and warning | Hides a real stall instead of fixing it; try it last. Modded pregen ignores anything below 120 seconds |
-| Raise `pregen.timeoutWarnIntervalMs` (default 500, minimum 250) | Spaces out repeated timeout warnings in console | Log noise only; changes nothing about the stall |
+| Raise `pregen.chunkLoadTimeoutSeconds` (default 15, clamped 5–120) | On Bukkit, waits longer before a still-pending Paper request warns and lowers adaptive admission; the request is never failed at this threshold | Hides a real stall instead of fixing it; try it last. On modded this remains a terminal timeout and anything below 120 seconds is ignored |
+| Raise `pregen.timeoutWarnIntervalMs` (default 500, minimum 250) | Spaces out repeated slow-request warnings in console | Log noise only; changes nothing about the stall |
 | Raise `pregen.saveIntervalMs` (default 30000, clamped 5000–900000) | Less frequent pregen state flushing, so less periodic IO | More work replayed if the job is interrupted |
 
 `pregen.runtimeSchedulerMode` (`AUTO`, `PAPER_LIKE`, `FOLIA`) and `pregen.paperLikeBackendMode` (`AUTO`, `TICKET`, `SERVICE`) exist for platform mismatches, not throughput. A Folia runtime always resolves to Folia scheduling regardless of the setting, and `AUTO` on Paper-like servers resolves to the ticket backend. Change these only when diagnosing a scheduler-specific defect.
@@ -52,6 +52,8 @@ Generation competing with the server tick shows up as timeout warnings, region s
 ## Symptom: heap pressure, long GC pauses, or OOM risk
 
 Mantle is the largest thing Iris keeps in heap. Iris already reacts to heap pressure on its own: as used heap climbs from 82% to 92%, the idle window before a mantle plate is trimmed shrinks linearly to zero, and above 96% Iris requests a reclaim (at most once every 30 seconds). If you are seeing pressure, that machinery is already running — you are deciding how much less mantle to hold.
+
+First make sure the JVM fits inside its container. Pterodactyl charges the Java heap, metaspace, code cache, thread stacks, native buffers, memory-mapped files, and often the operating-system overhead against the same memory limit. Do not set `-Xmx` or `MaxRAMPercentage` to 95% of that limit. Leave at least 20–25%, and at least 1.5–2 GiB on a large Iris server, outside the Java heap as a starting point. For a 10,000 MiB container, start around `-Xmx7G` to `-Xmx7500M`, measure peak resident memory, and adjust from evidence. `-XX:+AlwaysPreTouch` makes the committed heap visible in resident memory immediately, so a process can appear close to the panel limit even while most of that heap is empty.
 
 1. **Raise heap first if the machine has it.** The resident-plate budget is computed from process memory: roughly 60% of the heap, against a per-plate cost of about 48 MB at a 384-block world height, scaled by your actual dimension height. More heap means more plates without changing a setting.
 2. **Lower `pregen.maxResidentTectonicPlates`** (default 96). This is a soft cap on how many mantle tectonic plates stay resident. The effective number is the smaller of that cap, a height-scaled version of it, and the heap budget above — with a hard floor of 16. Taller worlds get fewer plates automatically. Lowering it cuts retained heap at the cost of more mantle reload work.
@@ -63,11 +65,13 @@ Mantle is the largest thing Iris keeps in heap. Iris already reacts to heap pres
 
 ## Symptom: Studio memory keeps growing during editing
 
-Studio worlds deliberately skip mantle trimming and per-chunk mantle cleanup, so a long authoring session accumulates mantle that a normal world would have released. Set `performance.trimMantleInStudio` to `true` to make studio worlds maintain mantle like any other world. The cost is that hotloaded pack edits will regenerate more from scratch because less is cached. A/B this in Studio only; it has no effect on production worlds.
+Studio worlds skip routine mantle maintenance by default, so a long authoring session can retain more data than a normal world. Emergency maintenance still runs after heap crosses Iris's high-water threshold; Studio no longer disables that safety path. Set `performance.trimMantleInStudio` to `true` to run routine maintenance as well. The cost is that hotloaded pack edits regenerate more from scratch because less remains cached. A/B this in Studio only; it has no effect on production worlds.
 
 ## Symptom: the same pack resources reload constantly
 
 `performance.resourceLoaderCacheSize` (default 1024) bounds the cache of parsed JSON pack resources; `performance.objectLoaderCacheSize` (default 4096) bounds `.iob`, matter, and image loaders. If profiling shows repeated parse or disk work for resources you know are in use, raise the one that is actually missing, one at a time. Both trade heap for fewer reloads, and neither changes generation output.
+
+Iris also keeps a current-format first-access prefetch file for generic JSON loaders. Each loader admits at most the smaller of its cache capacity and 1,024 resource keys; an overflowing history is skipped instead of being replayed at the next startup. Entries and loaders are admitted sequentially to bound parse-time memory, and the identity includes the exact pack root, seed, dimension version/key, and loader folder. Old cache identities are ignored, not migrated. `.iob`, image, and matter bodies do not use this history.
 
 ## Reference: `performance` section
 
@@ -76,7 +80,7 @@ Studio worlds deliberately skip mantle trimming and per-chunk mantle cleanup, so
 | `performance.simdKernels` | `true` | Allows vector kernels when `jdk.incubator.vector` is on the module path; `false` forces scalar. Read once at class initialization, so a restart is required |
 | `performance.mantleKeepAlive` | `30` | Seconds an idle mantle plate survives before maintenance trims it. Shrinks toward zero as used heap climbs from 82% to 92% |
 | `performance.mantleCleanupDelay` | `200` | Ticks a loaded chunk waits before its mantle cleanup runs (200 = 10 s). Raising it keeps mantle data resident longer after chunk loads; see "03 - Configuration.md" |
-| `performance.trimMantleInStudio` | `false` | Whether studio worlds get mantle trimming and per-chunk cleanup at all; false means they keep everything resident |
+| `performance.trimMantleInStudio` | `false` | Whether studio worlds get routine mantle maintenance; emergency high-water maintenance runs regardless |
 | `performance.noiseCacheSize` | `1024` | Noise sample cache capacity per engine. Starting a pregen raises it to at least 4096 for the rest of the process |
 | `performance.resourceLoaderCacheSize` | `1024` | Parsed pack resource entries held before eviction |
 | `performance.objectLoaderCacheSize` | `4096` | `.iob`, matter, and image loader entries held before eviction |
@@ -93,8 +97,8 @@ Studio worlds deliberately skip mantle trimming and per-chunk mantle cleanup, so
 |-----|---------|--------------|
 | `pregen.runtimeSchedulerMode` | `AUTO` | Which scheduler the Bukkit pregen driver uses: `AUTO`, `PAPER_LIKE`, `FOLIA`. A Folia runtime always resolves to Folia |
 | `pregen.paperLikeBackendMode` | `AUTO` | How Paper-like pregen acquires chunks: `AUTO`, `TICKET`, `SERVICE`. `AUTO` resolves to `TICKET` |
-| `pregen.chunkLoadTimeoutSeconds` | `15` | How long a pregen worker waits for a chunk before warning. Clamped 5–120; modded pregen raises anything below 120 to 120 |
-| `pregen.timeoutWarnIntervalMs` | `500` | Minimum gap between repeated timeout warnings. Minimum 250 |
+| `pregen.chunkLoadTimeoutSeconds` | `15` | Bukkit slow-request warning and adaptive-throttle age; it does not terminate the Paper future. Clamped 5–120. Modded pregen uses it as a terminal timeout and raises anything below 120 to 120 |
+| `pregen.timeoutWarnIntervalMs` | `500` | Minimum gap between repeated slow-request warnings. Minimum 250 |
 | `pregen.saveIntervalMs` | `30000` | Gap between pregen progress flushes. Clamped 5000–900000 |
 | `pregen.maxResidentTectonicPlates` | `96` | Ceiling on resident mantle plates before the height and heap budgets narrow it further. Never drops below 16 |
 | `pregen.mantleBackpressureWaitMs` | `25` | Pause between retries when the plate budget is full. Clamped 5–1000 |
@@ -109,7 +113,7 @@ There is no `concurrency` section in `settings.json`. The values are computed fr
 
 - Generation burst pool: `max(2, availableProcessors)`
 - IO burst pool: `max(2, availableProcessors / 2)`
-- Bukkit pregen in-flight cap: worker threads × 8, clamped 16–128 on Paper-like servers and 64–192 on Folia, then lowered adaptively under mantle backpressure down to `max(4, min(16, cap / 4))`
+- Bukkit pregen in-flight cap: detected chunk-system worker threads × 8, clamped 16–128 on Paper-like servers and 64–192 on Folia. CPU and configured world-gen threads are fallbacks only when worker detection is unavailable. The cap is then lowered adaptively for slow requests or mantle backpressure down to `max(4, min(16, cap / 4))`
 
 If you need less generation concurrency, use `serial=true` (Bukkit) or `sync` (modded) rather than looking for a knob that does not exist.
 
