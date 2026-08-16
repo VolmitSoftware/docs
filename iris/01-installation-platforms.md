@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -187,7 +187,7 @@ Only `/iris world replace-overworld`, `/iris world disable|delete` on the primar
 
 | Key path | Default | When you'd change it |
 |---|---|---|
-| `generator.defaultWorldType` | `overworld` | Bukkit `/iris create` resolves `type=default` through this. Point it at your own pack so plain `/iris create <name>` produces your world instead of the stock overworld |
+| `generator.defaultWorldType` | `overworld` | Bukkit `/iris create` resolves an omitted `type` (and the accepted but unadvertised `type=default` sentinel) through this. Point it at your own pack so `/iris create name=<name>` produces your world instead of the stock overworld |
 | `general.language` | `en_US` | Server-side message locale. See [08 - Localization](/iris/08-localization) |
 | `studio.openVSCode` | `true` | Set false on a headless box so `/iris studio vscode` writes the workspace file without trying to launch an editor |
 | `studio.autoStartDefaultStudio` | `false` | Leave off for production. Turning it on opens a studio world at boot, which is only useful on a dedicated authoring server |

@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "Iris documentation: PlaceholderAPI"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Prerequisites: Bukkit-family Iris, PlaceholderAPI installed *before* Iris starts
 2. `/papi parse me %iris_available%` — expect `true`. This only means Iris registered its terrain service, not that you are in an Iris world.
 3. `/papi parse me %iris_world.available%` — expect `true`. This is the guard you will use in the board template.
 4. `/papi parse me %iris_world.biome-key%` — expect a load key such as `desert/hot-dunes`. A `---` here means Iris has no reading for you yet; see the recovery table.
-5. Start a job to test the pregen family: `/iris pregen start 352 center=0,0 gui=false`, then `/papi parse me %iris_pregen.percent%`. Expect a bare number between `0.00` and `100.00` with no percent sign.
+5. Start a job to test the pregen family: `/iris pregen start radius=352 center=0,0 gui=false`, then `/papi parse me %iris_pregen.percent%`. Expect a bare number between `0.00` and `100.00` with no percent sign.
 6. `/iris pregen stop`, then `/papi parse me %iris_pregen.available%`. Expect `false`, and every other `pregen.*` key to read `---`.
 7. Now paste the exact string you verified into the consumer plugin, wrap it in whatever guard that plugin offers, and reload it.
 

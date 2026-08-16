@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -451,7 +451,7 @@ Path: `packs/overworld/dimensions/overworld.json` under the platform data direct
 7. Isolate while tuning: set `"focusRegion": "starter"` or `"focus": "starter"`, save, and generate a new area. Remove both before packaging.
 8. Tune land/sea and zoom, then add subsystems one at a time — caves, then ores and deposits, then objects, then structures — validating after each new resource edge so a broken key is attributable.
 9. Close and reopen Studio after editing `dimensionHeight`, `logicalHeight`, `environment`, or the dimension file name. Hotload rejects those by design.
-10. Create the production world only after Studio is clean: `/iris create mypack-test type=mypack seed=1337`. Recreate the world rather than editing its height contract later.
+10. Create the production world only after Studio is clean: `/iris create name=mypack-test type=mypack seed=1337`. Recreate the world rather than editing its height contract later.
 
 The baseline passes when Studio opens clean, validation reports no blocking errors, and the same seed reproduces the same terrain after a close and reopen.
 

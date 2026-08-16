@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,10 +27,10 @@ Work through the sections in order and confirm each one before moving on. Confir
 
 ## The one syntax rule that trips everyone up
 
-On the plugin, Iris uses the Director command framework, and it has a hard rule: **only required parameters accept a bare positional value. Every optional parameter must be given as `key=value`.** A leftover positional token isn't ignored — it's an error, and the command fails.
+On the plugin, Iris uses the Director command framework. Tab completion and help render every configurable value as `key=value`, including required and contextual values. Required parameters also accept their bare positional form, but optional and contextual overrides must be keyed. A leftover positional token isn't ignored — it's an error, and the command fails.
 
 ```text
-/iris create myworld type=overworld seed=1337     correct
+/iris create name=myworld type=overworld seed=1337     canonical
 /iris create myworld overworld 1337               fails: unexpected argument
 ```
 
@@ -40,7 +40,7 @@ Modded is Brigadier and works the way you'd expect: everything is positional, in
 
 | Platform | Required args | Optional args | Example |
 |---|---|---|---|
-| Plugin (Bukkit) | Positional, in declaration order | Must be `key=value` | `/iris create myworld type=overworld seed=1337` |
+| Plugin (Bukkit) | `key=value` in completion and help; bare positional also accepted | Must be `key=value` | `/iris create name=myworld type=overworld seed=1337` |
 | Mod (Fabric / Forge / NeoForge) | Positional | Further positional tokens or literal flags | `/iris create myworld overworld 1337` |
 
 Director also matches command and parameter names fuzzily, so shortenings and near-misses often resolve. That's convenient but don't rely on it in scripts — write the real names.
@@ -50,12 +50,12 @@ Director also matches command and parameter names fuzzily, so shortenings and ne
 ### Plugin
 
 ```text
-/iris create <name> [type=…] [seed=…]
+/iris create name=<name> [type=…] [seed=…]
 ```
 
 | Parameter | Aliases | Default | What it does |
 |---|---|---|---|
-| `name` | `world-name` | required | The world name. The only parameter that takes a positional value |
+| `name` | `world-name` | required | The world name. Completion emits `name=`; a bare positional name is also accepted |
 | `type` | `dimension`, `pack` | `default` | Which pack/dimension to generate. The literal `default` is resolved at runtime through `generator.defaultWorldType` (stock value `overworld`), so it follows your config rather than being hardcoded |
 | `seed` | — | `1337` | World seed |
 
@@ -72,7 +72,7 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 **Everything else, including Spigot.** Create builds the managed `iris:*` world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world). Spigot supports this create path even though it cannot cold-replace a vanilla slot.
 
 ```text
-/iris create myworld type=overworld seed=1337
+/iris create name=myworld type=overworld seed=1337
 ```
 
 Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. On a non-Folia server `myworld` must appear under Iris worlds. On Folia, wait for the automatic restart and reconnect before continuing.
@@ -80,7 +80,7 @@ Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds
 #### Replace an existing Bukkit world
 
 ```text
-/iris replace <target> [type=…] [seed=<signed-64-bit-integer>]
+/iris replace target=<target> [type=…] [seed=<signed-64-bit-integer>]
 ```
 
 `replace` has command aliases `override` and `overwrite`. It accepts an existing safe `iris:*` target or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`; it never creates a missing target. Friendly targets `main`/`overworld`, `nether`/`the_nether`, and `end`/`the_end` resolve to those three vanilla identities. The configured Bukkit names `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` resolve the same way and take priority if a level name happens to equal a friendly alias. Other bare names resolve to `iris:<name>`. Omit `seed` to preserve the authoritative seed already saved for that target, or provide any signed 64-bit integer to give the fresh replacement terrain an explicit seed.
@@ -185,19 +185,19 @@ The block radius is converted to an inclusive chunk box, so a 352-block radius a
 ### Plugin
 
 ```text
-/iris pregen start <radius> [world=…] [center=x,z|me] [gui=true|false] [serial=true|false]
+/iris pregen start radius=<radius> [world=…] [center=x,z|me] [gui=true|false] [serial=true|false]
 ```
 
 | Parameter | Aliases | Default | What it does |
 |---|---|---|---|
-| `radius` | `size` | required | Radius in blocks; must be greater than 0. The only positional parameter |
+| `radius` | `size` | required | Radius in blocks; must be greater than 0. Completion emits `radius=`; a bare positional radius is also accepted |
 | `world` | — | your current world | Target world. Contextual, so it must be keyed when you override it — typically when running from console |
 | `center` | `middle` | `0,0` | Center point. `me` uses the running player's position |
 | `gui` | — | `true` | Open the pregen progress window. Set false on a headless server |
 | `serial` | — | `false` | Generate one chunk at a time. Much slower, but the safe option when parallel generation is destabilizing the server. Requires a Paper-compatible server |
 
 ```text
-/iris pregen start 352 world=myworld center=0,0 gui=false
+/iris pregen start radius=352 world=myworld center=0,0 gui=false
 ```
 
 Immediately run `/iris pregen status`. It should report a 2,025-chunk job that advances without a growing failure count.
@@ -289,7 +289,7 @@ The Studio gate passes when the transient world opens, the workspace points at t
 2. Create the world using the form for your platform.
 3. On Folia only: wait for Iris's automatic restart request to complete. If the server stops without returning, start it through the host supervisor; the world then loads on its own.
 4. Teleport in and fly around a little to confirm chunks generate.
-5. Optional: `/iris pregen start 352 …` for a 45×45-chunk area.
+5. Optional: `/iris pregen start radius=352 …` for a 45×45-chunk area.
 6. Optional: `/iris studio open <pack>` and use the VSCode schemas for block, item, and entity autocomplete — mod content is included in those schemas on mod loaders.
 
 The session is genuinely finished when you restart the server cleanly, the production world loads again, and it generates new chunks from its copied pack snapshot. Remove a disposable world through the lifecycle command after evacuating players, never by deleting folders — see [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
@@ -322,9 +322,9 @@ The session is genuinely finished when you restart the server cleanly, the produ
 **Plugin**
 
 ```text
-/iris create myworld type=overworld seed=1337
+/iris create name=myworld type=overworld seed=1337
 /iris tp myworld
-/iris pregen start 352 world=myworld center=0,0 gui=false
+/iris pregen start radius=352 world=myworld center=0,0 gui=false
 /iris pregen status
 /iris studio open overworld seed=1337
 /iris studio close

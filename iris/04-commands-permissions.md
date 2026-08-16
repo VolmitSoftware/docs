@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,11 +16,11 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 ### Create a world and enter it
 
 ```
-/iris create tutorial type=overworld seed=1337        # Bukkit
+/iris create name=tutorial type=overworld seed=1337        # Bukkit
 /iris create tutorial overworld 1337                  # modded
 ```
 
-`type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Left at its default `default`, it resolves to `generator.defaultWorldType`. Bukkit refuses the names `iris` and `benchmark`, and refuses any name whose dimension folder already exists.
+`type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`; completion lists installed pack/dimension values and does not advertise the internal `default` sentinel. Bukkit refuses the names `iris` and `benchmark`, and refuses any name whose dimension folder already exists.
 
 When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged directly in Paper 26.2's current per-dimension format, Iris prints that staging succeeded, and then it automatically requests a controlled restart; reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
@@ -33,7 +33,7 @@ If the pack is missing, Iris identifies the exact supported download form — `p
 Radius is in **blocks** and measured from the center, so `352` covers a 704x704 block square.
 
 ```
-/iris pregen start 352 world=tutorial center=0,0 gui=false          # Bukkit
+/iris pregen start radius=352 world=tutorial center=0,0 gui=false          # Bukkit
 /iris pregen start 352 irisworldgen:tutorial at 0 0                 # modded
 ```
 
@@ -77,11 +77,11 @@ If a command fails before doing work, check in this order: platform syntax, perm
 ### Bukkit (Director)
 
 - Root: `/iris` / `/ir` / `/irs`. Subcommand and group names come from the method or class name unless `@Director(name=…)` overrides it, so several commands read differently than you would guess — see the reference tables.
-- **Required parameters are positional; optional parameters are never positional.** `/iris pregen start 500 true` is a parse error; write `/iris pregen start 500 gui=true`.
+- Tab completion and help render every configurable value as its canonical `key=value`, including required values and contextual overrides. Required values also accept their bare positional form; optional and contextual values do not. `/iris pregen start 500 true` is a parse error; write `/iris pregen start radius=500 gui=true`.
 - A parameter declared with a blank default counts as required even when the description says otherwise.
 - Names and aliases match case-insensitively.
-- Help uses the Director mini-menu: required renders as `<name>`, optional as `[name=…]`.
-- **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) resolve from the sender's current world or look target. They are hidden from the usage line and from tab completion, but they still accept `name=value`, which is how you drive them from console.
+- Help uses the Director mini-menu: required renders as `<name=…>`, optional as `[name=…]`.
+- **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) resolve from the sender's current world or look target. Iris marks its operator-overridable contexts for keyed help and completion; internal context injection remains hidden.
 - Tab completion is not permission-gated; only execution is.
 
 ### Modded (Brigadier)
@@ -124,7 +124,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | (empty) / help | | Both | `[section]` (modded) | Open help; modded supports a section path and page number |
 | `version` | | Both | — | Print Iris/platform/Minecraft version and engine count |
 | `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions and pack details; seed only for gamemasters |
-| `create` | `c` | Both | **Bukkit:** `<name> [type=default] [seed=1337]` (`name` alias `world-name`; `type` aliases `dimension`,`pack`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension; Bukkit creation is confined to `iris:*` and remains supported on Spigot |
+| `create` | `c` | Both | **Bukkit:** `<name=…> [type=<installed-pack-or-dimension>] [seed=1337]` (`name` alias `world-name`; `type` aliases `dimension`,`pack`; omitting `type` uses `generator.defaultWorldType`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension; Bukkit creation is confined to `iris:*` and remains supported on Spigot |
 | `replace` | `override`, `overwrite` | **Paper-family**; Spigot rejects | `<target> [type=default] [seed=preserve]` (`type` aliases `dimension`,`pack`; `seed` alias `s`) | Cold-replace an existing safe `iris:*` world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot; omit `seed` to preserve it or provide a signed 64-bit replacement seed |
 | `teleport` | `tp` | Both | **Bukkit:** `<world> [player]` (defaults to the sender). **Modded:** `<dimension> [player]` | Teleport self or a named player into an Iris world/dimension |
 | `evacuate` | | Both | **Bukkit:** `<world>`, player origin. **Modded:** `[dimension]` | Move players out of an Iris world to fallback/primary |
@@ -211,7 +211,7 @@ On Paper-family servers, `/iris replace` is deliberately restart-only; Spigot re
 
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
-| `start` | | **Bukkit:** `<radius> [world] [center=0,0] [gui=true] [serial=false]` (`radius` alias `size`, `center` alias `middle`, `me` for the player position; `world` is contextual with no default). **Modded:** `<radius> [dimension] [at <x> <z>] [gui] [sync] [nocache]`, radius `1..100000` | Start pregen; radius is in **blocks**, and every `center ± radius` edge must remain within ±29,999,984. The resumable checkpoint cache is on by default on modded unless `nocache` |
+| `start` | | **Bukkit:** `<radius=…> [world=…] [center=0,0] [gui=true] [serial=false]` (`radius` alias `size`, `center` alias `middle`, `me` for the player position; `world` is a contextual keyed override). **Modded:** `<radius> [dimension] [at <x> <z>] [gui] [sync] [nocache]`, radius `1..100000` | Start pregen; radius is in **blocks**, and every `center ± radius` edge must remain within ±29,999,984. The resumable checkpoint cache is on by default on modded unless `nocache` |
 | `stop` | `x` | — | Stop the active pregen after in-flight work closes |
 | `pause` | `resume` | — | Toggle pause/resume |
 | `status` | | — | Progress, chunks/s, ETA, elapsed, method, failures |

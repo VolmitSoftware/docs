@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-16T02:05:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -43,7 +43,7 @@ GoldenHash file layout and interpretation: [32 - Determinism & Goldenhash](/iris
 3. Create a world with a fixed seed and go to it:
 
    ```
-   /iris create test-ow type=overworld seed=1337
+   /iris create name=test-ow type=overworld seed=1337
    /iris tp test-ow
    ```
 
@@ -199,10 +199,10 @@ Prerequisites: a disposable server with one managed datapack source, a vanilla w
 
 Pregen radius is always in **blocks**. Use a disposable world.
 
-**Bukkit** (radius positional, everything else keyed; `gui` defaults to `true`):
+**Bukkit** (completion emits every configurable value as `key=value`; a bare positional radius is also accepted; `gui` defaults to `true`):
 
 ```
-/iris pregen start 352 world=test-ow center=0,0 gui=false
+/iris pregen start radius=352 world=test-ow center=0,0 gui=false
 /iris pregen status
 /iris pregen pause
 /iris pregen status
@@ -213,7 +213,7 @@ Pregen radius is always in **blocks**. Use a disposable world.
 Strict one-chunk-at-a-time (Paper-compatible servers only):
 
 ```
-/iris pregen start 352 world=test-ow center=0,0 gui=false serial=true
+/iris pregen start radius=352 world=test-ow center=0,0 gui=false serial=true
 ```
 
 **Modded** (positional radius, then optional dimension, then literal flags in any order — `at <x> <z>`, `gui`, `sync`, `nocache`):

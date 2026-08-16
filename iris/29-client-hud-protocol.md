@@ -2,7 +2,7 @@
 title: "Client HUD & Protocol"
 description: "Iris documentation: Client HUD & Protocol"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Installed on a Minecraft client, the Iris mod adds a native pregeneration HUD, a
 There is no separate client download. The Fabric, Forge, and NeoForge mod jars each contain the client code, gated to the client distribution, so the same jar you run on a server is the one you install on a client. The Iris and Minecraft versions on both ends must match — a mismatch is the single most common reason the HUD never appears.
 
 1. Install the Iris mod on your client and join an Iris server.
-2. Start a small pregen from the server, for example `/iris pregen start 512 center=0,0 gui=false`.
+2. Start a small pregen from the server, for example `/iris pregen start radius=512 center=0,0 gui=false`.
 3. Look at the top-left of your screen.
 
 Success is a dark panel at 6,6 with a green title, a `done / total (percent%)` line, a green progress bar, and a rate-and-ETA line under it. If region deltas are arriving you also get a small region grid below the panel.

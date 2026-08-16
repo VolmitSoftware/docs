@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-15T16:30:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -169,7 +169,7 @@ These keys are no-ops on mod loaders.
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
-| `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** The pack key used whenever a world, studio, or command omits one — including a bare `Iris` generator string in `bukkit.yml` and `/iris create name type=default`. Mod loaders use `defaultPack` in `modded.json` instead |
+| `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** The pack key used whenever a world, studio, or command omits one — including a bare `Iris` generator string in `bukkit.yml` and `/iris create name=<name>` with no `type`. The accepted `type=default` sentinel resolves the same way but is not advertised by completion. Mod loaders use `defaultPack` in `modded.json` instead |
 | `preventLeafDecay` | `true` | Effectively **restart** | Marks generated leaves persistent so they do not decay. The flag is baked into resolved block data that is then cached, so already-resolved leaf blocks keep the old behavior after a reload. Unrelated to the per-dimension `preventLeafDecay` field in pack JSON |
 
 ## `concurrency` — nothing to configure

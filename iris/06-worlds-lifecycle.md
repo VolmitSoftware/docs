@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ Fly around, look at the terrain, then close the studio:
 Now create the real world. This is the step that freezes the pack:
 
 ```text
-/iris create release_candidate type=overworld seed=1337
+/iris create name=release_candidate type=overworld seed=1337
 ```
 
 On Folia, this stages files and automatically requests a controlled restart after staging succeeds. Wait for the server to return, then the world loads on boot. On every other Bukkit-family server, including Spigot, the managed `iris:*` world is created immediately.
@@ -50,7 +50,7 @@ When a player runs the create command, Iris waits up to 60 seconds for the entry
 Now prove it survives a restart, because a world that only works in the session that created it is not actually created:
 
 ```text
-/iris pregen start 352 world=release_candidate center=0,0 gui=false
+/iris pregen start radius=352 world=release_candidate center=0,0 gui=false
 ```
 
 Wait for it to finish (see [07 - Pregeneration](/iris/07-pregeneration)), restart the server cleanly, teleport back in, and fly past the pregenerated boundary. New terrain must still appear.
@@ -139,7 +139,7 @@ Only that exact current-format startup name is accepted. Iris does not migrate, 
 
 | Command | What it does |
 |---|---|
-| `/iris create <name> [type=default] [seed=1337]` | Create an absent managed `iris:*` world now, or stage it for Folia's next boot |
+| `/iris create name=<name> [type=<installed-pack-or-dimension>] [seed=1337]` | Create an absent managed `iris:*` world now, or stage it for Folia's next boot; omitting `type` uses `generator.defaultWorldType` |
 | `/iris replace <target> [type=default] [seed=preserve]` | Stage a cold replacement of an existing safe Iris world or exact vanilla dimension slot; aliases `override`, `overwrite` |
 | `/iris load <name>` / `/iris import <name>` | Reconcile a world that already exists on disk back into the server. Never downloads anything |
 | `/iris unload <world>` | Evacuate, unload, close the generator. The safe first half of removal |
@@ -254,7 +254,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 
 - Startup datapack validation and the pack's own validation must both be loadable before any Studio folder, snapshot, generator, or Bukkit world is created. Missing validation fails closed.
 - The pack is **not** copied into the world folder, except for benchmark runs. The engine reads the live pack directly, which is what enables hotload.
-- Studio worlds are transient. Unloaded Studio worlds are cleaned up, and their `bukkit.yml` entries are removed during shutdown cleanup.
+- Studio worlds are transient. They are never written into Iris's persistent world registry; unloaded Studio worlds are cleaned up, and their `bukkit.yml` entries are removed during shutdown cleanup.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 - Biome Buffet prepares a changed focus before opening the chunk generation session; its exclusive fair-stage admission downgrades straight to the retained chunk permit so no other transition can slip in between the focus hotload and that chunk.
 - Ordinary Studio suppresses native structure starts only while the initial FULL entry chunk loads, then restores them for later preview chunks.

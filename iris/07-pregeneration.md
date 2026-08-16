@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-08-16T02:05:00.000Z
+date: 2026-08-16T03:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ Before you start you need a world whose ordinary chunk generation already works,
 ### 1. Prove the pipeline with a small run
 
 ```text
-/iris pregen start 352 world=myworld center=0,0 gui=false
+/iris pregen start radius=352 world=myworld center=0,0 gui=false
 ```
 
 That is 2,025 chunks and finishes in a minute or two. Watch it:
@@ -36,7 +36,7 @@ You should see the world name, `2,025` total chunks, a rising generated count, a
 ### 2. Run the real thing
 
 ```text
-/iris pregen start 10000 world=myworld center=0,0 gui=false
+/iris pregen start radius=10000 world=myworld center=0,0 gui=false
 ```
 
 If your spawn is not at `0,0`, stand at spawn and use `center=me` instead. That token only works for a player sender; from console, pass explicit coordinates.
@@ -98,7 +98,7 @@ The dimension argument comes after the radius, `at <x> <z>` after that, and `gui
 
 | Command | What it does |
 |---|---|
-| `/iris pregen start <radius> [world=<world>] [center=0,0] [gui=true] [serial=false]` | Start a job. Closes any previous job instance first |
+| `/iris pregen start radius=<radius> [world=<world>] [center=0,0] [gui=true] [serial=false]` | Start a job. Director completes every configurable Bukkit value as `key=value`; a bare positional radius remains accepted |
 | `/iris pregen stop` (alias `x`) | Request stop. In-flight chunks finish, then the job cancels asynchronously |
 | `/iris pregen pause` (alias `resume`) | Toggle pause. One command, two names — it flips whatever state the job is in |
 | `/iris pregen status` | Print a progress snapshot for the active job, or report that none exists |
