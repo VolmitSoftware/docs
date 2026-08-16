@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-15T21:07:31.000Z
+date: 2026-08-16T02:05:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -61,7 +61,7 @@ GoldenHash file layout and interpretation: [32 - Determinism & Goldenhash](/iris
 
 ## A.1 Exact vanilla-slot replacement (Paper-family)
 
-Prerequisites: a disposable Paper-family server with early plugin bootstrap (not Spigot), `level-name=world`, `allow-nether=true`, and initialized `minecraft:overworld` and `minecraft:the_nether` target directories. Enter the vanilla Nether once first if its target does not exist. Put a unique marker in both vanilla worlds; hash their `region`, `entities`, and `poi` files; and keep copies of each target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and `data/minecraft/world_gen_settings.dat`.
+Prerequisites: a disposable Paper-family server with early plugin bootstrap (not Spigot), `level-name=world`, `allow-nether=true`, and initialized `minecraft:overworld` and `minecraft:the_nether` target directories. Spigot uses the managed `/iris create` path in section A and cannot run this exact-slot sequence. Enter the vanilla Nether once first if its target does not exist. Put a unique marker in both vanilla worlds; hash their `region`, `entities`, and `poi` files; and keep copies of each target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and `data/minecraft/world_gen_settings.dat`.
 
 1. Download the shipping Overworld and wait for its completed success message:
 
@@ -81,9 +81,15 @@ Prerequisites: a disposable Paper-family server with early plugin bootstrap (not
 
 3. Manually restart the server once after both downloads complete.
 
-   Expect: startup registers the downloaded packs' dimension types and custom biomes, then full pack validation succeeds without downloading or installing managed external datapacks. The shipping Overworld uses Minecraft's registered vanilla structures and has no `datapackImports` dependencies.
+   Expect: with the default `general.autoIngestDatapacks=true`, startup discovers the shipping Overworld's declared Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 dependencies, installs their managed datapacks, and leaves player admission and Iris world creation locked in restart-required state. Do not stage either replacement yet.
 
-4. Stage both exact vanilla slots:
+4. Complete the ensuing clean restart.
+
+   Expect: Minecraft loads both external datapacks, the downloaded packs' dimension types, and their custom biomes into the live registries; startup ingest reuses its verified installed state and full Overworld validation succeeds. If automatic ingest is disabled, use the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before continuing.
+
+   Folia 26.2 exception: Dungeons & Taverns 5.3.0 currently emits 35 `nova_structures:*` function-load failures because Folia's dispatcher omits or restricts commands the unchanged pack uses. This reproduces without Iris and does not mean the Iris pack publication failed, but the affected Dungeons & Taverns functions are unavailable. Paper, Leaf, and Canvas must not emit those failures.
+
+5. Stage both exact vanilla slots:
 
    ```text
    /iris replace minecraft:overworld type=overworld seed=123456789
@@ -92,19 +98,23 @@ Prerequisites: a disposable Paper-family server with early plugin bootstrap (not
 
    Expect: both commands report staged after downloaded-pack registration. `bukkit.yml` names `Iris:overworld` for `world` and `Iris:underworld` for `world_nether`; exactly two replacement journals and two sibling stages exist; neither live target has moved; and `server.properties` `level-name` and `level-seed` are unchanged. There is no `main`, `overwrite`, `force`, or portal flag involved. `seed` is optional per target; omitting it preserves that target's saved seed.
 
-5. Restart once after both replacements are staged.
+6. Restart once after both replacements are staged.
 
    Expect: the same cold reconcile publishes both transactions before aggregate-datapack compilation, registry creation, and Bukkit world loading. The worlds load as exact `minecraft:overworld` and `minecraft:the_nether`, using the `overworld` `NORMAL` dimension and `underworld` `NETHER` dimension respectively. Their authoritative seeds are `123456789` and `-987654321`, each retains its Paper metadata, each has its own frozen `iris/pack`, and neither contains the old `region`, `entities`, `poi`, or marker chunks.
 
-6. Watch both `WorldLoad` verifications and wait for cleanup.
+7. Watch both `WorldLoad` verifications and wait for cleanup.
 
    Expect: each journal advances only after Iris proves the exact namespaced identity, generator, selected dimension, environment, seed, and unchanged pack fingerprint. Cleanup then removes both retained backups and journals asynchronously.
 
-7. Build a Nether portal in the replacement Overworld and traverse it, then traverse the resulting Nether-side portal back.
+8. Verify the replacement Overworld's persisted safe spawn before admitting ordinary players.
+
+   Expect: the canonical spawn has a non-air, non-fluid, collision-supporting block directly below it and two passable, collision-free, fluid-free body blocks. Stop and cold-start the server once more and verify the same spawn and block states. To test returning-player rescue, stage a disposable player data file whose saved Overworld position will be inside the new terrain, log in once, and confirm Iris redirects that player to the safe spawn and persists the new location; the next login must not repeat the one-time redirect. If Iris cannot verify the spawn, guarded login must be refused rather than placing the player inside terrain.
+
+9. Build a Nether portal in the replacement Overworld and traverse it, then traverse the resulting Nether-side portal back.
 
    Expect: the forward trip enters the exact `minecraft:the_nether` Iris Underworld and the return trip enters the exact `minecraft:overworld` Iris Overworld. Iris does not reroute portals to arbitrary `iris:*` worlds; canonical routing works here because both vanilla identities were replaced in place. Generate fresh chunks on both sides and confirm no fatal engine or portal-event stack trace.
 
-The fresh-install pathway has two required restart boundaries: downloaded-pack registration, then replacement publication. Custom packs that declare `datapackImports` need the separate ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before replacement staging. As a separate resilience check, a later ordinary restart should load the same two canonical identities without recreating a pending stage, backup, or journal.
+The default automatic-ingest fresh-install pathway has three required restart boundaries: discovery and installation of the shipping Overworld's external datapacks, registry loading, then replacement publication. Custom packs and installations with automatic ingest disabled use the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before replacement staging. As a separate resilience check, a later ordinary restart should load the same two canonical identities without recreating a pending stage, backup, or journal.
 
 For rollback coverage, repeat on a fresh disposable instance with a deliberately corrupted staged pack or conflicting `bukkit.yml` value before the publication restart. Early Paper bootstrap must abort before registry and world loading, preserve the recoverable artifacts, and never guess a target. A failure after publication must journal a rollback, request the controlled restart, and restore the retained original directory and prior configuration before datapack compilation or world loading. If Iris silently proceeds past a corrupted stage, capture the journal and stage directories before touching anything; that is a blocking defect.
 
@@ -113,7 +123,7 @@ For rollback coverage, repeat on a fresh disposable instance with a deliberately
 1. Install the matching mod jar into `mods/`. Fabric needs Loader at or above the declared floor; Forge and NeoForge need theirs. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [30 - Platform Differences](/iris/30-platform-differences).
 2. Start the dedicated server, or singleplayer if you are also testing the client mod.
 
-   Expect: Iris boots without network access and reports no installed worldgen packs. Run `/iris download pack=overworld` and `/iris download pack=underworld`; each command installs on disk, leaves the process running, and asks for a restart. Restart once after both complete, then expect datapack and biome registration to complete.
+   Expect: Iris boots without network access and reports no installed worldgen packs. Run `/iris download pack=overworld` and `/iris download pack=underworld`; each command installs on disk, leaves the process running, and asks for a restart. Even if the empty dedicated server has entered Minecraft's paused state, phase and completion feedback must still arrive. Before restarting, put the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives in this save's `datapacks/` directory because modded `/iris datapack ingest` is a stub. Restart once only after all four inputs are present, then expect external datapack, Iris dimension-type, and biome registration to complete.
 
 3. Create a world (arguments are positional here, not keyed):
 
@@ -216,10 +226,11 @@ Strict one-chunk-at-a-time (Paper-compatible servers only):
 Expect, in order:
 
 1. Start reports the correct world, center, and size.
-2. `status` shows generated/total, percent, chunks per second, ETA, elapsed, method, and a failed count when any chunk failed.
-3. The first `pause` freezes progress; the second resumes it (`resume` is an alias for the same toggle).
-4. `stop` cancels and finishes active work without claiming completion when chunks remain.
-5. For a release candidate, also run a full serial or sync 2,025-chunk run (radius 352 at 0,0) and confirm zero failed chunks.
+2. `status` shows generated/total, percent, labeled overall/10-second/30-second/60-second rates, ETA, elapsed, method, and a failed count when any chunk failed.
+3. With `gui=true`, closing the pregen popup's red X disposes the popup while generation continues and the server still answers commands. Repeat for Noise Explorer and Vision; on macOS, application Quit while an Iris server window is focused must be cancelled rather than stopping the JVM.
+4. The first `pause` freezes progress; the second resumes it (`resume` is an alias for the same toggle).
+5. `stop` cancels and finishes active work without claiming completion when chunks remain.
+6. For a release candidate, also run a full serial or sync 2,025-chunk run (radius 352 at 0,0) and confirm zero failed chunks.
 
 If `serial=true` is rejected, the server is not Paper-compatible for strict serial pregen — that is expected, not a bug. If chunks fail, capture the console before retrying; failures are the finding, not the retry.
 

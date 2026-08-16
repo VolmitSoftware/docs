@@ -2,12 +2,12 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-15T21:07:31.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Creating an Iris world copies the pack into the world folder, registers the world so the server rebuilds it on every boot, and hands generation to the Iris engine. This page covers the full lifecycle on Bukkit-family servers and on Fabric, Forge, and NeoForge: create, load, unload, remove, and cold replacement of an existing world slot. Iris worlds are managed under the level root as `dimensions/iris/<key>/` on Bukkit; mod loaders keep theirs in `iris-dimensions.json`.
+Creating an Iris world copies the pack into the world folder, registers the world so the server rebuilds it on every boot, and hands generation to the Iris engine. This page covers the full lifecycle on Bukkit-family servers and on Fabric, Forge, and NeoForge: create, load, unload, remove, and cold replacement of an existing world slot. Paper-family servers keep managed worlds under the selected level root as `dimensions/iris/<key>/`; plain Spigot uses a configured outer world root with the same canonical dimension tree nested inside it; mod loaders keep their registry in `iris-dimensions.json`.
 
 See also: [02 - Getting Started](/iris/02-getting-started), [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [07 - Pregeneration](/iris/07-pregeneration), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [30 - Platform Differences](/iris/30-platform-differences).
 
@@ -36,7 +36,7 @@ Now create the real world. This is the step that freezes the pack:
 /iris create release_candidate type=overworld seed=1337
 ```
 
-On Folia, this stages files and automatically requests a controlled restart after staging succeeds. Wait for the server to return, then the world loads on boot. On every other Bukkit-family server the world is created immediately.
+On Folia, this stages files and automatically requests a controlled restart after staging succeeds. Wait for the server to return, then the world loads on boot. On every other Bukkit-family server, including Spigot, the managed `iris:*` world is created immediately.
 
 ```text
 /iris worlds
@@ -58,6 +58,8 @@ Wait for it to finish (see [07 - Pregeneration](/iris/07-pregeneration)), restar
 **The world is now committed.** It generates from `<world>/iris/pack`, its own frozen copy. Continuing to edit `packs/overworld/` affects Studio only. Never delete or replace that snapshot while the world is loaded. To ship pack changes into it later, use the deliberate path in [25 - Pack Management](/iris/25-pack-management); for anything that changes height or dimension type, create a new world instead.
 
 ### Fabric / Forge / NeoForge
+
+Before the shipping Overworld loads, install Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 in the target save's `datapacks/` directory and restart with the Iris pack already installed. Modded `/iris datapack ingest` does not perform this Bukkit-only installation.
 
 ```text
 /iris pack validate overworld
@@ -88,7 +90,7 @@ Removal is the operation most likely to cost you data, so the order matters.
 4. **Remove it.** `/iris remove <world>` deletes the files. `/iris remove <world> delete=false` keeps them and only unregisters — use this when you want the directory back later.
 5. **Read the status Iris prints.** It tells you what actually happened; see the status table below.
 
-**Success looks like:** `UNREGISTERED` (files kept) or `DELETED` (files gone), the world is absent from `/iris worlds`, and its directory under `<levelRoot>/dimensions/iris/` matches what you asked for.
+**Success looks like:** `UNREGISTERED` (files kept) or `DELETED` (files gone), the world is absent from `/iris worlds`, and its platform-specific dimension root described below matches what you asked for.
 
 `DELETE_QUEUED` means the files could not be deleted now and were quarantined for deletion at next startup. Restart and confirm the target is gone before reusing that name.
 
@@ -117,8 +119,9 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 |---|---|
 | Managed namespace | The safe/managed API accepts `iris` only, so create, load, and remove can never touch a `minecraft:` or third-party dimension folder |
 | Logical name | For `iris:foo` the logical name is `foo` — that is what you type in commands |
-| Storage root | `Server#getLevelDirectory` on Paper. If that method is missing, Iris latches a permanent fallback to `<world-container>/<level-name>` read from `server.properties` (default `world`) |
-| Dimension folder | `<levelRoot>/dimensions/iris/<key>/` |
+| Selected level root | `Server#getLevelDirectory` on Paper-family servers. If that method is missing, Iris latches `<world-container>/<level-name>` from `server.properties` (default `world`) for save-scoped registry and datapack work |
+| Paper-family dimension folder | `<levelRoot>/dimensions/iris/<key>/` |
+| Spigot dimension folder | `<world-container>/<level-name>_iris_<key>/dimensions/iris/<key>/`; the outer name is CraftBukkit's configured world root, while chunks, `iris/pack`, and `iris/pregen` all remain under the canonical nested dimension root |
 | Pack snapshot | `<dimensionRoot>/iris/pack/` |
 | Pregen cache | `<dimensionRoot>/iris/pregen/` |
 | Registry | `<level-root>/iris/worlds.json` (a save-scoped flat `worldIdentity → dimensionType` map, written atomically) plus the global `worlds:` section of `bukkit.yml`, which stores `generator: "Iris:<dimension>"` and the seed |
@@ -128,7 +131,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 
 The vanilla main, Nether, and End worlds have the canonical keys `minecraft:overworld`, `minecraft:the_nether`, and `minecraft:the_end`. They are not Iris-managed dimension folders and are only reachable through the exact-slot replacement path below.
 
-Paper's startup configuration name is separate from both identity and display name. An `iris:moon` dimension in level root `world` is displayed as `moon`, stored at `world/dimensions/iris/moon`, and bound in `bukkit.yml` as `world_iris_moon`. Iris parses that startup name back to the canonical key. Because `bukkit.yml` is server-global, Iris only imports entries whose exact canonical dimension directory is a real non-symlink directory in the currently selected level root; switching `level-name` cannot silently reinterpret another save's Iris registry.
+The startup configuration name is separate from both identity and display name. On Paper-family servers, an `iris:moon` dimension in level root `world` is displayed as `moon`, stored at `world/dimensions/iris/moon`, and bound in `bukkit.yml` as `world_iris_moon`. Plain Spigot uses the same startup name and identity but configures the outer root `world_iris_moon`, with the persistent dimension at `world_iris_moon/dimensions/iris/moon`. Iris parses the startup name back to the canonical key. Because `bukkit.yml` is server-global, Iris imports an entry only when its exact platform-specific canonical dimension directory is a real non-symlink directory for the selected save; switching `level-name` cannot silently reinterpret another save's Iris registry.
 
 Only that exact current-format startup name is accepted. Iris does not migrate, translate, or rewrite former short custom-world entries; noncanonical entries are ignored.
 
@@ -190,11 +193,13 @@ Folia cannot create worlds at runtime, so `/iris create` becomes a staging opera
 
 Iris dispatches the server's restart command only after the frozen pack, world files, and `bukkit.yml` entry have all succeeded. The restart waits for active lifecycle work to drain and falls back to stopping the server if the restart command does not complete. Iris cannot launch a new JVM itself: configure a restart script or external supervisor, or start the stopped server manually. Failed staging does not request a restart. `/iris replace` remains a manual, batchable restart boundary so several distinct slots can be staged before one restart.
 
+On Folia, a newly built engine publishes its runtime, generation session, running state, and background-task admission before its world-manager thread starts. A clean boot must not report `Iris lifecycle rejected bukkit_world_manager_loop`, `GenerationSessionException`, or that a newly loaded engine is closing. Those messages during startup indicate an outdated or broken build, not a normal regionized-server transition.
+
 ## Exact world-slot replacement
 
 `/iris replace <target> [type=default] [seed=preserve]` puts Iris generation into a slot that already exists, including the vanilla Overworld, Nether, or End. The command aliases are `override` and `overwrite`. It preserves that canonical identity in place, uses lifecycle kind `WORLD_REPLACE`, and always stages for a full restart. There is no live generator swap or old/new chunk merge.
 
-It requires a Paper-family early bootstrap, which plain Spigot never runs; on Spigot the command fails closed. The target dimension folder must already exist — ordinary create is still the path for a new world.
+It requires a Paper-family early bootstrap, which plain Spigot never runs; on Spigot the command fails closed. The target dimension folder must already exist. Spigot still supports ordinary `/iris create` for a new managed `iris:*` world.
 
 Accepted targets are safe `iris:*` keys and exactly three canonical vanilla slots: `minecraft:overworld`, `minecraft:the_nether`, and `minecraft:the_end`. Friendly aliases `main`/`overworld`, `nether`/`the_nether`, and `end`/`the_end` resolve to those slots. The selected save's Bukkit aliases `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` also resolve to those slots and take priority over friendly aliases; other bare names resolve to `iris:<name>`. A vanilla slot additionally requires:
 
@@ -214,7 +219,7 @@ For the supported main-world route, initialize both vanilla target folders first
 /iris download pack=underworld
 ```
 
-Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld to finish. The shipping Overworld declares no external datapacks and uses Minecraft's registered vanilla structures. Manually restart once so the downloaded packs' dimension types and custom biomes enter the live registries.
+Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld to finish. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With the default automatic ingest enabled, restart once so Bukkit installs those external datapacks, then complete the ensuing required restart so Minecraft loads their registry keys together with the downloaded packs' dimension types and custom biomes.
 
 After the server returns, stage both exact slots:
 
@@ -223,7 +228,7 @@ After the server returns, stage both exact slots:
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both replacements report staged. A fresh install therefore has one downloaded-pack registration restart followed by one replacement-publication restart; both replacements still publish together in the second cold reconcile. If a customized pack declares `datapackImports`, complete the optional workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging it.
+Restart once after both replacements report staged. The default automatic-ingest route on a fresh install therefore crosses three restart boundaries: the first boot discovers and installs the shipping Overworld's external datapacks, the ensuing restart loads those dependencies and the Iris registry data, and the final cold reconcile publishes both replacements together. If automatic ingest is disabled, complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
 The `type=` values select the Iris pack/dimension; the replacement targets select the Minecraft identities being retained; and each optional `seed=` applies only to that target. There is no main-world, overwrite, force, or portal-routing flag. `override` and `overwrite` are command aliases for `replace`, not behavior switches. After cold publication, vanilla portal mechanics continue to route between `minecraft:overworld` and `minecraft:the_nether`; a separately created or replaced `iris:*` world remains outside that canonical pair.
 
@@ -236,6 +241,12 @@ At the next boot, Paper's bootstrap reconciles each authorized transaction befor
 Publication retains Paper's per-world `data/paper/metadata.dat` and `data/paper/level_overrides.dat`. It uses a verified clone of `data/minecraft/world_gen_settings.dat`, preserving every current-format field while applying the selected seed to `data.seed`. Old `region`, `entities`, `poi`, and Iris runtime data are never merged — they stay in the backup, and the replacement starts from the staged snapshot.
 
 The backup is only eligible for deletion after `WorldLoad` proves the exact namespaced identity, Iris generator, selected dimension, seed, vanilla-slot environment, and an unchanged pack fingerprint. A failed check journals a rollback and requests another restart, after which cold bootstrap restores the retained directory and the prior `bukkit.yml` entry. A crash between any move, config write, or journal phase is retried idempotently. Finder may create a regular `.DS_Store` file anywhere in the staged pack without invalidating the transaction; symbolic links, special files, and authored pack changes remain protected and fail closed. Conflicting manual configuration, changed roots or names, changed staged bytes, unsafe storage, or a duplicate or corrupt journal aborts early bootstrap and preserves the artifacts rather than guessing.
+
+### Safe entry after an Overworld replacement
+
+Replacing `minecraft:overworld` also replaces the terrain underneath saved player positions and the old world spawn. Before Iris retires that replacement's entry guard, it generates the new initial-spawn chunk, searches only inside that Folia-owned chunk for a dry collision-supporting floor with two collision-free, fluid-free body blocks, applies the result as the canonical world spawn, and saves the world. Water, waterlogged blocks, leaves, powder snow, magma, cactus, fire, portals, cobwebs, pointed dripstone, berry bushes, wither roses, and other explicit collision hazards are not accepted as the floor or body space. If no candidate can be verified, Iris keeps the guard active and refuses guarded login instead of guessing an unsafe position.
+
+The staged replacement records every player whose current data file exists in the selected save. On that player's first post-replacement login, Iris leaves a saved Overworld location alone when both body blocks are still passable; otherwise the Paper pre-login spawn event redirects the player to the persisted safe spawn while preserving yaw and pitch. After the join succeeds, Iris saves the redirected player data and atomically removes that player's durable receipt. The marker retires only after every recorded player has either entered safely or logged in from another dimension, so a crash or restart cannot turn the one-time rescue into an untracked partial operation. New players also use the verified replacement spawn while the guard is active.
 
 ## Studio create
 

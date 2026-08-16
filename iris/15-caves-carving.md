@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -162,6 +162,8 @@ For a given `(x, y, z)`, in order:
 3. If the sampled cave biome's `caveMinDepthBelowSurface` is deeper than the point actually is, or if the point is at or above the surface, the **surface** biome is used instead.
 
 Results are blended: the resolver samples the centre plus four points three blocks out, and where they disagree it picks the centre half the time and one of the four neighbours otherwise, seeded per block position. That produces a speckled transition band rather than a hard edge between two cave biomes.
+
+The resolver's per-worker scratch state is bound by weak identity to the exact engine, dimension, and pack data that produced it. When a generation worker switches worlds or an engine is replaced, Iris clears its cached Y-band entries, child-selection plans, biome resolutions, entry index, and child seed before the next lookup. One world's cave choices therefore cannot bleed into another, and a long-lived worker cannot keep a retired engine alive through this cache.
 
 `carvingBiome` on a surface biome is **not** part of this lookup. At runtime it only pulls the referenced biome into the pack's reachable-biome closure so its custom biome identity and spawn mappings get registered; it never selects a cave biome during generation. Use region `caveBiomes` or a dimension `carving` band instead.
 

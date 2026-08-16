@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-15T21:07:31.000Z
+date: 2026-08-15T22:04:01.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -114,23 +114,25 @@ The loop passes when the source closure validates, the package command produces 
 
 There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
 
-A successful download performs registry-independent pack validation and atomically publishes the pack on disk, then asks the operator to restart. The command reports connecting, transfer, unpacking, validation, and publication as styled phases. Bukkit players receive a rate-limited 24-cell HUD progress display with percentage, transferred size, total size, and transfer rate when the server supplies a content length; it uses the action bar when that Iris HUD slot is free and a stacked boss bar otherwise. Unknown-length transfers and non-transfer phases use a moving indeterminate bar. Console progress is limited to 10-percent boundaries or five-second intervals, and success, failure, cancellation, already-installed, and restart-required outcomes remain in chat or console history. Direct-link output identifies a Remote ZIP without echoing the URL or any signed query parameters. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically. Bootstrap validation proves the pack tree is structurally sound; it does not prove that external keys referenced through `datapackImports` exist in the current live registry.
+A successful download performs registry-independent pack validation and atomically publishes the pack on disk, then asks the operator to restart. The command reports connecting, transfer, unpacking, validation, and publication as styled phases. Bukkit players receive a rate-limited 24-cell HUD progress display with percentage, transferred size, total size, and transfer rate when the server supplies a content length; it uses the action bar when that Iris HUD slot is free and a stacked boss bar otherwise. Unknown-length transfers and non-transfer phases use a moving indeterminate bar. Console progress is limited to 10-percent boundaries or five-second intervals, and success, failure, cancellation, already-installed, and restart-required outcomes remain in chat or console history. On Fabric, Forge, and NeoForge, phase and terminal feedback runs through Minecraft's server task queue rather than Iris's tick queue, so completion is still delivered after an empty dedicated server enters its vanilla paused state. Direct-link output identifies a Remote ZIP without echoing the URL or any signed query parameters. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically. Bootstrap validation proves the pack tree is structurally sound; it does not prove that external keys referenced through `datapackImports` exist in the current live registry.
 
-The shipping Overworld declares no external datapacks and uses Minecraft's registered vanilla structures. Use this deterministic Paper-family sequence:
+The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. Use this deterministic Paper-family sequence (plain Spigot supports managed `/iris create`, but not exact-slot `/iris replace`):
 
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
-Wait for each download to complete before issuing the next command; the download slot never queues a second request. After both finish, manually restart once so the downloaded packs' dimension types and custom biomes enter the live registries. After the server returns:
+Wait for each download to complete before issuing the next command; the download slot never queues a second request. With the default `general.autoIngestDatapacks=true`, restart after both finish. On that boot Iris installs the Overworld's two external dependencies and leaves startup admission restart-required. Complete the ensuing clean restart so Minecraft loads those dependencies, the downloaded packs' dimension types, and their custom biomes into the live registries. After that server return:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both replacements report staged. The first restart registers the downloaded packs; the second cold reconcile publishes both exact replacements together with the two independently selected seeds. Omit a `seed=` argument to preserve that slot's existing saved seed. A customized pack with `datapackImports` must complete the separate ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks); full replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
+Restart once after both replacements report staged. The default automatic-ingest route therefore uses three restart boundaries: discovery and installation of the declared external datapacks, registry loading, then cold publication of both exact replacements with the two independently selected seeds. Omit a `seed=` argument to preserve that slot's existing saved seed. With automatic ingest disabled, complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks); full replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
+
+On Fabric, Forge, and NeoForge, `/iris datapack ingest` cannot install these dependencies. Put the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives in the target save's `datapacks/` directory before the shipping Iris Overworld loads, then restart with the Iris pack and both external datapacks already present.
 
 ### Install pipeline (`PackDownloader`)
 

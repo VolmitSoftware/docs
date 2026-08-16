@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-15T23:20:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,8 +58,9 @@ Done when: the source, dependencies, generated terrain baseline, and test result
 - [x] Fix the reproducible order/state-dependent generation defect. Cave painting relabeled shared, loader-cached biome objects as `CAVE`; shallow cave resolution can return the surface biome, so later height and biome decisions changed until `IrisComplex` was rebuilt. Carving now passes explicit cave context to surface and ceiling decorators without mutating the shared biome, preserving cave fluid behavior. Focused isolation and decorator tests plus a 2,025-chunk warm-sequence reproducer pass.
 - [x] Scope the confirmed height-bounds cache to its owning `IrisComplex`. The previous static thread-local cache keyed entries only by grid coordinates and interpolator index, allowing another engine or a hotloaded complex to reuse bounds from a different generator set. Focused coverage protects both cross-complex isolation and same-complex cache reuse.
 - [x] Scope the cave carver's scratch cache to each `IrisCaveCarver3D`. The warp cache was thread-local but shared by every cave profile and keyed only by sample coordinates, so a second profile on the same worker could reuse warp values from the first profile's noise generator. Focused same-thread coverage now proves distinct carvers retain their own warp samples while preserving per-carver scratch reuse.
+- [x] Bind the dimension-carving resolver's worker-local state by weak identity to the exact engine, dimension, and pack data. A worker switching worlds or generations clears every cached Y-band entry, selection plan, biome result, entry index, and child seed, preventing cross-world cave selection and allowing retired engines to be collected; focused identity-switch and weak-lifetime coverage protects the contract.
 - [x] Make cross-chunk cave-wall painting independent of adjacent mantle load order. All 37 block differences in the two focused mantle-reset diagnoses were on local chunk edges (`x=0`, `x=15`, or `z=15`), where `IrisCarveModifier` paints the neighboring cave wall only when that neighbor's mantle chunk contains carving data. The carving component now declares a minimal one-block radius, which schedules the full adjacent chunk pass through the mantle radius conversion; focused coverage protects that contract. Packaged-runtime regeneration now retains the same fixed-seed hash on every available platform.
-- [x] Repeat the fixed-seed, reset-mantle GoldenHash sequence from clean startup and after a complete pregen on every available platform. Paper 26.2-56, Fabric Loader 0.19.3, Forge 65.0.3, and NeoForge 26.2.0.8-beta all produced the exact combined hash `783cf831486858129a3730e93c2823b773a40af78442ba3ebe373425eb80fab4`; every strict single-thread 2,025-chunk pregen completed with zero failures and every post-pregen verification matched. Fabric also matched after a controlled restart. Folia 26.2 remains unavailable from its upstream build endpoint.
+- [x] Repeat the fixed-seed, reset-mantle GoldenHash sequence from clean startup and after a complete pregen on every available platform. Paper 26.2-56, Fabric Loader 0.19.3, Forge 65.0.3, and NeoForge 26.2.0.8-beta all produced the exact combined hash `783cf831486858129a3730e93c2823b773a40af78442ba3ebe373425eb80fab4`; every strict single-thread 2,025-chunk pregen completed with zero failures and every post-pregen verification matched. Fabric also matched after a controlled restart. Folia was not part of this earlier GoldenHash sequence; its later targeted replacement acceptance is recorded in section 11.
 - [x] Explain and fix the separate 50-chunk Paper-versus-modded biome-hash difference for byte-identical packs. All 131 differing sampled columns were exactly `minecraft:forest` versus `minecraft:plains`: Bukkit's NMS biome source seeded the shared scatter generator from its first coordinate-derived RNG, while modded generation seeded it from the engine biome seed. Every runtime path now passes its owning engine explicitly, shared registrants cache by canonical engine biome seed in a bounded eight-entry cache, and engine-less tooling preserves supplied-seed behavior. Concurrent interleaved-engine coverage protects exact engine ownership, seed isolation, same-seed reuse, and bounded eviction.
 - [x] Sample direct Bukkit/modded biome derivatives at each world column, matching Bukkit NMS resolution. The actuator previously reused the chunk origin for every local column, so scatter selection could differ even after both platforms used the same generator seed. Focused actuator coverage verifies all four coordinates in a two-by-two chunk section are distinct world positions.
 - [ ] Add a two-thread barrier test that generates two chunks through the same `IrisEngine` concurrently.
@@ -172,6 +173,8 @@ Done when: modded shutdown/hotload cannot save blank chunks, strand futures, rac
 - [ ] Replace full delayed-task scans with a due-time queue or equivalent bounded scheduler.
 - [ ] Stress cancellation, pause/resume, failure, shutdown, and restart under Paper and Folia.
 - [ ] Verify chunk tickets, regions, files, protocol sessions, and executor threads are released afterward.
+- [x] Publish the runtime, generation session, `RUNNING` state, cleared closing flag, and background-task admission before starting each engine's world manager. Three consecutive Folia 26.2 cold boots of the retained exact Overworld and Nether replacements loaded both engines without `bukkit_world_manager_loop` rejection, engine-closing warnings, `GenerationSessionException`, or startup failure; a Paper cold-boot smoke retained both canonical engines and seeds.
+- [x] Resolve and persist a replacement Overworld spawn on dry collision-supporting ground with two collision- and fluid-free body blocks, inside the already owned spawn chunk. A fresh Paper exact replacement moved the unsafe water-column spawn to a coarse-dirt-supported location, and the same location and block states survived a cold boot. Durable per-player entry receipts and one-time collision redirect have focused automated coverage; a returning-player real-login run remains separate gameplay acceptance.
 
 Done when: pregeneration remains thread-correct and bounded under saturation, cancellation, failure, and restart.
 
@@ -179,7 +182,7 @@ Done when: pregeneration remains thread-correct and bounded under saturation, ca
 
 ### Current verification coverage
 
-These runs validate packaged-artifact generation and establish a profiling candidate. They are not the final 5,000-10,000-chunk performance baseline required by this section. They also predate the current `gradle.properties` loader pins on two platforms — captured against Forge `65.0.3` and NeoForge `26.2.0.8-beta`, while the tree now pins `forgeVersion=26.2-65.0.4` and `neoForgeVersion=26.2.0.12-beta` — so re-run those two loaders before treating any of it as valid for the shipping artifacts.
+These runs validate packaged-artifact generation and establish a profiling candidate. They are not the final 5,000-10,000-chunk performance baseline required by this section. They predate the current `gradle.properties` loader pins on two platforms: this historical run used Forge `65.0.3` and NeoForge `26.2.0.8-beta`, while current artifacts target Forge `26.2-65.1.1` and NeoForge `26.2.0.59`. Treat the results below as historical evidence; current-loader acceptance is recorded separately in the platform matrix.
 
 - [x] Fixed inputs: Iris seed `1337`, GoldenHash radius `22`, one hash thread, and a 352-block serial/sync pregeneration radius covering exactly 2,025 chunks.
 - [x] Fixed host: Apple M3 Max, 128 GiB RAM, Temurin 25.0.2, 8 GiB instance heap.
@@ -189,6 +192,7 @@ These runs validate packaged-artifact generation and establish a profiling candi
 - [x] NeoForge 26.2.0.8-beta: sync pregen completed 2,025/2,025 with zero failed chunks; pause/cancel, checkpoint resume, fresh generation, and GoldenHash capture completed against the corrected pack.
 - [x] GoldenHash parity/determinism: Paper, Fabric, Forge, and NeoForge all captured the exact block+biome hash `783cf831486858129a3730e93c2823b773a40af78442ba3ebe373425eb80fab4` from the manually built candidate artifacts. Every platform then completed a strict single-thread 2,025-chunk pregen with zero failures and retained that hash; Fabric retained it across restart. The historical divergent hashes are superseded by fixes for cross-complex height bounds, cross-profile cave warp, cave-boundary scheduling, engine-owned biome generation, per-column biome sampling, and shared-biome cave relabeling.
 - [x] Paper JProfiler CPU, heap, and GC snapshots captured; explicit post-run GC reduced used heap from a sampled peak near 5.94 GiB to approximately 475 MiB, with no retained-heap leak indicated by this run.
+- [x] Plain Spigot 26.2 build 4645 completed fresh-center 1,000-block-radius pregenerations for managed Overworld and Underworld worlds at 16,129/16,129 chunks each with zero failures under a 4 GiB heap and `-XX:+DisableExplicitGC`. Six automatic diagnostic reclaims required no operator GC; the Underworld resumed after the bounded 60-second below-high-water release and completed without OOM, unsafe terrain reads, far writes, or critical errors.
 - [x] Fabric JProfiler sampled-allocation snapshot captured; profiling overhead made that run unsuitable for throughput comparison.
 - [x] Real content-mod fixture: Fabric, Forge, and NeoForge loaded Nerospace beta.7 with Neroland Core 1.4.0 (plus Fabric API 0.154.2 on Fabric), resolved a custom entity/item/block through Iris, generated the exact named structure chest item, performed once-per-chunk initial spawning with zero players, replaced the entity's death loot, generated seven custom ore blocks in the forced test area, and completed strict synchronous 2,025/2,025 pregeneration with zero failed chunks on every loader.
 
@@ -227,14 +231,21 @@ Done when: a clean CI run proves tests, deterministic generation, packaging, and
 
 Use the exact packaged release jars, not development classes.
 
-The runs completed so far prove fresh non-empty generation, exact fixed-seed block-and-biome parity, and complete serial/sync 2,025-chunk pregeneration on Paper, Fabric, Forge, and NeoForge. A second real content-mod fixture also passes entity, item, block, structure loot, death loot, headless initial-spawn, and 2,025-chunk pregeneration gates on all three mod loaders. It does not yet satisfy the minimum/latest loader, complete Bukkit-family, client, lifecycle, or full pregen-control matrix below.
+The runs completed so far prove fresh non-empty generation, exact fixed-seed block-and-biome parity, and complete serial/sync 2,025-chunk pregeneration on Paper, Fabric, Forge, and NeoForge. A separate exact-replacement acceptance loaded the shipping Overworld at seed `123456789` and Underworld at seed `-987654321` under the canonical vanilla keys on Paper, Folia, Leaf, and Canvas; every platform then completed both 1,000-block-radius pregenerations at 16,129/16,129 chunks with zero failures. Plain Spigot 26.2 build 4645 separately created managed `iris:qa-overworld` and `iris:qa-underworld` worlds with those same seeds, completed both 16,129-chunk pregenerations, and retained exact identities, seeds, canonical storage paths, region inode fingerprints, registry entries, frozen packs, and pregen caches across repeated cold boots, including the final shared artifact. Current-target modded acceptance used Fabric Loader 0.19.3, Forge 26.2-65.1.1, and NeoForge 26.2.0.59: the runtime-accepted jars passed packaging and mixin audits, reinjected `irisworldgen:accept_overworld` seed `123456789` and `irisworldgen:accept_underworld` seed `-987654321` before and after their final cold restart, and completed both valid-center 1,000-block-radius pregenerations at 16,129/16,129 with zero failures on every loader. After the later Bukkit-only exact-slot storage correction, all three modded artifacts were rebuilt from the final source and passed packaging and mixin verification again; no modded runtime path changed. A second real content-mod fixture also passes entity, item, block, structure loot, death loot, headless initial-spawn, and 2,025-chunk pregeneration gates on all three mod loaders. These targeted runs do not satisfy every minimum/latest loader, client, lifecycle, Studio, or pregen-control item below, so the broader matrix remains open.
+
+**Current world lifecycle and 1,000-block pregen acceptance: PASS-WITH-WARN.** Paper, Folia, Leaf, Canvas, Spigot, Fabric, Forge, and NeoForge all pass the requested world, seed, restart, storage, and pregeneration scenarios. The final source also passes every Bukkit and modded packaging verifier. The warning is external: Folia still cannot load 35 Dungeons & Taverns functions, and the modded logs retain the classified authored-content fallbacks described above. This targeted decision does not close the broader client, Studio, minimum/latest-loader, performance-baseline, distribution, or publication gates below.
 
 - [ ] Bukkit-family server matrix:
-  - [ ] Paper current target
+  - [x] Paper current target
   - [ ] Purpur current target
-  - [ ] Folia current target
-  - [ ] Spigot/CraftBukkit if still advertised as supported
+  - [x] Folia current target
+  - [x] Leaf current target
+  - [x] Canvas current target
+  - [x] Spigot/CraftBukkit managed-world path
 - [ ] Mod-loader matrix:
+  - [x] Fabric Loader 0.19.3 current target
+  - [x] Forge 26.2-65.1.1 current target
+  - [x] NeoForge 26.2.0.59 current target
   - [ ] Fabric declared minimum loader
   - [ ] Fabric latest compatible loader
   - [ ] Forge declared minimum loader
@@ -271,13 +282,13 @@ Done when: every advertised server, loader, client, and content path completes t
 - [ ] Document intentional entity-spawn and tooling differences that remain.
 - [x] Remove tracked generated SIMD benchmark `.class` files and jar outputs.
 - [x] Keep generated server worlds, caches, credentials, and build artifacts ignored.
-- [ ] Consolidate the Iris section of `MasterChangelog.MD` to the final shipped behavior.
+- [x] Consolidate the Iris section of `MasterChangelog.MD` to the final shipped behavior.
 - [ ] Review store/listing copy, screenshots, commands, supported platforms, and Java requirements.
 - [ ] Write release notes with upgrade instructions, known limitations, and rollback guidance.
 
 ### Confirmed release blockers and follow-ups
 
-- [ ] Keep both embedded beta assets anonymously downloadable: `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` and `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip`. Underworld currently returns anonymous HTTP 404 because its repository is private; make the asset public before release, then replace both URLs with the planned ZIP service when available.
+- [x] Verify both embedded beta assets remain anonymously downloadable: `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` and `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip` both return HTTP 200, and isolated acceptance downloaded and installed both packs successfully.
 - [x] Make modded GoldenHash metadata use the active Iris engine seed. Fabric, Forge, and NeoForge generated identical output from Iris seed `1337`, but filenames and headers recorded each vanilla level seed, preventing one captured baseline file from being reused directly across loaders.
 - [x] Correct the default overworld pack's slime spawn category from implicit `MISC` to explicit `MONSTER` in `biomes/vanilla/mangrove_swamp.json`, `biomes/swamp/cambian-drift.json`, `biomes/swamp/cambian-drift-extended.json`, `biomes/swamp/marsh.json`, and `biomes/swamp/marsh-rotten.json`. NeoForge exposes the bad category at startup; all loaders generate the same bad datapack entry, which can affect natural slime spawning and mob-cap accounting.
 - [x] Extend `PackValidator` to reject authored custom-biome spawn categories that disagree with the live entity category instead of allowing the bad datapack to reach loader validation.
@@ -288,7 +299,8 @@ Done when: every advertised server, loader, client, and content path completes t
 - [x] Make synchronous modded pregen completion diagnostics report meaningful concurrency values. The successful runs reported `peakInFlight=0 finalLimit=32` despite a strict `inFlightCap=1` sync mode.
 - [ ] Pin or fix the isolated test harness behavior before trusting it for a release: setting an instance isolated currently leaves consumer-content symlinks in place. This pass used a fresh, dedicated harness root, so those links pointed only to test-local content and did not contaminate the test, but the isolation flag alone is insufficient.
 - [x] Resolve the fixed-seed order/state-dependent block generation and Paper-versus-modded biome-hash difference. The manually built candidate produced one exact full hash before and after 2,025-chunk pregeneration on Paper, Fabric, Forge, and NeoForge; Fabric also retained it after restart.
-- [ ] Re-run Folia when an upstream 26.2 server build becomes available. The official 26.2 build endpoint currently returns `version_not_found`; an incompatible 26.1.2 runtime does not count.
+- [x] Run current Folia 26.2 after a compatible upstream build became available. Exact Overworld and Nether replacement, both independent seeds, both 16,129-chunk pregenerations, and three consecutive post-race-fix cold boots completed without an Iris lifecycle rejection or engine-closing exception.
+- [x] Track the upstream Folia 26.2 incompatibility with Dungeons & Taverns 5.3.0. A no-Iris Folia control confirms its command dispatcher lacks or restricts commands used by the unchanged datapack, producing 35 `nova_structures:*` function-load failures and incomplete load/tick tags; Paper, Leaf, and Canvas load the same bytes. Iris world loading and pregeneration pass, but affected Dungeons & Taverns functions remain unavailable until Folia or the datapack changes.
 - [ ] Nerospace beta.7's bundled `nerospace:guide/new_life` advancement uses the obsolete `minecraft:entity_sub_predicate_type`/`minecraft:type` shape and logs one datapack parse error on Fabric, Forge, and NeoForge 26.2. Iris's custom block, item, entity, chest loot, death loot, and pregeneration integration all pass despite that independent content-mod error; update Nerospace before using it as a clean-log beta recommendation.
 - [x] Preserve structure-level loot through placement persistence. Newly placed structure containers receive a versioned, delimiter-safe marker containing the piece object, deterministic placement id, and owning structure; `Engine.getObjectPlacement()` reconstructs authored loot in order at weight 1 for the existing Bukkit and modded application paths without overriding global loot. Legacy `object@id` markers remain readable, malformed and unknown-version markers fail safely, and marker writes are storage-container-only.
 - [x] Remove the unsupported `IrisStructurePlacement` `rotation`, `translate`, and `scale` fields from beta authoring and generated schemas. Read-only pack validation now blocks those keys specifically inside dimension, region, and biome `structures[]` entries instead of accepting settings with no runtime effect; ordinary object-placement transforms remain valid and are not inspected by this check.
@@ -302,10 +314,10 @@ Done when: documentation and distribution metadata describe the behavior users w
 - [ ] `edge-case-review`: pass or all remaining risks explicitly accepted.
 - [ ] `perf-regression`: pass against the recorded baseline.
 - [ ] `release-dry-run`: pass using final packaged artifacts.
-- [ ] `changelog-ready`: pass.
+- [x] `changelog-ready`: pass.
 - [x] `manual-runbooks`: pass.
-- [ ] `docs-updated`: pass.
-- [ ] `known-issues-reviewed`: pass.
+- [x] `docs-updated`: pass.
+- [x] `known-issues-reviewed`: pass.
 - [ ] Working tree is clean on the exact release commit.
 - [ ] CI is green on that commit and all supporting artifacts are retained.
 - [ ] Complete every item in [86 - Maintainer - Release Checklist](/iris/86-maintainer-release-checklist) without rebuilding from different source.
@@ -326,6 +338,9 @@ Release decision:
 - [x] Bukkit/Paper pregeneration accepts small positive radii and a strict one-in-flight `serial=true` mode without changing normal Paper/Folia concurrency.
 - [x] Pregeneration drains the final backend callback before reporting completion, eliminating the observed 2,024/2,025 success summary; delayed final success and failure paths have regression coverage.
 - [x] Modded synchronous and asynchronous completion counters count only successful chunks, and final summaries include generated, total, failed, and duration values.
+- [x] Reject a pregeneration whose `center ± radius` exceeds ±29,999,984 before runtime mutation. Shared bounds tests cover exact-edge acceptance and every overflow direction; modded command admission constructs and validates the task before cache-profile changes, tickets, job state, or pregen files, and the first asynchronous chunk failure now logs its complete unwrapped stack once before compact repeats.
+- [x] Bound modded native structure post-processing to the current 3×3 chunks with deterministic Iris terrain or empty ephemeral reads beyond it and no far mutations. Existing POI-bearing protochunk states are registered before shifted native placement so ordinary transitions remove or replace them correctly, and the vanilla structure-template palette uses a concurrent boot-audited lookup cache. Current-loader cold replays completed all six 16,129-chunk worlds with zero unsafe reads, far writes, POI mismatches, cave-key fallbacks, native-volume concurrency failures, failed chunks, OOMs, or crashes.
+- [x] Classify the remaining external-content warnings instead of hiding or migrating them: unresolved grass forms, invalid authored block properties, empty third-party template pools, the stale `chisled_polished_blackstone` replacement, and stale block-attached-entity positions continue through Minecraft's safe fallback where available and remain visible to operators.
 - [x] GoldenHash null-biome fallback is explicitly `minecraft:plains` on Bukkit and modded adapters.
 - [x] GoldenHash metadata uses the active Iris seed across every platform, and GitHub pack downloads accept validated immutable commit and tag references in preparation for freezing the default pack.
 - [x] Runtime splash identity derives from the packaged artifact version instead of a stale release label.
@@ -334,7 +349,7 @@ Release decision:
 - [x] Spawner entity dependency validation covers both runtime spawn lists, malformed entry/container shapes, missing or malformed referenced entities, nested resource keys, and path containment; the default pack's dormant spawner library resolves to exactly 36 standard entities and no restored unique entities.
 - [x] `.iris` packaging collects entity dependencies from both normal and initial spawner lists, so an entity used exclusively during initial chunk spawning remains present after export.
 - [x] Newly placed structure containers persist versioned structure ownership and resolve the structure's authored loot through the shared Bukkit/modded placement path without replacing global loot or consuming generation RNG.
-- [x] VolmLib is pinned to commit `d9026a7c8ebc391c8109f401ce79a0ce65df3969`; local-development and clean remote-resolution modes propagate through every nested platform build.
+- [x] VolmLib is pinned to commit `5486ac97ad6d6833e27275dc768222d377721522`; local-development and clean remote-resolution modes propagate through every nested platform build.
 - [x] Headless classload validation scans all 1,166 compiled core classes, including all 353 nested classfiles; 331 nested classes initialize without server APIs and the remaining 22 match exact reviewed class and dependency-namespace entries.
 - [x] Modded worldcheck uses a daemon coordinator with bounded waits on every server task, stops the server before exiting, and returns nonzero for internal failure, timeout, interruption, thrown checks, and shutdown failure; its exit contract is covered by the Fabric shared-source test gate.
 - [x] Fabric protocol startup tolerates the pre-player-list server phase.

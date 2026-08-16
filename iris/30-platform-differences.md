@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-15T00:00:00.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -44,6 +44,7 @@ Core engine: `core/`. Shared modded logic: `adapters/modded-common/`. SPI: `spi/
 | Generated datapack | world `datapacks/` + Iris ingest | `<configDir>/irisworldgen/generated/datapack/`; dimension-type pack name `iris` under `data/irisworldgen/dimension_type/` |
 | Parity / developer dumps | under plugin data folder | `<configDir>/iris/parity/` |
 | Persistent dynamic-world registry | `<level-root>/iris/worlds.json`, plus exact save-filtered `bukkit.yml` startup bindings | `<world-root>/iris/iris-dimensions.json` |
+| Managed dimension storage | Paper-family: `<level-root>/dimensions/iris/<key>/`. Plain Spigot: `<world-container>/<level-name>_iris_<key>/dimensions/iris/<key>/` | Minecraft's dynamic-dimension storage under the save, registered through `iris-dimensions.json` |
 
 On mod loaders only `settings.json` and the parity dumps use the `iris/` root; every pack, config, and generated artifact uses `irisworldgen/`. Both roots sit under the loader config directory.
 
@@ -69,11 +70,15 @@ Both use the same invalidate, reload, and locale path once a change is detected.
 | Studio world | Transient studio world via StudioSVC; `/iris jigsaw` can select the Jigsaw Studio generator for one activation | Studio dimension under `irisworldgen:studio_*`; no Jigsaw Studio authoring tree |
 | Folia | Regionized schedulers; pregen `runtimeSchedulerMode` always resolves to `FOLIA` on a regionized runtime | Not applicable |
 
-Startup never downloads packs. Paper bootstrap compiles the aggregate datapack from installed and world-local packs and accepts an empty pack set; legacy Bukkit and modded startup likewise use only pack bytes already on disk. Operators use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<zip-url>`, then restart manually.
+Startup never downloads packs. Paper bootstrap compiles the aggregate datapack from installed and world-local packs and accepts an empty pack set; plain Bukkit and modded startup likewise use only pack bytes already on disk. Operators use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<zip-url>`, then restart manually.
 
 Modded startup quarantines a corrupt persistent-dimension registry as `iris-dimensions.json.broken-<timestamp>` and continues without those dynamic worlds. Recovery: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 Cold replacement requires a full Paper-family plugin bootstrap. Without it the staging call fails outright, which is why replacement is Paper/Purpur/Leaf/Folia only. Several distinct targets can be staged and published with one manual restart.
+
+Folia's engine startup is region-safe but otherwise follows the same published runtime contract: Iris exposes the runtime and generation session as running before starting the world manager. Startup messages that reject `bukkit_world_manager_loop` or say a newly loaded engine is closing are defects or evidence of an outdated build, not expected Folia noise.
+
+There is one current third-party datapack exception. Folia 26.2's command dispatcher omits or restricts commands used by Dungeons & Taverns 5.3.0, causing 35 `nova_structures:*` function-load failures for the shipping Overworld dependency. The same bytes load on Paper, Leaf, and Canvas, and the absent commands reproduce on Folia without Iris installed. Iris world loading and pregeneration still complete, but the affected Dungeons & Taverns functions do not; see [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
 ## Commands and permissions
 

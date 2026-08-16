@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-15T18:07:57.000Z
+date: 2026-08-16T02:05:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Iris throughput is bounded by four things: how many chunks the platform will let
 Most bad tuning comes from changing three things, seeing a better number once, and keeping all three. Do this instead:
 
 1. Freeze the inputs: Iris artifact, pack bytes, seed, center, radius, JVM flags, and server population.
-2. Run one warmup, then three measured runs. Record chunks/second, wall time, peak heap, GC behavior, and failed chunk count.
+2. Run one warmup, then three measured runs. Record the overall, 10-second, 30-second, and 60-second chunk rates, wall time, peak heap, GC behavior, and failed chunk count.
 3. Change exactly one setting. Restart if the setting is read once at startup — thread pools, caches, and SIMD kernel selection all are.
 4. Repeat the warmup and three runs over the same area. A comparison across different terrain is not a comparison.
 5. Keep the change only if the median improves with no determinism mismatch, no new failures, no unacceptable heap growth, and no worse tick latency.
@@ -28,7 +28,7 @@ Work through these in order. The first two are free; the rest trade something.
 
 1. **Check whether the platform is the limit, not Iris.** On Fabric, Forge, and NeoForge without a parallel chunk system, pregen runs through the vanilla main-thread chunk pipeline and throughput is capped there regardless of settings. Iris logs this at pregen start and names the fix: install C2ME on Fabric, or run Paper if you want Bukkit-level throughput. No Iris setting recovers that gap.
 2. **Confirm SIMD is on.** On Bukkit, the startup log prints one of `SIMD: vector kernels enabled (…)`, `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector …`, or `SIMD: vector kernels disabled (performance.simdKernels=false)`. If you see the scalar message, add the JVM flag and restart. See the SIMD section for what it actually accelerates and how small that surface is. Mod loaders never print this line, so check the JVM flag directly there.
-3. **Leave concurrency alone unless it is warning at you.** Bukkit pregen concurrency is derived, not configured: a detected Paper, Moonrise, or Folia chunk-system worker count is authoritative; Iris uses CPU and configured world-gen threads only if detection is unavailable. The worker count is multiplied by 8 and clamped to 16–128 on Paper-like servers or 64–192 on Folia. Raising it is not an option, and the adaptive limiter lowers it when requests stay pending or mantle backpressure engages. The only concurrency lever on Bukkit is `serial=true`, which drops to one chunk in flight — use it for profiling and determinism isolation, never for throughput.
+3. **Leave concurrency alone unless it is warning at you.** Bukkit pregen concurrency is derived, not configured. Paper-like admission uses the larger of the detected chunk-system pool and the world-gen pool Iris provisions during initialization; Folia also includes its broader runtime capacity. The effective worker count is multiplied by 8 and clamped to 16–128 on Paper-like servers or 64–192 on Folia. Raising it is not an option, and the adaptive limiter lowers it when requests stay pending or mantle backpressure engages. The only concurrency lever on Bukkit is `serial=true`, which drops to one chunk in flight — use it for profiling and determinism isolation, never for throughput.
 4. **On mod loaders, size `pregen.moddedPregenInFlight` to the chunk system.** Default `0` resolves to `clamp(16, cpu*2, 48)`, and whatever value comes out is floored at 8. Raise it only if the loader has a parallel chunk system and the CPU is not saturated; lower it if you see chunk-load timeouts. Positive values are capped at 512.
 5. **Raise the object cache if the same objects keep reloading.** `performance.objectLoaderCacheSize` (default 4096) bounds the loader caches for `.iob` objects, matter objects, and images. Object-heavy packs on large pregens hit this. The tradeoff is retained heap, so only do this if heap has room — see the memory section.
 6. **Give the process more heap before touching mantle caps.** Resident mantle plates are budgeted against process memory, so a bigger heap raises the effective plate count without any settings change.
@@ -57,7 +57,7 @@ Generation competing with the server tick shows up as timeout warnings, region s
 
 ## Symptom: heap pressure, long GC pauses, or OOM risk
 
-Mantle is the largest thing Iris keeps in heap. Iris already reacts to heap pressure on its own: as used heap climbs from 82% to 92%, the idle window before a mantle plate is trimmed shrinks linearly to zero, and above 96% Iris requests a reclaim (at most once every 30 seconds). If you are seeing pressure, that machinery is already running — you are deciding how much less mantle to hold.
+Mantle is the largest thing Iris keeps in heap. Iris already reacts to heap pressure on its own: as used heap climbs from 82% to 92%, the idle window before a mantle plate is trimmed shrinks linearly to zero. At 92% pregeneration pauses, trims mantle, and begins one reclaim episode with a normal GC request. If pressure remains after 10 seconds, Iris asks the current HotSpot JVM for a diagnostic full GC; successful diagnostic attempts are at least 60 seconds apart, and failures back off from 1 to 15 minutes with a full error report. Generation resumes immediately at 82% or after heap remains continuously below 92% for 60 seconds, so a collector that settles between the thresholds cannot wedge the run indefinitely. If you are seeing pressure, that machinery is already running — you are deciding how much less mantle to hold.
 
 First make sure the JVM fits inside its container. Pterodactyl charges the Java heap, metaspace, code cache, thread stacks, native buffers, memory-mapped files, and often the operating-system overhead against the same memory limit. Do not set `-Xmx` or `MaxRAMPercentage` to 95% of that limit. Leave at least 20–25%, and at least 1.5–2 GiB on a large Iris server, outside the Java heap as a starting point. For a 10,000 MiB container, start around `-Xmx7G` to `-Xmx7500M`, measure peak resident memory, and adjust from evidence. `-XX:+AlwaysPreTouch` makes the committed heap visible in resident memory immediately, so a process can appear close to the panel limit even while most of that heap is empty.
 
@@ -119,7 +119,7 @@ There is no `concurrency` section in `settings.json`. The values are computed fr
 
 - Generation burst pool: `max(2, availableProcessors)`
 - IO burst pool: `max(2, availableProcessors / 2)`
-- Bukkit pregen in-flight cap: detected chunk-system worker threads × 8, clamped 16–128 on Paper-like servers and 64–192 on Folia. CPU and configured world-gen threads are fallbacks only when worker detection is unavailable. The cap is then lowered adaptively for slow requests or mantle backpressure down to `max(4, min(16, cap / 4))`
+- Bukkit pregen in-flight cap: effective worker threads × 8, clamped 16–128 on Paper-like servers and 64–192 on Folia. Paper-like effective workers are the larger of the detected chunk-system pool and the world-gen pool provisioned during initialization; CPU is the fallback when detection is unavailable. The cap is then lowered adaptively for slow requests or mantle backpressure down to `max(4, min(16, cap / 4))`
 
 If you need less generation concurrency, use `serial=true` (Bukkit) or `sync` (modded) rather than looking for a knob that does not exist.
 
@@ -147,7 +147,7 @@ To A/B on a real server: set `performance.simdKernels` false, restart, measure p
 
 ## Measurement checklist
 
-Record for every experiment: pack identity, seed, radius, serial/sync flags, JVM version and flags, heap size, CPU, the `performance` and `pregen` excerpts you changed, chunks/second, duration, failed chunks, peak heap, and the GoldenHash combined value. Reject any optimization that changes the hash unless the behavior change was intended and is documented. Release-scale baselines (5k–10k chunks with JProfiler) are tracked in [87 - Maintainer - Release Readiness](/iris/87-maintainer-release-readiness).
+Record for every experiment: pack identity, seed, radius, serial/sync flags, JVM version and flags, heap size, CPU, the `performance` and `pregen` excerpts you changed, overall/10-second/30-second/60-second chunk rates, duration, failed chunks, peak heap, and the GoldenHash combined value. Reject any optimization that changes the hash unless the behavior change was intended and is documented. Release-scale baselines (5k–10k chunks with JProfiler) are tracked in [87 - Maintainer - Release Readiness](/iris/87-maintainer-release-readiness).
 
 Never tune by editing pack content. Pack edits change terrain, which changes the hash, which means you are no longer comparing the same thing.
 

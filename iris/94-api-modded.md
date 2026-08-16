@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,7 +31,7 @@ The Bukkit terrain, world-event, pregen-event, and tree-feller **services** have
 ./gradlew buildNeoforge   # -> dist/Iris v<version> [NeoForge] <mc>+<loader>.jar
 ```
 
-Each task shells out to the adapter's own wrapper and copies the jar into `dist/`. The loader segment is that adapter's loader version verbatim — for example `26.2+0.19.3` on Fabric and `26.2+26.2.0.12-beta` on NeoForge.
+Each task shells out to the adapter's own wrapper and copies the jar into `dist/`. The loader segment is that adapter's loader version verbatim — for example `26.2+0.19.3` on Fabric and `26.2+26.2.0.59` on NeoForge.
 
 Each adapter is a standalone Gradle build (`adapters/<loader>/settings.gradle` `includeBuild('../..')` plus a dependency substitution for `art.arcane:core` and `art.arcane:spi`). Compile against the jar you run:
 

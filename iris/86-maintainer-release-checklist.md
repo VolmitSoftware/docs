@@ -2,7 +2,7 @@
 title: "Maintainer - Release Checklist"
 description: "Iris documentation: Maintainer - Release Checklist"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Manual release procedure. Nothing publishes, tags, or announces automatically by
 
 Before starting this publication procedure, complete [87 - Maintainer - Release Readiness](/iris/87-maintainer-release-readiness). It contains the engineering remediation, determinism, performance, CI, and full platform-acceptance gates. This checklist starts only after those gates produce GO or an explicitly accepted GO-WARN decision.
 
-Reference values below assume the current `gradle.properties`: `irisVersion=4.0.0-26.2`, `minecraftVersion=26.2`, `fabricLoaderVersion=0.19.3`, `forgeVersion=26.2-65.0.4`, `neoForgeVersion=26.2.0.12-beta`. For a Minecraft version bump, do [85 - Maintainer - MC Version Bump](/iris/85-maintainer-mc-version-bump) first, then start this checklist.
+Reference values below assume the current `gradle.properties`: `irisVersion=4.0.0-26.2`, `minecraftVersion=26.2`, `fabricLoaderVersion=0.19.3`, `forgeVersion=26.2-65.1.1`, `neoForgeVersion=26.2.0.59`. For a Minecraft version bump, do [85 - Maintainer - MC Version Bump](/iris/85-maintainer-mc-version-bump) first, then start this checklist.
 
 ## How to execute this checklist
 
@@ -33,8 +33,8 @@ Publication remains manual. Commands in this document produce local artifacts un
 - [ ] `dist/` contains the four platform jars (exact names for this release):
   - [ ] `Iris v4.0.0-26.2 [CraftBukkit] 26.1.2-26.2.jar` (Bukkit/Paper/Purpur/Spigot/Folia plugin)
   - [ ] `Iris v4.0.0-26.2 [Fabric] 26.2+0.19.3.jar`
-  - [ ] `Iris v4.0.0-26.2 [Forge] 26.2+65.0.4.jar`
-  - [ ] `Iris v4.0.0-26.2 [NeoForge] 26.2+26.2.0.12-beta.jar`
+  - [ ] `Iris v4.0.0-26.2 [Forge] 26.2+65.1.1.jar`
+  - [ ] `Iris v4.0.0-26.2 [NeoForge] 26.2+26.2.0.59.jar`
   - Naming pattern: `Iris v<irisVersion> [<Platform>] <target>.jar`. For the loader jars `<target>` is `<minecraftVersion>+<loaderDisplay>`; for CraftBukkit it is `bukkitMinecraftRange` (the supported Minecraft *range*, currently `26.1.2-26.2`), not `minecraftVersion`.
 - [ ] The SPI jar is built by the same run at `spi/build/libs/iris-spi-4.0.0-26.2.jar`. It is the adapter/platform contract, not the stable downstream plugin API; it is not copied into `dist/` or uploaded to mod portals.
 - [ ] Each mod jar bundles Iris core, SPI, and Iris-owned shaded libraries. LZ4, OSHI, JNA, and JNA Platform are supplied by the Minecraft 26.2 runtime and must not be bundled or relocated; `verifyModdedArtifacts` scans outer classes and nested jars for those packages and their relocated forms, so trust its pass rather than re-inspecting by hand.

@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,11 +36,11 @@ One plugin jar covers the whole Bukkit family; each mod loader gets its own jar.
 | Platform | Artifact | Minecraft | What's different |
 |---|---|---|---|
 | Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing; this is the reference plugin target |
-| Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Nothing for generation. Paper-only APIs degrade gracefully |
+| Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation; exact vanilla-slot `/iris replace` is unavailable |
 | Folia | plugin jar | 26.1.2 – 26.2 | Region-safe scheduling. `/iris create` cannot build a live world at runtime, so it stages the world and automatically requests a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
-| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD; needs Fabric Loader 0.19.3+ and Java 25 |
-| Forge | mod jar | 26.2 | Same; needs Forge 65.x (built against 26.2-65.0.4) |
-| NeoForge | mod jar | 26.2 | Same; needs NeoForge 26.2.x (built against 26.2.0.12-beta) |
+| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD; current acceptance target is Fabric Loader 0.19.3 on Java 25 |
+| Forge | mod jar | 26.2 | Same; current acceptance target is Forge 26.2-65.1.1 |
+| NeoForge | mod jar | 26.2 | Same; current acceptance target is NeoForge 26.2.0.59 |
 
 The plugin registers as `Iris` with command `/iris` (aliases `/ir`, `/irs`), `folia-supported: true`, `load: STARTUP`, and `api-version: 26.1` — the low api-version is deliberate so one jar loads on both 26.1.2 and 26.2. Its descriptor declares two permissions, `iris.all` (the whole command tree) and `iris.treefeller` (survival tree felling only), both defaulting to op. Optional soft-dependencies load before Iris; Multiverse-Core is ordered *after* Iris so Multiverse sees Iris generators once they exist. Full list in [01 - Installation & Platforms](/iris/01-installation-platforms).
 
@@ -146,8 +146,8 @@ At version `4.0.0-26.2` the four jars are named like this — the CraftBukkit on
 ```text
 Iris v4.0.0-26.2 [CraftBukkit] 26.1.2-26.2.jar
 Iris v4.0.0-26.2 [Fabric] 26.2+0.19.3.jar
-Iris v4.0.0-26.2 [Forge] 26.2+65.0.4.jar
-Iris v4.0.0-26.2 [NeoForge] 26.2+26.2.0.12-beta.jar
+Iris v4.0.0-26.2 [Forge] 26.2+65.1.1.jar
+Iris v4.0.0-26.2 [NeoForge] 26.2+26.2.0.59.jar
 ```
 
 Build one platform at a time with `./gradlew buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge`. The SPI jar comes from `./gradlew :spi:jar` and lands in `spi/build/libs/`.

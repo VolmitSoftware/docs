@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-15T21:17:41.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,11 +64,11 @@ Field details are in 1.5.
 
 ## Task 2: Install a third-party datapack for one Iris dimension
 
-This Bukkit-family workflow keeps the datapack installed in Minecraft's global registry while Iris scopes the managed structure sets to the dimensions that declare the source. The built-in `overworld` pack declares no external datapacks; Towns & Towers and Dungeons & Taverns below are opt-in examples for customized packs.
+This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry while Iris scopes the managed structure sets to the dimensions that declare the source. The shipping `overworld` pack already declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0; these are required inputs for that pack, not optional customization examples.
 
 Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
 
-1. Add the Modrinth or direct archive URL to `datapackImports` in the declaring dimension only:
+1. For a custom dimension, add the Modrinth or direct archive URL to `datapackImports` in that declaring dimension only. For the shipping Overworld, leave its existing declarations intact and skip this edit:
 
    ```json
    {
@@ -78,12 +78,14 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
    }
    ```
 
-2. Leave the URL out of the second test dimension, and keep the vanilla world as a control.
-3. Validate the pack, then run:
+2. Leave the URL out of the second test dimension, and keep the vanilla world as a control. When testing the shipping Overworld, use its exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 releases rather than substituting a different latest version.
+3. Validate the pack. For a custom source or an installation with automatic ingest disabled, run:
 
    ```text
    /iris datapack ingest restart=true
    ```
+
+   For the unmodified shipping Overworld with `general.autoIngestDatapacks=true`, do not run that command: restart once to let startup install both declared dependencies, then complete the ensuing registry-loading restart.
 
 4. After the full restart, run `/iris datapack list`, then `/iris structure list <declaring-dimension>` and pick one registered structure key from that source.
 5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before the generation test (see 1.2).
@@ -224,7 +226,7 @@ A datapack structure whose filter lists only its own biomes never generates unti
 | `disabled` | `[]` | Structure keys and prefixes to deny. |
 | `disabledExact` | `[]` | Complete structure keys to deny without matching related variants. |
 | `undergroundYShift` | `0` (-512..512) | Vertical offset for underground-step structures only. Surface structures never use it. |
-| `datapackOverrides` | `true` | Whether ingested datapacks may replace `minecraft:`-namespaced structure content (2.5). |
+| `datapackOverrides` | `true` | Whether ingested datapacks may replace `minecraft:`-namespaced structure content (2.7). |
 | `frequencyOverrides` | `[]` | Exact structure-set placement-density multipliers (1.4). |
 | `adjustments` | `[]` | Per-structure adjustments for structures still generating natively (1.5). |
 
@@ -391,13 +393,25 @@ On startup, Iris checks the cheap persisted cache context before reading managed
 
 Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
 
+For the shipping Overworld on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack download. The first boot discovers and installs Towns & Towers 26.1 and Dungeons & Taverns 5.3.0, then leaves admission restart-required; the ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
+
 Cache reuse is a local validation decision and does not poll remote sources; run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts, so unchanged bootstrap recovery leaves the manifest stable and the next startup can reuse the cached fingerprint. During a full ingest, Iris accepts an exact same-version, Iris-owned installed target in place when its content matches staging and the datapack requires no override stripping, avoiding a temporary copy and replacement.
 
 Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
 
 Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks while restating each entry and rechecking its `FileStore` immediately before access, retaining the existing cross-volume boundary behavior, including same-device bind mounts.
 
-### 2.3 Manual commands
+### 2.3 Folia 26.2 and Dungeons & Taverns 5.3.0
+
+Folia 26.2 currently cannot execute the shipping Dungeons & Taverns function set completely. Its own command dispatcher omits `tag` and `data`, does not expose a usable `item` command in this context, and accepts `ride` while rejecting nested forms used by the pack. The unchanged Dungeons & Taverns bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia; function-backed Dungeons & Taverns behavior is incomplete even though Iris world loading and chunk generation continue.
+
+This is an upstream Folia 26.2 command compatibility limitation, reproduced on a clean Folia server with no Iris plugin installed. Paper, Leaf, and Canvas load the same datapack bytes without those function errors. Iris does not rewrite or silently remove third-party functions, so use a server implementation that supports the pack's commands when complete Dungeons & Taverns behavior is required.
+
+### 2.4 Modded installation
+
+Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every declared external datapack directly in the target save's `datapacks/` directory. For the shipping Overworld, install the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives before that Iris Overworld loads, then restart with both archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries.
+
+### 2.5 Manual commands
 
 ```
 /iris datapack ingest [restart=false]    (alias: pull)
@@ -405,9 +419,9 @@ Managed external-datapack fingerprints remain full-content hashes: the cache-hit
 /iris datapack remove <id>               (alias: rm)
 ```
 
-`ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks — also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
+On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks — also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
 
-### 2.4 Usage patterns
+### 2.6 Usage patterns
 
 **(a) Natural generation.** Import, restart. Check with `/iris structure list <dimension>` (which writes `<pack>/.iris/structure-index.json`) and `/iris structure verify <dimension>` (`[native-eligible]` versus `[unreachable]`). Fix unreachable biomes with `vanillaDerivative`, or use (c).
 
@@ -454,7 +468,7 @@ Managed external-datapack fingerprints remain full-content hashes: the cache-hit
 }
 ```
 
-### 2.5 `datapackOverrides`
+### 2.7 `datapackOverrides`
 
 When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|template_pool/` and `data/minecraft/structure/` from every installed copy. This resolves **globally**: one dimension setting it `false` strips for all. Non-`minecraft:` content is unaffected, so disable those keys explicitly.
 
@@ -478,6 +492,12 @@ Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`,
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
 On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. Statusless chunk access inside that region retains `WorldGenRegion`'s current-stage lookup instead of being converted into a `FULL`-status request; this lets ordinary native piece placement, including mineshaft supports, read the generation chunk without asking Paper for a status that is unavailable during FEATURES. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads, or an empty ephemeral chunk when it explicitly requires a distant chunk; distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper's write-radius contract instead of widening it or suppressing Leaf/Paper diagnostics, removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings, and prevents the unavailable-chunk exception that Leaf and Paper treat as an unrecoverable generation failure.
+
+Fabric, Forge, and NeoForge apply the equivalent boundary around the generation chunk. Native post-processing can read and write only the current 3×3-chunk area; reads beyond it receive deterministic Iris surface/floor terrain or an empty ephemeral chunk, while far block changes, entities, events, and scheduled ticks never reach the live level. The modded structure-template palette's lazy block lookup is also concurrent and boot-audited, so parallel native-volume inspection cannot mutate one vanilla cache through an unsafe `HashMap` path.
+
+Before modded native placement, Iris registers every POI-bearing block already present in the target protochunk. The subsequent structure block transition can then unregister or replace that POI normally after a vertical shift; a shifted Trial Chamber that removed four pre-existing Iris barrels finished with air at all four positions and no stale POI mismatch on exact replay.
+
+The current external-pack acceptance still reports authored-content warnings for unresolved `minecraft:grass` forms, invalid properties on blocks such as `big_dripleaf_stem`, `beetroots`, or `creaking_heart`, empty third-party pools such as `nova_structures:hamlet/jockey` and the Kaisyn beach-lighthouse pool, a stale `chisled_polished_blackstone` replacement, and stale block-attached-entity `block_pos` values. Iris reports these inputs and uses only Minecraft's safe fallback where one exists; it does not rewrite or migrate the third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
 
 ### 3.2 `disabled` and `disabledExact` never block an explicit placement
 
@@ -620,7 +640,7 @@ Third-party jigsaw templates using the legacy slab property `half=top|bottom`, o
 
 | Command | Aliases | Parameters |
 |---|---|---|
-| `/iris datapack ingest` | `pull` | `restart=false` |
+| `/iris datapack ingest` | `pull` | `restart=false`; Bukkit only, modded stub |
 | `/iris datapack list` | `ls` | |
 | `/iris datapack remove <id>` | `rm` | |
 | `/iris structure list <dimension>` | `ls` | |

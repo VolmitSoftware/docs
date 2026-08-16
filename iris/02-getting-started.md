@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-15T21:07:31.000Z
+date: 2026-08-15T23:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,6 +23,7 @@ Work through the sections in order and confirm each one before moving on. Confir
 - A Java 25 server or mod instance running
 - Operator access on Bukkit (the `iris.all` permission), or permission level 2 / gamemaster on modded for anything that mutates state
 - The managed `overworld` and `underworld` packs present, or your own pack installed under the platform's packs directory
+- For the shipping Overworld, Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 loaded in the save's registry through the platform-specific workflow below
 
 ## The one syntax rule that trips everyone up
 
@@ -64,11 +65,11 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 
 **Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the logical name has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected. Names that collide with the selected save's Bukkit aliases — `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` — are also rejected, as are `minecraft:*` and foreign namespaced keys.
 
-**Already exists.** Create aborts if the managed dimension folder is already there. That folder lives at `<level-root>/dimensions/iris/<name>`, not next to your server jar. Use the separate replacement command when replacing an existing safe slot is intentional.
+**Already exists.** Create aborts if the managed dimension folder is already there. On Paper-family servers that folder is `<level-root>/dimensions/iris/<name>`. Plain Spigot uses `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>` so CraftBukkit can bind the outer world and the canonical `iris:<name>` storage together. Use the separate replacement command when replacing an existing safe slot is intentional; exact vanilla-slot replacement is unavailable on Spigot.
 
 **Folia.** Runtime creation is disabled. Iris stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and automatically requests a controlled restart after every staging step succeeds. After the server returns, the world generates and loads on its own from that registration — you don't need `/iris load`. Your host must provide a working restart script or supervisor; if the restart command cannot relaunch the JVM, Iris stops the server and the supervisor must start it again.
 
-**Everything else.** Create builds the world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world).
+**Everything else, including Spigot.** Create builds the managed `iris:*` world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world). Spigot supports this create path even though it cannot cold-replace a vanilla slot.
 
 ```text
 /iris create myworld type=overworld seed=1337
@@ -88,21 +89,21 @@ Every replacement is staged for cold publication. Stage as many distinct targets
 
 #### Install the shipping Overworld and Nether pair
 
-On a Paper-family server, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. The shipping Overworld uses Minecraft's registered vanilla structures and declares no external datapacks:
+On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 as external datapacks:
 
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
-Wait for each download to report success before starting the next command because downloads are single-flight. After both downloads finish, manually restart the server once so their dimension types and custom biomes enter the live registries. After the server returns, stage both replacements:
+Wait for each download to report success before starting the next command because downloads are single-flight. With the default `general.autoIngestDatapacks=true`, restart after both downloads. On that boot Iris installs the Overworld's two declared datapacks and holds startup admission in restart-required state. Complete the ensuing clean restart so Minecraft loads Towns & Towers 26.1, Dungeons & Taverns 5.3.0, the downloaded packs' dimension types, and their custom biomes into the live registries. After that server return, stage both replacements:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both commands report staged. This produces two deliberate restart boundaries on a fresh install: one to register the downloaded packs, then one to publish both exact world replacements. If you customize a pack with `datapackImports`, complete the separate ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging its replacement.
+Restart once after both commands report staged. The default automatic-ingest route therefore has three deliberate restart boundaries on a fresh install: one boot discovers and ingests the downloaded Overworld's external dependencies, the ensuing restart loads those dependencies and the Iris registry data, and the final restart publishes both exact world replacements. If automatic ingest is disabled, complete the explicit ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging either replacement.
 
 The existing Overworld and Nether target directories must already be initialized, `allow-nether=true` must remain enabled, and `server.properties` `level-name` stays unchanged. The example deliberately gives the two replacement dimensions different seeds; omitting either `seed=` preserves that target's existing saved seed instead. After the restart, the worlds retain the exact `minecraft:overworld` and `minecraft:the_nether` identities, so ordinary Nether portals keep their canonical forward and return routing. An arbitrary `iris:*` world is separate and does not become a vanilla portal destination merely because it uses an Overworld- or Nether-shaped pack.
 
@@ -122,7 +123,7 @@ Alias `c`. You can't pass `seed` without also passing `pack`.
 
 The `pack:dimension` form has to be **quoted** — `"overworld:overworld"` — because Brigadier's unquoted string type doesn't accept a colon. Iris's own help text says the same thing.
 
-If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`, restart, and then run create again.
+If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Before using the shipping Overworld, manually place the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 datapacks in this save's `datapacks/` directory; modded `/iris datapack ingest` is only a stub. Restart after all three are present, then run create.
 
 ```text
 /iris create myworld overworld 1337
@@ -278,7 +279,7 @@ Group aliases are `std` and `s`.
 /iris studio vscode overworld
 ```
 
-A number of Bukkit studio and content tools deliberately refuse on modded and print an explanatory message rather than half-working: `importvanilla` (`importv`, `iv`), `loot`, `profile`, `spawn`/`summon`, `objects`/`find-objects`, the object `we`, `studio`, and `convert` subcommands, structure `import`/`import-all`/`reimport`, and datapack `ingest`/`pull`/`remove`. Do that work on a Bukkit server and copy the pack folder across.
+A number of Bukkit studio and content tools deliberately refuse on modded and print an explanatory message rather than half-working: `importvanilla` (`importv`, `iv`), `loot`, `profile`, `spawn`/`summon`, `objects`/`find-objects`, the object `we`, `studio`, and `convert` subcommands, structure `import`/`import-all`/`reimport`, and datapack `ingest`/`pull`/`remove`. Do authoring work on a Bukkit server and copy the pack folder across. External datapacks are separate: install each compatible archive directly in the target modded save's `datapacks/` directory before loading the Iris world.
 
 The Studio gate passes when the transient world opens, the workspace points at the live `packs/overworld/` tree, and saving a valid JSON change produces a hotload result in-game. Close it with `/iris studio close` and confirm your production `myworld` is still there and unaffected.
 
@@ -305,6 +306,7 @@ The session is genuinely finished when you restart the server cleanly, the produ
 | Expecting pack edits to change existing chunks | Only newly generated chunks use the new config | Fly to unexplored terrain, pregen a fresh radius, or use a Studio world |
 | Folia: create then teleport immediately | The world isn't live yet | Restart after the staging message, then teleport |
 | Modded: new pack's heights or biomes missing | The forced datapack wasn't applied before registries loaded | Restart once with the pack already installed |
+| Modded Overworld reports missing Towns & Towers or Dungeons & Taverns keys | Bukkit-only ingest cannot install its declared dependencies on a mod loader | Put Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 in that save's `datapacks/`, then restart before loading the Overworld |
 | `/iris load` from console | Player-origin only; console can't run it | Rely on the `bukkit.yml` registration plus a restart, or run it as a player |
 | `/iris load` on modded | No such subcommand | Use create or `world enable`, then teleport |
 | Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote it: `"overworld:overworld"` |
