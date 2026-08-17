@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-16T03:30:00.000Z
+date: 2026-08-17T03:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -216,7 +216,7 @@ Iris has two independent ways to put ore in the ground, and they behave differen
 
 **Deposits** (`deposits`) are blob placements written through the mantle, closer to vanilla ore veins, with per-chunk counts and sizes.
 
-**Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed, inside a world-Y band. This is how the shipping pack turns `minecraft:iron_ore` into `minecraft:deepslate_iron_ore` below Y 0 without duplicating every generator.
+**Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed inside a world-Y band. The shipping pack instead relies on automatic host-aware conversion, so an ordinary ore becomes its deepslate form exactly when it replaces deepslate; variants remain available for modded ores and deliberate substitutions.
 
 ```json
 {
@@ -436,7 +436,7 @@ Path: `packs/overworld/dimensions/overworld.json` under the platform data direct
 | `preventLeafDecay` | `true` | Custom trees keep their canopies |
 | `caveProfile` | `enabled: true` | 3D caves on by default, overridden per region |
 | `carving` | one deep-dark band, world Y -250 to -175 | Depth-banded cave biome |
-| `ores` / `deposits` / `depositVariants` | 11 / 20 / 1 | Bedrock and band generators, classic ore blobs, one deepslate remap below Y 0 |
+| `ores` / `deposits` / `depositVariants` | 11 / 23 / 0 | Bedrock and stone bands plus Minecraft 26.2 ore shapes, biome exceptions and height providers normalized from vanilla's 384-block span into this dimension's 768-block span, at twice the vanilla attempt counts and with host-aware automatic deepslate conversion |
 | `importedStructures` | adjustments for stronghold, trial chambers, mineshaft, village | Native structures re-fitted to Iris terrain |
 | `structures` | ancient city with `nativeSuppression: REPLACE_SOURCE` | Vanilla placement replaced by an Iris-anchored one |
 

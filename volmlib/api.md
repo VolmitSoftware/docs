@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-16T03:30:00.000Z
+date: 2026-08-16T16:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -41,13 +41,15 @@ fact drives the rest of this page.
 | `util.network`                     | Downloads, metered streams, download progress reporting                                              |
 | `integration`                        | The cross-plugin metric handshake types. Read the relocation rule below before you touch these        |
 
-`BSupport` material listings expose current Bukkit materials only. Legacy `Material` aliases are excluded before block-data inspection or item-name publication, so registry discovery does not initialize CraftLegacy support.
+`BSupport` material listings expose current Bukkit materials only. Legacy `Material` aliases are excluded before block-data inspection or item-name publication, so registry discovery does not initialize CraftLegacy support. Its placement-support contract classifies cactus as a decorant and permits cactus only on sand, red sand, or another cactus.
 
 Everything else under `art.arcane.volmlib` is scaffolding for the Volmit plugins. It is public because Java
 has no better word for "visible to the plugins in this repository", not because it carries a compatibility
 promise. Only the surfaces documented in this directory are stable across VolmLib versions; anything else can
 change signature without notice, and the Volmit plugins update in lockstep because they build against the
 same source tree.
+
+`Mantle.saveIdleTectonicPlates(regionIds)` persists and unloads each requested plate only when it can be sealed immediately. It returns the region IDs that were busy and leaves those plates open, resident, and unchanged so a caller can retain its dirty state and retry on a later save. The method never waits for active chunk users; final shutdown persistence must run only after the caller has drained its producers.
 
 ## Director completion
 
@@ -312,34 +314,58 @@ placeholder snapshot machinery, and [placeholders.md](/volmlib/api/placeholders)
 
 ---
 
-## HUD slot arbitration
+## HUD coordination
 
-`art.arcane.volmlib.util.hud` coordinates the two exclusive player display surfaces — the action bar and the
-title (title + subtitle + times, treated as one atomic surface) — across every plugin that ships this package,
-including copies relocated into different namespaces. Boss bars are never arbitrated: the client stacks them
-natively, so `BOSS_BAR` is the terminal fallback every preference chain can end on.
+`art.arcane.volmlib.util.hud` coordinates the two shared player display surfaces across every plugin that
+ships this package, including copies relocated into different namespaces. The action bar is **cooperative**:
+plugins publish text segments and every copy composes the same single merged line. The title (title +
+subtitle + times, one atomic surface) stays **exclusive** and is arbitrated by bid. Boss bars are neither —
+they are reserved for Iris loading bars, rendered directly through `HudBossBarLane`; nothing falls back to
+them anymore.
 
-Coordination never crosses a plugin boundary through a VolmLib type. Each copy posts a String bid into Bukkit
-player metadata and every copy runs the same deterministic winner function over all posted bids:
+Coordination never crosses a plugin boundary through a VolmLib type. Each copy posts an encoded String into
+Bukkit player metadata and every copy runs the same deterministic layout or winner function over all posted
+values.
 
-| Piece            | Value                                                                          |
-|------------------|--------------------------------------------------------------------------------|
-| Metadata keys    | `volmit.hud.actionbar`, `volmit.hud.title`                                     |
-| Bid encoding     | `1\|priority\|sinceMillis\|assertedMillis\|ttlMillis\|purpose` (version first)  |
-| Winner order     | highest priority, then smallest `sinceMillis`, then plugin name, then purpose  |
-| Expiry           | a bid is dead when `now - assertedMillis > ttlMillis`                          |
-| Priorities       | `HudPriority`: AMBIENT 10, NOTICE 30, PROGRESS 60, INTERACTIVE 80, MODAL 100   |
+### Action bar: `HudActionBar`
 
-A consumer opens a `HudSlotClaim` from its plugin's `HudSlotService` with a `HudSlotRequest` (purpose,
-priority, TTL, ordered surface preferences) and calls `resolve()` from its existing update loop. The result is
-the one surface it may render to on that frame; rendering stays entirely on the claiming plugin's side, in its
-own text pipeline. Re-asserting keeps `sinceMillis` stable, which is what lets a holder keep an equal-priority
-slot. `release()` withdraws the bid; one-shot notices skip it and let the TTL hold the surface for their
-display window. `HudBossBarLane` renders fallback content as per-player boss bars keyed by lane id, with a
-per-lane staleness timeout so abandoned bars remove themselves.
+A plugin publishes with `hudBar.publish(player, new HudSegment(purpose, priority, ttlMillis, slots, text))`
+and withdraws with `clear(player, purpose)`. `text` is a legacy `§` string; `slots` is an ordered
+`HudSlot` preference list (`LEFT`, `CENTER`, `RIGHT`). Every publish re-encodes the plugin's live segments
+under one metadata value, then composes **all** plugins' live segments into one line and sends it, so the
+fastest publisher keeps everyone's content fresh and a cleared or expired segment disappears on the next
+compose. Clearing the last visible segment wipes the bar.
 
-`resolve()`, `release()`, and visible boss-bar `show`/`hide` operations touch the Bukkit player and must run on
-that player's owning scheduler. An entity-scheduler retirement callback instead calls `HudSlotClaim.retire()`
-and `HudBossBarLane.retire(playerId, laneId)`: these UUID-only operations drop local claims and tracked bars
-without touching the retired player or its metadata. Bids from a crashed or disabled plugin also expire by
-TTL; no service registration, election, or reflection is involved.
+| Piece            | Value                                                                            |
+|------------------|----------------------------------------------------------------------------------|
+| Metadata key     | `volmit.hud.segments`                                                            |
+| Segment encoding | version `2`, records split by `U+001E`, fields by `U+001F`, text last            |
+| Layout order     | highest priority, then smallest `sinceMillis`, then plugin name, then purpose    |
+| Slot assignment  | first empty preferred slot; otherwise the segment stacks into its last preference |
+| Lane render      | `LEFT` then `CENTER` then `RIGHT`; native claimants before spilled joiners       |
+| Budget           | segments past 150 visible characters are skipped for that frame, best-first      |
+| Expiry           | a segment is dead when `now - assertedMillis > ttlMillis`                        |
+
+Priorities double as placement rank: `HudPriority` AMBIENT 10, NOTICE 30, STATUS 40, PROGRESS 60,
+INTERACTIVE 80, MODAL 100, PINNED 1000. `PINNED` is reserved for the one always-centered ambient HUD (the
+React monitor); persistent feature HUDs like Adapt's Sixth Sense line sit at `STATUS` so transient notices
+flank them instead of displacing them. One-shot notices publish once and let the TTL retire them.
+
+### Title: `HudTitleService`
+
+A consumer opens a `HudTitleClaim` with `titles.open(player, purpose, priority, ttlMillis)` and calls
+`resolve()` from its update loop; `true` means it may render the title this frame, in its own text pipeline.
+The bid protocol is unchanged from v1: metadata key `volmit.hud.title`, encoding
+`1\|priority\|sinceMillis\|assertedMillis\|ttlMillis\|purpose`, winner by highest priority, then smallest
+`sinceMillis`, then plugin name, then purpose. Re-asserting keeps `sinceMillis` stable, which is what lets a
+holder keep an equal-priority slot; `release()` withdraws the bid. By fleet convention only Wormholes (and
+React's monitor edit mode) use this surface.
+
+### Threading and retirement
+
+`publish`, `clear`, `resolve`, `release`, and boss-bar `show`/`hide` touch the Bukkit player and must run on
+that player's owning scheduler. An entity-scheduler retirement callback instead calls
+`HudActionBar.retire(playerId)`, `HudTitleClaim.retire()`, or `HudBossBarLane.retire(playerId, laneId)`:
+UUID-only operations that drop local state without touching the retired player or its metadata. Segments and
+bids from a crashed or disabled plugin expire by TTL; no service registration, election, or reflection is
+involved.

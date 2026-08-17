@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "HoloUI documentation: Runtime Architecture"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,7 +35,7 @@ Because slimjar injects those libraries during construction, no class touched wh
 | 2 | `prewarmPacketEventsUsers()` | For each online player with a non-null channel and no existing `User`, installs a `User` with `ConnectionState.PLAY` and the server version as `ClientVersion` |
 | 3 | `PacketEvents.getAPI().init()` | On `NullPointerException`, `isPacketEventsUserBindFailure` walks the cause chain for a frame whose class name ends `SpigotChannelInjector` and whose method is `updatePlayer`. On a match, prewarm runs again and `init()` is retried once; otherwise the NPE is rethrown |
 | 4 | `TextUtils.splash(this)` | Console banner |
-| 5 | `new HudSlotService(this)`, `new HudBossBarLane()` | VolmLib HUD slot arbitration and boss bar lanes |
+| 5 | `new HudActionBar(this)` | VolmLib cooperative action-bar compositor |
 | 6 | `new HoloLocalization(getDataFolder(), getLogger())` | Reads `plugins/holoui/language.yml` |
 | 7 | Register outgoing `BungeeCord` | Enables proxy-connect actions |
 | 8 | Construct `HoloUiPersistenceCoordinator` and `HoloUiProjectTransaction`, then run recovery under the coordinator write lease | Completes rollback or archival for every durable editor-sync transaction before any menu watcher or board store can observe the files |
@@ -76,15 +76,14 @@ One ordering constraint is recorded in source: `PreviewDocumentRegistry` is full
 11. `boardService.shutdown()` — rejects queued work and waits for active board disk I/O to quiesce
 12. `sessionManager.destroyAll()`
 13. `itemProviders.shutdown()`
-14. `PreviewScaleService.shutdown()` — persists `preview-scales.json`, releases HUD claims
-15. `hudLanes.shutdown()`
-16. `hudSlots.shutdown()`
-17. `PacketEvents.getAPI().terminate()` when the API is non-null
-18. `SpigotPacketEventsBuilder.clearBuildCache()`
-19. `metrics.shutdown()`
-20. unregister the outgoing `BungeeCord` channel
-21. `SchedulerUtils.cancelPluginTasks(this)`
-22. `INSTANCE = null` when `INSTANCE == this`
+14. `PreviewScaleService.shutdown()` — persists `preview-scales.json`
+15. `hudBar.shutdown()`
+16. `PacketEvents.getAPI().terminate()` when the API is non-null
+17. `SpigotPacketEventsBuilder.clearBuildCache()`
+18. `metrics.shutdown()`
+19. unregister the outgoing `BungeeCord` channel
+20. `SchedulerUtils.cancelPluginTasks(this)`
+21. `INSTANCE = null` when `INSTANCE == this`
 
 Board and personal-session shutdown both complete while PacketEvents is active, so teardown can send the required destroy packets. Only after those holders are empty does PacketEvents terminate; repeating tasks are cancelled afterward. `PacketUtils` has no null check on `PacketEvents.getAPI()`, so this order is required.
 

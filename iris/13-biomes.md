@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -255,7 +255,7 @@ The stacks:
 |-------|---------------|
 | `layers` | The column downward from the terrain surface. First entry is the top. Anything below the stack becomes the dimension's rock palette (or an ore, if an ore generator claims that block). Required; the default is a single grass layer. |
 | `seaLayers` | The water column, indexed **downward from the water surface**, not upward from the sea floor. Index 0 sits at `fluidHeight`. Anything the stack does not cover becomes the dimension fluid. This is how you get a layer of ice or a band of murky water on top of an ocean. |
-| `caveCeilingLayers` | The underside of carved ceilings, downward from the ceiling. Defaults to one grass layer, which is almost never what you want in a cave — set it explicitly. |
+| `caveCeilingLayers` | The underside of carved ceilings, downward from the ceiling. The default is empty, so an omitted field leaves the existing ceiling material unchanged. |
 | `slab` | Palette for the half-slabs the post processor adds on single-block steps. Default is an empty palette, meaning no slabs. |
 | `wall` | Palette for the vertical faces the post processor paints when a neighbouring column is more than two blocks lower. Default is empty. Set it to stone/andesite to stop cliffs showing dirt. |
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |

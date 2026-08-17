@@ -2,7 +2,7 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - `/react config monitor` edits that player's groups, samplers, heads, names, and colors. Global `monitoring.monitorConfiguration` supplies the initial layout for a player who has no saved configuration.
 - The default groups are CPU, Memory, World, Physics, Iris, and Adapt. `monitoring.actionBarHeaderSlots = 6` and `monitoring.actionBarSamplerSlots = 6` cap visible group and focused-sampler entries.
 - While the player is sneaking and not in the monitor's falling/flying cooldown, hotbar scrolling selects a group. Pressing sneak twice within 250 ms locks or unlocks that group; while locked, sneaking and scrolling changes its head sampler.
-- The main row requests the action bar and falls back to a boss bar when another higher-priority HUD owner has the action bar. The focused group requests the title/subtitle surface. React releases and clears its surfaces when monitoring stops.
+- The main row publishes into the shared cooperative action-bar compositor pinned to the center of the line; other plugins' segments (Adapt HUDs, Wormholes notices, Iris progress) merge to its left and right instead of displacing it, and nothing falls back to a boss bar. The focused group still requests the exclusive title/subtitle surface while editing. React drops its segment and releases the title when monitoring stops.
 - Explicit monitor and GUI changes save immediately. A periodic dirty check runs once per minute, and quitting forces a final save.
 
 ## Map selection and item handling

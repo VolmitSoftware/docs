@@ -2,12 +2,12 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-17T03:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Three systems dress the terrain once its shape exists. Biome `layers` decide what the top few blocks of each column are made of, with the dimension `rockPalette` filling everything below. Decorators scatter a single block or stack on top of a surface — grass, flowers, cane, lily pads, cave vines. Deposits stamp pre-baked clumps of ore and stone into already-solid rock underground.
+Three systems dress the terrain once its shape exists. Biome `layers` decide what the top few blocks of each column are made of, with the dimension `rockPalette` filling everything below. Decorators scatter a single block or stack on top of a surface — grass, flowers, cane, lily pads, cave vines. Deposits stamp shaped clumps of ore and stone into existing solid hosts.
 
 Related: [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [14 - Generators & Noise](/iris/14-generators-noise), [15 - Caves & Carving](/iris/15-caves-carving), [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets).
 
@@ -83,7 +83,7 @@ Start from the flat generator in [26 - Example - Minimal Dimension](/iris/26-exa
 2. Generate fresh chunks and cut a cross-section. Success is exactly one grass block over three dirt blocks over stone, dandelions scattered on the grass, and coal clumps only in the lower part of the column.
 3. If the column is wrong, delete `decorators` and `deposits` and get `layers` right first. Layer thickness is noise-fit between `minHeight` and `maxHeight` per column, so equal min and max is the way to get a guaranteed thickness while debugging.
 4. If flowers never appear, raise `chance` to `0.5` temporarily and confirm the dimension has `decorate: true` (the default). `chance` is a noise-field cutoff, not a dice roll, so a low value can genuinely produce nothing within one chunk.
-5. If deposits never appear, check the Y band. Deposit `minHeight` and `maxHeight` are **engine-local Y** (0 = bottom of the world), and a clump centre is forced at least 9 blocks below the column's terrain surface. On a surface at engine-local 80, a band of `0..96` really means `0..71`.
+5. If deposits never appear, check the Y band. Deposit `minHeight` and `maxHeight` are **engine-local Y** (0 = bottom of the world); they do not automatically rescale when dimension height changes. `CLIPPED_UNIFORM` clips the origin band to the configured terrain clearance, while `UNIFORM` and `TRIANGLE` sample the authored band first and discard cells outside the world or terrain.
 6. Remove `focus` once the biome behaves, then tune each system on its own.
 
 Keep the code spelling `varience`. It is the field name.
@@ -102,7 +102,7 @@ Keep the code spelling `varience`. It is the field name.
 | `lockLayers` | Switches to mesa banding, described below |
 | `lockLayersMax` | Caps how many blocks deep the banded stack goes. Default `7` |
 
-`layers` and `caveCeilingLayers` both default to a single grass-block layer, so a biome that never declares them still produces grass floors and grass cave roofs.
+`layers` defaults to a single grass-block layer. `caveCeilingLayers` defaults to empty, so omitting it leaves carved ceiling blocks unchanged instead of introducing a surface material underground.
 
 ### Palette layer (`IrisBiomePaletteLayer`)
 
@@ -212,20 +212,20 @@ So `chance` is a share of the noise field, not an independent probability, and t
 
 The block is written one above the surface block (`height + 1`), and only into air. A palette entry carrying a `half` property is treated as a two-block plant: both `height + 1` and `height + 2` must be air or nothing is placed.
 
-By default the surface block must have a sturdy full up-face. `forcePlace: true` skips that test entirely; `forceBlock` replaces the surface block with the given block first and implies `forcePlace`. When not force-placing, `whitelist` and `blacklist` are matched against the surface block. An explicitly empty `whitelist` matches nothing and blocks all placement — omit the field rather than setting it to `[]`.
+By default the surface block must have a sturdy full up-face and satisfy the placed block's platform support rule. For example, cactus accepts sand, red sand, or another cactus, but not stone. `forcePlace: true` skips that test entirely; `forceBlock` replaces the surface block with the given block first and implies `forcePlace`. When not force-placing, `whitelist` and `blacklist` are matched against the surface block. An explicitly empty `whitelist` matches nothing and blocks all placement — omit the field rather than setting it to `[]`.
 
-Vines get their attachment faces recomputed against surrounding blocks. `minecraft:pointed_dripstone` gets `thickness` and `vertical_direction` assigned automatically along a stack (tip at the far end, then frustum, then base).
+Vines get their attachment faces recomputed against surrounding blocks. Stacked weeping and twisting vines use the corresponding `_plant` state for their body and retain one vine tip at the free end. `minecraft:pointed_dripstone` gets `thickness` and `vertical_direction` assigned automatically along a stack (tip at the far end, then frustum, then base).
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `chance` | double 0..1 | `0.1` | Fraction of the noise field that qualifies. Raise it while debugging, then dial back |
-| `palette` | `IrisBlockData[]` | grass | Blocks to place. An empty resolved palette places nothing and never even tests the gate |
+| `palette` | `IrisBlockData[]` | grass | Blocks to place. Pack validation requires the field and at least one entry; an empty resolved snippet places nothing and never tests the gate |
 | `topPalette` | `IrisBlockData[]` | `[]` | Used for the upper part of a stack — bamboo tips, cactus flowers. Empty falls back to `palette` |
 | `topThreshold` | double 0.01..1 | `1` | Normalized stack position where `topPalette` takes over. `0.8` gives a tip roughly a fifth of the stack tall |
 | `style` | `IrisGeneratorStyle` | `STATIC` | The field that gates `chance`. `STATIC` gives even scatter; wispy or cellular styles give meadows and bare patches |
 | `variance` | `IrisGeneratorStyle` | `STATIC` | Chooses between palette entries once a column has passed. Scattered variance mixes flowers per block; wispy variance gives single-species drifts |
 | `heightVariance` | `IrisGeneratorStyle` | `STATIC` | Shapes stack height across the terrain when `stackMin` and `stackMax` differ |
-| `stackMin` / `stackMax` | int 1..2032 | `1` / `1` | Stack height range. When they differ the resolved height is the noise fit **plus one**, so `1..4` actually produces stacks 2 to 5 tall |
+| `stackMin` / `stackMax` | int 1..2032 | `1` / `1` | Inclusive stack-height range in blocks. `1..4` produces stacks from 1 to 4 blocks tall |
 | `scaleStack` | boolean | `false` | Reinterprets `stackMin`/`stackMax` as a percentage of the available vertical space instead of a block count. Meant for cave stalagmites that should scale with cavern height |
 | `absoluteMaxStack` | int | `30` | Hard cap when `scaleStack` is on, so a huge cavern does not produce a 60-block column |
 | `partOf` | `IrisDecorationPart` | `NONE` | Which pass places this decorator. See the table below |
@@ -312,25 +312,35 @@ For each generator, once per chunk:
 
 1. Roll `spawnChance` for the whole generator.
 2. Pick a clump count between `minPerChunk` and `maxPerChunk`. Each clump then rolls `perClumpSpawnChance` on its own.
-3. Pick one of `varience` pre-baked clump objects. A clump is a solid-ish blob of up to `maxSize` blocks inside a cube no larger than 11x11x11.
-4. Pick a random position in the chunk. The centre Y is drawn from the deposit band, clipped to the column's surface limit.
-5. Stamp the clump block by block.
+3. Build the selected `shape`. `IRIS` picks one of `varience` cached fixed-block-count clumps; either vanilla shape is generated fresh from its configured vein size.
+4. Pick a random position in the chunk and sample the centre Y using `heightDistribution`.
+5. Apply the placement scope, biome filter, host-block filter and air-exposure rule while stamping the clump.
 
-A block is written only when the target is not air, not fluid, not carrying a cavern mark, and (unless `replaceBedrock`) not bedrock. That combination is why deposits never appear inside caves, in water, or floating in the open.
+A block is written only when the target is not air, not fluid, not carrying a cavern mark, allowed by `replaceableBlocks`, inside the selected placement scope and (unless `replaceBedrock`) not bedrock. Deposits therefore never overwrite cave air or water. `ABOVE_TERRAIN` still requires an existing solid host, so it can mineralize a floating island without creating a floating ore block.
 
-**Depth limits are stricter than the configured band.** The surface limit for any column is `terrainHeight - 7`, and the clump centre must sit at least 9 blocks below the surface. Individual clump blocks above their own column's `terrainHeight - 7` are skipped, which keeps veins from breaking through a slope.
+**Legacy depth limits remain the default.** `placementScope: TERRAIN`, `heightDistribution: CLIPPED_UNIFORM` and `surfaceClearance: 7` preserve the old behavior: the centre band is clipped to terrain and individual cells stay below their column's surface limit. Vanilla-like definitions normally use `UNIFORM` or `TRIANGLE` with clearance `0`; those sample the authored band before rejecting out-of-world cells, so a distribution can taper naturally into the build floor.
 
-**Deepslate conversion is automatic.** When no `depositVariants` rule matches, Iris converts the ore to the deepslate form of whatever block it is replacing. A vanilla pack usually does not need a manual deepslate remap at all; `depositVariants` exists for modded ores and for deliberate substitutions.
+Every height is engine-local. Convert an absolute world Y with `localY = worldY - dimensionMinY`; keep an `above_bottom` value unchanged; convert `below_top: n` to `dimensionHeight - 1 - n`. Negative local bounds are valid for unclipped distributions and deliberately put part of the probability below the build floor.
+
+**Deepslate conversion is automatic and host-aware.** When no `depositVariants` rule matches, Iris converts a normal ore to its deepslate form exactly when the replaced block is deepslate, and converts a deepslate ore back when the host is ordinary stone. A vanilla pack should not use a fixed-Y remap; `depositVariants` is for modded ores and deliberate substitutions.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `minHeight` / `maxHeight` | int 0..8192 | `1` / `75` | **Engine-local** Y band for the clump centre, further clamped by the surface limit above |
-| `minSize` / `maxSize` | int 0..8192 | `0` / `128` | Blocks per clump. Sizes above about 1300 saturate the 11-cube and produce a solid block instead of a vein |
+| `minHeight` / `maxHeight` | int -8192..8192 | `1` / `75` | Inclusive engine-local centre band. Negative values are useful with an unclipped bottom-relative distribution |
+| `heightDistribution` | `CLIPPED_UNIFORM`, `UNIFORM`, `TRIANGLE` | `CLIPPED_UNIFORM` | Legacy terrain-clipped uniform sampling, authored-band uniform sampling, or a midpoint-peaked triangular distribution |
+| `placementScope` | `TERRAIN`, `ABOVE_TERRAIN`, `FULL_HEIGHT` | `TERRAIN` | Restricts cells below terrain, above terrain, or only by the full build-height and host rules. `FULL_HEIGHT` is useful for Nether-style solid ceilings |
+| `surfaceClearance` | int 0..256 | `7` | Distance from the terrain surface enforced by `TERRAIN` and `ABOVE_TERRAIN`; ignored by `FULL_HEIGHT` |
+| `minSize` / `maxSize` | int 0..8192 | `0` / `128` | Fixed block count for `IRIS`, or the configured vein-size parameter for either vanilla shape |
+| `shape` | `IRIS`, `VANILLA_ELLIPSOID`, `VANILLA_SCATTERED` | `IRIS` | Cached Iris clump, Minecraft-style chained ellipsoids, or the sparse candidate pattern used by ancient debris |
 | `minPerChunk` / `maxPerChunk` | int 0..2048 | `0` / `3` | Clumps attempted per chunk. This is the main frequency knob |
 | `spawnChance` | double 0..1 | `1` | Rolled once per chunk for the whole generator. Use it for rare deposits that should be absent from most chunks entirely |
 | `perClumpSpawnChance` | double 0..1 | `1` | Rolled per clump, thinning within a chunk rather than between chunks |
+| `discardChanceOnAirExposure` | double 0..1 | `0` | Discards this fraction of candidates touching orthogonal air. Chunk-edge neighbours outside the current generation buffer are treated as covered |
 | `palette` | `IrisBlockData[]` | required | Clump materials, picked uniformly per block. **`weight` is ignored here**, unlike every other palette — list a block twice to double it |
-| `varience` | int 1..64 | `3` | How many distinct clump shapes are baked. Low values make repeated vein silhouettes visible; the field name is spelled this way in code |
+| `replaceableBlocks` | block-id array | `[]` | Exact solid host materials this deposit may replace. Empty preserves the legacy any-solid rule |
+| `biomeScope` | `SURFACE`, `CAVE` | `CAVE` | Which biome lookup the include/exclude lists inspect |
+| `includedBiomes` / `excludedBiomes` | biome-key array | `[]` | Iris biome load keys or vanilla derivative ids. Inclusion is checked before exclusion |
+| `varience` | int 1..64 | `3` | Number of cached `IRIS` silhouettes. It does not affect either vanilla shape; the field name is spelled this way in code |
 | `replaceBedrock` | boolean | `false` | Allows overwriting bedrock |
 
 ### Biome ore multipliers
@@ -396,9 +406,9 @@ Do these one at a time, on a focused biome that already produces correct height.
 
 **Surface.** Define one to three `layers` covering soil down to subsoil and leave stone to `rockPalette`. Add `wall` for cliff biomes and `seaLayers` for oceans. Use `lockLayers` only for mesa stripes. Inspect flat ground, a steep slope, an exposed cliff face, and an underwater column before moving on.
 
-**Decorators.** Start with a single decorator, `STATIC` style, low `chance`. Confirm it appears, then switch to a wispy or cellular style to get patches. Add `partOf` variants for shore, sea, and ceiling content. Set `stackMin`/`stackMax` and `topPalette` for cane, cactus, and bamboo, remembering the resolved height is one taller than the fit. Extract repeated definitions into `snippet/decorator/*.json` (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)). Always check somewhere the filter should *reject* the decorator, not just somewhere it should accept it.
+**Decorators.** Start with a single decorator, `STATIC` style, low `chance`. Confirm it appears, then switch to a wispy or cellular style to get patches. Add `partOf` variants for shore, sea, and ceiling content. Set `stackMin`/`stackMax` and `topPalette` for cane, cactus, and bamboo; the configured bounds are the actual inclusive block-count bounds. Extract repeated definitions into `snippet/decorator/*.json` (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)). Always check somewhere the filter should *reject* the decorator, not just somewhere it should accept it.
 
-**Deposits.** Put broad stone blobs and common ores on the dimension, regional minerals on regions, signature ores on biomes. Verify the band actually intersects generated terrain given the engine-local offset and the 9-block surface margin. Raise `varience` if repeated vein shapes are noticeable. Add `depositVariants` last, and only for ids automatic deepslate conversion does not already handle.
+**Deposits.** Put broad stone blobs and common ores on the dimension, regional minerals on regions, signature ores on biomes. Translate vanilla absolute, bottom-relative and top-relative anchors into engine-local Y before tuning counts. When a dimension deliberately stretches the vanilla vertical span, normalize each vanilla anchor into the same fraction of the custom span rather than copying its raw world Y. Use `replaceableBlocks` so a vein cannot eat soil, glass or decorative strata. Raise `varience` only for `IRIS` shapes. Add `depositVariants` last, and only for ids automatic host-aware deepslate conversion does not handle.
 
 ## Practical notes
 

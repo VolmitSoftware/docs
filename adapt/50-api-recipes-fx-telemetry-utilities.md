@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Adapt documentation: API - Recipes, FX, Telemetry & Utilities"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,9 +63,9 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 
 ## Notifications and HUD
 
-`Notification` is a queued player-facing message with a total duration and a group, and Adapt ships action bar, title, sound and advancement kinds. `Notifier` owns a player's queue and its XP aggregation and tick lifecycle; Adapt constructs it, you do not.
+`Notification` is a queued player-facing message with a total duration and a group, and Adapt ships action bar, title, sound and advancement kinds; the title kind now delivers as an action-bar notice rather than a screen title. `Notifier` owns a player's queue and its XP aggregation and tick lifecycle; Adapt constructs it, you do not.
 
-`AdaptHud` submits messages into Adapt's shared HUD arbitration so Adapt's own action bar, XP ticker and titles do not fight each other or other plugins. Call it on the player's owning thread.
+`AdaptHud` publishes messages as segments into the shared cooperative action-bar compositor, so Adapt's XP ticker, ability status lines, and notices merge onto one line beside other plugins' content instead of fighting for the surface. Adapt never writes the title area or boss bars. Call it on the player's owning thread.
 
 ---
 
@@ -133,7 +133,7 @@ Every read takes `now` in epoch milliseconds.
 
 `Notification` declares `getTotalDuration()`, `play(AdaptPlayer)` and `getGroup()`, which defaults to `"default"`. `ActionBarNotification`, `TitleNotification`, `SoundNotification` and `AdvancementNotification` implement it, and `SoundNotification.withXP(double)` attaches an XP payload. `Notifier` owns a player's queue, XP aggregation and tick lifecycle and is constructed by Adapt.
 
-`AdaptHud` exposes `actionBar(Player, String)`, `xpTicker(Player, String)`, `title(Player, title, subtitle, inTicks, stayTicks, outTicks)`, `guiTitle(...)` with the same shape, and `clear(Player)`, all on the owning thread. `start(Adapt)` and `stop()` are plugin lifecycle.
+`AdaptHud` exposes `actionBar(Player, String)`, `xpTicker(Player, String)`, `ambientStatus(Player, purpose, String)` / `clearAmbientStatus(Player, purpose)`, `title(Player, title, subtitle)`, `guiTitle(Player, title, subtitle)`, and `clear(Player)`, all on the owning thread. Every one of them publishes an action-bar segment — `title`/`guiTitle` are notice deliveries, not screen titles. `start(Adapt)` and `stop()` are plugin lifecycle.
 
 ### First-party internals
 

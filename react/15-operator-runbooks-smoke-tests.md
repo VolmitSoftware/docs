@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "React documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -103,7 +103,7 @@ For each supported artifact/server combination, record these as separate results
 | Compiled hooks | Startup bridge class and gameplay path using furnace/brew, falling blocks, explosions, or hoppers |
 | Paper/Purpur | Main-thread gameplay and clean reload/shutdown |
 | Folia | Region-boundary gameplay with no cross-region access error |
-| Visual | Held map, frame map, megamap, action-bar/boss-bar/title behavior |
+| Visual | Held map, frame map, megamap, action-bar/title behavior |
 | Integration | Peer absent, negotiating, healthy, and disabled states |
 
 Do not treat one green category as proof of another.

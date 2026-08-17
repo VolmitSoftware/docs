@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Carving happens in two separate passes, and knowing which one you are looking at
 
 **Pass 1 — mantle carve (`MantleCarvingComponent` + `IrisCaveCarver3D`).** For each chunk Iris resolves which cave profile applies to every column, samples a 3D density field, and for each cell that falls below the carve threshold writes a *cavern mark* into the mantle. The mark carries an intent: plain air, dimension fluid, lava, or forced air. No blocks are touched yet — the mantle is a parallel voxel store that outlives the chunk, which is why caves line up across chunk borders and why cave objects can be anchored before terrain exists.
 
-**Pass 2 — carve modifier (`IrisCarveModifier`).** After the terrain actuator has filled the column with stone and biome layers, this pass walks the chunk's cavern marks and replaces the real blocks: air marks become `cave_air`, fluid marks become the dimension `fluidPalette` block, lava marks become lava, forced-air marks become air even below the lava line. It then groups each column's carved cells into contiguous runs (a "zone"), and for each zone paints the cave biome's `layers` downward from the floor, `caveCeilingLayers` upward from the ceiling, the `wall` palette onto every solid block touching carved space, and finally runs the cave biome's surface and `CEILING` decorators.
+**Pass 2 — carve modifier (`IrisCarveModifier`).** After the terrain actuator has filled the column with stone and biome layers, this pass walks the chunk's cavern marks and replaces the real blocks: air marks become `cave_air`, fluid marks become the dimension `fluidPalette` block, lava marks become lava, forced-air marks become air even below the lava line. It then groups each column's carved cells into contiguous runs (a "zone"). The floor biome is resolved at the lowest carved Y and paints `layers` plus floor decorators; the ceiling biome is resolved independently at the highest carved Y and paints `caveCeilingLayers` plus `CEILING` decorators. Walls still resolve their cave biome at each Y.
 
 Stage order in `OVERWORLD` mode, which is what everything below depends on:
 
@@ -343,6 +343,8 @@ Snippet key: `dimension-carving-entry`. These override the cave biome inside an 
 | `objects` / `proceduralObjects` | cave biome | Props, gated by `carvingSupport: CARVING_ONLY` and the profile's anchor settings |
 
 Cave biomes still accept height generators, but nothing reads them underground. Leave them out or use a trivial filler.
+
+Gravity-affected cave-floor layers are written only when the block beneath them is solid. Floor decorators also require stable support, so a one-block shell above a second cave cannot turn into falling sand and leave its decorator suspended.
 
 ## Cave-anchored jigsaw structures
 

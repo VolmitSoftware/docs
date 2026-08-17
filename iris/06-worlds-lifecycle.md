@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-16T03:30:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,6 +37,8 @@ Now create the real world. This is the step that freezes the pack:
 ```
 
 On Folia, this stages files and automatically requests a controlled restart after staging succeeds. Wait for the server to return, then the world loads on boot. On every other Bukkit-family server, including Spigot, the managed `iris:*` world is created immediately.
+
+The immediate path starts its lifecycle progress presentation before validation, rather than waiting for spawn chunks. Players receive an Iris-colored boss bar for the whole run plus an action-bar meter published into the shared cooperative compositor, where it merges beside other plugins' HUD content; console receives a throttled colored text bar. The percentage advances only when create crosses a real phase boundary, with live generated/required counts during spawn generation, and the terminal state is retained briefly as green success or red failure. Detailed lifecycle and exception diagnostics continue to go to the console separately.
 
 ```text
 /iris worlds
@@ -255,6 +257,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 - Startup datapack validation and the pack's own validation must both be loadable before any Studio folder, snapshot, generator, or Bukkit world is created. Missing validation fails closed.
 - The pack is **not** copied into the world folder, except for benchmark runs. The engine reads the live pack directly, which is what enables hotload.
 - Studio worlds are transient. They are never written into Iris's persistent world registry; unloaded Studio worlds are cleaned up, and their `bukkit.yml` entries are removed during shutdown cleanup.
+- Opening Studio after creating a persistent world from the same pack reuses the already-loaded matching dimension type and custom biomes. The new frozen world snapshot and its `bukkit.yml` LevelStem binding are boot-time persistence inputs, not a reason to restart the current server solely to open Studio. New or changed registry content still requires the normal restart boundary.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 - Biome Buffet prepares a changed focus before opening the chunk generation session; its exclusive fair-stage admission downgrades straight to the retained chunk permit so no other transition can slip in between the focus hotload and that chunk.
 - Ordinary Studio suppresses native structure starts only while the initial FULL entry chunk loads, then restores them for later preview chunks.

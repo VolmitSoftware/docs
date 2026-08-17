@@ -2,7 +2,7 @@
 title: "Trees, Fungi, Coral, Crystals, Formations, Ruins"
 description: "Iris documentation: Trees, Fungi, Coral, Crystals, Formations, Ruins"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-17T03:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -103,7 +103,7 @@ Every family carries this same block of fields and converts them into an `IrisOb
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `name` | family name | Used in logs and as the variant load key. Must be unique within a pack if you want to identify variants in debug output |
-| `chance` | 0.4 (trees, fungi, coral), 0.2 (crystals), 0.05 (ruins), 0.02 (formations) | Probability the entry attempts anything at all in a given chunk |
+| `chance` | 0.4 (trees, fungi, coral), 0.2 (crystals), 0.05 (ruins), 0.02 (formations) | Probability the entry attempts anything at all in a given chunk. 0 never attempts; 1 attempts every chunk |
 | `density` | `1` | Attempts once the chance roll passes. Raising this clusters objects; raising `chance` spreads them |
 | `variants` | 8 (trees), 6 (all others) | How many distinct shapes to bake, 1 to 64. Below about 4 the repetition is visible; above about 16 you are paying memory for variation nobody sees |
 | `seed` | `1337` | Bake seed. Change it to get an entirely different set of shapes from identical settings |
@@ -362,11 +362,11 @@ Snippet key: `crystal`. A budding base blob with tapered shards radiating from i
 
 ## Formations (`IrisFormation`)
 
-Snippet key: `formation`. Natural rock landmarks. Default `chance: 0.02` — these are meant to be rare, and they are the family most likely to widen the pack's mantle radius.
+Snippet key: `formation`. Natural and magical landmarks. Default `chance: 0.02` — these are meant to be rare, and they are the family most likely to widen the pack's mantle radius.
 
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `form` | `SPIRE` | `SPIRE`, `HOODOO`, `ARCH`, `SEA_STACK`, `BOULDER`, `BASALT_COLUMN` |
+| `form` | `SPIRE` | `SPIRE`, `HOODOO`, `ARCH`, `SEA_STACK`, `BOULDER`, `BASALT_COLUMN`, `ICEBERG`, `FISSURE`, `SPIRAL`, `OVERHANG` |
 | `block` / `blockPalette` | `minecraft:stone` | Main rock body |
 | `capBlock` / `capPalette` | unset | Caprock on the crown, and the overhanging cap for `HOODOO`. Unset means the main rock everywhere |
 | `strataPalette` | unset | Horizontal colour bands. Every `strataThickness` blocks the palette advances, which is what produces the badlands look |
@@ -386,9 +386,20 @@ Snippet key: `formation`. Natural rock landmarks. Default `chance: 0.02` — the
 | `hoodooCapHeight` | `3` (1–6) | `HOODOO`: cap slab thickness |
 | `archSpan` | `10` | `ARCH`: gap width between the legs |
 | `archThickness` | `3` | `ARCH`: leg and span thickness |
+| `archAsymmetry` | `0.35` (0–1) | `ARCH`: deterministic variation in leg steepness, crown position, depth bow and tube width. 0 mirrors the two sides; 1 is strongly organic |
 | `basaltColumns` | `5` (2–12) | `BASALT_COLUMN`: columns per cluster |
 | `basaltColumnRadius` | `1` | `BASALT_COLUMN`: radius of each column |
 | `basaltHeightVariance` | `0.45` | `BASALT_COLUMN`: how much column heights differ, 0 all equal and 1 highly varied |
+| `icebergPeaks` | `3` (1–12) | `ICEBERG`: irregular tapered summits above the broad faceted body |
+| `fractureCount` | `3` (2–8) | `FISSURE`: separated shards divided by open cracks |
+| `fractureSeparation` | `2` (1–16) | `FISSURE`: clear-air gap between neighboring shards |
+| `spiralTurns` | `1.5` (0.25–6) | `SPIRAL`: complete turns from the grounded base to the curled tip |
+| `spiralRadius` | `4` (1–32) | `SPIRAL`: starting distance from the open center; the radius tightens toward the tip |
+| `spiralThickness` | `2` (1–8) | `SPIRAL`: radius of the swept tube |
+| `overhangReach` | `8` (1–32) | `OVERHANG`: horizontal reach of the hooked cantilever |
+| `overhangDrop` | `3` (0–16) | `OVERHANG`: downward curl at the free tip |
+
+`ICEBERG` combines a low, wide body with independently varied summits. `FISSURE` keeps its shards disconnected so the cracks remain real negative space. `SPIRAL` sweeps a tightening helix with an open center, while `OVERHANG` grows vertically before curling outward and down. `ARCH` sweeps one connected three-dimensional bridge between independently shaped feet; its configured height is the actual top bound, the opening remains traversable, and `archAsymmetry` prevents a clean mathematical semicircle. A pointed `SPIRE` always retains its final tip even at a zero-width top. Every form retains deterministic geometry for a fixed entry seed and variant index, so material palettes can type-replace the same silhouettes without storing duplicate `.iob` assets.
 
 ## Ruins (`IrisRuin`)
 

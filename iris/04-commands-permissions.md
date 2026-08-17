@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-16T03:30:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`; completion lists installed pack/dimension values and does not advertise the internal `default` sentinel. Bukkit refuses the names `iris` and `benchmark`, and refuses any name whose dimension folder already exists.
 
-When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged directly in Paper 26.2's current per-dimension format, Iris prints that staging succeeded, and then it automatically requests a controlled restart; reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
+On non-Folia Bukkit, create immediately opens the standard Iris boss-bar/action-bar progress presentation. Its localized stage and overall percent cover validation, datapacks, pack snapshot publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization; the spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. On Folia the world is staged directly in Paper 26.2's current per-dimension format, Iris prints that staging succeeded, and then it automatically requests a controlled restart; reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
 For a player-issued Bukkit create, Iris also attempts to move that player into the new world after its entry chunk and safe position are ready. This automatic entry attempt has a 60-second limit. A timeout cancels only that teleport, reports that the world was created but automatic teleport failed, and does not roll back the world or restart the server; retry with `/iris tp tutorial`.
 
@@ -155,7 +155,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `Developer` | `dev` | Both | see Developer | Diagnostics; the group name is registered with a capital `D`, but matching is case-insensitive |
 | `world` | `w` | **Modded** | see World | Runtime dimension enable/disable |
 
-Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through its localized, HUD-arbitrated progress display and bounded chat/console updates; a direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue, so a dedicated server paused because it is empty still prints completion instead of leaving a finished on-disk install appearing queued.
+Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through its localized progress display — an always-on boss bar plus a progress line merged into the shared action-bar compositor — and bounded chat/console updates; a direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue, so a dedicated server paused because it is empty still prints completion instead of leaving a finished on-disk install appearing queued.
 
 The supported exact shipping-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With automatic ingest enabled, restart once to let Bukkit install those dependencies, complete the ensuing required restart so Minecraft loads their keys with the Iris dimension types and biomes, then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. With automatic ingest disabled, follow [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 

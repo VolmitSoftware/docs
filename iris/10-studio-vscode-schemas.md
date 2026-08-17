@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -156,9 +156,11 @@ With a template — `/iris studio create name=mypack template=overworld` — Iri
 3. Close the existing studio if one is open.
 4. `IrisProject.open` creates a studio world bound to that pack folder — not to a production install copy.
 5. Optionally launch VSCode when `studio.openVSCode` is true.
-6. Datapack installation may require a restart after create; the message tells you to re-run `open` after restarting.
+6. Datapack installation requires a restart only when the selected pack needs new or changed dimension-type, custom-biome, or biome-tag registry content; the message tells you to re-run `open` after restarting.
 
-Both ordinary and Jigsaw Studio reuse Iris's startup-loaded datapack runtime only while its pinned compiler-input fingerprint still matches every live `dimensions`, `biomes`, and `snippet` JSON input, the compiler build, and the vanilla-height policy. A changed input, unavailable registry, failed startup recovery, or changed/failed external datapack ingest or removal invalidates reuse and falls back to recovery, compilation, publication, and the existing restart gate; a verified no-change ingest or recovery check restores the prior pin. Object, structure, jigsaw, pool, and ownership edits do not affect generated dimension types or custom biomes and therefore do not force that fallback.
+Both ordinary and Jigsaw Studio compare the selected dimension's generated dimension type, custom-biome JSON, and per-biome tag membership with the registry requirements pinned when the server loaded Iris's datapack. When every requested entry is present and identical, Studio reuses that loaded runtime. Creating a persistent Iris world from the same pack adds a frozen pack copy and a boot-time LevelStem binding, but those duplicate or unrelated entries do not change the selected Studio dimension's registry requirements and do not trigger a restart.
+
+A new or changed required registry entry, unavailable registry, failed startup recovery, or changed/failed external datapack ingest or removal invalidates reuse and falls back to recovery, compilation, publication, and the existing restart gate. Object, structure, jigsaw, pool, ownership, and other non-registry edits do not force that fallback.
 
 Compiler-input discovery resolves the canonical Iris authoring-pack and world-snapshot roots directly. It never searches saved region, entity, POI, or other chunk-storage trees for a nested `iris/pack`, so verification time scales with pack inputs rather than generated world size.
 
@@ -166,7 +168,7 @@ Ordinary Studio still resolves and teleports through its standard safe entry, ma
 
 Jigsaw Studio publishes an initialized empty native-structure state even when no managed datapack scope exists, never retains or activates the filtered full state, and keeps starts, references, locates, and native collision-volume queries disabled. Its dedicated open kind also skips the standard-entry teleport, workspace launch, procedural generation-cache warm, complete mantle-radius preparation, and ordinary pack-file hotloader before sending the owner once through the selected workcell destination. Jigsaw graph transactions directly invalidate, reload, evaluate, and rematerialize their owned resources; close and reopen Jigsaw Studio to apply unrelated external pack edits.
 
-Paper-family entry chunks are requested through the urgent asynchronous chunk API before Iris retains them with a plugin ticket; Folia retains its nonblocking ticket bootstrap and confirms the owning region before entry resolution. If an open fails while that exact request remains active, Iris reports the failure without unloading or closing the generator, rejects another Studio open until cleanup succeeds, and queues the transient world for deletion at the next clean startup if it remains active for another 120 seconds. Closing a Studio stops Iris engine maintenance at `WorldUnloadEvent`, waits for the raw backend unload completion and any tracked native ring preparation before sealing the generator, and the 26.2 noise pipeline keeps its generation lease through terrain and heightmap completion. Forced process termination cannot drain in-process ring futures.
+Paper-family entry chunks are requested through the urgent asynchronous chunk API before Iris retains them with a plugin ticket; Folia retains its nonblocking ticket bootstrap and confirms the owning region before entry resolution. If an open fails while that exact request remains active, Iris reports the failure without unloading or closing the generator, rejects another Studio open until cleanup succeeds, and queues the transient world for deletion at the next clean startup if it remains active for another 120 seconds. If a legitimate registry change has already queued a terminal server restart, failed-open cleanup does not compete for a live lifecycle lease; any materialized transient state is queued for startup deletion instead. Closing a Studio stops Iris engine maintenance at `WorldUnloadEvent`, waits for the raw backend unload completion and any tracked native ring preparation before sealing the generator, and the 26.2 noise pipeline keeps its generation lease through terrain and heightmap completion. Forced process termination cannot drain in-process ring futures.
 
 Every Bukkit Studio open writes one `[Studio timing]` line per lifecycle phase with the transient world, `standard` or `jigsaw` kind, phase duration, and cumulative duration where available. The measured phases separate loaded-runtime reuse, external-datapack recovery, compiler-input fingerprinting, datapack compilation/publication, generator preparation, Bukkit world creation, entry-chunk loading, safe-entry resolution, standard teleport, and finalization. Studio engine timing additionally separates prefetch loading, runtime construction, and the generation-cache warm or its Jigsaw-only skip so a slow open can be correlated with a profiler capture.
 

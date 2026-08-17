@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Adapt documentation: Skill - Discovery"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -118,7 +118,7 @@ Already-appraised items just puff smoke.
 
 ### Sixth Sense (`discovery-sixth-sense`)
 
-A compact navigator above the hotbar. It maintains the nearest supported generated structure within its level-scaled range, up to 500 blocks, and shows a structure symbol, its specific name or type, an eight-way compass direction, and rounded block distance. A short private direction line still appears when a nearer target is acquired. The cue clears while you are inside a supported generated structure's exact bounding box. One of 16 structure families is searched every pulse; villages, pillager outposts, and other jigsaw structures are included, and each player advances through the families independently. It does not alter vanilla XP.
+A compact navigator above the hotbar. It maintains the nearest supported generated structure within its level-scaled range, up to 500 blocks, and shows a structure symbol, its specific name or type, an eight-way compass direction, and rounded block distance. A short private direction line still appears when a nearer target is acquired. The cue clears while you are inside a supported generated structure's exact bounding box. One of 16 structure families is searched every pulse; villages, pillager outposts, and other jigsaw structures are included, and each player advances through the families independently. While the cue is active the experience bar visually fills as you close on the target — a client-side display only; stored XP values are never changed, and the real bar is restored when the cue clears.
 
 Works on its own once learned.
 
@@ -588,7 +588,7 @@ Listened events:
 - `PlayerQuitEvent` (`on`)
 - `PlayerMoveEvent` (`onMove`): clears cached HUD state after the adaptation is unlearned or disabled.
 
-Each pulse searches one of 16 structure families using a per-player cursor and keeps the nearest valid cached result. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. Searches include generated structures whether visited or not, do not generate or load chunks, and use at most a 500-block configured radius. The maintained action-bar cue shows `{symbol} {structure} {direction} {distance}m`; directions are N, NE, E, SE, S, SW, W, or NW, and HUD arbitration can move the cue to a temporary boss-bar lane while the action bar is occupied. A newly acquired nearer result also shows the private six-block direction line for 50 ticks. Exact inside suppression checks supported generated-structure bounding boxes in the player's current chunk. No vanilla experience state is read or changed for the HUD.
+Each pulse searches one of 16 structure families using a per-player cursor and keeps the nearest valid cached result. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. Searches include generated structures whether visited or not, do not generate or load chunks, and use at most a 500-block configured radius. The maintained action-bar cue shows `{symbol} {structure} {direction} {distance}m`; directions are N, NE, E, SE, S, SW, W, or NW. The cue publishes into the shared cooperative action-bar compositor as a persistent status segment: it holds the center of the line when free (XP gains slot to its left, notices to its right) and shifts left as one piece when the React monitor owns the center — it is never pushed to a boss bar. A newly acquired nearer result also shows the private six-block direction line for 50 ticks. Exact inside suppression checks supported generated-structure bounding boxes in the player's current chunk. While the cue is active, the experience bar is repainted client-side to show target proximity (full = on top of it) and restored when the cue clears; no stored experience value is read or changed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

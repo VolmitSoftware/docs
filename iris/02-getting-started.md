@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-16T03:30:00.000Z
+date: 2026-08-16T20:45:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,6 +70,8 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 **Folia.** Runtime creation is disabled. Iris stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and automatically requests a controlled restart after every staging step succeeds. After the server returns, the world generates and loads on its own from that registration — you don't need `/iris load`. Your host must provide a working restart script or supervisor; if the restart command cannot relaunch the JVM, Iris stops the server and the supervisor must start it again.
 
 **Everything else, including Spigot.** Create builds the managed `iris:*` world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world). Spigot supports this create path even though it cannot cold-replace a vanilla slot.
+
+For a player, the immediate create path opens an Iris-colored boss bar and action-bar meter before validation begins. The stage label advances through pack validation, datapack installation, snapshot copy, generator preparation, spawn generation, registration, safe entry, optional creation-time pregen, and finalization; spawn generation also shows generated/required chunk counts when available. Console creates receive the same truthful stages as a bounded colored text bar rather than per-chunk log spam. A red terminal bar means create failed and the detailed cause remains in the server console.
 
 ```text
 /iris create name=myworld type=overworld seed=1337

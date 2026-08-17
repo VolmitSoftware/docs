@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "HoloUI documentation: Installation & Configuration"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -134,7 +134,7 @@ Every scheduled task is dispatched through VolmLib's `SchedulerUtils`, which rou
 
 Both `menus/` passes apply the same recursive filter as the boot scan. Regular non-symbolic `*.json` files under real, non-hidden directories are accepted case-insensitively and receive a slash-separated relative id; other extensions, hidden paths, directories themselves, symbolic links, and files outside the root are skipped. Creating or deleting a nested directory registers or unregisters its accepted descendants.
 
-Players with a matching personal menu open receive a notice: a localized `CONFIG_RELOADED` message on the action bar, or on a boss bar lane when the action bar is claimed by something with higher priority, plus `ENTITY_EXPERIENCE_ORB_PICKUP` at volume `0.5`, pitch `1`. Board-view reloads do not send that notice.
+Players with a matching personal menu open receive a notice: a localized `CONFIG_RELOADED` message published into the shared cooperative action-bar compositor, where it merges for about 2.5 seconds beside whatever other plugins are showing on the line, plus `ENTITY_EXPERIENCE_ORB_PICKUP` at volume `0.5`, pitch `1`. Board-view reloads do not send that notice.
 
 ### Runtime notes
 

@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-16T03:30:00.000Z
+date: 2026-08-17T03:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -179,7 +179,7 @@ From `dimensions/overworld.json`:
 | `carving` | one deep-dark band at world Y -250 to -175 | Depth-banded cave biome |
 | `mode` | omitted | Runs `OVERWORLD` |
 
-Also present: region/continental/biome noise styles, 11 ore generators, 20 deposits, one deposit variant that remaps ores to their deepslate forms below Y 0, imported-structure adjustments for stronghold, trial chambers, mineshaft and village, and one ancient-city structure placement with `nativeSuppression: REPLACE_SOURCE`. Field-by-field meanings are in [11 - Dimensions](/iris/11-dimensions).
+Also present: region/continental/biome noise styles, 11 terrain-band generators, and 23 dimension deposits. Ore height bands preserve Minecraft 26.2's normalized vertical positions by mapping its 384-block Overworld span into this pack's 768-block span; vein shapes, exposure rules and biome exceptions remain vanilla-shaped while ordinary terrain and cave per-chunk attempt counts are twice vanilla. Three separate above-terrain deposits independently give the stone-and-andesite Magnetics islands eight coal attempts, eight iron attempts, and four frozen-island emerald attempts at 25% generator chance per chunk; glass islands remain excluded. Magnetics selects between `magnetic-hollows`, `flux-crystal-caverns`, and `polarity-grotto` below its terrain, while its nine floating entries use variable vascular or crystalline tails, coherently varied edge taper and restrained wall warp instead of fixed-depth slabs. The managed Underworld mirrors those terrain and cave shapes at the same seed with Nether-safe palettes, derivatives, and object keys while retaining its independent ore table. Host-aware automatic deepslate conversion, imported-structure adjustments for stronghold, trial chambers, mineshaft and village, and one ancient-city structure placement with `nativeSuppression: REPLACE_SOURCE` are also configured here. Frozen surface and cave biomes replace the former eleven fixed ice-cluster objects with deterministic `ICEBERG`, `FISSURE`, `SPIRAL`, `OVERHANG`, and organic `ARCH` formations. The separate fixed spike, spire, and spec library is also gone: 29 Overworld `.iob` assets and 47 Underworld material replacements were removed, and all 25 former consumers now use taller, thinner procedural needles, leaning lances, and separated shard fans. The Ice Spikes biome has a dedicated high-density pool whose primary needle placement attempts every chunk, backed by 32 deterministic variants plus fissures, spirals, overhangs, arches, icebergs, and two long-shard crystal blooms. Overworld uses ice, packed ice, blue ice, or glass as appropriate; the coordinate-identical Underworld forms use soul, blackstone, crying-obsidian, and glowstone palettes. The five frozen cave families (`ice`, `ice-lite`, `ice-ravine`, `frost-shards`, and `glacial`) keep their retained `.iob` object placements at `0.375`, half their previous rendered size, while their procedural formations bake directly at cave scale. Pallid Necropolis contains no Denmyre objects: it places only a broad, cohesive procedural willow at `chance: 0.24` and a narrow clustered spindle at `chance: 0.14`, both with `density: 1`. The pale-oak Denmyre object family instead belongs exclusively to `temperate/pale-denmyre`; the Underworld keeps the same biome placement and tree geometry with warped materials. Field-by-field meanings are in [11 - Dimensions](/iris/11-dimensions).
 
 Do not invent region or biome keys. List the directories under `regions/` and `biomes/` and use what is actually there.
 
@@ -187,7 +187,7 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 `regions/temperate.json` is a representative region:
 
-- `landBiomes` — 28 keys including `temperate/plains`, `temperate/oak-forest`, `mountain/plains`, `vanilla/cherry_grove`
+- `landBiomes` — 29 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
 - `shoreBiomes` — `temperate/shore/beach`, `ocean/shore/beach`, `vanilla/stony_shore`, others
 - `seaBiomes` — `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river`, others
 - `caveBiomes` — `carving/rocky-cavebiome`, `carving/drip`, `carving/deep`, others

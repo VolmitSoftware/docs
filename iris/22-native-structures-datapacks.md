@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-16T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -197,6 +197,8 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
 
+Iris keeps native-start ownership in the world's Mantle so locate, reference repair, and restart recovery agree on the same structure. A periodic world save immediately persists idle ownership plates and leaves any plate still used by generation dirty for the next save instead of waiting on the server thread. A clean engine shutdown drains generation first and requires the remaining ownership records to persist before the Mantle is released.
+
 Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, reducing each ring task from 3,249 biome evaluations to 225. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks; `/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
 
 ### 1.2 Biome mapping for structure filters
@@ -277,7 +279,7 @@ Each entry (`match` selects targets by the same prefix rule):
 | `stilt` | unset | Foundation columns: `maxDepth` (default 64), `palette` (default cobblestone), `spacing`. (`supportNonOccluding` applies to Iris-assembled structures.) |
 | `terrain` | unset (= `SOURCE`) | Terrain-integration override. |
 
-Vegetation clearing is automatic: trees intersecting piece envelopes are removed.
+Iris object placements are rejected as a complete unit before any write when their transformed solid blocks intersect a native piece volume, including dimensions with a negative minimum Y. Native-feature vegetation that was not placed through Iris still uses bounded piece-local clearing as a fallback.
 
 **Merge:** `yShift` adds; `preserveSourceY` is OR-ed; `stilt`, `terrain`, and `yBand` are last-match-wins. Put the broad prefix first and the specific overrides after.
 
@@ -293,7 +295,7 @@ Three structures honor only `yShift` among these controls: `minecraft:monument` 
 
 | Mode | Behavior |
 |---|---|
-| `SOURCE` (default) | Replay the structure's registered terrain adaptation, including vanilla BURY/ENCAPSULATE fill reimplemented with surrounding terrain material. |
+| `SOURCE` (default) | Replay the structure's registered terrain adaptation, including vanilla BURY/ENCAPSULATE fill. Surface fitting bends terrain up or down with a fixed 12-block falloff from rigid floors, jigsaw junctions, and processed lowest-solid cells in terrain-matching path pieces. Template air and non-solid decoration do not become anchors. |
 | `PRESERVE` | Disable terrain integration. |
 | `BORE` | Clear the padded piece volume (box) before placement. |
 | `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
@@ -336,7 +338,7 @@ Shift trial chambers, preserve mineshaft Y, stilt villages:
 { "match": ["minecraft:mineshaft"], "preserveSourceY": true },
 {
   "match": ["minecraft:village"],
-  "stilt": { "maxDepth": 768, "palette": { "palette": [ { "block": "minecraft:cobblestone" } ] } }
+  "stilt": { "maxDepth": 2, "palette": { "palette": [ { "block": "minecraft:dirt" } ] } }
 }
 ]
 ```

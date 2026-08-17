@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "HoloUI documentation: Container Previews"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-16T00:00:00.000Z
 tags: "holoui"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,7 +128,7 @@ No command changes the per-player factor. The only interaction is:
 | `DOUBLE_TAP_MS` | `400` | Double-tap window |
 | `ADJUST_IDLE_TIMEOUT_MS` | `20000` | Adjust mode auto-exits and persists after this idle time |
 
-Feedback goes to the action bar, or to a boss-bar lane (`holoui:preview`, `BarColor.BLUE`, `BarStyle.SOLID`) when HUD slot arbitration hands out `HudSurface.BOSS_BAR`. The messages are `holoui.message.preview_scale.adjusting`, `.size`, `.hidden`, `.saved` and `.saved_hidden`.
+Feedback publishes into the shared cooperative action-bar compositor as the `holoui:preview` segment, merging beside other plugins' content on the same line; the saved confirmation lingers for its 1.5-second display window and then retires on its own, and ending adjustment drops the segment immediately. The messages are `holoui.message.preview_scale.adjusting`, `.size`, `.hidden`, `.saved` and `.saved_hidden`.
 
 Persistence is `plugins/holoui/preview-scales.json`, a pretty-printed map keyed by player UUID. Only factors other than `1.0` are written, rounded to two decimals. Loading clamps to `[0.25, 2.50]` and skips NaN, infinite and unparseable UUID entries.
 
