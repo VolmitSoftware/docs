@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-18T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,11 +22,9 @@ React registers read-only `%react_…%` keys for scoreboards, holograms, tab lis
 
 ## Requirements
 
-PlaceholderAPI must be **enabled before React enables**. React declares `softdepend: [PlaceholderAPI]`, so on
-a normal startup that is automatic. If you install PlaceholderAPI onto a running server, or enable it after
-React, run `/react reload` — React only attempts to register the expansion during its own enable.
+PlaceholderAPI must be **enabled before React enables**. React declares `softdepend: [PlaceholderAPI]`. On a normal startup that is automatic. If you install PlaceholderAPI onto a running server, or enable it after React, run `/react reload`. React only tries to register the expansion during its own enable.
 
-The expansion is `persist()`-marked, so `/papi reload` does not unregister it.
+The expansion is `persist()`-marked. `/papi reload` does not unregister it.
 
 | Property   | Value            |
 |------------|------------------|
@@ -43,43 +41,36 @@ The expansion is `persist()`-marked, so `/papi reload` does not unregister it.
 %react_<key>%
 ```
 
-Paths contain one to four dot-separated segments. Each segment uses lowercase letters, digits, or hyphens; underscores are not valid inside the path because the underscore after `react` is PlaceholderAPI's identifier separator. Keys are lowercased before lookup, so `%react_TPS%` and `%react_tps%` resolve identically.
+Paths contain one to four dot-separated segments. Each segment uses lowercase letters, digits, or hyphens. Underscores are not valid inside the path. The underscore after `react` is PlaceholderAPI's identifier separator. Keys are lowercased before lookup. `%react_TPS%` and `%react_tps%` resolve identically.
 
-An **unknown** key returns nothing, so PlaceholderAPI leaves the literal `%react_nonsense%` in the output. This distinguishes an unknown key from a known but unavailable value.
+An **unknown** key returns nothing. PlaceholderAPI leaves the literal `%react_nonsense%` in the output. This distinguishes an unknown key from a known but unavailable value.
 
 An **unavailable** value returns `---`.
 
-If a key ever throws internally, React logs it once per key and returns `---` rather than propagating into
-your format.
+If a key ever throws internally, React logs it once per key and returns `---`. It does not propagate into your format.
 
 ---
 
 ## Warm-up for previously undemanded keys
 
-React does not sample anything until a placeholder asks for it, and it publishes values on a one-second
-cycle. The first request for a previously undemanded key returns `---` unless another consumer has already demanded it; the next publisher cycle normally supplies the value within one second.
+React does not sample anything until a placeholder asks for it. It publishes values on a one-second cycle. The first request for a previously undemanded key returns `---` unless another consumer has already demanded it. The next publisher cycle normally supplies the value within one second.
 
-React has more than 140 samplers, so the PlaceholderAPI publisher samples only demanded keys. Asking for a known key adds it to a sticky demand set.
+React has more than 140 samplers. The PlaceholderAPI publisher samples only demanded keys. Asking for a known key adds it to a sticky demand set.
 
 Consequences:
 
 - A scoreboard that refreshes once a second shows `---` for one frame after a restart, then real numbers.
 - A one-shot `/papi parse me %react_tps%` immediately after startup shows `---`. Run it twice.
-- **Demand is sticky.** Once a key has been asked for, React keeps sampling it until that sampler leaves the
-  registry or React restarts. Asking for a key once a day costs the same as asking every tick, and a key you
-  used once and removed from your config keeps its sampler warm until the next restart.
-- An unknown `sampler.<id>` never enters the demand set, so a typo in a config that is parsed thousands of
-  times a second cannot make React sample anything.
+- **Demand is sticky.** Once a key has been asked for, React keeps sampling it. That continues until the sampler leaves the registry or React restarts. Asking for a key once a day costs the same as asking every tick. A key you used once and removed from your config keeps its sampler warm until the next restart.
+- An unknown `sampler.<id>` never enters the demand set. A typo in a config that is parsed thousands of times a second cannot make React sample anything.
 
-`%react_available%` tells you whether React has published a snapshot at all. It is `false` before the first
-publish and `true` afterwards, and it is the right thing to gate a whole scoreboard section on.
+`%react_available%` tells you whether React has published a snapshot at all. It is `false` before the first publish and `true` afterwards. Gate a whole scoreboard section on that key.
 
 ---
 
 ## Number formats
 
-React formats every value itself. It never emits a thousands separator, never emits a `%` sign (that would
-break the surrounding placeholder syntax), and never emits colour codes.
+React formats every value itself. It never emits a thousands separator. It never emits a `%` sign, because that would break the surrounding placeholder syntax. It never emits color codes.
 
 | Style           | Format                                    | Used by                                            |
 |-----------------|-------------------------------------------|-----------------------------------------------------|
@@ -95,23 +86,23 @@ Add your own unit text in your format string: `%react_tps%` and `%react_mspt% ms
 
 ## The complete key list
 
-Thirteen keys exist. Twelve are fixed, one is a group.
+Thirteen keys exist. Twelve are fixed. One is a group.
 
 ### Server-wide
 
 | Key                     | Unit                | Meaning                                                                                       |
 |-------------------------|---------------------|------------------------------------------------------------------------------------------------|
-| `%react_available%`     | `true` / `false`    | Whether the registered expansion has published its first snapshot; React unregisters the expansion during shutdown |
+| `%react_available%`     | `true` / `false`    | Whether the registered expansion has published its first snapshot. React unregisters the expansion during shutdown |
 | `%react_tps%`           | ticks per second    | Server tick rate, derived from real elapsed time between ticks. Capped at `20.00`                |
 | `%react_mspt%`          | milliseconds        | Mean tick duration, from the server's own average-tick-time counter                             |
-| `%react_mspt-p95%`      | milliseconds        | 95th-percentile tick duration over the last 1200 recorded ticks. The number that tells you about stutter, where `mspt` tells you about steady load |
-| `%react_health%`        | 0–100               | `100` minus React's incident score. `100.00` is a healthy server. The score is a weighted blend of p95 tick time, tick spike rate, GC time, scheduler backlog and its growth, p95 player ping, the cost of the hottest chunk, and redstone burst rate |
-| `%react_top-world-mspt%` | milliseconds       | The share of the current tick attributed to the single most expensive world. Not the same as that world's own tick duration — it is the fraction of total sampled cost times `mspt` |
+| `%react_mspt-p95%`      | milliseconds        | 95th-percentile tick duration over the last 1200 recorded ticks. This number shows stutter. `mspt` shows steady load |
+| `%react_health%`        | 0–100               | `100` minus React's incident score. `100.00` is a healthy server. The score is a weighted blend of p95 tick time, tick spike rate, GC time, and scheduler backlog. It also includes backlog growth, p95 player ping, hottest-chunk cost, and redstone burst rate |
+| `%react_top-world-mspt%` | milliseconds       | The share of the current tick attributed to the single most expensive world. This is not that world's own tick duration. It is the fraction of total sampled cost times `mspt` |
 | `%react_entities%`      | count               | Entities across all loaded chunks                                                                |
 | `%react_chunks%`        | count               | Loaded chunks across all worlds                                                                  |
 | `%react_ground-items%`  | count               | Dropped item entities lying on the ground                                                        |
 | `%react_memory.used%`   | mebibytes (integer) | JVM heap in use: total heap minus free heap, divided by 1048576 and rounded                     |
-| `%react_memory.free%`   | mebibytes (integer) | Heap **headroom to the maximum**: max heap minus used heap, divided by 1048576 and rounded. This is not `Runtime.freeMemory()` and it does not shrink as the JVM grows its heap |
+| `%react_memory.free%`   | mebibytes (integer) | Heap **headroom to the maximum**: max heap minus used heap, divided by 1048576 and rounded. This is not `Runtime.freeMemory()`. It does not shrink as the JVM grows its heap |
 
 ### Per-world
 
@@ -119,15 +110,13 @@ Thirteen keys exist. Twelve are fixed, one is a group.
 |----------------------|--------------|---------------------------------------------------------------------------------------------------|
 | `%react_world.mspt%` | milliseconds | Mean tick duration of the world the **requesting player** is in                                    |
 
-`world.mspt` is the only key whose value depends on who is asking. Everything else is one number for the
-whole server, identical for every viewer.
+`world.mspt` is the only key whose value depends on who is asking. Everything else is one number for the whole server, identical for every viewer.
 
 It returns `---` when:
 
-- there is no player context — a console parse, or a format rendered for nobody;
-- React has not measured that world yet;
-- the player has been offline for more than 60 seconds. Within that grace window React keeps serving the
-  world the player was last in, so a leave message that includes the key still resolves.
+- there is no player context — a console parse, or a format rendered for nobody
+- React has not measured that world yet
+- the player has been offline for more than 60 seconds. Within that grace window React keeps serving the world the player was last in. A leave message that includes the key still resolves
 
 ### The sampler passthrough
 
@@ -135,24 +124,17 @@ It returns `---` when:
 %react_sampler.<sampler-id>%
 ```
 
-Any registered sampler, by id. This is the escape hatch for everything React measures that does not have a
-named key, and it is where metrics published by other plugins appear.
+Any registered sampler, by id. This is the escape hatch for everything React measures that does not have a named key. It is also where metrics published by other plugins appear.
 
 Three things to know:
 
-- **The value is raw.** No unit conversion, no percentage scaling, no suffix. Memory samplers are in
-  **bytes**, not mebibytes. The three CPU load samplers and `explosion-packet-reduction` are **fractions
-  between 0 and 1** that React's own monitors render as a percentage, so the placeholder is 100× smaller than
-  the number an operator sees. `adapt-cache-hit-ratio` is also a fraction, but React renders it as one too,
-  so that key matches its monitor. Durations are milliseconds.
+- **The value is raw**, with no unit conversion, percentage scaling, or suffix. Memory samplers are in **bytes**, not mebibytes. Durations are milliseconds. The three CPU load samplers and `explosion-packet-reduction` are **fractions between 0 and 1**. React's own monitors render those as a percentage, so the placeholder is 100× smaller than the number an operator sees. `adapt-cache-hit-ratio` is also a fraction, but React renders it as one too, so that key matches its monitor.
 - **An unknown id returns nothing**, so `%react_sampler.typo%` is left in your text verbatim.
-- **A sampler that disappears takes its key with it.** The integration samplers listed below are always
-  registered, present source plugin or not. A sampler synthesised from a third-party published metric is
-  not: it goes away when that plugin unregisters, and the key reverts to literal text.
+- **A sampler that disappears takes its key with it.** The integration samplers listed below are always registered, present source plugin or not. A sampler synthesized from a third-party published metric is not. It goes away when that plugin unregisters, and the key reverts to literal text.
 
 ---
 
-## Sampler catalogue
+## Sampler catalog
 
 Every id below can be used as `%react_sampler.<id>%`. All are server-wide.
 
@@ -177,7 +159,7 @@ Every id below can be used as `%react_sampler.<id>%`. All are server-wide.
 |------------------------|------------------|-----------------------------------------------------------------------------------|
 | `processor-system-load` | fraction 0–1    | Whole-machine CPU load                                                            |
 | `processor-process-load` | fraction 0–1   | CPU load of this JVM alone                                                        |
-| `processor-outside`    | fraction 0–1     | System load minus process load: what the rest of the box is doing                 |
+| `processor-outside`    | fraction 0–1     | System load minus process load: what the rest of the machine is doing             |
 | `memory-used`          | bytes            | Heap in use — total minus free                                                    |
 | `memory-free`          | bytes            | Headroom to the maximum heap                                                      |
 | `memory-used-after-gc` | bytes            | Heap in use at the last point it dropped, that is, after the last collection      |
@@ -259,23 +241,19 @@ Every id below can be used as `%react_sampler.<id>%`. All are server-wide.
 | `hopper-tick-time`            | ms          | Time spent on hoppers per tick                                         |
 | `hopper-chain-coalescing`     | ticks/s     | Hopper ticks saved per second by React's chain coalescing              |
 | `fluid`                       | flows/s     | Fluid flow events per second                                           |
-| `fluid-tick-time`             | ms          | Time spent on fluids per tick                                          |
+| `fluid-tick-time`            | ms          | Time spent on fluids per tick                                          |
 | `physics`                     | updates/s   | Block physics and piston events per second                             |
 | `physics-tick-time`           | ms          | Time spent on block physics per tick                                   |
 | `commands`                    | commands/s  | Commands executed per second, from players, console and RCON           |
 | `crop-fast-forward`           | blocks/s    | Crop growth stages advanced per second by React's fast-forward feature |
 | `lazy-gravity-skipped`        | ticks/s     | Falling-block ticks skipped per second by React's lazy gravity         |
 | `spawner-light-cache-skipped` | checks/s    | Spawner light checks skipped per second by React's light cache         |
-| `explosion-packet-reduction`  | ratio 0–1   | Share of explosion packets removed by React's explosion batching. Stored as a fraction; React's own monitors render it as a percentage |
+| `explosion-packet-reduction`  | ratio 0–1   | Share of explosion packets removed by React's explosion batching. Stored as a fraction. React's own monitors render it as a percentage |
 | `pdc-write-batcher`           | writes/s    | Persistent-data writes deferred per second by React's write batcher    |
 
 ### Integration samplers
 
-These read numbers reported by the other Volmit plugins. They are **always registered**, whether or not the
-source plugin is installed, so the key always resolves and never falls back to literal text. Before the
-source plugin has ever reported, they read `0`; once it has, they hold the last value they were given even
-if the plugin goes away. Gate the display on your own knowledge of what is installed, not on the key
-resolving.
+These read numbers reported by the other Volmit plugins. They are **always registered**, whether or not the source plugin is installed. The key always resolves and never falls back to literal text. Before the source plugin has ever reported, they read `0`. Once it has, they hold the last value they were given even if the plugin goes away. Gate the display on your own knowledge of what is installed, not on the key resolving.
 
 Iris:
 
@@ -390,20 +368,15 @@ BileTools:
 
 ### Metrics published by other plugins
 
-Any plugin that publishes through React's metric API gets a sampler here too. The id is the metric key with
-every non-alphanumeric character replaced by `-`, so a plugin publishing `guardianpets.pets.live` gives you:
+Any plugin that publishes through React's metric API gets a sampler here too. The id is the metric key with every non-alphanumeric character replaced by `-`. A plugin publishing `guardianpets.pets.live` gives you:
 
 ```
 %react_sampler.guardianpets-pets-live%
 ```
 
-The value is the raw `double` that plugin published, formatted by the automatic rule — integer when whole,
-two decimals otherwise.
+The value is the raw `double` that plugin published, formatted by the automatic rule. The format is integer when whole, two decimals otherwise.
 
-**A metric that stops updating freezes, it does not go to `---`.** React's monitors mark a reading stale
-after 15 seconds and render `---`, but the underlying sampler keeps returning the last value it saw, and the
-placeholder reads that number. A metric reads `0` only before its very first reading. Treat an unchanging
-number as a possible "publisher stopped", not as a measurement. See [18 - API - Metric Publishing.md](/react/18-api-metric-publishing).
+**A metric that stops updating freezes. It does not go to `---`.** React's monitors mark a reading stale after 15 seconds and render `---`. The underlying sampler keeps returning the last value it saw. The placeholder reads that number. A metric reads `0` only before its very first reading. Treat an unchanging number as a possible "publisher stopped", not as a measurement. See [18 - API - Metric Publishing.md](/react/18-api-metric-publishing).
 
 ---
 
@@ -411,8 +384,7 @@ number as a possible "publisher stopped", not as a measurement. See [18 - API - 
 
 Resolving a placeholder performs key normalization and a lookup against a snapshot that React publishes once a second. The request path does not sample metrics, access Bukkit world state, or block on metric collection.
 
-What does cost something is the sampling behind a key, which happens once a second regardless of how many
-players display it. Asking for one key on a 200-player scoreboard costs the same as asking for it once.
+What does cost something is the sampling behind a key. That sampling happens once a second regardless of how many players display it. Asking for one key on a 200-player scoreboard costs the same as asking for it once.
 
 ---
 
@@ -420,7 +392,7 @@ players display it. Asking for one key on a 200-player scoreboard costs the same
 
 | Symptom                                       | Cause                                                                          |
 |-----------------------------------------------|---------------------------------------------------------------------------------|
-| `%react_tps%` appears literally in the output | The expansion is not registered. PlaceholderAPI was enabled after React — run `/react reload` |
+| `%react_tps%` appears literally in the output | The expansion is not registered. PlaceholderAPI was enabled after React. Run `/react reload` |
 | One key appears literally, the rest work      | Typo, or a `sampler.<id>` that is not a registered sampler                       |
 | Everything shows `---`, `available` is `false` | The expansion is registered but has not published its first snapshot           |
 | One key shows `---` forever                    | Its sampler reports a non-finite value. `%react_world.mspt%` also does this with no player context |

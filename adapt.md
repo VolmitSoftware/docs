@@ -2,17 +2,13 @@
 title: "Adapt"
 description: "Adapt passive skills and abilities for Paper and Folia"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-# Adapt
-
-Passive skills and abilities layered on vanilla rather than replacing it. Players open the
-skill tree by right-clicking a **bookshelf face**; skills level from the matching activity and
-award knowledge, which is spent on individual adaptations.
+Adapt adds skills and abilities on vanilla gameplay. Players open the skill tree with a right-click on a bookshelf face. Skills gain levels from matching activity and award knowledge. Players spend knowledge on adaptations.
 
 | | |
 |---|---|
@@ -51,26 +47,25 @@ award knowledge, which is spent on individual adaptations.
 | [Unarmed](/adapt/33-skill-unarmed) | 12 |
 {.dense}
 
-Every skill and every adaptation is independently configurable and can be disabled. Mutations
-are a separate system layered on top — see [Mutations Overview](/adapt/34-mutations-overview).
+You can configure and disable each skill and each adaptation. Mutations are a separate system. See [Mutations Overview](/adapt/34-mutations-overview).
 
 ## Permissions
 
 | Node | Default | Description |
 |---|---|---|
-| `adapt.boost` | `op` | Allows for you to use the Boost command to boost XP gains |
-| `adapt.boost.global` | `op` | Allows boosting XP gains for every player on the server |
-| `adapt.cheatitem` | `op` | Allows for you to create a Cheat Item (one time use Xp Items) |
-| `adapt.clear` | `op` | Allows clearing player progression data |
-| `adapt.configurator` | `op` | Allows using the config editor and resetting configs to defaults |
-| `adapt.debug` | `op` | Allows Adapt debug tools including debug mode and config migration |
-| `adapt.determine` | `op` | Allows directly assigning skill lines and adaptations to players |
-| `adapt.effects` | `True` | Allows toggling Adapt effect visibility for yourself |
-| `adapt.gui` | `op` | Allows opening the Adapt GUI via /adapt gui |
-| `adapt.idontknowwhatimdoingiswear` | `op` | This is for the Adapt Testing command DEVELOPERS ONLY |
-| `adapt.main` | `op` | Allows for you to use the main command |
-| `adapt.mutations` | `True` | Allows using personal experimental Mutations after the server opts in |
-| `adapt.mutations.admin` | `op` | Allows inspecting and managing experimental Mutation state |
+| `adapt.boost` | `op` | Allows use of the Boost command to boost XP gains |
+| `adapt.boost.global` | `op` | Allows boosting of XP gains for every player on the server |
+| `adapt.cheatitem` | `op` | Allows creation of a Cheat Item (one-time-use XP items) |
+| `adapt.clear` | `op` | Allows clearing of player progression data |
+| `adapt.configurator` | `op` | Allows use of the config editor and reset of configs to defaults |
+| `adapt.debug` | `op` | Allows Adapt debug tools, including debug mode and config migration |
+| `adapt.determine` | `op` | Allows direct assignment of skill lines and adaptations to players |
+| `adapt.effects` | `True` | Allows toggle of Adapt effect visibility for yourself |
+| `adapt.gui` | `op` | Allows opening of the Adapt GUI with /adapt gui |
+| `adapt.idontknowwhatimdoingiswear` | `op` | Adapt testing command. Developers only |
+| `adapt.main` | `op` | Allows use of the main command |
+| `adapt.mutations` | `True` | Allows use of personal experimental Mutations after the server opts in |
+| `adapt.mutations.admin` | `op` | Allows inspect and manage of experimental Mutation state |
 
 Full command syntax is in [Commands & Permissions](/adapt/04-commands-permissions).
 

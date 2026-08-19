@@ -2,29 +2,21 @@
 title: "API - Skills & Adaptations"
 description: "Adapt documentation: API - Skills & Adaptations"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`Skill` and `Adaptation` are the catalogue objects Adapt hands you in its events and registries. A skill is
-one of the 23 lines a player levels; an adaptation is one purchasable ability inside a line. Their
-read-only accessors and `AdaptationLearningTransaction` are supported integration surfaces. The rest of
-the package is Adapt's own authoring machinery.
+`Skill` and `Adaptation` are the catalogue objects Adapt hands you in its events and registries. A skill is one of the 23 lines a player levels. An adaptation is one purchasable ability inside a line. Their read-only accessors and `AdaptationLearningTransaction` are supported integration surfaces. The rest of the package is Adapt's own authoring machinery.
 
-You reach for this document when you already have a `Skill<?>` or an `Adaptation<?>` and want to know what
-is safe to ask it, or when you want to give a player a level in something without reimplementing the
-knowledge, power and economy checks by hand.
+You reach for this document when you already have a `Skill<?>` or an `Adaptation<?>` and want to know what is safe to ask it. You also reach for it when you want to give a player a level in something. It
+avoids reimplementing the knowledge, power, and economy checks by hand.
 
-The caveat is linkage. These are the classes where Adapt's relocated utility library shows through: some
-accessors return VolmLib collections, and calling one bakes a build-time package path into your jar. Stick
-to the members listed in Reference and you never touch one. See
-[Adapt relocates VolmLib](/adapt/41-api-getting-started#adapt-relocates-volmlib).
+The caveat is linkage. These are the classes where Adapt's relocated utility library shows through. Some accessors return VolmLib collections. Calling one bakes a build-time package path into your jar. Stick to the members listed in Reference and you never touch one. See [Adapt relocates VolmLib](/adapt/41-api-getting-started#adapt-relocates-volmlib).
 
 ## Getting the registry
 
-There is one registry and it lives on the enabled plugin. Ask for it after Adapt has enabled, never in
-your own `onLoad`.
+There is one registry and it lives on the enabled plugin. Ask for it after Adapt has enabled. Never ask in your own `onLoad`.
 
 ```java
 Plugin plugin = Bukkit.getPluginManager().getPlugin("Adapt");
@@ -34,64 +26,36 @@ if (plugin instanceof Adapt adapt && adapt.isEnabled()) {
 }
 ```
 
-`getSkill(String)` finds enabled skills only; `getAnySkill(String)` also sees skills Adapt knows about but
-has disabled. Both accept the id in any casing. `getSkills()` and `getAllSkills()` hand back a fresh
-snapshot each call, declared as `List<Skill<?>>`, so iterating one is safe while the catalogue changes
-underneath you. If you cache anything derived from the catalogue, key the cache on `getCatalogRevision()`;
-it changes whenever a skill or adaptation is registered, unregistered or hot-reloaded.
+`getSkill(String)` finds enabled skills only. `getAnySkill(String)` also sees skills Adapt knows about but has disabled. Both accept the id in any casing. `getSkills()` and `getAllSkills()` hand back a fresh snapshot each call, declared as `List<Skill<?>>`. Iterating one is safe while the catalogue changes underneath you. If you cache anything derived from the catalogue, key the cache on `getCatalogRevision()`. It changes whenever a skill or adaptation is registered, unregistered, or hot-reloaded.
 
-Registration, hot reload, advancement and recipe synchronisation, the registry's own event handlers, and
-`unregister()` are Adapt lifecycle operations. Calling them from outside is not supported.
+Registration, hot reload, advancement and recipe synchronization, the registry's own event handlers, and `unregister()` are Adapt lifecycle operations. Calling them from outside is not supported.
 
 ## Reading a skill or an adaptation
 
-Stick to the accessors that return a `String`, an `int`, a `boolean`, a `Material` or a Bukkit type. Those
-are listed in Reference and they are stable. Two of them deserve a warning.
+Stick to the accessors that return a `String`, an `int`, a `boolean`, a `Material`, or a Bukkit type. Those are listed in Reference. They are stable. Two of them deserve a warning.
 
-`Skill.getLocalizedName()` does not resolve the localization catalogue despite the name. It capitalises
-the registry id, so `rift` becomes `Rift` in every locale. Use `getDisplayName()` for player-facing text.
+`Skill.getLocalizedName()` does not resolve the localization catalogue despite the name. It capitalizes the registry id. `rift` becomes `Rift` in every locale. Use `getDisplayName()` for player-facing text.
 
-On `Adaptation`, `getLevel(Player)` is the stored learned level and nothing else, while
-`getActiveLevel(Player)` runs the whole gate: learned level, world blacklist, game mode, protection,
-`adapt.use` permission, usage conflicts, `AdaptAdaptationUseEvent`, and every registered
-`AbilityUsePolicy`. It returns `0` the moment any of them says no. If you want to know whether an ability
-would actually fire right now, that is the one to call.
+On `Adaptation`, `getLevel(Player)` is the stored learned level and nothing else. `getActiveLevel(Player)` runs the whole gate: learned level, world blacklist, game mode, protection, `adapt.use` permission, usage conflicts, `AdaptAdaptationUseEvent`, and every registered `AbilityUsePolicy`. It returns `0` the moment any of them says no. If you want to know whether an ability would actually fire right now, that is the one to call.
 
-Everything else on these interfaces (storage, XP, scheduling, damage and projectile helpers, GUI, recipes,
-advancements, models, ticking, registration, config mutation) is first-party authoring code. Some of it
-names relocated types, and all of it mutates Adapt-owned runtime state.
+Everything else on these interfaces is first-party authoring code. That includes storage, XP, scheduling, damage and projectile helpers, GUI, recipes, advancements, models, ticking, registration, and config mutation. Some of it names relocated types. All of it mutates Adapt-owned runtime state.
 
 ## Learning and unlearning
 
-`AdaptationLearningTransaction` is the only supported way to change a learned level. Each of its two
-statics is a complete transaction: it clamps the target, checks power and knowledge, runs the Vault charge
-or refund when the learning economy is on, honours permanent-adaptation rules and the hardcore no-refunds
-setting, and converts a region-granted level into a paid one.
+`AdaptationLearningTransaction` is the only supported way to change a learned level. Each of its two statics is a complete transaction. It clamps the target. It checks power and knowledge. It runs the Vault charge or refund when the learning economy is on. It honors permanent-adaptation rules and the hardcore no-refunds setting. It converts a region-granted level into a paid one.
 
 ```java
 AdaptationLearningTransaction.Result result =
     AdaptationLearningTransaction.learn(adaptation, player, 3, false);
 ```
 
-Call it on the tick thread that owns the player, and pass the level the player should end up at rather
-than a delta. `learn` clamps to the adaptation's max level, `unlearn` clamps at zero. Pass
-`bypassCosts = true` only for an administrative action you have already authorised: it skips the power,
-knowledge and money checks, and on `unlearn` it also overrides the permanent-adaptation refusal and pays
-nothing back. The returned `Result` is the complete outcome, so do not also write `PlayerSkillLine`
-yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge and any
-Vault charge before it propagates.
+Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation refusal and pays nothing back. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
 
 ## Runtime markers
 
-Two annotations exist for Adapt's own adaptation classes, and both target handler **methods**, not types.
-`@RunsWithoutLearnedAdaptation` opts a handler out of the non-learner gate on `PlayerMoveEvent` and
-`PlayerJumpEvent`, which is how teardown and cleanup handlers still run for a player who has unlearned the
-adaptation. `@ReceiveCancelledEvents` opts a handler out of Adapt's default `ignoreCancelled` behaviour so
-it still receives an already-cancelled Bukkit event.
+Two annotations exist for Adapt's own adaptation classes. Both target handler **methods**, not types. `@RunsWithoutLearnedAdaptation` opts a handler out of the non-learner gate on `PlayerMoveEvent` and `PlayerJumpEvent`. That is how teardown and cleanup handlers still run for a player who has unlearned the adaptation. `@ReceiveCancelledEvents` opts a handler out of Adapt's default `ignoreCancelled` behavior so it still receives an already-cancelled Bukkit event.
 
-Neither is useful in an integration. Adapt only inspects methods on listeners it registers itself, and the
-movement gate additionally requires the listener to be an `Adaptation<?>`, so putting either annotation on
-your own listener does nothing.
+Neither is useful in an integration. Adapt only inspects methods on listeners it registers itself. The movement gate also requires the listener to be an `Adaptation<?>`. Putting either annotation on your own listener does nothing.
 
 ## Reference
 
@@ -114,13 +78,11 @@ your own listener does nothing.
 | `getIcon()` | `Material` |
 | `getDescription()` | `String` |
 | `getDisplayName()`, `getDisplayName(int)`, `getShortName()` | `String` |
-| `getLocalizedName()` | `String`, the capitalised registry id, not a translation |
+| `getLocalizedName()` | `String`, the capitalized registry id, not a translation |
 | `getConfigurationClass()` | `Class<T>` |
 | `getConfig()` | `T`, when the consumer already knows the config type |
 
-Do not call `getAdaptations()`, `getRecipes()`, `getStatTrackers()`, `getModel()`, the registration or XP
-helpers, or the tick methods. Those either return a relocated `KList` or mutate Adapt-owned state.
-`Skill.getId()` comes from the ticker and is a random UUID with a suffix, not the skill key.
+Do not call `getAdaptations()`, `getRecipes()`, `getStatTrackers()`, `getModel()`, the registration or XP helpers, or the tick methods. Those either return a relocated `KList` or mutate Adapt-owned state. `Skill.getId()` comes from the ticker and is a random UUID with a suffix, not the skill key.
 
 ### Supported read-only `Adaptation` members
 
@@ -137,13 +99,11 @@ helpers, or the tick methods. Those either return a relocated `KList` or mutate 
 | `getActiveLevel(Player)` | `int`, `0` unless every gate passes |
 | `isEnabled()`, `isPermanent()`, `canUse(Player)` | `boolean` |
 
-`canUse(Player)` is public and fires `AdaptAdaptationUseEvent` plus every `AbilityUsePolicy` on its own,
-without the learned-level test. It is the one path that can present a policy with `level() == 0`.
+`canUse(Player)` is public and fires `AdaptAdaptationUseEvent` plus every `AbilityUsePolicy` on its own, without the learned-level test. It is the one path that can present a policy with `level() == 0`.
 
 ### `AdaptationConfig` fields
 
-The base TOML shape for a first-party adaptation. External code may read these but must not replace a live
-config object.
+The base TOML shape for a first-party adaptation. External code may read these but must not replace a live config object.
 
 | Key | Type | Default | What it does |
 |---|---|---|---|
@@ -178,23 +138,21 @@ Java-public so Adapt's catalogue can be assembled across packages. Not third-par
 | Type | Runtime role and restriction |
 |---|---|
 | `SimpleSkill` | Base for Adapt's built-in skills. Its constructor requires `SkillPresentation`, whose `TextKey` members are relocated in the shaded jar |
-| `SimpleAdaptation` | Base for built-in adaptations; owns config files, recipes, advancements, FX, storage, and registration lifecycle |
+| `SimpleAdaptation` | Base for built-in adaptations. Owns config files, recipes, advancements, FX, storage, and registration lifecycle |
 | `AbilityApiBridge` | Installs and uninstalls the internal ability funnel. Integrations register `AbilityUsePolicy` or `AbilityCostProvider` through Bukkit instead |
-| `Cooldowns` | UUID cooldown map created by `PlayerStateRegistry`; uses relocated time utilities and is Adapt-owned state |
-| `ItemCooldowns` | Shared item and material cooldown coordinator used by built-in abilities; its group registry and player cooldown mutation are global |
-| `PlayerStateRegistry` | Tracks first-party per-player maps and owns the quit listener; `reset()` clears every registered map |
+| `Cooldowns` | UUID cooldown map created by `PlayerStateRegistry`. Uses relocated time utilities and is Adapt-owned state |
+| `ItemCooldowns` | Shared item and material cooldown coordinator used by built-in abilities. Its group registry and player cooldown mutation are global |
+| `PlayerStateRegistry` | Tracks first-party per-player maps and owns the quit listener. `reset()` clears every registered map |
 | `VelocityBurstRuntime` | Global movement-burst scheduler and its `Client`, `Profile`, `BurstRequest`, `Feedback` and `StartResult` nested types. Adapt owns startup, ticking and shutdown |
-| `ChunkLoading` | Folia and Paper chunk-loading helper used by built-in adaptations; not an external scheduling contract |
+| `ChunkLoading` | Folia and Paper chunk-loading helper used by built-in adaptations. Not an external scheduling contract |
 | `SkillOwnerPulse` | Internal learner-index refresh pulse |
 
-`AdaptationRuntimeGuards` and `SkillRuntimeGuards` are package-private implementation classes, not API
-types and not annotations. The only public markers are `RunsWithoutLearnedAdaptation` and
-`ReceiveCancelledEvents`, both `@Target(ElementType.METHOD)` with runtime retention.
+`AdaptationRuntimeGuards` and `SkillRuntimeGuards` are package-private implementation classes, not API types and not annotations. The only public markers are `RunsWithoutLearnedAdaptation` and `ReceiveCancelledEvents`, both `@Target(ElementType.METHOD)` with runtime retention.
 
 ## See also
 
-- [41 - API - Getting Started.md](/adapt/41-api-getting-started)
-- [43 - API - Ability Use Policy.md](/adapt/43-api-ability-use-policy)
-- [44 - API - Ability Cost.md](/adapt/44-api-ability-cost)
-- [45 - API - Events.md](/adapt/45-api-events)
-- [10 - Skills Catalog.md](/adapt/10-skills-catalog)
+- [41 - API - Getting Started](/adapt/41-api-getting-started)
+- [43 - API - Ability Use Policy](/adapt/43-api-ability-use-policy)
+- [44 - API - Ability Cost](/adapt/44-api-ability-cost)
+- [45 - API - Events](/adapt/45-api-events)
+- [10 - Skills Catalog](/adapt/10-skills-catalog)

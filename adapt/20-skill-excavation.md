@@ -2,30 +2,33 @@
 title: "Skill - Excavation"
 description: "Adapt documentation: Skill - Excavation"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Excavation is the shovel skill. Break blocks with a shovel in your main hand and you earn XP scaled by the block's value, hardness, and blast resistance; hit mobs with a shovel and you earn XP from the damage you deal. Twelve adaptations sit on top of that, and most of them are about moving dirt faster and getting more out of it.
+Excavation is the shovel skill. Break blocks with a shovel in your main hand and you earn XP scaled by the block's value, hardness, and blast resistance. Hit mobs with a shovel and you earn XP from the damage you deal. Twelve adaptations sit on top of that. Most of them are about moving dirt faster and getting more out of it.
 
-In play it starts quiet. You dig faster, drops go into your bag instead of on the floor, muddy blocks pay double, and falling onto soft ground stops hurting. Then it stops being quiet. Sneak-dig and you carve out a whole three-by-three face at once. Sneak-right-click and you drop a shaft straight down. Sneak-right-click with nothing in front of you and the ground throws every hostile mob nearby into the air.
+In play it starts quiet. You dig faster. Drops go into your bag instead of on the floor. Muddy blocks pay double. Falling onto soft ground stops hurting. Then it stops being quiet. Sneak-dig and you carve out a whole three-by-three face at once. Sneak-right-click and you drop a shaft straight down. Sneak-right-click with nothing in front of you and the ground throws every hostile mob nearby into the air.
 
-A few adaptations are about finding things rather than removing them. Seismic Ping lights up a nearby ore while you work, Spelunker turns a handful of glow berries into an x-ray sweep for one ore type, Treasure Hunter pulls pottery sherds out of sand and gravel, and Grave Digger pulls bones out of dirt, along with the occasional angry skeleton.
+A few adaptations are about finding things rather than removing them. Seismic Ping lights up a nearby ore while you work. Spelunker turns a handful of glow berries into an x-ray sweep for one ore type. Treasure Hunter pulls pottery sherds out of sand and gravel. Grave Digger pulls bones out of dirt, along with the occasional angry skeleton.
 
 OMNI - T.O.O.L. is the odd one out. It merges several tools into one item that switches to the right head for whatever you are pointed at.
 
 ## Adaptations
 
-Everything below needs the same four things: the adaptation learned at level 1 or higher in the Adapt menu, the Excavation skill and that adaptation both enabled in config, an `adapt.use.` permission that has not been revoked for you, and any protection or region plugin allowing the block or entity you are acting on. Those are not repeated per entry.
+Everything below needs the same four things. The adaptation is learned at level 1 or higher in the Adapt menu. The Excavation skill and that adaptation are both enabled in config. An `adapt.use.` permission has not been revoked for you. Any protection or region plugin allows the block or entity you are acting on. Those are not repeated per entry.
 
-Most of these also require a shovel in your main hand, and several restrict themselves to shovel-friendly blocks. Where that matters it is called out.
+Most of these also require a shovel in your main hand. Several restrict themselves to shovel-friendly blocks. Where that matters it is called out.
 
 ### Hasty Excavator (`excavation-haste`)
 
-Starting to break a block gives you a block-break speed bonus that lasts long enough to finish the block, so mining speed does not stutter partway through a slow dig. It works on its own once learned.
+Starting to break a block gives you a block-break speed bonus that lasts long
+enough to finish the block. Mining speed does not stutter partway through a slow
+dig. It works on its own once learned.
 
-The boost is an Adapt attribute modifier on block break speed, not the vanilla Haste potion effect. It stacks additively at 20 percent per adaptation level. The handler does not check what you are holding or what you are breaking, so the bonus applies to any block you start breaking, not only shovel work.
+The boost is an Adapt attribute modifier on block break speed, not the vanilla Haste potion effect. It stacks additively at 20 percent per adaptation level. The handler does not check what you are holding or what you are breaking. The
+bonus applies to any block you start breaking, not only shovel work.
 
 ### Super-Seeing Spelunker! (`excavation-spelunker`)
 
@@ -42,7 +45,7 @@ One glow berry is consumed per successful scan. If the scan finds nothing, or yo
 
 ### OMNI - T.O.O.L. (`excavation-omnitool`)
 
-Combines several tools into one item that switches heads based on what you are aiming at: axe on wood, shovel on dirt, sword on webs and similar, pickaxe on everything else, hoe on crops, flint and steel on burnable blocks. The merged item is identified by its "Leatherman" lore.
+Combines several tools into one item that switches heads based on what you are aiming at. Axe on wood. Shovel on dirt. Sword on webs and similar. Pickaxe on everything else. Hoe on crops. Flint and steel on burnable blocks. The merged item is identified by its "Leatherman" lore.
 
 How to use it:
 
@@ -52,17 +55,20 @@ How to use it:
 
 Component tools do not break. A component at two durability from breaking is refused instead, and the action is cancelled with a puff of smoke. The merged item is also inert if you do not have the adaptation active: block breaks and attacks with it are cancelled outright.
 
-The merge handler is wired to a shift-left-click that moves an item between inventories, but it reads the second tool from your cursor, and a shift-click leaves the cursor empty. In practice the merge branch does not run; what does run is the capacity check, which cancels the shift-click with a failure sound when the clicked tool already holds more components than your slot budget allows.
+The merge handler is wired to a shift-left-click that moves an item between inventories. It reads the second tool from your cursor. A shift-click leaves the cursor empty. In practice the merge branch does not run. What does run is the capacity check. It cancels the shift-click with a failure
+sound when the clicked tool already holds more components than your slot budget
+allows.
 
 ### Shovel Drop-To-Inventory (`excavation-drop-to-inventory`)
 
 Blocks you break with a shovel send their drops straight into your inventory instead of onto the ground. It works on its own once learned, and it is a single-level adaptation.
 
-Each drop is run through a normal pickup attempt first, so protection plugins that block pickups still win; anything they deny stays on the ground as usual. Items that do not fit in your inventory are dropped at your feet with a failure sound. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again.
+Each drop is run through a normal pickup attempt first, so protection plugins that block pickups still win. Anything they deny stays on the ground as usual. Items that do not fit in your inventory are dropped at your feet with a failure sound. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again.
 
 ### Seismic Ping (`excavation-seismic-ping`)
 
-While you dig, the ground occasionally answers back: one nearby ore block lights up for two seconds, in a color matched to the ore, visible only to you. The ping sound is pitched by distance, so a high chime means the ore is close. It works on its own once learned.
+While you dig, the ground occasionally answers back. One nearby ore block lights
+up for two seconds in a color matched to the ore. Only you can see it. The ping sound is pitched by distance, so a high chime means the ore is close. It works on its own once learned.
 
 Works with a shovel or a pickaxe in your main hand. Scan range grows with level, capped at 32 blocks. XP is paid per ping and scales with how valuable the revealed ore is. If HiddenOre is installed, its hidden veins are included as scan targets.
 
@@ -88,7 +94,9 @@ Rare finds get their own sparkle and level-up chime, so you know when something 
 
 Landing on ground you could have dug reduces the fall damage, and at high levels removes it entirely. It works on its own once learned.
 
-Counts as soft ground: dirt and its variants, grass, podzol, mycelium, path, farmland, sand, red sand, gravel, clay, mud, muddy mangrove roots, soul sand, soul soil, and snow. Either the block you land in or the block beneath it qualifies. XP is paid per point of damage prevented, so long falls onto sand pay well.
+These blocks count as soft ground. Dirt and its variants, grass, podzol,
+mycelium, path, farmland, sand, and red sand count. Gravel, clay, mud, muddy
+mangrove roots, soul sand, soul soil, and snow also count. Either the block you land in or the block beneath it qualifies. XP is paid per point of damage prevented, so long falls onto sand pay well.
 
 ### Earth Mover (`excavation-earth-mover`)
 
@@ -104,12 +112,13 @@ Mobs that take no actual damage, for example because something absorbed it, are 
 
 ### Burrow (`excavation-burrow`)
 
-Digs a shaft straight down under you, one block every couple of ticks, and stops before it drops you into something bad. It refuses to break into lava and stops when there is a two-block air gap below, so you do not open a cave ceiling under your feet.
+Digs a shaft straight down under you, one block every couple of ticks, and stops before it drops you into something bad. It refuses to break into lava and stops when there is a two-block air gap below.
+You do not open a cave ceiling under your feet.
 
 How to use it:
 
 1. Hold a shovel and sneak.
-2. Right-click the soft block you want to dig through. On Folia you must click a block directly; an air click is ignored because the ray target can cross region boundaries.
+2. Right-click the soft block you want to dig through. On Folia you must click a block directly. An air click is ignored because the ray target can cross region boundaries.
 3. The first block breaks immediately. If that fails, no hunger or cooldown is spent.
 4. The rest of the shaft digs itself out below you.
 
@@ -171,7 +180,7 @@ Written to `plugins/Adapt/adapt/skills/excavation.toml` on first load.
 | `challengeExcavationReward` | `1200` | Base knowledge reward for the Excavation milestones. |
 | `valueXPMultiplier` | `0.6` | Multiplier on the base material value before the hardness terms are added. |
 | `cooldownDelay` | `1250` | Minimum milliseconds between skill XP awards. |
-| `axeDamageXPMultiplier` | `4.0` | Skill XP per point of melee damage dealt with a shovel. The key name says axe; the code uses it for shovels. |
+| `axeDamageXPMultiplier` | `4.0` | Skill XP per point of melee damage dealt with a shovel. The key name says axe. The code uses it for shovels. |
 
 ### Skill milestones
 
@@ -214,7 +223,7 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | Tick interval (ms) | 4388 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-haste.toml` |
 | Listened events | `BlockDamageEvent` (HIGHEST, cancelled events ignored) |
-| Menu stat lines | Gain Haste while excavating; x Levels of Haste while actively excavating. |
+| Menu stat lines | Gain Haste while excavating. X Levels of Haste while actively excavating. |
 | Stat key | `excavation.haste.blocks-while-hasted` |
 | Milestones | `challenge_excavation_haste_5k` (5000, reward 400), `challenge_excavation_haste_50k` (50000, reward 1500) |
 
@@ -237,7 +246,7 @@ Applies `BLOCK_BREAK_SPEED` as an `ADD_SCALAR` modifier of `0.20 * level`, refre
 | Tick interval (ms) | 20388 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-spelunker.toml` |
 | Listened events | `PlayerToggleSneakEvent` (HIGH), `EntityRemoveEvent` (MONITOR), `PlayerQuitEvent` |
-| Menu stat lines | Ore in your offhand, Glowberries in your main hand, and Sneak!; Block Range: {range}; Consumes Glowberry on use |
+| Menu stat lines | Ore in your offhand, Glowberries in your main hand, and Sneak!. Block Range: {range}. Consumes Glowberry on use |
 | Stat key | `excavation.spelunker.ores-revealed` |
 | Milestones | `challenge_excavation_spelunker_1k` (1000, reward 400), `challenge_excavation_spelunker_25k` (25000, reward 1500) |
 
@@ -267,11 +276,11 @@ Scan radius is `rangeMultiplier * level`, clamped to 1 through 32 blocks. Marker
 | Localization key | `excavation.omni_tool` |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-omnitool.toml` |
 | Listened events | `EntityDamageByEntityEvent` (HIGH), `BlockBreakEvent` (HIGH), `PlayerInteractEvent` (HIGH), `BlockDamageEvent` (HIGH), `PlayerDropItemEvent` (HIGHEST), `InventoryClickEvent` (HIGHEST) |
-| Menu stat lines | Merges your tools into a single omni-tool that; dynamically swaps to the right tool on the fly, based on your needs.; To merge, shift click an item over another in your inventory.; To unbind tools, Sneak-Drop the item, and it will disassemble.; Merged tools never break, but tools at zero durability can't be used; total merge-able items.; You could use five or six tools, or just one! |
+| Menu stat lines | Merges your tools into a single omni-tool that dynamically swaps to the right tool on the fly. To merge, shift-click an item over another in your inventory. To unbind tools, sneak-drop the item and it will disassemble. Merged tools never break, but tools at zero durability cannot be used. Total merge-able items. You could use five or six tools, or just one! |
 | Stat key | `excavation.omni-tool.auto-swaps` |
 | Milestones | `challenge_excavation_omni_1k` (1000, reward 400), `challenge_excavation_omni_25k` (25000, reward 1500) |
 
-Merged items are recognized by `Leatherman` appearing in their lore. Component capacity is `startingSlots + level`. Head selection on `BlockDamageEvent` follows `ItemListings.getAxePreference()`, `getShovelPreference()`, `getSwordPreference()`, and falls back to pickaxe; `PlayerInteractEvent` swaps to a hoe on `ItemListings.farmable` blocks and to flint and steel on `ItemListings.burnable` blocks. Any use with two or fewer durability remaining is cancelled.
+Merged items are recognized by `Leatherman` appearing in their lore. Component capacity is `startingSlots + level`. Head selection on `BlockDamageEvent` follows `ItemListings.getAxePreference()`, `getShovelPreference()`, `getSwordPreference()`, and falls back to pickaxe. `PlayerInteractEvent` swaps to a hoe on `ItemListings.farmable` blocks and to flint and steel on `ItemListings.burnable` blocks. Any use with two or fewer durability remaining is cancelled.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -309,7 +318,7 @@ Awards a flat 2 skill XP per item caught. The display name comes from `excavatio
 | Tick interval (ms) | 2200 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-seismic-ping.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored), `PlayerQuitEvent` |
-| Menu stat lines | Scan Range; Ping Chance; Ping Cooldown |
+| Menu stat lines | Scan Range. Ping Chance. Ping Cooldown |
 | Stat key | `excavation.seismic-ping.pings-triggered` |
 | Milestones | `challenge_excavation_seismic_200` (200, reward 400) |
 
@@ -342,11 +351,13 @@ Triggers on any block broken while holding an item whose name ends in `_SHOVEL` 
 | Tick interval (ms) | 3170 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-tunneler.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored) |
-| Menu stat lines | Bonus Blocks Per Dig; Extra Durability Per Bonus Block |
+| Menu stat lines | Bonus Blocks Per Dig. Extra Durability Per Bonus Block |
 | Stat key | `excavation.tunneler.blocks-tunneled` |
 | Milestones | `challenge_excavation_tunneler_10k` (10000, reward 600) |
 
-Bonus blocks are `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` taken from the eight cells around the origin. Plane orientation is horizontal when pitch is at or beyond 50 degrees up or down, otherwise vertical and perpendicular to your yaw. The sweep runs one tick after the original break and aborts if the origin block did not actually change. Shovel-friendly blocks are clay, dirt, coarse dirt, rooted dirt, farmland, grass block, dirt path, gravel, mycelium, podzol, sand, red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
+Bonus blocks are `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` taken from the eight cells around the origin. Plane orientation is horizontal when pitch is at or beyond 50 degrees up or down, otherwise vertical and perpendicular to your yaw. The sweep runs one tick after the original break and aborts if the origin block did not actually change. Shovel-friendly blocks include clay, dirt, coarse dirt, rooted dirt, farmland,
+grass block, dirt path, and gravel. They also include mycelium, podzol, sand,
+red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -367,7 +378,7 @@ Bonus blocks are `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` taken fr
 | Tick interval (ms) | 3370 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-treasure-hunter.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored) |
-| Menu stat lines | Treasure Chance; Treasures roll from a weighted archaeology table |
+| Menu stat lines | Treasure Chance. Treasures roll from a weighted archaeology table |
 | Stat key | `excavation.treasure-hunter.treasures-found` |
 | Milestones | `challenge_excavation_treasure_500` (500, reward 500) |
 
@@ -394,11 +405,11 @@ Eligible blocks are `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, and `CLAY`. Chance is `
 | Tick interval (ms) | 3530 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-soft-fall.toml` |
 | Listened events | `EntityDamageEvent` (HIGHEST) |
-| Menu stat lines | Fall Damage Reduction; Applies when landing on dirt, sand, gravel, clay, mud, or soul sand |
+| Menu stat lines | Fall Damage Reduction. Applies when landing on dirt, sand, gravel, clay, mud, or soul sand |
 | Stat key | `excavation.soft-fall.damage-prevented` |
 | Milestones | `challenge_excavation_softfall_1k` (1000, reward 500) |
 
-Only `FALL` damage on a player is considered. Reduction is `min(maxReduction, reductionBase + levelPercent * reductionFactor)`; a remaining damage value at or under 0.01 cancels the event outright.
+Only `FALL` damage on a player is considered. Reduction is `min(maxReduction, reductionBase + levelPercent * reductionFactor)`. A remaining damage value at or under 0.01 cancels the event outright.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -420,11 +431,18 @@ Only `FALL` damage on a player is considered. Reduction is `min(maxReduction, re
 | Tick interval (ms) | 3730 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-earth-mover.toml` |
 | Listened events | `PlayerInteractEvent` (HIGHEST) |
-| Menu stat lines | Wave Radius; Shovel Damage Multiplier; Knockback Force; Slow Duration; Wave Cooldown; Hunger Cost |
+| Menu stat lines | Wave Radius. Shovel Damage Multiplier. Knockback Force. Slow Duration. Wave Cooldown. Hunger Cost |
 | Stat keys | `excavation.earth-mover.waves-unleashed`, `excavation.earth-mover.mobs-launched` |
 | Milestones | `challenge_excavation_earthmover_250` (250, reward 450) |
 
-Targets are entities implementing `Enemy`. Base shovel damage is 2.5 wooden and golden, 3.5 stone and copper, 4.5 iron, 5.5 diamond, 6.5 netherite, multiplied by `max(0, damageMultiplierBase + levelPercent * damageMultiplierFactor)`. Cooldown is `max(500, round((cooldownMillisBase - levelPercent * cooldownMillisFactor) * cooldownScale))` milliseconds. Hard caps override the config at 32 candidates, 16 affected, and 12 effect targets; the batch finishes after 20 ticks regardless.
+Targets are entities implementing `Enemy`. Base shovel damage is 2.5 wooden
+and golden, 3.5 stone and copper, 4.5 iron, 5.5 diamond, and 6.5 netherite.
+That value is multiplied by
+`max(0, damageMultiplierBase + levelPercent * damageMultiplierFactor)`.
+Cooldown is
+`max(500, round((cooldownMillisBase - levelPercent * cooldownMillisFactor) * cooldownScale))`
+milliseconds. Hard caps override the config at 32 candidates, 16 affected,
+and 12 effect targets. The batch finishes after 20 ticks regardless.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -438,7 +456,7 @@ Targets are entities implementing `Enemy`. Base shovel damage is 2.5 wooden and 
 | `liftVelocity` | `0.35` | Upward velocity applied to launched mobs. |
 | `slowTicksBase` | `40` | Slowness duration in ticks at level 0 progress. |
 | `slowTicksFactor` | `60` | Ticks of slowness added at full level. |
-| `slowAmplifierMax` | `2` | Slowness amplifier at full level; 0 at no progress. |
+| `slowAmplifierMax` | `2` | Slowness amplifier at full level. 0 at no progress. |
 | `cooldownMillisBase` | `16000` | Pre-scale cooldown in milliseconds at level 0 progress. |
 | `cooldownMillisFactor` | `8000` | Milliseconds removed from that cooldown at full level. |
 | `cooldownScale` | `0.5` | Multiplier applied after level scaling. Clamped to 0-1. |
@@ -461,11 +479,13 @@ Targets are entities implementing `Enemy`. Base shovel damage is 2.5 wooden and 
 | Tick interval (ms) | 4130 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-burrow.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, also receives cancelled events) |
-| Menu stat lines | Max Burrow Depth; Durability Per Block; Burrow Cooldown; Hunger Cost |
+| Menu stat lines | Max Burrow Depth. Durability Per Block. Burrow Cooldown. Hunger Cost |
 | Stat keys | `excavation.burrow.burrows-dug`, `excavation.burrow.blocks-burrowed` |
 | Milestones | `challenge_excavation_burrow_100` (100, reward 450) |
 
-Depth is `max(2, round(depthBase + levelPercent * depthFactor))`. Cooldown is `max(2000, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds. Planning stops at `worldMinHeight + safeFloorMargin`, at lava directly below, at a two-block air gap below, at any non shovel-friendly block, and at any block a protection plugin refuses. Shovel-friendly blocks match Tunneler's list.
+Depth is `max(2, round(depthBase + levelPercent * depthFactor))`. Cooldown is `max(2000, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds. Planning stops at `worldMinHeight + safeFloorMargin`, at lava directly below,
+and at a two-block air gap below. It also stops at any non shovel-friendly block
+and at any block a protection plugin refuses. Shovel-friendly blocks match Tunneler's list.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -492,7 +512,7 @@ Depth is `max(2, round(depthBase + levelPercent * depthFactor))`. Cooldown is `m
 | Tick interval (ms) | 4310 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-grave-digger.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored), `EntityDeathEvent` (MONITOR, effects only) |
-| Menu stat lines | Bone Loot Chance; Disturbed Grave Chance |
+| Menu stat lines | Bone Loot Chance. Disturbed Grave Chance |
 | Stat keys | `excavation.grave-digger.bones-unearthed`, `excavation.grave-digger.graves-disturbed` |
 | Milestones | `challenge_excavation_gravedigger_300` (300, reward 450) |
 
@@ -524,7 +544,7 @@ Eligible blocks are `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL
 | Tick interval (ms) | 4530 |
 | Config file | `plugins/Adapt/adapt/adaptations/excavation-mudlark.toml` |
 | Listened events | `BlockDamageEvent` (HIGHEST), `BlockBreakEvent` (HIGHEST, cancelled events ignored) |
-| Menu stat lines | Bonus Drop Chance; x Levels of haste while digging wet |
+| Menu stat lines | Bonus Drop Chance. X Levels of haste while digging wet |
 | Stat key | `excavation.mudlark.bonus-drops` |
 | Milestones | `challenge_excavation_mudlark_1k` (1000, reward 500) |
 
@@ -535,7 +555,7 @@ Bonus-drop blocks and their extra drop: `CLAY` gives a clay ball, `MUD` and `MUD
 | `bonusChanceBase` | `0.05` | Bonus drop chance at level 0 progress, 0-1. |
 | `bonusChanceFactor` | `0.2` | Extra bonus drop chance added at full level, 0-1. |
 | `maxBonusChance` | `0.25` | Hard ceiling on bonus drop chance, 0-1. |
-| `maxHasteLevel` | `3` | Displayed haste steps at full level; drives the break-speed scalar. |
+| `maxHasteLevel` | `3` | Displayed haste steps at full level. Drives the break-speed scalar. |
 | `hasteDurationTicks` | `60` | Ticks the wet-dig speed bonus lasts. 0 or less disables it. |
 | `xpPerBonusDrop` | `3` | Excavation skill XP per bonus drop. |
 

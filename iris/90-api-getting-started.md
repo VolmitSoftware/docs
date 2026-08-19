@@ -2,14 +2,26 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`art.arcane.iris.api` is the Bukkit plugin surface another plugin compiles against: terrain reads, world-engine and pregen observation, and tree-feller integration. It is built from `java.*`/`javax.*`, Bukkit types, and its own types only — no VolmLib, Adventure, or shaded types — so it links against a plain Spigot or Paper compile classpath. A build test walks every class in the package and fails if any exported signature mentions anything else. PlaceholderAPI keys are operator-facing, not compile-time: see [09 - PlaceholderAPI](/iris/09-placeholderapi).
+`art.arcane.iris.api` is the Bukkit plugin surface another plugin compiles
+against: terrain reads, world-engine and pregeneration observation, and
+tree-feller integration. It is built from `java.*`/`javax.*`, Bukkit
+types, and its own types only. No VolmLib, Adventure, or shaded types. It
+links against a plain Spigot or Paper compile classpath. A build test
+walks every class in the package and fails if any exported signature
+mentions anything else. PlaceholderAPI keys are operator-facing, not
+compile-time. See [09 - PlaceholderAPI](/iris/09-placeholderapi).
 
-Reach for this API when your plugin needs to know what Iris *will* generate before the server generates it — a map renderer, a spawn or settlement picker, a pregen planner, a HUD that names the pack biome — or when you need to act at the moment an Iris world's generator becomes usable or goes away. Everything here is read-only except the tree feller, which you can drive and charge.
+Use this API when your plugin needs to know what Iris *will* generate
+before the server generates it. Examples: a map renderer, a spawn or
+settlement picker, a pregeneration planner, a HUD that names the pack
+biome. Also use it when you need to act at the moment an Iris world's
+generator becomes usable or goes away. Everything here is read-only
+except the tree feller, which you can drive and charge.
 
 | Package | Purpose | Document |
 |---|---|---|
@@ -18,19 +30,34 @@ Reach for this API when your plugin needs to know what Iris *will* generate befo
 | `art.arcane.iris.api.pregen` | Pregeneration job progress | [92 - API - World Events](/iris/92-api-world-events) |
 | `art.arcane.iris.api.tree` | Drive and charge the tree feller | [93 - API - Tree Feller](/iris/93-api-tree-feller) |
 
-Writing a **mod** rather than a plugin? Fabric, Forge, and NeoForge jars expose `art.arcane.iris.modded.api` instead: [94 - API - Modded](/iris/94-api-modded).
+Writing a **mod** rather than a plugin? Fabric, Forge, and NeoForge jars
+expose `art.arcane.iris.modded.api` instead:
+[94 - API - Modded](/iris/94-api-modded).
 
-Anything outside `art.arcane.iris.api` is internal. `art.arcane.iris.core.*`, `art.arcane.iris.engine.*`, `art.arcane.iris.util.*`, and `art.arcane.iris.spi.*` change without notice. The separately built SPI jar is for Iris platform adapters, not downstream plugin integrations. Importing `Engine`, `IrisBiome`, or `IrisToolbelt` means you are outside the stable contract.
+Anything outside `art.arcane.iris.api` is internal. `art.arcane.iris.core.*`,
+`art.arcane.iris.engine.*`, `art.arcane.iris.util.*`, and
+`art.arcane.iris.spi.*` change without notice. The separately built SPI
+jar is for Iris platform adapters, not downstream plugin integrations.
+Importing `Engine`, `IrisBiome`, or `IrisToolbelt` means you are outside
+the stable contract.
 
 ---
 
 ## Platform limitation
 
-`art.arcane.iris.api` ships in the **Bukkit plugin jar only**. Fabric, Forge, and NeoForge mod jars carry the generator but not this package — there is no Bukkit `World`, `ServicesManager`, or `Event` bus to hang it on.
+`art.arcane.iris.api` ships in the **Bukkit plugin jar only**. Fabric,
+Forge, and NeoForge mod jars carry the generator but not this package.
+There is no Bukkit `World`, `ServicesManager`, or `Event` bus to hang it
+on.
 
-The mod jars carry `art.arcane.iris.modded.api` ([94 - API - Modded](/iris/94-api-modded)): detect Iris levels, drive pregeneration, read/write mantle data, and register providers so packs can place mod blocks, items, and mobs. It is absent from the Bukkit jar and shares no types with `art.arcane.iris.api`.
+The mod jars carry `art.arcane.iris.modded.api`
+([94 - API - Modded](/iris/94-api-modded)). Use it to detect Iris levels,
+drive pregeneration, and read or write mantle data. Register providers so
+packs can place mod blocks, items, and mobs. It is absent from the Bukkit
+jar and shares no types with `art.arcane.iris.api`.
 
-Everything in these API docs assumes Paper, Purpur, Leaf, Canvas, Folia, or Spigot; Minecraft 26.2; Java 25.
+Everything in these API docs assumes Paper, Purpur, Leaf, Canvas, Folia,
+or Spigot. Minecraft 26.2. Java 25.
 
 ---
 
@@ -38,7 +65,8 @@ Everything in these API docs assumes Paper, Purpur, Leaf, Canvas, Folia, or Spig
 
 Iris is not published to Maven Central. Two routes work.
 
-**Against the jar you already have.** The jar you compile against is the jar you run against.
+**Against the jar you already have.** The jar you compile against is the
+jar you run against.
 
 ```gradle
 dependencies {
@@ -46,7 +74,9 @@ dependencies {
 }
 ```
 
-**Against JitPack.** `transitive = false` is required — the Iris build declares a large dependency graph you do not want on your compile classpath.
+**Against JitPack.** `transitive = false` is required. The Iris build
+declares a large dependency graph you do not want on your compile
+classpath.
 
 ```gradle
 repositories {
@@ -78,15 +108,23 @@ dependencies:
       join-classpath: true
 ```
 
-`join-classpath: true` is mandatory on Paper. Plugin classloaders are isolated; without it you get `NoClassDefFoundError` on `art.arcane.iris.api.*` even though the classes ship unrelocated.
+`join-classpath: true` is mandatory on Paper. Plugin classloaders are
+isolated. Without it you get `NoClassDefFoundError` on
+`art.arcane.iris.api.*` even though the classes ship unrelocated.
 
-Iris declares `load: STARTUP` and registers its services during `onEnable`. Do not resolve an Iris service in a static initialiser or constructor. Resolve lazily at the point of use and handle `null`.
+Iris declares `load: STARTUP` and registers its services during
+`onEnable`. Do not resolve an Iris service in a static initialiser or
+constructor. Resolve lazily at the point of use and handle `null`.
 
 ---
 
 ## Acquiring a service
 
-Two services are registered with Bukkit `ServicesManager` at `ServicePriority.Normal`: `IrisTerrainService` and `IrisTreeFellerService`. Both are unregistered on Iris shutdown. Iris also registers the same instances in an internal `IrisServices` registry that its own code (including PlaceholderAPI expansion) uses.
+Two services are registered with Bukkit `ServicesManager` at
+`ServicePriority.Normal`: `IrisTerrainService` and
+`IrisTreeFellerService`. Both are unregistered on Iris shutdown. Iris
+also registers the same instances in an internal `IrisServices` registry
+that its own code (including PlaceholderAPI expansion) uses.
 
 A complete integration — resolve lazily, handle `null`, answer:
 
@@ -130,25 +168,40 @@ public final class ExamplePlugin extends JavaPlugin {
 }
 ```
 
-Resolve on every use, as above, or cache and invalidate on `PluginDisableEvent`. A cached reference after Iris disables does not throw — terrain queries answer absent and tree-feller calls return `false` — but it never becomes useful again, and a later enable registers a different object.
+Resolve on every use, as above, or cache and invalidate on
+`PluginDisableEvent`. A cached reference after Iris disables does not
+throw. Terrain queries answer absent and tree-feller calls return
+`false`. But it never becomes useful again, and a later enable registers
+a different object.
 
-Neither service is a functional interface and neither is meant for third-party implementation. `ServicesManager#getRegistration` returns the highest-priority registration; registering your own `IrisTerrainService` above `Normal` shadows Iris for every other plugin. It does not shadow Iris for Iris itself (internal registry), so PlaceholderAPI would still read the real service while other plugins would not.
+Neither service is a functional interface and neither is meant for
+third-party implementation. `ServicesManager#getRegistration` returns the
+highest-priority registration. Registering your own `IrisTerrainService`
+above `Normal` shadows Iris for every other plugin. It does not shadow
+Iris for Iris itself (internal registry), so PlaceholderAPI would still
+read the real service while other plugins would not.
 
 ---
 
 ## The shared library is not relocated
 
-Iris bundles `art.arcane.volmlib` **unrelocated**. Sibling Volmit plugins may relocate it (Adapt → `art.arcane.adapt.util.arcane.volmlib`, React → `art.arcane.react.util.arcane.volmlib`). Consequences:
+Iris bundles `art.arcane.volmlib` **unrelocated**. Sibling Volmit plugins
+may relocate it (Adapt → `art.arcane.adapt.util.arcane.volmlib`, React →
+`art.arcane.react.util.arcane.volmlib`). Consequences:
 
-1. **You do not need VolmLib to use this API.** No type in `art.arcane.iris.api` mentions it.
-2. **If you use VolmLib yourself, shade and relocate your own copy.** Do not bind to Iris's version via `join-classpath`.
-3. **A relocated sibling and Iris do not share those classes.** Never pass objects across relocated package boundaries.
+1. **You do not need VolmLib to use this API.** No type in
+   `art.arcane.iris.api` mentions it.
+2. **If you use VolmLib yourself, shade and relocate your own copy.** Do
+   not bind to Iris's version via `join-classpath`.
+3. **A relocated sibling and Iris do not share those classes.** Never
+   pass objects across relocated package boundaries.
 
 ---
 
 ## Threading, at a glance
 
-This suite runs on Folia (region threads own chunks; entity schedulers own entities). Each document states its contract; summary:
+This suite runs on Folia. Region threads own chunks. Entity schedulers
+own entities. Each document states its contract. Summary:
 
 | Call | Which thread may call it | Where the callback lands |
 |---|---|---|
@@ -156,19 +209,27 @@ This suite runs on Folia (region threads own chunks; entity schedulers own entit
 | `IrisColumnSink.accept` | — | The thread that called `sampleColumns` |
 | `IrisTreeFellerService.tryFell` | The region thread delivering the `BlockBreakEvent` | Returns inline |
 | `IrisTreeFellerService.isManagedBreak` | Any thread | Returns inline |
-| `IrisTreeFellerService.isTreeBlock` | The region thread owning the block; can block on disk — see [93 - API - Tree Feller](/iris/93-api-tree-feller) | Returns inline |
+| `IrisTreeFellerService.isTreeBlock` | The region thread owning the block. Can block on disk — see [93 - API - Tree Feller](/iris/93-api-tree-feller) | Returns inline |
 | `TreeFellerRunHooks.onActivationAccepted` | — | Region thread that owns the broken block |
-| `TreeFellerRunHooks.reserveLogCost` / `commitLogCost` / `refundLogCost` | — | Player entity scheduler on Folia; may run inline on the server main thread on Paper when already primary |
-| `IrisWorldEngineEvent` handlers | — | Main thread; on Folia, the global region thread |
-| `IrisPregenerationEvent` handlers | — | Main thread; on Folia, the global region thread |
+| `TreeFellerRunHooks.reserveLogCost` / `commitLogCost` / `refundLogCost` | — | Player entity scheduler on Folia. May run inline on the server main thread on Paper when already primary |
+| `IrisWorldEngineEvent` handlers | — | Main thread. On Folia, the global region thread |
+| `IrisPregenerationEvent` handlers | — | Main thread. On Folia, the global region thread |
 
-Terrain reads may use any thread because they only read the world generator reference and evaluate cached procedural noise — no chunk, block state, entity, or mantle storage. See [91 - API - Terrain](/iris/91-api-terrain). That claim does not apply to the rest of this API.
+Terrain reads may use any thread because they only read the world
+generator reference and evaluate cached procedural noise. No chunk, block
+state, entity, or mantle storage. See
+[91 - API - Terrain](/iris/91-api-terrain). That claim does not apply to
+the rest of this API.
 
 ---
 
 ## Switching over the enums
 
-`IrisSurfaceKind`, `IrisColumnField`, `IrisWorldPhase`, `IrisPregenPhase`, and `TreeFellerAccess` may gain constants. A `switch` **expression** without `default` stops compiling (and throws `IncompatibleClassChangeError` on an already-compiled jar) when a constant is added.
+`IrisSurfaceKind`, `IrisColumnField`, `IrisWorldPhase`, `IrisPregenPhase`,
+and `TreeFellerAccess` may gain constants. A `switch` **expression**
+without `default` stops compiling (and throws
+`IncompatibleClassChangeError` on an already-compiled jar) when a
+constant is added.
 
 Always write a `default` arm in third-party code:
 

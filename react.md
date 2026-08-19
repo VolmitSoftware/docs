@@ -1,17 +1,14 @@
 ---
 title: "React"
-description: "React performance monitoring and optimisation for Paper and Folia"
+description: "React performance monitoring and optimization for Paper and Folia"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-# React
-
-React measures where server time goes, then gives you tools to act on it. Monitoring first,
-optimisation second.
+React measures where server time goes. It then gives operators tools to act on those measurements. Monitoring comes first. Optimization comes second.
 
 | | |
 |---|---|
@@ -24,57 +21,54 @@ optimisation second.
 
 | Node | Default | Description |
 |---|---|---|
-| `react.*` | `op` | Allows using all /react commands. |
-| `react.shorthands.*` | `op` | Allows using all enabled React shorthand commands. |
-| `react.shorthands.custom` | `op` | Allows using operator-configured React shorthand commands. |
-| `react.shorthands.give` | `op` | Allows using the React /give shorthand when enabled. |
-| `react.shorthands.gmc` | `op` | Allows using /gmc when React Shorthands is enabled. |
-| `react.shorthands.gms` | `op` | Allows using /gms when React Shorthands is enabled. |
-| `react.shorthands.gmsp` | `op` | Allows using /gmsp when React Shorthands is enabled. |
-| `react.shorthands.more` | `op` | Allows using /more when React Shorthands is enabled. |
-| `react.shorthands.rl` | `op` | Allows using /rl when React Shorthands is enabled. |
-| `react.use` | `op` | Allows using the /react command root. |
+| `react.*` | `op` | Allows use of all /react commands |
+| `react.shorthands.*` | `op` | Allows use of all enabled React shorthand commands |
+| `react.shorthands.custom` | `op` | Allows use of operator-configured React shorthand commands |
+| `react.shorthands.give` | `op` | Allows use of the React /give shorthand when enabled |
+| `react.shorthands.gmc` | `op` | Allows use of /gmc when React Shorthands is enabled |
+| `react.shorthands.gms` | `op` | Allows use of /gms when React Shorthands is enabled |
+| `react.shorthands.gmsp` | `op` | Allows use of /gmsp when React Shorthands is enabled |
+| `react.shorthands.more` | `op` | Allows use of /more when React Shorthands is enabled |
+| `react.shorthands.rl` | `op` | Allows use of /rl when React Shorthands is enabled |
+| `react.use` | `op` | Allows use of the /react command root |
 
-> The `react.shorthands.*` nodes gate a separate, default-disabled feature that can register
-> aliases such as `/gms`, `/gmc`, `/more` and `/rl`. If EssentialsX or CMI is installed, React
-> forces the entire shorthand tweak off and registers none of its built-in or custom commands,
-> regardless of `shorthands.toml`.
+> The `react.shorthands.*` nodes gate a separate feature. That feature is off by default. It can register aliases such as `/gms`, `/gmc`, `/more`, and `/rl`. If EssentialsX or CMI is installed, React forces the shorthand tweak off. React then registers none of its built-in or custom commands. The `shorthands.toml` setting does not override this.
 {.is-warning}
 
 ### Getting started
 
-- [Overview](/react/00-overview)
-- [Installation & Configuration](/react/01-installation-configuration)
-- [Commands & Permissions](/react/02-commands-permissions)
-- [Concepts](/react/03-concepts)
+- [Overview *Feature map and documentation index*](/react/00-overview)
+- [Installation & Configuration *Requirements, data folder, and reload*](/react/01-installation-configuration)
+- [Commands & Permissions *`/react` tree and permission nodes*](/react/02-commands-permissions)
+- [Concepts *Registries, TOML layout, and enable model*](/react/03-concepts)
 {.links-list}
 
 ### Features
 
-- [Features - Entity Systems](/react/04-features-entity-systems)
-- [Features - Maps & Overlays](/react/05-features-maps-overlays)
-- [Features - Governors & Mechanics](/react/06-features-governors-mechanics)
-- [Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations)
-- [Tweaks Catalog](/react/08-tweaks-catalog)
-- [Actions Catalog](/react/09-actions-catalog)
+- [Features - Entity Systems *Stacking, sleep, trim, items, and more*](/react/04-features-entity-systems)
+- [Features - Maps & Overlays *Heatmaps, pie maps, and list maps*](/react/05-features-maps-overlays)
+- [Features - Governors & Mechanics *View range, hoppers, redstone, farms*](/react/06-features-governors-mechanics)
+- [Features - Iris Adapt & Integrations *Capability-gated surge guards*](/react/07-features-iris-adapt-integrations)
+- [Tweaks Catalog *Event and NMS accelerations*](/react/08-tweaks-catalog)
+- [Actions Catalog *Operator one-shot jobs*](/react/09-actions-catalog)
 {.links-list}
 
 ### Monitoring and operations
 
-- [Samplers & Metrics](/react/10-samplers-metrics)
-- [Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui)
-- [Incident Mode & Playbooks](/react/12-incident-mode-playbooks)
-- [Localization](/react/13-localization)
-- [NMS Bridges & Platform Notes](/react/14-nms-bridges-platform-notes)
-- [Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests)
+- [Samplers & Metrics *Sampler ids and observation model*](/react/10-samplers-metrics)
+- [Monitors Maps & In-Game GUI *Action bar, maps, and config UI*](/react/11-monitors-maps-in-game-gui)
+- [Incident Mode & Playbooks *Incident score and response*](/react/12-incident-mode-playbooks)
+- [Localization *Locales and overrides*](/react/13-localization)
+- [NMS Bridges & Platform Notes *Bridges, Folia, and jar workflow*](/react/14-nms-bridges-platform-notes)
+- [Operator Runbooks & Smoke Tests *Manual checklists*](/react/15-operator-runbooks-smoke-tests)
 {.links-list}
 
 ### Developer API
 
-- [API - Getting Started](/react/16-api-getting-started)
-- [API - Entity Protection](/react/17-api-entity-protection)
-- [API - Metric Publishing](/react/18-api-metric-publishing)
-- [API - PlaceholderAPI](/react/19-api-placeholderapi)
+- [API - Getting Started *Third-party dependency setup*](/react/16-api-getting-started)
+- [API - Entity Protection *Protection API*](/react/17-api-entity-protection)
+- [API - Metric Publishing *Metrics API*](/react/18-api-metric-publishing)
+- [API - PlaceholderAPI *`%react_…%` keys*](/react/19-api-placeholderapi)
 {.links-list}
 
 

@@ -2,36 +2,37 @@
 title: "Skill - Ranged"
 description: "Adapt documentation: Skill - Ranged"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Ranged is the bow and thrown-projectile skill. Its id is `ranged`, it uses a crossbow icon in the menu, and it carries 12 adaptations. You level it by firing arrows and by landing projectile hits, with longer shots paying more.
+Ranged is the bow and thrown-projectile skill. Its id is `ranged`. It uses a crossbow icon in the menu. It carries 12 adaptations. You level it by firing arrows and by landing projectile hits. Longer shots pay more.
 
 The adaptations turn a bow from a poking tool into a real weapon. Force Shot makes arrows fly faster and flatter. Heavy Draw trades speed for damage. Arrow Piercing pushes shots through a line of mobs. Arrow Recovery hands arrows back so you stop running dry. Ricochet Bolt bounces shots off walls and gets stronger with every bounce.
 
-Some of it is utility rather than damage. Trajectory Sight draws a dotted arc showing exactly where your shot lands. Fetch Shot pulls dropped items to you by shooting them. Web Snare is a crafted snowball that cages whatever it hits. Floaters and Pinning Shot are crowd control: one lifts targets off the ground, the other cuts their movement speed to a crawl.
+Some of it is utility rather than damage. Trajectory Sight draws a dotted arc showing exactly where your shot lands. Fetch Shot pulls dropped items to you by shooting them. Web Snare is a crafted snowball that cages whatever it hits. Floaters and Pinning Shot are crowd control. One lifts targets off the ground. The other cuts their movement speed to a crawl.
 
-Heartseeker is the top of the tree. Right-click a creature with a bow to lock on, and your next arrow curves after it around corners. With Arrow Piercing or Ricochet Bolt learned, that arrow keeps chaining to new targets after each hit.
+Heartseeker is the top of the tree. Right-click a creature with a bow to lock on. Your next arrow curves after it around corners. With Arrow Piercing or Ricochet Bolt learned, that arrow keeps chaining to new targets after each hit.
 
 ## Earning XP
 
-Firing an arrow, spectral arrow, or trident awards a flat amount of XP and counts a shot. Landing a projectile hit on a valid target awards XP from the damage dealt plus the distance the shot traveled, so a 40 block headshot is worth far more than a point-blank poke. Snowballs and fishing hooks do not count as hits.
+Firing an arrow, spectral arrow, or trident awards a flat amount of XP and counts a shot. Landing a projectile hit on a valid target awards XP from the damage dealt plus the distance the shot traveled. A 40 block headshot is worth far more than a point-blank poke. Snowballs and fishing hooks do not count as hits.
 
-Both XP paths share one cooldown, so rapid-firing does not multiply your income. Hits over 30 blocks count as longshots and have their own challenge chain, and kills count when you are holding a bow or crossbow as the target dies.
+Both XP paths share one cooldown. Rapid-firing does not multiply your income. Hits over 30 blocks count as longshots and have their own challenge chain. Kills count when you are holding a bow or crossbow as the target dies.
 
-Individual adaptations grant their own XP on top of that: Ricochet Bolt pays per bounce, Fetch Shot per item, Floaters and Pinning Shot per proc, Heartseeker per seeking shot and per hit.
+Individual adaptations grant their own XP on top of that. Ricochet Bolt pays per bounce. Fetch Shot pays per item. Floaters and Pinning Shot pay per proc. Heartseeker pays per seeking shot and per hit.
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation (level 1 or higher), the skill and the adaptation are both enabled, you are not in a blacklisted world or a blocked game mode, you hold the `adapt.use.<adaptation>` permission, and the protection plugins and region policy allow the action against that target or block. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions). Learn and level everything from the Adapt menu (`/adapt`).
+Everything below only runs when you have learned the adaptation (level 1 or higher). The skill and the adaptation are both enabled. You are not in a blacklisted world or a blocked game mode. You hold the `adapt.use.<adaptation>` permission. The protection plugins and region policy allow the action against that target or block. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions). Learn and level everything from the Adapt menu (`/adapt`).
 
 Adaptations that modify a projectile skip Heartseeker's seeking arrows, which run their own flight and damage logic.
 
 ### Force Shot (`ranged-force`)
 
-Every projectile you launch leaves at higher velocity, which means flatter arcs and less lead on moving targets. It works on its own once learned. Landing a hit gives a small XP kick, and your first hit from over 30 blocks away grants a one-time bonus and a Long Shot advancement.
+Every projectile you launch leaves at higher velocity, which means flatter arcs and less lead on moving targets. It works on its own once learned. Landing a hit gives a small XP kick. Your first hit from over 30 blocks away
+grants a one-time bonus and a Long Shot advancement.
 
 ### Arrow Piercing (`ranged-piercing`)
 
@@ -59,7 +60,9 @@ Web Snare gives you a crafted throwable that cages what it hits. Cobwebs appear 
 
 ### Trajectory Sight (`ranged-trajectory-sight`)
 
-Trajectory Sight draws your shot before you take it: a dotted line through the air and a ring where it would land. It reads the weapon you are holding, so it previews arrows, crossbow bolts, tridents, snowballs, eggs, pearls, potions, and experience bottles with the right arc for each. The predicted target entity glows so you know what you are about to hit. If Force Shot or Ricochet Bolt are learned, the preview accounts for them, and with a Heartseeker lock it shows the curved seeking path instead.
+Trajectory Sight draws your shot before you take it: a dotted line through the air and a ring where it would land. It reads the weapon you are holding. It previews arrows, crossbow bolts,
+tridents, snowballs, eggs, pearls, potions, and experience bottles with the
+right arc for each. The predicted target entity glows so you know what you are about to hit. If Force Shot or Ricochet Bolt are learned, the preview accounts for them, and with a Heartseeker lock it shows the curved seeking path instead.
 
 1. Learn it and hold a bow, crossbow, trident, snowball, egg, ender pearl, potion, or experience bottle.
 2. Draw the bow, or sneak with the projectile in either hand.
@@ -77,7 +80,7 @@ A pinned target loses most of its movement speed and, by default, has its horizo
 
 ### Ricochet Bolt (`ranged-ricochet-bolt`)
 
-Shots that hit a block bounce off instead of sticking, and every bounce makes the projectile faster and adds flat damage to its next hit. Bank a shot around a corner and it lands harder than the straight one would have. Arrows always bounce; snowballs and eggs bounce too unless you turn that off. It works on its own once learned. Bounce count, speed gain, and damage gain all scale with level, and each bounce pays XP.
+Shots that hit a block bounce off instead of sticking, and every bounce makes the projectile faster and adds flat damage to its next hit. Bank a shot around a corner and it lands harder than the straight one would have. Arrows always bounce. Snowballs and eggs bounce too unless you turn that off. It works on its own once learned. Bounce count, speed gain, and damage gain all scale with level, and each bounce pays XP.
 
 ### Fetch Shot (`ranged-fetch-shot`)
 
@@ -93,17 +96,20 @@ The pickup radius grows with level. Each impact inspects a limited number of ite
 
 Heavy Draw slows your projectiles down and makes them hit much harder. At level 1 the trade is bad on purpose: half your speed for a small damage bump. By max level the speed penalty has mostly gone away and the damage bonus is large. It applies to arrows, snowballs, and eggs, and it works on its own once learned.
 
-Because vanilla arrow damage already scales with speed, the code divides the bonus back out for arrows so slowing them down does not cancel the gain.
+Vanilla arrow damage already scales with speed. The code divides the bonus back
+out for arrows. Slowing them down does not cancel the gain.
 
 ### Heartseeker (`ranged-heartseeker`)
 
-Heartseeker is a manual lock-on. Point a bow at a creature and right-click to mark it: it glows red for you alone. Fire and the arrow leaves normally, then bends toward the mark, weaving around blocks in its way, and keeps chasing until it connects or runs out of flight time. Every seeking shot puts your bow on a cooldown that shrinks as you level.
+Heartseeker is a manual lock-on. Point a bow at a creature and right-click to mark it: it glows red for you alone. Fire and the arrow leaves normally. It then bends toward the mark, weaving
+around blocks in its way. It keeps chasing until it connects or runs out of
+flight time. Every seeking shot puts your bow on a cooldown that shrinks as you level.
 
 1. Learn it and hold a bow that is not on cooldown.
 2. Look at a creature within lock range and right-click to lock. It starts glowing red for you.
 3. Fire within the lock timeout. The arrow whistles and curves to the target.
 
-With Arrow Piercing learned, or with Ricochet Bolt bounce capacity left, the arrow chains: it punches through the target, exits the far side, and bends toward a fresh nearby target. Without a new target it keeps flying straight. Ricochet passes keep their reflection, speed, damage, and rewards when a seeking arrow strikes a block.
+With Arrow Piercing learned, or with Ricochet Bolt bounce capacity left, the arrow chains. It punches through the target, exits the far side, and bends toward a fresh nearby target. Without a new target it keeps flying straight. Ricochet passes keep their reflection, speed, damage, and rewards when a seeking arrow strikes a block.
 
 ## Reference
 
@@ -155,7 +161,12 @@ Written to `plugins/Adapt/adapt/skills/ranged.toml` on first load.
 | `challenge_longshot_25` | `ranged.longshots` | 25 | `challengeRangedLongshotReward` |
 | `challenge_longshot_250` | `ranged.longshots` | 250 | `challengeRangedLongshotReward` x 3 |
 
-Skill-level stats: `ranged.shotsfired` and `ranged.shotsfired.<projectile_type>` per launch, `ranged.damage` and `ranged.damage.<projectile_type>` per hit, `ranged.distance` and `ranged.distance.<projectile_type>` per hit, `ranged.longshots` for hits beyond 30 blocks, and `ranged.kills` for kills made while holding a `BOW` or `CROSSBOW`.
+Skill-level stats follow. `ranged.shotsfired` and
+`ranged.shotsfired.<projectile_type>` increment per launch. `ranged.damage` and
+`ranged.damage.<projectile_type>` increment per hit. `ranged.distance` and
+`ranged.distance.<projectile_type>` increment per hit. `ranged.longshots` counts
+hits beyond 30 blocks. `ranged.kills` counts kills made while holding a `BOW` or
+`CROSSBOW`.
 
 ### Shared adaptation keys
 
@@ -173,9 +184,9 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `en
 | Cost factor | 0.225 |
 | Tick interval (ms) | 4900 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-force.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL); `EntityDamageByEntityEvent` (`on`, NORMAL) |
+| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL). `EntityDamageByEntityEvent` (`on`, NORMAL) |
 | Stats | `ranged.force.long-range-hits` |
-| Milestones | `challenge_ranged_force_500` at 500 long-range hits, 500 XP; `challenge_force_30` ("Long Shot") granted once on the first hit past 30 blocks |
+| Milestones | `challenge_ranged_force_500` at 500 long-range hits, 500 XP. `challenge_force_30` ("Long Shot") granted once on the first hit past 30 blocks |
 | Menu lore | Projectile Speed |
 
 Launch velocity is multiplied by `1 + (levelPercent * speedFactor)` for any projectile the player shoots. Each hit grants a flat 5 XP. A long-range hit is one where the horizontal distance squared exceeds 900, so more than 30 blocks of ground distance.
@@ -197,12 +208,12 @@ Launch velocity is multiplied by `1 + (levelPercent * speedFactor)` for any proj
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4791 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-piercing.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL); `EntityDamageByEntityEvent` (`on`, HIGHEST) |
+| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL). `EntityDamageByEntityEvent` (`on`, HIGHEST) |
 | Stats | `ranged.piercing.extra-hits` |
-| Milestones | `challenge_ranged_piercing_500` at 500 extra hits, 400 XP; `challenge_ranged_piercing_4` granted once when a single arrow lands 4 hits |
+| Milestones | `challenge_ranged_piercing_500` at 500 extra hits, 400 XP. `challenge_ranged_piercing_4` granted once when a single arrow lands 4 hits |
 | Menu lore | Pierce Targets |
 
-The arrow's existing pierce level is increased by the adaptation level at launch, and the arrow is marked so the bonus is applied only once. Each launch grants a flat 5 XP. `ranged.piercing.extra-hits` counts only the second and later hits of an arrow. No adaptation-specific config knobs.
+The arrow's existing pierce level is increased by the adaptation level at launch. The arrow is marked so the bonus is applied only once. Each launch grants a flat 5 XP. `ranged.piercing.extra-hits` counts only the second and later hits of an arrow. No adaptation-specific config knobs.
 
 ### Arrow Recovery
 
@@ -216,10 +227,10 @@ The arrow's existing pierce level is increased by the adaptation level at launch
 | Cost factor | 0.78 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-recovery.toml` |
-| Listened events | `EntityShootBowEvent` (`onEntityShootBow`, NORMAL); `ProjectileHitEvent` (`onProjectileHit`, NORMAL) |
+| Listened events | `EntityShootBowEvent` (`onEntityShootBow`, NORMAL). `ProjectileHitEvent` (`onProjectileHit`, NORMAL) |
 | Stats | `ranged.arrow-recovery.arrows-recovered` |
-| Milestones | `challenge_ranged_arrow_500` at 500 arrows, 300 XP; `challenge_ranged_arrow_10k` at 10000 arrows, 1000 XP |
-| Menu lore | Chance to Recover Arrows on Hit/Kill; Chance: {chance} |
+| Milestones | `challenge_ranged_arrow_500` at 500 arrows, 300 XP. `challenge_ranged_arrow_10k` at 10000 arrows, 1000 XP |
+| Menu lore | Chance to Recover Arrows on Hit/Kill. Chance: {chance} |
 
 Only `Arrow` projectiles fired from a bow without Infinity are eligible, and the roll happens when the arrow hits an entity. The recovered arrow goes to the inventory, and drops at the player's feet when there is no room.
 
@@ -241,7 +252,7 @@ Only `Arrow` projectiles fired from a bow without Infinity are eligible, and the
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-lunge-shot.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, NORMAL) |
 | Stats | `ranged.lunge-shot.lunges` |
-| Milestones | `challenge_ranged_lunge_200` at 200 lunges, 300 XP; `challenge_ranged_lunge_2500` at 2500 lunges, 1000 XP |
+| Milestones | `challenge_ranged_lunge_200` at 200 lunges, 300 XP. `challenge_ranged_lunge_2500` at 2500 lunges, 1000 XP |
 | Menu lore | Recoil Burst Speed |
 
 Only fires for `AbstractArrow` launches while the player is off the ground. The player's look direction times `levelPercent * factor` is subtracted from their velocity.
@@ -262,13 +273,16 @@ Only fires for `AbstractArrow` launches while the player is off the ground. The 
 | Cost factor | 0.9 |
 | Tick interval (ms) | 4900 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-webshot.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR); `ProjectileHitEvent` (`on`, NORMAL); `EntityRemoveEvent` (`on`, MONITOR); `ChunkLoadEvent` (`on`, MONITOR); `BlockPistonExtendEvent` (`on`, HIGHEST); `BlockPistonRetractEvent` (`on`, HIGHEST); `BlockExplodeEvent` (`on`, HIGHEST); `BlockBreakEvent` (`on`, HIGHEST); `EntityExplodeEvent` (`on`, HIGHEST) |
+| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `ProjectileHitEvent` (`on`, NORMAL). `EntityRemoveEvent` (`on`, MONITOR). `ChunkLoadEvent` (`on`, MONITOR). `BlockPistonExtendEvent` (`on`, HIGHEST). `BlockPistonRetractEvent` (`on`, HIGHEST). `BlockExplodeEvent` (`on`, HIGHEST). `BlockBreakEvent` (`on`, HIGHEST). `EntityExplodeEvent` (`on`, HIGHEST) |
 | Stats | `ranged.web-bomb.mobs-trapped` |
 | Milestone | `challenge_ranged_web_200` at 200 mobs trapped, 300 XP |
-| Menu lore | 8 Cobwebs around a Snowball, and throw!; seconds of a cage, roughly. |
+| Menu lore | 8 Cobwebs around a Snowball, and throw!. Seconds of a cage, roughly. |
 | Recipe | Shaped `ranged-web-bomb`: 8 `COBWEB` around 1 `SNOWBALL`, produces a bound snowball item |
 
-Placement footprint is 7 blocks: the impact block one above the hit, plus its six direct neighbors. Cage lifetime is `level * 20` ticks. Every cobweb target must pass a block-place probe at commit, and on Folia the whole footprint must belong to the current region or the impact is dropped. Placed webs are journaled into chunk persistent data (up to 4096 per chunk) so they are still removed after a restart, with recovery processing at most 32 chunks per tick. Active webs cancel `BlockBreakEvent` and piston moves, and are stripped out of explosion block lists. No adaptation-specific config knobs.
+Placement footprint is 7 blocks: the impact block one above the hit, plus its six direct neighbors. Cage lifetime is `level * 20` ticks. Every cobweb target must pass a block-place probe at commit. On Folia the whole
+footprint must belong to the current region or the impact is dropped. Placed webs are journaled into chunk persistent data, up to 4096 per chunk. They
+are still removed after a restart. Recovery processes at most 32 chunks per
+tick. Active webs cancel `BlockBreakEvent` and piston moves, and are stripped out of explosion block lists. No adaptation-specific config knobs.
 
 ### Trajectory Sight
 
@@ -282,12 +296,12 @@ Placement footprint is 7 blocks: the impact block one above the hit, plus its si
 | Cost factor | 0.75 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-trajectory-sight.toml` |
-| Listened events | `PlayerQuitEvent`, `PlayerChangedWorldEvent`, `PlayerDeathEvent`, `PlayerDropItemEvent`, `PlayerInteractEvent`, `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `PlayerToggleSneakEvent`, `EntityShootBowEvent`, `ProjectileLaunchEvent`, `EntityDeathEvent` (all `on`); `PlayerStopUsingItemEvent` via a companion listener registered only when the Paper class exists |
+| Listened events | `PlayerQuitEvent`, `PlayerChangedWorldEvent`, `PlayerDeathEvent`, `PlayerDropItemEvent`, `PlayerInteractEvent`, `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `PlayerToggleSneakEvent`, `EntityShootBowEvent`, `ProjectileLaunchEvent`, `EntityDeathEvent` (all `on`). `PlayerStopUsingItemEvent` via a companion listener registered only when the Paper class exists |
 | Stats | `ranged.trajectory-sight.kills-while-aiming` |
 | Milestone | `challenge_ranged_trajectory_100` at 100 kills while aiming, 400 XP |
-| Menu lore | Prediction Range; Prediction Detail |
+| Menu lore | Prediction Range. Prediction Detail |
 
-Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, `SNOWBALL`, `EGG`, `ENDER_PEARL`, `SPLASH_POTION`, `LINGERING_POTION`, or `EXPERIENCE_BOTTLE` in either hand. Bow previews use the actual draw charge; when the hand is not raised and the player is sneaking, `sneakPreviewChargeTicks` is assumed instead.
+Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, `SNOWBALL`, `EGG`, `ENDER_PEARL`, `SPLASH_POTION`, `LINGERING_POTION`, or `EXPERIENCE_BOTTLE` in either hand. Bow previews use the actual draw charge. When the hand is not raised and the player is sneaking, `sneakPreviewChargeTicks` is assumed instead.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -339,12 +353,13 @@ Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, 
 | Cost factor | 0.78 |
 | Tick interval (ms) | 2400 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-floaters.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR); `EntityDamageByEntityEvent` (`on`, MONITOR) |
+| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `EntityDamageByEntityEvent` (`on`, MONITOR) |
 | Stats | `ranged.floaters.targets-levitated` |
 | Milestone | `challenge_ranged_floaters_200` at 200 targets, 300 XP |
-| Menu lore | Levitation Chance; Levitation Duration; Levitation Strength |
+| Menu lore | Levitation Chance. Levitation Duration. Levitation Strength |
 
-The level and owner are stamped onto the projectile's persistent data at launch, so the effect follows that shot even if the shooter changes level or logs out. Protected targets and the shooter's own tamed animals are skipped.
+The level and owner are stamped onto the projectile's persistent data at launch.
+The effect follows that shot even if the shooter changes level or logs out. Protected targets and the shooter's own tamed animals are skipped.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -368,10 +383,10 @@ The level and owner are stamped onto the projectile's persistent data at launch,
 | Cost factor | 0.74 |
 | Tick interval (ms) | 2200 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-pinning-shot.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR); `EntityDamageByEntityEvent` (`on`, MONITOR) |
+| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `EntityDamageByEntityEvent` (`on`, MONITOR) |
 | Stats | `ranged.pinning-shot.targets-pinned` |
 | Milestone | `challenge_ranged_pinning_300` at 300 targets, 400 XP |
-| Menu lore | Pin Chance; Pin Duration; Reapply Cooldown |
+| Menu lore | Pin Chance. Pin Duration. Reapply Cooldown |
 
 The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion effect. The scalar is `-min(1.0, 0.15 * (amplifier + 1))`, so -30% at level 1 and -60% at level 6 with the defaults. Level and owner are stamped onto the projectile at launch. Protected targets and the shooter's own tamed animals are skipped.
 
@@ -404,12 +419,12 @@ The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion eff
 | Cost factor | 0.74 |
 | Tick interval (ms) | 1400 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-ricochet-bolt.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR); `ProjectileHitEvent` (`on`, HIGHEST); `EntityDamageByEntityEvent` (`on`, HIGHEST); `EntityDeathEvent` (`on`, NORMAL) |
+| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `ProjectileHitEvent` (`on`, HIGHEST). `EntityDamageByEntityEvent` (`on`, HIGHEST). `EntityDeathEvent` (`on`, NORMAL) |
 | Stats | `ranged.ricochet-bolt.total-ricochets`, `ranged.ricochet-bolt.ricochet-kills` |
-| Milestones | `challenge_ranged_ricochet_kills_50` at 50 kills, 500 XP; `challenge_ranged_ricochet_kills_500` at 500 kills, 2000 XP |
-| Menu lore | Max Ricochets; Speed Bonus Per Ricochet; Bonus Damage Per Ricochet |
+| Milestones | `challenge_ranged_ricochet_kills_50` at 50 kills, 500 XP. `challenge_ranged_ricochet_kills_500` at 500 kills, 2000 XP |
+| Menu lore | Max Ricochets. Speed Bonus Per Ricochet. Bonus Damage Per Ricochet |
 
-Bounces are capped at 12 regardless of config. A bounce replaces the projectile with a new one carrying the accumulated count, speed, and bonus damage; Heartseeker's seeking arrows are excluded. XP per bounce is `xpPerRicochet + (count * xpPerRicochetStep)`.
+Bounces are capped at 12 regardless of config. A bounce replaces the projectile with a new one carrying the accumulated count, speed, and bonus damage. Heartseeker's seeking arrows are excluded. XP per bounce is `xpPerRicochet + (count * xpPerRicochetStep)`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -452,10 +467,10 @@ Bounces are capped at 12 regardless of config. A bounce replaces the projectile 
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-fetch-shot.toml` |
 | Listened events | `ProjectileHitEvent` (`on`, MONITOR) |
 | Stats | `ranged.fetch-shot.items-fetched` |
-| Milestones | `challenge_ranged_fetch_500` at 500 items, 400 XP; `challenge_ranged_fetch_5k` at 5000 items, 1500 XP |
+| Milestones | `challenge_ranged_fetch_500` at 500 items, 400 XP. `challenge_ranged_fetch_5k` at 5000 items, 1500 XP |
 | Menu lore | Fetch Radius |
 
-Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the normal pickup event sequence with the player's real remaining capacity; a cancelled pickup leaves the item entity alone. On Folia the scan runs only when the whole footprint belongs to the current region. Radius is `radiusBase + (levelPercent * radiusFactor)` blocks.
+Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the normal pickup event sequence with the player's real remaining capacity. A cancelled pickup leaves the item entity alone. On Folia the scan runs only when the whole footprint belongs to the current region. Radius is `radiusBase + (levelPercent * radiusFactor)` blocks.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -478,10 +493,10 @@ Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the norm
 | Cost factor | 0.5 |
 | Tick interval (ms) | 3277 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-heavy-draw.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, HIGH); `EntityDamageByEntityEvent` (`on`, HIGHEST) |
+| Listened events | `ProjectileLaunchEvent` (`on`, HIGH). `EntityDamageByEntityEvent` (`on`, HIGHEST) |
 | Stats | `ranged.heavy-draw.heavy-hits` |
-| Milestones | `challenge_ranged_heavy_hits_250` at 250 hits, 500 XP; `challenge_ranged_heavy_hits_2500` at 2500 hits, 2000 XP |
-| Menu lore | Bonus Damage; Projectile Speed |
+| Milestones | `challenge_ranged_heavy_hits_250` at 250 hits, 500 XP. `challenge_ranged_heavy_hits_2500` at 2500 hits, 2000 XP |
+| Menu lore | Bonus Damage. Projectile Speed |
 
 Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penalty and the damage bonus interpolate linearly from the level 1 value to the max level value. Damage multiplier is `1 + damageBonus`, divided by the velocity factor for arrows other than tridents so the vanilla speed-scaled damage does not eat the bonus.
 
@@ -505,12 +520,14 @@ Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penal
 | Cost factor | 0.6 |
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adapt/adaptations/ranged-heartseeker.toml` |
-| Listened events | `PlayerInteractEvent` (`on`, MONITOR); `EntityShootBowEvent` (`on`, LOWEST); `EntityAddToWorldEvent` (`on`); `ProjectileHitEvent` (`on`); `EntityDamageByEntityEvent` (`on`); `EntityRemoveEvent` (`on`); `PlayerQuitEvent` (`on`) |
+| Listened events | `PlayerInteractEvent` (`on`, MONITOR). `EntityShootBowEvent` (`on`, LOWEST). `EntityAddToWorldEvent` (`on`). `ProjectileHitEvent` (`on`). `EntityDamageByEntityEvent` (`on`). `EntityRemoveEvent` (`on`). `PlayerQuitEvent` (`on`) |
 | Stats | `ranged.heartseeker.seeks`, `ranged.heartseeker.hits` |
-| Milestones | `challenge_ranged_heartseeker_100` at 100 hits, 500 XP; `challenge_ranged_heartseeker_1k` at 1000 hits, 2000 XP |
-| Menu lore | Draw a bow while looking at a creature to lock on; Bow cooldown after a seeking shot; Piercing and Ricochet Bolt bounce capacity add seeking passes |
+| Milestones | `challenge_ranged_heartseeker_100` at 100 hits, 500 XP. `challenge_ranged_heartseeker_1k` at 1000 hits, 2000 XP |
+| Menu lore | Draw a bow while looking at a creature to lock on. Bow cooldown after a seeking shot. Piercing and Ricochet Bolt bounce capacity add seeking passes |
 
-Locking requires a `BOW` in hand that is not on cooldown. Tridents never seek. Ray traces, target snapshots, launches, and steering updates all run against per-owner and global work budgets, so heavy use degrades gracefully rather than stalling the server.
+Locking requires a `BOW` in hand that is not on cooldown. Tridents never seek. Ray traces, target snapshots, launches, and steering updates all run against
+per-owner and global work budgets. Heavy use degrades gracefully rather than
+stalling the server.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

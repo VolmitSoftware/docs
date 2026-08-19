@@ -2,18 +2,31 @@
 title: "API - World Events"
 description: "Iris documentation: API - World Events"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`IrisWorldEngineEvent` reports when an Iris world's engine becomes usable, is rebuilt under you, or is about to stop being usable. `IrisPregenerationEvent` reports pregeneration job progress. Both are pure observation: not cancellable, and handlers cannot change Iris's next step. Prefer `IrisWorldEngineEvent` over `WorldLoadEvent` when you care about the **generator**: a world exists before its Iris engine can answer, and still exists after the engine is told to close.
+`IrisWorldEngineEvent` reports when an Iris world's engine becomes
+usable, is rebuilt under you, or is about to stop being usable.
+`IrisPregenerationEvent` reports pregeneration job progress. Both are
+pure observation: not cancellable, and handlers cannot change Iris's next
+step. Prefer `IrisWorldEngineEvent` over `WorldLoadEvent` when you care
+about the **generator**. A world exists before its Iris engine can
+answer, and still exists after the engine is told to close.
 
-Reach for these when your plugin has per-world setup that must happen exactly when Iris can answer for that world — caching the dimension key, building a map layer, warming a spawn candidate list — or when you want to mirror pregeneration progress somewhere Iris does not draw it (a boss bar, a web panel, a Discord relay).
+Use these when your plugin has per-world setup that must happen exactly
+when Iris can answer for that world. Examples: caching the dimension key,
+building a map layer, warming a spawn candidate list. Also use them when
+you want to mirror pregeneration progress somewhere Iris does not draw it
+(a boss bar, a web panel, a Discord relay).
 
-Build setup: [90 - API - Getting Started](/iris/90-api-getting-started). No service lookup — register a `Listener` in `onEnable`; Bukkit unregisters on your disable.
+Build setup: [90 - API - Getting Started](/iris/90-api-getting-started).
+No service lookup. Register a `Listener` in `onEnable`. Bukkit
+unregisters on your disable.
 
-Each event has its own `HandlerList`. No shared base class. Neither implements `Cancellable`; `ignoreCancelled = true` does nothing useful.
+Each event has its own `HandlerList`. No shared base class. Neither
+implements `Cancellable`. `ignoreCancelled = true` does nothing useful.
 
 ---
 
@@ -38,18 +51,33 @@ ENGINE_CLOSING      engine about to tear down; last call
 
 Guarantees:
 
-- `ENGINE_READY` fires **at most once per world registration**, keyed on world UUID. Unload + load again gets a new ready.
-- `ENGINE_CLOSING` is **never delivered without a prior `ENGINE_READY`** for that world (ledger-gated).
-- `ENGINE_CLOSING` is dispatched **before** Iris starts closing the generator.
-- Engine replacement: `ENGINE_CLOSING` for the old, later `ENGINE_READY` for the new — never two consecutive ready without closing between them.
-- On Iris shutdown, every announced-ready world gets closing before worker pool drain and generator close.
-- `ENGINE_HOTLOADED` is not deduplicated and is not part of ready/closing pairing. Treat pack-derived caches from `ENGINE_READY` as stale when it arrives.
+- `ENGINE_READY` fires **at most once per world registration**, keyed on
+  world UUID. Unload + load again gets a new ready.
+- `ENGINE_CLOSING` is **never delivered without a prior `ENGINE_READY`**
+  for that world (ledger-gated).
+- `ENGINE_CLOSING` is dispatched **before** Iris starts closing the
+  generator.
+- Engine replacement: `ENGINE_CLOSING` for the old, later `ENGINE_READY`
+  for the new. Never two consecutive ready without closing between them.
+- On Iris shutdown, every announced-ready world gets closing before
+  worker pool drain and generator close.
+- `ENGINE_HOTLOADED` is not deduplicated and is not part of
+  ready/closing pairing. Treat pack-derived caches from `ENGINE_READY` as
+  stale when it arrives.
 
 ### What `ENGINE_CLOSING` does not promise
 
-Closing fires before the generator closes, but during full plugin shutdown the terrain service may already be withdrawn. **Do not run terrain queries in a closing handler.** Capture state at `ENGINE_READY`; use closing only to drop it. Queries during closing return absent without throwing.
+Closing fires before the generator closes, but during full plugin
+shutdown the terrain service may already be withdrawn. **Do not run
+terrain queries in a closing handler.** Capture state at `ENGINE_READY`.
+Use closing only to drop it. Queries during closing return absent without
+throwing.
 
-Closing is also not a crash guarantee. It is delivered on the normal plugin-disable path, where teardown runs on the main thread and the event is called inline. If the JVM exits without a clean plugin disable, Iris's shutdown hook still parks the generators, but nothing dispatches to your listener — persist anything you cannot rebuild as you go, not at closing.
+Closing is also not a crash guarantee. It is delivered on the normal
+plugin-disable path, where teardown runs on the main thread and the event
+is called inline. If the JVM exits without a clean plugin disable, Iris's
+shutdown hook still parks the generators, but nothing dispatches to your
+listener. Persist anything you cannot rebuild as you go, not at closing.
 
 ---
 
@@ -74,20 +102,27 @@ public class IrisWorldEngineEvent extends Event {
 
 `getWorld()` and `getPhase()` are never null (constructor rejects nulls).
 
-`getInfo()` may be empty if Iris could not describe the engine at dispatch (generator already closing, engine closed, or describe threw — logged; event still delivered). Do not call `Optional#get()` unconditionally.
+`getInfo()` may be empty if Iris could not describe the engine at
+dispatch (generator already closing, engine closed, or describe threw —
+logged. Event still delivered). Do not call `Optional#get()`
+unconditionally.
 
 `IrisWorldInfo` fields: [91 - API - Terrain](/iris/91-api-terrain).
 
 ### Threading
 
-**Handlers always run on the main thread. On Folia, that is the global region thread.**
+**Handlers always run on the main thread. On Folia, that is the global
+region thread.**
 
 Dispatch:
 
-- Raised on the primary thread: event called **inline** before the raiser continues.
-- Raised off-thread (e.g. file-watcher hotload): scheduled to main/global region on a later tick via Iris's event path.
+- Raised on the primary thread: event called **inline** before the raiser
+  continues.
+- Raised off-thread (e.g. file-watcher hotload): scheduled to
+  main/global region on a later tick via Iris's event path.
 
-Blocking is forbidden on this thread: no I/O, no `CompletableFuture#join`, no waiting on another scheduler.
+Blocking is forbidden on this thread: no I/O, no
+`CompletableFuture#join`, no waiting on another scheduler.
 
 ---
 
@@ -144,9 +179,15 @@ Register it from your `onEnable`:
 getServer().getPluginManager().registerEvents(new IrisWorldRegistry(), this);
 ```
 
-`default` is required because enums can grow: [90 - API - Getting Started](/iris/90-api-getting-started). Map is concurrent because readers may be off the event thread.
+`default` is required because enums can grow:
+[90 - API - Getting Started](/iris/90-api-getting-started). Map is
+concurrent because readers may be off the event thread.
 
-Iris also fires the internal `art.arcane.iris.core.events.IrisEngineHotloadEvent` alongside `ENGINE_HOTLOADED`. It exposes the internal `Engine` type, is not covered by the API purity test, and can change without notice — listen for `IrisWorldEngineEvent` instead.
+Iris also fires the internal
+`art.arcane.iris.core.events.IrisEngineHotloadEvent` alongside
+`ENGINE_HOTLOADED`. It exposes the internal `Engine` type, is not
+covered by the API purity test, and can change without notice. Listen for
+`IrisWorldEngineEvent` instead.
 
 ---
 
@@ -179,7 +220,7 @@ public class IrisPregenerationEvent extends Event {
 }
 ```
 
-Both accessors never null; constructor rejects nulls.
+Both accessors never null. Constructor rejects nulls.
 
 ### Phase order
 
@@ -193,16 +234,21 @@ STARTED  ->  TICK  ->  TICK  ->  ...  ->  COMPLETED
                         +-- CANCELLED (instead of COMPLETED if stopped early)
 ```
 
-- **One job at a time, server-wide.** No job id on the event; `IrisPregenProgress` names the world.
+- **One job at a time, server-wide.** No job id on the event.
+  `IrisPregenProgress` names the world.
 - `STARTED` once per job, immediately before first `TICK`.
 - `TICK` once per second while the job exists, including while paused.
 - `PAUSED` / `RESUMED` on transition only, each followed by a `TICK`.
 - `SAVING` at most once per job.
-- Exactly one of `COMPLETED` or `CANCELLED` is terminal. No phase after the terminal.
+- Exactly one of `COMPLETED` or `CANCELLED` is terminal. No phase after
+  the terminal.
 
 ### Threading
 
-**Handlers always run on the main / Folia global region thread.** Pregen ticks on a worker; phases are scheduled (up to about one tick of skew). Fire-and-forget: a throwing handler is logged and skipped; the job does not wait. Do not block the tick thread.
+**Handlers always run on the main / Folia global region thread.**
+Pregeneration ticks on a worker. Phases are scheduled (up to about one
+tick of skew). Fire-and-forget: a throwing handler is logged and skipped.
+The job does not wait. Do not block the tick thread.
 
 ### `IrisPregenProgress`
 
@@ -225,7 +271,7 @@ public record IrisPregenProgress(
 
 | Component | Meaning |
 |---|---|
-| `worldName` | Never null; falls back to `worldIdentity` |
+| `worldName` | Never null. Falls back to `worldIdentity` |
 | `worldIdentity` | World's namespaced key string |
 | `percent` | `0.0` .. `100.0` |
 | `generatedChunks` | Finished chunks |
@@ -235,20 +281,25 @@ public record IrisPregenProgress(
 | `chunksPerSecond` | Current rate |
 | `etaMillis` | Estimated remaining ms |
 | `elapsedMillis` | Since job start |
-| `method` | Never null; `""` if unknown |
+| `method` | Never null. `""` if unknown |
 | `paused` | Job paused |
 
 Constructor sanitises:
 
-- `percent` clamped to `0..100`; non-finite → `0`
-- `chunksPerSecond` ≥ 0; non-finite → `0`
+- `percent` clamped to `0..100`. Non-finite → `0`
+- `chunksPerSecond` ≥ 0. Non-finite → `0`
 - chunk and time counters ≥ 0
-- null `worldName` → `worldIdentity`; null `method` → `""`
-- null `worldIdentity` throws `NullPointerException` at construction — delivered instances always identify a world
+- null `worldName` → `worldIdentity`. Null `method` → `""`
+- null `worldIdentity` throws `NullPointerException` at construction.
+  Delivered instances always identify a world
 
-`etaMillis` is `0` early in a job: below 1024 generated chunks it needs a non-zero rolling chunks/second average, and above that it extrapolates from elapsed time per generated chunk. Non-zero `failedChunks` on `COMPLETED` means holes remain.
+`etaMillis` is `0` early in a job. Below 1024 generated chunks it needs a
+non-zero rolling chunks/second average, and above that it extrapolates
+from elapsed time per generated chunk. Non-zero `failedChunks` on
+`COMPLETED` means holes remain.
 
-Operator pregen surface: [07 - Pregeneration](/iris/07-pregeneration).
+Operator pregeneration surface:
+[07 - Pregeneration](/iris/07-pregeneration).
 
 ---
 
@@ -338,24 +389,26 @@ Do not set `ignoreCancelled = true`.
 
 ## Failure policy
 
-| Situation | Behaviour |
+| Situation | Behavior |
 |---|---|
-| Your handler throws | Logged; remaining handlers run; Iris lifecycle continues |
-| Iris cannot describe world for a phase | Logged; event still delivered with empty `getInfo()` |
-| Event dispatch itself throws | Logged with phase and world; registration/teardown proceeds |
+| Your handler throws | Logged. Remaining handlers run. Iris lifecycle continues |
+| Iris cannot describe world for a phase | Logged. Event still delivered with empty `getInfo()` |
+| Event dispatch itself throws | Logged with phase and world. Registration/teardown proceeds |
 | Pregen sink not registered | No `IrisPregenerationEvent` (before enable completes / after disable starts) |
-| Pregen job has no bound world | No event for any phase of that job; a null `worldIdentity` is dropped at the source |
-| Pregen handler throws | Logged; job not slowed/paused/stopped |
-| Iris shuts down mid-pregen | Terminal phase is `CANCELLED`, but delivery is not guaranteed — the event is scheduled onto the main thread and sync scheduling refuses once the plugin is disabled |
+| Pregen job has no bound world | No event for any phase of that job. A null `worldIdentity` is dropped at the source |
+| Pregen handler throws | Logged. Job not slowed/paused/stopped |
+| Iris shuts down mid-pregen | Terminal phase is `CANCELLED`, but delivery is not guaranteed. The event is scheduled onto the main thread and sync scheduling refuses once the plugin is disabled |
 | Iris shuts down with worlds registered | Every announced world gets `ENGINE_CLOSING` before worker drain, on the clean disable path |
 
-No listener quarantine. Iris never silently stalls a lifecycle step because a third party failed.
+No listener quarantine. Iris never silently stalls a lifecycle step
+because a third party failed.
 
 ---
 
 ## Configuration
 
-No configuration keys. Events are always on while Iris is enabled; no per-world gate.
+No configuration keys. Events are always on while Iris is enabled. No
+per-world gate.
 
 ---
 
@@ -366,7 +419,7 @@ No configuration keys. Events are always on while Iris is enabled; no per-world 
 | Constant | Meaning | Fires |
 |---|---|---|
 | `ENGINE_READY` | Engine registered and answering | Once per world registration |
-| `ENGINE_HOTLOADED` | Pack data reloaded in place | Any number of times, or never; not ledger-paired |
+| `ENGINE_HOTLOADED` | Pack data reloaded in place | Any number of times, or never. Not ledger-paired |
 | `ENGINE_CLOSING` | Engine about to tear down | Once per registration, always after a ready |
 
 ### `IrisPregenPhase`
@@ -378,7 +431,7 @@ No configuration keys. Events are always on while Iris is enabled; no per-world 
 | `PAUSED` | Job paused | Transition only + following `TICK` |
 | `RESUMED` | Job resumed | Transition only + following `TICK` |
 | `SAVING` | Flushing to disk | At most once |
-| `COMPLETED` | Reached chunk total | Terminal; exclusive with `CANCELLED` |
-| `CANCELLED` | Stopped before total | Terminal; exclusive with `COMPLETED` |
+| `COMPLETED` | Reached chunk total | Terminal. Exclusive with `CANCELLED` |
+| `CANCELLED` | Stopped before total | Terminal. Exclusive with `COMPLETED` |
 
 Default arms: [90 - API - Getting Started](/iris/90-api-getting-started).

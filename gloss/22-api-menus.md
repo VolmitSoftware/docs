@@ -7,26 +7,27 @@ tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-`art.arcane.gloss.api` lets another plugin describe a holographic menu in code, put it in front of one
-player, change what it says while it is on screen, receive clicks, and close it. This page is the
-reference for the menu builder, the component and icon types, the session handle, click dispatch and the
-two menu events. Service acquisition, dependency coordinates and the type index are in
-[API: Getting Started](/gloss/21-api-getting-started).
+`art.arcane.gloss.api` lets another plugin describe a holographic menu in code. The plugin can put
+it in front of one player, change what it says while it is on screen, receive clicks, and close it.
 
-There are two ways in, and they yield different handles:
+This page is the reference for the menu builder, the component and icon types, the session handle,
+click dispatch and the two menu events. Service acquisition, dependency coordinates and the type
+index are in [API: Getting Started](/gloss/21-api-getting-started).
+
+There are two ways in. They yield different handles:
 
 | Goal | Call |
 |---|---|
 | Build the menu in code, receive clicks, change text while it is open | `open(Plugin, Player, HoloMenu)` |
 | Show a menu an admin already wrote in `plugins/Gloss/menus/` | `open(Plugin, Player, String menuId)` |
 
-A handle from the `String` overload cannot mutate anything and never receives a click. It carries
+A handle from the `String` overload cannot mutate anything. It never receives a click. It carries
 lifecycle only.
 
-Both overloads use the player's single personal-menu slot. They do not create, query, mutate or close
-panels. Panel views have their own per-viewer sessions and history; they share the public menu open and
-click events documented below, but never produce a `HoloMenuHandle` or invoke an API menu click handler.
-Panels are covered in [Panels](/gloss/16-panels).
+Both overloads use the player's single personal-menu slot. They do not create, query, mutate or
+close panels. Panel views have their own per-viewer sessions and history. They share the public
+menu open and click events documented below. They never produce a `HoloMenuHandle`. They never
+invoke an API menu click handler. Panels are covered in [Panels](/gloss/16-panels).
 
 ## A menu is a value
 
@@ -38,9 +39,9 @@ public record HoloMenu(String id, double offsetX, double offsetY, double offsetZ
 public static HoloMenuBuilder builder()
 ```
 
-The compact constructor sanitises `id`, requires non-null `components`, replaces the list with
-`List.copyOf(components)`, and then rejects duplicate component ids. A menu is immutable and reusable:
-hand the same instance to `open` as many times as you like.
+The compact constructor sanitizes `id`, requires non-null `components`, replaces the list with
+`List.copyOf(components)`, and then rejects duplicate component ids. A menu is immutable and
+reusable. Hand the same instance to `open` as many times as you like.
 
 ### `HoloMenuBuilder`
 
@@ -59,20 +60,20 @@ public HoloMenu build()
 | Method | Default | Meaning |
 |---|---|---|
 | `id` | `""` | Required in practice: `build()` throws `IllegalArgumentException` on the empty default |
-| `offset` | `0, 0, 2` | Menu centre relative to the player, in blocks, as `x, y, z`. Not scaled by `[menus] uiScale` |
+| `offset` | `0, 0, 2` | Menu center relative to the player, in blocks, as `x, y, z`. Not scaled by `[menus] uiScale` |
 | `lockPosition` | `false` | Freezes the player in place while the menu is open. Takes priority over ordinary movement range validation |
-| `followPlayer` | `false` | Re-centres the menu and tracks current yaw on every positional or rotation-only move |
-| `maxDistance` | `8.0` | Range gate; see below |
+| `followPlayer` | `false` | Re-centers the menu and tracks current yaw on every positional or rotation-only move |
+| `maxDistance` | `8.0` | Range gate. See below |
 | `closeOnDeath` | `true` | Close on `PlayerDeathEvent` |
 | `closeOnTeleport` | `true` | Close on any teleport |
-| `component` | empty list | Appends one component; call repeatedly |
+| `component` | empty list | Appends one component. Call repeatedly |
 
-Every setter returns the builder. No setter validates or sanitises: `id` stores the raw string,
-`component` accepts anything including a duplicate id or `null`, and all validation happens in `build()` —
-that is, in the `HoloMenu` compact constructor `build()` calls.
+Every setter returns the builder. No setter validates or sanitizes. `id` stores the raw string.
+`component` accepts anything including a duplicate id or `null`. All validation happens in
+`build()`. That is, in the `HoloMenu` compact constructor `build()` calls.
 
-The builder is mutable and not thread-safe. `build()` may be called more than once; each call produces an
-independent `HoloMenu` from the builder's current state.
+The builder is mutable and not thread-safe. `build()` may be called more than once. Each call
+produces an independent `HoloMenu` from the builder's current state.
 
 Throw sites reachable from `build()`:
 
@@ -82,49 +83,51 @@ Throw sites reachable from `build()`:
 | No character of `id` survives filtering | `IllegalArgumentException("id must contain at least one of A-Z a-z 0-9 _ - .")` |
 | `components` is `null` | `NullPointerException("components")` |
 | A component in the list is `null` | `NullPointerException` from `List.copyOf` |
-| Two components share a sanitised id | `IllegalArgumentException("duplicate component id: …")` |
+| Two components share a sanitized id | `IllegalArgumentException("duplicate component id: …")` |
 
-`List.copyOf` runs before the distinct-id check, so a null element always produces the
-`NullPointerException` and never reaches the id validation.
+`List.copyOf` runs before the distinct-id check. A null element always produces the
+`NullPointerException`. It never reaches the id validation.
 
 ### Range gate
 
 The session closes with `HoloCloseReason.MOVED_OUT_OF_RANGE` when the player's location fails
-`centerPoint.distanceSquared(loc) <= maxDistance² + offsetLengthSquared`, where `offsetLengthSquared` is
+`centerPoint.distanceSquared(loc) <= maxDistance² + offsetLengthSquared`. `offsetLengthSquared` is
 the squared length of the menu-level offset. The menu's own standoff is therefore slack on top of
-`maxDistance`. Leaving the menu's world fails the same test and closes the session. For an ordinary move
-event, `lockPosition` rewrites the destination back to the origin, zeroes any non-zero velocity and
-returns before this range check; teleport and respawn keep their separate range and close checks.
+`maxDistance`. Leaving the menu's world fails the same test and closes the session.
+
+For an ordinary move event, `lockPosition` rewrites the destination back to the origin. It zeroes
+any non-zero velocity and returns before this range check. Teleport and respawn keep their
+separate range and close checks.
 
 ### Coordinate frame
 
-Offsets are player-relative, captured from the player's yaw at the instant the menu opens: `+X` right,
-`+Y` up, `+Z` in front. The frame does not re-orient afterwards, so walking around an open menu walks
-around a fixed object. A button's collision plane is re-aimed at the player's eye every tick, so a button
-stays clickable from any angle it is visible from.
+Offsets are player-relative. They are captured from the player's yaw at the instant the menu
+opens: `+X` right, `+Y` up, `+Z` in front. The frame does not re-orient afterwards. Walking around
+an open menu walks around a fixed object. A button's collision plane is re-aimed at the player's
+eye every tick. A button stays clickable from any angle it is visible from.
 
-The menu-level `offset(...)` is applied verbatim: `MenuTransform#menuOrigin` places it at a local scale of
-`1`. Component offsets go through `componentPosition`, which multiplies them by the transform's scale —
-`[menus] uiScale` from `config.toml`, default `1.0`, clamped to `0.25 .. 4.0`. A menu laid out at
-`uiScale = 1.0` therefore spreads or tightens when an operator changes it, while the overall standoff
-distance stays put. `[debug] hitbox` and `[debug] position` draw button hitboxes and anchors as
-particles. No other configuration knob affects API menus.
+The menu-level `offset(...)` is applied verbatim. `MenuTransform#menuOrigin` places it at a local
+scale of `1`. Component offsets go through `componentPosition`, which multiplies them by the
+transform's scale — `[menus] uiScale` from `config.toml`, default `1.0`, clamped to `0.25 .. 4.0`.
+A menu laid out at `uiScale = 1.0` therefore spreads or tightens when an operator changes it. The
+overall standoff distance stays put. `[debug] hitbox` and `[debug] position` draw button hitboxes
+and anchors as particles. No other configuration knob affects API menus.
 
-### Id sanitisation
+### Id sanitization
 
 `HoloText.sanitizeId` is applied to `HoloMenu#id` and to every component id.
 
-- Allowed characters are `A-Z a-z 0-9 _ - .`; every other character is dropped, not replaced.
+- Allowed characters are `A-Z a-z 0-9 _ - .`. Every other character is dropped, not replaced.
 - The result is truncated to the first 64 allowed characters (`HoloText.MAX_ID_LENGTH`).
 
-Because filtering is silent, `"stock count"` becomes `"stockcount"`, and `handle.setText("stock count", …)`
-then returns `false` because the component is registered under the name that survived. Keep every id
-inside the allowed set and the two can never diverge.
+Because filtering is silent, `"stock count"` becomes `"stockcount"`. `handle.setText("stock
+count", …)` then returns `false` because the component is registered under the name that survived.
+Keep every id inside the allowed set. The two can never diverge.
 
-Component ids must be unique within a menu. The only throw site is the `HoloMenu` compact constructor;
-`HoloMenuBuilder#component` performs no validation.
+Component ids must be unique within a menu. The only throw site is the `HoloMenu` compact
+constructor. `HoloMenuBuilder#component` performs no validation.
 
-A menu id that collides with a file in `plugins/Gloss/menus/` is a live hazard: Gloss closes every
+A menu id that collides with a file in `plugins/Gloss/menus/` is a live hazard. Gloss closes every
 personal session whose id exactly matches a changed or deleted file, with
 `HoloCloseReason.DEFINITION_RELOADED`, including API-built sessions. Namespace your ids
 (`exampleshop.store`, not `shop`).
@@ -153,30 +156,31 @@ public sealed interface HoloComponent permits HoloComponent.Decoration, HoloComp
 }
 ```
 
-A decoration draws and nothing else: no hitbox, no clicks. A button has a hitbox derived from its icon,
-leans toward the player when selected, and calls your handler on an accepted main-hand left or right
-click. Text and image hitboxes are centred on the visible glyph stack rather than the logical anchor, so
-aiming at what is drawn is what activates the button. Component offsets are relative to the menu centre,
-in the same right/up/forward frame.
+A decoration draws and nothing else. It has no hitbox and no clicks. A button has a hitbox derived
+from its icon. It leans toward the player when selected. It calls your handler on an accepted
+main-hand left or right click. Text and image hitboxes are centered on the visible glyph stack
+rather than the logical anchor. Aiming at what is drawn is what activates the button. Component
+offsets are relative to the menu center, in the same right/up/forward frame.
 
 Constraints:
 
-- Both records sanitise `id`. A `null` id throws `IllegalArgumentException`, not `NullPointerException`.
+- Both records sanitize `id`. A `null` id throws `IllegalArgumentException`, not `NullPointerException`.
 - Both records reject a null `icon` with `NullPointerException("icon")`, and `Button` rejects a null
   `handler` with `NullPointerException("handler")`.
 - `highlightModifier` — how far, in blocks, the icon leans toward the player when selected — is clamped
-  into `0.0F .. 1.0F`; a non-finite value becomes `0.0F`. The `button(...)` factory supplies
-  `DEFAULT_HIGHLIGHT_MODIFIER` (`0.05F`); use the canonical constructor to choose your own.
+  into `0.0F .. 1.0F`. A non-finite value becomes `0.0F`. The `button(...)` factory supplies
+  `DEFAULT_HIGHLIGHT_MODIFIER` (`0.05F`). Use the canonical constructor to choose your own.
 
 ```java
 new HoloComponent.Button("close", 0.0D, -0.6D, 0.0D, HoloIcon.text("<red>[X]"), 0.2F,
     click -> click.handle().close());
 ```
 
-API-authored buttons always use automatic, icon-derived hitbox dimensions and button-anchored alignment.
-The `hitbox` overrides available to file-backed JSON buttons, described in
-[Components & Hitboxes](/gloss/10-components-hitboxes), have no API equivalent. Toggle components, which
-JSON menus can declare, likewise have no API form: `HoloComponent` permits only `Decoration` and `Button`.
+API-authored buttons always use automatic, icon-derived hitbox dimensions and button-anchored
+alignment. The `hitbox` overrides available to file-backed JSON buttons, described in
+[Components & Hitboxes](/gloss/10-components-hitboxes), have no API equivalent. Toggle components,
+which JSON menus can declare, likewise have no API form. `HoloComponent` permits only `Decoration`
+and `Button`.
 
 ## Icons
 
@@ -201,42 +205,43 @@ public sealed interface HoloIcon permits HoloIcon.Text, HoloIcon.Item, HoloIcon.
 
 | Shape | Renders | Constraints |
 |---|---|---|
-| `Text` | MiniMessage markup; `\n` splits into stacked lines | Truncated at 4096 characters. Every control character except `\n` becomes a space. `null` and `""` both become `""`, which is legal and renders nothing |
+| `Text` | MiniMessage markup.`\n` splits into stacked lines | Truncated at 4096 characters. Every control character except `\n` becomes a space. `null` and `""` both become `""`, which is legal and renders nothing |
 | `Item` | A floating item display | `NullPointerException("stack")` on null. Cloned on construction and on every `stack()` read, so your `ItemStack` stays yours to mutate |
-| `Block` | A packet-only block display using the default state | Non-null Bukkit material; a live server rejects any material whose `isBlock()` is false |
+| `Block` | A packet-only block display using the default state | Non-null Bukkit material. A live server rejects any material whose `isBlock()` is false |
 | `Image` | A picture from `plugins/Gloss/images/` | `IllegalArgumentException` when blank, over 256 characters, containing a control character or `:`, starting with `/`, or containing a `..` segment. `\` becomes `/` |
-| `AnimatedImage` | Those frames in order, advancing every `tickSpeed` ticks | Every path sanitised as above; list copied; empty or null list rejected with `IllegalArgumentException`; `tickSpeed` clamped to at least `1` |
-| `Entity` | A packet-only living entity anchored at its feet | Non-null Bukkit type with `isSpawnable()` and `isAlive()`; width and height must be finite, greater than `0`, and no larger than `64` |
+| `AnimatedImage` | Those frames in order, advancing every `tickSpeed` ticks | Every path sanitized as above. List copied. Empty or null list rejected with `IllegalArgumentException`.`tickSpeed` clamped to at least `1` |
+| `Entity` | A packet-only living entity anchored at its feet | Non-null Bukkit type with `isSpawnable()` and `isAlive()`. Width and height must be finite, greater than `0`, and no larger than `64` |
 
 The image path validation messages name the directory they describe:
 `"image path must be relative to the Gloss images folder (plugins/Gloss/images/)"` and
 `"image path must not escape the Gloss images folder (plugins/Gloss/images/)"`.
 
-Text is parsed by `TextUtils.parse`, which translates legacy `&` and `§` codes into their MiniMessage tag
-equivalents first and then deserialises the whole string as MiniMessage. Both spellings work in one
-string.
+Text is parsed by `TextUtils.parse`. That helper translates legacy `&` and `§` codes into their
+MiniMessage tag equivalents first. It then deserializes the whole string as MiniMessage. Both
+spellings work in one string.
 
-If your `ItemStack` subclass throws from `clone()`, that exception propagates out of `open`. An image file
-that is missing or unreadable at render time does not fail the open: Gloss logs it and draws a visible
-placeholder in that slot.
+If your `ItemStack` subclass throws from `clone()`, that exception propagates out of `open`. An
+image file that is missing or unreadable at render time does not fail the open. Gloss logs it and
+draws a visible placeholder in that slot.
 
-Entity width and height define automatic click geometry rather than client-model scale. Entity icons
-receive the session's yaw, pitch and head yaw, move with the menu, and are destroyed client-side when the
-icon closes, without ever creating a Bukkit world entity. Block icons never create or mutate a Bukkit
-world block.
+Entity width and height define automatic click geometry rather than client-model scale. Entity
+icons receive the session's yaw, pitch and head yaw. They move with the menu. They are destroyed
+client-side when the icon closes, without ever creating a Bukkit world entity. Block icons never
+create or mutate a Bukkit world block.
 
 ### The `itemStack` icon is API-only
 
 `HoloIcon.Item` translates to `ItemStackIconData`, whose `MenuIconType` is `ITEM_STACK` with the
-serialized name `itemStack`. That enum constant carries a `null` data class, so the JSON icon
-deserialiser cannot construct it: `itemStack` is not a value a menu document may write. Every other
-`HoloIcon` shape maps onto an icon type that documents can also express — `text`, `block`, `textImage`,
-`animatedTextImage` and `entity`. Document icons additionally have `item` and `customItem`, which have no
-API form; see [Icons](/gloss/11-icons) and [Custom Items & Item Providers](/gloss/14-custom-items).
+serialized name `itemStack`. That enum constant carries a `null` data class. The JSON icon
+deserialiser cannot construct it. `itemStack` is not a value a menu document may write. Every other
+`HoloIcon` shape maps onto an icon type that documents can also express — `text`, `block`,
+`textImage`, `animatedTextImage` and `entity`. Document icons additionally have `item` and
+`customItem`, which have no API form. See [Icons](/gloss/11-icons) and
+[Custom Items & Item Providers](/gloss/14-custom-items).
 
-The practical consequence: a live `ItemStack`, with its own meta, enchantments and components, can only
-reach a menu through the API. `HoloIcon.item(stack)` clones the stack on construction and again on every
-read, so nothing you hand Gloss is shared.
+The practical consequence: a live `ItemStack`, with its own meta, enchantments and components, can
+only reach a menu through the API. `HoloIcon.item(stack)` clones the stack on construction and
+again on every read. Nothing you hand Gloss is shared.
 
 ## Opening, closing and querying
 
@@ -251,11 +256,11 @@ public interface GlossAPI {
 ```
 
 These five methods used to live on a separate `HoloUiService` interface. They are now part of
-`GlossAPI`, which is also the type registered on the `ServicesManager`; see
+`GlossAPI`, which is also the type registered on the `ServicesManager`. See
 [API: Getting Started](/gloss/21-api-getting-started).
 
-`open` never returns null. An ordinary refusal comes back as a handle that is already terminal, with the
-reason delivered to the close callback. It throws in exactly two cases:
+`open` never returns null. An ordinary refusal comes back as a handle that is already terminal.
+The reason is delivered to the close callback. It throws in exactly two cases:
 
 - A null `owner`, `player`, `menu` or `menuId` raises `NullPointerException`.
 - An exception thrown while translating your menu, such as an `ItemStack.clone()` failure, propagates to
@@ -264,9 +269,9 @@ reason delivered to the close callback. It throws in exactly two cases:
 `close(Player)` and `isOpen(Player)` tolerate a null player and answer `false`.
 
 `owner` is your plugin instance. Gloss captures `owner.getName()` and a `BooleanSupplier` bound to
-`owner::isEnabled` (`ApiOwner`), and uses them to name you in logs and in
-`GlossMenuOpenEvent#getOwnerPluginName`, to skip your handlers once you are disabled, and to close your
-menus when your plugin unloads.
+`owner::isEnabled` (`ApiOwner`). It uses them to name you in logs and in
+`GlossMenuOpenEvent#getOwnerPluginName`. It skips your handlers once you are disabled. It closes
+your menus when your plugin unloads.
 
 ### The two overloads are not equivalent
 
@@ -274,53 +279,53 @@ menus when your plugin unloads.
 |---|---|---|
 | Menu source | your code | `plugins/Gloss/menus/<menuId>.json` |
 | Permission check | none | `gloss.open.<menuId>` on the player |
-| Click handlers | yours, dispatched to you | the JSON file's own actions; nothing reaches your code |
+| Click handlers | yours, dispatched to you | the JSON file's own actions. Nothing reaches your code |
 | `setText` / `setItem` / `setIcon` | work | always return `false` |
-| `handle.menuId()` | the sanitised `menu.id()` | exactly the string you passed |
+| `handle.menuId()` | the sanitized `menu.id()` | exactly the string you passed |
 
-The `String` overload constructs the handle with an empty handler map and an empty component-id set, so
-every setter refuses and no click is ever routed to you. What you get is a lifecycle handle: `state()`,
-`onClosed(…)`, `close()`.
+The `String` overload constructs the handle with an empty handler map and an empty component-id
+set. Every setter refuses. No click is ever routed to you. What you get is a lifecycle handle:
+`state()`, `onClosed(…)`, `close()`.
 
-The id lookup is an exact `ConcurrentHashMap` containment check against the loaded menu registry, whose
-keys are case-preserving slash-separated paths relative to `menus/` without the final `.json`. `"Welcome"`
-will not find `welcome.json`, and `shop` will not find `shops/shop.json`; a miss terminates the handle
-with `HoloCloseReason.DENIED`. `menuIds()` returns a copy of the loaded ids.
+The id lookup is an exact `ConcurrentHashMap` containment check against the loaded menu registry.
+The keys are case-preserving slash-separated paths relative to `menus/` without the final `.json`.
+`"Welcome"` will not find `welcome.json`. `shop` will not find `shops/shop.json`. A miss terminates
+the handle with `HoloCloseReason.DENIED`. `menuIds()` returns a copy of the loaded ids.
 
-The permission check is `player.hasPermission("gloss.open." + definition.getId())`, where the loaded
+The permission check is `player.hasPermission("gloss.open." + definition.getId())`. The loaded
 definition's id is that relative path — identical to the key you passed, since the lookup is exact.
-`plugin.yml` does not declare `gloss.open` or any `gloss.open.*` child. The per-menu node is runtime-only;
-Bukkit's default for undeclared permissions is op-only, so operators pass and everyone else needs an
-explicit grant from a permission plugin. There is no parent wildcard. See
+`plugin.yml` does not declare `gloss.open` or any `gloss.open.*` child. The per-menu node is
+runtime-only. Bukkit's default for undeclared permissions is op-only. Operators pass. Everyone
+else needs an explicit grant from a permission plugin. There is no parent wildcard. See
 [Commands & Permissions](/gloss/17-commands-permissions).
 
-A cancelled `GlossMenuOpenEvent` is checked separately, after the permission gate, and also produces
+A cancelled `GlossMenuOpenEvent` is checked separately, after the permission gate. It also produces
 `DENIED`.
 
 ### One menu per player
 
-A player has at most one menu open. Opening a second prepares and opens a replacement while the first
-remains attached; only after success does the holder commit the swap, close the old session, and end its
-handle with `HoloCloseReason.REPLACED`. If construction or component opening fails, partial display
-entities are cleaned up, the old session and its handle remain live, and the incoming API handle ends as
-`OPEN_FAILED`. If the player is offline when the open task runs, the new handle terminates with `QUIT` and
-the existing session is left alone.
+A player has at most one menu open. Opening a second prepares and opens a replacement while the
+first remains attached. Only after success does the holder commit the swap, close the old session,
+and end its handle with `HoloCloseReason.REPLACED`. If construction or component opening fails,
+partial display entities are cleaned up. The old session and its handle remain live. The incoming
+API handle ends as `OPEN_FAILED`. If the player is offline when the open task runs, the new handle
+terminates with `QUIT` and the existing session is left alone.
 
-`close(Player)` closes whatever that player has open, whoever opened it, with `CLOSED_BY_OWNER`;
-`/gloss menu close` does the same with `CLOSED_BY_COMMAND`. `close` returns `false` when there was nothing
-to close and `true` when the teardown was accepted onto the player's entity scheduler — accepted, not
-necessarily already run.
+`close(Player)` closes whatever that player has open, whoever opened it, with `CLOSED_BY_OWNER`.
+`/gloss menu close` does the same with `CLOSED_BY_COMMAND`. `close` returns `false` when there was
+nothing to close. It returns `true` when the teardown was accepted onto the player's entity
+scheduler — accepted, not necessarily already run.
 
 To close only your own session, use `handle.close()`. It routes through `destroySessionFor`, which
-compares session identity, so it no-ops when the player's current session is not this handle's.
+compares session identity. It no-ops when the player's current session is not this handle's.
 
 ### Why `open` resolves inline on the owning thread
 
-`open` never reads the player's world state on your thread — the only thing it takes from the `Player`
-before dispatch is the UUID. Everything else runs inside a task submitted through
-`FoliaScheduler.runEntity(plugin, player, task, 0L, retired)`. That call runs the task inline when the
-delay is zero and the entity is owned by the calling region, and otherwise submits it to the entity
-scheduler. Two consequences:
+`open` never reads the player's world state on your thread. The only thing it takes from the
+`Player` before dispatch is the UUID. Everything else runs inside a task submitted through
+`FoliaScheduler.runEntity(plugin, player, task, 0L, retired)`. That call runs the task inline when
+the delay is zero and the entity is owned by the calling region. Otherwise it submits it to the
+entity scheduler. Two consequences:
 
 1. Called from the owning thread, the whole open resolves before `open` returns and the handle is already
    `OPEN`, `CLOSED` or `FAILED`. Called from anywhere else, you get a `PENDING` handle and the menu
@@ -329,8 +334,8 @@ scheduler. Two consequences:
 2. Gloss cannot protect the code around your call. If you built the `HoloMenu` from the player's inventory
    or a nearby block on an async thread, you already read world state illegally.
 
-To hop explicitly (`Bukkit.isOwnedByCurrentRegion` and `Entity#getScheduler()` are Paper API — present on
-Paper and Folia, absent on plain Spigot):
+To hop explicitly (`Bukkit.isOwnedByCurrentRegion` and `Entity#getScheduler()` are Paper API —
+present on Paper and Folia, absent on plain Spigot):
 
 ```java
 if (Bukkit.isOwnedByCurrentRegion(player)) {
@@ -340,9 +345,9 @@ if (Bukkit.isOwnedByCurrentRegion(player)) {
 }
 ```
 
-When the entity scheduler refuses the task on Folia, Gloss logs a warning, refuses the global fallback,
-and the handle terminates `FAILED` with `OPEN_FAILED`. On non-Folia servers the same refusal falls back to
-`SchedulerUtils.runGlobal`, which runs the open on the main thread.
+When the entity scheduler refuses the task on Folia, Gloss logs a warning, refuses the global
+fallback, and the handle terminates `FAILED` with `OPEN_FAILED`. On non-Folia servers the same
+refusal falls back to `SchedulerUtils.runGlobal`, which runs the open on the main thread.
 
 ## Handles and state
 
@@ -383,23 +388,23 @@ PENDING ---- session created ----> OPEN
 
 Guarantees, implemented in `ApiHandleState` over a single `AtomicReference<Snapshot>`:
 
-- A handle is one session. It is never reused or reopened; `sessionId()` is a fresh `UUID` per handle. A
+- A handle is one session. It is never reused or reopened. `sessionId()` is a fresh `UUID` per handle. A
   second `open` for the same player yields a different handle.
 - State moves forward only. `markOpen()` is a compare-and-set that succeeds only from `PENDING`, so
   `PENDING → OPEN` happens at most once. `PENDING → CLOSED/FAILED` skips `OPEN` when the open never lands.
-- Termination is exactly once. `terminate` CAS-loops until the snapshot is terminal; the first reason
+- Termination is exactly once. `terminate` CAS-loops until the snapshot is terminal. The first reason
   wins, and every later attempt returns `false` and never reaches your callback.
 - `FAILED` means the menu was never on screen. Exactly two reasons produce it: `DENIED` and `OPEN_FAILED`.
   Every other reason produces `CLOSED`.
 - A handle does not survive the player leaving. `PlayerQuitEvent` closes the session with `QUIT`, and a
   player who logs out before a `PENDING` open lands also gets `QUIT`, delivered through the entity
   scheduler's retired callback. There is no reattach on rejoin.
-- A handle does not survive your plugin disabling; see
+- A handle does not survive your plugin disabling. See
   [API: Getting Started](/gloss/21-api-getting-started).
 
 | `HoloMenuState` | Meaning |
 |---|---|
-| `PENDING` | Accepted, not yet on screen. Setters are accepted and staged; the updates apply on the first tick after open |
+| `PENDING` | Accepted, not yet on screen. Setters are accepted and staged. The updates apply on the first tick after open |
 | `OPEN` | On screen |
 | `CLOSED` | It was on screen and is not any more, or it ended before opening for a non-failure reason |
 | `FAILED` | It never reached the player. Only `DENIED` and `OPEN_FAILED` produce this |
@@ -422,7 +427,7 @@ Guarantees, implemented in `ApiHandleState` over a single `AtomicReference<Snaps
 | `OPEN_FAILED` | `FAILED` | Gloss was shut down, the scheduler refused the task, or the open threw |
 | `GLOSS_SHUTDOWN` | `CLOSED` | Gloss disabled or unloaded while the menu was open |
 
-Both enums may gain constants; always write a `default` arm over either one, or use
+Both enums may gain constants. Always write a `default` arm over either one, or use
 `HoloMenuState.terminal()`.
 
 ### The close callback
@@ -432,7 +437,7 @@ HoloMenuHandle onClosed(Consumer<HoloCloseReason> callback);
 ```
 
 - Returns the handle, so it chains onto `open`.
-- There is one callback slot (`AtomicReference`). Registering a second replaces the first; passing `null`
+- There is one callback slot (`AtomicReference`). Registering a second replaces the first. Passing `null`
   clears it.
 - It fires exactly once. `fire` uses `getAndSet(null)`, so Gloss drops the reference the moment it fires.
   Registering on an already-terminal handle fires immediately and inline, with the stored reason. That is
@@ -446,10 +451,10 @@ HoloMenuHandle onClosed(Consumer<HoloCloseReason> callback);
 
   Publish the handle first, then register. If the open already failed, the callback runs before `onClosed`
   returns and cleans up the entry you just wrote.
-- The callback runs on whichever thread terminated the handle: the player's region thread in the ordinary
-  cases, the `PlayerQuitEvent` thread on quit, Gloss's disable thread on shutdown, and your own thread for
-  a late registration. Treat it as bookkeeping only and schedule world work onto the player's entity
-  scheduler.
+- The callback runs on whichever thread terminated the handle. Ordinary cases use the player's
+  region thread. Quit uses the `PlayerQuitEvent` thread. Shutdown uses Gloss's disable thread. A
+  late registration uses your own thread. Treat it as bookkeeping only and schedule world work onto
+  the player's entity scheduler.
 - If your callback throws, Gloss logs one `WARNING` naming your plugin and continues. The exception never
   reaches the session teardown.
 
@@ -464,42 +469,42 @@ boolean setIcon(String componentId, HoloIcon icon);
 Each stages a new icon for one component and returns whether it was accepted. `false` means one of:
 
 - `componentId` is null, or is not in the component-id set the handle was built with — always the case for
-  the `String` overload;
-- the handle is terminal;
+  the `String` overload.
+- the handle is terminal.
 - for `setItem` and `setIcon` only, the value was null.
 
-`setText(id, null)` is accepted and blanks the component, because `HoloIcon.text(null)` sanitises to `""`.
+`setText(id, null)` is accepted and blanks the component, because `HoloIcon.text(null)` sanitizes to `""`.
 
 Staging is not drawing. Updates land in `ApiPendingIcons`, a `ConcurrentHashMap` plus a volatile dirty
-flag. `MenuSession#drainApiUpdates()` drains it on the player's region thread at the top of the menu tick,
-which runs every tick, so an accepted update is on screen within about 50 ms. Consequences:
+flag. `MenuSession#drainApiUpdates()` drains it on the player's region thread at the top of the menu
+tick. That tick runs every tick. An accepted update is on screen within about 50 ms. Consequences:
 
-- Updates coalesce per component. Repeated `setText` calls on the same component between two ticks produce
-  one visual change carrying the last value, so driving a setter from a tight loop does not generate
-  packet spam.
+- Updates coalesce per component. Repeated `setText` calls on the same component between two ticks
+  produce one visual change carrying the last value. Driving a setter from a tight loop does not
+  generate packet spam.
 - `true` means accepted, not rendered. If the session ends in the same tick, `terminate` calls
   `pending.discard()` and the update is dropped.
 - A staged update whose component id exists on the handle but not in the live session is silently skipped
   by the drain. That is reachable when a handle outlives a definition swap.
-- If applying an icon throws, Gloss logs it and that one component keeps its previous icon; the drain and
+- If applying an icon throws, Gloss logs it and that one component keeps its previous icon. The drain and
   the session continue.
 
-Changing text in place keeps the same display entities as long as the icon is already text and the new
-markup has the same number of `\n`-separated lines; only differing lines are re-sent. Changing the line
-count, or changing the kind of icon, tears the old icon down and spawns a new one. Either way a button's
-hitbox is re-derived from whatever it now draws.
+Changing text in place keeps the same display entities. The icon must already be text. The new
+markup must have the same number of `\n`-separated lines. Only differing lines are re-sent. Changing
+the line count, or changing the kind of icon, tears the old icon down and spawns a new one. Either
+way a button's hitbox is re-derived from whatever it now draws.
 
-Text placeholders refresh while the icon is visible, and only for text that contains a paired `%name%`
-token. The default interval is 10 ticks; file-backed text may set `refreshTicks: 0` to freeze the
-initially rendered value, and `HoloIcon.Text` has no refresh field so API text always uses the default.
-`setText` replaces the icon's source string, and later refreshes resolve that new source for the viewing
-player. A refresh that throws is logged once per session and the previous text is kept. With PlaceholderAPI
-absent, unresolved plugin placeholders remain literal. See
+Text placeholders refresh while the icon is visible, and only for text that contains a paired
+`%name%` token. The default interval is 10 ticks. File-backed text may set `refreshTicks: 0` to
+freeze the initially rendered value. `HoloIcon.Text` has no refresh field so API text always uses
+the default. `setText` replaces the icon's source string. Later refreshes resolve that new source
+for the viewing player. A refresh that throws is logged once per session and the previous text is
+kept. With PlaceholderAPI absent, unresolved plugin placeholders remain literal. See
 [API: Placeholders](/gloss/23-api-placeholders).
 
 ### After termination
 
-After termination, `setText`, `setItem` and `setIcon` return `false`, `close()` is a no-op, and staged
+After termination, `setText`, `setItem` and `setIcon` return `false`. `close()` is a no-op. Staged
 updates are discarded. Checking `state().terminal()` first is an optimisation, not a requirement.
 
 ## Clicks
@@ -514,11 +519,11 @@ public record HoloClick(Player player, String menuId, String componentId,
                         HoloClickTrigger trigger, HoloMenuHandle handle)
 ```
 
-`HoloClick` rejects a null `player`, `trigger` or `handle` with `NullPointerException`; `menuId` and
-`componentId` are unchecked. `handle` is the same instance `open` returned, so a handler can mutate or
-close the menu it is in with no bookkeeping. `trigger` is one of `LEFT_CLICK`, `RIGHT_CLICK`,
-`SHIFT_LEFT_CLICK` or `SHIFT_RIGHT_CLICK`; `ANY` exists only for configured action matching and is never
-emitted as a physical click.
+`HoloClick` rejects a null `player`, `trigger` or `handle` with `NullPointerException`. `menuId`
+and `componentId` are unchecked. `handle` is the same instance `open` returned. A handler can
+mutate or close the menu it is in with no bookkeeping. `trigger` is one of `LEFT_CLICK`,
+`RIGHT_CLICK`, `SHIFT_LEFT_CLICK` or `SHIFT_RIGHT_CLICK`. `ANY` exists only for configured action
+matching. It is never emitted as a physical click.
 
 ### Dispatch
 
@@ -532,8 +537,8 @@ Per click:
    against the event-time eye ray. Non-fixed billboard planes are re-oriented before testing, and the
    smallest positive intersection distance wins. An exact personal/panel tie goes to the personal menu.
 3. If no plane is hit, or a block ray trace finds a closer obstruction, the event remains untouched.
-   Otherwise Gloss cancels it at `HIGHEST`; lower-priority listeners have already observed the event, while
-   the vanilla interaction is suppressed.
+   Otherwise Gloss cancels it at `HIGHEST`. Lower-priority listeners have already observed the event. The
+   vanilla interaction is suppressed.
 4. For the one winning component:
    - `GlossMenuClickEvent` is fired with the exact trigger. Cancellation skips both file-authored actions
      and the API handler.
@@ -544,15 +549,15 @@ Per click:
      handler.
 
 Handlers run on the clicking player's region thread. Reading and mutating that player's inventory,
-experience and location is legal there. Do not block that thread: no I/O, no `CompletableFuture.join`, no
-`callSyncMethod`, no lock held across the call. That thread ticks every entity and every open menu in the
-region.
+experience and location is legal there. Do not block that thread: no I/O, no
+`CompletableFuture.join`, no `callSyncMethod`, no lock held across the call. That thread ticks
+every entity and every open menu in the region.
 
 ### The click guard
 
 `ApiClickGuard` wraps every dispatch. Gloss constructs one per `MenuSessionManager` with
-`ApiClickGuard.DEFAULT_FAULT_LIMIT` (`5`) and `ApiClickGuard.DEFAULT_SLOW_MILLIS` (`5`), keyed by plugin
-name. `dispatch` returns an `ApiClickOutcome`:
+`ApiClickGuard.DEFAULT_FAULT_LIMIT` (`5`) and `ApiClickGuard.DEFAULT_SLOW_MILLIS` (`5`), keyed by
+plugin name. `dispatch` returns an `ApiClickOutcome`:
 
 | Outcome | When |
 |---|---|
@@ -562,7 +567,7 @@ name. `dispatch` returns an `ApiClickOutcome`:
 | `SKIPPED_OWNER_DISABLED` | `owner.active()` returned `false` |
 | `SKIPPED_QUARANTINED` | The owning plugin is quarantined |
 
-Behaviour:
+Behavior:
 
 - Faults. A throwing handler is logged at `WARNING` naming your plugin, the component and the menu, and
   the click is swallowed. The owner's fault counter increments. `Plugin#isEnabled()` throwing counts as a
@@ -577,15 +582,15 @@ Behaviour:
   `PluginDisableEvent` for the disabling plugin, so a quarantined plugin that is disabled starts clean when
   it comes back. The whole guard is also replaced whenever Gloss restarts its menu session manager.
 
-`ApiClickOutcome` and the guard's counters (`dispatches()`, `faults()`, `skips()`, `quarantines()`) are
-internal telemetry and are not reachable from the API.
+`ApiClickOutcome` and the guard's counters (`dispatches()`, `faults()`, `skips()`, `quarantines()`)
+are internal telemetry. They are not reachable from the API.
 
 ## Menu events
 
-Both events extend `org.bukkit.event.Event` directly with their own `HandlerList`; there is no shared base
-class. Both are constructed with the no-arg `Event()` superconstructor and are therefore synchronous
-events — where "synchronous" on Folia means "on whichever region thread fired it", not "on the main
-thread". The third API event, `GlossContainerPreviewAccessEvent`, is in
+Both events extend `org.bukkit.event.Event` directly with their own `HandlerList`. There is no
+shared base class. Both are constructed with the no-arg `Event()` superconstructor. They are
+therefore synchronous events. On Folia, "synchronous" means "on whichever region thread fired it",
+not "on the main thread". The third API event, `GlossContainerPreviewAccessEvent`, is in
 [API: Previews](/gloss/24-api-previews).
 
 ### `GlossMenuOpenEvent`
@@ -601,20 +606,20 @@ public HandlerList getHandlers()
 public static HandlerList getHandlerList()
 ```
 
-Fired immediately before a menu session is created, on the player's region thread. Personal root opens
-fire from `MenuSessionManager#createNewSession`; personal push, replace, back and home navigation fire from
-`MenuSessionManager#navigateSession`. Panel root admission and panel navigation fire separately from
-`PanelViewSession#openMenu`. Those paths cover every personal and panel menu open, including
-`/gloss menu open`, `/gloss menu back`, API opens and native navigation.
+Fired immediately before a menu session is created, on the player's region thread. Personal root
+opens fire from `MenuSessionManager#createNewSession`. Personal push, replace, back and home
+navigation fire from `MenuSessionManager#navigateSession`. Panel root admission and panel
+navigation fire separately from `PanelViewSession#openMenu`. Those paths cover every personal and
+panel menu open, including `/gloss menu open`, `/gloss menu back`, API opens and native navigation.
 
-`getOwnerPluginName()` is the opening plugin's name, or `null` for a menu Gloss opened itself — every
-panel open is `null`. `getMenuId()` is the resolved definition id. A null `player` throws
+`getOwnerPluginName()` is the opening plugin's name, or `null` for a menu Gloss opened itself.
+Every panel open is `null`. `getMenuId()` is the resolved definition id. A null `player` throws
 `NullPointerException`.
 
-Cancelling it prevents that personal or panel menu from opening. For a root API open, `createNewSession`
-returns `false` and the handle terminates `FAILED` with `DENIED`; a cancelled navigation leaves the current
-menu and history intact, while a cancelled panel root admission leaves that panel view unopened and
-eligible for a later runtime retry.
+Cancelling it prevents that personal or panel menu from opening. For a root API open,
+`createNewSession` returns `false` and the handle terminates `FAILED` with `DENIED`. A cancelled
+navigation leaves the current menu and history intact. A cancelled panel root admission leaves that
+panel view unopened and eligible for a later runtime retry.
 
 ### `GlossMenuClickEvent`
 
@@ -632,15 +637,16 @@ public HandlerList getHandlers()
 public static HandlerList getHandlerList()
 ```
 
-Fired for the one nearest hit component, before its actions and handler run, on the clicking player's
-region thread. It also fires for panel components, whose owner name is null. Cancelling it makes that
-component do nothing for this click. A null `player` or `trigger` throws `NullPointerException`.
+Fired for the one nearest hit component, before its actions and handler run, on the clicking
+player's region thread. It also fires for panel components, whose owner name is null. Cancelling it
+makes that component do nothing for this click. A null `player` or `trigger` throws
+`NullPointerException`.
 
 ### Dispatch cost and failure
 
-`ApiEvents` checks `getHandlerList().getRegisteredListeners().length == 0` first and skips dispatch
-entirely when no listener is registered, so an unused event costs nothing. If the dispatch itself throws,
-Gloss logs it and treats the event as not cancelled.
+`ApiEvents` checks `getHandlerList().getRegisteredListeners().length == 0` first. It skips dispatch
+entirely when no listener is registered. An unused event costs nothing. If the dispatch itself
+throws, Gloss logs it and treats the event as not cancelled.
 
 ```java
 package com.example.shop;
@@ -680,7 +686,8 @@ public final class MenuWatcher implements Listener {
 
 ## Complete example
 
-A shop that hands out emeralds, rewrites its own stock line, and closes itself when the stock runs out.
+A shop that hands out emeralds, rewrites its own stock line, and closes itself when the stock runs
+out.
 
 ### The menu
 
@@ -769,14 +776,14 @@ public final class ShopMenu {
 }
 ```
 
-The stock decoration carries no placeholder; its value moves because `onBuy` pushes a new string through
-the handle. `onBuy` touches the player's inventory directly, which is legal because a click handler
-already runs on that player's region thread.
+The stock decoration carries no placeholder. Its value moves because `onBuy` pushes a new string
+through the handle. `onBuy` touches the player's inventory directly. That is legal because a click
+handler already runs on that player's region thread.
 
 ### Triggering it
 
-A player-issued command runs on the player's own region thread on Folia and on the main thread on Paper
-and Spigot, so `open` resolves inline and the returned handle is already settled.
+A player-issued command runs on the player's own region thread on Folia. It runs on the main thread
+on Paper and Spigot. `open` resolves inline. The returned handle is already settled.
 
 ```java
 package com.example.shop;
@@ -839,7 +846,8 @@ public final class ExampleShopPlugin extends JavaPlugin {
 }
 ```
 
-There is nothing to unregister for menus: Gloss closes every menu you own when your plugin disables.
+There is nothing to unregister for menus. Gloss closes every menu you own when your plugin
+disables.
 
 ### Showing an admin-authored menu
 
@@ -854,39 +862,39 @@ public void show(Player player) {
 }
 ```
 
-The player still needs `gloss.open.welcome`. The handle reports lifecycle and can end the session; it
-cannot change the menu or hear its clicks.
+The player still needs `gloss.open.welcome`. The handle reports lifecycle and can end the session.
+It cannot change the menu or hear its clicks.
 
 ## Failure isolation and consumer lifecycle
 
-The API isolates callback failures and owner shutdown where it can. Blocking callbacks still block the
-player's owning thread and are reported only after they return.
+The API isolates callback failures and owner shutdown where it can. Blocking callbacks still block
+the player's owning thread. They are reported only after they return.
 
 | Misbehaviour | What Gloss does |
 |---|---|
-| A click handler throws (`Exception` or `Error`) | Counted as a fault, logged at `WARNING` naming your plugin, the component and the menu; click swallowed |
+| A click handler throws (`Exception` or `Error`) | Counted as a fault, logged at `WARNING` naming your plugin, the component and the menu. Click swallowed |
 | A click handler is slow | One `WARNING` per plugin per 60 s once a dispatch takes 5 ms or more. Never changes the outcome |
 | 5 accumulated faults from one plugin | That plugin is quarantined: one `SEVERE` line, and its handlers stop being called. Its menus stay open |
 | A quarantined plugin disables | Quarantine, fault count and slow-warning timestamp are cleared on `PluginDisableEvent` |
-| `Plugin#isEnabled()` throws on the owner | Counted as a fault; the handler is not called |
+| `Plugin#isEnabled()` throws on the owner | Counted as a fault. The handler is not called |
 | Your plugin disables with menus open | Every session you own closes with `OWNER_DISABLED` |
 | A close callback throws | One `WARNING` naming your plugin. Teardown continues |
-| `ItemStack.clone()` throws during translation | Propagates out of `open`; no handle is registered and nothing is left behind |
-| Session construction or component opening throws | Partial entities, session state, placeholder state and telemetry are cleaned up; the previous session is restored; the incoming handle terminates `FAILED` with `OPEN_FAILED` |
-| The open task throws for another reason | Logged at `SEVERE` naming your plugin and the player; the handle terminates `FAILED` with `OPEN_FAILED` |
+| `ItemStack.clone()` throws during translation | Propagates out of `open`. No handle is registered and nothing is left behind |
+| Session construction or component opening throws | Partial entities, session state, placeholder state and telemetry are cleaned up. The previous session is restored. The incoming handle terminates `FAILED` with `OPEN_FAILED` |
+| The open task throws for another reason | Logged at `SEVERE` naming your plugin and the player. The handle terminates `FAILED` with `OPEN_FAILED` |
 | `setText`/`setItem`/`setIcon` with a bad id | Returns `false`. Nothing logged, nothing staged |
-| A staged update for a component the session lacks | Silently skipped by the drain; the session continues |
-| An icon update throws while being applied | Logged; that component keeps its previous icon and the session continues |
+| A staged update for a component the session lacks | Silently skipped by the drain. The session continues |
+| An icon update throws while being applied | Logged. That component keeps its previous icon and the session continues |
 | The entity scheduler refuses the task on Folia | Logged at `WARNING`. Gloss refuses the global fallback and fails the handle with `OPEN_FAILED` |
 | The entity scheduler retires the task | The handle terminates with `QUIT` |
 
-No value moves through this API. Gloss never takes or gives items, currency or experience on anyone's
-behalf, and a menu you build in code carries no actions but your own handlers. The one thing that does
-execute on your say-so is the `String` overload: an admin-authored menu runs the actions written in its
-JSON file, which may include commands dispatched as the player or as console, gated only by
-`gloss.open.<menuId>`. See [Actions](/gloss/12-actions).
+No value moves through this API. Gloss never takes or gives items, currency or experience on
+anyone's behalf. A menu you build in code carries no actions but your own handlers. The one thing
+that does execute on your say-so is the `String` overload: an admin-authored menu runs the actions
+written in its JSON file. Those actions may include commands dispatched as the player or as
+console, gated only by `gloss.open.<menuId>`. See [Actions](/gloss/12-actions).
 
-Text supplied through the API is intentionally parsed as markup. Before parsing it is truncated to 4096
-characters and control characters other than newlines are replaced with spaces. Ids are filtered to a
-fixed character set, image paths are constrained to `plugins/Gloss/images/`, and each menu's packets are
-sent only to its owning player.
+Text supplied through the API is intentionally parsed as markup. Before parsing it is truncated to
+4096 characters. Control characters other than newlines are replaced with spaces. Ids are filtered
+to a fixed character set. Image paths are constrained to `plugins/Gloss/images/`. Each menu's
+packets are sent only to its owning player.

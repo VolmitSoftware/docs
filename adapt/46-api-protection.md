@@ -2,36 +2,36 @@
 title: "API - Protection"
 description: "Adapt documentation: API - Protection"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`art.arcane.adapt.api.protection.Protector` is how a land, claims, or region plugin tells Adapt "not here". It answers questions shaped like "may this player do this kind of thing at this location, given that an adaptation is what is asking". Adapt ships implementations for WorldGuard, GriefDefender, GriefPrevention, Residence, Factions, ChestProtect and LockettePro, and your plugin registers alongside them the same way.
+`art.arcane.adapt.api.protection.Protector` is how a land, claims, or region plugin tells Adapt "not here". It answers questions shaped like "may this player do this kind of thing at this location, given that an adaptation is what is asking". Adapt ships implementations for WorldGuard, GriefDefender, GriefPrevention, Residence, Factions, ChestProtect, and LockettePro. Your plugin registers alongside them the same way.
 
-A protector can only refuse. Returning `true` means "no objection from me". Every other gate still runs, and an adaptation the player has not learned stays unreachable no matter what you return.
+A protector can only refuse. Returning `true` means "no objection from me". Every other gate still runs. An adaptation the player has not learned stays unreachable no matter what you return.
 
-The interface is deliberately small. It touches Bukkit types and Adapt's own `Adaptation` type, nothing else. No VolmLib, no Adventure, no shaded classes, so it links against a plain Paper compile classpath.
+The interface is deliberately small. It touches Bukkit types and Adapt's own `Adaptation` type, nothing else. No VolmLib, no Adventure, no shaded classes. It links against a plain Paper compile classpath.
 
-The other half of this page is `RegionPolicySource`, a separate single-provider hook for region-driven XP, ability power, and temporary adaptation grants. That one grants rather than refuses, and only one plugin can own it at a time.
+The other half of this page is `RegionPolicySource`. That is a separate single-provider hook for region-driven XP, ability power, and temporary adaptation grants. That one grants rather than refuses. Only one plugin can own it at a time.
 
 ## Protector or AbilityUsePolicy
 
 Adapt has two third-party veto surfaces and they overlap. Pick based on whether the rule depends on where the player is standing or on who the player is.
 
-Use `Protector` when the answer depends on location. A veinminer chewing through fifty blocks calls `canBlockBreak` fifty times, once per block, so a protector can refuse block forty-one while permitting block forty. An ability use policy cannot express that. It either kills the whole activation or it does not.
+Use `Protector` when the answer depends on location. A veinminer chewing through fifty blocks calls `canBlockBreak` fifty times, once per block. A protector can refuse block forty-one while permitting block forty. An ability use policy cannot express that. It either kills the whole activation or it does not.
 
-Use [`AbilityUsePolicy`](/adapt/43-api-ability-use-policy) when the answer depends on the player or their state. Jails, duels, quest states, rank gating, per-skill bans. It carries a reason string, it can be scoped to selected adaptations or skills, and a fault in your provider gets contained instead of taking an adaptation down with it.
+Use [`AbilityUsePolicy`](/adapt/43-api-ability-use-policy) when the answer depends on the player or their state. Jails, duels, quest states, rank gating, per-skill bans. It carries a reason string. It can be scoped to selected adaptations or skills. A fault in your provider gets contained instead of taking an adaptation down with it.
 
-Use both when you have both kinds of rule. They do not conflict. The protector's `checkRegion` runs first and both have to permit.
+Use both when you have both kinds of rule. They do not conflict. The protector's `checkRegion` runs first. Both have to permit.
 
-Do not reach for `Protector` as a general veto by returning `false` from `checkRegion` for reasons unrelated to location. It sits on the hottest gate in the plugin, it cannot explain itself to the player, and an admin can switch it off per adaptation without telling you. The full side-by-side comparison is in the [Reference](#protector-compared-to-abilityusepolicy).
+Do not reach for `Protector` as a general veto by returning `false` from `checkRegion` for reasons unrelated to location. It sits on the hottest gate in the plugin. It cannot explain itself to the player. An admin can switch it off per adaptation without telling you. The full side-by-side comparison is in the [Reference](#protector-compared-to-abilityusepolicy).
 
 ## Depending on Adapt
 
-Compile against the shaded `Adapt-<version>-all.jar` and declare the dependency in your plugin manifest. Full instructions are in [41 - API - Getting Started.md](/adapt/41-api-getting-started#depending-on-adapt).
+Compile against the shaded `Adapt-<version>-all.jar` and declare the dependency in your plugin manifest. Full instructions are in [41 - API - Getting Started](/adapt/41-api-getting-started#depending-on-adapt).
 
-Unlike the ability API, this one is not a Bukkit service. There is no `ServicesManager` entry for `ProtectorRegistry`. The only way in is through Adapt's plugin instance, which means your code names the class `art.arcane.adapt.Adapt`:
+Unlike the ability API, this one is not a Bukkit service. There is no `ServicesManager` entry for `ProtectorRegistry`. The only way in is through Adapt's plugin instance. Your code names the class `art.arcane.adapt.Adapt`:
 
 ```java
 private ProtectorRegistry protectorRegistry() {
@@ -68,30 +68,34 @@ unregisterAll()                  Adapt shutting down: unregister() on everyone, 
 
 Four rules are worth saying plainly.
 
-`isEnabledByDefault()` is not polled. It is read when the registry rebuilds its snapshots, which happens on every register, every unregister, every explicit `refreshDefaultProtectors()`, and every successful Adapt core-config hotload. A protector that flips its own answer at runtime has to call `refreshDefaultProtectors()` itself.
+`isEnabledByDefault()` is not polled. It is read when the registry rebuilds its snapshots. That happens on every register, every unregister, every explicit `refreshDefaultProtectors()`, and every successful Adapt core-config hotload. A protector that flips its own answer at runtime has to call `refreshDefaultProtectors()` itself.
 
-Duplicate detection is by `equals`, not by name. `registerProtector` ignores a protector already in the list, which for an ordinary class means the same instance. A protector written as a `record` will collapse two value-equal instances instead. Either way it never compares `getName()`, so two different protectors sharing a name both register, and the `[protectionOverrides]` lookup resolves that name to only one of them. Keep names unique.
+Duplicate detection is by `equals`, not by name. `registerProtector` ignores a protector already in the list. For an ordinary class that means the same instance. A protector written as a `record` will collapse two value-equal instances instead. Either way it never compares `getName()`. Two different protectors sharing a name both register. The `[protectionOverrides]` lookup resolves that name to only one of them. Keep names unique.
 
-`getName()` is the admin-facing key. It is what an admin types into `[protectionOverrides]`. Pick something short and stable and never change it across releases. The built-in names are listed in the [Reference](#built-in-protectors).
+`getName()` is the admin-facing key. It is what an admin types into `[protectionOverrides]`. Pick something short and stable. Never change it across releases. The built-in names are listed in the [Reference](#built-in-protectors).
 
 `unregister()` is the teardown hook. Adapt calls it on shutdown and on explicit unregistration. Release listeners and caches there. Do not touch the registry from inside it.
 
 ## Threading
 
-Every `Protector` method runs on the tick thread that owns the acting player: the main thread on Paper, the owning region thread on Folia. Reading blocks, entities and the player is legal there.
+Every `Protector` method runs on the tick thread that owns the acting player: the main thread on Paper, the owning region thread on Folia. Reading blocks, entities, and the player is legal there.
 
-That is enforced upstream rather than at the call. Adapt's active-level resolution, which is what invokes `checkRegion`, returns zero immediately when Folia is in use and the current region does not own the player, so the protector is never reached off-region. The ad-hoc calls run inside adaptation event handlers, which are on the same thread.
+That is enforced upstream rather than at the call. Adapt's active-level
+resolution is what invokes `checkRegion`. It returns zero immediately when
+Folia is in use and the current region does not own the player. The protector
+is never reached off-region. The ad-hoc calls run inside adaptation event
+handlers, which are on the same thread.
 
-This is the hottest third-party call surface in Adapt. Active-level resolution is cached per player, per adaptation, per tick, so `checkRegion` costs you at most one call per adaptation per tick, but a block-affecting adaptation calls `canBlockBreak` once per candidate block and a single veinminer activation can be dozens of calls in one tick.
+This is the hottest third-party call surface in Adapt. Active-level resolution is cached per player, per adaptation, per tick. `checkRegion` costs you at most one call per adaptation per tick. A block-affecting adaptation calls `canBlockBreak` once per candidate block. A single veinminer activation can be dozens of calls in one tick.
 
 - No I/O. No database, no HTTP, no file reads.
 - No blocking. No `CompletableFuture.join`, no `callSyncMethod`, no lock held across the call.
 - Avoid allocation you do not need. Cache region lookups by chunk and invalidate them on your provider's own change events.
-- Do not call back into Adapt. `Adaptation.getActiveLevel`, `hasActiveAdaptation` and anything else that resolves an active level will re-enter the gate you are currently inside.
+- Do not call back into Adapt. `Adaptation.getActiveLevel`, `hasActiveAdaptation`, and anything else that resolves an active level will re-enter the gate you are currently inside.
 
-There is no watchdog and no quarantine here. A slow protector is not warned about and a broken one is not disabled. The contract is the only protection.
+There is no watchdog and no quarantine here. A slow protector is not warned about. A broken one is not disabled. The contract is the only protection.
 
-Adapt does time every world-policy evaluation across all protectors in a rolling sixty-second window. `WorldPolicyLatencyTelemetry.averageMillis(System.currentTimeMillis())` returns the mean in milliseconds. It is read-only diagnostics that Adapt's own commands display, and nothing about its value changes any decision.
+Adapt does time every world-policy evaluation across all protectors in a rolling sixty-second window. `WorldPolicyLatencyTelemetry.averageMillis(System.currentTimeMillis())` returns the mean in milliseconds. It is read-only diagnostics that Adapt's own commands display. Nothing about its value changes any decision.
 
 ## The seven verbs
 
@@ -107,13 +111,13 @@ boolean canAccessChest(Player player, Location chestLocation, Adaptation<?> adap
 boolean checkRegion(Player player, Location location, Adaptation<?> adaptation)
 ```
 
-`checkRegion` is the global gate. Adapt asks it with the player's own location during active-level resolution, before the use-permission check, and a `false` makes the adaptation completely inert for that player. The other six are asked ad hoc by the adaptation that is about to touch something. The full list of where each one fires is in the [Reference](#where-adapt-asks).
+`checkRegion` is the global gate. Adapt asks it with the player's own location during active-level resolution, before the use-permission check. A `false` makes the adaptation completely inert for that player. The other six are asked ad hoc by the adaptation that is about to touch something. The full list of where each one fires is in the [Reference](#where-adapt-asks).
 
-The built-in protectors treat `checkRegion` as the base test and AND it with a flag lookup. WorldGuard's `canBlockBreak`, for example, is `checkRegion(...) && flag(BLOCK_BREAK)`. You are not obliged to follow that shape, but it is a sane default: implement `checkRegion` for "may they be doing anything here at all" and let the verbs add specificity.
+The built-in protectors treat `checkRegion` as the base test and AND it with a flag lookup. WorldGuard's `canBlockBreak`, for example, is `checkRegion(...) && flag(BLOCK_BREAK)`. You are not obliged to follow that shape. It is a sane default: implement `checkRegion` for "may they be doing anything here at all" and let the verbs add specificity.
 
 ### The adaptation argument can be null
 
-`Adaptation<?> adaptation` is the adaptation asking, and it is `null` whenever the caller is not an adaptation. Adapt's mutation runtime passes `null` on every combat, block break, block place, interact and region-occupancy check, and the Adapt activator interaction check (the sneak-right-click on a lectern or observer that opens the skills menu) passes `null` to `canInteract`.
+`Adaptation<?> adaptation` is the adaptation asking. It is `null` whenever the caller is not an adaptation. Adapt's mutation runtime passes `null` on every combat, block break, block place, interact, and region-occupancy check. The Adapt activator interaction check (the sneak-right-click on a lectern or observer that opens the skills menu) passes `null` to `canInteract`.
 
 ```java
 if (adaptation != null && adaptation.getName().startsWith("pickaxe-")) {
@@ -121,9 +125,9 @@ if (adaptation != null && adaptation.getName().startsWith("pickaxe-")) {
 }
 ```
 
-A protector that dereferences `adaptation` without a null check throws on the first mutation check, and because nothing quarantines a protector, it keeps throwing.
+A protector that dereferences `adaptation` without a null check throws on the first mutation check. Because nothing quarantines a protector, it keeps throwing.
 
-Those null-adaptation callers also ask a different set of protectors. They read `getDefaultProtectors()` directly, so `[protectionOverrides]`, which is keyed by adaptation id, has no effect on them. A protector an admin removed from every adaptation is still consulted for mutations, and one added by an override is not.
+Those null-adaptation callers also ask a different set of protectors. They read `getDefaultProtectors()` directly. `[protectionOverrides]`, which is keyed by adaptation id, has no effect on them. A protector an admin removed from every adaptation is still consulted for mutations. One added by an override is not.
 
 ## Worked example: a claims plugin
 
@@ -186,9 +190,9 @@ public final class ClaimProtector implements Protector {
 }
 ```
 
-`ClaimIndex` is yours; the sample needs `boolean isClaimed(Location)` and `boolean isTrusted(UUID, Location)`, both answering from an in-memory index.
+`ClaimIndex` is yours. The sample needs `boolean isClaimed(Location)` and `boolean isTrusted(UUID, Location)`, both answering from an in-memory index.
 
-This protector deliberately does not override `checkRegion`. It has nothing to say about whether a player may use an adaptation at all, only about specific blocks and containers, so it leaves the global gate alone and stays out of the hot path. That is the right shape for most claims plugins.
+This protector deliberately does not override `checkRegion`. It has nothing to say about whether a player may use an adaptation at all. It only cares about specific blocks and containers. It leaves the global gate alone and stays out of the hot path. That is the right shape for most claims plugins.
 
 ### Registration
 
@@ -242,7 +246,7 @@ public final class WardenPlugin extends JavaPlugin {
 }
 ```
 
-Unregistering in `onDisable` is not optional the way it is with the `ServicesManager`. Bukkit does not know about this registry, so a disabled plugin's protector stays registered and keeps being consulted.
+Unregistering in `onDisable` is not optional the way it is with the `ServicesManager`. Bukkit does not know about this registry. A disabled plugin's protector stays registered and keeps being consulted.
 
 ## The minimum: one verb
 
@@ -280,25 +284,29 @@ public final class LockProtector implements Protector {
 }
 ```
 
-Write defensively everywhere. Null-check `player`, `location` and `adaptation`, return `true` when you genuinely do not know, and never let an exception out. What happens when you do is in the [Reference](#failure-policy).
+Write defensively everywhere. Null-check `player`, `location`, and `adaptation`. Return `true` when you genuinely do not know. Never let an exception out. What happens when you do is in the [Reference](#failure-policy).
 
 ## Region policy source
 
-`RegionPolicySource` is the other side of the coin. Instead of refusing an action it hands Adapt a `RegionPolicy` describing what a region gives a player: whether XP is allowed there, an XP multiplier, an ability power bonus, and a set of adaptation ids to grant temporarily while the player stands in it.
+`RegionPolicySource` is the other side of the coin. Instead of refusing an
+action it hands Adapt a `RegionPolicy`. That policy describes what a region
+gives a player. It covers whether XP is allowed there, an XP multiplier, and
+an ability power bonus. It also covers a set of adaptation ids to grant while
+the player stands in the region.
 
-Implement two methods, `getName()` and `resolve(player, location)`, and return an immutable `RegionPolicy`. The record's constructor clamps the multiplier and the power bonus into range and lower-cases the adaptation ids for you. Returning the id `"*"` (the `RegionPolicy.UNLOCK_ALL` constant) grants every enabled catalogue adaptation while the policy is active.
+Implement two methods, `getName()` and `resolve(player, location)`. Return an immutable `RegionPolicy`. The record's constructor clamps the multiplier and the power bonus into range and lower-cases the adaptation ids for you. Returning the id `"*"` (the `RegionPolicy.UNLOCK_ALL` constant) grants every enabled catalogue adaptation while the policy is active.
 
-There is exactly one slot. `RegionPolicyService.install(source)` replaces whatever is currently installed. It does not compose sources and it does not keep the one it displaced. Adapt installs `WorldGuardRegionPolicySource` during enable when WorldGuard is present, so calling `install` from a third-party plugin replaces WorldGuard flag behavior for the whole server. Call it only after Adapt and your region provider have both enabled, and call `clear()` on your own disable only when you deliberately own that slot. There is no compare-and-clear and no automatic restoration of WorldGuard.
+There is exactly one slot. `RegionPolicyService.install(source)` replaces whatever is currently installed. It does not compose sources. It does not keep the one it displaced. Adapt installs `WorldGuardRegionPolicySource` during enable when WorldGuard is present. Calling `install` from a third-party plugin replaces WorldGuard flag behavior for the whole server. Call it only after Adapt and your region provider have both enabled. Call `clear()` on your own disable only when you deliberately own that slot. There is no compare-and-clear and no automatic restoration of WorldGuard.
 
-`resolve(player, location)` runs synchronously on the caller's owning thread. If it throws, Adapt logs the stack trace and quarantines your source until the next `install` or `clear`. While no source is installed or the installed one is quarantined, `RegionPolicy.DEFAULT` applies: XP allowed at multiplier `1`, no power bonus, no adaptation grants. `RegionPolicyService.adjustXp(xp, policy)` returns `0` when the policy denies XP and otherwise applies the multiplier, and `isActive()` tells you whether a live, non-quarantined source is installed.
+`resolve(player, location)` runs synchronously on the caller's owning thread. If it throws, Adapt logs the stack trace and quarantines your source until the next `install` or `clear`. While no source is installed or the installed one is quarantined, `RegionPolicy.DEFAULT` applies: XP allowed at multiplier `1`, no power bonus, no adaptation grants. `RegionPolicyService.adjustXp(xp, policy)` returns `0` when the policy denies XP and otherwise applies the multiplier. `isActive()` tells you whether a live, non-quarantined source is installed.
 
-`RegionGrantRuntime` is Adapt's own reconciler on top of that. It applies the resolved power bonus, grants and revokes region-owned level 1 adaptation entries, and prunes adaptations when a shrunk power budget is exceeded. External plugins return policy from the source and stop there; they do not call `RegionGrantRuntime.refresh` or edit region-granted records. `WorldPolicyLatencyTelemetry` is Adapt's own timing instrumentation, not a provider API.
+`RegionGrantRuntime` is Adapt's own reconciler on top of that. It applies the resolved power bonus, grants and revokes region-owned level 1 adaptation entries, and prunes adaptations when a shrunk power budget is exceeded. External plugins return policy from the source and stop there. They do not call `RegionGrantRuntime.refresh` or edit region-granted records. `WorldPolicyLatencyTelemetry` is Adapt's own timing instrumentation, not a provider API.
 
 ## Configuration
 
 Everything lives in `plugins/Adapt/adapt/adapt.toml`.
 
-`[protectorSupport]` toggles the built-in protectors' `isEnabledByDefault()`. It has no effect on a third-party protector, whose default comes from your own `isEnabledByDefault()`. A built-in protector is only constructed at all when its plugin is enabled, so these keys switch off support that would otherwise be active. A successful core-config hotload refreshes the default-active snapshot; adding or removing the provider plugin still needs an Adapt restart.
+`[protectorSupport]` toggles the built-in protectors' `isEnabledByDefault()`. It has no effect on a third-party protector, whose default comes from your own `isEnabledByDefault()`. A built-in protector is only constructed at all when its plugin is enabled. These keys switch off support that would otherwise be active. A successful core-config hotload refreshes the default-active snapshot. Adding or removing the provider plugin still needs an Adapt restart.
 
 `[protectionOverrides]` adds or removes individual protectors for one adaptation, keyed by adaptation id and then by `getName()`:
 
@@ -308,15 +316,13 @@ WardenClaims = true
 GriefPrevention = false
 ```
 
-`true` adds a protector that is not enabled by default, `false` removes one that is. A name that matches no registered protector is logged as an error and skipped. The resolved set is cached per adaptation and re-derived automatically when the registered protectors or the override map change, so an admin editing the file still needs a reload for the config itself to be re-read.
+`true` adds a protector that is not enabled by default. `false` removes one that is. A name that matches no registered protector is logged as an error and skipped. The resolved set is cached per adaptation and re-derived automatically when the registered protectors or the override map change. An admin editing the file still needs a reload for the config itself to be re-read.
 
 Overrides apply to adaptation checks only. Mutation and activator checks use the default set. See [The adaptation argument can be null](#the-adaptation-argument-can-be-null).
 
-The default file ships a placeholder entry under the literal adaptation id `adaptation-name`, which matches nothing. Leave it or replace it; it is inert either way.
+The default file ships a placeholder entry under the literal adaptation id `adaptation-name`, which matches nothing. Leave it or replace it. It is inert either way.
 
-`worldguard` additionally gates Adapt's region flags for XP, power, and temporary adaptation grants through the `RegionPolicySource` slot. See [08 - Protection & Region Policy.md](/adapt/08-protection-region-policy).
-
----
+`worldguard` also gates Adapt's region flags for XP, power, and temporary adaptation grants through the `RegionPolicySource` slot. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
 
 ## Reference
 
@@ -329,7 +335,7 @@ The default file ships a placeholder entry under the literal adaptation id `adap
 | Location-aware | yes, every method takes the `Location` in question | no, you get the `Player` and read their location yourself |
 | Consulted where | once per active-level resolution as a global gate (`checkRegion`), then ad hoc by individual adaptations for each block or entity they touch | once per player, per adaptation, per tick |
 | Carries a reason | no, a `boolean` | yes, `AbilityUseDecision.deny("...")`, recorded for diagnostics |
-| Scoping | none; every registered protector sees every adaptation | `AbilityScope` by adaptation id or skill id |
+| Scoping | none. Every registered protector sees every adaptation | `AbilityScope` by adaptation id or skill id |
 | Per-adaptation admin override | yes, `[protectionOverrides]` in the config | no |
 | Registration | `Adapt.instance.getProtectorRegistry()`, requires naming Adapt's plugin class | Bukkit `ServicesManager`, no Adapt class named |
 | Fault containment | none, a throwing protector is not quarantined | quarantined after `providerFaultLimit` faults (default `5`) |
@@ -378,7 +384,7 @@ There is no fault budget, quarantine, slow-call watchdog, or configurable failur
 | A method dereferences a null `adaptation` | The above, on every mutation check and on every Adapt activator interaction |
 | Repeated faults | Nothing. There is no quarantine. It throws forever |
 | A slow method | Nothing is logged. It shows up as tick time |
-| `getName()` returns null | The per-adaptation protector-set builder throws `NullPointerException` while hashing names. In the active-level path that is caught and every adaptation goes inert; elsewhere it propagates |
+| `getName()` returns null | The per-adaptation protector-set builder throws `NullPointerException` while hashing names. In the active-level path that is caught and every adaptation goes inert. Elsewhere it propagates |
 | The same instance registered twice | The second call is ignored |
 | Two instances share one `getName()` | Both are registered. `[protectionOverrides]` resolves the name to whichever the internal name map saw last |
 | Your plugin is disabled while still registered | You keep being consulted. Unregister yourself in `onDisable` |
@@ -413,7 +419,7 @@ Each is registered only when its plugin is enabled at Adapt startup.
 | `MAX_POWER_BONUS` | `4096` | Upper clamp applied by the constructor |
 | `DEFAULT` | `(true, 1.0, 0, {})` | Served when no source is installed, the source is quarantined, or it returned `null` |
 
-A non-finite `xpMultiplier` is replaced with `1.0`. Ids in `unlockedAdaptations` are trimmed, lower-cased, and empties dropped. `unlocksEverything()` tests for `"*"`; `grantsAnyAdaptation()` tests for a non-empty set.
+A non-finite `xpMultiplier` is replaced with `1.0`. Ids in `unlockedAdaptations` are trimmed, lower-cased, and empties dropped. `unlocksEverything()` tests for `"*"`. `grantsAnyAdaptation()` tests for a non-empty set.
 
 ### RegionPolicyService
 
@@ -431,12 +437,12 @@ Read-only diagnostics over a rolling sixty-second window of one-second slots, co
 
 | Method | Value |
 |--------|-------|
-| `double averageMillis(long now)` | Mean milliseconds per world-policy evaluation across the window; `0` when the window has no samples |
+| `double averageMillis(long now)` | Mean milliseconds per world-policy evaluation across the window. `0` when the window has no samples |
 | `void recordNanos(long)` | Adapt-owned instrumentation. Negative durations are dropped |
-| `void clear()` | Adapt-owned; zeroes every slot |
+| `void clear()` | Adapt-owned. Zeroes every slot |
 
 ## See also
 
-- [08 - Protection & Region Policy.md](/adapt/08-protection-region-policy)
-- [41 - API - Getting Started.md](/adapt/41-api-getting-started)
-- [43 - API - Ability Use Policy.md](/adapt/43-api-ability-use-policy)
+- [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
+- [41 - API - Getting Started](/adapt/41-api-getting-started)
+- [43 - API - Ability Use Policy](/adapt/43-api-ability-use-policy)

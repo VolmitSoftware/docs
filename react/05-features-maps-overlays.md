@@ -2,40 +2,40 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Heatmaps, pie maps, list maps, and pressure overlays on Minecraft maps. Open with `/react map`. Config: `plugins/React/feature/<id>.toml`.
+Heatmaps, pie maps, list maps, and pressure overlays render on Minecraft maps. Open with `/react map`. Config: `plugins/React/feature/<id>.toml`.
 
-Most chunk heatmaps share `FeatureChunkHeatmapBase` (implements `ReactRenderer` and `ChunkGridExporter` for grid export). Pie charts share `FeatureIrisChunkSharePieBase`. List maps implement `ReactRenderer` directly.
+Most chunk heatmaps share `FeatureChunkHeatmapBase`. That base implements `ReactRenderer` and `ChunkGridExporter` for grid export. Pie charts share `FeatureIrisChunkSharePieBase`. List maps implement `ReactRenderer` directly.
 
 ## Shared heatmap base (`FeatureChunkHeatmapBase`)
 
-Inherited by all heatmaps/overlays listed below unless noted.
+All heatmaps and overlays below inherit these fields unless noted.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Feature on/off. |
 | `chunkPixelSize` | int | `5` | Pixels per chunk cell (zoom). |
-| `mapRadiusChunks` | int | `0` | `0` = derive from view distance; else fixed radius. |
+| `mapRadiusChunks` | int | `0` | `0` = derive from view distance. Else a fixed radius. |
 | `rotateWithPlayer` | boolean | `true` | Rotate with player heading. |
 | `drawCenterMarker` | boolean | `true` | Crosshair at anchor. |
 | `drawLabel` | boolean | `true` | Title in header. |
 | `minSignificantScore` | double | `0.001` | Below peak score → quiet map (no noise-scale colors). |
 
-Scan uses loaded chunks in a circular chunk radius, optional player-yaw rotation, 45 ms scan cache, megamap wall support.
+Scan uses loaded chunks in a circular chunk radius. Rotation with player yaw is optional. Scan cache is 45 ms. Megamap wall support is included.
 
 ## Shared pie base (`FeatureIrisChunkSharePieBase`)
 
-Donut pie + legend. Cap slices by legend height (3–32). Overflow → “Other”. Bucket cache 45 ms. Iris helpers optionally resolve Iris biome names via reflection; otherwise vanilla biomes. Pie subclasses in this set typically add **no** keys beyond `enabled`.
+Donut pie plus legend. Cap slices by legend height (3–32). Overflow goes to “Other”. Bucket cache is 45 ms. Iris helpers can resolve Iris biome names via reflection. Otherwise they use vanilla biomes. Pie subclasses in this set typically add **no** keys beyond `enabled`.
 
 ## Heatmaps
 
 ### `chunk-load-gen-cost-map`
 
-Weighted load/gen cost per loaded chunk: `loadMS*1.0 + genMS*1.35 + loadRate*0.4 + genRate*0.7` from samplers `chunk-load-ms`, `chunk-gen-ms`, `chunks-loaded`, `chunks-generated`.
+Weighted load and gen cost per loaded chunk: `loadMS*1.0 + genMS*1.35 + loadRate*0.4 + genRate*0.7` from samplers `chunk-load-ms`, `chunk-gen-ms`, `chunks-loaded`, `chunks-generated`.
 
 - **Class:** `FeatureChunkLoadGenCostMap` · Config: base heatmap keys only.
 
@@ -77,7 +77,7 @@ Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay dr
 
 ### `tick-spike-origin-replay-map`
 
-Captures spike origins when `tick-time` ≥ threshold and decays heat over time. Folia path region-schedules capture without per-chunk total-score weighting.
+This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. The Folia path region-schedules capture. It does not apply per-chunk total-score weighting.
 
 - **Class:** `FeatureTickSpikeOriginReplayMap`
 
@@ -105,11 +105,11 @@ Ranked plugin event cost from `PluginEventImpactSeries`.
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
-| `maxRowsPerTile` | int | `0` | `0` = fill height; else rows × grid height. |
+| `maxRowsPerTile` | int | `0` | `0` = fill height. Else rows × grid height. |
 
 ### `adapt-ability-impact-list-map`
 
-Ranks Adapt ability detail metrics. The feature object registers normally, but `MapController` omits the renderer until the Adapt capability is present.
+Ranks Adapt ability detail metrics. The feature object registers normally. `MapController` omits the renderer until the Adapt capability is present.
 
 - **Class:** `FeatureAdaptAbilityImpactListMap`
 
@@ -128,7 +128,7 @@ Pie of rolling plugin event impact. Config: `enabled` only.
 
 ### `iris-biome-chunk-share-pie-map`
 
-Loaded chunks in the map world by biome label. `MapController` currently hard-disables this renderer id, so it is not selectable. Config: `enabled` only.
+Loaded chunks in the map world by biome label. `MapController` currently hard-disables this renderer id. It is not selectable. Config: `enabled` only.
 
 - **Class:** `FeatureIrisBiomeChunkSharePieMap`
 

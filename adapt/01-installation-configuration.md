@@ -2,28 +2,33 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt 2.0.0-26.2 is a single Bukkit jar that runs on Paper, Purpur, and Folia servers built against the Minecraft 26.1 API line, on Java 25. Drop the jar into `plugins/`, start the server once so it writes its defaults, then edit the TOML files under `plugins/Adapt/adapt/`.
 
-Most of what you will change is hot-reloadable. A watcher drains filesystem events and also reconciles file signatures on a short interval, then applies a save only after the file has stayed stable for one extra poll. That covers editors that write a file in two steps and hosts where the operating-system watcher registers but never fires, which is common on Docker and Pterodactyl. Valid edits refresh any Adapt menus that happen to be open. Broken TOML is rejected outright and the settings already in memory keep running, so a typo never takes the plugin down. The things that are not hot-reloadable are the ones Adapt only wires up while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
+Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/adapt/`.
 
-Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders, without Vault learning stays knowledge-only, and without a protection plugin Adapt never asks one for permission. Missing integrations are silent, not fatal. Settings live in three places: `adapt.toml` for global behavior, one file per skill and per adaptation under `adapt/skills/` and `adapt/adaptations/`, and `adapt/mutations.toml` for the experimental Mutation layer, which is off until you turn it on.
+Most of what you will change is hot-reloadable. A watcher drains filesystem events. It also reconciles file signatures on a short interval. Then it applies a save only after the file has stayed stable for one extra poll. That covers editors that write a file in two steps. It also covers hosts where the operating-system watcher registers but never fires. That case is common on Docker and Pterodactyl. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected. The settings already in memory keep running. A typo never takes the plugin down.
+
+These things are not hot-reloadable. Adapt wires them only while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
+
+Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders. Without Vault, learning stays knowledge-only. Without a protection plugin, Adapt never asks one for permission. Missing integrations are silent, not fatal.
+
+Settings live in three places. `adapt.toml` holds global behavior. One file per skill and per adaptation lives under `adapt/skills/` and `adapt/adaptations/`. `adapt/mutations.toml` holds the experimental Mutation layer. That layer is off until you turn it on.
 
 ## Installing
 
 1. Run a Paper, Purpur, or Folia server on the Minecraft 26.1 API line, on Java 25. Adapt declares `folia-supported: true`, so Folia needs no separate build.
 2. Copy the shaded Adapt jar (`Adapt-<version>.jar`) into the backend's `plugins/` folder. On a Velocity network it goes on each backend, never on the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
-4. Stop the server again before configuring SQL, Redis, or metrics. Those are read once, at enable.
+4. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
 5. Grant `adapt.main` to anyone who should reach `/adapt` at all, then add the specific command nodes. The gameplay `adapt.use.*` nodes default to true but do not get anyone past that root gate.
 
 ## Sharing player data across servers
 
-By default a player's progression lives in `data/players/<uuid>.json` and that file is the truth. SQL moves the truth into an `ADAPT_DATA` table, which is what you want when several backends share one player base. Redis sits in front of SQL as a one-minute handoff cache so a player switching servers does not wait on a database round trip; it is not a second storage backend.
+By default a player's progression lives in `data/players/<uuid>.json`. That file is the truth. SQL moves the truth into an `ADAPT_DATA` table. Use SQL when several backends share one player base. Redis sits in front of SQL as a one-minute handoff cache. A player who switches servers does not wait on a database round trip. Redis is not a second storage backend.
 
 1. Create the database schema yourself and give the account SELECT, INSERT, UPDATE, DELETE, and CREATE TABLE on it. Adapt creates its table inside the schema but never the schema.
 2. Fill in the `sql.*` host, port, database, username, and password keys, then set `sql.enabled = true`.
@@ -31,7 +36,7 @@ By default a player's progression lives in `data/players/<uuid>.json` and that f
 4. Restart. Both clients are only built during enable.
 5. Confirm the table appears and that a test player's progression survives a relog and a server switch.
 
-Adapt puts the SQL credentials straight into the JDBC URL and has no TLS switch of its own, so configure transport security on the database endpoint and in the driver environment. A shutdown write that cannot reach SQL is parked beside the player file as `<uuid>.json.pending-sql` rather than dropped. See [38 - Runtime Architecture](/adapt/38-runtime-architecture) and [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server).
+Adapt puts the SQL credentials straight into the JDBC URL. It has no TLS switch of its own. Configure transport security on the database endpoint and in the driver environment. A shutdown write that cannot reach SQL is parked beside the player file as `<uuid>.json.pending-sql`. It is not dropped. See [38 - Runtime Architecture](/adapt/38-runtime-architecture) and [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server).
 
 ## Charging money for learning
 
@@ -39,15 +44,15 @@ Adapt puts the SQL credentials straight into the JDBC URL and has no TLS switch 
 2. Set `learningEconomy.moneyPerKnowledge` to the currency charged per knowledge point. An adaptation's bill is its knowledge cost times this number.
 3. Set `learningEconomy.refundPercent` to how much comes back on a normal unlearn, or `0` for no money refunds.
 
-Without Vault or an economy provider, learning falls back to knowledge only. A failed withdrawal rejects the purchase. A failed refund is written onto the player's skill line as a pending receipt and settled by the next learning transaction on that line. `hardcoreNoRefunds = true` suppresses knowledge and money refunds entirely.
+Without Vault or an economy provider, learning falls back to knowledge only. A failed withdrawal rejects the purchase. A failed refund is written onto the player's skill line as a pending receipt. The next learning transaction on that line settles it. `hardcoreNoRefunds = true` suppresses knowledge and money refunds entirely.
 
 ## Turning on Mutations
 
 1. Set `enabled = true` in `mutations.toml`.
-2. Set the gates. `slotOneUnlockLevel` and `slotTwoUnlockLevel` are master levels; `minimumAdaptationLevel` is the learned adaptation level needed in each of a mutation's two skill domains.
+2. Set the gates. `slotOneUnlockLevel` and `slotTwoUnlockLevel` are master levels. `minimumAdaptationLevel` is the learned adaptation level needed in each of a mutation's two skill domains.
 3. Decide whether players may re-pick. `switchingEnabled` allows player-driven changes, `permanentSelection` locks the first choice until an admin clears it, and `switchCooldownMillis` and `combatLockMillis` throttle the rest.
 4. Set `cooperativeConsentMode` if you use group effects. Every mode also needs the recipient's own saved opt-in.
-5. Save. Mutation config hot-reloads and online players are reconciled; `/adapt mutations reload` does the same on demand.
+5. Save. Mutation config hot-reloads and online players are reconciled. `/adapt mutations reload` does the same on demand.
 
 Player-facing behavior for each type is in [35 - Mutations Catalog](/adapt/35-mutations-catalog).
 
@@ -61,7 +66,7 @@ Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, no
 
 `/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` delete that file, regenerate it from defaults, and reconcile mutations. `/adapt default all` archives `adapt.toml` and every skill and adaptation TOML into `config-archive/<timestamp>/` first, then deletes, regenerates, and reloads them. It leaves `mutations.toml`, `models.toml`, language overrides, SQL and Redis data, and player progression alone. All three need `adapt.configurator`.
 
-Older installs used `.json` config files, and Adapt still recognizes the TOML peer for `adapt/adapt.json`, `adapt/models.json`, `adapt/mutations.json`, `adapt/skills/<id>.json`, and `adapt/adaptations/<id>.json`. When a startup migration is actually needed, Adapt first zips every legacy JSON file under `adapt/` into `adapt/migrations/backups/<timestamp>-pre-toml-migration.zip` and drops a `.legacy-json-backed-up` marker so it never repeats. `/adapt migrate-configs` then rewrites skill and adaptation TOML in canonical form and deletes each legacy JSON file below `adapt/` that already has a TOML peer. While a legacy JSON file still shadows an existing TOML file, the hotload watcher ignores the JSON. The old misspelled key `value.valueMutlipliers` is folded into `value.valueMultipliers` when the core config loads, with correctly-spelled entries winning a collision.
+Older installs used `.json` config files. Adapt still recognizes the TOML peer for `adapt/adapt.json`, `adapt/models.json`, `adapt/mutations.json`, `adapt/skills/<id>.json`, and `adapt/adaptations/<id>.json`. When a startup migration is needed, Adapt first zips every legacy JSON file under `adapt/` into `adapt/migrations/backups/<timestamp>-pre-toml-migration.zip`. It drops a `.legacy-json-backed-up` marker so it never repeats. `/adapt migrate-configs` then rewrites skill and adaptation TOML in canonical form. It deletes each legacy JSON file below `adapt/` that already has a TOML peer. While a legacy JSON file still shadows an existing TOML file, the hotload watcher ignores the JSON. The old misspelled key `value.valueMutlipliers` is folded into `value.valueMultipliers` when the core config loads. Correctly spelled entries win a collision.
 
 ## Reference
 
@@ -116,19 +121,19 @@ plugins/Adapt/
   data/mantle/<namespace>/<world-key>/
 ```
 
-`data/advancements.db` is the SQLite advancement store used while `sql.enabled` is false. `config-archive` timestamps use `yyyy-MM-dd_HHmmss`; migration backup zips use `yyyyMMdd-HHmmss`.
+`data/advancements.db` is the SQLite advancement store used while `sql.enabled` is false. `config-archive` timestamps use `yyyy-MM-dd_HHmmss`. Migration backup zips use `yyyyMMdd-HHmmss`.
 
 ### `adapt/adapt.toml`, general and progression
 
 | Key | Default | What it does |
 |---|---:|---|
 | `debug` | `false` | Prints Adapt's developer debug lines to the console |
-| `verbose` | `false` | Prints per-action diagnostic logging; `/adapt debug verbose` flips the in-memory value without writing the file |
+| `verbose` | `false` | Prints per-action diagnostic logging. `/adapt debug verbose` flips the in-memory value without writing the file |
 | `autoUpdateCheck` | `true` | Runs the update check during enable |
 | `splashScreen` | `true` | Prints the startup splash |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
 | `language` | `en_US` | Active locale, and the filename used for overrides |
-| `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level; see [05 - Configuration Math](/adapt/05-configuration-math) |
+| `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
 | `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the level-search cursor clamps to |
 | `playerXpPerSkillLevelUpBase` | `489` | Flat master XP granted per skill level crossed |
 | `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
@@ -142,7 +147,7 @@ plugins/Adapt/
 | `welcomeMessage` | `true` | Sends the Adapt welcome message |
 | `advancements` | `true` | Registers and syncs Adapt advancements |
 | `advancementUnlockToasts` | `true` | Shows Adapt's advancement unlock popup. Disable it to suppress the popup and its client-controlled sound without suppressing the recorded grant |
-| `levelMilestoneSoundVolume` | `0.35` | Volume from 0 to 1 for Adapt's explicit paired sounds every ten skill levels; this cannot independently change Minecraft's built-in advancement-toast sound |
+| `levelMilestoneSoundVolume` | `0.35` | Volume from 0 to 1 for Adapt's explicit paired sounds every ten skill levels. This cannot independently change Minecraft's built-in advancement-toast sound |
 | `preventHunterSkillsWhenHungerApplied` | `true` | Blocks Hunter passives while the player has the Hunger effect |
 
 Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_run_in` and `example:another_world`, neither of which matches a real world.
@@ -164,7 +169,7 @@ Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_r
 | `actionbarNotifyXp` | `true` | Shows the XP action-bar figure |
 | `actionbarNotifyLevel` | `true` | Shows level-up notifications |
 | `unlearnAllButton` | `false` | Shows the bulk-unlearn control |
-| `guiShowAllSkills` | `false` | Lists every enabled skill even when the player has no progress in it; display only, use permissions still apply |
+| `guiShowAllSkills` | `false` | Lists every enabled skill even when the player has no progress in it. Display only. Use permissions still apply |
 
 The `[gui]` subsection, icon precedence, and menu ordering are in [06 - GUI Customization](/adapt/06-gui-customization).
 
@@ -180,7 +185,7 @@ soundsEnabled = true
 "skill-name" = true
 ```
 
-`particlesEnabled` and `soundsEnabled` are the global switches. The two override maps are keyed by registry ID and act as extra gates: `false` turns that component's particles off, `true` leaves the global decision alone. The player's own `/adapt effects` preference is a further gate. The `adaptation-name` and `skill-name` rows are placeholders.
+`particlesEnabled` and `soundsEnabled` are the global switches. The two override maps are keyed by registry ID and act as extra gates. `false` turns that component's particles off. `true` leaves the global decision alone. The player's own `/adapt effects` preference is a further gate. The `adaptation-name` and `skill-name` rows are placeholders.
 
 ### `[abilityApi]`
 
@@ -189,8 +194,8 @@ soundsEnabled = true
 | `abilityApi.enabled` | `true` | Enables external ability policy and cost providers through the Bukkit provider gateways |
 | `abilityApi.usePolicyFailureMode` | `deny` | What happens when a use-policy provider throws: `allow` or `deny` |
 | `abilityApi.costProviderFailureMode` | `allow` | What happens when a cost provider throws: `allow` or `deny` |
-| `abilityApi.providerFaultLimit` | `5` | Consecutive faults before a provider is quarantined; `0` disables the watchdog |
-| `abilityApi.slowProviderMillis` | `2` | Milliseconds a provider may take before a slow warning is logged; `0` disables the warning |
+| `abilityApi.providerFaultLimit` | `5` | Consecutive faults before a provider is quarantined. `0` disables the watchdog |
+| `abilityApi.slowProviderMillis` | `2` | Milliseconds a provider may take before a slow warning is logged. `0` disables the warning |
 | `abilityApi.denyMessageThrottleMillis` | `2000` | Minimum milliseconds between repeated denial messages to the same player |
 
 An unrecognized failure-mode string falls back to `deny` for use policies and `allow` for cost providers. See [43 - API - Ability Use Policy](/adapt/43-api-ability-use-policy) and [44 - API - Ability Cost](/adapt/44-api-ability-cost).
@@ -210,21 +215,21 @@ An unrecognized failure-mode string falls back to `deny` for use policies and `a
 | `sql.enabled` | `false` | Makes the `ADAPT_DATA` table authoritative instead of local JSON |
 | `sql.host` | `localhost` | MySQL-compatible server hostname |
 | `sql.port` | `3306` | Server port |
-| `sql.database` | `adapt` | Existing schema the table lives in; Adapt creates the table, never the schema |
+| `sql.database` | `adapt` | Existing schema the table lives in. Adapt creates the table, never the schema |
 | `sql.username` | `user` | SQL account |
 | `sql.password` | `password` | SQL account password, sent in plain text unless the server enforces TLS |
 | `sql.poolSize` | `10` | Connection pool size requested by the advancement backend only |
-| `sql.connectionTimeout` | `5000` | Milliseconds allowed for the JDBC connect handshake; raised to 1000 if set lower, and the socket timeout is twice the result |
-| `sql.secondsCheckverify` | `30` | Seconds passed to `Connection.isValid`; the startup probe clamps it to 1-10, the reconnect probe uses the raw value |
+| `sql.connectionTimeout` | `5000` | Milliseconds allowed for the JDBC connect handshake. Raised to 1000 if set lower. The socket timeout is twice the result |
+| `sql.secondsCheckverify` | `30` | Seconds passed to `Connection.isValid`. The startup probe clamps it to 1-10. The reconnect probe uses the raw value |
 
 ### `[redis]`
 
 | Key | Default | What it does |
 |---|---:|---|
-| `redis.enabled` | `false` | Enables Redis pub/sub handoff; ignored unless `sql.enabled` is also true |
+| `redis.enabled` | `false` | Enables Redis pub/sub handoff. Ignored unless `sql.enabled` is also true |
 | `redis.host` | `127.0.0.1` | Redis hostname |
 | `redis.port` | `6379` | Redis port |
-| `redis.username` | empty | ACL username; credentials are only attached when username or password is non-empty |
+| `redis.username` | empty | ACL username. Credentials are only attached when username or password is non-empty |
 | `redis.password` | empty | Redis password |
 
 Cached entries expire one minute after write. Channel: `Adapt:data`.
@@ -240,9 +245,9 @@ WorldGuard = true
 GriefPrevention = false
 ```
 
-Both blocks are examples. `adaptationUsageConflicts` ships empty; `protectionOverrides` ships with one placeholder row, `"adaptation-name"` mapped to `WorldGuard = true`.
+Both blocks are examples. `adaptationUsageConflicts` ships empty. `protectionOverrides` ships with one placeholder row, `"adaptation-name"` mapped to `WorldGuard = true`.
 
-Conflict pairs are symmetric at runtime: listing `agility-air-dash` under `rift-blink` means holding either one blocks use of the other, not just the direction the file reads. `protectionOverrides` starts from the currently enabled default protector set, then adds or removes protectors by exact `Protector.getName()` value; a `true` naming an unknown protector logs an error and is skipped. Full protector names and defaults: [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
+Conflict pairs are symmetric at runtime. Listing `agility-air-dash` under `rift-blink` means holding either one blocks use of the other. The block is not only the direction the file reads. `protectionOverrides` starts from the currently enabled default protector set. Then it adds or removes protectors by exact `Protector.getName()` value. A `true` naming an unknown protector logs an error and is skipped. Full protector names and defaults: [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
 
 ### Other nested sections
 
@@ -262,7 +267,7 @@ Conflict pairs are symmetric at runtime: listing `agility-air-dash` under `rift-
 |---|---:|---|
 | `enabled` | `false` | Master switch for the whole Mutation feature |
 | `slotOneUnlockLevel` | `25` | Master level needed for slot 1 |
-| `slotTwoUnlockLevel` | `50` | Master level needed for slot 2; normalized up to at least slot 1 |
+| `slotTwoUnlockLevel` | `50` | Master level needed for slot 2. Normalized up to at least slot 1 |
 | `perfectAdaptationLevel` | `200` | Master level at which drawbacks soften |
 | `perfectAdaptationEnabled` | `true` | Enables that level-based softening |
 | `minimumAdaptationLevel` | `1` | Learned adaptation level required in each of the mutation's two domains |
@@ -280,7 +285,7 @@ Conflict pairs are symmetric at runtime: listing `agility-air-dash` under `rift-
 | `worldBlacklist` | empty | Namespaced world keys where all Mutations are off |
 | `domainMembership` | built-in map | Which skills count toward each Mutation domain |
 
-Every consent mode also requires the recipient's saved opt-in. `EXPLICIT` accepts any opted-in eligible recipient, `PARTY` additionally requires both players to share a Bukkit scoreboard and be on the same team, and `FRIEND` and `DISABLED` both accept nobody (no friend provider is implemented). Every type profile also carries `enabled = true`, `pvpEnabled = true`, `particlesEnabled = true`, `soundsEnabled = true`, an empty `worldBlacklist`, and an empty `conflicts`; world keys and conflict lists are normalized on load.
+Every consent mode also requires the recipient's saved opt-in. `EXPLICIT` accepts any opted-in eligible recipient. `PARTY` also requires both players to share a Bukkit scoreboard and be on the same team. `FRIEND` and `DISABLED` both accept nobody (no friend provider is implemented). Every type profile also carries `enabled = true`, `pvpEnabled = true`, `particlesEnabled = true`, `soundsEnabled = true`, an empty `worldBlacklist`, and an empty `conflicts`. World keys and conflict lists are normalized on load.
 
 ### `adapt/mutations.toml`, per-type tables
 
@@ -306,7 +311,7 @@ Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server t
 
 ### Reload matrix
 
-The watcher drains events at a 500 ms cadence over `adapt.toml` and its legacy JSON peer, `models.toml` and its legacy peer, `mutations.toml`, everything directly inside `adapt/skills/` and `adapt/adaptations/`, and the locale override folder. Signature reconciliation still runs on a short interval when the operating-system watcher is silent.
+The watcher drains events at a 500 ms cadence. It watches `adapt.toml` and its legacy JSON peer. It also watches `models.toml` and its legacy peer, `mutations.toml`, and the locale override folder. It watches everything directly inside `adapt/skills/` and `adapt/adaptations/`. Signature reconciliation still runs on a short interval when the operating-system watcher is silent.
 
 | Change | Hot reload | Restart required |
 |---|---|---|

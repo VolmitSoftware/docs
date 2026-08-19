@@ -2,16 +2,17 @@
 title: "Localization"
 description: "Adapt documentation: Localization"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
+
 Adapt's English text lives in typed Java catalogs, not in a file you can edit. Seventeen translations ship inside the jar. Everything on disk under `plugins/Adapt/languages/` is either a generated reference you read, or an override you write.
 
-Pick a language with one key in `adapt.toml`. If you want to change wording, put only the keys you care about in an override file. Adapt resolves each key on its own, so an override falls back to the bundled translation, and a key missing from the bundle falls back to English.
+Pick a language with one key in `adapt.toml`. If you want to change wording, put only the keys you care about in an override file. Adapt resolves each key on its own. An override falls back to the bundled translation. A key missing from the bundle falls back to English.
 
-Reloads are all-or-nothing and validated before anything goes live. A bad override never reaches players; Adapt logs what was wrong and keeps running on the last good language. Nothing that reads text ever touches disk at runtime, so a reload cannot stall gameplay.
+Reloads are all-or-nothing and validated before anything goes live. A bad override never reaches players. Adapt logs what was wrong and keeps running on the last good language. Nothing that reads text ever touches disk at runtime. A reload cannot stall gameplay.
 
 ```
 plugins/Adapt/
@@ -26,20 +27,24 @@ plugins/Adapt/
 ## Picking a language
 
 1. Open `plugins/Adapt/adapt/adapt.toml`.
-2. Set `language` to one of the bundled names in the Reference below, matching the spelling exactly. `ja-JP` uses a hyphen; the other sixteen use an underscore.
+2. Set `language` to one of the bundled names in the Reference below, matching the spelling exactly. `ja-JP` uses a hyphen. The other sixteen use an underscore.
 3. Save. The hotload watcher sees the `adapt.toml` change, reloads the config, and reloads the language with it.
 
-Setting `language` to a name with no bundled translation is not an error. Adapt warns `No bundled locale exists for <locale>; code-owned English will be used.` and runs on English, with your overrides for that name still applied on top.
+Setting `language` to a name with no bundled translation is not an error. Adapt warns that no bundled locale exists for that name. Code-owned English is used. Your overrides for that name still apply on top.
+
+```
+No bundled locale exists for <locale>; code-owned English will be used.
+```
 
 A name that is not made of letters, digits, underscores and hyphens is rejected outright and the previously loaded language stays live.
 
 ## Reading the generated reference
 
-`languages/en_US.toml` is written first thing in every reload, before the locale is even resolved. It is a dump of the code-owned English catalog in the same TOML shape as the bundled files, and it is the authoritative list of every key that exists. Start here when you want to know what a key is called.
+`languages/en_US.toml` is written first thing in every reload, before the locale is even resolved. It is a dump of the code-owned English catalog in the same TOML shape as the bundled files. It is the authoritative list of every key that exists. Start here when you want to know what a key is called.
 
-`languages/<locale>.toml` appears after a successful reload when `language` is not `en_US`, holding the bundled translation for that locale exactly as it ships. Only the active locale is extracted; the other sixteen stay in the jar. Set `language = "de_DE"` and you get `languages/de_DE.toml` on the next boot. A rejected reload leaves the previous extraction in place.
+`languages/<locale>.toml` appears after a successful reload when `language` is not `en_US`. It holds the bundled translation for that locale exactly as it ships. Only the active locale is extracted. The other sixteen stay in the jar. Set `language = "de_DE"` and you get `languages/de_DE.toml` on the next boot. A rejected reload leaves the previous extraction in place.
 
-Both files are regenerated on every boot and every language reload, through a temp file plus an atomic move. Editing them accomplishes nothing: your edits are overwritten and were never read in the first place. Each carries a four-line header saying so. A failed write warns and is otherwise ignored, it never blocks language loading.
+Both files are regenerated on every boot and every language reload, through a temp file plus an atomic move. Editing them accomplishes nothing. Your edits are overwritten and were never read in the first place. Each carries a four-line header saying so. A failed write warns and is otherwise ignored. It never blocks language loading.
 
 ## Overriding text
 
@@ -55,15 +60,19 @@ Both files are regenerated on every boot and every language reload, through a te
 title = "&5Stufe {level} &7({used}/{maximum} Leistung)"
 ```
 
-Overrides are sparse by design. Copy in only the keys you want to change; everything absent resolves through the fallback chain.
+Overrides are sparse by design. Copy in only the keys you want to change. Everything absent resolves through the fallback chain.
 
-Colors use `&` codes and are translated when the message renders. Runtime values substituted into a message are either trusted, meaning they render as markup, or untrusted, meaning colors are stripped and `&` becomes a full-width `＆`. The code that raises the message decides which, and an override cannot promote an untrusted value.
+Colors use `&` codes and are translated when the message renders. Runtime values substituted into a message are trusted or untrusted. Trusted values render as markup. Untrusted values have colors stripped. `&` becomes a full-width `＆`. The code that raises the message decides which. An override cannot promote an untrusted value.
 
 ## Watching a reload
 
-A successful reload logs `Loaded locale <name> with N fallback entries.` `N` is the validator's warning count, one per key that an overlay does not define. Overlays are sparse on purpose, so a large `N` is normal and is not a problem signal.
+A successful reload logs `Loaded locale <name> with N fallback entries.` `N` is the validator's warning count. There is one warning per key that an overlay does not define. Overlays are sparse on purpose. A large `N` is normal and is not a problem signal.
 
-A rejected reload logs `Rejected locale reload for <locale>; continuing with <active>.` followed by up to twelve specific issues formatted as `source [key]: detail`, then a count of any omitted issues. The last good language stays live.
+A rejected reload logs that the locale reload was rejected and that the active language continues. Then it logs up to twelve specific issues formatted as `source [key]: detail`. Then it logs a count of any omitted issues. The last good language stays live.
+
+```
+Rejected locale reload for <locale>; continuing with <active>.
+```
 
 An override reload triggered by the watcher also re-synchronizes advancement titles, so new text reaches the advancement tree.
 
@@ -71,7 +80,7 @@ An override reload triggered by the watcher also re-synchronizes advancement tit
 
 ### Bundled locales
 
-Seventeen translations ship inside the jar. English is not one of them, it comes from code.
+Seventeen translations ship inside the jar. English is not one of them. It comes from code.
 
 `de_DE` `es_ES` `fi_FI` `fr_FR` `he_IL` `it_IT` `ja-JP` `ko_KR` `lt_LT` `nl_NL` `pl_PL` `pt_PT` `ru_RU` `tr_TR` `vi_VI` `zh_CN` `zh_TW`
 
@@ -79,7 +88,7 @@ Seventeen translations ship inside the jar. English is not one of them, it comes
 
 | Key | Default | What it does |
 |---|---|---|
-| `language` | `"en_US"` | Locale name to load. Must match `[A-Za-z0-9_-]+`; an invalid name rejects the reload |
+| `language` | `"en_US"` | Locale name to load. Must match `[A-Za-z0-9_-]+`. An invalid name rejects the reload |
 | `automaticGradients` | `false` | Applies a gradient pass over rendered markup after `&` codes are translated |
 
 ### Value shapes
@@ -118,20 +127,20 @@ Any one of these fails validation and keeps the previous language:
 
 Missing keys are warnings, not errors. Only errors block a reload.
 
-### Limits and behaviour
+### Limits and behavior
 
 | Item | Value |
 |---|---|
 | Maximum override file size | 2 MiB |
 | Issues logged per rejected reload | 12, then a count of the remainder |
 | Override watcher poll interval | 500 ms |
-| Watched for language reloads | `languages/overrides/*.toml`; `adapt/adapt.toml` also reloads the language as part of its config reload |
+| Watched for language reloads | `languages/overrides/*.toml`. `adapt/adapt.toml` also reloads the language as part of its config reload |
 | Not watched | `languages/en_US.toml`, `languages/<locale>.toml` |
 | Generated file write | Temp file plus atomic move, falling back to a plain move |
 
 ### Catalog layout
 
-Message keys are declared in `art.arcane.adapt.localization.catalog`, one class per area: `GuiMessages`, `CommandMessages`, `RuntimeMessages`, `SnippetsMessages`, `AdvancementMessages`, `MutationMessages`, `ItemsMessages`, `ConfigMessages`, plus one per skill (`AgilityMessages`, `AxeMessages`, and so on). Key ids are dotted paths, which become the TOML table structure in the generated files.
+Message keys are declared in `art.arcane.adapt.localization.catalog`. There is one class per area: `GuiMessages`, `CommandMessages`, `RuntimeMessages`, `SnippetsMessages`, `AdvancementMessages`, `MutationMessages`, `ItemsMessages`, and `ConfigMessages`. There is also one class per skill (`AgilityMessages`, `AxeMessages`, and so on). Key ids are dotted paths. Those paths become the TOML table structure in the generated files.
 
 ## See also
 

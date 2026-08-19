@@ -2,22 +2,24 @@
 title: "Skill - Kinetics"
 description: "Adapt documentation: Skill - Kinetics"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Kinetics is the momentum skill. It pays attention to force: mace smashes, spear charges, knockback in both directions, bounces off slime and beds, launches off pistons, levitation, big falls you survive, and anvils you drop on things. Do any of that and you earn `kinetics` XP.
+Kinetics is the momentum skill. It pays attention to force. Mace smashes, spear charges, and knockback in both directions all count. Bounces
+off slime and beds, launches off pistons, and levitation also count. Big falls
+you survive and anvils you drop on things count too. Do any of that and you earn `kinetics` XP.
 
-The tree splits into three families. The movement adaptations change how you jump, land, slide, and fall, so a Kinetics player moves differently from everyone else on the server. The mace adaptations hang off the vanilla smash attack: dive faster into it, shred armor with it, blow the room apart with it, and land braced and springy afterward. The spear adaptations are about spacing: extra reach, damage that scales with how fast you are moving, a slowness pin at the right distance, better lunges, mounted charges, and a shove that clears anyone crowding your point.
+The tree splits into three families. The movement adaptations change how you jump, land, slide, and fall. A Kinetics player moves differently from everyone else on the server. The mace adaptations hang off the vanilla smash attack. Dive faster into it. Shred armor with it. Blow the room apart with it. Land braced and springy afterward. The spear adaptations are about spacing. You get extra reach. Damage scales with how fast you are moving. You get a slowness pin at the right distance, better lunges, mounted charges, and a shove that clears anyone crowding your point.
 
-Most of it is Paper-only. The smash, lunge, and knockback hooks come from Paper events, and the whole combat listener stays unregistered if those classes are missing.
+Most of it is Paper-only. The smash, lunge, and knockback hooks come from Paper events. The whole combat listener stays unregistered if those classes are missing.
 
-Anvils get special treatment. Kinetics keeps a ledger of who placed which anvil, follows that anvil through piston pushes and falls, and pays the owner when it lands on something. Nearby players get a cut. Drop one from high enough for a kill and it counts toward the skill's only challenge.
+Anvils get special treatment. Kinetics keeps a ledger of who placed which anvil. It follows that anvil through piston pushes and falls. It pays the owner when it lands on something. Nearby players get a cut. Drop one from high enough for a kill and it counts toward the skill's only challenge.
 
 ## Adaptations
 
-Everything below needs the same conditions: the adaptation learned at level 1 or higher, the Kinetics skill and that adaptation both enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and any protection plugin on your server allowing the action where you are standing. Several of these lean on modern attributes (gravity, bounciness, air drag, scale) and silently do nothing if the running server version does not have them. Surface Skate uses the native friction attribute when available and otherwise mirrors its percentage-based slide through bounded ground-velocity adjustment.
+Everything below needs the same conditions. The adaptation is learned at level 1 or higher. The Kinetics skill and that adaptation are both enabled in config. You hold the `adapt.use.*` permission (or the matching per-adaptation node). Any protection plugin on your server allows the action where you are standing. Several of these lean on modern attributes (gravity, bounciness, air drag, scale). They silently do nothing if the running server version does not have them. Surface Skate uses the native friction attribute when available. Otherwise it mirrors its percentage-based slide through bounded ground-velocity adjustment.
 
 "Spear" means any of the seven spear items, wooden through netherite. "Mace" means the vanilla mace.
 
@@ -37,13 +39,16 @@ Your boots stay springy all the time, so every landing keeps more of your moment
 
 ### Soft Catch (`kinetics-soft-catch`)
 
-Landing on something soft (slime, honey, a bed, hay, powder snow, sponge) cuts most of the fall damage, and you get Kinetics XP for the damage you avoided. Bouncing off a springy block also opens a short grace window, so the second landing after a bounce is protected even if you come down on stone. Works on its own once learned.
+Landing on something soft cuts most of the fall damage. Soft surfaces are slime,
+honey, a bed, hay, powder snow, and sponge. You get Kinetics XP for the damage
+you avoided. Bouncing off a springy block also opens a short grace window. The second landing
+after a bounce is protected even if you come down on stone. Works on its own once learned.
 
 ### Surface Skate (`kinetics-surface-skate`)
 
-Sprint on any ground surface and Surface Skate cancels a level-scaled percentage of that surface's normal friction loss. With the defaults, level 1 cancels 22% and level 5 cancels 50%, so stone, ice, soul sand, and every other supporting surface keep their own character while all become proportionally slicker. Pressing sneak while grounded applies a separate horizontal brake: its default 100% setting immediately sets X/Z motion to zero without changing Y motion. This is a one-time brake on the sneak press, not a movement lock while sneak remains held.
+Sprint on any ground surface and Surface Skate cancels a level-scaled percentage of that surface's normal friction loss. With the defaults, level 1 cancels 22% and level 5 cancels 50%. Stone, ice, soul sand, and every other supporting surface keep their own character. All become proportionally slicker. Pressing sneak while grounded applies a separate horizontal brake: its default 100% setting immediately sets X/Z motion to zero without changing Y motion. This is a one-time brake on the sneak press, not a movement lock while sneak remains held.
 
-Servers with the friction attribute use a native `MULTIPLY_SCALAR_1` modifier. Servers without it derive the supporting block's slipperiness and apply the same percentage through a bounded velocity fallback; the fallback cannot accelerate you from rest, increase existing knockback beyond observed movement, change vertical velocity, or run for teleports.
+Servers with the friction attribute use a native `MULTIPLY_SCALAR_1` modifier. Servers without it derive the supporting block's slipperiness and apply the same percentage through a bounded velocity fallback. The fallback cannot accelerate you from rest, increase existing knockback beyond observed movement, change vertical velocity, or run for teleports.
 
 **How to use it**
 
@@ -53,7 +58,9 @@ Servers with the friction attribute use a native `MULTIPLY_SCALAR_1` modifier. S
 
 ### Terminal Toggle (`kinetics-terminal-toggle`)
 
-While falling, sneaking flips you between two midair modes: dive, which cuts air drag and increases gravity to get you down fast, and hang, which does the opposite and turns the fall into a drift. Each sneak press swaps modes. You need to have been airborne for a moment before the toggle arms, and landing clears the mode.
+While falling, sneaking flips you between two midair modes. Dive cuts air drag
+and increases gravity to get you down fast. Hang does the opposite and turns the
+fall into a drift. Each sneak press swaps modes. You need to have been airborne for a moment before the toggle arms, and landing clears the mode.
 
 **How to use it**
 
@@ -63,7 +70,9 @@ While falling, sneaking flips you between two midair modes: dive, which cuts air
 
 ### Heavy Frame (`kinetics-heavy-frame`)
 
-Sneak while holding a mace or a spear and you plant your feet: heavy knockback resistance, blast resistance, and a movement speed penalty for as long as you hold it. This is a passive transient-attribute stance, not a potion effect, so there is no status icon. A short chain sound and particle ring confirm entry and exit. Stand up or switch to a different item and it drops immediately.
+Sneak while holding a mace or a spear and you plant your feet. You get heavy
+knockback resistance, blast resistance, and a movement speed penalty for as long
+as you hold it. This is a passive transient-attribute stance, not a potion effect, so there is no status icon. A short chain sound and particle ring confirm entry and exit. Stand up or switch to a different item and it drops immediately.
 
 **How to use it**
 
@@ -73,7 +82,7 @@ Sneak while holding a mace or a spear and you plant your feet: heavy knockback r
 
 ### Mass Shift (`kinetics-mass-shift`)
 
-Three persistent body forms you switch between with a gesture. Titan makes you bigger, adds 20 percent to your attack damage and max health, gives you a taller step height and a pulled-back camera, and saddles you with Slowness I. Pocket makes you smaller, takes 20 percent off damage and health, and gives you Speed I. Normal is normal. The form survives until you change it, and it resets on death or logout.
+Three persistent body forms you switch between with a gesture. Titan makes you bigger. It adds 20 percent to your attack damage and max health. It gives you a taller step height and a pulled-back camera. It saddles you with Slowness I. Pocket makes you smaller, takes 20 percent off damage and health, and gives you Speed I. Normal is normal. The form survives until you change it. It resets on death or logout.
 
 **How to use it**
 
@@ -83,7 +92,9 @@ Three persistent body forms you switch between with a gesture. Titan makes you b
 
 ### Meteor Cadence (`kinetics-meteor-cadence`)
 
-Hold sneak while falling with a mace and you drop like a rock: extra gravity, less air drag, and a hard downward push added every tick up to a terminal speed. Fall distance is what powers vanilla mace smash damage, so this is a setup move rather than a separate damage source. Releasing sneak or touching ground ends it.
+Hold sneak while falling with a mace and you drop like a rock. You get extra
+gravity, less air drag, and a hard downward push added every tick up to a
+terminal speed. Fall distance is what powers vanilla mace smash damage, so this is a setup move rather than a separate damage source. Releasing sneak or touching ground ends it.
 
 **How to use it**
 
@@ -109,11 +120,13 @@ After a smash, your legs stay coiled for a short window: your bounciness goes wa
 
 ### Phalanx Reach (`kinetics-phalanx-reach`)
 
-While a spear is in your main hand, your entity interaction range grows, so you hit things from farther away than the person swinging back at you. Drop the spear and the reach goes away. Works on its own once learned.
+While a spear is in your main hand, your entity interaction range grows. You hit
+things from farther away than the person swinging back at you. Drop the spear and the reach goes away. Works on its own once learned.
 
 ### Charge Lance (`kinetics-charge-lance`)
 
-Spear hits scale with how fast you are actually moving. Below a minimum speed there is no bonus at all, so this rewards hitting at the end of a sprint or a lunge rather than standing still and poking. Does not apply while you are riding something; that is what Mounted Shock is for.
+Spear hits scale with how fast you are actually moving. Below a minimum speed there is no bonus at all. This rewards hitting at the end
+of a sprint or a lunge rather than standing still and poking. Does not apply while you are riding something. That is what Mounted Shock is for.
 
 **How to use it**
 
@@ -123,7 +136,8 @@ Spear hits scale with how fast you are actually moving. Below a minimum speed th
 
 ### Impale Pin (`kinetics-impale-pin`)
 
-Land a spear hit in the sweet band, not point-blank and not at the edge of your reach, and the target gets hit with heavy Slowness plus a chain-and-particle confirmation. Distance is measured from your eye to the nearest point on the target's hitbox, so elevation and large mobs do not distort the range check. Higher levels widen the band, raise the slowness tier, and hold the pin longer. The same target cannot be re-pinned for a couple of seconds.
+Land a spear hit in the sweet band, not point-blank and not at the edge of your
+reach. The target gets heavy Slowness plus a chain-and-particle confirmation. Distance is measured from your eye to the nearest point on the target's hitbox. Elevation and large mobs do not distort the range check. Higher levels widen the band, raise the slowness tier, and hold the pin longer. The same target cannot be re-pinned for a couple of seconds.
 
 **How to use it**
 
@@ -133,7 +147,7 @@ Land a spear hit in the sweet band, not point-blank and not at the edge of your 
 
 ### Lunge Conductor (`kinetics-lunge-conductor`)
 
-Your spear lunges hit with more power and carry you farther forward. Adapt raises Paper's native lunge power, snapshots your facing, then adds a horizontal-only assist one tick later so the native impulse cannot overwrite it; existing vertical motion is preserved. By default only one lunge every 2.5 seconds is boosted, and intervening lunges remain vanilla.
+Your spear lunges hit with more power and carry you farther forward. Adapt raises Paper's native lunge power, snapshots your facing, then adds a horizontal-only assist one tick later so the native impulse cannot overwrite it. Existing vertical motion is preserved. By default only one lunge every 2.5 seconds is boosted, and intervening lunges remain vanilla.
 
 ### Mounted Shock (`kinetics-mounted-shock`)
 
@@ -185,13 +199,13 @@ Written to `plugins/Adapt/adapt/skills/kinetics.toml` on first load.
 | `launchMinDeltaY` | `0.6` | Upward movement in blocks, from a standstill or a fall, needed to count as a launch. |
 | `motionRewardCooldownMs` | `1000` | Milliseconds between bounce or launch rewards. |
 | `motionRewardMinDistance` | `1.5` | Horizontal blocks you must cover between bounce or launch rewards, which is what stops a fixed bounce farm. |
-| `kbDealtBaseXp` | `3` | XP for knockback you deal at vanilla base magnitude; scales with actual magnitude. |
-| `kbTakenBaseXp` | `1.5` | XP for knockback you take at vanilla base magnitude; scales with actual magnitude. |
+| `kbDealtBaseXp` | `3` | XP for knockback you deal at vanilla base magnitude. Scales with actual magnitude. |
+| `kbTakenBaseXp` | `1.5` | XP for knockback you take at vanilla base magnitude. Scales with actual magnitude. |
 | `kbMinMagnitude` | `0.25` | Knockback vector length below which nothing is paid. |
 | `kbXpCap` | `12` | Maximum XP from one knockback event. |
 | `kbCooldownMs` | `750` | Milliseconds between knockback rewards, shared by dealt and taken. |
 | `selfKnockbackFactor` | `0.35` | Multiplier applied when you knocked yourself back. |
-| `levitationReceiveXp` | `5` | Base XP when Levitation is applied to you; scaled by amplifier and duration. |
+| `levitationReceiveXp` | `5` | Base XP when Levitation is applied to you. Scaled by amplifier and duration. |
 | `levitationApplyXp` | `5` | Base XP per target when you apply Levitation with a splash potion or lingering cloud. |
 | `levitationPulseXp` | `0.8` | XP per skill interval while you are levitating. |
 | `levitationXpCap` | `15` | Maximum XP from one levitation award. |
@@ -199,11 +213,11 @@ Written to `plugins/Adapt/adapt/skills/kinetics.toml` on first load.
 | `anvilBaseXp` | `20` | Flat starting value of an anvil crush payout. |
 | `anvilFallFactor` | `6` | XP added per block the anvil fell. |
 | `anvilHealthFactor` | `0.6` | Scales the payout by the victim's max health (health x factor / 20 added as a multiplier). |
-| `anvilKillBonusMultiplier` | `1.5` | Multiplier used when the anvil got the kill; a non-kill uses damage dealt over max health instead, floored at 0.1. |
+| `anvilKillBonusMultiplier` | `1.5` | Multiplier used when the anvil got the kill. A non-kill uses damage dealt over max health instead, floored at 0.1. |
 | `anvilPerEventCap` | `250` | Maximum XP from one anvil crush. |
 | `anvilCooldownMs` | `4000` | Milliseconds between anvil payouts for the same player, and between share payouts. |
 | `anvilLocationCooldownMs` | `8000` | Milliseconds before the same block position can pay out again, which is what stops stacked-anvil farms. |
-| `anvilShareRadius` | `8` | Blocks around the victim searched for players to share with; at most 8 recipients. |
+| `anvilShareRadius` | `8` | Blocks around the victim searched for players to share with. At most 8 recipients. |
 | `anvilShareFactor` | `0.35` | Fraction of the owner's payout each nearby player receives. |
 | `anvilLedgerTtlMs` | `120000` | Milliseconds a placed-anvil ownership record stays valid. |
 | `anvilAdvancementMinFall` | `8` | Minimum anvil fall distance in blocks for a kill to count toward the challenge. |
@@ -217,7 +231,12 @@ Written to `plugins/Adapt/adapt/skills/kinetics.toml` on first load.
 
 Other stats recorded but not tied to a challenge: `kinetics.smash.hits`, `kinetics.smash.shreds`, `kinetics.windburst.bursts`, `kinetics.rebound.windows`, `kinetics.meteor.dives`, `kinetics.lance.charges`, `kinetics.mounted.charges`.
 
-Skill-level events: `EntityDamageByEntityEvent` (melee XP and anvil crush detection), `EntityDamageEvent` (broken falls), `PlayerMoveEvent` (bounces and launches), `EntityPotionEffectEvent`, `PotionSplashEvent`, `AreaEffectCloudApplyEvent` (levitation), `BlockPlaceEvent`, `EntityChangeBlockEvent`, `BlockPistonExtendEvent`, `BlockPistonRetractEvent`, `BlockBreakEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`, `EntityRemoveEvent`, `EntityDeathEvent` (anvil ledger and crush settlement). A separate Paper-only companion listener adds `EntityAttemptSmashAttackEvent`, `EntityLungeEvent`, `EntityPushedByEntityAttackEvent`, and `EntityKnockbackEvent`; it is skipped entirely when those Paper classes are absent.
+Skill-level events follow. `EntityDamageByEntityEvent` covers melee XP and anvil
+crush detection. `EntityDamageEvent` covers broken falls. `PlayerMoveEvent`
+covers bounces and launches. `EntityPotionEffectEvent`, `PotionSplashEvent`, and
+`AreaEffectCloudApplyEvent` cover levitation. Block and piston events cover
+anvil placement. `EntityRemoveEvent` and `EntityDeathEvent` settle the anvil
+ledger and crush. A separate Paper-only companion listener adds `EntityAttemptSmashAttackEvent`, `EntityLungeEvent`, `EntityPushedByEntityAttackEvent`, and `EntityKnockbackEvent`. It is skipped entirely when those Paper classes are absent.
 
 ### Shared adaptation keys
 
@@ -310,13 +329,13 @@ Soft landing surfaces are slime, honey, any bed, hay bale, powder snow, sponge, 
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-surface-skate.toml` |
 
-Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, and `PlayerMoveEvent`. When available, sprint sliding is a `MULTIPLY_SCALAR_1` friction-attribute modifier and the learner-bound tick reconciles it against current sprint/sneak state. The configured slide percentage cancels that percentage of each surface's own friction loss rather than assigning every block one friction value. When the attribute is absent, the move handler derives the supporting block's slipperiness and applies the same formula only while grounded; it preserves vertical velocity, ignores teleports, and bounds sliding to observed movement so it cannot inject speed from rest or grow knockback indefinitely. Sneak braking is grounded and event-driven on both paths, changes only horizontal velocity, and is applied once when sneak is pressed.
+Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, and `PlayerMoveEvent`. When available, sprint sliding is a `MULTIPLY_SCALAR_1` friction-attribute modifier and the learner-bound tick reconciles it against current sprint/sneak state. The configured slide percentage cancels that percentage of each surface's own friction loss rather than assigning every block one friction value. When the attribute is absent, the move handler derives the supporting block's slipperiness and applies the same formula only while grounded. It preserves vertical velocity, ignores teleports, and bounds sliding to observed movement so it cannot inject speed from rest or grow knockback indefinitely. Sneak braking is grounded and event-driven on both paths, changes only horizontal velocity, and is applied once when sneak is pressed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `slidePercentBase` | `0.15` | Base percentage of each surface's friction loss cancelled while sprinting. Clamped to `0`-`1`. |
 | `slidePercentFactor` | `0.35` | Additional percentage at max level. Clamped to `0` through `1 - slidePercentBase`, so the total never exceeds 100%. |
-| `sneakBrakePercent` | `1.0` | Horizontal velocity removed on a grounded sneak press. Clamped to `0`-`1`; `1.0` is a complete stop and `0` disables the brake. |
+| `sneakBrakePercent` | `1.0` | Horizontal velocity removed on a grounded sneak press. Clamped to `0`-`1`. `1.0` is a complete stop and `0` disables the brake. |
 
 The generated config is canonicalized on load. The previous `slideFrictionBase`, `slideFrictionFactor`, `gripFrictionBase`, and `gripFrictionFactor` keys are removed rather than retained as aliases.
 
@@ -335,7 +354,7 @@ The generated config is canonicalized on load. The previous `slideFrictionBase`,
 
 Listened events: `PlayerToggleSneakEvent` (flips mode), `PlayerMoveEvent` (refreshes the modifiers every move while airborne and clears them on landing).
 
-Dive applies negative air drag and positive gravity; hang applies the opposite. Both are refreshed in 10-tick slices while the mode is held.
+Dive applies negative air drag and positive gravity. Hang applies the opposite. Both are refreshed in 10-tick slices while the mode is held.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -386,7 +405,9 @@ The stance uses transient `KNOCKBACK_RESISTANCE`, `EXPLOSION_KNOCKBACK_RESISTANC
 
 Listened events: `PlayerSwapHandItemsEvent` (cancelled when it triggers a form change), `PlayerQuitEvent`, `PlayerDeathEvent` (both reset to Normal). The tick only runs while at least one player holds a form, and it refreshes the movement effect and reapplies modifiers after a level change.
 
-Fixed values not exposed in config: the combat scalar is 0.2 up for Titan and 0.2 down for Pocket, applied to both attack damage and max health as `MULTIPLY_SCALAR_1`; Titan also gets step height `+1.0` and camera distance `+2.0`; the look threshold is 25 degrees of pitch; the form movement effect is Slowness I for Titan and Speed I for Pocket, refreshed in 60-tick slices. Health is clamped to the new maximum on every form change.
+Fixed values are not exposed in config. The combat scalar is 0.2 up for Titan
+and 0.2 down for Pocket. It applies to both attack damage and max health as
+`MULTIPLY_SCALAR_1`. Titan also gets step height `+1.0` and camera distance `+2.0`. The look threshold is 25 degrees of pitch. The form movement effect is Slowness I for Titan and Speed I for Pocket, refreshed in 60-tick slices. Health is clamped to the new maximum on every form change.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -418,9 +439,9 @@ Meteor Cadence never applies damage itself. The faster descent builds fall dista
 | `gravityBoostFactor` | `0.6` | Extra gravity increase across levels. |
 | `dragCutBase` | `0.2` | Air drag reduction while diving, at level 0. |
 | `dragCutFactor` | `0.4` | Extra drag reduction across levels. |
-| `downwardAccelerationBase` | `0.2` | Downward velocity added per tick while diving, at level 0; clamped to 2.0. |
+| `downwardAccelerationBase` | `0.2` | Downward velocity added per tick while diving, at level 0. Clamped to 2.0. |
 | `downwardAccelerationFactor` | `0.3` | Extra per-tick downward push across levels. |
-| `terminalFallSpeed` | `3.5` | Fastest downward speed this dive will push you to, in blocks per tick; clamped to 10. |
+| `terminalFallSpeed` | `3.5` | Fastest downward speed this dive will push you to, in blocks per tick. Clamped to 10. |
 
 ### Breachwright
 
@@ -471,7 +492,7 @@ Hard limits not exposed in config: at most 32 candidate entities scanned, 16 act
 | `forceBase` | `0.6` | Outward velocity applied to each target at level 0. |
 | `forceFactor` | `0.8` | Extra outward velocity across levels. |
 | `minFallDistanceBase` | `3` | Fall distance in blocks needed to trigger a burst at level 0. |
-| `minFallDistanceFactor` | `-1` | Change to that requirement across levels; negative means higher levels need less height. |
+| `minFallDistanceFactor` | `-1` | Change to that requirement across levels. Negative means higher levels need less height. |
 | `cooldownMs` | `4000` | Milliseconds between bursts. |
 | `xpPerBurst` | `8` | Kinetics XP per burst. |
 
@@ -582,7 +603,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Tick interval (ms) | 9999 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-impale-pin.toml` |
 
-Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand. Sweet-range distance is measured from the attacker's eye to the nearest point of the target bounding box. A successful pin emits a chain sound, critical ring, and colored dust burst; the tick only clears expired per-target cooldowns.
+Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand. Sweet-range distance is measured from the attacker's eye to the nearest point of the target bounding box. A successful pin emits a chain sound, critical ring, and colored dust burst. The tick only clears expired per-target cooldowns.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -591,7 +612,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | `sweetMaxFactor` | `1.5` | Extra maximum distance across levels. |
 | `slowTierBase` | `0` | Slowness amplifier at level 0 (0 is Slowness I). |
 | `slowTierFactor` | `2` | Extra amplifier across levels, rounded to a whole number. |
-| `durationTicksBase` | `40` | Slowness duration in ticks at level 0; the result is floored at 10. |
+| `durationTicksBase` | `40` | Slowness duration in ticks at level 0. The result is floored at 10. |
 | `durationTicksFactor` | `50` | Extra slowness duration in ticks across levels. |
 | `targetCooldownMs` | `2500` | Milliseconds before the same target can be pinned again. |
 
@@ -608,7 +629,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Tick interval (ms) | 9999 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-lunge-conductor.toml` |
 
-Listened events: `EntityLungeEvent` twice, once at `HIGHEST` (`on`, raises lunge power) and once at `MONITOR` (`finalizeLunge`, snapshots facing and marks the cooldown). The horizontal-only velocity assist runs on the player's owning scheduler one tick later, after the native impulse, and leaves vertical velocity unchanged. Only cooldown-ready events receive either boost; intervening lunges use vanilla power and distance.
+Listened events: `EntityLungeEvent` twice, once at `HIGHEST` (`on`, raises lunge power) and once at `MONITOR` (`finalizeLunge`, snapshots facing and marks the cooldown). The horizontal-only velocity assist runs on the player's owning scheduler one tick later, after the native impulse, and leaves vertical velocity unchanged. Only cooldown-ready events receive either boost. Intervening lunges use vanilla power and distance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -654,7 +675,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Tick interval (ms) | 9999 |
 | Config file | `plugins/Adapt/adapt/adaptations/kinetics-dead-zone.toml` |
 
-Listened events: `EntityDamageByEntityEvent`, handling both halves. The shove half fires when you are the victim, holding a spear, and the attacker is a living entity inside the dead zone; PvP or PvE policy is checked first. The riposte half fires on your next spear melee hit while the window is open and is consumed by that hit. Shoved attackers keep 20 percent of their velocity plus the shove, with a fixed 0.25 upward lift.
+Listened events: `EntityDamageByEntityEvent`, handling both halves. The shove half fires when you are the victim, holding a spear, and the attacker is a living entity inside the dead zone. PvP or PvE policy is checked first. The riposte half fires on your next spear melee hit while the window is open and is consumed by that hit. Shoved attackers keep 20 percent of their velocity plus the shove, with a fixed 0.25 upward lift.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

@@ -2,23 +2,23 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-16T16:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Structures that come from outside Iris packs: vanilla structures in Iris worlds, datapack structures, the Minecraft structure-block and `.nbt` system, and converting native structures into editable Iris resources. Objects and Iris jigsaws are covered in [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+This page covers structures that come from outside Iris packs. That includes vanilla structures in Iris worlds and datapack structures. It also covers the Minecraft structure-block and `.nbt` system. It covers conversion of native structures into editable Iris resources. Objects and Iris jigsaws are covered in [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 Terminology:
 
 - **registered / native structure** — anything in Minecraft's live structure registry (vanilla, mod, or datapack). Keys are namespaced: `minecraft:village_plains`, `towns_and_towers:village_ocean`.
 - **Iris structure** — an editable `structures/<key>.json` inside a pack.
 
-Command listings are Bukkit/Paper; modded loaders expose a reduced set.
+Command listings are Bukkit/Paper. Modded loaders expose a reduced set.
 
 ## Pick a task
 
-The five things people actually want are separate workflows. None of them requires the others.
+These five tasks are separate workflows. None of them requires the others.
 
 | Goal | Go to |
 |---|---|
@@ -32,7 +32,8 @@ Every task below changes newly generated chunks only. Nothing rewrites existing 
 
 ## Task 1: Make a vanilla structure fit Iris terrain
 
-Native placement stays in charge of where and how often; you only adjust how the structure meets the ground.
+Native placement stays in charge of where and how often.
+You only adjust how the structure meets the ground.
 
 Prerequisite: the structure appears in `/iris structure list <dimension>`.
 
@@ -58,13 +59,14 @@ Prerequisite: the structure appears in `/iris structure list <dimension>`.
 
 **Success:** newly generated starts keep their native blocks, entities, processors, and loot, and the requested terrain operation is visible. Existing chunks are unchanged.
 
-Widen from an exact key to a prefix only after the exact-key test passes, because a namespace or family prefix can hit many variants at once. If verify flips to `[disabled]`, remove the matching disable entry. If it says `[unreachable]`, fix the biome derivative mapping (see 1.2) before touching terrain.
+Widen from an exact key to a prefix only after the exact-key test passes. A namespace or family prefix can hit many variants at once. If verify flips to `[disabled]`, remove the matching disable entry. If it says `[unreachable]`, fix the biome derivative mapping (see 1.2) before touching terrain.
 
 Field details are in 1.5.
 
 ## Task 2: Install a third-party datapack for one Iris dimension
 
-This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry while Iris scopes the managed structure sets to the dimensions that declare the source. The shipping `overworld` pack already declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0; these are required inputs for that pack, not optional customization examples.
+This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The shipping `overworld` pack already declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0.
+These are required inputs for that pack, not optional customization examples.
 
 Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
 
@@ -85,17 +87,21 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
    /iris datapack ingest restart=true
    ```
 
-   For the unmodified shipping Overworld with `general.autoIngestDatapacks=true`, do not run that command: restart once to let startup install both declared dependencies, then complete the ensuing registry-loading restart.
+   For the unmodified shipping Overworld with `general.autoIngestDatapacks=true`, do not run that command. Restart once to let startup install both declared dependencies. Then complete the ensuing registry-loading restart.
 
 4. After the full restart, run `/iris datapack list`, then `/iris structure list <declaring-dimension>` and pick one registered structure key from that source.
 5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before the generation test (see 1.2).
 6. Create fresh declaring and nondeclaring Iris worlds. In all three worlds, run `/locate structure <key>` and generate new chunks.
 
-**Success:** the declaring Iris world locates and naturally generates the structure; the nondeclaring Iris world and the vanilla world do neither. Restart without deleting the installed datapack and confirm the same result.
+**Success:** the declaring Iris world locates and naturally generates the structure.
+The nondeclaring Iris world and the vanilla world do neither. Restart without deleting the installed datapack and confirm the same result.
 
-If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart; it does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
+If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart.
+It does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
 
-To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list, remove source-specific entries under `importedStructures` such as namespace or vanilla-family disables and adjustments, and remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot; if you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL. Restart before verifying the restored policy. Only newly generated chunks change; existing starts remain.
+To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot.
+If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL. Restart before verifying the restored policy. Only newly generated chunks change.
+Existing starts remain.
 
 ## Task 3: Turn a structure off
 
@@ -114,7 +120,8 @@ To remove an optional source and return to vanilla placement, delete its URL fro
 3. Validate the pack, update the world snapshot or open a fresh world, and restart.
 4. Run `/iris structure verify <dimension> radius=48`.
 
-**Success:** the key reports `[disabled]`, and `/iris goto structure <key>` answers that it is disabled by this dimension's `importedStructures` settings. New chunks no longer contain it; old chunks keep whatever already generated.
+**Success:** the key reports `[disabled]`, and `/iris goto structure <key>` answers that it is disabled by this dimension's `importedStructures` settings. New chunks no longer contain it.
+Old chunks keep whatever already generated.
 
 Two things catch people out. A namespace disable needs the trailing colon — `"nova_structures:"` works, `"nova_structures"` does not (see the prefix rules in 1.3). And neither deny list blocks an explicit `nativeStructures` placement, which is exactly what Task 4 relies on.
 
@@ -123,7 +130,8 @@ Two things catch people out. A namespace disable needs the trailing colon — `"
 Use this when a datapack's buildings should exist but its own structure sets should not decide where. Complete Task 2 first so the source is ingested and the server has restarted.
 
 1. Confirm the keys with `/iris structure list <dimension>`.
-2. Merge this into that dimension. The `disabled` entry kills the datapack's own generation; the placement puts the building back on an Iris grid:
+2. Merge this into that dimension. The `disabled` entry kills the datapack's own generation.
+The placement puts the building back on an Iris grid:
 
    ```json
    {
@@ -156,13 +164,14 @@ Use this when a datapack's buildings should exist but its own structure sets sho
 
 **Success:** the structure appears at Iris-planned starts with full native fidelity and nowhere else.
 
-If validation cannot resolve the key, the datapack is not live in the registry for that dimension — go back to Task 2 and finish the restart and scope check. If verify reports `[iris-not-found]`, raise the radius or lower the spacing for the test. Existing natural starts stay in old chunks after the namespace is disabled.
+If validation cannot resolve the key, the datapack is not live in the registry for that dimension. Go back to Task 2. Finish the restart and scope check. If verify reports `[iris-not-found]`, raise the radius or lower the spacing for the test. Existing natural starts stay in old chunks after the namespace is disabled.
 
 Field details are in section 3.
 
 ## Task 5: Convert a registered structure for editing
 
-Conversion is deliberately less faithful than Minecraft's native runtime, so use it only when block geometry or graph topology has to change. `nativeStructures` keeps native processors, entities, spawners, loot, and placement behavior; conversion does not.
+Conversion is deliberately less faithful than Minecraft's native runtime, so use it only when block geometry or graph topology has to change. `nativeStructures` keeps native processors, entities, spawners, loot, and placement behavior.
+Conversion does not.
 
 1. Confirm the registered source generates natively first.
 2. Back up the target pack. For one registered jigsaw graph, run:
@@ -171,8 +180,10 @@ Conversion is deliberately less faithful than Minecraft's native runtime, so use
    /iris jigsaw convert <dimension> <namespace:path> target=auto seed=1337
    ```
 
-3. Conversion follows the registered start pool and the reachable template-pool closure, writes a new add-only owned Iris graph, reports the imported piece and pool counts plus the fidelity-warning count, then opens Jigsaw Studio. `target=auto` turns `minecraft:village_plains` into `minecraft_village_plains`; pass `target=<iris-path>` for a deliberate key.
-4. Load each variant from the Studio control chest or triple-sneak menu and inspect its real blocks and Mojang marker fields. Once a workcell finishes loading and hydrating, block and container changes autosave; **Save Now** only forces an immediate flush. Review the automatic seed-`1337` evaluation and the permanent read-only block preview before accepting the fidelity.
+3. Conversion follows the registered start pool and the reachable template-pool closure. It writes a new add-only owned Iris graph. It reports the imported piece and pool counts plus the fidelity-warning count. It then opens Jigsaw Studio. `target=auto` turns `minecraft:village_plains` into `minecraft_village_plains`.
+Pass `target=<iris-path>` for a deliberate key.
+4. Load each variant from the Studio control chest or triple-sneak menu and inspect its real blocks and Mojang marker fields. Once a workcell finishes loading and hydrating, block and container changes autosave.
+**Save Now** only forces an immediate flush. Review the automatic seed-`1337` evaluation and the permanent read-only block preview before accepting the fidelity.
 5. For a non-jigsaw template or a bulk pass, use `/iris structure import <dimension>` instead (section 5). Review every per-structure result: successful bundles can sit alongside failures.
 
 **Success:** the owned copy reopens with `/iris jigsaw open <dimension> <target>` and its preview matches the native original closely enough for your purpose.
@@ -181,15 +192,17 @@ Conversion is deliberately less faithful than Minecraft's native runtime, so use
 
 ### What conversion changes about pools
 
-A native list pool entry stays one weighted choice. Iris keeps its recursively first physical template and outer connectors, and omits later colocated children and their processors with a `LIST_ELEMENTS` warning instead of turning them into separate alternatives.
+A native list pool entry stays one weighted choice. Iris keeps its recursively first physical template and outer connectors. It omits later colocated children and their processors with a `LIST_ELEMENTS` warning. It does not turn them into separate alternatives.
 
-Every start-pool member stays a physical Iris piece even when it has no connectors. An all-air template with at least one connector stays a non-collidable scaffold so its bounds may overlap attached physical pieces. Every non-start connectorless member in a pool with a distinct fallback also stays physical, regardless of pool size or air content, so weighted primary no-match attempts still reach that fallback; a retained all-air member stays non-collidable.
+Every start-pool member stays a physical Iris piece even when it has no connectors. An all-air template with at least one connector stays a non-collidable scaffold so its bounds may overlap attached physical pieces. Every non-start connectorless member in a pool with a distinct fallback also stays physical. Pool size and air content do not matter. Weighted primary no-match attempts still reach that fallback.
+A retained all-air member stays non-collidable.
 
-A singleton all-air connectorless member with no fallback or a self-fallback becomes an explicit empty entry, recorded as `connectorless_all_air_member_normalized_empty`. The observed waystone form is the self-fallback case. The same member in a mixed no/self-fallback pool is omitted instead, recorded as `connectorless_all_air_mixed_member_omitted`, because converting it to empty could terminate the branch before later candidates get a chance; that loss records the changed selection weights and RNG consumption. Other connectorless nonempty members in no/self-fallback non-start pools are omitted as unattachable with `connectorless_non_air_member_omitted`, and that block loss also records exact fallback context plus selection-weight and RNG-consumption drift.
+A singleton all-air connectorless member with no fallback or a self-fallback becomes an explicit empty entry, recorded as `connectorless_all_air_member_normalized_empty`. The observed waystone form is the self-fallback case. The same member in a mixed no/self-fallback pool is omitted instead. It is recorded as `connectorless_all_air_mixed_member_omitted`. Converting it to empty could terminate the branch before later candidates get a chance.
+That loss records the changed selection weights and RNG consumption. Other connectorless nonempty members in no/self-fallback non-start pools are omitted as unattachable with `connectorless_non_air_member_omitted`. That block loss also records exact fallback context plus selection-weight and RNG-consumption drift.
 
 Converted graphs explicitly use `branchFailurePolicy: TERMINATE_BRANCH`: once ordinary primary and direct-fallback candidates are exhausted only that optional branch ends, while required physical fallbacks still fail. Explicit empty members and empty optional primary pools end the branch before the direct fallback is tried.
 
-Native placement settings beyond start pool, maximum depth, and maximum distance may not survive conversion, and neither may feature pool elements, alternate palettes, processors, entities, or other native-only behavior.
+Native placement settings beyond start pool, maximum depth, and maximum distance may not survive conversion. Feature pool elements, alternate palettes, processors, entities, and other native-only behavior may also be lost.
 
 ## 1. Vanilla structures in Iris worlds
 
@@ -197,9 +210,10 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
 
-Iris keeps native-start ownership in the world's Mantle so locate, reference repair, and restart recovery agree on the same structure. A periodic world save immediately persists idle ownership plates and leaves any plate still used by generation dirty for the next save instead of waiting on the server thread. A clean engine shutdown drains generation first and requires the remaining ownership records to persist before the Mantle is released.
+Iris keeps native-start ownership in the world's Mantle so locate, reference repair, and restart recovery agree on the same structure. A periodic world save immediately persists idle ownership plates. Any plate still used by generation stays dirty for the next save. Iris does not wait on the server thread. A clean engine shutdown drains generation first and requires the remaining ownership records to persist before the Mantle is released.
 
-Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, reducing each ring task from 3,249 biome evaluations to 225. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks; `/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
+Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column. Each ring task drops from 3,249 biome evaluations to 225. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks.
+`/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
 
 ### 1.2 Biome mapping for structure filters
 
@@ -260,11 +274,11 @@ Use this to make a registered native structure set more or less common without c
 }
 ```
 
-Iris keeps the registered set's entries, weights, biome eligibility, placement algorithm, salt, exclusion zones, structure start and Y logic, processors, entities, mobs, loot, and native locate path. For random-spread placement it first scales Minecraft's placement probability up to `1`, then derives the nearest integer spacing with `round(oldSpacing / sqrt(remainingMultiplier))`, never below `separation + 1`.
+Iris keeps the registered set entries, weights, biome eligibility, placement algorithm, and salt. It also keeps exclusion zones, structure start and Y logic, processors, entities, mobs, loot, and the native locate path. For random-spread placement it first scales Minecraft's placement probability up to `1`, then derives the nearest integer spacing with `round(oldSpacing / sqrt(remainingMultiplier))`, never below `separation + 1`.
 
-Integer rounding means the realized change can land slightly under or over the request. At `1.1`, Nether complexes move from spacing `27` to `26` (about `7.8%` denser), ruined portals from `40` to `38` (about `10.8%` denser), and Nether fossils stay at `2/1` because no smaller legal spacing exists.
+Integer rounding means the realized change can land slightly under or over the request. At `1.1`, Nether complexes move from spacing `27` to `26` (about `7.8%` denser). Ruined portals move from `40` to `38` (about `10.8%` denser). Nether fossils stay at `2/1` because no smaller legal spacing exists.
 
-Concentric-ring sets can scale only their placement probability, so a ring placement already at probability `1` cannot get denser this way. Minecraft or modded custom placement types outside the affected override and exclusion-zone graph are untouched. An exact override, or an exclusion dependency on an overridden set, that would require copying an unsupported placement fails world binding instead of silently leaving stale exclusion behavior. Existing chunks and existing starts are never rewritten.
+Concentric-ring sets can scale only their placement probability, so a ring placement already at probability `1` cannot get denser this way. Minecraft or modded custom placement types outside the affected override and exclusion-zone graph are untouched. An exact override that would require copying an unsupported placement fails world binding. So does an exclusion dependency on an overridden set. Iris does not silently leave stale exclusion behavior. Existing chunks and existing starts are never rewritten.
 
 ### 1.5 `adjustments[]`
 
@@ -273,15 +287,17 @@ Each entry (`match` selects targets by the same prefix rule):
 | Field | Default | Meaning |
 |---|---|---|
 | `match` | `[]` | Keys and prefixes. Empty matches nothing. |
-| `yShift` | `0` (-512..512) | Vertical offset; stacks across matches; clamped to build bounds. |
+| `yShift` | `0` (-512..512) | Vertical offset. Stacks across matches. Clamped to build bounds. |
 | `yBand` | unset | Absolute world-Y band `{min, max}`: the structure midpoint lands in the band, deterministic per start chunk. |
 | `preserveSourceY` | `false` | Skip Iris burial repositioning and keep the vanilla Y. `undergroundYShift` and `yShift` still apply on top. |
 | `stilt` | unset | Foundation columns: `maxDepth` (default 64), `palette` (default cobblestone), `spacing`. (`supportNonOccluding` applies to Iris-assembled structures.) |
 | `terrain` | unset (= `SOURCE`) | Terrain-integration override. |
 
-Iris object placements are rejected as a complete unit before any write when their transformed solid blocks intersect a native piece volume, including dimensions with a negative minimum Y. Native-feature vegetation that was not placed through Iris still uses bounded piece-local clearing as a fallback.
+Iris object placements are rejected as a complete unit before any write when their transformed solid blocks intersect a native piece volume. That includes dimensions with a negative minimum Y. Native-feature vegetation that was not placed through Iris still uses bounded piece-local clearing as a fallback.
 
-**Merge:** `yShift` adds; `preserveSourceY` is OR-ed; `stilt`, `terrain`, and `yBand` are last-match-wins. Put the broad prefix first and the specific overrides after.
+**Merge:** `yShift` adds.
+`preserveSourceY` is OR-ed.
+`stilt`, `terrain`, and `yBand` are last-match-wins. Put the broad prefix first and the specific overrides after.
 
 **Vertical precedence:**
 
@@ -289,7 +305,7 @@ Iris object placements are rejected as a complete unit before any write when the
 preserveSourceY  >  yBand  >  burial (underground steps)  >  plain yShift
 ```
 
-Three structures honor only `yShift` among these controls: `minecraft:monument` (aligned 24 below sea level), `minecraft:desert_pyramid` (one block above the lowest surface Y of its footprint), and `minecraft:jungle_pyramid` (one block above the average surface Y).
+Three structures honor only `yShift` among these controls. `minecraft:monument` aligns 24 below sea level. `minecraft:desert_pyramid` sits one block above the lowest surface Y of its footprint. `minecraft:jungle_pyramid` sits one block above the average surface Y.
 
 #### Terrain modes
 
@@ -300,7 +316,7 @@ Three structures honor only `yShift` among these controls: `minecraft:monument` 
 | `BORE` | Clear the padded piece volume (box) before placement. |
 | `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
 | `VACUUM` | Raise surface terrain to the structure's ground planes with a fixed 12-block falloff. Never lowers ground. |
-| `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional; defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
+| `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
 
 Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding` (0..64, where 0 preserves the floor). ERODED adds `erosionStrength` (default 0.8), `erosionFrequency` (0.07), `lobeFrequency`, and `lobeStrength` (0.85).
 
@@ -375,7 +391,7 @@ A dimension-file list of datapack sources Iris downloads and installs:
 }
 ```
 
-A `datapackImports` URL belongs to the dimension that declares it. Bukkit exposes installed resources through the server-wide registry, but before initial chunks load Iris removes disallowed managed structure sets and structure definitions from each world's generation state. Vanilla worlds, and Iris worlds whose active dimension does not declare the source, therefore neither generate nor locate those structures. Declaring the same URL in multiple dimensions deliberately shares its structures. If multiple managed sources claim the same key, every owner must be declared, because the registry winner cannot be inferred safely.
+A `datapackImports` URL belongs to the dimension that declares it. Bukkit exposes installed resources through the server-wide registry. Before initial chunks load, Iris removes disallowed managed structure sets and structure definitions from each world generation state. Vanilla worlds, and Iris worlds whose active dimension does not declare the source, therefore neither generate nor locate those structures. Declaring the same URL in multiple dimensions deliberately shares its structures. If multiple managed sources claim the same key, every owner must be declared, because the registry winner cannot be inferred safely.
 
 Accepted URL forms:
 
@@ -391,27 +407,31 @@ Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>
 
 Ingest and recovery run synchronously inside Iris's startup admission gate when `general.autoIngestDatapacks` is enabled (default true). Players and every Iris world and Studio creation path stay locked until that phase is valid.
 
-On startup, Iris checks the cheap persisted cache context before reading managed datapack trees. When that context matches, Iris confirms the exact local content fingerprint and skips remote resolution, semantic revalidation, copying, installation, and pack compilation. Iris refreshes the post-start fingerprint only when its authorized import maintenance mutates managed external-datapack state; a no-op maintenance pass retains the existing receipt. A change to the URL, the Minecraft or Iris version, the override policy, external manifest edits, staging, the transaction, installed content, or cache corruption invalidates reuse and runs the full fail-closed path.
+On startup, Iris checks the cheap persisted cache context before reading managed datapack trees. When that context matches, Iris confirms the exact local content fingerprint and skips remote resolution, semantic revalidation, copying, installation, and pack compilation. Iris refreshes the post-start fingerprint only when its authorized import maintenance mutates managed external-datapack state.
+A no-op maintenance pass retains the existing receipt. A change to the URL, the Minecraft or Iris version, the override policy, or external manifest edits invalidates reuse. So does a change to staging, the transaction, installed content, or cache corruption. Iris then runs the full fail-closed path.
 
 Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
 
-For the shipping Overworld on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack download. The first boot discovers and installs Towns & Towers 26.1 and Dungeons & Taverns 5.3.0, then leaves admission restart-required; the ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
+For the shipping Overworld on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack download. The first boot discovers and installs Towns & Towers 26.1 and Dungeons & Taverns 5.3.0, then leaves admission restart-required.
+The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
 
-Cache reuse is a local validation decision and does not poll remote sources; run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts, so unchanged bootstrap recovery leaves the manifest stable and the next startup can reuse the cached fingerprint. During a full ingest, Iris accepts an exact same-version, Iris-owned installed target in place when its content matches staging and the datapack requires no override stripping, avoiding a temporary copy and replacement.
+Cache reuse is a local validation decision and does not poll remote sources.
+Run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts. Unchanged bootstrap recovery leaves the manifest stable. The next startup can reuse the cached fingerprint. During a full ingest, Iris may keep an exact same-version, Iris-owned installed target in place. Content must match staging. The datapack must need no override stripping. That avoids a temporary copy and replacement.
 
-Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
+Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial. It does this when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
 
-Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks while restating each entry and rechecking its `FileStore` immediately before access, retaining the existing cross-volume boundary behavior, including same-device bind mounts.
+Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks. It restates each entry and rechecks its `FileStore` immediately before access. It retains the existing cross-volume boundary behavior, including same-device bind mounts.
 
 ### 2.3 Folia 26.2 and Dungeons & Taverns 5.3.0
 
-Folia 26.2 currently cannot execute the shipping Dungeons & Taverns function set completely. Its own command dispatcher omits `tag` and `data`, does not expose a usable `item` command in this context, and accepts `ride` while rejecting nested forms used by the pack. The unchanged Dungeons & Taverns bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia; function-backed Dungeons & Taverns behavior is incomplete even though Iris world loading and chunk generation continue.
+Folia 26.2 currently cannot execute the shipping Dungeons & Taverns function set completely. Its own command dispatcher omits `tag` and `data`. It does not expose a usable `item` command in this context. It accepts `ride` while rejecting nested forms used by the pack. The unchanged Dungeons & Taverns bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia.
+Function-backed Dungeons & Taverns behavior is incomplete even though Iris world loading and chunk generation continue.
 
-This is an upstream Folia 26.2 command compatibility limitation, reproduced on a clean Folia server with no Iris plugin installed. Paper, Leaf, and Canvas load the same datapack bytes without those function errors. Iris does not rewrite or silently remove third-party functions, so use a server implementation that supports the pack's commands when complete Dungeons & Taverns behavior is required.
+This is an upstream Folia 26.2 command compatibility limitation, reproduced on a clean Folia server with no Iris plugin installed. Paper, Leaf, and Canvas load the same datapack bytes without those function errors. Iris does not rewrite or silently remove third-party functions. Use a server implementation that supports the pack commands when complete Dungeons & Taverns behavior is required.
 
 ### 2.4 Modded installation
 
-Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every declared external datapack directly in the target save's `datapacks/` directory. For the shipping Overworld, install the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives before that Iris Overworld loads, then restart with both archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries.
+Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every declared external datapack directly in the target save's `datapacks/` directory. For the shipping Overworld, install the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives before that Iris Overworld loads. Then restart with both archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries.
 
 ### 2.5 Manual commands
 
@@ -485,21 +505,26 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 
 | Field | Default | Meaning |
 |---|---|---|
-| `structure` | required | Registered structure key; must exist live. |
+| `structure` | required | Registered structure key. Must exist live. |
 | `weight` | `1` (min 1) | Weighted selection among the sources in this placement. |
-| `jigsaw` | unset | Overrides for registered **jigsaw** structures only: `startPool`, `startJigsawName`, `maxDepth` (0..20), `maxDistanceHorizontal` (1..128), `maxDistanceVertical` (1..4064), `useExpansionHack`, `projectStartToHeightmap` (`SOURCE`/`NONE`/heightmap types), `dimensionPaddingBottom` and `dimensionPaddingTop` (nonnegative distance from floor and ceiling), and `liquidSettings`. Null or unset values preserve the registered definition. |
+| `jigsaw` | unset | Overrides for registered **jigsaw** structures only. Fields include `startPool`, `startJigsawName`, `maxDepth` (0..20), `maxDistanceHorizontal` (1..128), and `maxDistanceVertical` (1..4064). Also `useExpansionHack`, `projectStartToHeightmap` (`SOURCE`/`NONE`/heightmap types), `dimensionPaddingBottom` and `dimensionPaddingTop`, and `liquidSettings`. Null or unset values preserve the registered definition. |
 
-Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures), except that the native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
+Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
-On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. Statusless chunk access inside that region retains `WorldGenRegion`'s current-stage lookup instead of being converted into a `FULL`-status request; this lets ordinary native piece placement, including mineshaft supports, read the generation chunk without asking Paper for a status that is unavailable during FEATURES. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads, or an empty ephemeral chunk when it explicitly requires a distant chunk; distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper's write-radius contract instead of widening it or suppressing Leaf/Paper diagnostics, removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings, and prevents the unavailable-chunk exception that Leaf and Paper treat as an unrecoverable generation failure.
+On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. Statusless chunk access inside that region retains `WorldGenRegion`'s current-stage lookup instead of being converted into a `FULL`-status request.
+This lets ordinary native piece placement, including mineshaft supports, read the generation chunk without asking Paper for a status that is unavailable during FEATURES. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads. If it explicitly requires a distant chunk, it receives an empty ephemeral chunk.
+Distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper write-radius contract. It does not widen the radius or suppress Leaf/Paper diagnostics. It removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings. It prevents the unavailable-chunk exception that Leaf and Paper treat as an unrecoverable generation failure.
 
-Fabric, Forge, and NeoForge apply the equivalent boundary around the generation chunk. Native post-processing can read and write only the current 3×3-chunk area; reads beyond it receive deterministic Iris surface/floor terrain or an empty ephemeral chunk, while far block changes, entities, events, and scheduled ticks never reach the live level. The modded structure-template palette's lazy block lookup is also concurrent and boot-audited, so parallel native-volume inspection cannot mutate one vanilla cache through an unsafe `HashMap` path.
+Fabric, Forge, and NeoForge apply the equivalent boundary around the generation chunk. Native post-processing can read and write only the current 3×3-chunk area.
+Reads beyond it receive deterministic Iris surface/floor terrain or an empty ephemeral chunk. Far block changes, entities, events, and scheduled ticks never reach the live level. The modded structure-template palette lazy block lookup is also concurrent and boot-audited. Parallel native-volume inspection cannot mutate one vanilla cache through an unsafe `HashMap` path.
 
-Before modded native placement, Iris registers every POI-bearing block already present in the target protochunk. The subsequent structure block transition can then unregister or replace that POI normally after a vertical shift; a shifted Trial Chamber that removed four pre-existing Iris barrels finished with air at all four positions and no stale POI mismatch on exact replay.
+Before modded native placement, Iris registers every POI-bearing block already present in the target protochunk. The subsequent structure block transition can then unregister or replace that POI normally after a vertical shift.
+A shifted Trial Chamber that removed four pre-existing Iris barrels finished with air at all four positions and no stale POI mismatch on exact replay.
 
-The current external-pack acceptance still reports authored-content warnings for unresolved `minecraft:grass` forms, invalid properties on blocks such as `big_dripleaf_stem`, `beetroots`, or `creaking_heart`, empty third-party pools such as `nova_structures:hamlet/jockey` and the Kaisyn beach-lighthouse pool, a stale `chisled_polished_blackstone` replacement, and stale block-attached-entity `block_pos` values. Iris reports these inputs and uses only Minecraft's safe fallback where one exists; it does not rewrite or migrate the third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
+The current external-pack acceptance still reports authored-content warnings. Those cover unresolved `minecraft:grass` forms and invalid properties on blocks such as `big_dripleaf_stem`, `beetroots`, or `creaking_heart`. They also cover empty third-party pools such as `nova_structures:hamlet/jockey` and the Kaisyn beach-lighthouse pool, a stale `chisled_polished_blackstone` replacement, and stale block-attached-entity `block_pos` values. Iris reports these inputs and uses only Minecraft's safe fallback where one exists.
+It does not rewrite or migrate the third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
 
 ### 3.2 `disabled` and `disabledExact` never block an explicit placement
 
@@ -559,28 +584,35 @@ A key that is both disabled and placed reports as Iris-placed.
 
 ## 4. Minecraft structure-block system
 
-Structure blocks save and load `.nbt` templates; jigsaw blocks wire pools together. Iris Jigsaw Studio is the documented in-game workflow for editable Iris graphs, so reach for external vanilla Structure Block and datapack references only when authoring raw `.nbt` assets outside Iris.
+Structure blocks save and load `.nbt` templates.
+Jigsaw blocks wire pools together. Iris Jigsaw Studio is the documented in-game workflow for editable Iris graphs. Reach for external vanilla Structure Block and datapack references only when authoring raw `.nbt` assets outside Iris.
 
 How an authored `.nbt` reaches an Iris world:
 
-**(a) Through a datapack (native generation).** Ship it under `data/<ns>/structure/`, add `worldgen/template_pool`, `worldgen/structure`, and `worldgen/structure_set`, zip it, host it or publish to Modrinth, add the URL to `datapackImports`, then `/iris datapack ingest restart=true`. From there use natural generation, `adjustments`, or `nativeStructures`.
+**(a) Through a datapack (native generation).** Ship it under `data/<ns>/structure/`. Add `worldgen/template_pool`, `worldgen/structure`, and `worldgen/structure_set`. Zip it, host it or publish to Modrinth, and add the URL to `datapackImports`. Then run `/iris datapack ingest restart=true`. From there use natural generation, `adjustments`, or `nativeStructures`.
 
 **(b) Import into Iris resources.** `/iris structure import <dimension>` (section 5). The template pass enumerates **registered** templates only — loose saves in `<world>/generated/` are not enumerated, so package them into a datapack first.
 
-Template-import fidelity is lossy by design: first palette only; structure voids and structure blocks dropped; jigsaw blocks resolved to `final_state` (the graph is rebuilt by the separate jigsaw pass); entities not converted; block entities captured.
+Template-import fidelity is lossy by design: first palette only.
+Structure voids and structure blocks dropped.
+Jigsaw blocks resolved to `final_state` (the graph is rebuilt by the separate jigsaw pass).
+Entities not converted.
+Block entities captured.
 
 ## 5. Importing native structures into Iris resources
 
-You do not need import just to place something — `nativeStructures` places any registered key with full fidelity. Import only when you need Iris object, pool, or piece resources. Manual imports are editable transaction-owned copies; automatic datapack imports stay managed by ingest and must be cloned before Jigsaw Studio will edit them.
+You do not need import just to place something — `nativeStructures` places any registered key with full fidelity. Import only when you need Iris object, pool, or piece resources. Manual imports are editable transaction-owned copies.
+Automatic datapack imports stay managed by ingest and must be cloned before Jigsaw Studio will edit them.
 
 ### 5.1 `/iris structure import <dimension>`
 
 Four passes, always overwriting its own previous output:
 
-1. **Jigsaw rebuild** — registered jigsaw structures become editable pools, pieces, and objects. Connector `final_state`, signed `selection_priority`, and signed `placement_priority` values are retained in the Iris piece metadata, and the generated root writes `branchFailurePolicy: TERMINATE_BRANCH` so unmatched optional branches keep native termination behavior.
+1. **Jigsaw rebuild** — registered jigsaw structures become editable pools, pieces, and objects. Connector `final_state`, signed `selection_priority`, and signed `placement_priority` values are retained in the Iris piece metadata. The generated root writes `branchFailurePolicy: TERMINATE_BRANCH`. Unmatched optional branches keep native termination behavior.
 2. **Template import** — registered `.nbt` templates become `objects/<name>.iob` plus a single-piece `jigsaw-pieces/<name>.json`.
 3. **Template groups** — fixed multi-template structures (shipwrecks, ruined portals, ocean ruins, nether fossils) become one Iris structure each, with every variant in the pool.
-4. **Capture** — only non-jigsaw registry keys for which the first pass found no same-key template are captured through a scratch world. This pass never rewrites a successful or failed jigsaw conversion; the standalone `/iris structure capture <dimension>` command stays unfiltered. Structures spanning more than **48 blocks** on any axis are skipped, so strongholds, mansions, and monuments stay native-only.
+4. **Capture** — only non-jigsaw registry keys for which the first pass found no same-key template are captured through a scratch world. This pass never rewrites a successful or failed jigsaw conversion.
+The standalone `/iris structure capture <dimension>` command stays unfiltered. Structures spanning more than **48 blocks** on any axis are skipped, so strongholds, mansions, and monuments stay native-only.
 
 Naming: `minecraft:village_plains` becomes `minecraft_village_plains`. Generated structures carry `vanillaSource` for locate and `REPLACE_SOURCE`.
 
@@ -596,7 +628,8 @@ Import conflict for '<name>': <path> is unowned_resource. Existing authored file
 
 Iris found a file it did not write and refused to clobber it. `modified_resource` means Iris wrote it, you edited it, and the hash no longer matches. Rename the target, restore the exact owned bytes, or leave the key native.
 
-A successfully converted or manually imported jigsaw opens directly with `/iris jigsaw open <dimension> <key>` because its ownership manifest is editable. A pre-existing Iris graph with no manifest uses the `adopt inspect` then `adopt apply` workflow in [21 - Jigsaw Structures](/iris/21-jigsaw-structures); no import command is needed for that case.
+A successfully converted or manually imported jigsaw opens directly with `/iris jigsaw open <dimension> <key>` because its ownership manifest is editable. A pre-existing Iris graph with no manifest uses the `adopt inspect` then `adopt apply` workflow in [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+No import command is needed for that case.
 
 ### 5.3 Automatic datapack import
 
@@ -607,11 +640,13 @@ A successfully converted or manually imported jigsaw opens directly with `/iris 
 /iris jigsaw adopt apply <plan-uuid>
 ```
 
-Inspect verifies the existing manifest is exactly a managed vanilla or datapack Iris assembly, pins the complete source and target read set, and reports `CLONE_REQUIRED` or a blocking diagnostic. Apply re-hashes under the pack mutation lock, atomically writes a deep clone with deterministic internal reference rewrites plus its ownership receipt, leaves the managed source unchanged, and opens the editable clone. An expired, consumed, or stale plan writes nothing. There is no adoption rollback command, so keep the pack backup you made before converting.
+Inspect verifies the existing manifest is exactly a managed vanilla or datapack Iris assembly. It pins the complete source and target read set. It reports `CLONE_REQUIRED` or a blocking diagnostic. Apply re-hashes under the pack mutation lock. It atomically writes a deep clone with deterministic internal reference rewrites plus its ownership receipt. It leaves the managed source unchanged. It opens the editable clone. An expired, consumed, or stale plan writes nothing. There is no adoption rollback command, so keep the pack backup you made before converting.
 
-Automatic import is off by default because native generation and `nativeStructures` never need the copies, and conversion can write thousands of files. Deterministic source-content and graph-validation failures retain the bundles that did write and record the attempted source, importer format, and target-pack revision, so the same failures do not repeat every boot; a source update, importer-format change, or different target retries them. Unexpected reflection, I/O, transaction, and runtime failures stay pending and retry. Removing a URL from `datapackImports` cleans only bundles still owned by that managed source, and an adopted editable clone is independent.
+Automatic import is off by default because native generation and `nativeStructures` never need the copies, and conversion can write thousands of files. Deterministic source-content and graph-validation failures retain the bundles that did write. They record the attempted source, importer format, and target-pack revision. The same failures do not repeat every boot.
+A source update, importer-format change, or different target retries them. Unexpected reflection, I/O, transaction, and runtime failures stay pending and retry. Removing a URL from `datapackImports` cleans only bundles still owned by that managed source, and an adopted editable clone is independent.
 
-Third-party jigsaw templates using the legacy slab property `half=top|bottom`, or the exact known misspelling `minecraft:chisled_polished_blackstone`, are normalized to current Minecraft block data during editable conversion. Other invalid final-state values are recorded as fidelity loss and omitted without internal-error telemetry. Invalid structure graphs stay per-structure failures, and expected graph-contract rejections are reported as concise import results instead of internal Iris stack traces; unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
+Third-party jigsaw templates using the legacy slab property `half=top|bottom`, or the exact known misspelling `minecraft:chisled_polished_blackstone`, are normalized to current Minecraft block data during editable conversion. Other invalid final-state values are recorded as fidelity loss and omitted without internal-error telemetry. Invalid structure graphs stay per-structure failures, and expected graph-contract rejections are reported as concise import results instead of internal Iris stack traces.
+Unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
 
 ## 6. Verification and debugging
 
@@ -642,7 +677,7 @@ Third-party jigsaw templates using the legacy slab property `half=top|bottom`, o
 
 | Command | Aliases | Parameters |
 |---|---|---|
-| `/iris datapack ingest` | `pull` | `restart=false`; Bukkit only, modded stub |
+| `/iris datapack ingest` | `pull` | `restart=false`. Bukkit only, modded stub |
 | `/iris datapack list` | `ls` | |
 | `/iris datapack remove <id>` | `rm` | |
 | `/iris structure list <dimension>` | `ls` | |
@@ -651,9 +686,9 @@ Third-party jigsaw templates using the legacy slab property `half=top|bottom`, o
 | `/iris structure verify <dimension>` | `locateall` | `radius=48` (1..1000 chunks) |
 | `/iris structure info <dimension> <structure>` | | |
 | `/iris structure place <dimension> <structure>` | `p` | player only |
-| `/iris jigsaw convert <dimension> <source>` | `import`, `import-vanilla` | `target=auto seed=1337`; Bukkit player only; source is a registered jigsaw key |
-| `/iris jigsaw adopt inspect <dimension> <source>` | | `target=auto strategy=auto`; Bukkit player only; source is an existing Iris graph |
-| `/iris jigsaw adopt apply <planId>` | | Bukkit player only; no active or opening Jigsaw Studio |
+| `/iris jigsaw convert <dimension> <source>` | `import`, `import-vanilla` | `target=auto seed=1337`. Bukkit player only. Source is a registered jigsaw key |
+| `/iris jigsaw adopt inspect <dimension> <source>` | | `target=auto strategy=auto`. Bukkit player only. Source is an existing Iris graph |
+| `/iris jigsaw adopt apply <planId>` | | Bukkit player only. No active or opening Jigsaw Studio |
 | `/iris goto structure <key>` | `/iris find structure` | |
 | `/iris goto unregistered` | | |
 | `/iris developer update-world` | | `world=<w> pack=<dim> confirm=true` — all keyed |

@@ -1,36 +1,48 @@
 ---
 title: "HiddenOre API"
-description: "HiddenOre documentation: HiddenOre API"
+description: "Developer API index"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-HiddenOre replaces visible ore distribution with rewards hidden behind ordinary blocks. Its API lets another
-plugin **ask what a block is** (was it placed by a player, or has it simply never been recorded?), **find the
-hidden veins** a seeded world holds, **refuse** a reward before it is computed, and **edit** the reward before
-it is delivered.
 
-The six contract types listed at the end of this page expose Bukkit types, `java.*` types and their own types
-only — no VolmLib, no Adventure, no shaded types — so they link against a plain Spigot or Paper compile
-classpath. That guarantee covers those six types, not the whole of `art.arcane.hiddenore.api`: the
-implementation class that lives beside them does reference VolmLib, which is why you hold the interface and not
-the implementation. The `HiddenOreDropsEvent` accessors carry JetBrains nullability annotations; those are
-class-retained and need no dependency of their own.
+HiddenOre hides rewards behind ordinary blocks. Visible ore is gone from world
+generation.
+
+The API lets another plugin:
+
+- Ask where a block came from
+- Find hidden veins in a seeded world
+- Refuse a reward before HiddenOre computes it
+- Edit a reward before HiddenOre delivers it
+
+The six contract types at the end of this page expose Bukkit types, `java.*`
+types, and their own types only. They do not expose VolmLib, Adventure, or
+shaded types. You can compile against a plain Spigot or Paper classpath.
+
+That guarantee covers those six types, not all of `art.arcane.hiddenore.api`.
+The implementation class next to them references VolmLib. Hold the interface.
+Do not hold the implementation.
+
+The `HiddenOreDropsEvent` accessors carry JetBrains nullability annotations.
+Those annotations are class-retained. They need no extra dependency.
 
 | You want to…                                                     | Read                                    |
 |------------------------------------------------------------------|-----------------------------------------|
-| ask where a block came from, or where the veins are               | [service.md](/hiddenore/api/service)                |
-| refuse a reward, or add to one                                    | [events.md](/hiddenore/api/events)                  |
-| show HiddenOre state on a scoreboard or in chat                   | [placeholders.md](/hiddenore/api/placeholders)      |
+| ask where a block came from, or where the veins are               | [service](/hiddenore/api/service)                |
+| refuse a reward, or add to one                                    | [events](/hiddenore/api/events)                  |
+| show HiddenOre state on a scoreboard or in chat                   | [placeholders](/hiddenore/api/placeholders)      |
 
-Two entry points exist and they are not interchangeable:
+Two entry points exist. They are not interchangeable:
 
-- **`HiddenOreService`** (ServicesManager) answers questions. It never changes anything, and every question
-  about a block is answered only on the thread that owns that block's region.
-- **`HiddenOreBreakEvent` / `HiddenOreDropsEvent`** are pushed to you during a break. One is cancellable and is
-  where you refuse; the other is not cancellable and is where you edit.
+- **`HiddenOreService`** (ServicesManager) answers questions. It never changes
+  anything. Every question about a block is answered only on the thread that
+  owns that block's region.
+- **`HiddenOreBreakEvent` / `HiddenOreDropsEvent`** fire during a break. The
+  first is cancellable. Use it to refuse. The second is not cancellable. Use it
+  to edit.
 
 ---
 
@@ -53,10 +65,13 @@ dependencies:
       join-classpath: true
 ```
 
-`join-classpath: true` is mandatory on Paper — plugin classloaders are isolated, and without it you get
-`NoClassDefFoundError` on `art.arcane.hiddenore.api.*` even though the classes ship unrelocated. HiddenOre
-relocates only `io.github.slimjar`, `org.bstats` and `net.kyori`; nothing under `art.arcane.hiddenore` is
-relocated, so the class names you compile against are the class names present at runtime.
+`join-classpath: true` is mandatory on Paper. Plugin classloaders are isolated.
+Without it you get `NoClassDefFoundError` on `art.arcane.hiddenore.api.*` even
+though the classes ship unrelocated.
+
+HiddenOre relocates only `io.github.slimjar`, `org.bstats` and `net.kyori`.
+Nothing under `art.arcane.hiddenore` is relocated. The class names you compile
+against are the class names at runtime.
 
 HiddenOre publishes no Maven artifact. Compile against the jar:
 
@@ -66,13 +81,16 @@ dependencies {
 }
 ```
 
-Two jars come out of a HiddenOre build. The unclassified `HiddenOre-<version>.jar` is the thin compile-facing
-artifact — HiddenOre's own classes and nothing else. The `HiddenOre-<version>-plugin.jar` is the shaded
-deployable that goes in `plugins/`. Either one satisfies the compiler; prefer the thin one so your build cannot
-accidentally resolve a shaded internal type.
+A HiddenOre build produces two jars. The unclassified
+`HiddenOre-<version>.jar` is the thin compile-facing artifact. It contains
+HiddenOre's own classes and nothing else. The
+`HiddenOre-<version>-plugin.jar` is the shaded deployable that goes in
+`plugins/`. Either jar satisfies the compiler. Prefer the thin jar so your
+build cannot resolve a shaded internal type.
 
-HiddenOre requires Java 25 and a Paper API 26.1.2 - 26.2 server, and declares `folia-supported: true`. Its classes are
-Java 25 bytecode, so your own build needs JDK 25 or newer to read them, whatever release level you target.
+HiddenOre requires Java 25 and a Paper API 26.1.2 - 26.2 server. It declares
+`folia-supported: true`. Its classes are Java 25 bytecode. Your build needs
+JDK 25 or newer to read them, whatever release level you target.
 
 ---
 
@@ -113,49 +131,70 @@ public final class QuarryGuard extends JavaPlugin {
 }
 ```
 
-`getRegistration` returns `null` when HiddenOre is absent, failed to enable, or has already drained. There is
-exactly one registration, at `ServicePriority.Normal`; HiddenOre never registers a second provider and no
-other plugin is expected to.
+`getRegistration` returns `null` when HiddenOre is absent, failed to enable, or
+has already drained. There is exactly one registration, at
+`ServicePriority.Normal`. HiddenOre never registers a second provider. No other
+plugin is expected to.
 
-Events do not need the service, but they do need the classes. **Keep every HiddenOre listener in a class of its
-own and register it only when HiddenOre is present.** `registerEvents` resolves the parameter types of your
-handler methods, so registering a listener that mentions `HiddenOreBreakEvent` on a server without HiddenOre
-throws `NoClassDefFoundError` — a `softdepend` makes the plugin optional, not its classes. The non-null service
-lookup above is one presence check; `getServer().getPluginManager().isPluginEnabled("HiddenOre")` is the other,
-for an integration that wants events and no service at all.
+Events do not need the service. They do need the classes. **Keep every
+HiddenOre listener in a class of its own. Register it only when HiddenOre is
+present.**
+
+`registerEvents` resolves the parameter types of your handler methods.
+Registering a listener that mentions `HiddenOreBreakEvent` on a server without
+HiddenOre throws `NoClassDefFoundError`. A `softdepend` makes the plugin
+optional. It does not make the classes optional.
+
+The non-null service lookup above is one presence check.
+`getServer().getPluginManager().isPluginEnabled("HiddenOre")` is the other. Use
+the second when you want events and no service.
 
 ---
 
 ## The lifecycle, in order
 
-1. **HiddenOre enables.** It declares `load: STARTUP`, so it enables before worlds load. It reads
-   `config.yml` and `language.yml` and publishes one immutable runtime record.
-2. **The service is registered** with the ServicesManager at `ServicePriority.Normal`. A line naming the
-   registration is written to the console.
-3. **Your plugin enables.** With `softdepend`/`load: BEFORE`, this happens after step 2, so acquiring the
-   service in your own `onEnable` is safe.
-4. **During play**, the service answers questions and the two events fire on the region thread that owns the
-   broken block.
-5. **A configuration reload** (`/hiddenore reload`, or the config file watcher noticing an edit) validates and
-   swaps the runtime record in one assignment. The watcher uses operating-system events when they arrive and
-   also compares `config.yml` and `language.yml` signatures about once a second, so a silent bind-mount
-   watcher still picks up a finished save. Your `HiddenOreService` reference stays valid and keeps working
-   — but its *answers* change: `isSeeded()` can flip, a material can stop being managed, and the seeded vein
-   layout is recomputed. If the new configuration is invalid the reload is rejected, the previous runtime stays
-   live, and nothing you hold changes.
-6. **Drain** — plugin disable, or a hot unload by a development tool — unregisters the service and the
-   PlaceholderAPI expansion. A `HiddenOreService` reference you cached still works in the sense that it does
-   not throw: it degrades to "no data" (see the failure table in [service.md](/hiddenore/api/service)). Re-acquire on
-   `PluginEnableEvent` rather than holding a reference across a reload of HiddenOre itself.
+1. **HiddenOre enables.** It declares `load: STARTUP`, so it enables before
+   worlds load. It reads `config.yml` and `language.yml`. It publishes one
+   immutable runtime configuration.
+2. **HiddenOre registers the service** with the ServicesManager at
+   `ServicePriority.Normal`. The console gets a line that names the
+   registration.
+3. **Your plugin enables.** With `softdepend`/`load: BEFORE`, this happens
+   after step 2. Acquiring the service in your `onEnable` is safe.
+4. **During play**, the service answers questions. The two events fire on the
+   region thread that owns the broken block.
+5. **A configuration reload** (`/hiddenore reload`, or the config file watcher)
+   validates the new file. It swaps the runtime configuration in one
+   assignment.
+6. **Drain** — plugin disable, or a hot unload by a development tool —
+   unregisters the service and the PlaceholderAPI expansion.
+
+The watcher uses operating-system events when they arrive. It also compares
+`config.yml` and `language.yml` signatures about once a second. A silent
+bind-mount write still reaches a finished save.
+
+Your `HiddenOreService` reference stays valid. Its answers can change.
+`isSeeded()` can flip. A material can stop being managed. The seeded vein
+layout is recomputed.
+
+If the new configuration is invalid, HiddenOre rejects the reload. The previous
+runtime configuration stays live. Nothing you hold changes.
+
+A cached `HiddenOreService` reference still works after drain. It does not
+throw. It degrades to "no data". See the failure table in
+[service](/hiddenore/api/service). Re-acquire on `PluginEnableEvent`. Do not
+hold a reference across a reload of HiddenOre itself.
 
 ---
 
 ## Threading, in one line
 
-Every method that names a `Block`, `Chunk` or `Location` must be called from the thread that owns that
-position's region, and several of them throw `IllegalStateException` if it is not. `ownsRegion(World, int, int)`
-is the probe you branch on. On Paper and Spigot that is the main thread; on Folia it is one specific region
-thread out of many. [service.md](/hiddenore/api/service) states this per method and shows the branch.
+Every method that names a `Block`, `Chunk` or `Location` must run on the thread
+that owns that position's region. Several methods throw `IllegalStateException`
+if the thread is wrong. `ownsRegion(World, int, int)` is the probe you branch
+on. On Paper and Spigot that thread is the main thread. On Folia it is one
+specific region thread. [service](/hiddenore/api/service) states this per method
+and shows the branch.
 
 ---
 
@@ -167,6 +206,8 @@ thread out of many. [service.md](/hiddenore/api/service) states this per method 
 | `art.arcane.volmlib.integration.IntegrationServiceContract` | HiddenOre registers a provider for this VolmLib service so that React can read its telemetry. It is a VolmLib contract, versioned by VolmLib, and requires VolmLib on your classpath |
 | Everything under `art.arcane.hiddenore.rules`, `.vein`, `.listeners`, `.service`, `.generation`, `.util` | Public Java classes for HiddenOre's own use. They reference shaded and VolmLib types, and they change without notice |
 
-A regression test in the HiddenOre build asserts that no method, constructor or field of `HiddenOreService`,
-`ChunkProvenance`, `BlockOrigin`, `HiddenVein`, `HiddenOreBreakEvent` or `HiddenOreDropsEvent` mentions a type
-outside `java.*`, `org.bukkit.*` and `art.arcane.hiddenore.api.*`. Those six types are the contract.
+A regression test in the HiddenOre build asserts the contract types. No method,
+constructor, or field of `HiddenOreService`, `ChunkProvenance`, `BlockOrigin`,
+`HiddenVein`, `HiddenOreBreakEvent`, or `HiddenOreDropsEvent` may mention a
+type outside `java.*`, `org.bukkit.*`, and `art.arcane.hiddenore.api.*`. Those
+six types are the contract.

@@ -2,37 +2,38 @@
 title: "Skill - Blocking"
 description: "Adapt documentation: Skill - Blocking"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Blocking is the shield skill. You level it by taking hits with your shield up, and it pays out whether the hit was an arrow, a sword, or a creeper. If you play the tank in a group, or you just get shot at a lot, this is your tree.
+Blocking is the shield skill. You level it by taking hits with your shield up. It pays out whether the hit was an arrow, a sword, or a creeper. If you play the tank in a group, or you just get shot at a lot, this is your tree.
 
-The defensive adaptations turn a raised shield from a flat damage sponge into something with timing and positioning behind it. Perfect Guard rewards raising the shield at the last instant with a full negate and a stagger. Bastion Stance rewards planting your feet. Mirror Block throws arrows back where they came from. Counter Guard builds up charges while you eat hits and spends them to hurt whoever is hitting you. Tempered Guard quietly patches your gear while you soak.
+The defensive adaptations turn a raised shield from a flat damage sponge into something with timing and positioning. Perfect Guard rewards raising the shield at the last instant with a full negate and a stagger. Bastion Stance rewards planting your feet. Mirror Block throws arrows back where they came from. Counter Guard builds up charges while you eat hits and spends them to hurt whoever is hitting you. Tempered Guard quietly patches your gear while you soak.
 
-There is a support side too. Shield Wall shelters allies standing behind you from projectiles, Interpose lets you eat part of a hurt ally's damage on your own shield, and Shieldbearer's Resolve gets your shield back fast when an axe knocks it out of your hands.
+There is a support side too. Shield Wall shelters allies standing behind you from projectiles. Interpose lets you eat part of a hurt ally's damage on your own shield. Shieldbearer's Resolve gets your shield back fast when an axe knocks it out of your hands.
 
-The rest are crafting utilities that came along for the ride: chainmail armor, saddles, horse armor, an alternate shield recipe with a netherite upgrade, and Multi-Armor, which merges an elytra into your chestplate so it swaps itself when you jump off a cliff.
+The rest are crafting utilities. You get chainmail armor, saddles, horse armor, and an alternate shield recipe with a netherite upgrade. Multi-Armor merges an elytra into your chestplate so it swaps itself when you jump off a cliff.
 
 ## Earning XP
 
-Every hit you take while blocking pays a flat XP award, on a shared cooldown so a burst of arrows does not pay ten times. The same event records four stats: total blocked hits, total blocked damage, whether the hit was a projectile or melee, and whether it was a heavy hit, which means more than 5 damage in one blow.
+Every hit you take while blocking pays a flat XP award. A shared cooldown means a burst of arrows does not pay ten times. The same event records four stats. Those stats are total blocked hits, total
+blocked damage, projectile versus melee, and whether it was a heavy hit. A heavy hit means more than 5 damage in one blow.
 
-There is a second, off-by-default source. If you set `passiveXpForUsingShield` above zero, you also earn a trickle every skill tick just for having a shield in either hand. It is scaled by how much time actually elapsed, and it is awarded silently, so it never spams your screen.
+There is a second, off-by-default source. If you set `passiveXpForUsingShield` above zero, you also earn a trickle every skill tick just for having a shield in either hand. It is scaled by how much time actually elapsed. It is awarded silently, so it never spams your screen.
 
 ## Adaptations
 
-All of these need the same things before they do anything: the adaptation learned at level 1 or higher, the Blocking skill and the adaptation both enabled, the player holding the matching `adapt.use.` permission (or the `adapt.use.*` wildcard), and any protection or region plugin on the server allowing the action. Anything that hurts another entity also runs the normal PvP and PvE checks first.
+All of these need the same things before they do anything. The adaptation is learned at level 1 or higher. The Blocking skill and the adaptation are both enabled. The player holds the matching `adapt.use.` permission (or the `adapt.use.*` wildcard). Any protection or region plugin on the server allows the action. Anything that hurts another entity also runs the normal PvP and PvE checks first.
 
 ### Multi-Armor (`blocking-multiarmor`)
 
-Merge an elytra into a chestplate and get one item that switches between the two by itself. On the ground it is your chestplate. Jump off something and once you have fallen more than four blocks it becomes an elytra. It is a travel adaptation more than a combat one.
+Merge an elytra into a chestplate and get one item that switches between the two by itself. On the ground it is your chestplate. Jump off something. Once you have fallen more than four blocks it becomes an elytra. It is a travel adaptation more than a combat one.
 
 How to use it:
 
 1. Learn Multi-Armor.
-2. Open your inventory, pick up the elytra on your cursor, and left-click it onto the chestplate (or the other way round). One of the two has to be an elytra.
+2. Open your inventory. Pick up the elytra on your cursor. Left-click it onto the chestplate (or the other way round). One of the two has to be an elytra.
 3. Wear the merged item. It swaps itself as you move.
 4. To take it apart, sneak and drop it. The parts come back out with their names, enchantments and damage intact.
 
@@ -74,13 +75,13 @@ Also `permanent` by default.
 
 ### Counter Guard (`blocking-counter-guard`)
 
-Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on, so a long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow. Stack gains and confirmed spends briefly show `Counter Guard current/max` on the action bar.
+Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on. A long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow. Stack gains and confirmed spends briefly show `Counter Guard current/max` on the action bar.
 
 Works on its own once learned. Keep your shield up and stacks build themselves.
 
 ### Bastion Stance (`blocking-bastion-stance`)
 
-Sneak while actively blocking with a shield and you plant yourself. You gain knockback resistance and explosion knockback resistance while the stance holds, incoming projectile damage is cut, and each projectile also rolls a chance to be blocked outright for zero damage.
+Sneak while actively blocking with a shield and you plant yourself. You gain knockback resistance and explosion knockback resistance while the stance holds. Incoming projectile damage is cut. Each projectile also rolls a chance to be blocked outright for zero damage.
 
 How to use it:
 
@@ -88,17 +89,17 @@ How to use it:
 2. Hold a shield in either hand and raise it.
 3. Hold sneak.
 
-The stance re-checks itself on a short timer and drops the moment you stop sneaking, stop blocking, lose the shield, or leave survival or adventure mode.
+The stance re-checks itself on a short timer. It drops the moment you stop sneaking, stop blocking, lose the shield, or leave survival or adventure mode.
 
 ### Mirror Block (`blocking-mirror-block`)
 
-While you are blocking with a shield, an incoming projectile can be sent back at whoever fired it instead of hitting you. The reflected shot carries a fraction of the original damage and flies at a fraction of the original speed. Each reflect starts a cooldown, and a projectile that was already reflected cannot be reflected again.
+While you are blocking with a shield, an incoming projectile can be sent back at whoever fired it instead of hitting you. The reflected shot carries a fraction of the original damage. It flies at a fraction of the original speed. Each reflect starts a cooldown. A projectile that was already reflected cannot be reflected again.
 
 Works on its own once learned. Just block projectiles.
 
 ### Bulwark Bash (`blocking-bulwark-bash`)
 
-Sprint, jump, and hit something on the way down while a shield is in your off hand. The target takes bonus damage and gets thrown back, and everything else in range is knocked away and slowed. It is the shield player's opener and gap-closer at the same time.
+Sprint, jump, and hit something on the way down while a shield is in your off hand. The target takes bonus damage and gets thrown back. Everything else in range is knocked away and slowed. It is the shield player's opener and gap-closer at the same time.
 
 How to use it:
 
@@ -108,11 +109,11 @@ How to use it:
 4. Jump.
 5. Hit an enemy while you are still falling.
 
-Only the entity you actually hit takes the extra damage; the rest of the shockwave is knockback and stun. Each bash puts your shield on cooldown.
+Only the entity you actually hit takes the extra damage. The rest of the shockwave is knockback and stun. Each bash puts your shield on cooldown.
 
 ### Shield Wall (`blocking-shield-wall`)
 
-Stand in front of your team with your shield up and facing the incoming fire, and projectiles that hit players behind you land softer. Adapt looks at every blocking player near the target, keeps only the ones inside range, inside the protection arc, and actually facing into the shot, and applies the strongest reduction it finds.
+Stand in front of your team with your shield up and facing the incoming fire. Projectiles that hit players behind you land softer. Adapt looks at every blocking player near the target. It keeps only the ones inside range, inside the protection arc, and actually facing into the shot. It applies the strongest reduction it finds.
 
 How to use it:
 
@@ -124,7 +125,7 @@ Only players are shielded this way. The XP goes to the blocker, not the ally.
 
 ### Perfect Guard (`blocking-perfect-guard`)
 
-Raise your shield in the last fraction of a second before a hit lands and the hit is cancelled outright, and the attacker eats a stagger. It is a parry, not a block, and it takes real timing: the window is short and there is a cooldown between successful guards.
+Raise your shield in the last fraction of a second before a hit lands. The hit is cancelled outright. The attacker eats a stagger. It is a parry, not a block. The window is short. There is a cooldown between successful guards.
 
 How to use it:
 
@@ -137,19 +138,19 @@ It negates melee and projectiles alike. If the source is a living attacker you a
 
 ### Tempered Guard (`blocking-tempered-guard`)
 
-Whenever a blocked hit actually deals positive durability damage to your shield, Tempered Guard rolls a chance to repair gear. One tick later, after vanilla applies that shield wear, it repairs the shield first and then the first damaged armor piece it finds. It will not carry you through a long fight, but over a session it noticeably slows how fast your kit wears out.
+Whenever a blocked hit actually deals positive durability damage to your shield, Tempered Guard rolls a chance to repair gear. One tick later, after vanilla applies that shield wear, it repairs the shield first. Then it repairs the first damaged armor piece it finds. It will not carry you through a long fight. Over a session it slows how fast your kit wears out.
 
 Works on its own once learned.
 
 ### Shieldbearer's Resolve (`blocking-shieldbearers-resolve`)
 
-Getting your shield axed is normally a death sentence. With this, the moment an axe disables your shield you get Resistance and the shield cooldown is cut down, so you are back behind cover much sooner.
+Getting your shield axed is normally a death sentence. With this, the moment an axe disables your shield you get Resistance. The shield cooldown is cut down. You are back behind cover much sooner.
 
 Works on its own once learned. It only fires when the attacker was actually swinging an axe and your shield really went on cooldown.
 
 ### Phalanx Crafter (`blocking-phalanx-crafter`)
 
-Two levels unlock two shaped crafting-table recipes. Level 1 adds an alternate way to make an ordinary shield. Level 2 upgrades an existing shield into a Netherite-Reinforced Shield. The reinforced shield blocks exactly like a normal shield; its special benefit is 1,200 maximum durability instead of normal shield durability. It is fully repaired during the upgrade and keeps the input shield's enchantments and banner face, although its display name becomes gold.
+Two levels unlock two shaped crafting-table recipes. Level 1 adds an alternate way to make an ordinary shield. Level 2 upgrades an existing shield into a Netherite-Reinforced Shield. The reinforced shield blocks exactly like a normal shield. Its special benefit is 1,200 maximum durability instead of normal shield durability. It is fully repaired during the upgrade. It keeps the input shield's enchantments and banner face. Its display name becomes gold.
 
 How to use it:
 
@@ -174,13 +175,14 @@ NSN
 .N.
 ```
 
-This consumes four netherite ingots and the center shield, producing one fully repaired Netherite-Reinforced Shield with 1,200 maximum durability.
+This consumes four netherite ingots and the center shield. It produces one fully repaired Netherite-Reinforced Shield with 1,200 maximum durability.
 
 Crafting the netherite recipe below level 2 is cancelled with a deny sound. Any existing banner base color or pattern on the input shield, including an explicitly white face, is preserved. A shield with no banner face receives a black face with an orange border and light-gray rhombus so the reinforced result is visually distinct.
 
 ### Interpose (`blocking-interpose`)
 
-Sneak-block near a hurt ally and part of the damage they take gets pulled onto your shield instead. It only kicks in once the ally is below the low-health threshold, so it saves people who are actually about to die rather than leaking your durability all fight.
+Sneak-block near a hurt ally and part of the damage they take gets pulled onto your shield instead. It only kicks in once the ally is below the low-health threshold. It saves
+people who are about to die rather than leaking your durability all fight.
 
 How to use it:
 
@@ -255,7 +257,13 @@ Written to `plugins/Adapt/adapt/skills/blocking.toml` on first load.
 | `challenge_blocking_interpose_250` | `blocking.interpose.damage-redirected` | 250 |
 | `challenge_blocking_interpose_2k` | `blocking.interpose.damage-redirected` | 2000 |
 
-Five advancements are granted directly instead of by a stat threshold: `challenge_blocking_bastion_10` after ten projectiles in one stance session, `challenge_blocking_counter_max` on a Counter Guard reflect fired at full stacks, `challenge_blocking_mirror_3in5` on three Mirror Block reflects inside one window, `challenge_blocking_bulwark_4` when one bash affects four or more targets, and `challenge_blocking_phalanx_netherite` on the first netherite shield crafted.
+Five advancements are granted directly instead of by a stat threshold.
+`challenge_blocking_bastion_10` fires after ten projectiles in one stance
+session. `challenge_blocking_counter_max` fires on a Counter Guard reflect at
+full stacks. `challenge_blocking_mirror_3in5` fires on three Mirror Block
+reflects inside one window. `challenge_blocking_bulwark_4` fires when one bash
+affects four or more targets. `challenge_blocking_phalanx_netherite` fires on
+the first netherite shield crafted.
 
 ### Shared adaptation config keys
 
@@ -272,7 +280,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries the
 | `maxLevel` | per adaptation | Highest level a player can buy. |
 | `initialCost` | per adaptation | Knowledge cost of level 1. |
 
-The tick interval below is the adaptation's background tick rate. Only Bastion Stance does work on that tick, clearing stale stance sessions; for every other Blocking adaptation the interval is idle bookkeeping.
+The tick interval below is the adaptation's background tick rate. Only Bastion Stance does work on that tick, clearing stale stance sessions. For every other Blocking adaptation the interval is idle bookkeeping.
 
 ### Multi-Armor
 
@@ -597,7 +605,11 @@ Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so t
 
 Listened events: `PrepareItemCraftEvent` and `CraftItemEvent`.
 
-Recipes: `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, gives a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only, gives a fully repaired shield with max durability 1200 named "Netherite-Reinforced Shield"). The netherite preview and output clone the input shield, preserving any existing banner base color or pattern; a shield without banner metadata instead receives a black base, orange border, and light-gray rhombus. No adaptation-specific config keys.
+Recipes follow. `blocking-phalanx-field-shield` uses `WHITE_WOOL` x3 on top,
+`OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, and one `OAK_PLANKS`
+below center. It gives a plain `SHIELD`. `blocking-phalanx-netherite-shield`
+uses four `NETHERITE_INGOT` around a `SHIELD` at level 2 only. It gives a fully
+repaired shield with max durability 1200 named "Netherite-Reinforced Shield". The netherite preview and output clone the input shield, preserving any existing banner base color or pattern. A shield without banner metadata instead receives a black base, orange border, and light-gray rhombus. No adaptation-specific config keys.
 
 ### Interpose
 

@@ -2,30 +2,30 @@
 title: "Skill - Brewing"
 description: "Adapt documentation: Skill - Brewing"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Brewing is the potion skill. You level it by actually using potions, not by staring at a brewing stand: drinking one pays out, and landing a splash potion pays out. The stronger the effect and the longer it lasts, the more it is worth.
+Brewing is the potion skill. You level it by using potions, not by staring at a brewing stand. Drinking one pays out. Landing a splash potion pays out. The stronger the effect and the longer it lasts, the more it is worth.
 
-Two of the adaptations change how brewing works. Lingering Brew stretches the duration of everything that comes out of your stand. Super Heated Brew makes a stand surrounded by fire or lava run faster, which turns a lava-lined brewing room into a real build instead of decoration.
+Two of the adaptations change how brewing works. Lingering Brew stretches the duration of everything that comes out of your stand. Super Heated Brew makes a stand surrounded by fire or lava run faster. A lava-lined brewing room becomes a real build instead of decoration.
 
-The other eleven unlock potions vanilla does not let you make. Absorption, Health Boost, Resistance, Haste and Saturation on the useful side; Blindness, Darkness, Decay, Fatigue, Hunger and Nausea on the throwing side. Each one adds two recipes (Darkness adds one), a normal strength and a stronger short version, and each is capped at level 1.
+The other eleven unlock potions vanilla does not let you make. Absorption, Health Boost, Resistance, Haste and Saturation sit on the useful side. Blindness, Darkness, Decay, Fatigue, Hunger and Nausea sit on the throwing side. Each one adds two recipes (Darkness adds one): a normal strength and a stronger short version. Each is capped at level 1.
 
-Every custom recipe is permanent once learned, so pick the ones you want. The brewing stand also remembers who owns it, which is how Lingering Brew and Super Heated Brew know whose adaptation level to use.
+Every custom recipe is permanent once learned, so pick the ones you want. The brewing stand also remembers who owns it. That is how Lingering Brew and Super Heated Brew know whose adaptation level to use.
 
 ## Earning XP
 
-Drinking a potion pays a base award plus a bonus scaled off the potion's custom effects and whether it is an upgraded (level II) potion. Water, mundane, thick and awkward potions are ignored, since they do nothing.
+Drinking a potion pays a base award plus a bonus. The bonus scales off the potion's custom effects and whether it is an upgraded (level II) potion. Water, mundane, thick and awkward potions are ignored, since they do nothing.
 
 Throwing a splash potion pays the same base award plus a bonus for the total effect power of the splash. It also records how many entities the cloud actually caught.
 
-Both awards share one cooldown, so chugging a stack does not pay per bottle. Placing a brewing stand records a stat for the placement challenges but pays no XP on its own.
+Both awards share one cooldown. Chugging a stack does not pay per bottle. Placing a brewing stand records a stat for the placement challenges but pays no XP on its own.
 
 ## Adaptations
 
-All of these need the same things before they do anything: the adaptation learned at level 1 or higher, the Brewing skill and the adaptation both enabled, the player holding the matching `adapt.use.` permission (or the `adapt.use.*` wildcard), and any protection or region plugin on the server allowing the action.
+All of these need the same things before they do anything. The adaptation is learned at level 1 or higher. The Brewing skill and the adaptation are both enabled. The player holds the matching `adapt.use.` permission (or the `adapt.use.*` wildcard). Any protection or region plugin on the server allows the action.
 
 ### Lingering Brew (`brewing-lingering`)
 
@@ -33,7 +33,7 @@ Everything with a duration that comes out of your brewing stand comes out longer
 
 Works on its own once learned. Brew as normal.
 
-The stand has to have a recorded owner, and the boost uses that owner's level, not the level of whoever pulls the bottles out. A stand gets its owner recorded when a player places it, or the first time a player opens one that has no owner yet. Extended potions get rewritten lore listing each effect with its new duration, and the vanilla effect tooltip is hidden so the numbers do not appear twice.
+The stand has to have a recorded owner. The boost uses that owner's level, not the level of whoever pulls the bottles out. A stand gets its owner recorded when a player places it, or the first time a player opens one that has no owner yet. Extended potions get rewritten lore listing each effect with its new duration. The vanilla effect tooltip is hidden so the numbers do not appear twice.
 
 ### Super Heated Brew (`brewing-super-heated`)
 
@@ -46,7 +46,7 @@ How to use it:
 3. Put fire or lava directly below it or against any of its four sides.
 4. Brew as normal. The timer runs down faster while the stand is hot.
 
-Like Lingering Brew, this uses the stand owner's level, and the owner has to be online. Adapt only watches stands it has recently seen activity on, so a stand that has been idle for a while stops being checked until someone touches it again.
+Like Lingering Brew, this uses the stand owner's level, and the owner has to be online. Adapt only watches stands it has recently seen activity on. A stand that has been idle for a while stops being checked until someone touches it again.
 
 ### Brewing custom potions
 
@@ -57,7 +57,7 @@ The eleven potion adaptations below all work the same way. Each adds recipes to 
 3. Put the required base potion in the bottle slots.
 4. Pick up the custom ingredient and left-click it into the ingredient slot yourself.
 
-That last step matters. Adapt watches for the click rather than for the item appearing, checks that the click was not cancelled, and then confirms one tick later that you still have the same brewing stand open before it starts the brew. Dropping the ingredient in by hopper or dragging it will not start a custom brew. The player who clicks the ingredient in is the one whose adaptation is checked.
+That last step matters. Adapt watches for the click rather than for the item appearing. It checks that the click was not cancelled. Then one tick later it confirms that you still have the same brewing stand open before it starts the brew. Dropping the ingredient in by hopper or dragging it will not start a custom brew. The player who clicks the ingredient in is the one whose adaptation is checked.
 
 ### Bottled Absorption (`brewing-absorption`)
 
@@ -69,7 +69,7 @@ Adds Potions of Blindness, which black out whatever they hit. Throwing material.
 
 ### Bottled Darkness (`brewing-darkness`)
 
-Adds a Potion of Darkness, which drops a shroud over the target's vision. It brews from a Night Vision potion with black concrete, and there is only one strength. The menu lore also claims Darkness stops the drinker sprinting; that is a claim about the vanilla effect and nothing in Adapt enforces it.
+Adds a Potion of Darkness, which drops a shroud over the target's vision. It brews from a Night Vision potion with black concrete, and there is only one strength. The menu lore also claims Darkness stops the drinker sprinting. That is a claim about the vanilla effect and nothing in Adapt enforces it.
 
 ### Bottled Decay (`brewing-decay`)
 
@@ -85,7 +85,7 @@ Adds Potions of Haste for when Efficiency V still is not fast enough. An amethys
 
 ### Bottled Life (`brewing-healthboost`)
 
-Adds Potions of Health Boost, which raise your maximum hearts rather than healing you. A golden apple on an Instant Health potion for the normal version, an enchanted golden apple for the stronger one. Both last the same length; the enchanted apple buys you the extra tier, not extra time.
+Adds Potions of Health Boost, which raise your maximum hearts rather than healing you. A golden apple on an Instant Health potion for the normal version, an enchanted golden apple for the stronger one. Both last the same length. The enchanted apple buys you the extra tier, not extra time.
 
 ### Bottled Hunger (`brewing-hunger`)
 
@@ -180,9 +180,11 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries the
 | `maxLevel` | per adaptation | Highest level a player can buy. |
 | `initialCost` | per adaptation | Knowledge cost of level 1. |
 
-The tick interval below is the adaptation's background tick rate. Only Super Heated Brew does work on that tick, and only while it has a stand to watch; for every other Brewing adaptation the interval is idle bookkeeping.
+The tick interval below is the adaptation's background tick rate. Only Super Heated Brew does work on that tick, and only while it has a stand to watch. For every other Brewing adaptation the interval is idle bookkeeping.
 
-All eleven potion adaptations share the same progression: max level 1, initial knowledge cost 2, base knowledge cost 3, cost factor 1, and `permanent` defaulting to `true`. They all listen to `AdaptBrewCompleteEvent` and use it only to record the brewed-potion stat and play effects; the recipes themselves are gated by `BrewingManager`. Every custom recipe brews for 320 ticks, which is 16 seconds. Fuel cost is in the same units the stand stores, where one blaze powder is 20 units.
+All eleven potion adaptations share the same progression. Max level is 1.
+Initial knowledge cost is 2. Base knowledge cost is 3. Cost factor is 1.
+`permanent` defaults to `true`. They all listen to `AdaptBrewCompleteEvent` and use it only to record the brewed-potion stat and play effects. The recipes themselves are gated by `BrewingManager`. Every custom recipe brews for 320 ticks, which is 16 seconds. Fuel cost is in the same units the stand stores, where one blaze powder is 20 units.
 
 ### Lingering Brew
 
@@ -224,7 +226,9 @@ New duration for each non-instant effect is the flat tick bonus plus the origina
 
 Listened events: `InventoryMoveItemEvent`, `BrewEvent` and `InventoryClickEvent`, all of which mark the stand as recently active so it gets ticked.
 
-Heat sources are counted on five faces: the block below the stand and the four sides. Each tick removes `ceil(interval_in_ticks * total_percent)` from the brew timer, where total percent is the fire boost times the fire block count plus the lava boost times the lava block count. A stand with no brew running is checked a few more times and then dropped from the watch list.
+Heat sources are counted on five faces: the block below the stand and the four sides. Each tick removes `ceil(interval_in_ticks * total_percent)` from the brew timer.
+Total percent is the fire boost times the fire block count plus the lava boost
+times the lava block count. A stand with no brew running is checked a few more times and then dropped from the watch list.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

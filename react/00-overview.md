@@ -2,20 +2,20 @@
 title: "Overview"
 description: "React documentation: Overview"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-React is a runtime performance and monitoring plugin for Paper, Purpur, and Folia. It samples the server, runs optional features and tweaks that bound lag sources, exposes operator actions for incidents, and renders monitors and maps in-game.
+React is a runtime performance and monitoring plugin for Paper, Purpur, and Folia. It samples the server. Optional features and tweaks bound lag sources. Operator actions, monitors, and maps support incident response.
 
 ## Feature Map
 
-- **Samplers** — metrics for tick time, entities, hoppers, redstone, memory, cross-plugin integrations, and more. See [10 - Samplers & Metrics](/react/10-samplers-metrics).
-- **Features** — optional systems covering entities, maps, governors, world mechanics, and integrations. See [04 - Features - Entity Systems](/react/04-features-entity-systems), [05 - Features - Maps & Overlays](/react/05-features-maps-overlays), [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics), and [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).
-- **Tweaks** — lighter event/NMS accelerations (fluids, fire, shorthands, hardstops). See [08 - Tweaks Catalog](/react/08-tweaks-catalog).
-- **Actions** — operator one-shots (purge, quarantine, incident playbook). See [09 - Actions Catalog](/react/09-actions-catalog).
-- **Monitors and maps** — action bar, map GUI, heatmaps. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
+- **Samplers** — metrics for tick time, entities, hoppers, redstone, memory, and cross-plugin integrations. See [10 - Samplers & Metrics](/react/10-samplers-metrics).
+- **Features** — optional systems for entities, maps, governors, world mechanics, and integrations. See [04 - Features - Entity Systems](/react/04-features-entity-systems). See also [05 - Features - Maps & Overlays](/react/05-features-maps-overlays), [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics), and [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).
+- **Tweaks** — lighter event and NMS accelerations. Examples are fluids, fire, shorthands, and hardstops. See [08 - Tweaks Catalog](/react/08-tweaks-catalog).
+- **Actions** — operator one-shots such as purge, quarantine, and the incident playbook. See [09 - Actions Catalog](/react/09-actions-catalog).
+- **Monitors and maps** — action bar, map GUI, and heatmaps. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
 - **Incident mode** — score-driven posture and playbooks. See [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
 - **Public plugin API** — entity protection, metric publishing, and PlaceholderAPI. See [16 - API - Getting Started](/react/16-api-getting-started), [17 - API - Entity Protection](/react/17-api-entity-protection), [18 - API - Metric Publishing](/react/18-api-metric-publishing), and [19 - API - PlaceholderAPI](/react/19-api-placeholderapi).
 
@@ -28,7 +28,7 @@ React is a runtime performance and monitoring plugin for Paper, Purpur, and Foli
 | [02 - Commands & Permissions](/react/02-commands-permissions) | `/react` tree, permissions, shorthands |
 | [03 - Concepts](/react/03-concepts) | Registries, TOML layout, enable model |
 | [04 - Features - Entity Systems](/react/04-features-entity-systems) | Entity features |
-| [05 - Features - Maps & Overlays](/react/05-features-maps-overlays) | Map/overlay features |
+| [05 - Features - Maps & Overlays](/react/05-features-maps-overlays) | Map and overlay features |
 | [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics) | Governors and world mechanics |
 | [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations) | Capability-gated features |
 | [08 - Tweaks Catalog](/react/08-tweaks-catalog) | All tweaks |
@@ -44,7 +44,7 @@ React is a runtime performance and monitoring plugin for Paper, Purpur, and Foli
 | [18 - API - Metric Publishing](/react/18-api-metric-publishing) | Metrics API |
 | [19 - API - PlaceholderAPI](/react/19-api-placeholderapi) | `%react_…%` keys |
 
-Docs `00`–`15` are for operators; `16`–`19` are for plugin developers.
+Docs `00`–`15` are for operators. Docs `16`–`19` are for plugin developers.
 
 ## Project Layout
 
@@ -67,4 +67,4 @@ From `React/React/`, use Java 25:
 ./gradlew shadowJar
 ```
 
-The shaded plugin jar is written under `React/React/build/libs/`. The version suffix tracks the Minecraft API React was built against (for example `2.0.0-26.2`).
+The shaded plugin jar is written under `React/React/build/libs/`. The version suffix tracks the Minecraft API React was built against. An example is `2.0.0-26.2`.

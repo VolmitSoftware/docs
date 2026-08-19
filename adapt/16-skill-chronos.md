@@ -2,30 +2,34 @@
 title: "Skill - Chronos"
 description: "Adapt documentation: Skill - Chronos"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Chronos is the time skill. You level it by being alive and busy: walking around, sleeping in beds, throwing ender pearls, drinking or splashing Speed potions, and just staying alive without dying. Carrying a clock multiplies everything Chronos pays out, and the multiplier is biggest when the clock sits in your off hand.
+Chronos is the time skill. You level it by being alive and busy. Walking around, sleeping in beds, throwing ender pearls, drinking or splashing Speed potions, and staying alive without dying all pay. Carrying a clock multiplies everything Chronos pays out. The multiplier is biggest when the clock sits in your off hand.
 
-Because the XP comes from playing rather than from one specific action, Chronos has anti-AFK logic built in. If you stand still and stop doing varied things, your position variance drops and the plugin cuts your Chronos XP to a fraction until you move again. Doing several different kinds of things inside a short window pays a bonus instead, and night time pays a little more than day.
+Because the XP comes from playing rather than from one specific action, Chronos has anti-AFK logic built in. If you stand still and stop doing varied things, your position variance drops. The plugin cuts your Chronos XP to a fraction until you move again. Doing several different kinds of things inside a short window pays a bonus instead. Night time pays a little more than day.
 
-The 13 adaptations split into two groups. Some are consumable or gesture based: a bottle that stores time and dumps it into furnaces and crops, a thrown chrono bomb, a stasis bubble, two different rewinds. The rest are quiet passives that make you harder to kill, stretch your potion buffs, or fast-forward the blocks around you while you work.
+The 13 adaptations split into two groups. Some are consumable or gesture based. Those include a bottle that stores time
+and dumps it into furnaces and crops, a thrown chrono bomb, a stasis bubble, and
+two different rewinds. The rest are quiet passives that make you harder to kill, stretch your potion buffs, or fast-forward the blocks around you while you work.
 
 Chronos also has its own advancement chain for hours online, distance travelled, beds used, and ender pearl teleports.
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation to level 1 or higher, the skill and the adaptation are both enabled in config, you hold the `adapt.use` permission, and any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
+Everything below only runs when you have learned the adaptation to level 1 or higher. The skill and the adaptation are both enabled in config. You hold the `adapt.use` permission. Any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
 
 ### Time In A Bottle (`chronos-time-bottle`)
 
 A craftable bottle that slowly fills with stored time while you carry it, then dumps that time into something that would otherwise take a while. Furnaces, smokers, blast furnaces, brewing stands, campfires, growable blocks, and any Ageable entity such as a baby cow are all valid targets. It is the closest thing Adapt has to a personal fast-forward button.
 
-The recipe is shapeless and the plugin rejects the craft unless the potion in the grid is an actual Swiftness Potion, even though the recipe itself accepts any potion item.
+The recipe is shapeless. The plugin rejects the craft unless the potion in the grid is an actual Swiftness Potion. The recipe itself accepts any potion item.
 
-Spending time on a sapling can grow a whole tree. Before that happens the plugin checks every block the tree would occupy, fires a `StructureGrowEvent`, and cancels the entire tree if any block or any listening plugin says no.
+Spending time on a sapling can grow a whole tree. Before that happens the plugin checks every block the tree would occupy. It
+fires a `StructureGrowEvent`. It cancels the entire tree if any block or any
+listening plugin says no.
 
 **How to use it**
 
@@ -34,7 +38,7 @@ Spending time on a sapling can grow a whole tree. Before that happens the plugin
 3. Carry it. It charges on its own, once per second, up to the stored-time cap for your level.
 4. Right-click the furnace, brewing stand, campfire, growable block, or baby animal you want to speed up.
 
-On Folia you have to click the block directly. The air-click variant that ray-traces to a block is disabled there. Off Folia, an air click that finds a block still has to pass a normal right-click-block check first; furnaces and brewing stands additionally need container access, and campfires and growables need block-place permission.
+On Folia you have to click the block directly. The air-click variant that ray-traces to a block is disabled there. Off Folia, an air click that finds a block still has to pass a normal right-click-block check first. Furnaces and brewing stands additionally need container access, and campfires and growables need block-place permission.
 
 ### Aberrant Touch (`chronos-aberrant-touch`)
 
@@ -44,7 +48,8 @@ It works on its own once learned. Hit things.
 
 ### Instant Recall (`chronos-instant-recall`)
 
-Click with a clock and you snap back to where you were a few seconds ago with your health and hunger restored to what they were then. The clock is consumed and you lose half your remaining health, but the recall will never kill you: health is floored at 1. Your inventory is not rolled back.
+Click with a clock and you snap back to where you were a few seconds ago. Health
+and hunger restore to what they were then. The clock is consumed and you lose half your remaining health, but the recall will never kill you: health is floored at 1. Your inventory is not rolled back.
 
 **How to use it**
 
@@ -103,13 +108,14 @@ Works on its own once learned.
 
 ### Overtime (`chronos-overtime`)
 
-Beneficial potion effects applied to you last longer. The extension is a fraction of the original duration and scales with level, with a cap on how many bonus ticks any single effect can gain. Once the adaptation is at max level, harmful effects applied to you are cut to half duration as well.
+Beneficial potion effects applied to you last longer. The extension is a fraction of the original duration and scales with level. A
+cap limits how many bonus ticks any single effect can gain. Once the adaptation is at max level, harmful effects applied to you are cut to half duration as well.
 
 Works on its own once learned.
 
 ### Accelerate (`chronos-accelerate`)
 
-A quiet aura that pulses around you and nudges time forward on whatever it samples. Crops advance a growth stage, furnaces and smokers and blast furnaces and brewing stands jump forward a chunk of their remaining cook or brew time. You do not aim it; it just makes working near your farm and your furnace row faster.
+A quiet aura that pulses around you and nudges time forward on whatever it samples. Crops advance a growth stage, furnaces and smokers and blast furnaces and brewing stands jump forward a chunk of their remaining cook or brew time. You do not aim it. It just makes working near your farm and your furnace row faster.
 
 Each sampled block is only touched if you and the block are on the same region thread and the normal interaction checks pass. Crops additionally need block-place permission, and processing stations need container access.
 
@@ -117,13 +123,15 @@ Works on its own once learned.
 
 ### Hourglass Guard (`chronos-hourglass-guard`)
 
-A death save. A blow that would kill you leaves you at half a heart instead, gives you a brief window of invulnerability, and slows the enemies standing around you. The cooldown is measured in minutes and drops with level, so it is a once-per-fight lifeline, not something to plan around.
+A death save. A blow that would kill you leaves you at half a heart instead. You get a brief
+window of invulnerability. Enemies standing around you slow. The cooldown is measured in minutes and drops with level, so it is a once-per-fight lifeline, not something to plan around.
 
 Works on its own once learned. It caps at level 3 rather than 5.
 
 ### Pocket Watch (`chronos-pocket-watch`)
 
-Turns any fall into a controlled drift. You get a slow-fall budget measured in seconds per airtime, and it refills when you land, so it covers a cliff drop but not an indefinite hover.
+Turns any fall into a controlled drift. You get a slow-fall budget measured in seconds per airtime. It refills when you
+land. It covers a cliff drop but not an indefinite hover.
 
 **How to use it**
 
@@ -221,7 +229,7 @@ Written to `plugins/Adapt/adapt/skills/chronos.toml` on first load.
 | `survivalStreakHourCap` | `5` | Hours counted toward the survival multiplier before it stops growing. |
 | `challengeChronosReward` | `500` | Base knowledge reward for the Chronos challenge chain. |
 
-A `speedPotionBaseXP` of exactly `45` in an existing config is rewritten to `120` on load; that value was the old default.
+A `speedPotionBaseXP` of exactly `45` in an existing config is rewritten to `120` on load. That value was the old default.
 
 ### Time In A Bottle
 
@@ -450,7 +458,7 @@ Listened events:
 
 Recipe key `chronos-time-bomb`, shapeless: `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND`, producing a lingering potion item.
 
-Milestone: `challenge_chronos_bomb_freeze_50` on `chronos.time-bomb.projectiles-frozen` at 50, rewarding 500. `challenge_chronos_bomb_crowd_8` has no milestone threshold; it is granted directly in code when one field slows 8 entities.
+Milestone: `challenge_chronos_bomb_freeze_50` on `chronos.time-bomb.projectiles-frozen` at 50, rewarding 500. `challenge_chronos_bomb_crowd_8` has no milestone threshold. It is granted directly in code when one field slows 8 entities.
 
 Listened events:
 

@@ -7,9 +7,11 @@ tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Gloss registers three root commands and mounts every feature under `/gloss` as a subtree. The command
-tree is built with Director, so arguments are keyed (`name=value`) and the tree supplies its own paged
-help. This page is the reference for the node names, arguments, permissions and defaults; the behaviour
+Gloss registers three root commands. It mounts every feature under `/gloss` as a subtree. The
+command tree is built with Director. Arguments are keyed (`name=value`). The tree supplies its own
+paged help.
+
+This page is the reference for the node names, arguments, permissions and defaults. The behavior
 behind each command lives on the feature page it belongs to.
 
 ## Root commands
@@ -20,12 +22,13 @@ behind each command lives on the feature page it belongs to.
 | `/hologram` | `holo`, `h` | A shortcut that prefixes `hologram`, so `/hologram create id` is `/gloss hologram create id` |
 | `/board` | `sb`, `bd` | A shortcut that prefixes `board`, so `/board list` is `/gloss board list` |
 
-The same three names and aliases are declared in both `plugin.yml` and `paper-plugin.yml`, and Gloss binds
-whichever registration path the server offers, so the spellings are identical on Spigot, Paper and Folia.
+The same three names and aliases are declared in both `plugin.yml` and `paper-plugin.yml`. Gloss
+binds whichever registration path the server offers. The spellings are identical on Spigot, Paper
+and Folia.
 
-Inside the tree the `hologram` node also answers to `holo` and `h`, and the `board` node also answers to
-`boards`, `sb` and `bd`. `/gloss holo create id` and `/gloss boards list` both work; `boards` is only
-reachable through `/gloss`, because the root command is registered as `board` alone.
+Inside the tree the `hologram` node also answers to `holo` and `h`. The `board` node also answers to
+`boards`, `sb` and `bd`. `/gloss holo create id` and `/gloss boards list` both work. `boards` is
+only reachable through `/gloss`. The root command is registered as `board` alone.
 
 Direct leaves on `/gloss`:
 
@@ -37,20 +40,20 @@ Direct leaves on `/gloss`:
 
 ## Who can run anything at all
 
-Before Director sees the arguments, Gloss checks a single gate: the sender must hold at least one of the
-39 command permissions listed in `GlossCommandService.BASE_COMMAND_PERMISSIONS`. A sender holding none of
-them gets the "no permission" message and the failure chime for `/gloss`, `/hologram` and `/board` alike,
-and tab completion returns an empty list.
+Before Director sees the arguments, Gloss checks a single gate. The sender must hold at least one of
+the 39 command permissions listed in `GlossCommandService.BASE_COMMAND_PERMISSIONS`. A sender
+holding none of them gets the "no permission" message and the failure chime for `/gloss`,
+`/hologram` and `/board` alike. Tab completion returns an empty list.
 
-`gloss.emoji.use` is in that list and defaults to `true`, so ordinary players pass the gate by default and
-are then stopped by the per-node permission check on anything they may not run. Removing `gloss.emoji.use`
-from a group removes the whole command tree from tab completion for that group.
+`gloss.emoji.use` is in that list and defaults to `true`. Ordinary players pass the gate by default.
+They are then stopped by the per-node permission check on anything they may not run. Removing
+`gloss.emoji.use` from a group removes the whole command tree from tab completion for that group.
 
 ## Argument style
 
 Gloss uses keyed arguments. A parameter that has a default value is optional and must be written
-`name=value`; required parameters may be given positionally in declaration order. A stray positional value
-where a keyed one is expected is rejected and the sender gets the usage line.
+`name=value`. Required parameters may be given positionally in declaration order. A stray positional
+value where a keyed one is expected is rejected. The sender gets the usage line.
 
 ```
 /gloss hologram move spawn y=1.5
@@ -59,16 +62,34 @@ where a keyed one is expected is rejected and the sender gets the usage line.
 /gloss hologram rendertext banner "GLOSS" scale=2
 ```
 
+### Multi-word values
+
+A keyed value that spans several words is written in brackets. `key=[...]` collects everything up to
+the closing `]` into one value and strips the brackets:
+
+```
+/gloss hologram addline id=123 text=[This is an example.]
+```
+
+binds `text` to `This is an example.`. The closing `]` must end its word. A `]` in the middle of a
+word is part of the value. Inline hex colors like `text=[ff0000]Red` keep working unchanged.
+
+A bare color code — a single bracketed value of exactly six hex digits, like `text=[ff0000]` — is
+kept literal rather than stripped. Doubling the brackets escapes them: `text=[[literal brackets]]`
+binds `[literal brackets]`. `text=[]` binds an empty value. Opening a bracket without closing it is
+an error naming the parameter that is missing its `]`.
+
 ### The scoped positional pre-pass
 
-Six subtrees carry a normalisation pre-pass ported from HoloUi so that the old positional spellings keep
-working: `menu` (`menus`), `panel` (`panels`), `preview` (`previews`), `item` (`items`), `sync` and
-`import`. The pre-pass lives in `GlossCommandService.normalizePositionalArgs` and runs on the routed
-argument array before the permission gate and before Director. It only fires when the first argument names
-one of those roots, so `/gloss hologram move spawn 1.5` is still a hard error.
+Six subtrees carry a normalization pre-pass ported from HoloUi so that the old positional spellings
+keep working: `menu` (`menus`), `panel` (`panels`), `preview` (`previews`), `item` (`items`), `sync`
+and `import`. The pre-pass lives in `GlossCommandService.normalizePositionalArgs`. It runs on the
+routed argument array before the permission gate and before Director. It only fires when the first
+argument names one of those roots. `/gloss hologram move spawn 1.5` is still a hard error.
 
-Of those six roots, only `menu`, `panel` and `preview` actually have rewrites. `item`, `sync` and `import`
-are in scope but have no positional forms to rewrite, because none of their parameters are optional.
+Of those six roots, only `menu`, `panel` and `preview` actually have rewrites. `item`, `sync` and
+`import` are in scope but have no positional forms to rewrite. None of their parameters are
+optional.
 
 | Written | Executed |
 |---|---|
@@ -81,8 +102,8 @@ are in scope but have no positional forms to rewrite, because none of their para
 | `/gloss panel near <radius>` | `panel near radius=<radius>` |
 | `/gloss panel create <board> <menu>` | `panel create <board> menu=<menu>` |
 
-A second rule joins everything from a fixed position to the end of the line into one keyed argument, so
-multi-word text, icon values and image paths need no quotes on `menu` and `panel`:
+A second rule joins everything from a fixed position to the end of the line into one keyed argument.
+Multi-word text, icon values and image paths need no quotes on `menu` and `panel`:
 
 | Node | Joined from | Bound as |
 |---|---|---|
@@ -92,10 +113,10 @@ multi-word text, icon values and image paths need no quotes on `menu` and `panel
 | `menu\|panel seticon`, `style` | argument 6 | `value=` |
 | `menu\|panel image` | argument 4 | `path=` |
 
-An explicit `text=`, `value=` or `path=` prefix is detected and not doubled. `help`, `?` and `help=<n>`
-are never treated as bare values, so a help request inside a scoped subtree still resolves to help. Tab
-completion applies the same rewrites and then strips the injected `menu=`, `name=`, `radius=` or `page=`
-prefix back off the suggestions, so completion looks positional too.
+An explicit `text=`, `value=` or `path=` prefix is detected and not doubled. `help`, `?` and
+`help=<n>` are never treated as bare values. A help request inside a scoped subtree still resolves
+to help. Tab completion applies the same rewrites. It then strips the injected `menu=`, `name=`,
+`radius=` or `page=` prefix back off the suggestions. Completion looks positional too.
 
 Everywhere else — `hologram`, `board`, `emoji`, `animations`, `bubbles`, `tablist`, `motd` — keyed
 arguments are the only accepted form for optional parameters.
@@ -116,7 +137,7 @@ Also reachable as `/hologram`. Covered in [Holograms](/gloss/04-holograms).
 | `movehere` | `<id>` | `gloss.holograms.move` | Player only |
 | `move` | `<id> [x=0] [y=0] [z=0]` | `gloss.holograms.move` | Relative block offsets |
 | `tp` | `<id>` | `gloss.holograms.teleport` | Player only |
-| `list` | `[page=1]` | none beyond the base gate | Clickable list; clicking teleports. Twelve per page |
+| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking teleports. Twelve per page |
 | `info` | `<id>` | none beyond the base gate | Location and raw lines |
 
 ## `/gloss board`
@@ -137,7 +158,7 @@ Gloss scoreboards, not panels. Also reachable as `/board`. Covered in
 | `reset` | `[name=*]` | `gloss.boards.edit` | Restores shipped board documents |
 | `show` | `<id>` | `gloss.boards.show` | Player only |
 | `hide` | none | `gloss.boards.hide` | Player only |
-| `list` | `[page=1]` | none beyond the base gate | Clickable list; clicking runs `info`. Twelve per page |
+| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking runs `info`. Twelve per page |
 | `info` | `<id>` | none beyond the base gate | Title, primary flag, permission and lines |
 
 ## `/gloss emoji`, `animations`, `bubbles`, `tablist`, `motd`
@@ -148,7 +169,7 @@ Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `emoji list` | `[page=1]` | `gloss.emoji.use` | Twenty-four per page, three glyphs per line; clicking suggests `:id:` in chat |
+| `emoji list` | `[page=1]` | `gloss.emoji.use` | Twenty-four per page, three glyphs per line. Clicking suggests `:id:` in chat |
 | `emoji reset` | `[name=*]` | `gloss.emoji.reset` | Restores shipped emoji documents |
 | `animations list` | `[page=1]` | none beyond the base gate | Plain list of animation ids, twelve per page |
 | `animations reset` | `[name=*]` | `gloss.animations.reset` | |
@@ -157,10 +178,10 @@ Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 | `tablist reset` | none | `gloss.tablist.reset` | Always resets the singleton document |
 | `motd reset` | none | `gloss.motd.reset` | Always resets the singleton document |
 
-`animations` also answers to `animation`, and `bubbles` to `bubble`.
+`animations` also answers to `animation`. `bubbles` answers to `bubble`.
 
 Choosing a style with `bubbles style` only takes effect if the player also holds
-`gloss.bubbles.style.<styleId>`; the resolution order is on the bubbles page.
+`gloss.bubbles.style.<styleId>`. The resolution order is on the bubbles page.
 
 ## `/gloss menu`
 
@@ -169,7 +190,7 @@ Hologram menus. Also answers to `/gloss menus`. Covered in [Hologram Menus](/glo
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `list` | `[page=1]` | `gloss.menus.list` | Clickable list; clicking opens the menu. Twelve per page |
+| `list` | `[page=1]` | `gloss.menus.list` | Clickable list. Clicking opens the menu. Twelve per page |
 | `open` | `[menu=*]` | `gloss.menus.open` plus `gloss.open.<menuId>` | Player only unless `menu=*`, which falls through to `list` and re-checks `gloss.menus.list` |
 | `back` | none | `gloss.menus.back` | Player only |
 | `close` | none | `gloss.menus.close` | Player only |
@@ -210,7 +231,7 @@ Every node below is gated by `gloss.panels`, except `web`, which is gated by `gl
 | `reload` | none | Re-reads the panel files from disk |
 | `near` | `[radius=64]` `[page=1]` | Player only. Horizontal search radius, twelve entries per page |
 | `info` | `<board>` | Full state of one panel |
-| `create` | `<board> [menu=*]` | Player only. `menu=*` means a menu whose id equals the panel id; that menu must already exist |
+| `create` | `<board> [menu=*]` | Player only. `menu=*` means a menu whose id equals the panel id. That menu must already exist |
 | `delete` (`remove`) | `<board>` | |
 | `rename` | `<board> <newBoard>` | |
 | `copy` | `<board> <newBoard>` | |
@@ -220,7 +241,7 @@ Every node below is gated by `gloss.panels`, except `web`, which is gated by `gl
 | `rotate` | `<board> <yaw> <pitch> <roll>` | Absolute or `~`-relative |
 | `scale` | `<board> <scale>` | Absolute or `~`-relative |
 | `align` | `<board> <reference> <axes>` | `axes` is `x`, `y`, `z`, `xy`, `xz`, `yz` or `xyz` |
-| `menu` (`root`) | `<board> <menu>` | Sets the root menu; the menu must be loaded |
+| `menu` (`root`) | `<board> <menu>` | Sets the root menu. The menu must be loaded |
 | `addrow` | `<board> <text>` | Mutates the panel's root menu |
 | `insertrow` | `<board> <row> <text>` | |
 | `setrow` | `<board> <row> <text>` | |
@@ -230,9 +251,9 @@ Every node below is gated by `gloss.panels`, except `web`, which is gated by `gl
 | `style` | `<board> <row> <property> <value>` | `value=*` clears the property |
 | `image` | `<board> <path>` | |
 | `ranges` | `<board> <viewRange> <interactionRange>` | Both must be positive |
-| `visibility` | `<board> <mode> <viewPermission> <interactPermission>` | `mode` is `public`, `permission` or `hidden`; `-` clears a permission |
+| `visibility` | `<board> <mode> <viewPermission> <interactPermission>` | `mode` is `public`, `permission` or `hidden`.`-` clears a permission |
 | `permissions` | `<board> <viewPermission> <interactPermission>` | `-` clears a permission |
-| `follow` | `<board> <player> <rotation>` | `rotation` is `fixed`, `yaw` or `full`; the target must be online |
+| `follow` | `<board> <player> <rotation>` | `rotation` is `fixed`, `yaw` or `full`. The target must be online |
 | `unfollow` | `<board>` | |
 | `edit` | `<board>` | Player only. Starts a staged edit session |
 | `save` | none | Player only. Commits your staged edit |
@@ -249,12 +270,13 @@ Container preview documents. Also answers to `/gloss previews`. Covered in
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
 | `list` | `[page=1]` | `gloss.previews` | Names plus each document's block, entity, special and priority match summary, twelve per page |
-| `reset` | `[name=*]` | `gloss.previews.reset` | Runs asynchronously; restores shipped documents without deleting extra user documents that shadow them |
+| `reset` | `[name=*]` | `gloss.previews.reset` | Runs asynchronously. Restores shipped documents without deleting extra user documents that shadow them |
 | `dump` | `<name>` | `gloss.previews.dump` | Builds the document once and prints panel, cell, slot and label counts plus up to three build errors |
 
-For a player, `dump` uses the block you are looking at when that block matches the document, otherwise it
-builds against statics. Console always builds against statics. `gloss.preview` — singular — is a different
-node and does not gate any command; it controls whether a player sees previews at all.
+For a player, `dump` uses the block you are looking at when that block matches the document.
+Otherwise it builds against statics. Console always builds against statics. `gloss.preview` —
+singular — is a different node and does not gate any command. It controls whether a player sees
+previews at all.
 
 ## `/gloss item`
 
@@ -266,8 +288,8 @@ Custom item providers. Also answers to `/gloss items`. Covered in
 | `status` | `[page=1]` | `gloss.items` | One line per provider with its plugin and state, twelve per page. Holders of `gloss.items.export` also get a clickable export hint |
 | `export` | none | `gloss.items.export` | Writes the catalog asynchronously and reports the item count, provider count and path when it finishes |
 
-Both refuse with a message when `[items] customItems` is off. `export` refuses while a previous export is
-still running.
+Both refuse with a message when `[items] customItems` is off. `export` refuses while a previous
+export is still running.
 
 ## `/gloss sync`
 
@@ -281,9 +303,9 @@ Web editor sync sessions. Every node is gated by `gloss.sync`. Covered in
 | `revoke` | `<session>` | Revokes the capability |
 | `pull` (`poll`) | `<session>` | Polls the relay immediately |
 
-Session ids are displayed abbreviated to 12 characters. `status`, `revoke` and `pull` accept either the
-exact id or a unique prefix of at least 12 characters; a shorter prefix is not resolved and an ambiguous
-prefix is rejected.
+Session ids are displayed abbreviated to 12 characters. `status`, `revoke` and `pull` accept either
+the exact id or a unique prefix of at least 12 characters. A shorter prefix is not resolved. An
+ambiguous prefix is rejected.
 
 ## `/gloss import`
 
@@ -294,22 +316,22 @@ prefix is rejected.
 | `holoui` | none | `gloss.import` | Copies HoloUi data from `plugins/holoui`, then reloads |
 | `legacy` | none | `gloss.import` | Migrates pre-merger Gloss data files to the enveloped shapes, then reloads |
 
-`source` is one of `gholo`, `decent-holograms`, `holographic-displays` or `fancy-holograms`. Each accepts
-short aliases: `files` for `gholo`, `decent` for `decent-holograms`, `hd` for `holographic-displays` and
-`fancy` for `fancy-holograms`.
+`source` is one of `gholo`, `decent-holograms`, `holographic-displays` or `fancy-holograms`. Each
+accepts short aliases: `files` for `gholo`, `decent` for `decent-holograms`, `hd` for
+`holographic-displays` and `fancy` for `fancy-holograms`.
 
 > `/gloss import holoui` always runs in force mode: it re-copies and overwrites anything an earlier HoloUi
 > import already placed. It takes no arguments and has no confirmation step. It never modifies the source
 > folder, and never copies `editor-sync-sessions.json`.
 {.is-warning}
 
-Both `preview` and `apply` refuse while an import is already in flight, and report at most twelve detail
-lines before summarising the rest.
+Both `preview` and `apply` refuse while an import is already in flight. They report at most twelve
+detail lines before summarizing the rest.
 
 ## Permissions
 
-Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and `gloss.indicators.show`,
-which default to `true`.
+Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
+`gloss.indicators.show`, which default to `true`.
 
 | Node | Default | Grants |
 |---|---|---|
@@ -363,9 +385,9 @@ which default to `true`.
 
 ### Dynamic nodes
 
-These are built at runtime from document ids, so they are not declared in `plugin.yml`. An undeclared
-permission has no registered default, which means Bukkit treats it as op-only until a permission plugin
-grants it.
+These are built at runtime from document ids. They are not declared in `plugin.yml`. An undeclared
+permission has no registered default. Bukkit treats it as op-only until a permission plugin grants
+it.
 
 | Node | Checked when | See |
 |---|---|---|
@@ -374,15 +396,15 @@ grants it.
 | `gloss.board.<permission>` | Auto-selecting a scoreboard, where `<permission>` is the board document's `permission` value. The value `default` means unrestricted and is never turned into a node | [Scoreboards & Groups](/gloss/05-scoreboards-groups) |
 | `gloss.emoji.<emojiId>` | Replacing one emoji, and only when `[emoji] emojiSpecificPermissions` is `true` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 
-`gloss.open.<menuId>` is checked in addition to `gloss.menus.open`, and it is not applied to `menu list` —
-every configured menu id appears in the list and the per-menu node is only tested on open.
+`gloss.open.<menuId>` is checked in addition to `gloss.menus.open`. It is not applied to `menu
+list`. Every configured menu id appears in the list. The per-menu node is only tested on open.
 
 ## List paging
 
 Every multi-entry list takes an optional `page=<n>`: `hologram list`, `board list`, `emoji list`,
 `animations list`, `menu list`, `panel list`, `panel near`, `preview list`, `item status` and
-`sync list`. Text lists show twelve entries per page; `emoji list` shows twenty-four, three glyphs to
-a line.
+`sync list`. Text lists show twelve entries per page. `emoji list` shows twenty-four, three glyphs
+to a line.
 
 Every one of them prints its own header, then the entries, then the same two-line footer:
 
@@ -391,18 +413,18 @@ Page 2/6 - showing 13-24 of 67
 Next page: /gloss emoji list page=3
 ```
 
-The `Next page` line only appears when a further page exists, and it prints the command in full so it
-works from the console; in chat it is also clickable. `page` is clamped rather than rejected — `page=0`
-and any page past the end land on the first and last page respectively.
+The `Next page` line only appears when a further page exists. It prints the command in full so it
+works from the console. In chat it is also clickable. `page` is clamped rather than rejected.
+`page=0` and any page past the end land on the first and last page respectively.
 
-`/gloss panel list <n>` still works as a positional shorthand for `panel list page=<n>`; every other
+`/gloss panel list <n>` still works as a positional shorthand for `panel list page=<n>`. Every other
 list takes the keyed form only.
 
 ## Help output
 
-`help`, `?` and `help=<page>` resolve to a paged menu of the node's children, eight entries per page.
-The token can appear at any depth, and a bare `help` followed by a number is normalised into
-`help=<number>` before resolution, so all of these work:
+`help`, `?` and `help=<page>` resolve to a paged menu of the node's children, eight entries per
+page. The token can appear at any depth. A bare `help` followed by a number is normalized into
+`help=<number>` before resolution. All of these work:
 
 ```
 /gloss
@@ -415,17 +437,17 @@ The token can appear at any depth, and a bare `help` followed by a number is nor
 ```
 
 `/gloss` with no arguments prints the root help page. A group name with no leaf — `/gloss emoji`,
-`/gloss bubbles` — prints that group's help, because the group node is not itself invocable. The three
+`/gloss bubbles` — prints that group's help. The group node is not itself invocable. The three
 groups covered by the positional pre-pass are the exception: `/gloss menu`, `/gloss panel` and
 `/gloss preview` are rewritten into their `list` node and execute instead of printing help.
 
-Pages are one-based for the reader and clamped to the available range. Help resolution happens after the
-base permission gate, so a sender who fails that gate gets the permission message rather than help.
+Pages are one-based for the reader and clamped to the available range. Help resolution happens after
+the base permission gate. A sender who fails that gate gets the permission message rather than help.
 
 ## Command sounds
 
-`[commands] sounds` in `config.toml` (default `true`) controls the outcome chime. Chimes only play for
-player senders; console never hears anything.
+`[commands] sounds` in `config.toml` (default `true`) controls the outcome chime. Chimes only play
+for player senders. Console never hears anything.
 
 | Outcome | Sound |
 |---|---|
@@ -433,14 +455,16 @@ player senders; console never hears anything.
 | Help page delivered | The success sound, volume 0.4, pitch 1.0 |
 | Base permission gate failed, or Director could not handle the input | The theme's error sound, volume 0.4, pitch 0.6 |
 
-The chime reflects whether Director dispatched the node, not whether the command's own logic succeeded, so
-a per-node permission denial still gets the success chime. Two commands finish long after dispatch returns
-and report their real outcome with a second, louder tone: `/gloss menu create`, which is suppressed from
-the automatic chime so it plays only its own success or error tone, and `/gloss item export`, which keeps
-the dispatch chime and adds its completion tone once the catalog is written.
+The chime reflects whether Director dispatched the node. It does not reflect whether the command's
+own logic succeeded. A per-node permission denial still gets the success chime.
 
-Turning `sounds` off silences every chime Gloss plays, the two self-reported completion tones included.
-See [Configuration](/gloss/02-configuration).
+Two commands finish long after dispatch returns. They report their real outcome with a second,
+louder tone. `/gloss menu create` is suppressed from the automatic chime so it plays only
+its own success or error tone. `/gloss item export` keeps the dispatch chime and adds
+its completion tone once the catalog is written.
+
+Turning `sounds` off silences every chime Gloss plays, the two self-reported completion tones
+included. See [Configuration](/gloss/02-configuration).
 
 ## Migrating from HoloUi
 
@@ -477,8 +501,8 @@ Two renames are easy to trip over:
 
 - HoloUi's world-anchored **boards** are Gloss **panels**. `/gloss board` is the scoreboard tree, which
   HoloUi never had. Anything that used to be `/holoui board ...` is now `/gloss panel ...`.
-- HoloUi's `/holoui create` made a board plus a menu; that is `/gloss menu create`. HoloUi's
-  `/holoui menu create` made a blank menu document; that is `/gloss menu new`. The word `create` moved.
+- HoloUi's `/holoui create` made a board plus a menu. That is `/gloss menu create`. HoloUi's
+  `/holoui menu create` made a blank menu document. That is `/gloss menu new`. The word `create` moved.
 
 ### Permissions
 
@@ -506,12 +530,14 @@ Two renames are easy to trip over:
 | `holoui.open.<menuId>` | `gloss.open.<menuId>` |
 | `holoui.preview` | `gloss.preview` |
 
-There is no `gloss.*` equivalent of HoloUi's `holoui.command` root gate. Granting `gloss.*` is the closest
-single node; granting `gloss.panels` and `gloss.menus` reproduces most of what a HoloUi builder group held.
+There is no `gloss.*` equivalent of HoloUi's `holoui.command` root gate. Granting `gloss.*` is the
+closest single node. Granting `gloss.panels` and `gloss.menus` reproduces most of what a HoloUi
+builder group held.
 
 Everything on the Gloss side of the tree — holograms, scoreboards, emoji, animations, chat bubbles,
-damage indicators, drops, tablist and MOTD — has no HoloUi ancestor and therefore no migration row. Those
-nodes are new to operators arriving from HoloUi.
+damage indicators, drops, tablist and MOTD — has no HoloUi ancestor. Those nodes have no migration
+row. Those nodes are new to operators arriving from HoloUi.
 
-The data-side migration, including what `/gloss import holoui` copies and where it puts it, is covered in
-[Getting Started](/gloss/01-getting-started) and [Data Files & Hot Reload](/gloss/03-data-files).
+The data-side migration, including what `/gloss import holoui` copies and where it puts it, is
+covered in [Getting Started](/gloss/01-getting-started) and
+[Data Files & Hot Reload](/gloss/03-data-files).

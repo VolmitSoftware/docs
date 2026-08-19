@@ -7,9 +7,8 @@ tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
-Drop the Gloss jar into `plugins/`, start the server once, and the whole data tree is written with
-working defaults. Settings live in `plugins/Gloss/config.toml`; content lives in JSON documents beside
-it. Both hot-reload from disk while the server runs, so most changes need no restart and no command.
+
+Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data tree with working defaults. Settings live in `plugins/Gloss/config.toml`. Content lives in JSON documents beside that file. Both reload from disk while the server runs. Most changes need no restart and no command.
 
 ## Requirements
 
@@ -20,29 +19,17 @@ it. Both hot-reload from disk while the server runs, so most changes need no res
 | Java | 25 |
 | Plugin version | `3.0.0-26.2`, api-version `26.1` |
 
-Nothing else is required. Gloss soft-depends on PlaceholderAPI, Vault, ProtocolLib, ProtocolSupport,
-ViaVersion, ViaBackwards, ViaRewind, Geyser-Spigot, CraftEngine, ItemsAdder, Oraxen, Nexo, MMOItems,
-ExecutableItems, EcoItems, Slimefun, MythicMobs, HeadDatabase and WorldGuard. Each of those loads
-before Gloss when it is installed and is simply skipped when it is not: without PlaceholderAPI,
-`%...%` tokens stay raw; without Vault, no player resolves a group.
+Nothing else is required. Gloss soft-depends on PlaceholderAPI, Vault, ProtocolLib, ProtocolSupport, ViaVersion, ViaBackwards, ViaRewind, Geyser-Spigot, CraftEngine, ItemsAdder, Oraxen, Nexo, MMOItems, ExecutableItems, EcoItems, Slimefun, MythicMobs, HeadDatabase and WorldGuard. Each of those loads before Gloss when it is installed. Gloss skips a missing one. Without PlaceholderAPI, `%...%` tokens stay raw. Without Vault, no player resolves a group.
 
-On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`, which also declares
-`folia-supported: true`. On Spigot it loads at `POSTWORLD` from `plugin.yml`. Both descriptors declare
-the same permission tree and the same three root commands: `/gloss` (aliases `gl`, `glo`, `gg`),
-`/hologram` (`holo`, `h`) and `/board` (`sb`, `bd`).
+On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`. That file also declares `folia-supported: true`. On Spigot it loads at `POSTWORLD` from `plugin.yml`. Both descriptors declare the same permission tree and the same three root commands: `/gloss` (aliases `gl`, `glo`, `gg`), `/hologram` (`holo`, `h`) and `/board` (`sb`, `bd`).
 
 ## Install
 
 1. Put the Gloss jar in `plugins/`.
-2. Start the server. Gloss creates `plugins/Gloss/`, writes `config.toml`, extracts the shipped
-   default documents and prints a splash banner ending in a startup status. `READY` means every
-   service enabled. `DEGRADED` means one did not, and a `Startup error: <exception>` warning follows
-   naming the cause; the plugin stays loaded with the failed services shut down.
-3. Edit `config.toml`. Saving it reloads Gloss in place. `/gloss reload` (permission `gloss.admin`)
-   does the same thing on demand.
+2. Start the server. Gloss creates `plugins/Gloss/`, writes `config.toml`, extracts the shipped default documents, and prints a splash banner that ends in a startup status. `READY` means every service enabled. `DEGRADED` means one did not. A `Startup error: <exception>` warning then names the cause. The plugin stays loaded. The failed services stay shut down.
+3. Edit `config.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
 
-Setting `splashScreen = false` suppresses the banner for clean startups only. A failed enable always
-prints it, because that is where the `DEGRADED` status and the error line come from.
+If you set `splashScreen = false`, Gloss hides the banner for clean startups only. A failed enable always prints the banner. That banner is the source of the `DEGRADED` status and the error line.
 
 ## What the first boot creates
 
@@ -63,10 +50,9 @@ plugins/Gloss/
 └── language.yml           locale selection and message overrides
 ```
 
-`tablist.json` and `motd.json` sit at the root of the data folder, not inside a `tablist/` or `motd/`
-folder. `panels/` is only created when `[features] panels` is on.
+`tablist.json` and `motd.json` sit at the root of the data folder. They do not sit inside a `tablist/` or `motd/` folder. Gloss creates `panels/` only when `[features] panels` is on.
 
-Several more paths can appear later, never on a first boot:
+Several more paths can appear later. They do not appear on a first boot:
 
 | Path | Written when |
 |---|---|
@@ -79,8 +65,7 @@ Several more paths can appear later, never on a first boot:
 
 ## Shipped defaults
 
-Default documents are extracted only where the target file is missing, so an edited file is never
-overwritten and a deleted file comes back on the next boot. What ships:
+Gloss extracts default documents only where the target file is missing. An edited file is never overwritten. A deleted file comes back on the next boot. What ships:
 
 | Folder | Documents |
 |---|---|
@@ -92,15 +77,11 @@ overwritten and a deleted file comes back on the next boot. What ships:
 | `tablist.json` | one singleton document |
 | `motd.json` | one singleton document |
 
-Nothing ships for `holograms/`, `panels/`, `menus/` or `images/` — those start empty. The blank
-hologram and blank menu baselines used by `/gloss hologram create` and `/gloss menu new` are read from
-inside the jar and are never written to disk. Details and the per-kind reset commands are on
-[Data Files & Hot Reload](/gloss/03-data-files).
+Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those start empty. The blank hologram and blank menu baselines used by `/gloss hologram create` and `/gloss menu new` are read from inside the jar. They are never written to disk. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Feature toggles
 
-`[features]` in `config.toml` gates each subsystem. Turning one off stops that subsystem from
-rendering or listening; its documents still load and its commands still edit them.
+`[features]` in `config.toml` gates each subsystem. If you turn one off, that subsystem stops rendering or listening. Its documents still load. Its commands still edit them.
 
 | Key | Default | Gates |
 |---|---|---|
@@ -117,20 +98,13 @@ rendering or listening; its documents still load and its commands still edit the
 | `previews` | `true` | Look-at container previews |
 | `motd` | `false` | The custom server list MOTD |
 
-`motd` is the only feature that ships off. Turn it on and the shipped `motd.json` takes over the
-server list ping immediately; see [Tablist & Server List MOTD](/gloss/06-tablist-motd).
+`motd` is the only feature that ships off. If you turn it on, the shipped `motd.json` takes over the server list ping at once. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
 
 ## Coming from HoloUi
 
-HoloUi is merged into Gloss. If a `plugins/holoui` (or `plugins/HoloUi`) folder still exists beside
-the Gloss data folder on first boot, Gloss copies its data across automatically. The source folder is
-never modified, the copy runs exactly once, and session secrets are never copied. The import writes
-`holoui-import.json` listing every path it touched.
+HoloUi is merged into Gloss. If a `plugins/holoui` (or `plugins/HoloUi`) folder still exists beside the Gloss data folder on first boot, Gloss copies its data across. The source folder is never modified. The copy runs exactly once. Session secrets are never copied. The import writes `holoui-import.json` and lists every path it touched.
 
-Commands, permissions and placeholders all moved: `/holoui ...` is gone in favour of the `/gloss`
-subtrees, `holoui.*` permissions became `gloss.*`, `%holoui_*%` placeholders became `%gloss_*%`, and
-HoloUi "boards" (world-anchored hologram menus) are now called panels. Gloss keeps the name "board"
-for scoreboards. The full import contract is on [Data Files & Hot Reload](/gloss/03-data-files).
+Commands, permissions and placeholders all moved. `/holoui ...` is gone. Use the `/gloss` subtrees. `holoui.*` permissions became `gloss.*`. `%holoui_*%` placeholders became `%gloss_*%`. HoloUi "boards" (world-anchored hologram menus) are now called panels. Gloss keeps the name "board" for scoreboards. The full import contract is on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Where to go next
 

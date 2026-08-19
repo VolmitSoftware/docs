@@ -2,22 +2,22 @@
 title: "Features - Entity Systems"
 description: "React documentation: Features - Entity Systems"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Entity-side features for stacking, sleep, trim, items, spawns, vehicles, portals, and explosions. Config: `plugins/React/feature/<id>.toml`. Base field `enabled` defaults to `true`.
+Entity-side features cover stacking, sleep, trim, items, spawns, vehicles, portals, and explosions. Config: `plugins/React/feature/<id>.toml`. Base field `enabled` defaults to `true`.
 
-Stacking, trim, and sleep honor the protection API ([17 - API - Entity Protection](/react/17-api-entity-protection)): `STACK`, `TRIM`, and `SLEEP` respectively.
+Stacking, trim, and sleep honor the protection API. See [17 - API - Entity Protection](/react/17-api-entity-protection). The operations are `STACK`, `TRIM`, and `SLEEP`.
 
 ### `mob-stacking`
 
-Merges compatible living entities into stacks (count via health/`ReactEntity`), with optional custom names and vacuum collect packets. Processes dirty chunks on a batch interval.
+This feature merges compatible living entities into stacks. Stack count uses health or `ReactEntity`. Optional custom names and vacuum collect packets are available. The feature processes dirty chunks on a batch interval.
 
 - **Class:** `FeatureMobStacking`
 - **Listener:** yes
-- **Notes:** Honors `ReactProtection` / `STACK`. Folia uses region-aware dirty-chunk processing. Skips tamed pets; optional skip for custom mobs; optional spawner-only stacking. Default stackable types: all alive+spawnable minus `PLAYER`, `ARMOR_STAND`, `VILLAGER`, `WANDERING_TRADER`, `FALLING_BLOCK`.
+- **Notes:** Honors `ReactProtection` / `STACK`. Folia uses region-aware dirty-chunk processing. The feature skips tamed pets. You can skip custom mobs. You can limit stacking to spawner-origin mobs. Default stackable types: all alive+spawnable minus `PLAYER`, `ARMOR_STAND`, `VILLAGER`, `WANDERING_TRADER`, `FALLING_BLOCK`.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -34,7 +34,7 @@ Merges compatible living entities into stacks (count via health/`ReactEntity`), 
 
 ### `adaptive-entity-sleep`
 
-Puts distant living entities into sleep/pause under load; optional mid-range duty-cycling via `Mob#setAware` when available. Wakes on damage/target when configured.
+This feature puts distant living entities into sleep or pause under load. Optional mid-range duty-cycling uses `Mob#setAware` when available. It wakes on damage or target when configured.
 
 - **Class:** `FeatureAdaptiveEntitySleep`
 - **Listener:** yes
@@ -61,7 +61,7 @@ Puts distant living entities into sleep/pause under load; optional mid-range dut
 
 ### `entity-trimmer`
 
-When entity counts exceed soft caps (per chunk / player / world), removes lowest-priority eligible entities in batches.
+When entity counts exceed soft caps, this feature removes lowest-priority eligible entities in batches. Soft caps apply per chunk, per player, and per world.
 
 - **Class:** `FeatureEntityTrimmer`
 - **Listener:** yes (tick-driven)
@@ -84,7 +84,7 @@ When entity counts exceed soft caps (per chunk / player / world), removes lowest
 
 ### `item-super-stacker`
 
-Merges nearby dropped items into flagged bundles with pickup explode-into-inventory behavior.
+This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory.
 
 - **Class:** `FeatureItemSuperStacker`
 - **Listener:** yes
@@ -97,7 +97,7 @@ Merges nearby dropped items into flagged bundles with pickup explode-into-invent
 
 ### `item-backpressure`
 
-Under high tick time or entity count (or per-world pressure), removes remote ground items away from players, with age/name/valuable protections.
+Under high tick time or entity count, this feature removes remote ground items away from players. Per-world pressure can also trigger it. Age, name, and valuable protections apply.
 
 - **Class:** `FeatureItemBackpressure`
 - **Listener:** no
@@ -119,7 +119,7 @@ Under high tick time or entity count (or per-world pressure), removes remote gro
 
 ### `spawn-burst-limiter`
 
-Cancels `CreatureSpawnEvent` bursts per chunk over a rolling window (total / spawner / monster caps). Can push spawner delay when spawner spawns are limited.
+This feature cancels `CreatureSpawnEvent` bursts per chunk over a rolling window. Caps cover total, spawner, and monster spawns. It can push spawner delay when spawner spawns are limited.
 
 - **Class:** `FeatureSpawnBurstLimiter`
 - **Listener:** yes
@@ -141,7 +141,7 @@ Cancels `CreatureSpawnEvent` bursts per chunk over a rolling window (total / spa
 
 ### `spawner-light-cache`
 
-Caches dark-candidate light snapshots per chunk for spawner/`TRIAL_SPAWNER` monster spawns; measurement-only until engaged under pressure, then cancels spawns when no dark candidate matches.
+This feature caches dark-candidate light snapshots per chunk for spawner and `TRIAL_SPAWNER` monster spawns. It stays measurement-only until engaged under pressure. Then it cancels spawns when no dark candidate matches.
 
 - **Class:** `FeatureSpawnerLightCache`
 - **Listener:** yes
@@ -161,7 +161,7 @@ Caches dark-candidate light snapshots per chunk for spawner/`TRIAL_SPAWNER` mons
 
 ### `lazy-gravity`
 
-Tracks falling blocks on clear vertical paths; with NMS bridge and pressure gate, can `SKIP` falling-block ticks away from players.
+This feature tracks falling blocks on clear vertical paths. With an NMS bridge and pressure gate, it can `SKIP` falling-block ticks away from players.
 
 - **Class:** `FeatureLazyGravity`
 - **Listener:** yes
@@ -182,7 +182,7 @@ Tracks falling blocks on clear vertical paths; with NMS bridge and pressure gate
 
 ### `minecart-tether`
 
-Zeroes velocity on minecart entity types when no player is within `maxBlockDistance`.
+This feature zeroes velocity on minecart entity types when no player is within `maxBlockDistance`.
 
 - **Class:** `FeatureMinecartTether`
 - **Listener:** yes (entity tick listeners)
@@ -194,7 +194,7 @@ Zeroes velocity on minecart entity types when no player is within `maxBlockDista
 
 ### `portal-traffic-smoother`
 
-Throttles player and non-player portal traffic per chunk over a window; cancels and re-teleports after a short delay when over caps.
+This feature throttles player and non-player portal traffic per chunk over a window. When over caps, it cancels the portal and re-teleports after a short delay.
 
 - **Class:** `FeaturePortalTrafficSmoother`
 - **Listener:** yes
@@ -209,7 +209,7 @@ Throttles player and non-player portal traffic per chunk over a window; cancels 
 | `cooloffMS` | int | `5000` | Cool-off after throttle (ms). |
 | `playerDelayTicks` | int | `2` | Player re-teleport delay (ticks). |
 | `entityDelayTicks` | int | `4` | Entity re-teleport delay (ticks). |
-| `maxQueuedDelays` | int | `512` | Max queued delays; full queue cancels only. |
+| `maxQueuedDelays` | int | `512` | Max queued delays. A full queue cancels only. |
 | `onlyDuringPressure` | boolean | `true` | Only under pressure. |
 | `pressureIncidentScore` | double | `40` | Pressure incident threshold. |
 | `pressureTickMS` | double | `52` | Pressure tick-time threshold (ms). |
@@ -218,7 +218,7 @@ Throttles player and non-player portal traffic per chunk over a window; cancels 
 
 ### `explosion-packet-batching`
 
-Collects same-tick explosions, clusters by `mergeRadius`, and with NMS suppressor + pressure gate can suppress per-explosion packets and broadcast merged packets.
+This feature collects same-tick explosions and clusters them by `mergeRadius`. With an NMS suppressor and pressure gate, it can suppress per-explosion packets and broadcast merged packets.
 
 - **Class:** `FeatureExplosionPacketBatching`
 - **Listener:** yes
@@ -240,7 +240,7 @@ Collects same-tick explosions, clusters by `mergeRadius`, and with NMS suppresso
 
 ### `fast-explosions`
 
-Staggers primed TNT fuse offsets, caps primed TNT left in explosion block lists, optionally disables TNT chain priming, and applies fast block updates.
+This feature staggers primed TNT fuse offsets. It caps primed TNT left in explosion block lists. It can disable TNT chain priming. It also applies fast block updates.
 
 - **Class:** `FeatureFastExplosions`
 - **Listener:** yes

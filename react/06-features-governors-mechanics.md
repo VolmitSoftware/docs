@@ -2,21 +2,21 @@
 title: "Features - Governors & Mechanics"
 description: "React documentation: Features - Governors & Mechanics"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Pressure-aware governors and world mechanics: activation/view ranges, hoppers, redstone, farms, furnaces, pathfinding, random ticks, quarantine, and incident mode. Config: `plugins/React/feature/<id>.toml`. Base `enabled` defaults to `true`.
+Pressure-aware governors and world mechanics cover activation ranges, view ranges, hoppers, redstone, farms, furnaces, pathfinding, random ticks, quarantine, and incident mode. Config: `plugins/React/feature/<id>.toml`. Base `enabled` defaults to `true`.
 
-Most governors engage only after sustained tick or incident thresholds and release through configured hysteresis.
+Most governors engage only after sustained tick or incident thresholds. They release through configured hysteresis.
 
 ### `activation-range-governor`
 
-Scales down per-world Spigot entity activation ranges under sustained pressure; restores on release. Instant server-wide range change (unlike continuous `dynamic-activation-range`).
+This feature scales down per-world Spigot entity activation ranges under sustained pressure. It restores those ranges on release. The range change is instant and server-wide. That differs from continuous `dynamic-activation-range`.
 
 - **Class:** `FeatureActivationRangeGovernor` · **Listener:** no
-- **Notes:** Reflects `World.getHandle()` → `spigotConfig` activation fields. If the config object or fields cannot be resolved, or a runtime reflection write fails, the feature calls `setEnabled(false)` and stops engaging.
+- **Notes:** Reflects `World.getHandle()` → `spigotConfig` activation fields. If the config object or fields cannot be resolved, the feature calls `setEnabled(false)` and stops engaging. A runtime reflection write failure does the same.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -38,7 +38,7 @@ Scales down per-world Spigot entity activation ranges under sustained pressure; 
 
 ### `dynamic-activation-range`
 
-Continuously tunes an activation radius from tick time and pauses distant living entities via `ReactEntity`. Honors `SLEEP` protection.
+This feature continuously tunes an activation radius from tick time. It pauses distant living entities via `ReactEntity`. It honors `SLEEP` protection.
 
 - **Class:** `FeatureDynamicActivationRange` · **Listener:** yes (wake on damage/target)
 
@@ -58,7 +58,7 @@ Continuously tunes an activation radius from tick time and pauses distant living
 
 ### `dynamic-view-distance`
 
-Maps rolling tick time and player count into per-world view and simulation distance. Requires Paper/Purpur world distance setters; on activate, calls `setEnabled(false)` and warns if setters are missing or reflection fails.
+This feature maps rolling tick time and player count into per-world view and simulation distance. It requires Paper or Purpur world distance setters. On activate, it calls `setEnabled(false)` and warns if setters are missing or reflection fails.
 
 - **Class:** `FeatureDynamicViewDistance` · **Listener:** yes (no event handlers)
 
@@ -74,7 +74,7 @@ Maps rolling tick time and player count into per-world view and simulation dista
 
 ### `afk-view-shedding`
 
-Lowers idle players’ send view distance; optional pressure notch caps all players’ send view distance. Requires `Player.getSendViewDistance` / `setSendViewDistance`; disables itself when those methods are absent or fail at runtime.
+This feature lowers idle players' send view distance. An optional pressure notch caps all players' send view distance. It requires `Player.getSendViewDistance` / `setSendViewDistance`. It disables itself when those methods are absent or fail at runtime.
 
 - **Class:** `FeatureAfkViewShedding` · **Listener:** yes
 
@@ -84,7 +84,7 @@ Lowers idle players’ send view distance; optional pressure notch caps all play
 | `tickIntervalMS` | int | `5000` | Evaluation interval (ms). |
 | `idleAfterSeconds` | int | `180` | Idle timeout (seconds). |
 | `idleSendViewDistance` | int | `4` | Idle send view distance (chunks). |
-| `minTickTimeMs` | double | `0` | Tick ms before idle shedding; `0` = always. |
+| `minTickTimeMs` | double | `0` | Tick ms before idle shedding. `0` = always. |
 | `pressureNotch` | boolean | `true` | Cap all send view distances under pressure. |
 | `pressureSendViewDistanceCap` | int | `8` | Pressure cap (chunks). |
 | `pressureEngageTickTimeMs` | double | `70` | Pressure engage tick ms. |
@@ -95,7 +95,7 @@ Lowers idle players’ send view distance; optional pressure notch caps all play
 
 ### `tracker-range-governor`
 
-Scales Spigot entity tracking ranges under pressure. Reflects `spigotConfig` tracking fields; missing fields or runtime reflection failures call `setEnabled(false)`.
+This feature scales Spigot entity tracking ranges under pressure. It reflects `spigotConfig` tracking fields. Missing fields or runtime reflection failures call `setEnabled(false)`.
 
 - **Class:** `FeatureTrackerRangeGovernor` · **Listener:** no
 
@@ -117,7 +117,7 @@ Scales Spigot entity tracking ranges under pressure. Reflects `spigotConfig` tra
 
 ### `pathfinder-budget`
 
-Shrinks A* visited-node budget for distant mobs via NMS navigation multipliers. On activate, if navigation bridges do not resolve, calls `setEnabled(false)` and leaves vanilla pathfinding alone.
+This feature shrinks the A* visited-node budget for distant mobs via NMS navigation multipliers. On activate, if navigation bridges do not resolve, it calls `setEnabled(false)`. Vanilla pathfinding stays unchanged.
 
 - **Class:** `FeaturePathfinderBudget` · **Listener:** no
 
@@ -132,7 +132,7 @@ Shrinks A* visited-node budget for distant mobs via NMS navigation multipliers. 
 
 ### `random-tick-governor`
 
-Lowers `randomTickSpeed` under sustained pressure; restores on release.
+This feature lowers `randomTickSpeed` under sustained pressure. It restores the speed on release.
 
 - **Class:** `FeatureRandomTickGovernor` · **Listener:** no
 
@@ -149,7 +149,7 @@ Lowers `randomTickSpeed` under sustained pressure; restores on release.
 
 ### `per-world-tick-budget`
 
-Measures per-world tick share and publishes NORMAL/PRESSURE/PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume the per-world state when applying pressure behavior.
+This feature measures per-world tick share. It publishes NORMAL, PRESSURE, or PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume that per-world state when they apply pressure behavior.
 
 - **Class:** `FeaturePerWorldTickBudget` · **Listener:** no
 
@@ -166,7 +166,7 @@ Measures per-world tick share and publishes NORMAL/PRESSURE/PANIC. Adaptive enti
 
 ### `chunk-quarantine`
 
-Scores hot chunks from spawns, redstone, physics, hoppers; quarantines and cancels/freezes activity under pressure.
+This feature scores hot chunks from spawns, redstone, physics, and hoppers. It quarantines those chunks. Under pressure it cancels or freezes activity.
 
 - **Class:** `FeatureChunkQuarantine` · **Listener:** yes
 
@@ -195,7 +195,7 @@ Scores hot chunks from spawns, redstone, physics, hoppers; quarantines and cance
 
 ### `circuit-manager`
 
-Tracks redstone circuits; when redstone tick time exceeds `maxCircuitMS`, stops the worst circuit and freezes further current changes.
+This feature tracks redstone circuits. When redstone tick time exceeds `maxCircuitMS`, it stops the worst circuit. It then freezes further current changes.
 
 - **Class:** `FeatureCircuitManager` · **Listener:** yes
 - **Notes:** Tick interval hard-coded `1000`.
@@ -207,7 +207,7 @@ Tracks redstone circuits; when redstone tick time exceeds `maxCircuitMS`, stops 
 
 ### `hopper-chain-coalescing`
 
-Detects linear hopper chains and projects savings. Default measurement-only; `featureActMode` + NMS hopper hook skips intermediate ticks.
+This feature detects linear hopper chains and projects savings. Default mode is measurement-only. `featureActMode` plus an NMS hopper hook skips intermediate ticks.
 
 - **Class:** `FeatureHopperChainCoalescing` · **Listener:** yes
 
@@ -226,10 +226,10 @@ Detects linear hopper chains and projects savings. Default measurement-only; `fe
 
 ### `hopper-item-index`
 
-Maintains spatial indices of dropped items and hoppers for `TweakHopperIndex`.
+This feature maintains spatial indices of dropped items and hoppers for `TweakHopperIndex`.
 
 - **Class:** `FeatureHopperItemIndex` · **Listener:** yes
-- **Notes:** Folia skips initial seed/reconcile sweeps; event-driven index remains.
+- **Notes:** Folia skips initial seed/reconcile sweeps. The event-driven index remains.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -238,7 +238,7 @@ Maintains spatial indices of dropped items and hoppers for `TweakHopperIndex`.
 
 ### `hopper-token-bucket`
 
-Per-chunk token bucket limiting hopper item moves; cancels when empty.
+This feature applies a per-chunk token bucket that limits hopper item moves. It cancels moves when the bucket is empty.
 
 - **Class:** `FeatureHopperTokenBucket` · **Listener:** yes
 
@@ -254,7 +254,7 @@ Per-chunk token bucket limiting hopper item moves; cancels when empty.
 
 ### `redstone-clock-governor`
 
-Throttles high-frequency redstone clocks via `BlockRedstoneEvent` (hold current). No NMS.
+This feature throttles high-frequency redstone clocks via `BlockRedstoneEvent` (hold current). No NMS.
 
 - **Class:** `FeatureRedstoneClockGovernor` · **Listener:** yes
 
@@ -270,7 +270,7 @@ Throttles high-frequency redstone clocks via `BlockRedstoneEvent` (hold current)
 
 ### `crop-fast-forward`
 
-When a chunk wakes after long dormancy, advances crop/sapling growth. **Silences under high load** (opposite polarity to most governors).
+When a chunk wakes after long dormancy, this feature advances crop and sapling growth. It **silences under high load**. That polarity is the opposite of most governors.
 
 - **Class:** `FeatureCropFastForward` · **Listener:** yes
 
@@ -291,7 +291,7 @@ When a chunk wakes after long dormancy, advances crop/sapling growth. **Silences
 
 ### `farm-burst-smoother`
 
-When farm growth events burst, cancels growth and reapplies on a delayed budgeted schedule.
+When farm growth events burst, this feature cancels growth. It then reapplies growth on a delayed budgeted schedule.
 
 - **Class:** `FeatureFarmBurstSmoother` · **Listener:** yes
 
@@ -314,7 +314,7 @@ When farm growth events burst, cancels growth and reapplies on a delayed budgete
 
 ### `furnace-brew-batching`
 
-Tracks furnaces/brewing stands; with NMS hooks, skips intermediate ticks away from players under pressure (measurement-only without bridge).
+This feature tracks furnaces and brewing stands. With NMS hooks, it skips intermediate ticks away from players under pressure. Without a bridge it stays measurement-only.
 
 - **Class:** `FeatureFurnaceBrewBatching` · **Listener:** yes
 
@@ -333,7 +333,7 @@ Tracks furnaces/brewing stands; with NMS hooks, skips intermediate ticks away fr
 
 ### `fast-leaf-decay`
 
-Accelerates leaf decay around break/decay events with radius scan and optional fast block removal.
+This feature accelerates leaf decay around break and decay events. It uses a radius scan. Fast block removal is optional.
 
 - **Class:** `FeatureFastLeafDecay` · **Listener:** yes
 
@@ -357,7 +357,7 @@ Accelerates leaf decay around break/decay events with radius scan and optional f
 
 ### `incident-mode`
 
-Enters a sustained incident state from high incident score or tick time (after startup grace), then rate-limits spawner/natural spawns, portals, hopper moves, and redstone until calm. See also [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
+This feature enters a sustained incident state from high incident score or tick time. It waits for startup grace first. Then it rate-limits spawner and natural spawns, portals, hopper moves, and redstone until calm. See also [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
 
 - **Class:** `FeatureIncidentMode` · **Listener:** yes
 

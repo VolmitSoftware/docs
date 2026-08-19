@@ -2,46 +2,67 @@
 title: "API - PlaceholderAPI"
 description: "Wormholes documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Wormholes publishes `%wormholes_…%` through PlaceholderAPI without requiring a Wormholes compile dependency. Full operator key tables, selection rules, vocabularies, formats, and failure matrix are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi). This page covers integrator lifecycle, threading, and compile notes only.
+
+Wormholes publishes `%wormholes_…%` through PlaceholderAPI without requiring a
+Wormholes compile dependency. Full operator key tables, selection rules,
+vocabularies, formats, and failure matrix are in
+[12 - PlaceholderAPI](/wormholes/12-placeholderapi). This page covers integrator
+lifecycle, threading, and compile notes only.
 
 ## Compile and dependency
 
-- Depend on PlaceholderAPI the usual way (`softdepend: [PlaceholderAPI]` or Paper optional dependency).
-- Do **not** put Wormholes or `Wormholes-*-api.jar` on the classpath for placeholders alone.
-- When Wormholes is absent, keys do not resolve; PlaceholderAPI leaves the original text.
+- Depend on PlaceholderAPI the usual way (`softdepend: [PlaceholderAPI]` or
+  Paper optional dependency).
+- Do **not** put Wormholes or `Wormholes-*-api.jar` on the classpath for
+  placeholders alone.
+- When Wormholes is absent, keys do not resolve. PlaceholderAPI leaves the
+  original text.
 
 ## Lifecycle
 
-1. Wormholes enable attempts registration if PlaceholderAPI is already enabled.
-2. A `PluginEnableEvent` listener registers when PlaceholderAPI enables later.
-3. Values stay `---` / `available=false` until the portal attendance pass publishes snapshots (~1 Hz).
-4. Disable/unload unregisters the expansion and clears snapshots.
-5. Expansion `persist()` is set; `/papi reload` does not drop it.
+1. If PlaceholderAPI is already enabled, Wormholes attempts registration during
+   enable.
+2. A `PluginEnableEvent` listener registers the expansion when PlaceholderAPI
+   enables later.
+3. Values stay `---` / `available=false` until the portal attendance pass
+   publishes snapshots (~1 Hz).
+4. Disable and unload unregister the expansion and clear snapshots.
+5. Expansion `persist()` is set. `/papi reload` does not remove it.
 
 Discover keys at runtime: `/papi info wormholes`.
 
 ## Threading
 
-`PlaceholderAPI.setPlaceholders` for Wormholes keys may run on any thread. Resolvers only read a `volatile` immutable server snapshot or a concurrent player map of immutable records; they never touch `Player`, entities, worlds, blocks, or chunks.
+`PlaceholderAPI.setPlaceholders` for Wormholes keys may run on any thread.
+Resolvers only read a `volatile` immutable server snapshot or a concurrent
+player map of immutable records. They never touch `Player`, entities, worlds,
+blocks, or chunks.
 
 Caveats:
 
-- Other expansions in the same string are not necessarily thread-safe; resolve Wormholes keys alone if off-region.
-- Writing a scoreboard/boss bar/title after resolve still follows Folia entity/region ownership for that write.
+- Other expansions in the same string are not necessarily thread-safe. If you
+  resolve off-region, resolve Wormholes keys alone.
+- After resolve, writing a scoreboard, boss bar, or title still follows Folia
+  entity/region ownership for that write.
 
-Publish runs on Wormholes' attendance task; consumers never schedule it.
+Publish runs on the Wormholes attendance task. Consumers never schedule it.
 
 ## Consumption pattern
 
 1. Check `%wormholes_portal.available%` first (`true`/`false` only).
-2. Treat `---` as a first-class unavailable value (e.g. unlinked destination vs no portal).
-3. The batch `setPlaceholders(player, List.of(...))` overload keeps reads adjacent, but it is not an atomic multi-key snapshot; server and player records may publish between individual resolutions.
-4. Switch on enum keys (`portal.state`, `rtp.state`, `peers.link`) with a `default` arm — vocabularies can grow; `---` is always possible for player/RTP keys.
+2. Treat `---` as a first-class unavailable value. Examples: unlinked
+   destination vs no portal.
+3. The batch `setPlaceholders(player, List.of(...))` overload keeps reads
+   adjacent. It is not an atomic multi-key snapshot. Server and player records
+   may publish between individual resolutions.
+4. Switch on enum keys (`portal.state`, `rtp.state`, `peers.link`) with a
+   `default` arm. Vocabularies can grow. `---` is always possible for player and
+   RTP keys.
 
 Minimal resolve:
 
@@ -67,8 +88,13 @@ String state = values.get(2);
 String distance = values.get(3);
 ```
 
-The list call reduces consumer-side repetition but is still not an atomic snapshot; tolerate a nearby portal changing between fields and refresh on the next HUD interval.
+The list call reduces consumer-side repetition. It is still not an atomic
+snapshot. Tolerate a nearby portal changing between fields. Refresh on the next
+HUD interval.
 
 ## Not an API jar surface
 
-Placeholder types live under `art.arcane.wormholes.papi` and VolmLib helpers; they are **not** in `Wormholes-*-api.jar`. Integrators only need PlaceholderAPI at runtime. For numeric metrics without string parsing, use [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
+Placeholder types live under `art.arcane.wormholes.papi` and VolmLib helpers.
+They are **not** in `Wormholes-*-api.jar`. Integrators only need PlaceholderAPI
+at runtime. For numeric metrics without string parsing, use
+[23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).

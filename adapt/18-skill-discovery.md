@@ -2,22 +2,24 @@
 title: "Skill - Discovery"
 description: "Adapt documentation: Skill - Discovery"
 published: true
-date: 2026-08-16T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Discovery is the skill for seeing things for the first time. Every block state, item, food, recipe, enchantment, mob, player, potion effect, biome, dimension, and world you have never encountered before pays Discovery XP once and once only. It is the one skill that rewards wandering off and poking at things instead of grinding one action.
+Discovery is the skill for seeing things for the first time. Every new block state, item, food, recipe, enchantment, mob, player, potion
+effect, biome, dimension, and world pays Discovery XP. That payout happens once
+and once only. It is the one skill that rewards wandering off and poking at things instead of grinding one action.
 
-The plugin also watches whatever block you are looking at. Every half second it ray-traces up to five blocks ahead and records the block and its biome, so you pick up discoveries just by walking through new terrain with your eyes open. On top of that, any vanilla experience you collect is mirrored straight into Discovery XP.
+The plugin also watches whatever block you are looking at. Every half second it ray-traces up to five blocks ahead and records the block and its biome. You pick up discoveries just by walking through new terrain with your eyes open. On top of that, any vanilla experience you collect is mirrored straight into Discovery XP.
 
-The payouts are lopsided on purpose. A new block is worth a few points, a new mob or player is worth a lot more, and stepping into a dimension or world you have never visited is worth hundreds. Rare finds get their own particle flourish so you notice them.
+The payouts are lopsided on purpose. A new block is worth a few points. A new mob or player is worth a lot more. Stepping into a dimension or world you have never visited is worth hundreds. Rare finds get their own particle flourish so you notice them.
 
-The 14 adaptations mostly turn curiosity into utility: a HUD that reads out what you are looking at, direction guidance toward nearby generated structures, a compass that points at the nearest structure, glowing chests through walls, and better archaeology brushing. A few convert experience into something else, either armor, damage resistance, cheaper villager trades, or faster mending.
+The 14 adaptations mostly turn curiosity into utility. You get a HUD that reads out what you are looking at. You get direction guidance toward nearby generated structures. A compass points at the nearest structure. Chests glow through walls. Archaeology brushing pays more. A few convert experience into something else: armor, damage resistance, cheaper villager trades, or faster mending.
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation to level 1 or higher, the skill and the adaptation are both enabled in config, you hold the `adapt.use` permission, and any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
+Everything below only runs when you have learned the adaptation to level 1 or higher. The skill and the adaptation are both enabled in config. You hold the `adapt.use` permission. Any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
 
 ### Experimental Unity (`discovery-unity`)
 
@@ -27,13 +29,14 @@ Works on its own once learned. Goes to seven levels.
 
 ### World Armor (`discovery-world-armor`)
 
-Standing on and near hard blocks makes you tougher. The bonus armor is derived from the hardness of the blocks around you, so it pays out in stone and deepslate and gives you nothing in a field.
+Standing on and near hard blocks makes you tougher. The bonus armor is derived from the hardness of the blocks around you. It pays
+out in stone and deepslate. It gives you nothing in a field.
 
 Works on its own once learned.
 
 ### Experimental Resistance (`discovery-xp-resist`)
 
-An emergency brake tied to your experience bar. It predicts the threshold from the hit's effective final damage, after armor and other reductions, and only fires when that hit would drop you below five hearts or kill you outright. It then spends vanilla levels through the normal experience-cost path and cuts the damage. The built-in charge authoritatively changes the server level, immediately updates the XP display, and shows a `-N XP Levels` notice. If you do not have the levels, it fails with a red puff and the hit lands in full. Higher adaptation levels both cut more damage and cost fewer levels.
+An emergency brake tied to your experience bar. It predicts the threshold from the hit's effective final damage, after armor and other reductions. It only fires when that hit would drop you below five hearts or kill you outright. It then spends vanilla levels through the normal experience-cost path and cuts the damage. The built-in charge authoritatively changes the server level, immediately updates the XP display, and shows a `-N XP Levels` notice. If you do not have the levels, it fails with a red puff and the hit lands in full. Higher adaptation levels both cut more damage and cost fewer levels.
 
 Works on its own once learned.
 
@@ -45,7 +48,7 @@ Right-clicking a villager has a chance to rewrite the trades in your favour, pai
 
 1. Learn it in the Adapt menu.
 2. Keep some vanilla levels banked.
-3. Right-click a villager with your main hand. If it procs, the offers you open are improved by a temporary Hero of the Village session; Adapt validates the merchant after the screen has actually opened and restores your previous effect when it closes.
+3. Right-click a villager with your main hand. If it procs, the offers you open are improved by a temporary Hero of the Village session. Adapt validates the merchant after the screen has actually opened and restores your previous effect when it closes.
 
 ### Better Mending (`discovery-better-mending`)
 
@@ -61,7 +64,9 @@ Nothing happens if the item is undamaged, if you have no experience, or if the i
 
 ### Archaeologist (`discovery-archaeologist`)
 
-Brushing suspicious sand and suspicious gravel to completion can pay out twice. Those two vanilla suspicious blocks are the entire "strange/mysterious" set; ordinary sand and gravel do not qualify. On top of the vanilla find there is a chance for brick, clay, bone, flint, string, or coal, and a smaller rare roll for diamond, emerald, gold, or amethyst. Both chances climb with level, and there is a cooldown between rewards that shrinks as you level.
+Brushing suspicious sand and suspicious gravel to completion can pay out twice. Those two vanilla suspicious blocks are the entire "strange/mysterious" set. Ordinary sand and gravel do not qualify. On top of the vanilla find there is a chance for brick, clay, bone, flint,
+string, or coal. A smaller rare roll can pay diamond, emerald, gold, or
+amethyst. Both chances climb with level, and there is a cooldown between rewards that shrinks as you level.
 
 **How to use it**
 
@@ -82,19 +87,22 @@ Not enough food, still on cooldown, or nothing found in range and you get a smok
 
 ### Insight (`discovery-insight`)
 
-Study creatures at a glance. The entity you are looking at shows its name and a health bar over its head, tameable creatures also show their live speed, jump, and attack values, and your own hits sprout floating damage numbers with crits in orange. The HUD scales with distance so it stays the same size on your screen.
+Study creatures at a glance. The entity you are looking at shows its name and a health bar over its head. Tameable creatures also show their live speed, jump, and attack values. Your own hits sprout floating damage numbers with crits in orange. The HUD scales with distance so it stays the same size on your screen.
 
 Works on its own once learned. Look at something.
 
 ### Trailblazer (`discovery-trailblazer`)
 
-Rewards the first time you set foot in each biome or structure type with a burst of skill XP and a short speed boost, so exploring actually moves you along. Structure discoveries pay considerably more than biome discoveries. The Discovery XP pool is flushed immediately, so the ordinary XP action-bar ticker appears at discovery time when the global `actionbarNotifyXp` setting is enabled.
+The first time you set foot in each biome or structure type you get a burst of
+skill XP and a short speed boost. Exploring actually moves you along. Structure discoveries pay considerably more than biome discoveries. The Discovery XP pool is flushed immediately, so the ordinary XP action-bar ticker appears at discovery time when the global `actionbarNotifyXp` setting is enabled.
 
 Works on its own once learned.
 
 ### Field Notes (`discovery-field-notes`)
 
-The first kill of each mob species pays a large XP bounty, and every kill after that banks a small permanent damage bonus against that species up to a per-species cap. Over time you become measurably better at killing the things you kill often.
+The first kill of each mob species pays a large XP bounty. Every kill after that
+banks a small permanent damage bonus against that species up to a per-species
+cap. Over time you become measurably better at killing the things you kill often.
 
 Works on its own once learned.
 
@@ -106,7 +114,7 @@ Works on its own once learned.
 
 ### Relic Appraiser (`discovery-relic-appraiser`)
 
-Turns rare junk into XP. Heads, music discs, armor trim templates, and pottery sherds can be appraised for Discovery XP scaled by how rare the category is. Each successful appraisal also grants a bounded random XP payout to one enabled, permitted non-Discovery skill. An appraised item is stamped so it cannot be appraised twice; placing and breaking an appraised head or skull preserves the exact stamped item data and lore.
+Turns rare junk into XP. Heads, music discs, armor trim templates, and pottery sherds can be appraised for Discovery XP scaled by how rare the category is. Each successful appraisal also grants a bounded random XP payout to one enabled, permitted non-Discovery skill. An appraised item is stamped so it cannot be appraised twice. Placing and breaking an appraised head or skull preserves the exact stamped item data and lore.
 
 **How to use it**
 
@@ -118,13 +126,13 @@ Already-appraised items just puff smoke.
 
 ### Sixth Sense (`discovery-sixth-sense`)
 
-A compact navigator above the hotbar. It maintains the nearest supported generated structure within its level-scaled range, up to 500 blocks, and shows a structure symbol, its specific name or type, an eight-way compass direction, and rounded block distance. A short private direction line still appears when a nearer target is acquired. The cue clears while you are inside a supported generated structure's exact bounding box. One of 16 structure families is searched every pulse; villages, pillager outposts, and other jigsaw structures are included, and each player advances through the families independently. While the cue is active the experience bar visually fills as you close on the target — a client-side display only; stored XP values are never changed, and the real bar is restored when the cue clears.
+A compact navigator above the hotbar. It maintains the nearest supported generated structure within its level-scaled range, up to 500 blocks. It shows a structure symbol, its specific name or type, an eight-way compass direction, and rounded block distance. A short private direction line still appears when a nearer target is acquired. The cue clears while you are inside a supported generated structure's exact bounding box. One of 16 structure families is searched every pulse. Villages, pillager outposts, and other jigsaw structures are included. Each player advances through the families independently. While the cue is active the experience bar visually fills as you close on the target. That fill is a client-side display only. Stored XP values are never changed. The real bar is restored when the cue clears.
 
 Works on its own once learned.
 
 ### Keen Eye (`discovery-keen-eye`)
 
-Chests and spawners inside your line of sight briefly light up as private glowing outlines. Only you see them. It has a forward-view cone rather than full radius, so you have to be roughly facing what you want to spot, and only a handful of containers light up per scan.
+Chests and spawners inside your line of sight briefly light up as private glowing outlines. Only you see them. It has a forward-view cone rather than full radius. You have to be roughly facing what you want to spot. Only a handful of containers light up per scan.
 
 Works on its own once learned.
 
@@ -163,7 +171,9 @@ Each discovery pays once. The record is kept per player per key.
 | The dimension of a newly seen world | `World.Environment` | `discoverEnvironmentXP` | none |
 | Collecting vanilla experience | not a discovery | the raw vanilla amount | none |
 
-The look-ahead check runs on the skill tick. Each pass takes up to `maxTargetChecksPerPass` players from a rotating cursor, each player is throttled to one check every 500 ms, and the check is a five-block `getTargetBlockExact` with fluids ignored. Repeating the same block at the same coordinates with the same data and biome is skipped.
+The look-ahead check runs on the skill tick. Each pass takes up to `maxTargetChecksPerPass` players from a rotating cursor.
+Each player is throttled to one check every 500 ms. The check is a five-block
+`getTargetBlockExact` with fluids ignored. Repeating the same block at the same coordinates with the same data and biome is skipped.
 
 Discoveries with a value of 24 or more play the rare-find timeline effect instead of the plain particle.
 
@@ -221,7 +231,9 @@ Written to `plugins/Adapt/adapt/skills/discovery.toml` on first load.
 | Tick interval (ms) | 666 |
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-unity.toml` |
 
-Grants a flat 5 Discovery XP per orb pickup, then picks one random skill line and gives it `amount * xpGainedMultiplier * levelPercent` fresh XP, where `amount` is a random 1 to 3.
+It grants a flat 5 Discovery XP per orb pickup. It then picks one random skill
+line and gives it `amount * xpGainedMultiplier * levelPercent` fresh XP.
+`amount` is a random 1 to 3.
 
 Milestones: `challenge_discovery_unity_5k` and `challenge_discovery_unity_50k` on `discovery.unity.orbs-distributed` at 5000 and 50000, rewarding 400 and 1500.
 
@@ -271,7 +283,7 @@ Listened events:
 | Tick interval (ms) | 5215 |
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-xp-resist.toml` |
 
-The trigger predicts post-hit health from `EntityDamageEvent.getFinalDamage()`, so armor and the damage modifiers already committed to the event are part of the threshold decision. Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels`; the built-in charge uses Bukkit's authoritative level-accounting path, preserves bar progress, immediately pushes the new XP display, and shows a `-N XP Levels` notice. A registered ability cost provider may waive or replace that built-in charge, in which case no vanilla levels or vanilla-cost notice are applied. Already-cancelled damage events do not charge. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
+The trigger predicts post-hit health from `EntityDamageEvent.getFinalDamage()`, so armor and the damage modifiers already committed to the event are part of the threshold decision. Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels`. The built-in charge uses Bukkit's authoritative level-accounting path, preserves bar progress, immediately pushes the new XP display, and shows a `-N XP Levels` notice. A registered ability cost provider may waive or replace that built-in charge, in which case no vanilla levels or vanilla-cost notice are applied. Already-cancelled damage events do not charge. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
 
 Milestones: `challenge_discovery_xp_resist_25` and `challenge_discovery_xp_resist_250` on `discovery.xp-resist.saves` at 25 and 250, rewarding 500 and 2000. `challenge_discovery_xp_resist_clutch` is granted the first time a qualifying save processes an original hit of at least 30 health points.
 
@@ -307,7 +319,7 @@ Milestones: `challenge_discovery_villager_100` and `challenge_discovery_villager
 
 Listened events:
 
-- `PlayerInteractEntityEvent` (`on`): rolls the proc on a main-hand villager interaction; offhand duplicates are ignored
+- `PlayerInteractEntityEvent` (`on`): rolls the proc on a main-hand villager interaction. Offhand duplicates are ignored
 - `InventoryOpenEvent` (`on`): activates the trade session and schedules validation one tick later, after the merchant view opens
 - `PlayerTradeEvent` (`on`)
 - `InventoryCloseEvent` (`on`): restores the original offers
@@ -364,9 +376,11 @@ Listened events:
 | Tick interval (ms) | 10 |
 | Config file | `plugins/Adapt/adapt/adaptations/discovery-archaeologist.toml` |
 
-Brush completions arrive through a `BrushEventBridge` built by reflection at construction against `BlockBrushEvent`. When the server does not expose that event the bridge is null, and the right-click handler's queued pending brush plus its fallback window is what resolves the reward.
+Brush completions arrive through a `BrushEventBridge` built by reflection at construction against `BlockBrushEvent`. When the server does not expose that event the bridge is null. The right-click
+handler's queued pending brush plus its fallback window is what resolves the
+reward.
 
-Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is considered only after brushing completes. Common rewards are brick, clay balls, bones, flint, string, and coal; rare rewards are diamonds, emeralds, gold ingots, and amethyst shards.
+Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is considered only after brushing completes. Common rewards are brick, clay balls, bones, flint, string, and coal. Rare rewards are diamonds, emeralds, gold ingots, and amethyst shards.
 
 Milestones: `challenge_discovery_archaeologist_50` and `challenge_discovery_archaeologist_500` on `discovery.archaeologist.bonus-finds` at 50 and 500, rewarding 300 and 1000.
 
@@ -469,7 +483,7 @@ Listened events:
 
 Milestones: `challenge_discovery_trailblazer_25` and `challenge_discovery_trailblazer_100` on `discovery.trailblazer.discoveries` at 25 and 100, rewarding 400 and 1200.
 
-No event handlers. It runs entirely on its tick. A first-visit award immediately flushes the Discovery XP pool through the normal notifier; the action-bar display still obeys the global `actionbarNotifyXp` switch.
+No event handlers. It runs entirely on its tick. A first-visit award immediately flushes the Discovery XP pool through the normal notifier. The action-bar display still obeys the global `actionbarNotifyXp` switch.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -562,7 +576,7 @@ Listened events:
 | `appraiseXpBase` | `60` | Discovery XP for an appraisal at level 0, before rarity weighting. |
 | `appraiseXpFactor` | `180` | Additional appraisal XP unlocked across the level range. |
 | `randomSkillXpMin` | `20` | Lower bound for the additional random non-Discovery skill XP payout. Values are clamped to `0`-`10000`. |
-| `randomSkillXpMax` | `60` | Upper bound for the additional random non-Discovery skill XP payout. Values are clamped to `0`-`10000` and reordered when necessary; both zero disables this payout. |
+| `randomSkillXpMax` | `60` | Upper bound for the additional random non-Discovery skill XP payout. Values are clamped to `0`-`10000` and reordered when necessary. Both zero disables this payout. |
 | `discRarityWeight` | `1.5` | Rarity multiplier for music discs. |
 | `headRarityWeight` | `1.4` | Rarity multiplier for heads and skulls. |
 | `trimRarityWeight` | `1.25` | Rarity multiplier for armor trim templates. |
@@ -588,14 +602,19 @@ Listened events:
 - `PlayerQuitEvent` (`on`)
 - `PlayerMoveEvent` (`onMove`): clears cached HUD state after the adaptation is unlearned or disabled.
 
-Each pulse searches one of 16 structure families using a per-player cursor and keeps the nearest valid cached result. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. Searches include generated structures whether visited or not, do not generate or load chunks, and use at most a 500-block configured radius. The maintained action-bar cue shows `{symbol} {structure} {direction} {distance}m`; directions are N, NE, E, SE, S, SW, W, or NW. The cue publishes into the shared cooperative action-bar compositor as a persistent status segment: it holds the center of the line when free (XP gains slot to its left, notices to its right) and shifts left as one piece when the React monitor owns the center — it is never pushed to a boss bar. A newly acquired nearer result also shows the private six-block direction line for 50 ticks. Exact inside suppression checks supported generated-structure bounding boxes in the player's current chunk. While the cue is active, the experience bar is repainted client-side to show target proximity (full = on top of it) and restored when the cue clears; no stored experience value is read or changed.
+Each pulse searches one of 16 structure families using a per-player cursor and keeps the nearest valid cached result. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. Searches include generated structures whether visited or not, do not generate or load chunks, and use at most a 500-block configured radius. The maintained action-bar cue shows `{symbol} {structure} {direction} {distance}m`. Directions are N, NE, E, SE, S, SW, W, or NW. The cue publishes into the shared cooperative action-bar compositor as a
+persistent status segment. It holds the center of the line when free. XP gains
+slot to its left. Notices slot to its right. It shifts left as one piece when
+the React monitor owns the center. It is never pushed to a boss bar. A newly acquired nearer result also shows the private six-block direction line for 50 ticks. Exact inside suppression checks supported generated-structure bounding boxes in the player's current chunk. While the cue is active, the experience bar is repainted client-side to show
+target proximity. Full means you are on top of it. The bar restores when the cue
+clears. No stored experience value is read or changed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `detectionRangeBase` | `48` | Structure detection radius in blocks at level 0. |
 | `detectionRangeFactor` | `452` | Additional detection radius in blocks across the level range, reaching 500 at max level with the default ceiling. |
-| `maxDetectionRange` | `500` | Configured ceiling for the search and HUD radius; runtime hard-capped at 500 blocks. |
-| `pulseIntervalMillis` | `4000` | Milliseconds between structure searches for one player; runtime-clamped to 2000-60000. Cached HUD guidance refreshes on the 2000 ms adaptation tick between searches. |
+| `maxDetectionRange` | `500` | Configured ceiling for the search and HUD radius. Runtime hard-capped at 500 blocks. |
+| `pulseIntervalMillis` | `4000` | Milliseconds between structure searches for one player. Runtime-clamped to 2000-60000. Cached HUD guidance refreshes on the 2000 ms adaptation tick between searches. |
 
 ### Keen Eye
 

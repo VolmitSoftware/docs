@@ -2,18 +2,19 @@
 title: "BileTools — Configuration"
 description: "Every config.yml key with its shipped default"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`plugins/BileTools/config.yml`. Values below are the defaults written on first run. BileTools
-rewrites the file after loading, so unknown keys are dropped and missing keys are restored.
+`plugins/BileTools/config.yml`. Values below are the defaults written on first
+run. BileTools rewrites the file after loading. The rewrite drops unknown keys
+and restores missing keys.
 
 ## Watcher
 
-Controls the automatic hot-reload behaviour.
+Controls automatic hot-reload.
 
 | Key | Default | Effect |
 |---|---|---|
@@ -39,12 +40,13 @@ watcher:
     - spark
 ```
 
-These are excluded because hot-reloading them on a dev box is usually either dangerous or
-pointless — they hold static state, register protocol hooks, or are depended on by everything
-else.
+These plugins are excluded by default. Hot-reload is often dangerous or
+pointless for them. They hold static state. They register protocol hooks. Other
+plugins depend on them.
 
-The debounce exists because a Gradle or Maven build writes the jar incrementally. Acting on
-the first write would load a truncated file; BileTools waits for the fingerprint to settle.
+The debounce exists because a Gradle or Maven build writes the jar
+incrementally. Acting on the first write would load a truncated file. BileTools
+waits for the fingerprint to settle.
 
 ## Lifecycle and observability
 
@@ -54,8 +56,8 @@ the first write would load a truncated file; BileTools waits for the fingerprint
 | `observability.log-timings` | `true` | Log unload, load and reload phase timings |
 | `archive-plugins` | `true` | Archive a copy of a jar before `uninstall` deletes it |
 
-Leave `health-check` on. Without it a plugin that throws during `onEnable` reports a
-successful reload while sitting inert.
+Leave `health-check` on. If you turn it off, a plugin that throws during
+`onEnable` reports a successful reload. The plugin stays inert.
 
 ## Remote deploy
 
@@ -71,5 +73,5 @@ successful reload while sitting inert.
 | `remote-deploy.max-transfer-bytes` | `268435456` | 256 MiB cap per transfer. Minimum 1 MiB |
 {.dense}
 
-Both halves default to off. See [Remote Deploy](/biletools/remote-deploy) before enabling
-either — the credential model needs reading first.
+The master and the slave both default to off. Read
+[Remote Deploy](/biletools/remote-deploy) before you enable either half.

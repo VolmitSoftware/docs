@@ -2,30 +2,31 @@
 title: "Skill - Herbalism"
 description: "Adapt documentation: Skill - Herbalism"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Herbalism is the farming skill. You level it by harvesting and planting crops, shearing, feeding a composter, and eating. Fifteen adaptations sit on top of that, and between them they cover the whole loop: planting a field, growing it, harvesting it, replanting it, and turning the leftovers back into fertilizer.
+Herbalism is the farming skill. You level it by harvesting and planting crops, shearing, feeding a composter, and eating. Fifteen adaptations sit on top of that. Together they cover the whole loop: planting a field, growing it, harvesting it, replanting it, and turning the leftovers back into fertilizer.
 
-The early adaptations are small conveniences. Crops you harvest go straight into your bag, grass and flowers start dropping useful things, and eating fills you up more than it should. Then it gets ambitious. Harvest and Replant turns one right-click into a harvested and re-seeded patch. Seed Sower plants a whole plot from one sneak-click. Growth Aura and Bee Shepherd push crops forward just by standing near them, paying in hunger instead of bone meal.
+The early adaptations are small conveniences. Crops you harvest go straight into your bag. Grass and flowers start dropping useful things. Eating fills you up more than it should. Then it gets ambitious. Harvest and Replant turns one right-click into a harvested and re-seeded patch. Seed Sower plants a whole plot from one sneak-click. Growth Aura and Bee Shepherd push crops forward just by standing near them. They pay in hunger instead of bone meal.
 
-Compost Cascade is the big one. Sneak-click a composter and it sweeps everything nearby: loose drops on the ground, mature crops in the field, the compostable junk in your inventory. It fills the composter, spits out bone meal, spends the compost pushing your immature crops one stage forward, and occasionally coughs up something valuable.
+Compost Cascade is the big one. Sneak-click a composter and it sweeps everything nearby: loose drops on the ground, mature crops in the field, the compostable junk in your inventory. It fills the composter. It spits out bone meal. It spends the compost pushing your immature crops one stage forward. Occasionally it coughs up something valuable.
 
 Two adaptations point sideways. Hungry Shield pays your incoming damage out of your food bar instead of your health. Rooted Footing stops you trampling farmland and turns part of a fall into hunger. Four more just unlock recipes: mycelium, grass blocks, mushroom blocks, and cobwebs.
 
 ## Adaptations
 
-Everything below needs the same four things: the adaptation learned at level 1 or higher in the Adapt menu, the Herbalism skill and that adaptation both enabled in config, an `adapt.use.` permission that has not been revoked for you, and any protection or region plugin allowing the block or entity you are acting on. Those are not repeated per entry.
+Everything below needs the same four things. The adaptation is learned at level 1 or higher in the Adapt menu. The Herbalism skill and that adaptation are both enabled in config. An `adapt.use.` permission has not been revoked for you. Any protection or region plugin allows the block or entity you are acting on. Those are not repeated per entry.
 
-Five of them ship with `permanent = true`, which means they act as already learned and skip the learn and unlearn flow: Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
+Five of them ship with `permanent = true`. They act as already learned and skip the learn and unlearn flow. Those five are Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
 
 ### Growth Aura (`herbalism-growth-aura`)
 
 Crops near you grow on their own, paid for out of your hunger. Stand in a field and it ticks forward around you without any input. It works on its own once learned.
 
-Each pulse throws random samples around you. Samples that land on a crop below full growth get queued, then a second or two later the crop jumps forward by a few age steps. Each step costs a fraction of a food point, so a big field drains you fast. Higher levels widen the radius, push more age steps per hit, and cost less food per step.
+Each pulse throws random samples around you. Samples that land on a crop below full growth get queued. A second or two later
+the crop jumps forward by a few age steps. Each step costs a fraction of a food point, so a big field drains you fast. Higher levels widen the radius, push more age steps per hit, and cost less food per step.
 
 By default it only touches crops sitting on the surface, so it will not run a hidden underground farm for you.
 
@@ -66,7 +67,8 @@ Each drop is run through a normal pickup attempt first, so protection plugins th
 
 Breaking grass can drop a random seed. Breaking a flower can drop random food. It works on its own once learned, and it pays well, 100 skill XP per lucky drop.
 
-The chance is the square of your adaptation level as a percentage, so it climbs steeply: level 3 is about 9 percent, level 7 is about 49 percent.
+The chance is the square of your adaptation level as a percentage. It climbs
+steeply. Level 3 is about 9 percent. Level 7 is about 49 percent.
 
 ### Herbalist's Myconid (`herbalism-myconid`)
 
@@ -78,7 +80,7 @@ Unlocks a shaped recipe: three wheat seeds in a row over three dirt in a row mak
 
 ### Mushroom Maker (`herbalism-mushroom-blocks`)
 
-Unlocks four recipes. Four red mushrooms in a 2x2 make a red mushroom block, four brown mushrooms in a 2x2 make a brown mushroom block, and either mushroom block alone converts to a mushroom stem. Active by default without learning it.
+Unlocks four recipes. Four red mushrooms in a 2x2 make a red mushroom block. Four brown mushrooms in a 2x2 make a brown mushroom block. Either mushroom block alone converts to a mushroom stem. Active by default without learning it.
 
 ### Webby Creator (`herbalism-cobweb`)
 
@@ -91,7 +93,7 @@ Plants a whole patch of farmland in one gesture instead of clicking every tile.
 How to use it:
 
 1. Hold a stack of seeds. Wheat seeds, carrots, potatoes, beetroot seeds, melon seeds, pumpkin seeds, torchflower seeds, and nether wart all work.
-2. Sneak and right-click. Clicking a block sets the plane you plant on; clicking air uses the block you are looking at within 5 blocks, except on Folia where you must click a block.
+2. Sneak and right-click. Clicking a block sets the plane you plant on. Clicking air uses the block you are looking at within 5 blocks, except on Folia where you must click a block.
 3. Every empty tile above farmland within the radius gets planted, up to your per-use crop cap and the number of seeds you are holding.
 
 Nether wart plants on soul sand instead of farmland. Seeds come out of the held stack, one per crop. If planting fails partway, the crops are rolled back and the seeds are refunded. The seed type goes on a short item cooldown afterward.
@@ -113,7 +115,7 @@ The item budget is split three ways: 40 percent to the field scan, 20 percent to
 
 ### Rooted Footing (`herbalism-rooted-footing`)
 
-Two safety nets. You stop trampling farmland when you walk or jump on it, and part of your fall damage is paid out of your food bar as long as you land on natural ground. Active by default without learning it.
+Two safety nets. You stop trampling farmland when you walk or jump on it. Part of your fall damage is paid out of your food bar as long as you land on natural ground. Active by default without learning it.
 
 Natural ground means farmland, grass block, moss block, mycelium, dirt, or rooted dirt directly under you. The conversion is capped both by the absorb percentage and by how much food you actually have. If the absorbed amount covers the whole fall, the damage is cancelled outright.
 
@@ -123,7 +125,7 @@ Hold a flower and nearby crops start growing, while nearby bees drift toward you
 
 How to use it:
 
-1. Hold any flower in your main hand or your off hand. Tulips, dandelion, poppy, blue orchid, allium, azure bluet, oxeye daisy, cornflower, lily of the valley, wither rose, sunflower, lilac, rose bush, peony, torchflower, and pink petals all count.
+1. Hold any flower in your main hand or your off hand. Tulips, dandelion, poppy, blue orchid, allium, azure bluet, oxeye daisy, and cornflower all count. Lily of the valley, wither rose, sunflower, lilac, rose bush, peony, torchflower, and pink petals also count.
 2. Stand near crops. Pulses fire on their own while you keep holding the flower and have enough food.
 3. Each pulse spends food, makes a batch of growth attempts inside its radius, and tugs up to eight nearby bees toward you.
 
@@ -131,12 +133,14 @@ Bees you have herded add extra growth attempts, up to a configured cap, so keepi
 
 ### Spore Bloom (`herbalism-spore-bloom`)
 
-Turns a patch of ground into a mushroom field. The bloom spreads outward from where you clicked in rings, converting dirt-family soil into the surface you started from and swapping flowers into mushrooms as it goes.
+Turns a patch of ground into a mushroom field. The bloom spreads outward from where you clicked in rings. It converts
+dirt-family soil into the surface you started from. It swaps flowers into
+mushrooms as it goes.
 
 How to use it:
 
 1. Hold red or brown mushrooms.
-2. Sneak and place one on top of mycelium or podzol. The placement itself is cancelled; the bloom happens instead.
+2. Sneak and place one on top of mycelium or podzol. The placement itself is cancelled. The bloom happens instead.
 3. Rings of ground convert outward over the next few seconds, a few blocks per pulse.
 
 Mycelium seeds a mycelium bloom, podzol seeds a podzol bloom. Warm-colored flowers usually become red mushrooms, cool-colored ones usually become brown, and anything else follows whichever mushroom you were holding. Mushrooms and hunger are only charged once the first block actually converts, so a fully blocked bloom costs you nothing. Turn off `swapFlowersToMushrooms` to convert soil only and leave flowers alone.
@@ -168,7 +172,7 @@ All handlers run at MONITOR priority.
 | `BlockPlaceEvent` | Same as above | Yes | `harvest.planted` +1 |
 | `PlayerInteractEvent` on a composter | See below | No | `harvest.composted` +1 |
 
-The block handlers only fire when the block data is `Ageable`, so non-crop blocks award nothing. A freshly placed seed is age 0, which means planting records the `harvest.planted` stat but awards 0 XP from this path; `plantCropSeedsXP` is what actually pays for replanting, and only Harvest & Replant uses it. `provenance` is `XpProvenance.harvestXpMultiplier` and `novelty` is `XpNovelty.fieldCycleMultiplier`, both anti-farm multipliers.
+The block handlers only fire when the block data is `Ageable`, so non-crop blocks award nothing. A freshly placed seed is age 0, which means planting records the `harvest.planted` stat but awards 0 XP from this path. `plantCropSeedsXP` is what actually pays for replanting, and only Harvest & Replant uses it. `provenance` is `XpProvenance.harvestXpMultiplier` and `novelty` is `XpNovelty.fieldCycleMultiplier`, both anti-farm multipliers.
 
 Composter XP is checked one tick after the interaction. If the composter level rose, or dropped from above zero to zero, the award is `composterBaseXP + (newLevel * composterLevelXPMultiplier) + (newLevel == 0 ? composterEmptyBonus : composterNonZeroLevelBonus)`.
 
@@ -189,7 +193,7 @@ Written to `plugins/Adapt/adapt/skills/herbalism.toml` on first load.
 | `composterNonZeroLevelBonus` | `25` | Bonus skill XP when the composter ends above level zero. |
 | `composterEmptyBonus` | `5` | Bonus skill XP when the composter empties after producing bone meal. |
 | `challengeEat100Reward` | `1250` | Knowledge reward for `challenge_eat_100`. |
-| `challengeEat1kReward` | `6250` | Knowledge reward for `challenge_eat_1000`; the 10000 tier pays this times 5. |
+| `challengeEat1kReward` | `6250` | Knowledge reward for `challenge_eat_1000`. The 10000 tier pays this times 5. |
 | `challengeHarvest100Reward` | `1250` | Knowledge reward for `challenge_harvest_100`. |
 | `challengeHarvest1kReward` | `6250` | Knowledge reward for `challenge_harvest_1000`. |
 | `challengePlant100Reward` | `1250` | Knowledge reward for `challenge_plant_100`. |
@@ -244,12 +248,12 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | Cost factor | 0.325 |
 | Tick interval (ms) | 10 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-growth-aura.toml` |
-| Listened events | `PlayerQuitEvent`; the work itself runs on the adaptation tick |
-| Menu stat lines | Block Radius; Growth Aura Strength; Food Cost |
+| Listened events | `PlayerQuitEvent`. The work itself runs on the adaptation tick |
+| Menu stat lines | Block Radius. Growth Aura Strength. Food Cost |
 | Stat key | `herbalism.growth-aura.blocks-grown` |
 | Milestones | `challenge_herbalism_growth_1k` (1000, reward 300), `challenge_herbalism_growth_25k` (25000, reward 1000) |
 
-Ticking is learner-bound. A player is re-evaluated every 850 ms while pulsing and every 250 ms while idle. Radius is `levelPercent * radiusFactor`; samples per pulse are `ceil(clamp(radius * radius, 3, 256))`. Strength is `level * strengthFactor` age steps per hit, capped by the crop's remaining age. Food per step is interpolated from `maxFoodCost` at no progress down to `minFoodCost` at full level. Mutations are applied 1500 to 3000 ms after their sample. Per-tick work caps are 32 player checks, 32 samples, 16 mutations, and 16 completions.
+Ticking is learner-bound. A player is re-evaluated every 850 ms while pulsing and every 250 ms while idle. Radius is `levelPercent * radiusFactor`. Samples per pulse are `ceil(clamp(radius * radius, 3, 256))`. Strength is `level * strengthFactor` age steps per hit, capped by the crop's remaining age. Food per step is interpolated from `maxFoodCost` at no progress down to `minFoodCost` at full level. Mutations are applied 1500 to 3000 ms after their sample. Per-tick work caps are 32 player checks, 32 samples, 16 mutations, and 16 completions.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -299,11 +303,11 @@ Radius is `level - radiusSub`, so level 1 harvests only the clicked crop. Above 
 | Tick interval (ms) | 875 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-hungry-shield.toml` |
 | Listened events | `EntityDamageEvent` (HIGHEST) |
-| Menu stat lines | Resisted by Hunger; Contact, Crushing & Weather Damage Shielded; Melee & Thorns Damage Shielded; Fire & Lava Damage Shielded; Projectile & Explosion Damage Shielded; Magic, Poison & Wither Damage Shielded |
+| Menu stat lines | Resisted by Hunger. Contact, Crushing & Weather Damage Shielded. Melee & Thorns Damage Shielded. Fire & Lava Damage Shielded. Projectile & Explosion Damage Shielded. Magic, Poison & Wither Damage Shielded |
 | Stat key | `herbalism.hungry-shield.damage-absorbed` |
 | Milestones | `challenge_herbalism_shield_500` (500, reward 400), `challenge_herbalism_shield_5k` (5000, reward 1500) |
 
-Effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. Absorbed damage is `min(damage * effectiveness, max(0, foodLevel + saturation - 6))`, so it never spends your last 6 food points. Skill XP equals the absorbed damage. Damage-over-time causes are fire, fire tick, lava, campfire, hot floor, poison, wither, drowning, and freeze; those charge at most once per `dotChargeIntervalMs`. The shield-break effect is limited to once per 1500 ms and only for hits above 2 damage.
+Effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. Absorbed damage is `min(damage * effectiveness, max(0, foodLevel + saturation - 6))`, so it never spends your last 6 food points. Skill XP equals the absorbed damage. Damage-over-time causes are fire, fire tick, lava, campfire, hot floor, poison, wither, drowning, and freeze. Those charge at most once per `dotChargeIntervalMs`. The shield-break effect is limited to once per 1500 ms and only for hits above 2 damage.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -367,11 +371,11 @@ Requires survival mode and a hoe from `ItemListings.toolHoes` in the main hand. 
 | Tick interval (ms) | 8121 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-luck.toml` |
 | Listened events | `BlockDropItemEvent` (NORMAL) |
-| Menu stat lines | Flowers = Food, and Grass = Seeds; Chance to get an item from breaking Flowers; Chance to get an item from breaking Grass |
+| Menu stat lines | Flowers = Food, and Grass = Seeds. Chance to get an item from breaking Flowers. Chance to get an item from breaking Grass |
 | Stat key | `herbalism.luck.lucky-drops` |
 | Milestones | `challenge_herbalism_luck_100` (100, reward 300), `challenge_herbalism_luck_2500` (2500, reward 1000) |
 
-Chance is `min(highChance, level * level + lowChance)` rolled against a 0 to 100 range, so it uses the raw adaptation level rather than level percent. Grass and tall grass roll from `ItemListings.getHerbalLuckSeeds()`; flowers from `ItemListings.getFlowers()` roll from `ItemListings.getHerbalLuckFood()`. Each lucky drop awards 100 skill XP.
+Chance is `min(highChance, level * level + lowChance)` rolled against a 0 to 100 range, so it uses the raw adaptation level rather than level percent. Grass and tall grass roll from `ItemListings.getHerbalLuckSeeds()`. Flowers from `ItemListings.getFlowers()` roll from `ItemListings.getHerbalLuckFood()`. Each lucky drop awards 100 skill XP.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -436,7 +440,7 @@ Recipe `adapt:herbalism-dirt-terralid`, shaped `SSS` over `DDD` where `S` is `WH
 | Stat key | `herbalism.mushroom-blocks.crafted` |
 | Milestones | `challenge_herbalism_mushroom_100` (100, reward 300) |
 
-Recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are 2x2 mushrooms to one matching mushroom block; `adapt:herbalism-mushstemred` and `adapt:herbalism-mushstembrown` are shapeless conversions of either mushroom block to one `MUSHROOM_STEM`. The stat only counts the two block recipes. No adaptation-specific config knobs.
+Recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are 2x2 mushrooms to one matching mushroom block. `adapt:herbalism-mushstemred` and `adapt:herbalism-mushstembrown` are shapeless conversions of either mushroom block to one `MUSHROOM_STEM`. The stat only counts the two block recipes. No adaptation-specific config knobs.
 
 ### Webby Creator
 
@@ -471,11 +475,14 @@ Recipe `adapt:herbalism-cobwebblock`, shaped 3x3 of `STRING` to one `COBWEB`. No
 | Tick interval (ms) | 6920 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-seed-sower.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, also receives cancelled events) |
-| Menu stat lines | Plant Radius; Max Crops Per Use; Sowing Cooldown |
+| Menu stat lines | Plant Radius. Max Crops Per Use. Sowing Cooldown |
 | Stat keys | `herbalism.seed-sower.seeds-planted`, plus the skill's `harvest.planted` |
 | Milestones | `challenge_herbalism_seed_1k` (1000, reward 300), `challenge_herbalism_seed_25k` (25000, reward 1000) |
 
-Seed to crop mapping: wheat seeds to wheat, carrot to carrots, potato to potatoes, beetroot seeds to beetroots, melon seeds to melon stem, pumpkin seeds to pumpkin stem, torchflower seeds to torchflower crop, nether wart to nether wart. Valid base is `FARMLAND`, or `SOUL_SAND` for nether wart. Radius is `max(1, round(baseRadius + levelPercent * radiusFactor))`; crop cap is `max(1, round(baseCropCount + levelPercent * cropCountFactor))`; cooldown is `max(2, round(cooldownTicksBase - levelPercent * cooldownTicksReduction))` ticks on the seed item. Creative mode plants without consuming seeds. A partial plant is rolled back and the seed charge refunded.
+Seed to crop mapping follows. Wheat seeds map to wheat. Carrot maps to carrots.
+Potato maps to potatoes. Beetroot seeds map to beetroots. Melon seeds map to
+melon stem. Pumpkin seeds map to pumpkin stem. Torchflower seeds map to
+torchflower crop. Nether wart maps to nether wart. Valid base is `FARMLAND`, or `SOUL_SAND` for nether wart. Radius is `max(1, round(baseRadius + levelPercent * radiusFactor))`. Crop cap is `max(1, round(baseCropCount + levelPercent * cropCountFactor))`. Cooldown is `max(2, round(cooldownTicksBase - levelPercent * cooldownTicksReduction))` ticks on the seed item. Creative mode plants without consuming seeds. A partial plant is rolled back and the seed charge refunded.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -500,11 +507,13 @@ Seed to crop mapping: wheat seeds to wheat, carrot to carrots, potato to potatoe
 | Tick interval (ms) | 600 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-compost-cascade.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, cancelled events ignored) |
-| Menu stat lines | Cascade Radius; Max Items Processed; Compost Fill Chance; Cascade Cooldown |
+| Menu stat lines | Cascade Radius. Max Items Processed. Compost Fill Chance. Cascade Cooldown |
 | Stat keys | `herbalism.compost-cascade.items-composted`, plus the skill's `harvest.composted` |
 | Milestones | `challenge_herbalism_compost_1k` (1000, reward 300), `challenge_herbalism_compost_25k` (25000, reward 1000) |
 
-Item budget is split 40 percent to the field scan, 20 percent to your inventory, and the remainder to loose drops. The field scan inspects at most 24576 blocks and tracks at most 512 immature crops. Maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`. Bone meal is `baseBoneMeal + (itemsConsumed / itemsPerBoneMeal) + overflowBoneMeal`, plus the ready bonus the first time the composter reaches level 8, capped at a stack. Valuable rolls only happen at a full composter and pick from honeycomb (45 percent), glow berries (25 percent), amethyst shards (18 percent), emerald (9 percent), and diamond (3 percent). Dropped rewards are tagged in persistent data so a later cascade will not re-consume them. Total XP is `(itemsConsumed * xpPerItemConsumed) + (levelGains * xpPerLevelGain) + (cropsMatured * xpPerCropMatured)`.
+Item budget is split 40 percent to the field scan, 20 percent to your inventory, and the remainder to loose drops. The field scan inspects at most 24576 blocks and tracks at most 512 immature crops. Maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`. Bone meal is `baseBoneMeal + (itemsConsumed / itemsPerBoneMeal) + overflowBoneMeal`, plus the ready bonus the first time the composter reaches level 8, capped at a stack. Valuable rolls only happen at a full composter. They pick honeycomb at 45
+percent and glow berries at 25 percent. They also pick amethyst shards at 18
+percent, emerald at 9 percent, and diamond at 3 percent. Dropped rewards are tagged in persistent data so a later cascade will not re-consume them. Total XP is `(itemsConsumed * xpPerItemConsumed) + (levelGains * xpPerLevelGain) + (cropsMatured * xpPerCropMatured)`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -554,11 +563,11 @@ Item budget is split 40 percent to the field scan, 20 percent to your inventory,
 | Tick interval (ms) | 2050 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-rooted-footing.toml` |
 | Listened events | `PlayerInteractEvent` (HIGHEST, `PHYSICAL` action only), `EntityDamageEvent` (HIGH) |
-| Menu stat lines | Fall Damage Converted; Food Per Damage; Prevents Farmland Trample |
+| Menu stat lines | Fall Damage Converted. Food Per Damage. Prevents Farmland Trample |
 | Stat key | `herbalism.rooted-footing.farmland-saved` |
 | Milestones | `challenge_herbalism_rooted_500` (500, reward 300) |
 
-Trample protection cancels the physical interact on `FARMLAND`; its effect is throttled to once per 500 ms. Fall absorption applies only when the block directly under you is farmland, grass block, moss block, mycelium, dirt, or rooted dirt. Absorb cap is `damage * min(maxAbsorbPercent, absorbBase + levelPercent * absorbFactor)`, and the amount actually absorbed is `min(absorbCap, usableFood / foodPerDamage)`. Remaining damage at or under 0.01 cancels the event.
+Trample protection cancels the physical interact on `FARMLAND`. Its effect is throttled to once per 500 ms. Fall absorption applies only when the block directly under you is farmland, grass block, moss block, mycelium, dirt, or rooted dirt. Absorb cap is `damage * min(maxAbsorbPercent, absorbBase + levelPercent * absorbFactor)`, and the amount actually absorbed is `min(absorbCap, usableFood / foodPerDamage)`. Remaining damage at or under 0.01 cancels the event.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -579,12 +588,12 @@ Trample protection cancels the physical interact on `FARMLAND`; its effect is th
 | Cost factor | 0.64 |
 | Tick interval (ms) | 10 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-bee-shepherd.toml` |
-| Listened events | `PlayerQuitEvent`; the work itself runs on the adaptation tick |
-| Menu stat lines | Pulse Radius; Growth Attempts; Pulse Cooldown; Bee Growth Bonus |
+| Listened events | `PlayerQuitEvent`. The work itself runs on the adaptation tick |
+| Menu stat lines | Pulse Radius. Growth Attempts. Pulse Cooldown. Bee Growth Bonus |
 | Stat key | `herbalism.bee-shepherd.bees-attracted` |
 | Milestones | `challenge_herbalism_bee_100` (100, reward 300) |
 
-Ticking is learner-bound. Requires a flower in the main or off hand. Radius is `radiusBase + levelPercent * radiusFactor`. Growth attempts are `round(growthAttemptsBase + levelPercent * growthAttemptsFactor)`, then multiplied by `1 + min(bees, maxBonusBees) * growthBonusPerBee`. Growth step is `round(growthStepBase + levelPercent * growthStepFactor)` age stages. Food cost is `max(1, round(foodCostBase - levelPercent * foodCostFactor))`, charged once per pulse at the first committed growth. Pulse spacing is `max(250, round(pulseMillisBase - levelPercent * pulseMillisFactor))` milliseconds. At most 8 bees are pulled per pulse; the attracted-bee stat only counts each bee once per 60 seconds. Per-tick work caps are 32 player checks, 96 growth samples, 8 bee pulls, and 16 completions.
+Ticking is learner-bound. Requires a flower in the main or off hand. Radius is `radiusBase + levelPercent * radiusFactor`. Growth attempts are `round(growthAttemptsBase + levelPercent * growthAttemptsFactor)`, then multiplied by `1 + min(bees, maxBonusBees) * growthBonusPerBee`. Growth step is `round(growthStepBase + levelPercent * growthStepFactor)` age stages. Food cost is `max(1, round(foodCostBase - levelPercent * foodCostFactor))`, charged once per pulse at the first committed growth. Pulse spacing is `max(250, round(pulseMillisBase - levelPercent * pulseMillisFactor))` milliseconds. At most 8 bees are pulled per pulse. The attracted-bee stat only counts each bee once per 60 seconds. Per-tick work caps are 32 player checks, 96 growth samples, 8 bee pulls, and 16 completions.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -618,11 +627,11 @@ Ticking is learner-bound. Requires a flower in the main or off hand. Radius is `
 | Tick interval (ms) | 2100 |
 | Config file | `plugins/Adapt/adapt/adaptations/herbalism-spore-bloom.toml` |
 | Listened events | `BlockPlaceEvent` (MONITOR, cancelled events ignored) |
-| Menu stat lines | Bloom Attempts; Bloom Radius; Bloom Cooldown; Mushroom Cost |
+| Menu stat lines | Bloom Attempts. Bloom Radius. Bloom Cooldown. Mushroom Cost |
 | Stat key | `herbalism.spore-bloom.blocks-spread` |
 | Milestones | `challenge_herbalism_spore_500` (500, reward 300) |
 
-Triggered by sneak-placing `RED_MUSHROOM` or `BROWN_MUSHROOM` on `MYCELIUM` or `PODZOL`; the placement is cancelled and the bloom runs instead. Convertible soil is dirt, grass block, coarse dirt, rooted dirt, mycelium, and podzol. Bloom attempts are `round(bloomAttemptsBase + levelPercent * bloomAttemptsFactor) + (level - 1) * bloomAttemptsPerLevel`. Radius is `bloomRadiusBase + levelPercent * bloomRadiusFactor`, floored at 6 once level 5 is reached, which also forces the first 6 rings to be filled. Mushroom cost is `sporeCostBase + (level - 1) * sporeCostPerLevel`. Cooldown is `max(250, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds. Costs are charged on the first committed conversion, not on activation.
+Triggered by sneak-placing `RED_MUSHROOM` or `BROWN_MUSHROOM` on `MYCELIUM` or `PODZOL`. The placement is cancelled and the bloom runs instead. Convertible soil is dirt, grass block, coarse dirt, rooted dirt, mycelium, and podzol. Bloom attempts are `round(bloomAttemptsBase + levelPercent * bloomAttemptsFactor) + (level - 1) * bloomAttemptsPerLevel`. Radius is `bloomRadiusBase + levelPercent * bloomRadiusFactor`, floored at 6 once level 5 is reached, which also forces the first 6 rings to be filled. Mushroom cost is `sporeCostBase + (level - 1) * sporeCostPerLevel`. Cooldown is `max(250, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds. Costs are charged on the first committed conversion, not on activation.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

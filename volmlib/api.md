@@ -7,58 +7,103 @@ tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
 ---
-VolmLib is the code the Volmit plugins are built out of: Folia-aware scheduling, the Director command
-framework, localization, PlaceholderAPI plumbing, NBT and region-file IO, chunk-shaped storage, and the small
-Bukkit helpers that every one of those plugins would otherwise write twice. It is a **library, not a plugin**.
-The published artifact contains no `plugin.yml` and no resources at all — only classes under
-`art.arcane.volmlib`. Nothing loads it on the server; it is compiled and shaded into your jar. That single
-fact drives the rest of this page.
 
-| Document                             | Covers                                                              |
-|--------------------------------------|---------------------------------------------------------------------|
-| This file                            | Depending on VolmLib, and the relocation rule                        |
-| [placeholders.md](/volmlib/api/placeholders)   | `art.arcane.volmlib.util.bukkit.papi` and `Placeholders`             |
+VolmLib is the shared library behind the Volmit plugins. It is a **library, not a plugin**.
+The published artifact contains only classes under `art.arcane.volmlib`. Nothing loads it on
+the server, and each plugin compiles and shades it into its jar.
+
+| Document | Covers |
+|---|---|
+| This file | How to depend on VolmLib, and the relocation rule |
+| [placeholders](/volmlib/api/placeholders) | `art.arcane.volmlib.util.bukkit.papi` and `Placeholders` |
 
 ---
 
 ## What is in it
 
-| Package                              | What lives there                                                                                   |
-|--------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `util.scheduling`                    | `FoliaScheduler` (global/region/entity dispatch that works on Paper and Folia alike), `SchedulerRuntime`, `Looper`, `ChronoLatch`, `SlidingWindowRateLimiter` (N events per rolling window), `PrecisionStopwatch`, `IrisLock` |
-| `util.bukkit`                        | `Events`, `WorldIdentity`, `ChunkPositionSet`, `Placeholders`                                       |
-| `util.bukkit.papi`                   | The shared PlaceholderAPI expansion base and its key registry — see [placeholders.md](/volmlib/api/placeholders) |
-| `util.director`                      | The Director command framework: annotations, parameter handlers, help rendering, tab completion      |
-| `util.localization`                  | `LocalizationManager`, `MessageCatalog`, locale overlays, plural selection, catalogue validation      |
-| `util.format`                        | `Form` (durations, memory sizes, wrapping, capitalisation, `prettyEnumName`), `ColorFormatter`, `MemoryMonitor` |
-| `util.plugin`                        | `SplashScreenSupport` (shared console-splash metadata: Java major version, server version, startup date, release train), `CancellableTask` |
-| `util.board`                         | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`). `BoardSettings` carries a configurable `updateIntervalTicks` (default 20), and `BoardManager` drives updates through a Folia-safe scheduler on regionized runtimes |
-| `util.inventorygui`                  | Chest-menu building                                                                                  |
-| `util.nbt`, `util.nbt.mca`           | NBT tags, and reading and writing Anvil region files                                                 |
+| Package | What lives there |
+|---|---|
+| `util.scheduling` | `FoliaScheduler` (global, region, and entity dispatch on Paper and Folia), `SchedulerRuntime`, `Looper`, `ChronoLatch`, `SlidingWindowRateLimiter` (N events per rolling window), `PrecisionStopwatch`, `IrisLock` |
+| `util.bukkit` | `Events`, `WorldIdentity`, `ChunkPositionSet`, `Placeholders` |
+| `util.bukkit.papi` | The shared PlaceholderAPI expansion base and its key registry. See [placeholders](/volmlib/api/placeholders) |
+| `util.director` | The Director command framework: annotations, parameter handlers, help display, tab completion |
+| `util.localization` | `LocalizationManager`, `MessageCatalog`, locale overlays, plural selection, catalog validation |
+| `util.format` | `Form` (durations, memory sizes, wrapping, capitalization, `prettyEnumName`), `ColorFormatter`, `MemoryMonitor` |
+| `util.plugin` | `SplashScreenSupport` (shared console-splash metadata: Java major version, server version, startup date, release train), `CancellableTask` |
+| `util.board` | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`). `BoardSettings` has a configurable `updateIntervalTicks` (default 20). `BoardManager` updates through a Folia-safe scheduler on regionized runtimes |
+| `util.inventorygui` | Chest menus |
+| `util.nbt`, `util.nbt.mca` | NBT tags, and reading and writing Anvil region files |
 | `util.hunk`, `util.matter`, `util.mantle` | Three-dimensional chunk-shaped buffers, palette-backed storage, and the persistent world-data layer |
-| `util.noise`, `util.interpolation`, `util.stream` | Noise generators, interpolators, and composable procedural streams                        |
-| `util.collection`, `util.cache`, `util.data` | `KList`/`KMap`/`KSet`, chunk caches, palettes, cuboids, varint helpers                        |
-| `util.io`, `util.json`             | IO adapters and the JSON implementation                                                              |
-| `util.network`                     | Downloads, metered streams, download progress reporting                                              |
-| `integration`                        | The cross-plugin metric handshake types. Read the relocation rule below before you touch these        |
+| `util.noise`, `util.interpolation`, `util.stream` | Noise generators, interpolators, and composable procedural streams |
+| `util.collection`, `util.cache`, `util.data` | `KList`/`KMap`/`KSet`, chunk caches, palettes, cuboids, varint helpers |
+| `util.io`, `util.json` | IO adapters and the JSON implementation |
+| `util.network` | Downloads, metered streams, download progress reporting |
+| `integration` | The cross-plugin metric handshake types. Read the relocation rule below before you touch these |
 
-`BSupport` material listings expose current Bukkit materials only. Legacy `Material` aliases are excluded before block-data inspection or item-name publication, so registry discovery does not initialize CraftLegacy support. Its placement-support contract classifies cactus as a decorant and permits cactus only on sand, red sand, or another cactus.
+`BSupport` material listings expose current Bukkit materials only. `BSupport` excludes
+legacy `Material` aliases before block-data inspection or item-name publication. Registry
+discovery does not initialize CraftLegacy support. Its placement-support contract classifies
+cactus as a decorant and permits cactus only on sand, red sand, or another cactus.
 
-Everything else under `art.arcane.volmlib` is scaffolding for the Volmit plugins. It is public because Java
-has no better word for "visible to the plugins in this repository", not because it carries a compatibility
-promise. Only the surfaces documented in this directory are stable across VolmLib versions; anything else can
-change signature without notice, and the Volmit plugins update in lockstep because they build against the
-same source tree.
+Everything else under `art.arcane.volmlib` is scaffolding for the Volmit plugins. Those types
+are public because Java has no better word for "visible to the plugins in this repository".
+They carry no compatibility promise. Only the surfaces in this directory stay stable across
+VolmLib versions. Anything else can change signature without notice. The Volmit plugins
+update together because they build against the same source tree.
 
-`Mantle.saveIdleTectonicPlates(regionIds)` persists and unloads each requested plate only when it can be sealed immediately. It returns the region IDs that were busy and leaves those plates open, resident, and unchanged so a caller can retain its dirty state and retry on a later save. The method never waits for active chunk users; final shutdown persistence must run only after the caller has drained its producers.
+`Mantle.saveIdleTectonicPlates(regionIds)` saves and unloads each requested plate only when
+it can be sealed immediately. It returns the region IDs that were busy. It leaves those
+plates open, resident, and unchanged. A caller can keep its dirty state and retry on a later
+save. The method never waits for active chunk users. Final shutdown save must run only after
+the caller has drained its producers.
 
 ## Director completion
 
-Director suggests canonical command names and keeps aliases executable without duplicating them in completion lists. Every exposed command value completes as a canonical `name=value` token, whether the parameter is required, optional, or a configurable contextual override. Known handler, enum, and boolean values are emitted as complete tokens; an open-ended numeric or string value emits `name=`, and a value already typed after `=` is preserved instead of being erased by Tab. Required parameters still accept their positional execution form, but completion and help consistently teach the keyed form.
+Director suggests canonical command names and keeps aliases executable without duplicating
+them in completion lists. Every exposed command value completes as a canonical `name=value`
+token, whether the parameter is required, optional, or a configurable contextual override.
+Director emits known handler, enum, and boolean values as complete tokens. An open-ended
+numeric or string value emits `name=`. Director keeps a value already typed after `=`.
+Required parameters still accept their positional execution form, but completion and help
+teach the keyed form.
 
-Context-injected implementation parameters stay hidden. A contextual parameter that operators may override must set `@Param(contextual = true, contextualOverride = true)`; Director then presents it as an optional keyed value while still resolving the sender context when it is omitted.
+Context-injected implementation parameters stay hidden. A contextual parameter that operators
+may override must set `@Param(contextual = true, contextualOverride = true)`. Director then
+presents it as an optional keyed value. Director still resolves the sender context when it is
+omitted.
 
-Normal `DirectorInvocation` execution treats its argument list as raw command-line fragments, joining and tokenizing quoted input before mapping parameters. A command adapter that has already normalized several raw fragments into one semantic argument must instead use `DirectorInvocation.pretokenized(sender, label, args)`. That factory preserves every supplied list element exactly, including embedded spaces and quotes, so a keyed trailing value such as `text=Say "hello" to everyone` cannot be split or rewritten a second time.
+Normal `DirectorInvocation` execution treats its argument list as raw command-line fragments.
+It joins and tokenizes quoted input before it maps parameters. A command adapter that has
+already normalized several raw fragments into one semantic argument must instead use
+`DirectorInvocation.pretokenized(sender, label, args)`. That factory preserves every supplied
+list element exactly, including embedded spaces and quotes. A keyed trailing value such as
+`text=Say "hello" to everyone` cannot be split or rewritten a second time.
+
+## Bracket-grouped values
+
+Write a multi-word keyed value with brackets. `key=[...]` joins every space-separated token
+up to a token-final `]` into one value. It strips the outer brackets.
+`addline id=123 text=[This is an example.]` binds `text` to `This is an example.`.
+
+Grouping starts only when the value starts with `[`. The closing `]` must be the final
+character of its token. Everything the group consumes is part of the value. Director never
+parses that text as a key, even when it contains `=`.
+
+Three exceptions keep existing inputs working. A value whose `]` sits mid-token with
+characters after it stays literal. `text=[ff0000]Red` still binds `[ff0000]Red`. Inline hex
+colors keep working.
+
+A single-token value whose bracket content is exactly six hex digits stays literal. A bare
+color code like `text=[ff0000]` stays unstripped. A value that already contains spaces is
+never grouped. That includes quoted input and a `pretokenized` argument.
+
+Double the brackets to escape them. `key=[[literal brackets]]` binds `[literal brackets]`.
+Director strips exactly one outer level. `key=[]` binds the empty string. Positional tokens
+are untouched. Only `key=[` starts grouping.
+
+A group with no token-final `]` before the end of the line is a parse error. The error names
+the key (`director.runtime.error.unclosed_group`). Tab completion inside an open group
+suggests nothing. It does not misread the value as keys.
 
 ---
 
@@ -85,24 +130,28 @@ dependencies {
 }
 ```
 
-Three details in that block are load-bearing:
+Three details in that block are required:
 
-- **`implementation`, not `compileOnly`.** Nothing on the server provides these classes. If you do not shade
-  them you get `NoClassDefFoundError: art/arcane/volmlib/...` the first time your code touches VolmLib.
-- **`transitive = false`.** VolmLib compiles against Gson, Guava, fastutil, Caffeine, commons-lang3,
-  concurrentlinkedhashmap-lru and lz4-java. Pulling those in transitively drags a second copy of libraries the
-  server or your other dependencies already ship. Add back by hand only what you actually call.
-- **`changing = true`** on a `-SNAPSHOT` coordinate, so Gradle re-resolves instead of serving a week-old jar.
-  Pin a commit hash (`com.github.VolmitSoftware:VolmLib:<sha>`) for reproducible builds.
+- **`implementation`, not `compileOnly`.** Nothing on the server provides these classes. If
+  you do not shade them you get `NoClassDefFoundError: art/arcane/volmlib/...` the first time
+  your code touches VolmLib.
+- **`transitive = false`.** VolmLib compiles against Gson, Guava, fastutil, Caffeine,
+  commons-lang3, concurrentlinkedhashmap-lru and lz4-java. A transitive pull adds a second
+  copy of libraries the server or your other dependencies already ship. Add back by hand only
+  what you actually call.
+- **`changing = true`** on a `-SNAPSHOT` coordinate. Gradle then re-resolves instead of
+  serving a week-old jar. Pin a commit hash (`com.github.VolmitSoftware:VolmLib:<sha>`) for
+  reproducible builds.
 
-VolmLib builds with a **Java 25 toolchain**, emits **Java 17 bytecode**, and compiles its shipped source against
-Paper 1.20.1. The same source is gated against Spigot 1.20.1, Paper 26.1.2, and Spigot 26.2; consuming plugins
-therefore require Java 17 or newer, while packages that name Paper-only types remain Paper-specific.
+VolmLib builds with a **Java 25 toolchain**, emits **Java 17 bytecode**, and compiles its
+shipped source against Paper 1.20.1. The same source is gated against Spigot 1.20.1, Paper
+26.1.2, and Spigot 26.2. Consuming plugins therefore require Java 17 or newer. Packages that
+name Paper-only types remain Paper-specific.
 
 ### Building against a local checkout
 
-Every Volmit plugin resolves VolmLib from a sibling directory when one is present, via a Gradle composite
-build. The consumer's `settings.gradle` does the substitution:
+Every Volmit plugin resolves VolmLib from a sibling directory when one is present. It uses a
+Gradle composite build. The consumer's `settings.gradle` does the substitution:
 
 ```groovy
 includeBuild('../VolmLib') {
@@ -114,49 +163,53 @@ includeBuild('../VolmLib') {
 }
 ```
 
-All three spellings need substituting, because all three can appear in a resolved graph: the whole-repository
-JitPack form (`com.github.VolmitSoftware:VolmLib`), the subproject form built from the Gradle project name
-(`com.github.VolmitSoftware.VolmLib:shared`), and the subproject form built from the Maven publication's
-`artifactId`, which is `volmlib-shared` (`com.github.VolmitSoftware.VolmLib:volmlib-shared`). Substituting
-only some of them leaves you compiling against a local checkout while resolving something else at runtime,
-which is worse than substituting none.
+You must substitute all three spellings. All three can appear in a resolved graph:
+
+- the whole-repository JitPack form (`com.github.VolmitSoftware:VolmLib`)
+- the subproject form from the Gradle project name (`com.github.VolmitSoftware.VolmLib:shared`)
+- the subproject form from the Maven publication `artifactId` `volmlib-shared`
+  (`com.github.VolmitSoftware.VolmLib:volmlib-shared`)
+
+If you substitute only some of them, you compile against a local checkout. Runtime can still
+resolve something else. That result is worse than substituting none.
 
 ---
 
 ## The relocation rule
 
-This is the most important thing on this page.
+This rule is the most important fact on this page.
 
-VolmLib classes live inside your jar. Some plugins shade them under `art.arcane.volmlib` unchanged; others
-rewrite the package during shading so their copy cannot collide with anyone else's. In this suite, both shapes
-are in production at once:
+VolmLib classes live inside your jar. Some plugins shade them under `art.arcane.volmlib`
+unchanged. Others rewrite the package during shading so their copy cannot collide with anyone
+else's. In this suite, both shapes are in production at once:
 
-| Plugin     | Package its copy of VolmLib ends up in           |
-|------------|--------------------------------------------------|
-| Iris       | `art.arcane.volmlib`                             |
-| Wormholes  | `art.arcane.volmlib`                             |
-| Gloss      | `art.arcane.volmlib`                             |
-| HiddenOre  | `art.arcane.volmlib`                             |
-| BileTools  | `art.arcane.volmlib`                             |
-| Adapt      | `art.arcane.adapt.util.arcane.volmlib`           |
-| React      | `art.arcane.react.util.arcane.volmlib`           |
+| Plugin | Package its copy of VolmLib ends up in |
+|---|---|
+| Iris | `art.arcane.volmlib` |
+| Wormholes | `art.arcane.volmlib` |
+| Gloss | `art.arcane.volmlib` |
+| HiddenOre | `art.arcane.volmlib` |
+| BileTools | `art.arcane.volmlib` |
+| Adapt | `art.arcane.adapt.util.arcane.volmlib` |
+| React | `art.arcane.react.util.arcane.volmlib` |
 
 `art.arcane.volmlib.util.bukkit.papi.PlaceholderValues` and
-`art.arcane.adapt.util.arcane.volmlib.util.bukkit.papi.PlaceholderValues` are different classes, in different
-classloaders, with separate static state. They are not assignable to one another and never will be. Which
-brings us to the rule.
+`art.arcane.adapt.util.arcane.volmlib.util.bukkit.papi.PlaceholderValues` are different
+classes, in different classloaders, with separate static state. They are not assignable to
+one another and never will be. That fact gives this rule.
 
-> **A VolmLib type is safe only if every reference to it stays inside one plugin's own jar, or travels through
-> a third-party type that is not relocated.**
+> A VolmLib type is safe only if every reference stays inside one plugin's own
+> jar. It is also safe if it travels through a third-party type that is not
+> relocated.
 
-Nothing else is safe. Not "usually works". Not "works if both plugins are on the same version". If a class
-name written by plugin A has to be resolved by plugin B, and either plugin rewrites that name at build time,
-the link fails.
+Nothing else is safe. It does not "usually work". It does not work because both
+plugins share a version. Plugin A writes a class name. Plugin B must resolve it.
+If either plugin rewrites that name at build time, the link fails.
 
 ### Why the placeholder base class is safe
 
-`VolmitPlaceholderExpansion` is a VolmLib type that PlaceholderAPI — a completely separate plugin — calls
-into. It satisfies the rule because of what sits at the boundary:
+PlaceholderAPI is a separate plugin. It calls into `VolmitPlaceholderExpansion`, a VolmLib
+type. The type satisfies the rule because of what sits at the boundary:
 
 ```
 your jar                                  PlaceholderAPI's jar
@@ -167,31 +220,34 @@ YourExpansion
       onRequest(OfflinePlayer, String) : String
 ```
 
-The only name crossing the jar boundary is `PlaceholderExpansion`, which belongs to PlaceholderAPI and is
-never relocated by anybody — it is declared with a compile-only scope in every consuming build (`compileOnly`,
-or `compileOnlyApi` where the type appears in that plugin's own API), so it is never shaded, and it is
-provided at runtime by the PlaceholderAPI plugin itself. Everything on your side of that arrow is your own
-copy: your subclass, the base class, the registry, the value formatter. PlaceholderAPI stores your object as a
-`PlaceholderExpansion`, calls `onRequest`, and gets back a `java.lang.String`. Every type in the signature is
-a PlaceholderAPI type, a Bukkit type or a JDK type.
+The only name that crosses the jar boundary is `PlaceholderExpansion`. That type belongs to
+PlaceholderAPI. Nobody relocates it. Every consuming build declares it with a compile-only
+scope (`compileOnly`, or `compileOnlyApi` when the type appears in that plugin's own API). It
+is never shaded. The PlaceholderAPI plugin provides it at runtime.
 
-That is why Adapt and Wormholes can both register a placeholder expansion built on the same base class on the
-same server, with the class relocated in one jar and not the other, and neither notices the other exists.
+Everything on your side of that arrow is your own copy. That copy includes your subclass, the
+base class, the registry, and the value formatter. PlaceholderAPI stores your object as a
+`PlaceholderExpansion`. It calls `onRequest`. It gets a `java.lang.String`. Every type in the
+signature is a PlaceholderAPI type, a Bukkit type, or a JDK type.
+
+Adapt and Wormholes can both register a placeholder expansion on the same server. Both
+expansions use the same base class. One jar relocates the class. The other does not. Neither
+plugin notices the other.
 
 ### What is not safe
 
-| Pattern                                                                     | What goes wrong                                                                                     |
-|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| Registering a VolmLib type with `ServicesManager` for another plugin to load | Provider and consumer look up different `Class` objects. `load()` returns `null`, silently           |
-| A Bukkit event with a getter that returns a VolmLib type                     | The listener cannot name the return type without a `NoClassDefFoundError`                            |
-| A public API method on your plugin taking or returning `KList`, `KMap`, `Cuboid`, or any other VolmLib type | Any caller that relocates differently gets `NoClassDefFoundError` at the call site   |
-| `instanceof` or a cast against a VolmLib type on an object from another plugin | The cast never matches. On a shared supertype you get `ClassCastException`                         |
-| Assuming static state in VolmLib is server-global                            | Each relocated copy has its own statics. A cache primed in Adapt's copy is invisible to Iris's copy   |
-| Serializing a VolmLib type into a PDC value, plugin message or metadata for another plugin to read | The reader cannot resolve the class name that was written                          |
+| Pattern | What goes wrong |
+|---|---|
+| Registering a VolmLib type with `ServicesManager` for another plugin to load | Provider and consumer look up different `Class` objects. `load()` returns `null`, silently |
+| A Bukkit event with a getter that returns a VolmLib type | The listener cannot name the return type without a `NoClassDefFoundError` |
+| A public API method on your plugin taking or returning `KList`, `KMap`, `Cuboid`, or any other VolmLib type | Any caller that relocates differently gets `NoClassDefFoundError` at the call site |
+| `instanceof` or a cast against a VolmLib type on an object from another plugin | The cast never matches. On a shared supertype you get `ClassCastException` |
+| Assuming static state in VolmLib is server-global | Each relocated copy has its own statics. A cache filled in Adapt's copy is invisible to Iris's copy |
+| Serializing a VolmLib type into a PDC value, plugin message or metadata for another plugin to read | The reader cannot resolve the class name that was written |
 
-The `art.arcane.volmlib.integration` package is exactly this hazard in the wild. Several plugins register an
-`IntegrationServiceContract` implementation with Bukkit's `ServicesManager` under their own copy of that
-interface, so a straightforward consumer sees nothing:
+The `art.arcane.volmlib.integration` package is this hazard in production. Several plugins
+register an `IntegrationServiceContract` implementation with Bukkit's `ServicesManager` under
+their own copy of that interface. A straightforward consumer sees nothing:
 
 ```java
 import art.arcane.volmlib.integration.IntegrationServiceContract;
@@ -200,24 +256,24 @@ import org.bukkit.Bukkit;
 IntegrationServiceContract contract = Bukkit.getServicesManager().load(IntegrationServiceContract.class);
 ```
 
-That returns `null` for every provider whose jar relocated VolmLib differently from yours, and returns a
-provider only by the coincidence that you both chose the same shading. It never throws, so the failure looks
-like "the other plugin is not installed".
+That call returns `null` for every provider whose jar relocated VolmLib differently from
+yours. It returns a provider only when both jars chose the same shading. It never throws. The
+failure looks like "the other plugin is not installed".
 
 ### Crossing a boundary on purpose
 
-If a value genuinely has to move between plugins, one of these has to be true at the boundary:
+If a value must move between plugins, one of these must be true at the boundary:
 
-1. **The type is a JDK or Bukkit type.** `String`, `UUID`, `Map<String, String>`, `Location`, `ItemStack`.
-   This is the right answer almost every time.
-2. **The type is a third-party type nobody relocates**, provided at runtime by the plugin that owns it —
-   `PlaceholderExpansion` is the worked example above.
-3. **The type is declared in your own plugin's package and you never relocate your own package.** Publish it
-   from your jar; consumers compile against your jar.
-4. **Nothing is named at all** — the consumer works reflectively.
+1. **The type is a JDK or Bukkit type.** `String`, `UUID`, `Map<String, String>`, `Location`,
+   `ItemStack`. This is the right answer almost every time.
+2. **The type is a third-party type nobody relocates.** The plugin that owns it provides it at
+   runtime. `PlaceholderExpansion` is the example above.
+3. **The type is declared in your own plugin's package and you never relocate your own
+   package.** Publish it from your jar. Consumers compile against your jar.
+4. **Nothing is named at all.** The consumer works reflectively.
 
-Option 4, applied to the services case, finds every provider regardless of how it was shaded, by matching on
-the simple name and calling through `java.lang.reflect`:
+Option 4 for services finds every provider, regardless of shading. It matches on the simple
+name and calls through `java.lang.reflect`:
 
 ```java
 package com.example.claims;
@@ -265,108 +321,120 @@ public final class ForeignIntegrationLookup {
 }
 ```
 
-The providers come back as `Object`. Every method you call on them returns a JDK type or has to be unwrapped
-reflectively in turn, which is the honest cost of the approach: you trade compile-time checking for the
-ability to talk to a jar that renamed its classes. Call `providers()` on the main (global region) thread —
-`ServicesManager` is not documented as thread-safe, and the providers you get back may not be either.
+The providers come back as `Object`. Every method you call on them returns a JDK type or you
+unwrap it with reflection. You trade compile-time checking for the ability to talk to a jar
+that renamed its classes. Call `providers()` on the main (global region) thread.
+`ServicesManager` is not documented as thread-safe. The providers you get may not be either.
 
-### Recognising the failure
+### Recognizing the failure
 
-| Symptom                                                                   | Cause                                                                    |
-|---------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| `NoClassDefFoundError: art/arcane/volmlib/...` at your own call site       | You depended on VolmLib with `compileOnly`, or your shade step dropped it |
-| `NoClassDefFoundError: art/arcane/volmlib/...` inside another plugin's stack | You exposed a VolmLib type in your public API                          |
-| `ServicesManager.load(...)` returns `null` with the provider clearly enabled | Provider and consumer relocated VolmLib differently                    |
-| `ClassCastException` between two identically-named classes                 | Two copies of the same VolmLib type, one relocated                       |
-| State written through VolmLib in one plugin is invisible in another        | Per-copy statics, exactly as designed                                    |
+| Symptom | Cause |
+|---|---|
+| `NoClassDefFoundError: art/arcane/volmlib/...` at your own call site | You depended on VolmLib with `compileOnly`, or your shade step dropped it |
+| `NoClassDefFoundError: art/arcane/volmlib/...` inside another plugin's stack | You exposed a VolmLib type in your public API |
+| `ServicesManager.load(...)` returns `null` with the provider clearly enabled | Provider and consumer relocated VolmLib differently |
+| `ClassCastException` between two identically-named classes | Two copies of the same VolmLib type, one relocated |
+| State written through VolmLib in one plugin is invisible in another | Per-copy statics, exactly as designed |
 
 ---
 
 ## Threading
 
-Everything in this suite runs on Folia as well as Paper, so "the main thread" is not a place. Region threads
-own worlds and chunks, entity schedulers own entities, and the global region thread owns everything that
-belongs to no region.
+Everything in this suite runs on Folia as well as Paper, so "the main thread" is not a place.
+Region threads own worlds and chunks. Entity schedulers own entities. The global region
+thread owns everything that belongs to no region.
 
-VolmLib does not hide this. `art.arcane.volmlib.util.scheduling.FoliaScheduler` exposes the dispatch you need
-and behaves correctly on both server types:
+VolmLib does not hide this. `art.arcane.volmlib.util.scheduling.FoliaScheduler` exposes the
+dispatch you need. It behaves correctly on both server types:
 
-| Method                                                           | Runs the task where                                             |
-|------------------------------------------------------------------|-----------------------------------------------------------------|
-| `runGlobal(Plugin, Runnable)` / `runGlobal(Plugin, Runnable, long)` | Global region thread on Folia, main thread on Paper           |
-| `runRegion(Plugin, Location, Runnable[, long])`                   | The region owning that location                                 |
-| `runRegion(Plugin, World, int, int, Runnable[, long])`            | The region owning that chunk                                    |
-| `runEntity(Plugin, Entity, Runnable[, long])`                     | The entity's scheduler; runs inline when you already own the entity and asked for no delay |
-| `runEntity(Plugin, Entity, Runnable, long, Runnable)`             | The same, with a retired callback run instead when the entity is gone |
+| Method | Runs the task where |
+|---|---|
+| `runGlobal(Plugin, Runnable)` / `runGlobal(Plugin, Runnable, long)` | Global region thread on Folia, main thread on Paper |
+| `runRegion(Plugin, Location, Runnable[, long])` | The region owning that location |
+| `runRegion(Plugin, World, int, int, Runnable[, long])` | The region owning that chunk |
+| `runEntity(Plugin, Entity, Runnable[, long])` | The entity's scheduler. Runs inline when you already own the entity and asked for no delay |
+| `runEntity(Plugin, Entity, Runnable, long, Runnable)` | The same, with a retired callback run instead when the entity is gone |
 
-Each returns `boolean`: `true` when the task was scheduled or run, `false` when it could not be (a disabled
-plugin, a null argument, a location with no world, a retired entity). A `false` return is not an exception and
-does not retry — check it if the work matters. On the five-argument `runEntity` the retired callback runs
-whenever the entity turns out to be gone, on both sides of that boolean: `true` when the call was already on
-the entity's own thread and could see the entity was retired, `false` when the entity scheduler rejected the
+Each method returns `boolean`. `true` means the task was scheduled or run. `false` means it
+could not be. Causes include a disabled plugin, a null argument, a location with no world, or
+a retired entity. A `false` return is not an exception. It does not retry. Check it if the
+work matters.
+
+On the five-argument `runEntity` the retired callback runs whenever the entity is gone. That
+is true on both sides of the boolean. `true` means the call was already on the entity's own
+thread and could see the entity was retired. `false` means the entity scheduler rejected the
 task. Do the cleanup in the callback, not in the `false` branch.
 
 `FoliaScheduler.isFolia(Server)`, `isFoliaThreading(Server)`, `isPrimaryThread()` and the
-`isOwnedByCurrentRegion(...)` overloads answer "may I touch this from here" without scheduling anything.
+`isOwnedByCurrentRegion(...)` overloads answer "may I touch this from here" without
+scheduling anything.
 
-Everything else in VolmLib states its own threading contract, or has none and must be treated as
-single-threaded. The one surface documented in this directory that is explicitly safe from any thread is the
-placeholder snapshot machinery, and [placeholders.md](/volmlib/api/placeholders) explains exactly why it has to be.
+Everything else in VolmLib states its own threading contract, or has none. Treat a type with
+no contract as single-threaded. The one surface in this directory that is safe from any
+thread is the placeholder snapshot machinery.
+[placeholders](/volmlib/api/placeholders) explains why.
 
 ---
 
 ## HUD coordination
 
-`art.arcane.volmlib.util.hud` coordinates the two shared player display surfaces across every plugin that
-ships this package, including copies relocated into different namespaces. The action bar is **cooperative**:
-plugins publish text segments and every copy composes the same single merged line. The title (title +
-subtitle + times, one atomic surface) stays **exclusive** and is arbitrated by bid. Boss bars are neither —
-they are reserved for Iris loading bars, rendered directly through `HudBossBarLane`; nothing falls back to
-them anymore.
+`art.arcane.volmlib.util.hud` coordinates the two shared player display surfaces across every
+plugin that ships this package, including copies relocated into different namespaces. The
+action bar is **cooperative**. Plugins publish text segments. Every copy composes the same
+single merged line. The title (title + subtitle + times, one atomic surface) stays
+**exclusive** and is arbitrated by bid. Boss bars are neither. They are reserved for Iris
+loading bars. Iris renders them directly through `HudBossBarLane`. Nothing falls back to
+them.
 
-Coordination never crosses a plugin boundary through a VolmLib type. Each copy posts an encoded String into
-Bukkit player metadata and every copy runs the same deterministic layout or winner function over all posted
-values.
+Coordination never crosses a plugin boundary through a VolmLib type. Each copy posts an
+encoded String into Bukkit player metadata. Every copy runs the same deterministic layout or
+winner function over all posted values.
 
 ### Action bar: `HudActionBar`
 
-A plugin publishes with `hudBar.publish(player, new HudSegment(purpose, priority, ttlMillis, slots, text))`
-and withdraws with `clear(player, purpose)`. `text` is a legacy `§` string; `slots` is an ordered
-`HudSlot` preference list (`LEFT`, `CENTER`, `RIGHT`). Every publish re-encodes the plugin's live segments
-under one metadata value, then composes **all** plugins' live segments into one line and sends it, so the
-fastest publisher keeps everyone's content fresh and a cleared or expired segment disappears on the next
-compose. Clearing the last visible segment wipes the bar.
+A plugin publishes with
+`hudBar.publish(player, new HudSegment(purpose, priority, ttlMillis, slots, text))`. It
+withdraws with `clear(player, purpose)`. `text` is a legacy `§` string. `slots` is an ordered
+`HudSlot` preference list (`LEFT`, `CENTER`, `RIGHT`).
 
-| Piece            | Value                                                                            |
-|------------------|----------------------------------------------------------------------------------|
-| Metadata key     | `volmit.hud.segments`                                                            |
-| Segment encoding | version `2`, records split by `U+001E`, fields by `U+001F`, text last            |
-| Layout order     | highest priority, then smallest `sinceMillis`, then plugin name, then purpose    |
-| Slot assignment  | first empty preferred slot; otherwise the segment stacks into its last preference |
-| Lane render      | `LEFT` then `CENTER` then `RIGHT`; native claimants before spilled joiners       |
-| Budget           | segments past 150 visible characters are skipped for that frame, best-first      |
-| Expiry           | a segment is dead when `now - assertedMillis > ttlMillis`                        |
+Every publish re-encodes the plugin's live segments under one metadata value. It then
+composes **all** plugins' live segments into one line and sends it. The fastest publisher
+keeps everyone's content fresh. A cleared or expired segment disappears on the next compose.
+Clearing the last visible segment wipes the bar.
 
-Priorities double as placement rank: `HudPriority` AMBIENT 10, NOTICE 30, STATUS 40, PROGRESS 60,
-INTERACTIVE 80, MODAL 100, PINNED 1000. `PINNED` is reserved for the one always-centered ambient HUD (the
-React monitor); persistent feature HUDs like Adapt's Sixth Sense line sit at `STATUS` so transient notices
-flank them instead of displacing them. One-shot notices publish once and let the TTL retire them.
+| Piece | Value |
+|---|---|
+| Metadata key | `volmit.hud.segments` |
+| Segment encoding | version `2`, records split by `U+001E`, fields by `U+001F`, text last |
+| Layout order | highest priority, then smallest `sinceMillis`, then plugin name, then purpose |
+| Slot assignment | first empty preferred slot. Otherwise the segment stacks into its last preference |
+| Lane render | `LEFT` then `CENTER` then `RIGHT`. Native claimants before spilled joiners |
+| Budget | segments past 150 visible characters are skipped for that frame, best-first |
+| Expiry | a segment is dead when `now - assertedMillis > ttlMillis` |
+
+Priorities also set placement rank: `HudPriority` AMBIENT 10, NOTICE 30, STATUS 40, PROGRESS
+60, INTERACTIVE 80, MODAL 100, PINNED 1000. `PINNED` is reserved for the one always-centered
+ambient HUD (the React monitor). Persistent feature HUDs like Adapt's Sixth Sense line sit at
+`STATUS`. Transient notices flank them instead of displacing them. One-shot notices publish
+once. The TTL retires them.
 
 ### Title: `HudTitleService`
 
-A consumer opens a `HudTitleClaim` with `titles.open(player, purpose, priority, ttlMillis)` and calls
-`resolve()` from its update loop; `true` means it may render the title this frame, in its own text pipeline.
-The bid protocol is unchanged from v1: metadata key `volmit.hud.title`, encoding
-`1\|priority\|sinceMillis\|assertedMillis\|ttlMillis\|purpose`, winner by highest priority, then smallest
-`sinceMillis`, then plugin name, then purpose. Re-asserting keeps `sinceMillis` stable, which is what lets a
-holder keep an equal-priority slot; `release()` withdraws the bid. By fleet convention only Wormholes (and
-React's monitor edit mode) use this surface.
+A consumer opens a `HudTitleClaim` with
+`titles.open(player, purpose, priority, ttlMillis)`. It calls `resolve()` from its update
+loop. `true` means it may render the title this frame, in its own text pipeline.
+
+The bid protocol is unchanged from v1. Metadata key: `volmit.hud.title`. Encoding:
+`1\|priority\|sinceMillis\|assertedMillis\|ttlMillis\|purpose`. Winner by highest priority,
+then smallest `sinceMillis`, then plugin name, then purpose. Re-asserting keeps `sinceMillis`
+stable. That lets a holder keep an equal-priority slot. `release()` withdraws the bid. By
+fleet convention only Wormholes and React's monitor edit mode use this surface.
 
 ### Threading and retirement
 
-`publish`, `clear`, `resolve`, `release`, and boss-bar `show`/`hide` touch the Bukkit player and must run on
-that player's owning scheduler. An entity-scheduler retirement callback instead calls
-`HudActionBar.retire(playerId)`, `HudTitleClaim.retire()`, or `HudBossBarLane.retire(playerId, laneId)`:
-UUID-only operations that drop local state without touching the retired player or its metadata. Segments and
-bids from a crashed or disabled plugin expire by TTL; no service registration, election, or reflection is
-involved.
+`publish`, `clear`, `resolve`, `release`, and boss-bar `show`/`hide` touch the Bukkit player
+and must run on that player's owning scheduler. An entity-scheduler retirement callback
+instead calls `HudActionBar.retire(playerId)`, `HudTitleClaim.retire()`, or
+`HudBossBarLane.retire(playerId, laneId)`. Those UUID-only operations drop local state. They
+do not touch the retired player or its metadata. Segments and bids from a crashed or disabled
+plugin expire by TTL. No service registration, election, or reflection is involved.

@@ -2,28 +2,30 @@
 title: "Skill - Stealth"
 description: "Adapt documentation: Skill - Stealth"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Stealth is the rogue skill. You level it by sneaking around and by hurting or killing things while crouched, and it pays best when you open a fight from a shadow instead of walking into it. It has 14 adaptations and shows up in the menu as a dark gray `WITHER_ROSE`.
+Stealth is the rogue skill. You level it by sneaking around and by hurting or killing things while crouched. It pays best when you open a fight from a shadow instead of walking into it. It has 14 adaptations. It shows up in the menu as a dark gray `WITHER_ROSE`.
 
-The one that matters most is Stealth itself. It runs a concealment session while you sneak, watches every nearby mob and player to work out whether anyone can actually see you, and multiplies your melee damage when nobody can. Cutpurse and Assassinate both hang off that same undetected check, so learning the core first is the whole point of the tree.
+The one that matters most is Stealth itself. It runs a concealment session while you sneak. It watches every nearby mob and player to work out whether anyone can actually see you. It multiplies your melee damage when nobody can. Cutpurse and Assassinate both hang off that same undetected check. Learning the core first is the whole point of the tree.
 
-Around that sit the utility picks. Sneak Speed makes crouching bearable, Item Snatch vacuums drops off the floor, Ghost's Armor charges a free hit absorber while you avoid damage, Stealth Vision lights up the dark and reveals invisible players, Enderveil stops endermen aggroing on you, Trap Sense outlines traps and stops sculk hearing your footsteps, and Umbral Recovery feeds you and stretches your invisibility on every sneaking kill.
+Around that sit the utility picks. Sneak Speed makes crouching bearable. Item Snatch vacuums drops off the floor. Ghost's Armor charges a free hit absorber while you avoid damage. Stealth Vision lights up the dark and reveals invisible players. Enderveil stops endermen aggroing on you. Trap Sense outlines traps and stops sculk hearing your footsteps. Umbral Recovery feeds you and stretches your invisibility on every sneaking kill.
 
-Then there are the escapes. Shadow Decoy leaves a copy of you behind and turns you invisible, Decoy Swap teleports you to that copy, Shadowmeld makes you actually invisible for staying still and unseen, and Smoke Pellet throws an aimed cloud that blinds everything in it and wipes aggro out to 64 blocks.
+Then there are the escapes. Shadow Decoy leaves a copy of you behind and turns you invisible. Decoy Swap teleports you to that copy. Shadowmeld makes you actually invisible for staying still and unseen. Smoke Pellet throws an aimed cloud that blinds everything in it and wipes aggro out to 64 blocks.
 
 ## Adaptations
 
-Everything below needs the same four things before it does anything: the adaptation learned at level 1 or higher, the skill and the adaptation both enabled in config, the matching `adapt.use.*` permission, and any protection or region plugin allowing the action. Those preconditions are not repeated per adaptation.
+Everything below needs the same four things before it does anything. The adaptation is learned at level 1 or higher. The skill and the adaptation are both enabled in config. You hold the matching `adapt.use.*` permission. Any protection or region plugin allows the action. Those preconditions are not repeated per adaptation.
 
 ### Stealth (`stealth-silent-step`)
 
-The core of the tree. Sneaking opens a concealment session. Every quarter second the plugin scans nearby mobs and players, checks whether each one is looking roughly at you and has line of sight, and decides whether you are detected. Being invisible, having an active Shadow Decoy, or sitting in a Smoke Pellet cloud all count as undetected no matter who is looking.
+The core of the tree. Sneaking opens a concealment session. Every quarter second the plugin scans nearby mobs and players. It checks whether each one is looking roughly at you and has line of sight. Then it decides whether you are detected. Being invisible, having an active Shadow Decoy, or sitting in a Smoke Pellet cloud all count as undetected no matter who is looking.
 
-While a session is open, mobs that had you as their target let go of you, targeting events aimed at you are cancelled, and you take no fall damage. While you are actually undetected your screen dims, and nearby threats are outlined for you alone: red for anyone who can see you, gray for anyone about to.
+While a session is open, mobs that had you as their target let go of you.
+Targeting events aimed at you are cancelled. You take no fall damage. While you are actually undetected your screen dims. Nearby threats are outlined
+for you alone. Red marks anyone who can see you. Gray marks anyone about to.
 
 Attacking while undetected multiplies your damage. Mobs take a bigger bonus than players. Land five backstabs inside ten seconds and you get the Unseen Blade advancement.
 
@@ -38,7 +40,7 @@ Four dangerous mobs ignore the targeting suppression by default: warden, wither,
 
 Crouching stops being punishing. Each level adds sneaking speed, and at max level with default settings you sneak at full walk speed, which is the vanilla cap. Crawling on land gets a small extra multiplier.
 
-It also gives you auto-stepping while active: extra step height so you walk up one-block ledges without jumping, and an auto-step-down so you drop off one-block edges while moving instead of stopping at the lip.
+It also gives you auto-stepping while active. Extra step height lets you walk up one-block ledges without jumping. An auto-step-down lets you drop off one-block edges while moving instead of stopping at the lip.
 
 It runs while you sneak or crawl, on the ground, in survival or adventure mode. Riding, flying, gliding, and being in water all switch it off.
 
@@ -48,7 +50,7 @@ Passive. Learn it and sneak.
 
 Sneak and dropped items within range fly into your inventory. It keeps pulling on a repeating pulse for as long as you stay crouched, so you can walk a mob-farm floor without clicking anything.
 
-Every item goes through the normal Bukkit pickup event with your real remaining inventory space, so a plugin that cancels the pickup leaves the item on the ground untouched, and a full inventory is skipped rather than eaten. Item Snatch adds the same unchanged stack it found; it has no bundle or backpack conversion. Because it emits normal pickup events, another listener can still replace or transform the item before the pull commits.
+Every item goes through the normal Bukkit pickup event with your real remaining inventory space. A plugin that cancels the pickup leaves the item on the ground untouched. A full inventory is skipped rather than eaten. Item Snatch adds the same unchanged stack it found. It has no bundle or backpack conversion. Because it emits normal pickup events, another listener can still replace or transform the item before the pull commits.
 
 1. Learn Item Snatch.
 2. Stand near dropped items.
@@ -64,7 +66,9 @@ Passive. Learn it and let it charge.
 
 ### Stealth Vision (`stealth-vision`)
 
-Three things while you sneak: you get Night Vision, incoming Blindness is refused outright, and any invisible player near you gets a private outline that only you can see. Stand up and all three go away, including the Night Vision the adaptation applied.
+Three things happen while you sneak. You get Night Vision. Incoming Blindness is
+refused outright. Any invisible player near you gets a private outline that only
+you can see. Stand up and all three go away, including the Night Vision the adaptation applied.
 
 It only cleans up its own Night Vision. A potion you drank yourself is left alone.
 
@@ -72,7 +76,7 @@ Passive, single level. Learn it and sneak.
 
 ### Enderveil (`stealth-enderveil`)
 
-Endermen stop caring about you. At level 1 the protection applies while you are sneaking; at level 2 it applies always, so you can stare at them across an End highlands with no pumpkin on your head. At level 2 a slow portal particle orbits your head whenever an enderman is nearby.
+Endermen stop caring about you. At level 1 the protection applies while you are sneaking. At level 2 it applies always, so you can stare at them across an End highlands with no pumpkin on your head. At level 2 a slow portal particle orbits your head whenever an enderman is nearby.
 
 Passive.
 
@@ -90,7 +94,8 @@ The decoy cannot be killed. Damage to it is cancelled, but it does react: hits k
 
 ### Shadowmeld (`stealth-shadowmeld`)
 
-Hold a sneak while Stealth reports nobody can see you, and after a short delay you turn genuinely invisible and mobs stop being able to target you. The delay is three seconds at level 1 and drops to a quarter second at max level.
+Hold a sneak while Stealth reports nobody can see you. After a short delay you
+turn genuinely invisible. Mobs stop being able to target you. The delay is three seconds at level 1 and drops to a quarter second at max level.
 
 The meld breaks the moment you do anything: attack, get hurt, interact with a block or entity, get spotted, or stand up.
 
@@ -101,7 +106,8 @@ The meld breaks the moment you do anything: attack, get hurt, interact with a bl
 
 ### Smoke Pellet (`stealth-smoke-pellet`)
 
-Hold gunpowder and sneak. One gunpowder is spent and a smoke cloud is thrown along your aim, stopping at the first block or living entity it hits, up to a long range. The cloud pulses for several seconds.
+Hold gunpowder and sneak. One gunpowder is spent and a smoke cloud is thrown along your aim. It stops at
+the first block or living entity it hits, up to a long range. The cloud pulses for several seconds.
 
 Everything living inside the cloud goes blind. Players inside go invisible and get a concealment lease that lasts a couple of seconds past each pulse. Mobs inside drop their target, and while the lease holds, mobs within 64 blocks of the cloud cannot reacquire a concealed player. Even a warden angry at a concealed player has that anger cleared.
 
@@ -113,7 +119,10 @@ Everything living inside the cloud goes blind. Players inside go invisible and g
 
 ### Cutpurse (`stealth-cutpurse`)
 
-Hit a pillager, vindicator, piglin, or piglin brute directly in melee while Stealth reports you undetected and you may roll its native mob loot table and take a few stacks straight into your inventory. The spawn method is irrelevant: natural, structure, spawner, and command-spawned mobs use the same path. The mob lives. It is marked as picked only after a successful, non-empty loot roll, and the stolen items go to the ground if your inventory is full. Structure chest loot is unrelated.
+Hit a pillager, vindicator, piglin, or piglin brute directly in melee while
+Stealth reports you undetected. You may roll its native mob loot table and take
+a few stacks straight into your inventory. The spawn method is irrelevant: natural, structure, spawner, and command-spawned mobs use the same path. The mob lives. It is marked as picked only after a successful, non-empty loot roll. The stolen
+items go to the ground if your inventory is full. Structure chest loot is unrelated.
 
 Passive on top of the core check. Get behind the mob, hit it, keep the loot.
 
@@ -121,7 +130,8 @@ Passive on top of the core check. Get behind the mob, hit it, keep the loot.
 
 While you sneak, nearby trapped chests, tripwire, tripwire hooks, pressure plates, and sculk blocks are outlined for you alone. Sculk blocks glow teal, tripwire glows yellow, everything else glows red.
 
-It also quiets your footsteps. Below max level there is a chance per movement vibration that a sculk sensor or shrieker does not hear you at all, and it only applies while sneaking. At max level every movement vibration you produce is suppressed, sneaking or not, and the block that would have heard you is outlined instead.
+It also quiets your footsteps. Below max level there is a chance per movement vibration that a sculk sensor or
+shrieker does not hear you at all. That chance only applies while sneaking. At max level every movement vibration you produce is suppressed, sneaking or not, and the block that would have heard you is outlined instead.
 
 1. Learn Trap Sense.
 2. Sneak as you enter an ancient city or a suspicious hallway.
@@ -129,7 +139,8 @@ It also quiets your footsteps. Below max level there is a chance per movement vi
 
 ### Assassinate (`stealth-assassinate`)
 
-A finisher. Hit an eligible mob while Stealth reports you undetected and the damage is replaced with exactly the mob's current health, so it dies in one hit with no overkill number. It only works on mobs whose maximum health is under a level-scaled cap, and it is on a long cooldown that shortens as you level.
+A finisher. Hit an eligible mob while Stealth reports you undetected. The damage is replaced with exactly the mob's current health. The mob dies in one hit with no overkill number. It only works on mobs whose maximum health is under a level-scaled cap. It is on
+a long cooldown that shortens as you level.
 
 Players, anything implementing `Boss`, and the warden are excluded.
 
@@ -231,7 +242,7 @@ Written to `plugins/Adapt/adapt/skills/stealth.toml` on first load.
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-silent-step.toml` |
 
-Menu stat lines: Mob Detection Suppression Radius; Mob Backstab Damage Bonus; Player Backstab Damage Bonus.
+Menu stat lines: Mob Detection Suppression Radius. Mob Backstab Damage Bonus. Player Backstab Damage Bonus.
 
 Listened events:
 
@@ -241,9 +252,12 @@ Listened events:
 - `EntityDamageByEntityEvent` (`HIGHEST`) - applies the backstab multiplier
 - `PlayerQuitEvent` (`MONITOR`) - clears the session
 
-Detection uses a look-dot check plus a line-of-sight check against the player's eye location. An observer at or above `detectionLookDotThreshold` with line of sight can detect you; between the threshold minus `almostLookDotMargin` and the threshold it is an almost-detect. Forced concealment (invisible, an Invisibility effect, an active Shadow Decoy, or a Smoke Pellet lease) short-circuits detection entirely. While a session is open the adaptation applies `SAFE_FALL_DISTANCE` of `1024` under the `fall` slot, so you take no fall damage while concealed. While undetected it applies `DARKNESS` to the concealing player at `dimAmplifier`. Backstab XP is `xpPerBonusDamage` times the final damage after the multiplier; target drops pay `xpPerTargetDrop` per mob that let go of you in a scan.
+Detection uses a look-dot check plus a line-of-sight check against the player's eye location. An observer at or above `detectionLookDotThreshold` with line of sight can detect you. Between the threshold minus `almostLookDotMargin` and the threshold it is an almost-detect. Forced concealment (invisible, an Invisibility effect, an active Shadow Decoy, or a Smoke Pellet lease) short-circuits detection entirely. While a session is open the adaptation applies `SAFE_FALL_DISTANCE` of `1024` under the `fall` slot, so you take no fall damage while concealed. While undetected it applies `DARKNESS` to the concealing player at `dimAmplifier`. Backstab XP is `xpPerBonusDamage` times the final damage after the multiplier. Target drops pay `xpPerTargetDrop` per mob that let go of you in a scan.
 
-Hard caps not exposed in config: stealth radius 16 blocks, player detection radius 24 blocks, scan completion delay 4 ticks, dim duration floor 160 ticks, 16 scan dispatches per tick, 16 scan completions per tick, 128 owner refreshes per tick.
+Hard caps not exposed in config follow. Stealth radius is 16 blocks. Player
+detection radius is 24 blocks. Scan completion delay is 4 ticks. Dim duration
+floor is 160 ticks. Scan dispatches are 16 per tick. Scan completions are 16 per
+tick. Owner refreshes are 128 per tick.
 
 Milestones: `challenge_stealth_silent_200` on `stealth.silent-step.backstabs` at 200, reward 400. The `challenge_stealth_silent_5in10` advancement is granted directly in code after 5 backstabs within 10 seconds and has no stat milestone.
 
@@ -294,7 +308,9 @@ Listened events:
 - `PlayerDeathEvent` - clears state
 - `PlayerQuitEvent` - clears state
 
-Applies `SNEAKING_SPEED` as a `MULTIPLY_SCALAR_1` modifier under the `sneak` slot, and `STEP_HEIGHT` under the `step` slot when auto-step-up is on. Eligibility requires sneaking or crawling on land, survival or adventure mode, not dead, not in a vehicle, not flying, not gliding, and grounded unless `requireGrounded` is false. Water disables it unless `allowWhileInWater` is true. Milestone: `challenge_stealth_speed_5k` on `stealth.speed.blocks-sneak-sprinted` at 5000, reward 400.
+Applies `SNEAKING_SPEED` as a `MULTIPLY_SCALAR_1` modifier under the `sneak` slot, and `STEP_HEIGHT` under the `step` slot when auto-step-up is on. Eligibility requires sneaking or crawling on land in survival or adventure mode.
+You must not be dead, in a vehicle, flying, or gliding. You must be grounded
+unless `requireGrounded` is false. Water disables it unless `allowWhileInWater` is true. Milestone: `challenge_stealth_speed_5k` on `stealth.speed.blocks-sneak-sprinted` at 5000, reward 400.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -346,7 +362,8 @@ Listened events:
 - `PlayerToggleSneakEvent` (`MONITOR`, ignore cancelled) - snatches immediately and opens a repeating session
 - `PlayerQuitEvent` (`MONITOR`) - closes the session
 
-Each pulse inspects at most `128` nearby entities and takes at most `32` items, searching a box of radius by radius over 1.5 by radius around the player. Every candidate must pass a chest-access check, an inventory space check, and Bukkit's normal pickup event sequence; a cancelled pickup leaves the item entity untouched. Adapt then adds the unchanged original stack and contains no bundle or backpack conversion path, although another pickup listener may transform the event item. Items are held for up to `5000` ms to avoid double pulls. On Folia the scan runs only when the whole footprint belongs to the current region. Milestones: `challenge_stealth_snatch_2500` on `stealth.snatch.items-snatched` at 2500 (reward 400); `challenge_stealth_snatch_25k` at 25000 (reward 1500).
+Each pulse inspects at most `128` nearby entities and takes at most `32` items.
+It searches a box of radius by radius over 1.5 by radius around the player. Every candidate must pass a chest-access check, an inventory space check, and Bukkit's normal pickup event sequence. A cancelled pickup leaves the item entity untouched. Adapt then adds the unchanged original stack and contains no bundle or backpack conversion path, although another pickup listener may transform the event item. Items are held for up to `5000` ms to avoid double pulls. On Folia the scan runs only when the whole footprint belongs to the current region. Milestones: `challenge_stealth_snatch_2500` on `stealth.snatch.items-snatched` at 2500 (reward 400). `challenge_stealth_snatch_25k` at 25000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -366,7 +383,7 @@ Each pulse inspects at most `128` nearby entities and takes at most `32` items, 
 | Tick interval (ms) | 5353 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-ghost-armor.toml` |
 
-Menu stat lines: Max Ghost Armor; Speed.
+Menu stat lines: Max Ghost Armor. Speed.
 
 Listened events:
 
@@ -377,7 +394,8 @@ Listened events:
 - `PlayerDeathEvent` (`MONITOR`) - clears the session and the armor modifier
 - `PlayerQuitEvent` (`MONITOR`) - clears the session and the armor modifier
 
-Applies the `ARMOR` attribute under the `armor` slot as an additive modifier that grows by the per-tick amount every refresh. Both the ceiling and the per-refresh gain are interpolated between the min and max knob by level percent, and both are clamped to 0-20. XP on consumption is `min(10, 2.5 * incoming damage)`. Damage tagged as bypassing armor does not consume the buffer. Milestones: `challenge_stealth_ghost_100` on `stealth.ghost-armor.armor-consumed` at 100 (reward 300); `challenge_stealth_ghost_500` at 500 (reward 1000).
+Applies the `ARMOR` attribute under the `armor` slot as an additive modifier that grows by the per-tick amount every refresh. Both the ceiling and the per-refresh gain are interpolated between the min and
+max knob by level percent. Both are clamped to 0-20. XP on consumption is `min(10, 2.5 * incoming damage)`. Damage tagged as bypassing armor does not consume the buffer. Milestones: `challenge_stealth_ghost_100` on `stealth.ghost-armor.armor-consumed` at 100 (reward 300). `challenge_stealth_ghost_500` at 500 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -399,7 +417,7 @@ Applies the `ARMOR` attribute under the `armor` slot as an additive modifier tha
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-vision.toml` |
 
-Menu stat lines: Gain a burst of night vision while sneaking; Blindness immunity while sneaking; Invisible players glow while sneaking.
+Menu stat lines: Gain a burst of night vision while sneaking. Blindness immunity while sneaking. Invisible players glow while sneaking.
 
 Listened events:
 
@@ -433,7 +451,7 @@ Listened events:
 - `EndermanAttackPlayerEvent` (`LOWEST`, ignore cancelled, reflective handler, `onTarget`) - cancels direct enderman aggression
 - `PlayerQuitEvent` (`MONITOR`) - stops the ambient particle session
 
-At level 1 suppression requires sneaking; at level 2 it always applies. At level 2 a portal particle orbits the player's eye position on a 4 second cycle while an enderman is within 16 blocks. The suppression puff effect is throttled to once every `2000` ms. Milestone: `challenge_stealth_ender_veil_200` on `stealth.ender-veil.stares-survived` at 200, reward 300.
+At level 1 suppression requires sneaking. At level 2 it always applies. At level 2 a portal particle orbits the player's eye position on a 4 second cycle while an enderman is within 16 blocks. The suppression puff effect is throttled to once every `2000` ms. Milestone: `challenge_stealth_ender_veil_200` on `stealth.ender-veil.stares-survived` at 200, reward 300.
 
 No adaptation-specific config knobs.
 
@@ -450,7 +468,7 @@ No adaptation-specific config knobs.
 | Tick interval (ms) | 5 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-shadow-decoy.toml` |
 
-Menu stat lines: Decoy Duration; Decoy Attraction Radius; Decoy Cooldown.
+Menu stat lines: Decoy Duration. Decoy Attraction Radius. Decoy Cooldown.
 
 Listened events:
 
@@ -459,7 +477,7 @@ Listened events:
 - `PlayerAnimationEvent` (`HIGHEST`, ignore cancelled) - ray traces attack swings against the decoy
 - `PlayerQuitEvent` (`MONITOR`) - removes active decoys and cooldown state
 
-The decoy is an invisible, non-persistent armor stand anchor plus a packet-only fake player wearing the owner's skin and equipment. If the packet decoy cannot be created and `legacyFallbackEnabled` is true, the armor stand is made visible instead. Spawning is skipped when the player carries the `adapt-mutation-exposed` metadata. Aggro redirection skips mobs protected as friendly to the owner, including tamed pets. Cooldown floors at 1000 ms and duration floors at 20 ticks. Milestones: `challenge_stealth_decoy_100` on `stealth.shadow-decoy.decoys-spawned` at 100 (reward 300); `challenge_stealth_decoy_distract_500` on `stealth.shadow-decoy.mobs-distracted` at 500 (reward 1000).
+The decoy is an invisible, non-persistent armor stand anchor plus a packet-only fake player wearing the owner's skin and equipment. If the packet decoy cannot be created and `legacyFallbackEnabled` is true, the armor stand is made visible instead. Spawning is skipped when the player carries the `adapt-mutation-exposed` metadata. Aggro redirection skips mobs protected as friendly to the owner, including tamed pets. Cooldown floors at 1000 ms and duration floors at 20 ticks. Milestones: `challenge_stealth_decoy_100` on `stealth.shadow-decoy.decoys-spawned` at 100 (reward 300). `challenge_stealth_decoy_distract_500` on `stealth.shadow-decoy.mobs-distracted` at 500 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -516,7 +534,7 @@ Listened events:
 - `PlayerInteractEvent` (`onInteract`) - breaks the meld on any interaction
 - `PlayerQuitEvent` (`LOWEST`) - ends the session
 
-Eligibility is sneaking plus either a Smoke Pellet lease or Stealth reporting you currently undetected. The meld applies `INVISIBILITY` at amplifier 0 in `40` tick refreshes and removes it on break unless a Smoke Pellet lease still covers you. Meld delay interpolates linearly from `meldDelayStartMillis` at level 1 to `meldDelayEndMillis` at max level. At most `2048` sessions are tracked and `64` visited per tick. Milestones: `challenge_stealth_shadowmeld_100` on `stealth.shadowmeld.melds` at 100 (reward 350); `challenge_stealth_shadowmeld_1k` at 1000 (reward 1500).
+Eligibility is sneaking plus either a Smoke Pellet lease or Stealth reporting you currently undetected. The meld applies `INVISIBILITY` at amplifier 0 in `40` tick refreshes and removes it on break unless a Smoke Pellet lease still covers you. Meld delay interpolates linearly from `meldDelayStartMillis` at level 1 to `meldDelayEndMillis` at max level. At most `2048` sessions are tracked and `64` visited per tick. Milestones: `challenge_stealth_shadowmeld_100` on `stealth.shadowmeld.melds` at 100 (reward 350). `challenge_stealth_shadowmeld_1k` at 1000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -536,7 +554,7 @@ Eligibility is sneaking plus either a Smoke Pellet lease or Stealth reporting yo
 | Cost factor | 0.4 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-smoke-pellet.toml` |
 
-Menu stat lines: Cloud Radius; Cloud Duration.
+Menu stat lines: Cloud Radius. Cloud Duration.
 
 Listened events:
 
@@ -544,7 +562,7 @@ Listened events:
 - `EntityTargetLivingEntityEvent` (`HIGHEST`, ignore cancelled) - cancels targeting on a concealed player and clears the mob's target
 - `PlayerQuitEvent` (`MONITOR`) - clears concealment state
 
-The cloud pulses every `10` ticks. Each pulse blinds living entities inside for `40` ticks, renews the concealment lease and Invisibility of players inside for `40` ticks, and clears mob targets. Aggro clearing also sweeps mobs within `64` blocks of the cloud center, including a warden's anger at a concealed player. At most `24` targets are handed off per tick. Ray range is clamped to 2-64 blocks. The gunpowder cost goes through the normal item-cost path, so a cancelled cost aborts the throw. Milestones: `challenge_stealth_smoke_100` on `stealth.smoke-pellet.thrown` at 100 (reward 400); `challenge_stealth_smoke_1k` at 1000 (reward 1500).
+The cloud pulses every `10` ticks. Each pulse blinds living entities inside for `40` ticks, renews the concealment lease and Invisibility of players inside for `40` ticks, and clears mob targets. Aggro clearing also sweeps mobs within `64` blocks of the cloud center, including a warden's anger at a concealed player. At most `24` targets are handed off per tick. Ray range is clamped to 2-64 blocks. The gunpowder cost goes through the normal item-cost path, so a cancelled cost aborts the throw. Milestones: `challenge_stealth_smoke_100` on `stealth.smoke-pellet.thrown` at 100 (reward 400). `challenge_stealth_smoke_1k` at 1000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -569,13 +587,15 @@ The cloud pulses every `10` ticks. Each pulse blinds living entities inside for 
 | Cost factor | 0.4 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-cutpurse.toml` |
 
-Menu stat lines: Steal Chance; Loot Stacks.
+Menu stat lines: Steal Chance. Loot Stacks.
 
 Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - rolls the steal
 
-Eligible targets are `PILLAGER`, `VINDICATOR`, `PIGLIN`, and `PIGLIN_BRUTE`. The hit must be direct melee, the mob must expose a native non-null loot table and must not already carry the `cutpurse_picked` persistent key, and Stealth must report you undetected. Spawn reason is not checked. On a successful chance roll the mob's own loot table is rolled with `lootQuality` as luck; only a non-empty result produces feedback and stamps the mob so it can never be picked again. The first non-empty stacks up to the stack cap are taken. Items that do not fit in your inventory drop at the mob's location. Milestones: `challenge_stealth_cutpurse_100` on `stealth.cutpurse.pockets-picked` at 100 (reward 400); `challenge_stealth_cutpurse_1k` at 1000 (reward 1500).
+Eligible targets are `PILLAGER`, `VINDICATOR`, `PIGLIN`, and `PIGLIN_BRUTE`. The hit must be direct melee. The mob must expose a native non-null loot table
+and must not already carry the `cutpurse_picked` persistent key. Stealth must
+report you undetected. Spawn reason is not checked. On a successful chance roll the mob's own loot table is rolled with `lootQuality` as luck. Only a non-empty result produces feedback and stamps the mob so it can never be picked again. The first non-empty stacks up to the stack cap are taken. Items that do not fit in your inventory drop at the mob's location. Milestones: `challenge_stealth_cutpurse_100` on `stealth.cutpurse.pockets-picked` at 100 (reward 400). `challenge_stealth_cutpurse_1k` at 1000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -601,7 +621,7 @@ Eligible targets are `PILLAGER`, `VINDICATOR`, `PIGLIN`, and `PIGLIN_BRUTE`. The
 | Tick interval (ms) | 400 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-trap-sense.toml` |
 
-Menu stat lines: Detection Range; Sculk Movement Suppression.
+Menu stat lines: Detection Range. Sculk Movement Suppression.
 
 Listened events:
 
@@ -609,7 +629,7 @@ Listened events:
 - `BlockReceiveGameEvent` (`HIGHEST`, ignore cancelled) - suppresses movement vibrations reaching sculk blocks
 - `PlayerQuitEvent` (`MONITOR`) - cancels scans and clears the viewer's block displays
 
-Revealed blocks are `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`, `CALIBRATED_SCULK_SENSOR`, `SCULK_SHRIEKER`, and any material whose name ends in `_PRESSURE_PLATE`. Markers are private viewer block displays, colored RGB `40, 220, 210` for sculk, `255, 220, 45` for tripwire and hooks, and `255, 70, 70` for everything else. Each scan samples at most `4096` blocks and shows at most `96` markers, and the stat counts only newly revealed blocks. Suppressed game events are `STEP`, `SWIM`, `FLAP`, `HIT_GROUND`, `ELYTRA_GLIDE`, `SPLASH`, `BOUNCE` where present, `TELEPORT`, `ENTITY_MOUNT`, and `ENTITY_DISMOUNT`. At max level suppression is unconditional and does not require sneaking. Below max level the effective chance is `mercyMaxChance * (level / maxLevel)` and it only applies while sneaking. The cached suppression state expires `1500` ms after its last refresh. Milestones: `challenge_stealth_trap_500` on `stealth.trap-sense.traps-revealed` at 500 (reward 400); `challenge_stealth_trap_5k` at 5000 (reward 1500).
+Revealed blocks are `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`, `CALIBRATED_SCULK_SENSOR`, `SCULK_SHRIEKER`, and any material whose name ends in `_PRESSURE_PLATE`. Markers are private viewer block displays, colored RGB `40, 220, 210` for sculk, `255, 220, 45` for tripwire and hooks, and `255, 70, 70` for everything else. Each scan samples at most `4096` blocks and shows at most `96` markers, and the stat counts only newly revealed blocks. Suppressed game events are `STEP`, `SWIM`, `FLAP`, `HIT_GROUND`, `ELYTRA_GLIDE`, `SPLASH`, `BOUNCE` where present, `TELEPORT`, `ENTITY_MOUNT`, and `ENTITY_DISMOUNT`. At max level suppression is unconditional and does not require sneaking. Below max level the effective chance is `mercyMaxChance * (level / maxLevel)` and it only applies while sneaking. The cached suppression state expires `1500` ms after its last refresh. Milestones: `challenge_stealth_trap_500` on `stealth.trap-sense.traps-revealed` at 500 (reward 400). `challenge_stealth_trap_5k` at 5000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -630,13 +650,13 @@ Revealed blocks are `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`
 | Cost factor | 0.85 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-assassinate.toml` |
 
-Menu stat lines: Executable Health Cap; Cooldown.
+Menu stat lines: Executable Health Cap. Cooldown.
 
 Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - replaces the damage with an execution
 
-Excludes players, anything implementing `Boss`, and `WARDEN`. Eligibility compares the target's maximum health against the level-scaled cap; the replaced damage is the target's current health at the moment of the hit. Milestones: `challenge_stealth_assassinate_50` on `stealth.assassinate.executions` at 50 (reward 500); `challenge_stealth_assassinate_500` at 500 (reward 2000).
+Excludes players, anything implementing `Boss`, and `WARDEN`. Eligibility compares the target's maximum health against the level-scaled cap. The replaced damage is the target's current health at the moment of the hit. Milestones: `challenge_stealth_assassinate_50` on `stealth.assassinate.executions` at 50 (reward 500). `challenge_stealth_assassinate_500` at 500 (reward 2000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -658,14 +678,14 @@ Excludes players, anything implementing `Boss`, and `WARDEN`. Eligibility compar
 | Cost factor | 0.5 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-decoy-swap.toml` |
 
-Menu stat lines: Swap Range; Cooldown.
+Menu stat lines: Swap Range. Cooldown.
 
 Listened events:
 
 - `PlayerToggleSneakEvent` (`MONITOR`) - detects the double tap and starts the swap
 - `PlayerQuitEvent` (`MONITOR`) - clears double-tap and cooldown state
 
-Requires Shadow Decoy learned and an active decoy. Both teleports run asynchronously; if the second leg fails the decoy is rolled back to where it started and no cooldown or XP is charged. The swap is refused when the decoy is in a different world or outside the swap range. Milestones: `challenge_stealth_decoy_swap_100` on `stealth.decoy-swap.swaps` at 100 (reward 400); `challenge_stealth_decoy_swap_1k` at 1000 (reward 1500).
+Requires Shadow Decoy learned and an active decoy. Both teleports run asynchronously. If the second leg fails the decoy is rolled back to where it started and no cooldown or XP is charged. The swap is refused when the decoy is in a different world or outside the swap range. Milestones: `challenge_stealth_decoy_swap_100` on `stealth.decoy-swap.swaps` at 100 (reward 400). `challenge_stealth_decoy_swap_1k` at 1000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -688,13 +708,14 @@ Requires Shadow Decoy learned and an active decoy. Both teleports run asynchrono
 | Cost factor | 0.35 |
 | Config file | `plugins/Adapt/adapt/adaptations/stealth-umbral-recovery.toml` |
 
-Menu stat lines: Hunger Refund; Invisibility Extension.
+Menu stat lines: Hunger Refund. Invisibility Extension.
 
 Listened events:
 
 - `EntityDeathEvent` (`MONITOR`) - runs the recovery when the killer was sneaking
 
-Hunger is only refunded if the player is below 20 food, and saturation is raised by the same amount but never above the new food level. Invisibility is only extended if an Invisibility effect is already active and the extension would actually raise its duration. If neither applies, no stat and no XP are granted. Milestones: `challenge_stealth_umbral_200` on `stealth.umbral-recovery.recoveries` at 200 (reward 400); `challenge_stealth_umbral_2k` at 2000 (reward 1500).
+Hunger is only refunded if the player is below 20 food. Saturation is raised by
+the same amount but never above the new food level. Invisibility is only extended if an Invisibility effect is already active and the extension would actually raise its duration. If neither applies, no stat and no XP are granted. Milestones: `challenge_stealth_umbral_200` on `stealth.umbral-recovery.recoveries` at 200 (reward 400). `challenge_stealth_umbral_2k` at 2000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

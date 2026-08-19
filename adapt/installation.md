@@ -2,7 +2,7 @@
 title: Adapt — Installation
 description: Requirements and setup for Adapt
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: adapt, installation
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,14 +15,13 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | Server software | Paper or a Paper fork |
 | Optional integrations | PlaceholderAPI, WorldGuard, Factions, ChestProtect, Residence |
 
-All integrations are `softdepend` — Adapt runs without any of them. When present, Adapt
-respects region and claim protection so abilities do not bypass them.
+All integrations are `softdepend`. Adapt runs without any of them. When they are present, Adapt respects region and claim protection. Abilities do not bypass them.
 
 ## Install
 
-1. Drop `Adapt-x.x.x.jar` into `plugins/`.
+1. Copy `Adapt-x.x.x.jar` into `plugins/`.
 2. Restart the server.
-3. Configs are written to `plugins/Adapt/` on first run.
+3. Adapt writes configs to `plugins/Adapt/` on first run.
 
 ## First steps
 
@@ -40,8 +39,7 @@ Adapt writes one config per skill and per adaptation. To reset:
 /adapt default all
 ```
 
-`/adapt default all` resets everything and archives the previous settings rather than
-deleting them.
+`/adapt default all` resets everything. It archives the previous settings. It does not delete them.
 
 If you upgrade across a version that changed the config schema, run:
 
@@ -49,7 +47,7 @@ If you upgrade across a version that changed the config schema, run:
 /adapt migrate-configs
 ```
 
-This rewrites all skill and adaptation configs to the canonical current format.
+This command rewrites all skill and adaptation configs to the canonical current format.
 
 ## Clearing player data
 
@@ -57,7 +55,7 @@ This rewrites all skill and adaptation configs to the canonical current format.
 /adapt clear xp | knowledge | adaptations | stats
 ```
 
-These operate across all skill lines. To remove a player entirely:
+These commands operate across all skill lines. To remove a player entirely:
 
 ```
 /adapt reset confirm <player>

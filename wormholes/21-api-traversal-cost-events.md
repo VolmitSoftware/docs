@@ -2,12 +2,17 @@
 title: "API - Traversal Cost & Events"
 description: "Wormholes documentation: API - Traversal Cost & Events"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`art.arcane.wormholes.api.traversal` lets another plugin price, charge for, or veto a portal traversal. It depends only on Bukkit types, `java.*`, and its own types (no VolmLib, Adventure, or shaded types on the compile surface). Descriptor and `apiJar` setup: [20 - API - Getting Started](/wormholes/20-api-getting-started).
+
+`art.arcane.wormholes.api.traversal` lets another plugin price, charge for, or
+veto a portal traversal. It depends only on Bukkit types, `java.*`, and its own
+types (no VolmLib, Adventure, or shaded types on the compile surface).
+Descriptor and `apiJar` setup:
+[20 - API - Getting Started](/wormholes/20-api-getting-started).
 
 | Goal | Use |
 |------|-----|
@@ -18,7 +23,9 @@ Events never move money. Only a registered `TraversalCostProvider` holds value.
 
 ## Dependency
 
-Same as [20 - API - Getting Started](/wormholes/20-api-getting-started): soft-depend Wormholes; Paper needs `join-classpath: true`; compile against `Wormholes-*-api.jar` with `compileOnly`.
+Same as [20 - API - Getting Started](/wormholes/20-api-getting-started).
+Soft-depend Wormholes. Paper needs `join-classpath: true`. Compile against
+`Wormholes-*-api.jar` with `compileOnly`.
 
 ## Lifecycle
 
@@ -35,31 +42,42 @@ reserve(context, quote) take value now → receipt
 
 Guarantees:
 
-- `quote` at most once per provider per traversal; never after another provider denied.
-- `reserve` only for `PAYABLE` quotes after every provider quoted without denying.
-- **All-or-nothing:** any reserve failure refunds already-reserved providers in reverse order; nobody pays.
-- Exactly one of `commit` or `refund` per receipt; first wins.
+- `quote` runs at most once per provider per traversal. It never runs after
+  another provider denied.
+- `reserve` runs only for `PAYABLE` quotes after every provider quoted without
+  denying.
+- **All-or-nothing:** any reserve failure refunds already-reserved providers in
+  reverse order. Nobody pays.
+- Exactly one of `commit` or `refund` runs per receipt. The first call wins.
 - **`commit` is final.** Refund after commit is a no-op and never reaches you.
-- Unresolved receipts older than 30s refund with `EXPIRED` (sweep at head of next traversal evaluation, at most once per second; idle servers wait until the next attempt or shutdown).
+- Unresolved receipts older than 30s refund with `EXPIRED`. The sweep runs at
+  the head of the next traversal evaluation, at most once per second. Idle
+  servers wait until the next attempt or shutdown.
 - Shutdown refunds unresolved receipts with `SERVER_SHUTDOWN`.
-- One in-flight traversal per player; a second attempt is refused before any provider (`DENIED_IN_PROGRESS`).
+- One in-flight traversal per player. A second attempt is refused before any
+  provider (`DENIED_IN_PROGRESS`).
 
 ## Threading
 
-`quote`, `reserve`, and `commit` run on the portal's region thread. Inventory/XP/location of the traveler are legal there.
+`quote`, `reserve`, and `commit` run on the portal's region thread. Inventory,
+XP, and location of the traveler are legal there.
 
 `refund` is the same thread except:
 
 - `EXPIRED` — region of whichever portal triggered the next evaluation
 - `SERVER_SHUTDOWN` — unload thread
 
-On those two paths the traveler may be on another region or offline: reverse against your own ledger only unless you hop to the player's entity scheduler (and handle refusal).
+On those two paths the traveler may be on another region or offline. Reverse
+against your own ledger only, unless you hop to the player entity scheduler and
+handle refusal.
 
-Do not block any of the four methods. Slow providers get a throttled warning; the decision is not changed.
+Do not block any of the four methods. Slow providers get a throttled warning.
+The decision is not changed.
 
 ## Worked example
 
-Receipt is opaque: `TraversalReceipt` has no abstract instance methods. Wormholes stores and returns the same instance and never calls into it.
+Receipt is opaque: `TraversalReceipt` has no abstract instance methods.
+Wormholes stores and returns the same instance and never calls into it.
 
 ```java
 import art.arcane.wormholes.api.traversal.TraversalContext;
@@ -157,13 +175,15 @@ Register in `onEnable`:
 ManaTravelCost.register(this, manaPool);
 ```
 
-Providers run highest `ServicePriority` first, then plugin name, then `providerId()`.
+Providers run highest `ServicePriority` first, then plugin name, then
+`providerId()`.
 
-`reserve` receives the same `TraversalQuote` instance your `quote` returned (`amount()` / `unit()` available if set via `withPrice`).
+`reserve` receives the same `TraversalQuote` instance your `quote` returned
+(`amount()` / `unit()` available if set via `withPrice`).
 
 ### Pure veto
 
-`TraversalCostProvider` is a functional interface; only `quote` is required:
+`TraversalCostProvider` is a functional interface. Only `quote` is required:
 
 ```java
 getServer().getServicesManager().register(TraversalCostProvider.class,
@@ -173,7 +193,9 @@ getServer().getServicesManager().register(TraversalCostProvider.class,
     this, ServicePriority.Normal);
 ```
 
-If you charge, implement `providerId()`. Default is the class name (unstable for lambdas); Wormholes logs a warning and still uses the generated name within a run.
+If you charge, implement `providerId()`. Default is the class name (unstable for
+lambdas). Wormholes logs a warning and still uses the generated name within a
+run.
 
 ## TraversalContext
 
@@ -188,13 +210,19 @@ public record TraversalContext(
 | `traversalId` | Unique per attempt |
 | `kind` | `LOCAL`, `CROSS_SERVER`, `RANDOM_TELEPORT`, `DIMENSIONAL_DOOR` |
 | `traveler` | Live `Player` |
-| `portalId` / `portalName` | Entered portal (door for dimensional door); name sanitised, empty if unnamed |
-| `origin` | Entry location; fresh clone every read |
-| `destination` | Present when known; empty for RTP at quote time |
+| `portalId` / `portalName` | Entered portal (door for dimensional door). Name sanitized, empty if unnamed |
+| `origin` | Entry location. Fresh clone every read |
+| `destination` | Present when known. Empty for RTP at quote time |
 
-`TraversalDestination.sameServer()` is false for cross-server; `serverName()` names the peer; `location()` is empty when remote and returns a defensive clone when present. `TraversalContext.origin()` also returns a defensive clone. Static factories on context/destination exist for Wormholes and unit tests. Only players are gated; minecarts, mobs, and items never reach providers.
+`TraversalDestination.sameServer()` is false for cross-server. `serverName()`
+names the peer. `location()` is empty when remote and returns a defensive clone
+when present. `TraversalContext.origin()` also returns a defensive clone. Static
+factories on context/destination exist for Wormholes and unit tests. Only
+players are gated. Minecarts, mobs, and items never reach providers.
 
-`TraversalDecision` is not passed to providers or events. `TraversalReceipt.SimpleReceipt` is only for receipts you create via `TraversalReceipt.of(label)`.
+`TraversalDecision` is not passed to providers or events.
+`TraversalReceipt.SimpleReceipt` is only for receipts you create via
+`TraversalReceipt.of(label)`.
 
 ## Events
 
@@ -213,42 +241,54 @@ public void onTraversed(WormholesPortalTraversedEvent event) {
 }
 ```
 
-- `WormholesPortalTraverseEvent`: before any quote; cancel is free; portal region thread; no blocking.
-- `WormholesPortalTraversedEvent`: after commit; traveler entity scheduler; dropped with a warning if the scheduler refuses; not a ledger of record.
-- Both extend `org.bukkit.event.Event` with their own `HandlerList`. Not async. Not dispatched with zero listeners. Neither fires when `traversal-api-enabled` is false.
+- `WormholesPortalTraverseEvent`: before any quote. Cancel is free. Portal
+  region thread. No blocking.
+- `WormholesPortalTraversedEvent`: after commit. Traveler entity scheduler.
+  Dropped with a warning if the scheduler refuses. Not a ledger of record.
+- Both extend `org.bukkit.event.Event` with their own `HandlerList`. Not async.
+  Not dispatched with zero listeners. Neither fires when `traversal-api-enabled`
+  is false.
 
 ## Hostile-provider policy
 
-| Misbehaviour | Response |
+| Misbehavior | Response |
 |--------------|----------|
-| `quote` throws or null | Fault logged (stack if throw); treated as refusal to charge |
-| `reserve` throws or null | Reverse-order refund of prior reserves; nobody pays |
+| `quote` throws or null | Fault is logged (stack if throw). Treated as a refusal to charge |
+| `reserve` throws or null | Reverse-order refund of prior reserves. Nobody pays |
 | Receipt `toString`/`equals`/`hashCode` throws | Irrelevant — never called |
-| `reserve` returns `failed(reason)` | Not a fault; rollback then deny with your reason |
-| `commit` throws | Logged; trip not undone |
-| `refund` throws | Logged; rollback continues |
+| `reserve` returns `failed(reason)` | Not a fault. Rollback then deny with your reason |
+| `commit` throws | Logged. The trip is not undone |
+| `refund` throws | Logged. Rollback continues |
 | Repeated faults | Quarantine until re-register |
-| Slow call | Throttled warning; outcome unchanged |
+| Slow call | Throttled warning. Outcome unchanged |
 | Blank/`providerId` throws | Registration ignored |
 | Duplicate `providerId` | Higher priority kept |
 | Same instance twice | Collapsed to higher priority |
 | Nested traversal from inside pipeline | `DENIED_REENTRANT` |
-| Your plugin disabled mid-flight | No further quotes; still `refund` held receipts |
+| Your plugin disabled mid-flight | No further quotes. Still `refund` held receipts |
 
-`amount()` / `unit()` on quotes are display-only. Third-party text (descriptions, reasons, cancel reasons, receipt labels) is truncated to 128 chars, control characters flattened, whitespace stripped at construction.
+`amount()` / `unit()` on quotes are display-only. Third-party text
+(descriptions, reasons, cancel reasons, receipt labels) is truncated to 128
+chars. Control characters are flattened. Whitespace is stripped at
+construction.
 
-`withPrice` rejects negative amounts. `TraversalReservation.reserved` requires a non-null receipt; nullable optionals are normalized to empty by the context and destination records, while the required traversal ID, kind, traveler, portal ID, and origin reject null.
+`withPrice` rejects negative amounts. `TraversalReservation.reserved` requires a
+non-null receipt. The context and destination records normalize nullable
+optionals to empty. The required traversal ID, kind, traveler, portal ID, and
+origin reject null.
 
 ### Configuration (`config/wormholes.toml` `[main]`)
 
 | Key | Default | Meaning |
 |-----|---------|---------|
-| `traversal-api-enabled` | `true` | Master switch; false → no providers, no events |
-| `traversal-api-provider-failure-policy` | `allow` | `allow` = fault → free pass; `deny` = fault closes portal |
-| `traversal-api-provider-fault-limit` | `5` | Quarantine on Nth fault; `0` disables; clamped 0–1000 |
-| `traversal-api-slow-provider-millis` | `5` | Warn threshold; `0` disables; clamped 0–60000 |
+| `traversal-api-enabled` | `true` | Master switch. When false, no providers and no events |
+| `traversal-api-provider-failure-policy` | `allow` | `allow` = fault becomes a free pass. `deny` = fault closes the portal |
+| `traversal-api-provider-fault-limit` | `5` | Quarantine on Nth fault. `0` disables. Clamped 0–1000 |
+| `traversal-api-slow-provider-millis` | `5` | Warn threshold. `0` disables. Clamped 0–60000 |
 
-Default is fail-open on faults only. Deliberate `DENIED` / `INSUFFICIENT` always deny. Quarantine is in-memory per registration; unregister/re-register clears it; nothing persists across restart.
+Default is fail-open on faults only. Deliberate `DENIED` / `INSUFFICIENT` always
+deny. Quarantine is in-memory per registration. Unregister then re-register
+clears it. Nothing persists across restart.
 
 ## Enums (always use `default` in switch expressions)
 
@@ -256,7 +296,8 @@ Default is fail-open on faults only. Deliberate `DENIED` / `INSUFFICIENT` always
 
 `TraversalQuoteStatus`: `PASS`, `PAYABLE`, `INSUFFICIENT`, `DENIED` (no `FREE`).
 
-`TraversalReservationStatus`: `RESERVED`, `FAILED` (use factories; `RESERVED` without receipt throws).
+`TraversalReservationStatus`: `RESERVED`, `FAILED` (use factories. `RESERVED`
+without receipt throws).
 
 `TraversalRefundReason` (all reach `refund`):
 
@@ -278,7 +319,7 @@ Default is fail-open on faults only. Deliberate `DENIED` / `INSUFFICIENT` always
 
 | Constant | allowed | Meaning |
 |----------|---------|---------|
-| `DISABLED` | true | API off; no provider ran |
+| `DISABLED` | true | API off. No provider ran |
 | `ALLOWED_FREE` | true | Nobody charged |
 | `ALLOWED_CHARGED` | true | At least one reserved |
 | `ALLOWED_PROVIDER_FAILED` | true | Fault under `allow` policy |
@@ -289,4 +330,6 @@ Default is fail-open on faults only. Deliberate `DENIED` / `INSUFFICIENT` always
 | `DENIED_IN_PROGRESS` | false | Traveler already in flight |
 | `DENIED_REENTRANT` | false | Nested pipeline attempt |
 
-`WormholesPortalTraversedEvent.getOutcome()` is only `ALLOWED_FREE`, `ALLOWED_CHARGED`, or `ALLOWED_PROVIDER_FAILED`. **No denial event.** Observe denials from your `quote` and from `WormholesPortalTraverseEvent`.
+`WormholesPortalTraversedEvent.getOutcome()` is only `ALLOWED_FREE`,
+`ALLOWED_CHARGED`, or `ALLOWED_PROVIDER_FAILED`. **No denial event.** Observe
+denials from your `quote` and from `WormholesPortalTraverseEvent`.

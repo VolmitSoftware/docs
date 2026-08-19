@@ -2,14 +2,21 @@
 title: "API - Metrics & Integration Contract"
 description: "Wormholes documentation: API - Metrics & Integration Contract"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Wormholes registers VolmLib `art.arcane.volmlib.integration.IntegrationServiceContract` with Bukkit `ServicesManager` at `ServicePriority.Normal`. React and other monitors sample Wormholes without either plugin hard-depending on the other. Handshake, heartbeat, and sample shapes are defined by VolmLib; this page records what Wormholes contributes.
 
-Descriptor / soft-depend notes for Wormholes itself: [20 - API - Getting Started](/wormholes/20-api-getting-started). Soft depends and operator integrations: [15 - Integrations](/wormholes/15-integrations).
+Wormholes registers VolmLib
+`art.arcane.volmlib.integration.IntegrationServiceContract` with Bukkit
+`ServicesManager` at `ServicePriority.Normal`. React and other monitors sample
+Wormholes with no hard dependency either way. Handshake, heartbeat, and sample
+shapes come from VolmLib. This page records what Wormholes contributes.
+
+Descriptor / soft-depend notes for Wormholes itself:
+[20 - API - Getting Started](/wormholes/20-api-getting-started). Soft depends
+and operator integrations: [15 - Integrations](/wormholes/15-integrations).
 
 ## Contract identity
 
@@ -20,7 +27,12 @@ Descriptor / soft-depend notes for Wormholes itself: [20 - API - Getting Started
 | Capabilities | `handshake`, `heartbeat`, `metrics`, `wormholes-projection-metrics` |
 | Priority | `ServicePriority.Normal` |
 
-The contract type ships in **VolmLib**, not in `Wormholes-*-api.jar`. Consumers need VolmLib as `compileOnly` and must share the same runtime class identity as the registered service, normally through Paper dependency classpath joining. Bundling another unrelocated copy does not make typed `ServicesManager` lookup cross classloaders. React additionally scans registrations through its reflective adapter, but ordinary consumers do not receive that behavior automatically.
+The contract type ships in **VolmLib**, not in `Wormholes-*-api.jar`. Consumers
+need VolmLib as `compileOnly`. They must share the same runtime class identity
+as the registered service. That is normally through Paper dependency classpath
+joining. Bundling another unrelocated copy does not make typed `ServicesManager`
+lookup cross classloaders. React also scans registrations through its reflective
+adapter. Ordinary consumers do not get that behavior automatically.
 
 ## Acquire, handshake, and sample
 
@@ -67,18 +79,28 @@ for (RegisteredServiceProvider<IntegrationServiceContract> registration : regist
 }
 ```
 
-Acquire after both plugins enable, repeat discovery when service registrations change, and stop using a provider after its registration disappears. A successful handshake negotiates the highest shared protocol; the heartbeat reports that negotiated protocol and current health. A sample with `available() == false` has no numeric value and carries the reason in `message()`.
+Acquire after both plugins enable. Repeat discovery when service registrations
+change. Stop using a provider after its registration disappears. A successful
+handshake negotiates the highest shared protocol. The heartbeat reports that
+negotiated protocol and current health. A sample with `available() == false` has
+no numeric value and carries the reason in `message()`.
 
 ## Sampling
 
-- `sampleMetrics(keys)` with null/empty keys returns every Wormholes key from `IntegrationMetricSchema.wormholesKeys()`.
-- Unknown keys return `IntegrationMetricSample.unavailable` with reason `unsupported-key`.
-- Answers come from volatile counters, immutable snapshots, and concurrent structures. Sampling does not touch entities, blocks, or chunks.
-- Rate-derived samples (bytes/s, drops/s, replicated blocks/s) recompute at most once per second behind a short lock; faster sampling returns the previous rate.
+- `sampleMetrics(keys)` with null/empty keys returns every Wormholes key from
+  `IntegrationMetricSchema.wormholesKeys()`.
+- Unknown keys return `IntegrationMetricSample.unavailable` with reason
+  `unsupported-key`.
+- Answers come from volatile counters, immutable snapshots, and concurrent
+  structures. Sampling does not touch entities, blocks, or chunks.
+- Rate-derived samples (bytes/s, drops/s, replicated blocks/s) recompute at most
+  once per second behind a short lock. Faster sampling returns the previous
+  rate.
 
 ## Unavailable vs zero
 
-When a backing subsystem is not started, Wormholes returns **unavailable** with a reason string — not a numeric zero.
+When a backing subsystem is not started, Wormholes returns **unavailable** with
+a reason string — not a numeric zero.
 
 | Reason (examples) | Subsystem |
 |-------------------|-----------|
@@ -89,11 +111,13 @@ When a backing subsystem is not started, Wormholes returns **unavailable** with 
 | `traversal-service-not-ready` | Transfers in flight / failed |
 | `unsupported-key` | Key not owned by Wormholes schema |
 
-Treat unavailable as "no answer". Zero is a real measurement after the subsystem is up (e.g. zero connected peers while networking runs).
+Treat unavailable as "no answer". Zero is a real measurement after the subsystem
+is up (for example, zero connected peers while networking runs).
 
 ## Metric keys (`wormholes.*`)
 
-All keys begin with `wormholes.` and are declared in VolmLib `IntegrationMetricSchema`. Wormholes filters descriptors to that prefix.
+All keys begin with `wormholes.` and are declared in VolmLib
+`IntegrationMetricSchema`. Wormholes filters descriptors to that prefix.
 
 ### Portals
 
@@ -125,7 +149,7 @@ All keys begin with `wormholes.` and are declared in VolmLib `IntegrationMetricS
 
 | Key | Type / unit | Meaning |
 |-----|-------------|---------|
-| `wormholes.peers-connected` | int / servers | READY wire peers (`PeerConnection.State.READY`); same count as `%wormholes_peers.connected%` |
+| `wormholes.peers-connected` | int / servers | READY wire peers (`PeerConnection.State.READY`). Same count as `%wormholes_peers.connected%` |
 | `wormholes.peer-rtt-max-ms` | long / ms | Max RTT among connected peers |
 | `wormholes.wire-bytes-out-per-second` | double / bytes-per-second | Wire egress rate |
 | `wormholes.wire-bytes-in-per-second` | double / bytes-per-second | Wire ingress rate |
@@ -139,4 +163,8 @@ All keys begin with `wormholes.` and are declared in VolmLib `IntegrationMetricS
 
 ## Scoreboard alternative
 
-A subset of the same runtime facts is available as PlaceholderAPI strings without VolmLib compile deps — see [12 - PlaceholderAPI](/wormholes/12-placeholderapi) (`portals`, projections, peers, transfers, failures). Use the integration contract when you need typed numeric samples and domain tags for monitoring.
+A subset of the same runtime facts is available as PlaceholderAPI strings. That
+path needs no VolmLib compile dependency. See
+[12 - PlaceholderAPI](/wormholes/12-placeholderapi) (`portals`, projections,
+peers, transfers, failures). Use the integration contract when you need typed
+numeric samples and domain tags for monitoring.

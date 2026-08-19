@@ -2,7 +2,7 @@
 title: "BileTools — Commands & Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,8 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Commands
 
-Root command `/biletools`, aliases `bile`, `bi`, `b`, `volmit`, `vomit`, `vom`.
-Notation: `<required>`, `[optional]`.
+The root command is `/biletools`. The aliases are `bile`, `bi`, `b`, `volmit`,
+`vomit`, and `vom`. Notation: `<required>`, `[optional]`.
 
 | Command | Description |
 |---|---|
@@ -32,12 +32,13 @@ Notation: `<required>`, `[optional]`.
 | `library` | `plugin` | `*` | Omit or pass `*` to list everything |
 {.dense}
 
-> `/bile uninstall` deletes the jar from disk. With `archive-plugins: true` (the default) a
-> copy is archived first, but this is still a destructive filesystem operation.
+> `/bile uninstall` deletes the jar from disk. If `archive-plugins` is `true`
+> (the default), BileTools archives a copy first. This is still a destructive
+> filesystem operation.
 {.is-warning}
 
-Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and `watcher.only`
-filters. Those only govern automatic watcher-driven reloads.
+Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and
+`watcher.only` filters. Those filters control only automatic watcher reloads.
 
 ## Permissions
 
@@ -45,5 +46,5 @@ filters. Those only govern automatic watcher-driven reloads.
 |---|---|---|
 | `bile.use` | `op` | Gives access to BileTools |
 
-One node covers the entire command tree. There is no read-only subset, and no separate node
-for the destructive `uninstall` subcommand.
+One node covers the entire command tree. There is no read-only subset. There is
+no separate node for the destructive `uninstall` subcommand.

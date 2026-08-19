@@ -2,34 +2,34 @@
 title: "Skill - Axes"
 description: "Adapt documentation: Skill - Axes"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Axes is the woodcutting and axe-combat skill. You level it by breaking logs, wood, mushroom blocks and mangrove roots with an axe in your main hand, and by hitting things with an axe. It is the skill you live in if you spend your time clearing forests, and it doubles as a real melee tree for players who fight with an axe instead of a sword.
+Axes is the woodcutting and axe-combat skill. You level it by breaking logs, wood, mushroom blocks and mangrove roots with an axe in your main hand. You also level it by hitting things with an axe. It is the skill you live in if you spend your time clearing forests. It also works as a melee tree for players who fight with an axe instead of a sword.
 
-The woodcutting half is about doing more per swing. Axe Chop takes a stack of logs off a tree with a single right click. Wood-miner and Leaf-miner pull whole clusters of matching blocks in one break while you sneak. Drop-To-Inventory keeps the results out of the dirt. Lucy's Log-Swapper lets you trade one wood type for another at a crafting table so you are not hunting a biome for the color you want.
+The woodcutting half is about doing more per swing. Axe Chop takes a stack of logs off a tree with a single right click. Wood-miner and Leaf-miner pull whole clusters of matching blocks in one break while you sneak. Drop-To-Inventory keeps the results out of the dirt. Lucy's Log-Swapper lets you trade one wood type for another at a crafting table. You do not have to hunt a biome for the color you want.
 
-The combat half is a different feel. Throwing Axe turns your axe into a projectile that comes back to you once you max the adaptation. Cleave splashes damage into a cone. Sunder peels armor off whatever you keep hitting, Shield Splitter punishes anyone hiding behind a shield, and Bark Hide gives you absorption hearts just for working.
+The combat half is a different feel. Throwing Axe turns your axe into a projectile that comes back to you once you max the adaptation. Cleave splashes damage into a cone. Sunder peels armor off whatever you keep hitting. Shield Splitter punishes anyone hiding behind a shield. Bark Hide gives you absorption hearts just for working.
 
-Eleven adaptations always register. A twelfth, Iris Feller, registers only when Iris is installed, because it hands the whole tree over to the Iris tree-feller instead of breaking blocks itself.
+Eleven adaptations always register. A twelfth, Iris Feller, registers only when Iris is installed. It hands the whole tree over to the Iris tree-feller instead of breaking blocks itself.
 
 ## Earning XP
 
-Two things pay out. Breaking a log, wood, mushroom block, mangrove roots or muddy mangrove roots block with an axe pays XP based on that block's material value, plus its hardness and blast resistance up to the configured caps. Damaging a living entity while holding an axe pays XP scaled off the damage you dealt.
+Two things pay out. Breaking a log, wood, mushroom block, mangrove roots or muddy mangrove roots block with an axe pays XP. The payout is based on that block's material value, plus its hardness and blast resistance up to the configured caps. Damaging a living entity while holding an axe pays XP scaled off the damage you dealt.
 
-Both share one cooldown, so rapid-fire breaks and hits do not each pay out. Blocks with zero hardness are worth nothing, and blocks that Adapt's XP provenance system has already paid for do not pay again.
+Both share one cooldown. Rapid-fire breaks and hits do not each pay out. Blocks with zero hardness are worth nothing. Blocks that Adapt's XP provenance system has already paid for do not pay again.
 
-Breaking leaves with an axe only bumps the `axes.leaves` stat, which drives the leaf challenges. Leaves are not log-type blocks, so they never reach the XP branch, and `leavesMultiplier` has no effect on what you actually earn with the shipped code.
+Breaking leaves with an axe only bumps the `axes.leaves` stat, which drives the leaf challenges. Leaves are not log-type blocks, so they never reach the XP branch. `leavesMultiplier` has no effect on what you actually earn with the shipped code.
 
 ## Adaptations
 
-All of these need the same things before they do anything: the adaptation learned at level 1 or higher, the Axes skill and the adaptation both enabled, the player holding the matching `adapt.use.` permission (or the `adapt.use.*` wildcard), and any protection or region plugin on the server allowing the action at that spot. Anything that breaks blocks routes each extra break through your own break action, so blocks in a claim you cannot build in do not break.
+All of these need the same things before they do anything. The adaptation is learned at level 1 or higher. The Axes skill and the adaptation are both enabled. The player holds the matching `adapt.use.` permission (or the `adapt.use.*` wildcard). Any protection or region plugin on the server allows the action at that spot. Anything that breaks blocks routes each extra break through your own break action. Blocks in a claim you cannot build in do not break.
 
 ### Axe Ground Smash (`axe-ground-smash`)
 
-Jump with an axe out, crouch in the air, and hit the ground: everything living around you takes damage and gets launched. Damage and force fall off toward the edge of the radius, so the middle of the crowd takes the worst of it. It is the crowd-control button for an axe build.
+Jump with an axe out, crouch in the air, and hit the ground. Everything living around you takes damage and gets launched. Damage and force fall off toward the edge of the radius. The middle of the crowd takes the worst of it. It is the crowd-control button for an axe build.
 
 How to use it:
 
@@ -43,7 +43,7 @@ Releasing sneak, or landing after the arm expires, cancels it. Each smash starts
 
 ### Axe Chop (`axe-chop`)
 
-Right-click the bottom log of a tree and Adapt strips the topmost log off the column above the block you clicked. It repeats once per adaptation level, so a level 3 chop takes three logs per click. Every log costs the axe durability and puts a short cooldown on that item type, and the cooldown and wear both shrink as you level.
+Right-click the bottom log of a tree. Adapt strips the topmost log off the column above the block you clicked. It repeats once per adaptation level. A level 3 chop takes three logs per click. Every log costs the axe durability and puts a short cooldown on that item type. The cooldown and wear both shrink as you level.
 
 How to use it:
 
@@ -51,17 +51,17 @@ How to use it:
 2. Hold an axe in your main hand.
 3. Right-click a log.
 
-On Folia the click has to land directly on a block. An air click resolves its target by ray trace, and that ray can land in another region, so air clicks are ignored there.
+On Folia the click has to land directly on a block. An air click resolves its target by ray trace. That ray can land in another region. Air clicks are ignored there.
 
 ### Axe Drop-To-Inventory (`axe-drop-to-inventory`)
 
-Logs and leaves you break with an axe go straight into your inventory instead of landing on the ground. Each item still runs through the normal pickup path, so anything a protection plugin blocks stays where it fell. If your inventory fills up mid-break, the overflow drops at your feet and you get a fail sound. If another plugin has already cancelled and claimed the block-drop event, this adaptation leaves it alone instead of trying to transfer the same items again.
+Logs and leaves you break with an axe go straight into your inventory instead of landing on the ground. Each item still runs through the normal pickup path. Anything a protection plugin blocks stays where it fell. If your inventory fills up mid-break, the overflow drops at your feet and you get a fail sound. If another plugin has already cancelled and claimed the block-drop event, this adaptation leaves it alone. It does not try to transfer the same items again.
 
-Works on its own once learned. No gesture, no cooldown.
+Works on its own once learned. No gesture. No cooldown.
 
 ### Leaf-miner (`axe-leaf-veinminer`)
 
-Sneak and break a leaf block with an axe, and every connected leaf of the same type inside your range goes with it. Range is your level plus the base range, and the chain stops at the block cap. Mangrove roots and muddy mangrove roots count as leaves here.
+Sneak and break a leaf block with an axe. Every connected leaf of the same type inside your range goes with it. Range is your level plus the base range. The chain stops at the block cap. Mangrove roots and muddy mangrove roots count as leaves here.
 
 How to use it:
 
@@ -70,11 +70,11 @@ How to use it:
 3. Hold sneak.
 4. Break a leaf block.
 
-The chain runs one tick after the first leaf finishes breaking, and only if you are still holding an axe. Every extra leaf uses your own break action, so denied blocks stay put and do not count toward the stat. The extra leaves drop normally.
+The chain runs one tick after the first leaf finishes breaking. It only runs if you are still holding an axe. Every extra leaf uses your own break action. Denied blocks stay put and do not count toward the stat. The extra leaves drop normally.
 
 ### Iris Feller (`axe-iris-feller`)
 
-Only present when Iris is installed. Sneak-break a log that Iris recognizes as part of one of its trees and Iris erodes the whole tree outward for you. The run keeps going only while you keep sneaking and keep holding the same axe you started with, and only while you have hunger left to pay for the next log. Higher levels give a growing chance to skip the durability hit on each felled log.
+Only present when Iris is installed. Sneak-break a log that Iris recognizes as part of one of its trees. Iris erodes the whole tree outward for you. The run keeps going only while you keep sneaking and keep holding the same axe you started with. You also need hunger left to pay for the next log. Higher levels give a growing chance to skip the durability hit on each felled log.
 
 How to use it:
 
@@ -84,11 +84,11 @@ How to use it:
 4. Break a log that belongs to an Iris tree.
 5. Keep sneaking and keep that axe held while the tree comes down.
 
-Hunger is reserved before each log and only spent once that log actually comes out, so a refused break costs you nothing. Once Iris accepts the run, the activation cooldown starts.
+Hunger is reserved before each log and only spent once that log actually comes out. A refused break costs you nothing. Once Iris accepts the run, the activation cooldown starts.
 
 ### Wood-miner (`axe-wood-veinminer`)
 
-Sneak and break a log or wood block with an axe, and every matching block inside your range goes with it. Planks are not logs, so a plank wall is safe. Range is your level plus the base range, capped at the block limit. It stacks with Drop-To-Inventory.
+Sneak and break a log or wood block with an axe. Every matching block inside your range goes with it. Planks are not logs, so a plank wall is safe. Range is your level plus the base range, capped at the block limit. It stacks with Drop-To-Inventory.
 
 How to use it:
 
@@ -97,7 +97,7 @@ How to use it:
 3. Hold sneak.
 4. Break a log or wood block.
 
-Like Leaf-miner, the chain runs a tick later, uses your own break action for every extra block, and skips anything you are not allowed to break.
+Like Leaf-miner, the chain runs a tick later. It uses your own break action for every extra block. It skips anything you are not allowed to break.
 
 ### Lucy's Log-Swapper (`axe-logswap`)
 
@@ -110,11 +110,11 @@ How to use it:
 3. Place eight logs of one type plus one sapling of the type you want.
 4. Take the result.
 
-Cherry and pale oak recipes register only when the server's Minecraft version has those materials. This adaptation ships with `permanent` set to `true`, which means once you learn it you cannot unlearn it and get the knowledge back.
+Cherry and pale oak recipes register only when the server's Minecraft version has those materials. This adaptation ships with `permanent` set to `true`. Once you learn it you cannot unlearn it and get the knowledge back.
 
 ### Throwing Axe (`axe-throwing-axe`)
 
-Left-click the air and your axe leaves your hand as a spinning projectile that deals a fraction of its melee damage. It is a real throw: the axe comes out of your inventory. Below max level it lands on the ground where it hit, so you have to go pick it up. At max level it flies back to your hand instead.
+Left-click the air. Your axe leaves your hand as a spinning projectile that deals a fraction of its melee damage. It is a real throw. The axe comes out of your inventory. Below max level it lands on the ground where it hit, so you have to go pick it up. At max level it flies back to your hand instead.
 
 How to use it:
 
@@ -122,11 +122,11 @@ How to use it:
 2. Hold an axe in your main hand.
 3. Left-click the air.
 
-Each throw spends durability, starts a cooldown, and puts a matching item cooldown on that axe type. If the axe hits nothing, it is recovered automatically once its flight timer runs out. Left-clicking a block does not throw, and the swing that Minecraft emits right after an axe block break is filtered out so mining does not fling your tool.
+Each throw spends durability, starts a cooldown, and puts a matching item cooldown on that axe type. If the axe hits nothing, it is recovered automatically once its flight timer runs out. Left-clicking a block does not throw. The swing that Minecraft emits right after an axe block break is filtered out so mining does not fling your tool.
 
 ### Sunder (`axe-sunder`)
 
-Every axe hit strips armor and a share of armor toughness from the target, and the layers stack up to a cap. Each new hit refreshes the timer on the whole stack, so a target you keep working on gets softer and softer. Stop hitting and it wears off.
+Every axe hit strips armor and a share of armor toughness from the target. The layers stack up to a cap. Each new hit refreshes the timer on the whole stack. A target you keep working on gets softer and softer. Stop hitting and it wears off.
 
 Works on its own once learned. Just hit things with an axe.
 
@@ -134,17 +134,17 @@ Works on its own once learned. Just hit things with an axe.
 
 Your axe swings splash a share of the primary hit's damage onto other living things standing in a cone in front of you. The arc, reach and number of extra targets all grow with level. Each connect costs a point of axe durability.
 
-Works on its own once learned. Armor stands are skipped, and a target that was just cleaved is not double-hit by the same swing.
+Works on its own once learned. Armor stands are skipped. A target that was just cleaved is not double-hit by the same swing.
 
 ### Bark Hide (`axe-bark-hide`)
 
-Chopping logs with an axe layers on absorption hearts. Each log adds a stack, up to a level-scaled cap, and the stacks stick around for a grace period after your last chop. It turns a woodcutting trip into a small buffer of temporary health, which matters when a creeper finds you in the trees.
+Chopping logs with an axe layers on absorption hearts. Each log adds a stack, up to a level-scaled cap. The stacks stick around for a grace period after your last chop. A woodcutting trip becomes a small buffer of temporary health. That matters when a creeper finds you in the trees.
 
-Works on its own once learned. Dying clears the ceiling, and your next chop refills it.
+Works on its own once learned. Dying clears the ceiling. Your next chop refills it.
 
 ### Shield Splitter (`axe-shield-splitter`)
 
-Hitting someone who is actively blocking deals bonus damage and puts their shield on a much longer cooldown than a vanilla axe would. It also works against mobs that raise a shield.
+Hitting someone who is actively blocking deals bonus damage. It also puts their shield on a much longer cooldown than a vanilla axe would. It also works against mobs that raise a shield.
 
 Works on its own once learned.
 
@@ -216,7 +216,11 @@ Written to `plugins/Adapt/adapt/skills/axes.toml` on first load.
 | `challenge_axe_bark_hide_2500` | `axe.bark-hide.stacks-gained` | 2500 |
 | `challenge_axe_shield_splitter_250` | `axe.shield-splitter.shields-broken` | 250 |
 
-Three advancements are granted directly instead of by a stat threshold: `challenge_axe_chop_one_swing` when one Axe Chop click fells at least `maxLevel` logs, `challenge_axe_wood_vein_cascade` when one Wood-miner break takes 15 or more logs, and `challenge_axe_ground_smash_5` when one smash hits 5 or more targets.
+Three advancements are granted directly instead of by a stat threshold.
+`challenge_axe_chop_one_swing` fires when one Axe Chop click fells at least
+`maxLevel` logs. `challenge_axe_wood_vein_cascade` fires when one Wood-miner
+break takes 15 or more logs. `challenge_axe_ground_smash_5` fires when one smash
+hits 5 or more targets.
 
 Other stats tracked but not tied to a milestone: `axe.throwing-axe.thrown`. The `axes.blocks.value` stat is recorded from the raw material value, not the skill-adjusted value used for XP.
 
@@ -235,7 +239,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries the
 | `maxLevel` | per adaptation | Highest level a player can buy. |
 | `initialCost` | per adaptation | Knowledge cost of level 1. |
 
-The tick interval below is the adaptation's background tick rate. Only Cleave actually does work on that tick (it clears expired cleave marks); for every other Axes adaptation the interval is idle bookkeeping.
+The tick interval below is the adaptation's background tick rate. Only Cleave actually does work on that tick (it clears expired cleave marks). For every other Axes adaptation the interval is idle bookkeeping.
 
 ### Axe Ground Smash
 
@@ -341,7 +345,7 @@ Durability preservation chance is hard-coded per level, not configurable: level 
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
-| `hungerCost` | `2` | Hunger points reserved per log and spent only after that log actually comes out. Clamped to 0 through 20; 0 disables the cost. |
+| `hungerCost` | `2` | Hunger points reserved per log and spent only after that log actually comes out. Clamped to 0 through 20. 0 disables the cost. |
 | `cooldownSeconds` | `30` | Seconds before another fell can be accepted. 0 disables the cooldown. |
 
 ### Wood-miner

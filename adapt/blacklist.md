@@ -2,13 +2,13 @@
 title: Adapt — Blacklist Reference
 description: Complete list of Adapt skill and adaptation blacklist permission nodes
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: adapt, permissions
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Every node below defaults to `false`. Granting a node **disables** that skill or adaptation for the player. Skill-level nodes imply their child adaptation nodes.
+Every node below defaults to `false`. Grant of a node **disables** that skill or adaptation for the player. Skill-level nodes imply their child adaptation nodes.
 
 ### `adapt.blacklist.agility`
 

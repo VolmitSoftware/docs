@@ -2,16 +2,16 @@
 title: "Skill - Taming"
 description: "Adapt documentation: Skill - Taming"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Taming is the pet skill. You level it by taming animals, breeding them, and letting your pets fight for you, and the adaptations turn a wolf pack or a horse from a novelty into real support. Fourteen adaptations cover the whole arc: tougher and stronger pets, a recall so you stop losing them, damage sharing, item retrieval, focus-fire commands, and a last-second save when a pet is about to die.
+Taming is the pet skill. You level it by taming animals, breeding them, and letting your pets fight for you. The adaptations turn a wolf pack or a horse from a novelty into real support. Fourteen adaptations cover the whole arc. Pets get tougher and stronger. A recall stops you losing them. You get damage sharing, item retrieval, focus-fire commands, and a last-second save when a pet is about to die.
 
-Early on the skill mostly rewards the things you already do. Tame a cat, breed some horses, let a wolf finish a skeleton, and XP comes in. Later the pack starts doing work you would otherwise do yourself: wolves walk over and pick up your drops, pets body-block arrows, and a bone in your hand becomes a "kill that" button.
+Early on the skill mostly rewards the things you already do. Tame a cat. Breed some horses. Let a wolf finish a skeleton. XP comes in. Later the pack starts doing work you would otherwise do yourself. Wolves walk over and pick up your drops. Pets body-block arrows. A bone in your hand becomes a "kill that" button.
 
-Mounted play is part of the skill too. Mounted Tactics changes how horses, striders, and pigs handle and hit, so riding is a real combat style instead of just travel.
+Mounted play is part of the skill too. Mounted Tactics changes how horses, striders, and pigs handle and hit. Riding is a real combat style instead of just travel.
 
 Most of the pack adaptations are passive and stack quietly. Only three ask for a gesture: Beast Recall (lead), Alpha's Command (bone), and Wild Empathy (the animal's normal taming food).
 
@@ -22,15 +22,22 @@ Most of the pack adaptations are passive and stack quietly. Only three ask for a
 - A tamed pet damaging something pays damage times `tameDamageXPMultiplier` and adds the raw damage to `taming.pet.damage`.
 - A mob killed by your pet pays `petKillXP` and counts toward `taming.pet.kills`. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
 
-Breeding XP and pet damage XP share one cooldown of `cooldownDelay` milliseconds, so a long fight or a breeding spree pays on a steady drip rather than per event. Tame and pet-kill XP have no such cooldown.
+Breeding XP and pet damage XP share one cooldown of `cooldownDelay`
+milliseconds. A long fight or a breeding spree pays on a steady drip rather than
+per event. Tame and pet-kill XP have no such cooldown.
 
 ## Adaptations
 
-Everything below needs the same four things before it does anything: the adaptation learned at level 1 or higher, the Taming skill and that adaptation both enabled in config, the `adapt.use` permission for it, and any protection or region plugin allowing the action at that spot. Learn adaptations from the Adapt menu (`/adapt`), under Taming.
+Everything below needs the same four things before it does anything. You must
+learn the adaptation to level 1 or higher. The Taming skill and that adaptation
+must both be enabled in config. You need the `adapt.use` permission for it. Any
+protection or region plugin must allow the action at that spot. Learn adaptations from the Adapt menu (`/adapt`), under Taming.
 
 ### Tame Health (`tame-health`)
 
-Every animal you own gets a large percentage boost to its maximum health, applied as a transient attribute modifier that is refreshed while you are online and stripped when ownership ends. Good first pick, because a dead wolf does no damage.
+Every animal you own gets a large percentage boost to its maximum health. That
+boost is a transient attribute modifier. It is refreshed while you are online
+and stripped when ownership ends. Good first pick, because a dead wolf does no damage.
 
 ### Tame Damage (`tame-damage`)
 
@@ -63,7 +70,8 @@ Some of the damage aimed at you is split across nearby pets instead. The split n
 
 ### Mounted Tactics (`tame-mounted-tactics`)
 
-Riding gets better in several ways at once. You deal more damage and take less while mounted on a horse, strider, or pig. Horses gain speed and jump strength, striders gain speed and stop shivering over lava (and you get fire resistance while riding one), and pigs give you resistance. Sprinting on a horse or a pig also adds a forward shove, so the mount actually feels like it is charging.
+Riding gets better in several ways at once. You deal more damage and take less while mounted on a horse, strider, or pig. Horses gain speed and jump strength. Striders gain speed and stop shivering over
+lava. You get fire resistance while riding a strider. Pigs give you resistance. Sprinting on a horse or a pig also adds a forward shove, so the mount actually feels like it is charging.
 
 How to use it:
 
@@ -74,7 +82,7 @@ How to use it:
 
 ### Fetch (`tame-fetch`)
 
-Your idle tamed wolves physically collect dropped items around you. A wolf must path to the drop, get within 1.5 blocks, pick it up, path back within 2 blocks of you, and then drop the carried stack at its own position. Fetch never teleports an item to you; if no eligible wolf can reach it, the item stays where it is.
+Your idle tamed wolves physically collect dropped items around you. A wolf must path to the drop, get within 1.5 blocks, and pick it up. Then it paths back within 2 blocks of you and drops the carried stack at its own position. Fetch never teleports an item to you. If no eligible wolf can reach it, the item stays where it is.
 
 How to use it:
 
@@ -83,11 +91,12 @@ How to use it:
 3. Drop items or walk near loose drops.
 4. Wolves work automatically on their own pass, subject to the carry chance roll.
 
-A fetched item goes through the normal pickup event as if you had walked over it, so a protection plugin that would block your pickup blocks the fetch too. The source of the drop does not matter, so another player may throw the item, but a wolf still has to complete the physical trip. On Folia, wolf and item scans only run when the area belongs to the current region. On a platform without Paper's pathfinder API, Fetch leaves drops alone rather than silently falling back to teleportation.
+A fetched item goes through the normal pickup event as if you had walked over
+it. A protection plugin that would block your pickup blocks the fetch too. The source of the drop does not matter, so another player may throw the item, but a wolf still has to complete the physical trip. On Folia, wolf and item scans only run when the area belongs to the current region. On a platform without Paper's pathfinder API, Fetch leaves drops alone rather than silently falling back to teleportation.
 
 ### Alpha's Command (`tame-alphas-command`)
 
-Marks a target and sends every nearby combat pet at it. Only wolves, cats, and llamas answer the call. Commanded pets are stood up if they were sitting, given a short attack damage and movement speed buff, and kept on the target until the focus runs out, the target dies, or the target stops being a legal thing for you to hit.
+Marks a target and sends every nearby combat pet at it. Only wolves, cats, and llamas answer the call. Commanded pets are stood up if they were sitting. They get a short attack damage and movement speed buff. They stay on the target until the focus runs out, the target dies, or the target stops being a legal thing for you to hit.
 
 How to use it:
 
@@ -100,7 +109,8 @@ Each successful command eats one bone (not in creative) and has its own cooldown
 
 ### Guardian Instinct (`tame-guardian-instinct`)
 
-An arrow headed for you can be intercepted by a nearby pet, which leaps at you and eats the shot at reduced damage while your hit is cancelled outright. It rolls per projectile, and a short cooldown stops one pet from soaking an entire barrage.
+An arrow headed for you can be intercepted by a nearby pet. The pet leaps at you
+and eats the shot at reduced damage. Your hit is cancelled outright. It rolls per projectile, and a short cooldown stops one pet from soaking an entire barrage.
 
 ### Stable Hand (`tame-stable-hand`)
 
@@ -121,7 +131,8 @@ The anger half applies to wolves, bees, polar bears, llamas, pandas, and goats a
 
 ### Battle Bond (`tame-battle-bond`)
 
-When one of your pets lands a kill, you and every owned pet nearby get speed, regeneration, and strength for a few seconds, and the bonded pets briefly glow. It turns a pack fight into a snowball as long as kills keep coming.
+When one of your pets lands a kill, you and every owned pet nearby get speed,
+regeneration, and strength for a few seconds. The bonded pets briefly glow. It turns a pack fight into a snowball as long as kills keep coming.
 
 ### Last Breath (`tame-last-breath`)
 
@@ -179,7 +190,9 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carrie
 
 Level scaling below uses "level percent", which is the learned level divided by the adaptation's max level (0 to 1).
 
-Every adaptation carries a tick interval because every adaptation is registered with the scheduler, but only Tame Health, Tame Damage, Tame Regeneration, Pack Leader Aura, Mounted Tactics, and Fetch actually run work on that tick. The rest are event-driven and their interval is inert.
+Every adaptation carries a tick interval because every adaptation is registered
+with the scheduler. Only Tame Health, Tame Damage, Tame Regeneration, Pack
+Leader Aura, Mounted Tactics, and Fetch actually run work on that tick. The rest are event-driven and their interval is inert.
 
 ### Tame Health
 
@@ -280,7 +293,7 @@ Milestone: `challenge_taming_pack_72k` on `taming.pack-leader.buffed-ticks` at 7
 |-----|--------------|------------------|
 | `radiusBase` | `8` | Aura radius in blocks at level percent 0. |
 | `radiusFactor` | `14` | Extra aura radius in blocks at full level percent. |
-| `maxAmplifier` | `2` | Highest potion amplifier the aura can reach; the applied amplifier is level percent times this, rounded down. |
+| `maxAmplifier` | `2` | Highest potion amplifier the aura can reach. The applied amplifier is level percent times this, rounded down. |
 | `effectTicks` | `80` | Duration in ticks of each speed and regeneration reapplication. |
 | `maxOwnersPerPass` | `16` | Owners refreshed per scheduler tick, hard-capped at 16. |
 | `maxTameablesPerPass` | `48` | Indexed tameables examined per scheduler tick, hard-capped at 48. |
@@ -298,7 +311,7 @@ Milestone: `challenge_taming_pack_72k` on `taming.pack-leader.buffed-ticks` at 7
 | Tick interval (ms) | 2200 |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-beast-recall.toml` |
 
-Listened events: `PlayerInteractEvent` (sneak plus right-click with a lead in the main hand; the handler also receives cancelled events).
+Listened events: `PlayerInteractEvent` (sneak plus right-click with a lead in the main hand. The handler also receives cancelled events).
 
 Menu lore: "Recall Radius", "Recall Cooldown", and "Hunger cost per recall" when `hungerCost` is above 0.
 
@@ -312,9 +325,9 @@ Milestones: `challenge_taming_recall_100` and `challenge_taming_recall_1k` on `t
 | `cooldownTicksBase` | `420` | Lead item cooldown in ticks at level percent 0. |
 | `cooldownTicksFactor` | `280` | Ticks removed from that cooldown at full level percent, with a floor of 40 ticks. |
 | `xpOnRecall` | `26` | Taming XP paid per successful recall. |
-| `hungerCost` | `2` | Food points consumed per recall; 0 disables the cost. |
+| `hungerCost` | `2` | Food points consumed per recall. 0 disables the cost. |
 | `maxCandidatesPerActivation` | `16` | Nearby tameables inspected per recall, hard-capped at 32. |
-| `maxAffectedPerActivation` | `1` | Pets recalled per activation, hard-capped at 1; 0 disables the effect. |
+| `maxAffectedPerActivation` | `1` | Pets recalled per activation, hard-capped at 1. 0 disables the effect. |
 
 ### Shared Pain
 
@@ -416,7 +429,9 @@ Menu lore: "Fetch Range", "Carry Chance".
 
 Milestones: `challenge_taming_fetch_1k` and `challenge_taming_fetch_10k` on `taming.fetch.items-fetched` at 1000 (reward 400) and 10000 (reward 1500).
 
-Hard limits in code: pickup range 1.5 blocks, delivery range 2 blocks, and a fetch is abandoned if the wolf ends up more than 11 blocks from you, because vanilla yanks pets back at that distance. An aborted job returns any already-carried stack at the safest available owner or wolf location.
+Hard limits in code follow. Pickup range is 1.5 blocks. Delivery range is 2
+blocks. A fetch is abandoned if the wolf ends up more than 11 blocks from you.
+Vanilla yanks pets back at that distance. An aborted job returns any already-carried stack at the safest available owner or wolf location.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -430,7 +445,7 @@ Hard limits in code: pickup range 1.5 blocks, delivery range 2 blocks, and a fet
 | `maxWolves` | `6` | Eligible idle wolves used around the owner, hard-capped at 12. |
 | `maxCarryPerTick` | `4` | Drops handled per owner per pass, hard-capped at 8. |
 | `fetchWalkSpeed` | `1.15` | Pathfinding speed multiplier while walking a fetch, clamped to 0.1 - 4.0. |
-| `pathfindRadius` | `9.0` | Farthest drop a wolf may physically fetch, in blocks, clamped internally to 11; farther drops remain untouched. |
+| `pathfindRadius` | `9.0` | Farthest drop a wolf may physically fetch, in blocks, clamped internally to 11. Farther drops remain untouched. |
 | `fetchDeadlineMillis` | `9000` | Milliseconds a walked fetch may run before it is abandoned, clamped to 1000 - 60000. |
 | `maintenanceIntervalTicks` | `5` | Ticks between re-issuing the wolf its path, clamped to 1 - 20. |
 
@@ -444,10 +459,13 @@ Hard limits in code: pickup range 1.5 blocks, delivery range 2 blocks, and a fet
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-alphas-command.toml` |
 
-Listened events: `PlayerInteractEvent` (sneak plus left-click with a bone, raycast for the target), `EntityDamageByEntityEvent` (sneak melee with a bone, which cancels the hit and commands instead), `PlayerQuitEvent` (clears glow and focus state).
+Listened events follow. `PlayerInteractEvent` handles sneak plus left-click with
+a bone and raycasts for the target. `EntityDamageByEntityEvent` handles sneak
+melee with a bone, which cancels the hit and commands instead. `PlayerQuitEvent`
+clears glow and focus state.
 
 Menu lore: "Command Range", "Focus Duration".
 
@@ -476,7 +494,7 @@ Focus is re-asserted every 10 ticks and revalidated against PVP/PVE policy each 
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-guardian-instinct.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (projectile damage to the owner only).
@@ -509,7 +527,7 @@ Milestones: `challenge_taming_guardian_250` and `challenge_taming_guardian_2500`
 | Initial knowledge cost | 3 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.5 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-stable-hand.toml` |
 
 Listened events: `EntityTameEvent` (applies the bias to the tamed animal), `EntityBreedEvent` (applies it to the offspring one tick later).
@@ -518,7 +536,8 @@ Menu lore: "Attribute Bias", "Safe Fall Blocks".
 
 Milestones: `challenge_taming_stable_100` and `challenge_taming_stable_1k` on `taming.stable-hand.animals-shaped` at 100 (reward 400) and 1000 (reward 1500).
 
-The bias is applied as a scalar to movement speed, jump strength, and max health, and as a flat block bonus to safe fall distance equal to bias x 10.
+The bias is applied as a scalar to movement speed, jump strength, and max
+health. It is also a flat block bonus to safe fall distance equal to bias x 10.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -537,7 +556,7 @@ The bias is applied as a scalar to movement speed, jump strength, and max health
 | Initial knowledge cost | 3 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-wild-empathy.toml` |
 
 Listened events: `PlayerInteractEntityEvent` (right-click an untamed tameable with its taming food), `EntityTargetLivingEntityEvent` (a neutral mob targeting you).
@@ -546,7 +565,7 @@ Menu lore: "Extra Taming Odds", "Anger Resistance".
 
 Milestones: `challenge_taming_empathy_100` and `challenge_taming_empathy_1k` on `taming.wild-empathy.tames` at 100 (reward 400) and 1000 (reward 1500). Resisted anger is also counted on `taming.wild-empathy.angers-resisted`, which has no milestone.
 
-Taming foods in code: `BONE` for wolves; `COD` and `SALMON` for cats and ocelots; `WHEAT_SEEDS`, `MELON_SEEDS`, `PUMPKIN_SEEDS`, `BEETROOT_SEEDS`, `TORCHFLOWER_SEEDS`, and `PITCHER_POD` for parrots. Pacifiable neutrals: wolves, bees, polar bears, llamas, pandas, goats, and only while untamed.
+Taming foods in code: `BONE` for wolves. `COD` and `SALMON` for cats and ocelots. `WHEAT_SEEDS`, `MELON_SEEDS`, `PUMPKIN_SEEDS`, `BEETROOT_SEEDS`, `TORCHFLOWER_SEEDS`, and `PITCHER_POD` for parrots. Pacifiable neutrals: wolves, bees, polar bears, llamas, pandas, goats, and only while untamed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -568,7 +587,7 @@ Taming foods in code: `BONE` for wolves; `COD` and `SALMON` for cats and ocelots
 | Initial knowledge cost | 3 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-battle-bond.toml` |
 
 Listened events: `EntityDeathEvent` (the killing blow came from a tameable).
@@ -581,7 +600,7 @@ Buffs applied are Speed, Regeneration, and the strength effect where the server 
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `maxBuffTier` | `1` | Highest potion amplifier reachable; the applied amplifier is level percent times (this + 1), rounded down and clamped here. |
+| `maxBuffTier` | `1` | Highest potion amplifier reachable. The applied amplifier is level percent times (this + 1), rounded down and clamped here. |
 | `buffTicksBase` | `80` | Buff duration in ticks at level percent 0. |
 | `buffTicksFactor` | `120` | Extra duration in ticks at full level percent, with a floor of 20 ticks. |
 | `packRadius` | `16` | Radius in blocks searched for pack members to buff. |
@@ -599,10 +618,10 @@ Buffs applied are Speed, Regeneration, and the strength effect where the server 
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-last-breath.toml` |
 
-Listened events: `EntityDamageEvent` twice. `onProtectedWindow` runs at LOWEST and cancels all damage to a pet inside its invulnerability window; `on` runs at HIGHEST and performs the save when the hit would be lethal.
+Listened events: `EntityDamageEvent` twice. `onProtectedWindow` runs at LOWEST and cancels all damage to a pet inside its invulnerability window. `on` runs at HIGHEST and performs the save when the hit would be lethal.
 
 Menu lore: "Per-Pet Cooldown", "Invulnerability".
 

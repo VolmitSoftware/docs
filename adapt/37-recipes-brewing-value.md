@@ -2,26 +2,26 @@
 title: "Recipes, Brewing & Value"
 description: "Adapt documentation: Recipes, Brewing & Value"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt adds three things on the crafting side of the game: extra crafting recipes that ship with certain adaptations, a custom brewing track that runs on an ordinary brewing stand, and a material value estimate that several skills use to size XP rewards. Recipes and brews belong to the adaptation that registered them, so only players who learned that adaptation get them. Material value is server-wide and ignores who learned what.
+Adapt adds three things on the crafting side of the game. Extra crafting recipes ship with certain adaptations. A custom brewing track runs on an ordinary brewing stand. A material value estimate lets several skills size XP rewards. Recipes and brews belong to the adaptation that registered them. Only players who learned that adaptation get them. Material value is server-wide. It ignores who learned what.
 
-Adapt's recipes are real server recipes, registered at startup. They stay hidden in the recipe book until a player learns the owning adaptation at the level the recipe asks for. Learn it and the recipe shows up; unlearn it and it goes away again. The crafting is plain vanilla crafting, so a crafting table, a recipe book, or an autocrafter all treat them like any other recipe. Custom brewing works the same way, with a longer ingredient list layered on an ordinary stand.
+Adapt recipes are real server recipes. Adapt registers them at startup. They stay hidden in the recipe book until a player learns the owning adaptation at the level the recipe asks for. Learn it and the recipe shows up. Unlearn it and it goes away again. The crafting is plain vanilla crafting. A crafting table, a recipe book, or an autocrafter all treat them like any other recipe. Custom brewing works the same way. A longer ingredient list is layered on an ordinary stand.
 
-Material value is a rough "what is this worth" number Adapt works out by walking vanilla recipes backwards. Skills that pay XP for what you mined, placed, or crafted read that number instead of carrying their own price list.
+Material value is a rough worth number. Adapt works it out by walking vanilla recipes backwards. Skills that pay XP for what you mined, placed, or crafted read that number. They do not carry their own price list.
 
 ## Crafting recipes
 
-A recipe exists on the server only while its skill and its adaptation are both enabled. Turn an adaptation off in config and its recipes are unregistered outright. Each recipe key belongs to exactly one adaptation; if two claim the same key, Adapt logs a conflict warning and the later registration wins.
+A recipe exists on the server only while its skill and its adaptation are both enabled. Turn an adaptation off in config and its recipes are unregistered outright. Each recipe key belongs to exactly one adaptation. If two claim the same key, Adapt logs a conflict warning. The later registration wins.
 
-Discovery is per player. Adapt recalculates the whole set on join, whenever a player learns or unlearns anything, and whenever the skill catalog changes, then pushes only the difference to that player's recipe book. The gate is the learned level of the owning adaptation, not the skill level.
+Discovery is per player. Adapt recalculates the whole set on join. It also recalculates whenever a player learns or unlearns anything, and whenever the skill catalog changes. Then it pushes only the difference to that player's recipe book. The gate is the learned level of the owning adaptation, not the skill level.
 
-On Folia, Adapt refuses to register or re-register recipes while players are online, because reloading the recipe registry under a live server is unsafe. It logs a warning and retries until the server has no players, so a Folia box that never empties will not pick up recipe changes made after boot.
+On Folia, Adapt refuses to register or re-register recipes while players are online. Reloading the recipe registry under a live server is unsafe. It logs a warning and retries until the server has no players. A Folia box that never empties will not pick up recipe changes made after boot.
 
-Three recipes carry extra conditions. Rift Gate registers its recipe only when `requireCraftedEye` is true. The backpack mode-cycle recipe is always registered, but the crafting handler lets it through only when `allowModeToggle` is true and the grid holds exactly one empty Adapt backpack. The Cherry and Pale Oak log swaps register only when the server actually has those materials.
+Three recipes carry extra conditions. Rift Gate registers its recipe only when `requireCraftedEye` is true. The backpack mode-cycle recipe is always registered. The crafting handler lets it through only when `allowModeToggle` is true and the grid holds exactly one empty Adapt backpack. The Cherry and Pale Oak log swaps register only when the server actually has those materials.
 
 `maxRecipeListPrecaution` does not cap how many recipes Adapt registers. It is a guard on the material value walk, described below.
 
@@ -35,23 +35,26 @@ Brewing a custom potion:
 4. Left-click the recipe's ingredient into the empty ingredient slot.
 5. Wait out the timer. When it finishes the ingredient drops by one and every bottle slot holding the matching base potion converts at once.
 
-Fuel is taken up front when the task starts, not at the end. Changing the ingredient, pulling the base potions, or breaking the stand mid-brew cancels the task and the reserved fuel is gone. Starting a different custom recipe on the same stand cancels the one already running.
+Fuel is taken up front when the task starts, not at the end. Changing the ingredient, pulling the base potions, or breaking the stand mid-brew cancels the task. The reserved fuel is gone. If you start a different custom recipe on the same stand, Adapt cancels the one already running.
 
-The ingredient click is handled carefully. If another plugin cancels the click, Adapt does nothing at all. Otherwise Adapt cancels the vanilla click itself and completes the move one tick later, and only if the player still has that same physical stand open with the ingredient slot still empty. That is what stops an item landing in a stand the player already walked away from.
+The ingredient click is handled carefully. If another plugin cancels the click, Adapt does nothing at all. Otherwise Adapt cancels the vanilla click itself and completes the move one tick later. It does so only if the player still has that same physical stand open with the ingredient slot still empty. That is what stops an item landing in a stand the player already walked away from.
 
-A finished brew fires `AdaptBrewCompleteEvent` when at least one bottle converted. Vanilla gunpowder and dragon's breath conversion still works afterwards, so Adapt potions become splash and lingering versions the normal way. Each brewing adaptation's own level, duration, amplifier, and enable setting are in [15 - Skill - Brewing](/adapt/15-skill-brewing).
+A finished brew fires `AdaptBrewCompleteEvent` when at least one bottle converted. Vanilla gunpowder and dragon's breath conversion still works afterwards. Adapt potions become splash and lingering versions the normal way. Each brewing adaptation's own level, duration, amplifier, and enable setting are in [15 - Skill - Brewing](/adapt/15-skill-brewing).
 
 ## Material values
 
-Every material resolves to a number. Adapt starts at `value.baseValue`, asks Bukkit for every recipe that produces the material, and for each of those recipes adds up `baseValue` plus the resolved value of each ingredient, then divides by how many items the recipe outputs. Those per-recipe numbers are averaged and added to the base. Recipes already visited on the current walk are skipped so a crafting loop cannot recurse forever.
+Every material resolves to a number. Adapt starts at `value.baseValue`. It asks Bukkit for every recipe that produces the material. For each of those recipes it adds `baseValue` plus the resolved value of each ingredient. Then it divides by how many items the recipe outputs. Those per-recipe numbers are averaged and added to the base. Recipes already visited on the current walk are skipped so a crafting loop cannot recurse forever.
 
-Two clamps sit on the result. If the running total passes `maxRecipeListPrecaution`, it collapses to `total / 10 + 1`, which keeps deep recipe chains from exploding. Any block whose hardness is zero reads back as `0` regardless of what was computed. The last step is `value.valueMultipliers`, looked up case insensitively on the Bukkit material name, with `1` for anything absent.
+Two clamps sit on the result. If the running total passes `maxRecipeListPrecaution`, it collapses to `total / 10 + 1`. That keeps deep recipe chains from exploding. Any block whose hardness is zero reads back as `0` regardless of what was computed. The last step is `value.valueMultipliers`. Adapt looks it up case insensitively on the Bukkit material name. Anything absent uses `1`.
 
-Resolved values are cached in memory and written to `plugins/Adapt/data/value-cache.json` at shutdown. The cache signature carries a random per-process id, so the file is never reused across restarts and every boot recomputes from the recipe registry that actually exists. A core config reload throws the in-memory cache away too, so edits to `baseValue` or the multiplier map take effect without a restart.
+Resolved values are cached in memory. They are written to `plugins/Adapt/data/value-cache.json` at shutdown. The cache signature carries a random per-process id. The file is never reused across restarts. Every boot recomputes from the recipe registry that actually exists. A core config reload throws the in-memory cache away too. Edits to `baseValue` or the multiplier map take effect without a restart.
 
-Material value feeds Architect XP and Placement, Axes XP and its value statistics, Crafting XP and Deconstruction, Discovery XP and Archaeologist, Excavation XP and Seismic Ping, Pickaxes XP, and the HiddenOre bridge.
+Material value feeds Architect XP and Placement, Axes XP and its value
+statistics, and Crafting XP and Deconstruction. It also feeds Discovery XP and
+Archaeologist, Excavation XP and Seismic Ping, Pickaxes XP, and the HiddenOre
+bridge.
 
-The walk is meant to skip Adapt's own recipes so plugin recipes cannot feed back into their own prices. It does not. The guard tests the Bukkit recipe against Adapt's `AdaptRecipe` type, and Adapt registers plain Bukkit recipe objects, so the test never matches and Adapt recipes do contribute to material values.
+The walk is meant to skip Adapt's own recipes so plugin recipes cannot feed back into their own prices. It does not. The guard tests the Bukkit recipe against Adapt's `AdaptRecipe` type. Adapt registers plain Bukkit recipe objects. The test never matches. Adapt recipes do contribute to material values.
 
 ## Reference
 
@@ -61,42 +64,42 @@ Shapes list rows top to bottom, and a space is an empty cell. Symbols are define
 
 | Adaptation | Key and type | Recipe | Output | Required level |
 |---|---|---|---|---:|
-| Architect: Chalk Line | `architect-chalk-straightedge`, shaped | `S` / `T`; `S` String, `T` Stick | Straightedge chalk wand | 1 |
-| Architect: Chalk Line | `architect-chalk-polyline`, shaped | `S ` / ` T`; `S` String, `T` Stick | Polyline chalk wand | 2 |
-| Architect: Chalk Line | `architect-chalk-compass`, shaped | `T` / `S`; `T` Stick, `S` String | Compass chalk wand | 3 |
-| Architect: Chalk Line | `architect-chalk-arc-bow`, shaped | `TS`; `T` Stick, `S` String | Arc Bow chalk wand | 4 |
-| Architect: Elevator | `elevator`, shaped | `XXX` / `XYX` / `XXX`; `X` any Wool, `Y` Ender Pearl | Elevator item | 1 |
+| Architect: Chalk Line | `architect-chalk-straightedge`, shaped | `S` / `T`. Keys: `S` String, `T` Stick | Straightedge chalk wand | 1 |
+| Architect: Chalk Line | `architect-chalk-polyline`, shaped | `S ` / ` T`. Keys: `S` String, `T` Stick | Polyline chalk wand | 2 |
+| Architect: Chalk Line | `architect-chalk-compass`, shaped | `T` / `S`. Keys: `T` Stick, `S` String | Compass chalk wand | 3 |
+| Architect: Chalk Line | `architect-chalk-arc-bow`, shaped | `TS`. Keys: `T` Stick, `S` String | Arc Bow chalk wand | 4 |
+| Architect: Elevator | `elevator`, shaped | `XXX` / `XYX` / `XXX`. Keys: `X` any Wool, `Y` Ender Pearl | Elevator item | 1 |
 | Architect: Wireless Redstone | `remote-redstone-torch`, shapeless | Redstone Torch + Target + Ender Pearl | Unbound wireless redstone torch | 1 |
-| Blocking: Chain Armorer | `blocking-chainarmorer-boots`, shaped | `I I` / `I I`; `I` Iron Nugget | Chainmail Boots | 1 |
-| Blocking: Chain Armorer | `blocking-chainarmorer-leggings`, shaped | `III` / `I I` / `I I`; `I` Iron Nugget | Chainmail Leggings | 1 |
-| Blocking: Chain Armorer | `blocking-chainarmorer-chestplate`, shaped | `I I` / `III` / `III`; `I` Iron Nugget | Chainmail Chestplate | 1 |
-| Blocking: Chain Armorer | `blocking-chainarmorer-helmet`, shaped | `III` / `I I`; `I` Iron Nugget | Chainmail Helmet | 1 |
-| Blocking: Horse Armorer | `blocking-horsearmorerleather`, shaped | `III` / `IUI` / `III`; `I` Leather, `U` Saddle | Leather Horse Armor | 1 |
-| Blocking: Horse Armorer | `blocking-horsearmoreriron`, shaped | same shape; `I` Iron Ingot, `U` Saddle | Iron Horse Armor | 1 |
-| Blocking: Horse Armorer | `blocking-horsearmorergold`, shaped | same shape; `I` Gold Ingot, `U` Saddle | Golden Horse Armor | 1 |
-| Blocking: Horse Armorer | `blocking-horsearmorerdiamond`, shaped | same shape; `I` Diamond, `U` Saddle | Diamond Horse Armor | 1 |
-| Blocking: Phalanx Crafter | `blocking-phalanx-field-shield`, shaped | `WWW` / `PIP` / ` P `; `W` White Wool, `P` Oak Planks, `I` Iron Ingot | Shield | 1 |
-| Blocking: Phalanx Crafter | `blocking-phalanx-netherite-shield`, shaped | ` N ` / `NSN` / ` N `; `N` Netherite Ingot, `S` Shield | Netherite Phalanx Shield | 2 |
-| Blocking: Saddlecrafter | `blocking-saddlecrafter`, shaped | `I I` / `III`; `I` Leather | Saddle | 1 |
+| Blocking: Chain Armorer | `blocking-chainarmorer-boots`, shaped | `I I` / `I I`. Keys: `I` Iron Nugget | Chainmail Boots | 1 |
+| Blocking: Chain Armorer | `blocking-chainarmorer-leggings`, shaped | `III` / `I I` / `I I`. Keys: `I` Iron Nugget | Chainmail Leggings | 1 |
+| Blocking: Chain Armorer | `blocking-chainarmorer-chestplate`, shaped | `I I` / `III` / `III`. Keys: `I` Iron Nugget | Chainmail Chestplate | 1 |
+| Blocking: Chain Armorer | `blocking-chainarmorer-helmet`, shaped | `III` / `I I`. Keys: `I` Iron Nugget | Chainmail Helmet | 1 |
+| Blocking: Horse Armorer | `blocking-horsearmorerleather`, shaped | `III` / `IUI` / `III`. Keys: `I` Leather, `U` Saddle | Leather Horse Armor | 1 |
+| Blocking: Horse Armorer | `blocking-horsearmoreriron`, shaped | same shape. Keys: `I` Iron Ingot, `U` Saddle | Iron Horse Armor | 1 |
+| Blocking: Horse Armorer | `blocking-horsearmorergold`, shaped | same shape. Keys: `I` Gold Ingot, `U` Saddle | Golden Horse Armor | 1 |
+| Blocking: Horse Armorer | `blocking-horsearmorerdiamond`, shaped | same shape. Keys: `I` Diamond, `U` Saddle | Diamond Horse Armor | 1 |
+| Blocking: Phalanx Crafter | `blocking-phalanx-field-shield`, shaped | `WWW` / `PIP` / ` P `. Keys: `W` White Wool, `P` Oak Planks, `I` Iron Ingot | Shield | 1 |
+| Blocking: Phalanx Crafter | `blocking-phalanx-netherite-shield`, shaped | ` N ` / `NSN` / ` N `. Keys: `N` Netherite Ingot, `S` Shield | Netherite Phalanx Shield | 2 |
+| Blocking: Saddlecrafter | `blocking-saddlecrafter`, shaped | `I I` / `III`. Keys: `I` Leather | Saddle | 1 |
 | Chronos: Time Bomb | `chronos-time-bomb`, shapeless | Snowball + Clock + Diamond + Sand | Time Bomb | 1 |
 | Chronos: Time in a Bottle | `chronos-time-in-a-bottle`, shapeless | Clock + Potion + Glass Bottle | Empty Time in a Bottle | 1 |
-| Crafting: Backpacks | `crafting-backpacks`, shaped | `LLL` / `LCL` / `LLL`; `L` Leather, `C` Chest | Backpack in the configured default mode and capacity | 1 |
+| Crafting: Backpacks | `crafting-backpacks`, shaped | `LLL` / `LCL` / `LLL`. Keys: `L` Leather, `C` Chest | Backpack in the configured default mode and capacity | 1 |
 | Crafting: Backpacks | `crafting-backpacks-mode`, shapeless | One Adapt Backpack, matched through the Bundle ingredient | The same empty backpack in the other mode | 1 |
-| Crafting: Leather | `crafting-leather`, campfire | Rotten Flesh; 100-tick cook, 1 recipe XP | Leather | 1 |
-| Crafting: Skulls | `crafting-skeletonskull`, shaped | `III` / `IXI` / `III`; `I` Bone, `X` Bone Block | Skeleton Skull | 1 |
-| Crafting: Skulls | `crafting-witherskeletonskull`, shaped | same shape; `I` Nether Brick, `X` Bone Block | Wither Skeleton Skull | 1 |
-| Crafting: Skulls | `crafting-zombieskull`, shaped | same shape; `I` Rotten Flesh, `X` Bone Block | Zombie Head | 1 |
-| Crafting: Skulls | `crafting-creeperhead`, shaped | same shape; `I` Gunpowder, `X` Bone Block | Creeper Head | 1 |
-| Crafting: Skulls | `crafting-dragonhead`, shaped | same shape; `I` Dragon's Breath, `X` Bone Block | Dragon Head | 1 |
-| Herbalism: Craftable Cobweb | `herbalism-cobwebblock`, shaped | `III` / `III` / `III`; `I` String | Cobweb | 1 |
-| Herbalism: Mushroom Blocks | `herbalism-redmushblock`, shaped | `II` / `II`; `I` Red Mushroom | Red Mushroom Block | 1 |
-| Herbalism: Mushroom Blocks | `herbalism-brownmushblock`, shaped | `II` / `II`; `I` Brown Mushroom | Brown Mushroom Block | 1 |
+| Crafting: Leather | `crafting-leather`, campfire | Rotten Flesh. 100-tick cook, 1 recipe XP | Leather | 1 |
+| Crafting: Skulls | `crafting-skeletonskull`, shaped | `III` / `IXI` / `III`. Keys: `I` Bone, `X` Bone Block | Skeleton Skull | 1 |
+| Crafting: Skulls | `crafting-witherskeletonskull`, shaped | same shape. Keys: `I` Nether Brick, `X` Bone Block | Wither Skeleton Skull | 1 |
+| Crafting: Skulls | `crafting-zombieskull`, shaped | same shape. Keys: `I` Rotten Flesh, `X` Bone Block | Zombie Head | 1 |
+| Crafting: Skulls | `crafting-creeperhead`, shaped | same shape. Keys: `I` Gunpowder, `X` Bone Block | Creeper Head | 1 |
+| Crafting: Skulls | `crafting-dragonhead`, shaped | same shape. Keys: `I` Dragon's Breath, `X` Bone Block | Dragon Head | 1 |
+| Herbalism: Craftable Cobweb | `herbalism-cobwebblock`, shaped | `III` / `III` / `III`. Keys: `I` String | Cobweb | 1 |
+| Herbalism: Mushroom Blocks | `herbalism-redmushblock`, shaped | `II` / `II`. Keys: `I` Red Mushroom | Red Mushroom Block | 1 |
+| Herbalism: Mushroom Blocks | `herbalism-brownmushblock`, shaped | `II` / `II`. Keys: `I` Brown Mushroom | Brown Mushroom Block | 1 |
 | Herbalism: Mushroom Blocks | `herbalism-mushstemred`, shapeless | Red Mushroom Block | Mushroom Stem | 1 |
 | Herbalism: Mushroom Blocks | `herbalism-mushstembrown`, shapeless | Brown Mushroom Block | Mushroom Stem | 1 |
 | Herbalism: Myconid | `herbalism-dirt-myconid`, shapeless | Dirt + Red Mushroom + Brown Mushroom | Mycelium | 1 |
-| Herbalism: Terralid | `herbalism-dirt-terralid`, shaped | `SSS` / `DDD`; `S` Wheat Seeds, `D` Dirt | 3 Grass Blocks | 1 |
-| Hunter: Snare Line | `hunter-snare`, shaped | `S S` / `SIS` / `S S`; `S` String, `I` Iron Ingot | 2 Snare items | 1 |
-| Ranged: Web Bomb | `ranged-web-bomb`, shaped | `III` / `ISI` / `III`; `I` Cobweb, `S` Snowball | Unbound Web Bomb | 1 |
+| Herbalism: Terralid | `herbalism-dirt-terralid`, shaped | `SSS` / `DDD`. Keys: `S` Wheat Seeds, `D` Dirt | 3 Grass Blocks | 1 |
+| Hunter: Snare Line | `hunter-snare`, shaped | `S S` / `SIS` / `S S`. Keys: `S` String, `I` Iron Ingot | 2 Snare items | 1 |
+| Ranged: Web Bomb | `ranged-web-bomb`, shaped | `III` / `ISI` / `III`. Keys: `I` Cobweb, `S` Snowball | Unbound Web Bomb | 1 |
 | Rift: Rift Access | `rift-remote-access`, shapeless | Ender Pearl + Compass | Unbound remote-access pearl | 1 |
 | Rift: Rift Gate | `rift-recall-gate`, shapeless | Ender Pearl + Amethyst Shard + Emerald | Unbound Rift Gate eye | 1 |
 
@@ -104,7 +107,9 @@ Shapes list rows top to bottom, and a space is an empty cell. Symbols are define
 
 Axe: Craft Log Swap registers 70 shapeless conversions, all at adaptation level 1. Each takes eight logs of one family plus one sapling of the destination family, or a Mangrove Propagule for Mangrove, and returns eight destination logs. Keys are `axe-swap<source><destination>` with lowercase family names and no underscores, for example `axe-swapdarkoakpaleoak`.
 
-- Birch, Oak, Acacia, Dark Oak, Jungle, Spruce, and Mangrove each convert into every other family among Birch, Oak, Acacia, Dark Oak, Jungle, Spruce, Mangrove, Cherry, and Pale Oak.
+- Birch, Oak, Acacia, Dark Oak, Jungle, Spruce, and Mangrove convert into the
+  other families. Those families are Birch, Oak, Acacia, Dark Oak, Jungle,
+  Spruce, Mangrove, Cherry, and Pale Oak.
 - Cherry converts into Birch, Oak, Acacia, Dark Oak, Jungle, Spruce, and Pale Oak.
 - Pale Oak converts into Birch, Oak, Acacia, Dark Oak, Jungle, Spruce, and Cherry.
 - The Cherry and Pale Oak entries register only when those materials exist on the server. There is no Cherry to Mangrove or Pale Oak to Mangrove recipe.
@@ -144,8 +149,8 @@ All 21 registered brews run 320 ticks. Weak recipes cost 16 fuel units and stron
 | Key | Default | What it does |
 |---|---|---|
 | `value.baseValue` | `1` | Starting value for every material, and the flat term added to each recipe path |
-| `value.valueMultipliers` | see below | Bukkit material name to final multiplier, matched case insensitively; absent keys use `1` |
-| `maxRecipeListPrecaution` | `25` | Ceiling on the running value total; anything above it collapses to `total / 10 + 1`, and it also bounds how many recipes the verbose value dump will visit |
+| `value.valueMultipliers` | see below | Bukkit material name to final multiplier, matched case insensitively. Absent keys use `1` |
+| `maxRecipeListPrecaution` | `25` | Ceiling on the running value total. Anything above it collapses to `total / 10 + 1`. It also bounds how many recipes the verbose value dump will visit |
 
 Default `value.valueMultipliers` entries, written into `adapt.toml` when it is first generated:
 

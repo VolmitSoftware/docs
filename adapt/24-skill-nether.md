@@ -2,38 +2,44 @@
 title: "Skill - Nether"
 description: "Adapt documentation: Skill - Nether"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Nether is the survival skill for the fire dimension. The skill itself pays out for wither business: taking wither damage, punching a Wither boss, killing wither skeletons, killing the Wither, and breaking wither roses. Everything else you earn in the Nether comes from the adaptations themselves, and most of them hand out their own XP for the thing they do.
+Nether is the survival skill for the fire dimension. The skill itself pays out for wither business: taking wither damage, punching a Wither boss, killing wither skeletons, killing the Wither, and breaking wither roses. Everything else you earn in the Nether comes from the adaptations themselves. Most of them hand out their own XP for the thing they do.
 
-The tree is mostly about not dying to the terrain. Fire Resistance, Ashwalker, Ghast Ward, Wither Resistance, and Magma Skin each shave off a different way the Nether kills you. Lava Walker, Soul Strider, and Strider Bond fix the movement problems: crossing a lava lake, slogging through soul sand, and riding a strider without it freezing up.
+The tree is mostly about not dying to the terrain. Fire Resistance, Ashwalker, Ghast Ward, Wither Resistance, and Magma Skin each shave off a different way the Nether kills you. Lava Walker, Soul Strider, and Strider Bond fix the movement problems. Those
+problems are crossing a lava lake, slogging through soul sand, and riding a
+strider without it freezing up.
 
-The rest is about taking things out of the Nether. Netherrack Mason speeds up bulk mining and adds bonus drops, Piglin Broker fattens up barters, Crimson Feast turns fungi and roots into real food, Wither Harvest makes wither skeletons pay properly, and Blaze Leech turns fire itself into food and regeneration.
+The rest is about taking things out of the Nether. Netherrack Mason speeds up bulk mining and adds bonus drops. Piglin Broker fattens up barters. Crimson Feast turns fungi and roots into real food. Wither Harvest makes wither skeletons pay properly. Blaze Leech turns fire itself into food and regeneration.
 
 Skull Throw is the one loud button in the tree. Right-click with a wither skeleton skull and you throw it as a live wither skull projectile.
 
 ## Adaptations
 
-Everything below needs the same conditions: the adaptation learned at level 1 or higher, the Nether skill and that adaptation both enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and any protection plugin on your server allowing the action where you are standing.
+Everything below needs the same conditions. The adaptation is learned at level 1 or higher. The Nether skill and that adaptation are both enabled in config. You hold the `adapt.use.*` permission (or the matching per-adaptation node). Any protection plugin on your server allows the action where you are standing.
 
-Several of these only work while you are in a Nether-environment world: Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson Feast. The rest work anywhere, including Soul Strider, which speeds you across soul sand in the overworld too.
+Several of these only work while you are in a Nether-environment world. Those
+are Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson
+Feast. The rest work anywhere. Soul Strider speeds you across soul sand in the overworld too.
 
 ### Wither Resistance (`nether-wither-resist`)
 
-Each piece of netherite armor you are wearing gives you a chance to shrug off wither damage entirely. The chances add up across the four slots and grow with level, so a full netherite set at max level negates the wither effect every time. Works on its own once learned.
+Each piece of netherite armor you are wearing gives you a chance to shrug off wither damage entirely. The chances add up across the four slots and grow with level. A full netherite
+set at max level negates the wither effect every time. Works on its own once learned.
 
 ### Wither Skull Throw (`nether-skull-toss`)
 
-Wither skeleton skulls become ammunition. Right-click while holding one and you launch a real wither skull that flies where you are looking and explodes on impact, same as the boss fires. The skull is consumed (except in creative), and there is a cooldown that gets much shorter as you level. Landing a kill from 40 blocks or more unlocks a hidden challenge.
+Wither skeleton skulls become ammunition. Right-click while holding one and you launch a real wither skull. It flies where
+you are looking and explodes on impact, same as the boss fires. The skull is consumed (except in creative), and there is a cooldown that gets much shorter as you level. Landing a kill from 40 blocks or more unlocks a hidden challenge.
 
 **How to use it**
 
 1. Learn Wither Skull Throw in the Adapt menu.
 2. Hold a wither skeleton skull in your main hand.
-3. Right-click. Look where you want it to go first; the skull follows your aim.
+3. Right-click. Look where you want it to go first. The skull follows your aim.
 
 ### Fire Resistance (`nether-fire-resist`)
 
@@ -47,7 +53,7 @@ In the Nether, walking into lava pushes you forward across the surface instead o
 
 1. Learn Lava Walker in the Adapt menu.
 2. Be in the Nether with food in your bar.
-3. Walk into the lava, facing the direction you want to go. Keep looking where you want to end up; each stride follows your view direction.
+3. Walk into the lava, facing the direction you want to go. Keep looking where you want to end up. Each stride follows your view direction.
 
 ### Ghast Ward (`nether-ghast-ward`)
 
@@ -55,15 +61,17 @@ In the Nether, ghast fireballs hit you for much less, and getting hit by one als
 
 ### Blaze Leech (`nether-blaze-leech`)
 
-Fire feeds you. Whenever you take fire, lava, or magma-block damage, or land a hit on something that is currently burning, there is a chance to trigger a leech: food, saturation, and a burst of Regeneration. Higher levels raise the trigger chance, lengthen the regen, restore more food, and shorten the internal cooldown. Works on its own once learned.
+Fire feeds you. Whenever you take fire, lava, or magma-block damage there is a chance to trigger
+a leech. Landing a hit on something that is currently burning also has that
+chance. The leech grants food, saturation, and a burst of Regeneration. Higher levels raise the trigger chance, lengthen the regen, restore more food, and shorten the internal cooldown. Works on its own once learned.
 
 ### Piglin Broker (`nether-piglin-broker`)
 
-Any piglin bartering near you pays better. When a barter resolves, the nearest player with this adaptation gets credited: a chance for a duplicated and enlarged roll of whatever came out, plus a smaller chance for a separate bonus item from a fixed premium pool. Works on its own once learned, and you do not have to be the one who threw the gold.
+Any piglin bartering near you pays better. When a barter resolves, the nearest player with this adaptation gets credited. There is a chance for a duplicated and enlarged roll of whatever came out. There is a smaller chance for a separate bonus item from a fixed premium pool. Works on its own once learned. You do not have to be the one who threw the gold.
 
 ### Soul Strider (`nether-soul-strider`)
 
-Soul sand and soul soil stop slowing you down; you move across them at full speed and then some. At max level, stepping back onto soul ground after a short gap also fires a short soul-speed burst. Works anywhere, not only in the Nether. Works on its own once learned.
+Soul sand and soul soil stop slowing you down. You move across them at full speed and then some. At max level, stepping back onto soul ground after a short gap also fires a short soul-speed burst. Works anywhere, not only in the Nether. Works on its own once learned.
 
 ### Magma Skin (`nether-magma-skin`)
 
@@ -71,11 +79,13 @@ Only active while you are on fire. Anyone who melees you catches fire, and your 
 
 ### Netherrack Mason (`nether-netherrack-mason`)
 
-In the Nether, starting to mine netherrack, basalt, or blackstone gives you a block-breaking speed boost that refreshes as you keep working. Every one of those blocks you break pays Nether XP, and some of them drop an extra item: usually a second copy of what you mined, sometimes gold nuggets, quartz, iron nuggets, or nether brick. Works on its own once learned.
+In the Nether, starting to mine netherrack, basalt, or blackstone gives you a block-breaking speed boost that refreshes as you keep working. Every one of those blocks you break pays Nether XP. Some of them drop an extra item. Usually that is a second copy of what you mined. Sometimes it is gold nuggets, quartz, iron nuggets, or nether brick. Works on its own once learned.
 
 ### Strider Bond (`nether-strider-bond`)
 
-Striders you ride stop shivering and move faster, including when they step out of lava. From level 2 up, dismounting over lava triggers a rescue: the adaptation looks for solid safe ground nearby and teleports you there instead of letting you fall in. The first successful rescue unlocks a hidden challenge.
+Striders you ride stop shivering and move faster, including when they step out of lava. From level 2 up, dismounting over lava triggers a rescue. The adaptation looks
+for solid safe ground nearby and teleports you there instead of letting you fall
+in. The first successful rescue unlocks a hidden challenge.
 
 **How to use it**
 
@@ -96,7 +106,7 @@ Nether flora becomes food. Right-click while holding a crimson or warped fungus,
 
 ### Ashwalker (`nether-ashwalker`)
 
-Magma blocks stop hurting you from the moment you learn it. From level 2 up, campfires stop hurting you too. Those immune hits are reduced to zero, cancelled, and clear your fire ticks so they do not produce vanilla hurt feedback; Ashwalker's own extinguish sound is silent by default and configurable. At max level, soul fire is only reduced rather than cancelled, so its remaining hit feedback is intentional. You earn XP for every point it takes off. Works on its own once learned.
+Magma blocks stop hurting you from the moment you learn it. From level 2 up, campfires stop hurting you too. Those immune hits are reduced to zero, cancelled, and clear your fire ticks so they do not produce vanilla hurt feedback. Ashwalker's own extinguish sound is silent by default and configurable. At max level, soul fire is only reduced rather than cancelled, so its remaining hit feedback is intentional. You earn XP for every point it takes off. Works on its own once learned.
 
 ### Wither Harvest (`nether-wither-harvest`)
 
@@ -132,11 +142,11 @@ Written to `plugins/Adapt/adapt/skills/nether.toml` on first load.
 | `witherKillXp` | `900` | XP for killing the Wither. |
 | `witherRoseBreakXp` | `125` | XP for breaking a wither rose. |
 | `witherRoseBreakCooldown` | `1200` (written as `60 * 20`) | Ticks between wither-rose payouts, converted to milliseconds at 50 ms per tick, so 60 seconds. |
-| `challengeNetherReward` | `500` | Base XP for the Nether kill-count challenges; later tiers pay 2x and 5x. |
-| `challengeWitherDmgReward` | `500` | Base XP for the wither-damage challenges; the second tier pays 2x. |
-| `challengeWitherSkelReward` | `500` | Base XP for the wither-skeleton challenges; the second tier pays 2x. |
-| `challengeWitherBossReward` | `1000` | Base XP for the Wither boss challenges; the second tier pays 2x. |
-| `challengeRosesReward` | `500` | Base XP for the wither-rose challenges; the second tier pays 2x. |
+| `challengeNetherReward` | `500` | Base XP for the Nether kill-count challenges. Later tiers pay 2x and 5x. |
+| `challengeWitherDmgReward` | `500` | Base XP for the wither-damage challenges. The second tier pays 2x. |
+| `challengeWitherSkelReward` | `500` | Base XP for the wither-skeleton challenges. The second tier pays 2x. |
+| `challengeWitherBossReward` | `1000` | Base XP for the Wither boss challenges. The second tier pays 2x. |
+| `challengeRosesReward` | `500` | Base XP for the wither-rose challenges. The second tier pays 2x. |
 
 ### Milestones and challenges
 
@@ -199,7 +209,7 @@ Milestones: `challenge_nether_wither_100` and `challenge_nether_wither_1k` on `n
 | Tick interval (ms) | 2314 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-skull-toss.toml` |
 
-Listened events: `PlayerInteractEvent` (`onRightClick`, receives cancelled events; main hand only, right-click air or block, item must be `WITHER_SKELETON_SKULL`), `EntityDeathEvent` (`onEntityDeath`, credits kills made by a thrown skull).
+Listened events: `PlayerInteractEvent` (`onRightClick`, receives cancelled events. Main hand only, right-click air or block, item must be `WITHER_SKELETON_SKULL`), `EntityDeathEvent` (`onEntityDeath`, credits kills made by a thrown skull).
 
 Cooldown is `max(1, baseCooldown - levelCooldown * level)` seconds, so 10 seconds at level 1 and 1 second at level 3. It is an item cooldown keyed to the skull material, shared by the gate and the sweep. The projectile is an uncharged, non-bouncing `WitherSkull` with the player as shooter, and throwing it pays 100 Nether XP directly. The interact event is always cancelled so the skull is never placed as a block.
 
@@ -225,7 +235,9 @@ Milestones: `challenge_nether_skull_100` on `nether.skull-yeet.skulls-thrown` (1
 
 Listened events: `EntityDamageEvent`, `FIRE` and `FIRE_TICK` causes only.
 
-Negation chance is `fireResistBase + fireResistFactor * level` using the raw level, not a level percentage, so it is 35 percent at level 1 and 85 percent at level 3.
+Negation chance is `fireResistBase + fireResistFactor * level` using the raw
+level, not a level percentage. It is 35 percent at level 1 and 85 percent at
+level 3.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -275,7 +287,10 @@ Milestones: `challenge_nether_lava_1k` and `challenge_nether_lava_25k` on `nethe
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-ghast-ward.toml` |
 
-Listened events: `EntityDamageByEntityEvent` at `HIGHEST` (ghast fireballs and wither skeleton arrows), `EntityDamageEvent` at `HIGH` (`ENTITY_EXPLOSION` and `BLOCK_EXPLOSION`, skipped when the damager was already handled as a ghast fireball). All of it requires a Nether-environment world.
+Listened events follow. `EntityDamageByEntityEvent` at `HIGHEST` covers ghast
+fireballs and wither skeleton arrows. `EntityDamageEvent` at `HIGH` covers
+`ENTITY_EXPLOSION` and `BLOCK_EXPLOSION`. Those explosion cases skip when the
+damager was already handled as a ghast fireball. All of it requires a Nether-environment world.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -314,7 +329,7 @@ Listened events: `EntityDamageEvent` (defensive trigger on `FIRE`, `FIRE_TICK`, 
 | `triggerChanceBase` | `0.16` | Chance to leech at level 0, 0 to 1. |
 | `triggerChanceFactor` | `0.34` | Extra trigger chance across levels. |
 | `maxTriggerChance` | `0.7` | Ceiling on trigger chance. |
-| `regenTicksBase` | `28` | Regeneration duration in ticks at level 0; the result is floored at 20. |
+| `regenTicksBase` | `28` | Regeneration duration in ticks at level 0. The result is floored at 20. |
 | `regenTicksFactor` | `42` | Extra regeneration ticks across levels. |
 | `regenAmplifierBase` | `0` | Regeneration amplifier at level 0 (0 is Regeneration I). |
 | `regenAmplifierFactor` | `1` | Extra amplifier across levels, floored to a whole number. |
@@ -353,7 +368,7 @@ Listened events: `PiglinBarterEvent`. The nearest player within `brokerRange` wh
 | `rareBonusChanceFactor` | `0.2` | Extra premium chance across levels. |
 | `maxRareBonusChance` | `0.25` | Ceiling on premium chance. |
 | `amountMultiplierBase` | `1.0` | Stack size multiplier on the duplicated item at level 0, floored at 1. |
-| `amountMultiplierFactor` | `0.5` | Extra stack multiplier across levels; the result is capped by the item's max stack size. |
+| `amountMultiplierFactor` | `0.5` | Extra stack multiplier across levels. The result is capped by the item's max stack size. |
 | `xpOnBoostedBarter` | `12` | Nether XP when a barter was improved. |
 
 Milestones: `challenge_nether_piglin_100` and `challenge_nether_piglin_2500` on `nether.piglin-broker.improved-barters` (100 for 300 XP, 2500 for 1000 XP).
@@ -371,14 +386,16 @@ Milestones: `challenge_nether_piglin_100` and `challenge_nether_piglin_2500` on 
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-soul-strider.toml` |
 
-Listened events: `PlayerMoveEvent`. Requires soul sand or soul soil at your feet or below, and not flying, gliding, or riding. Applies a movement efficiency modifier of `1.0` (which is what removes the soul sand slowdown) plus a movement speed multiplier, both refreshed in 40-tick holds while you stay on soul ground and removed the moment you step off. The burst only fires at max level.
+Listened events: `PlayerMoveEvent`. Requires soul sand or soul soil at your feet or below, and not flying, gliding, or riding. It applies a movement efficiency modifier of `1.0`, which removes the soul sand
+slowdown. It also applies a movement speed multiplier. Both refresh in 40-tick
+holds while you stay on soul ground. Both are removed the moment you step off. The burst only fires at max level.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `strideSpeedBase` | `0.20` | Reference stride speed; the movement speed bonus is `(levelPercent * factor) / base`. |
+| `strideSpeedBase` | `0.20` | Reference stride speed. The movement speed bonus is `(levelPercent * factor) / base`. |
 | `strideSpeedFactor` | `0.10` | Extra stride speed across levels. |
 | `burstTicks` | `60` | Soul-speed burst duration in ticks. |
-| `burstAmplifier` | `1` | Burst strength; the speed multiplier is `0.2 * (amplifier + 1)`. |
+| `burstAmplifier` | `1` | Burst strength. The speed multiplier is `0.2 * (amplifier + 1)`. |
 | `burstGapMillis` | `600` | Milliseconds you must be off soul ground before stepping back on can fire a burst. |
 | `burstCooldownMillis` | `3000` | Milliseconds between bursts. |
 | `xpPerStride` | `2.0` | Nether XP per XP interval while striding. |
@@ -459,7 +476,7 @@ Milestones: `challenge_nether_mason_1k` and `challenge_nether_mason_25k` on `net
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-strider-bond.toml` |
 
-Listened events: `PlayerMoveEvent` (only while your vehicle is a strider; clears shivering and refreshes the mount speed modifier) and Adapt's reflective `EntityDismountEvent` (the lava rescue). Rescue teleports go through the async teleport path and only settle when the teleport actually succeeds.
+Listened events: `PlayerMoveEvent` (only while your vehicle is a strider. Clears shivering and refreshes the mount speed modifier) and Adapt's reflective `EntityDismountEvent` (the lava rescue). Rescue teleports go through the async teleport path and only settle when the teleport actually succeeds.
 
 The strider speed modifier is `0.2 * (amplifier + 1)` applied to the strider, not to you.
 
@@ -491,7 +508,7 @@ Milestones: `challenge_nether_strider_500` and `challenge_nether_strider_5k` on 
 | Tick interval (ms) | 3000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-crimson-feast.toml` |
 
-Listened events: `PlayerInteractEvent` at HIGHEST (receives vanilla's cancelled right-click-air event; main hand right-click with eligible flora) and `PlayerItemConsumeEvent` (any food, Nether only). A protection plugin denying the clicked block still prevents the custom bite. Eating flora is blocked at a full food bar unless you are sneaking, and the flora item is consumed except in creative. The fire resistance grant only happens in a Nether-environment world, so eating flora elsewhere still feeds you but gives no buff.
+Listened events: `PlayerInteractEvent` at HIGHEST (receives vanilla's cancelled right-click-air event. Main hand right-click with eligible flora) and `PlayerItemConsumeEvent` (any food, Nether only). A protection plugin denying the clicked block still prevents the custom bite. Eating flora is blocked at a full food bar unless you are sneaking, and the flora item is consumed except in creative. The fire resistance grant only happens in a Nether-environment world, so eating flora elsewhere still feeds you but gives no buff.
 
 Eligible flora: `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, `TWISTING_VINES`.
 
@@ -522,14 +539,17 @@ Milestones: `challenge_nether_feast_100` and `challenge_nether_feast_2500` on `n
 | Tick interval (ms) | 4000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-ashwalker.toml` |
 
-Listened events: `EntityDamageEvent` at HIGHEST priority, with already-cancelled hits ignored. `HOT_FLOOR` (magma blocks) is set to zero and cancelled outright at any level. `CAMPFIRE` damage, and `FIRE`/`FIRE_TICK` damage traced first to the event's damaging block and then to a lit campfire under or at the player's feet, is set to zero and cancelled from `campfireUnlockLevel` up. Full immunity clears current fire ticks. Soul fire is reduced at max level and the configured fraction is clamped to 0-1.
+Listened events: `EntityDamageEvent` at HIGHEST priority, with already-cancelled hits ignored. `HOT_FLOOR` (magma blocks) is set to zero and cancelled outright at any level. `CAMPFIRE` damage is set to zero and cancelled from `campfireUnlockLevel` up.
+`FIRE` and `FIRE_TICK` damage is traced first to the event's damaging block. It
+is then traced to a lit campfire under or at the player's feet. That damage is
+also set to zero and cancelled from that level up. Full immunity clears current fire ticks. Soul fire is reduced at max level and the configured fraction is clamped to 0-1.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `campfireUnlockLevel` | `2` | Adaptation level required before campfire burns are cancelled. |
 | `soulFireReduction` | `0.8` | Fraction of soul fire damage removed at max level, 0 to 1. |
 | `soulFireMaxFireTicks` | `20` | Burn ticks you are clamped to after soul fire damage. |
-| `immunitySoundVolume` | `0.0` | Volume of Ashwalker's extinguish cue after fully cancelling magma or campfire damage, clamped to 0-1; 0 is silent. |
+| `immunitySoundVolume` | `0.0` | Volume of Ashwalker's extinguish cue after fully cancelling magma or campfire damage, clamped to 0-1. 0 is silent. |
 | `xpPerNegatedDamage` | `3` | Nether XP per point of damage cancelled or reduced. |
 
 Milestones: `challenge_nether_ash_200` and `challenge_nether_ash_5k` on `nether.ashwalker.damage-negated` (200 for 300 XP, 5000 for 1000 XP).

@@ -2,7 +2,7 @@
 title: Adapt — Commands & Permissions
 description: Adapt command tree and functional permission nodes
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: adapt, commands, permissions
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,13 +16,13 @@ Adapt registers the root command `/adapt`. Argument notation: `<required>`, `[op
 
 | Command | Description |
 |---|---|
-| `/adapt boost [seconds] [multiplier]` | Boost Target player Experience gain. |
-| `/adapt global-boost [seconds]` | Boost Global Experience gain. |
+| `/adapt boost [seconds] [multiplier]` | Boost the target player's experience gain. |
+| `/adapt global-boost [seconds]` | Boost global experience gain. |
 | `/adapt gui [target] [player]` | Open the Adapt GUI |
 | `/adapt configure` | Open the in-game Adapt config editor *(alias: config, cfg)* |
 | `/adapt experience <skill> [amount]` | Give yourself an experience orb |
 | `/adapt knowledge <skill> [amount]` | Give yourself a knowledge orb |
-| `/adapt determine <adaptationTarget> <assign> <force> <level>` | Assign a skill, or UnAssign a skill as if you are learning / unlearning a skill. |
+| `/adapt determine <adaptationTarget> <assign> <force> <level>` | Assign or unassign a skill as if you learn or unlearn it. |
 | `/adapt migrate-configs` | Force migrate and rewrite all skill/adaptation configs to canonical TOML with comments. |
 
 ## /adapt clear
@@ -71,24 +71,21 @@ Adapt registers the root command `/adapt`. Argument notation: `<required>`, `[op
 
 | Node | Default | Description |
 |---|---|---|
-| `adapt.boost` | `op` | Allows for you to use the Boost command to boost XP gains |
-| `adapt.cheatitem` | `op` | Allows for you to create a Cheat Item (one time use Xp Items) |
-| `adapt.clear` | `op` | Allows clearing player progression data |
+| `adapt.boost` | `op` | Allows use of the Boost command to boost XP gains |
+| `adapt.cheatitem` | `op` | Allows creation of a Cheat Item (one-time-use XP items) |
+| `adapt.clear` | `op` | Allows clearing of player progression data |
 | `adapt.config` | `False` | Legacy alias for adapt.configurator |
-| `adapt.configurator` | `op` | Allows opening and using the in-game Adapt config editor |
-| `adapt.idontknowwhatimdoingiswear` | `op` | This is for the Adapt Testing command DEVELOPERS ONLY |
-| `adapt.listboosts` | `op` | Allows for you to view the boosts on a player |
-| `adapt.main` | `op` | Allows for you to use the main command |
-| `adapt.opengui` | `op` | Open the GUI without needing a Bookshelf |
+| `adapt.configurator` | `op` | Allows opening and use of the in-game Adapt config editor |
+| `adapt.idontknowwhatimdoingiswear` | `op` | Adapt testing command. Developers only |
+| `adapt.listboosts` | `op` | Allows view of the boosts on a player |
+| `adapt.main` | `op` | Allows use of the main command |
+| `adapt.opengui` | `op` | Open the GUI without a bookshelf |
 
 
 ## Blacklist permissions
 
-Adapt ships 21 blacklist nodes. They all default to `false`, meaning nothing is
-blacklisted out of the box. Granting a node **removes** that skill or adaptation from the
-player — this is a deny-by-grant system, which is the opposite of how most permission nodes work.
+Adapt ships 21 blacklist nodes. They all default to `false`. Nothing is blacklisted out of the box. Grant of a node **removes** that skill or adaptation from the player. This is a deny-by-grant system. Most permission nodes work in the opposite way.
 
-Granting a skill-level node (for example `adapt.blacklist.axes`) implies all of its child
-adaptation nodes, because the children are declared as `children:` in `plugin.yml`.
+Grant of a skill-level node (for example `adapt.blacklist.axes`) implies all of its child adaptation nodes. The children are declared as `children:` in `plugin.yml`.
 
 See [Blacklist Reference](/adapt/blacklist) for the complete node list.

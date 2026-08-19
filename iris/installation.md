@@ -2,7 +2,7 @@
 title: Iris — Installation
 description: Requirements and first-world setup
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: iris, installation
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,8 +17,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | Load order | `STARTUP` — Iris loads before worlds |
 
 Iris downloads its own runtime libraries on first start (`zt-zip`, `fastutil`, `guava`, `asm`,
-`gson`, `concurrentlinkedhashmap-lru`, `bsf`, `rhino`). The first boot after installing will
-take longer than subsequent ones and needs outbound network access.
+`gson`, `concurrentlinkedhashmap-lru`, `bsf`, `rhino`). The first boot after you install takes
+longer than later boots. It needs outbound network access.
 
 ## Install
 
@@ -51,7 +51,7 @@ Generating on demand is expensive. For a production server, pregenerate before o
 ```
 
 `/iris lazypregen start` runs slower but leaves more headroom for live players.
-`/iris turbopregen start` is the fastest and the most disruptive — use it on an empty server.
+`/iris turbopregen start` is the fastest and the most disruptive. Use it on an empty server.
 Both `stop` (alias `x`) and `pause` (alias `t`) work on a running task.
 
 ## Building from source

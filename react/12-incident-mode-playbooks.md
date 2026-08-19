@@ -2,16 +2,16 @@
 title: "Incident Mode & Playbooks"
 description: "React documentation: Incident Mode & Playbooks"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The `incident-score` sampler combines eight pressure signals into a 0–100 value. `incident-mode` applies event-rate limits while that pressure is sustained, while `action-incident-playbook` queues a separate set of cleanup and recovery actions.
+The `incident-score` sampler combines eight pressure signals into a 0–100 value. `incident-mode` applies event-rate limits while that pressure lasts. `action-incident-playbook` queues a separate set of cleanup and recovery actions.
 
 ## Incident score
 
-Each input is linearly normalized between the listed minimum and maximum, clamped to 0–1, multiplied by its weight, and summed. Positive backlog growth is used; negative growth contributes zero.
+React linearly normalizes each input between the listed minimum and maximum. It then clamps the value to 0–1, multiplies by the weight, and sums the results. React uses positive backlog growth. Negative growth contributes zero.
 
 | Sampler | Normalization range | Weight |
 |---|---:|---:|
@@ -28,9 +28,9 @@ Each input is linearly normalized between the listed minimum and maximum, clampe
 
 ## Feature `incident-mode`
 
-The feature waits for its 60-second startup grace, then enters when `incident-score >= 58` or `tick-time >= 60 ms`. It remains active for at least eight seconds and exits only when tick time is at most 46 ms and incident score is at most 35.
+The feature waits for its 60-second startup grace. It then enters when `incident-score >= 58` or `tick-time >= 60 ms`. It stays active for at least eight seconds. It exits only when tick time is at most 46 ms and incident score is at most 35.
 
-During each one-second rate window it allows the configured number of events, then applies these limits:
+During each one-second rate window it allows the configured number of events. It then applies these limits:
 
 | Path | Default limit | Enforcement | Near-player bypass |
 |---|---:|---|---|
@@ -40,13 +40,13 @@ During each one-second rate window it allows the configured number of events, th
 | Hopper inventory moves | 120 | Cancel excess moves | Yes, 14 blocks by default |
 | Redstone transitions | 220 | Restore the old current | Yes, 14 blocks by default |
 
-The complete field/default table is in [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics). Incident mode is its own limiter; other governors continue to evaluate their own pressure gates.
+The complete field and default table is in [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics). Incident mode is its own limiter. Other governors continue to evaluate their own pressure gates.
 
 ## Action `action-incident-playbook`
 
-Run `/react action incident-playbook [include-gc=true] [tier=-1] [world=ALL]` (alias `aip`). Auto tier is severe (`2`) at incident score 70 or tick time 75 ms, medium (`1`) at score 45 or tick time 58 ms, and mild (`0`) otherwise.
+Run `/react action incident-playbook [include-gc=true] [tier=-1] [world=ALL]` (alias `aip`). The auto tier is severe (`2`) at incident score 70 or tick time 75 ms. The auto tier is medium (`1`) at score 45 or tick time 58 ms. The auto tier is mild (`0`) otherwise.
 
-The playbook attempts to queue registered quarantine, trim, hopper-normalization, prewarm, and optional GC tickets, then immediately completes its own ticket. The action controller ignores disabled child actions, although the playbook still counts that queue attempt in its completion total. Accepted child actions may overlap; this is queue orchestration rather than a sequential transaction.
+The playbook tries to queue registered quarantine, trim, hopper-normalization, prewarm, and optional GC tickets. It then completes its own ticket at once. The action controller ignores disabled child actions. The playbook still counts that queue attempt in its completion total. Accepted child actions may overlap. This is queue orchestration, not a sequential transaction.
 
 | Tier | Quarantine | Entity trim | Hopper normalize | Prewarm |
 |---|---|---|---|---|
@@ -54,8 +54,8 @@ The playbook attempts to queue registered quarantine, trim, hopper-normalization
 | 1 medium | 28 chunks, score 80, player radius 56 | 600 total, 12/chunk, age 5 min | 20 chunks, 25 updates/chunk, 48 merges | 32 chunks, radius 1 |
 | 2 severe | 42 chunks, score 60, player radius 48 | 1,000 total, 16/chunk, age 3 min | 32 chunks, 18 updates/chunk, 64 merges | 48 chunks, radius 2 |
 
-The action defaults and full parameter objects are documented in [09 - Actions Catalog](/react/09-actions-catalog).
+The action defaults and full parameter objects are in [09 - Actions Catalog](/react/09-actions-catalog).
 
 ## Trinity coordination
 
-The secret `feature-trinity-incident-mode` requires registered Iris and Adapt capabilities. Its trigger and dependent-feature behavior are documented in [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).
+The secret `feature-trinity-incident-mode` requires registered Iris and Adapt capabilities. Its trigger and dependent-feature behavior are in [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).

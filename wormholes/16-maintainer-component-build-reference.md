@@ -2,12 +2,17 @@
 title: "Maintainer Component & Build Reference"
 description: "Wormholes documentation: Maintainer Component & Build Reference"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Wormholes is split into domain packages rather than one public class per feature. This reference maps every production package to the behavior it owns, identifies the runtime entry points, and records the verification and packaging tasks. Only `art.arcane.wormholes.api.traversal` excluding its `internal` package is a supported Java API.
+
+Wormholes is split into domain packages rather than one public class per
+feature. This page maps each production package to the behavior it owns. It also
+lists runtime entry points and build tasks. Only
+`art.arcane.wormholes.api.traversal` excluding its `internal` package is a
+supported Java API.
 
 ## Runtime entry points
 
@@ -23,7 +28,8 @@ Wormholes is split into domain packages rather than one public class per feature
 | `ProjectionManager` | Observer interest, projection scheduling, RTP view resolution, freeze/flush, projected events |
 | `EffectManager` | Portal ambient effects and effect-entity ownership |
 
-Enable and teardown order are documented in [13 - Runtime Architecture](/wormholes/13-runtime-architecture).
+Enable and teardown order are documented in
+[13 - Runtime Architecture](/wormholes/13-runtime-architecture).
 
 ## Package map
 
@@ -31,7 +37,7 @@ Enable and teardown order are documented in [13 - Runtime Architecture](/wormhol
 |---------|-----------------|-----------------------|
 | `art.arcane.wormholes` | Plugin lifecycle, listeners, construction, projection orchestration, config application | [03 - Building Portals](/wormholes/03-building-portals), [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings), [13 - Runtime Architecture](/wormholes/13-runtime-architecture) |
 | `api.traversal` | Supported provider, context, quote, reservation, receipt, outcome, and event types | [20 - API - Getting Started](/wormholes/20-api-getting-started), [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
-| `api.traversal.internal` | Provider discovery, ordering, fault policy, tickets, settlement, and event dispatch; not public API | [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
+| `api.traversal.internal` | Provider discovery, ordering, fault policy, tickets, settlement, and event dispatch. Not public API | [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
 | `chunk` | Chunk leases, arrival warming, view-distance and send-rate helpers | [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings) |
 | `chunk.presend` | Optional traversal-time chunk pre-send planning, budgets, adapters, and platform delivery | [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings) |
 | `commands` | Director root, admin, network, and server command handlers and parameter completion | [09 - Commands & Permissions](/wormholes/09-commands-permissions) |
@@ -56,11 +62,22 @@ Enable and teardown order are documented in [13 - Runtime Architecture](/wormhol
 
 ## Internal boundaries
 
-- Portal CRUD, menus, projection/render classes, RTP search, dimensional doors, and network/wire classes are implementation details; plugins must not compile against them.
-- `PortalTypeAccess` controls construction and type management only. Traversal authorization remains in the dynamic portal and door policies.
-- Paper chat prompts read the signed message through an ABI-neutral reflective boundary. The runtime jar verification rejects relocated Adventure types in Bukkit or Paper method descriptors, because those platform methods retain the server-owned `net.kyori` types.
-- World and entity access is scheduled through VolmLib's Folia-aware bridge. Network, disk, and heavy sampling work may run asynchronously, but game-state application returns to the owning region or entity.
-- Portal JSON, door state, routes, trust, identities, dictionaries, and the stats snapshot have different lifecycle and reset rules; see [13 - Runtime Architecture](/wormholes/13-runtime-architecture) before changing persistence.
+- Portal CRUD, menus, projection and render classes, RTP search, dimensional
+  doors, and network/wire classes are implementation details. Plugins must not
+  compile against them.
+- `PortalTypeAccess` controls construction and type management only. Traversal
+  authorization remains in the dynamic portal and door policies.
+- Paper chat prompts read the signed message through an ABI-neutral reflective
+  boundary. The runtime jar verification rejects relocated Adventure types in
+  Bukkit or Paper method descriptors. Those platform methods retain the
+  server-owned `net.kyori` types.
+- The runtime schedules world and entity access through the VolmLib Folia-aware
+  bridge. Network, disk, and heavy sampling work may run asynchronously. The
+  runtime applies game state on the owning region or entity.
+- Portal JSON, door state, routes, trust, identities, dictionaries, and the
+  stats snapshot have different lifecycle and reset rules. See
+  [13 - Runtime Architecture](/wormholes/13-runtime-architecture) before you
+  change persistence.
 
 ## Build and verification tasks
 
@@ -68,13 +85,18 @@ Run tasks from `WormholesPlugin/` with Java 25.
 
 | Task | Result |
 |------|--------|
-| `./gradlew test` | JUnit suite with native access enabled for zstd; builds and verifies the shaded runtime jar's platform method descriptors |
+| `./gradlew test` | JUnit suite with native access enabled for zstd. Builds and verifies the shaded runtime jar platform method descriptors |
 | `./gradlew compileSpigotCompatibility` | Compiles supported source against Spigot API after excluding Paper-only bootstrap/listener/registrar classes |
 | `./gradlew check` | Unit tests plus Spigot compatibility compilation |
 | `./gradlew shadowJar` | Runtime plugin jar with configured relocations and SlimJar metadata |
-| `./gradlew apiJar` | Compile-only public traversal API jar; excludes `api.traversal.internal` |
+| `./gradlew apiJar` | Compile-only public traversal API jar. Excludes `api.traversal.internal` |
 | `./gradlew build` | Full check plus runtime and API artifacts |
-| `./gradlew bandwidthHarness` | Entity, transport, and replication comparison harness; scenario settings are supplied as JVM system properties |
-| `./gradlew buildPsychoLT` | Full check plus managed test-server drop-in deployment; use only for the workspace Multiplexor test environment |
+| `./gradlew bandwidthHarness` | Entity, transport, and replication comparison harness. Scenario settings are supplied as JVM system properties |
+| `./gradlew buildPsychoLT` | Full check plus managed test-server drop-in deployment. Use this only for the workspace Multiplexor test environment |
 
-`build/libs/Wormholes-<version>.jar` is the server artifact; `build/libs/Wormholes-<version>-api.jar` is compile-only. A green build proves compilation and automated behavior, not client-visible projection, door interaction, cross-server transfer, or Folia ownership under a live workload; use the matching checks in [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests).
+`build/libs/Wormholes-<version>.jar` is the server artifact.
+`build/libs/Wormholes-<version>-api.jar` is compile-only. A green build proves
+compilation and automated behavior. It does not prove client-visible projection,
+door interaction, cross-server transfer, or Folia ownership under a live
+workload. Use the matching checks in
+[14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests).

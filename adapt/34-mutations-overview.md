@@ -2,56 +2,59 @@
 title: "Mutations Overview"
 description: "Adapt documentation: Mutations Overview"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Mutations are an experimental trait system that sits beside skill adaptations. A player wears up to two traits, each one a package with a real upside and a real downside, and lives with that pair until they are allowed to change it. The feature ships off, so none of it exists on your server until you set `enabled = true` in `plugins/Adapt/adapt/mutations.toml`.
+Mutations are an experimental trait system next to skill adaptations. A player wears up to two traits. Each trait has a benefit and a burden. The feature is off until you set `enabled = true` in `plugins/Adapt/adapt/mutations.toml`.
 
-Where adaptations are things you learn and spend knowledge on, a Mutation is a body you commit to. Gale Lung makes you fast and dangerous while moving, and also makes every hit you take shove you further. Bastion Spine turns standing still into a weapon, and takes your sprint away while you brace. All fifteen types work this way: a benefit, a burden, and one clear thing you do to trigger it. At master level 200 the burdens stop applying, which is the reward for sticking with a pair.
+A player learns adaptations and spends knowledge on them. A Mutation is a commitment the player wears. Gale Lung makes you fast and dangerous while you move. Hits you take also shove you farther. Bastion Spine turns a still stance into a weapon. You cannot sprint while you brace. All fifteen types work this way. Each type has a benefit, a burden, and one trigger action. At master level 200 the burdens stop.
 
-The commitment is enforced with time. Slots unlock at master level 25 and 50, changing one needs a trip to an Adapt bookshelf, and each change puts a ten-minute cooldown on that slot. Because Mutations touch combat, movement, blocks, and other players, nearly everything is tunable per type and per world: conflict lists, a PvP switch, particle and sound switches, and world blacklists.
+Time enforces the commitment. Slots unlock at master level 25 and 50. A change needs a visit to an Adapt bookshelf. Each change puts a ten-minute cooldown on that slot. Mutations touch combat, movement, blocks, and other players. You can tune most of this per type and per world. You can set conflict lists, a PvP switch, particle and sound switches, and world blacklists.
 
-## Turning it on
+## Enable the feature
 
-1. Start the server once with Adapt installed so `plugins/Adapt/adapt/mutations.toml` is written.
-2. Set `enabled = true` and save. The config watcher picks it up and reconciles every online player, and `/adapt mutations reload` does the same on demand.
-3. Grant `adapt.mutations` to players, plus `adapt.use.mutation.<id>` for each type you want available. Give `adapt.mutations.admin` to staff.
+1. Start the server once with Adapt installed. Adapt writes `plugins/Adapt/adapt/mutations.toml`.
+2. Set `enabled = true` and save. The config watcher applies the change. It reconciles every online player. `/adapt mutations reload` does the same on demand.
+3. Grant `adapt.mutations` to players. Also grant `adapt.use.mutation.<id>` for each type you want available.
+4. Give `adapt.mutations.admin` to staff.
 
-Adapt logs which way the switch is set on boot, so check the console if you are unsure.
+Adapt logs the switch state at boot. If you are not sure, check the console.
 
 ## How a player gets a Mutation
 
-Qualification is the first gate. Every type belongs to two of the six domains (Body, Hunt, Industry, Wild, Craft, Anomaly), and each domain is a list of skills. To qualify you need at least one learned adaptation from a skill in each of the type's two domains, at `minimumAdaptationLevel` or higher, with the skill and adaptation both enabled and both use permissions held. A player who has never touched Hunt skills cannot wear Gale Lung at any level. Slots come next: slot one at master level 25, slot two at 50, each announced with a title and a sound.
+Qualification is the first gate. Every type belongs to two of the six domains: Body, Hunt, Industry, Wild, Craft, and Anomaly. Each domain is a list of skills. To qualify, learn at least one adaptation from a skill in each of the two domains. That adaptation must be at `minimumAdaptationLevel` or higher. The skill and the adaptation must both be enabled. You must also hold both use permissions. A player who has not learned Hunt skills cannot wear Gale Lung at any level.
 
-To equip, the player right-clicks the Adapt activator block (a bookshelf by default), which opens the Adapt menu and authorizes Mutation editing for the next minute. `/adapt mutations menu` then shows a page of cards, one per type, with its benefit, burden, state, and the reason for that state. Clicking a card equips it.
+Slots come next. Slot one unlocks at master level 25. Slot two unlocks at 50. Each unlock shows a title and a sound.
 
-A non-admin equip or clear puts a ten-minute cooldown on that slot, and dealing or taking damage blocks slot changes for ten seconds. Admin commands skip those gates along with the permission, world, level, and qualification checks, but still refuse duplicates and configured conflicts. Mutation effects themselves only run in survival and adventure mode; creative and spectator are ignored by the runtime.
+To equip, right-click the Adapt activator block. The default block is a bookshelf. This opens the Adapt menu. It also authorizes Mutation editing for the next minute. `/adapt mutations menu` then shows a page of cards. Each card is one type. The card shows the benefit, burden, state, and the reason for that state. Click a card to equip it.
+
+A non-admin equip or clear puts a ten-minute cooldown on that slot. Damage you deal or take blocks slot changes for ten seconds. Admin commands skip those gates. They also skip the permission, world, level, and qualification checks. They still refuse duplicates and configured conflicts. Mutation effects run only in survival and adventure mode. The runtime ignores creative and spectator.
 
 ## Perfect adaptation and discovery
 
-At master level 200 an active Mutation keeps its benefit and drops its burden. Each catalog entry says what changes. Admins can force it either way with `/adapt mutations perfect-test on|off|clear`, but that override lives in memory only and is dropped when the player leaves or the config reloads.
+At master level 200 an active Mutation keeps its benefit and drops its burden. Each catalog entry says what changes. Admins can force it either way with `/adapt mutations perfect-test on|off|clear`. That override lives in memory only. Adapt drops it when the player leaves or the config reloads.
 
-Discovery is a per-player record of which types a player has actually worn. Equipping marks a type discovered and the menu labels each card Discovered or Undiscovered. It gates nothing. Admins can set it with `/adapt mutations discover <id> <true|false> [player]`.
+Discovery is a per-player record of which types a player has worn. When you equip a type, Adapt marks it discovered. The menu labels each card Discovered or Undiscovered. Discovery gates nothing. Admins can set it with `/adapt mutations discover <id> <true|false> [player]`.
 
 ## States
 
-Every type gets a state and a reason string, and the menu prints that reason on the card, so "why can I not use this" is answerable from the menu alone. The state that trips people up is `DORMANT`: the type is slotted but stopped, usually by a locked slot, a blacklisted world, a lost permission, or a qualification the player no longer meets. All seven states are listed in Reference.
+Every type gets a state and a reason string. The menu prints that reason on the card. You can see why a type is not usable from the menu alone. The state that often confuses players is `DORMANT`. The type is slotted but stopped. Common causes are a locked slot, a blacklisted world, a lost permission, or a qualification the player no longer meets. All seven states are listed in Reference.
 
 ## Cooperative effects
 
-Some Mutations reach other players. Packmind builds Tempo when allies help on your marked target, and Mycelial Nerve spreads your own good potion effects to people near you. Neither ever touches a player who has not opted in with the menu toggle or `/adapt mutations cooperative on|off|toggle`.
+Some Mutations reach other players. Packmind builds Tempo when allies help on your marked target. Mycelial Nerve spreads your own good potion effects to players near you. Neither ever touches a player who has not opted in. Use the menu toggle or `/adapt mutations cooperative on|off|toggle`.
 
-On top of that opt-in, `cooperativeConsentMode` decides which opted-in players count. `EXPLICIT`, the default, accepts any of them. `PARTY` also requires the recipient to share the initiator's scoreboard and team name, which is what Adapt reads as a party. `FRIEND` has no friendship provider behind it, so it rejects everyone and behaves like `DISABLED`.
+`cooperativeConsentMode` then decides which opted-in players count. `EXPLICIT` is the default. It accepts any of them. `PARTY` also requires the recipient to share the initiator's scoreboard and team name. Adapt reads that pair as a party. `FRIEND` has no friendship provider. It rejects everyone and behaves like `DISABLED`.
 
 ## Slot pairs that overlap
 
-Two different types can always be worn together unless a profile's `conflicts` list rejects the pair. Seven pairs do compete for the same runtime resource, though, because both want to move you, both want to save your item from breaking, or both want to place temporary blocks. Each of those has a fixed resolution rule, listed in Reference.
+Two different types can always be worn together unless a profile's `conflicts` list rejects the pair. Seven pairs compete for the same runtime resource. Both types may want to move you. Both may want to save your item from breaking. Both may want to place temporary blocks. Each of those pairs has a fixed resolution rule. The rules are listed in Reference.
 
 ## GUI and commands
 
-`/adapt mutations menu` opens the card GUI and needs `adapt.mutations` plus the feature enabled. `view` and `cooperative` are player-facing; `equip`, `clear`, `discover`, `cooldown`, `refresh`, `slot-override`, `reset`, `perfect-test`, and `reload` all require `adapt.mutations.admin`. `slot-override` forces a slot open or shut for one player regardless of their level, and unlike `perfect-test` it is saved with their data. Full syntax is in [04 - Commands & Permissions](/adapt/04-commands-permissions), and placeholders are in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
+`/adapt mutations menu` opens the card GUI. It needs `adapt.mutations` and the feature enabled. `view` and `cooperative` are player-facing. `equip`, `clear`, `discover`, `cooldown`, `refresh`, `slot-override`, `reset`, `perfect-test`, and `reload` all require `adapt.mutations.admin`. `slot-override` forces a slot open or shut for one player regardless of their level. Unlike `perfect-test`, Adapt saves it with their data. Full syntax is in [04 - Commands & Permissions](/adapt/04-commands-permissions). Placeholders are in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
 
 ## Reference
 
@@ -89,7 +92,7 @@ Two different types can always be worn together unless a profile's `conflicts` l
 | `worldBlacklist` | `[]` | World keys where no Mutation works |
 | `domainMembership` | Table below | Skill ids assigned to each domain |
 
-Normalization runs on load and after every reload. It enforces `slotOneUnlockLevel >= 0`, `slotTwoUnlockLevel >= slotOneUnlockLevel`, `perfectAdaptationLevel >= slotTwoUnlockLevel`, and `minimumAdaptationLevel >= 1`. Switch and combat durations clamp to 0 through 31,536,000,000 ms, the bookshelf token to 1,000 through 300,000 ms, and bookshelf distance to 2 through 32 blocks. World lists keep at most 256 normalized world keys, and each domain list keeps at most 64 unique lowercase skill ids.
+Normalization runs on load and after every reload. It enforces `slotOneUnlockLevel >= 0`, `slotTwoUnlockLevel >= slotOneUnlockLevel`, `perfectAdaptationLevel >= slotTwoUnlockLevel`, and `minimumAdaptationLevel >= 1`. Switch and combat durations clamp to 0 through 31,536,000,000 ms. The bookshelf token clamps to 1,000 through 300,000 ms. Bookshelf distance clamps to 2 through 32 blocks. World lists keep at most 256 normalized world keys. Each domain list keeps at most 64 unique lowercase skill ids.
 
 ### Per-type profile keys
 

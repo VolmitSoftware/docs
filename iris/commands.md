@@ -2,13 +2,13 @@
 title: Iris — Commands
 description: Full /iris command tree
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: iris, commands
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Iris registers a single root command, `/iris`, with the aliases `ir` and `irs`. Every group below is a subcommand of that root — `/iris studio open`, `/iris pregen start`, and so on.
+Iris registers a single root command, `/iris`, with the aliases `ir` and `irs`. Every group below is a subcommand of that root. Examples are `/iris studio open` and `/iris pregen start`.
 
 Argument notation: `<required>`, `[optional]`.
 
@@ -195,6 +195,6 @@ Argument notation: `<required>`, `[optional]`.
 ## Permissions
 
 Iris does not declare granular permission nodes in `plugin.yml`. Command access is gated by
-operator status and by the Decree framework's own origin checks (some commands are
-player-only, some are console-only, most are both). If you need finer control, wrap the
+operator status and by the Decree framework's own origin checks. Some commands are
+player-only. Some are console-only. Most are both. If you need finer control, wrap the
 root command with a permissions plugin that supports per-command matching.

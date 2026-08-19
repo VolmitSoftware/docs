@@ -2,14 +2,14 @@
 title: Iris — Developer API
 description: Accessing Iris from another plugin
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: iris, api
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Iris exposes `IrisToolbelt` as its public entry point. Add Iris as a `softdepend` in your own
-`plugin.yml` and guard every call with `IrisToolbelt.isIrisWorld(world)`.
+`plugin.yml`. Guard every call with `IrisToolbelt.isIrisWorld(world)`.
 
 ## IrisToolbelt
 
@@ -49,7 +49,7 @@ IrisAccess access = IrisToolbelt.createWorld()
 
 > **Note on pregen units.** `center` and `radius` are in *regions*, not chunks or blocks.
 > One region is 32×32 chunks. A radius of 4 produces a 9×9 region map, which is 288×288
-> chunks — considerably more world than the number suggests.
+> chunks. That is considerably more world than the number suggests.
 
 ## Compatibility
 

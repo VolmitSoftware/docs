@@ -2,20 +2,20 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-08-18T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Samplers are React's measurement units. They feed monitors, map renderers, and PlaceholderAPI; every sampler also implements the React map-renderer contract. The complete meaning and unit table for every built-in id is in [19 - API - PlaceholderAPI](/react/19-api-placeholderapi).
+Samplers are React's measurement units. They feed monitors, map renderers, and PlaceholderAPI. Every sampler also implements the React map-renderer contract. The complete meaning and unit table for every built-in id is in [19 - API - PlaceholderAPI](/react/19-api-placeholderapi).
 
 ## Observation model
 
-- Registered samplers start with the sample controller. Cached samplers perform their measurement when sampled and reuse it for their cache interval; ticked samplers update on their own schedule.
+- Registered samplers start with the sample controller. Cached samplers perform their measurement when sampled. They reuse that measurement for their cache interval. Ticked samplers update on their own schedule.
 - PlaceholderAPI demand controls which sampler values its once-per-second publisher requests. It does not enable or disable sampler objects.
-- Built-in cross-plugin samplers are registered even when their source plugin is absent. Their renderer formatting is `---` until data arrives; raw sampler reads return zero before the first value and retain the last received value afterward.
+- Built-in cross-plugin samplers are registered even when their source plugin is absent. Their renderer formatting is `---` until data arrives. Raw sampler reads return zero before the first value. They retain the last received value afterward.
 - Metrics published through `ReactMetrics` create dynamic samplers while their source is registered. They disappear when that source unregisters or its plugin disables.
-- A sampler's `sample(Chunk)` path uses observer data when the metric has chunk samples and otherwise resolves to zero. Its map renderer graphs the sampler history.
+- A sampler's `sample(Chunk)` path uses observer data when the metric has chunk samples. Otherwise it resolves to zero. Its map renderer graphs the sampler history.
 
 ## Built-in sampler count
 
@@ -260,11 +260,11 @@ Short keys such as `%react_tps%` and `%react_mspt%` map to specific samplers. Fu
 | `hiddenore-` | HiddenOre |
 | `biletools-` | BileTools |
 
-Mirrored metric renderers show `---` while the owning plugin has never supplied data; raw `%react_sampler.<id>%` reads return `0` before the first value and retain the last value afterward. Mirrored values lag the source's publish interval. The owning plugin's PlaceholderAPI key is canonical when both plugins expose the same metric.
+Mirrored metric renderers show `---` while the owning plugin has never supplied data. Raw `%react_sampler.<id>%` reads return `0` before the first value. They retain the last value afterward. Mirrored values lag the source's publish interval. The owning plugin's PlaceholderAPI key is canonical when both plugins expose the same metric.
 
 ## Dynamic plugin-cost samplers
 
-React registers `plugin-<normalized-plugin-name>` for each enabled plugin except React and the peers represented by built-in integration samplers. The id lowercases the plugin name and replaces characters outside letters, digits, `_`, and `-` with `-`; the value is a five-sample rolling mean of event-handler time in `ms/s`. The sampler is removed when that plugin disables.
+React registers `plugin-<normalized-plugin-name>` for each enabled plugin except React. It also skips peers represented by built-in integration samplers. The id lowercases the plugin name. It replaces characters outside letters, digits, `_`, and `-` with `-`. The value is a five-sample rolling mean of event-handler time in `ms/s`. React removes the sampler when that plugin disables.
 
 ## Publishing your own metrics
 

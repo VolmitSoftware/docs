@@ -2,24 +2,28 @@
 title: "Skill - Crafting"
 description: "Adapt documentation: Skill - Crafting"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Crafting is the workbench skill. You level it by pulling results out of a crafting grid and by running furnaces. Craft XP scales with the value of what you made, so a stack of sticks is worth much less than a diamond pickaxe, and a flat bonus is added on top of every craft. Furnace XP is granted at the furnace itself and reaches any Adapt player standing within range, which means a smelting room pays the whole base.
+Crafting is the workbench skill. You level it by pulling results out of a crafting grid and by running furnaces. Craft XP scales with the value of what you made. A stack of sticks is worth much less than a diamond pickaxe. A flat bonus is added on top of every craft. Furnace XP is granted at the furnace itself and reaches any Adapt player standing within range. A smelting room pays the whole base.
 
-Both XP paths are throttled. One player can only be paid for a craft once every few seconds, and each individual furnace has its own cooldown, so an AFK auto-smelter does not print XP.
+Both XP paths are throttled. One player can only be paid for a craft once every few seconds. Each individual furnace has its own cooldown. An AFK auto-smelter does not print XP.
 
-The 14 adaptations cover three jobs. Some unlock recipes that do not exist in vanilla: leather from rotten flesh on a campfire, mob heads, ores rebuilt from their drops, and a backpack. Some give you tools that save trips: portable crafting stations you open from your hand, a compactor bound to a crafting table, and shears that tear dropped items back into components. The rest quietly improve the crafts you were making anyway, with refunds, bigger batches, better gear, and bonus food. Five of them ship marked permanent in config, so once learned they stay learned.
+The 14 adaptations cover three jobs. Some unlock recipes that do not exist in vanilla. Those recipes include leather
+from rotten flesh on a campfire, mob heads, ores rebuilt from their drops, and a
+backpack. Some give you tools that save trips. You get portable crafting stations you open from your hand. You also get a
+compactor bound to a crafting table. Shears tear dropped items back into
+components. The rest quietly improve the crafts you were making anyway, with refunds, bigger batches, better gear, and bonus food. Five of them ship marked permanent in config. Once learned they stay learned.
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation to level 1 or higher, the skill and the adaptation are both enabled in config, you hold the `adapt.use` permission, and any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
+Everything below only runs when you have learned the adaptation to level 1 or higher. The skill and the adaptation are both enabled in config. You hold the `adapt.use` permission. Any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
 
 ### Deconstruction (`crafting-deconstruction`)
 
-Shears that work backwards. Point them at an item lying on the ground and it returns half of the recipe's most-used component, accounting for repeated slots and recipes that craft more than one result. Armor must be fully repaired; its enchantments and other metadata are ignored only while finding the original crafting recipe. Large salvage outputs are split into legal stacks rather than rejected.
+Shears that work backwards. Point them at an item lying on the ground. It returns half of the recipe's most-used component. Repeated slots and recipes that craft more than one result are accounted for. Armor must be fully repaired. Its enchantments and other metadata are ignored only while finding the original crafting recipe. Large salvage outputs are split into legal stacks rather than rejected.
 
 **How to use it**
 
@@ -27,7 +31,9 @@ Shears that work backwards. Point them at an item lying on the ground and it ret
 2. Drop the item you want to break down.
 3. Hold shears in your main hand, sneak, and right-click the dropped item.
 
-The dropped item has to be one you are allowed to pick up, and it goes through Bukkit's normal pickup event sequence before it is replaced. If anything denies that, the item, your shears, your XP, and your stats are all left alone. On Folia the player and the item entity must be on the same owning region, and the whole six-block ray has to be region-owned.
+The dropped item has to be one you are allowed to pick up. It goes through
+Bukkit's normal pickup event sequence before it is replaced. If anything denies that, the item, your shears, your XP, and your stats are all left alone. On Folia the player and the item entity must be on the same owning region. The
+whole six-block ray has to be region-owned.
 
 ### Crafting XP (`crafting-xp`)
 
@@ -49,7 +55,7 @@ Without the adaptation the click is cancelled and the campfire hisses at you.
 
 ### Craftable Skulls (`crafting-skulls`)
 
-Unlocks shaped recipes for mob heads. Every one is a ring of eight of one material around a bone block: bones for a skeleton skull, nether bricks for a wither skeleton skull, rotten flesh for a zombie head, gunpowder for a creeper head, and dragon breath for a dragon head. Decorating no longer requires a charged creeper or a dead dragon.
+Unlocks shaped recipes for mob heads. Every one is a ring of eight of one material around a bone block. Bones make a skeleton skull. Nether bricks make a wither skeleton skull. Rotten flesh makes a zombie head. Gunpowder makes a creeper head. Dragon breath makes a dragon head. Decorating no longer requires a charged creeper or a dead dragon.
 
 Works on its own once learned. Craft the recipes.
 
@@ -80,7 +86,7 @@ Anything left inside a portable station is lost when it closes. Not enough food 
 
 ### Ore Reconstruction (`crafting-reconstruction`)
 
-Turns drops back into ore blocks. Every recipe is shapeless: eight of the drop plus one host block gives one ore. The host is whatever the ore is normally encased in, so stone for overworld ores, deepslate for the deepslate variants, and nether bricks for nether gold, nether quartz, and ancient debris.
+Turns drops back into ore blocks. Every recipe is shapeless: eight of the drop plus one host block gives one ore. The host is whatever the ore is normally encased in. Stone is used for overworld ores. Deepslate is used for the deepslate variants. Nether bricks are used for nether gold, nether quartz, and ancient debris.
 
 The in-game lore says scraps, quartz, and emeralds are excluded. That text is out of date. Emerald ore, deepslate emerald ore, nether quartz ore, and ancient debris from netherite scraps all have working recipes.
 
@@ -104,15 +110,19 @@ Works on its own once learned.
 
 ### Masterwork (`crafting-masterwork`)
 
-Tools and armor you craft can come out better than they should. Every actual output rolls independently, including each item produced by one shift-click batch. A successful masterwork adds a randomized fraction of the item's base durability: with shipped settings the roll spans half to all of the durability bonus available at your level. At full level that means +25-50 percent, so `+264 Masterwork` is the upper durability roll for an item with 528 base durability rather than a fixed bonus.
+Tools and armor you craft can come out better than they should. Every actual output rolls independently, including each item produced by one shift-click batch. A successful masterwork adds a randomized fraction of the item's base
+durability. With shipped settings the roll spans half to all of the durability
+bonus available at your level. At full level that means +25-50 percent. `+264 Masterwork` is the upper
+durability roll for an item with 528 base durability rather than a fixed bonus.
 
-Each successful masterwork also has a 10-percent chance to gain one compatible, positive level-one vanilla enchantment. At full level it separately has a 15-percent chance for a small attribute bonus: +1 attack damage on a tool or +1 armor on armor. Normal outputs remain normal when the 75-percent full-level masterwork roll misses. Masterwork does not refund diamonds or other ingredients; that roll belongs to Thrifty Hands.
+Each successful masterwork also has a 10-percent chance to gain one compatible, positive level-one vanilla enchantment. At full level it separately has a 15-percent chance for a small attribute bonus.
+That bonus is +1 attack damage on a tool or +1 armor on armor. Normal outputs remain normal when the 75-percent full-level masterwork roll misses. Masterwork does not refund diamonds or other ingredients. That roll belongs to Thrifty Hands.
 
 Works on its own once learned.
 
 ### Compactor (`crafting-compactor`)
 
-A one-gesture way to squash loose materials into blocks. Look at a crafting table, sneak, tap swap hands, and each supported material with at least 64 plain units across the inventory gets compacted. Neither hand needs to hold an item, so the gesture works with both hands empty. Glowstone dust uses its vanilla 4:1 ratio; coal and every other supported material use 9:1, leaving any non-convertible remainder in the inventory.
+A one-gesture way to squash loose materials into blocks. Look at a crafting table, sneak, tap swap hands, and each supported material with at least 64 plain units across the inventory gets compacted. Neither hand needs to hold an item, so the gesture works with both hands empty. Glowstone dust uses its vanilla 4:1 ratio. Coal and every other supported material use 9:1, leaving any non-convertible remainder in the inventory.
 
 **How to use it**
 
@@ -122,7 +132,7 @@ A one-gesture way to squash loose materials into blocks. Look at a crafting tabl
 
 ### Tinkerer (`crafting-tinkerer`)
 
-Grid-repairing two damaged tools of the same type normally throws away most of the enchantments. Tinkerer merges the highest level of every enchantment from either input into the actual current craft result. There is a chance to keep all of them; when the roll fails you only lose one enchantment at random rather than the lot, and maximum level is always lossless.
+Grid-repairing two damaged tools of the same type normally throws away most of the enchantments. Tinkerer merges the highest level of every enchantment from either input into the actual current craft result. There is a chance to keep all of them. When the roll fails you only lose one enchantment at random rather than the lot, and maximum level is always lossless.
 
 Works on its own once learned.
 
@@ -134,7 +144,8 @@ Works on its own once learned.
 
 ### Artisan's Signature (`crafting-signature`)
 
-Items you craft get stamped with your name in their lore and a hidden signature. Walk up to a villager while carrying your own signed goods and you get Hero of the Village for a moment, which is what makes the trades cheaper.
+Items you craft get stamped with your name in their lore and a hidden signature. Walk up to a villager while carrying your own signed goods and you get Hero of
+the Village for a moment. That effect is what makes the trades cheaper.
 
 **How to use it**
 
@@ -162,7 +173,12 @@ Every adaptation config file also carries the shared keys `enabled`, `permanent`
 
 ### XP sources
 
-Taking a craft result pays `amount * itemValue * craftingValueXPMultiplier + baseCraftingXP` and adds to `crafted.items` and `crafted.value`, plus `crafting.tools` for pickaxes, axes, shovels, hoes, and swords, plus `crafting.armor` for helmets, chestplates, leggings, and boots. It is gated by `cooldownDelay` per player.
+Taking a craft result pays
+`amount * itemValue * craftingValueXPMultiplier + baseCraftingXP`.
+It adds to `crafted.items` and `crafted.value`. It also adds `crafting.tools`
+for pickaxes, axes, shovels, hoes, and swords. It adds `crafting.armor` for
+helmets, chestplates, leggings, and boots. It is gated by `cooldownDelay` per
+player.
 
 A `FurnaceSmeltEvent` pays `furnaceBaseXP + resultValue * furnaceValueXPMultiplier`, granted spatially within `furnaceXPRadius` for `furnaceXPDuration`, and sets no stats. It is gated by `furnaceXpCooldown` per furnace block, keyed by world and coordinates.
 
@@ -215,7 +231,10 @@ Written to `plugins/Adapt/adapt/skills/crafting.toml` on first load.
 
 Milestones: `challenge_crafting_decon_200` and `challenge_crafting_decon_5k` on `crafting.deconstruction.items-deconstructed` at 200 and 5000, rewarding 300 and 1000.
 
-For each recipe Adapt counts every occupied shaped or shapeless slot, chooses the material occupying the most slots, adjusts for the recipe's output count, and returns 50 percent. Armor is eligible only at zero damage; Adapt uses a plain copy of fully repaired armor for recipe lookup so enchantments, Masterwork metadata, and other item metadata do not hide its vanilla recipe. When an item has multiple eligible recipes, the recipe with the greatest total occupied-slot count wins. Recipes whose salvage is not worth less than the source are rejected. Outputs above the material's maximum stack size are emitted as multiple item entities.
+For each recipe Adapt counts every occupied shaped or shapeless slot. It chooses
+the material occupying the most slots. It adjusts for the recipe's output count
+and returns 50 percent. Armor is eligible only at zero damage. Adapt uses a plain copy of fully repaired armor for recipe lookup. Enchantments,
+Masterwork metadata, and other item metadata do not hide its vanilla recipe. When an item has multiple eligible recipes, the recipe with the greatest total occupied-slot count wins. Recipes whose salvage is not worth less than the source are rejected. Outputs above the material's maximum stack size are emitted as multiple item entities.
 
 Listened events:
 
@@ -276,7 +295,12 @@ Listened events:
 | Tick interval (ms) | 17776 |
 | Config file | `plugins/Adapt/adapt/adaptations/crafting-skulls.toml` |
 
-Five shaped recipes, each eight of a ring material around one `BONE_BLOCK`: `crafting-skeletonskull` (`BONE` to `SKELETON_SKULL`), `crafting-witherskeletonskull` (`NETHER_BRICK` to `WITHER_SKELETON_SKULL`), `crafting-zombieskull` (`ROTTEN_FLESH` to `ZOMBIE_HEAD`), `crafting-creeperhead` (`GUNPOWDER` to `CREEPER_HEAD`), and `crafting-dragonhead` (`DRAGON_BREATH` to `DRAGON_HEAD`).
+Five shaped recipes each use eight of a ring material around one `BONE_BLOCK`.
+`crafting-skeletonskull` maps `BONE` to `SKELETON_SKULL`.
+`crafting-witherskeletonskull` maps `NETHER_BRICK` to `WITHER_SKELETON_SKULL`.
+`crafting-zombieskull` maps `ROTTEN_FLESH` to `ZOMBIE_HEAD`.
+`crafting-creeperhead` maps `GUNPOWDER` to `CREEPER_HEAD`. `crafting-dragonhead`
+maps `DRAGON_BREATH` to `DRAGON_HEAD`.
 
 Milestones: `challenge_crafting_skulls_10` and `challenge_crafting_skulls_100` on `crafting.skulls.skulls-crafted` at 10 and 100, rewarding 300 and 1000.
 
@@ -338,7 +362,10 @@ Listened events:
 | Tick interval (ms) | 9248 |
 | Config file | `plugins/Adapt/adapt/adaptations/crafting-stations.toml` |
 
-Recognised held items and the inventory each opens: `CRAFTING_TABLE` to `WORKBENCH`, `GRINDSTONE` to `GRINDSTONE`, `ANVIL` to `ANVIL`, `STONECUTTER` to `STONECUTTER`, `CARTOGRAPHY_TABLE` to `CARTOGRAPHY`, `LOOM` to `LOOM`. Main hand only.
+Recognized held items and the inventory each opens follow. `CRAFTING_TABLE`
+opens `WORKBENCH`. `GRINDSTONE` opens `GRINDSTONE`. `ANVIL` opens `ANVIL`.
+`STONECUTTER` opens `STONECUTTER`. `CARTOGRAPHY_TABLE` opens `CARTOGRAPHY`.
+`LOOM` opens `LOOM`. Main hand only.
 
 Milestones: `challenge_crafting_stations_200` and `challenge_crafting_stations_5k` on `crafting.stations.portable-opens` at 200 and 5000, rewarding 300 and 1000.
 
@@ -468,9 +495,13 @@ Listened events:
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adapt/adaptations/crafting-compactor.toml` |
 
-Activation requires all four: sneaking, an active level above 0, no container open beyond the default inventory view, and a `CRAFTING_TABLE` as the exact target block within 5 blocks. The contents of the main and off hand are irrelevant. This exact gesture remains authoritative if another listener has already cancelled the shared swap-hands event. Stored levels above 1 are normalized back down on join.
+Activation requires all four conditions. You must sneak. Active level must be
+above 0. No container may be open beyond the default inventory view. A
+`CRAFTING_TABLE` must be the exact target block within 5 blocks. The contents of the main and off hand are irrelevant. This exact gesture remains authoritative if another listener has already cancelled the shared swap-hands event. Stored levels above 1 are normalized back down on join.
 
-Supported conversions are iron, gold, coal, redstone, copper, lapis lazuli, raw iron, raw gold, raw copper, diamond, emerald, and netherite into their block forms at 9:1, plus glowstone dust into glowstone at 4:1. A material needs at least 64 plain units across the inventory before its convertible units are processed; those units may be split across slots.
+Supported conversions turn iron, gold, coal, redstone, copper, lapis lazuli, raw
+iron, raw gold, raw copper, diamond, emerald, and netherite into blocks at 9:1.
+Glowstone dust converts into glowstone at 4:1. A material needs at least 64 plain units across the inventory before its convertible units are processed. Those units may be split across slots.
 
 Milestones: `challenge_crafting_compactor_1k` and `challenge_crafting_compactor_10k` on `crafting.compactor.blocks-compacted` at 1000 and 10000, rewarding 400 and 1500.
 
@@ -497,7 +528,9 @@ Listened events:
 
 - `CraftItemEvent` (`on`): grid repair of two matching tools
 
-The handler reads and updates the event's current result, so enchantments compose with earlier craft-result changes such as Masterwork instead of being overwritten by the inventory's stale preview.
+The handler reads and updates the event's current result. Enchantments compose
+with earlier craft-result changes such as Masterwork. They are not overwritten
+by the inventory's stale preview.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

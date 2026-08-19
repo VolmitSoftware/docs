@@ -1,13 +1,16 @@
 ---
 title: "Installation & Configuration"
-description: "Wormholes documentation: Installation & Configuration"
+description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Install the shaded Wormholes jar into `plugins/`, start once so `plugins/Wormholes/` is created, then edit `config/wormholes.toml` (`schema = 2`). Soft depends are optional; missing plugins skip their bridges. Changes to the consolidated config hot-reload via file watch or `/wh reload` (see [09 - Commands & Permissions](/wormholes/09-commands-permissions)).
+
+Copy the shaded Wormholes jar into `plugins/`. Start the server once so
+Wormholes creates `plugins/Wormholes/`. Then edit `config/wormholes.toml`
+(`schema = 2`). A missing optional plugin skips its bridge.
 
 ## Requirements
 
@@ -16,15 +19,21 @@ Install the shaded Wormholes jar into `plugins/`, start once so `plugins/Wormhol
 | Runtime | Paper, Paper-compatible derivatives such as Purpur, and Folia (`folia-supported: true`) |
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
-| Soft depends | PlaceholderAPI, Iris, Vault (optional; load BEFORE when present) |
+| Soft depends | PlaceholderAPI, Iris, Vault (optional). Load them BEFORE when they are present |
 | Artifact | Shaded plugin jar from `./gradlew shadowJar` (prefer over thin/api jars for runtime) |
 
 ## Install
 
-1. Place the shaded jar in `plugins/`.
-2. Start the server. Wormholes creates the data folder and writes `config/wormholes.toml` if missing.
-3. Edit `plugins/Wormholes/config/wormholes.toml`. Unsupported or schema-less files are rejected; `schema = 2` is required.
-4. Apply config changes with `/wormholes reload` or the config file watcher. Direct edits to `languages/*.toml` require `/wormholes reload` (or a config change); Dimensional Doors pack/registry changes require a full server restart (see [07 - Dimensional Doors](/wormholes/07-dimensional-doors)).
+1. Copy the shaded jar into `plugins/`.
+2. Start the server. Wormholes creates the data folder and writes
+   `config/wormholes.toml` if the file is missing.
+3. Edit `plugins/Wormholes/config/wormholes.toml`. Wormholes rejects files that
+   have no schema or a wrong schema. The file must use `schema = 2`.
+4. Apply config changes with `/wormholes reload` or the config file watcher.
+
+Direct edits to `languages/*.toml` need `/wormholes reload` or a config change.
+Dimensional Doors pack and registry changes need a full server restart. See
+[07 - Dimensional Doors](/wormholes/07-dimensional-doors).
 
 ## Data folder layout
 
@@ -42,7 +51,9 @@ plugins/Wormholes/
   wormholes-stats.txt       default stats snapshot path (overridable)
 ```
 
-Peers are not listed under `[network]` in TOML. Import/export writes routes and trust under `routes/` and `trust/` (see [10 - Cross-Server Networking](/wormholes/10-cross-server-networking)).
+Peers are not listed under `[network]` in TOML. Import and export write routes
+and trust under `routes/` and `trust/`. See
+[10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
 ## Config path and schema
 
@@ -54,22 +65,28 @@ Peers are not listed under `[network]` in TOML. Import/export writes routes and 
 | Sections | `[main]`, `[network]` (+ nested), `[projection]`, `[render]` |
 | Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
 
-On successful load the file is rewritten in canonical form with every known key. Canonical rewriting removes custom comments and unknown or misspelled keys. Schema-less files, wrong schemas, and parse failures keep the previous live settings.
+On a successful load, Wormholes rewrites the file in canonical form with every
+known key. Canonical rewriting removes custom comments and unknown or
+misspelled keys. Files with no schema, a wrong schema, or a parse failure keep
+the previous live settings.
 
 ## Visual quality (`quality`)
 
 | Value | Effect after clamps from `[projection]` / `[render]` are applied |
 |-------|------------------------------------------------------------------|
 | `auto` (default) | No profile clamps |
-| `performance` | Forces `lighting-fidelity = false`, `entity-spoofing = false`; caps range ≤ 32, depth ≤ 48, max projectors/tick ≤ 12, max portals/observer/tick ≤ 2, max new observer scans/tick ≤ 32 |
+| `performance` | Forces `lighting-fidelity = false`, `entity-spoofing = false`. Caps range ≤ 32, depth ≤ 48, max projectors/tick ≤ 12, max portals/observer/tick ≤ 2, max new observer scans/tick ≤ 32 |
 | `balanced` | Lighting refresh interval ≥ 6, entity update interval ≥ 2, max spoofed entities ≤ 16, max projectors/tick ≤ 20, max new observer scans/tick ≤ 64 |
-| `cinematic` | Range ≥ 64, depth ≥ 96, max projectors/tick ≥ 32, max new observer scans/tick ≥ 128, lighting refresh ≤ 2, lighting max sections/pass ≥ 4, entity spoof range ≥ 64, max spoofed entities ≥ 48 |
+| `cinematic` | Range ≥ 64, depth ≥ 96, max projectors/tick ≥ 32, and max new observer scans/tick ≥ 128. Lighting refresh ≤ 2, lighting max sections/pass ≥ 4, entity spoof range ≥ 64, and max spoofed entities ≥ 48 |
 
-Unknown profile names fail load. `enable-particles` remains an independent global particle switch; `quality` controls the projection/render profile.
+Unknown profile names fail the load. `enable-particles` remains an independent
+global particle switch. `quality` controls the projection and render profile.
 
 ## Runtime clamps (`Settings.refresh`)
 
-Config values are clamped when applied to runtime. Canonical rewriting happens before runtime clamps, so an out-of-range source value can remain on disk while the live value is bounded.
+Wormholes clamps config values when it applies them to runtime. Canonical
+rewriting happens before runtime clamps. An out-of-range source value can stay
+on disk while the live value is bounded.
 
 | Runtime field source | Clamp |
 |----------------------|--------|
@@ -120,21 +137,21 @@ Config values are clamped when applied to runtime. Canonical rewriting happens b
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `language` | `en_US` | Active locale name; see [11 - Localization](/wormholes/11-localization) |
-| `language-fallbacks` | `""` | Comma-separated fallback locales; code English always final |
+| `language` | `en_US` | Active locale name. See [11 - Localization](/wormholes/11-localization) |
+| `language-fallbacks` | `""` | Comma-separated fallback locales. Code English is always final |
 | `enable-particles` | `true` | Independent global particle switch |
 | `replace-nether-and-end-portals` | `true` | Auto-link vanilla Nether/End frames as Wormholes portals |
-| `dimensional-doors-enabled` | `true` | Full Dimensional Doors feature set; live disable allowed |
+| `dimensional-doors-enabled` | `true` | Full Dimensional Doors feature set. Live disable is allowed |
 | `portal-collapse-speed` | `0.91` | Collapse animation factor |
 | `verbose-logging` | `false` | Verbose console logs (`Settings.DEBUG`) |
 | `debug-rendering` | `false` | Debug rendering aids |
-| `teleport-cooldown-millis` | `1000` | Local teleport cooldown; also floors cross-server handoff rate limit (min 1000 ms) |
-| `portal-pushback-multiplier` | `1.0` | Rejected-traversal push scale; 0 mutes knockback |
-| `portal-sound-volume-multiplier` | `1.0` | Portal/door/traversal sound scale; 0 mutes |
-| `traversal-api-enabled` | `true` | When false, no cost provider runs and traversal events do not fire |
+| `teleport-cooldown-millis` | `1000` | Local teleport cooldown. Also floors cross-server handoff rate limit (min 1000 ms) |
+| `portal-pushback-multiplier` | `1.0` | Rejected-traversal push scale. 0 mutes knockback |
+| `portal-sound-volume-multiplier` | `1.0` | Portal/door/traversal sound scale. 0 mutes |
+| `traversal-api-enabled` | `true` | If false, no cost provider runs and traversal events do not fire |
 | `traversal-api-provider-failure-policy` | `allow` | `allow` (treat fault as free pass) or `deny` (close portal) on provider throw/misbehavior |
-| `traversal-api-provider-fault-limit` | `5` | Faults before provider quarantine; `0` disables quarantine |
-| `traversal-api-slow-provider-millis` | `5` | Warn when a provider call meets/exceeds this ms; `0` disables |
+| `traversal-api-provider-fault-limit` | `5` | Faults before provider quarantine. `0` disables quarantine |
+| `traversal-api-slow-provider-millis` | `5` | Warn when a provider call meets or exceeds this ms. `0` disables |
 | `chunk-pre-send-enabled` | `false` | Pre-send destination chunks at traversal commit (off until verified) |
 | `chunk-pre-send-radius-chunks` | `3` | Radius of pre-send |
 | `chunk-pre-send-max-chunks` | `32` | Hard ceiling per traversal |
@@ -147,8 +164,8 @@ Config values are clamped when applied to runtime. Canonical rewriting happens b
 | `arrival-transition-mask` | `true` | Transition mask at arrival |
 | `arrival-transition-mask-ticks` | `25` | Mask duration |
 | `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
-| `chunk-send-rate-target` | `1000.0` | Target chunks/sec send; Paper default 75; `<=0` or `>10000` is unlimited |
-| `chunk-load-rate-target` | `1000.0` | Target chunks/sec load; Paper default 100; `<=0` or `>10000` is unlimited |
+| `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
+| `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
 ### Traversal API-related main keys
 
@@ -159,17 +176,20 @@ Config values are clamped when applied to runtime. Canonical rewriting happens b
 | `traversal-api-provider-fault-limit` | Session quarantine threshold |
 | `traversal-api-slow-provider-millis` | Slow-call warning threshold |
 
-API surface details: [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
+API surface details:
+[21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
 
 ## `[network]`
 
-Cross-server networking. Default `enabled = false`. Import/export auto-sets `enabled = true` and starts the network when needed (see [10 - Cross-Server Networking](/wormholes/10-cross-server-networking)).
+Cross-server networking. Default `enabled = false`. Import and export set
+`enabled = true` and start the network when needed. See
+[10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
 | Key | Default | Notes |
 |-----|---------|--------|
 | `enabled` | `false` | Cross-server portals / peers |
 | `listen-enabled` | `true` | Accept inbound peer connections |
-| `listen-port` | `8901` | Preferred raw-stream port; bind scans this port through +50, otherwise game-port sideband is used |
+| `listen-port` | `8901` | Preferred raw-stream port. Bind scans this port through +50. Otherwise game-port sideband is used |
 | `trust-on-first-use` | `true` | Trust unknown peer keys on first approved contact when no stored key |
 | `entity-transfer-deny-types` | `""` | Comma-separated entity type names denied for entity transfer |
 | `advertise-host-override` | `""` | Force advertised host in export codes |
@@ -178,7 +198,8 @@ Cross-server networking. Default `enabled = false`. Import/export auto-sets `ena
 | `handoff-timeout-ms` | `5000` | Admission / handoff deadline |
 | `auto-accept-transfers` | `true` | Compatibility rewrite of TRANSFER handshakes to LOGIN when native `accepts-transfers` is not set |
 
-Static `[[peers]]` are not written into this file. Peers live in `routes/peers.properties`.
+Static `[[peers]]` are not written into this file. Peers live in
+`routes/peers.properties`.
 
 ### `[network.transport]`
 
@@ -186,17 +207,18 @@ Static `[[peers]]` are not written into this file. Peers live in `routes/peers.p
 |-----|---------|--------|
 | `compression-enabled` | `true` | Wire compression |
 | `compression-level` | `3` | Runtime clamp 1–22 |
-| `compression-dict-train-bytes` | `10485760` | Dictionary corpus budget; runtime minimum 65536 bytes |
+| `compression-dict-train-bytes` | `10485760` | Dictionary corpus budget. Runtime minimum 65536 bytes |
 | `compression-dict-target-size` | `65536` | Dictionary size target |
-| `compression-retrain-interval-sec` | `600` | Retrain interval; runtime minimum 30 s; applies on reload (reschedules the dictionary retrain task) |
+| `compression-retrain-interval-sec` | `600` | Retrain interval. Runtime minimum 30 s. Applies on reload (reschedules the dictionary retrain task) |
 | `uds-enabled` | `true` | Unix domain sockets when available |
-| `uds-dir` | `""` | Empty uses `plugins/Wormholes/uds`; a relative override resolves from the JVM working directory |
+| `uds-dir` | `""` | Empty uses `plugins/Wormholes/uds`. A relative override resolves from the JVM working directory |
 
 ### `[network.view]`
 
 Entity delta rates for remote views:
 
-Non-positive Hz disables that distance band. Positive rates above 20 Hz still schedule at most once per server tick.
+A non-positive Hz value disables that distance band. Positive rates above 20 Hz
+still schedule at most once per server tick.
 
 | Key | Default |
 |-----|---------|
@@ -214,22 +236,22 @@ Non-positive Hz disables that distance band. Positive rates above 20 Hz still sc
 | Key | Default | Notes |
 |-----|---------|--------|
 | `enabled` | `true` | Periodic stats snapshot file |
-| `interval-sec` | `10` | Write interval; runtime minimum 1 s |
-| `path-override` | `""` | Empty → `wormholes-stats.txt`; relative paths resolve under the data folder, absolute paths are used as written |
+| `interval-sec` | `10` | Write interval. Runtime minimum 1 s |
+| `path-override` | `""` | Empty → `wormholes-stats.txt`. Relative paths resolve under the data folder. Absolute paths are used as written |
 
 ### `[network.replication]`
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `hash-probe-interval-sec` | `30` | Hash probe cadence; runtime minimum 1 s |
-| `hash-probe-chunks-per-tick` | `16` | Probe budget; runtime minimum 1 |
-| `diff-window-size` | `32` | Diff window; runtime minimum 1 |
-| `resync-timeout-sec` | `5` | Resync timeout; runtime minimum 0 |
+| `hash-probe-interval-sec` | `30` | Hash probe cadence. Runtime minimum 1 s |
+| `hash-probe-chunks-per-tick` | `16` | Probe budget. Runtime minimum 1 |
+| `diff-window-size` | `32` | Diff window. Runtime minimum 1 |
+| `resync-timeout-sec` | `5` | Resync timeout. Runtime minimum 0 |
 | `max-queued-diffs-per-peer` | `4096` | Queue cap |
-| `capture-snapshot-interval-ticks` | `100` | Snapshot interval; runtime minimum 20 ticks |
-| `capture-max-queued-diffs-per-chunk` | `256` | Per-chunk queue; runtime minimum 16 |
+| `capture-snapshot-interval-ticks` | `100` | Snapshot interval. Runtime minimum 20 ticks |
+| `capture-max-queued-diffs-per-chunk` | `256` | Per-chunk queue. Runtime minimum 16 |
 | `capture-light-enabled` | `true` | Capture light in replication |
-| `capture-block-entity-enabled` | `false` | Block-entity NBT capture; disabled by default (renderer does not consume it) |
+| `capture-block-entity-enabled` | `false` | Block-entity NBT capture. Disabled by default (renderer does not consume it) |
 
 ## `[projection]`
 
@@ -238,13 +260,13 @@ Non-positive Hz disables that distance band. Positive rates above 20 Hz still sc
 | `range` | `48.0` | Observer interest / projection range |
 | `refresh-interval-ticks` | `1` | Projection refresh cadence |
 | `near-plane-padding` | `2.0` | Near plane pad |
-| `aperture-padding-blocks` | `0.75` | Extra outward pad past aperture edges; raise if rim bleed-through |
+| `aperture-padding-blocks` | `0.75` | Extra outward pad past aperture edges. Raise if rim bleed-through |
 | `frustum-culling-ratio` | `0.2` | Frustum cull ratio |
-| `depth-blocks` | `64` | Extra search distance for recursive portal candidates; primary view depth is per portal |
+| `depth-blocks` | `64` | Extra search distance for recursive portal candidates. Primary view depth is per portal |
 | `recursive-portal-depth` | `3` | Nested portal recursion (runtime min 3) |
 | `stable-cell-resample-interval-ticks` | `4` | Stable cell resample |
 | `client-view-distance-cap` | `true` | Cap to client view distance |
-| `foveated-unrendering` | `false` | Look/side interest filter (`observer-interest-dot` and `side-grace-dot`); off means any observer inside the view AABB is interested |
+| `foveated-unrendering` | `false` | Look/side interest filter (`observer-interest-dot` and `side-grace-dot`). Off means any observer inside the view AABB is interested |
 | `observer-interest-dot` | `-0.2` | Look-toward interest threshold |
 | `side-grace-dot` | `0.12` | Portal-side grace |
 | `max-projectors-per-tick` | `24` | Global projector budget |
@@ -252,9 +274,10 @@ Non-positive Hz disables that distance band. Positive rates above 20 Hz still sc
 | `max-new-observer-scans-per-tick` | `64` | New observer scan budget |
 | `interest-grace-ticks` | `5` | Ticks a projector stays open after live interest is lost (unrender-on-loss delay) |
 | `initial-resend-passes` | `1` | Full sends after view create (raise only to diagnose packet loss) |
-| `max-projected-cells` | `250000` | Hard scan ceiling; budget drops lateral pad first then depth; `0` disables (not recommended) |
+| `max-projected-cells` | `250000` | Hard scan ceiling. Budget drops lateral pad first then depth. `0` disables (not recommended) |
 
-Projection behavior detail: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
+Projection behavior detail:
+[05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
 ## `[render]`
 
@@ -269,19 +292,20 @@ Projection behavior detail: [05 - Projection Modes & Settings](/wormholes/05-pro
 | `entity-spoof-range` | `48.0` | Spoof range |
 | `entity-candidate-cache-ticks` | `3` | Candidate cache TTL |
 | `max-spoofed-entities` | `24` | Cap per view |
-| `capture-zone-radius` | `8.0` | Capture zone radius; applies on reload (every local portal rebuilds its capture AABB) |
+| `capture-zone-radius` | `8.0` | Capture zone radius. Applies on reload (every local portal rebuilds its capture AABB) |
 
 ## Hot reload
 
 | Path | Mechanism |
 |------|-----------|
 | `config/wormholes.toml` change | `HotloadManager` reloads config and then reloads the selected language when valid |
-| `languages/*.toml` change | Not watched directly; use `/wormholes reload` or touch the config file |
+| `languages/*.toml` change | Not watched directly. Use `/wormholes reload` or touch the config file |
 | `/wormholes reload` | Explicit reload of configuration and language files (`wormholes.admin.reload`) |
-| Failed language load on reload | Config may still apply; last valid language retained; console reports cause |
+| Failed language load on reload | Config may still apply. Last valid language is kept. Console reports the cause |
 | Network enable/peer changes | Import/export may start the network without a full restart |
 
-Destructive wipe of config, routes, trust, identity, portals, and doors: `/wormholes admin deleteeverything` (`wormholes.admin.reset`).
+Use `/wormholes admin deleteeverything` to wipe config, routes, trust,
+identity, portals, and doors. That command needs `wormholes.admin.reset`.
 
 ## Related docs
 

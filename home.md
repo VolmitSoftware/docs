@@ -8,25 +8,25 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-# Volmit Software
+This wiki documents the plugins that Volmit Software maintains. Each link
+opens that plugin's landing page. To suggest a change, open a pull request
+or use Discord.
 
-Below are links to Volmits actively maintained software documentation. Please feel free to suggest any changes to the wiki.
-
-- [**Iris** *World generation engine. Dimensions, biomes, caves and jigsaw structures authored as JSON packs, with a live studio and three pregenerators.*](/iris)
+- [**Iris** *World generation engine. JSON packs define dimensions, biomes, caves, and jigsaw structures. The plugin has a live studio and three pregenerators.*](/iris)
 - [**Adapt** *23 passive skill lines and 331 adaptations behind a bookshelf GUI, plus a mutations system.*](/adapt)
 - [**React** *Performance tooling. Live samplers, entity governors, incident mode, and optional command shorthands.*](/react)
 - [**Wormholes** *Portals that render the far side before you step through. RTP, dimensional doors, pocket dimensions, cross-server gateways.*](/wormholes)
-- [**Gloss** *Display suite. Holograms, holographic menus, world panels, container previews, scoreboards, tablist and chat polish, with a web editor.*](/gloss)
-- [**HiddenOre** *Mining economy and anti-xray. Ore pays out of plain stone, so there is nothing to xray.*](/hiddenore)
-- [**BileTools** *Dev utility. Rebuild a jar and it is already reloaded in game.*](/biletools)
+- [**Gloss** *Display suite. Holograms, holographic menus, world panels, container previews, scoreboards, tablist, and chat polish, with a web editor.*](/gloss)
+- [**HiddenOre** *Mining drop-control and anti-xray. Rewards come from ordinary stone and deepslate. An xray client finds nothing.*](/hiddenore)
+- [**BileTools** *Development utility. Rebuild a jar. The plugin then reloads in the game.*](/biletools)
 {.links-list}
 
-[VolmLib](/volmlib), the shared library the suite is built on, is documented for plugin
-developers under [/volmlib/api](/volmlib/api).
+[VolmLib](/volmlib) is the shared library for the suite. Plugin developers
+use the [VolmLib API](/volmlib/api).
 
 ## Compatibility
 
-Every plugin targets the same modern baseline.
+Every plugin uses the same modern baseline.
 
 | Plugin | Java | Paper API | Folia | Load | Root command |
 |---|---|---|---|---|---|
@@ -39,47 +39,53 @@ Every plugin targets the same modern baseline.
 | [BileTools](/biletools) | 21 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
 {.dense}
 
-> Iris, Adapt and React are documented from their `unification` branch. The `master` branches
-> are older and target much earlier Minecraft versions — if you build from `master` you will
-> get a different plugin than these pages describe.
+> Iris, Adapt, and React use the `unification` branch. The `master` branches
+> are older. Those branches target earlier Minecraft versions. If you build
+> from `master`, you get a different plugin than these pages describe.
 {.is-info}
 
 ## Load order
 
-Iris declares `loadbefore: Multiverse-Core` and loads at `STARTUP`. Wormholes and Gloss each ship
-two descriptors: Paper reads `paper-plugin.yml` and loads at `STARTUP`, Spigot falls back to
-`plugin.yml` at `POSTWORLD`. HiddenOre also loads at `STARTUP`.
+Iris declares `loadbefore: Multiverse-Core`. Iris loads at `STARTUP`.
+Wormholes and Gloss each ship two descriptors. Paper reads
+`paper-plugin.yml` and loads at `STARTUP`. Spigot uses `plugin.yml` and
+loads at `POSTWORLD`. HiddenOre also loads at `STARTUP`.
 
 ## Permissions at a glance
 
 | Plugin | Nodes | Shape |
 |---|---|---|
-| [Iris](/iris/04-commands-permissions) | 2 | `iris.all` covers the whole tree; `iris.treefeller` is the one player-facing node |
+| [Iris](/iris/04-commands-permissions) | 2 | `iris.all` covers the whole tree. `iris.treefeller` is the one player-facing node |
 | [Adapt](/adapt/04-commands-permissions) | 13 | Per-feature: gui, boost, mutations, clear, determine, configurator |
 | [React](/react/02-commands-permissions) | 10 | `react.use` plus seven opt-in shorthand nodes |
-| [Wormholes](/wormholes/09-commands-permissions) | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` | Grouped tree; `wormholes.portals` defaults to **true** |
-| [Gloss](/gloss/17-commands-permissions) | 44 declared yml nodes plus dynamic `gloss.open.<menuId>` and `gloss.bubbles.style.<styleId>` | Grouped tree per feature; `gloss.emoji.use`, `gloss.bubbles.send` and `gloss.indicators.show` default to **true** |
+| [Wormholes](/wormholes/09-commands-permissions) | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` | Grouped tree. `wormholes.portals` defaults to **true** |
+| [Gloss](/gloss/17-commands-permissions) | 44 declared yml nodes plus dynamic `gloss.open.<menuId>` and `gloss.bubbles.style.<styleId>` | Grouped tree per feature. `gloss.emoji.use`, `gloss.bubbles.send`, and `gloss.indicators.show` default to **true** |
 | [HiddenOre](/hiddenore/commands) | 1 | `hiddenore.admin` |
-| [BileTools](/biletools/commands) | 1 | `bile.use`, equivalent to console access |
+| [BileTools](/biletools/commands) | 1 | `bile.use` is equal to console access |
 {.dense}
 
-## Things that will catch you out
+## Warnings
 
-> **Wormholes lets everyone build portals by default.** `wormholes.portals` and its two
-> children default to `true`. Every other node in the suite defaults to `op`.
+> **Wormholes lets everyone build portals by default.** `wormholes.portals`
+> and its two children default to `true`. Every other node in the suite
+> defaults to `op`.
 {.is-warning}
 
-> **HiddenOre's seeded veins depend on config order.** Vein positions derive from the order of
-> the `drops:` list. Reorder, insert or delete an entry on a live server and every
-> undiscovered vein reshuffles. Append to the end instead.
+> **A HiddenOre item-rule identity change moves undiscovered veins.**
+> Reordering `drops:` does not move veins. If you add or remove an unrelated
+> rule, each retained rule keeps its layout except where the rules overlap.
+> A change to an item rule's material or spatial generation fields gives
+> that rule a new undiscovered layout.
+{.is-warning}
+
+> **BileTools can delete jars and accept them over a socket.** `bile.use` is
+> equal to console access. Remote deploy uses a plaintext shared secret. Use
+> BileTools on development machines only.
 {.is-danger}
 
-> **BileTools can delete jars and accept them over a socket.** `bile.use` is console-equivalent,
-> and remote deploy authenticates with a plaintext shared secret. Dev boxes only.
-{.is-danger}
-
-> **React's shorthands collide with EssentialsX and CMI.** `/gms`, `/gmc`, `/more`, `/rl` and
-> friends are off by default for that reason. Check before enabling.
+> **React shorthands collide with EssentialsX and CMI.** `/gms`, `/gmc`,
+> `/more`, `/rl`, and similar commands are off by default. Check those
+> plugins before you enable the shorthands.
 {.is-warning}
 
 ## Starting points
@@ -99,7 +105,7 @@ two descriptors: Paper reads `paper-plugin.yml` and loads at `STARTUP`, Spigot f
 
 #### Authoring content
 
-- [Iris — pack layout and concepts *How a dimension is assembled*](/iris/05-concepts-pack-layout)
+- [Iris — pack layout and concepts *How you assemble a dimension*](/iris/05-concepts-pack-layout)
 - [Iris — a minimal dimension *Worked example from empty folder*](/iris/26-example-minimal-dimension)
 - [Adapt — skills catalog *All 23 lines and what they level from*](/adapt/10-skills-catalog)
 - [Wormholes — building portals *Wand, runes, frame rules*](/wormholes/03-building-portals)
@@ -110,9 +116,9 @@ two descriptors: Paper reads `paper-plugin.yml` and loads at `STARTUP`, Spigot f
 
 - [Iris — performance tuning *Where generation time goes*](/iris/33-performance-tuning)
 - [React — samplers and metrics *What each metric measures*](/react/10-samplers-metrics)
-- [React — incident mode and playbooks *When TPS is already on fire*](/react/12-incident-mode-playbooks)
+- [React — incident mode and playbooks *When TPS has already dropped*](/react/12-incident-mode-playbooks)
 - [Wormholes — operator runbooks *Manual smoke checks*](/wormholes/14-operator-runbooks-smoke-tests)
-- [BileTools — hot reload behaviour *When to stop trusting it and restart*](/biletools/hot-reload)
+- [BileTools — hot reload behavior *When to restart instead of a hot reload*](/biletools/hot-reload)
 {.links-list}
 
 #### Developer APIs
@@ -121,7 +127,7 @@ two descriptors: Paper reads `paper-plugin.yml` and loads at `STARTUP`, Spigot f
 - [Adapt — API getting started *Skills, adaptations, mutations, events*](/adapt/41-api-getting-started)
 - [React — API getting started *Metric publishing and entity protection*](/react/16-api-getting-started)
 - [Wormholes — traversal cost and events *Price and intercept player travel*](/wormholes/21-api-traversal-cost-events)
-- [Gloss — API getting started *Menus, holograms and previews from other plugins*](/gloss/21-api-getting-started)
+- [Gloss — API getting started *Menus, holograms, and previews from other plugins*](/gloss/21-api-getting-started)
 - [HiddenOre — API overview *Hook the mining reward pipeline*](/hiddenore/api)
 {.links-list}
 

@@ -2,39 +2,39 @@
 title: "Skill - Agility"
 description: "Adapt documentation: Skill - Agility"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Agility is the movement line. You level it by moving, and the game does the counting for you: sprinting, swimming, hanging in the air, and climbing each pay out on a slow pulse, and every block you travel pays a small trickle on top. It tends to level itself while you play.
+Agility is the movement line. You level it by moving. The game counts sprinting, swimming, hanging in the air, and climbing on a slow pulse. Every block you travel also pays a small trickle. The line tends to level itself while you play.
 
-What you get back is parkour. Sprint long enough and you outrun your own walk speed. Latch a wall and climb a shaft with nothing but shift. Dash mid-air, slide under a one-block gap, and roll out of a fall that would otherwise have cost you half your hearts.
+What you get back is parkour. Sprint long enough and you outrun your own walk speed. Latch a wall and climb a shaft with nothing but shift. Dash mid-air. Slide under a one-block gap. Roll out of a fall that would otherwise cost you half your hearts.
 
-Not all of it is flashy. Several adaptations are quiet insurance: less hunger burned per sprint, a chance to sidestep an incoming arrow, farmland you stop trampling and pressure plates you stop setting off.
+Not all of it is flashy. Several adaptations are quiet insurance. You burn less hunger per sprint. You have a chance to sidestep an incoming arrow. You stop trampling farmland. You stop setting off pressure plates.
 
-Agility uses the `FEATHER` icon, shows green in menus, and runs its passive XP pulse every 975 ms. It has 13 adaptations, and most of them are cheap to unlock.
+Agility uses the `FEATHER` icon. It shows green in menus. Its passive XP pulse runs every 975 ms. It has 13 adaptations. Most of them are cheap to unlock.
 
 ## How you earn Agility XP
 
 Two paths, both automatic.
 
-1. Every movement you make credits distance to the `move` stat and pays `moveXpPassive` for each block travelled. The same distance is also credited to exactly one of `move.sneak`, `move.fly`, `move.swim`, or `move.sprint`, checked in that order. Those four stats are what the challenge milestones count.
-2. Every 975 ms a pulse looks at what you are doing and pays for each thing that applies: sprinting pays `sprintXpPassive`, swimming pays `swimXpPassive`, being off the ground pays `jumpXpPassive`, and climbing pays `climbXpPassive`. Sneaking or flying blocks all four. Sprinting and swimming exclude each other.
+1. Every movement credits distance to the `move` stat and pays `moveXpPassive` for each block travelled. The same distance is also credited to exactly one of `move.sneak`, `move.fly`, `move.swim`, or `move.sprint`, checked in that order. Those four stats are what the challenge milestones count.
+2. Every 975 ms a pulse looks at what you are doing and pays for each thing that applies. Sprinting pays `sprintXpPassive`. Swimming pays `swimXpPassive`. Being off the ground pays `jumpXpPassive`. Climbing pays `climbXpPassive`. Sneaking or flying blocks all four. Sprinting and swimming exclude each other.
 
-The pulse scales its payout by how much real time actually elapsed, so a laggy tick does not shortchange you.
+The pulse scales its payout by how much real time actually elapsed. A laggy tick does not shortchange you.
 
 ## Adaptations
 
-All of these need the same four things before they do anything: you have learned the adaptation to level 1 or higher in the Adapt menu, both the Agility skill and that adaptation are enabled in config, you hold the matching `adapt.use` permission, and protection plugins or region policy allow the action where you are standing. Most also require Survival or Adventure mode. That list is not repeated below.
+All of these need the same four things before they do anything. You have learned the adaptation to level 1 or higher in the Adapt menu. Both the Agility skill and that adaptation are enabled in config. You hold the matching `adapt.use` permission. Protection plugins or region policy allow the action where you are standing. Most also require Survival or Adventure mode. That list is not repeated below.
 
 ### Wind Up (`agility-wind-up`)
 
-Hold a sprint and you keep accelerating. The speed builds over a fixed number of ticks and settles well above vanilla sprint speed, easing in rather than snapping on. Break the sprint, sneak, start flying, start gliding, mount or dismount anything, or leave Survival and Adventure mode, and the buildup resets to zero. It works on its own once learned. Just run.
+Hold a sprint and you keep accelerating. The speed builds over a fixed number of ticks. It settles well above vanilla sprint speed. It eases in rather than snapping on. Break the sprint, sneak, start flying, start gliding, mount or dismount anything, or leave Survival and Adventure mode, and the buildup resets to zero. It works on its own once learned. Just run.
 
 ### Wall Jump (`agility-wall-jump`)
 
-Turns any flat wall into a ladder you can chain. Good for shafts, cliffs, and getting out of holes you dug yourself into.
+Turns any flat wall into a ladder you can chain. Use it on shafts, cliffs, and holes you dug yourself into.
 
 1. Get airborne next to a wall.
 2. Hold shift. You latch onto the wall and stop falling.
@@ -47,18 +47,18 @@ If you are steering away from the wall as you release, you get an extra push bac
 
 A charged standing jump for crossing gaps and reaching ledges.
 
-1. Hold shift. The jump-strength bonus applies while you sneak and is stripped the moment you release.
+1. Hold shift. The jump-strength bonus applies while you sneak. It is stripped the moment you release.
 2. Jump.
 
 Four levels scale the apex from 1.5 blocks up to 2.5 blocks.
 
 ### Armor-Up (`agility-armor-up`)
 
-Sprinting plates you in temporary armor. The plating builds while you run and drains back off after you stop, so it rewards committing to a charge instead of poking. Sneaking, swimming, flying, or gliding all stop it building. It works on its own once learned.
+Sprinting plates you in temporary armor. The plating builds while you run. It drains back off after you stop. It rewards committing to a charge instead of poking. Sneaking, swimming, flying, or gliding all stop it building. It works on its own once learned.
 
 ### Ladder Slide (`agility-ladder-slide`)
 
-Turns ladders and vines into express lanes. Look up to climb fast, look down to drop fast, and level your view back toward the horizon to hand control back to vanilla. Sneaking stops directional movement outright, and the first and last two climbable blocks of a column always use normal control so you do not overshoot the top or slam into the floor. Scaffolding is deliberately excluded. Fall damage caused directly by a fast descent is cancelled while `safeLanding` is on.
+Turns ladders and vines into express lanes. Look up to climb fast. Look down to drop fast. Level your view back toward the horizon to hand control back to vanilla. Sneaking stops directional movement outright. The first and last two climbable blocks of a column always use normal control. You do not overshoot the top or slam into the floor. Scaffolding is deliberately excluded. Fall damage caused directly by a fast descent is cancelled while `safeLanding` is on.
 
 ### Roll Landing (`agility-roll-landing`)
 
@@ -67,16 +67,16 @@ A timed crouch that turns a bad landing into a hungry one.
 1. While falling, tap or hold shift shortly before you hit the ground. A soft click confirms the input is armed.
 2. Land. Part of the fall damage is absorbed and paid for in food points instead.
 
-The absorbed damage scales with level and is capped. You go briefly prone on the landing, and a cooldown is stamped on the hay-block item slot so you cannot chain rolls. Rolling out of a fall of 30 blocks or more grants a hidden challenge.
+The absorbed damage scales with level and is capped. You go briefly prone on the landing. A cooldown is stamped on the hay-block item slot so you cannot chain rolls. Rolling out of a fall of 30 blocks or more grants a hidden challenge.
 
 ### Slipstream Slide (`agility-slipstream-slide`)
 
-A baseball slide that keeps its speed. Useful for shooting a one-block gap you would normally have to crouch-walk through.
+A baseball slide that keeps its speed. Use it to shoot a one-block gap you would normally have to crouch-walk through.
 
 1. Sprint.
 2. Tap shift.
 
-You drop into a prone pose, ground friction mostly disappears, and you carry your momentum until the slide runs out. Each slide costs hunger and puts you on a cooldown that shrinks as you level. At max level, mobs you slide through get slowed.
+You drop into a prone pose. Ground friction mostly disappears. You carry your momentum until the slide runs out. Each slide costs hunger. Each slide puts you on a cooldown that shrinks as you level. At max level, mobs you slide through get slowed.
 
 ### Air Dash (`agility-air-dash`)
 
@@ -85,23 +85,23 @@ A mid-air correction for jumps you misjudged.
 1. Sprint, then jump. That arms the dash.
 2. While still in the air, left-click empty air.
 
-You snap forward along your look direction with a small lift so you do not lose the airtime. Landing rearms it. Each dash costs hunger, and at max level you get two charges per sprint-jump. It does nothing while flying, gliding, swimming, climbing, riding, or already on the ground.
+You snap forward along your look direction with a small lift so you do not lose the airtime. Landing rearms it. Each dash costs hunger. At max level you get two charges per sprint-jump. It does nothing while flying, gliding, swimming, climbing, riding, or already on the ground.
 
 ### Cat Reflexes (`agility-cat-reflexes`)
 
-While you are sprinting, incoming projectiles have a chance to miss entirely. The hit is cancelled and you get a small sidestep nudge. It only fires while sprinting, and only against projectiles. It works on its own once learned.
+While you are sprinting, incoming projectiles have a chance to miss entirely. The hit is cancelled. You get a small sidestep nudge. It only fires while sprinting. It only fires against projectiles. It works on its own once learned.
 
 ### Featherfoot (`agility-featherfoot`)
 
-Stops the ground from punishing you for running across it. Farmland unlocks first, then pressure plates, then sweet berry bushes, then powder snow, one per level. By default it only applies while you are sprinting, which server owners can turn off. It works on its own once learned.
+Stops the ground from punishing you for running across it. Farmland unlocks first. Then pressure plates. Then sweet berry bushes. Then powder snow. One per level. By default it only applies while you are sprinting. Server owners can turn that off. It works on its own once learned.
 
 ### Vault (`agility-vault`)
 
-Run at a fence and jump; you clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded and pre-arms the jump so the hop is high enough to land on top. One level, no scaling.
+Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. One level. No scaling.
 
 ### Marathoner (`agility-marathoner`)
 
-Cuts the saturation drain from sprinting and sprint-jumping. It does not make you faster, it just means you can keep running for a lot longer before hunger stops you. It works on its own once learned.
+Cuts the saturation drain from sprinting and sprint-jumping. It does not make you faster. You can keep running longer before hunger stops you. It works on its own once learned.
 
 ### Kip-Up (`agility-kip-up`)
 
@@ -110,11 +110,11 @@ Turns getting knocked around into momentum you keep.
 1. Take a hit from another entity.
 2. Jump within the recovery window.
 
-You are re-launched in the direction you were steering, or where you were looking if you were not moving, and you get a short speed burst on top. There is a flat cooldown between recoveries.
+You are re-launched in the direction you were steering. If you were not moving, you launch where you were looking. You also get a short speed burst. There is a flat cooldown between recoveries.
 
 ### Paper-only jump detection
 
-Super Jump and Vault both read Paper's `PlayerJumpEvent` through a companion listener that Adapt only registers when that class exists. On a server without it, the rest of each adaptation still runs, but the jump-moment work in that listener does not.
+Super Jump and Vault both read Paper's `PlayerJumpEvent` through a companion listener. Adapt only registers that listener when that class exists. On a server without it, the rest of each adaptation still runs. The jump-moment work in that listener does not.
 
 ## Reference
 
@@ -164,7 +164,10 @@ Written to `plugins/Adapt/adapt/skills/agility.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, and `showSounds`, plus the learn-cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
+Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also
+carries `enabled`, `permanent`, `showParticles`, and `showSounds`. The
+learn-cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` are
+listed per adaptation below.
 
 ### Wind Up
 
@@ -177,7 +180,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carrie
 | Base knowledge cost | 2 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 50 |
-| Menu lines | Max Speed; Windup Time |
+| Menu lines | Max Speed. Windup Time |
 | Milestone | `challenge_agility_wind_up_10min` on `agility.wind-up.max-speed-ticks` at 12000, reward 400 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-wind-up.toml` |
 
@@ -191,7 +194,7 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 | `windupSpeedLevelMultiplier` | `0.225` | Extra speed target added at max level. |
 | `walkSpeedBonusScalar` | `0.75` | Fraction of the speed target converted into the relative movement-speed modifier. |
 | `walkSpeedLerpPerTick` | `0.45` | How quickly the applied modifier eases toward its target each tick, 0-1. |
-| `maxWalkSpeed` | `0.35` | Walk-speed ceiling measured against the 0.2 vanilla base; the relative bonus is capped at maxWalkSpeed / 0.2 - 1. |
+| `maxWalkSpeed` | `0.35` | Walk-speed ceiling measured against the 0.2 vanilla base. The relative bonus is capped at maxWalkSpeed / 0.2 - 1. |
 | `movementVelocityThreshold` | `0.015` | Minimum horizontal speed before top-speed ticks count toward the milestone stat. |
 
 ### Wall Jump
@@ -205,7 +208,7 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 | Base knowledge cost | 2 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 50 |
-| Menu lines | Max Jumps; Jump Height |
+| Menu lines | Max Jumps. Jump Height |
 | Milestone | `challenge_agility_wall_jump_500` on `agility.wall-jump.air-jumps` at 500, reward 500. A hidden `challenge_agility_parkour_master` advancement is also registered. |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-wall-jump.toml` |
 
@@ -232,8 +235,8 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeCha
 | Base knowledge cost | 2 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 9999 |
-| Menu lines | Jump apex (blocks); Sneak + Jump to Super Jump! |
-| Milestones | `challenge_agility_super_jump_100` on `agility.super-jump.jumps` at 100, reward 300; `challenge_agility_super_jump_5k` at 5000, reward 1500 |
+| Menu lines | Jump apex (blocks). Sneak + Jump to Super Jump! |
+| Milestones | `challenge_agility_super_jump_100` on `agility.super-jump.jumps` at 100, reward 300. `challenge_agility_super_jump_5k` at 5000, reward 1500 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-super-jump.toml` |
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerChangedWorldEvent`, and `PlayerJumpEvent` through a Paper-only companion listener.
@@ -254,7 +257,7 @@ Listened events: `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerC
 | Base knowledge cost | 2 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 50 |
-| Menu lines | Max Armor; Armor-Up Time; Armor Decay Time |
+| Menu lines | Max Armor. Armor-Up Time. Armor Decay Time |
 | Milestone | `challenge_agility_armor_up_30min` on `agility.armor-up.ticks-armored` at 36000, reward 500 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-armor-up.toml` |
 
@@ -280,8 +283,8 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 | Base knowledge cost | 1 |
 | Cost factor | 0.12 |
 | Tick interval (ms) | 50 |
-| Menu lines | Ladder descent speed (blocks/sec); Ladder climb speed (blocks/sec); Look activation / release angles |
-| Milestones | `challenge_agility_ladder_500` on `agility.ladder-slide.blocks-climbed` at 500, reward 300; `challenge_agility_ladder_10k` at 10000, reward 1000 |
+| Menu lines | Ladder descent speed (blocks/sec). Ladder climb speed (blocks/sec). Look activation / release angles |
+| Milestones | `challenge_agility_ladder_500` on `agility.ladder-slide.blocks-climbed` at 500, reward 300. `challenge_agility_ladder_10k` at 10000, reward 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-ladder-slide.toml` |
 
 Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerChangedWorldEvent`, `PlayerTeleportEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`, `EntityDamageEvent`, `ServerResourcesReloadedEvent`.
@@ -309,8 +312,8 @@ Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAF
 | Base knowledge cost | 3 |
 | Cost factor | 0.62 |
 | Tick interval (ms) | 1200 |
-| Menu lines | Fall Damage Conversion; Input Timing Window; Roll Cooldown |
-| Milestones | `challenge_agility_roll_100` on `agility.roll-landing.damage-prevented` at 100, reward 300; `challenge_agility_roll_1000` at 1000, reward 1000. A hidden `challenge_agility_fearless` advancement is granted for rolling a fall of 30 blocks or more. |
+| Menu lines | Fall Damage Conversion. Input Timing Window. Roll Cooldown |
+| Milestones | `challenge_agility_roll_100` on `agility.roll-landing.damage-prevented` at 100, reward 300. `challenge_agility_roll_1000` at 1000, reward 1000. A hidden `challenge_agility_fearless` advancement is granted for rolling a fall of 30 blocks or more. |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-roll-landing.toml` |
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerMoveEvent`, `EntityDamageEvent`.
@@ -344,8 +347,8 @@ The roll cooldown is stamped on the player's `HAY_BLOCK` item cooldown slot.
 | Base knowledge cost | 3 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Slide speed (blocks/sec); Slide cooldown; Max level: mobs you slide through are slowed |
-| Milestones | `challenge_agility_slipstream_500` on `agility.slipstream-slide.slides` at 500, reward 400; `challenge_agility_slipstream_5k` at 5000, reward 1500 |
+| Menu lines | Slide speed (blocks/sec). Slide cooldown. Max level: mobs you slide through are slowed |
+| Milestones | `challenge_agility_slipstream_500` on `agility.slipstream-slide.slides` at 500, reward 400. `challenge_agility_slipstream_5k` at 5000, reward 1500 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-slipstream-slide.toml` |
 
 Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerTeleportEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`.
@@ -378,13 +381,15 @@ A sprint that ended within the last 350 ms still counts as sprinting for the pur
 | Base knowledge cost | 3 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Dash speed (blocks/sec); Mid-air dash charges |
-| Milestones | `challenge_agility_air_dash_500` on `agility.air-dash.dashes` at 500, reward 400; `challenge_agility_air_dash_5k` at 5000, reward 1500 |
+| Menu lines | Dash speed (blocks/sec). Mid-air dash charges |
+| Milestones | `challenge_agility_air_dash_500` on `agility.air-dash.dashes` at 500, reward 400. `challenge_agility_air_dash_5k` at 5000, reward 1500 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-air-dash.toml` |
 
 Listened events: `PlayerMoveEvent`, `PlayerInteractEvent` (left-click air only), `PlayerQuitEvent`.
 
-A dash is refused when you are on the ground, flying, gliding, swimming, climbing, riding a vehicle, at zero food, or outside Survival and Adventure mode.
+A dash is refused when you are on the ground, flying, gliding, swimming, or
+climbing. It is also refused when you ride a vehicle, have zero food, or leave
+Survival and Adventure mode.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -408,7 +413,7 @@ A dash is refused when you are on the ground, flying, gliding, swimming, climbin
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
 | Menu lines | Projectile dodge chance |
-| Milestones | `challenge_agility_cat_reflexes_100` on `agility.cat-reflexes.dodges` at 100, reward 300; `challenge_agility_cat_reflexes_1k` at 1000, reward 1200 |
+| Milestones | `challenge_agility_cat_reflexes_100` on `agility.cat-reflexes.dodges` at 100, reward 300. `challenge_agility_cat_reflexes_1k` at 1000, reward 1200 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-cat-reflexes.toml` |
 
 Listened events: `EntityDamageByEntityEvent`.
@@ -431,13 +436,15 @@ Listened events: `EntityDamageByEntityEvent`.
 | Base knowledge cost | 1 |
 | Cost factor | 0.2 |
 | Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Surfaces ignored while sprinting; Farmland > pressure plates > sweet berries > powder snow |
-| Milestones | `challenge_agility_featherfoot_500` on `agility.featherfoot.surfaces-ignored` at 500, reward 300; `challenge_agility_featherfoot_5k` at 5000, reward 1000 |
+| Menu lines | Surfaces ignored while sprinting. Farmland > pressure plates > sweet berries > powder snow |
+| Milestones | `challenge_agility_featherfoot_500` on `agility.featherfoot.surfaces-ignored` at 500, reward 300. `challenge_agility_featherfoot_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-featherfoot.toml` |
 
 Listened events: `PlayerMoveEvent`, `PlayerInteractEvent`, `EntityInsideBlockEvent`, `PlayerInputEvent`, `PlayerToggleSprintEvent`, `PlayerQuitEvent`.
 
-Disabling a surface group or moving its minimum level changes the adaptation's own max level, because max level is set to the highest enabled unlock level whenever the config is normalized.
+Disabling a surface group or moving its minimum level changes the adaptation's
+own max level. Max level is set to the highest enabled unlock level whenever the
+config is normalized.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -468,7 +475,7 @@ Disabling a surface group or moving its minimum level changes the adaptation's o
 | Cost factor | 0 (locked in code) |
 | Tick interval (ms) | 1000 |
 | Menu lines | Fence jump apex (blocks) |
-| Milestones | `challenge_agility_vault_250` on `agility.vault.vaults` at 250, reward 300; `challenge_agility_vault_2500` at 2500, reward 1200 |
+| Milestones | `challenge_agility_vault_250` on `agility.vault.vaults` at 250, reward 300. `challenge_agility_vault_2500` at 2500, reward 1200 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-vault.toml` |
 
 Listened events: `PlayerMoveEvent`, `PlayerTeleportEvent`, `PlayerGameModeChangeEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`, and `PlayerJumpEvent` through a Paper-only companion listener.
@@ -490,7 +497,7 @@ Listened events: `PlayerMoveEvent`, `PlayerTeleportEvent`, `PlayerGameModeChange
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1000 (framework default) |
 | Menu lines | Sprint saturation drain reduction |
-| Milestones | `challenge_agility_marathoner_5k` on `agility.marathoner.saturation-saved` at 5000, reward 400; `challenge_agility_marathoner_50k` at 50000, reward 1500 |
+| Milestones | `challenge_agility_marathoner_5k` on `agility.marathoner.saturation-saved` at 5000, reward 400. `challenge_agility_marathoner_50k` at 50000, reward 1500 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-marathoner.toml` |
 
 Listened events: `EntityExhaustionEvent`, filtered to the `SPRINT` and `JUMP_SPRINT` reasons.
@@ -513,8 +520,8 @@ Listened events: `EntityExhaustionEvent`, filtered to the `SPRINT` and `JUMP_SPR
 | Base knowledge cost | 3 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Recovery window; Recovery speed boost tier |
-| Milestones | `challenge_agility_kip_up_100` on `agility.kip-up.recoveries` at 100, reward 300; `challenge_agility_kip_up_1k` at 1000, reward 1200 |
+| Menu lines | Recovery window. Recovery speed boost tier |
+| Milestones | `challenge_agility_kip_up_100` on `agility.kip-up.recoveries` at 100, reward 300. `challenge_agility_kip_up_1k` at 1000, reward 1200 |
 | Config file | `plugins/Adapt/adapt/adaptations/agility-kip-up.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, `PlayerMoveEvent`, `PlayerQuitEvent`.
@@ -533,7 +540,8 @@ Listened events: `EntityDamageByEntityEvent`, `PlayerMoveEvent`, `PlayerQuitEven
 
 ### Support classes
 
-`AgilityJumpPhysics` is not a player adaptation. It converts between jump strength, jump height, and the extra velocity needed to reach a target height, and is used by Super Jump, Wall Jump, and Vault.
+`AgilityJumpPhysics` is not a player adaptation. It converts between jump strength, jump height, and the extra velocity needed to
+reach a target height. Super Jump, Wall Jump, and Vault use it.
 
 ## See also
 

@@ -2,16 +2,14 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-# Iris
-
-Iris replaces vanilla world generation entirely. Dimensions, regions, biomes, objects and
-jigsaw structures are authored as JSON data packs; Iris assembles them at generation time.
+Iris replaces vanilla world generation. You write dimensions, regions, biomes, objects, and
+jigsaw structures as JSON data packs. Iris assembles them when it generates a chunk.
 
 | | |
 |---|---|
@@ -21,8 +19,8 @@ jigsaw structures are authored as JSON data packs; Iris assembles them at genera
 | Permissions | `iris.all`, `iris.treefeller` |
 | Integrations | WorldEdit, ItemsAdder, Nexo, CraftEngine, MMOItems, MythicMobs, MythicCrucible, EcoItems, ExecutableItems, SCore, MythicLib, eco, KGenerators, PlaceholderAPI |
 
-> Iris declares `loadbefore: Multiverse-Core`. If you run Multiverse, Iris must initialise
-> first or Multiverse will claim Iris worlds with the vanilla generator.
+> Iris declares `loadbefore: Multiverse-Core`. If you run Multiverse, Iris must start first.
+> If Multiverse starts first, it claims Iris worlds with the vanilla generator.
 {.is-warning}
 
 ## Permissions
@@ -32,8 +30,8 @@ jigsaw structures are authored as JSON data packs; Iris assembles them at genera
 | `iris.all` | `op` | The full `/iris` tree — worlds, studio, pregen, packs, developer tools |
 | `iris.treefeller` | `op` | Lets survival players fell Iris-managed trees with an axe |
 
-`iris.all` is deliberately coarse. There is no per-subcommand node, so anyone holding it can
-create, unload, evacuate and delete worlds. Grant it to administrators only, and use
+`iris.all` is coarse. There is no per-subcommand node. Anyone who holds it can create,
+unload, evacuate, and delete worlds. Grant it to administrators only. Use
 `iris.treefeller` for the one player-facing feature.
 
 ### Getting started

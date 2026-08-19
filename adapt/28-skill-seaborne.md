@@ -2,20 +2,20 @@
 title: "Skill - Seaborne"
 description: "Adapt documentation: Skill - Seaborne"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Seaborne is the water skill. You level it by living in the ocean: swimming with your air bar draining, mining underwater, fishing, throwing tridents, and killing drowned and guardians. It has 14 adaptations and shows up in the menu as a blue `TRIDENT`.
+Seaborne is the water skill. You level it by living in the ocean. Swimming with your air bar draining, mining underwater, fishing, throwing tridents, and killing drowned and guardians all pay. It has 14 adaptations. It shows up in the menu as a blue `TRIDENT`.
 
-The early adaptations are about staying down there. Organic Oxygen Tank stretches your air, Turtle's Vision lights up the water, Turtle Miner speeds up underwater mining, and Dolphin's Grace makes you actually fast. Once you can survive a dive, Pressure Diver and Brine Skin keep you alive under damage, and Ink Veil gives you an escape when a guardian locks on.
+The early adaptations are about staying down there. Organic Oxygen Tank stretches your air. Turtle's Vision lights up the water. Turtle Miner speeds up underwater mining. Dolphin's Grace makes you actually fast. Once you can survive a dive, Pressure Diver and Brine Skin keep you alive under damage. Ink Veil gives you an escape when a guardian locks on.
 
-The rest is about doing something useful down there. Deep Salvager marks sunken chests and pays out treasure the first time you crack one open. Coral Gardener lets you keep coral alive out of water and farm it with bone meal. Fish Whisperer herds fish toward you and turns dolphins and axolotls into bodyguards. Trident Mastery makes tridents hit harder and fly home on their own. Two more are pure movement: Tidecaller surges you forward through water or rain, and Hydro Jet burns hunger for a hard burst while you are sprint-swimming.
+The rest is about doing something useful down there. Deep Salvager marks sunken chests and pays out treasure the first time you crack one open. Coral Gardener lets you keep coral alive out of water and farm it with bone meal. Fish Whisperer herds fish toward you and turns dolphins and axolotls into bodyguards. Trident Mastery makes tridents hit harder and fly home on their own. Two more are pure movement. Tidecaller surges you forward through water or rain. Hydro Jet burns hunger for a hard burst while you are sprint-swimming.
 
 ## Adaptations
 
-Everything below needs the same four things before it does anything: the adaptation learned at level 1 or higher, the skill and the adaptation both enabled in config, the matching `adapt.use.*` permission, and any protection or region plugin allowing the action. Those preconditions are not repeated per adaptation.
+Everything below needs the same four things before it does anything. The adaptation is learned at level 1 or higher. The skill and the adaptation are both enabled in config. You hold the matching `adapt.use.*` permission. Any protection or region plugin allows the action. Those preconditions are not repeated per adaptation.
 
 ### Organic Oxygen Tank (`seaborne-oxygen`)
 
@@ -37,13 +37,14 @@ Works on its own once learned. Just fish.
 
 ### Turtle's Vision (`seaborne-turtles-vision`)
 
-Gives you Night Vision the whole time you are in water, and takes it away when you surface. By default Adapt applies a hidden-particle 30-second effect and refreshes it before it reaches five seconds, so the displayed duration is expected to stay high rather than count down to zero. It only removes the effect if it was the one that applied it, so a Night Vision potion you drank yourself is left alone.
+Gives you Night Vision the whole time you are in water, and takes it away when you surface. By default Adapt applies a hidden-particle 30-second effect and refreshes it before it reaches five seconds. The displayed duration is expected to stay high rather than count down to zero. It only removes the effect if it was the one that applied it, so a Night Vision potion you drank yourself is left alone.
 
 Passive. Learn it and swim.
 
 ### Turtle Miner (`seaborne-turtles-mining-speed`)
 
-Adds 40 percent to submerged mining speed and stacks with Aqua Affinity rather than replacing it. Floating normally carries a separate vanilla one-fifth airborne mining penalty; Turtle Miner now compensates for that penalty while you are off the ground, so it works at the same effective rate whether you stand on the seabed or float.
+Adds 40 percent to submerged mining speed and stacks with Aqua Affinity rather than replacing it. Floating normally carries a separate vanilla one-fifth airborne mining penalty. Turtle Miner now compensates for that penalty while you are off the ground. It
+works at the same effective rate whether you stand on the seabed or float.
 
 Passive, single level. It uses attributes rather than a Haste potion and has no Water Breathing prerequisite.
 
@@ -63,11 +64,11 @@ Operators can turn either trigger off, require sneak for the swing trigger, rest
 
 ### Pressure Diver (`seaborne-pressure-diver`)
 
-Rewards going deep. Once your eyes are far enough below sea level, you gain visible absorption hearts, refreshed Resistance, and direct incoming-damage reduction. Go deeper still and the Resistance steps up a tier. The required depth shrinks as you level, so higher levels get the protection nearer the surface. Pressure Diver does not grant Water Breathing; Organic Oxygen Tank remains the oxygen adaptation.
+Rewards going deep. Once your eyes are far enough below sea level, you gain visible absorption hearts, refreshed Resistance, and direct incoming-damage reduction. Go deeper still and the Resistance steps up a tier. The required depth shrinks as you level, so higher levels get the protection nearer the surface. Pressure Diver does not grant Water Breathing. Organic Oxygen Tank remains the oxygen adaptation.
 
-The absorption capacity scales from two hearts at level 1 to six hearts at level 4 with the defaults. It fills when Pressure Diver first activates and only adds newly unlocked capacity if your level rises; the periodic depth refresh does not replace hearts already consumed by damage. Surfacing removes Pressure Diver's own absorption capacity without removing capacity supplied by another adaptation or effect.
+The absorption capacity scales from two hearts at level 1 to six hearts at level 4 with the defaults. It fills when Pressure Diver first activates and only adds newly unlocked capacity if your level rises. The periodic depth refresh does not replace hearts already consumed by damage. Surfacing removes Pressure Diver's own absorption capacity without removing capacity supplied by another adaptation or effect.
 
-It also fights actual Mining Fatigue. While the buff is up it adds a submerged mining speed modifier sized to partly cancel the amplifier you are carrying. It does not counter the normal underwater or floating penalties; Turtle Miner and Aqua Affinity handle those.
+It also fights actual Mining Fatigue. While the buff is up it adds a submerged mining speed modifier sized to partly cancel the amplifier you are carrying. It does not counter the normal underwater or floating penalties. Turtle Miner and Aqua Affinity handle those.
 
 Passive. It arms itself when you dive and clears when you surface.
 
@@ -83,13 +84,14 @@ The second half is bone meal farming. Right-click live coral with bone meal and 
 4. Right-click a coral block that has water next to it.
 5. On a success a new coral block appears in that water cell and one bone meal is consumed.
 
-Growth is authorized like a normal block place, so a region plugin that blocks you gets the last word. If placement is denied, no bone meal is spent; if the bone meal charge fails, the water cell is put back. On Folia the growth only happens in cells owned by the same region as the player.
+Growth is authorized like a normal block place, so a region plugin that blocks you gets the last word. If placement is denied, no bone meal is spent. If the bone meal charge fails, the water cell is put back. On Folia the growth only happens in cells owned by the same region as the player.
 
 ### Deep Salvager (`seaborne-deep-salvager`)
 
-While you are in water, the adaptation quietly scans nearby blocks and paints chests, trapped chests, and barrels with an aqua glow that only you can see. Up to six show at a time, within a capped radius, and only within three blocks of your own height.
+While you are in water, the adaptation quietly scans nearby blocks. It paints
+chests, trapped chests, and barrels with an aqua glow that only you can see. Up to six show at a time, within a capped radius, and only within three blocks of your own height.
 
-Opening one of those containers while you are in water and the container is touching water pays out bonus treasure rolled from an ocean loot table (nautilus shells, prismarine, ingots, lapis, emeralds, ink sacs, tropical fish, heart of the sea). Each container pays once, ever, and the container is stamped so nobody double-dips.
+Opening one of those containers while you are in water and the container is touching water pays out bonus treasure. The roll uses an ocean loot table (nautilus shells, prismarine, ingots, lapis, emeralds, ink sacs, tropical fish, heart of the sea). Each container pays once, ever. The container is stamped so nobody double-dips.
 
 1. Learn Deep Salvager.
 2. Swim into a shipwreck, ruin, or any flooded structure.
@@ -106,7 +108,7 @@ Passive. Learn it and take a hit underwater.
 
 Tridents hit harder, both thrown and swung in melee. When you throw one, the trident is stamped with your level at launch, so it keeps the bonus even if you switch gear mid-flight.
 
-It also brings the trident back. After a short flight grace the trident turns around and homes to you at a velocity that scales with level, and a trident stuck in a block frees itself and comes home too. Higher levels start the return sooner. Operators can turn the return off and keep only the damage.
+It also brings the trident back. After a short flight grace the trident turns around and homes to you at a velocity that scales with level. A trident stuck in a block frees itself and comes home too. Higher levels start the return sooner. Operators can turn the return off and keep only the damage.
 
 Passive. Throw or swing a trident.
 
@@ -217,7 +219,7 @@ Written to `plugins/Adapt/adapt/skills/seaborne.toml` on first load.
 
 Menu stat line: Oxygen Capacity Increase.
 
-Applies the `OXYGEN_BONUS` attribute with a `160` tick timed modifier under the `oxygen` slot. The bonus is derived from the saved-air fraction `level * airPerLevelTics / 75`, clamped to 1; a fraction of 1 grants the hard maximum bonus of `1024`.
+Applies the `OXYGEN_BONUS` attribute with a `160` tick timed modifier under the `oxygen` slot. The bonus is derived from the saved-air fraction `level * airPerLevelTics / 75`, clamped to 1. A fraction of 1 grants the hard maximum bonus of `1024`.
 
 Milestone: `challenge_seaborne_oxygen_12k` on `seaborne.oxygen.bonus-air-ticks` at 12000, reward 300.
 
@@ -245,7 +247,7 @@ Listened events:
 
 Applies `WATER_MOVEMENT_EFFICIENCY` under the `swim` slot at `level / maxLevel`, capped at 1. Applies `DOLPHINS_GRACE` at amplifier 0 for `20 + round(levelPercent * 60)` ticks while sprint-swimming. Eligibility is re-checked at most every `500` ms, and resolves to level 0 (fully inactive) when the player's boots carry Depth Strider. Swim distance is tracked in `4` block chunks and flushed to the stat every `4` blocks.
 
-Milestones: `challenge_seaborne_speed_10k` on `seaborne.speed.blocks-swum` at 10000 (reward 300); `challenge_seaborne_speed_100k` at 100000 (reward 1500).
+Milestones: `challenge_seaborne_speed_10k` on `seaborne.speed.blocks-swum` at 10000 (reward 300). `challenge_seaborne_speed_100k` at 100000 (reward 1500).
 
 No adaptation-specific config knobs.
 
@@ -268,9 +270,11 @@ Listened events:
 
 - `PlayerFishEvent` - on `CAUGHT_FISH` only
 
-On a catch, rolls one 50 percent coin flip per level. Each success drops one random fishing drop at the player's location, spawns an experience orb worth `level * 2`, and adds skill XP of `15` per success at the end.
+On a catch, rolls one 50 percent coin flip per level. Each success drops one random fishing drop at the player's location. It spawns
+an experience orb worth `level * 2`. It adds skill XP of `15` per success at the
+end.
 
-Milestones: `challenge_seaborne_fish_500` on `seaborne.fishers-fantasy.fish-caught` at 500 (reward 300); `challenge_seaborne_fish_5k` at 5000 (reward 1000).
+Milestones: `challenge_seaborne_fish_500` on `seaborne.fishers-fantasy.fish-caught` at 500 (reward 300). `challenge_seaborne_fish_5k` at 5000 (reward 1000).
 
 No adaptation-specific config knobs.
 
@@ -323,12 +327,12 @@ Listened events:
 
 - `BlockBreakEvent` (`MONITOR`, ignore cancelled) - counts blocks broken while in water and plays effects
 - `BlockDamageEvent` (`MONITOR`, ignore cancelled) - activates the mining modifiers immediately when mining starts
-- `PlayerMoveEvent` (`MONITOR`, ignore cancelled) - immediately clears compensation on landing or surfacing; block damage and passive refresh reapply it when floating
-- `PlayerQuitEvent` (`MONITOR`) - clears local managed state; the shared attribute service removes the transient modifiers
+- `PlayerMoveEvent` (`MONITOR`, ignore cancelled) - immediately clears compensation on landing or surfacing. Block damage and passive refresh reapply it when floating
+- `PlayerQuitEvent` (`MONITOR`) - clears local managed state. The shared attribute service removes the transient modifiers
 
 While the player is in water, applies the configured `SUBMERGED_MINING_SPEED` multiplier. When that player is also off the ground, a separate `BLOCK_BREAK_SPEED` multiplier compensates for vanilla's airborne penalty. Both transient modifiers clear on surfacing, unlearning, disable, or disconnect.
 
-Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-underwater` at 2500 (reward 300); `challenge_seaborne_mining_25k` at 25000 (reward 1000).
+Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-underwater` at 2500 (reward 300). `challenge_seaborne_mining_25k` at 25000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -351,7 +355,7 @@ Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-
 | Tick interval (ms) | 1600 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-tidecaller.toml` |
 
-Menu stat lines: Surge Distance; Surge Cooldown; plus a generated Trigger line per enabled trigger and an Environment line.
+Menu stat lines: Surge Distance. Surge Cooldown. Plus a generated Trigger line per enabled trigger and an Environment line.
 
 Listened events:
 
@@ -361,7 +365,7 @@ Listened events:
 
 The cooldown is stored as a vanilla item cooldown on `HEART_OF_THE_SEA` and floors at `20` ticks. A ready ping plays when it expires. Water state counts as in water, swimming, or standing with feet or eyes in liquid. Rain state requires a storm and a position at or above the highest block minus one.
 
-Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` at 200 (reward 300); `challenge_seaborne_tidecaller_5k` at 5000 (reward 1000).
+Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` at 200 (reward 300). `challenge_seaborne_tidecaller_5k` at 5000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -405,7 +409,7 @@ Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` 
 | Tick interval (ms) | 20 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-pressure-diver.toml` |
 
-Menu stat lines: Minimum Depth Requirement; Depth Damage Reduction; Mining Fatigue Reduction Chance; Depth Absorption Hearts.
+Menu stat lines: Minimum Depth Requirement. Depth Damage Reduction. Mining Fatigue Reduction Chance. Depth Absorption Hearts.
 
 Listened events:
 
@@ -414,7 +418,8 @@ Listened events:
 - `BlockBreakEvent` (`MONITOR`, ignore cancelled) - counts blocks mined while the deep state is active
 - `PlayerQuitEvent` - clears depth state
 
-Depth is measured as world sea level minus eye Y. Meeting the depth threshold applies `RESISTANCE` at amplifier 0 for `effectTicks`, adds a namespaced `MAX_ABSORPTION` capacity modifier, and grants that new capacity as absorption health; passing the deep threshold raises Resistance to amplifier 1. It does not apply `WATER_BREATHING`. The absorption modifier composes with other Adapt modifiers, is removed on surfacing, and is not refilled by ordinary refresh pulses. The depth threshold floors at 2 blocks and the deep threshold at 4 blocks. Refresh cadence is clamped to 250 ms to 750 ms, with a 250 ms entry check while shallow, and refresh work is batched at 128 players per tick.
+Depth is measured as world sea level minus eye Y. Meeting the depth threshold applies `RESISTANCE` at amplifier 0 for `effectTicks`, adds a namespaced `MAX_ABSORPTION` capacity modifier, and grants that new capacity as absorption health. Passing the deep threshold raises Resistance to amplifier 1. It does not apply `WATER_BREATHING`. The absorption modifier composes with other Adapt modifiers, is removed on surfacing, and is not refilled by ordinary refresh pulses. The depth threshold floors at 2 blocks and the deep threshold at 4 blocks. Refresh cadence is clamped to 250 ms to 750 ms. A 250 ms entry check runs while
+shallow. Refresh work is batched at 128 players per tick.
 
 Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blocks-mined` at 1000, reward 400.
 
@@ -450,7 +455,7 @@ Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blo
 | Cost factor | 0.55 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-coral-gardener.toml` |
 
-Menu stat lines: Coral Survival Time; Bonemeal Growth Chance.
+Menu stat lines: Coral Survival Time. Bonemeal Growth Chance.
 
 Listened events:
 
@@ -460,7 +465,7 @@ Listened events:
 
 Reef blocks are anything tagged `CORAL_BLOCKS`, `CORALS`, or `WALL_CORALS`, plus `PRISMARINE`, `PRISMARINE_BRICKS`, `DARK_PRISMARINE`, `SEA_LANTERN`, `SPONGE`, and `WET_SPONGE`. Only tagged coral gets fade protection and counts toward the stat. Growth picks a random block from `TUBE_CORAL_BLOCK`, `BRAIN_CORAL_BLOCK`, `BUBBLE_CORAL_BLOCK`, `FIRE_CORAL_BLOCK`, and `HORN_CORAL_BLOCK` and searches the six adjacent faces for a water cell. Growth passes the normal block place authorization and a protection event probe before changing the cell. A denied placement consumes no bone meal, and a failed bone meal charge restores the water cell. Creative mode skips the bone meal cost. On Folia both player and target must be owned by the current region. At most `8192` protected coral blocks are tracked, with expired entries purged first.
 
-Milestones: `challenge_seaborne_coral_500` on `seaborne.coral-gardener.coral-placed` at 500 (reward 300); `challenge_seaborne_coral_5k` at 5000 (reward 1000).
+Milestones: `challenge_seaborne_coral_500` on `seaborne.coral-gardener.coral-placed` at 500 (reward 300). `challenge_seaborne_coral_5k` at 5000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -484,18 +489,23 @@ Milestones: `challenge_seaborne_coral_500` on `seaborne.coral-gardener.coral-pla
 | Tick interval (ms) | 3000 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-deep-salvager.toml` |
 
-Menu stat lines: Detection Range (blocks); Bonus Treasure Rolls.
+Menu stat lines: Detection Range (blocks). Bonus Treasure Rolls.
 
 Listened events:
 
 - `InventoryOpenEvent` (`MONITOR`) - bonus treasure roll
 - `PlayerQuitEvent` (`MONITOR`) - cancels scans and clears the viewer's block displays
 
-Shimmer scans run only while the player is in water. The effective radius is capped at `9` blocks, vertical reach at 3 blocks either side of the player, samples at `3200` blocks per scan, and results at `6` shimmering containers. Shimmers are private per-viewer block displays tinted RGB `70, 230, 235`, lasting between 20 and 200 ticks based on the scan cooldown. Container types are `CHEST`, `TRAPPED_CHEST`, and `BARREL`.
+Shimmer scans run only while the player is in water. The effective radius is capped at `9` blocks. Vertical reach is 3 blocks either
+side of the player. Samples cap at `3200` blocks per scan. Results cap at `6`
+shimmering containers. Shimmers are private per-viewer block displays tinted RGB `70, 230, 235`, lasting between 20 and 200 ticks based on the scan cooldown. Container types are `CHEST`, `TRAPPED_CHEST`, and `BARREL`.
 
-Salvage requires the player to be in water and the container to have water on at least one of its six faces. The container is stamped with the `seaborne_salvaged` persistent key so it pays out once. Treasure is rolled from `NAUTILUS_SHELL` (x2 weight), `PRISMARINE_SHARD` (x3), `PRISMARINE_CRYSTALS` (x2), `GOLD_INGOT`, `IRON_INGOT`, `LAPIS_LAZULI`, `EMERALD`, `INK_SAC`, `GLOW_INK_SAC`, `TROPICAL_FISH`, and `HEART_OF_THE_SEA`, in stacks of 1 to 3 except Heart of the Sea which is always 1. XP is `salvageXp` per item that actually fit in the container.
+Salvage requires the player to be in water and the container to have water on at least one of its six faces. The container is stamped with the `seaborne_salvaged` persistent key so it pays out once. Treasure is rolled from `NAUTILUS_SHELL` at x2 weight, `PRISMARINE_SHARD` at x3,
+and `PRISMARINE_CRYSTALS` at x2. It also rolls `GOLD_INGOT`, `IRON_INGOT`,
+`LAPIS_LAZULI`, `EMERALD`, `INK_SAC`, `GLOW_INK_SAC`, and `TROPICAL_FISH`.
+`HEART_OF_THE_SEA` is always a stack of 1. Other stacks are 1 to 3. XP is `salvageXp` per item that actually fit in the container.
 
-Milestones: `challenge_seaborne_salvage_100` on `seaborne.deep-salvager.containers-salvaged` at 100 (reward 400); `challenge_seaborne_salvage_1k` at 1000 (reward 1500).
+Milestones: `challenge_seaborne_salvage_100` on `seaborne.deep-salvager.containers-salvaged` at 100 (reward 400). `challenge_seaborne_salvage_1k` at 1000 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -519,7 +529,7 @@ Milestones: `challenge_seaborne_salvage_100` on `seaborne.deep-salvager.containe
 | Cost factor | 0.55 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-ink-veil.toml` |
 
-Menu stat lines: Ink Cloud Size (blocks); Ink Burst Cooldown.
+Menu stat lines: Ink Cloud Size (blocks). Ink Burst Cooldown.
 
 Listened events:
 
@@ -529,18 +539,18 @@ Listened events:
 
 Emits an expanding `SQUID_INK` cloud and applies `BLINDNESS` to a bounded number of nearby `Monster` entities. Drowned, guardians, and elder guardians targeting the player have their target cleared and are prevented from reacquiring the player during the concealment lease. The player is not made invisible, and the burst does not cancel or reduce the incoming damage.
 
-Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 100 (reward 300); `challenge_seaborne_ink_1k` at 1000 (reward 1000).
+Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 100 (reward 300). `challenge_seaborne_ink_1k` at 1000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `cloudSizeBase` | `4` | Cloud radius in blocks, before level scaling; the final radius is clamped from 0.5 to 16. |
-| `cloudSizeFactor` | `4` | Extra cloud radius gained at max level; the final radius is clamped from 0.5 to 16. |
-| `cooldownMillisBase` | `12000` | Milliseconds between bursts, before level scaling; the final cooldown is clamped from 3000 to 3600000 ms. |
-| `cooldownMillisReduction` | `8000` | Milliseconds removed from the cooldown at max level; the final cooldown is clamped from 3000 to 3600000 ms. |
-| `concealmentTicksBase` | `40` | Drowned/guardian anti-target duration in ticks, before level scaling; the final duration is clamped from 1 to 1200. |
-| `concealmentTicksFactor` | `40` | Extra concealment ticks gained at max level; the final duration is clamped from 1 to 1200. |
-| `blindTicksBase` | `60` | Blindness duration in ticks applied to hostiles, before level scaling; the final duration is clamped from 1 to 1200. |
-| `blindTicksFactor` | `60` | Extra blindness ticks gained at max level; the final duration is clamped from 1 to 1200. |
+| `cloudSizeBase` | `4` | Cloud radius in blocks, before level scaling. The final radius is clamped from 0.5 to 16. |
+| `cloudSizeFactor` | `4` | Extra cloud radius gained at max level. The final radius is clamped from 0.5 to 16. |
+| `cooldownMillisBase` | `12000` | Milliseconds between bursts, before level scaling. The final cooldown is clamped from 3000 to 3600000 ms. |
+| `cooldownMillisReduction` | `8000` | Milliseconds removed from the cooldown at max level. The final cooldown is clamped from 3000 to 3600000 ms. |
+| `concealmentTicksBase` | `40` | Drowned/guardian anti-target duration in ticks, before level scaling. The final duration is clamped from 1 to 1200. |
+| `concealmentTicksFactor` | `40` | Extra concealment ticks gained at max level. The final duration is clamped from 1 to 1200. |
+| `blindTicksBase` | `60` | Blindness duration in ticks applied to hostiles, before level scaling. The final duration is clamped from 1 to 1200. |
+| `blindTicksFactor` | `60` | Extra blindness ticks gained at max level. The final duration is clamped from 1 to 1200. |
 | `maxAffectedHostiles` | `24` | Maximum nearby monsters blinded by one burst, clamped from 0 to 128. |
 | `cloudVisualTicks` | `10` | Number of ticks over which the visible ink cloud expands, clamped from 1 to 40. |
 | `burstXp` | `10` | Skill XP granted per burst. |
@@ -557,16 +567,18 @@ Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 
 | Cost factor | 0.6 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-trident-mastery.toml` |
 
-Menu stat lines: Bonus Trident Damage; Recall Speed.
+Menu stat lines: Bonus Trident Damage. Recall Speed.
 
 Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - applies the damage bonus
 - `ProjectileLaunchEvent` (`MONITOR`, ignore cancelled) - stamps the trident and starts recall
 
-Thrown tridents carry the thrower's level in the `seaborne_trident_mastery_level` persistent key, and the damage bonus uses that stamped level. Melee hits use the wielder's current level and require a `TRIDENT` in the main hand. Recall re-evaluates every tick up to `120` ticks of tracked life, stops once the trident is within `1.6` blocks of the player, and teleports a stuck trident free before homing it.
+Thrown tridents carry the thrower's level in the `seaborne_trident_mastery_level` persistent key, and the damage bonus uses that stamped level. Melee hits use the wielder's current level and require a `TRIDENT` in the main hand. Recall re-evaluates every tick up to `120` ticks of tracked life. It stops once
+the trident is within `1.6` blocks of the player. It teleports a stuck trident
+free before homing it.
 
-Milestones: `challenge_seaborne_trident_250` on `seaborne.trident-mastery.trident-hits` at 250 (reward 400); `challenge_seaborne_trident_2500` at 2500 (reward 1500).
+Milestones: `challenge_seaborne_trident_250` on `seaborne.trident-mastery.trident-hits` at 250 (reward 400). `challenge_seaborne_trident_2500` at 2500 (reward 1500).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -592,15 +604,17 @@ Milestones: `challenge_seaborne_trident_250` on `seaborne.trident-mastery.triden
 | Tick interval (ms) | 4000 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-fish-whisperer.toml` |
 
-Menu stat lines: Luck of the Sea Tier; Creature Affinity Range (blocks).
+Menu stat lines: Luck of the Sea Tier. Creature Affinity Range (blocks).
 
 Listened events:
 
 - `EntityDamageByEntityEvent` (`MONITOR`, ignore cancelled) - recruits dolphins and axolotls onto the victim
 
-Applies the `LUCK` attribute under the `luck` slot at `level`, refreshed on every tick pulse for `400` ticks. Fish schooling only runs while the player is in water or swimming, nudges at most `12` fish per pulse, ignores fish already within 1 block, and blends the fish's current velocity at half weight with the pull vector. The charmed stat counts a fish once per `12000` ms session. Assist recruitment affects at most `8` mobs per hit; dolphins get a velocity charge toward the victim, axolotls get retargeted.
+Applies the `LUCK` attribute under the `luck` slot at `level`, refreshed on every tick pulse for `400` ticks. Fish schooling only runs while the player is in water or swimming. It nudges at
+most `12` fish per pulse. It ignores fish already within 1 block. It blends the
+fish's current velocity at half weight with the pull vector. The charmed stat counts a fish once per `12000` ms session. Assist recruitment affects at most `8` mobs per hit. Dolphins get a velocity charge toward the victim, axolotls get retargeted.
 
-Milestones: `challenge_seaborne_charm_2k` on `seaborne.fish-whisperer.charmed` at 2000 (reward 300); `challenge_seaborne_charm_20k` at 20000 (reward 1000).
+Milestones: `challenge_seaborne_charm_2k` on `seaborne.fish-whisperer.charmed` at 2000 (reward 300). `challenge_seaborne_charm_20k` at 20000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -624,7 +638,7 @@ Milestones: `challenge_seaborne_charm_2k` on `seaborne.fish-whisperer.charmed` a
 | Cost factor | 0.6 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-hydro-jet.toml` |
 
-Menu stat lines: Burst Force; Jet Charges.
+Menu stat lines: Burst Force. Jet Charges.
 
 Listened events:
 
@@ -633,7 +647,7 @@ Listened events:
 
 Requires `isSwimming()`, so floating in water is not enough. A food level of 0 fizzles without spending a charge. The jet blends 40 percent of current velocity with the burst vector and caps the result at a magnitude of `2.6`. Charges refill continuously from the last use, in fractions of a charge.
 
-Milestones: `challenge_seaborne_hydro_200` on `seaborne.hydro-jet.jets` at 200 (reward 300); `challenge_seaborne_hydro_5k` at 5000 (reward 1000).
+Milestones: `challenge_seaborne_hydro_200` on `seaborne.hydro-jet.jets` at 200 (reward 300). `challenge_seaborne_hydro_5k` at 5000 (reward 1000).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -658,13 +672,15 @@ Milestones: `challenge_seaborne_hydro_200` on `seaborne.hydro-jet.jets` at 200 (
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-brine-skin.toml` |
 
-Menu stat lines: Brine Regeneration Tier; Damage Reduction While Wet.
+Menu stat lines: Brine Regeneration Tier. Damage Reduction While Wet.
 
 Listened events:
 
 - `EntityDamageEvent` (`HIGHEST`, ignore cancelled) - applies the damage reduction
 
-Wet means in water, swimming, or exposed to a storm at or above the highest block minus one. Regeneration is applied for `100` ticks at amplifier `floor(levelPercent * 3)` clamped to a maximum of 2, and is refreshed once the remaining duration drops to `40` ticks or below. Damage reduction also applies during the linger window after leaving water. Wet time is credited to the stat at `interval / 50` ticks per pulse.
+Wet means in water, swimming, or exposed to a storm at or above the highest block minus one. Regeneration is applied for `100` ticks at amplifier `floor(levelPercent * 3)`,
+clamped to a maximum of 2. It is refreshed once the remaining duration drops to
+`40` ticks or below. Damage reduction also applies during the linger window after leaving water. Wet time is credited to the stat at `interval / 50` ticks per pulse.
 
 Milestone: `challenge_seaborne_brine_72k` on `seaborne.brine-skin.wet-ticks` at 72000, reward 400.
 

@@ -2,38 +2,41 @@
 title: "Overview"
 description: "Adapt documentation: Overview"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt is a skills plugin for Paper, Purpur, and Folia servers. Players earn experience in twenty-three skill lines just by playing, spend the knowledge those lines produce on adaptations (abilities attached to a skill), and hold as many adaptation levels at once as their ability power allows. Nothing is handed out by an operator; you unlock it by doing the activity.
 
-In play it works like this. You mine for a while, Pickaxes levels up and pays you knowledge. You right-click a bookshelf, the Adapt menu opens, and you spend that knowledge on something like faster ore breaking. Some adaptations are passive and start working the moment you buy them. Others give you a gesture: sneak-right-click with a certain item, left-click the air mid-jump, raise a shield just before a hit lands. The menu is the only place a player spends anything, so nobody needs to learn a command.
+Adapt is a skills plugin for Paper, Purpur, and Folia servers. Players earn experience in twenty-three skill lines by play and spend the knowledge on adaptations. Ability power limits how many adaptation levels a player can hold at once. Players unlock adaptations by activity, not from an operator.
 
-Around that core sit the optional parts. Experimental Mutations add a second, late-game progression track. Protectors make adaptations respect WorldGuard regions and claim plugins. PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics hook in when those plugins are present. A Velocity and Redis companion module shares player data across a network, and a Java API lets other plugins price, deny, or watch ability use.
+In play it works like this. You mine for a while. Pickaxes levels up and pays you knowledge. You right-click a bookshelf. The Adapt menu opens. You spend that knowledge on something like faster ore breaking.
+
+Some adaptations are passive. They work from the moment you buy them. Others give you a gesture. Examples include sneak-right-click with a certain item, left-click the air mid-jump, or raise a shield just before a hit lands. The menu is the only place a player spends anything. Nobody needs to learn a command.
+
+Optional systems sit around that core. Experimental Mutations add a second, late-game progression track. Protectors make adaptations respect WorldGuard regions and claim plugins. PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics hook in when those plugins are present. A Velocity and Redis companion module shares player data across a network. A Java API lets other plugins price, deny, or watch ability use.
 
 This file is the map. Each section below says what a piece is and which doc owns the detail.
 
 ## What is in the plugin
 
-**Skills** are the progress lines: Agility, Pickaxes, Chronos, and twenty more. Each one watches for its own activities, pays skill XP, and owns a set of adaptations. [10 - Skills Catalog](/adapt/10-skills-catalog) indexes them; `11` through `33` cover one skill each, including where its XP comes from and how every adaptation activates.
+**Skills** are the progress lines. The lines include Agility, Pickaxes, Chronos, and twenty more. Each skill watches for its own activities. Each skill pays skill XP and owns a set of adaptations. [10 - Skills Catalog](/adapt/10-skills-catalog) indexes them. Docs `11` through `33` cover one skill each. Each skill page lists where its XP comes from. It lists how every adaptation activates.
 
-**Adaptations** are what a player buys. Each has levels, a knowledge price per level, and an ability power price it keeps charging while you hold it. Each lives in its own file under `plugins/Adapt/adapt/adaptations/`, so an operator can retune or disable a single ability without touching the rest.
+**Adaptations** are the abilities a player buys. Each adaptation has levels. Each level has a knowledge price. Each held adaptation also charges an ability power price. Each adaptation has its own file under `plugins/Adapt/adapt/adaptations/`. An operator can retune or disable one ability without change to the rest.
 
-**Progression** runs skill XP to skill level to knowledge, and skill level also feeds a shared master level that sets the ability power budget. Knowledge decides what you can afford, power decides how much you can carry at once. See [02 - Concepts](/adapt/02-concepts) for the model and [05 - Configuration Math](/adapt/05-configuration-math) for the curves.
+**Progression** converts skill XP to skill level and knowledge. Skill level also feeds a shared master level. Master level sets the ability power budget. Knowledge decides what you can afford. Power decides how much you can carry at once. See [02 - Concepts](/adapt/02-concepts) for the model and [05 - Configuration Math](/adapt/05-configuration-math) for the curves.
 
-**Menus** carry the whole player experience: the skills list, one page per skill, a level picker per adaptation, the mutation menu, and an in-game config editor for admins. See [03 - Player Usage](/adapt/03-player-usage) and [06 - GUI Customization](/adapt/06-gui-customization).
+**Menus** carry the player experience. The menus include the skills list, one page per skill, and a level picker per adaptation. They also include the mutation menu and an in-game config editor for admins. See [03 - Player Usage](/adapt/03-player-usage) and [06 - GUI Customization](/adapt/06-gui-customization).
 
-**Mutations** are a separate opt-in track with two slots, paired domains, a combat lock that stops mid-fight swapping, and an end-game perfect adaptation state. They are off by default and do not use knowledge. See [34 - Mutations Overview](/adapt/34-mutations-overview) and [35 - Mutations Catalog](/adapt/35-mutations-catalog).
+**Mutations** are a separate opt-in track. They have two slots, paired domains, and a combat lock that stops swaps during a fight. They also have an end-game perfect adaptation state. They are off by default. They do not use knowledge. See [34 - Mutations Overview](/adapt/34-mutations-overview) and [35 - Mutations Catalog](/adapt/35-mutations-catalog).
 
-**Protection** runs before any adaptation touches the world, so claims and regions hold, and WorldGuard gets custom Adapt flags. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [09 - Integrations](/adapt/09-integrations).
+**Protection** runs before any adaptation changes the world. Claims and regions stay in force. WorldGuard gets custom Adapt flags. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [09 - Integrations](/adapt/09-integrations).
 
 **The public API** lets other plugins deny an ability, charge for it, register a protector, or listen for activation events. None of them can grant an unlearned adaptation. Docs `41` through `50` cover it.
 
 ## Building from source
 
-Adapt builds on its own from the `Adapt/` directory and needs a JDK 25 toolchain. Run `./gradlew build` to compile and check, `./gradlew test` for the JVM suite alone, and `./gradlew shadowJar` to produce the shaded jar. Use `build/libs/Adapt-*-all.jar` both at runtime and as the compile-only dependency for API consumers. See [41 - API - Getting Started](/adapt/41-api-getting-started).
+Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Run `./gradlew build` to compile and check. Run `./gradlew test` for the JVM suite alone. Run `./gradlew shadowJar` to produce the shaded jar. Use `build/libs/Adapt-*-all.jar` at runtime and as the compile-only dependency for API consumers. See [41 - API - Getting Started](/adapt/41-api-getting-started).
 
 ## Reference
 

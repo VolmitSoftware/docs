@@ -1,8 +1,8 @@
 ---
 title: React — Samplers & Features
-description: The metrics React collects and the optimisations it offers
+description: The metrics React collects and the optimizations it offers
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: react
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,7 @@ Samplers are live metrics. They feed the monitor, the map renderer, and the chun
 |---|---|
 | `MemoryUsed` | Heap in use |
 | `MemoryFree` | Heap available |
-| `MemoryUsedAfterGC` | Live set after collection — the number that matters for sizing |
+| `MemoryUsedAfterGC` | Live set after collection. Use this number for sizing |
 | `MemoryGarbage` | Garbage generated |
 | `MemoryPressure` | Allocation pressure |
 
@@ -52,24 +52,23 @@ Samplers are live metrics. They feed the monitor, the map renderer, and the chun
 | `ProcessorSystemLoad` | CPU used across the whole system |
 | `ProcessorOutsideLoad` | CPU used by everything *other than* the server |
 
-`ProcessorOutsideLoad` is the one to watch on shared or oversubscribed hosts — a high value
-means your neighbours are the problem, not your plugins.
+Watch `ProcessorOutsideLoad` on shared or oversubscribed hosts. A high value means your neighbors are the problem, not your plugins.
 
 ### React internals
 `ReactSyncTickTime`, `ReactAsyncTickTime`, `ReactJobBudget`, `ReactJobQueueTime`, and
-`ReactJobsQueue` report React's own overhead. If these climb, React itself is contending for
-time and its own workload should be reduced.
+`ReactJobsQueue` report React's own overhead. If these climb, React itself contends for
+time. Reduce the React workload.
 
 ## Features
 
-Features are opt-in optimisations. Each changes gameplay behaviour to some degree — read
-before enabling on a live server.
+Features are opt-in optimizations. Each one changes gameplay behavior to some degree. Read
+the feature page before you enable it on a live server.
 
 | Feature | Effect | Gameplay impact |
 |---|---|---|
 | `EntityTrimmer` | Culls entities above configured thresholds | Removes mobs and items players may consider theirs |
-| `MobStacking` | Merges nearby identical mobs into stacks | Visible; alters farm rates |
-| `ItemSuperStacker` | Merges dropped item stacks beyond vanilla limits | Visible; affects item despawn behaviour |
+| `MobStacking` | Merges nearby identical mobs into stacks | Visible. Alters farm rates |
+| `ItemSuperStacker` | Merges dropped item stacks beyond vanilla limits | Visible. Affects item despawn behavior |
 | `DynamicViewDistance` | Adjusts view distance against load | Players see render distance change |
 | `FastLeafDecay` | Accelerates leaf decay | Cosmetic, generally welcome |
 | `FastExplosions` | Cheaper explosion calculation | May alter block-breaking edge cases |
@@ -77,8 +76,7 @@ before enabling on a live server.
 | `CircuitManager` | Manages redstone circuit load | Can throttle clocks players rely on |
 | `ChunkSamplerMap` | Feeds per-chunk sampling data | Diagnostic only |
 
-> Enable one feature at a time and re-measure. Turning on five at once makes it impossible to
-> tell which one helped and which one broke a player's farm.
+> Enable one feature at a time. Then measure again. If you enable five at once, you cannot tell which one helped and which one broke a farm.
 
 ## Actions
 
@@ -88,5 +86,4 @@ before enabling on a live server.
 | `/react action purge-chunks` | Unloads chunks in the given region |
 | `/react action collect-garbage` | Runs a JVM GC |
 
-> `purge-entities` is destructive and does not discriminate between mob-farm mobs and a
-> player's named pets or item frames. Announce it first.
+> `purge-entities` is destructive. It does not separate mob-farm mobs from named pets or item frames. Announce it first.

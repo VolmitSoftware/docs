@@ -2,18 +2,20 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-08-15T23:55:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris is a world generation engine for Minecraft: it replaces the vanilla chunk generator with terrain, biomes, caves, structures, objects, and entities built from editable JSON packs. The same engine ships as a Bukkit-family plugin and as a Fabric, Forge, or NeoForge server mod, and generates identical chunks on all four when artifacts, pack bytes, seed, and area match. This page is the map of the documentation set: read it to find the page you actually need, then leave. This branch targets Minecraft 26.2 and requires Java 25 everywhere.
+Iris replaces the vanilla chunk generator. Terrain, biomes, caves, structures, objects, and entities come from editable JSON packs. The same engine ships as a Bukkit plugin and as a Fabric, Forge, or NeoForge mod. This branch targets Minecraft 26.2 and requires Java 25.
+
+The four platforms generate identical chunks when artifacts, pack bytes, seed, and area match. This page maps the documentation set. Find the page you need, then leave.
 
 ## Who this documentation is for
 
-There are three audiences and the numbering reflects them. Pages `00`–`33` are for **server operators** installing Iris and **pack authors** writing dimensions, in roughly the order a newcomer needs them. Pages `85`–`87` are **maintainer** checklists for cutting a release. Pages `90`–`94` are for **Java developers** consuming the Iris API from their own plugin or mod.
+There are three audiences. The page numbers reflect them. Pages `00`–`33` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
 
-Reading the set front to back is a waste of time. Pick the outcome you want from the table below and follow only that row.
+Do not read the set from front to back. Pick the outcome you want from the table below. Follow only that row.
 
 ## Choose a learning path
 
@@ -23,32 +25,38 @@ Reading the set front to back is a waste of time. Pick the outcome you want from
 | Write a pack from scratch | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) → [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) → [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) |
 | Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
-| Place a building or structure | [18 - Structures Overview](/iris/18-structures-overview) first to pick an approach, then [19 - Objects](/iris/19-objects) + [20 - Object Placement](/iris/20-object-placement) for single `.iob` objects, [21 - Jigsaw Structures](/iris/21-jigsaw-structures) for multi-piece Iris structures, or [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for vanilla/datapack ones |
+| Place a building or structure | [18 - Structures Overview](/iris/18-structures-overview) → [19 - Objects](/iris/19-objects) → [20 - Object Placement](/iris/20-object-placement) → [21 - Jigsaw Structures](/iris/21-jigsaw-structures) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Ship a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) → [31 - Operator Runbooks](/iris/31-operator-runbooks) |
-| Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences); if you're writing Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
+| Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
-Each tutorial page ends with something you can observe — a world that loads, a chunk that generates, a hotload that lands. Confirm that before moving to the next page. Iris failures cascade misleadingly: a biome key you typo'd in step two shows up three systems later as a cave, decorator, or structure that "doesn't work," and you'll debug the wrong thing.
+Each tutorial page ends with something you can observe. That can be a world that loads, a chunk that generates, or a hotload that lands. Confirm that result before you open the next page.
+
+Iris failures cascade in a misleading way. A biome key you type wrong in step two can show up three systems later as a cave, decorator, or structure that does not work. You then debug the wrong thing.
 
 ## Platforms
 
-One plugin jar covers the whole Bukkit family; each mod loader gets its own jar. Pick by what your server runs, not by feature set — the generator is the same code on all of them.
+One plugin jar covers the whole Bukkit family. Each mod loader gets its own jar. Pick by what your server runs, not by feature set. The generator is the same code on all of them.
 
-| Platform | Artifact | Minecraft | What's different |
+| Platform | Artifact | Minecraft | What is different |
 |---|---|---|---|
-| Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing; this is the reference plugin target |
-| Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation; exact vanilla-slot `/iris replace` is unavailable |
+| Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing. This is the reference plugin target |
+| Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
 | Folia | plugin jar | 26.1.2 – 26.2 | Region-safe scheduling. `/iris create` cannot build a live world at runtime, so it stages the world and automatically requests a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
-| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD; current acceptance target is Fabric Loader 0.19.3 on Java 25 |
-| Forge | mod jar | 26.2 | Same; current acceptance target is Forge 26.2-65.1.1 |
-| NeoForge | mod jar | 26.2 | Same; current acceptance target is NeoForge 26.2.0.59 |
+| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD. Current acceptance target is Fabric Loader 0.19.3 on Java 25 |
+| Forge | mod jar | 26.2 | Same. Current acceptance target is Forge 26.2-65.1.1 |
+| NeoForge | mod jar | 26.2 | Same. Current acceptance target is NeoForge 26.2.0.59 |
 
-The plugin registers as `Iris` with command `/iris` (aliases `/ir`, `/irs`), `folia-supported: true`, `load: STARTUP`, and `api-version: 26.1` — the low api-version is deliberate so one jar loads on both 26.1.2 and 26.2. Its descriptor declares two permissions, `iris.all` (the whole command tree) and `iris.treefeller` (survival tree felling only), both defaulting to op. Optional soft-dependencies load before Iris; Multiverse-Core is ordered *after* Iris so Multiverse sees Iris generators once they exist. Full list in [01 - Installation & Platforms](/iris/01-installation-platforms).
+The plugin registers as `Iris` with command `/iris` (aliases `/ir`, `/irs`). It sets `folia-supported: true`, `load: STARTUP`, and `api-version: 26.1`. The low api-version is deliberate so one jar loads on both 26.1.2 and 26.2.
 
-All three mod loaders use mod id `irisworldgen`, and register `/ir` and `/irs` as command redirects the same way the plugin does.
+The descriptor declares two permissions. `iris.all` covers the whole command tree. `iris.treefeller` covers survival tree felling only. Both default to op.
+
+Optional soft-dependencies load before Iris. Multiverse-Core is ordered *after* Iris so Multiverse sees Iris generators once they exist. The full list is in [01 - Installation & Platforms](/iris/01-installation-platforms).
+
+All three mod loaders use mod id `irisworldgen`. They register `/ir` and `/irs` as command redirects the same way the plugin does.
 
 ## Feature map
 
-Every feature of Iris is documented on exactly one page. Find the subject, go there.
+Every Iris feature is on exactly one page. Find the subject, then go there.
 
 | Area | What it covers | Doc |
 |---|---|---|
@@ -96,20 +104,20 @@ Every feature of Iris is documented on exactly one page. Find the subject, go th
 
 ## Content model
 
-Six terms carry most of the documentation. Learn them here and the rest of the set reads much faster.
+Six terms carry most of the documentation. Learn them here. The rest of the set then reads faster.
 
 | Term | What it is |
 |---|---|
 | Pack | A folder of JSON and `.iob` files under `packs/<key>/`. It needs at least one `dimensions/*.json` to count as a pack at all — a folder without one is treated as absent and will be re-downloaded |
 | Dimension | The root config for one world type: height range, generation modes, which regions it uses, what native content it imports. One dimension file is one world's ruleset |
 | Region / biome / generator | The authoring units under a dimension. Regions divide the map, biomes fill regions, generators produce the actual heightmap noise |
-| Object / structure | Placed content. An object is a single saved build (`.iob`); a structure is either an Iris jigsaw of several objects, or a vanilla/datapack/mod structure Iris allows through |
+| Object / structure | Placed content. An object is a single saved build (`.iob`). A structure is either an Iris jigsaw of several objects, or a vanilla/datapack/mod structure Iris allows through |
 | Studio | A throwaway authoring world that reads the live pack folder and hotloads your edits into new chunks. Deleted when you close it, and any leftovers are purged at startup |
 | World pack snapshot | A production world copies the pack into `<world>/iris/pack` at creation and reads only that copy forever after. This is the single most common source of "my edits did nothing" — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 
 ## Project layout
 
-Relevant if you're building Iris or filing a bug against a specific subsystem.
+This section is for you if you build Iris or file a bug against a specific subsystem.
 
 | Path | Role |
 |---|---|
@@ -127,11 +135,11 @@ Relevant if you're building Iris or filing a bug against a specific subsystem.
 | `dist/` | Where `buildAllToOut` drops the finished consumer jars |
 | `docs/` | This documentation set, which is the authority over any hosted copy |
 
-`minecraft-common`, `modded-common`, and `client-common` are source trees only — they have no `build.gradle` and are not Gradle projects. The loader builds pull them in as extra source directories.
+`minecraft-common`, `modded-common`, and `client-common` are source trees only. They have no `build.gradle` and are not Gradle projects. The loader builds pull them in as extra source directories.
 
 ## Developer build check
 
-Set `JAVA_HOME` to a JDK 25, then from the Iris root:
+Set `JAVA_HOME` to a JDK 25. Then from the Iris root:
 
 ```text
 java -version
@@ -139,9 +147,9 @@ java -version
 ./gradlew buildAllToOut
 ```
 
-The check passes when `build` finishes with no failed tasks and `buildAllToOut` leaves one current jar per platform in `dist/`. `build` already runs the tests, so use `./gradlew test` only when you want to rerun tests without reassembling every artifact.
+The check passes when `build` finishes with no failed tasks. `buildAllToOut` must leave one current jar per platform in `dist/`. `build` already runs the tests. Use `./gradlew test` only when you want to rerun tests without reassembling every artifact.
 
-At version `4.0.0-26.2` the four jars are named like this — the CraftBukkit one carries the supported Minecraft *range*, the loader jars carry `<mc>+<loader>`:
+At version `4.0.0-26.2` the four jars are named like this. The CraftBukkit one carries the supported Minecraft *range*. The loader jars carry `<mc>+<loader>`:
 
 ```text
 Iris v4.0.0-26.2 [CraftBukkit] 26.1.2-26.2.jar
@@ -152,7 +160,7 @@ Iris v4.0.0-26.2 [NeoForge] 26.2+26.2.0.59.jar
 
 Build one platform at a time with `./gradlew buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge`. The SPI jar comes from `./gradlew :spi:jar` and lands in `spi/build/libs/`.
 
-To iterate on a loader adapter, drive it from its own project root — these are separate Gradle builds, so a root-level invocation won't reach them:
+To iterate on a loader adapter, drive it from its own project root. These are separate Gradle builds. A root-level invocation does not reach them:
 
 ```text
 ./gradlew -p adapters/fabric   runServer
@@ -160,9 +168,9 @@ To iterate on a loader adapter, drive it from its own project root — these are
 ./gradlew -p adapters/neoforge runServer
 ```
 
-`-PincludeModdedAdapters=true` surfaces those builds in the root composite for IDE import. It's off by default because each adapter includes the root build back for `core`/`spi` substitution, which closes a composite cycle.
+`-PincludeModdedAdapters=true` surfaces those builds in the root composite for IDE import. It is off by default. Each adapter includes the root build back for `core`/`spi` substitution, which closes a composite cycle.
 
-A passing Bukkit jar proves nothing about the loaders. Loom, ForgeGradle, and ModDevGradle each fail in their own ways, so if a loader build breaks while the root build is green, rerun that adapter from its own root and fix its first error rather than re-running the root build.
+A passing Bukkit jar proves nothing about the loaders. Loom, ForgeGradle, and ModDevGradle each fail in their own ways. If a loader build breaks while the root build is green, rerun that adapter from its own root. Fix its first error. Do not rerun the root build.
 
 The current version lives in `gradle.properties` as `irisVersion=4.0.0-26.2`.
 

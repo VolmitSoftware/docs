@@ -2,17 +2,17 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-18T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Install the React shaded jar into `plugins/`, start the server once so the data folder is created, then edit TOML configs and reload or restart as required. React targets modern Paper/Purpur/Folia with `folia-supported: true`.
+Install the React shaded jar into `plugins/`. Start the server once so React creates the data folder. Then edit TOML configs and reload or restart as required. React targets modern Paper, Purpur, and Folia with `folia-supported: true`.
 
 ## Requirements
 
 - Java 25 for both building and running this tree. Use the React artifact built for the target server's Minecraft API version.
-- Soft dependency: PlaceholderAPI (optional; enables `%react_…%` keys).
+- Soft dependency: PlaceholderAPI (optional). This enables `%react_…%` keys.
 - Optional peer plugins for mirrored metrics and gated features: Iris, Adapt, Wormholes, Gloss, HiddenOre, BileTools.
 
 ## Install
@@ -39,7 +39,7 @@ Install the React shaded jar into `plugins/`, start the server once so the data 
 | `plugins/React/migrations/backups/` | ZIP backups created before legacy JSON migration |
 | `plugins/React/test-reports/` | JSON reports requested by `/react test run` or `loadtest` |
 
-At startup, React backs up legacy JSON configs to a timestamped ZIP, writes their TOML replacements, records a migration marker, and deletes each JSON file only after its TOML replacement exists. A legacy JSON file beside an existing canonical TOML file is ignored by hotload.
+At startup, React backs up legacy JSON configs to a timestamped ZIP. It writes their TOML replacements. It records a migration marker. It deletes each JSON file only after its TOML replacement exists. A legacy JSON file beside an existing canonical TOML file is ignored by hotload.
 
 ## Global configuration (`ReactConfiguration`)
 
@@ -55,7 +55,7 @@ Primary operator-facing keys:
 | `language` | `en_US` | Locale for player/operator messages |
 | `slowTickLogMode` | `BLAME` | `OFF`, `BLAME`, `SHORT`, or `DETAILED` slow-tick logging |
 | `integrationSecretsEnabled` | `false` | Allows Iris/Adapt secret integration bundles when deps present |
-| `unsafeBytecode` | `false` | Eagerly attaches React's general ByteBuddy agent during startup. Versioned NMS features may attach their own instrumentation independently when active; attached instrumentation remains until JVM restart. |
+| `unsafeBytecode` | `false` | Eagerly attaches React's general ByteBuddy agent during startup. Versioned NMS features may attach their own instrumentation independently when active. Attached instrumentation remains until JVM restart. |
 | `metrics` | `true` | bStats anonymous metrics |
 | `adaptAbilityOpsMetricMode` | `SUCCESSFUL_CHECKS` | Which Adapt ability-ops metric React uses |
 | `monitoring` | default groups | Default action-bar monitor layout |
@@ -78,17 +78,21 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 
 ## Reload
 
-- The hotload controller watches `config.toml`, locale overrides, and TOML files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. Operating-system file events are applied when they arrive. Even when those events never show up — common on Docker and Pterodactyl bind mounts — the watcher still reconciles file signatures on a short interval and applies a save only after the file has stayed stable for one extra poll.
-- Feature and tweak changes deactivate and reactivate active components; enable-state changes activate or deactivate them. Sampler changes restart the sampler, action changes refresh its configuration, and core changes reload the matching controller.
-- Global changes refresh language, entity priority, and active player monitors. Changes to `metrics` and the startup `unsafeBytecode` decision still require a full server restart.
-- `/react reload` performs a complete React disable and enable lifecycle. If the old ticker cannot drain, React refuses to re-enable and requires a server restart.
-- Invalid component, controller, global-config, or localization hotloads are rejected and the current live snapshot remains active. A half-written or unreadable component file is not rewritten from memory. Startup still copies an unreadable component file to a sibling `.bak` and replaces it from defaults.
+The hotload controller watches `config.toml`, locale overrides, and TOML files. Those files live under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. The controller applies operating-system file events when they arrive. Docker and Pterodactyl bind mounts often never deliver those events. The watcher still reconciles file signatures on a short interval. It applies a save only after the file stays stable for one extra poll.
+
+Feature and tweak changes deactivate and reactivate active components. Enable-state changes activate or deactivate those components. Sampler changes restart the sampler. Action changes refresh the action configuration. Core changes reload the matching controller.
+
+Global changes refresh language, entity priority, and active player monitors. Changes to `metrics` and the startup `unsafeBytecode` decision still require a full server restart.
+
+`/react reload` performs a complete React disable and enable lifecycle. If the old ticker cannot drain, React refuses to re-enable and requires a server restart.
+
+React rejects invalid component, controller, global-config, or localization hotloads. The current live snapshot stays active. React does not rewrite a half-written or unreadable component file from memory. Startup still copies an unreadable component file to a sibling `.bak` and replaces it from defaults.
 
 ## Hotload controller (`core/hotload.toml`)
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `enabled` | `true` | Enables managed config file watching; disabling it requires manual reloads or restarts. |
+| `enabled` | `true` | Enables managed config file watching. Disabling it requires manual reloads or restarts. |
 | `pollIntervalMs` | `500` | Watcher queue-drain interval, clamped to at least 100 ms. Operating-system event delivery can add latency. |
 | `maxDiffMessagesPerFile` | `12` | Maximum changed-key messages included in each operator summary. |
 | `notifyOperators` | `true` | Sends hotload summaries to online operators in addition to console output. |
@@ -96,9 +100,9 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 ## Other controller configuration
 
 - `core/config-input.toml`: `sessionTimeoutSeconds = 45` controls the in-game config editor's text-input timeout and is clamped to at least five seconds.
-- `core/map.toml` controls map repair, redraw, packet delivery, and megamap behavior; see [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
+- `core/map.toml` controls map repair, redraw, packet delivery, and megamap behavior. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
 
 
 ## Localization
 
-Server English is code-owned under `art.arcane.react.localization`. Bundled locales ship as TOML resources. Select locale with `language`; override selected keys via `languages/overrides/<locale>.toml`. See [13 - Localization](/react/13-localization).
+Server English is code-owned under `art.arcane.react.localization`. Bundled locales ship as TOML resources. Select locale with `language`. Override selected keys via `languages/overrides/<locale>.toml`. See [13 - Localization](/react/13-localization).

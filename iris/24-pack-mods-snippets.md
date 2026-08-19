@@ -2,31 +2,40 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Snippets let you write a nested JSON value once and reference it by path from as many places as you like. Any pack type annotated `@Snippet` accepts either an inline object or a string pointing at a file under `snippet/<type>/`. Iris also still loads the older `IrisMod` schema from `mods/`, but nothing in the engine applies those injectors or replacers — treat that folder as dead weight.
+Snippets let you write a nested JSON value once and reference it by path from as many places as you like. Any pack type annotated `@Snippet` accepts either an inline object or a string pointing at a file under `snippet/<type>/`. Iris also still loads the older `IrisMod` schema from `mods/`. Nothing in the engine applies those injectors or replacers. Treat that folder as dead weight.
 
-Related: [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [14 - Generators & Noise](/iris/14-generators-noise), [20 - Object Placement](/iris/20-object-placement), [25 - Pack Management](/iris/25-pack-management).
+Related:
+
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [20 - Object Placement](/iris/20-object-placement)
+- [25 - Pack Management](/iris/25-pack-management)
 
 ## The mental model
 
-Most of a pack is nested objects: a decorator inside a biome, a noise style inside a generator, a palette inside a decorator. When two biomes want the same decorator you'd normally copy the JSON, and then you have two copies to keep in sync.
+Most of a pack is nested objects: a decorator inside a biome, a noise style inside a generator, a palette inside a decorator. When two biomes want the same decorator you would normally copy the JSON. Then you have two copies to keep in sync.
 
-Snippets fix that at the deserializer level. Iris registers a Gson type adapter for every class carrying `@Snippet("some-name")`. When that adapter reads a field and finds a **string** instead of an object, it treats the string as a path, opens `snippet/some-name/<path>.json`, and parses the file's contents as the field's value. Nothing else changes: the biome still ends up holding a real decorator object, the engine never knows the difference, and the value is resolved once at load time rather than looked up per chunk.
+Snippets fix that at the deserializer level. Iris registers a Gson type adapter for every class carrying `@Snippet("some-name")`. When that adapter reads a field and finds a **string** instead of an object, it treats the string as a path. It opens `snippet/some-name/<path>.json`. It parses the file contents as the field value. Nothing else changes. The biome still ends up holding a real decorator object. The engine never knows the difference. The value is resolved once at load time rather than looked up per chunk.
 
 Two consequences worth internalising:
 
-- **Snippets are load-time only.** Editing a snippet file does nothing until the pack reloads — Studio hotload, world reload, or a restart. There is no live indirection.
+- **Snippets are load-time only.** Editing a snippet file does nothing until the pack reloads: Studio hotload, world reload, or a restart. There is no live indirection.
 - **Snippets vanish on serialization.** When Iris writes a pack back out (Studio saves, the Bukkit packager), the adapter writes the resolved object, not the string. Snippet references get inlined. See "Packaging" below.
 
 ## Walkthrough: share a palette across biomes
 
 The goal is one decorator definition placing wildflowers in several biomes, with a single file to edit. Prerequisites: a validating pack and a biome that already generates.
 
-**1. Write the snippet.** The folder name must match the `@Snippet` value of the field you'll use it in — a decorator field wants `snippet/decorator/`. Save `snippet/decorator/tutorial-wildflowers.json`:
+**1. Write the snippet.** The folder name must match the `@Snippet` value of the field you will use it in. A decorator field wants `snippet/decorator/`. Save `snippet/decorator/tutorial-wildflowers.json`:
 
 ```json
 {
@@ -53,11 +62,11 @@ The goal is one decorator definition placing wildflowers in several biomes, with
 }
 ```
 
-**3. Verify one call site.** Validate the pack, then open Studio on a fixed seed and generate fresh chunks in that biome. Success is both flowers appearing only on slopes the snippet allows, with no "Couldn't find snippet" line in the console. If the field resolves to null, the console names the path it tried — compare it against the file on disk.
+**3. Verify one call site.** Validate the pack. Then open Studio on a fixed seed and generate fresh chunks in that biome. Success is both flowers appearing only on slopes the snippet allows, with no `Couldn't find snippet` line in the console. If the field resolves to null, the console names the path it tried. Compare it against the file on disk.
 
-**4. Add the second call site.** Only once the first one works. Paste the same string into another biome's `decorators`.
+**4. Add the second call site.** Only once the first one works. Paste the same string into another biome `decorators`.
 
-**5. Prove they're linked.** Change one value inside the snippet — raise `chance` to `0.3` — hotload, and generate fresh chunks in both biomes. Both should get denser. Restore the value afterwards. That round trip is the actual test that you have one definition and not two.
+**5. Prove they are linked.** Change one value inside the snippet. Raise `chance` to `0.3`. Hotload. Generate fresh chunks in both biomes. Both should get denser. Restore the value afterwards. That round trip is the actual test that you have one definition and not two.
 
 Generate the VSCode workspace (`/iris studio vscode`) so schema completion offers valid snippet paths for each field. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
@@ -66,13 +75,13 @@ Generate the VSCode workspace (`/iris studio vscode`) so schema completion offer
 1. Iris registers a type adapter for every class annotated `@Snippet("type-name")`.
 2. On read, if the JSON token is an object, the adapter parses it normally. Nothing snippet-specific happens.
 3. If the token is a **string**, the adapter treats it as a path:
-   - The string must start with `snippet/`. If it doesn't, the field resolves to **null with no error message** — this is the failure mode that looks like the field was ignored.
-   - The literal `snippet/` prefix is stripped and replaced with `snippet/<type-name>/` for the field being read. Only the prefix is rewritten; the rest of the path is kept verbatim. So writing `"snippet/style/bedrock"` in a `decorator` field becomes a lookup for `snippet/decorator/style/bedrock.json`, which won't exist. The rewrite is a convenience for the common `snippet/<correct-type>/…` case, not a search across type folders.
+   - The string must start with `snippet/`. If it does not, the field resolves to **null with no error message**. This is the failure mode that looks like the field was ignored.
+   - The literal `snippet/` prefix is stripped and replaced with `snippet/<type-name>/` for the field being read. Only the prefix is rewritten. The rest of the path is kept verbatim. So writing `"snippet/style/bedrock"` in a `decorator` field becomes a lookup for `snippet/decorator/style/bedrock.json`, which will not exist. The rewrite is a convenience for the common `snippet/<correct-type>/…` case, not a search across type folders.
    - The file is read from the pack root. A missing file logs `Couldn't find snippet <path>` and the field resolves to null.
 4. Snippet files are parsed with the same adapters, so a snippet can reference other snippets in its own nested fields.
-5. Files may sit in subfolders under the type folder; the path in the reference is everything after `snippet/<type>/`, with forward slashes.
+5. Files may sit in subfolders under the type folder. The path in the reference is everything after `snippet/<type>/`, with forward slashes.
 
-Studio schema generation exposes every snippet type as an `anyOf` of "object or string", and fills the string branch's enum from the files actually present under `snippet/<type>/`.
+Studio schema generation exposes every snippet type as an `anyOf` of "object or string". It fills the string branch enum from the files actually present under `snippet/<type>/`.
 
 ### Disk layout
 
@@ -123,16 +132,16 @@ Biome decorator lists take snippet strings as array elements, mixed freely with 
 
 ## When to use a snippet
 
-Use one when the same value genuinely appears in more than one place and should change in lockstep: decorators shared across a climate's biomes, a noise style reused by several generators, a palette that defines a pack's stone. That's what the shipping Overworld pack uses them for.
+Use one when the same value genuinely appears in more than one place and should change in lockstep. Examples: decorators shared across a climate biomes, a noise style reused by several generators, a palette that defines a pack stone. That is what the shipping Overworld pack uses them for.
 
-Skip it when a value appears once. A snippet reference costs a file open and adds a place to look when something goes wrong, and it buys nothing if there's a single call site. It also makes the failure mode worse: a wrong-type or missing snippet resolves to null after logging, so a field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
+Skip it when a value appears once. A snippet reference costs a file open and adds a place to look when something goes wrong. It buys nothing if there is a single call site. It also makes the failure mode worse. A wrong-type or missing snippet resolves to null after logging. A field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
 
 ## Packaging and snippets
 
 Because the adapter writes resolved objects rather than strings, exported packs handle snippets differently per platform:
 
-- **Bukkit `/iris studio package`** re-serializes the loaded object graph, so snippet references are inlined into the dimension, region, biome, and generator JSON. The export has no `snippet/` folder and doesn't need one.
-- **Modded `/iris studio package`** copies the source JSON files verbatim and does **not** copy `snippet/`, so snippet references in a modded export are dangling.
+- **Bukkit `/iris studio package`** re-serializes the loaded object graph. Snippet references are inlined into the dimension, region, biome, and generator JSON. The export has no `snippet/` folder and does not need one.
+- **Modded `/iris studio package`** copies the source JSON files verbatim and does **not** copy `snippet/`. Snippet references in a modded export are dangling.
 
 See [25 - Pack Management](/iris/25-pack-management) for the full export contents and the gaps in both compilers.
 
@@ -221,17 +230,17 @@ Whole-file registrants — dimensions, regions, biomes, generators, loot tables,
 
 ## Pack mods (`IrisMod`) — schema only, not applied
 
-Folder: `mods/`. The load key is the path under `mods/` without `.json`. `IrisData` registers a loader for these files, so they parse, appear in tooling, and show up in generated schemas — but no engine path reads them. Neither world creation nor Studio hotload consumes an `IrisMod`. A `mods/*.json` file that looks correct will change nothing about the terrain you generate.
+Folder: `mods/`. The load key is the path under `mods/` without `.json`. `IrisData` registers a loader for these files. They parse, appear in tooling, and show up in generated schemas. No engine path reads them. Neither world creation nor Studio hotload consumes an `IrisMod`. A `mods/*.json` file that looks correct will change nothing about the terrain you generate.
 
-To get the same effect, edit the target dimension, region, biome, generator, or object placement directly. If you need the same edit applied to several packs, keep the edits in version control rather than expecting the mod schema to layer them at runtime.
+To get the same effect, edit the target dimension, region, biome, generator, or object placement directly. If you need the same edit applied to several packs, keep the edits in version control. Do not expect the mod schema to layer them at runtime.
 
 The fields below are documented because they still appear in schema completion and because packs in the wild contain them, not because they work.
 
 | Field | Type | Default | Intended meaning |
 |-------|------|---------|------------------|
 | `name` | string | `"A Pack Modification"` | Human name, at least 2 characters |
-| `forDimension` | string | `""` | Dimension load key to scope to; empty means any |
-| `overrideFluidHeight` | int -1..512 | `-1` | Fluid height override; `-1` leaves it alone |
+| `forDimension` | string | `""` | Dimension load key to scope to. Empty means any |
+| `overrideFluidHeight` | int -1..512 | `-1` | Fluid height override. `-1` leaves it alone |
 | `removeBiomes` | string[] | `[]` | Biome keys to strip |
 | `removeObjects` | string[] | `[]` | Object keys to strip |
 | `removeRegions` | string[] | `[]` | Region keys to strip |
@@ -263,18 +272,18 @@ Shapes of the nested types, all of which are also registered snippet types:
 { "biome": "temperate/plains", "place": [{ "chance": 0.01, "place": ["clutter/camp1"] }] }
 ```
 
-`IrisModObjectPlacementRegionInjector` uses the field name `biome` even though the value is a region load key. `IrisModNoiseStyleReplacer` takes `find` (a `NoiseStyle` enum value), `replace` (a full `IrisGeneratorStyle`), and `replaceTypeOnly` (swap only the style type and keep the rest of the style's fields).
+`IrisModObjectPlacementRegionInjector` uses the field name `biome` even though the value is a region load key. `IrisModNoiseStyleReplacer` takes `find` (a `NoiseStyle` enum value). It takes `replace` (a full `IrisGeneratorStyle`). It takes `replaceTypeOnly` (swap only the style type and keep the rest of the style fields).
 
 ## Other registered schemas with no runtime consumer
 
-Schema registration alone doesn't prove there's a consumer. These are visible to loaders or schema generation but are not supported pack features:
+Schema registration alone does not prove there is a consumer. These are visible to loaders or schema generation but are not supported pack features:
 
 | Surface | Status |
 |---------|--------|
 | `mods/*.json` (`IrisMod`) | Parsed and registered, never applied. See above |
 | `potion-effect` / `IrisPotionEffect` | The snippet type exists, but no production field is typed as `IrisPotionEffect`. Use the `potionEffect`, `potionStrength`, and `potionTicks*` fields on `IrisEffect` instead |
 | `matter/` resources | A loader exists for Matter binaries, but no generation or runtime path reads pack `matter/` resources |
-| `IrisObjectPlacement.translateCenter` | Removed; no placement path ever read the value. Old packs that still carry the key load fine |
+| `IrisObjectPlacement.translateCenter` | Removed. No placement path ever read the value. Old packs that still carry the key load fine |
 
 ## Related commands
 

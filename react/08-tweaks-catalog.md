@@ -2,18 +2,18 @@
 title: "Tweaks Catalog"
 description: "React documentation: Tweaks Catalog"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Lightweight event and NMS accelerations. Config: `plugins/React/tweak/<id>.toml`. Base `enabled` defaults to `true` on `ReactTweak` except **`shorthands`**, which forces `enabled = false` in its constructor until you enable it in TOML.
+This catalog lists lightweight event and NMS accelerations. Config: `plugins/React/tweak/<id>.toml`. Base `enabled` defaults to `true` on `ReactTweak` except **`shorthands`**. That tweak forces `enabled = false` in its constructor until you enable it in TOML.
 
-Several tweaks fail closed or passive to vanilla when required NMS bridges are missing. Inspect with `/react bridge status`.
+Several tweaks fail closed or stay passive to vanilla when required NMS bridges are missing. Inspect with `/react bridge status`.
 
 ### `entity-bubbler`
 
-Removes selected projectile/utility entities stuck in bubble columns or soul-sand bubble lifts. Honors `DESPAWN` protection.
+This tweak removes selected projectile and utility entities stuck in bubble columns or soul-sand bubble lifts. It honors `DESPAWN` protection.
 
 - **Class:** `TweakEntityBubbler` · **Listener:** yes (entity tick path)
 
@@ -24,7 +24,7 @@ Removes selected projectile/utility entities stuck in bubble columns or soul-san
 
 ### `entity-crowd-prevention`
 
-Trims overcrowded livestock-style clusters. Honors `PURGE` protection. Config field `preventEntityBubbling` is currently unused at runtime.
+This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protection. Config field `preventEntityBubbling` is currently unused at runtime.
 
 - **Class:** `TweakEntityCrowdPrevention` · **Listener:** yes
 
@@ -33,11 +33,11 @@ Trims overcrowded livestock-style clusters. Honors `PURGE` protection. Config fi
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
 | `maxEntitiesPerClusterCrowd` | int | `10` | Max entities per cluster. |
 | `mobsToPreventFromCrowding` | `List<EntityType>` | COW, CHICKEN, PIG, SHEEP, PIG | Monitored types. |
-| `preventEntityBubbling` | boolean | `true` | Declared; not referenced by runtime logic. |
+| `preventEntityBubbling` | boolean | `true` | Declared. Not referenced by runtime logic. |
 
 ### `entity-hardstop`
 
-Hard-caps per-chunk entity population by cancelling spawns/breeds/drops once count ≥ limit. Spawn denial is the `SPAWN_CAP` protection operation path (see [17 - API - Entity Protection](/react/17-api-entity-protection)).
+This tweak hard-caps per-chunk entity population. It cancels spawns, breeds, and drops once the count is at or above the limit. Spawn denial is the `SPAWN_CAP` protection operation path. See [17 - API - Entity Protection](/react/17-api-entity-protection).
 
 - **Class:** `TweakEntityHardstop` · **Listener:** yes
 
@@ -50,7 +50,7 @@ Hard-caps per-chunk entity population by cancelling spawns/breeds/drops once cou
 
 ### `experience-orb-merge`
 
-On XP orb spawn, merges nearby orbs into the new orb.
+On XP orb spawn, this tweak merges nearby orbs into the new orb.
 
 - **Class:** `TweakExperienceOrbMerge` · **Listener:** yes
 
@@ -63,7 +63,7 @@ On XP orb spawn, merges nearby orbs into the new orb.
 
 ### `fast-columns`
 
-Collapses bamboo/sugar cane/cactus/kelp columns on break/physics. Hard-coded `maxColumnSize = 16` (not in TOML).
+This tweak collapses bamboo, sugar cane, cactus, and kelp columns on break or physics. Hard-coded `maxColumnSize = 16` (not in TOML).
 
 - **Class:** `TweakFastColumns` · **Listener:** yes
 
@@ -73,7 +73,9 @@ Collapses bamboo/sugar cane/cactus/kelp columns on break/physics. Hard-coded `ma
 
 ### `fast-drops`
 
-Routes eligible item drops into player inventory and grants eligible XP directly to the player. `teleportBlockDrops`, `teleportBlockXP`, `teleportEntityDrops`, and `teleportEntityXP` control only their named paths; disabling one no longer prevents or deletes another path's items or XP. Entity and block stacks are cloned before inventory insertion so the API cannot mutate the live source stack. For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer; it does not cancel the whole event and ignores an event another plugin already cancelled. This lets another drop-routing plugin, including Adapt's Drop-To-Inventory adaptations, own the event first without duplicate transfers or deleted items.
+This tweak routes eligible item drops into player inventory. It also grants eligible XP directly to the player. `teleportBlockDrops`, `teleportBlockXP`, `teleportEntityDrops`, and `teleportEntityXP` control only their named paths. Disabling one no longer prevents or deletes another path's items or XP. This tweak clones entity and block stacks before inventory insertion so the API cannot mutate the live source stack.
+
+For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer. It does not cancel the whole event. It ignores an event another plugin already canceled. This lets another drop-routing plugin own the event first. Adapt Drop-To-Inventory adaptations are one such plugin. Duplicate transfers and deleted items do not occur.
 
 - **Class:** `TweakFastDrops` · **Listener:** yes
 
@@ -88,7 +90,7 @@ Routes eligible item drops into player inventory and grants eligible XP directly
 
 ### `fast-entity-incineration`
 
-Instantly removes burning monsters on FIRE_TICK when no player is within radius. Honors `DESPAWN` protection.
+This tweak instantly removes burning monsters on FIRE_TICK when no player is within radius. It honors `DESPAWN` protection.
 
 - **Class:** `TweakFastEntityIncineration` · **Listener:** yes
 
@@ -99,7 +101,7 @@ Instantly removes burning monsters on FIRE_TICK when no player is within radius.
 
 ### `fast-falling-blocks`
 
-Cancels normal falling-block settle; queues accelerated column fall/land work budgeted by ms/tick.
+This tweak cancels normal falling-block settle. It queues accelerated column fall and land work budgeted by ms/tick.
 
 - **Class:** `TweakFastFallingBlocks` · **Listener:** yes
 
@@ -110,7 +112,7 @@ Cancels normal falling-block settle; queues accelerated column fall/land work bu
 
 ### `fast-fire`
 
-Short-circuits fire spread/fade/burn into `FastWorld` set/break ops.
+This tweak short-circuits fire spread, fade, and burn into `FastWorld` set and break ops.
 
 - **Class:** `TweakFastFire` · **Listener:** yes
 
@@ -120,7 +122,7 @@ Short-circuits fire spread/fade/burn into `FastWorld` set/break ops.
 
 ### `fast-fluids`
 
-Queues bounded extra vanilla fluid ticks via NMS bridges; optional drain acceleration. **Fail-passive** without fluid bridges or after consecutive bridge failures.
+This tweak queues bounded extra vanilla fluid ticks via NMS bridges. Drain acceleration is optional. **Fail-passive** without fluid bridges or after consecutive bridge failures.
 
 - **Class:** `TweakFastFluids` · **Listener:** yes
 - **Notes:** Clamps: `extraVanillaTicksPerEvent` 0–4, `maxExtraVanillaTicksPerServerTick` 16–4096, `maxBurstTicksPerLocationPerServerTick` 1–16. See [15 - Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
@@ -137,7 +139,7 @@ Queues bounded extra vanilla fluid ticks via NMS bridges; optional drain acceler
 
 ### `fast-snow`
 
-Short-circuits snow form/fade into `FastWorld` set/break.
+This tweak short-circuits snow form and fade into `FastWorld` set and break.
 
 - **Class:** `TweakFastSnow` · **Listener:** yes
 
@@ -147,7 +149,7 @@ Short-circuits snow form/fade into `FastWorld` set/break.
 
 ### `hopper-index`
 
-Pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit vanilla AABB scans; optional idle empty-hopper cooldown stretch. **Fail-closed** without NMS bridges.
+This tweak pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit vanilla AABB scans. Optional idle empty-hopper cooldown stretch is available. **Fail-closed** without NMS bridges.
 
 - **Class:** `TweakHopperIndex` · **Listener:** no
 
@@ -161,7 +163,7 @@ Pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit vanilla AABB s
 
 ### `hopper-limit`
 
-Cancels inventory transfers whose destination holder is a hopper when the hopper tick-time sampler exceeds the threshold. Transfers out of hoppers into non-hopper destinations are not handled by this tweak.
+This tweak cancels inventory transfers whose destination holder is a hopper. It does so when the hopper tick-time sampler exceeds the threshold. Transfers out of hoppers into non-hopper destinations are not handled by this tweak.
 
 - **Class:** `TweakHopperLimit` · **Listener:** yes
 
@@ -172,7 +174,7 @@ Cancels inventory transfers whose destination holder is a hopper when the hopper
 
 ### `item-despawn-accelerator`
 
-On item spawn, if no player within radius, forces high `ticksLived` toward despawn (skips named/valuables when configured).
+On item spawn, if no player is within radius, this tweak forces high `ticksLived` toward despawn. It skips named items and valuables when configured.
 
 - **Class:** `TweakItemDespawnAccelerator` · **Listener:** yes
 
@@ -187,7 +189,7 @@ On item spawn, if no player within radius, forces high `ticksLived` toward despa
 
 ### `projectile-limiter`
 
-Caps projectile launches per player and per chunk over rolling windows.
+This tweak caps projectile launches per player and per chunk over rolling windows.
 
 - **Class:** `TweakProjectileLimiter` · **Listener:** yes
 
@@ -205,26 +207,26 @@ Caps projectile launches per player and per chunk over rolling windows.
 
 ### `server-hibernator`
 
-Experimental empty-server hibernation. When its safety gate is enabled and the server is empty, it runs `save-all` once and then calls `Thread.sleep` from a synchronous repeating task every tick, blocking the main/global server thread for `secondsPerTick`. The safety gate defaults **off**.
+Experimental empty-server hibernation. When its safety gate is enabled and the server is empty, it runs `save-all` once. It then calls `Thread.sleep` from a synchronous repeating task every tick. That call blocks the main or global server thread for `secondsPerTick`. The safety gate defaults **off**.
 
 - **Class:** `TweakServerHibernator` · **Listener:** yes (scheduled path)
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
-| `imACloudServerEnableMe` | boolean | `false` | Safety gate; must be true to hibernate. |
+| `imACloudServerEnableMe` | boolean | `false` | Safety gate. Must be true to hibernate. |
 | `secondsPerTick` | double | `1.0` | Sleep seconds per tick while empty. |
 
 ### `shorthands`
 
-Registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor). When EssentialsX (plugin name `Essentials`) or CMI is installed, React forces this tweak off before activation and registers no built-in or custom shorthand commands, even if the config enables it.
+This tweak registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor). When EssentialsX (plugin name `Essentials`) or CMI is installed, React forces this tweak off before activation. React then registers no built-in or custom shorthand commands, even if the config enables it.
 
 - **Class:** `TweakShorthands` · **Listener:** no
 - **Permissions:** `react.shorthands.*` and children — see [02 - Commands & Permissions](/react/02-commands-permissions).
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `enabled` | boolean | `false` | Enables or disables this tweak unless EssentialsX or CMI is installed; either plugin forces it off. |
+| `enabled` | boolean | `false` | Enables or disables this tweak unless EssentialsX or CMI is installed. Either plugin forces it off. |
 | `gms` | boolean | `true` | Register `/gms`. |
 | `gmsp` | boolean | `true` | Register `/gmsp`. |
 | `gmc` | boolean | `true` | Register `/gmc`. |
@@ -238,13 +240,13 @@ Registers operator shortcuts on the Bukkit command map. **Default disabled** (`e
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enable this custom entry. |
-| `command` | String | `""` | Command without leading slash; `{args}` or appended args. |
+| `command` | String | `""` | Command without leading slash. Use `{args}` or appended args. |
 | `permission` | String | `react.shorthands.custom` | Extra permission (blank = none). |
 | `overrideExisting` | boolean | `false` | Replace existing bare labels. |
 
 ### `spawner-player-radius`
 
-Cancels spawner / trial-spawner creature spawns when no player is within range.
+This tweak cancels spawner and trial-spawner creature spawns when no player is within range.
 
 - **Class:** `TweakSpawnerPlayerRadius` · **Listener:** yes
 
@@ -258,7 +260,7 @@ Cancels spawner / trial-spawner creature spawns when no player is within range.
 
 ### `vehicle-idle-brake`
 
-Zeroes velocity on distant empty minecarts/boats.
+This tweak zeroes velocity on distant empty minecarts and boats.
 
 - **Class:** `TweakVehicleIdleBrake` · **Listener:** no (ticked)
 

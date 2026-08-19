@@ -8,12 +8,7 @@ editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-# Gloss
-
-Everything Gloss draws on a player's screen, in one plugin: world holograms, holographic
-menus and world-anchored panels, look-at container previews, scoreboards, tablist header
-and list names, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels,
-and a randomized server-list MOTD.
+Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels, and a randomized server-list MOTD.
 
 | | |
 |---|---|
@@ -26,16 +21,10 @@ and a randomized server-list MOTD.
 | Web editor | [Web Editor & Sync](/gloss/18-web-editor) |
 | Integrations | PlaceholderAPI, Vault, WorldGuard, ten item plugins, and live metrics from the other Volmit plugins — all optional |
 
-> **HoloUI is now part of Gloss.** Menus, panels (formerly HoloUI "boards"), container
-> previews, custom item icons and the web editor moved into this plugin. The `/holoui`
-> command, the `holoui.*` permissions and `plugins/holoui/` are gone. An existing
-> `plugins/holoui/` folder is imported automatically on first start, and
-> [Commands & Permissions](/gloss/17-commands-permissions) carries the full command and
-> permission mapping.
+> **HoloUI is part of Gloss.** Menus, panels (former HoloUI "boards"), container previews, custom item icons, and the web editor live in this plugin. The `/holoui` command, the `holoui.*` permissions, and `plugins/holoui/` are gone. Gloss imports an existing `plugins/holoui/` folder on first start. [Commands & Permissions](/gloss/17-commands-permissions) lists the command and permission map.
 {.is-info}
 
-> Gloss ships two descriptors. Paper-family servers read `paper-plugin.yml` (loads at
-> `STARTUP`); Spigot falls back to `plugin.yml` (loads at `POSTWORLD`).
+> Gloss ships two descriptors. Paper-family servers read `paper-plugin.yml` and load at `STARTUP`. Spigot reads `plugin.yml` and loads at `POSTWORLD`.
 {.is-info}
 
 ### Getting started

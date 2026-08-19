@@ -7,11 +7,13 @@ tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Container previews expose two integration points in `art.arcane.gloss.api`: `PreviewStateProvider`,
-which contributes named variables that preview documents read, and `GlossContainerPreviewAccessEvent`,
-the last gate before Gloss builds a preview for a viewer. This page defines those contracts. The document
-format and the expression language they feed are in [Container Previews](/gloss/15-container-previews)
-and [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+Container previews expose two integration points in `art.arcane.gloss.api`.
+`PreviewStateProvider` contributes named variables that preview documents read.
+`GlossContainerPreviewAccessEvent` is the last gate before Gloss builds a preview for a viewer.
+
+This page defines those contracts. The document format and the expression language they feed are
+in [Container Previews](/gloss/15-container-previews) and
+[Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 ## `PreviewStateProvider`
 
@@ -26,13 +28,13 @@ public interface PreviewStateProvider {
 
 `Block`, `Entity` and `Player` are `org.bukkit.block.Block`, `org.bukkit.entity.Entity` and
 `org.bukkit.entity.Player`. Every entry a provider returns is published to preview expressions as
-`namespace() + "." + entryKey`, so a provider with namespace `"adapt"` returning `{"level": 12}` publishes
-`adapt.level`.
+`namespace() + "." + entryKey`. A provider with namespace `"adapt"` returning `{"level": 12}`
+publishes `adapt.level`.
 
 Contract, as implemented in `PreviewStateContext#mergeProviders`:
 
 - `snapshot` runs on the region thread that owns the preview target, at most once per game tick per
-  preview — the snapshot map is cached by tick. Bukkit access is safe; expensive work is not.
+  preview — the snapshot map is cached by tick. Bukkit access is safe. Expensive work is not.
 - `block` is null when previewing an entity or a bare inventory. `entity` is null when previewing a block
   or a bare inventory. `player` is null when the preview has no viewer context, which includes the
   target-less `statics` context used for locked previews and document validation.
@@ -43,29 +45,31 @@ Contract, as implemented in `PreviewStateContext#mergeProviders`:
 - A namespace that is null, blank, or reserved by a built-in is dropped whole — not partially merged — and
   warned about once.
 - A provider that throws a `RuntimeException` from `namespace()` or `snapshot()` is skipped for that
-  sample and warned about once, keyed by namespace, or by the implementing class name when `namespace()`
-  itself threw. It cannot take a preview down.
+  sample. Gloss warns about it once, keyed by namespace. If `namespace()` itself threw, the key is
+  the implementing class name. It cannot take a preview down.
 
-Providers are iterated in registration order and merged flat into one map, so two providers claiming the
-same namespace and key silently overwrite each other, last registration wins. Namespace your keys with
-your own plugin id.
+Providers are iterated in registration order and merged flat into one map. Two providers claiming
+the same namespace and key silently overwrite each other. Last registration wins. Namespace your
+keys with your own plugin id.
 
 ### Gloss registers providers here too
 
-The integration bridge is itself a consumer of this SPI. For every plugin publishing the shared Volmit
-integration contract on the `ServicesManager`, it registers one provider whose namespace is the first
-segment of that plugin's metric keys — `adapt`, `iris`, `react`, `wormholes`, `hiddenore`, `biletools` —
-publishing each metric under its native dotted name. If your plugin already publishes integration
-metrics, do not register a second provider on the same namespace: the bridge's registration and yours
-would overwrite each other key by key. Providers are re-registered whenever a plugin enables or
-disables, so the bridge's providers are always the most recent registrations for their namespaces. See
+The integration bridge is itself a consumer of this SPI. For every plugin publishing the shared
+Volmit integration contract on the `ServicesManager`, it registers one provider. That provider's
+namespace is the first segment of that plugin's metric keys — `adapt`, `iris`, `react`,
+`wormholes`, `hiddenore`, `biletools`. It publishes each metric under its native dotted name.
+
+If your plugin already publishes integration metrics, do not register a second provider on the same
+namespace. The bridge's registration and yours would overwrite each other key by key. Providers are
+re-registered whenever a plugin enables or disables. The bridge's providers are always the most
+recent registrations for their namespaces. See
 [Runtime Architecture](/gloss/20-runtime-architecture).
 
 ### Reserved namespaces
 
-`PreviewStateAdapters.RESERVED_NAMESPACES` holds `vars`, every full built-in variable name, and the first
-segment of every dotted built-in name. A provider whose namespace is in that set is dropped whole, with
-one `WARNING` per namespace:
+`PreviewStateAdapters.RESERVED_NAMESPACES` holds `vars`, every full built-in variable name, and the
+first segment of every dotted built-in name. A provider whose namespace is in that set is dropped
+whole, with one `WARNING` per namespace:
 
 ```
 Preview provider namespace '<name>' is reserved by a built-in variable; provider ignored.
@@ -82,8 +86,8 @@ Preview provider namespace '<name>' is reserved by a built-in variable; provider
 | Cauldron | `level`, `maxLevel`, `fluid` |
 | Jukebox | `playing`, `record` |
 
-The set is derived from the built-in catalog at class load, so it grows whenever a built-in variable is
-added. A namespace equal to your plugin id will not collide with any of it.
+The set is derived from the built-in catalog at class load. It grows whenever a built-in variable
+is added. A namespace equal to your plugin id will not collide with any of it.
 
 ## `PreviewStateProviders`
 
@@ -97,26 +101,26 @@ public final class PreviewStateProviders {
 }
 ```
 
-| Method | Behaviour |
+| Method | Behavior |
 |---|---|
 | `register` | `addIfAbsent` on the backing list, so registering the same instance twice is a no-op. A null provider throws `NullPointerException("provider")` |
 | `unregister` | Removes the instance. A null argument and an unknown instance are both ignored |
 | `all()` | Unmodifiable view, in registration order. Iterated on region threads during every preview snapshot |
 
-The registry is a `static` `CopyOnWriteArrayList` on the `PreviewStateProviders` class. It lives for the
-lifetime of the JVM and is not tied to any plugin, so Gloss does not and cannot clear your entry when your
-plugin disables.
+The registry is a `static` `CopyOnWriteArrayList` on the `PreviewStateProviders` class. It lives
+for the lifetime of the JVM and is not tied to any plugin. Gloss does not and cannot clear your
+entry when your plugin disables.
 
 > **Unregister on disable.** A provider left registered retains your instance, and through it your
-> classloader, across every reload of your plugin. This is the one thing a Gloss consumer must clean up;
-> menus need no cleanup, because Gloss listens for `PluginDisableEvent` and closes every session whose
+> classloader, across every reload of your plugin. This is the one thing a Gloss consumer must clean up.
+> Menus need no cleanup, because Gloss listens for `PluginDisableEvent` and closes every session whose
 > owner name matches the disabling plugin.
 {.is-warning}
 
-Registration timing is otherwise free. The registry is a plain static field, so it accepts a provider
-before Gloss has enabled and keeps it after Gloss disables; a provider registered while Gloss is absent
-simply contributes nothing until Gloss comes back. There is no ordering requirement against Gloss's own
-enable.
+Registration timing is otherwise free. The registry is a plain static field. It accepts a provider
+before Gloss has enabled. It keeps it after Gloss disables. A provider registered while Gloss is
+absent simply contributes nothing until Gloss comes back. There is no ordering requirement against
+Gloss's own enable.
 
 ```java
 package com.example.charge;
@@ -169,31 +173,32 @@ public final class ChargePlugin extends JavaPlugin {
 
 ## Sampling cadence and threading
 
-`PreviewStateContext` is the scope a preview document is evaluated against. It is constructed on whichever
-thread opened the preview and sampled from the region thread that owns the target.
+`PreviewStateContext` is the scope a preview document is evaluated against. It is constructed on
+whichever thread opened the preview. It is sampled from the region thread that owns the target.
 
-The snapshot is sampled lazily on the first variable lookup and re-sampled whenever the tick changes, so
-one refresh reads each Bukkit getter and calls each provider exactly once no matter how many expressions
-reference them. The tick is `world.getGameTime()`, or `System.currentTimeMillis() / 50` when the context
-has no world. The tick and the map it produced are published together in one immutable record behind a
-single `volatile` field, so a reader can never pair one sample's tick with another sample's map.
-Concurrent sampling is last-writer-wins and benign: both writers read the same target at the same game
-tick.
+The snapshot is sampled lazily on the first variable lookup. It is re-sampled whenever the tick
+changes. One refresh reads each Bukkit getter and calls each provider exactly once, no matter how
+many expressions reference them. The tick is `world.getGameTime()`, or
+`System.currentTimeMillis() / 50` when the context has no world.
+
+The tick and the map it produced are published together in one immutable record behind a single
+`volatile` field. A reader can never pair one sample's tick with another sample's map. Concurrent
+sampling is last-writer-wins and benign. Both writers read the same target at the same game tick.
 
 | Loop | Interval | What it does |
 |---|---|---|
 | Preview content refresh | every 4 ticks (`ContainerPreview.REFRESH_INTERVAL`) | Re-reads dynamic values, which is what re-samples the context |
 | Access re-check | every 10 ticks (`ContainerPreview.ACCESS_RECHECK_INTERVAL`) | Re-runs the access gate, including `GlossContainerPreviewAccessEvent` |
-| Preview session tick | every tick | Anchor, scale and visibility only; no provider work |
+| Preview session tick | every tick | Anchor, scale and visibility only. No provider work |
 
 A refresh will not start while a previous one is still in flight. Block targets run the read on the
-region that owns the block; an ender chest hops to the viewer's entity scheduler, because the inventory
-belongs to the player rather than the block.
+region that owns the block. An ender chest hops to the viewer's entity scheduler, because the
+inventory belongs to the player rather than the block.
 
-Since a provider is called at most once per game tick per open preview, a viewer looking at one container
-costs at most one `snapshot` call per tick, and in practice one per four ticks because that is when a
-refresh polls. Do not treat that as a budget for I/O — the call sits on a region thread that also ticks
-every entity in the region.
+A provider is called at most once per game tick per open preview. A viewer looking at one
+container costs at most one `snapshot` call per tick. In practice it is one per four ticks, because
+that is when a refresh polls. Do not treat that as a budget for I/O. The call sits on a region
+thread that also ticks every entity in the region.
 
 ## How provider values reach a document
 
@@ -217,18 +222,19 @@ Compile-time name checking, in `PreviewDocumentParser#checkVariableName`:
 | A bare name in the enclosing repeat scope | Accepted |
 | Any other bare name | Compile error `unknown variable: <name>` |
 | A dotted name whose prefix is reserved | Compile error `unknown variable: <name>` |
-| A dotted name whose prefix is not reserved | `WARNING` `<document>: <path> references provider namespace '<name>', not verifiable at parse time`; compiled, resolved at runtime |
+| A dotted name whose prefix is not reserved | `WARNING` `<document>: <path> references provider namespace '<name>', not verifiable at parse time`. Compiled, resolved at runtime |
 
 A document referencing `myplugin.charge` therefore compiles with a warning even when your plugin is
-absent, because the parser cannot know whether a provider will register later. At render, an unresolved
-name throws `unknown variable: myplugin.charge` from the evaluator. A preview never takes a frame down:
-an element whose build-time expressions fail is skipped and the rest of the document still renders, while
-a live closure that fails renders transparent for a cell colour and empty for a label. Every such failure
-logs at most once per document per minute, because the alternative is a line every four ticks for as long
-as the player looks at the block.
+absent. The parser cannot know whether a provider will register later. At render, an unresolved
+name throws `unknown variable: myplugin.charge` from the evaluator.
 
-Preview expressions never resolve PlaceholderAPI. The lexer has no `%…%` form and a bare `%` is the
-modulo operator, so `PreviewStateProvider` is the only route for external data into a preview. See
+A preview never takes a frame down. An element whose build-time expressions fail is skipped. The
+rest of the document still renders. A live closure that fails renders transparent for a cell color
+and empty for a label. Every such failure logs at most once per document per minute. The
+alternative is a line every four ticks for as long as the player looks at the block.
+
+Preview expressions never resolve PlaceholderAPI. The lexer has no `%…%` form. A bare `%` is the
+modulo operator. `PreviewStateProvider` is the only route for external data into a preview. See
 [API: Placeholders](/gloss/23-api-placeholders) for where placeholders do apply.
 
 ## `GlossContainerPreviewAccessEvent`
@@ -249,19 +255,20 @@ public final class GlossContainerPreviewAccessEvent extends Event implements Can
 }
 ```
 
-The event extends `org.bukkit.event.Event` directly with its own `HandlerList` and is constructed with the
-no-arg `Event()` superconstructor, so it is a synchronous event — which on Folia means "on whichever
-region thread fired it", not "on the main thread".
+The event extends `org.bukkit.event.Event` directly with its own `HandlerList`. It is constructed
+with the no-arg `Event()` superconstructor. It is a synchronous event. On Folia that means "on
+whichever region thread fired it", not "on the main thread".
 
-**Block and entity are exclusive.** The block constructor sets `entity` to null; the entity constructor
-sets `block` to null. Exactly one of `getBlock()` / `getEntity()` is non-null in every dispatch. Both
-constructors reject a null `player`, and each rejects a null target, with `NullPointerException`.
+**Block and entity are exclusive.** The block constructor sets `entity` to null. The entity
+constructor sets `block` to null. Exactly one of `getBlock()` / `getEntity()` is non-null in every
+dispatch. Both constructors reject a null `player`. Each rejects a null target, with
+`NullPointerException`.
 
 ### The gates that precede it
 
-The event is fired from `ContainerProtectionService#canAccess`, the last step of
-`ContainerPreviewAccess.canOpen`, on the region thread that owns the target. Everything before it must
-already have allowed the request:
+The event is fired from `ContainerProtectionService#canAccess`. That is the last step of
+`ContainerPreviewAccess.canOpen`. It runs on the region thread that owns the target. Everything
+before it must already have allowed the request:
 
 1. The viewer holds `gloss.preview` and previews are enabled (`ContainerPreviewAccess.PERMISSION`, captured
    into a `ViewerAccess` snapshot alongside the viewer's game mode and main-hand item).
@@ -270,27 +277,29 @@ already have allowed the request:
 3. The installed container protection provider allows it. WorldGuard is installed reflectively when it is
    present and removed again if it disables.
 
-Only then is the event dispatched. The full gate order and the WorldGuard behaviour are in
+Only then is the event dispatched. The full gate order and the WorldGuard behavior are in
 [Container Previews](/gloss/15-container-previews).
 
 ### Cancelling
 
-Cancelling denies the preview. Gloss builds the `locked` document instead of the container's contents, so
-the viewer sees the padlock card and no inventory contents. Locked previews are constructed with contents
-disabled, so that card renders even for a viewer who could not open the container.
-
-Access is re-checked every 10 ticks. If the decision flips while the viewer is looking, the session drops
-its contents state and the look loop rebuilds it down the other path on a later tick.
-
-Gloss performs every one of these checks before it builds any preview document or reads a single inventory
-slot, and it never synthesizes player-interact or inventory-open events while a player looks at a
+Cancelling denies the preview. Gloss builds the `locked` document instead of the container's
+contents. The viewer sees the padlock card and no inventory contents. Locked previews are
+constructed with contents disabled. That card renders even for a viewer who could not open the
 container.
+
+Access is re-checked every 10 ticks. If the decision flips while the viewer is looking, the session
+drops its contents state. The look loop rebuilds it down the other path on a later tick.
+
+Gloss performs every one of these checks before it builds any preview document or reads a single
+inventory slot. It never synthesizes player-interact or inventory-open events while a player looks
+at a container.
 
 ### Deny on throw
 
-`canAccess` wraps the provider call and the event dispatch in one `try`. A `ReflectiveOperationException`,
-`RuntimeException` or `LinkageError` from either logs once and **returns false**, denying the preview. The
-log latch is a single `AtomicBoolean`, so a persistent failure produces one line rather than one per look.
+`canAccess` wraps the provider call and the event dispatch in one `try`. A
+`ReflectiveOperationException`, `RuntimeException` or `LinkageError` from either logs once and
+**returns false**, denying the preview. The log latch is a single `AtomicBoolean`. A persistent
+failure produces one line rather than one per look.
 
 ```java
 package com.example.protection;
@@ -315,9 +324,10 @@ public final class PreviewGate implements Listener {
 }
 ```
 
-`ContainerProtectionProvider` is internal and has no registration API. `GlossContainerPreviewAccessEvent`
-is the supported extension point: the installed provider runs first, so an event listener can deny access
-that the provider allowed, but cannot override a provider denial.
+`ContainerProtectionProvider` is internal and has no registration API.
+`GlossContainerPreviewAccessEvent` is the supported extension point. The installed provider runs
+first. An event listener can deny access that the provider allowed. It cannot override a provider
+denial.
 
 ## Related pages
 

@@ -2,41 +2,26 @@
 title: "API - Ability Cost"
 description: "Adapt documentation: API - Ability Cost"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`art.arcane.adapt.api.ability.AbilityCostProvider` lets another plugin price, charge for, waive or veto
-the cost of one adaptation activation. Every consumable an adaptation takes (an item, hunger, health, tool
-durability, vanilla experience) passes through a single funnel, and that funnel offers each registered
-provider the chance to substitute its own currency, declare the cost paid, or refuse outright.
+`art.arcane.adapt.api.ability.AbilityCostProvider` lets another plugin price, charge for, waive, or veto the cost of one adaptation activation. Every consumable an adaptation takes (an item, hunger, health, tool durability, vanilla experience) passes through a single funnel. That funnel offers each registered provider the chance to substitute its own currency, declare the cost paid, or refuse outright.
 
-This is how you make abilities cost mana instead of bones, make them free for a rank, or make one
-particular ability unaffordable in one particular place. You quote a price, you take the value yourself
-when Adapt tells you to, and you give it back if the activation falls through. Adapt never touches your
-currency; it only asks and reports.
+This is how you make abilities cost mana instead of bones. You can make them free for a rank. You can make one particular ability unaffordable in one particular place. You quote a price. You take the value yourself when Adapt tells you to. You give it back if the activation falls through. Adapt never touches your currency. It only asks and reports.
 
-There is a second, cheaper entry point. If all you want is to watch activations or to veto them for free,
-listen to `AdaptAbilityActivateEvent` and `AdaptAbilityActivatedEvent` instead. Events are never the
-transport for value: a cancelled event costs nothing and refunds nothing. Only a registered
-`AbilityCostProvider` ever holds value.
+There is a second, cheaper entry point. If all you want is to watch activations or to veto them for free, listen to `AdaptAbilityActivateEvent` and `AdaptAbilityActivatedEvent` instead. Events are never the transport for value. A cancelled event costs nothing and refunds nothing. Only a registered `AbilityCostProvider` ever holds value.
 
-A cost provider cannot grant an ability. It prices a use that has already been permitted. See
-[Skill items are inert without their adaptation](/adapt/41-api-getting-started#skill-items-are-inert-without-their-adaptation).
+A cost provider cannot grant an ability. It prices a use that has already been permitted. See [Skill items are inert without their adaptation](/adapt/41-api-getting-started#skill-items-are-inert-without-their-adaptation).
 
-The interface is built from Bukkit types, `java.*` types and its own types only. No VolmLib, no Adventure,
-no shaded types: it links against a plain Paper compile classpath.
-
----
+The interface is built from Bukkit types, `java.*` types, and its own types only. No VolmLib, no Adventure, no shaded types. It links against a plain Paper compile classpath.
 
 ## Registering
 
-Compile against the shaded `Adapt-<version>-all.jar` and declare the dependency in your plugin manifest.
-The full instructions are in [41 - API - Getting Started.md](/adapt/41-api-getting-started#depending-on-adapt).
+Compile against the shaded `Adapt-<version>-all.jar` and declare the dependency in your plugin manifest. The full instructions are in [41 - API - Getting Started](/adapt/41-api-getting-started#depending-on-adapt).
 
-Register in `onEnable`. Bukkit unregisters you automatically when your plugin disables, and Adapt notices
-the unregistration on the next check.
+Register in `onEnable`. Bukkit unregisters you automatically when your plugin disables. Adapt notices the unregistration on the next check.
 
 ```java
 @Override
@@ -48,34 +33,19 @@ public void onEnable() {
 
 ## The consumable funnel
 
-Adapt's adaptations do not take things from players directly. Each one calls a typed anchor on
-`Adaptation`, hands Adapt the cost it *would* have taken as a callback, and lets the funnel decide whether
-that callback runs. Reference lists the anchors and the `AbilityCostKind` each one maps to.
+Adapt's adaptations do not take things from players directly. Each one calls a typed anchor on `Adaptation`. It hands Adapt the cost it *would* have taken as a callback. The funnel decides whether that callback runs. Reference lists the anchors and the `AbilityCostKind` each one maps to.
 
-Every anchor carries a cost key, `adaptation:<adaptation id>:<what>`, lowercased. That key is the stable
-name of one charge inside one adaptation, and it is what you branch on when you want to price individual
-actions rather than whole skills. `adaptation:rift-gate:teleport` and `adaptation:rift-gate:bind` are two
-different charges in one adaptation, and you can price them differently.
+Every anchor carries a cost key, `adaptation:<adaptation id>:<what>`, lowercased. That key is the stable name of one charge inside one adaptation. It is what you branch on when you want to price individual actions rather than whole skills. `adaptation:rift-gate:teleport` and `adaptation:rift-gate:bind` are two different charges in one adaptation. You can price them differently.
 
-Two of the keys come from shared machinery rather than from a specific adaptation: `:durability` covers
-hand and off-hand tool damage, and `:health` covers self-damage an adaptation applies. Both appear under
-many adaptation ids. Cost keys are not exhaustively enumerable from outside, so branch on `kind()` for
-broad rules and on `costKey()` only for the specific charges you care about, always with a `default` arm.
+Two of the keys come from shared machinery rather than from a specific adaptation. `:durability` covers hand and off-hand tool damage. `:health` covers self-damage an adaptation applies. Both appear under many adaptation ids. Cost keys are not exhaustively enumerable from outside. Branch on `kind()` for broad rules and on `costKey()` only for the specific charges you care about. Always use a `default` arm.
 
 ### Pass, waive, pay, refuse
 
-`AbilityQuote` has five statuses, and the difference between `pass()` and `waived(...)` is the one that
-catches people out. `pass()` means "not my business", and Adapt then takes its own cost as usual.
-`waived(...)` means "this is free, on my authority", and Adapt takes nothing. Passing on an item cost
-tells Adapt to consume the item.
+`AbilityQuote` has five statuses. The difference between `pass()` and `waived(...)` is the one that catches people out. `pass()` means "not my business". Adapt then takes its own cost as usual. `waived(...)` means "this is free, on my authority". Adapt takes nothing. Passing on an item cost tells Adapt to consume the item.
 
-`payable(...)` says you will charge instead, and it is the only status that leads to a `reserve` call.
-`insufficient(...)` and `denied(...)` both end the activation immediately, and nothing is charged.
-`suppressesDefaultCost()` answers the built-in question directly: true for `WAIVED` and `PAYABLE`, false
-for the rest.
+`payable(...)` says you will charge instead. It is the only status that leads to a `reserve` call. `insufficient(...)` and `denied(...)` both end the activation immediately. Nothing is charged. `suppressesDefaultCost()` answers the built-in question directly: true for `WAIVED` and `PAYABLE`, false for the rest.
 
-The built-in cost is suppressed if any provider waives or successfully reserves. Providers do not
-negotiate: the first `INSUFFICIENT` or `DENIED` ends the activation there and then.
+The built-in cost is suppressed if any provider waives or successfully reserves. Providers do not negotiate. The first `INSUFFICIENT` or `DENIED` ends the activation there and then.
 
 ## The lifecycle
 
@@ -94,70 +64,44 @@ Rules Adapt guarantees:
 
 - `quote` is called at most once per provider per activation, and never after another provider denied.
 - Providers run in `ServicePriority` order, highest first, tie-broken by plugin name then `providerId()`.
-- `reserve` is called only for a `PAYABLE` quote, and only after every provider has quoted without
-  denying.
-- **All-or-nothing.** If any provider fails to reserve, every provider that already reserved is refunded
-  in strict reverse order with `CHARGE_ROLLBACK`, and nobody pays.
-- If nobody waived and nobody reserved, Adapt takes its own built-in cost last. A player who cannot afford
-  it is denied with `DENIED_INSUFFICIENT`, and because nothing was reserved in that case, there is nothing
-  to roll back.
-- Exactly one of `commit` or `refund` is called for each receipt. Whichever arrives first wins, and
-  `commit` is final: a refund attempted after commit never reaches you.
-- `providerId()` and `scope()` are read once, when Adapt rebuilds its provider index after a service
-  registration change. Treat both as constants.
+- `reserve` is called only for a `PAYABLE` quote, and only after every provider has quoted without denying.
+- **All-or-nothing.** If any provider fails to reserve, every provider that already reserved is refunded in strict reverse order with `CHARGE_ROLLBACK`, and nobody pays.
+- If nobody waived and nobody reserved, Adapt takes its own built-in cost last. A player who cannot afford it is denied with `DENIED_INSUFFICIENT`, and because nothing was reserved in that case, there is nothing to roll back.
+- Exactly one of `commit` or `refund` is called for each receipt. Whichever arrives first wins, and `commit` is final: a refund attempted after commit never reaches you.
+- `providerId()` and `scope()` are read once, when Adapt rebuilds its provider index after a service registration change. Treat both as constants.
 
 ### Immediate and deferred charges
 
-Most charges resolve inside one call: `quote`, `reserve` and `commit` all happen before `payItemCost`
-returns to the adaptation. Your `commit` follows your `reserve` on the same thread, in the same stack.
+Most charges resolve inside one call. `quote`, `reserve`, and `commit` all happen before `payItemCost` returns to the adaptation. Your `commit` follows your `reserve` on the same thread, in the same stack.
 
-Some do not. `payItemCostDeferred` opens a ticket, and the adaptation settles or refunds it later, once it
-knows whether the thing actually happened. The shipped catalogue uses this for the six hunter potion
-adaptations, `rift-gate` teleports, `rift-conduit` binds, `rift-void-skin` pearls,
-`enchanting-offer-reroll` and `herbalism-seed-sower`: a player who walks out of a rift gate channel, or
-whose reroll fails, gets their eye or lapis back. Nothing about your contract changes, only the delay
-before `commit` or `refund` arrives. Write your provider so that delay is legal.
+Some do not. `payItemCostDeferred` opens a ticket. The adaptation settles or refunds it later, once it knows whether the thing actually happened. The shipped catalogue uses this for the six hunter potion adaptations, `rift-gate` teleports, `rift-conduit` binds, `rift-void-skin` pearls, `enchanting-offer-reroll`, and `herbalism-seed-sower`. A player who walks out of a rift gate channel, or whose reroll fails, gets their eye or lapis back. Nothing about your contract changes. Only the delay before `commit` or `refund` arrives. Write your provider so that delay is legal.
 
-An open ticket that is never settled or refunded is reclaimed with `EXPIRED` once it is 30 seconds old.
-The reclaim is a backstop, not a timer: the sweep runs at most once a second and only when the funnel is
-next used, so on an idle server the refund waits until something else happens, or until shutdown.
+An open ticket that is never settled or refunded is reclaimed with `EXPIRED` once it is 30 seconds old. The reclaim is a backstop, not a timer. The sweep runs at most once a second and only when the funnel is next used. On an idle server the refund waits until something else happens, or until shutdown.
 
 ## Threading
 
-`quote` and `reserve` run on the tick thread that owns the player: the main thread on Paper, the owning
-region thread on Folia. Reading and mutating the player's inventory, experience, health and location is
-legal there. `commit` runs on that same thread for an immediate charge, where it happens inside the
-`reserve` call's own stack; for a deferred charge it runs on whichever thread settles the ticket.
+`quote` and `reserve` run on the tick thread that owns the player: the main thread on Paper, the owning region thread on Folia. Reading and mutating the player's inventory, experience, health, and location is legal there. `commit` runs on that same thread for an immediate charge, where it happens inside the `reserve` call's own stack. For a deferred charge it runs on whichever thread settles the ticket.
 
-Adapt checks before it calls. If the calling thread is not `Bukkit.isPrimaryThread()`, or if Folia is in
-use and the current region does not own the player, no provider is consulted, the built-in cost is taken,
-and a throttled warning is logged.
+Adapt checks before it calls. If the calling thread is not
+`Bukkit.isPrimaryThread()`, no provider is consulted. The same is true if Folia
+is in use and the current region does not own the player. The built-in cost is
+taken. A throttled warning is logged.
 
-`refund` runs on the owning thread for `CHARGE_ROLLBACK` and for the reasons an adaptation sends while
-settling its own ticket. Three reasons do not carry that guarantee:
+`refund` runs on the owning thread for `CHARGE_ROLLBACK` and for the reasons an adaptation sends while settling its own ticket. Three reasons do not carry that guarantee:
 
-- **`EXPIRED`.** The reclaim happens at the head of the next charge, so the call arrives on the tick
-  thread of whatever player triggered that charge, not the one you were quoted for.
+- **`EXPIRED`.** The reclaim happens at the head of the next charge. The call
+  arrives on the tick thread of whatever player triggered that charge. It does
+  not arrive on the thread of the player you were quoted for.
 - **`ADAPTATION_DISABLED`.** Adapt drains orphaned tickets from its `ServiceUnregisterEvent` handler.
-- **`SERVER_SHUTDOWN`.** Adapt refunds from its own uninstall path, on whichever thread is disabling the
-  plugin.
+- **`SERVER_SHUTDOWN`.** Adapt refunds from its own uninstall path, on whichever thread is disabling the plugin.
 
-On all three the player may be owned by a different region thread, or may not be on the server at all.
-Reverse the charge against your own state and nothing else: no inventory writes, no teleports, no entity,
-block or chunk access. If a refund genuinely has to touch the player, hop to that player's entity
-scheduler and handle the hop being refused.
+On all three the player may be owned by a different region thread, or may not be on the server at all. Reverse the charge against your own state and nothing else. No inventory writes, no teleports, no entity, block, or chunk access. If a refund genuinely has to touch the player, hop to that player's entity scheduler and handle the hop being refused.
 
-**Do not block.** No I/O, no `CompletableFuture.join`, no `callSyncMethod`, no lock held across the call.
-A slow call is logged with a throttled warning naming your plugin, but the warning never changes the
-outcome.
+**Do not block.** No I/O, no `CompletableFuture.join`, no `callSyncMethod`, no lock held across the call. A slow call is logged with a throttled warning naming your plugin. The warning never changes the outcome.
 
-**Do not re-enter Adapt.** If a provider triggers another charge on the same thread, the nested charge is
-refused outright with `AbilityOutcome.DENIED_REENTRANT`, is counted, and logs a throttled warning. Nothing
-is charged and nothing is rolled back, because nothing had been reserved.
+**Do not re-enter Adapt.** If a provider triggers another charge on the same thread, the nested charge is refused outright with `AbilityOutcome.DENIED_REENTRANT`. It is counted. It logs a throttled warning. Nothing is charged and nothing is rolled back, because nothing had been reserved.
 
 If you need remote data, cache it and prime the cache on `PlayerJoinEvent`.
-
----
 
 ## Worked example: charging from your own resource pool
 
@@ -165,9 +109,7 @@ A plugin with its own "Mana" pool that wants blood magic to cost mana instead of
 
 ### The receipt
 
-The receipt is provider-owned and opaque. `AbilityReceipt` declares no instance methods: Adapt stores the
-object verbatim, never calls anything on it, not even `toString()`, and hands the exact same instance back
-to `commit` or `refund`. Put whatever you need to reverse the charge in it.
+The receipt is provider-owned and opaque. `AbilityReceipt` declares no instance methods. Adapt stores the object verbatim. It never calls anything on it, not even `toString()`. It hands the exact same instance back to `commit` or `refund`. Put whatever you need to reverse the charge in it.
 
 ```java
 package com.example.warden;
@@ -179,9 +121,7 @@ public record ManaReceipt(UUID playerId, int amount) implements AbilityReceipt {
 }
 ```
 
-Adapt pairs every receipt with the provider that returned it, so a receipt never has to identify itself
-and can never be attributed to anyone else. `AbilityReceipt.of("label")` exists for providers that need no
-state; the label is for your own logs and Adapt never reads it.
+Adapt pairs every receipt with the provider that returned it. A receipt never has to identify itself. It can never be attributed to anyone else. `AbilityReceipt.of("label")` exists for providers that need no state. The label is for your own logs. Adapt never reads it.
 
 ### The provider
 
@@ -275,22 +215,15 @@ public final class ManaCostProvider implements AbilityCostProvider {
 }
 ```
 
-`ManaPool` is application-owned; the sample needs `isAttuned(UUID)`, `balance(UUID)`,
-`withdraw(UUID, int)`, `deposit(UUID, int)` and `recordSpend(UUID, int)`, all answering from memory.
+`ManaPool` is application-owned. The sample needs `isAttuned(UUID)`, `balance(UUID)`, `withdraw(UUID, int)`, `deposit(UUID, int)`, and `recordSpend(UUID, int)`, all answering from memory.
 
 Three things this example does on purpose:
 
-- A player who is not attuned gets `pass()`, so Adapt takes its own bones and blood as usual. Returning
-  `waived(...)` there would make blood magic free for everyone who never joined your system.
-- A price of zero for an attuned player is `waived(...)`, not `pass()`. The mana system owns this cost
-  now, and it has decided the cost is nothing.
-- `priceOf` is deterministic and reads nothing but the context, so `quote` and `reserve` cannot disagree.
-  If yours can, quote once and stash the number on a field keyed by `context.ability().activationId()`.
-  `reserve` always follows its own `quote` on the same thread.
+- A player who is not attuned gets `pass()`, so Adapt takes its own bones and blood as usual. Returning `waived(...)` there would make blood magic free for everyone who never joined your system.
+- A price of zero for an attuned player is `waived(...)`, not `pass()`. The mana system owns this cost now, and it has decided the cost is nothing.
+- `priceOf` is deterministic and reads nothing but the context, so `quote` and `reserve` cannot disagree. If yours can, quote once and stash the number on a field keyed by `context.ability().activationId()`. `reserve` always follows its own `quote` on the same thread.
 
-The `switch` in `priceOf` is exhaustive over `AbilityCostKind` because it is a sample compiled against a
-known Adapt version. In shipping code, add a `default` arm. See
-[Switching over the enums](/adapt/41-api-getting-started#switching-over-the-enums).
+The `switch` in `priceOf` is exhaustive over `AbilityCostKind` because it is a sample compiled against a known Adapt version. In shipping code, add a `default` arm. See [Switching over the enums](/adapt/41-api-getting-started#switching-over-the-enums).
 
 ### Registration
 
@@ -314,8 +247,7 @@ public final class WardenPlugin extends JavaPlugin {
 
 ## The minimum: waive or veto, no money
 
-`quote` is the only method without a default. If you never take value, that is the only method you write,
-and `AbilityCostProvider` accepts a lambda:
+`quote` is the only method without a default. If you never take value, that is the only method you write. `AbilityCostProvider` accepts a lambda:
 
 ```java
 getServer().getServicesManager().register(AbilityCostProvider.class,
@@ -325,21 +257,13 @@ getServer().getServicesManager().register(AbilityCostProvider.class,
     this, ServicePriority.Normal);
 ```
 
-The default `reserve` returns `AbilityReservation.failed("this provider quoted a price but does not
-implement reserve")`. That is a deliberate late refusal rather than a fault, so a provider that quotes
-`PAYABLE` without implementing `reserve` denies the activation cleanly instead of charging nothing and
-proceeding. `commit` and `refund` default to doing nothing.
+The default `reserve` returns `AbilityReservation.failed("this provider quoted a price but does not implement reserve")`. That is a deliberate late refusal rather than a fault. A provider that quotes `PAYABLE` without implementing `reserve` denies the activation cleanly instead of charging nothing and proceeding. `commit` and `refund` default to doing nothing.
 
-If you charge, override `providerId()` too. The default is your class name, which for a lambda is a
-generated name like `com.example.Warden$$Lambda/0x00007f2a…` that changes on every restart. Adapt logs one
-warning naming your plugin when it sees that and keeps using the generated name. It is unique within a
-run, so deduplication and quarantine still work, but it is not a name an admin can recognise.
+If you charge, override `providerId()` too. The default is your class name. For a lambda that is a generated name like `com.example.Warden$$Lambda/0x00007f2a…` that changes on every restart. Adapt logs one warning naming your plugin when it sees that and keeps using the generated name. It is unique within a run, so deduplication and quarantine still work. It is not a name an admin can recognize.
 
 ## Observing and vetoing with events
 
-Two events, each with its own `HandlerList`, both fired on the tick thread that owns the player. They are
-not part of the `AdaptEvent` family and share nothing with it. See
-[45 - API - Events.md](/adapt/45-api-events).
+Two events, each with its own `HandlerList`, both fired on the tick thread that owns the player. They are not part of the `AdaptEvent` family and share nothing with it. See [45 - API - Events](/adapt/45-api-events).
 
 ```java
 @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -367,38 +291,24 @@ public void onActivated(AdaptAbilityActivatedEvent event) {
 }
 ```
 
-`AdaptAbilityActivateEvent` fires before any provider is quoted, so cancelling costs nothing and refunds
-nothing. Your cancel reason is sanitised to 128 characters and is not shown to the player.
+`AdaptAbilityActivateEvent` fires before any provider is quoted. Cancelling costs nothing and refunds nothing. Your cancel reason is sanitized to 128 characters and is not shown to the player.
 
-`AdaptAbilityActivatedEvent` fires only for an activation that was allowed and settled, which for a
-deferred charge means at settle time rather than at charge time. Denials never reach it, and a deferred
-charge that ends in a refund never reaches it either. There is no event for a refused activation.
+`AdaptAbilityActivatedEvent` fires only for an activation that was allowed and settled. For a deferred charge that means at settle time rather than at charge time. Denials never reach it. A deferred charge that ends in a refund never reaches it either. There is no event for a refused activation.
 
-Registering a listener on either event is enough on its own to wake the funnel. Adapt short-circuits the
-whole cost path when there are no cost providers *and* no listeners on either event, so a pure-observer
-plugin costs nothing until it exists.
+Registering a listener on either event is enough on its own to wake the funnel. Adapt short-circuits the whole cost path when there are no cost providers *and* no listeners on either event. A pure-observer plugin costs nothing until it exists.
 
 ## Fault policy
 
-Adapt assumes a provider will throw, return null, hand back somebody else's receipt, or fail to refund.
-The full behaviour table is in Reference.
+Adapt assumes a provider will throw, return null, hand back somebody else's receipt, or fail to refund. The full behavior table is in Reference.
 
-The default for cost providers is **fail-open**, the opposite of use policies, which fail closed. That
-keeps a provider failure recoverable and logged instead of making every adaptation unusable.
-Administrators who require hard gating set `[abilityApi] costProviderFailureMode = "deny"`. A deliberate
-`DENIED` or `INSUFFICIENT` quote always denies, whatever the failure mode says; the mode governs faults
-only.
+The default for cost providers is **fail-open**, the opposite of use policies, which fail closed. That keeps a provider failure recoverable and logged instead of making every adaptation unusable. Administrators who require hard gating set `[abilityApi] costProviderFailureMode = "deny"`. A deliberate `DENIED` or `INSUFFICIENT` quote always denies, whatever the failure mode says. The mode governs faults only.
 
-No value ever moves through this API. `AbilityQuote.withPrice(long amount, String unit)` attaches an
-optional `OptionalLong amount()` and `String unit()` so Adapt can name a price in its own voice. It is
-display-only, refused at construction if it is negative, and Adapt never reconstructs, inspects or does
-arithmetic on value moved in the external system. The provider owns that movement end to end, and a quote
-without `withPrice(…)` is perfectly valid.
+No value ever moves through this API. `AbilityQuote.withPrice(long amount, String unit)` attaches an optional `OptionalLong amount()` and `String unit()` so Adapt can name a price in its own voice. It is display-only. It is refused at construction if it is negative. Adapt never reconstructs, inspects, or does arithmetic on value moved in the external system. The provider owns that movement end to end. A quote without `withPrice(…)` is perfectly valid.
 
-All third-party text (quote descriptions, refusal reasons, event cancel reasons, receipt labels) is
-truncated to 128 characters and stripped of control characters before Adapt stores or logs it.
-
----
+All third-party text is truncated to 128 characters and stripped of control
+characters. That includes quote descriptions, refusal reasons, event cancel
+reasons, and receipt labels. Adapt applies this before it stores or logs the
+text.
 
 ## Reference
 
@@ -467,39 +377,32 @@ public record AbilityContext(UUID activationId, String abilityId, String skillId
 | `player` | The live `Player` |
 | `origin` | The player's location when the charge began |
 
-Plus `UUID playerId()`, a shortcut for `player().getUniqueId()`. `defaultItem()` and `origin()` return a
-defensive copy on every read, so mutating what you get back changes nothing and calling them in a loop
-allocates. Read once into a local.
+Plus `UUID playerId()`, a shortcut for `player().getUniqueId()`. `defaultItem()` and `origin()` return a defensive copy on every read, so mutating what you get back changes nothing and calling them in a loop allocates. Read once into a local.
 
 ### Public types not passed to providers
 
-`AbilityDefaultCost` is the callback an adaptation hands the funnel: the built-in cost it *would* have
-taken, wrapped as `boolean take()`. It is public because the `pay*Cost` anchors on `Adaptation` name it in
-their signatures, and it never reaches a provider. `AbilityDefaultCost.NONE` is the no-op that always
-succeeds. You observe its effect through `AbilityCharge.defaultCostSuppressed()`, not by calling it.
+`AbilityDefaultCost` is the callback an adaptation hands the funnel: the built-in cost it *would* have taken, wrapped as `boolean take()`. It is public because the `pay*Cost` anchors on `Adaptation` name it in their signatures. It never reaches a provider. `AbilityDefaultCost.NONE` is the no-op that always succeeds. You observe its effect through `AbilityCharge.defaultCostSuppressed()`, not by calling it.
 
-`AbilityReceipt.SimpleReceipt` is the record behind `AbilityReceipt.of(label)`. Match on it only if you
-created it; a `SimpleReceipt` you did not create belongs to another provider and will never reach you. The
-factory sanitises the input label, so `label()` may differ from the original string.
+`AbilityReceipt.SimpleReceipt` is the record behind `AbilityReceipt.of(label)`. Match on it only if you created it. A `SimpleReceipt` you did not create belongs to another provider and will never reach you. The factory sanitizes the input label, so `label()` may differ from the original string.
 
-### Fault behaviour
+### Fault behavior
 
 | Misbehaviour | What Adapt does |
 |---|---|
 | `quote` throws or returns null | Counted as a fault, logged with the stack trace, then the configured failure mode decides |
 | Failure mode `allow` (the default) | The faulting provider is skipped, the activation proceeds, and the outcome becomes `ALLOWED_PROVIDER_FAILED` naming your provider id |
 | Failure mode `deny` | The activation is refused with `DENIED_PROVIDER_FAILED` |
-| `reserve` throws or returns null | Everything already reserved is refunded in reverse order with `CHARGE_ROLLBACK`; nobody pays. Then the failure mode decides |
+| `reserve` throws or returns null | Everything already reserved is refunded in reverse order with `CHARGE_ROLLBACK`. Nobody pays. Then the failure mode decides |
 | `reserve` returns `failed(reason)` | Not a fault, a deliberate late refusal. Rollback, then deny with `DENIED_INSUFFICIENT` and your reason |
 | A receipt that throws from `toString`, `equals` or `hashCode` | Nothing. Adapt never calls a receipt |
-| `commit` throws | Logged and counted. The activation already happened; it is not undone |
+| `commit` throws | Logged and counted. The activation already happened. It is not undone |
 | `refund` throws | Logged and counted, and the rollback loop continues to the next receipt |
 | Repeated faults | On the `providerFaultLimit`-th fault the provider is quarantined with a `SEVERE` log line naming your plugin, and skipped until its registration disappears and returns |
 | Slow call | Throttled warning naming your plugin. Never changes the outcome |
 | `providerId()` throws or returns blank | The registration is ignored entirely, with a warning |
 | `scope()` throws or returns null | Treated as `AbilityScope.everything()`, with a warning |
 | Two providers claim one `providerId` | The one that sorts first is kept and the other is ignored with a warning. Sort order is `ServicePriority` descending, then plugin name, then provider id |
-| The same instance registered twice | The duplicate is dropped silently; you are quoted once |
+| The same instance registered twice | The duplicate is dropped silently. You are quoted once |
 | Your plugin is disabled while still registered | You are not quoted. If you hold an open reservation, Adapt still calls `refund` and logs that it is refunding through a disabled plugin |
 | Your service is unregistered with tickets open | Every open ticket holding one of your charges is refunded with `ADAPTATION_DISABLED` |
 | Adapt shuts down | Every unresolved receipt is refunded with `SERVER_SHUTDOWN` |
@@ -513,13 +416,12 @@ factory sanitises the input label, so `label()` may differ from the original str
 |---|---|---|
 | `enabled` | `true` | Master switch for the whole ability API. When false, no provider is called and neither event fires |
 | `costProviderFailureMode` | `"allow"` | What a faulting cost provider means. `allow`: the provider is skipped and the activation proceeds. `deny`: the activation is refused |
-| `usePolicyFailureMode` | `"deny"` | The use-policy equivalent. See [43 - API - Ability Use Policy.md](/adapt/43-api-ability-use-policy#configuration) |
-| `providerFaultLimit` | `5` | Fault count that trips quarantine, so the default tolerates four. Clamped to 0 to 1000; `0` disables quarantine |
-| `slowProviderMillis` | `2` | Milliseconds one provider call may take before a warning is logged. Clamped to 0 to 60000; `0` disables the watchdog |
+| `usePolicyFailureMode` | `"deny"` | The use-policy equivalent. See [43 - API - Ability Use Policy](/adapt/43-api-ability-use-policy#configuration) |
+| `providerFaultLimit` | `5` | Fault count that trips quarantine, so the default tolerates four. Clamped to 0 to 1000. `0` disables quarantine |
+| `slowProviderMillis` | `2` | Milliseconds one provider call may take before a warning is logged. Clamped to 0 to 60000. `0` disables the watchdog |
 | `denyMessageThrottleMillis` | `2000` | Use-policy denial deduplication window in milliseconds. Does not affect the cost funnel |
 
-Both failure-mode keys accept `deny`, `denied`, `closed`, `fail-closed` and `allow`, `allowed`, `open`,
-`fail-open`, case-insensitively. An unrecognised value falls back to that key's default.
+Both failure-mode keys accept `deny`, `denied`, `closed`, `fail-closed` and `allow`, `allowed`, `open`, `fail-open`, case-insensitively. An unrecognized value falls back to that key's default.
 
 ### `AbilityCostKind`
 
@@ -562,11 +464,9 @@ Both failure-mode keys accept `deny`, `denied`, `closed`, `fail-closed` and `all
 | `SERVER_SHUTDOWN` | Adapt is shutting down with tickets still open | yes |
 | `PLAYER_DIED` | Declared for a future deferred charge. No shipped adaptation sends it | yes |
 
-`CHARGE_ROLLBACK` is not sent when the built-in cost turns out to be unaffordable. That branch is only
-reachable with nothing reserved, so there is never anything to give back.
+`CHARGE_ROLLBACK` is not sent when the built-in cost turns out to be unaffordable. That branch is only reachable with nothing reserved, so there is never anything to give back.
 
-Handle every reason the same way, by giving the value back. Do not branch on the reason to decide
-*whether* to refund.
+Handle every reason the same way, by giving the value back. Do not branch on the reason to decide *whether* to refund.
 
 ### `AbilityOutcome`
 
@@ -574,11 +474,11 @@ Carried by `AbilityCharge`. `allowed()` answers the only question most consumers
 
 | Constant | `allowed()` | Meaning | Visible on `AdaptAbilityActivatedEvent` |
 |---|---|---|---|
-| `ALLOWED_DEFAULT` | `true` | Nobody waived or charged; Adapt took its own cost | yes |
-| `ALLOWED_WAIVED` | `true` | A provider waived; nothing was taken | yes |
+| `ALLOWED_DEFAULT` | `true` | Nobody waived or charged. Adapt took its own cost | yes |
+| `ALLOWED_WAIVED` | `true` | A provider waived. Nothing was taken | yes |
 | `ALLOWED_CHARGED` | `true` | At least one provider reserved and committed | yes |
-| `ALLOWED_PROVIDER_FAILED` | `true` | A provider faulted under `allow` mode; the activation went ahead | yes |
-| `DISABLED` | `true` | The ability API is switched off; the built-in cost was taken | no |
+| `ALLOWED_PROVIDER_FAILED` | `true` | A provider faulted under `allow` mode. The activation went ahead | yes |
+| `DISABLED` | `true` | The ability API is switched off. The built-in cost was taken | no |
 | `DENIED_BY_LISTENER` | `false` | `AdaptAbilityActivateEvent` was cancelled | no |
 | `DENIED_BY_PROVIDER` | `false` | A provider quoted `DENIED` | no |
 | `DENIED_INSUFFICIENT` | `false` | A provider quoted `INSUFFICIENT`, a `reserve` refused, or the built-in cost was unaffordable | no |
@@ -597,9 +497,8 @@ public record AbilityCharge(UUID activationId, AbilityOutcome outcome, boolean d
 | `activationId` | The activation this settles |
 | `outcome` | The final verdict. `allowed()` is the shorthand |
 | `defaultCostSuppressed` | `true` when no built-in cost was taken |
-| `reason` | The deciding provider's text, sanitised. Empty when allowed |
+| `reason` | The deciding provider's text, sanitized. Empty when allowed |
 | `providerId` | The deciding or faulting provider. Empty when nobody decided |
 | `chargedProviderIds` | Every provider that reserved, in charge order. Immutable |
 
-All enums here may gain constants. Write a `default` arm. See
-[Switching over the enums](/adapt/41-api-getting-started#switching-over-the-enums).
+All enums here may gain constants. Write a `default` arm. See [Switching over the enums](/adapt/41-api-getting-started#switching-over-the-enums).

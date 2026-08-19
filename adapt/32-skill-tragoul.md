@@ -2,24 +2,26 @@
 title: "Skill - TragOul"
 description: "Adapt documentation: Skill - TragOul"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-TragOul is the blood skill. You level it by getting hurt and living through it, and the adaptations pay that back: damage reflected at whoever hit you, life stolen out of your enemies, corpses that explode or launch seeking lances, and a pack of skeletons raised out of a stack of bones. Fourteen adaptations, and most of them get better the more dangerous your fights are.
+TragOul is the blood skill. You level it by getting hurt and living through it. The adaptations pay that back. Damage is reflected at whoever hit you. Life is stolen out of your enemies. Corpses explode or launch seeking lances. A pack of skeletons is raised out of a stack of bones. There are fourteen adaptations. Most of them get better the more dangerous your fights are.
 
 It plays as a high-risk kit. Several adaptations charge you for their power. Corpse Lances take a bite out of your own health each time a lance connects. Skeletal Servant permanently lowers your max health while its pack is alive. Marrow Armor eats a bone off your belt every time it soaks a hit. In exchange you get lifesteal, an emergency save that refuses a killing blow, and crowd damage that clears rooms.
 
-It also has a death penalty, off by default. Turn `takeAwaySkillsOnDeath` on and dying costs you TragOul XP and knocks every TragOul adaptation down one level.
+It also has a death penalty, off by default. Turn `takeAwaySkillsOnDeath` on and dying costs you TragOul XP. Every TragOul adaptation is knocked down one level.
 
-If you are new to it, Will of Pain and Soul Siphon are the safest starting picks, because they only ever give you health back. Corpse Lances and Skeletal Servant are where the skill gets loud.
+If you are new to it, Will of Pain and Soul Siphon are the safest starting picks. They only ever give you health back. Corpse Lances and Skeletal Servant are where the skill gets loud.
 
 ## How you earn TragOul XP
 
-XP comes from being damaged by something. When an entity hits you, the skill adds 1 to `trag.hitsrecieved` and adds the raw damage to `trag.damage`, then pays `damageReceivedXpMultiplier` times that damage. XP awards are on a `cooldownDelay` cooldown, so the stat counters keep climbing during a long fight while the payouts drip.
+XP comes from being damaged by something. When an entity hits you, the skill adds 1 to `trag.hitsrecieved` and adds the raw damage to `trag.damage`. Then it pays `damageReceivedXpMultiplier` times that damage. XP awards are on a `cooldownDelay` cooldown. The stat counters keep climbing during a long fight while the payouts drip.
 
-Surviving low pays extra. If the hit leaves you alive but at 4 hearts or less, you get `lowHealthSurvivalXP` on top, with a short red-to-cyan ring effect around you.
+Surviving low pays extra. If the hit leaves you alive but at 4 hearts or less, you get
+`lowHealthSurvivalXP` on top. A short red-to-cyan ring effect appears around
+you.
 
 Nothing is credited if you are already dead, invulnerable, or blocking with a shield when the hit lands.
 
@@ -27,7 +29,10 @@ Death behavior depends on config. If Adapt's global hardcore reset is on, dying 
 
 ## Adaptations
 
-Everything below needs the same four things before it does anything: the adaptation learned at level 1 or higher, the TragOul skill and that adaptation both enabled in config, the `adapt.use` permission for it, and any protection or region plugin allowing the action on that target. Learn adaptations from the Adapt menu (`/adapt`), under TragOul.
+Everything below needs the same four things before it does anything. You must
+learn the adaptation to level 1 or higher. The TragOul skill and that adaptation
+must both be enabled in config. You need the `adapt.use` permission for it. Any
+protection or region plugin must allow the action on that target. Learn adaptations from the Adapt menu (`/adapt`), under TragOul.
 
 ### Thorns (`tragoul-thorns`)
 
@@ -35,7 +40,8 @@ Whoever hits you takes a flat chunk of damage back. Projectiles count, and the r
 
 ### Globe of Pain (`tragoul-globe`)
 
-Your melee hit stops being single target. The damage is split evenly across the mob you hit and the other valid mobs nearby, and each of them also takes a per-level bonus on top. Against a crowd, each mob takes less than your normal hit, but everything gets hit at once. Armor, Resistance, protection effects, and damage listeners then process that share independently for each target, so displayed or observed health loss can differ between them.
+Your melee hit stops being single target. The damage is split evenly across the mob you hit and the other valid mobs
+nearby. Each of them also takes a per-level bonus on top. Against a crowd, each mob takes less than your normal hit, but everything gets hit at once. Armor, Resistance, protection effects, and damage listeners then process that share independently for each target, so displayed or observed health loss can differ between them.
 
 ### Will of Pain (`tragoul-healing`)
 
@@ -43,7 +49,7 @@ Anything that damages you loses a small fixed amount of life, and you are healed
 
 ### Corpse Lances (`tragoul-lance`)
 
-Kill something and a lance launches from the corpse at the nearest valid target. It never picks you. If the lance kills its target, it can chain from that corpse to the next one at half damage, up to one hop per level and a hard maximum of 6. Damage is based on the killing blow that started it, tripled by default while you wear no armor at all.
+Kill something and a lance launches from the corpse at the nearest valid target. It never picks you. If the lance kills its target, it can chain from that corpse to the next one at half damage. That is up to one hop per level and a hard maximum of 6. Damage is based on the killing blow that started it, tripled by default while you wear no armor at all.
 
 Each connecting lance costs you real health, mitigated by armor and effects like any other hit, and the cost drops as you level. There is a 5 second cooldown per player and only one chain running at a time.
 
@@ -53,7 +59,7 @@ Take a big enough hit and you might be rewarded for it. On a proc you get a hand
 
 ### Bone Harvest (`tragoul-bone-harvest`)
 
-Kills can drop a globe on the ground: a red blood globe or a white bone globe, coin flip. Walk over it to collect. Blood globes give regeneration; bone globes give a random handful of buffs. Globes expire on their own and hoppers cannot take them.
+Kills can drop a globe on the ground: a red blood globe or a white bone globe, coin flip. Walk over it to collect. Blood globes give regeneration. Bone globes give a random handful of buffs. Globes expire on their own and hoppers cannot take them.
 
 ### Corpse Explosion (`tragoul-corpse-explosion`)
 
@@ -63,7 +69,7 @@ Servant kills detonate too, tinted bone white instead of crimson.
 
 ### Soul Siphon (`tragoul-soul-siphon`)
 
-Lifesteal on everything you are credited for. Melee, arrows, TNT you lit, lingering clouds you threw, evoker fangs, all of it heals you for part of the final damage. There is a healing cap per second so multi-target hits cannot fully restore you in one swing, and you get a small puff of smoke when you hit that cap.
+Lifesteal on everything you are credited for. Melee, arrows, TNT you lit, lingering clouds you threw, evoker fangs, all of it heals you for part of the final damage. There is a healing cap per second so multi-target hits cannot fully restore you in one swing. You get a small puff of smoke when you hit that cap.
 
 ### Skeletal Servant (`tragoul-skeletal-servant`)
 
@@ -76,7 +82,8 @@ How to use it:
 3. Sneak and right-click.
 4. A servant rises at your feet and takes your current mark, which is whatever you last hit or whatever last hit you.
 
-You can keep one living servant per level. Summoning at the cap recycles the oldest one by default. While servants are alive your maximum health is reduced by `healthCostPerMinion` for each of them, down to a floor, so a full pack is a real trade.
+You can keep one living servant per level. Summoning at the cap recycles the oldest one by default. While servants are alive your maximum health is reduced by `healthCostPerMinion`
+for each of them, down to a floor. A full pack is a real trade.
 
 ### Marrow Armor (`tragoul-marrow-armor`)
 
@@ -92,7 +99,8 @@ Wounded creatures and players near you glow through walls, visible only to you. 
 
 ### Plague Bearer (`tragoul-plague-bearer`)
 
-If you poison or wither a mob and it dies with that effect still on it, the affliction jumps to nearby mobs at a higher amplifier. The spread can chain for a few generations before it burns out.
+If you poison or wither a mob and it dies with that effect still on it, the
+affliction jumps to nearby mobs. The jumped effect uses a higher amplifier. The spread can chain for a few generations before it burns out.
 
 How to use it:
 
@@ -103,7 +111,8 @@ How to use it:
 
 ### Last Rites (`tragoul-last-rites`)
 
-A hit that would kill you is refused. You drop to 1 HP, go invisible with heavy resistance for a few seconds, and every hostile mob within range that was targeting you forgets about you. The cooldown is long, measured in minutes, and drops as you level. This is your escape button, not a rotation.
+A hit that would kill you is refused. You drop to 1 HP. You go invisible with heavy resistance for a few seconds.
+Every hostile mob within range that was targeting you forgets about you. The cooldown is long, measured in minutes, and drops as you level. This is your escape button, not a rotation.
 
 ## Reference
 
@@ -153,7 +162,9 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carrie
 
 "Level percent" below is the learned level divided by the adaptation's max level (0 to 1). Where a value is described as scaling from level 1 to max level, the code lerps on `(level - 1) / (maxLevel - 1)` instead.
 
-Every adaptation carries a tick interval because every adaptation is registered with the scheduler, but only Bone Harvest, Curse of Frailty, Death Sense, and Skeletal Servant actually run work on that tick. The rest are event-driven and their interval is inert. Corpse Explosion drains its nova queue on its own one-tick schedule instead.
+Every adaptation carries a tick interval because every adaptation is registered
+with the scheduler. Only Bone Harvest, Curse of Frailty, Death Sense, and
+Skeletal Servant actually run work on that tick. The rest are event-driven and their interval is inert. Corpse Explosion drains its nova queue on its own one-tick schedule instead.
 
 ### Thorns
 
@@ -221,7 +232,7 @@ Per hit, damage per entity is `originalDamage / (sharedTargets + 1)` plus the le
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adapt/adaptations/tragoul-healing.toml` |
 
-Listened events: `EntityDamageEvent` (you are the victim; the attacker is resolved from the damage source or the projectile shooter).
+Listened events: `EntityDamageEvent` (you are the victim. The attacker is resolved from the damage source or the projectile shooter).
 
 Menu lore: "health drained from each attacker", "Actual life drained is restored to you".
 
@@ -232,7 +243,7 @@ Your own skeletal servants cannot be drained. Healing is capped by your missing 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `drainDamageStart` | `0.5` | Health points drained from each attacker at level 1. |
-| `drainDamageEnd` | `2.0` | Health points drained at max level; levels in between interpolate. |
+| `drainDamageEnd` | `2.0` | Health points drained at max level. Levels in between interpolate. |
 
 ### Corpse Lances
 
@@ -244,23 +255,29 @@ Your own skeletal servants cannot be drained. Healing is capped by your missing 
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tragoul-lance.toml` |
 
 Listened events: `EntityDeathEvent` at LOWEST (starts a chain from a kill you caused), `PlayerQuitEvent` and `PlayerDeathEvent` (cancel any chain in flight).
 
-Menu lore: "Killing blows launch seeking corpse lances, including lance chain kills", "Flat life cost falls from 3 hearts to 1 heart and uses normal damage mitigation", "Max Lances: 1 + level".
+Menu lore includes these lines. "Killing blows launch seeking corpse lances,
+including lance chain kills". "Flat life cost falls from 3 hearts to 1 heart and
+uses normal damage mitigation". "Max Lances: 1 + level".
 
-Stats and milestones: `tragoul.lance.lances-spawned` at 200 (reward 400), incremented per connecting lance; `tragoul.lance.lance-kills` at 100 (reward 1000).
+Stats and milestones: `tragoul.lance.lances-spawned` at 200 (reward 400), incremented per connecting lance. `tragoul.lance.lance-kills` at 100 (reward 1000).
 
-Fixed in code: 5000 ms cooldown per player, one chain in flight per player, search radius `min(32, 5 + 4 x level)`, chain length `min(6, level)`, each hop deals half the previous damage, 24 candidates examined and 8 handed off per search, 32 searches per 50 ms window, chains abandoned after 30 seconds. Lance damage is the killing blow's final damage times `seekerDamageMultiplier`, times `unarmoredDamageMultiplier` when no armor is equipped.
+Fixed values in code follow. Cooldown is 5000 ms per player. One chain may be in
+flight per player. Search radius is `min(32, 5 + 4 x level)`. Chain length is
+`min(6, level)`. Each hop deals half the previous damage. Each search examines
+24 candidates and hands off 8. There are 32 searches per 50 ms window. Chains
+are abandoned after 30 seconds. Lance damage is the killing blow's final damage times `seekerDamageMultiplier`, times `unarmoredDamageMultiplier` when no armor is equipped.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `seekerDelay` | `12` | Ticks between launch and impact, clamped to 1 - 40. |
 | `seekerDamageMultiplier` | `1.0` | Multiplier on the killing blow's damage, clamped to 0 - 4. |
 | `selfDamageAtFirstLevel` | `6.0` | Health points you take per connecting lance at level 1. |
-| `selfDamageAtMaxLevel` | `2.0` | Health points you take at max level; never higher than the level-1 value. |
+| `selfDamageAtMaxLevel` | `2.0` | Health points you take at max level. Never higher than the level-1 value. |
 | `unarmoredDamageMultiplier` | `3.0` | Extra multiplier while no armor is equipped, clamped to 1 - 10. |
 
 ### Blood Pact
@@ -273,20 +290,20 @@ Fixed in code: 5000 ms cooldown per player, one chain in flight per player, sear
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.62 |
-| Tick interval (ms) | 1000 (default; no tick work) |
+| Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tragoul-blood-pact.toml` |
 
 Listened events: `EntityDamageEvent` (rolls the proc), `EntityDeathEvent` (counts kills made while an Absorption or Resistance effect is on you).
 
 Menu lore: "Proc Chance", "Buff Duration", "Proc Cooldown".
 
-Stats and milestones: `tragoul.blood-pact.health-sacrificed` at 200 (reward 400); `tragoul.blood-pact.empowered-kills` at 500 (reward 1000). One-off advancement `challenge_tragoul_pact_all_in` for an empowered kill after a proc that left you at 3 hearts or less.
+Stats and milestones: `tragoul.blood-pact.health-sacrificed` at 200 (reward 400). `tragoul.blood-pact.empowered-kills` at 500 (reward 1000). One-off advancement `challenge_tragoul_pact_all_in` for an empowered kill after a proc that left you at 3 hearts or less.
 
 Effect pool: Speed, Regeneration, Resistance, Fire Resistance, Absorption, Jump Boost, Night Vision. Speed and Jump Boost are applied as timed attribute modifiers rather than potion effects. Absorption runs 20 ticks shorter, floored at 40. Amplifier steps to 1 at level percent 0.85 for Absorption, Resistance, and Regeneration, and at 0.7 for the rest.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `minDamageTriggerHearts` | `2.0` | Hearts of final damage required to roll a proc; doubled internally into health points. |
+| `minDamageTriggerHearts` | `2.0` | Hearts of final damage required to roll a proc. Doubled internally into health points. |
 | `procChanceBase` | `0.12` | Proc chance at level percent 0, 0-1. |
 | `procChanceFactor` | `0.38` | Extra proc chance at full level percent. |
 | `maxProcChance` | `0.5` | Ceiling on the proc chance, 0-1. |
@@ -319,7 +336,9 @@ Menu lore: "Globe Spawn Chance", "Globe Lifetime".
 
 Stats and milestones: `tragoul.bone-harvest.orbs-collected` at 500 (reward 300) and 5000 (reward 1000).
 
-Globes are real dropped items: `MAGMA_CREAM` for blood, `SNOWBALL` for bone, owner-locked to you with a 10 tick pickup delay, tagged with `adapt:tragoul-globe`, and not pickable by mobs. Which type spawns is a coin flip.
+Globes are real dropped items. Blood uses `MAGMA_CREAM`. Bone uses `SNOWBALL`.
+They are owner-locked to you with a 10 tick pickup delay. They are tagged with
+`adapt:tragoul-globe`. Mobs cannot pick them up. Which type spawns is a coin flip.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -331,7 +350,7 @@ Globes are real dropped items: `MAGMA_CREAM` for blood, `SNOWBALL` for bone, own
 | `bloodBuffTicks` | `80` | Regeneration duration in ticks from a blood globe. |
 | `bloodBuffAmplifier` | `1` | Regeneration amplifier from a blood globe. |
 | `boneBuffTicks` | `100` | Duration in ticks of every buff from a bone globe. |
-| `boneBuffAmplifier` | `0` | Amplifier of bone globe buffs; Absorption gets one more at level percent 0.75 and up. |
+| `boneBuffAmplifier` | `0` | Amplifier of bone globe buffs. Absorption gets one more at level percent 0.75 and up. |
 | `boneBuffCountBase` | `1` | Buffs from a bone globe at level percent 0. |
 | `boneBuffCountFactor` | `2` | Extra buffs at full level percent, drawn from the same seven-effect pool as Blood Pact. |
 | `xpPerGlobeSpawned` | `8` | TragOul XP paid when a globe spawns. |
@@ -421,7 +440,11 @@ Listened events:
 - `EntityDeathEvent` as `onServantKill`: routes servant kills into Corpse Explosion.
 - `EntitiesUnloadEvent`, `PlayerQuitEvent`, `PlayerDeathEvent`: release the pack.
 
-Menu lore: "Sneak + Right-Click with bones in hand to summon a servant", "Servant Lifetime", "Bones consumed per summon", "Summon Cooldown", "Max living servants", "Servants gear up with your level, inherit your Tragoul perks, and hunt whatever you strike or whatever strikes you", "Max health lost per living servant".
+Menu lore includes these lines. "Sneak + Right-Click with bones in hand to
+summon a servant". "Servant Lifetime". "Bones consumed per summon". "Summon
+Cooldown". "Max living servants". "Servants gear up with your level, inherit
+your Tragoul perks, and hunt whatever you strike or whatever strikes you". "Max
+health lost per living servant".
 
 Stats and milestones: `tragoul.skeletal-servant.servants-summoned` at 50 (reward 400) and 500 (reward 1500).
 
@@ -436,7 +459,7 @@ Servants are `Skeleton` entities tagged with `adapt:tragoul_servant_owner`, excl
 | `cooldownMillisBase` | `10000` | Milliseconds between summons at level percent 0. |
 | `cooldownMillisFactor` | `9000` | Milliseconds removed at full level percent, floored at 1000. |
 | `servantCapPerLevel` | `1.0` | Living servants allowed per learned level, hard-capped at 16 per owner. |
-| `replaceOldestAtCap` | `true` | True recycles your oldest servant when summoning at the cap; false refuses the summon. |
+| `replaceOldestAtCap` | `true` | True recycles your oldest servant when summoning at the cap. False refuses the summon. |
 | `playerThreatWindowMillis` | `5000` | Milliseconds the last thing you hit or that hit you stays the pack's mark. |
 | `gearChancePerPiece` | `0.55` | Chance per armor slot that a new servant spawns wearing something, 0-1. |
 | `enchantChanceBase` | `0.0` | Chance an equipped piece is enchanted at level percent 0, 0-1. |
@@ -493,7 +516,7 @@ Stats and milestones: `tragoul.marrow-armor.damage-absorbed` at 500 (reward 400)
 | Tick interval (ms) | 5000 |
 | Config file | `plugins/Adapt/adapt/adaptations/tragoul-curse-of-frailty.toml` |
 
-Listened events: `EntityDamageByEntityEvent` (you are the victim; projectile shooters are cursed rather than the projectile). The tick pass only expires attacker cooldowns.
+Listened events: `EntityDamageByEntityEvent` (you are the victim. Projectile shooters are cursed rather than the projectile). The tick pass only expires attacker cooldowns.
 
 Menu lore: "Attackers are cursed with Weakness", "Curse Duration", "Attackers are also cursed with Slowness" (the third line only appears once slowness is unlocked).
 
@@ -529,7 +552,8 @@ Menu lore: "Wounded damageable entities near you glow only for you", "health or 
 
 Stats and milestones: `tragoul.death-sense.prey-sensed` at 1000 (reward 600).
 
-Glow color by remaining health fraction: dark red at 0.25 and below, red at 0.5 and below, gold at 0.75 and below, yellow above that. The health threshold scales from `healthThresholdStart` at level 1 to `healthThresholdEnd` at max level. Glows are per-viewer and lease for 1 second at a time.
+Glow color follows remaining health fraction. Dark red is 0.25 and below. Red is
+0.5 and below. Gold is 0.75 and below. Yellow is above that. The health threshold scales from `healthThresholdStart` at level 1 to `healthThresholdEnd` at max level. Glows are per-viewer and lease for 1 second at a time.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

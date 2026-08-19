@@ -1,18 +1,16 @@
 ---
 title: "Wormholes"
-description: "Wormholes through-portal projection and traversal"
+description: "Through-portal projection and traversal plugin"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-# Wormholes
-
-Frame portals that render a live view of the destination instead of an opaque surface, plus
-random-teleport portals, survival Dimensional Doors with pocket dimensions, and cross-server
-gateways.
+Frame portals show a live view of the destination. Travelers walk through that
+view. Wormholes also adds random-teleport portals, Dimensional Doors with pocket
+dimensions, and cross-server gateways.
 
 | | |
 |---|---|
@@ -22,13 +20,14 @@ gateways.
 | Integrations | PlaceholderAPI, Iris, Vault |
 
 > Wormholes ships two descriptors that disagree on load order. Paper reads
-> `paper-plugin.yml` and bootstraps at `STARTUP`; Spigot falls back to `plugin.yml` at
-> `POSTWORLD`. Worth knowing before debugging a load-order problem.
+> `paper-plugin.yml` and bootstraps at `STARTUP`. Spigot falls back to
+> `plugin.yml` at `POSTWORLD`. Know this before you debug a load-order problem.
 {.is-info}
 
-> All static permission nodes default to `op`. Non-operators need an explicit frame-portal
-> type permission to construct or change portals, `wormholes.doors.craft` to craft or
-> reskin Dimensional Doors, and `wormholes.doors.place` to place them.
+> All static permission nodes default to `op`. Non-operators need an explicit
+> frame-portal type permission to construct or change portals. They need
+> `wormholes.doors.craft` to craft or reskin Dimensional Doors. They need
+> `wormholes.doors.place` to place them.
 {.is-info}
 
 ### Getting started

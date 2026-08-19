@@ -2,7 +2,7 @@
 title: "HiddenOre — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-14T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,27 +19,33 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Install
 
-1. Drop `HiddenOre-x.x.x.jar` into `plugins/`.
-2. Restart. `config.yml` and `language.yml` are written on first run.
-3. Read [Configuration](/hiddenore/configuration) **before** letting players mine.
+1. Copy `HiddenOre-x.x.x.jar` into `plugins/`.
+2. Restart the server. HiddenOre writes `config.yml` and `language.yml` on first
+   run.
+3. Read [Configuration](/hiddenore/configuration) **before** you let players
+   mine.
 
 ## Two decisions to make first
 
-**Generation mode.** Switching between `seeded` and `pure_random` later is safe. Seeded vein
-positions are stable across `drops:` reordering. Adding or removing an unrelated rule leaves
-retained pseudorandom layouts unchanged except where the rules directly overlap. Changing an
-item rule's material or spatial generation fields changes its undiscovered layout; changing
-only Fortune behavior, tool tiers, or experience does not.
+**Generation mode.** You can switch between `seeded` and `pure_random` later.
+Seeded vein positions stay stable when you reorder `drops:`. Adding or removing
+an unrelated rule leaves retained layouts unchanged except where the rules
+overlap. Changing an item rule's material or spatial generation fields changes
+its undiscovered layout. Changing only Fortune behavior, tool tiers, or
+experience does not.
 
-**Ore removal.** `ore-removal.enabled` is `false` by default, so vanilla ore still generates.
-Turning it on affects only newly generated chunks — existing terrain keeps its ore.
+**Ore removal.** `ore-removal.enabled` is `false` by default. Vanilla ore still
+generates. If you set it to `true`, only newly generated chunks change. Existing
+terrain keeps its ore.
 
 ## Language
 
-Set `locale` in `language.yml`. Bundled: German, Spanish, Finnish, French, Hebrew, Italian,
-Japanese, Korean, Lithuanian, Dutch, Polish, Portuguese, Russian, Turkish, Vietnamese,
-Simplified Chinese, Traditional Chinese.
+Set `locale` in `language.yml`. Bundled locales: German, Spanish, Finnish,
+French, Hebrew, Italian, Japanese, Korean, Lithuanian, Dutch, Polish,
+Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
+Chinese.
 
-Canonical English lives in `art/arcane/hiddenore/util/common/Messages.java`; there is no
-English bundle file. Entries in `language.yml` are sparse overrides. Sound settings live in
-the same file.
+Canonical English lives in
+`art/arcane/hiddenore/util/common/Messages.java`. There is no English bundle
+file. Entries in `language.yml` are sparse overrides. Sound settings live in the
+same file.

@@ -2,12 +2,14 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris ships its command, Studio, runtime, HUD, and UI text as typed Java message catalogs, with translated overlays for seventeen languages and an operator-editable override file per locale. You pick the server language with `general.language` in `settings.json`; you change individual strings by dropping a partial JSON file into `languages/overrides/`. Client keybind labels are a separate surface and live in the mod jar's Minecraft lang assets. See also [03 - Configuration](/iris/03-configuration), [04 - Commands & Permissions](/iris/04-commands-permissions), and [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
+Iris ships its command, Studio, runtime, HUD, and UI text as typed Java message catalogs. Translated overlays cover seventeen languages. An operator-editable override file exists per locale. You pick the server language with `general.language` in `settings.json`. You change individual strings by dropping a partial JSON file into `languages/overrides/`.
+
+Client keybind labels are a separate surface. They live in the mod jar's Minecraft lang assets. See also [03 - Configuration](/iris/03-configuration), [04 - Commands & Permissions](/iris/04-commands-permissions), and [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
 
 ## Change one message
 
@@ -27,12 +29,12 @@ Prerequisites: write access to the Iris data folder, a backup of `settings.json`
    }
    ```
 
-3. Run `/iris reload`. A green `Hotloaded settings and locale de_DE.` means the settings and the locale both applied. A yellow `Settings were reloaded, but locale ... was rejected` means the overlay failed validation and the previous locale is still active — read the errors in the console before going further.
+3. Run `/iris reload`. A green `Hotloaded settings and locale de_DE.` means the settings and the locale both applied. A yellow `Settings were reloaded, but locale ... was rejected` means the overlay failed validation and the previous locale is still active. Read the errors in the console before going further.
 4. Run `/iris` with a subcommand that does not exist, for example `/iris zzz`.
 
-Success looks like your override text appearing verbatim. Everything else in the same session — help output, pregen status, Studio messages — should be in German from the bundled `de_DE` overlay, and any key that neither file defines falls back to the built-in English rather than printing a raw key id.
+Success looks like your override text appearing verbatim. Everything else in the same session — help output, pregen status, Studio messages — should be in German from the bundled `de_DE` overlay. Any key that neither file defines falls back to the built-in English rather than printing a raw key id.
 
-Edit the file again and save it. The settings hotload poll calls `IrisLanguage.update()`, which compares the override file's path, modification time, and length against what it last loaded, so an edit is picked up on the next poll with no command and no restart. Delete the test override when you are done.
+Edit the file again and save it. The settings hotload poll calls `IrisLanguage.update()`. That call compares the override file's path, modification time, and length against what it last loaded. An edit is picked up on the next poll with no command and no restart. Delete the test override when you are done.
 
 If you are authoring a whole new locale, translate one command group first and confirm it loads before you translate the rest. A single bad key rejects the entire file.
 
@@ -40,17 +42,17 @@ If you are authoring a whole new locale, translate one command group first and c
 
 | Symptom | What actually happened | Fix |
 |---|---|---|
-| `Rejected locale setting '...'` in the log | The value does not match `[A-Za-z0-9_-]+`, so it never reached the loader | Correct the string in `settings.json`; the previously active locale keeps running in the meantime |
-| `Rejected locale reload for <locale>` | The overlay failed validation. The console then lists up to 12 concrete errors and a count of any it omitted | Fix the listed keys and reload. Nothing partial is applied — the previous locale stays active in full |
+| `Rejected locale setting '...'` in the log | The value does not match `[A-Za-z0-9_-]+`, so it never reached the loader | Correct the string in `settings.json`. The previously active locale keeps running in the meantime |
+| `Rejected locale reload for <locale>` | The overlay failed validation. The console then lists up to 12 concrete errors and a count of any it omitted | Fix the listed keys and reload. Nothing partial is applied. The previous locale stays active in full |
 | `Locale overlay key is not declared by the message catalog` | You invented a key name. Overrides can only redefine keys that already exist in code | Copy the exact key id from the bundled locale file for your language |
-| `Expected [x, y] but found [x]` | Your text dropped or renamed a `{name}` placeholder | Match the English template's placeholder set exactly. Order and surrounding words are free; the set of names is not |
+| `Expected [x, y] but found [x]` | Your text dropped or renamed a `{name}` placeholder | Match the English template's placeholder set exactly. Order and surrounding words are free. The set of names is not |
 | `Expected 5 lines but found 4` / `Expected plural forms [...]` | A lines key needs the same line count as English, and a plural key needs the same form names | Restore the missing entries |
 | Override edits do nothing | Wrong data folder, or the filename does not match the active locale id | The file must be `<data>/languages/overrides/<active locale>.json`, spelled exactly as `general.language`. Run `/iris reload` to force it |
 | Server text is translated but keybind labels are still English | Those labels come from the mod jar's client assets, not from the server locale | See "Client language assets" below |
 
 ## Where English comes from
 
-Canonical English is owned by code in `core/.../localization`. `IrisMessages` assembles the catalog from every surface class plus the shared Director command keys from VolmLib. There is no English server translation file, and there does not need to be — English is the fallback layer under every locale.
+Canonical English is owned by code in `core/.../localization`. `IrisMessages` assembles the catalog from every surface class plus the shared Director command keys from VolmLib. There is no English server translation file, and there does not need to be. English is the fallback layer under every locale.
 
 | Catalog | Covers |
 |---|---|
@@ -64,7 +66,7 @@ Canonical English is owned by code in `core/.../localization`. `IrisMessages` as
 | `ClientUiMessages` | Client mod strings: Vision map, What overlay, pregen HUD stats, toasts, create-world gates |
 | `BukkitUiMessages`, `DesktopUiMessages` | Bukkit inventory UI and desktop pregen window strings |
 
-Code resolves text through `IrisLanguage.text(...)` when color codes should survive, or `IrisLanguage.plain(...)` when they should be stripped. Argument-free `plain` calls are memoized per locale snapshot because HUD code calls them several times per frame; a locale reload publishes a new snapshot and throws the whole memo away.
+Code resolves text through `IrisLanguage.text(...)` when color codes should survive, or `IrisLanguage.plain(...)` when they should be stripped. Argument-free `plain` calls are memoized per locale snapshot because HUD code calls them several times per frame. A locale reload publishes a new snapshot and throws the whole memo away.
 
 ## Selecting a locale
 
@@ -72,7 +74,7 @@ Code resolves text through `IrisLanguage.text(...)` when color codes should surv
 |---|---|---|
 | `general.language` | `en_US` | `plugins/Iris/settings.json` (plugin) or `<data folder>/settings.json` (mod) |
 
-The value must match `[A-Za-z0-9_-]+`. Anything else is rejected outright and the previously active locale keeps running. Both `/iris reload` and the automatic settings hotload re-read the setting and reload the locale; the command reports the requested and the active id so you can tell a successful switch from a silent no-op.
+The value must match `[A-Za-z0-9_-]+`. Anything else is rejected outright and the previously active locale keeps running. Both `/iris reload` and the automatic settings hotload re-read the setting and reload the locale. The command reports the requested and the active id so you can tell a successful switch from a silent no-op.
 
 On a successful load Iris logs `Loaded locale <id> with N fallback entries.` That count is the number of catalog keys each overlay did not define, summed across overlays. A one-key override file therefore produces a very large number. It is informational, not an error.
 
@@ -100,13 +102,13 @@ Complete translations ship inside the jar as `/languages/<locale>.json`.
 | `zh_CN` | Simplified Chinese |
 | `zh_TW` | Traditional Chinese |
 
-A bundled file is capped at 2 MiB. If one of these ids is configured but its jar resource is missing, the load throws — that is a build defect, not an operator problem. An id outside this list with no bundle is not an error: Iris skips the bundled layer and every string falls through to English, which is what makes a fully custom locale possible from an override file alone.
+A bundled file is capped at 2 MiB. If one of these ids is configured but its jar resource is missing, the load throws. That is a build defect, not an operator problem. An id outside this list with no bundle is not an error. Iris skips the bundled layer and every string falls through to English. That is what makes a fully custom locale possible from an override file alone.
 
 ## Override files
 
 Path: `<Iris data folder>/languages/overrides/<locale>.json`, created as a folder on locale load.
 
-Overrides are partial by design. Define only the keys you want to change; the rest resolve from the bundled overlay, then from English.
+Overrides are partial by design. Define only the keys you want to change. The rest resolve from the bundled overlay, then from English.
 
 ```json
 {
@@ -134,7 +136,7 @@ Validation is all-or-nothing. A rejected reload leaves the previous locale fully
 
 For a non-`en_US` locale a key resolves as: operator override → bundled `/languages/<locale>.json` → English catalog default. For `en_US` the bundled layer is skipped entirely, so it is: operator override → English catalog default.
 
-Templates use `{name}` tokens. Arguments are classified as trusted or untrusted at the call site. Trusted arguments may carry color codes. Untrusted arguments — player names, world names, pack-authored strings, exception text — have legacy section codes stripped and have `&`, `<`, and `>` rewritten to lookalike characters so they cannot inject formatting.
+Templates use `{name}` tokens. Arguments are classified as trusted or untrusted at the call site. Trusted arguments may carry color codes. Untrusted arguments are player names, world names, pack-authored strings, and exception text. Legacy section codes are stripped. `&`, `<`, and `>` are rewritten to lookalike characters so they cannot inject formatting.
 
 `&` codes in the template itself are translated to section-sign codes before send, for `0-9`, `a-f`, `k-o`, `r`, and `x`.
 
@@ -149,10 +151,10 @@ The Minecraft client reads its own lang files from `assets/irisworldgen/lang/<mc
 | `key.irisworldgen.open_vision_map` | Open Iris Vision Map |
 | `key.irisworldgen.toggle_what_overlay` | Toggle Iris What Overlay |
 
-`en_us.json` is required; a translated file ships for every bundled locale. The Minecraft code is the server locale id with `-` replaced by `_` and lowercased, so `ja-JP` becomes `ja_jp`.
+`en_us.json` is required. A translated file ships for every bundled locale. The Minecraft code is the server locale id with `-` replaced by `_` and lowercased, so `ja-JP` becomes `ja_jp`.
 
-Everything else the client draws — HUD stats, Vision map labels, What overlay rows, toasts — resolves through `IrisLanguage` and `ClientUiMessages` on whichever process renders it, not through these four keys. That is why a translated boss bar and an English keybind label can coexist.
+Everything else the client draws resolves through `IrisLanguage` and `ClientUiMessages` on whichever process renders it. That includes HUD stats, Vision map labels, What overlay rows, and toasts. It does not use these four keys. That is why a translated boss bar and an English keybind label can coexist.
 
 ## Platforms
 
-Localization works the same on Bukkit-family and on Fabric/Forge/NeoForge, from the same catalogs and the same override file. Only the surfaces differ: the modded command tree uses `ModdedCommandMessages`/`ModdedHelpMessages`, the Bukkit tree uses the Bukkit catalogs, and each ignores the other's keys. Keybind lang assets apply only where the client mod is installed. See [30 - Platform Differences](/iris/30-platform-differences).
+Localization works the same on Bukkit-family and on Fabric/Forge/NeoForge, from the same catalogs and the same override file. Only the surfaces differ. The modded command tree uses `ModdedCommandMessages`/`ModdedHelpMessages`. The Bukkit tree uses the Bukkit catalogs. Each ignores the other's keys. Keybind lang assets apply only where the client mod is installed. See [30 - Platform Differences](/iris/30-platform-differences).

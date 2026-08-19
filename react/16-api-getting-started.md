@@ -2,12 +2,12 @@
 title: "API - Getting Started"
 description: "React documentation: API - Getting Started"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-React exposes third-party Java APIs for entity protection and metric publishing, plus read-only PlaceholderAPI keys. This document covers dependency setup, current relocation boundaries, and the distinction between public API and internal runtime types.
+React exposes third-party Java APIs for entity protection and metric publishing, plus read-only PlaceholderAPI keys. This document covers dependency setup, current relocation boundaries, and the line between public API and internal runtime types.
 
 | You want to…                                            | Read                                 |
 |---------------------------------------------------------|--------------------------------------|
@@ -21,8 +21,7 @@ The current public signatures use Bukkit, `java.*`, and React API types only. Re
 
 ## Depending on React
 
-React ships a `plugin.yml`, so it participates in the legacy Bukkit plugin classloader chain. Declaring a
-dependency is all it takes to see `art.arcane.react.api.*`.
+React ships a `plugin.yml`, so it participates in the legacy Bukkit plugin classloader chain. Declare a dependency to see `art.arcane.react.api.*`.
 
 Bukkit plugin (`plugin.yml`):
 
@@ -41,8 +40,7 @@ dependencies:
       join-classpath: true
 ```
 
-`join-classpath: true` is mandatory on Paper. Paper plugin classloaders are isolated, and without it you get
-`NoClassDefFoundError` on `art.arcane.react.api.*` even though the classes ship unrelocated.
+`join-classpath: true` is mandatory on Paper. Paper plugin classloaders are isolated. Without it you get `NoClassDefFoundError` on `art.arcane.react.api.*`. The classes still ship unrelocated.
 
 ### Compile classpath
 
@@ -54,14 +52,11 @@ dependencies {
 }
 ```
 
-Maven has no first-class equivalent of a file dependency; install the jar into your local repository under
-coordinates you choose and depend on it with `<scope>provided</scope>`.
+Maven has no first-class equivalent of a file dependency. Install the jar into your local repository under coordinates you choose. Depend on it with `<scope>provided</scope>`.
 
-Scope is compile-only in every case — the jar must not end up inside yours. Never shade React classes into
-your plugin: two copies of `ReactProtection` means your calls reach a facade with no binding installed, and
-every call silently returns `false` with no error anywhere.
+Scope is compile-only in every case. The jar must not end up inside yours. Never shade React classes into your plugin. Two copies of `ReactProtection` send your calls to a facade with no binding. Every call then returns `false` with no error.
 
-The version suffix tracks the Minecraft API version React was built against (`2.0.0-26.2` is React 2.0.0 for Minecraft 26.2). It does not by itself state API compatibility with another React build.
+The version suffix tracks the Minecraft API version React was built against. `2.0.0-26.2` is React 2.0.0 for Minecraft 26.2. It does not by itself state API compatibility with another React build.
 
 ---
 
@@ -80,13 +75,9 @@ React's shaded jar rewrites these packages at build time:
 
 Three consequences:
 
-- **You never need VolmLib to use React's API.** No public API type takes or returns one. If you depend on
-  VolmLib yourself, your copy and React's copy are different classes with different names and cannot
-  collide.
-- **You cannot hand a VolmLib object to React**, and React cannot hand you one. Anything that looks like it
-  should cross that line is internal.
-- **Reflection into React by original package name fails.** `Class.forName("art.arcane.volmlib.…")` will not
-  find React's copy. Nothing in the documented API requires reflection.
+- **You do not need VolmLib to use React's API.** No public API type takes or returns a VolmLib type. If you depend on VolmLib yourself, your copy and React's copy are different classes with different names. They cannot collide.
+- **You cannot pass a VolmLib object to React.** React cannot pass one to you. Anything that looks like it should cross that line is internal.
+- **Reflection into React by original package name fails.** `Class.forName("art.arcane.volmlib.…")` will not find React's copy. Nothing in the documented API requires reflection.
 
 `art.arcane.react.api.protect` and `art.arcane.react.api.metric` are not relocated in the current shaded build. A build test fails if any current public member of those packages mentions a relocated, shaded, internal, or Adventure type.
 
@@ -94,9 +85,7 @@ Three consequences:
 
 ## Detecting React at runtime
 
-Both facades are static and inert. `ReactProtection` and `ReactMetrics` return `false`, `0`, `""`, an empty
-set — or `Double.NaN` from `readHostMetric` — when React's runtime is not installed, and never touch your
-entity in that state.
+Both facades are static and inert. `ReactProtection` and `ReactMetrics` return `false`, `0`, `""`, or an empty set when React's runtime is not installed. `readHostMetric` returns `Double.NaN` in that state. Those calls do not touch your entity.
 
 ```java
 if (ReactProtection.available()) {
@@ -104,13 +93,9 @@ if (ReactProtection.available()) {
 }
 ```
 
-That covers React being **installed but not started** — during your `onEnable` if you load first, during a
-`/react reload`, or after React shut itself down.
+That covers React being **installed but not started**. That includes your `onEnable` if you load first, a `/react reload`, or React after it shut itself down.
 
-It does **not** cover React being absent from the server entirely. In that case the classes do not exist, and
-the JVM throws `NoClassDefFoundError` the moment it links a method of yours that mentions one. With a
-`softdepend`, keep every React-touching statement inside its own class and only load that class after
-checking:
+It does **not** cover React being absent from the server entirely. In that case the classes do not exist. The JVM throws `NoClassDefFoundError` the moment it links a method of yours that mentions one. With a `softdepend`, keep every React-touching statement inside its own class. Load that class only after this check:
 
 ```java
 @Override
@@ -121,39 +106,25 @@ public void onEnable() {
 }
 ```
 
-`ReactBridge` is your class; it is the only one that imports `art.arcane.react.api.*`.
+`ReactBridge` is your class. It is the only one that imports `art.arcane.react.api.*`.
 
 ---
 
 ## What is not API
 
-Only `art.arcane.react.api.protect` and `art.arcane.react.api.metric` are contracts. Everything else under
-`art.arcane.react` is React's own runtime and changes without notice:
+Only `art.arcane.react.api.protect` and `art.arcane.react.api.metric` are contracts. Everything else under `art.arcane.react` is React's own runtime and changes without notice:
 
-- **Any package named `internal`.** `api.protect.internal` and `api.metric.internal` hold the binding that
-  React installs into the facade at startup. They are public only because React installs them from another
-  package. Do not import them: a test in React's build asserts that no published API type can reach the
-  binding, and code that reaches around it will break.
-- **`art.arcane.react.api.sampler`.** `Sampler`, `ReactCachedSampler`, `ReactCachedRateSampler` and
-  `ReactTickedSampler` are React's internal measurement types. They extend React's registry and map-renderer
-  interfaces and their members use relocated and shaded types, so a third-party plugin cannot implement or
-  extend them at all. Publish a metric instead — React builds the sampler for you. See
-  [18 - API - Metric Publishing.md](/react/18-api-metric-publishing).
+- **Any package named `internal`.** `api.protect.internal` and `api.metric.internal` hold the binding that React installs into the facade at startup. They are public only because React installs them from another package. Do not import them. A test in React's build asserts that no published API type can reach the binding. Code that reaches around it will break.
+- **`art.arcane.react.api.sampler`.** `Sampler`, `ReactCachedSampler`, `ReactCachedRateSampler` and `ReactTickedSampler` are React's internal measurement types. They extend React's registry and map-renderer interfaces. Their members use relocated and shaded types, so a third-party plugin cannot implement or extend them. Publish a metric instead. React builds the sampler for you. See [18 - API - Metric Publishing.md](/react/18-api-metric-publishing).
 - **`api.feature`, `api.tweak`, `api.action`, `api.monitor`, `api.rendering`, `api.entity`, `api.benchmark`,
   `api.test`.** React's own content model, renderers, and self-test harness. They are wired to React's registries and shaded dependencies.
-- **`art.arcane.react.api.event`.** `ReactEvent` and `ReactCancellableEvent` are base classes that hold the
-  `HandlerList` for every subclass, so all of React's internal layer events funnel through two shared lists,
-  and some of them are fired every tick from a reused instance. `ReactEntityGuardEvent` deliberately does
-  **not** extend either of them and owns its own `HandlerList`; it is the only React event a third party
-  should register for.
+- **`art.arcane.react.api.event`.** `ReactEvent` and `ReactCancellableEvent` are base classes that hold the `HandlerList` for every subclass. All of React's internal layer events funnel through two shared lists. Some of them fire every tick from a reused instance. `ReactEntityGuardEvent` does **not** extend either of them and owns its own `HandlerList`. It is the only React event a third party should register for.
 
 ---
 
 ## Versioning
 
-`ReactOperation`, `ReactMetricKind` and every other enum in the API may gain constants in a future release. A
-`switch` **expression** over an enum is exhaustive, so it stops compiling — and throws
-`IncompatibleClassChangeError` on an already-compiled jar — the moment a constant is added.
+`ReactOperation`, `ReactMetricKind` and every other enum in the API may gain constants in a future release. A `switch` **expression** over an enum is exhaustive. It stops compiling when a constant is added. An already-compiled jar then throws `IncompatibleClassChangeError`.
 
 Always write a `default` arm in third-party code:
 
@@ -165,4 +136,4 @@ String verb = switch (event.getOperation()) {
 };
 ```
 
-Construct `ReactProtectionRule` and `ReactMetric` through their static factories and `with…` methods. Those are the documented construction surface; the canonical record constructors are not.
+Construct `ReactProtectionRule` and `ReactMetric` through their static factories and `with…` methods. Those are the documented construction surface. The canonical record constructors are not.

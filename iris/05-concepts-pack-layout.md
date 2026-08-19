@@ -2,12 +2,12 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-08-13T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris loads it through `IrisData`, which registers one loader per resource type, turns short string keys into files on disk, and caches what it reads. Every world you create gets its own frozen copy of the pack; only Studio worlds read the folder you are editing.
+A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris loads it through `IrisData`, which registers one loader per resource type. It turns short string keys into files on disk and caches what it reads. Every world you create gets its own frozen copy of the pack. Only Studio worlds read the folder you edit.
 
 See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
 
@@ -17,7 +17,7 @@ There is no manifest file, no registry, and no build step. A pack is a directory
 
 The pack folder's own name is the pack key. A folder called `packs/myworld/` is the pack `myworld`. Rename the folder and you have renamed the pack.
 
-The only hard requirement is at least one `.json` file directly inside `dimensions/`. Everything else is optional, and a folder you never create simply has no resources of that type.
+The only hard requirement is at least one `.json` file directly inside `dimensions/`. Everything else is optional. A folder you never create simply has no resources of that type.
 
 ## A pack you can read in one screen
 
@@ -37,7 +37,7 @@ packs/myworld/
 
 Five files. `dimensions/myworld.json` lists `"main"` in its `regions` array. `regions/main.json` lists `"plains"` and `"hills/rolling"` in `landBiomes`. Each biome names `"plain"` as a generator. That chain is the whole pack.
 
-Note `hills/rolling`. Subfolders are yours to organize however you like — they become part of the key, and nothing else changes.
+Note `hills/rolling`. Subfolders are yours to organize however you like. They become part of the key, and nothing else changes.
 
 ## Keys: the one rule
 
@@ -50,13 +50,13 @@ Note `hills/rolling`. Subfolders are yours to organize however you like — they
 | `objects/trees/oak/big.iob` | `objects/` | `trees/oak/big` |
 | `snippet/style/soft.json` | (snippets, see below) | `snippet/style/soft` |
 
-There is no namespace and no type prefix. You never write `biomes/plains` or `iris:plains` — the field you are filling in already knows it wants a biome, so it searches `biomes/` for you. Cross-references everywhere (region biome lists, object placements, spawner entity ids, structure piece pools) use exactly these keys.
+There is no namespace and no type prefix. You never write `biomes/plains` or `iris:plains`. The field you fill in already knows it wants a biome, so it searches `biomes/` for you. Cross-references everywhere (region biome lists, object placements, spawner entity ids, structure piece pools) use exactly these keys.
 
 ### What happens when the exact file is missing
 
 Iris first tries `<typeFolder>/<key>.json` and returns it if it exists. That is the normal path and the only one that works for nested keys.
 
-If there is no exact hit, Iris scans the type folder's own files (not subfolders) for any name whose first dot-segment equals the key. This is what makes `plains.disabled.json` still load for key `plains` — useful for parking a variant, surprising if you forgot you did it. If two files match, Iris logs `Ambiguous <type> <key> in <folder>: ...` and takes the alphabetically first one. Keep one canonical filename per key and this never bites you.
+If there is no exact hit, Iris scans the type folder's own files (not subfolders) for any name whose first dot-segment equals the key. This is what makes `plains.disabled.json` still load for key `plains`. That is useful for parking a variant. It is surprising if you forgot you did it. If two files match, Iris logs `Ambiguous <type> <key> in <folder>: ...` and takes the alphabetically first one. Keep one canonical filename per key and this never bites you.
 
 The literal string `"null"` is refused with a warning by direct file lookups and by warning-enabled loads. Silent loads (the cross-pack fallback search) do not refuse it and will look for `null.json`. Do not name a file `null.json`.
 
@@ -76,11 +76,11 @@ dimension  ->  regions  ->  biomes  ->  generators   (terrain height/noise)
 - **Dimension** — the root. Sets world height, environment, seed behavior, and which regions exist. One dimension equals one world type.
 - **Region** — a spatial zone. Regions decide which biomes can appear where, and can carry their own objects and structures that span biome edges.
 - **Biome** — the workhorse. Block layers, surface treatment, decorations, object placements, structures, and mob spawns.
-- **Generator** — noise and height math. Biomes reference generators to get terrain shape; several biomes can share one.
+- **Generator** — noise and height math. Biomes reference generators to get terrain shape. Several biomes can share one.
 - **Object** — a `.iob` block model with its own placement rules.
 - **Structure / jigsaw pool / jigsaw piece** — multi-piece assemblies, either Iris-native or bridged to vanilla structures.
 
-The practical consequence: **a file that nothing references is inert.** It parses, it validates, it never generates. When a resource you wrote is not showing up, the first question is not "is the JSON wrong" but "is it reachable from the dimension." Work forward from `dimensions/<key>.json` and find where the chain breaks.
+The practical consequence: **a file that nothing references is inert.** It parses. It validates. It never generates. When a resource you wrote is not showing up, the first question is not "is the JSON wrong." Ask whether it is reachable from the dimension. Work forward from `dimensions/<key>.json` and find where the chain breaks.
 
 ## Trace one reference end to end
 
@@ -113,7 +113,7 @@ resolves to `<packRoot>/snippet/style/soft-hills.json`.
 | Required prefix | The string must start with `snippet/`. Anything else resolves to `null` **with no log line at all** — the most common silent snippet failure |
 | Re-rooting | If the string starts with `snippet/` but not `snippet/<thisType>/`, Iris strips `snippet/` and re-roots the remainder under this field's own type. So `snippet/decorator/foo` on a style field becomes `snippet/style/decorator/foo`, not an error |
 | On-disk path | `<packRoot>/snippet/<type>/<name>.json`, resolved from the pack root, not from the type folder |
-| Subfolders | Allowed; `<name>` may contain `/`. Discovery walks the tree recursively |
+| Subfolders | Allowed. `<name>` may contain `/`. Discovery walks the tree recursively |
 | Missing file | Logs `Couldn't find snippet <path> in <file>` and yields `null` for that field |
 | Unreadable file | Logs `Couldn't read snippet <path> in <file> (<message>)` and yields `null` |
 | Inline parse failure | Different path: logs `Failed to read <type>... faking objects a little`, then substitutes a **default-constructed instance**, not `null` |
@@ -127,7 +127,7 @@ This is the concept that causes the most confusion, so it is worth being blunt a
 
 **The pack you edit and the pack a world generates from are different files.**
 
-When you create a non-Studio world, Iris copies the entire pack tree into `<world>/iris/pack` and the world's engine reads only that copy for the rest of its life. Editing `packs/overworld/` afterwards changes nothing about that world. This is deliberate: a world's terrain must stay reproducible even if you keep authoring.
+When you create a non-Studio world, Iris copies the entire pack tree into `<world>/iris/pack`. The world's engine reads only that copy for the rest of its life. Editing `packs/overworld/` afterwards changes nothing about that world. This is deliberate. A world's terrain must stay reproducible even if you keep authoring.
 
 Studio worlds are the exception. A Studio world's engine points directly at the live pack folder and watches it for changes, which is what makes hotload possible.
 
@@ -137,11 +137,11 @@ Studio worlds are the exception. A Studio world's engine points directly at the 
 | Production create | `<world>/iris/pack` | No | Yes, atomic stage then publish via `StudioSVC.installIntoWorld` |
 | Benchmark | `<world>/iris/pack` | Studio flag still governs transient cleanup | Yes |
 
-Hotload opens a fresh `IrisData` on the same folder, reloads the dimension by its key, builds a replacement engine runtime under the lifecycle lock, publishes it, retires the old `IrisData`, then refreshes the editor workspace and datapacks in the background. If any step fails it rolls back to the previous runtime and reports the error.
+Hotload opens a fresh `IrisData` on the same folder. It reloads the dimension by its key and builds a replacement engine runtime under the lifecycle lock. It publishes that runtime, retires the old `IrisData`, then refreshes the editor workspace and datapacks in the background. If any step fails it rolls back to the previous runtime and reports the error.
 
-The watcher polls every 250 ms but only checks the folder about once per second, backing off to once per 4 s during maintenance or within 2 s of chunk generation. It watches `.json` and `.iob` and ignores anything under `.iris`. It runs only while the world is a Studio world that is not closing and not in jigsaw-studio mode.
+The watcher polls every 250 ms but only checks the folder about once per second. It backs off to once per 4 s during maintenance or within 2 s of chunk generation. It watches `.json` and `.iob` and ignores anything under `.iris`. It runs only while the world is a Studio world that is not closing and not in jigsaw-studio mode.
 
-To push pack edits into an existing production world, see `update-world` in [25 - Pack Management](/iris/25-pack-management), or just create a new world — which is the right answer for any change to height or dimension type.
+To push pack edits into an existing production world, see `update-world` in [25 - Pack Management](/iris/25-pack-management), or just create a new world. That is the right answer for any change to height or dimension type.
 
 ## Where packs live
 
@@ -153,9 +153,9 @@ To push pack edits into an existing production world, see `update-world` in [25 
 | Prefetch key indexes | `<platform data dir>/prefetch/<dimId>/<hash>.ipfch` | same |
 | Studio schemas | `<packRoot>/.iris/schema/` | same |
 
-On mod loaders the pack root and the platform data dir are two different folders — packs go under `config/irisworldgen/`, everything else under `config/iris/`. If you are hand-placing a pack on a modded server, `config/irisworldgen/packs/` is the one that matters.
+On mod loaders the pack root and the platform data dir are two different folders. Packs go under `config/irisworldgen/`. Everything else goes under `config/iris/`. If you are hand-placing a pack on a modded server, `config/irisworldgen/packs/` is the one that matters.
 
-Folders whose names start with `.` are skipped when Iris lists packs, which is why `.iris/` inside a pack is invisible to the pack listing. Pack listing itself follows symbolic links; the stricter check (`requireSafePackTree`, used when installing a pack into a world) refuses a symlinked root, any symlink anywhere in the tree, and any non-regular file, and skips hidden subtrees.
+Folders whose names start with `.` are skipped when Iris lists packs, which is why `.iris/` inside a pack is invisible to the pack listing. Pack listing itself follows symbolic links. The stricter check (`requireSafePackTree`) is used when installing a pack into a world. It refuses a symlinked root, any symlink in the tree, and any non-regular file. It also skips hidden subtrees.
 
 ## Registrant folders
 
@@ -179,11 +179,11 @@ Folders whose names start with `.` are skipped when Iris lists packs, which is w
 | `expressions/` | `.json` | Math expressions callable from generators and placement rules |
 | `images/` | `.png` | PNG maps sampled as noise or as direct biome/height input |
 | `matter/` | `.mat` | Matter binaries. The loader exists and resolves keys, but no runtime system consumes them |
-| `mods/` | `.json` | Injector/replacer documents. Loaded so schemas and tooling see them; the engine has no path that applies them |
+| `mods/` | `.json` | Injector/replacer documents. Loaded so schemas and tooling see them. The engine has no path that applies them |
 
-Anything else in a pack directory is not a resource type. The shipping overworld ships empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file — none of those names are keys, and none are loaded.
+Anything else in a pack directory is not a resource type. The shipping overworld ships empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
 
-A reduced init path used by the datapack compiler registers only `biomes` and `dimensions`; that is internal and not something a pack author configures.
+A reduced init path used by the datapack compiler registers only `biomes` and `dimensions`. That is internal and not something a pack author configures.
 
 ## What makes a pack loadable
 
@@ -193,15 +193,15 @@ A reduced init path used by the datapack compiler registers only `biomes` and `d
 2. There is no `dimensions/` directory.
 3. There are no `*.json` files **directly inside** `dimensions/`. Nested dimension files do not count toward this check.
 
-Passing those three does not mean the pack is loadable. `PackValidator` then runs roughly ten content validators — dimension, cave profile, loot, object/surface, structure graph, native structure, spawn, and content-key checks — and any blocking error from those also makes the pack not loadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one; the rest are usually downstream.
+Passing those three does not mean the pack is loadable. `PackValidator` then runs roughly ten content validators — dimension, cave profile, loot, object/surface, structure graph, native structure, spawn, and content-key checks. Any blocking error from those also makes the pack not loadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one. The rest are usually downstream.
 
-Presence on disk is a weaker notion than loadability: a pack "exists" if its directory is safe and holds at least one non-symlink `dimensions/*.json`.
+Presence on disk is a weaker notion than loadability. A pack "exists" if its directory is safe and holds at least one non-symlink `dimensions/*.json`.
 
 ### Download key rules
 
-Downloaded pack keys must match `[a-z0-9_-]+`, and the check applies both to a caller-supplied expected key and to the key Iris derives from the archive.
+Downloaded pack keys must match `[a-z0-9_-]+`. The check applies both to a caller-supplied expected key and to the key Iris derives from the archive.
 
-An archive installed through `link=` has no expected key. Iris uses its shortest dimension key, then alphabetical order, as the install folder name while preserving every dimension in the pack. The built-in `overworld` and `underworld` downloads carry their exact expected key, so the expected key picks the folder name and the whole pack is validated before publication.
+An archive installed through `link=` has no expected key. Iris uses its shortest dimension key, then alphabetical order, as the install folder name while preserving every dimension in the pack. The built-in `overworld` and `underworld` downloads carry their exact expected key. That key picks the folder name. The whole pack is validated before publication.
 
 ## When a resource does not resolve
 
@@ -209,11 +209,11 @@ An archive installed through `link=` has no expected key. Iris uses its shortest
 |---|---|---|
 | File exists, key does not resolve | You included the extension or the type folder in the key, the case differs, or you counted the path from the wrong root | Rebuild the key as the exact relative path under the type folder, extension removed |
 | Nested dotted variant not found | The dotted-name fallback only scans the type folder's own files, never subfolders | Give nested files their exact key name, or move the variant to the type folder root |
-| File validates but never generates | Nothing in the dimension → region → biome chain references it, or a chance/filter excludes it | Trace forward from the dimension root; test with Studio focus or buffet mode |
+| File validates but never generates | Nothing in the dimension → region → biome chain references it, or a chance/filter excludes it | Trace forward from the dimension root. Test with Studio focus or buffet mode |
 | Snippet silently becomes null | The string does not start with `snippet/` — this failure logs nothing | Write the full `snippet/<type>/<name>` form |
 | Snippet loaded the wrong file | A `snippet/<otherType>/…` string was re-rooted under this field's own type | Use the type that matches the field |
 | Studio does not offer a new resource in completions | Workspace schema enums are stale | `/iris studio update dimension=<pack>` on Bukkit, `/iris studio update <pack>` on modded |
-| Console warns "Ambiguous \<type\> \<key\>" | Two files share a base name before the first dot | Keep one canonical filename; Iris took the alphabetically first |
+| Console warns "Ambiguous \<type\> \<key\>" | Two files share a base name before the first dot | Keep one canonical filename. Iris took the alphabetically first |
 | Production world ignores your fix | It is reading `<world>/iris/pack`, not your live pack | Validate in Studio, then run the explicit world-update workflow or create a new world |
 
 ## The shipping overworld pack
