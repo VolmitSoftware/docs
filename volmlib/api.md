@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-16T16:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -25,13 +25,14 @@ fact drives the rest of this page.
 
 | Package                              | What lives there                                                                                   |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `util.scheduling`                    | `FoliaScheduler` (global/region/entity dispatch that works on Paper and Folia alike), `SchedulerRuntime`, `Looper`, `ChronoLatch`, `PrecisionStopwatch`, `IrisLock` |
+| `util.scheduling`                    | `FoliaScheduler` (global/region/entity dispatch that works on Paper and Folia alike), `SchedulerRuntime`, `Looper`, `ChronoLatch`, `SlidingWindowRateLimiter` (N events per rolling window), `PrecisionStopwatch`, `IrisLock` |
 | `util.bukkit`                        | `Events`, `WorldIdentity`, `ChunkPositionSet`, `Placeholders`                                       |
 | `util.bukkit.papi`                   | The shared PlaceholderAPI expansion base and its key registry — see [placeholders.md](/volmlib/api/placeholders) |
 | `util.director`                      | The Director command framework: annotations, parameter handlers, help rendering, tab completion      |
 | `util.localization`                  | `LocalizationManager`, `MessageCatalog`, locale overlays, plural selection, catalogue validation      |
-| `util.format`                        | `Form` (durations, memory sizes, wrapping, capitalisation), `ColorFormatter`, `MemoryMonitor`         |
-| `util.board`                         | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`)                      |
+| `util.format`                        | `Form` (durations, memory sizes, wrapping, capitalisation, `prettyEnumName`), `ColorFormatter`, `MemoryMonitor` |
+| `util.plugin`                        | `SplashScreenSupport` (shared console-splash metadata: Java major version, server version, startup date, release train), `CancellableTask` |
+| `util.board`                         | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`). `BoardSettings` carries a configurable `updateIntervalTicks` (default 20), and `BoardManager` drives updates through a Folia-safe scheduler on regionized runtimes |
 | `util.inventorygui`                  | Chest-menu building                                                                                  |
 | `util.nbt`, `util.nbt.mca`           | NBT tags, and reading and writing Anvil region files                                                 |
 | `util.hunk`, `util.matter`, `util.mantle` | Three-dimensional chunk-shaped buffers, palette-backed storage, and the persistent world-data layer |
@@ -134,7 +135,7 @@ are in production at once:
 |------------|--------------------------------------------------|
 | Iris       | `art.arcane.volmlib`                             |
 | Wormholes  | `art.arcane.volmlib`                             |
-| HoloUi     | `art.arcane.volmlib`                             |
+| Gloss      | `art.arcane.volmlib`                             |
 | HiddenOre  | `art.arcane.volmlib`                             |
 | BileTools  | `art.arcane.volmlib`                             |
 | Adapt      | `art.arcane.adapt.util.arcane.volmlib`           |

@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-16T00:00:00.000Z
+date: 2026-08-17T15:00:24.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -196,7 +196,7 @@ The same call also merges the mappings into `<pack>/.idea/jsonSchemas.xml` so In
 - Every property's `description` is assembled from the field name, its `@Desc` text, the type name, the type's own `@Desc`, a snippet hint where applicable, and the field's **default value**, read by instantiating the owning class. That is why hovering a field in the editor tells you what it defaults to without opening the source.
 - `@MinNumber`/`@MaxNumber` become `minimum`/`maximum` on numeric fields and `minLength`/`maxLength` on string fields. `@Required` fills the `required` array. `@ArrayType` supplies the array item schema.
 - Registry annotations become `enum` lists: `@RegistryListResource` for pack resource keys of a given type, `@RegistryListFunction` for computed lists such as mantle component flags, and the platform registry annotations (`@RegistryListBlockType`, `@RegistryListBiome`, `@RegistryListEntityType`, `@RegistryListItemType`, `@RegistryListStructure`, `@RegistryListVanillaStructure`, `@RegistryListVanillaStructureSet`, `@RegistryListNativeJigsawPool`, `@RegistryListPotionEffect`, `@RegistryListEnchantment`, `@RegistryListSpecialEntity`, `@RegistryListFont`, `@RegistryMapBlockState`) for live server registries.
-- A field with no `@Desc` still emits, with the description `No Field Description`, and the builder logs a warning naming the field and class when the schema is generated. A type with no `@Desc` logs a similar warning.
+- A field with no `@Desc` still emits, with the description `No Field Description`, and the builder logs a warning naming the field and class when the schema is generated. A type with no `@Desc` logs a similar warning. Every enum-valued deposit option and every selectable enum value carries authored `@Desc` text; Dimension, Biome, and Region schema generation therefore exposes complete deposit hover help without missing-description warnings.
 
 **These annotations are editor hints only.** Nothing validates `@Required`, `@MinNumber` or `@MaxNumber` at load time. The schema will underline an out-of-range value in your editor; the engine will load it anyway. The dimension-type height rules in [11 - Dimensions](/iris/11-dimensions) are the exception — those are enforced in code and throw.
 

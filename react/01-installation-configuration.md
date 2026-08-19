@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-18T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ Install the React shaded jar into `plugins/`, start the server once so the data 
 
 - Java 25 for both building and running this tree. Use the React artifact built for the target server's Minecraft API version.
 - Soft dependency: PlaceholderAPI (optional; enables `%react_…%` keys).
-- Optional peer plugins for mirrored metrics and gated features: Iris, Adapt, Wormholes, HoloUi, HiddenOre, BileTools.
+- Optional peer plugins for mirrored metrics and gated features: Iris, Adapt, Wormholes, Gloss, HiddenOre, BileTools.
 
 ## Install
 

@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-08-12T22:30:00.000Z
+date: 2026-08-17T15:52:10.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -109,7 +109,7 @@ By default a placement is surface-only, unlimited in height, unlimited in slope,
 { "carvingSupport": "CARVING_ONLY", "caveAnchorMode": "FLOOR" }
 ```
 
-`SURFACE_ONLY` (the default) rejects any anchor that lands in carved space. `CARVING_ONLY` requires carved space at the anchor or within three blocks below it, and the engine hunts for an anchor Y inside the cave column instead of using the terrain surface. `ANYWHERE` sits in both lists, which means it rolls `chance` twice per chunk — once for the surface pass and once for the cave pass. Cave passes resolve their biome by sampling 48, 80, and 112 blocks below the surface and taking the deepest sample that differs from the surface biome and has carving objects; if none does, the surface biome is used.
+`SURFACE_ONLY` (the default) rejects any anchor that lands in carved space. `CARVING_ONLY` requires carved space at the anchor or within three blocks below it, and the engine hunts for an anchor Y inside the cave column instead of using the terrain surface. A biome-owned cave placement accepts only cells owned by that exact cave biome; a region-owned cave placement intentionally spans every cave biome in the region. Unless `underwater: true` explicitly opts into fluid anchors, the anchor must be dry carved air above the dimension's default cave-lava height. `ANYWHERE` sits in both lists, which means it rolls `chance` twice per chunk — once for the surface pass and once for the cave pass. Cave passes resolve their biome by sampling 48, 80, and 112 blocks below the surface and taking the deepest sample that differs from the surface biome and has carving objects; if none does, the surface biome is used.
 
 `caveAnchorMode` picks which carved cells count: `FLOOR` needs solid support below, `CEILING` needs solid above, `CENTER` needs neither, `ANY` takes anything carved, and `PROFILE_DEFAULT` defers to the cave profile ([15 - Caves & Carving](/iris/15-caves-carving)). `CEILING_HANG` overrides this to `CEILING` regardless of what you wrote.
 

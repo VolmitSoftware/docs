@@ -2,7 +2,7 @@
 title: "API - Metric Publishing"
 description: "React documentation: API - Metric Publishing"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-18T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -255,7 +255,7 @@ React enforces both naming rules on every declaration cycle. Invalid descriptors
 - 2 to 32 characters
 - only `a`–`z`, `0`–`9`, `_`, `-`
 - first character `a`–`z` or `0`–`9`
-- not one of the reserved ids: `react`, `iris`, `adapt`, `wormholes`, `holoui`, `hiddenore`, `biletools`
+- not one of the reserved ids: `react`, `iris`, `adapt`, `wormholes`, `gloss`, `hiddenore`, `biletools`
 
 **Metric key.** Not lowercased for you — write it lowercase.
 

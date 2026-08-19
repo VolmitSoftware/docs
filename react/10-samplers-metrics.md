@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-18T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
 
 ## Built-in sampler count
 
-This tree registers **146** sampler ids (excluding internal `unknown`).
+This tree registers **154** sampler ids (excluding internal `unknown`).
 
 ### adapt
 
@@ -113,6 +113,30 @@ This tree registers **146** sampler ids (excluding internal `unknown`).
 | `world-save-duration` |
 | `worlds` |
 
+### gloss
+
+| Sampler id |
+|---|
+| `gloss-animations` |
+| `gloss-boards` |
+| `gloss-bubbles` |
+| `gloss-builder-server` |
+| `gloss-display-entities` |
+| `gloss-emoji` |
+| `gloss-holograms` |
+| `gloss-indicators` |
+| `gloss-menu-definitions` |
+| `gloss-menus` |
+| `gloss-packets` |
+| `gloss-panels` |
+| `gloss-preview-refresh` |
+| `gloss-previews` |
+| `gloss-sessions` |
+| `gloss-spawns` |
+| `gloss-tablist-players` |
+| `gloss-tick-ms` |
+| `gloss-visible-entities` |
+
 ### hiddenore
 
 | Sampler id |
@@ -129,22 +153,6 @@ This tree registers **146** sampler ids (excluding internal `unknown`).
 | `hiddenore-vein-cache` |
 | `hiddenore-vein-computes` |
 | `hiddenore-vein-discoveries` |
-
-### holoui
-
-| Sampler id |
-|---|
-| `holoui-builder-server` |
-| `holoui-display-entities` |
-| `holoui-menu-definitions` |
-| `holoui-menus` |
-| `holoui-packets` |
-| `holoui-preview-refresh` |
-| `holoui-previews` |
-| `holoui-sessions` |
-| `holoui-spawns` |
-| `holoui-tick-ms` |
-| `holoui-visible-entities` |
 
 ### iris
 
@@ -248,7 +256,7 @@ Short keys such as `%react_tps%` and `%react_mspt%` map to specific samplers. Fu
 | `adapt-` | Adapt |
 | `iris-` | Iris |
 | `wormholes-` | Wormholes |
-| `holoui-` | HoloUi |
+| `gloss-` | Gloss |
 | `hiddenore-` | HiddenOre |
 | `biletools-` | BileTools |
 

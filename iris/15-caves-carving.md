@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-16T00:00:00.000Z
+date: 2026-08-17T15:52:10.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -182,7 +182,9 @@ Aquifers and deep lava are two independent mechanisms, and neither changes cave 
 - a detail-noise sample at that point clears a cutoff that **rises with depth** — about `0.35` at the fluid line, `0.55` some 48 blocks below it, topping out at `0.65` around 72 blocks down, so shallow aquifers are common and deep ones are rare
 - with `fluidRequiresFloor` on (the default), the cell sits in a cup: solid directly below, solid two below, and at least four of its five remaining neighbours (four horizontal plus above) solid
 
-Set `allowFluid: false` for a completely dry cave system. `allowWater`, `waterMinDepthBelowSurface`, and `waterRequiresFloor` were removed; pack validation rejects them by name in inline dimension, region, and biome profiles and in `snippet/cave-profile` files, so an old dry-cave setting cannot silently fall back to the new `allowFluid: true` default.
+Natural surface bodies are separate from aquifers. Where a surface-breaking cave would remove the seabed or a block directly beside the generated surface reservoir, Iris keeps that wet interface solid from the first adjacent fluid block through `fluidHeight`. The cave may continue below the seabed and may open again above the fluid line, but Iris does not drain the reservoir, extend it downward, or flood the connected cave. The same rule uses the one-block terrain halo across chunk borders, so the result does not depend on chunk generation order.
+
+Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid; combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava. `allowWater`, `waterMinDepthBelowSurface`, and `waterRequiresFloor` were removed; pack validation rejects them by name in inline dimension, region, and biome profiles and in `snippet/cave-profile` files, so an old dry-cave setting cannot silently fall back to the new `allowFluid: true` default.
 
 ## Surface openings
 
@@ -192,7 +194,7 @@ Whether a cave can reach daylight is decided per column before any density sampl
 breakColumn = allowSurfaceBreak && surfaceBreakNoise2D(x, z) >= surfaceBreakNoiseThreshold
 ```
 
-In a break column, carving is allowed all the way up to the terrain surface, and within `surfaceBreakDepth` blocks of the surface the carve threshold is relaxed by `surfaceBreakThresholdBoost` so the opening actually punches through instead of pinching shut. In every other column, carving stops `surfaceClearance` blocks below the surface.
+In a break column, carving is allowed all the way up to the terrain surface, and within `surfaceBreakDepth` blocks of the surface the carve threshold is relaxed by `surfaceBreakThresholdBoost` so the opening actually punches through instead of pinching shut. In every other column, carving stops `surfaceClearance` blocks below the surface. The natural surface-fluid boundary described above remains solid even in a break column; this contains oceans and lakes at their generated level instead of creating a floating source plane or a cave-spanning flood.
 
 After materials are applied, an ore block sitting on the surface directly above a carved, unsupported cell is deleted. That prevents a floating ore cap over a cave mouth. Supported surface ores and underground ores are untouched.
 
@@ -259,6 +261,8 @@ Adaptive classification also falls back to exact evaluation whenever fewer than 
 
 These apply to `.iob` placements and procedural objects marked `carvingSupport: CARVING_ONLY`. See [20 - Object Placement](/iris/20-object-placement) and [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins).
 
+Biome-owned cave objects anchor only in cells owned by that exact cave biome; region-owned cave objects intentionally span the region's cave biomes. Unless the placement sets `underwater: true`, candidate anchors must be dry cavern cells above `caveLavaHeight`; explicit fluid, explicit lava, and default-lava cells are skipped.
+
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `objectMinDepthBelowSurface` | int 0..64 | `6` | Cave objects will not anchor closer than this to the surface, so props do not appear inside a cave mouth |
@@ -271,9 +275,9 @@ These apply to `.iob` placements and procedural objects marked `carvingSupport: 
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `allowFluid` | boolean | `true` | Enables aquifers from the dimension `fluidPalette` |
+| `allowFluid` | boolean | `true` | Enables generated cave aquifers from the dimension `fluidPalette`; it does not control natural surface bodies |
 | `fluidMinDepthBelowSurface` | int 0..64 | `12` | Aquifers stay at least this far below the terrain surface, which keeps water from bleeding out of a hillside |
-| `fluidRequiresFloor` | boolean | `true` | Requires the cup test described above. Turning it off gives far more fluid and far more of it pouring down shafts |
+| `fluidRequiresFloor` | boolean | `true` | Requires the cave-aquifer cup test described above. Turning it off gives far more aquifer fluid and far more of it pouring down shafts |
 | `allowLava` | boolean | `true` | When false, carved cells at or below `caveLavaHeight` are marked forced air rather than lava |
 
 ### Density module (`IrisCaveFieldModule`)
@@ -413,7 +417,7 @@ Iris does not implement Minecraft `NoiseGeneratorSettings` carver sampling. The 
 | Two distinct cave types in one profile | Add a module with a different `style` and its own `verticalRange` |
 | Fewer surface holes | Raise `surfaceBreakNoiseThreshold`, lower `surfaceBreakDepth`, or `allowSurfaceBreak: false` with a larger `surfaceClearance` |
 | Cave props stop floating | Set `defaultObjectPlaceMode` to a stilt mode and raise `objectMinDepthBelowSurface` |
-| Completely dry caves | `allowFluid: false` and `allowLava: false` |
+| No generated cave liquids | `allowFluid: false` and `allowLava: false`; natural surface bodies remain contained at their wet boundary |
 | Lava-filled caverns instead of water | Change the dimension `fluidPalette` to lava; leave the profile alone |
 | Cheaper carving | Keep `adaptiveSampling` on and simplify the styles. Prefer this over raising `sampleStep`, which degrades shape |
 

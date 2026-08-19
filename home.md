@@ -1,8 +1,8 @@
 ---
 title: "Volmit Software"
-description: "Documentation for Iris, Adapt, React, Wormholes, HoloUI, HiddenOre and BileTools"
+description: "Documentation for Iris, Adapt, React, Wormholes, Gloss, HiddenOre and BileTools"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "index"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Below are links to Volmits actively maintained software documentation. Please fe
 - [**Adapt** *23 passive skill lines and 331 adaptations behind a bookshelf GUI, plus a mutations system.*](/adapt)
 - [**React** *Performance tooling. Live samplers, entity governors, incident mode, and optional command shorthands.*](/react)
 - [**Wormholes** *Portals that render the far side before you step through. RTP, dimensional doors, pocket dimensions, cross-server gateways.*](/wormholes)
-- [**HoloUI** *Holographic menus and container previews. Packet-only, per-viewer, JSON-driven, with a web editor.*](/holoui)
+- [**Gloss** *Display suite. Holograms, holographic menus, world panels, container previews, scoreboards, tablist and chat polish, with a web editor.*](/gloss)
 - [**HiddenOre** *Mining economy and anti-xray. Ore pays out of plain stone, so there is nothing to xray.*](/hiddenore)
 - [**BileTools** *Dev utility. Rebuild a jar and it is already reloaded in game.*](/biletools)
 {.links-list}
@@ -34,7 +34,7 @@ Every plugin targets the same modern baseline.
 | [Adapt](/adapt) | 25 | 26.x+ | Yes | default | `/adapt` |
 | [React](/react) | 25 | 26.x+ | Yes | default | `/react` `/re` |
 | [Wormholes](/wormholes) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/wormholes` `/wh` |
-| [HoloUI](/holoui) | 25 | 26.x+ | Yes | default | `/holoui` `/holo` `/hui` |
+| [Gloss](/gloss) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/gloss` `/gl` `/gg` |
 | [HiddenOre](/hiddenore) | 25 | 26.x+ | Yes | `STARTUP` | `/hiddenore` |
 | [BileTools](/biletools) | 21 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
 {.dense}
@@ -46,8 +46,8 @@ Every plugin targets the same modern baseline.
 
 ## Load order
 
-Iris declares `loadbefore: Multiverse-Core` and loads at `STARTUP`. Wormholes ships two
-descriptors: Paper reads `paper-plugin.yml` and bootstraps at `STARTUP`, Spigot falls back to
+Iris declares `loadbefore: Multiverse-Core` and loads at `STARTUP`. Wormholes and Gloss each ship
+two descriptors: Paper reads `paper-plugin.yml` and loads at `STARTUP`, Spigot falls back to
 `plugin.yml` at `POSTWORLD`. HiddenOre also loads at `STARTUP`.
 
 ## Permissions at a glance
@@ -58,7 +58,7 @@ descriptors: Paper reads `paper-plugin.yml` and bootstraps at `STARTUP`, Spigot 
 | [Adapt](/adapt/04-commands-permissions) | 13 | Per-feature: gui, boost, mutations, clear, determine, configurator |
 | [React](/react/02-commands-permissions) | 10 | `react.use` plus seven opt-in shorthand nodes |
 | [Wormholes](/wormholes/09-commands-permissions) | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` | Grouped tree; `wormholes.portals` defaults to **true** |
-| [HoloUI](/holoui/02-commands-permissions) | 12 | One node per subcommand |
+| [Gloss](/gloss/17-commands-permissions) | 44 declared yml nodes plus dynamic `gloss.open.<menuId>` and `gloss.bubbles.style.<styleId>` | Grouped tree per feature; `gloss.emoji.use`, `gloss.bubbles.send` and `gloss.indicators.show` default to **true** |
 | [HiddenOre](/hiddenore/commands) | 1 | `hiddenore.admin` |
 | [BileTools](/biletools/commands) | 1 | `bile.use`, equivalent to console access |
 {.dense}
@@ -92,7 +92,7 @@ descriptors: Paper reads `paper-plugin.yml` and bootstraps at `STARTUP`, Spigot 
 - [Adapt — installation and configuration *Setup, config layout, first run*](/adapt/01-installation-configuration)
 - [React — installation and configuration *Setup and the shorthands decision*](/react/01-installation-configuration)
 - [Wormholes — installation and configuration *Setup and projection budgets*](/wormholes/01-installation-configuration)
-- [HoloUI — installation and configuration *Data folder and every settings.json key*](/holoui/01-installation-configuration)
+- [Gloss — getting started *Data folder, feature toggles, first boot*](/gloss/01-getting-started)
 - [HiddenOre — installation *Two decisions to make before players mine*](/hiddenore/installation)
 - [BileTools — installation *Requirements and verifying hot reload*](/biletools/installation)
 {.links-list}
@@ -103,7 +103,7 @@ descriptors: Paper reads `paper-plugin.yml` and bootstraps at `STARTUP`, Spigot 
 - [Iris — a minimal dimension *Worked example from empty folder*](/iris/26-example-minimal-dimension)
 - [Adapt — skills catalog *All 23 lines and what they level from*](/adapt/10-skills-catalog)
 - [Wormholes — building portals *Wand, runes, frame rules*](/wormholes/03-building-portals)
-- [HoloUI — menu file format *JSON structure and examples*](/holoui/03-menu-file-format)
+- [Gloss — hologram menus *JSON structure and examples*](/gloss/09-menus)
 {.links-list}
 
 #### Operations
@@ -121,7 +121,7 @@ descriptors: Paper reads `paper-plugin.yml` and bootstraps at `STARTUP`, Spigot 
 - [Adapt — API getting started *Skills, adaptations, mutations, events*](/adapt/41-api-getting-started)
 - [React — API getting started *Metric publishing and entity protection*](/react/16-api-getting-started)
 - [Wormholes — traversal cost and events *Price and intercept player travel*](/wormholes/21-api-traversal-cost-events)
-- [HoloUI — API getting started *HoloUiService from the ServicesManager*](/holoui/13-api-getting-started)
+- [Gloss — API getting started *Menus, holograms and previews from other plugins*](/gloss/21-api-getting-started)
 - [HiddenOre — API overview *Hook the mining reward pipeline*](/hiddenore/api)
 {.links-list}
 

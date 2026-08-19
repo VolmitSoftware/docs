@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-08-09T00:00:00.000Z
+date: 2026-08-19T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ directly to page paths: `iris/commands.md` is `/iris/commands`.
 ## Where content comes from
 
 Most pages are **ported from `docs/` directories inside the plugin repositories**. Iris, Adapt,
-React, Wormholes and HoloUI each maintain their own documentation alongside the code.
+React, Wormholes and Gloss each maintain their own documentation alongside the code.
 
 > Editing a ported page here will be overwritten the next time the docs are re-imported from
 > upstream. Fix those pages in the plugin repository instead, then re-run the import.
@@ -60,5 +60,5 @@ Edit only `title`, `description` and `tags`. Leave the dates alone.
 ## Source branches
 
 Iris, Adapt and React are documented from their **`unification`** branch, not `master`.
-The `master` branches are older and target much earlier Minecraft versions. HoloUI, HiddenOre,
+The `master` branches are older and target much earlier Minecraft versions. Gloss, HiddenOre,
 BileTools and Wormholes are documented from `master`.

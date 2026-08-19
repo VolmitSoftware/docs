@@ -2,7 +2,7 @@
 title: "Trees, Fungi, Coral, Crystals, Formations, Ruins"
 description: "Iris documentation: Trees, Fungi, Coral, Crystals, Formations, Ruins"
 published: true
-date: 2026-08-17T03:35:00.000Z
+date: 2026-08-17T15:52:10.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ So `chance` is per chunk and `density` is per chunk-that-passed. `chance: 0.5, d
 
 Placement runs in the same mantle stage as `.iob` object placement, before the terrain blocks exist, which is why procedural objects can be anchored to carved cave space and why they respect the same surface-support rules as regular objects ([20 - Object Placement](/iris/20-object-placement)).
 
-**Scope.** Three lists are read per chunk, all resolved at the chunk centre: the surface biome's `proceduralObjects`, the region's, and the cave biome's (only when it differs from the surface biome). Everything in all three is evaluated; they add rather than override.
+**Scope.** Three lists are read per chunk, all resolved at the chunk centre: the surface biome's `proceduralObjects`, the region's, and the cave biome's (only when it differs from the surface biome). Everything in all three is evaluated; they add rather than override. A biome-owned `CARVING_ONLY` entry may anchor only where that exact biome owns the cave cell. Region-owned entries remain intentionally region-wide and can anchor in any cave biome in that region.
 
 **Cost.** The mantle object component's radius grows to cover the largest baked variant across the whole pack. One 60-block formation therefore widens the generation footprint for every chunk in the world, not just the biome that uses it. Keep large shapes rare and large *entries* rarer.
 
@@ -119,7 +119,7 @@ Every family carries this same block of fields and converts them into an `IrisOb
 
 Variant load keys are `procedural/tree/<name>#<i>` for trees and `procedural/<name>#<i>` for every other family.
 
-Only `CARVING_ONLY` entries take the cave path. Those search the chunk for an anchor using the active cave profile's `defaultObjectAnchor`, `anchorScanStep`, `anchorSearchAttempts`, and `objectMinDepthBelowSurface`; an entry that finds no anchor is skipped for that attempt. The profile's `defaultObjectPlaceMode` overrides the entry's `mode`, but only when the entry left `mode` at the default `CENTER_HEIGHT`. See [15 - Caves & Carving](/iris/15-caves-carving).
+Only `CARVING_ONLY` entries take the cave path. Those search the chunk for an anchor using the active cave profile's `defaultObjectAnchor`, `anchorScanStep`, `anchorSearchAttempts`, and `objectMinDepthBelowSurface`; an entry that finds no anchor is skipped for that attempt. Dry entries reject water, explicit lava, and ordinary carved cells at or below the dimension's default cave-lava height. Set `underwater: true` only when a procedural object is intentionally allowed to anchor in cave fluid. The profile's `defaultObjectPlaceMode` overrides the entry's `mode`, but only when the entry left `mode` at the default `CENTER_HEIGHT`. See [15 - Caves & Carving](/iris/15-caves-carving).
 
 `plausible` is a **tree-only** field. Every other family reports `false`, which means their objects are placed with decay prevention active. This matters only for blocks that have leaf-style decay properties.
 

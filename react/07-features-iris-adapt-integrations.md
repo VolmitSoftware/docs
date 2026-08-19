@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-18T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ Use `/react integration status` for live capability status. Global `integrationS
 
 ## Integration model
 
-- `IntegrationController` / `ReactIntegrationService` discover peer plugins and publish mirrored metrics (`iris-`, `adapt-`, `wormholes-`, `holoui-`, `hiddenore-`, `biletools-` — see [10 - Samplers & Metrics](/react/10-samplers-metrics)).
+- `IntegrationController` / `ReactIntegrationService` discover peer plugins and publish mirrored metrics (`iris-`, `adapt-`, `wormholes-`, `gloss-`, `hiddenore-`, `biletools-` — see [10 - Samplers & Metrics](/react/10-samplers-metrics)).
 - `CapabilityGatedFeature` declares `requiredCapabilities()` and optional `isSecretBundle()`.
 - `ReactCapabilityFeature.autoRegister()`:
   - secret + `!integrationSecretsEnabled` → do not register

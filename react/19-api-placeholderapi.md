@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-12T00:00:00.000Z
+date: 2026-08-18T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -337,21 +337,29 @@ Wormholes:
 | `wormholes-sideband-drops`      | per s     | Sideband frames dropped per second             |
 | `wormholes-resyncs`             | count     | Resync requests, cumulative                    |
 
-HoloUi:
+Gloss:
 
-| Id                        | Unit      | Meaning                                     |
-|---------------------------|-----------|----------------------------------------------|
-| `holoui-menus`            | menus     | Menus currently open                         |
-| `holoui-menu-definitions` | count     | Menu definitions loaded                      |
-| `holoui-sessions`         | players   | Players holding a session                    |
-| `holoui-display-entities` | entities  | Display entities in existence                |
-| `holoui-visible-entities` | entities  | Display entities currently visible           |
-| `holoui-spawns`           | per s     | Display entity spawns per second             |
-| `holoui-packets`          | packets/s | Packets per second                           |
-| `holoui-tick-ms`          | ms        | Time spent in HoloUi's tick                  |
-| `holoui-previews`         | count     | Previews open                                |
-| `holoui-preview-refresh`  | per s     | Preview refreshes per second                 |
-| `holoui-builder-server`   | 0 or 1    | Whether the builder server is running        |
+| Id                       | Unit      | Meaning                                      |
+|--------------------------|-----------|----------------------------------------------|
+| `gloss-menus`            | menus     | Menus currently open                         |
+| `gloss-menu-definitions` | count     | Menu definitions loaded                      |
+| `gloss-sessions`         | players   | Players holding a session                    |
+| `gloss-display-entities` | entities  | Display entities in existence                |
+| `gloss-visible-entities` | entities  | Display entities currently visible           |
+| `gloss-spawns`           | per s     | Display entity spawns per second             |
+| `gloss-packets`          | packets/s | Packets per second                           |
+| `gloss-tick-ms`          | ms        | Time spent in Gloss's tick                   |
+| `gloss-previews`         | count     | Previews open                                |
+| `gloss-preview-refresh`  | per s     | Preview refreshes per second                 |
+| `gloss-builder-server`   | 0 or 1    | Whether the builder server is running        |
+| `gloss-holograms`        | count     | Persistent holograms active                  |
+| `gloss-panels`           | count     | World-anchored panel menus active            |
+| `gloss-boards`           | count     | Scoreboard sidebars rendered                 |
+| `gloss-tablist-players`  | players   | Players receiving tablist formatting         |
+| `gloss-animations`       | count     | Text animations registered and ticking       |
+| `gloss-bubbles`          | per s     | Chat bubbles spawned per second              |
+| `gloss-indicators`       | per s     | Damage indicators spawned per second         |
+| `gloss-emoji`            | per s     | Chat emoji replacements applied per second   |
 
 HiddenOre:
 

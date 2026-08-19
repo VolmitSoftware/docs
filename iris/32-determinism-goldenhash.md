@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-08-12T23:30:00.000Z
+date: 2026-08-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,8 @@ Iris generation is a pure function of the pack plus a seed. Feed the same pack a
 That property is what makes an Iris world portable. A player's base survives a server restart, a Bukkit world can be reproduced on Fabric, and a pack author can hand someone a seed and get the same terrain back. When determinism breaks, it usually breaks quietly: a handful of chunks differ at a biome boundary or inside a cave, nobody notices until a world is regenerated months later and the terrain no longer lines up with the buildings on it.
 
 GoldenHash exists because eyeballing terrain cannot catch that. Two screenshots can look identical while thousands of blocks differ. A hash catches a single changed block state.
+
+Generation fixes can intentionally change a baseline. Builds with surface-fluid cave containment retain terrain at the wet cave boundary, so an older baseline may differ where a surface-breaking cave meets an ocean or lake. Capture a replacement only after confirming the mismatch is limited to the expected generated-block change and remains identical across repeated, threaded, and cross-platform runs.
 
 ## What GoldenHash actually does
 
