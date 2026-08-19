@@ -42,9 +42,11 @@ Random showcases are contextual. Right-click a library document and choose `Crea
 to replace that document's JSON with a valid editable example while preserving its identity,
 folder and runtime id. Right-click a menu component to randomize that component without moving or
 renaming it. The generators procedurally vary layouts, values, colors, animation modes, time-based
-RGB expressions, math, bars, PlaceholderAPI samples and integration metrics wherever the runtime
-surface supports them. The recurring staff names are scattered easter eggs rather than a fixed
-script. MOTDs deliberately use only viewer-free time and server values: the status response is sent
+RGB expressions, math and bars. Player and server values use Gloss's native getters; optional PAPI
+expansion data and integration metrics are demonstrated with explicit fallbacks rather than used
+for values Gloss already owns. Random scoreboards also demonstrate the per-board 1.20.3+ hidden
+number format. The recurring staff names are scattered easter eggs rather than a fixed script.
+MOTDs deliberately use only viewer-free time and server values: the status response is sent
 before the same request's latency is measured, so a current-ping conditional MOTD cannot exist.
 Random container previews become a furnace expression lab rather than arbitrary decoration. The
 generated document claims furnace, blast-furnace and smoker targets; opens against the furnace

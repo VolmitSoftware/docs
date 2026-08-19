@@ -156,7 +156,7 @@ PlaceholderAPI is not resolved at ping time because there is no player to resolv
 The same request's round-trip ping cannot control that MOTD. The server sends the status response,
 including the MOTD, before the protocol performs its ping/pong measurement. There is therefore no
 current latency value to branch on. MOTD expressions may branch on time, online count, maximum
-players and integration metrics instead; they may not use `player.ping`, `papi(...)` or
+players, native `server.tps` and integration metrics instead; they may not use `player.ping`, `papi(...)` or
 `papiNumber(...)`.
 
 Animation functions ignore the viewer and resolve from wall-clock time. `|animation.rainbow|` does work in an MOTD. It will visibly cycle between pings. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).

@@ -20,10 +20,12 @@ Scoreboards are enveloped JSON documents in `plugins/Gloss/boards/`. One file is
   "revision": 7,
   "title": "&d&lStaff",
   "lines": [
-    "&7Online: &f%server_online%",
-    "&7World: &f%player_world%"
+    "&7Player: &f{{ player.name }}",
+    "&7Online: &f{{ server.online }}/{{ server.maxPlayers }}",
+    "&7TPS: &f{{ fixed(server.tps, 1) }}"
   ],
   "primary": false,
+  "hideNumbers": true,
   "permission": "staff",
   "groups": ["admin", "moderator"]
 }
@@ -36,6 +38,7 @@ Scoreboards are enveloped JSON documents in `plugins/Gloss/boards/`. One file is
 | `title` | `""` | An empty title falls back to the board id. Rendered per player, then truncated to 32 characters |
 | `lines` | `[]` | Sidebar lines. A `null` entry becomes an empty string. At most 15 render |
 | `primary` | `false` | Marks this board as the last-resort board for everyone |
+| `hideNumbers` | `false` | Uses Minecraft's blank number format so 1.20.3+ clients do not draw the red 15..1 score column |
 | `permission` | `"default"` | Trimmed and lowercased. Empty or absent becomes `default`, which means ungated |
 | `groups` | `[]` | Group names, trimmed, lowercased and de-duplicated in place |
 
@@ -138,9 +141,17 @@ The sidebar is driven by VolmLib board manager on the `[boards] updateIntervalTi
 
 Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. The rendered title is then truncated to 32 characters. Color codes count toward that limit. At most 15 lines render. The rest are dropped.
 
+`"hideNumbers": true` applies Minecraft's blank score number format per board on native 1.20.3+
+servers and clients. It removes the red score column without changing the internal 15-to-1 values
+that keep the rows ordered. On a server older than 1.20.3, ViaVersion's global
+`hide-scoreboard-numbers: true` option provides the equivalent translation for 1.20.3+ clients;
+that ViaVersion setting affects every scoreboard on the server rather than one Gloss document.
+
 With `[features] boards = false` the driver is never created. No player sees a sidebar. Documents still load, hot-reload and stay editable by command. If the driver itself fails to construct, Gloss logs `Sidebar driver unavailable: <reason>` and runs without sidebars.
 
-Boards are not part of the web editor. `EditorSyncKind` only carries `menu` and `panel`. Boards are edited by command or by file.
+Boards are editable in the Gloss web editor. Its inspector exposes title, lines, selection rules and
+the number-visibility toggle, and its Minecraft-style preview hides the score column when the
+document does. Server sync carries the board JSON as a first-class document kind.
 
 ## Groups
 

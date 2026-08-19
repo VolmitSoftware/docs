@@ -237,21 +237,31 @@ visible as written and logs once, so a typo does not silently erase the surround
 
 ```text
 {{ hex(mix(#FF55FF, #55FFFF, (sin(time.seconds * 2) + 1) / 2)) }}&lLIVE
-&7Player &f{{ papi('player_name') }}
-&7Health &a{{ bar(papiNumber('player_health'), 20, 10, '■', '□') }}
-&7TPS &a{{ fixed(metric('react.tps'), 1) }}
+&7Player &f{{ player.name }}
+&7Health &a{{ bar(player.health, 20, 10, '■', '□') }}
+&7TPS &a{{ fixed(server.tps, 1) }}
+&7Rank {{ papi('vault_prefix', '&7Member') }}
+&7Tick &f{{ fixed(metric('react.tick-ms', 1000 / server.tps), 1) }}ms
 ```
 
 Available live variables are `time.ms`, `time.seconds`, `time.ticks`, `server.online`,
-`server.maxPlayers`, `player.name`, `player.ping`, `player.health` and `player.level`. `player.*`,
-`papi(...)` and `papiNumber(...)` require a viewer. Use them on boards, tablists and per-viewer
-holograms, not MOTDs or other static renders.
+`server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health` and `player.level`.
+These are direct Gloss getters. They do not require PlaceholderAPI, React or another integration.
+`server.tps` is sampled internally from the server tick cadence and is available on viewer-free
+surfaces. `player.*`, `papi(...)` and `papiNumber(...)` require a viewer. Use them on boards,
+tablists and per-viewer holograms, not MOTDs or other static renders.
+
+Use a native variable whenever Gloss already owns the value. Use PAPI only for expansion-specific
+data such as Vault economy or prefix values, and `metric` only for a metric published by another
+integration. Optional sources accept a fallback as their second argument. An absent expansion,
+unresolved placeholder or non-numeric PAPI answer uses that fallback; a missing integration metric
+does the same. Omitting the fallback preserves the strict behavior.
 
 | Function | Result |
 |---|---|
-| `papi('player_name')` | Resolves a PlaceholderAPI key; surrounding `%` are optional |
-| `papiNumber('player_ping')` | Resolves PAPI and parses its first numeric value for math |
-| `metric('react.tps')` | Reads a numeric integration metric and activates demand-driven sampling |
+| `papi('vault_prefix', '&7Member')` | Resolves a PlaceholderAPI key; surrounding `%` are optional. The optional string fallback is used when it cannot resolve |
+| `papiNumber('vault_eco_balance', 0)` | Resolves PAPI and parses its first numeric value for math. The optional numeric fallback covers an absent expansion or non-numeric answer |
+| `metric('react.tick-ms', 1000 / server.tps)` | Reads a numeric integration metric and activates demand-driven sampling. The optional numeric fallback covers an absent publisher or unsampled key |
 | `select(list, index)` | Wraps the floored index and returns any list entry |
 | `number(value)` | Parses the first number from a number or formatted string |
 | `bar(value, maximum, width, filled, empty)` | Builds a clamped 1–64-character progress bar |
