@@ -1,11 +1,11 @@
 ---
-title: "Volmit Software"
-description: "Documentation for Iris, Adapt, React, Wormholes, Gloss, HiddenOre and BileTools"
+title: Volmit Software
+description: Documentation for Iris, Adapt, React, Wormholes, Gloss, HiddenOre and BileTools
 published: true
-date: 2026-08-19T00:00:00.000Z
-tags: "index"
+date: 2026-08-19T17:19:05.149Z
+tags: index
 editor: markdown
-dateCreated: 2026-08-09T00:00:00.000Z
+dateCreated: 2026-07-31T23:34:19.060Z
 ---
 
 # Volmit Software
@@ -36,51 +36,8 @@ Every plugin targets the same modern baseline.
 | [Wormholes](/wormholes) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/wormholes` `/wh` |
 | [Gloss](/gloss) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/gloss` `/gl` `/gg` |
 | [HiddenOre](/hiddenore) | 25 | 26.x+ | Yes | `STARTUP` | `/hiddenore` |
-| [BileTools](/biletools) | 21 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
+| [BileTools](/biletools) | 17 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
 {.dense}
-
-> Iris, Adapt and React are documented from their `unification` branch. The `master` branches
-> are older and target much earlier Minecraft versions — if you build from `master` you will
-> get a different plugin than these pages describe.
-{.is-info}
-
-## Load order
-
-Iris declares `loadbefore: Multiverse-Core` and loads at `STARTUP`. Wormholes and Gloss each ship
-two descriptors: Paper reads `paper-plugin.yml` and loads at `STARTUP`, Spigot falls back to
-`plugin.yml` at `POSTWORLD`. HiddenOre also loads at `STARTUP`.
-
-## Permissions at a glance
-
-| Plugin | Nodes | Shape |
-|---|---|---|
-| [Iris](/iris/04-commands-permissions) | 2 | `iris.all` covers the whole tree; `iris.treefeller` is the one player-facing node |
-| [Adapt](/adapt/04-commands-permissions) | 13 | Per-feature: gui, boost, mutations, clear, determine, configurator |
-| [React](/react/02-commands-permissions) | 10 | `react.use` plus seven opt-in shorthand nodes |
-| [Wormholes](/wormholes/09-commands-permissions) | 12 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` | Grouped tree; `wormholes.portals` defaults to **true** |
-| [Gloss](/gloss/17-commands-permissions) | 44 declared yml nodes plus dynamic `gloss.open.<menuId>` and `gloss.bubbles.style.<styleId>` | Grouped tree per feature; `gloss.emoji.use`, `gloss.bubbles.send` and `gloss.indicators.show` default to **true** |
-| [HiddenOre](/hiddenore/commands) | 1 | `hiddenore.admin` |
-| [BileTools](/biletools/commands) | 1 | `bile.use`, equivalent to console access |
-{.dense}
-
-## Things that will catch you out
-
-> **Wormholes lets everyone build portals by default.** `wormholes.portals` and its two
-> children default to `true`. Every other node in the suite defaults to `op`.
-{.is-warning}
-
-> **HiddenOre's seeded veins depend on config order.** Vein positions derive from the order of
-> the `drops:` list. Reorder, insert or delete an entry on a live server and every
-> undiscovered vein reshuffles. Append to the end instead.
-{.is-danger}
-
-> **BileTools can delete jars and accept them over a socket.** `bile.use` is console-equivalent,
-> and remote deploy authenticates with a plaintext shared secret. Dev boxes only.
-{.is-danger}
-
-> **React's shorthands collide with EssentialsX and CMI.** `/gms`, `/gmc`, `/more`, `/rl` and
-> friends are off by default for that reason. Check before enabling.
-{.is-warning}
 
 ## Starting points
 
