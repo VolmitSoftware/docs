@@ -1,11 +1,11 @@
 ---
-title: "Volmit Software"
-description: "Documentation for Iris, Adapt, React, Wormholes, Gloss, HiddenOre and BileTools"
+title: Volmit Software
+description: Documentation for Iris, Adapt, React, Wormholes, Gloss, HiddenOre and BileTools
 published: true
-date: 2026-08-19T00:00:00.000Z
-tags: "index"
+date: 2026-08-19T17:19:05.149Z
+tags: index
 editor: markdown
-dateCreated: 2026-08-09T00:00:00.000Z
+dateCreated: 2026-07-31T23:34:19.060Z
 ---
 
 This wiki documents the plugins that Volmit Software maintains. Each link
@@ -36,7 +36,7 @@ Every plugin uses the same modern baseline.
 | [Wormholes](/wormholes) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/wormholes` `/wh` |
 | [Gloss](/gloss) | 25 | 26.x+ | Yes | `STARTUP` / `POSTWORLD` | `/gloss` `/gl` `/gg` |
 | [HiddenOre](/hiddenore) | 25 | 26.x+ | Yes | `STARTUP` | `/hiddenore` |
-| [BileTools](/biletools) | 21 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
+| [BileTools](/biletools) | 17 | 1.20.x+ | Yes | default | `/biletools` `/bile` |
 {.dense}
 
 > Iris, Adapt, and React use the `unification` branch. The `master` branches
