@@ -12,7 +12,7 @@ Adapt registers exactly one Bukkit command, `/adapt`. Everything else is a subco
 
 Almost every node defaults to op. The exceptions are `adapt.effects` and `adapt.mutations`. Those default to true so ordinary players can toggle their own visuals and manage their own mutations. The whole dynamically registered `adapt.use.*` family controls gameplay rather than commands. Holding a default-true node still does not get anyone past `adapt.main`.
 
-`/adapt help`, `/adapt ?`, and any partial path render a paginated tree of subcommands and their parameters. Tab completion for skill and adaptation arguments only offers components that are currently enabled. Console can run most subcommands but has no implicit "you". It refuses wherever a handler needs a player and you did not name one. The player-only subcommands are `/adapt effects`, `/adapt configure`, `/adapt mutations menu`, `/adapt mutations cooperative`, `/adapt debug particle`, and `/adapt debug sound`.
+`/adapt help`, `/adapt ?`, and any partial path render a paginated tree of subcommands and their parameters. Player help uses the shared 19-line panel: up to 17 entries at the root, or 16 inside a subtree where one line is reserved for Back. Shorter trees print every entry without padding; console help remains a flat, unpaginated listing. Tab completion for skill and adaptation arguments only offers components that are currently enabled. Console can run most subcommands but has no implicit "you". It refuses wherever a handler needs a player and you did not name one. The player-only subcommands are `/adapt effects`, `/adapt configure`, `/adapt mutations menu`, `/adapt mutations cooperative`, `/adapt debug particle`, and `/adapt debug sound`.
 
 ## Giving progression
 

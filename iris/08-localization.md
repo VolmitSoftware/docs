@@ -56,7 +56,7 @@ Canonical English is owned by code in `core/.../localization`. `IrisMessages` as
 
 | Catalog | Covers |
 |---|---|
-| `DirectorMessages` (VolmLib) | Shared command framework text: parameter errors, argument prompts, help chrome |
+| `DirectorMessages` (VolmLib) | Shared command framework text: parameter errors, including a missing closing `]` in bracketed values, argument prompts, help chrome |
 | `IrisMessages` | Permission denials, unknown command, player-only, "not an Iris world", reload results, modded help chrome |
 | `BukkitCommandMessages`, `BukkitCommandMessagesExtended` | Feedback from the Bukkit `/iris` command tree |
 | `DirectorCommandMessages` | Per-command and per-parameter descriptions shown in `/iris help` |

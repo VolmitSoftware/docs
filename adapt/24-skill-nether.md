@@ -287,7 +287,9 @@ Milestones: `challenge_nether_lava_1k` and `challenge_nether_lava_25k` on `nethe
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adapt/adaptations/nether-ghast-ward.toml` |
 
-Listened events follow. `EntityDamageByEntityEvent` at `HIGHEST` covers ghast
+Listened events: `EntityDamageByEntityEvent` and `EntityDamageEvent`.
+
+`EntityDamageByEntityEvent` at `HIGHEST` covers ghast
 fireballs and wither skeleton arrows. `EntityDamageEvent` at `HIGH` covers
 `ENTITY_EXPLOSION` and `BLOCK_EXPLOSION`. Those explosion cases skip when the
 damager was already handled as a ghast fireball. All of it requires a Nether-environment world.

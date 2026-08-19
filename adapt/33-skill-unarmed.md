@@ -279,7 +279,9 @@ leather helmet is 0.04. An iron helmet is 0.08. A diamond helmet is 0.12. With z
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/unarmed-battering-charge.toml` |
 
-Listened events follow. `EntityDamageByEntityEvent` applies the impact.
+Listened events: `EntityDamageByEntityEvent`, `EntityDeathEvent`, `PlayerMoveEvent`, and `PlayerToggleSprintEvent`.
+
+`EntityDamageByEntityEvent` applies the impact.
 `EntityDeathEvent` counts kills within 2 seconds of a charge hit.
 `PlayerMoveEvent` samples horizontal movement and updates the primed trail.
 `PlayerToggleSprintEvent` primes or drops the charge.
@@ -315,7 +317,9 @@ The movement sample must be under 750 ms old to count. Riding a vehicle blocks t
 | Tick interval (ms) | 1800 |
 | Config file | `plugins/Adapt/adapt/adaptations/unarmed-combo-chain.toml` |
 
-Listened events follow. `EntityDamageByEntityEvent` builds the combo, or drops
+Listened events: `EntityDamageByEntityEvent` and `PlayerInteractEvent`.
+
+`EntityDamageByEntityEvent` builds the combo, or drops
 it if the main hand holds a melee tool. `PlayerInteractEvent` drops the combo
 when a left-click lands on nothing after the grace window.
 
@@ -545,7 +549,9 @@ Friendly targets, including your own pets, are skipped. Food is clamped to 20 an
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adapt/adaptations/unarmed-meditation.toml` |
 
-Listened events follow. `EntityDamageByEntityEvent` starts the lockout and ends
+Listened events: `EntityDamageByEntityEvent`, `PlayerToggleSneakEvent`, and `PlayerQuitEvent`.
+
+`EntityDamageByEntityEvent` starts the lockout and ends
 the session for any combat as attacker or victim. `PlayerToggleSneakEvent`
 starts and stops sessions. `PlayerQuitEvent` cleans up the absorption capacity
 modifier.

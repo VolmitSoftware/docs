@@ -30,7 +30,7 @@ the server, and each plugin compiles and shades it into its jar.
 | `util.localization` | `LocalizationManager`, `MessageCatalog`, locale overlays, plural selection, catalog validation |
 | `util.format` | `Form` (durations, memory sizes, wrapping, capitalization, `prettyEnumName`), `ColorFormatter`, `MemoryMonitor` |
 | `util.plugin` | `SplashScreenSupport` (shared console-splash metadata: Java major version, server version, startup date, release train), `CancellableTask` |
-| `util.board` | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`). `BoardSettings` has a configurable `updateIntervalTicks` (default 20). `BoardManager` updates through a Folia-safe scheduler on regionized runtimes |
+| `util.board` | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`). `BoardSettings` has a configurable `updateIntervalTicks` (default 20). A board exposes its first complete frame with the provider's real title: at most 15 single-line rows, a 32-UTF-16-unit title, and 16-unit team prefix plus 16-unit suffix per row with active colours carried forward. Line breaks collapse to spaces and fitting never splits a surrogate, legacy colour pair, or complete legacy RGB run. `BoardProvider.hideScoreNumbers(Player)` defaults to `true`; VolmLib applies the native blank number format when the server supports it and otherwise keeps the numbered sidebar without failing. Providers may override the policy per player. Packet scoreboards use isolated objective ids and cross-plugin ownership arbitration so shaded VolmLib consumers such as Iris and Gloss cannot overwrite one another. `BoardManager` updates through a Folia-safe scheduler on regionized runtimes |
 | `util.inventorygui` | Chest menus |
 | `util.nbt`, `util.nbt.mca` | NBT tags, and reading and writing Anvil region files |
 | `util.hunk`, `util.matter`, `util.mantle` | Three-dimensional chunk-shaped buffers, palette-backed storage, and the persistent world-data layer |
@@ -58,6 +58,8 @@ save. The method never waits for active chunk users. Final shutdown save must ru
 the caller has drained its producers.
 
 ## Director completion
+
+`DirectorMiniMenu.resolveHelp(engine, args)` owns the shared player layout. A panel has a fixed 19-line budget including its header and footer, so root pages hold at most 17 entries and subtrees hold at most 16 after reserving the Back row. Shorter trees render every entry without padding. Sender-aware delivery keeps console help flat and unpaginated. Custom command lists can derive their own row capacity from `DirectorMiniMenu.MENU_LINE_COUNT` instead of declaring another height.
 
 Director suggests canonical command names and keeps aliases executable without duplicating
 them in completion lists. Every exposed command value completes as a canonical `name=value`

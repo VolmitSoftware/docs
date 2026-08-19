@@ -98,7 +98,7 @@ Root: `/iris studio`, aliases `std` and `s`. Implemented by `CommandStudio` and 
 | `version [dimension=default]` | | Prints the dimension's `version` field |
 | `pkg [dimension=default] [obfuscate=false] [minify=true]` | `package` | Compiles the pack into a distributable archive |
 | `importvanilla <dimension> [variants=3] [structures=true]` | `importv`, `iv` | Captures vanilla features and structures into the pack through Bukkit NMS |
-| `scoreboard` | `board`, `sidebar`, `sb` | Toggles the studio debug scoreboard. Player must be in the studio world |
+| `scoreboard` | `board`, `sidebar`, `sb` | Toggles the studio debug scoreboard. Player must be in the studio world. Its numeric score column is hidden on clients and servers that support the native blank number format |
 | `noise [generator=<key>] [seed=12345]` | `nmap` | Opens the external noise explorer GUI |
 | `map [world=<world>]` | `render` | Opens the external biome/terrain map GUI for an Iris world |
 | `regions [radius=500]` | | Samples region rarity over a chunk spiral. Player must be in an Iris world |

@@ -35,8 +35,8 @@ Scoreboards are enveloped JSON documents in `plugins/Gloss/boards/`. One file is
 |---|---|---|
 | `schemaVersion` | required | Must be `1`. Anything else rejects the file with `unsupported boards schemaVersion: <n>` |
 | `revision` | required | `1` to `9007199254740991`. Gloss owns this value and bumps it by one on every write it makes |
-| `title` | `""` | An empty title falls back to the board id. Rendered per player, then truncated to 32 characters |
-| `lines` | `[]` | Sidebar lines. A `null` entry becomes an empty string. At most 15 render |
+| `title` | `""` | An empty title falls back to the board id. Rendered per player, then fitted to 32 UTF-16 units without splitting a character or colour sequence |
+| `lines` | `[]` | Sidebar lines. A `null` entry becomes an empty string. At most 15 render; each is a single non-wrapping row fitted into Minecraft's 16-unit team prefix and 16-unit suffix |
 | `primary` | `false` | Marks this board as the last-resort board for everyone |
 | `hideNumbers` | `false` | Uses Minecraft's blank number format so 1.20.3+ clients do not draw the red 15..1 score column |
 | `permission` | `"default"` | Trimmed and lowercased. Empty or absent becomes `default`, which means ungated |
@@ -139,7 +139,7 @@ Every command edit rewrites the document with `revision` bumped by one, through 
 
 The sidebar is driven by VolmLib board manager on the `[boards] updateIntervalTicks` cadence (default 20, clamped 1..200). If you change that interval on reload, Gloss tears down the driver and rebuilds it.
 
-Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. The rendered title is then truncated to 32 characters. Color codes count toward that limit. At most 15 lines render. The rest are dropped.
+Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. Fitting happens after that pipeline: the title has a 32-UTF-16-unit wire limit, and each row uses a 16-unit team prefix plus a 16-unit suffix with its active colour state carried into the suffix. Colour codes consume that budget. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Surrogate pairs, legacy colour pairs and complete legacy RGB runs are never cut in half. At most 15 rows render; the rest are dropped.
 
 `"hideNumbers": true` applies Minecraft's blank score number format per board on native 1.20.3+
 servers and clients. It removes the red score column without changing the internal 15-to-1 values

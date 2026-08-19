@@ -79,9 +79,10 @@ offers a workspace-bundle backup first. A completed erase leaves the workspace g
 does not recreate `my-menu`.
 
 Menu and container-preview surfaces retain their own fit, reset and zoom tools. The scoreboard
-preview is centered in the editor while retaining the runtime's descending 15-to-1 scores and an
-intrinsic, internally right-aligned Minecraft sidebar; a preview-only control can place it over the
-Minecraft scene backdrop in the client's right-side position. Scoreboard, MOTD,
+preview is centered in the editor while retaining the runtime's descending 15-to-1 scores, 15-row
+cap, single-line normalization, 32-unit title and 16-unit prefix plus 16-unit suffix fitting. It uses
+an intrinsic, internally right-aligned Minecraft sidebar; a preview-only control can place it over
+the Minecraft scene backdrop in the client's right-side position. Scoreboard, MOTD,
 chat-bubble and tablist previews have independent 50%-200% zoom controls. The hologram stage
 supports both wheel zoom and visible zoom/reset buttons for touch use. These controls affect only
 the editor preview and never alter the exported document.

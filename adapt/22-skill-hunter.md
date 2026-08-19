@@ -428,7 +428,9 @@ Milestone: `challenge_hunter_resistance_500` on `hunter.resistance.activations`,
 | Tick interval (ms) | 18440 |
 | Config file | `plugins/Adapt/adapt/adaptations/hunter-drop-to-inventory.toml` |
 
-Listened events follow. `BlockDropItemEvent` requires a sword from
+Listened events: `BlockDropItemEvent` and `EntityDeathEvent`.
+
+`BlockDropItemEvent` requires a sword from
 `ItemListings.toolSwords` in the main hand, an allowed interact context, and a
 passing block-break check. `EntityDeathEvent` covers any mob you killed, with no
 held-item requirement.

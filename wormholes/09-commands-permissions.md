@@ -25,7 +25,7 @@ without admin rights.
 | Root gate | Any of: `wormholes.admin`, `wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`, `wormholes.admin.projection`, `wormholes.admin.reset` |
 | Without root gate | Only bare `help`/`?` (or empty) and `info` run. Other args get no-permission |
 | Public tab complete | `help`, `info` only when lacking all admin command leaves |
-| Admin help | Full Director mini-menu when the root gate passes |
+| Admin help | Shared 19-line Director panel when the root gate passes: up to 17 root entries or 16 subtree entries after the Back row; shorter trees print every entry |
 
 Handlers still require their own node (for example reload needs
 `wormholes.admin.reload`). Holding only a leaf is enough to enter Director

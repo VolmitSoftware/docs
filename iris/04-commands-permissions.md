@@ -84,7 +84,7 @@ If a command fails before doing work, check in this order. Check platform syntax
 - Tab completion and help render every configurable value as its canonical `key=value`, including required values and contextual overrides. Required values also accept their bare positional form. Optional and contextual values do not. `/iris pregen start 500 true` is a parse error. Write `/iris pregen start radius=500 gui=true`.
 - A parameter declared with a blank default counts as required even when the description says otherwise.
 - Names and aliases match case-insensitively.
-- Help uses the Director mini-menu: required renders as `<name=…>`, optional as `[name=…]`.
+- Help uses the shared 19-line Director mini-menu: up to 17 root entries or 16 subtree entries after reserving the Back row. Shorter trees print every entry, console help remains flat and unpaginated, required renders as `<name=…>`, and optional renders as `[name=…]`.
 - **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) resolve from the sender's current world or look target. Iris marks its operator-overridable contexts for keyed help and completion. Internal context injection remains hidden.
 - Tab completion is not permission-gated. Only execution is.
 
@@ -276,7 +276,7 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `vscode` | `vsc` | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Generate and open the code workspace |
 | `update` | | Both | same pack argument as `vscode` | Regenerate the workspace only |
 | `importvanilla` | `importv`, `iv` | **Bukkit**. Stub on modded | `<dimension> [variants=3] [structures=true]` | Import vanilla trees/objects/structures into a pack |
-| `scoreboard` | `board`, `sidebar`, `sb` | **Bukkit** | — | Toggle the studio debug scoreboard |
+| `scoreboard` | `board`, `sidebar`, `sb` | **Bukkit** | — | Toggle the studio debug scoreboard; supported clients hide the numeric score column |
 | `loot` | | **Bukkit**. Stub on modded | `[fast=false] [add=true]` | Simulate chest loot in a GUI |
 | `profile` | | **Bukkit**. Stub on modded | `[dimension=default]` | Pack performance profile |
 | `spawn` | `summon` | **Bukkit**. Stub on modded | `<entity> <location>` (`location` is contextual) | Spawn an Iris entity |

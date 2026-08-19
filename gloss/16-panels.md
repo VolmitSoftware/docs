@@ -212,8 +212,8 @@ to quote it.
 
 | Node | Arguments | Notes |
 |---|---|---|
-| `list` | `[page=1]` | Ids, root menus and revisions in id order, 12 per page |
-| `near` | `[radius=64]` `[page=1]` | Panels within a horizontal radius of the player, 12 per page. Player only |
+| `list` | `[page=1]` | Ids, root menus and revisions in id order, 15 per page |
+| `near` | `[radius=64]` `[page=1]` | Panels within a horizontal radius of the player, 15 per page. Player only |
 | `info` | `<panel>` | Identity, effective transform, visibility, ranges and follow state |
 | `create` | `<panel> [menu=<id>]` | Creates the panel at your feet. Player only |
 | `delete` (`remove`) | `<panel>` | Removes only the panel document |

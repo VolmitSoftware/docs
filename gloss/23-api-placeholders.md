@@ -151,7 +151,9 @@ Holograms, scoreboards, the tablist, chat bubbles, drop names and everything els
 `TextPipeline#render` are processed in this order:
 
 1. `|function|` tokens, when `[text] functions` is on and the string contains a `|`.
-2. Inline `{{ expression }}` blocks. `papi(...)`, `papiNumber(...)` and `player.*` require a viewer.
+2. Inline `{{ expression }}` blocks. `player.*` requires a viewer. `papi(...)` and
+   `papiNumber(...)` use PlaceholderAPI when available, then fall back to Gloss's standard native
+   player/server aliases; only the server aliases work without a viewer.
 3. PlaceholderAPI placeholders, when `[text] placeholders` is on, the string contains a `%`, **and** the
    viewer is non-null.
 4. Emoji replacement.

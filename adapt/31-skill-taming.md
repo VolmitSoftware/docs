@@ -462,7 +462,9 @@ Vanilla yanks pets back at that distance. An aborted job returns any already-car
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adapt/adaptations/tame-alphas-command.toml` |
 
-Listened events follow. `PlayerInteractEvent` handles sneak plus left-click with
+Listened events: `PlayerInteractEvent`, `EntityDamageByEntityEvent`, and `PlayerQuitEvent`.
+
+`PlayerInteractEvent` handles sneak plus left-click with
 a bone and raycasts for the target. `EntityDamageByEntityEvent` handles sneak
 melee with a bone, which cancels the hit and commands instead. `PlayerQuitEvent`
 clears glow and focus state.

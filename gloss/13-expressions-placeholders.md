@@ -248,8 +248,16 @@ Available live variables are `time.ms`, `time.seconds`, `time.ticks`, `server.on
 `server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health` and `player.level`.
 These are direct Gloss getters. They do not require PlaceholderAPI, React or another integration.
 `server.tps` is sampled internally from the server tick cadence and is available on viewer-free
-surfaces. `player.*`, `papi(...)` and `papiNumber(...)` require a viewer. Use them on boards,
-tablists and per-viewer holograms, not MOTDs or other static renders.
+surfaces. `player.*` requires a viewer. Use it on boards, tablists and per-viewer holograms, not
+MOTDs or other static renders.
+
+`papi(...)` and `papiNumber(...)` use PlaceholderAPI first when a viewer and the expansion are
+available. If the token remains unresolved, Gloss supplies native fallbacks for `player_name`,
+`player_ping`, `player_health`, `player_level`, `server_online`, `server_max_players` and
+`server_tps`; surrounding `%` signs are optional. The player aliases still require a viewer, while
+the server aliases work on viewer-free surfaces. Other PAPI keys need a viewer or an explicit typed
+fallback. The former `react.tps` metric key resolves to Gloss's native `server.tps`; new content
+should use `server.tps` directly.
 
 Use a native variable whenever Gloss already owns the value. Use PAPI only for expansion-specific
 data such as Vault economy or prefix values, and `metric` only for a metric published by another

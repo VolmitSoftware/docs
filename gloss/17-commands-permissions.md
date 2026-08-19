@@ -137,7 +137,7 @@ Also reachable as `/hologram`. Covered in [Holograms](/gloss/04-holograms).
 | `movehere` | `<id>` | `gloss.holograms.move` | Player only |
 | `move` | `<id> [x=0] [y=0] [z=0]` | `gloss.holograms.move` | Relative block offsets |
 | `tp` | `<id>` | `gloss.holograms.teleport` | Player only |
-| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking teleports. Twelve per page |
+| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking teleports. Fifteen per page |
 | `info` | `<id>` | none beyond the base gate | Location and raw lines |
 
 ## `/gloss board`
@@ -158,7 +158,7 @@ Gloss scoreboards, not panels. Also reachable as `/board`. Covered in
 | `reset` | `[name=*]` | `gloss.boards.edit` | Restores shipped board documents |
 | `show` | `<id>` | `gloss.boards.show` | Player only |
 | `hide` | none | `gloss.boards.hide` | Player only |
-| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking runs `info`. Twelve per page |
+| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking runs `info`. Fifteen per page |
 | `info` | `<id>` | none beyond the base gate | Title, primary flag, permission and lines |
 
 ## `/gloss emoji`, `animations`, `bubbles`, `tablist`, `motd`
@@ -169,9 +169,9 @@ Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `emoji list` | `[page=1]` | `gloss.emoji.use` | Twenty-four per page, three glyphs per line. Clicking suggests `:id:` in chat |
+| `emoji list` | `[page=1]` | `gloss.emoji.use` | Forty-five per page, three glyphs per line. Clicking suggests `:id:` in chat |
 | `emoji reset` | `[name=*]` | `gloss.emoji.reset` | Restores shipped emoji documents |
-| `animations list` | `[page=1]` | none beyond the base gate | Plain list of animation ids, twelve per page |
+| `animations list` | `[page=1]` | none beyond the base gate | Plain list of animation ids, fifteen per page |
 | `animations reset` | `[name=*]` | `gloss.animations.reset` | |
 | `bubbles style` | `<style>` | `gloss.bubbles.style` | Player only. `style=clear` returns to automatic selection |
 | `bubbles reset` | `[name=*]` | `gloss.bubbles.reset` | |
@@ -190,7 +190,7 @@ Hologram menus. Also answers to `/gloss menus`. Covered in [Hologram Menus](/glo
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `list` | `[page=1]` | `gloss.menus.list` | Clickable list. Clicking opens the menu. Twelve per page |
+| `list` | `[page=1]` | `gloss.menus.list` | Clickable list. Clicking opens the menu. Fifteen per page |
 | `open` | `[menu=*]` | `gloss.menus.open` plus `gloss.open.<menuId>` | Player only unless `menu=*`, which falls through to `list` and re-checks `gloss.menus.list` |
 | `back` | none | `gloss.menus.back` | Player only |
 | `close` | none | `gloss.menus.close` | Player only |
@@ -227,9 +227,9 @@ Every node below is gated by `gloss.panels`, except `web`, which is gated by `gl
 
 | Node | Arguments | Notes |
 |---|---|---|
-| `list` | `[page=1]` | Twelve entries per page |
+| `list` | `[page=1]` | Fifteen entries per page |
 | `reload` | none | Re-reads the panel files from disk |
-| `near` | `[radius=64]` `[page=1]` | Player only. Horizontal search radius, twelve entries per page |
+| `near` | `[radius=64]` `[page=1]` | Player only. Horizontal search radius, fifteen entries per page |
 | `info` | `<board>` | Full state of one panel |
 | `create` | `<board> [menu=*]` | Player only. `menu=*` means a menu whose id equals the panel id. That menu must already exist |
 | `delete` (`remove`) | `<board>` | |
@@ -269,7 +269,7 @@ Container preview documents. Also answers to `/gloss previews`. Covered in
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `list` | `[page=1]` | `gloss.previews` | Names plus each document's block, entity, special and priority match summary, twelve per page |
+| `list` | `[page=1]` | `gloss.previews` | Names plus each document's block, entity, special and priority match summary, fifteen per page |
 | `reset` | `[name=*]` | `gloss.previews.reset` | Runs asynchronously. Restores shipped documents without deleting extra user documents that shadow them |
 | `dump` | `<name>` | `gloss.previews.dump` | Builds the document once and prints panel, cell, slot and label counts plus up to three build errors |
 
@@ -285,7 +285,7 @@ Custom item providers. Also answers to `/gloss items`. Covered in
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `status` | `[page=1]` | `gloss.items` | One line per provider with its plugin and state, twelve per page. Holders of `gloss.items.export` also get a clickable export hint |
+| `status` | `[page=1]` | `gloss.items` | One line per provider with its plugin and state, thirteen per page. Holders of `gloss.items.export` also get a clickable export hint |
 | `export` | none | `gloss.items.export` | Writes the catalog asynchronously and reports the item count, provider count and path when it finishes |
 
 Both refuse with a message when `[items] customItems` is off. `export` refuses while a previous
@@ -298,7 +298,7 @@ Web editor sync sessions. Every node is gated by `gloss.sync`. Covered in
 
 | Node | Arguments | Notes |
 |---|---|---|
-| `list` | `[page=1]` | Active sessions with kind, subject, seconds to expiry, last publication revision and pending state, twelve per page |
+| `list` | `[page=1]` | Active sessions with kind, subject, seconds to expiry, last publication revision and pending state, fifteen per page |
 | `status` | `<session>` | The same fields for one session |
 | `revoke` | `<session>` | Revokes the capability |
 | `pull` (`poll`) | `<session>` | Polls the relay immediately |
@@ -403,14 +403,16 @@ list`. Every configured menu id appears in the list. The per-menu node is only t
 
 Every multi-entry list takes an optional `page=<n>`: `hologram list`, `board list`, `emoji list`,
 `animations list`, `menu list`, `panel list`, `panel near`, `preview list`, `item status` and
-`sync list`. Text lists show twelve entries per page. `emoji list` shows twenty-four, three glyphs
-to a line.
+`sync list`. Text lists show fifteen entries per page. `item status` reserves two additional lines
+for its summary and export action, so it shows thirteen. `emoji list` shows forty-five, three glyphs
+to a line. These limits keep a full player menu within nineteen chat lines, including its top and
+bottom chrome.
 
 Every one of them prints its own header, then the entries, then the same two-line footer:
 
 ```
-Page 2/6 - showing 13-24 of 67
-Next page: /gloss emoji list page=3
+Page 1/2 - showing 1-45 of 67
+Next page: /gloss emoji list page=2
 ```
 
 The `Next page` line only appears when a further page exists. It prints the command in full so it
@@ -422,8 +424,9 @@ list takes the keyed form only.
 
 ## Help output
 
-`help`, `?` and `help=<page>` resolve to a paged menu of the node's children, eight entries per
-page. The token can appear at any depth. A bare `help` followed by a number is normalized into
+`help`, `?` and `help=<page>` resolve to a paged menu of the node's children. The root fits up to
+seventeen entries; submenus fit sixteen because they also render a back action. Both stay within
+nineteen lines including the top and bottom bars. The token can appear at any depth. A bare `help` followed by a number is normalized into
 `help=<number>` before resolution. All of these work:
 
 ```

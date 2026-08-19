@@ -7,7 +7,7 @@ tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The root command is `/react` (alias `/re`). Use `/react help [page]` or `/react ? [page]` for generated command help. The permission root is `react.use`. `react.*` grants the full tree including shorthands.
+The root command is `/react` (alias `/re`). Use `/react help [page]` or `/react ? [page]` for generated command help. Player help uses the shared 19-line panel: up to 17 entries at the root or 16 in a subtree with a Back row, while shorter trees print every entry. Console help remains flat and unpaginated. The permission root is `react.use`. `react.*` grants the full tree including shorthands.
 
 ## Permissions (`plugin.yml`)
 

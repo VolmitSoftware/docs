@@ -183,7 +183,7 @@ The listener re-reads `[features] emoji` and `[emoji] tabComplete` on every even
 /gloss emoji reset [name=*]
 ```
 
-`list` prints a page of 24 enabled emoji, three to a line. Each glyph is clickable to insert its `:id:` token into your chat input. It needs `gloss.emoji.use`. The page closes with a `Page X/Y` line. When there is more to see, it also shows the full `Next page` command. Out-of-range page numbers are clamped to the first or last page.
+`list` prints a page of 45 enabled emoji, three to a line. A full page occupies 19 chat lines including the banner, page status, next-page action and bottom bar. Each glyph is clickable to insert its `:id:` token into your chat input. It needs `gloss.emoji.use`. The page closes with a `Page X/Y` line. When there is more to see, it also shows the full `Next page` command. Out-of-range page numbers are clamped to the first or last page.
 
 `reset` rewrites shipped emoji documents from the jar and needs `gloss.emoji.reset` (op). `name=*` (the default) restores all 67. A single name restores just that one. A trailing `.json` on the name is accepted.
 
@@ -229,9 +229,10 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 
 `rainbow.json` is the only shipped animation. Its frames contain only color codes, so
 `|animation.rainbow|&lONLINE` changes the following text's color without inserting a word. Like
-emoji, it is re-extracted whenever the file is missing. Existing files are not overwritten during
-startup; run `/gloss animations reset name=rainbow` to replace an older copy that still contains
-`Gloss` in each frame.
+emoji, it is re-extracted whenever the file is missing. On startup Gloss also replaces the exact
+older shipped file whose four frames were `&cGloss`, `&6Gloss`, `&aGloss` and `&bGloss`. Any edited
+or merely reformatted copy is preserved as user content; use `/gloss animations reset name=rainbow`
+when that copy should be replaced deliberately.
 
 ### Modes
 
@@ -272,7 +273,7 @@ directly without a named animation document; see [Expressions & Placeholders](/g
 /gloss animations reset [name=*]
 ```
 
-`animation` is an alias for `animations`. `list` prints the loaded animation ids twelve per page behind a count header and the shared pager footer. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores `rainbow.json` from the jar.
+`animation` is an alias for `animations`. `list` prints the loaded animation ids fifteen per page behind a count header and the shared pager footer. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores `rainbow.json` from the jar.
 
 > `/gloss animations reset` overwrites `animations/rainbow.json`. Only shipped ids are affected. Your own animation files are never touched.
 {.is-warning}
