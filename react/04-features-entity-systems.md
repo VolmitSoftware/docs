@@ -84,7 +84,7 @@ When entity counts exceed soft caps, this feature removes lowest-priority eligib
 
 ### `item-super-stacker`
 
-This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible nametag describes the current contents instead of retaining the previous item name. The label stays one line and uses the Item Super Stacker's own Gloss format and entry limit.
+This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous target item. React removes the Gloss presentation before deleting a bundle, republishes loaded flagged bundles, and reconciles sampled bundles through a 30-second per-entity cache. Gloss owns display creation and renders the React-configured bundle header, material rows, and remainder row vertically while real drops are active.
 
 - **Class:** `FeatureItemSuperStacker`
 - **Listener:** yes
@@ -94,8 +94,12 @@ This feature merges nearby dropped items into flagged bundles. Pickup explodes t
 | `enabled` | boolean | `true` | Enables or disables this feature. |
 | `maxItemsPerBundle` | int | `64` | Max items per bundle. |
 | `searchRadius` | double | `3` | Search radius (blocks). |
-| `glossBundleFormat` | string | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | Single-line Gloss nametag. `{total}` is the summed item count; `{contents}` is the aggregated material list. |
-| `glossBundleEntryLimit` | int | `3` | Material entries shown before Gloss appends `+N more`; clamped to 1 – 10. |
+| `glossBundleHeaderFormat` | string | `"&eBundle &8(&e{total} items&8)"` | First vertical line. `{total}` is the summed item count. |
+| `glossBundleEntryFormat` | string | `"&7- &f{count}x {type}"` | One vertical line per aggregated material. |
+| `glossBundleMoreFormat` | string | `"&8+{remaining} more"` | Final line when material types were hidden by the limit. |
+| `glossBundleEntryLimit` | int | `3` | Material rows shown before the remainder row; clamped to 1 – 10. |
+
+The Gloss integration is optional and discovered through Bukkit's service registry. React has no compile or runtime classloader dependency on Gloss. If Gloss is absent, bundling and pickup behavior are unchanged. The three templates are passed only for flagged bundle refreshes; Gloss's ordinary drop and bundle templates continue to style every other item.
 
 ### `item-backpressure`
 

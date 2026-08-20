@@ -8,8 +8,8 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 `art.arcane.gloss.api` is the package another Bukkit plugin compiles against. One interface,
-`GlossAPI`, covers everything: holograms, scoreboards, tablist, text rendering and holographic
-menus.
+`GlossAPI`, covers everything: holograms, scoreboards, tablist, text rendering, dropped-item
+presentations and holographic menus.
 
 This page covers the dependency, the two ways of resolving that interface, availability and
 lifecycle, the three Bukkit events, and the non-menu API in full. The menu, placeholder and preview
@@ -266,7 +266,8 @@ handle is safe from any thread.
 | `GlossAPI.open(Plugin, Player, String)` | any. Prefer owning | the same, minus icon translation |
 | `GlossAPI.close` / `isOpen` / `menuIds` | any | one concurrent-map read, then a scheduler hand-off for `close` |
 | `GlossAPI.refreshDropName(Item)` | any | validation, then an entity-scheduler hand-off when the caller does not own the item |
-| `GlossAPI.refreshDropName(Item, String, int)` | any | the same, with a caller-supplied bundle format and clamped entry limit for this refresh |
+| `GlossAPI.refreshDropName(Item, String, String, String, int)` | any | the same, with caller-supplied vertical bundle templates and a clamped entry limit |
+| `GlossAPI.removeDropPresentation(Item)` | any | validation, then removal and visibility restoration on the item entity thread |
 | `handle.sessionId/playerId/menuId` | any | final-field reads |
 | `handle.state()` | any | one `AtomicReference` read |
 | `handle.setText/setItem/setIcon` | any | validation and one `ConcurrentHashMap` put |
@@ -441,14 +442,22 @@ tick. The override is dropped automatically when the player quits.
 `refreshDropName(Item)` reapplies the configured drop label from the entity's current `ItemStack`.
 Use it after changing an existing ground item's stack in place, because Bukkit does not emit a new
 `ItemSpawnEvent` or `ItemMergeEvent` for `Item#setItemStack`. The call is safe from any thread:
-Gloss runs the refresh on the item entity's owning thread. It is a no-op while drop labels are
-disabled or when the entity is no longer valid. `[drops] preserveCustomNames` still applies, so a
-foreign custom name that Gloss does not own remains untouched.
+Gloss runs the refresh on the item entity's owning thread. It is a no-op when the entity is no
+longer valid. `[drops] preserveCustomNames` still applies, so a foreign custom name that Gloss does
+not own remains untouched. With labels off, the same call still reconciles the real-drop model.
 
-`refreshDropName(Item, String, int)` has the same scheduler and preservation behavior, but uses the
-supplied single-line bundle format and entry limit for that refresh. The format supports `{total}`
-and `{contents}`. The entry limit is clamped to 1 – 10. Non-bundles and empty bundles still fall
-back to Gloss's configured `[drops] nameFormat`.
+`refreshDropName(Item, String, String, String, int)` has the same scheduler and preservation
+behavior. Its three strings are the vertical header, material-entry, and remainder templates. The
+header supports `{total}`, the entry supports `{count}` and `{type}`, and the remainder supports
+`{remaining}`. The entry limit clamps to 1 – 10. Non-bundles and empty bundles still use Gloss's
+configured `[drops] nameFormat`; the hidden native horizontal fallback still uses
+`[drops] bundleFormat`.
+
+`removeDropPresentation(Item)` destroys Gloss-owned passenger displays and restores the item
+entity's previous client and name visibility. Use it immediately before directly removing an item
+entity, because a plugin-side `Item#remove()` does not emit every normal pickup, merge, or despawn
+lifecycle event. The call forgets drop tracking but does not clear the `ItemStack` or a native
+custom name. It is safe from any thread and is a no-op for an item Gloss does not present.
 
 ## Text rendering
 

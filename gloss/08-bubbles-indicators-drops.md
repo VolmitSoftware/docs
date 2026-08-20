@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Three small features share one mechanism. Chat bubbles float a player message above their head. Damage indicators throw the applied health delta off an entity. Drop labels name item entities on the ground. Bubbles and indicators are built on temporary holograms. A bubble prefix is rendered with its speaker as viewer; indicators and drop labels are shared viewerless text.
+Chat bubbles float a player message above their head. Damage indicators throw the applied health delta off an entity. Drop labels identify item entities, while real drops replace their vanilla client model with grounded and tumbling display entities. Bubbles and indicators use temporary holograms; dropped-item presentation has its own display-carrier lifecycle.
 
 ## Chat bubbles
 
@@ -23,7 +23,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
   "schemaVersion": 2,
   "revision": 1,
   "prefix": "&7",
-  "offset": [0, 1, 0],
+  "offset": [0, 0.3, 0],
   "wordWrapChars": 32,
   "maxAliveMs": 5000,
   "followPlayer": true,
@@ -55,7 +55,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `schemaVersion` | required | Must be `2`, otherwise `unsupported bubbles schemaVersion: <n>` |
 | `revision` | required | `1` to `9007199254740991` |
 | `prefix` | `"&7"` | Authored text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
-| `offset` | `[0.0, 1.0, 0.0]` | `[x, y, z]` added to the speaker's eye position before stack and motion translation. The full offset remains applied while a bubble follows its speaker |
+| `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
 | `wordWrapChars` | `0` clamped to `8` | Visible characters per wrapped row. Color and format codes do not consume the width. Clamped to `8`..`128` |
 | `maxAliveMs` | `0` clamped to `500` | Milliseconds a bubble lives. Clamped to `500`..`60000` |
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
@@ -95,7 +95,7 @@ For each chat message Gloss resolves one style, in this order:
 1. **The player's explicit choice.** Used only when the player has chosen a style, that style id still exists on disk, **and** the player holds `gloss.bubbles.style.<id>`. Any of the three failing drops straight to step 2 with no message.
 2. **The best matching `select`.** Every style that has a `select` block and whose block matches the speaker world and primary group is a candidate. The highest `priority` wins. Ties are broken by the lexicographically smallest style id.
 3. **`default`.** Used when nothing matched and a style with the id `default` exists.
-4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-2 values shown above: prefix `&7`, offset `[0, 1, 0]`, wrap 32, 5000 ms, follow and hide-own on, and the late upward motion expression. Bubbles never stop working because a file is missing.
+4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-2 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, and the late upward motion expression. Bubbles never stop working because a file is missing.
 
 Two consequences worth stating plainly:
 
@@ -139,7 +139,7 @@ Frames come from the same high-frequency async packet animator that drives sub-t
 
 ### Motion
 
-Every live message has a base position at the speaker's eye plus `offset`. It then adds the normal bubble-stack lift and the evaluated motion translation. New messages push older messages up by `[holograms] stackDistance` (default `0.26`). With `followPlayer` on, the speaker eye and the complete configured offset are resampled together; with it off, that base is captured when the message spawns.
+Every live message has a base position at the speaker's eye plus `offset`, then adds only the space required by newer wrapped messages and the evaluated motion translation. The newest message has no hidden stack lift, so the shipped `[0, 0.3, 0]` begins exactly 0.3 blocks above the eye anchor. New messages push older messages up by `[holograms] stackDistance` (default `0.26`) per wrapped row. With `followPlayer` on, the speaker eye and the complete configured offset are resampled together; with it off, that base is captured when the message spawns.
 
 `motion` contains four expression surfaces:
 
@@ -265,40 +265,90 @@ With `[features] drops = true` (the default) every item entity that spawns gets 
 | `{count}` | The stack size |
 | `{type}` | The item's display name from its item meta when it has one and `[drops] useItemDisplayNames` is on (the default). Otherwise the material name lowercased with underscores turned into spaces, so `DIAMOND_SWORD` becomes `diamond sword` |
 
-The shipped default is `"&7{count}x {type}"`, giving `64x cobblestone` — or `1x Excalibur` for a renamed sword. If you set `[drops] useItemDisplayNames = false`, Gloss always labels by material. A blank `nameFormat` restores the default on load.
+The shipped default is `"&7{count}x {type}"`, giving `64x cobblestone` — or `1x Excalibur` for a renamed sword. If `[drops] useItemDisplayNames = false`, Gloss always labels by material. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
 
 ### Bundles
 
-A dropped `BUNDLE` whose `BundleMeta` carries stacks is named from `[drops] bundleFormat` instead. React-created super-stack bundles may supply their own single-line format and entry limit through React's Item Super Stacker configuration. A merged super-stack reads as its contents rather than as one bundle:
+A dropped `BUNDLE` whose `BundleMeta` carries stacks keeps a horizontal fallback name from `[drops] bundleFormat`. A merged React super-stack therefore describes its contents rather than retaining the target item that existed before the merge:
 
 | Token | Replaced with |
 |---|---|
 | `{total}` | The summed amount of every stack inside the bundle |
 | `{contents}` | The rendered content list |
 
-Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first. Ties are broken by type name. `[drops] bundleEntryLimit` (default `3`, clamped to 1 – 10) caps ordinary bundles; React's `glossBundleEntryLimit` applies to its own super-stack refreshes. The rest collapse into a `+N more` suffix counting the entries that were left off, not the items. Both shipped defaults give:
+Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first; ties use the material name. `[drops] bundleEntryLimit` defaults to `3` and clamps to 1 – 10. The remainder counts hidden material types, not hidden items.
+
+With `[features] realDrops = true` and `[drops] bundleVerticalLabels = true`, the visible display is vertical. `[drops] bundleHeaderFormat`, `bundleEntryFormat`, and `bundleMoreFormat` produce:
 
 ```
-Bundle (12 items): 5x stone, 4x dirt, +2 more
+Bundle (12 items)
+- 5x stone
+- 4x dirt
+- 2x oak log
++1 more
 ```
 
-A bundle with no contents, or one whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle` like any other item. This is what makes React merged ground drops readable. React packs nearby stacks into a `BUNDLE` with the originals in `BundleMeta`. The plain `{count}x {type}` format could only ever name after the bundle itself.
+A bundle with no contents, or whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle`. The horizontal fallback remains on the hidden item entity, so turning real drops off immediately returns to a readable vanilla nametag.
 
-The formatted string is rendered statically through the text pipeline. Colors, bracket hex, emoji and `|animation.<id>|` tokens work. Placeholders do not resolve. Only the ground entity display name changes. The `ItemStack` itself is untouched. If a player picks the item up, they get an unmodified item.
+React supplies its own header, entry, remainder, and entry-limit values for flagged super-stack bundles. It refreshes immediately after a merge or partial hopper pickup, removes the presentation before deleting a source entity, republishes loaded bundles, and reconciles sampled bundles at most once per entity per 30 seconds. Gloss still owns aggregation, text rendering, display creation, thread routing, and cleanup.
 
-The listener runs at `MONITOR` and always forces the applied name
-visible. Gloss marks every entity it names with the persistent data key
-`gloss:drop_name`. With `[drops] preserveCustomNames = true` (the
-default), Gloss leaves some names alone. An item entity that already
-carries a custom name **without** that marker is left untouched on spawn
-and on merge. Those names come from another plugin. If you set it to
-`false`, Gloss restores the old unconditional overwrite.
+Every line is rendered statically through the text pipeline. Colors, bracket hex, emoji and static `|function|` tokens work. Viewer placeholders do not resolve. The `ItemStack` is untouched.
 
-Both `ItemSpawnEvent` and `ItemMergeEvent` are handled at `MONITOR` priority, ignoring cancelled events. When two stacks merge on the ground the surviving entity is renamed with the combined count. The absorbed entity is dropped from tracking. React calls `GlossAPI.refreshDropName(Item, String, int)` immediately after it replaces a surviving drop's `ItemStack` with a bundle or updates a residual bundle after hopper collection, passing `glossBundleFormat` and `glossBundleEntryLimit`. This refresh runs on the item entity's owning thread, so the single-line nametag changes to the current bundle contents without requiring a new spawn or vanilla merge event. An unchanged rendered label is not written again.
+The listener runs at `MONITOR` and makes the native fallback name visible. Gloss marks every entity
+it names with `gloss:drop_name` and stores the matching rendered value in `gloss:drop_name_value`.
+With `[drops] preserveCustomNames = true` (the default), an existing foreign name is left untouched.
+If another plugin replaces a formerly Gloss-owned name, the stored value no longer matches; Gloss
+relinquishes its stale marker instead of reclaiming the name. Setting the option to `false` restores
+unconditional overwrite.
 
-Label visibility distance is the client own entity name render distance. There is no radius setting.
+Spawn, vanilla merge, pickup, hopper pickup, despawn, entity load, and entity unload are coordinated at `MONITOR`. Full removal destroys the attached presentation. Partial pickup refreshes one tick later, after the server has replaced the remaining stack. All world and entity work runs on the owning entity or region thread.
 
-If you set `[features] drops = false`, Gloss unregisters the listener so no new labels are applied. Names already written onto existing item entities stay until those entities despawn.
+### Real drops
+
+`[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. One non-persistent `ItemDisplay` in explicit `FIXED` render mode follows the item as the visible carrier; additional stack models and the optional `TextDisplay` label ride that carrier as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. This feature uses Bukkit display entities and the Gloss scheduler; it does not use ProtocolLib or a new packet dependency.
+
+Airborne models update their carrier position and transformation every `[realDrops.limits] updateIntervalTicks` and let client interpolation smooth the interval. Once grounded, they only check for movement or stack changes every `settledPollIntervalTicks`. A stack uses one to five one-count models as a size cue, bounded by `maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. If the complete initial presentation does not fit, Gloss leaves that item vanilla-visible.
+
+| Key | Default | Range / behavior |
+|---|---:|---|
+| `[features] realDrops` | `true` | Enables the complete physical presentation |
+| `[realDrops.limits] updateIntervalTicks` | `2` | Airborne transformation cadence; 1 – 20 |
+| `[realDrops.limits] settledPollIntervalTicks` | `20` | Grounded state and stack check; 2 – 200 |
+| `[realDrops.limits] maxVisualsPerStack` | `3` | Item models per stack; 1 – 5 |
+| `[realDrops.limits] maxVisualsPerChunk` | `128` | Gloss-owned item and text displays per chunk; 8 – 1024 |
+| `[realDrops.limits] viewRange` | `32.0` | Item-model tracking range; 4 – 128 blocks |
+| `[realDrops.limits] spread` | `0.18` | Separation of additional stack models; 0 – 1 block |
+| `[realDrops.scale] defaultScale` | `0.4` | Ordinary block models; 0.05 – 2 |
+| `[realDrops.scale] flatItems` | `0.65` | Non-block item models; 0.05 – 2 |
+| `[realDrops.scale] thinBlocks` | `0.45` | Slabs, carpets, pressure plates, and snow; 0.05 – 2 |
+| `[realDrops.motion] tumble` | `true` | Rotates airborne models |
+| `[realDrops.motion] degreesPerSecondX` | `160.0` | X speed; -1440 – 1440 |
+| `[realDrops.motion] degreesPerSecondY` | `120.0` | Y speed; -1440 – 1440 |
+| `[realDrops.motion] degreesPerSecondZ` | `100.0` | Z speed; -1440 – 1440 |
+| `[realDrops.motion] variance` | `0.2` | Deterministic per-item speed variation; 0 – 1 |
+| `[realDrops.motion] changeOnBounce` | `true` | Selects another deterministic spin after an upward bounce |
+| `[realDrops.landing] mode` | `"NATURAL"` | `NATURAL`, `FLAT`, or `UPRIGHT` |
+| `[realDrops.landing] tiltDegrees` | `10.0` | Maximum NATURAL block tilt; 0 – 45 degrees |
+| `[realDrops.landing] randomYaw` | `true` | Gives each item a stable yaw |
+| `[realDrops.landing] transitionTicks` | `4` | Client interpolation into the landing pose; 0 – 20 |
+| `[realDrops.labels] enabled` | `true` | Mirrors the effective drop name through one TextDisplay |
+| `[realDrops.labels] yOffset` | `0.55` | Label translation above the model; 0 – 4 blocks |
+| `[realDrops.labels] scale` | `0.85` | Label scale; 0.1 – 4 |
+| `[realDrops.labels] viewRange` | `32.0` | Label tracking range; 4 – 128 blocks |
+| `[realDrops.labels] billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, or `VERTICAL` |
+| `[realDrops.labels] seeThrough` | `false` | Draws through blocks when on |
+| `[realDrops.labels] shadow` | `true` | Draws the glyph shadow |
+| `[realDrops.labels] background` | `true` | Enables the full label background |
+| `[realDrops.labels] backgroundRed/Green/Blue/Alpha` | `0/0/0/80` | Channels clamp to 0 – 255 |
+| `[realDrops.filters] disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
+| `[realDrops.filters] materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
+| `[realDrops.filters] onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
+
+`NATURAL` leaves blocks mostly upright with the configured stable tilt while flat item models lie down. `FLAT` lays every model down. `UPRIGHT` removes pitch and roll. Tumble directions, landing angles, offsets, and variation derive from the item UUID, so they do not allocate random state each update and remain stable until a configured bounce change.
+
+Presentations are removed on merge, pickup, despawn, entity unload, feature reload, and plugin shutdown. New `ItemSpawnEvent` entities reconcile one entity tick after the event, when Bukkit marks them valid; loaded items are rebuilt after enable and entity load. Persistent ownership and restore markers heal an item after an interrupted lifecycle; Gloss restores the prior native visibility and name visibility before rebuilding or falling back. The display carrier and its passengers are non-persistent.
+
+If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both sections hot-reload.
 
 ## Reference
 

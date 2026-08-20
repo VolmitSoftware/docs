@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -65,6 +65,7 @@ Master switches. If you turn one off, that subsystem stops rendering or listenin
 | `chatBubbles` | `true` | Chat bubbles above players |
 | `damageIndicators` | `true` | Floating damage and heal indicators |
 | `drops` | `true` | Custom names on dropped item stacks |
+| `realDrops` | `true` | Native display-backed dropped-item models, motion, landing, and labels |
 | `menus` | `true` | Holographic menus |
 | `panels` | `true` | World-anchored panels |
 | `previews` | `true` | Look-at container previews |
@@ -170,8 +171,78 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `nameFormat` | `"&7{count}x {type}"` | — | Name format for dropped stacks. `{count}` and `{type}` are replaced. A null value restores the default |
 | `bundleFormat` | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | — | Name format for a dropped bundle carrying stacks. `{total}` and `{contents}` are replaced. A null value restores the default. An empty bundle falls back to `nameFormat` |
 | `bundleEntryLimit` | `3` | 1 – 10 | Bundle content entries listed before the rest collapse into a `+N more` suffix |
+| `bundleVerticalLabels` | `true` | — | Use one multiline TextDisplay for bundle labels while real drops are active |
+| `bundleHeaderFormat` | `"&eBundle &8(&e{total} items&8)"` | — | First vertical bundle line; `{total}` is replaced |
+| `bundleEntryFormat` | `"&7- &f{count}x {type}"` | — | One vertical line per material; `{count}` and `{type}` are replaced |
+| `bundleMoreFormat` | `"&8+{remaining} more"` | — | Final line for hidden material types; `{remaining}` is replaced |
 | `preserveCustomNames` | `true` | — | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
 | `useItemDisplayNames` | `true` | — | Use an item's display name from its item meta as `{type}` instead of the pretty material name |
+
+## `[realDrops.limits]`
+
+| Key | Default | Range | Meaning |
+|---|---:|---|---|
+| `updateIntervalTicks` | `2` | 1 – 20 | Airborne carrier-position and transformation cadence; client interpolation smooths the interval |
+| `settledPollIntervalTicks` | `20` | 2 – 200 | Grounded movement and stack-change poll cadence |
+| `maxVisualsPerStack` | `3` | 1 – 5 | Maximum one-count ItemDisplay models used to suggest stack size |
+| `maxVisualsPerChunk` | `128` | 8 – 1024 | Shared chunk budget for item models and labels; an item stays vanilla-visible if its complete presentation cannot fit |
+| `viewRange` | `32.0` | 4 – 128 | Item-model tracking range in blocks |
+| `spread` | `0.18` | 0 – 1 | Separation in blocks between additional stack models |
+
+## `[realDrops.scale]`
+
+| Key | Default | Range | Meaning |
+|---|---:|---|---|
+| `defaultScale` | `0.4` | 0.05 – 2 | Ordinary block model scale |
+| `flatItems` | `0.65` | 0.05 – 2 | Non-block item model scale |
+| `thinBlocks` | `0.45` | 0.05 – 2 | Slab, carpet, pressure-plate, and snow model scale |
+
+## `[realDrops.motion]`
+
+| Key | Default | Range | Meaning |
+|---|---:|---|---|
+| `tumble` | `true` | — | Rotate airborne models |
+| `degreesPerSecondX` | `160.0` | -1440 – 1440 | Base X-axis tumble speed |
+| `degreesPerSecondY` | `120.0` | -1440 – 1440 | Base Y-axis tumble speed |
+| `degreesPerSecondZ` | `100.0` | -1440 – 1440 | Base Z-axis tumble speed |
+| `variance` | `0.2` | 0 – 1 | Stable per-item variation applied to each configured speed |
+| `changeOnBounce` | `true` | — | Select another deterministic spin after an upward bounce |
+
+## `[realDrops.landing]`
+
+| Key | Default | Range | Meaning |
+|---|---:|---|---|
+| `mode` | `"NATURAL"` | `NATURAL`, `FLAT`, `UPRIGHT` | Grounded pose policy |
+| `tiltDegrees` | `10.0` | 0 – 45 | Maximum stable pitch and roll for NATURAL block models |
+| `randomYaw` | `true` | — | Give each item a stable UUID-derived yaw |
+| `transitionTicks` | `4` | 0 – 20 | Client interpolation duration into the landing pose |
+
+## `[realDrops.labels]`
+
+| Key | Default | Range | Meaning |
+|---|---:|---|---|
+| `enabled` | `true` | — | Mirror the effective item name through one TextDisplay |
+| `yOffset` | `0.55` | 0 – 4 | Label height above the model in blocks |
+| `scale` | `0.85` | 0.1 – 4 | TextDisplay scale |
+| `viewRange` | `32.0` | 4 – 128 | Label tracking range in blocks |
+| `billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, `VERTICAL` | Billboard constraint |
+| `seeThrough` | `false` | — | Draw the label through blocks |
+| `shadow` | `true` | — | Draw the text shadow |
+| `background` | `true` | — | Draw the configured full background |
+| `backgroundRed` | `0` | 0 – 255 | Background red channel |
+| `backgroundGreen` | `0` | 0 – 255 | Background green channel |
+| `backgroundBlue` | `0` | 0 – 255 | Background blue channel |
+| `backgroundAlpha` | `80` | 0 – 255 | Background alpha channel |
+
+## `[realDrops.filters]`
+
+| Key | Default | Meaning |
+|---|---|---|
+| `disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla item rendering |
+| `materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla item rendering |
+| `onlyPlayerDrops` | `false` | Require the item entity to carry a non-null thrower UUID |
+
+Real drops use one non-persistent `ItemDisplay` carrier per item, with additional models and the label mounted to it, while the real item keeps all physics and inventory behavior. Only the carrier receives position updates. Turning the feature off removes Gloss-owned displays and restores native item and name visibility. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) for lifecycle, performance, and React bundle integration details.
 
 ## `[commands]`
 
