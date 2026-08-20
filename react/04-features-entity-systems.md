@@ -84,7 +84,7 @@ When entity counts exceed soft caps, this feature removes lowest-priority eligib
 
 ### `item-super-stacker`
 
-This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. When Gloss is present and publishes its drop-label refresh API, React refreshes the surviving entity immediately after creating a bundle and after changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous item name.
+This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible nametag describes the current contents instead of retaining the previous item name. The label stays one line and uses the Item Super Stacker's own Gloss format and entry limit.
 
 - **Class:** `FeatureItemSuperStacker`
 - **Listener:** yes
@@ -94,6 +94,8 @@ This feature merges nearby dropped items into flagged bundles. Pickup explodes t
 | `enabled` | boolean | `true` | Enables or disables this feature. |
 | `maxItemsPerBundle` | int | `64` | Max items per bundle. |
 | `searchRadius` | double | `3` | Search radius (blocks). |
+| `glossBundleFormat` | string | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | Single-line Gloss nametag. `{total}` is the summed item count; `{contents}` is the aggregated material list. |
+| `glossBundleEntryLimit` | int | `3` | Material entries shown before Gloss appends `+N more`; clamped to 1 – 10. |
 
 ### `item-backpressure`
 

@@ -40,11 +40,11 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
   },
   "shimmer": {
     "spawn": true,
-    "flyAway": false,
+    "flyAway": true,
     "color": "#ffffff",
     "width": 3,
-    "durationMs": 4233,
-    "spawnDelayMs": 0,
+    "durationMs": 700,
+    "spawnDelayMs": 400,
     "flyAwayLeadMs": 700
   }
 }
@@ -61,7 +61,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
 | `hideOwn` | `false` | When true the speaker cannot see their own bubbles |
 | `motion` | shipped late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
-| `shimmer` | shipped shine shown above | The original Gloss shine: a solid white three-glyph wave moving left to right at exactly 30 glyphs per second, restarting its horizontal index on every wrapped row and repeating until the bubble expires; see below |
+| `shimmer` | shipped shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
 
 `followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
@@ -108,33 +108,33 @@ The style is resolved **once per chat message**, before the text is wrapped. The
 
 The bubble hook runs on `AsyncPlayerChatEvent` at `MONITOR` priority, after Gloss has applied its chat emoji and permitted color stages. Bubbles preserve that final message formatting. For example, `&1Hello!!!` reaches the bubble as blue text when the chat color stage translated it; an unauthorized raw `&1` stays literal instead of gaining color only in the bubble.
 
-Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines and sent to one `TextDisplay`, so one chat message is one multiline entity and one background block rather than several independently moving bubbles.
+Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines, left-aligned and sent to one `TextDisplay`, so one chat message is one aligned multiline entity and one background block rather than several independently moving bubbles.
 
 The authored `prefix` is rendered separately through the full text pipeline with the speaker as viewer and prepended to the already-formatted message. It therefore supports `|function|`, `{{ player.* }}`, `papi`, raw PlaceholderAPI tokens, emoji and colors just like a scoreboard. Dynamic prefixes refresh on the speaker entity thread while the bubble lives. Player chat itself is not reinterpreted as Gloss code. The resulting bubble lives for `maxAliveMs` milliseconds. Immediately before spawn, Gloss re-checks that chat bubbles are enabled, the speaker is online and outside a blacklisted world, and the speaker still holds `gloss.bubbles.send`.
 
 ### Shimmer
 
-`shimmer` is the original Gloss shine, restored as an explicit presentation effect. It changes live text color, not particles. The shipped wave is a solid white three-glyph band governed by the original integer law: the head is `floor(3 * elapsedMs / 100)`, travels at exactly 30 glyphs per second and repeats every 127 glyph positions. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph.
+`shimmer` is the original Gloss shine presented as two explicit high-frequency passes. It changes live text color, not particles. The shipped wave is a solid white three-glyph band. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph.
 
-Each wrapped row starts its visible-glyph index at zero, matching the original text-filter phase while retaining the newer one-message, one-multiline-`TextDisplay` layout. The rows therefore show the wave in the same horizontal position instead of treating the whole block as one continuous character stream.
+The wrapped message is one continuous visible-glyph stream. A band crossing a line boundary lights the end of one row and the start of the next, so a five-line bubble still has exactly one shimmer rather than five independently phased waves. The server moves the band from the first to the last visible glyph over `durationMs`; longer messages therefore update more frequently instead of moving at a fixed slow glyph rate.
 
-The spawn cycle free-runs until expiry. With the shipped 5-second lifetime it produces the two familiar visible passes without a separate departure restart: the first begins at spawn and the second begins at 4,234 ms, while the default late-fly motion is active. `flyAway` remains available for styles that deliberately want an additional restart at a different departure time.
+The shipped first pass waits 400 ms after chat, then crosses the full block over 700 ms. The second begins 700 ms before expiry and crosses it again while the default late-fly motion is active. Between those windows the text is unchanged.
 
 | Key | Default | Clamp / notes |
 |---|---|---|
-| `spawn` | `true` | Anchor the cycle at the bubble's spawn. The band free-runs from there for the whole lifetime |
-| `flyAway` | `false` | Add a second cycle anchored to the departure window. The free-running cycle already produces a departure pass at ordinary lifetimes, so turning this on doubles the band |
+| `spawn` | `true` | Run one bounded pass after `spawnDelayMs` |
+| `flyAway` | `true` | Run a second bounded pass beginning `flyAwayLeadMs` before expiry |
 | `color` | `"#ffffff"` | Color applied to every lit glyph. Strict `#RRGGBB`; invalid values reject the style |
 | `width` | `3` | Highlighted visible glyphs, clamped to `1`..`16` |
-| `durationMs` | `4233` | Milliseconds for one full 127-glyph cycle, clamped to `100`..`10000`. The shipped `4233` is the original 30 glyphs per second |
-| `spawnDelayMs` | `0` | Delay before the spawn cycle starts, clamped to `0`..`60000` |
+| `durationMs` | `700` | Milliseconds for one complete pass across the whole multiline block, clamped to `100`..`10000` |
+| `spawnDelayMs` | `400` | Delay before the spawn pass starts, clamped to `0`..`60000` |
 | `flyAwayLeadMs` | `700` | Departure starts this many milliseconds before expiry, clamped to `0`..`60000` |
 
-A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn cycle starts at `spawnDelayMs`; a `flyAway` cycle starts at `max(0, maxAliveMs - flyAwayLeadMs)` and takes precedence while both are running. Shimmer timing and the `motion` expressions are independent, so the band keeps traveling while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
+A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine twice. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn pass starts at `spawnDelayMs`; the fly-away pass starts at `max(0, maxAliveMs - flyAwayLeadMs)` and wins if the windows overlap. Each pass stops after `durationMs`. Shimmer timing and the `motion` expressions are independent, so the band can travel while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
 
 Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (shipped `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to the configured temporary-hologram interval, shipped as two ticks, and is visibly coarser.
 
-> `durationMs` is the full-cycle time. A custom style that explicitly writes the former `700` value still runs about six times faster. The exact untouched former shipped defaults upgrade automatically; for an edited style, remove the key or set `4233` to restore the original speed.
+> Exact untouched former shipped defaults are atomically upgraded to the delayed two-pass style. Edited or reformatted styles remain operator-owned; set `spawnDelayMs` to `400`, `durationMs` to `700`, and `flyAway` to `true` to opt in.
 {.is-info}
 
 ### Motion
@@ -269,14 +269,14 @@ The shipped default is `"&7{count}x {type}"`, giving `64x cobblestone` — or `1
 
 ### Bundles
 
-A dropped `BUNDLE` whose `BundleMeta` carries stacks is named from `[drops] bundleFormat` instead. A merged super-stack reads as its contents rather than as one bundle:
+A dropped `BUNDLE` whose `BundleMeta` carries stacks is named from `[drops] bundleFormat` instead. React-created super-stack bundles may supply their own single-line format and entry limit through React's Item Super Stacker configuration. A merged super-stack reads as its contents rather than as one bundle:
 
 | Token | Replaced with |
 |---|---|
 | `{total}` | The summed amount of every stack inside the bundle |
 | `{contents}` | The rendered content list |
 
-Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first. Ties are broken by type name. `[drops] bundleEntryLimit` (default `3`, clamped to 1 – 10) caps how many entries are listed. The rest collapse into a `+N more` suffix counting the entries that were left off, not the items. The shipped default gives:
+Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first. Ties are broken by type name. `[drops] bundleEntryLimit` (default `3`, clamped to 1 – 10) caps ordinary bundles; React's `glossBundleEntryLimit` applies to its own super-stack refreshes. The rest collapse into a `+N more` suffix counting the entries that were left off, not the items. Both shipped defaults give:
 
 ```
 Bundle (12 items): 5x stone, 4x dirt, +2 more
@@ -294,7 +294,7 @@ carries a custom name **without** that marker is left untouched on spawn
 and on merge. Those names come from another plugin. If you set it to
 `false`, Gloss restores the old unconditional overwrite.
 
-Both `ItemSpawnEvent` and `ItemMergeEvent` are handled at `MONITOR` priority, ignoring cancelled events. When two stacks merge on the ground the surviving entity is renamed with the combined count. The absorbed entity is dropped from tracking. React also calls `GlossAPI.refreshDropName(Item)` immediately after it replaces a surviving drop's `ItemStack` with a bundle or updates a residual bundle after hopper collection. This refresh runs on the item entity's owning thread, so the label changes to the current bundle contents without requiring a new spawn or vanilla merge event. An unchanged rendered label is not written again.
+Both `ItemSpawnEvent` and `ItemMergeEvent` are handled at `MONITOR` priority, ignoring cancelled events. When two stacks merge on the ground the surviving entity is renamed with the combined count. The absorbed entity is dropped from tracking. React calls `GlossAPI.refreshDropName(Item, String, int)` immediately after it replaces a surviving drop's `ItemStack` with a bundle or updates a residual bundle after hopper collection, passing `glossBundleFormat` and `glossBundleEntryLimit`. This refresh runs on the item entity's owning thread, so the single-line nametag changes to the current bundle contents without requiring a new spawn or vanilla merge event. An unchanged rendered label is not written again.
 
 Label visibility distance is the client own entity name render distance. There is no radius setting.
 

@@ -266,6 +266,7 @@ handle is safe from any thread.
 | `GlossAPI.open(Plugin, Player, String)` | any. Prefer owning | the same, minus icon translation |
 | `GlossAPI.close` / `isOpen` / `menuIds` | any | one concurrent-map read, then a scheduler hand-off for `close` |
 | `GlossAPI.refreshDropName(Item)` | any | validation, then an entity-scheduler hand-off when the caller does not own the item |
+| `GlossAPI.refreshDropName(Item, String, int)` | any | the same, with a caller-supplied bundle format and clamped entry limit for this refresh |
 | `handle.sessionId/playerId/menuId` | any | final-field reads |
 | `handle.state()` | any | one `AtomicReference` read |
 | `handle.setText/setItem/setIcon` | any | validation and one `ConcurrentHashMap` put |
@@ -347,6 +348,7 @@ shape and the render pipeline are in [Holograms](/gloss/04-holograms).
 ```java
 public interface TemporaryHologram extends Hologram {
   void setRenderedLines(List<String> lines);
+  void bindRenderedFrames(LongFunction<List<String>> frames);
   void bindPosition(Supplier<Location> binder);
   void bindPresentation(Supplier<HologramPresentation> binder);
   long remainingMs();
@@ -383,7 +385,10 @@ placeholder tokens are not resolved while functions, inline expressions, emoji a
 apply. `setRenderedLines(List<String>)` replaces the complete line list with final legacy-formatted
 text and skips that text pipeline. Use it when another renderer already produced colors and
 decorations and a second interpretation would be incorrect. Both methods can represent multiple
-rows in one multiline `TextDisplay`.
+rows in one multiline `TextDisplay`; final rendered blocks use a large client line width and left
+alignment so server-produced wrapping stays one aligned block. `bindRenderedFrames` makes the
+already-rendered block time-dependent and samples it through the high-frequency animator when that
+feature is enabled.
 
 `bindPresentation(Supplier<HologramPresentation>)` supplies scale, three-axis rotation and opacity
 on each drive. Scale axes are multipliers clamped to `0`..`16`; rotation axes are degrees normalized
@@ -439,6 +444,11 @@ Use it after changing an existing ground item's stack in place, because Bukkit d
 Gloss runs the refresh on the item entity's owning thread. It is a no-op while drop labels are
 disabled or when the entity is no longer valid. `[drops] preserveCustomNames` still applies, so a
 foreign custom name that Gloss does not own remains untouched.
+
+`refreshDropName(Item, String, int)` has the same scheduler and preservation behavior, but uses the
+supplied single-line bundle format and entry limit for that refresh. The format supports `{total}`
+and `{contents}`. The entry limit is clamped to 1 – 10. Non-bundles and empty bundles still fall
+back to Gloss's configured `[drops] nameFormat`.
 
 ## Text rendering
 
