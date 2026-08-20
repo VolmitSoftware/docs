@@ -156,7 +156,7 @@ The three `special` markers are roles, not targets:
 | `special` | What it does |
 |---|---|
 | `enderChest` | Draws the **viewer's own** ender chest instead of a tile entity. The block still has to be matched by `match.blocks` for the raycast to stop on it |
-| `locked` | The target-less card shown when a viewer may not open the container. It is built with no target at all, so it can only read `vars` and `time` |
+| `locked` | The target-less card shown when a viewer may not open the container. It has the viewing player and standard player/server expression context, but no block, entity or inventory state |
 | `anyInventoryHolder` | The fallback for an inventory-holding entity no document names |
 
 `special` and `priority` are read from the top-level `match` only.
@@ -351,6 +351,12 @@ Four functions read the previewed inventory directly, on top of the general expr
 | `item(slot)` | Material id in that slot (`"IRON_ORE"`), or `""`. Wrap it in `readable()` for text |
 | `lang(key, ...)` | A localized message. Positional arguments fill the key's placeholders in order |
 
+Every preview also has the standard text-expression functions `papi(key, fallback?)`,
+`papiNumber(key, fallback?)` and `metric(key, fallback?)`, plus `time.ms`, `time.seconds`,
+`time.ticks`, `server.online`, `server.maxPlayers`, `server.tps`, `player.name`, `player.ping`,
+`player.health` and `player.level`. Player values are available for block, entity, ender-chest and
+locked cards. They are absent in console/static diagnostics; use an explicit typed fallback there.
+
 `lang` resolves through the same catalog the rest of the plugin uses. A document renders in each
 viewer's locale. A key the catalog does not declare is a hard failure on a running server. The label
 reports `label text: lang: Unknown message key: <id>` and renders empty. The rest of the preview is
@@ -479,10 +485,9 @@ provides `burnTime`, `fuelSeconds`, `bankedXp`, `lit`, `surge.active` and `surge
 expression can use `palette([...], floor(time / 4))` for a stepped flame or test `surge.active` to
 flash a boosted state.
 
-These preview expressions do not have a player or PlaceholderAPI context. `%player_name%`,
-`papi(...)` and `player.*` are not furnace variables. Use a registered `PreviewStateProvider` for
-additional server data, or use inline `{{ }}` expressions on a player-backed scoreboard, tablist or
-per-viewer hologram instead.
+The preview expression lexer treats `%` as modulo, so raw `%player_name%` is not placeholder syntax.
+Use `player.name`, `papi('player_name')` or `papiNumber('player_ping', 0)` instead. Use a registered
+`PreviewStateProvider` for typed domain state not exposed by PAPI.
 
 In the web editor, right-click a container-preview document and choose `Create random preview`.
 The generator emits all four element types, selects the furnace simulation through its
@@ -692,8 +697,9 @@ added.
 {.is-warning}
 
 `dump` is the tool for debugging a document. For a player it builds against the block being looked
-at when that block is one the named document matches. Otherwise it builds target-less. From the
-console it is always target-less, so state-dependent expressions read nothing.
+at when that block is one the named document matches. Otherwise it builds target-less but retains
+that player for standard player/PAPI expressions. From the console it is viewerless and target-less,
+so player and target-state expressions are unavailable.
 
 Output is the element total broken down into panels, cells, slots and labels. Then up to three build
 errors with a `+N more (see console log)` tail. A trailing `.json` in the name is accepted. `No

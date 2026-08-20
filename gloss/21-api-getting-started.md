@@ -76,6 +76,7 @@ Gloss registers exactly one provider from `GlossApiServiceImpl#register(GlossAPI
 | `GlossAPIProvider` | final class | Static holder behind `GlossAPI.get()` |
 | `Hologram` | interface | One persistent hologram |
 | `TemporaryHologram` | interface | A hologram that expires. Extends `Hologram` |
+| `HologramPresentation` | record | Normalized scale, three-axis rotation and opacity for a temporary hologram |
 | `HologramViewers` | interface | Viewer filter on a temporary hologram |
 | `HoloMenu` | record | Immutable menu definition |
 | `HoloMenuBuilder` | final class | Builds a `HoloMenu`. Reached through `HoloMenu.builder()` |
@@ -343,9 +344,29 @@ shape and the render pipeline are in [Holograms](/gloss/04-holograms).
 ## Temporary holograms
 
 ```java
+public interface TemporaryHologram extends Hologram {
+  void setRenderedLines(List<String> lines);
+  void bindPosition(Supplier<Location> binder);
+  void bindPresentation(Supplier<HologramPresentation> binder);
+  long remainingMs();
+  HologramViewers viewers();
+  void destroy();
+}
+
+public record HologramPresentation(
+    double scaleX, double scaleY, double scaleZ,
+    double rotationXDegrees, double rotationYDegrees, double rotationZDegrees,
+    double opacity) {}
+```
+
+```java
 TemporaryHologram tag = gloss.createTemporaryHologram("combat-tag", start, 4000L);
-tag.addLine("&c-4");
+tag.setRenderedLines(List.of("\u00a7c-4", "\u00a77Critical hit"));
 tag.bindPosition(() -> entity.getLocation().add(0, 2.2, 0));
+tag.bindPresentation(() -> new HologramPresentation(
+    1.0, 1.0, 1.0,
+    0.0, 0.0, (4000L - tag.remainingMs()) * 0.09,
+    Math.min(1.0, tag.remainingMs() / 500.0)));
 tag.viewers().whitelist();
 tag.viewers().add(player.getUniqueId());
 ```
@@ -353,8 +374,23 @@ tag.viewers().add(player.getUniqueId());
 Temporary holograms are never written to disk. They expire after `durationMs`, which
 `remainingMs()` reports the remainder of. They are driven every
 `[holograms] temporaryUpdateIntervalTicks` (default 2). The `bindPosition` supplier, if set, is
-polled on each drive and the display follows it. Text renders statically, so placeholder tokens
-are not resolved. Functions, emoji and colors still apply.
+polled on each drive and the display follows it. Translation remains position movement through
+`bindPosition`; it is not part of `HologramPresentation`.
+
+Inherited `setLines(List<String>)` accepts authored Gloss text. It renders statically, so
+placeholder tokens are not resolved while functions, inline expressions, emoji and colors still
+apply. `setRenderedLines(List<String>)` replaces the complete line list with final legacy-formatted
+text and skips that text pipeline. Use it when another renderer already produced colors and
+decorations and a second interpretation would be incorrect. Both methods can represent multiple
+rows in one multiline `TextDisplay`.
+
+`bindPresentation(Supplier<HologramPresentation>)` supplies scale, three-axis rotation and opacity
+on each drive. Scale axes are multipliers clamped to `0`..`16`; rotation axes are degrees normalized
+modulo 360; and opacity is normalized and clamped to `0`..`1`. The record replaces a non-finite
+scale or opacity with `1`, and a non-finite rotation with `0`. `HologramPresentation.identity()` is
+the neutral value. Presentation changes are applied on the entity-owning thread; with
+`[holograms] interpolatedMotion` enabled, supported servers interpolate scale and rotation between
+drives.
 
 `viewers()` returns a `HologramViewers` filter over a UUID set plus a mode flag:
 
@@ -401,13 +437,16 @@ String rendered = gloss.filter(player, "&d|animation.rainbow| %player_name% :hea
 ```
 
 `filter` runs the full Gloss text pipeline for the given player. `|function|` tokens run when
-`[text] functions` is on and the string contains a `|`. PlaceholderAPI placeholders run when
+`[text] functions` is on and the string contains a `|`; inline `{{ expression }}` blocks use the
+same switch. PlaceholderAPI placeholders run when
 `[text] placeholders` is on, the string contains a `%`, and the viewer is non-null. Emoji
 replacement runs next. Then colors run, `[RRGGBB]` bracket hex first and `&` codes second. A
 `null` or empty input returns `""`. Passing `null` as the player gives a static render with
-placeholder tokens left as written.
+raw placeholder tokens left as written. Static inline expressions still receive time/server values,
+native server PAPI aliases and explicit fallbacks; player values remain unresolved.
 
-The only text function family Gloss registers is `|animation.<id>|`, from `AnimationService`. The
+Gloss registers `|animation.<id>|` from `AnimationService` and `|metric.<key>|` for integration
+samples. The
 pipeline's `registerFunction` entry point is internal and is not reachable from the API package. A
 third-party plugin cannot add a function of its own. To get external values into Gloss text,
 publish a PlaceholderAPI expansion and let `filter` resolve it — see

@@ -116,7 +116,7 @@ The default `lineWidth` of `2000` effectively prevents wrapping. A smaller style
 
 ### Text formatting
 
-Each line goes through the shared text parser. The parser rewrites legacy codes into MiniMessage tags and then deserializes the result as MiniMessage. The rewrite is a single left-to-right scan. `&` and `§` are both accepted as the prefix. The code letter is case-insensitive. A prefix not followed by a known code is copied through verbatim.
+Each line first goes through the full viewer-aware text pipeline: functions, inline expressions, PlaceholderAPI, emoji and colors. The resulting legacy text is then rewritten into MiniMessage tags and deserialized. `&` and `§` are both accepted as legacy prefixes. The code letter is case-insensitive. A prefix not followed by a known code is copied through verbatim.
 
 | Legacy | MiniMessage tag |
 |---|---|
@@ -134,18 +134,16 @@ Every generated tag is one MiniMessage accepts. The two notations mix freely in 
 
 Text icon lines run the emoji stage between placeholder substitution and the MiniMessage parse. `:heart:` and any configured trigger such as `<3` resolve in a menu label and a panel row exactly as they do in a hologram line. Per-emoji permissions apply when `[emoji] emojiSpecificPermissions` is on, because a menu icon always knows its viewer. With the default `false` every viewer sees the same glyph. If you turn `[features] emoji` off, the stage is removed. `:heart:` stays as written.
 
-This is still the menu text parser, not the full hologram text pipeline. There is no `|function|` stage here. A literal `|` in a label is just a pipe character. A token like `|animation.rainbow|` renders verbatim. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) and [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
+Function tokens and inline expressions use the same facilities as a scoreboard. `|animation.rainbow|`, `{{ player.name }}` and `{{ papi('vault_prefix', '&7Member') }}` are valid text-icon content. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) and [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 
-### Placeholder refresh
+### Dynamic text refresh
 
 Substitution reaches PlaceholderAPI reflectively. It is a no-op when the viewer is `null` or the string contains no `%`. Plugin presence is re-probed at most once per second. A lookup or invocation failure is logged once. The text is served unresolved.
 
-Substitution happens when the icon is constructed and then every
-`refreshTicks` while that icon is visible. It happens **only when the
-source text looks like it carries a placeholder**. That means the text
-contains a `%` followed later by another `%` with at least one character
-between them. Text without such a pair does no periodic work at all
-regardless of `refreshTicks`. A text icon whose placeholder pair is
+Rendering happens when the icon is constructed and then every
+`refreshTicks` while that icon is visible when the source contains a complete
+`%name%`, `|function|` or `{{ expression }}` token. Plain text does no periodic work at all
+regardless of `refreshTicks`. A text icon whose last dynamic token is
 edited away by the API stops refreshing from that point on.
 
 A refresh that throws is logged once per icon with the menu id and player name. The previous text stays on screen. The next successful refresh clears the one-shot log latch.
@@ -310,14 +308,16 @@ Provider ids, activation order, the `[items] customItemProviders` allowlist and 
 | Key | Type | Required | Default | Notes |
 |---|---|---|---|---|
 | `entity` | lowercase Bukkit entity id | yes | `null` | An omitted namespace defaults to `minecraft`. The type must report both `isSpawnable()` and `isAlive()` |
-| `width` | finite number greater than 0, at most 64 | no | `1` | Click-plane width in blocks at session scale 1 |
-| `height` | finite number greater than 0, at most 64 | no | `1` | Click-plane height in blocks at session scale 1 |
+| `width` | finite number greater than 0, at most 64 | no | `1` | Editor silhouette and button/toggle click-plane width in blocks at session scale 1 |
+| `height` | finite number greater than 0, at most 64 | no | `1` | Editor silhouette and button/toggle click-plane height in blocks at session scale 1 |
 
 A `width` or `height` outside that range throws `width must be finite, greater than 0, and at most 64` during deserialization and rejects the menu file.
 
-The component anchor is the entity **feet**, not its center. That is the one placement rule that differs from every other icon type. Gloss sends a spawn packet, base entity metadata with gravity off, movement and orientation packets, and a destroy packet, all to the one viewer. No Bukkit world entity is ever created. Body yaw, pitch and head yaw follow the session transform. A fixed entity icon turns with a following menu as the player turns.
+The component anchor is the entity **feet**, not its center. That is the one placement rule that differs from every other icon type. Gloss sends a private client team with collision set to `never`, a spawn packet, base entity metadata with gravity off, movement and orientation packets, and a destroy and team-removal packet, all to the one viewer. No Bukkit world entity is ever created, and the entity cannot physically push or collide with a player. Its ordinary client interaction outline is separate from physical collision; Gloss intercepts interaction packets for its own fake ids and routes them through the owning button or toggle logical-plane click path.
 
-The explicit dimensions do not rescale the client model. They center the automatic click plane half the authored height above the feet and scale that plane by the session scale. To change how large the entity looks, pick a different entity.
+Body yaw, pitch and head yaw follow the session transform. A fixed entity icon turns with a following menu as the player turns, and unchanged poses send no duplicate packets. Vanilla living entities have no arbitrary roll transform, so a rolled panel rotates the entity anchor and any authored click plane but keeps the living model upright around its own forward axis. The web editor's 3D preview follows that same distinction.
+
+The explicit dimensions do not rescale the client model or create physical collision. For a button or toggle they center Gloss's logical click plane half the authored height above the feet and scale that plane by the session scale. A decoration has no click plane. To change how large the entity looks, pick a different entity.
 
 Because the icon is a raw entity rather than a display entity, none of the display-style metadata applies. Billboard, brightness, culling, glow, opacity and per-axis scale are all unavailable here.
 

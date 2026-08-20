@@ -146,7 +146,8 @@ The chosen text is rendered **statically**:
 |---|---|
 | `\|function\|` tokens, including `\|animation.<id>\|` | Yes |
 | Inline `{{ expression }}` blocks using time and server values | Yes |
-| Inline player, ping or `papi(...)` values | **No** |
+| Native server aliases through `papi(...)` / `papiNumber(...)` | Yes |
+| Inline player values or external PAPI expansions | **No** |
 | PlaceholderAPI placeholders | **No** |
 | Emoji replacement | Yes |
 | Colors — `[RRGGBB]` bracket hex, then `&` codes | Yes |
@@ -156,8 +157,9 @@ PlaceholderAPI is not resolved at ping time because there is no player to resolv
 The same request's round-trip ping cannot control that MOTD. The server sends the status response,
 including the MOTD, before the protocol performs its ping/pong measurement. There is therefore no
 current latency value to branch on. MOTD expressions may branch on time, online count, maximum
-players, native `server.tps` and integration metrics instead; they may not use `player.ping`, `papi(...)` or
-`papiNumber(...)`.
+players, native `server.tps`, integration metrics and the native `server_online`, `server_max_players`
+and `server_tps` PAPI aliases instead. A player-backed PAPI key is only safe with an explicit fallback,
+for example `papi('player_name', 'Visitor')`; it cannot reveal the unjoined client.
 
 Animation functions ignore the viewer and resolve from wall-clock time. `|animation.rainbow|` does work in an MOTD. It will visibly cycle between pings. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 

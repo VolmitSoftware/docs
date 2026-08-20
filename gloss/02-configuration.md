@@ -85,9 +85,9 @@ Master switches. If you turn one off, that subsystem stops rendering or listenin
 | `stackDistance` | `0.26` | 0.05 – 2.0 | Vertical distance in blocks between stacked temporary holograms, and the value exposed to the API as the stack spread |
 | `updateIntervalTicks` | `10` | 1 – 200 | Ticks between persistent hologram text refreshes |
 | `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which per-viewer copies are rendered |
-| `perViewerPlaceholders` | `true` | — | Resolve placeholders per viewing player instead of once globally |
+| `perViewerPlaceholders` | `true` | — | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
 | `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, API temporaries) |
-| `interpolatedMotion` | `true` | — | Smooths moving temporary holograms between drive ticks via display teleport interpolation, using a teleport duration equal to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Falls back to plain teleports when the server API lacks `setTeleportDuration` |
+| `interpolatedMotion` | `true` | — | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
 | `textArtMaxWidth` | `48` | 8 – 128 | Maximum character width of `/gloss hologram rendertext` output |
 | `highFrequencyAnimations` | `true` | — | Drive animation clips faster than 20 fps from the dedicated `Gloss Animator` thread with sub-tick packet updates. Off restores the tick-bounded behavior exactly |
 | `maxAnimationFps` | `120` | 1 – 240 | Frame-rate ceiling of the high-frequency animator loop. Sets its adaptive floor to `1000 / fps` ms (at least 4 ms) |
@@ -145,7 +145,7 @@ Stage gates for the rendering pipeline. Neither applies to chat messages.
 |---|---|---|
 | `blacklistWorlds` | `[]` | World folder names where chat bubbles never appear. Null entries are dropped. No case folding is applied, so match the folder name exactly |
 
-Bubble appearance and timing are per-style, in `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Bubble wrapping, appearance, lifetime and expression-driven motion are per-style, in schema-2 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
 ## `[damageIndicators]`
 
@@ -269,6 +269,8 @@ Three groups of settings moved out of configuration. They are now content docume
 |---|---|---|
 | `tablist.header`, `tablist.footer`, `tablist.use-header-footers`, `tablist.group-list-names` | `tablist.json` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
 | `motd.texts` | `motd.json` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
-| `chat-bubbles.message.*`, `word-wrap-break-chars`, `max-time-alive`, `line-stagger-ticks`, `fly-away`, `follow-players`, `hide-own-messages` | `bubbles/<id>.json` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
+| `chat-bubbles.message.*`, `word-wrap-break-chars`, `max-time-alive`, `follow-players`, `hide-own-messages` | `bubbles/<id>.json` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 
 The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Per-group tablist names and default boards are now fields inside `tablist.json` and each board document.
+
+The former `line-stagger-ticks` and `fly-away` switches have no direct schema-2 keys. One wrapped message is now one multiline entity, and translation, scale, rotation and opacity are authored as BubbleStyle motion expressions. During one-time legacy `config.yml` import, line stagger is discarded; fly-away on keeps the shipped late-fly motion, while off writes identity motion. Prefix, offset, wrap, lifetime, follow and hide still map directly.

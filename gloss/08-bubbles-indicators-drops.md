@@ -8,46 +8,63 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Three small features share one mechanism. Chat bubbles float a player message above their head. Damage indicators throw the applied health delta off an entity. Drop labels name item entities on the ground. Bubbles and indicators are built on temporary holograms. They are never written to disk. They never resolve placeholders. Drop labels are a plain listener on the item entity custom name.
+Three small features share one mechanism. Chat bubbles float a player message above their head. Damage indicators throw the applied health delta off an entity. Drop labels name item entities on the ground. Bubbles and indicators are built on temporary holograms. A bubble prefix is rendered with its speaker as viewer; indicators and drop labels are shared viewerless text.
 
 ## Chat bubbles
 
 ### Style documents
 
-Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing. If you delete it, it comes back on the next reload or restart.
+Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing. If you delete it, it comes back on the next reload or restart. On enable, Gloss also atomically replaces the exact byte-identical former shipped schema-1 default with this schema-2 file and logs the upgrade. Any edited or reformatted schema-1 file is preserved and rejected for manual conversion.
 
 `plugins/Gloss/bubbles/default.json` as shipped:
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "revision": 1,
   "prefix": "&7",
-  "offset": [0.0, 1.0, 0.0],
+  "offset": [0, 1, 0],
   "wordWrapChars": 32,
-  "lineStaggerTicks": 5,
   "maxAliveMs": 5000,
-  "flyAway": true,
   "followPlayer": true,
-  "hideOwn": true
+  "hideOwn": true,
+  "motion": {
+    "translation": {
+      "x": "0",
+      "y": "10 * pow(clamp((ageMs - lifetimeMs + 2000) / 2000, 0, 1), 16)",
+      "z": "0"
+    },
+    "scale": {"x": "1", "y": "1", "z": "1"},
+    "rotation": {"x": "0", "y": "0", "z": "0"},
+    "opacity": "1"
+  },
+  "shimmer": {
+    "spawn": true,
+    "flyAway": true,
+    "color": "#ffffff",
+    "width": 3,
+    "durationMs": 700,
+    "spawnDelayMs": 0,
+    "flyAwayLeadMs": 700
+  }
 }
 ```
 
 | Key | Default when absent | Clamp / notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `1`, otherwise `unsupported bubbles schemaVersion: <n>` |
+| `schemaVersion` | required | Must be `2`, otherwise `unsupported bubbles schemaVersion: <n>` |
 | `revision` | required | `1` to `9007199254740991` |
-| `prefix` | `"&7"` | Prepended to every bubble line before rendering. `null` or absent becomes `"&7"`. An explicit `""` stays empty and the bubble renders with no leading color |
-| `offset` | `[0.0, 1.0, 0.0]` | `[x, y, z]` added to the speaker's eye position when the bubble spawns |
-| `wordWrapChars` | `0` clamped to `8` | Characters per wrapped line. Clamped to `8`..`128` |
-| `lineStaggerTicks` | `0` | Ticks between successive lines of one message. Clamped to `0`..`40`. `0` spawns every line at once |
+| `prefix` | `"&7"` | Authored text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
+| `offset` | `[0.0, 1.0, 0.0]` | `[x, y, z]` added to the speaker's eye position before stack and motion translation. The full offset remains applied while a bubble follows its speaker |
+| `wordWrapChars` | `0` clamped to `8` | Visible characters per wrapped row. Color and format codes do not consume the width. Clamped to `8`..`128` |
 | `maxAliveMs` | `0` clamped to `500` | Milliseconds a bubble lives. Clamped to `500`..`60000` |
-| `flyAway` | `false` | When true the bubble accelerates upward during its last 2 seconds |
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
 | `hideOwn` | `false` | When true the speaker cannot see their own bubbles |
+| `motion` | shipped late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
+| `shimmer` | shipped two-pass white shimmer shown above | Left-to-right color sweep at spawn and departure; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
 
-`flyAway`, `followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix` and `offset`, which have real fallbacks. Write them out explicitly in every style you author.
+`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display.
 
 There is no config table for bubble styles. `config.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
 
@@ -78,42 +95,72 @@ For each chat message Gloss resolves one style, in this order:
 1. **The player's explicit choice.** Used only when the player has chosen a style, that style id still exists on disk, **and** the player holds `gloss.bubbles.style.<id>`. Any of the three failing drops straight to step 2 with no message.
 2. **The best matching `select`.** Every style that has a `select` block and whose block matches the speaker world and primary group is a candidate. The highest `priority` wins. Ties are broken by the lexicographically smallest style id.
 3. **`default`.** Used when nothing matched and a style with the id `default` exists.
-4. **Built-in fallback.** With no `default` on disk, Gloss uses its compiled-in values. Those values are prefix `&7`, offset `[0, 1, 0]`, wrap 32, stagger 5, and 5000 ms. `flyAway`, `followPlayer` and `hideOwn` are all on. Bubbles never stop working because a file is missing.
+4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-2 values shown above: prefix `&7`, offset `[0, 1, 0]`, wrap 32, 5000 ms, follow and hide-own on, and the late upward motion expression. Bubbles never stop working because a file is missing.
 
 Two consequences worth stating plainly:
 
 - **A style with no `select` block never auto-matches.** It can only be reached by an explicit `/gloss bubbles style <id>` or by being named `default`. This is the way to publish a style that is opt-in only.
 - **An empty `select` matches everyone.** `"select": {}` or `"select": {"priority": 5}` has no world and no group condition. Both conditions pass. The style becomes a server-wide auto-match at that priority.
 
-The style is resolved **once per chat message**, before the lines are wrapped. The whole message bubbles use it. If you edit a style file, or a player changes their choice, the change applies from the next message onward. Bubbles already in flight keep the values they were spawned with.
+The style is resolved **once per chat message**, before the text is wrapped. The whole message uses it. If you edit a style file, or a player changes their choice, the change applies from the next message onward. Bubbles already in flight keep the values they were spawned with.
 
 ### From message to bubbles
 
-The bubble hook runs on `AsyncPlayerChatEvent` at `MONITOR` priority, after Gloss has already applied its own chat emoji and color stages. Bubbles show whatever the final chat text is.
+The bubble hook runs on `AsyncPlayerChatEvent` at `MONITOR` priority, after Gloss has applied its chat emoji and permitted color stages. Bubbles preserve that final message formatting. For example, `&1Hello!!!` reaches the bubble as blue text when the chat color stage translated it; an unauthorized raw `&1` stays literal instead of gaining color only in the bubble.
 
-1. Formatted section-sign color sequences are stripped from the message. Raw `&` codes that chat did not translate survive the strip. That happens when `[chat] color` is off, or the sender lacks `gloss.chat.color`. Those codes are colorized when the bubble line renders.
-2. The text is wrapped at `wordWrapChars`, breaking on word boundaries. A single word longer than the limit is cut at exactly `wordWrapChars` characters. Blank lines are dropped.
-3. Line `n` spawns after `lineStaggerTicks * n` ticks, so the first line appears immediately.
+Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines and sent to one `TextDisplay`, so one chat message is one multiline entity and one background block rather than several independently moving bubbles.
 
-Each line spawns as its own temporary hologram at the speaker eye position plus `offset`, prefixed with `prefix`, living `maxAliveMs` milliseconds. At that point three conditions are re-checked. Any of them cancels the spawn: `[features] chatBubbles` still on, the speaker still online and not in a blacklisted world, and the speaker still holding `gloss.bubbles.send`.
+The authored `prefix` is rendered separately through the full text pipeline with the speaker as viewer and prepended to the already-formatted message. It therefore supports `|function|`, `{{ player.* }}`, `papi`, raw PlaceholderAPI tokens, emoji and colors just like a scoreboard. Dynamic prefixes refresh on the speaker entity thread while the bubble lives. Player chat itself is not reinterpreted as Gloss code. The resulting bubble lives for `maxAliveMs` milliseconds. Immediately before spawn, Gloss re-checks that chat bubbles are enabled, the speaker is online and outside a blacklisted world, and the speaker still holds `gloss.bubbles.send`.
 
-Bubble text renders statically. `prefix` colors, bracket hex, emoji and `|function|` tokens all work. Placeholders are not resolved. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
+### Shimmer
+
+`shimmer` restores the original Gloss left-to-right shine as an explicit presentation effect. It changes the live text color across a moving band, not particles. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph, so a white pass over green bold chat remains green and bold behind the band. Every row in the one multiline `TextDisplay` receives the same horizontal progress independently; the effect never splits one message into multiple entities.
+
+| Key | Default | Clamp / notes |
+|---|---|---|
+| `spawn` | `true` | Run one sweep after the bubble spawns |
+| `flyAway` | `true` | Run one sweep as the bubble enters its departure window |
+| `color` | `"#ffffff"` | Strict `#RRGGBB`; invalid values reject the style |
+| `width` | `3` | Highlighted visible glyphs, clamped to `1`..`16` |
+| `durationMs` | `700` | Time for one sweep, clamped to `100`..`10000` |
+| `spawnDelayMs` | `0` | Delay before the spawn sweep, clamped to `0`..`60000` |
+| `flyAwayLeadMs` | `700` | Departure starts this many milliseconds before expiry, clamped to `0`..`60000` |
+
+A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine twice. Set both booleans to `false` to disable it. The spawn window starts at `spawnDelayMs`; the departure window starts at `max(0, maxAliveMs - flyAwayLeadMs)`. Each remains active for `durationMs`, although expiry naturally truncates a departure sweep whose lead is shorter than its duration. If the two windows overlap, the departure pass takes precedence. Shimmer timing and the `motion` expressions are independent, so a configured departure sweep follows the text while it flies, fades, shrinks, rotates or follows any other authored motion curve.
 
 ### Motion
 
-Every live bubble sits at its base position plus a lift of `0.86`
-blocks. It then adds one `[holograms] stackDistance` (default `0.26`)
-for each bubble stacked below it. It also adds the fly-away lift. New
-bubbles push older ones up.
+Every live message has a base position at the speaker's eye plus `offset`. It then adds the normal bubble-stack lift and the evaluated motion translation. New messages push older messages up by `[holograms] stackDistance` (default `0.26`). With `followPlayer` on, the speaker eye and the complete configured offset are resampled together; with it off, that base is captured when the message spawns.
 
-With `followPlayer` on, the base is the speaker current eye position, resampled every tick. `offset` is **not** re-applied. It only shapes where the bubble first appears. With `followPlayer` off, the base is the position captured at spawn, offset included. The bubble stays there.
+`motion` contains four expression surfaces:
 
-With `flyAway` on, the last 2000 ms of a bubble life add an upward
-lift. That lift starts at zero and eases to 10 blocks. The curve is
-sharp at the very end. With `flyAway` off, the bubble holds its stack
-position until it vanishes.
+```json
+"motion": {
+  "translation": {"x": "0", "y": "4 * t", "z": "0"},
+  "scale": {"x": "1 - 0.65 * t", "y": "1 - 0.65 * t", "z": "1"},
+  "rotation": {"x": "0", "y": "0", "z": "360 * t"},
+  "opacity": "1 - smoothstep(0.65, 1, t)"
+}
+```
 
-Positions are re-evaluated on the temporary hologram driver, which ticks every `[holograms] temporaryUpdateIntervalTicks` (default `2`).
+`translation.x/y/z` add blocks to the base position and clamp to `-64`..`64`. `scale.x/y/z` are display-size multipliers clamped to `0`..`16`. `rotation.x/y/z` are finite degrees normalized modulo 360. `opacity` is normalized and clamped from `0` (transparent) to `1` (opaque). Each expression source is limited to 512 characters. Expressions are compiled with the style and evaluated on the temporary-hologram cadence. The available variables are:
+
+| Variable | Value |
+|---|---|
+| `t` | Normalized lifetime progress from `0` at spawn to `1` at expiry |
+| `remaining` | Normalized lifetime remaining, `1 - t` |
+| `ageMs` | Milliseconds since this bubble spawned |
+| `lifetimeMs` | Effective `maxAliveMs` |
+| `stackIndex` | This message's zero-based position in the speaker's live bubble stack |
+| `stackCount` | Number of live message bubbles for the speaker |
+| `lineCount` | Number of wrapped text rows in this one display |
+| `stackY` | Vertical stack lift already assigned to this message |
+| `seed` | Stable per-bubble numeric seed for deterministic variation |
+| `pi` | Mathematical π |
+
+The normal Gloss arithmetic, comparison, ternary and math functions are available, including `sin`, `cos`, `clamp`, `lerp`, `pow` and `smoothstep`. A fly-up is `translation.y = "4 * t"`; a fade is `opacity = "1 - t"`; a shrink uses `1 - t` on the scale axes; and an arc that rises before ending below its start can use `translation.y = "16 * t * (1 - t) - 4 * t"`. The shipped default reproduces the former late fly-away curve as an ordinary `translation.y` expression, so it can now be edited or replaced.
+
+Position and presentation are re-evaluated on the temporary hologram driver, which ticks every `[holograms] temporaryUpdateIntervalTicks` (default `2`). Teleport and transformation interpolation smooth supported changes between those evaluations.
 
 `hideOwn` adds the speaker to the bubble viewer exclusion list. Everyone except the speaker sees it.
 

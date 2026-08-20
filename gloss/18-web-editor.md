@@ -27,6 +27,15 @@ Everything above works offline as file editing. Export from the editor. Drop the
 `plugins/Gloss/`. The hot reload described in [Data Files & Hot Reload](/gloss/03-data-files) picks
 it up.
 
+The Import action detects menus, previews, holograms, animations, scoreboards, MOTD, emoji, bubble
+styles and tablists from their JSON shape, previews validation issues, and replaces the active
+document only after confirmation; dropping a JSON file creates a new document instead. Export has
+one download action plus Copy JSON, names `motd.json` and `tablist.json` canonically, and shows the
+exact runtime destination for every other kind. The same actions remain searchable in the command
+palette, and Mod+S opens Export. On tablet widths, the overflow contains only controls hidden from
+the bar; on phones it becomes the complete action surface without leaving authoring controls
+unreachable.
+
 The editor shell adapts to narrow screens by moving the library and inspector into drawers. The
 document creation controls reflow into a grid, and the template kind selector scrolls horizontally
 on phones so every document kind remains reachable. The Gloss cube is used for the application
@@ -37,6 +46,10 @@ required `Unfiled` container. Library documents and folders, menu components and
 elements expose the same management actions through right-click and a touch-accessible actions
 button. These menus include the applicable rename, duplicate, move, link and confirmed delete
 operations without being clipped by a pane edge.
+
+The container-preview inspector exposes the complete match and variant targeting surface, including
+blocks, entities, special target, priority, variables and preserved extension keys. Card and match
+extension keys are editable there as well; code view remains available for direct JSON authoring.
 
 Random showcases are contextual. Right-click a library document and choose `Create random <kind>`
 to replace that document's JSON with a valid editable example while preserving its identity,
@@ -55,25 +68,48 @@ repeats, centered layout math, timer ratios, conditional state, `sin`/`mix` colo
 animation, inventory functions, `bar`, `fixed`, `select` and localized `lang` text. Its palette,
 segment geometry, pulse rate and card dimensions vary procedurally while remaining valid runtime
 JSON.
-Random holograms immediately refresh the open stage. Random bubble styles exercise the runtime's
-wrap, lifetime, offset, stagger, fly, follow and hide behavior; random tablists populate dynamic
+Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise visible-character wrapping, multiline formatting, lifetime, offset, follow/hide behavior and procedural translation, scale, rotation and opacity expressions. Their presets include editable fly-up, fade, shrink and arcing motion. The bubble inspector also exposes the two left-to-right shimmer passes, RGB band color, visible-glyph width, duration, spawn delay and departure lead; the preview recolors the same multiline block at the same lifecycle points as the server. Random tablists populate dynamic
 headers, footers and group formats. Minecraft samples an MOTD animation frame when it answers each
 server-list request rather than continuously redrawing an already displayed row. Each replacement
 is one undo step.
 
-The image and animated-image icon inspectors accept PNG, JPEG, WebP and GIF uploads directly. A GIF
-is expanded into ordered PNG frame paths under `plugins/Gloss/images/` and attached to an
-`animatedTextImage` component, up to 128 imported frames. The frame speed remains an editable Gloss
-tick interval. Living-entity icons use real Minecraft entity sprites instead of geometric stand-ins.
+The image and animated-image icon inspectors accept PNG, JPEG, WebP and GIF uploads directly.
+Oversized uploads are aspect-fit to the 64-pixel Gloss ceiling automatically instead of requiring a
+separate resize step. A GIF is resized frame by frame, expanded into ordered PNG paths under
+`plugins/Gloss/images/` and attached to an `animatedTextImage` component, up to 128 imported frames.
+The image manager can also import a 64x32, 64x64 or proportional high-resolution Minecraft skin:
+it combines the face and translucent hat layer into an 8x8 pixel head under `images/heads/`. The
+frame speed remains an editable Gloss tick interval. On a holographic-menu canvas, right-clicking or
+pressing Shift+F10 opens creation at that exact snapped position for text, images, GIFs, pixel heads,
+living entities, items, blocks, buttons and toggles. Media creation opens the same image manager and
+inserts the chosen static or animated asset as one undoable component edit. A standalone hologram
+document remains a text-display line list; mixed icon components belong to menu documents. Living-
+entity icons use real Minecraft entity sprites instead of geometric stand-ins.
 The bundled Java 26.2 item/block catalog contains 1,691 materials and 1,644 textured atlas entries;
 the entity catalog contains 91 living renders using Java 26.2 textures and the renderer's latest
 supported 26.1 geometry definitions. Maintainers refresh both catalogs with
 `dart run tool/refresh_minecraft_media.dart` and explicit client, Paper-source and renderer inputs.
+The 3D preview keeps living-entity sprites on the runtime's raw-entity orientation: body yaw and
+pitch follow the menu, while panel roll applies only to the anchor and an interactive component's
+logical click plane. Entity decorations remain non-clickable, and the runtime uses a private
+collision-never client team rather than creating a physical world entity.
+Buttons and toggles expose hover travel, duration and easing together in the inspector. The 3D
+preview uses the same 0-to-40-tick entry and exit animation as the server, applies effective
+`uiScale` once, and moves only the visual while the authored click plane remains fixed. Both
+clickable types can use the same custom hitbox controls; a toggle custom hitbox stays stable when
+its true and false icons differ. Random menu examples vary all four easing curves, durations and
+toggle hitboxes rather than demonstrating only an instant fixed nudge. Menu text in the canvas and
+3D preview runs the full Gloss pipeline for workspace animations, emoji, expressions, native
+player/server samples and optional PAPI fallbacks, using each icon's runtime refresh interval.
 
 The template picker includes an Everything showcase menu, a furnace expression lab using all four
 container-preview element types, the shipped defaults, richer examples for every Gloss document
-kind and all four animation modes. Gloss's shipped `rainbow` animation is available to previews even
-when no workspace animation document exists, matching a clean server installation. Workspace controls also
+kind and all four animation modes. Gloss's shipped 60-step, one-tick RGB `rainbow` gradient is
+available to previews even when no workspace animation document exists, matching a clean server
+installation. Procedurally randomized animations also generate dense continuous hue gradients
+instead of short legacy-color cycles. A color-only frame is shown against the preview-only word
+`RAINBOW`, making its actual color visible without adding that word to the document or server output.
+Workspace controls also
 expose `Erase all local data`; its confirmation shows the affected document and folder counts and
 offers a workspace-bundle backup first. A completed erase leaves the workspace genuinely empty and
 does not recreate `my-menu`.
@@ -110,9 +146,10 @@ update Gloss`.
 | Animations | yes | no |
 | Bubble styles | yes | no |
 
-> Scoreboards, tablist, MOTD, emoji, animations, bubble styles and holograms are edited on disk or in
-> game. The editor can open and export them, but there is no path that publishes them back into a
-> running server. Do not expect a sync session to carry them.
+> Scoreboards, tablist, MOTD, emoji, animations, bubble styles and holograms can all be authored in
+> the editor and exported as runtime files, but there is no path that publishes them back into a
+> running server. Install the exported file under `plugins/Gloss/`; do not expect a sync session to
+> carry it.
 {.is-info}
 
 ## Hosting and URLs

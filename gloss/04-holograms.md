@@ -91,18 +91,19 @@ If you set `[features] holograms = false`, Gloss despawns every hologram on the 
 
 ### Shared and per-viewer modes
 
-When **any** line contains a `%` character and `[holograms] perViewerPlaceholders` is on (the default), the hologram switches to per-viewer rendering. Every player in the anchor world within `[holograms] viewRange` blocks of the anchor gets a private `TextDisplay`. Placeholders resolve for that player. The copy is hidden from everyone else through the entity visible-by-default flag where the server API exposes it. Otherwise Gloss issues per-player hide calls at spawn time. Players who leave the range lose their copy.
+When any line contains a complete `%name%` placeholder, `|function|` token or `{{ expression }}` block and `[holograms] perViewerPlaceholders` is on (the default), the hologram switches to per-viewer rendering. Every player in the anchor world within `[holograms] viewRange` blocks of the anchor gets a private `TextDisplay`. Player variables, PlaceholderAPI and viewer-aware functions resolve for that player. The copy is hidden from everyone else through the entity visible-by-default flag where the server API exposes it. Otherwise Gloss issues per-player hide calls at spawn time. Players who leave the range lose their copy.
 
-Without a `%`, one shared display is rendered for everybody. Functions, emoji and colors still apply. Placeholder tokens are left in the text exactly as written. If you set `[holograms] perViewerPlaceholders = false`, Gloss forces this shared mode for every hologram. Lines with `%` render once for everyone with the tokens unresolved. If you remove the last `%` from a per-viewer hologram, Gloss collapses it back to a single shared display.
+Plain viewer-independent lines use one shared display. Functions, expressions, emoji and colors still apply in that static context. If you set `[holograms] perViewerPlaceholders = false`, Gloss forces shared mode; player-backed values then remain unresolved, while native server/time values and explicit fallbacks still work. Removing the last complete dynamic token collapses the hologram back to one shared display. A lone percent sign such as `100%` does not create private displays.
 
 ### The line pipeline
 
 Each line is rendered in this order:
 
 1. `|function|` tokens, including `|animation.<id>|`, when `[text] functions` is on.
-2. PlaceholderAPI placeholders, when `[text] placeholders` is on **and** a viewer is present. Shared displays and temporary holograms have no viewer, so they skip this step.
-3. Emoji replacement.
-4. Colors: `[RRGGBB]` bracket hex first, then `&` codes.
+2. Inline `{{ expression }}` blocks, with the standard time, server, player, PAPI and metric facilities available for the current context.
+3. PlaceholderAPI placeholders, when `[text] placeholders` is on **and** a viewer is present. Shared displays and temporary holograms have no viewer, so they skip this step.
+4. Emoji replacement.
+5. Colors: `[RRGGBB]` bracket hex first, then `&` codes.
 
 Animation frames substitute on every refresh. For tick-driven clips the visible frame rate is bounded by `[holograms] updateIntervalTicks`. Clips faster than 20 fps are driven by the high-frequency animator below. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations) and [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
@@ -154,7 +155,9 @@ Every Gloss display carries the scoreboard tag `gloss_display` and the persisten
 
 Chat bubbles and damage indicators are built on temporary holograms. They are never written to disk. They are driven every `[holograms] temporaryUpdateIntervalTicks` (default 2). They can be position-bound and filtered to a whitelist or blacklist of viewers. Temporary holograms always render statically. Placeholder tokens in their lines are not resolved. Lines that contain fast animation clips ride the same high-frequency animator as persistent holograms. The audience snapshot honors the viewer whitelist or blacklist.
 
-A moving temporary hologram is driven at that same tick cadence, but with `[holograms] interpolatedMotion` on (the default) the client is told to interpolate between drive ticks instead of snapping. Gloss sets the display teleport duration to `temporaryUpdateIntervalTicks` and then teleports on schedule. This changes how the motion looks, not how often it is driven: raising `temporaryUpdateIntervalTicks` still means fewer position updates, it just means the client smooths across a longer gap. Servers whose API does not expose `setTeleportDuration` fall back to plain teleports automatically, with no configuration change needed.
+One chat message is one temporary `TextDisplay`. Its visible-character wrapper inserts newlines into that display instead of spawning one entity per row, so its formatting, background, position and lifetime remain one unit. BubbleStyle schema 2 can also bind translation, scale, three-axis rotation and opacity expressions to that display. These presentation values are applied on the entity-owning thread with the same dirty checks as position and text.
+
+A moving temporary hologram is driven at that same tick cadence, but with `[holograms] interpolatedMotion` on (the default) the client is told to interpolate between drive ticks instead of snapping. Gloss sets the display teleport duration to `temporaryUpdateIntervalTicks` and then teleports on schedule; changing scale or rotation uses display transformation interpolation over the same cadence. This changes how the motion looks, not how often it is driven: raising `temporaryUpdateIntervalTicks` still means fewer position and presentation updates, just with longer client interpolation between them. Servers whose API does not expose the interpolation controls fall back to immediate updates automatically, with no configuration change needed.
 
 Other plugins can create them directly. See [API: Getting Started](/gloss/21-api-getting-started). The features built on them are covered in [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 

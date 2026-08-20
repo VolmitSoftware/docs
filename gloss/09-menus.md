@@ -160,28 +160,24 @@ If you set `[features] menus = false` in `config.toml`, every open path refuses.
 
 ## Text inside menus
 
-Menu text is rendered by the menu subsystem, not by the shared text pipeline used for holograms, boards, tablist and chat. The rules are different. The difference matters.
+Menu and panel text uses the same viewer-aware text pipeline as scoreboards before the menu subsystem converts it to a MiniMessage component.
 
 For a text icon, each line of the `text` value — split on `\n` — is rendered in this order:
 
-1. **PlaceholderAPI**, resolved against the viewing player. This is unconditional. The `[text] placeholders` switch does not apply here. Without PlaceholderAPI installed the tokens are left as written.
-2. **Emoji.** `:heart:` and any configured trigger such as `<3` are replaced with their glyph, exactly as they are in a hologram line. Per-emoji permissions apply when `[emoji] emojiSpecificPermissions` is on, because a menu always knows its viewer. `[features] emoji = false` removes the stage.
-3. **Legacy color codes.** A `&` or `§` followed by one of `0`-`9`, `a`-`f`, `k`, `l`, `m`, `n`, `o`, `r` (case-insensitive) is rewritten to the matching MiniMessage tag. Both `[RRGGBB]` bracket hex and the `&x&r&r&g&g&b&b` sequence become `<#RRGGBB>`. A `&` followed by anything else stays literal.
-4. **MiniMessage**, applied to the result. Full MiniMessage is available, including `<#RRGGBB>`, `<gradient:…>` and `<rainbow>`.
-
-One thing that works elsewhere in Gloss does **not** work here:
-
-- **`|function|` expressions are not evaluated.** `|animation.rainbow|`, `|metric.…|` and every other function token renders as literal text in a menu. A stray `|` in a label is only ever a pipe character. `[text] functions` has no effect on menus.
+1. **Functions**, including `|animation.<id>|` and `|metric.<key>|`, when `[text] functions` is on.
+2. **Inline expressions**, including direct `player.*`/`server.*` getters and `papi`, `papiNumber` and `metric` calls.
+3. **PlaceholderAPI**, resolved against the viewing player when `[text] placeholders` is on.
+4. **Emoji.** `:heart:` and configured triggers are replaced with their glyphs.
+5. **Legacy and bracket-hex colors**, followed by MiniMessage parsing.
 
 Because a placeholder is resolved per viewer, two players looking at
 the same menu id see two different renderings. A text icon re-resolves
-its placeholders every `refreshTicks` (default `10`, `0` disables the
-refresh, maximum `1200`). It only does that when the source actually
-contains a placeholder token. A token is a `%` followed later by another
-`%` with at least one character between them. A refresh that throws
+its dynamic text every `refreshTicks` (default `10`, `0` disables the
+refresh, maximum `1200`). It does this when the source has a complete `%name%`,
+`|function|` or `{{ expression }}` token. A refresh that throws
 keeps the previously rendered text and logs once per session.
 
-A toggle `condition` is resolved through PlaceholderAPI as well, but only once, when the session is constructed. See [Components & Hitboxes](/gloss/10-components-hitboxes).
+A toggle `condition` uses the same full viewer-aware renderer, but only once when the session is constructed. A `message` action renders through the same pipeline each time it fires. See [Components & Hitboxes](/gloss/10-components-hitboxes).
 
 ## Parsing
 

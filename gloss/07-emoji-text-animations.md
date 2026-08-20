@@ -8,9 +8,7 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Gloss content text goes through one text pipeline. That includes hologram lines, board titles and lines, tablist text, drop labels and the MOTD. Emoji and animations are enveloped JSON documents in `plugins/Gloss/emoji/` and `plugins/Gloss/animations/` that plug into that pipeline. Player chat gets a shorter version of it.
-
-Menu, panel and container-preview text is the exception. It keeps its own inherited text handling and runs only the emoji and color stages. `|function|` tokens never resolve there. See [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+Gloss authored display text uses one viewer-aware text capability contract. Holograms, boards, tablists, menu and panel labels and messages, bubble prefixes, drop labels and the MOTD all use the shared pipeline. Container previews use the same expression runtime as a whole-field DSL. Emoji and animations are enveloped JSON documents in `plugins/Gloss/emoji/` and `plugins/Gloss/animations/`. Player chat gets a deliberately shorter, non-executable path.
 
 ## The text pipeline
 
@@ -22,7 +20,7 @@ Menu, panel and container-preview text is the exception. It keeps its own inheri
 4. **Emoji.** `:id:` tokens and emoji triggers are replaced with their glyphs. Skipped when `[features] emoji = false`, because the emoji service is what installs this stage.
 5. **Colors.** `[RRGGBB]` bracket hex first, then `&` legacy codes.
 
-A "static" render is the same pipeline with no viewer. Player-backed parts of stages 2 and 3 never run. Shared holograms, temporary holograms (chat bubbles and damage indicators), drop labels and the MOTD all render statically. Placeholder tokens in those surfaces stay as written. Per-viewer holograms, boards and the tablist pass a viewer and do resolve placeholders.
+A "static" render is the same pipeline with no viewer. Player-backed parts of stages 2 and 3 never run. Shared and temporary holograms, damage indicators, drop labels and the MOTD render statically. Native `time.*` and `server.*` variables, server-native PAPI aliases and explicit `papi`/`metric` fallbacks remain truthful there; raw player placeholders stay written. Per-viewer holograms, boards, tablists, menus, panels, preview cards and BubbleStyle prefixes pass a viewer. The player message beside a bubble prefix is already-rendered chat content and is not scanned again for functions, expressions, placeholders, emoji or colors.
 
 ### Functions
 
@@ -73,19 +71,20 @@ Player chat does **not** use the four-stage pipeline. `AsyncPlayerChatEvent` is 
 
 Functions and placeholders are never applied to chat. Rewriting the chat message at `HIGH` means other plugins listening at `HIGHEST` or `MONITOR` see the already-substituted text.
 
+Chat bubbles consume that final message rather than reconstructing it. Translated legacy colors, RGB sequences and decorations remain in the bubble and remain active across its wrapped rows. Raw `&` codes that were not authorized and translated by the chat color stage stay literal. This keeps the bubble visually aligned with chat without turning the bubble renderer into a second permission-bypassing color pass.
+
 ### Menu, panel and preview text
 
-Menu and panel text icons, and container preview labels, run their own short pipeline rather than the four-stage one:
+Menu and panel text icons and `message` actions run the same five-stage pipeline as scoreboards with the session player as viewer. Toggle conditions use the same renderer before their case-insensitive comparison. Text icons re-render complete placeholder, function and inline-expression sources at their configured `refreshTicks` cadence.
+
+Container preview fields use whole-field expressions rather than `{{ }}` delimiters:
 
 | Surface | Stages, in order |
 |---|---|
-| Menu and panel text icons | PlaceholderAPI (as the menu renderer already did) → emoji → colors → MiniMessage |
-| Container preview labels | Expression evaluation → emoji → MiniMessage |
+| Menu and panel text icons/messages | functions → inline expressions → PlaceholderAPI → emoji → colors → MiniMessage |
+| Container preview labels/card titles | preview expression evaluation → emoji → MiniMessage |
 
-That is what makes `:heart:` and a `<3` trigger work in a menu label, a panel row and a preview label. Two consequences are deliberate:
-
-- **Functions never run there.** A literal `|` in a menu label is just a pipe character. A token that looks like `|animation.rainbow|` stays as written. Menu content is authored text. It is never scanned for function tokens. Nothing in a label can be corrupted by one.
-- **No extra placeholder pass.** Menus keep exactly the one PlaceholderAPI pass the menu renderer always did. Preview labels get none, because a preview label is an expression result, not a template.
+Preview expressions expose their target-specific furnace, inventory, entity and provider variables plus the standard `time.*`, `server.*` and `player.*` variables and `papi`, `papiNumber` and `metric` functions. A block, entity, ender-chest or locked preview has its viewing player. A console/static diagnostic does not; player values then require an explicit fallback.
 
 Colors still come from MiniMessage tags in menu and preview documents. The color stage that runs ahead of it translates `&` codes and `[RRGGBB]` bracket hex into MiniMessage own syntax first. Both spellings work in a menu label.
 
@@ -118,6 +117,8 @@ One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with 
 Every emoji is always usable as `:<id>:`, whether or not it has a trigger. A trigger is an additional, shorter spelling.
 
 `emoji` is passed through the `U+<hex>;` escape decoder. The hex run is everything between `U+` and the next `;`, any length. An unparseable value becomes `?`. A trailing `U+<hex>` with no `;` is kept literally if it does not parse. A string with no `U` character at all is used verbatim. A pasted glyph or a resource-pack private-use character works directly.
+
+Emoji replacement text is a literal fragment, not executable authored code. Function, expression and placeholder-looking text introduced by an emoji value is not scanned again. This is required because player chat may invoke emoji triggers; chat can never use an emoji document to execute operator-side expressions or bypass permissions.
 
 ### Shipped defaults
 
@@ -209,12 +210,68 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
   "schemaVersion": 1,
   "revision": 1,
   "mode": "ascend",
-  "frameIntervalMs": 500,
+  "frameIntervalMs": 50,
   "frames": [
-    "&c",
-    "&6",
-    "&a",
-    "&b"
+    "[FF0000]",
+    "[FF1A00]",
+    "[FF3300]",
+    "[FF4D00]",
+    "[FF6600]",
+    "[FF8000]",
+    "[FF9900]",
+    "[FFB300]",
+    "[FFCC00]",
+    "[FFE600]",
+    "[FFFF00]",
+    "[E5FF00]",
+    "[CCFF00]",
+    "[B2FF00]",
+    "[99FF00]",
+    "[7FFF00]",
+    "[66FF00]",
+    "[4CFF00]",
+    "[33FF00]",
+    "[19FF00]",
+    "[00FF00]",
+    "[00FF1A]",
+    "[00FF33]",
+    "[00FF4D]",
+    "[00FF66]",
+    "[00FF80]",
+    "[00FF99]",
+    "[00FFB3]",
+    "[00FFCC]",
+    "[00FFE6]",
+    "[00FFFF]",
+    "[00E5FF]",
+    "[00CCFF]",
+    "[00B2FF]",
+    "[0099FF]",
+    "[007FFF]",
+    "[0066FF]",
+    "[004CFF]",
+    "[0033FF]",
+    "[0019FF]",
+    "[0000FF]",
+    "[1A00FF]",
+    "[3300FF]",
+    "[4D00FF]",
+    "[6600FF]",
+    "[8000FF]",
+    "[9900FF]",
+    "[B300FF]",
+    "[CC00FF]",
+    "[E600FF]",
+    "[FF00FF]",
+    "[FF00E5]",
+    "[FF00CC]",
+    "[FF00B2]",
+    "[FF0099]",
+    "[FF007F]",
+    "[FF0066]",
+    "[FF004C]",
+    "[FF0033]",
+    "[FF0019]"
   ]
 }
 ```
@@ -227,12 +284,21 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 | `frameIntervalMs` | yes | Milliseconds per frame, clamped to `1`..`60000` |
 | `frames` | yes | At least one string, otherwise `animation requires at least one frame`. A `null` entry becomes `""` |
 
-`rainbow.json` is the only shipped animation. Its frames contain only color codes, so
-`|animation.rainbow|&lONLINE` changes the following text's color without inserting a word. Like
-emoji, it is re-extracted whenever the file is missing. On startup Gloss also replaces the exact
-older shipped file whose four frames were `&cGloss`, `&6Gloss`, `&aGloss` and `&bGloss`. Any edited
-or merely reformatted copy is preserved as user content; use `/gloss animations reset name=rainbow`
-when that copy should be replaced deliberately.
+`rainbow.json` is the only shipped animation. It walks the complete RGB hue wheel through 60
+color-only frames at one Minecraft tick per frame, so the transition is a smooth three-second
+gradient rather than a small legacy-color cycle. `|animation.rainbow|&lONLINE` changes the
+following text's color without inserting a word. Like emoji, it is re-extracted whenever the file
+is missing. On startup Gloss also replaces either exact unchanged prior shipped file: the original
+four `Gloss`-prefixed frames and the later four color-only frames. Any edited or merely reformatted
+copy is preserved as user content; use `/gloss animations reset name=rainbow` when that copy should
+be replaced deliberately.
+
+The RGB frame expands to a full legacy hex sequence after the text pipeline. That is appropriate
+for holograms, MOTDs, tablists, bubbles and other component text. A sidebar row has the stricter
+32-unit team-prefix/suffix budget documented in [Scoreboards & Groups](/gloss/05-scoreboards-groups),
+so generated scoreboard examples use a compact animated glyph instead of spending that row's budget
+on the RGB prefix. The editor's scoreboard validator shows the exact delivered result if a custom
+board references `rainbow` directly.
 
 ### Modes
 

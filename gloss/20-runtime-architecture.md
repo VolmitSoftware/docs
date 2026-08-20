@@ -32,6 +32,8 @@ They follow vanilla nameplate rules.
 owns them. Every client in range sees them without Gloss sending anything per viewer. They appear
 in entity counts and in commands that select entities.
 
+Each live chat message is one real multiline `TextDisplay`, regardless of how many visible-character rows its BubbleStyle wrap produces. Its position, scale, rotation and opacity are expression-driven presentation state on that same entity; they do not create child displays.
+
 They are spawned with `setPersistent(false)`. An orderly shutdown never writes them into the region
 files. Nothing about a hologram survives a restart as an entity. The JSON document in
 `plugins/Gloss/holograms/` is the only persistent state. Every display is recreated from it on the
@@ -290,27 +292,33 @@ reapply. A hand edit made in a text editor does. `config.toml` uses the same ide
 
 ## Text rendering and refresh cadences
 
-Every rendered string runs through `TextPipeline.render(viewer, raw)` in a fixed order:
+Every authored rendered string runs through `TextPipeline.render(viewer, raw)` in a fixed order:
 
 1. `|function|` tokens, including `|animation.<id>|` and `|metric.<key>|`, when `[text] functions` is on
    and the string contains a `|`. A function that throws is logged once per function name and yields an
    empty string.
-2. PlaceholderAPI placeholders, when `[text] placeholders` is on, the string contains a `%`, **and** a
+2. Inline `{{ expression }}` blocks.
+3. PlaceholderAPI placeholders, when `[text] placeholders` is on, the string contains a `%`, **and** a
    viewer was supplied. `renderStatic` passes no viewer, so shared holograms and temporary holograms
    skip this stage and leave the tokens as written.
-3. Emoji replacement.
-4. Colors: `[RRGGBB]` bracket hex first (validated as exactly six hex digits followed by `]`, with a
+4. Emoji replacement.
+5. Colors: `[RRGGBB]` bracket hex first (validated as exactly six hex digits followed by `]`, with a
    bounded translation cache), then `&` codes.
 
 Two shorter paths branch off the same object. Chat gets emoji if `[features] emoji` is on and the
 sender holds `gloss.emoji.use`. Then it gets colors if `[chat] color` is on and the sender holds
 `gloss.chat.color`.
 
-`renderMenuText(viewer, raw)` gets emoji and colors only. There is no function stage. A literal
-`|` in a menu label can never be read as a token. There is no extra placeholder pass beyond the one
-the menu renderer already performs. Menu and panel text icons call it after their own PlaceholderAPI
-pass and before `TextUtils.parse`. Container preview labels take the emoji half alone, between the
-expression result and `TextUtils.parse`.
+BubbleStyle prefixes use the full authored pipeline with the speaker as viewer and refresh while a
+dynamic token is present. The final player-chat payload does not: it is retained as already-rendered
+text so its permitted colors and decorations survive wrapping, raw unauthorized `&` codes stay
+literal, and player input cannot invoke a Gloss function or expression. Bubble motion is a separate
+precompiled numeric expression scope evaluated once per temporary-hologram drive.
+
+`renderMenuText(viewer, raw)` delegates to that same full pipeline. Menu and panel text icons call it
+before `TextUtils.parse`; complete function, expression and PAPI tokens therefore refresh with the
+viewer. Container preview labels evaluate their whole-field expression first and take the emoji half
+between that result and `TextUtils.parse`.
 
 Refresh cadences per surface:
 
@@ -327,7 +335,7 @@ Refresh cadences per surface:
 | `menus/` and `images/` hot reload | 5 ticks fast, 20 ticks slow | `ConfigManager` |
 | Document folders and `config.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
 
-Hologram text is only re-sent when the rendered string actually changed. Preview cells, labels and
+Hologram text is only re-sent when the rendered string actually changed. Bubble motion likewise applies only presentation values that changed, and one multiline entity replaces the previous per-row bubble entities. Preview cells, labels and
 slots are likewise only re-sent when the computed color, component or item differs from what was
 last applied. A preview whose contents are static costs nothing beyond the comparison. Changing a
 hologram driver interval takes effect on the next reload of that service. The session tick loop is

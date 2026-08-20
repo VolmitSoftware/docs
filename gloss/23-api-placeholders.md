@@ -142,13 +142,13 @@ server dependency in `paper-plugin.yml`.
 ## Placeholders inside Gloss documents
 
 Gloss text supports function tokens, inline expressions and PlaceholderAPI. Container preview
-expressions use the same grammar as inline expressions but remain a separate, whole-field system
-with preview-state variables and no PlaceholderAPI access.
+expressions use the same grammar as inline expressions and add preview-state variables and
+inventory functions. Their `papi`, `papiNumber` and `metric` calls share the standard Gloss scope.
 
 ### The text pipeline
 
-Holograms, scoreboards, the tablist, chat bubbles, drop names and everything else routed through
-`TextPipeline#render` are processed in this order:
+Scoreboards, tablist text, persistent holograms, menu text, bubble prefixes, drop names and other
+authored fields routed through `TextPipeline#render` are processed in this order:
 
 1. `|function|` tokens, when `[text] functions` is on and the string contains a `|`.
 2. Inline `{{ expression }}` blocks. `player.*` requires a viewer. `papi(...)` and
@@ -168,16 +168,17 @@ colors still apply there. See
 
 ### Menu documents
 
-Three fields in a menu definition receive placeholder expansion. Component ids, icon values, image
-paths and every other action type are never expanded.
+Three fields in a menu definition receive the full viewer-aware text pipeline. Component ids, icon
+values, image paths and every other action type are never expanded.
 
 | Field | Class | Substitution |
 |---|---|---|
-| Text icon `text` | `TextMenuIcon` (`TextIconData`) | `Placeholders.setPlaceholders(player, line)` per `\n`-separated line, before `TextUtils.parse` |
-| Toggle `condition` | `ToggleComponent` (`ToggleComponentData`) | `Placeholders.setPlaceholders(player, condition)`, then `.equalsIgnoreCase(expectedValue)` |
-| Message action `message` | `MessageMenuAction` (`MessageActionData`) | `%player%` is replaced with the player's name first, then `Placeholders.setPlaceholders(player, text)` |
+| Text icon `text` | `TextMenuIcon` (`TextIconData`) | Full pipeline per `\n`-separated line, before `TextUtils.parse` |
+| Toggle `condition` and `expectedValue` | `ToggleComponent` (`ToggleComponentData`) | Full pipeline once on both, then `.equalsIgnoreCase(...)` |
+| Message action `message` | `MessageMenuAction` (`MessageActionData`) | `%player%` becomes the player's name, then the full pipeline runs |
 
-`art.arcane.volmlib.util.bukkit.Placeholders#setPlaceholders` reflectively invokes
+The pipeline's raw-placeholder stage uses
+`art.arcane.volmlib.util.bukkit.Placeholders#setPlaceholders`, which reflectively invokes
 `me.clip.placeholderapi.PlaceholderAPI#setPlaceholders(Player, String)`. It returns the input
 unchanged when the player is null, when the text contains no `%`, or when the method cannot be
 resolved. The reflective lookup is re-probed every 1000 ms. Document-side expansion begins working
@@ -193,8 +194,9 @@ A failed invocation logs one `WARNING` for the JVM lifetime and serves the text 
 | `HoloMenuHandle#setText` / text `setIcon` | When applied, then on later refresh intervals using the replacement source |
 | Message action | Each time the action runs |
 
-Only text containing a paired `%name%` token performs periodic work. `TextMenuIcon` tracks that as
-a `dynamicSource` flag and skips the whole refresh when it is false. A changed resolved value
+Only text containing a complete `%name%`, `|function|` or `{{ expression }}` token performs periodic
+work. `TextMenuIcon` tracks that as a `dynamicSource` flag and skips the whole refresh when it is
+false; a lone `%` or `|` does not make the icon dynamic. A changed resolved value
 updates display metadata in place when the line count is stable. A changed line count respawns that
 text icon. Either change refreshes automatic hitbox geometry. API text uses the 10-tick default
 because `HoloIcon.Text` has no refresh-interval field.
@@ -217,9 +219,12 @@ does not exist.
 
 ### Preview documents
 
-Container preview expressions never resolve PlaceholderAPI. The expression lexer has no `%…%` form.
-A bare `%` is the modulo operator. The supported route for getting external data into a preview is
-a `PreviewStateProvider`. See [API: Previews](/gloss/24-api-previews).
+Container preview expressions expose `papi(key, fallback?)`, `papiNumber(key, fallback?)` and
+`metric(key, fallback?)` through the same standard scope as inline text. They also accept the direct
+`time.*`, `server.*` and `player.*` variables. The expression lexer has no raw `%…%` form: a bare
+`%` is the modulo operator, so use `papi('player_name')`, not `%player_name%`. A
+`PreviewStateProvider` remains the route for plugin-specific target state. See
+[API: Previews](/gloss/24-api-previews).
 
 ## Feeding your values into Gloss text
 
@@ -239,12 +244,15 @@ Gloss surface that renders with a viewer resolves it:
 
 - scoreboard titles and lines, tablist header, footer and name formats, and per-viewer hologram lines,
   through `TextPipeline#render`.
-- menu text icons, toggle conditions and message actions, through `Placeholders#setPlaceholders`.
+- menu text icons, toggle conditions, message actions and bubble prefixes, through the full text
+  pipeline.
 - anything you render yourself with `GlossAPI#filter(Player, String)`.
 
-Surfaces that render with no viewer resolve no placeholders. That includes shared-mode hologram
-lines, temporary holograms, chat bubbles, damage indicators, drop name formats, and the MOTD. All
-of them call `renderStatic`.
+Surfaces that render with no viewer resolve no raw placeholders. That includes shared-mode
+hologram lines, temporary holograms, damage indicators, drop name formats and the MOTD. Their
+server/time expressions, native server aliases and explicit fallbacks still work. Bubble message
+text is already-safe player chat and is not rescanned; its authored style prefix renders with the
+speaker as viewer.
 
 ```java
 GlossAPI gloss = GlossAPI.get();

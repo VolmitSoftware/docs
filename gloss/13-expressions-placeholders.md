@@ -7,23 +7,31 @@ tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Gloss has four substitution systems. PlaceholderAPI fills
+Gloss has five authored substitution and expression systems. PlaceholderAPI fills
 `%expansion_key%` tokens from another plugin. The text pipeline fills `|name|` tokens from a Gloss
 registry. Inline text expressions evaluate `{{ code }}` inside every Gloss text-pipeline surface.
-Container previews use the same expression grammar as a whole-field DSL with their own live state.
+Bubble motion and container previews use the same expression grammar as whole-field DSLs with their
+own live state.
 
 ## Which system applies where
 
 | System | Syntax | Applies to |
 |---|---|---|
 | PlaceholderAPI | `%expansion_key%` | Per-viewer hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text icons, menu and panel toggle conditions, menu `message` actions |
-| Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, `[drops] nameFormat`, MOTD lines, chat bubbles and damage indicators |
-| Inline text expressions | `{{ expression }}` | Every text-pipeline surface above; player/PAPI values require a player-backed surface |
+| Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, chat-bubble authored prefixes and damage indicators |
+| Inline text expressions | `{{ expression }}` | Every authored text-pipeline surface above; player/PAPI values require a player-backed surface |
+| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-2 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
 | Preview expression DSL | bare expression source, no delimiter | Container preview documents in `plugins/Gloss/previews/` only |
 
 Nothing else in Gloss is substituted. Action commands, item icons, image icons and component ids stay
 as written. Panel transforms, emoji `trigger` values and preview `match`/`variants` selectors also stay
 as written.
+
+The chat message inside a bubble is deliberately not another authored text-pipeline surface. It arrives after the chat emoji and permitted color stages, keeps the resulting formatting, and is never reinterpreted as a function or expression token. Only the BubbleStyle `prefix` and `motion` fields are authored code.
+
+### Bubble motion context
+
+Bubble motion uses the same operators and numeric function library documented below, including `pow` and `smoothstep`, but has its own bounded runtime scope. It exposes `t`, `remaining`, `ageMs`, `lifetimeMs`, `stackIndex`, `stackCount`, `lineCount`, `stackY`, `seed` and `pi`. Translation results are blocks clamped to `-64`..`64`; scale multipliers clamp to `0`..`16`; rotations are finite degrees normalized modulo 360; opacity clamps to `0`..`1`; and each source is limited to 512 characters. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops#motion) for the field layout and examples.
 
 ## PlaceholderAPI substitution
 
@@ -47,19 +55,22 @@ separates the surfaces:
 | Shared hologram lines | none | no |
 | Board title and lines | the board's holder | yes |
 | Tablist header, footer, name formats | the player being formatted | yes |
+| Menu/panel text, conditions and messages | the session player | yes |
+| Container preview expressions | the preview viewer, except console/static diagnostics | `papi(...)` calls only; raw `%...%` is modulo syntax |
+| BubbleStyle prefix | the speaker | yes |
 | `[drops] nameFormat` | none | no |
 | MOTD lines | none | no |
-| Chat bubbles, damage indicators | none | no |
+| Damage indicators | none | no |
 
-A hologram uses per-viewer rendering when a line contains `%` and
-`[holograms] perViewerPlaceholders` is `true`. That key defaults to `true`.
+A hologram uses per-viewer rendering when a line contains a complete `%name%`, `|function|` or
+`{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`. That key defaults to `true`.
 
 If you set that key to `false`, every hologram renders once for all viewers. Lines with `%` then keep
 the tokens. See [Holograms](/gloss/04-holograms).
 
 ### In menu and panel documents
 
-Menu documents do not use the text pipeline. They call PlaceholderAPI directly in three places:
+Menu documents use the same full viewer-aware renderer in three places:
 
 | Field | Where | When it expands |
 |---|---|---|
@@ -67,8 +78,7 @@ Menu documents do not use the text pipeline. They call PlaceholderAPI directly i
 | toggle `condition` | toggle component | once, in the toggle's constructor |
 | `message` action `message` | menu action | every time the action fires |
 
-These fields are not governed by `[text] placeholders`. If you turn that key off, holograms, boards,
-the tablist and the MOTD stop placeholders. Menus and panels do not change.
+These fields honor `[text] functions` and `[text] placeholders` exactly like boards and tablists.
 
 A panel shows the menu document that `rootMenuId` names. Those fields behave the same in panels. See
 [Hologram Menus](/gloss/09-menus), [Components & Hitboxes](/gloss/10-components-hitboxes),
@@ -84,7 +94,7 @@ then controls later re-expansion:
   `refreshTicks must be between 0 and 1200`.
 - `0` disables refreshing, so the icon keeps whatever it rendered at construction.
 
-Refresh is also skipped when the source text has no paired `%…%` token. Static text costs nothing at
+Refresh is skipped when the source text has no complete `%name%`, `|function|` or `{{ expression }}` token. Static text costs nothing at
 any `refreshTicks` value.
 
 When a refresh produces different text, the display name updates in place. A changed line count
@@ -94,11 +104,11 @@ refresh re-arms that warning.
 
 #### Toggle conditions
 
-A toggle state is `setPlaceholders(player, condition)` compared to `expectedValue` with
+A toggle state is the full rendered `condition` compared to `expectedValue` with
 `equalsIgnoreCase`.
 
 - The comparison is case-insensitive, unlike expression string equality.
-- A `condition` with no `%` is never sent to PlaceholderAPI. It is compared as a literal, so
+- A condition with no dynamic token is compared as a literal, so
   `"condition": "yes"` with `"expectedValue": "YES"` is a toggle that always starts on.
 - The condition is read once, in the constructor. Clicking a toggle flips the stored state and runs
   `trueActions` or `falseActions`. It never re-reads the condition.
@@ -112,7 +122,9 @@ The service therefore calls `renderStatic`, which is `render(null, text)`. The p
 placeholder stage on `viewer != null`. There is nobody to resolve `%player_name%` against. The stage
 is skipped. The token reaches the client as written.
 
-Functions, emoji and colors still apply to the MOTD. Those stages do not need a viewer. See
+Functions, viewer-free inline expressions, emoji and colors still apply to the MOTD. Native
+`time.*` and `server.*` variables, server aliases such as `papi('server_online')`, and explicit
+fallbacks work. Player values do not. See
 [Tablist & Server List MOTD](/gloss/06-tablist-motd).
 
 The current round-trip latency cannot affect the MOTD either. The server sends its status response,
@@ -217,17 +229,12 @@ Two results follow. Both are normal:
 - **Nothing is sampled on an idle server.** A server whose content names no metric never calls
   another plugin's sampler.
 
-### Not available in menus or panels
+### Menus and panels
 
-Menu and panel text is built by `TextUtils.parse`. That helper translates legacy `&` codes into
-MiniMessage tags and deserializes the result. It never calls the text pipeline function stage.
-
-`|function|` tokens, including `|animation.<id>|` and `|metric.<key>|`, are inert in menu documents.
-They render as literal text, pipes and all. A stray `|` in a label cannot be read as a token.
-
-Menu, panel and preview text still get the emoji and color stages. `:heart:` and a `<3` trigger
-resolve in a menu label, a panel row and a preview label. See
-[Emoji, Text & Animations](/gloss/07-emoji-text-animations).
+Menu and panel text icons, toggle conditions and `message` actions receive the session player and
+use the same function, inline-expression, PlaceholderAPI, emoji and color facilities as boards.
+Text icons refresh complete dynamic tokens at `refreshTicks`; conditions render once per session;
+messages render each time the action fires.
 
 ## Inline text expressions
 
@@ -248,8 +255,8 @@ Available live variables are `time.ms`, `time.seconds`, `time.ticks`, `server.on
 `server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health` and `player.level`.
 These are direct Gloss getters. They do not require PlaceholderAPI, React or another integration.
 `server.tps` is sampled internally from the server tick cadence and is available on viewer-free
-surfaces. `player.*` requires a viewer. Use it on boards, tablists and per-viewer holograms, not
-MOTDs or other static renders.
+surfaces. `player.*` requires a viewer. Use it on boards, tablists, menus, previews, bubble prefixes
+and per-viewer holograms, not MOTDs or other static renders.
 
 `papi(...)` and `papiNumber(...)` use PlaceholderAPI first when a viewer and the expansion are
 available. If the token remains unresolved, Gloss supplies native fallbacks for `player_name`,
@@ -282,15 +289,17 @@ without a separate animation document; `|animation.<id>|` remains useful for reu
 ## The preview expression DSL
 
 Container preview documents use the same grammar as inline expressions, but each expression occupies
-an entire field and reads preview target state such as furnace cook time. They never call
-PlaceholderAPI; their `papi` functions are not available.
+an entire field and reads preview target state such as furnace cook time. In addition to that state,
+they expose the standard `time.*`, `server.*` and `player.*` variables and `papi`, `papiNumber` and
+`metric` functions. Block, entity, ender-chest and locked previews have their viewing player. Static
+validation and console dumps do not; player values there need an explicit fallback.
 
 The lexer has no `%…%` form. A bare `%` is the modulo operator. A `%` inside a string literal is an
 ordinary character.
 
-To surface external data in a preview, register a `PreviewStateProvider` and read
-`<namespace>.<key>`. See [API: Previews](/gloss/24-api-previews). The document format is documented
-in [Container Previews](/gloss/15-container-previews).
+Use `papi('key', 'fallback')` for a PlaceholderAPI expansion or register a `PreviewStateProvider`
+and read `<namespace>.<key>` for typed live state. See [API: Previews](/gloss/24-api-previews). The
+document format is documented in [Container Previews](/gloss/15-container-previews).
 
 ### Furnace expressions at a glance
 
@@ -471,6 +480,8 @@ throws `<name> argument <1-based index> must be a number`, `... a string` or `..
 | `mod(a, b)` | 2 | number ×2 | number | Floor-mod.`b == 0` throws `division by zero` |
 | `sin(x)` | 1 | number, radians | number | Sine |
 | `cos(x)` | 1 | number, radians | number | Cosine |
+| `pow(base, exponent)` | 2 | number ×2 | number | `base` raised to `exponent` |
+| `smoothstep(edge0, edge1, x)` | 3 | number ×3 | number | Clamps `(x - edge0) / (edge1 - edge0)` to `0`..`1`, then applies `t²(3 - 2t)` |
 | `rgb(r, g, b)` | 3 | number ×3 | color | Opaque color. Channels rounded and clamped to `[0, 255]`, alpha forced to `FF` |
 | `argb(a, r, g, b)` | 4 | number ×4 | color | As `rgb`, with an explicit alpha channel |
 | `alpha(color, a)` | 2 | color, number | color | Replaces only the alpha byte.`a` rounded and clamped to `[0, 255]` |
@@ -492,6 +503,9 @@ today. All four are available in every preview document.
 | `count(slot)` | 1 | number | number | Stack size in that slot of the previewed inventory.`0` for an empty slot, an out-of-range index, or no inventory |
 | `occupied(slot)` | 1 | number | boolean | Whether that slot holds a non-empty stack |
 | `item(slot)` | 1 | number | string | Material id in that slot, such as `IRON_ORE`, or `""` when the slot is empty, out of range, or there is no inventory. Pair with `readable(item(0))` for display text |
+| `papi(key, fallback?)` | 1 or 2 | string key, optional string fallback | string | Same PlaceholderAPI-first and native-fallback behavior as inline text expressions |
+| `papiNumber(key, fallback?)` | 1 or 2 | string key, optional numeric fallback | number | Numeric PlaceholderAPI/native value for preview math |
+| `metric(key, fallback?)` | 1 or 2 | string key, optional numeric fallback | number | Reads a demanded integration metric |
 
 Slot indexes are floored. Calling `lang` with no argument, or with a non-string first argument,
 throws. Localization keys are covered in [Localization](/gloss/19-localization).
@@ -511,6 +525,8 @@ throws. Localization keys are covered in [Localization](/gloss/19-localization).
    variant's `vars` merged over them.
 3. Everything else reads the sampled state snapshot — the built-in variables for the target's category plus
    every registered provider namespace, merged flat as `<namespace>.<key>`.
+4. A name absent from preview state delegates to the standard text expression scope for `time.*`,
+   `server.*`, `player.*` and integration metrics.
 
 The snapshot is sampled lazily on the first lookup. It is re-sampled when the world's game time
 changes. One refresh reads each server getter once, no matter how many expressions reference it. A
@@ -527,10 +543,11 @@ Exactly one category group is published on top of those. The group is chosen at 
 from the block state, entity or inventory type: `furnace`, `brewing`, `beehive`, `cauldron`,
 `jukebox`, `inventory` or `static`.
 
-The full catalog with types and fallback values is in
-[Container Previews](/gloss/15-container-previews). There is no player name, player world, server or
-time-of-day built-in. The viewing player is passed to `PreviewStateProvider#snapshot` but is not
-published as a variable.
+The full target-state catalog with types and fallback values is in
+[Container Previews](/gloss/15-container-previews). Preview expressions additionally publish
+`time.ms`, `time.seconds`, `time.ticks`, `server.online`, `server.maxPlayers`, `server.tps`,
+`player.name`, `player.ping`, `player.health` and `player.level`. The `player.*` values are absent in
+viewerless static/console contexts rather than invented.
 
 ### Document variables and repeat variables
 
@@ -608,9 +625,9 @@ The per-failure fallbacks are listed in [Container Previews](/gloss/15-container
 
 | Config key | Default | Effect |
 |---|---|---|
-| `[text] placeholders` | `true` | PlaceholderAPI stage of the text pipeline. Does not affect menus or panels |
+| `[text] placeholders` | `true` | PlaceholderAPI stage of the text pipeline, including menus and panels |
 | `[text] functions` | `true` | `\|function\|` stage of the text pipeline |
-| `[holograms] perViewerPlaceholders` | `true` | Lets a hologram containing `%` render per viewer so placeholders resolve |
+| `[holograms] perViewerPlaceholders` | `true` | Lets holograms with complete dynamic tokens render per viewer |
 | `[features] animations` | `true` | Registers the `\|animation.<id>\|` functions |
 | `[features] previews` | `true` | Container previews, and therefore the expression DSL |
 

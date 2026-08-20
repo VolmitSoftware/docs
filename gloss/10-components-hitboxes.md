@@ -85,6 +85,8 @@ each entry of `data.actions`, `data.trueActions` and `data.falseActions`.
   "data": {
     "type": "button",
     "highlightModifier": 0.05,
+    "hoverDurationTicks": 4,
+    "hoverEasing": "ease_out_cubic",
     "icon": { "type": "text", "text": "&aConfirm" },
     "actions": [
       { "type": "command", "command": "say confirmed", "source": "player" }
@@ -96,11 +98,13 @@ each entry of `data.actions`, `data.trueActions` and `data.falseActions`.
 | Key | Type | Required | Default when absent |
 |---|---|---|---|
 | `highlightModifier` | number | no | `0.0` |
+| `hoverDurationTicks` | integer from 0 to 40 | no | `4`; `0` is instant |
+| `hoverEasing` | `linear`, `ease_out_cubic`, `ease_in_out_cubic` or `back_out` | no | `ease_out_cubic` |
 | `icon` | icon object | yes in the schema | `null` |
 | `actions` | array of action objects | yes in the schema | `null` |
 | `hitbox` | hitbox object | no | `null`, meaning a fully automatic hitbox |
 
-The `Required` column reflects `schema/gloss.schema.json`, which is advisory. The Gson records enforce nothing. A button decoded with no `hitbox` simply has a null hitbox.
+The `Required` column reflects `schema/gloss.schema.json`, which is advisory. A button decoded with no `hitbox` simply has a null hitbox. Parsed `highlightModifier` must be finite and `hoverDurationTicks`, when present, must be between 0 and 40 or the document is rejected.
 
 `actions` are resolved when the document is parsed and again when the
 component is built. An action whose payload is unusable is dropped.
@@ -150,10 +154,13 @@ It still ticks its icon. Animated images advance. Text placeholders refresh. It 
   "data": {
     "type": "toggle",
     "highlightModifier": 0.05,
+    "hoverDurationTicks": 6,
+    "hoverEasing": "ease_in_out_cubic",
     "condition": "%player_gamemode%",
     "expectedValue": "CREATIVE",
     "trueIcon": { "type": "text", "text": "&aOn" },
     "falseIcon": { "type": "text", "text": "&cOff" },
+    "hitbox": { "width": 0.8, "height": 0.3 },
     "trueActions": [{ "type": "command", "command": "gamemode creative", "source": "server" }],
     "falseActions": [{ "type": "command", "command": "gamemode survival", "source": "server" }]
   }
@@ -163,14 +170,17 @@ It still ticks its icon. Animated images advance. Text placeholders refresh. It 
 | Key | Type | Required | Default when absent |
 |---|---|---|---|
 | `highlightModifier` | number | no | `0.0` |
+| `hoverDurationTicks` | integer from 0 to 40 | no | `4`; `0` is instant |
+| `hoverEasing` | `linear`, `ease_out_cubic`, `ease_in_out_cubic` or `back_out` | no | `ease_out_cubic` |
 | `condition` | string | yes in the schema | `null` |
 | `expectedValue` | string | yes in the schema | `null` |
 | `trueActions` | array of action objects | yes in the schema | `null` |
 | `falseActions` | array of action objects | yes in the schema | `null` |
 | `trueIcon` | icon object | yes in the schema | `null` |
 | `falseIcon` | icon object | yes in the schema | `null` |
+| `hitbox` | hitbox object | no | `null`, meaning the active icon supplies the automatic plane |
 
-`ToggleComponentData` has no `hitbox` field. The schema toggle definition does not declare one. The component passes `null` as its hitbox unconditionally. A toggle click plane is always icon-derived and always centered on the icon. Toggles cannot carry a custom hitbox.
+A toggle accepts the same optional hitbox as a button. An explicit size gives both states one stable click plane even when the true and false icons have different dimensions. Without one, each state uses the active icon automatic geometry.
 
 ### State
 
@@ -200,8 +210,7 @@ Both icons are constructed eagerly in the constructor. Both are
 teleported whenever the component moves. The inactive one stays
 positionally in sync without being spawned. The icon swap removes the
 current icon display entities and teleports the replacement. It then
-rebuilds the collision plane from the new icon bounding box and spawns
-the replacement.
+rebuilds the collision plane from the new icon bounding box or shared custom hitbox, applies the current hover progress to the replacement visual, and spawns it. A state change therefore does not snap an already-hovered toggle back to its base position.
 
 Like buttons, toggles have no cooldown. If a matching `navigate` action is reached, the method returns before the icon and state change. The toggle does not flip. Navigation bound to a different trigger is skipped and does not block the transition.
 
@@ -211,7 +220,7 @@ Every clickable component owns a `CollisionPlane`: a rectangle with a center, a 
 
 ### `hitbox` keys
 
-`hitbox` is accepted on `button` only. The schema constrains it with `minProperties: 1`, `additionalProperties: false`, and a mutual `dependentRequired` binding between `width` and `height`.
+`hitbox` is accepted on buttons and toggles. The schema constrains it with `minProperties: 1`, `additionalProperties: false`, and a mutual `dependentRequired` binding between `width` and `height`.
 
 | Key | Type | Required | Default when absent |
 |---|---|---|---|
@@ -293,12 +302,12 @@ transform changes through follow, manual movement or a scale refresh. A
 dynamic icon that reports a geometry change also rebuilds it. One
 example is a text icon whose refreshed placeholder produced different
 text. Each rebuild reads the current icon and records the fresh
-bounding-box center as the button origin. It applies the configured size
+bounding-box center as the component origin. It applies the configured size
 when one is present. It repositions the plane if a `hitbox` object
 exists. It then re-orients the plane for the viewer. If the component is
-currently selected, it re-applies the highlight displacement.
+currently between hover poses, it reapplies the eased visual displacement without moving the plane.
 
-Repositioning is a no-op when `hitbox` is null. That is why an unconfigured button and every toggle keep a plane centered exactly on the icon bounding box.
+Repositioning is a no-op when `hitbox` is null. An unconfigured button or toggle therefore keeps a plane centered exactly on its active icon bounding box.
 
 ### Billboard-aware orientation
 
@@ -345,10 +354,10 @@ Highlighting runs once per tick per open clickable component:
 
 1. The plane is re-oriented for the live eye position, following the icon billboard.
 2. The ray test decides whether the component is selected.
-3. On the transition from not selected to selected, the icon is displaced by `plane.normal * highlightModifier`. A positive value moves it toward the plane current viewing side.
-4. On the transition from selected to not selected, the icon is teleported back to the component location.
+3. Hover progress advances toward 1 while selected and retreats toward 0 after exit over `hoverDurationTicks`. Zero changes state instantly.
+4. The selected easing curve converts that progress into visual travel: `plane.normal * highlightModifier * effectiveScale * easing(progress)`.
 
-`highlightModifier` is the entire hover feedback. There is no color change, no scale change and no sound. The default of `0.0` means a button that is otherwise fully functional gives no visual response at all. `0.05` is a reasonable nudge. It is what the shipped blank baseline uses. The selected flag is cleared on close.
+`highlightModifier` is authored in menu-local blocks at scale 1. Effective `uiScale`, including panel scale, is applied exactly once. The logical collision plane never follows the visual displacement, so hover cannot make its own target drift. Billboard icons recompute the travel direction from their current normal each tick. Item, block, text, image and living-entity icons all use the same visual motion. The four easing curves are linear, cubic ease-out, cubic ease-in/out and back-out overshoot. The shipped blank baseline demonstrates a seven-tick `back_out` nudge.
 
 Selection is tick-driven presentation state only. It is not a prerequisite for a click. A click does not consult it.
 
@@ -365,7 +374,7 @@ The dispatcher listens on `PlayerInteractEvent` at `EventPriority.HIGHEST`. It i
 | Left click, sneaking | `LEFT_CLICK_AIR`, `LEFT_CLICK_BLOCK` | `shift_left_click` |
 | Right click, sneaking | `RIGHT_CLICK_AIR`, `RIGHT_CLICK_BLOCK` | `shift_right_click` |
 
-Off-hand events and `PHYSICAL` are ignored. `any` is an action binding, not a physical interaction. It is never delivered as the trigger of a click.
+Off-hand events and `PHYSICAL` are ignored. `any` is an action binding, not a physical interaction. It is never delivered as the trigger of a click. A packet-only living icon has a normal client interaction outline, so the client sends `INTERACT_ENTITY` instead of a Bukkit air click when it is targeted. Gloss recognizes only its own raw entity ids, cancels that packet and schedules the same event-time logical-plane dispatch on the player owning thread. Entity icons therefore activate buttons and toggles without bypassing hitboxes, obstruction or nearest-target arbitration.
 
 ### Nearest-hit arbitration
 
@@ -380,7 +389,7 @@ The handler recomputes every open personal-menu plane against the event-time eye
 
 Before anything is dispatched, a block ray trace runs from the eye out to the winning distance. If it finds a block closer than that, the click is abandoned and the event is left alone. The player normal block interaction happens instead. Passable blocks and fluids do not obstruct. Entities never obstruct.
 
-On Folia the ray trace is replaced by a stepped march in 0.1-block increments that stops at the first non-passable block. It also treats a sample outside the current region as obstructed rather than reaching across a region boundary.
+On Folia the ray trace is replaced by an exact voxel walk over blocks owned by the current region. A foreign-region voxel is treated as passable, so a menu crossing a region seam remains clickable; obstruction inside that foreign region is best-effort.
 
 An unobstructed hit cancels the event before the API event and any actions run. The same input does not also perform its vanilla block interaction.
 
