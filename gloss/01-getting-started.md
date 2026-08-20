@@ -33,32 +33,40 @@ If you set `splashScreen = false`, Gloss hides the banner for clean startups onl
 
 ## What the first boot creates
 
+Gloss never creates a folder it has nothing to put in. A first boot writes the config, the language
+file and the shipped defaults of the features that are enabled. Nothing else exists yet:
+
 ```
 plugins/Gloss/
 ├── config.toml            every runtime knob, commented, clamped and hot-reloading
-├── holograms/             one JSON per persistent hologram (nothing shipped)
+├── language.yml           locale selection and message overrides
+├── tablist.json           tablist header, footer and per-group list-name formats
 ├── boards/                one JSON per scoreboard sidebar (default.json shipped)
-├── panels/                one JSON per world-anchored panel (nothing shipped)
-├── menus/                 hologram menu documents; the path under menus/ is the menu id
-├── images/                image files referenced by image icons
-├── previews/              container preview documents (13 shipped)
 ├── emoji/                 one JSON per emoji (67 shipped)
 ├── animations/            one JSON per text animation (rainbow.json shipped)
 ├── bubbles/               one JSON per chat bubble style (default.json shipped)
-├── tablist.json           tablist header, footer and per-group list-name formats
-├── motd.json              server list MOTD entries
-└── language.yml           locale selection and message overrides
+└── previews/              container preview documents (13 shipped)
 ```
 
-`tablist.json` and `motd.json` sit at the root of the data folder. They do not sit inside a `tablist/` or `motd/` folder. Gloss creates `panels/` only when `[features] panels` is on.
+`tablist.json` sits at the root of the data folder. It does not sit inside a `tablist/` folder, and
+neither does `motd.json` when it appears.
 
-Several more paths can appear later. They do not appear on a first boot:
+Every other path is created the first time something is actually written into it. An empty folder is
+never left lying around, and deleting one does not bring it back on the next hot-reload pass — it
+returns when a document is saved:
 
 | Path | Written when |
 |---|---|
+| `holograms/` | The first hologram is saved |
+| `menus/` | The first menu document is written |
+| `images/` | You put an image file in |
+| `panels/` | The first panel is created |
+| `motd.json` | `[features] motd` is turned on |
 | `preview-scales.json` | Shutdown, and whenever a player finishes adjusting a preview scale. Holds every per-player scale that is not 1.0 |
 | `bubble-styles.json` | A player picks a personal chat bubble style |
 | `editor-sync-sessions.json` | A web editor sync session is created. Session secrets — never copied by an importer |
+| `editor-sync-transactions/` | A web editor publication is in flight |
+| `editor-sync-backups/<id>/` | A web editor publication replaced at least one file |
 | `custom-items.json` | `/gloss item export` runs. Regenerable, so nothing preserves it |
 | `holoui-import.json` | The HoloUi importer runs. Its presence is what stops the boot-time import re-running |
 | `import-backups/<timestamp>/` | The in-place legacy migration rewrites at least one file |
@@ -67,17 +75,23 @@ Several more paths can appear later. They do not appear on a first boot:
 
 Gloss extracts default documents only where the target file is missing. An edited file is never overwritten. A deleted file comes back on the next boot. What ships:
 
-| Folder | Documents |
-|---|---|
-| `emoji/` | 67 |
-| `animations/` | `rainbow.json` |
-| `boards/` | `default.json` |
-| `bubbles/` | `default.json` |
-| `previews/` | 13 |
-| `tablist.json` | one singleton document |
-| `motd.json` | one singleton document |
+| Folder | Documents | Extracted while |
+|---|---|---|
+| `emoji/` | 67 | `[features] emoji` |
+| `animations/` | `rainbow.json` | `[features] animations` |
+| `boards/` | `default.json` | `[features] boards` |
+| `bubbles/` | `default.json` | `[features] chatBubbles` |
+| `previews/` | 13 | `[features] previews` |
+| `tablist.json` | one singleton document | `[features] tablist` |
+| `motd.json` | one singleton document | `[features] motd` |
 
-Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those start empty. The blank hologram and blank menu baselines used by `/gloss hologram create` and `/gloss menu new` are read from inside the jar. They are never written to disk. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
+A feature that is off ships nothing, which is why a stock first boot has no `motd.json` — `motd` is
+the one feature that defaults to `false`. Turning `motd`, `tablist`, `emoji`, `animations`, `boards`
+or `chatBubbles` on extracts its defaults on the config reload, without a restart. `previews` is the
+exception: the preview registry is only built during enable, so turning that feature on takes a
+restart before `previews/` appears.
+
+Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those folders do not exist until you put something in them. The blank hologram and blank menu baselines used by `/gloss hologram create` and `/gloss menu new` are read from inside the jar. They are never written to disk. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Feature toggles
 

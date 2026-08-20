@@ -32,7 +32,8 @@ This is not an inventory event. Nothing about the container is opened. No `Inven
 fires. Other players see nothing.
 
 `[features] previews = false` turns the whole subsystem off. The raycast returns nothing immediately.
-No preview is ever built. Documents still load and hot-reload.
+No preview is ever built. The document registry is not constructed at all, so nothing is extracted,
+nothing loads and nothing hot-reloads until the feature is on and the server has restarted.
 
 A block's material is eligible only because a document names it, exactly or through a glob. To make
 a new block type previewable, add its material to a document's `match.blocks`. The
@@ -496,8 +497,10 @@ result is normal editable JSON and one undo step, not a preview-only effect.
 
 ## The shipped documents
 
-Thirteen documents are extracted into `previews/` on first run, only where the file is missing. All
-thirteen use `priority: 10`.
+Thirteen documents are extracted into `previews/`, only where the file is missing and only while
+`[features] previews` is on. With the feature off nothing is extracted and the folder does not
+exist; the registry is built during enable, so turning previews on takes a restart before the folder
+appears. All thirteen use `priority: 10`.
 
 | Document | Matches | Notes |
 |---|---|---|

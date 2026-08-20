@@ -27,6 +27,19 @@ Everything above works offline as file editing. Export from the editor. Drop the
 `plugins/Gloss/`. The hot reload described in [Data Files & Hot Reload](/gloss/03-data-files) picks
 it up.
 
+The top bar carries a mode tab per document kind, plus `All`. Picking one scopes the whole shell to
+that kind: the library rail lists only those documents and hides folders holding none of them, the
+heading counts what is in scope, creating a document defaults to that kind, and an empty rail names
+the kind it is empty of. The mode persists between visits and follows the documents you open.
+
+Every kind has the same four views. **Visual** is that kind's editing surface. **Preview** frames
+the same surface inside a Minecraft game screen — a scoreboard anchored to the right edge the way
+the client draws it, the tablist as the tab overlay, the MOTD as a server list entry, bubbles over
+a player, emoji in chat, holograms and animations in the world. **Code** is the document JSON, and
+**Split** puts the surface and the JSON side by side. The chosen view is remembered per kind.
+Panels keep all four buttons visible and say why Preview, Code and Split do not apply to them
+rather than hiding the buttons.
+
 The Import action detects menus, previews, holograms, animations, scoreboards, MOTD, emoji, bubble
 styles and tablists from their JSON shape, previews validation issues, and replaces the active
 document only after confirmation; dropping a JSON file creates a new document instead. Export has
@@ -51,6 +64,13 @@ The container-preview inspector exposes the complete match and variant targeting
 blocks, entities, special target, priority, variables and preserved extension keys. Card and match
 extension keys are editable there as well; code view remains available for direct JSON authoring.
 
+Every inspector field carries help. The long tail is generated from the JSON Schema files in the
+plugin repository; a field whose schema wording is silent or hides a runtime trap gets a
+hand-written note instead, each one citing the plugin source line it was read from. A field that
+has a default shows it with a one-click reset, inspector sections collapse and remember it, colour
+fields open a colour picker, and a field measured in ticks or milliseconds shows the equivalent in
+seconds as you type.
+
 Random showcases are contextual. Right-click a library document and choose `Create random <kind>`
 to replace that document's JSON with a valid editable example while preserving its identity,
 folder and runtime id. Right-click a menu component to randomize that component without moving or
@@ -68,7 +88,7 @@ repeats, centered layout math, timer ratios, conditional state, `sin`/`mix` colo
 animation, inventory functions, `bar`, `fixed`, `select` and localized `lang` text. Its palette,
 segment geometry, pulse rate and card dimensions vary procedurally while remaining valid runtime
 JSON.
-Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise visible-character wrapping, multiline formatting, lifetime, offset, follow/hide behavior and procedural translation, scale, rotation and opacity expressions. Their presets include editable fly-up, fade, shrink and arcing motion. The bubble inspector also exposes the two left-to-right shimmer passes, RGB band color, visible-glyph width, duration, spawn delay and departure lead; the preview recolors the same multiline block at the same lifecycle points as the server. Random tablists populate dynamic
+Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise visible-character wrapping, multiline formatting, lifetime, offset, follow/hide behavior and procedural translation, scale, rotation and opacity expressions. Their presets include editable fly-up, fade, shrink and arcing motion. The bubble inspector also exposes the shimmer's spawn anchor and optional departure cycle, both RGB band colors (core and edge), visible-glyph width, full-cycle duration, spawn delay and departure lead. The effect itself is the original Gloss shine: a white-cored, light-grey-edged band that crosses the text left to right at a constant 30 glyphs per second, sweeping the wrapped block one line at a time, and keeps wrapping on its 127-glyph cycle until the bubble expires, restoring each glyph's own color and formatting behind it. The preview recolors the same multiline block the server does; it is being brought onto the restored constant-speed cycle in this same workstream. Random tablists populate dynamic
 headers, footers and group formats. Minecraft samples an MOTD animation frame when it answers each
 server-list request rather than continuously redrawing an already displayed row. Each replacement
 is one undo step.
@@ -109,10 +129,11 @@ available to previews even when no workspace animation document exists, matching
 installation. Procedurally randomized animations also generate dense continuous hue gradients
 instead of short legacy-color cycles. A color-only frame is shown against the preview-only word
 `RAINBOW`, making its actual color visible without adding that word to the document or server output.
-Workspace controls also
-expose `Erase all local data`; its confirmation shows the affected document and folder counts and
-offers a workspace-bundle backup first. A completed erase leaves the workspace genuinely empty and
-does not recreate `my-menu`.
+The library rail carries a labelled
+**Workspace actions** menu holding workspace-bundle Import and Export and `Erase all local data`;
+none of the three sit in the document creation row any more. The erase confirmation shows the
+affected document and folder counts and offers a workspace-bundle backup first. A completed erase
+leaves the workspace genuinely empty and does not recreate `my-menu`.
 
 Menu and container-preview surfaces retain their own fit, reset and zoom tools. The scoreboard
 preview is centered in the editor while retaining the runtime's descending 15-to-1 scores, 15-row
@@ -122,6 +143,13 @@ the Minecraft scene backdrop in the client's right-side position. Scoreboard, MO
 chat-bubble and tablist previews have independent 50%-200% zoom controls. The hologram stage
 supports both wheel zoom and visible zoom/reset buttons for touch use. These controls affect only
 the editor preview and never alter the exported document.
+
+Rendered text on every surface carries Minecraft's own text shadow. A board with an empty title
+falls back to the board id, which is what the plugin does. The per-board hidden-number option says
+plainly that a client older than 1.20.3 still draws the numbers. A text animation can be played and
+paused on every surface, not only on the menu canvas. A viewer simulator resolves which board a
+player with a given primary group and permission would actually be given, following the plugin's
+own selection order.
 
 Hover and keyboard-focus help is rendered in a viewport-level overlay. Tooltips flip and clamp at
 screen edges instead of being cut off by the library, inspector, canvas, preview or dialog bounds.
@@ -489,6 +517,12 @@ Two working directories sit in the data folder:
 |---|---|
 | `editor-sync-transactions/` | In-flight transactions: `journal.json`, a `stage/` tree and a `backup/` tree |
 | `editor-sync-backups/` | Archived transactions, pruned to the most recent 20 |
+
+Neither directory exists until a publication actually runs; recovery at enable creates neither. The
+`backup/` tree is created by the first replacement that overwrites an existing file, so a
+publication carrying only new documents archives no backup directory at all. Archiving prunes empty
+directories on the way out, so an archived transaction holds only the files it really staged or
+replaced.
 
 Each transaction records the state it reached — `prepared`, `publishing`, `published`, `committed`
 or `rolledback`. Every replaced file is hash-checked against the snapshot taken when the session

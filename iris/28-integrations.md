@@ -107,22 +107,29 @@ itself. See [19 - Objects](/iris/19-objects).
 
 ## Multiverse-Core
 
-`MultiverseCoreLink` calls the Multiverse Core API directly. It is guarded
-by `isPluginEnabled("Multiverse-Core")`.
+Multiverse gets its own page. Read [34 - Multiverse](/iris/34-multiverse)
+before you run any Multiverse command against an Iris world.
+
+The short version: Multiverse can list, inspect, teleport to, and configure
+Iris worlds. It cannot create, delete, regenerate, or clone them. Those
+commands are refused, because an Iris world is a dimension inside the level
+carrying a world-local pack snapshot, not a folder in the world container,
+and Multiverse's folder operations would destroy that snapshot.
 
 | Operation | Behavior |
 |---|---|
-| World create or update | If Multiverse does not know the world, imports it with generator `Iris:<pack>`, the Bukkit world's environment, and spawn-adjust off. Then sets `autoLoad = false`, forces the generator string if it drifted, and saves the worlds config |
-| World remove | Looks the world up, removes it through Multiverse, and saves the worlds config. Throws `IllegalStateException` naming Multiverse's refusal reason if the removal fails |
-| Multiverse absent or disabled | Create/update returns without doing anything. Remove returns `false` |
+| World create or update | Iris registers the world with Multiverse itself, with generator `Iris:<pack>`, `auto-load` off, and spawn-adjust off. It re-asserts those values on every startup |
+| World remove | `/iris remove` clears the Multiverse entry along with the folder, the `bukkit.yml` entry, and the Iris registry entry |
+| Destructive Multiverse commands | `/mv delete`, `/mv regen`, and `/mv clone` are refused with the Iris command to use instead |
+| `/mv load` | Iris performs the load and hands the world back to Multiverse |
+| Multiverse absent or disabled | Every Multiverse call is a no-op. Iris world creation and removal work normally |
 
-`autoLoad = false` is deliberate. Iris owns the load lifecycle of its
-worlds. If Multiverse also loads them at startup, a double-load race
-occurs.
+`auto-load = false` is deliberate. Iris owns the load lifecycle of its
+worlds. If Multiverse also loaded them at startup, the two would race.
 
-Iris corrects a drifted generator string by reflection into Multiverse's
-world config. The public API has no setter for it. If a Multiverse update
-breaks that, the world keeps its old generator string. It does not crash.
+Parts of this link use reflection, because Multiverse's public API has no
+setter for the state Iris must correct. If a Multiverse update moves it,
+Iris logs one warning and continues rather than failing.
 
 World creation, removal, and Studio open/close all use this same link. See
 [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).

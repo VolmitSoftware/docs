@@ -14,7 +14,7 @@ Three small features share one mechanism. Chat bubbles float a player message ab
 
 ### Style documents
 
-Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing. If you delete it, it comes back on the next reload or restart. On enable, Gloss also atomically replaces the exact byte-identical former shipped schema-1 default with this schema-2 file and logs the upgrade. Any edited or reformatted schema-1 file is preserved and rejected for manual conversion.
+Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart. On enable, Gloss also atomically replaces the exact byte-identical former shipped schema-1 default with this schema-2 file and logs the upgrade. Any edited or reformatted schema-1 file is preserved and rejected for manual conversion.
 
 `plugins/Gloss/bubbles/default.json` as shipped:
 
@@ -40,10 +40,11 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
   },
   "shimmer": {
     "spawn": true,
-    "flyAway": true,
+    "flyAway": false,
     "color": "#ffffff",
+    "edgeColor": "#aaaaaa",
     "width": 3,
-    "durationMs": 700,
+    "durationMs": 4233,
     "spawnDelayMs": 0,
     "flyAwayLeadMs": 700
   }
@@ -61,10 +62,10 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
 | `hideOwn` | `false` | When true the speaker cannot see their own bubbles |
 | `motion` | shipped late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
-| `shimmer` | shipped two-pass white shimmer shown above | Left-to-right color sweep at spawn and departure; see below |
+| `shimmer` | shipped shine shown above | The Gloss shine: a white-cored, light-grey-edged band sweeping the block left to right at a constant speed, one line at a time, anchored at spawn and wrapping until the bubble expires; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
 
-`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display.
+`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
 
 There is no config table for bubble styles. `config.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
 
@@ -114,19 +115,31 @@ The authored `prefix` is rendered separately through the full text pipeline with
 
 ### Shimmer
 
-`shimmer` restores the original Gloss left-to-right shine as an explicit presentation effect. It changes the live text color across a moving band, not particles. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph, so a white pass over green bold chat remains green and bold behind the band. Every row in the one multiline `TextDisplay` receives the same horizontal progress independently; the effect never splits one message into multiple entities.
+`shimmer` is the original Gloss shine, restored as an explicit presentation effect. It changes the live text color across a moving band, not particles. A three-glyph band travels left to right at a constant 30 glyphs per second, no matter how long the line is. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph, so a pass over green bold chat leaves it green and bold behind the band.
+
+The band is two-toned. `color` paints the single glyph the band head is standing on and `edgeColor` paints every other lit glyph, so the shipped three-glyph band reads light grey, white, light grey. Widening the band adds edge glyphs only — there is always exactly one core glyph.
+
+The band sweeps the block **line by line**. Visible glyphs are counted continuously through the wrapped rows in reading order, so the band crosses row one, then row two, then row three, rather than lighting the same column on every row at once. The `prefix` glyphs are part of that count and there is no gap at a row break: the band's trailing edge can sit on the last glyph of one row while its core has already moved to the first glyph of the next. It remains one multiline `TextDisplay`; the effect never splits a message into multiple entities.
+
+The band free-runs. It wraps on a 127-glyph cycle and keeps wrapping until the bubble expires, rather than making a fixed one or two passes. At the shipped 5-second lifetime that produces the original look on its own: one sweep shortly after the bubble spawns, and a second starting just before it leaves. The group that reappears on the text after a wrap sits a full cycle behind the head, so it carries no core glyph and is drawn entirely in `edgeColor`.
 
 | Key | Default | Clamp / notes |
 |---|---|---|
-| `spawn` | `true` | Run one sweep after the bubble spawns |
-| `flyAway` | `true` | Run one sweep as the bubble enters its departure window |
-| `color` | `"#ffffff"` | Strict `#RRGGBB`; invalid values reject the style |
-| `width` | `3` | Highlighted visible glyphs, clamped to `1`..`16` |
-| `durationMs` | `700` | Time for one sweep, clamped to `100`..`10000` |
-| `spawnDelayMs` | `0` | Delay before the spawn sweep, clamped to `0`..`60000` |
+| `spawn` | `true` | Anchor the cycle at the bubble's spawn. The band free-runs from there for the whole lifetime |
+| `flyAway` | `false` | Add a second cycle anchored to the departure window. The free-running cycle already produces a departure pass at ordinary lifetimes, so turning this on doubles the band |
+| `color` | `"#ffffff"` | The band core: the one glyph the head is standing on. Strict `#RRGGBB`; invalid values reject the style |
+| `edgeColor` | `"#aaaaaa"` | The band edges: every lit glyph that is not the head. Strict `#RRGGBB`; invalid values reject the style. Optional — a style written before the two-toned band omits the key and runs Minecraft's light grey |
+| `width` | `3` | Highlighted visible glyphs, clamped to `1`..`16`. One of them is the core, the rest are edges |
+| `durationMs` | `4233` | Milliseconds for one full 127-glyph cycle, clamped to `100`..`10000`. The shipped `4233` is the original 30 glyphs per second |
+| `spawnDelayMs` | `0` | Delay before the spawn cycle starts, clamped to `0`..`60000` |
 | `flyAwayLeadMs` | `700` | Departure starts this many milliseconds before expiry, clamped to `0`..`60000` |
 
-A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine twice. Set both booleans to `false` to disable it. The spawn window starts at `spawnDelayMs`; the departure window starts at `max(0, maxAliveMs - flyAwayLeadMs)`. Each remains active for `durationMs`, although expiry naturally truncates a departure sweep whose lead is shorter than its duration. If the two windows overlap, the departure pass takes precedence. Shimmer timing and the `motion` expressions are independent, so a configured departure sweep follows the text while it flies, fades, shrinks, rotates or follows any other authored motion curve.
+A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn cycle starts at `spawnDelayMs`; a `flyAway` cycle starts at `max(0, maxAliveMs - flyAwayLeadMs)` and takes precedence while both are running. Shimmer timing and the `motion` expressions are independent, so the band keeps traveling while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
+
+Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (shipped `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to one step per tick.
+
+> `durationMs` is the full-cycle time. It was previously the length of one short bounded sweep, and the old shipped default was `700`. A style file that still writes `durationMs: 700` runs the band about six times too fast — drop the key or set `4233`. Existing installations keep their own `bubbles/default.json`; the new shipped values only land where the file is extracted fresh.
+{.is-info}
 
 ### Motion
 

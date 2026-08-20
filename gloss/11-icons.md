@@ -174,7 +174,7 @@ A toggle builds its `trueIcon` and `falseIcon` once in its constructor and ticks
 
 ### Where images live
 
-Image assets live in `plugins/Gloss/images/`. The folder is created on first run if it is missing. `path` is always relative to that folder. There is no URL support anywhere in the icon path. Sources are local files only.
+Image assets live in `plugins/Gloss/images/`. Gloss does not create that folder at startup — make it yourself when you have something to put in it, or let a HoloUi import or an editor sync publication carrying images create it. `path` is always relative to that folder. There is no URL support anywhere in the icon path. Sources are local files only.
 
 Resolution canonicalizes both the images root and the requested file. It requires the result to still start with the root path **and** to be a regular file. Blank paths, absolute paths, missing files, directories, `..` escapes and symlink escapes all fail with `FileNotFoundException`. Traversal cannot read anything outside `plugins/Gloss/images/`. Format detection and decoding use Apache Commons Imaging. Any format it recognizes works.
 
@@ -184,7 +184,7 @@ characters. It also rejects absolute paths, values containing `:`, and
 any `..` segment. During that pass it normalises `\` to `/`. Then the
 canonical containment check above runs again.
 
-The images folder is watched. A changed file is logged and triggers a visual refresh on the same tick pass as menu documents (default every 5 ticks). An added or removed file is picked up by the slower 20-tick pass and also refreshes visuals. Because icons are rebuilt on refresh, if you replace an image file, Gloss re-decodes it without a reload.
+The images folder is its own entry on the shared hot-reload pass, at `[hotload] watchIntervalTicks` (default 5). One folder walk reports changed, added and removed files together, and any of the three refreshes the visuals of every open menu session and live panel view. Because icons are rebuilt on refresh, if you replace an image file, Gloss re-decodes it without a reload.
 
 ### Pixels to characters
 

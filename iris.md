@@ -21,6 +21,8 @@ jigsaw structures as JSON data packs. Iris assembles them when it generates a ch
 
 > Iris declares `loadbefore: Multiverse-Core`. If you run Multiverse, Iris must start first.
 > If Multiverse starts first, it claims Iris worlds with the vanilla generator.
+> Multiverse cannot create, delete, regenerate, or clone Iris worlds — those commands are
+> refused. Read [Multiverse](/iris/34-multiverse) before running any of them.
 {.is-warning}
 
 ## Permissions
@@ -82,6 +84,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Operator Runbooks](/iris/31-operator-runbooks)
 - [Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [Performance Tuning](/iris/33-performance-tuning)
+- [Multiverse](/iris/34-multiverse)
 {.links-list}
 
 ### Maintainer

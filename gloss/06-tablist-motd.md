@@ -40,7 +40,7 @@ The tablist header, footer and per-group list names live in the single document 
 | `groupListNames` | `true` | When false, Gloss never touches list names and restores any it applied |
 | `nameFormats` | `{}` | Map of group key to list-name template |
 
-This is a single file at the root of the data folder. It is not a folder of documents. It is extracted on first run when missing. `/gloss tablist reset` rewrites it from the shipped copy (permission `gloss.tablist.reset`).
+This is a single file at the root of the data folder. It is not a folder of documents. It is extracted when missing, while `[features] tablist` is on. `/gloss tablist reset` rewrites it from the shipped copy (permission `gloss.tablist.reset`).
 
 If the file is missing or fails to parse at startup, Gloss falls back to
 built-in defaults. Those defaults are `useHeaderFooter` true, header
@@ -136,7 +136,7 @@ A document that violates either rule is refused as a whole. At startup that leav
 
 ### How a ping is answered
 
-`[features] motd` defaults to **`false`**. Gloss extracts and hot-reloads `motd.json` either way. It only registers the ping listener when the feature is on.
+`[features] motd` defaults to **`false`**. The shipped `motd.json` is only written to disk once the feature is on, so a stock data folder has no MOTD document at all and the built-in default stands. Gloss watches and hot-reloads the file either way, and only registers the ping listener when the feature is on. Turning the feature on extracts the document on that reload.
 
 With the feature on, Gloss listens on `ServerListPingEvent` at `EventPriority.LOWEST`. It picks one entry uniformly at random on every ping. A multi-entry document rotates naturally with no timer. Because it runs at the lowest priority, any other MOTD plugin that also handles the event runs later and wins.
 

@@ -48,7 +48,7 @@ A document that fails to parse is logged as `boards/<id>.json: <reason>` and ski
 
 ### The shipped default
 
-`boards/default.json` is extracted on first run when it is missing:
+`boards/default.json` is extracted on first run when it is missing, and only while `[features] boards` is on. With the feature off there is no `boards/` folder at all; turning it on extracts the default on that reload:
 
 ```json
 {

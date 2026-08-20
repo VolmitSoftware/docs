@@ -104,14 +104,15 @@ setting.
    MOTD, chat, bubbles, indicators and drops, in that order.
 8. Construct the HUD action bar, the localization engine, the persistence coordinator and the project
    transaction, then recover the transaction.
-9. Construct `ConfigManager` (which scans `menus/` in its constructor), then `PanelService`
-   (`panels`).
+9. Construct `MenuCatalog` (which scans `menus/` in its constructor) and `ImageAssets`, then
+   `PanelService` (`panels`).
 10. Construct the preview document registry and start watching it (`previews`).
 11. Item providers (`item-providers`), container protection (`protection`), the menu session manager
     (`menus`), the panel runtime (`panel-runtime`), panel creation (`panel-creation`) and editor sync
     (`editor-sync`).
-12. Push the `panel-creation-intake` and `config-watchers` entries, start the preview scale service
-    (`preview-scale`), and register the outgoing `BungeeCord` plugin channel.
+12. Push the `panel-creation-intake` entry, start the `menu-catalog`, `image-assets` and
+    `locale-watcher` watch entries and the preview scale service (`preview-scale`), and register the
+    outgoing `BungeeCord` plugin channel.
 13. Register commands (`commands`), start bStats, register the integration service (`integration`),
     start the integration bridge (`integration-bridge`), register the API service (`api-service`) and
     the PlaceholderAPI expansion (`placeholders`), then publish `GlossAPIProvider`.
@@ -121,10 +122,10 @@ Four ordering constraints in that list are load-bearing:
 - **Importers run after `config.toml` loads and before any service scans.** The HoloUi importer
   overlays `settings.json` keys onto the in-memory boot config. It has to run after the file is
   read but before the typed snapshot is taken. It also writes documents into `menus/`, `panels/` and
-  the rest. It has to finish before `ConfigManager` scans `menus/` in its constructor. It also has
+  the rest. It has to finish before `MenuCatalog` scans `menus/` in its constructor. It also has
   to finish before `PanelService` and the registries scan on start. Importer failures are logged
   and never abort enable. See [Data Files & Hot Reload](/gloss/03-data-files).
-- **Editor sync transaction recovery runs before `ConfigManager` and `PanelService`.** An interrupted
+- **Editor sync transaction recovery runs before `MenuCatalog` and `PanelService`.** An interrupted
   editor sync apply is finished or rolled back while nothing has read those folders yet. The
   services never load a half-applied project. A failure here is fatal to enable, because continuing
   would mean scanning an inconsistent data folder.
@@ -183,7 +184,9 @@ poll callbacks. It is started with the period from `[hotload] watchIntervalTicks
 | `tablist` | `tablist.json` |
 | `bubbles` | `bubbles/` |
 | `motd` | `motd.json` |
-| `menus` | `menus/` and `images/`, plus the localization overlay refresh |
+| `menus` | `menus/`, subdirectories included |
+| `images` | `images/` |
+| `locale` | `language.yml` |
 | `previews` | `previews/` |
 
 ### The IO thread
@@ -213,7 +216,7 @@ moved is where the disk work happens. On an otherwise idle server the polling co
 on `Gloss-Watchdog-IO`, and it scales with the number of watched files times the poll rate — the
 knob for that is `watchIntervalTicks`.
 
-One task instead of ten matters for two more reasons. Each service would otherwise hold its own
+One task instead of twelve matters for two more reasons. Each service would otherwise hold its own
 repeating task and its own timer slot. That would multiply the fixed per-task overhead for work that
 is almost always a no-op modification-time check.
 
@@ -227,19 +230,34 @@ Changing `watchIntervalTicks` on disk restarts the watchdog with the new period 
 config reload. Nothing else restarts it. A `/gloss reload` reuses the running task unless the
 interval actually changed.
 
-No subsystem owns a hot-reload task of its own. `ConfigManager` and `PreviewDocumentRegistry` are
-the two entries that carry extra work beyond a document reload. Both are entries like any other:
+No subsystem owns a hot-reload task of its own. `MenuCatalog` and `PreviewDocumentRegistry` are the
+two entries that carry extra work beyond a document reload. Both are entries like any other:
 
-- `menus` walks `menus/` and `images/` once per pass. That single walk reports changed, created and
-  deleted files together, so the folder is stat-ed once rather than once for edits and again for
-  creations. A `FolderWatcher` consumes each modification-time and size delta exactly once, which is
-  why the phases cannot be split across separate tasks — whichever ran first would eat a change the
-  other one needed. For a changed menu the entry compares the loaded revision, closes every open
-  session of that menu, publishes the new definition and notifies the affected players. The same
-  entry then refreshes the localization overlay.
+- `menus` is a folder-tree `DocumentRegistry` on the same spine as `holograms/` and `boards/`.
+  Discovery, own-write suppression by content hash and per-file parse failure therefore behave the
+  way they do for every other kind, nested subdirectories included; a menu carries no envelope, so
+  the content hash the registry already computes is its revision. One walk reports changed, created
+  and deleted files together, and a `FolderWatcher` consumes each modification-time and size delta
+  exactly once, which is why the phases cannot be split across separate tasks — whichever ran first
+  would eat a change the other one needed. On top of the reload the entry closes every open session
+  of a changed menu, publishes the new definition and notifies the affected players. Its read is
+  taken under the persistence lease, because `menus/` is one of the collections an editor sync
+  transaction stages and swaps, and a pass that read the folder mid-publish would load half a
+  project.
 - `previews` handles edits, creations and deletions together in one pass. A changed preview
   document has to be recompiled before the resolution snapshot can be republished. Every open
   preview is closed so the raycast rebuilds it.
+
+`images` is deliberately not a document registry. An image is bytes an operator dropped in, with no
+id, no envelope and no revision to compare, and a poll that read every file to decide whether it
+changed would decode the whole folder several times a second. It stays a plain folder watch that
+reports paths, and any reported change refreshes the visuals of open menu sessions and panel views.
+`locale` is the third small entry: it refreshes the localization overlay from `language.yml`.
+
+None of these entries creates its folder. `menus/`, `images/` and `panels/` are created by the
+paths that write into them, discovery tolerates a missing root, and a folder that appears later has
+its contents reported as creations. That is why a server whose operator never authors a menu never
+grows a `menus/` folder, and why deleting one does not bring it back on the next pass.
 
 `panels/` is deliberately not watched at all. Panel documents are server-owned and revision-checked.
 A watcher republishing a half-written or revision-stale file would fight the editor sync and
@@ -267,15 +285,20 @@ thread, so project size does not translate into tick time.
 
 ## Document registries and snapshot publication
 
-Each document kind is backed by a `DocumentRegistry`, either folder-backed or single-file backed. A
-registry keeps a mutable map of loaded documents. It publishes an immutable copy of it into a
+Each document kind is backed by a `DocumentRegistry` in one of three layouts: single-file, flat
+folder, or the folder tree `menus/` uses. A registry keeps a mutable map of loaded documents. It publishes an immutable copy of it into a
 `volatile` snapshot field. Readers always take the snapshot, never the mutable map. Rendering
 threads and region threads see a consistent set of documents with no locking. A reload swaps the
 whole set in one reference assignment.
 
-Only files ending in `.json` are read, and only files directly inside the folder. Subfolders are
-ignored. A file that fails to parse is logged as `<kind>/<id>.json <reason>` and skipped. The copy
-already in memory stays live. A bad edit stops applying instead of deleting a working document.
+Only files ending in `.json` are read. A flat-folder registry reads only the files directly inside
+its folder and ignores subfolders; a tree registry walks the whole subtree and derives the id from
+the relative path. A file that fails to parse is logged as one warning line, `<kind>/<id>.json
+<reason>`, and skipped. The copy already in memory stays live. A bad edit stops applying instead of
+deleting a working document.
+
+A registry never creates its folder. A missing root is an empty snapshot, not an error, and the
+folder appearing later reports its contents as creations.
 
 Every loaded document is stored as `GlossDocument(id, contentHash, raw, value, revision)` where
 `contentHash` is the SHA-256 of the raw file text.
@@ -332,8 +355,7 @@ Refresh cadences per surface:
 | Menu, panel and preview sessions | every tick | session tick loop |
 | Preview live fields | every 4 session ticks | `ContainerPreview` refresh interval |
 | Preview access recheck | every 10 session ticks | `ContainerPreview` access interval |
-| `menus/` and `images/` hot reload | 5 ticks fast, 20 ticks slow | `ConfigManager` |
-| Document folders and `config.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
+| Document folders, `images/`, `language.yml` and `config.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
 
 Hologram text is only re-sent when the rendered string actually changed. Bubble motion likewise applies only presentation values that changed, and one multiline entity replaces the previous per-row bubble entities. Preview cells, labels and
 slots are likewise only re-sent when the computed color, component or item differs from what was
@@ -501,7 +523,7 @@ purposes:
 | Purpose | Priority | Time to live | Raised by |
 |---|---|---|---|
 | `gloss:preview` | interactive | 1500 ms | the preview scale service, while a preview is being scaled |
-| `gloss:reload` | notice | 2500 ms | `ConfigManager`, when an open menu's document changed on disk |
+| `gloss:reload` | notice | 2500 ms | `MenuCatalog`, when an open menu's document changed on disk |
 
 Both write to the center and right slots. `gloss:preview` is cleared explicitly when the preview
 ends. Every Gloss segment is cleared for a player on quit.

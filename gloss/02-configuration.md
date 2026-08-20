@@ -53,7 +53,7 @@ A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
 
 ## `[features]`
 
-Master switches. If you turn one off, that subsystem stops rendering or listening. Its documents still load. They still hot-reload. Its commands still edit them.
+Master switches. If you turn one off, that subsystem stops rendering or listening. For most kinds the documents still load, still hot-reload and are still editable by command. `emoji`, `animations` and `previews` are the three that shut down completely: with those off nothing of theirs is loaded or watched at all.
 
 | Key | Default | Gates |
 |---|---|---|
@@ -71,6 +71,8 @@ Master switches. If you turn one off, that subsystem stops rendering or listenin
 | `motd` | `false` | The custom server list MOTD |
 
 `motd` is the only feature that ships off. Gloss reads `panels` and `previews` once during enable. The panel service and the preview registry start only when their feature is on at that moment.
+
+Shipped defaults follow the toggle. A feature that is off extracts nothing and leaves no folder behind, which is why a stock data folder has no `motd.json` and a server with previews off has no `previews/`. Turning a feature on extracts its defaults on that reload, except for `previews`, which needs the restart described above. See [Getting Started](/gloss/01-getting-started).
 
 ## `[hotload]`
 

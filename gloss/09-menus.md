@@ -19,7 +19,7 @@ plugins/Gloss/menus/     menu documents
 plugins/Gloss/images/    image assets referenced by textImage and animatedTextImage icons
 ```
 
-Both directories are created on first enable if they are missing. Neither is seeded with content. A fresh install has no menus until you create one.
+Neither directory is created up front and neither is seeded with content. `menus/` appears when the first menu document is written. `images/` appears when you put an image file in it. A fresh install has no menus until you create one, and no folder standing empty waiting for one.
 
 Menus are discovered recursively. A file is accepted when every one of these holds:
 
@@ -197,20 +197,20 @@ the menu.
 
 ### Parse failures
 
-A zero-byte file logs `Menu config "<id>.json" is empty, ignoring.` and is skipped. Any other failure logs `An error occurred while parsing menu config "<id>.json":` with a stack trace. In both cases the previously registered definition, if there was one, stays live. A bad edit does not delete a working menu. It just stops applying until the file parses again. A failed file never partially registers.
+A failed file logs one warning line, `menus/<id>.json: <reason>`, exactly as every other document kind does. A zero-byte file reports `menu document must not be empty`. In both cases the previously registered definition, if there was one, stays live. A bad edit does not delete a working menu. It just stops applying until the file parses again. A failed file never partially registers.
 
 ## Hot reload
 
-Menus and images are watched by the menu subsystem own pair of tasks, not by the `DataWatchdog` that covers the enveloped document kinds. The intervals are fixed. `[hotload] watchIntervalTicks` does not change them.
+`menus/` is a document registry on the shared `DataWatchdog` pass, like `holograms/` and `boards/`. `images/` is a second entry on the same pass. Both run at `[hotload] watchIntervalTicks` (default 5).
 
-| Interval | Detects | Effect |
-|---|---|---|
-| 5 ticks | modified files, plus created and deleted paths | the file is re-parsed. If the content hash changed, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice and an experience-orb pickup sound, the registry entry is replaced, and any panel showing that menu reloads it |
-| 20 ticks | created and deleted paths | created files are parsed and registered. Deleting a file unregisters its id and closes matching sessions silently |
+| Entry | Effect |
+|---|---|
+| `menus` | Changed, created and deleted files are reported by one folder walk. A file whose content hash actually differs is re-parsed and its registry entry replaced, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice and an experience-orb pickup sound, and any panel showing that menu reloads it. Deleting a file unregisters its id and closes matching sessions silently |
+| `images` | A changed, added or removed image refreshes the visuals of open sessions and panel views |
 
-Both passes apply the same recursive filter. If you create a directory, Gloss registers every accepted file beneath it. If you delete a directory, Gloss unregisters every menu id under that path prefix, one by one.
+The walk applies the same recursive filter as the boot scan, so subdirectories are covered. If you create a directory, Gloss registers every accepted file beneath it. If you delete a directory, Gloss unregisters every menu id under that path prefix, one by one.
 
-Changes under `images/` do not reload menu documents. They refresh the visuals of open sessions and panel views on the same cadence. An edited PNG appears without reopening anything.
+Changes under `images/` do not reload menu documents. Because icons are rebuilt on refresh, an edited PNG appears without reopening anything.
 
 > If you delete a menu file, Gloss unregisters the menu at once and closes anyone viewing it. There is no undo and no backup for a hand-deleted file.
 {.is-warning}

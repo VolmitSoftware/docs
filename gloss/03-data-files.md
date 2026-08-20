@@ -64,16 +64,21 @@ Only one pass is ever in flight. If a pass is still running when the next tick f
 | `bubbles` | Republishes the style snapshot. Styles are read per bubble, so the change applies to the next bubble |
 | `tablist` | Clears the applied header/footer and list-name caches so the next driver tick re-pushes them, or resets them on players when the document turns those features off |
 | `motd` | Republishes the document snapshot. The next ping uses it |
-| `menus` | Re-scans `menus/` and `images/`. A changed menu whose content hash actually differs destroys every open session of that menu, notifies those players, and re-registers the definition. A changed, added or removed image refreshes every open menu session and every live panel. The same pass also refreshes the localization overlay |
+| `menus` | Re-scans `menus/` and every subdirectory below it. A changed menu whose content hash actually differs destroys every open session of that menu, notifies those players, and re-registers the definition |
+| `images` | A changed, added or removed image file refreshes every open menu session and every live panel |
+| `locale` | Refreshes the localization overlay from `language.yml` |
 | `previews` | Recompiles changed and added `previews/*.json`, drops deleted ones, republishes the resolution snapshot and closes every open preview so the raycast rebuilds it |
 
-Every watcher, menus and previews included, is one entry on that single
-watchdog task. No subsystem runs a hot-reload task of its own. The
-`menus` entry walks `menus/` and `images/` once per pass, and that single
-walk reports changed, created and deleted files together. It does not
-stat the folder twice. A `FolderWatcher` consumes each change exactly
-once, so a file that is created and edited between two polls still
-applies once, in order, rather than being split across passes.
+Every watcher is one entry on that single watchdog task. No subsystem
+runs a hot-reload task of its own, and `menus/` is no longer the
+exception: it is a folder-tree document registry on the same spine as
+`holograms/` and `boards/`, so its discovery, self-write suppression and
+parse-failure handling are the ones described on this page. `images/`
+stays a plain folder watch, because an image file is bytes an operator
+dropped in rather than a document with an id and a revision. A
+`FolderWatcher` consumes each change exactly once, so a file that is
+created and edited between two polls still applies once, in order,
+rather than being split across passes.
 
 A config edit picked up by the watchdog only cycles the services whose
 section moved. Config sections compare as whole values, so editing
@@ -108,9 +113,15 @@ A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skip
 
 `tablist.json` and `motd.json` live at the root of `plugins/Gloss/`. They do not live inside a folder of their own.
 
+A folder in that table exists only once there is something in it. Gloss creates `holograms/`, `menus/`, `images/` and `panels/` when the first document or asset is written to them, not at enable, and it never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it on the next pass either; it comes back the next time a document of that kind is saved. Removing the folder itself is not the same as removing the files inside it — the documents Gloss already loaded stay live until a restart, where deleting individual files unregisters them on the next pass.
+
 ## Shipped defaults and resets
 
 At enable, each kind that ships defaults extracts only the files that are missing from its folder. An edited file is never overwritten. A deleted file returns on the next boot. A file that is missing from the jar logs `<kind>/<name>.json: missing from the jar, not extracted.` and is skipped.
+
+Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `bubbles/` only while `chatBubbles` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
+
+Turning one of those features on extracts its defaults on the config reload rather than at the next restart. `previews` is again the exception: the preview registry is only constructed during enable, so `previews/` does not appear until the server restarts.
 
 The reset commands re-extract on demand and **do** overwrite. Each takes an optional name. The default is `*` for every shipped document of that kind. `/gloss tablist reset` and `/gloss motd reset` take no argument. Each has exactly one document.
 
