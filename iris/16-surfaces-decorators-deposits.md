@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,7 @@ Related:
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## The mental model
 
@@ -43,6 +44,8 @@ Everything else lands in later stages. Using the `OVERWORLD` pipeline order:
 | 6 | floating decoration, perfection, custom |
 
 Two consequences worth internalising. Deposits go in *after* caves are cut and skip any cell carrying a cavern mark. Veins never hang in open air. Decorators run after carving. A cave that broke the surface does not get flowers planted over the hole.
+
+A cold `derivative` tints grass and can freeze water. It does not stamp snow layers. Snow layers come from Iris decorators, object `snow`, or `importedFeatures` with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ## Walkthrough: a surface, a flower scatter, and an ore vein
 

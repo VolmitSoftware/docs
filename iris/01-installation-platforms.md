@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -236,7 +236,7 @@ Iris replaces the chunk generator outright, so vanilla and mod worldgen only run
 | Mod biomes | Only as a `derivative`, `vanillaDerivative`, `biomeScatter`, or `biomeSkyScatter` target | Iris always picks the biome from the pack |
 | Mob spawning, including mod mobs | Yes | Biome spawn tables are merged with the vanilla derivative's |
 
-With `importedFeatures` off — the default — chunk output is pure Iris. The full control reference is [94 - API - Modded](/iris/94-api-modded), which also applies conceptually on Bukkit for the imported native stages.
+With `importedFeatures` off — the default — chunk output is pure Iris. Pack-author recipes for features, mobs, loot, saplings, and dimension-type gameplay are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The loader-level feature contract is restated on [94 - API - Modded](/iris/94-api-modded).
 
 Separately from that flag, Iris custom biomes inherit the biome tags of their vanilla derivative on every platform. Tag-driven content such as `#minecraft:is_overworld` and mod spawn rules therefore applies to Iris custom biomes without any extra configuration.
 

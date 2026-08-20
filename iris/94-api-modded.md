@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -580,6 +580,8 @@ placement type that must be copied throws during level structure-state
 construction, so binding fails rather than a partial override being
 applied. Full semantics and the Nether `1.1` example are in
 [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
+
+Pack-author recipes for this control, including “keep Iris trees, import vanilla ores”, live in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The rest of this section is the loader-level contract.
 
 ### `importedFeatures`
 

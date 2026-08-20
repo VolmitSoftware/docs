@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,7 @@ Related:
 - [20 - Object Placement](/iris/20-object-placement)
 - [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## The mental model
 

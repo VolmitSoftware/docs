@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ The four platforms generate identical chunks when artifacts, pack bytes, seed, a
 
 ## Who this documentation is for
 
-There are three audiences. The page numbers reflect them. Pages `00`–`33` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
+There are three audiences. The page numbers reflect them. Pages `00`–`35` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
 
 Do not read the set from front to back. Pick the outcome you want from the table below. Follow only that row.
 
@@ -26,6 +26,7 @@ Do not read the set from front to back. Pick the outcome you want from the table
 | Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) |
 | Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 | Place a building or structure | [18 - Structures Overview](/iris/18-structures-overview) → [19 - Objects](/iris/19-objects) → [20 - Object Placement](/iris/20-object-placement) → [21 - Jigsaw Structures](/iris/21-jigsaw-structures) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| Control what vanilla still generates | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for structures |
 | Ship a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) → [31 - Operator Runbooks](/iris/31-operator-runbooks) |
 | Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
@@ -82,6 +83,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Object placement | Placing objects in biomes and regions | [20 - Object Placement](/iris/20-object-placement) |
 | Jigsaw | Iris multi-piece structures | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Native structures | Vanilla / datapack structures on Iris | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| Vanilla passthrough | Enable, deny, or replace vanilla features, mobs, loot, saplings, and gameplay | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers) |
 | Pack extensions | Reusable snippets and the inactive pack-mod schema | [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |
@@ -93,6 +95,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Operator checks | Manual verification | [31 - Operator Runbooks](/iris/31-operator-runbooks) |
 | Determinism | Goldenhash cross-platform gate | [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash) |
 | Performance | Threads, mantle, SIMD, pregen caps | [33 - Performance Tuning](/iris/33-performance-tuning) |
+| Multiverse | What Multiverse may and may not do with Iris worlds | [34 - Multiverse](/iris/34-multiverse) |
 | Maintainer — MC version bump | Version bump procedure | [85 - Maintainer - MC Version Bump](/iris/85-maintainer-mc-version-bump) |
 | Maintainer — release | Release steps | [86 - Maintainer - Release Checklist](/iris/86-maintainer-release-checklist) |
 | Maintainer — readiness | Living readiness tracker | [87 - Maintainer - Release Readiness](/iris/87-maintainer-release-readiness) |

@@ -84,7 +84,7 @@ When entity counts exceed soft caps, this feature removes lowest-priority eligib
 
 ### `item-super-stacker`
 
-This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous target item. React removes the Gloss presentation before deleting a bundle, republishes loaded flagged bundles, and reconciles sampled bundles through a 30-second per-entity cache. Gloss owns display creation and renders the React-configured bundle header, material rows, and remainder row vertically while real drops are active.
+This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. Matching ordinary stacks now consolidate directly up to their native stack limit instead of waiting for Minecraft's item-merge timer, so dense cobblestone and similar mining drops collapse on the first deferred spawn pass. One pass can consume several nearby entities but stops at its configured budget; only its first merge emits the particle trail. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous target item. React removes the Gloss presentation before deleting a bundle, republishes loaded flagged bundles, and reconciles sampled bundles through a 30-second per-entity cache. Gloss owns display creation and renders the React-configured bundle header, material rows, and remainder row vertically while real drops are active.
 
 - **Class:** `FeatureItemSuperStacker`
 - **Listener:** yes
@@ -94,12 +94,15 @@ This feature merges nearby dropped items into flagged bundles. Pickup explodes t
 | `enabled` | boolean | `true` | Enables or disables this feature. |
 | `maxItemsPerBundle` | int | `64` | Max items per bundle. |
 | `searchRadius` | double | `3` | Search radius (blocks). |
+| `mergeMatchingStacks` | boolean | `true` | Immediately consolidate similar ordinary stacks up to the material's native maximum. |
+| `maxMergesPerPass` | int | `16` | Nearby entities one pass may consume; runtime use is bounded to 1 – 64. |
+| `spawnMergeDelayTicks` | int | `1` | Delay before the first post-spawn cluster pass; runtime use is bounded to 1 – 20 ticks. |
 | `glossBundleHeaderFormat` | string | `"&eBundle &8(&e{total} items&8)"` | First vertical line. `{total}` is the summed item count. |
 | `glossBundleEntryFormat` | string | `"&7- &f{count}x {type}"` | One vertical line per aggregated material. |
 | `glossBundleMoreFormat` | string | `"&8+{remaining} more"` | Final line when material types were hidden by the limit. |
 | `glossBundleEntryLimit` | int | `3` | Material rows shown before the remainder row; clamped to 1 – 10. |
 
-The Gloss integration is optional and discovered through Bukkit's service registry. React has no compile or runtime classloader dependency on Gloss. If Gloss is absent, bundling and pickup behavior are unchanged. The three templates are passed only for flagged bundle refreshes; Gloss's ordinary drop and bundle templates continue to style every other item.
+Every scalar field in this table is exposed automatically in Reactor's web `Configure` sheet for Item Super Stacker and in React's in-game configurator. The Gloss integration is optional and discovered through Bukkit's service registry. React has no compile or runtime classloader dependency on Gloss. If Gloss is absent, bundling and pickup behavior are unchanged. The three templates are passed only for flagged bundle refreshes; Gloss's ordinary drop and bundle templates continue to style every other item.
 
 ### `item-backpressure`
 

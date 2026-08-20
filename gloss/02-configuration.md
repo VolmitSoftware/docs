@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Every runtime setting lives in `plugins/Gloss/config.toml`. Gloss generates the file with a comment above each knob. It rewrites the file on load so the values on disk are the values in effect. It watches the file while the server runs. A save reloads Gloss. Content such as tablist text, MOTD lines and bubble styling is not in this file. That content lives in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
+Feature switches and general runtime settings live in `plugins/Gloss/config.toml`. Gloss generates the file with a comment above each knob, rewrites it on load so the values on disk are the values in effect, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## The file model
 
@@ -178,7 +178,11 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `preserveCustomNames` | `true` | — | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
 | `useItemDisplayNames` | `true` | — | Use an item's display name from its item meta as `{type}` instead of the pretty material name |
 
-## `[realDrops.limits]`
+## `real-drops/default.json`
+
+`[features] realDrops` is the only real-drop setting in `config.toml`. The complete presentation profile lives in `plugins/Gloss/real-drops/default.json`, is extracted when the feature is enabled, and hot-reloads without a full config reload. The web editor's **Real drops** document exposes every field below and exports directly to that path.
+
+### `limits`
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
@@ -189,7 +193,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `viewRange` | `32.0` | 4 – 128 | Item-model tracking range in blocks |
 | `spread` | `0.18` | 0 – 1 | Separation in blocks between additional stack models |
 
-## `[realDrops.scale]`
+### `scale`
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
@@ -197,18 +201,19 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `flatItems` | `0.65` | 0.05 – 2 | Non-block item model scale |
 | `thinBlocks` | `0.45` | 0.05 – 2 | Slab, carpet, pressure-plate, and snow model scale |
 
-## `[realDrops.motion]`
+### `motion`
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
 | `tumble` | `true` | — | Rotate airborne models |
+| `speedMultiplier` | `1.35` | 0.1 – 4 | Multiplier applied to all three authored tumble speeds; `1` uses the axis values unchanged |
 | `degreesPerSecondX` | `160.0` | -1440 – 1440 | Base X-axis tumble speed |
 | `degreesPerSecondY` | `120.0` | -1440 – 1440 | Base Y-axis tumble speed |
 | `degreesPerSecondZ` | `100.0` | -1440 – 1440 | Base Z-axis tumble speed |
 | `variance` | `0.2` | 0 – 1 | Stable per-item variation applied to each configured speed |
 | `changeOnBounce` | `true` | — | Select another deterministic spin after an upward bounce |
 
-## `[realDrops.landing]`
+### `landing`
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
@@ -217,7 +222,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `randomYaw` | `true` | — | Give each item a stable UUID-derived yaw |
 | `transitionTicks` | `4` | 0 – 20 | Client interpolation duration into the landing pose |
 
-## `[realDrops.labels]`
+### `labels`
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
@@ -226,7 +231,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `scale` | `0.85` | 0.1 – 4 | TextDisplay scale |
 | `viewRange` | `32.0` | 4 – 128 | Label tracking range in blocks |
 | `billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, `VERTICAL` | Billboard constraint |
-| `seeThrough` | `false` | — | Draw the label through blocks |
+| `seeThrough` | `true` | — | Draw the label through blocks |
 | `shadow` | `true` | — | Draw the text shadow |
 | `background` | `true` | — | Draw the configured full background |
 | `backgroundRed` | `0` | 0 – 255 | Background red channel |
@@ -234,7 +239,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `backgroundBlue` | `0` | 0 – 255 | Background blue channel |
 | `backgroundAlpha` | `80` | 0 – 255 | Background alpha channel |
 
-## `[realDrops.filters]`
+### `filters`
 
 | Key | Default | Meaning |
 |---|---|---|

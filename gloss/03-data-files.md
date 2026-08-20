@@ -8,11 +8,11 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji and the tablist. Everything hot-reloads. Edit a file, save it, and the change applies within a few ticks. No command and no restart is required.
+All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, real-drop settings and the tablist. Everything hot-reloads. Edit a file, save it, and the change applies within a few ticks. No command and no restart is required.
 
 ## The document envelope
 
-Every hologram, board, emoji, animation, bubble style, tablist and MOTD document starts with the same two keys:
+Every hologram, board, emoji, animation, bubble style, real-drop settings, tablist and MOTD document starts with the same two keys:
 
 ```json
 {
@@ -21,7 +21,7 @@ Every hologram, board, emoji, animation, bubble style, tablist and MOTD document
 }
 ```
 
-`schemaVersion` must match that document kind. Holograms, boards, emoji, animations, tablist and MOTD use `1`; bubble styles use `2`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder name (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `tablist`, `motd`). On enable, Gloss atomically replaces only a `bubbles/default.json` whose bytes are identical to the former shipped schema-1 default with the new shipped schema-2 default and logs the upgrade. An edited or reformatted schema-1 bubble style is not interpreted as schema 2: update its shape before loading it on this release.
+`schemaVersion` must match that document kind. Holograms, boards, emoji, animations, real-drop settings, tablist and MOTD use `1`; bubble styles use `2`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder or file kind (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `real-drops`, `tablist`, `motd`). On enable, Gloss atomically replaces only a `bubbles/default.json` whose bytes are identical to the former shipped schema-1 default with the new shipped schema-2 default and logs the upgrade. An edited or reformatted schema-1 bubble style is not interpreted as schema 2: update its shape before loading it on this release.
 
 `revision` must be between `1` and `9007199254740991`. That is the largest integer a browser can represent exactly. Anything outside that range is rejected with `<kind> revision must be between 1 and 9007199254740991`. The revision is server-owned. Gloss increments it by one on every write it makes. Revision-checked mutations refuse to run when the document on disk has moved on. They report `document <id> is at revision <actual>, expected <expected>`. A hand edit of a file does not need you to bump the revision. If you leave it alone, the web editor and the command layer both see the file as unchanged in revision terms. Bump it if you care about that.
 
@@ -62,6 +62,7 @@ Only one pass is ever in flight. If a pass is still running when the next tick f
 | `emoji` | Rebuilds the entire replacement table from the folder snapshot, ordered by document id |
 | `animations` | Unregisters every `\|animation.<id>\|` text function and re-registers them from the snapshot |
 | `bubbles` | Republishes the style snapshot. Styles are read per bubble, so the change applies to the next bubble |
+| `real-drops` | Rebuilds the cached presentation profile, recreates active drop displays, and rehydrates loaded items on their owning threads |
 | `tablist` | Clears the applied header/footer and list-name caches so the next driver tick re-pushes them, or resets them on players when the document turns those features off |
 | `motd` | Republishes the document snapshot. The next ping uses it |
 | `menus` | Re-scans `menus/` and every subdirectory below it. A changed menu whose content hash actually differs destroys every open session of that menu, notifies those players, and re-registers the definition |
@@ -106,6 +107,7 @@ A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skip
 | Emoji | `emoji/<id>.json` | yes | 67 documents | `/gloss emoji reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Animations | `animations/<id>.json` | yes | `rainbow` | `/gloss animations reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Bubble styles | `bubbles/<id>.json` | yes | `default` | `/gloss bubbles reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
+| Real-drop settings | `real-drops/default.json` | yes | `default` | — | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Menus | `menus/**.json` | no, hash revision | none | — | [Hologram Menus](/gloss/09-menus) |
 | Images | `images/<file>` | not JSON | none | — | [Icons](/gloss/11-icons) |
 | Container previews | `previews/<id>.json` | no | 13 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
@@ -119,7 +121,7 @@ A folder in that table exists only once there is something in it. Gloss creates 
 
 At enable, each kind that ships defaults extracts only the files that are missing from its folder. An edited file is never overwritten. A deleted file returns on the next boot. A file that is missing from the jar logs `<kind>/<name>.json: missing from the jar, not extracted.` and is skipped.
 
-Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `bubbles/` only while `chatBubbles` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
+Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `bubbles/` only while `chatBubbles` is on, `real-drops/` only while `realDrops` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
 
 Turning one of those features on extracts its defaults on the config reload rather than at the next restart. `previews` is again the exception: the preview registry is only constructed during enable, so `previews/` does not appear until the server restarts.
 

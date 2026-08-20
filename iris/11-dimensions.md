@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,7 @@ Related:
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension)
 
 ## Decide these before you create a world
@@ -116,7 +117,7 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 
 ## Environment and dimension-type options
 
-`environment` picks which vanilla dimension template Iris starts from when it generates this dimension type. `dimensionOptions` then overrides individual attributes of that template. Together they control sky, fog, ambient light, portal scale, whether beds work, whether raids can start, and the rest of the dimension-type surface. They do not change terrain.
+`environment` picks which vanilla dimension template Iris starts from when it generates this dimension type. `dimensionOptions` then overrides individual attributes of that template. Together they control sky, fog, ambient light, portal scale, whether beds work, whether raids can start, and the rest of the dimension-type surface. They do not change terrain. Pack-author recipes are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ```json
 {
@@ -191,7 +192,7 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `coordFractureDistance` | double | `20` | How far, in blocks, coordinate warping can displace a sample. This produces Iris characteristic swirls. Set to 0 for straight, unwarped borders |
 | `coordFractureZoom` | double | `8` | Frequency of that warping. Lower values warp more rapidly and more violently. The shipping overworld uses `0.15` |
 | `dimensionAngleDeg` | double | `0` | Rotates every input coordinate by this angle. Breaks up axis-aligned artifacts. Pick something off 45 and 90. The shipping overworld uses 69 |
-| `focus` | string | `""` | Forces the whole world to one biome load key. Testing only. Remove before packaging |
+| `focus` | string | `""` | Forces the whole world to one biome load key, in the **land** role. A sea biome under `focus` generates as land, so sea and shore structure eligibility never runs. Testing only. Remove before packaging |
 | `focusRegion` | string | `""` | Forces the whole world to one region load key. Testing only. Remove before packaging |
 
 ## Rock, fluid, and overlay noise
@@ -312,7 +313,7 @@ These fields gate the passes that run after terrain and carving. All of them hot
 | `requireObjectSurfaceSupport` | boolean | `true` | Refuses to place surface objects and trees that would hang over a carved opening. If you turn it off, floating buildings appear above caves. The per-placement flag can only opt out further. It never overrides this on |
 | `objectSurfaceSupportBuffer` | int | `2` | Minimum solid blocks required beneath a surface placement, 0 to 16. The effective value is the larger of this and the placement own buffer. Raising it hardens every placement in the dimension at once |
 | `preventLeafDecay` | boolean | `false` | Marks generated leaves persistent so they never decay when the supporting log is removed. Turn it on for packs whose custom trees have unusual leaf-to-log distances |
-| `treeSettings` | `IrisTreeSettings` | disabled default | Overrides vanilla sapling growth with pack objects. See [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
+| `treeSettings` | `IrisTreeSettings` | disabled default | Overrides vanilla sapling growth with pack objects. Off until `enabled` is true. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). Fields in [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 
 ## Structures and datapacks
 
@@ -344,8 +345,8 @@ Dimension-level `structures` entries are Iris placements considered everywhere i
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
 | `structures` | `IrisStructurePlacement[]` | empty | Iris structure placements at dimension scope. Use this for content that must exist regardless of biome, such as a global stronghold analogue or a native structure you are re-anchoring |
-| `importedStructures` | `IrisImportedStructureControl` | default | Allow/deny and Y-adjustment rules for every registered native structure. Every registered structure generates by default. `disabled` is the only deny list. `adjustments` can shift, band, encase, or stilt a structure into Iris terrain |
-| `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes) over Iris terrain. Filter by `disabled` keys, `steps`, and `disabledSteps`. Carvers are never imported |
+| `importedStructures` | `IrisImportedStructureControl` | default | Allow/deny and Y-adjustment rules for every registered native structure. Every registered structure generates by default. Deny families with `disabled`, one complete key with `disabledExact`. `adjustments` can shift, band, encase, or stilt a structure into Iris terrain. Recipes in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` keys, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | `datapackImports` | string[] | empty | External datapack URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
 
 Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, `CAVE_ANY`. Details in [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), and [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).

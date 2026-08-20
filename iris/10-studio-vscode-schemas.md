@@ -72,7 +72,7 @@ Studio settings live in `settings.json` under `studio` (`IrisSettings.IrisSettin
 |-----|---------|---------|
 | `openVSCode` | `true` | When true and the JVM is not headless, `open`/`vscode` may launch the desktop opener on the pack's `*.code-workspace`. Set false on servers where a desktop launch would be pointless or unwanted |
 | `entitySpawning` | `true` | Only affects Studio worlds. False stops Iris ambient entity spawning there. Production worlds always spawn regardless of this key |
-| `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds. Set false to let them run while authoring |
+| `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds. Set false to let them run while authoring. Night and storm Iris spawners do not fire here until this is false or you test in a production world |
 | `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot |
 
 ## Hotload rules

@@ -2,7 +2,7 @@
 title: "Trees, Fungi, Coral, Crystals, Formations, Ruins"
 description: "Iris documentation: Trees, Fungi, Coral, Crystals, Formations, Ruins"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,7 @@ Related:
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## The mental model
 
@@ -451,6 +452,8 @@ Snippet key: `ruin-decorator`.
 | `sizes` | `IrisTreeSize` entries (`width` by `depth`) describing the sapling footprints it applies to. Width and depth are matched either way round, so a 1x2 entry also matches 2x1 |
 | `anyTree` | Removed. It was never read at runtime. Matching is by `treeTypes` only |
 | `anySize` | Removed. It was never read at runtime. Matching is by `sizes` only |
+
+Vanilla sapling growth continues until this is on. The enable recipe is [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) Task 4.
 
 Dimension `treeSettings` gates the whole feature:
 

@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,7 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
 - [25 - Pack Management](/iris/25-pack-management)
 - [04 - Commands & Permissions](/iris/04-commands-permissions)

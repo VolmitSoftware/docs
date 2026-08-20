@@ -2,12 +2,12 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page covers structures that come from outside Iris packs. That includes vanilla structures in Iris worlds and datapack structures. It also covers the Minecraft structure-block and `.nbt` system. It covers conversion of native structures into editable Iris resources. Objects and Iris jigsaws are covered in [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+This page covers structures that come from outside Iris packs. That includes vanilla structures in Iris worlds and datapack structures. It also covers the Minecraft structure-block and `.nbt` system. It covers conversion of native structures into editable Iris resources. Objects and Iris jigsaws are covered in [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), and [21 - Jigsaw Structures](/iris/21-jigsaw-structures). Vanilla features, mobs, loot, saplings, and dimension-type gameplay are [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 Terminology:
 
@@ -18,15 +18,16 @@ Command listings are Bukkit/Paper. Modded loaders expose a reduced set.
 
 ## Pick a task
 
-These five tasks are separate workflows. None of them requires the others.
+These tasks are separate workflows. None of them requires the others.
 
 | Goal | Go to |
 |---|---|
 | A vanilla structure generates but sits badly in Iris terrain | Task 1 |
 | Add a third-party datapack (Terralith-style) to one Iris dimension | Task 2 |
 | Stop a structure or a whole namespace from generating | Task 3 |
-| Keep a datapack's buildings but choose where they go yourself | Task 4 |
+| Allow selected vanilla or datapack structures and choose where they go yourself | Task 4 |
 | Edit a registered structure's blocks or graph inside Iris | Task 5 |
+| Import vanilla ores, geodes, or snow, or control mobs, loot, and saplings | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 
 Every task below changes newly generated chunks only. Nothing rewrites existing terrain or existing starts.
 
@@ -127,7 +128,50 @@ Two things catch people out. A namespace disable needs the trailing colon — `"
 
 ## Task 4: Place registered structures only where Iris says
 
-Use this when a datapack's buildings should exist but its own structure sets should not decide where. Complete Task 2 first so the source is ingested and the server has restarted.
+Use this when a vanilla or datapack building should exist but its own structure sets should not decide where. Explicit `nativeStructures` placements bypass both `importedStructures` deny lists and the registered structure's normal biome eligibility. For a datapack source, complete Task 2 first so its key is registered.
+
+### Allow one vanilla structure in one chosen biome
+
+This example disables every vanilla structure at dimension scope, then allows native witch huts only from one Iris surface biome.
+
+1. Add the namespace deny to the dimension JSON:
+
+   ```json
+   {
+     "importedStructures": {
+       "disabled": ["minecraft:"]
+     }
+   }
+   ```
+
+2. Merge this placement into the existing `structures` array in the chosen `biomes/<biome>.json` file:
+
+   ```json
+   {
+     "structures": [
+       {
+         "placementId": "witch-hut",
+         "nativeStructures": [
+           { "structure": "minecraft:swamp_hut" }
+         ],
+         "distribution": "RANDOM_SPREAD",
+         "spacing": 32,
+         "separation": 8,
+         "salt": 928341,
+         "anchor": "SURFACE",
+         "underwater": false
+       }
+     ]
+   }
+   ```
+
+3. Validate the pack, update the world snapshot or open a fresh world, and restart. Run `/iris structure verify <dimension> radius=48`; `minecraft:swamp_hut` must report `[iris-planned]` even though the `minecraft:` namespace is disabled.
+
+The placement is eligible when the selected start chunk's center belongs to that Iris biome. It bypasses the witch hut's normal swamp-biome restriction and retains the native generator and structure identity. A hut can extend across the biome boundary after its start qualifies. Smaller `spacing` values make attempts more frequent. Do not put `nativeSuppression: "REPLACE_SOURCE"` on this biome entry: replacement suppression is valid only at dimension scope, and the namespace deny already stops natural vanilla starts.
+
+If the dimension should retain other vanilla structures, deny only `minecraft:swamp_hut` through `disabledExact` instead of denying `minecraft:`.
+
+### Place an ingested datapack structure
 
 1. Confirm the keys with `/iris structure list <dimension>`.
 2. Merge this into that dimension. The `disabled` entry kills the datapack's own generation.

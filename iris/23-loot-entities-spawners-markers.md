@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,7 @@ Related:
 - [20 - Object Placement](/iris/20-object-placement)
 - [03 - Configuration](/iris/03-configuration)
 - [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## The mental model
 
@@ -27,6 +28,8 @@ Two independent pipelines share the loot table format.
 **Containers.** When a chunk finishes generating, Iris walks the blocks it recorded and fills every storage chest it placed. It builds a list of loot tables for that exact block, then rolls each one and drops the results into the inventory. The list comes from up to four sources, in this order. First is the object placement that owns the block. Then come the dimension, region, surface biome, and cave biome the block sits in. Each source can add to the list, wipe it, or only contribute when nothing else did.
 
 **Ambient mobs.** A background loop ticks each Iris world roughly twice a second. Each tick it measures how crowded the world is. If there is room, it picks a handful of loaded chunks and tries one spawn in each. A spawn attempt gathers every spawner the dimension, region, and surface biome list. It throws out the ones whose time, weather, rate, or crowding gates fail. It then pools their entries, picks exactly one, and places one to a few mobs.
+
+Vanilla natural spawning is a third pipeline. It stays on via the biome `vanillaDerivative` unless you replace that table. Iris spawners do not turn it off. Custom biome `spawns` merge with it. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 Markers bolt the second pipeline onto the first. An object placement can tag specific blocks it places. A marker definition attaches spawners to whatever carries that tag. That is how you get mobs that appear inside a specific ruin rather than anywhere in the biome.
 

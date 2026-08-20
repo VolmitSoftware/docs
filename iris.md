@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,6 +70,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Jigsaw Structures](/iris/21-jigsaw-structures)
 - [Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [Pack Mods & Snippets](/iris/24-pack-mods-snippets)
 - [Pack Management](/iris/25-pack-management)
 {.links-list}

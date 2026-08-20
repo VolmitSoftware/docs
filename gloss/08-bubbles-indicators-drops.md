@@ -307,48 +307,49 @@ Spawn, vanilla merge, pickup, hopper pickup, despawn, entity load, and entity un
 
 `[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. One non-persistent `ItemDisplay` in explicit `FIXED` render mode follows the item as the visible carrier; additional stack models and the optional `TextDisplay` label ride that carrier as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. This feature uses Bukkit display entities and the Gloss scheduler; it does not use ProtocolLib or a new packet dependency.
 
-Airborne models update their carrier position and transformation every `[realDrops.limits] updateIntervalTicks` and let client interpolation smooth the interval. Once grounded, they only check for movement or stack changes every `settledPollIntervalTicks`. A stack uses one to five one-count models as a size cue, bounded by `maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. If the complete initial presentation does not fit, Gloss leaves that item vanilla-visible.
+The feature switch remains `[features] realDrops` in `config.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. Airborne models update their carrier position and transformation every `limits.updateIntervalTicks` and let client interpolation smooth the interval. The three authored axis speeds are multiplied by `motion.speedMultiplier`, which ships at `1.35`; setting it to `1` uses the axis values unchanged. Once grounded, models only check for movement or stack changes every `limits.settledPollIntervalTicks`. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. If the complete initial presentation does not fit, Gloss leaves that item vanilla-visible.
 
 | Key | Default | Range / behavior |
 |---|---:|---|
 | `[features] realDrops` | `true` | Enables the complete physical presentation |
-| `[realDrops.limits] updateIntervalTicks` | `2` | Airborne transformation cadence; 1 – 20 |
-| `[realDrops.limits] settledPollIntervalTicks` | `20` | Grounded state and stack check; 2 – 200 |
-| `[realDrops.limits] maxVisualsPerStack` | `3` | Item models per stack; 1 – 5 |
-| `[realDrops.limits] maxVisualsPerChunk` | `128` | Gloss-owned item and text displays per chunk; 8 – 1024 |
-| `[realDrops.limits] viewRange` | `32.0` | Item-model tracking range; 4 – 128 blocks |
-| `[realDrops.limits] spread` | `0.18` | Separation of additional stack models; 0 – 1 block |
-| `[realDrops.scale] defaultScale` | `0.4` | Ordinary block models; 0.05 – 2 |
-| `[realDrops.scale] flatItems` | `0.65` | Non-block item models; 0.05 – 2 |
-| `[realDrops.scale] thinBlocks` | `0.45` | Slabs, carpets, pressure plates, and snow; 0.05 – 2 |
-| `[realDrops.motion] tumble` | `true` | Rotates airborne models |
-| `[realDrops.motion] degreesPerSecondX` | `160.0` | X speed; -1440 – 1440 |
-| `[realDrops.motion] degreesPerSecondY` | `120.0` | Y speed; -1440 – 1440 |
-| `[realDrops.motion] degreesPerSecondZ` | `100.0` | Z speed; -1440 – 1440 |
-| `[realDrops.motion] variance` | `0.2` | Deterministic per-item speed variation; 0 – 1 |
-| `[realDrops.motion] changeOnBounce` | `true` | Selects another deterministic spin after an upward bounce |
-| `[realDrops.landing] mode` | `"NATURAL"` | `NATURAL`, `FLAT`, or `UPRIGHT` |
-| `[realDrops.landing] tiltDegrees` | `10.0` | Maximum NATURAL block tilt; 0 – 45 degrees |
-| `[realDrops.landing] randomYaw` | `true` | Gives each item a stable yaw |
-| `[realDrops.landing] transitionTicks` | `4` | Client interpolation into the landing pose; 0 – 20 |
-| `[realDrops.labels] enabled` | `true` | Mirrors the effective drop name through one TextDisplay |
-| `[realDrops.labels] yOffset` | `0.55` | Label translation above the model; 0 – 4 blocks |
-| `[realDrops.labels] scale` | `0.85` | Label scale; 0.1 – 4 |
-| `[realDrops.labels] viewRange` | `32.0` | Label tracking range; 4 – 128 blocks |
-| `[realDrops.labels] billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, or `VERTICAL` |
-| `[realDrops.labels] seeThrough` | `false` | Draws through blocks when on |
-| `[realDrops.labels] shadow` | `true` | Draws the glyph shadow |
-| `[realDrops.labels] background` | `true` | Enables the full label background |
-| `[realDrops.labels] backgroundRed/Green/Blue/Alpha` | `0/0/0/80` | Channels clamp to 0 – 255 |
-| `[realDrops.filters] disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
-| `[realDrops.filters] materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
-| `[realDrops.filters] onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
+| `limits.updateIntervalTicks` | `2` | Airborne transformation cadence; 1 – 20 |
+| `limits.settledPollIntervalTicks` | `20` | Grounded state and stack check; 2 – 200 |
+| `limits.maxVisualsPerStack` | `3` | Item models per stack; 1 – 5 |
+| `limits.maxVisualsPerChunk` | `128` | Gloss-owned item and text displays per chunk; 8 – 1024 |
+| `limits.viewRange` | `32.0` | Item-model tracking range; 4 – 128 blocks |
+| `limits.spread` | `0.18` | Separation of additional stack models; 0 – 1 block |
+| `scale.defaultScale` | `0.4` | Ordinary block models; 0.05 – 2 |
+| `scale.flatItems` | `0.65` | Non-block item models; 0.05 – 2 |
+| `scale.thinBlocks` | `0.45` | Slabs, carpets, pressure plates, and snow; 0.05 – 2 |
+| `motion.tumble` | `true` | Rotates airborne models |
+| `motion.speedMultiplier` | `1.35` | Multiplies all three axis speeds; 0.1 – 4 |
+| `motion.degreesPerSecondX` | `160.0` | X speed; -1440 – 1440 |
+| `motion.degreesPerSecondY` | `120.0` | Y speed; -1440 – 1440 |
+| `motion.degreesPerSecondZ` | `100.0` | Z speed; -1440 – 1440 |
+| `motion.variance` | `0.2` | Deterministic per-item speed variation; 0 – 1 |
+| `motion.changeOnBounce` | `true` | Selects another deterministic spin after an upward bounce |
+| `landing.mode` | `"NATURAL"` | `NATURAL`, `FLAT`, or `UPRIGHT` |
+| `landing.tiltDegrees` | `10.0` | Maximum NATURAL block tilt; 0 – 45 degrees |
+| `landing.randomYaw` | `true` | Gives each item a stable yaw |
+| `landing.transitionTicks` | `4` | Client interpolation into the landing pose; 0 – 20 |
+| `labels.enabled` | `true` | Mirrors the effective drop name through one TextDisplay |
+| `labels.yOffset` | `0.55` | Label translation above the model; 0 – 4 blocks |
+| `labels.scale` | `0.85` | Label scale; 0.1 – 4 |
+| `labels.viewRange` | `32.0` | Label tracking range; 4 – 128 blocks |
+| `labels.billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, or `VERTICAL` |
+| `labels.seeThrough` | `true` | Draws through blocks when on |
+| `labels.shadow` | `true` | Draws the glyph shadow |
+| `labels.background` | `true` | Enables the full label background |
+| `labels.backgroundRed/Green/Blue/Alpha` | `0/0/0/80` | Channels clamp to 0 – 255 |
+| `filters.disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
+| `filters.materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
+| `filters.onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
 
-`NATURAL` leaves blocks mostly upright with the configured stable tilt while flat item models lie down. `FLAT` lays every model down. `UPRIGHT` removes pitch and roll. Tumble directions, landing angles, offsets, and variation derive from the item UUID, so they do not allocate random state each update and remain stable until a configured bounce change.
+`NATURAL` leaves blocks mostly upright with the configured stable tilt while flat item models lie down. `FLAT` lays every model down. `UPRIGHT` removes pitch and roll. Tumble directions, landing angles, offsets, and variation derive from the item UUID, so they do not allocate random state each update and remain stable until a configured bounce change. Drop labels ship see-through so cave walls do not occlude the name; set `labels.seeThrough` to `false` for ordinary depth-tested text.
 
 Presentations are removed on merge, pickup, despawn, entity unload, feature reload, and plugin shutdown. New `ItemSpawnEvent` entities reconcile one entity tick after the event, when Bukkit marks them valid; loaded items are rebuilt after enable and entity load. Persistent ownership and restore markers heal an item after an interrupted lifecycle; Gloss restores the prior native visibility and name visibility before rebuilding or falling back. The display carrier and its passengers are non-persistent.
 
-If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both sections hot-reload.
+If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both `config.toml` and the real-drop document hot-reload.
 
 ## Reference
 

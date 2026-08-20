@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -125,6 +125,11 @@ Ingest, adjustment, disabling, and conversion back into editable Iris resources 
 | A vanilla structure sits badly in Iris terrain | `importedStructures.adjustments` | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Remove vanilla villages or another whole family | `importedStructures.disabled` | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Remove one key without touching its variants | `importedStructures.disabledExact` | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| Disable every vanilla structure, then allow one in a chosen biome | Deny `minecraft:`, then add a biome-level `nativeStructures` placement | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| Import vanilla ores, geodes, or snow without vanilla trees | `importedFeatures.enabled` plus `steps` / `disabledSteps` | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| Stop vanilla mobs or merge custom spawn tables | `vanillaDerivative` plus `customDerivitives.spawns` | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| Keep vanilla chest loot, replace it, or fill only empty chests | Native tables vs `FALLBACK` vs `vanillaLoot` | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| Make grown saplings become pack trees | `treeSettings.enabled` plus object `trees[]` | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | Make a datapack structures generate natively | `datapackImports` plus ingest | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Keep a datapack buildings but choose the locations | Disable the namespace, then a `nativeStructures` placement | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Replace a vanilla structure with Iris-positioned starts | Dimension placement with `nativeSuppression: REPLACE_SOURCE` | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |

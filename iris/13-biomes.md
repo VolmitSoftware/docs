@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,7 @@ Related:
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
 - [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## The mental model
 
@@ -215,7 +216,7 @@ That is why a sea biome with `vanillaDerivative: "minecraft:plains"` gets no oce
 | `children` | string[] | empty | Biome keys that portions of this biome morph into. Cycles are allowed. A column resolves at most four child hops. Do not also list these in a region. |
 | `childShrinkFactor` | double | `1.5` | Scales the child selection noise. Higher means smaller child patches inside the parent. Useful range is roughly 1 to 3. |
 | `childStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Shape of the child patches. Cellular styles give distinct blobs. Simplex gives soft gradients. |
-| `carvingBiome` | string | `""` | Biome key used instead of this one under a carving. Reachability indexes follow it. The referenced biome is loaded and registered even if no region lists it. |
+| `carvingBiome` | string | `""` | Registers the referenced biome as reachable so its custom identity and spawn mappings exist. It does **not** select a cave biome at runtime. Cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | `caveMinDepthBelowSurface` | int 0-256 | `0` | When this biome is used as a cave biome, shallow columns fall back to the surface biome. The cutoff is this many blocks below the terrain surface. Raise it to keep a deep-cave palette out of shallow openings. |
 
 ### Height (`generators`)
@@ -288,7 +289,7 @@ When a biome has any custom derivative, that custom biome becomes the visible bi
 | `humidity` | double -3..3 | `0.4` | Written as vanilla `downfall`. Affects foliage tint and fire spread. |
 | `downfallType` | `IrisBiomeCustomPrecipType` | `rain` | `none`, `rain` or `snow`. `none` also clears the `has_precipitation` flag. |
 | `spawnRarity` | int 0-20 | `0` | Written straight into `creature_spawn_probability`. Leave at `0` unless you are also supplying `spawns`. |
-| `spawns` | `IrisBiomeCustomSpawn[]` | empty | Mob spawn entries grouped by category. Only meaningful together with `spawnRarity`. |
+| `spawns` | `IrisBiomeCustomSpawn[]` | empty | Mob spawn entries grouped by category. Only meaningful together with `spawnRarity`. Nonempty lists are **merged** with the vanilla derivative table, not a replace. An empty list leaves vanilla in charge. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). |
 | `tags` | string[] | empty | Extra biome tags, e.g. `minecraft:allows_surface_slime_spawns`. |
 | `ambientParticle` | `IrisBiomeCustomParticle` | `null` | Client-rendered ambient particle. No server cost. |
 | `skyColor` | hex | `#79a8e1` | Upper sky color. |

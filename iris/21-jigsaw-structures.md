@@ -2,14 +2,14 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 An Iris jigsaw structure is a set of objects (pieces). The assembler snaps them together through matching connectors until it runs out of depth, space, or candidates. Jigsaw Studio is the Bukkit in-game workflow for authoring those pieces. The resources it saves run on every supported platform through the shared core assembler. Planar mode is a constrained grid for village-like layouts. Spatial mode is freeform for strongholds, towers, and multi-level rooms. A project created with the `VANILLA_PORTABLE` contract can also be exported as a strict Minecraft 26.2 vanilla datapack.
 
-This page replaces the former in-game jigsaw instructions. General Studio behavior is in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas). Placement context is in [18 - Structures Overview](/iris/18-structures-overview). Native and datapack structures are in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
+This page replaces the former in-game jigsaw instructions. General Studio behavior is in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas). Placement context is in [18 - Structures Overview](/iris/18-structures-overview). Native and datapack structures are in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Vanilla feature, mob, loot, and sapling recipes are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ## Build a village kit
 
@@ -664,6 +664,8 @@ Only newly generated chunks use a changed placement. Direct `/iris structure pla
 
 Iris tests up to `caveAnchorAttempts` deterministic, unique X/Z columns in the start chunk and scans the clipped `minHeight..maxHeight` band in increments of `caveAnchorScanStep`. It stops at the first column with matches and chooses deterministically among all valid anchors in that column. Runtime clamps attempts to `1..64`, scan step to `1..16`, and clearance to `1..64`, and visits at most 64 of the chunk's 256 columns. `caveMinimumClearance` is the required vertical carved run. Empty `caveBiomes` accepts any resolved cave biome.
 Otherwise trimmed, case-normalized keys with or without a namespace are rechecked against the cave/mantle biome at the actual X/Y/Z anchor.
+
+On a structure placement, `underwater: true` **allows** submerged starts and `false` skips them. That is the opposite of object placement, where `underwater: true` means seafloor-only. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 For cave anchors, `underwater` checks `MatterCavern` at the actual anchor rather than the surface ocean height. A null or non-cavern cell never qualifies. With `underwater: false`, ordinary cavern air must be above the dimension `caveLavaHeight`. Explicit water and lava are rejected. Forced-air cavern matter stays dry even below that threshold. With `underwater: true`, fluid cavern cells are allowed but the cell must still be carved cavern matter.
 

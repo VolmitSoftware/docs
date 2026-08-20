@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Gloss documentation: Holograms"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -25,7 +25,8 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
   "lines": [
     "&d&lSpawn",
     "Welcome, %player_name%!"
-  ]
+  ],
+  "seeThrough": true
 }
 ```
 
@@ -36,6 +37,7 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
 | `anchor.world` | yes | World folder name. Missing or blank rejects the file with `hologram anchor requires a world` |
 | `anchor.position` | yes | `[x, y, z]` array of doubles. Missing rejects the file with `hologram anchor requires a position` |
 | `lines` | no | Absent or `null` becomes an empty list. A `null` entry becomes an empty string |
+| `seeThrough` | no | Defaults to `true`. When true, solid blocks do not occlude the TextDisplay |
 
 There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the hologram. Only files directly inside `holograms/` are read. Subfolders are ignored.
 
@@ -46,7 +48,7 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 
 ### The shipped baseline
 
-`/gloss hologram create` and `/gloss hologram rendertext` seed new holograms from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`.
+`/gloss hologram create` and `/gloss hologram rendertext` seed new holograms from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled.
 
 ## Creating and editing by command
 
@@ -83,7 +85,7 @@ Every command edit rewrites the document with `revision` bumped by one. Writes a
 
 ## Rendering
 
-Each display is spawned non-persistent with a `CENTER` billboard, no shadow and no see-through. Its client view range is set to `[holograms] viewRange` divided by the 64-block Paper base. Text is refreshed every `[holograms] updateIntervalTicks` (default 10). Text is only re-sent when the rendered string actually changed.
+Each display is spawned non-persistent with a `CENTER` billboard, no shadow, and the document's `seeThrough` value. The shipped baseline and the absent-key fallback both enable see-through, so terrain does not hide a hologram unless its document explicitly sets `false`. The value hot-reloads on an existing shared or per-viewer display. Its client view range is set to `[holograms] viewRange` divided by the 64-block Paper base. Text is refreshed every `[holograms] updateIntervalTicks` (default 10). Text is only re-sent when the rendered string actually changed.
 
 Spawning requires the anchor chunk to be loaded. An unloaded chunk retries on later ticks. A hologram whose world is not loaded, or whose `lines` list is empty, despawns every display it owns. It renders nothing until that changes. If you move the anchor, Gloss teleports the existing displays. It does not respawn them.
 
