@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,10 +39,13 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 | Subcommand | Aliases | Origin | Description |
 |------------|---------|--------|-------------|
 | `monitor` | `m`, `mon` | player | Toggle action-bar monitor |
+| `monitoring-only` | `monitor-only`, `monitoring-mode`, `mo` | both | Toggle runtime-only suppression of gameplay features and every tweak while leaving monitoring, statistics, maps, actions, and commands available |
 | `set-player-view-distance <distance>` | `vd`, `view-distance` | player | Set current world view and simulation distance. Values above 32 are clamped. The command does not reject negative values. Paper setters are required |
 | `map [renderer=unknown]` | | player | Open the map selector, or give the selected React renderer map |
 | `reload` | `rl` | both | Reload React |
 | `version` | `v` | both | Show React version |
+
+`/react monitoring-only` does not rewrite any feature or tweak TOML. The state survives `/react reload` in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
 
 ## `/react config` (`cfg`)
 

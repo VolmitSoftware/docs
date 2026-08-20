@@ -2,7 +2,7 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - React map items carry persistent renderer metadata. Inventory maps are repaired on join and in maintenance batches. Item-frame maps are rediscovered and repaired after startup or reload.
 - A framed map uses the item frame as the renderer's spatial anchor. A held map falls back to the viewer location. Then it uses the map world's spawn if no viewer is available.
 
-Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Integration-prefixed renderers are omitted until their peer capability is present. `iris-biome-chunk-share-pie-map` is explicitly disabled by `MapController`. It is not selectable.
+Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Monitoring-only mode keeps configured renderer features active while it pauses other features and tweaks, so map collection and rendering continue. Integration-prefixed renderers are omitted until their peer capability is present. `iris-biome-chunk-share-pie-map` is explicitly disabled by `MapController`. It is not selectable.
 
 ## Item-frame delivery and megamaps
 

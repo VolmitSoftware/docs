@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "React documentation: Concepts"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,6 +36,12 @@ React creates missing files from Java field defaults. Fields are documented with
 - Some features call `setEnabled(false)` at runtime when required platform APIs or NMS bridges are missing. Examples include pathfinder budget without navigation bridges, dynamic view distance without Paper world distance setters, and AFK view shedding without send-view-distance methods.
 - Disabling keeps the config file. The component does not activate. Actions do not appear in normal queues.
 - Capability-gated secret features also require peer plugins and `integrationSecretsEnabled`.
+
+## Monitoring-only mode
+
+`/react monitoring-only` is a runtime toggle that deactivates every non-renderer feature and every tweak without changing their `enabled` fields or TOML files. Features implementing `ReactRenderer` remain active so map-specific collection and rendering continue; sampler, observer, event-tracking, player-monitor, map, PlaceholderAPI, Web metrics, and integration controllers are not stopped. Actions remain registered and manually invokable, ordinary commands such as manual view-distance changes remain available, and already queued or running actions are not canceled.
+
+The mode survives `/react reload` within the current server process and resets on a full restart. Toggling it off reconciles features and tweaks against their current configuration and capability gates, including edits made while they were paused. Deactivation uses each component's normal shutdown path: it prevents further automatic work but does not reverse world or server changes already applied, and integrity listeners for existing compressed mobs or item bundles remain available to unwind those objects safely.
 
 ## Observation and sampling
 
