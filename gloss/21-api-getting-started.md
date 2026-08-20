@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Gloss documentation: API: Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -265,6 +265,7 @@ handle is safe from any thread.
 | `GlossAPI.open(Plugin, Player, HoloMenu)` | any. Prefer owning | `Plugin#getName()`, `Plugin#isEnabled()`, `Player#getUniqueId()`, one `clone()` per item icon |
 | `GlossAPI.open(Plugin, Player, String)` | any. Prefer owning | the same, minus icon translation |
 | `GlossAPI.close` / `isOpen` / `menuIds` | any | one concurrent-map read, then a scheduler hand-off for `close` |
+| `GlossAPI.refreshDropName(Item)` | any | validation, then an entity-scheduler hand-off when the caller does not own the item |
 | `handle.sessionId/playerId/menuId` | any | final-field reads |
 | `handle.state()` | any | one `AtomicReference` read |
 | `handle.setText/setItem/setIcon` | any | validation and one `ConcurrentHashMap` put |
@@ -429,6 +430,15 @@ when the player has none.
 empty string. Group list names keep applying. The override covers header and footer only.
 `resetTab` drops the override. Both push immediately rather than waiting for the next tablist
 tick. The override is dropped automatically when the player quits.
+
+## Dropped item labels
+
+`refreshDropName(Item)` reapplies the configured drop label from the entity's current `ItemStack`.
+Use it after changing an existing ground item's stack in place, because Bukkit does not emit a new
+`ItemSpawnEvent` or `ItemMergeEvent` for `Item#setItemStack`. The call is safe from any thread:
+Gloss runs the refresh on the item entity's owning thread. It is a no-op while drop labels are
+disabled or when the entity is no longer valid. `[drops] preserveCustomNames` still applies, so a
+foreign custom name that Gloss does not own remains untouched.
 
 ## Text rendering
 

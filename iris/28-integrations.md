@@ -2,19 +2,20 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris can use these Bukkit plugins. WorldEdit handles selections.
-Multiverse-Core handles world management. Nine item, block, or entity plugins
-handle pack content. MythicMobs handles skill conditions. PlaceholderAPI
-handles scoreboard values.
-All of them are optional. Iris checks that a plugin is enabled before it
-uses that plugin. A soft-depend only sets load order. It does not make sure
-the plugin is present. Tree felling is a separate feature. It runs on Bukkit
-and on the mod loaders. See also
+Iris can use these Bukkit plugins and coexist with PlotSquared. WorldEdit
+handles selections. Multiverse-Core handles world management. Nine item,
+block, or entity plugins handle pack content. MythicMobs handles skill
+conditions. PlaceholderAPI handles scoreboard values. PlotSquared's own
+generator discovery calls Iris without becoming an Iris integration.
+All integrations are optional. Iris checks that a plugin is enabled before
+it uses that plugin. A soft-depend only sets load order. It does not make
+sure the plugin is present. Tree felling is a separate feature. It runs on
+Bukkit and on the mod loaders. See also
 [04 - Commands & Permissions](/iris/04-commands-permissions),
 [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle),
 [09 - PlaceholderAPI](/iris/09-placeholderapi),
@@ -133,6 +134,17 @@ Iris logs one warning and continues rather than failing.
 
 World creation, removal, and Studio open/close all use this same link. See
 [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+
+## PlotSquared
+
+PlotSquared asks every enabled plugin for a generator using the synthetic
+world name `CheckingPlotSquaredGenerator`. Iris recognizes that exact empty-ID
+probe and returns no generator. It does not resolve world storage, load a pack,
+or request a server shutdown.
+
+Iris is therefore not offered as a base generator in PlotSquared's setup
+wizard. Create Iris worlds with `/iris create`; create plot worlds through
+PlotSquared. The two plugins can own separate worlds on the same server.
 
 ## External item, block, and entity plugins
 

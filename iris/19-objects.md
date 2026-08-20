@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -131,7 +131,7 @@ The file lands at `<data>/packs/<dimension load key>/objects/<name>.iob`.
 /iris object paste <object> [edit=false] [rotate=0] [scale=1]
 ```
 
-The paste lands on the block you are looking at, with the object bottom resting on it. Small foliage (grass, snow layers, vines, torches, dead bushes, poppies, dandelions) is ignored by the raycast so you target the ground, not the plant. `rotate` is degrees around Y. `scale` resizes with tricubic interpolation and is clamped down for large objects. A big object silently pastes at a smaller factor than you asked for.
+The paste lands on the block you are looking at, with the object bottom resting on it. All air variants and small foliage (grass, snow layers, vines, torches, dead bushes, poppies, dandelions) are transparent to the 256-block raycast, so flight height does not move an in-range paste anchor toward the player. If the scan reaches its limit without an opaque target, Iris asks you to look at a block and does not paste at the terminal air block. `rotate` is degrees around Y. `scale` resizes with tricubic interpolation and is clamped down for large objects. A big object silently pastes at a smaller factor than you asked for.
 
 ```
 /iris object undo [amount=1]
@@ -139,7 +139,7 @@ The paste lands on the block you are looking at, with the object bottom resting 
 
 Alias `u`. It reverts pastes, not blocks you placed by hand.
 
-`paste ... edit=true` additionally hands you a wand fitted to the pasted bounds. That is the normal way to edit an existing object: paste it, change it, re-save the same key with `overwrite=true`.
+`paste ... edit=true` additionally hands you a wand fitted to the pasted bounds. The selection follows the pasted rotation and encloses its transformed footprint. That is the normal way to edit an existing object: paste it, change it, re-save the same key with `overwrite=true`.
 
 Inspection and maintenance:
 

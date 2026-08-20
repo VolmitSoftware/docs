@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Gloss documentation: Chat Bubbles, Indicators & Drops"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -14,7 +14,7 @@ Three small features share one mechanism. Chat bubbles float a player message ab
 
 ### Style documents
 
-Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart. On enable, Gloss also atomically replaces the exact byte-identical former shipped schema-1 default with this schema-2 file and logs the upgrade. Any edited or reformatted schema-1 file is preserved and rejected for manual conversion.
+Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart. On enable, Gloss atomically replaces the exact byte-identical former schema-1 default, the former 700 ms schema-2 default and the short-lived grey-edge schema-2 default with the file below. Any edited or reformatted copy is preserved.
 
 `plugins/Gloss/bubbles/default.json` as shipped:
 
@@ -42,7 +42,6 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
     "spawn": true,
     "flyAway": false,
     "color": "#ffffff",
-    "edgeColor": "#aaaaaa",
     "width": 3,
     "durationMs": 4233,
     "spawnDelayMs": 0,
@@ -62,7 +61,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
 | `hideOwn` | `false` | When true the speaker cannot see their own bubbles |
 | `motion` | shipped late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
-| `shimmer` | shipped shine shown above | The Gloss shine: a white-cored, light-grey-edged band sweeping the block left to right at a constant speed, one line at a time, anchored at spawn and wrapping until the bubble expires; see below |
+| `shimmer` | shipped shine shown above | The original Gloss shine: a solid white three-glyph wave moving left to right at exactly 30 glyphs per second, restarting its horizontal index on every wrapped row and repeating until the bubble expires; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
 
 `followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
@@ -115,30 +114,27 @@ The authored `prefix` is rendered separately through the full text pipeline with
 
 ### Shimmer
 
-`shimmer` is the original Gloss shine, restored as an explicit presentation effect. It changes the live text color across a moving band, not particles. A three-glyph band travels left to right at a constant 30 glyphs per second, no matter how long the line is. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph, so a pass over green bold chat leaves it green and bold behind the band.
+`shimmer` is the original Gloss shine, restored as an explicit presentation effect. It changes live text color, not particles. The shipped wave is a solid white three-glyph band governed by the original integer law: the head is `floor(3 * elapsedMs / 100)`, travels at exactly 30 glyphs per second and repeats every 127 glyph positions. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph.
 
-The band is two-toned. `color` paints the single glyph the band head is standing on and `edgeColor` paints every other lit glyph, so the shipped three-glyph band reads light grey, white, light grey. Widening the band adds edge glyphs only — there is always exactly one core glyph.
+Each wrapped row starts its visible-glyph index at zero, matching the original text-filter phase while retaining the newer one-message, one-multiline-`TextDisplay` layout. The rows therefore show the wave in the same horizontal position instead of treating the whole block as one continuous character stream.
 
-The band sweeps the block **line by line**. Visible glyphs are counted continuously through the wrapped rows in reading order, so the band crosses row one, then row two, then row three, rather than lighting the same column on every row at once. The `prefix` glyphs are part of that count and there is no gap at a row break: the band's trailing edge can sit on the last glyph of one row while its core has already moved to the first glyph of the next. It remains one multiline `TextDisplay`; the effect never splits a message into multiple entities.
-
-The band free-runs. It wraps on a 127-glyph cycle and keeps wrapping until the bubble expires, rather than making a fixed one or two passes. At the shipped 5-second lifetime that produces the original look on its own: one sweep shortly after the bubble spawns, and a second starting just before it leaves. The group that reappears on the text after a wrap sits a full cycle behind the head, so it carries no core glyph and is drawn entirely in `edgeColor`.
+The spawn cycle free-runs until expiry. With the shipped 5-second lifetime it produces the two familiar visible passes without a separate departure restart: the first begins at spawn and the second begins at 4,234 ms, while the default late-fly motion is active. `flyAway` remains available for styles that deliberately want an additional restart at a different departure time.
 
 | Key | Default | Clamp / notes |
 |---|---|---|
 | `spawn` | `true` | Anchor the cycle at the bubble's spawn. The band free-runs from there for the whole lifetime |
 | `flyAway` | `false` | Add a second cycle anchored to the departure window. The free-running cycle already produces a departure pass at ordinary lifetimes, so turning this on doubles the band |
-| `color` | `"#ffffff"` | The band core: the one glyph the head is standing on. Strict `#RRGGBB`; invalid values reject the style |
-| `edgeColor` | `"#aaaaaa"` | The band edges: every lit glyph that is not the head. Strict `#RRGGBB`; invalid values reject the style. Optional — a style written before the two-toned band omits the key and runs Minecraft's light grey |
-| `width` | `3` | Highlighted visible glyphs, clamped to `1`..`16`. One of them is the core, the rest are edges |
+| `color` | `"#ffffff"` | Color applied to every lit glyph. Strict `#RRGGBB`; invalid values reject the style |
+| `width` | `3` | Highlighted visible glyphs, clamped to `1`..`16` |
 | `durationMs` | `4233` | Milliseconds for one full 127-glyph cycle, clamped to `100`..`10000`. The shipped `4233` is the original 30 glyphs per second |
 | `spawnDelayMs` | `0` | Delay before the spawn cycle starts, clamped to `0`..`60000` |
 | `flyAwayLeadMs` | `700` | Departure starts this many milliseconds before expiry, clamped to `0`..`60000` |
 
 A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn cycle starts at `spawnDelayMs`; a `flyAway` cycle starts at `max(0, maxAliveMs - flyAwayLeadMs)` and takes precedence while both are running. Shimmer timing and the `motion` expressions are independent, so the band keeps traveling while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
 
-Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (shipped `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to one step per tick.
+Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (shipped `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to the configured temporary-hologram interval, shipped as two ticks, and is visibly coarser.
 
-> `durationMs` is the full-cycle time. It was previously the length of one short bounded sweep, and the old shipped default was `700`. A style file that still writes `durationMs: 700` runs the band about six times too fast — drop the key or set `4233`. Existing installations keep their own `bubbles/default.json`; the new shipped values only land where the file is extracted fresh.
+> `durationMs` is the full-cycle time. A custom style that explicitly writes the former `700` value still runs about six times faster. The exact untouched former shipped defaults upgrade automatically; for an edited style, remove the key or set `4233` to restore the original speed.
 {.is-info}
 
 ### Motion
@@ -298,7 +294,7 @@ carries a custom name **without** that marker is left untouched on spawn
 and on merge. Those names come from another plugin. If you set it to
 `false`, Gloss restores the old unconditional overwrite.
 
-Both `ItemSpawnEvent` and `ItemMergeEvent` are handled at `MONITOR` priority, ignoring cancelled events. When two stacks merge on the ground the surviving entity is renamed with the combined count. The absorbed entity is dropped from tracking. The label never goes stale after a merge.
+Both `ItemSpawnEvent` and `ItemMergeEvent` are handled at `MONITOR` priority, ignoring cancelled events. When two stacks merge on the ground the surviving entity is renamed with the combined count. The absorbed entity is dropped from tracking. React also calls `GlossAPI.refreshDropName(Item)` immediately after it replaces a surviving drop's `ItemStack` with a bundle or updates a residual bundle after hopper collection. This refresh runs on the item entity's owning thread, so the label changes to the current bundle contents without requiring a new spawn or vanilla merge event. An unchanged rendered label is not written again.
 
 Label visibility distance is the client own entity name render distance. There is no radius setting.
 

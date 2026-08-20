@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "React documentation: Features - Entity Systems"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -84,7 +84,7 @@ When entity counts exceed soft caps, this feature removes lowest-priority eligib
 
 ### `item-super-stacker`
 
-This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory.
+This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. When Gloss is present and publishes its drop-label refresh API, React refreshes the surviving entity immediately after creating a bundle and after changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous item name.
 
 - **Class:** `FeatureItemSuperStacker`
 - **Listener:** yes

@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,9 +20,9 @@ Prerequisites: a writable packs directory. You also need operator access on Bukk
 1. **Create a project.** `/iris studio create name=tutorial`
    Writes `packs/tutorial/` with a dimension, region, biome, generator, and a `tutorial.code-workspace`. The command reports the completed project path. Creation runs asynchronously and may report that a restart is needed before the pack can be opened.
 2. **Open it as a world.** `/iris studio open tutorial seed=1337`
-   You are teleported into a transient world generated from the live pack folder. A fixed seed matters — you will be comparing the same coordinates across reloads.
+   You are teleported into a transient world generated from the live pack folder. Iris refreshes the pack's canonical workspace and materializes its JSON schemas before attempting any desktop launch. A fixed seed matters — you will be comparing the same coordinates across reloads.
 3. **Open the editor workspace.** `/iris studio vscode dimension=tutorial`
-   Generates `.iris/schema/*` if missing and opens the `*.code-workspace`. On a headless server nothing launches. Copy the pack folder to your machine and open the workspace file yourself.
+   Refreshes `<pack>/<pack>.code-workspace`, rewrites `.iris/schema/*`, and opens that exact workspace. Generation still completes when `studio.openVSCode` is false or the server is headless; only the desktop launch is skipped. Copy the pack folder to your machine and open the workspace file yourself.
    *Success condition:* typing `"` inside any object in `biomes/starter.json` offers field names, and hovering a field shows its description, type, and default value. If it does not, the workspace was not opened or the schemas were never written — run `/iris studio update dimension=tutorial`.
 4. **Make one change.** Edit `packs/tutorial/biomes/starter.json` and change only its display `name`. Save once.
 5. **Wait for the hotload result** in console before saving anything else. A failed hotload leaves the previous runtime active and reports the error. Stacking more edits on top makes the first failure hard to find.
@@ -187,7 +187,7 @@ Every Bukkit Studio open writes one `[Studio timing]` line per lifecycle phase. 
 | `json.maxItemsComputed` | `30000` — large enough that big registry enums still complete |
 | `json.schemas` | Array of `{ fileMatch, url }` entries, sorted by url |
 
-The same call also merges the mappings into `<pack>/.idea/jsonSchemas.xml` so IntelliJ picks up the schemas. It writes that file whenever there is a mapping it does not already contain. The workspace file is only rewritten when its rendered content changes. If it is unparseable, Iris deletes and recreates it, losing hand-edited workspace settings but never pack content.
+The same call also merges the mappings into `<pack>/.idea/jsonSchemas.xml` so IntelliJ picks up the schemas. It writes that file whenever there is a mapping it does not already contain. IntelliJ mapping failures are reported but cannot suppress the VSCode workspace or schemas. The workspace file is only rewritten when its rendered content changes. If it is unparseable, Iris deletes and recreates it, losing hand-edited workspace settings but never pack content.
 
 ## Schema generation
 
@@ -226,7 +226,8 @@ Files under `.iris/schema/` are generated editor artifacts. They are safe to del
 | Trigger | Effect |
 |---------|--------|
 | `/iris studio update dimension=<dim>` | Rewrites the workspace and queues schema writes |
-| `/iris studio open` or `create` | Builds the workspace config, including schemas |
+| `/iris studio open` | Refreshes the canonical workspace and fully writes every referenced schema before an optional desktop launch on Bukkit and modded |
+| `/iris studio create` | Builds the workspace config and queues schema writes |
 | Successful hotload | The platform hook may refresh the workspace |
 
 Registry-backed enums are captured from the live server. A schema generated on a server without a mod installed will not offer that mod's blocks. Regenerate after changing the server's mod or datapack set.

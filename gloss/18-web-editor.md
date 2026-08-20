@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -88,7 +88,7 @@ repeats, centered layout math, timer ratios, conditional state, `sin`/`mix` colo
 animation, inventory functions, `bar`, `fixed`, `select` and localized `lang` text. Its palette,
 segment geometry, pulse rate and card dimensions vary procedurally while remaining valid runtime
 JSON.
-Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise visible-character wrapping, multiline formatting, lifetime, offset, follow/hide behavior and procedural translation, scale, rotation and opacity expressions. Their presets include editable fly-up, fade, shrink and arcing motion. The bubble inspector also exposes the shimmer's spawn anchor and optional departure cycle, both RGB band colors (core and edge), visible-glyph width, full-cycle duration, spawn delay and departure lead. The effect itself is the original Gloss shine: a white-cored, light-grey-edged band that crosses the text left to right at a constant 30 glyphs per second, sweeping the wrapped block one line at a time, and keeps wrapping on its 127-glyph cycle until the bubble expires, restoring each glyph's own color and formatting behind it. The preview recolors the same multiline block the server does; it is being brought onto the restored constant-speed cycle in this same workstream. Random tablists populate dynamic
+Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise visible-character wrapping, multiline formatting, lifetime, offset, follow/hide behavior and procedural translation, scale, rotation and opacity expressions. Their presets include editable fly-up, fade, shrink and arcing motion. The bubble inspector exposes the shimmer's spawn anchor, optional departure restart, solid RGB band color, visible-glyph width, full-cycle duration, spawn delay and departure lead, plus an `Original Gloss` preset. That preset uses the original integer timing and solid-white three-glyph wave: every wrapped row restarts at its left edge, the first pass begins at spawn and the 127-step repeat begins at 4,234 ms during the shipped late-fly motion. The preview uses `requestAnimationFrame` and the server uses its high-frequency packet animator, so both show the 30-glyph-per-second band without a one-tick alias. Random tablists populate dynamic
 headers, footers and group formats. Minecraft samples an MOTD animation frame when it answers each
 server-list request rather than continuously redrawing an already displayed row. Each replacement
 is one undo step.
