@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Adapt documentation: Skill - Crafting"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,7 +37,7 @@ whole six-block ray has to be region-owned.
 
 ### Crafting XP (`crafting-xp`)
 
-Extra passive skill XP whenever you take a craft result. Nothing to aim, nothing to trigger. It goes to seven levels rather than five, so it is the cheap long-term investment for anyone who crafts a lot.
+Taking a committed craft result can produce a bounded vanilla XP orb. The default reward is one point at level one plus one point per additional adaptation level, for 1-7 points, with a 30-second per-player cooldown. The nominal result must fit the player's storage and the reward does not scale with crafted stack size.
 
 Works on its own once learned.
 
@@ -257,7 +257,16 @@ Milestones: `challenge_crafting_xp_1k` and `challenge_crafting_xp_25k` on `craft
 
 Listened events:
 
-- `CraftItemEvent` (`on`): taking a craft result
+- `CraftItemEvent` (`MONITOR`, cancelled events ignored): taking a committed craft result
+
+The vanilla XP reward is `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)`.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `vanillaXpAtLevelOne` | `1` | Vanilla XP points granted at adaptation level one. |
+| `vanillaXpPerAdditionalLevel` | `1` | XP points added for every level after level one. |
+| `maximumXpPerCraft` | `16` | Hard cap on one craft reward. |
+| `cooldownMillis` | `30000` | Minimum milliseconds between rewards for one player. |
 
 ### Craftable Leather
 

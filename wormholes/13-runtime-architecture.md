@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,8 +71,9 @@ Order from `Wormholes.onEnable`, then network bootstrap:
 14. `WormholesIntegrationService.register()`.
 15. When PlaceholderAPI is present, the PlaceholderAPI expansion registers.
 16. `TraversalCostGateway` from traversal API settings.
-17. The hotload manager starts (`HotloadManager` watches
-    `config/wormholes.toml`).
+17. The hotload manager starts. It registers a filesystem watcher for
+    `config/wormholes.toml` and keeps content-digest reconciliation as a
+    fallback.
 18. Diagnostics start. Network capture runtime start.
 19. The splash screen prints. On failure, Wormholes tears down fully and
     self-disables.
@@ -81,17 +82,19 @@ Order from `Wormholes.onEnable`, then network bootstrap:
 
 `tearDownBeforeDrain` runs in this order:
 
-1. Unregister integration and placeholders.
-2. Shut the traversal cost gateway.
-3. Shut the door manager, then the pocket world.
-4. Close RTP.
-5. Shut down projection.
-6. Shut the view server.
-7. Shut the arrival warmer.
-8. Release chunk leases.
-9. Shut effects.
-10. Cancel plugin and Folia tasks.
-11. Drain remaining static state.
+1. Invalidate hotload admission, close the filesystem watcher, and join its
+   worker thread.
+2. Unregister integration and placeholders.
+3. Shut the traversal cost gateway.
+4. Shut the door manager, then the pocket world.
+5. Close RTP.
+6. Shut down projection.
+7. Shut the view server.
+8. Shut the arrival warmer.
+9. Release chunk leases.
+10. Shut effects.
+11. Cancel plugin and Folia tasks.
+12. Drain remaining static state.
 
 BileTools `onPreUnload` uses the same tear-down path.
 
@@ -135,8 +138,24 @@ refuses while players are inside or mid-transit in a pocket dimension.
 
 | Trigger | Behavior |
 |---------|----------|
-| `/wh reload` | Permission `wormholes.admin.reload`. Loads `wormholes.toml`, prepares localization, and applies on the global scheduler next tick. |
-| File hotload | `HotloadManager` watches `config/wormholes.toml` and applies the same path after the file is stable. |
+| `/wh reload` | Permission `wormholes.admin.reload`. Immediately loads and canonicalizes `wormholes.toml`, prepares localization, and applies on the global scheduler next tick. It is not subject to the automatic cooldown and invalidates older queued automatic work. |
+| File hotload | Native create/modify/delete events plus periodic SHA-256 reconciliation watch only `config/wormholes.toml`. A candidate must remain byte-identical for 350 ms. Passive parsing does not canonicalize or write the file. |
+
+The watcher reads at most 8 MiB into an immutable snapshot and validates that
+the file did not change during the read. This detects atomic replacement and
+same-size/same-timestamp edits while ignoring unrelated temporary files. A
+temporary missing or empty target is held as an incomplete FTP/editor save; a
+recreated stable file is considered normally.
+
+Automatic applications are single-flight and latest-wins. The three-second
+cooldown begins when an application completes. Changes during an in-flight
+application or cooldown replace the trailing candidate, and only the exact
+snapshot that was parsed and successfully applied is acknowledged. A refused
+global task or subsystem application failure keeps the snapshot pending with
+bounded exponential retry. A malformed snapshot is rejected until its content
+changes. Startup, successful manual reload, and full reset start the watcher
+against the exact canonical bytes applied to the runtime; any newer disk bytes
+already present are reconciled as pending work rather than baselined away.
 
 `applyReloadedState` refreshes `Settings` and syncs debug telemetry. It notifies
 `BlockManager` of language and re-applies dimensional-doors enable or disable.
@@ -145,8 +164,10 @@ It invalidates the command cache. It applies network config and
 replication/capture settings, then restarts the stats snapshot writer.
 
 An invalid language reload keeps the previous localization snapshot. An invalid
-config parse keeps the previous live settings. Load throws. Hotload completion
-fails without applying.
+config parse keeps the previous live settings and never reaches the global
+application path. Manager notification and runtime reconfiguration failures
+propagate to the watcher, emit their full stacktrace, and prevent acknowledgment
+so the candidate can retry.
 
 ## Soft depends and load order
 

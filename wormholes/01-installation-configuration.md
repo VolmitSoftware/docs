@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -65,10 +65,11 @@ and trust under `routes/` and `trust/`. See
 | Sections | `[main]`, `[network]` (+ nested), `[projection]`, `[render]` |
 | Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
 
-On a successful load, Wormholes rewrites the file in canonical form with every
-known key. Canonical rewriting removes custom comments and unknown or
-misspelled keys. Files with no schema, a wrong schema, or a parse failure keep
-the previous live settings.
+Startup and explicit `/wormholes reload` loads rewrite the file in canonical
+form with every known key. Canonical rewriting removes custom comments and
+unknown or misspelled keys. Passive file hotload parses an immutable byte
+snapshot and never rewrites the watched file. Files with no schema, a wrong
+schema, or a parse failure keep the previous live settings.
 
 ## Visual quality (`quality`)
 
@@ -298,11 +299,28 @@ Projection behavior detail:
 
 | Path | Mechanism |
 |------|-----------|
-| `config/wormholes.toml` change | `HotloadManager` reloads config and then reloads the selected language when valid |
+| `config/wormholes.toml` change | Native filesystem events wake `HotloadManager`; periodic SHA-256 content reconciliation catches missed events, atomic replacement, and content changes whose size and timestamp are unchanged |
 | `languages/*.toml` change | Not watched directly. Use `/wormholes reload` or touch the config file |
-| `/wormholes reload` | Explicit reload of configuration and language files (`wormholes.admin.reload`) |
+| `/wormholes reload` | Immediate, unthrottled reload of configuration and language files (`wormholes.admin.reload`). It invalidates older queued automatic work before applying |
 | Failed language load on reload | Config may still apply. Last valid language is kept. Console reports the cause |
 | Network enable/peer changes | Import/export may start the network without a full restart |
+
+Automatic hotload waits for one byte-identical snapshot to remain stable for
+350 ms. Only one application can run at a time. After it completes, the next
+automatic application cannot begin for three seconds; edits received during
+that interval replace the queued candidate, so the final snapshot still runs.
+Only the exact bytes parsed and successfully applied are acknowledged. A save
+that lands during application remains queued. Startup, manual reload, and the
+full reset seed watcher state from the exact canonical settings snapshot that
+became live, so a newer disk save that lands before watching resumes remains a
+candidate instead of becoming an unobserved baseline.
+
+Temporary deletion or an empty intermediate file, as produced by some FTP
+clients and editor save strategies, is treated as an incomplete save. Wormholes
+waits for `wormholes.toml` to reappear as a stable regular file. Passive reads
+are limited to 8 MiB. Invalid snapshots keep the last-known-good settings;
+application failures retain the snapshot for bounded-backoff retry and report a
+full console stacktrace.
 
 Use `/wormholes admin deleteeverything` to wipe config, routes, trust,
 identity, portals, and doors. That command needs `wormholes.admin.reset`.

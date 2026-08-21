@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -139,7 +139,7 @@ Studio worlds are the exception. A Studio world's engine points directly at the 
 
 Hotload opens a fresh `IrisData` on the same folder. It reloads the dimension by its key and builds a replacement engine runtime under the lifecycle lock. It publishes that runtime, retires the old `IrisData`, then refreshes the editor workspace and datapacks in the background. If any step fails it rolls back to the previous runtime and reports the error.
 
-The watcher polls every 250 ms but only checks the folder about once per second. It backs off to once per 4 s during maintenance or within 2 s of chunk generation. It watches `.json` and `.iob` and ignores anything under `.iris`. It runs only while the world is a Studio world that is not closing and not in jigsaw-studio mode.
+The recursive watcher consumes native events and reconciles metadata plus SHA-256 content, so atomic moves, FTP uploads, and same-size edits with preserved timestamps are detected. It waits for a stable snapshot, ignores common temporary artifacts and everything under `.iris`, and applies no more than one completed hotload every 3 seconds; later saves collapse into one latest-state trailing pass and a failed pass remains queued. Bukkit checks the folder about once per second. Modded runs a 250 ms eligibility sweep, but each pack is checked about once per second and remains held off during pregeneration or within 2 seconds of recent generation. Bukkit backs off to 4-second checks during maintenance. It watches only `.json` and `.iob` and runs only while the world is a Studio world that is not closing and not in jigsaw-studio mode.
 
 To push pack edits into an existing production world, see `update-world` in [25 - Pack Management](/iris/25-pack-management), or just create a new world. That is the right answer for any change to height or dimension type.
 

@@ -2,13 +2,13 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Feature switches and general runtime settings live in `plugins/Gloss/config.toml`. Gloss generates the file with a comment above each knob, rewrites it on load so the values on disk are the values in effect, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
+Feature switches and general runtime settings live in `plugins/Gloss/config.toml`. Gloss generates the file with a comment above each knob, canonicalizes it during startup and explicit importer writes, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## The file model
 
@@ -28,9 +28,9 @@ metrics = true
 
 Every table below is emitted the same way. Each key has its own comment line before it.
 
-**Canonicalization.** Every load parses the file, normalizes it, re-serialises it, and writes it back when the result differs from the disk file. That is how out-of-range numbers get clamped into the file. That is how missing keys reappear. That is how comments regenerate after an upgrade. What you read back is what Gloss uses.
+**Canonicalization.** Startup and explicit importer writes parse, normalize, re-serialize, and write the file back when the canonical result differs. That is how out-of-range numbers are clamped into the file, missing keys reappear, and comments regenerate after an upgrade. Automatic hotload and `/gloss reload` normalize only the captured in-memory value; they never rewrite a file an editor or FTP client may still be replacing.
 
-**Hot reload.** The same watchdog that polls the data folders also polls `config.toml` at `[hotload] watchIntervalTicks`. When the file timestamp and size change, Gloss reads the file again and reloads every service in place. A hash guard suppresses Gloss canonicalization writes. A rewrite does not loop into another reload.
+**Hot reload.** The same watchdog that checks the data folders also checks `config.toml` at `[hotload] watchIntervalTicks`. Native file events and a SHA-256 content check detect ordinary writes, atomic replacements, FTP saves, and same-size edits with preserved timestamps. Automatic work is queued into at most one completed batch every 3 seconds, with one latest-state trailing pass when more saves arrive. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
 
 **Failure behavior differs between boot and reload.**
 
@@ -39,7 +39,7 @@ Every table below is emitted the same way. Each key has its own comment line bef
 
 A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
 
-**`/gloss reload`** (permission `gloss.admin`) reads the file again and reloads services exactly as the watcher does. Use it when you want the reload at once rather than within the next poll.
+**`/gloss reload`** (permission `gloss.admin`) reads the file immediately and cycles every configured service. Automatic hotload compares section snapshots and cycles only the services whose section changed. Both paths parse passively without rewriting the source file.
 
 ## Root keys
 
@@ -187,7 +187,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
 | `updateIntervalTicks` | `2` | 1 – 20 | Airborne carrier-position and transformation cadence; client interpolation smooths the interval |
-| `settledPollIntervalTicks` | `20` | 2 – 200 | Grounded movement and stack-change poll cadence |
+| `settledPollIntervalTicks` | `20` | 2 – 200 | Movement and stack-change poll cadence after consecutive stable ground samples; landing slides retain the moving cadence |
 | `maxVisualsPerStack` | `3` | 1 – 5 | Maximum one-count ItemDisplay models used to suggest stack size |
 | `maxVisualsPerChunk` | `128` | 8 – 1024 | Shared chunk budget for item models and labels; an item stays vanilla-visible if its complete presentation cannot fit |
 | `viewRange` | `32.0` | 4 – 128 | Item-model tracking range in blocks |
@@ -197,9 +197,9 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
-| `defaultScale` | `0.4` | 0.05 – 2 | Ordinary block model scale |
-| `flatItems` | `0.65` | 0.05 – 2 | Non-block item model scale |
-| `thinBlocks` | `0.45` | 0.05 – 2 | Slab, carpet, pressure-plate, and snow model scale |
+| `defaultScale` | `0.4` | 0.05 – 2 | Ordinary three-dimensional block model scale |
+| `flatItems` | `0.65` | 0.05 – 2 | Non-block item and vanilla sprite-modeled placeable-item scale, including doors, rails, signs, panes, torches, and plants |
+| `thinBlocks` | `0.45` | 0.05 – 2 | Slab, carpet, pressure-plate, and snow-layer model scale |
 
 ### `motion`
 
@@ -217,10 +217,10 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
-| `mode` | `"NATURAL"` | `NATURAL`, `FLAT`, `UPRIGHT` | Grounded pose policy |
-| `tiltDegrees` | `10.0` | 0 – 45 | Maximum stable pitch and roll for NATURAL block models |
-| `randomYaw` | `true` | — | Give each item a stable UUID-derived yaw |
-| `transitionTicks` | `4` | 0 – 20 | Client interpolation duration into the landing pose |
+| `mode` | `"NATURAL"` | `NATURAL`, `FLAT`, `UPRIGHT` | Grounded pose policy; NATURAL block models may settle on any of six faces |
+| `tiltDegrees` | `10.0` | 0 – 45 | Maximum in-face variation for stationary/rebuilt NATURAL block models; momentum landings preserve their physical heading |
+| `randomYaw` | `true` | — | Give direct landing modes and stationary/rebuilt models a stable UUID-derived yaw |
+| `transitionTicks` | `4` | 0 – 20 | Client interpolation duration for the final carrier movement and landing pose; settled polling does not slow the touchdown |
 
 ### `labels`
 

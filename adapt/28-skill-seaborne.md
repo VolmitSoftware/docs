@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Adapt documentation: Skill - Seaborne"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,7 +31,7 @@ It works on its own once learned. Just get in the water.
 
 ### Fisher's Fantasy (`seaborne-fishers-fantasy`)
 
-Every time you reel in a fish, the adaptation flips one coin per level. Each success drops an extra random fishing item at your feet, spawns a vanilla XP orb, and pays skill XP on top. At level 7 that is seven chances at a bonus drop per catch.
+Every committed fish catch makes one bounded reward roll. The chance scales from 10% at level one to 35% at level seven. A success drops one extra random fishing item, spawns 2-8 vanilla XP, pays 8 Seaborne skill XP, and starts a five-second success cooldown.
 
 Works on its own once learned. Just fish.
 
@@ -264,19 +264,25 @@ No adaptation-specific config knobs.
 | Tick interval (ms) | 8080 |
 | Config file | `plugins/Adapt/adapt/adaptations/seaborne-fishers-fantasy.toml` |
 
-Menu stat line: For each level there is a chance to get more XP and Fish.
+Menu stat line: Chance for one bonus fishing reward bundle.
 
 Listened events:
 
-- `PlayerFishEvent` - on `CAUGHT_FISH` only
+- `PlayerFishEvent` (`MONITOR`, cancelled events ignored) - on `CAUGHT_FISH` only
 
-On a catch, rolls one 50 percent coin flip per level. Each success drops one random fishing drop at the player's location. It spawns
-an experience orb worth `level * 2`. It adds skill XP of `15` per success at the
-end.
+On a catch, one roll interpolates from `bonusChanceAtLevelOne` to `bonusChanceAtMaxLevel`. A success drops one random fishing-pool item, spawns `min(maximumVanillaXpPerCatch, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)` vanilla XP, grants `skillXpOnSuccess`, and starts the configured cooldown.
 
 Milestones: `challenge_seaborne_fish_500` on `seaborne.fishers-fantasy.fish-caught` at 500 (reward 300). `challenge_seaborne_fish_5k` at 5000 (reward 1000).
 
-No adaptation-specific config knobs.
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `bonusChanceAtLevelOne` | `0.1` | Bonus-bundle chance at adaptation level one. |
+| `bonusChanceAtMaxLevel` | `0.35` | Bonus-bundle chance at maximum adaptation level. |
+| `vanillaXpAtLevelOne` | `2` | Vanilla XP points granted at adaptation level one. |
+| `vanillaXpPerAdditionalLevel` | `1` | XP points added for every level after level one. |
+| `maximumVanillaXpPerCatch` | `16` | Hard cap on one catch reward. |
+| `skillXpOnSuccess` | `8` | Seaborne skill XP granted after a successful roll. |
+| `cooldownMillis` | `5000` | Minimum milliseconds between successful reward bundles. |
 
 ### Turtle's Vision
 

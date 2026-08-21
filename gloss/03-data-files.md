@@ -2,13 +2,13 @@
 title: "Data Files & Hot Reload"
 description: "Gloss documentation: Data Files & Hot Reload"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, real-drop settings and the tablist. Everything hot-reloads. Edit a file, save it, and the change applies within a few ticks. No command and no restart is required.
+All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, real-drop settings and the tablist. Everything hot-reloads through a queued automatic batch. No command and no restart is required.
 
 ## The document envelope
 
@@ -43,7 +43,7 @@ Writes are atomic. The document is serialized to a temporary file in the same fo
 
 ## Hot reload
 
-One repeating watchdog task polls the shared kinds every `[hotload] watchIntervalTicks` (default `5`). Each registered watcher runs in turn. If one throws, it logs `<name>: hot reload pass failed: <reason>`. The remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss restarts the task on the next reload.
+One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes. Automatic passes start no more than once every 3 seconds after the preceding apply batch completes, and requests made while one is waiting or running collapse into one trailing latest-state pass. JSON registries also reconcile raw content on a rolling 8 MiB/256-file budget, reject documents above 2 MiB, and hold deletions for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and requeues the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss restarts the task on the next reload.
 
 The polling itself runs on a dedicated `Gloss-Watchdog-IO` thread. Stat, read and parse never touch the server tick. Anything that has to touch the world hops back to the server thread, or on Folia and Canvas to the owning region thread, before it applies. The console shows both halves:
 
@@ -52,7 +52,7 @@ The polling itself runs on a dedicated `Gloss-Watchdog-IO` thread. Stat, read an
 [Server thread/INFO]: [Gloss] Reloaded in-place from disk.
 ```
 
-Only one pass is ever in flight. If a pass is still running when the next tick fires, that tick is skipped rather than queued, so a slow disk cannot stack passes up.
+Only one pass is ever in flight. If another request arrives while a disk scan or its server apply phase is still running, Gloss remembers one trailing pass and reads the latest state when the 3-second completion cooldown opens. A burst cannot stack unbounded work or lose its final save.
 
 | Watcher | What a change does |
 |---|---|
@@ -75,11 +75,17 @@ runs a hot-reload task of its own, and `menus/` is no longer the
 exception: it is a folder-tree document registry on the same spine as
 `holograms/` and `boards/`, so its discovery, self-write suppression and
 parse-failure handling are the ones described on this page. `images/`
-stays a plain folder watch, because an image file is bytes an operator
-dropped in rather than a document with an id and a revision. A
-`FolderWatcher` consumes each change exactly once, so a file that is
-created and edited between two polls still applies once, in order,
-rather than being split across passes.
+uses a reactive byte watcher rather than the document parser because an
+image file has no document id, envelope, or revision. Its rolling digest
+still detects a silent same-metadata replacement without decoding every
+image on every pass. A
+`FolderWatcher` consumes native recursive events and reconciles directory
+state after overflow, deletion, recreation, or watcher-key loss. It does
+not follow symlinks. Parsed documents use their SHA-256 content as the
+final identity, so a touch or a late duplicate event is a no-op while an
+atomic replacement or same-metadata edit still applies once. A target
+that returns during the 3-second deletion grace cancels the pending
+unload and is parsed from its final bytes.
 
 A config edit picked up by the watchdog only cycles the services whose
 section moved. Config sections compare as whole values, so editing
@@ -115,7 +121,7 @@ A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skip
 
 `tablist.json` and `motd.json` live at the root of `plugins/Gloss/`. They do not live inside a folder of their own.
 
-A folder in that table exists only once there is something in it. Gloss creates `holograms/`, `menus/`, `images/` and `panels/` when the first document or asset is written to them, not at enable, and it never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it on the next pass either; it comes back the next time a document of that kind is saved. Removing the folder itself is not the same as removing the files inside it — the documents Gloss already loaded stay live until a restart, where deleting individual files unregisters them on the next pass.
+A folder in that table exists only once there is something in it. Gloss creates `holograms/`, `menus/`, `images/` and `panels/` when the first document or asset is written to them, not at enable, and it never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it; it comes back the next time a document of that kind is saved. Every document below a removed folder enters the same 3-second deletion grace and unregisters only if still absent; restoration cancels the pending unload.
 
 ## Shipped defaults and resets
 

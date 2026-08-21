@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Adapt documentation: Skill - Pickaxes"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -105,9 +105,9 @@ Your pickaxe stops at 1 durability instead of shattering. On top of that, each d
 Every block you break with a pickaxe has a chance to cancel that block's
 durability wear. It can then give one or two additional durability points back. The repair commits after vanilla's item-damage step, so a one-point proc is visible instead of being immediately offset by the same block's wear. It only triggers on a damaged tool, and it stacks well with Unbreakable Pact for a pickaxe that basically maintains itself. It works on its own once learned.
 
-### Gem Polish (`pickaxe-gem-polish`)
+### Trophy Polish (`pickaxe-gem-polish`)
 
-Mining diamond, emerald, or lapis ore, or an amethyst cluster, drops a bonus XP orb and has a chance to drop one extra matching gem. By default Silk Touch turns the whole thing off so you cannot silk the ore, place it, and mine it again for doubled rewards. It works on its own once learned.
+Mining a naturally generated standing or wall head, skull, or dragon egg with a pickaxe drops a bounded vanilla XP orb. Ores and amethyst never qualify, and the adaptation never duplicates the trophy. Player-placed or previously player-modified trophies are permanently rejected by default, so moving the same head or egg cannot become an XP loop. Only direct, uncancelled `BlockBreakEvent` breaks qualify; piston, gravity, or teleport collection of a dragon egg does not award XP.
 
 ### Stone Skin (`pickaxe-stone-skin`)
 
@@ -455,33 +455,33 @@ Repair chance is `min(maxChance, chanceBase + level * chancePerLevel)`. It fires
 | `restoreMin` | `1` | Fewest durability points restored per proc. |
 | `restoreMax` | `2` | Most durability points restored per proc. |
 
-### Gem Polish
+### Trophy Polish
 
 | Property | Value |
 |----------|-------|
 | Class | `PickaxeGemPolish` |
-| Icon | `DIAMOND` |
+| Icon | `DRAGON_HEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 6 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 6844 |
 | Config file | `plugins/Adapt/adapt/adaptations/pickaxe-gem-polish.toml` |
-| Listened events | `BlockBreakEvent` (`on`, HIGH) |
-| Stats | `pickaxe.gem-polish.gems-polished` |
-| Milestone | `challenge_pickaxe_gempolish_500` at 500 gems, 400 XP |
-| Menu lore | Mine diamond, emerald, lapis or amethyst. Chance for an extra matching gem. Bonus XP per gem ore mined |
+| Listened events | `BlockBreakEvent` (`MONITOR`, cancelled events ignored) |
+| Stats | `pickaxe.gem-polish.trophies-polished` |
+| Milestone | `challenge_pickaxe_gempolish_25` at 25 trophies, 400 XP |
+| Menu lore | Mine natural heads, skulls, or dragon eggs. Player-placed trophies grant no XP. Vanilla XP per trophy |
 
-Triggers: diamond ore to diamond, emerald ore to emerald, lapis ore to lapis lazuli (all including deepslate variants), and amethyst cluster to amethyst shard. The bonus XP orb is worth `bonusXpBase + level * bonusXpPerLevel` and spawns on every qualifying break. The extra gem rolls `min(maxGemChance, gemChanceBase + level * gemChancePerLevel)`.
+Eligible heads are skeleton, wither skeleton, zombie, player, creeper, dragon, and piglin heads or skulls, including their wall forms, plus `DRAGON_EGG`. The orb is `min(maximumXpPerTrophy, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)`, or 7-19 points at defaults.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `preventSilkTouchDoubleDip` | `true` | Skips the XP orb and the extra gem when the pickaxe has Silk Touch. |
-| `gemChanceBase` | `0.04` | Extra-gem chance before the level bonus, 0-1. |
-| `gemChancePerLevel` | `0.05` | Extra-gem chance added per level, 0-1. |
-| `maxGemChance` | `0.4` | Cap on the extra-gem chance, 0-1. |
-| `bonusXpBase` | `1` | Vanilla XP in the bonus orb before the level bonus. |
-| `bonusXpPerLevel` | `2` | Vanilla XP added to the bonus orb per level. |
+| `headsEnabled` | `true` | Allows naturally generated standing and wall heads or skulls. |
+| `dragonEggEnabled` | `true` | Allows naturally generated dragon egg blocks. |
+| `rejectPlayerModifiedBlocks` | `true` | Permanently rejects player-placed or previously player-modified trophies. |
+| `vanillaXpAtLevelOne` | `7` | Vanilla XP points granted at adaptation level one. |
+| `vanillaXpPerAdditionalLevel` | `3` | XP points added for every level after level one. |
+| `maximumXpPerTrophy` | `24` | Hard cap on one trophy reward. |
 
 ### Stone Skin
 

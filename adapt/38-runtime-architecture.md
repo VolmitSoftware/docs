@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Adapt documentation: Runtime Architecture"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -50,7 +50,7 @@ On quit, state is queued for persistence. Player-scoped tasks, HUD state, and te
 
 ## Reloading and restarting
 
-A watcher polls Adapt's config paths twice a second and applies changes in place. While a legacy `.json` file still sits next to a canonical `.toml`, the watcher ignores the JSON.
+A watcher drains native file events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. Stable saves are queued into a latest-state batch and applied no more than once every 3 seconds; a save that lands while a batch is waiting or running becomes one trailing batch. Atomic moves, brief FTP replacement gaps, and same-metadata edits are covered. Automatic loads are passive and do not canonicalize, migrate, delete, or recreate watched files. While a legacy `.json` file still sits next to a canonical `.toml`, the watcher ignores the JSON.
 
 A core config reload refreshes language, custom models, advancement synchronization, default-active protector membership, and online mutation qualification. It also throws away the material value cache. Ability API policy settings are read fresh on every call. They follow the core config without a restart. SQL and Redis clients, metrics, protector registration, plugin load order, and the Velocity companion are restart boundaries. [01 - Installation & Configuration](/adapt/01-installation-configuration) carries the full matrix.
 
@@ -90,6 +90,7 @@ The watcher covers `adapt/adapt.toml` and `adapt/adapt.json`, `adapt/models.toml
 | Item | Value |
 |---|---|
 | Config watcher poll | 500 ms |
+| Automatic hotload cooldown | At least 3 s between batch starts |
 | In-memory player retention after quit | 60 s |
 | PlaceholderAPI offline snapshot grace | 60 s |
 | Prefetched login data cache | 2 minutes, 2048 entries |

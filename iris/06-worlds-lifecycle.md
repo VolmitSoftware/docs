@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ Now create the real world. This is the step that freezes the pack:
 
 On Folia, this stages files and automatically requests a controlled restart after staging succeeds. Wait for the server to return, then the world loads on boot. On every other Bukkit-family server, including Spigot, the managed `iris:*` world is created immediately.
 
-The immediate path starts its lifecycle progress presentation before validation, rather than waiting for spawn chunks. Players receive an Iris-colored boss bar for the whole run. An action-bar meter is published into the shared cooperative compositor. It merges beside other plugins' HUD content. Console receives a throttled colored text bar. The percentage advances only when create crosses a real phase boundary, with live generated/required counts during spawn generation. The terminal state is retained briefly as green success or red failure. Detailed lifecycle and exception diagnostics continue to go to the console separately.
+The immediate path starts its lifecycle progress presentation before validation, rather than waiting for spawn chunks. Players receive an arbitrated large title and a labeled action-bar meter published into the shared cooperative compositor; ordinary world creation does not use a boss bar. The meter merges beside other plugins' HUD content. Console receives a throttled colored text bar. The percentage advances only when create crosses a real phase boundary, with live generated/required counts during spawn generation. Completion or failure remains in chat, while detailed lifecycle and exception diagnostics continue to go to the console separately. Optional creation-time pregeneration retains its dedicated long-running boss bar.
 
 ```text
 /iris worlds

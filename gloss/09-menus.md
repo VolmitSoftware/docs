@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Gloss documentation: Hologram Menus"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -201,18 +201,18 @@ A failed file logs one warning line, `menus/<id>.json: <reason>`, exactly as eve
 
 ## Hot reload
 
-`menus/` is a document registry on the shared `DataWatchdog` pass, like `holograms/` and `boards/`. `images/` is a second entry on the same pass. Both run at `[hotload] watchIntervalTicks` (default 5).
+`menus/` is a document registry on the shared `DataWatchdog` pass, like `holograms/` and `boards/`. `images/` is a second entry on the same pass. Both request checks at `[hotload] watchIntervalTicks` (default 5), while completed automatic passes remain subject to the shared 3-second cooldown.
 
 | Entry | Effect |
 |---|---|
-| `menus` | Changed, created and deleted files are reported by one folder walk. A file whose content hash actually differs is re-parsed and its registry entry replaced, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice and an experience-orb pickup sound, and any panel showing that menu reloads it. Deleting a file unregisters its id and closes matching sessions silently |
+| `menus` | Changed, created and deleted files are reported by one folder walk. A file whose content hash actually differs is re-parsed and its registry entry replaced, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice and an experience-orb pickup sound, and any panel showing that menu reloads it. A deletion enters a 3-second grace period before its id is unregistered and matching sessions close silently |
 | `images` | A changed, added or removed image refreshes the visuals of open sessions and panel views |
 
 The walk applies the same recursive filter as the boot scan, so subdirectories are covered. If you create a directory, Gloss registers every accepted file beneath it. If you delete a directory, Gloss unregisters every menu id under that path prefix, one by one.
 
 Changes under `images/` do not reload menu documents. Because icons are rebuilt on refresh, an edited PNG appears without reopening anything.
 
-> If you delete a menu file, Gloss unregisters the menu at once and closes anyone viewing it. There is no undo and no backup for a hand-deleted file.
+> If you delete a menu file, Gloss waits 3 seconds before unregistering it and closing anyone viewing it. Restoring the path during that grace cancels the unload; after the grace there is no backup for a hand-deleted file.
 {.is-warning}
 
 ## Configuration

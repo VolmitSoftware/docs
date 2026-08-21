@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/adapt/`.
 
-Most of what you will change is hot-reloadable. A watcher drains filesystem events. It also reconciles file signatures on a short interval. Then it applies a save only after the file has stayed stable for one extra poll. That covers editors that write a file in two steps. It also covers hosts where the operating-system watcher registers but never fires. That case is common on Docker and Pterodactyl. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected. The settings already in memory keep running. A typo never takes the plugin down.
+Most of what you will change is hot-reloadable. Native filesystem events are reconciled with content checks, so atomic editor saves, FTP replacements, and same-size edits with an unchanged timestamp are still found. Adapt waits for a stable snapshot of at most 2 MiB and applies at most one automatic batch every 3 seconds; saves made during that interval replace the queued state and run in one trailing batch. Temporary upload artifacts and brief delete-and-recreate gaps are ignored. Automatic loads parse the captured file without rewriting, migrating, deleting, or recreating watched files; canonical rewrites remain startup and explicit migration work. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected, and the settings already in memory keep running.
 
 These things are not hot-reloadable. Adapt wires them only while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
 
@@ -58,7 +58,7 @@ Player-facing behavior for each type is in [35 - Mutations Catalog](/adapt/35-mu
 
 ## Turning Adapt off in a world
 
-Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, not folder names: `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or whatever key a custom world provider supplies. The two entries in the generated file are placeholders that match nothing. The change applies on the next poll. Mutations have their own separate `worldBlacklist`, both globally and per type.
+Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, not folder names: `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or whatever key a custom world provider supplies. The two entries in the generated file are placeholders that match nothing. The change applies in the next eligible automatic batch, or immediately through explicit reload. Mutations have their own separate `worldBlacklist`, both globally and per type.
 
 ## Config maintenance
 
@@ -311,7 +311,7 @@ Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server t
 
 ### Reload matrix
 
-The watcher drains events at a 500 ms cadence. It watches `adapt.toml` and its legacy JSON peer. It also watches `models.toml` and its legacy peer, `mutations.toml`, and the locale override folder. It watches everything directly inside `adapt/skills/` and `adapt/adaptations/`. Signature reconciliation still runs on a short interval when the operating-system watcher is silent.
+The watcher drains native events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. It watches `adapt.toml` and its legacy JSON peer. It also watches `models.toml` and its legacy peer, `mutations.toml`, and the locale override folder. It watches everything directly inside `adapt/skills/` and `adapt/adaptations/`. Automatic snapshots are capped at 2 MiB and normalized into one latest-state batch, with at most one application every 3 seconds and one trailing batch when more saves arrive during the cooldown. Passive automatic loads never canonicalize or migrate the source file.
 
 | Change | Hot reload | Restart required |
 |---|---|---|

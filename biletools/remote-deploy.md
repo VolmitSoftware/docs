@@ -2,7 +2,7 @@
 title: "BileTools — Remote Deploy"
 description: "Push plugin jars to other servers, and the security model"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -67,6 +67,19 @@ remote-deploy:
 Only plugins named in `master-deploy-signatures` are pushed. A rebuild of an
 unrelated jar is not distributed. Both shipped entries are placeholders.
 Replace them, or the feature does nothing.
+
+## Transfer and watcher handoff
+
+The master sends the immutable snapshot accepted by its local watcher while
+preserving the authoritative source jar's filename. Internal staging filenames
+are not exposed to the slave.
+
+The slave writes the transfer to `<filename>.jar.part`, verifies the declared
+size and SHA-256 digest, then atomically replaces the final `.jar` when the
+filesystem supports it. BileTools ignores the partial file. The completed jar
+then follows the normal stability checks and the completion-anchored
+three-second automatic batch cadence. A replaced jar's brief
+delete-and-recreate window is covered by the three-second deletion grace period.
 
 ## Transfer limits
 

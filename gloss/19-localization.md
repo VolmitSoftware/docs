@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Gloss documentation: Localization"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -164,10 +164,16 @@ or a number where a string is expected fails the load.
 
 ## Hot reload
 
-The same 5-tick pass that watches `menus/` and `images/` checks `language.yml` by last-modified time
-and size. It reloads it on any change. No command and no restart is needed. A save applies within a
-few ticks. `/gloss reload` does not reload `language.yml`. The file watch is the only path. It is
-always running.
+The shared `DataWatchdog` checks `language.yml` at `[hotload] watchIntervalTicks`. Each eligible
+watchdog pass drains native events and captures an immutable SHA-256 snapshot; two consecutive
+identical captures must agree before the overlay can reload. Automatic batches complete no more
+than once every 3 seconds, with the
+latest edit retained as one trailing pass. `/gloss reload` does not reload `language.yml`; the file
+watch remains the automatic path.
+
+An invalid, unreadable or missing automatic snapshot keeps the last-good locale. Deleting
+`language.yml` does not recreate or rewrite it; startup restores the default file if it is still
+missing after a restart.
 
 Reloads are atomic. The new snapshot is built and validated in full. It is swapped in only if it
 passes. If it does not, the previously loaded snapshot stays live. Nothing changes.
@@ -229,7 +235,7 @@ A `lang()` key the catalog does not declare is a build error for that document. 
 
 4. Keep every placeholder the original had. You may reorder or repeat them. You may not add or drop
    one.
-5. Save. The change applies within a few ticks.
+5. Save. The change applies after two matching captures and the next eligible 3-second batch.
 6. If nothing changes, read the console. A `Rejected language reload` line names the offending key
    and the exact mismatch. The previous text keeps serving until you fix it.
 

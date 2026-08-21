@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -78,7 +78,13 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 
 ## Reload
 
-The hotload controller watches `config.toml`, locale overrides, and TOML files. Those files live under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. The controller applies operating-system file events when they arrive. Docker and Pterodactyl bind mounts often never deliver those events. The watcher still reconciles file signatures on a short interval. It applies a save only after the file stays stable for one extra poll.
+The hotload controller watches `config.toml`, locale overrides, and managed config files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. It consumes operating-system file events and periodically reconciles signatures so Docker, Pterodactyl, and other mounts that omit events still converge. A detected file must stay stable for an extra watcher poll before it is eligible.
+
+React normalizes watched paths and coalesces repeated events by path. An automatic apply batch cannot start until three monotonic seconds after the preceding drain and any deferred watcher reconfiguration finish. Saves received while a batch is waiting or running collapse into one trailing drain that reads the latest stable state. A successful `core/hotload.toml` change reconfigures the watcher only after every file in the current batch has been processed; React compares digests before and after that reconfiguration so the watcher reset cannot discard a concurrent save.
+
+Before applying a file, React captures a strict-UTF-8 snapshot of at most 2 MiB and requires two identical reads with stable file attributes. It applies those immutable bytes, acknowledges that exact digest, and reads the file again afterward. If newer bytes arrived during parsing or application, that path is queued for the trailing batch instead of being marked complete. Common editor, browser-download, and FTP temporary artifacts are ignored.
+
+A missing target enters a three-second controller tombstone grace after the watcher delivers the stable missing-file event. React does not recreate, migrate, canonicalize, or delete a watched target during that gap. If the file returns, the latest bytes are queued; if it remains absent through the grace, React logs the deletion and keeps the last-good runtime state.
 
 Feature and tweak changes deactivate and reactivate active components. Enable-state changes activate or deactivate those components. Sampler changes restart the sampler. Action changes refresh the action configuration. Core changes reload the matching controller.
 
@@ -86,14 +92,14 @@ Global changes refresh language, entity priority, and active player monitors. Ch
 
 `/react reload` performs a complete React disable and enable lifecycle. If the old ticker cannot drain, React refuses to re-enable and requires a server restart.
 
-React rejects invalid component, controller, global-config, or localization hotloads. The current live snapshot stays active. React does not rewrite a half-written or unreadable component file from memory. Startup still copies an unreadable component file to a sibling `.bak` and replaces it from defaults.
+React rejects invalid component, controller, global-config, or localization hotloads. The current live snapshot stays active. Passive hotload parses the captured bytes without canonical rewrites, legacy migration, or target deletion, so it cannot overwrite a newer external save. Transient capture, verification, scheduling, or application failures retain the last-good state, stay queued when retryable, and log their full stack traces. Startup and explicit manual reloads keep their normal canonicalization, migration, backup, and recovery behavior.
 
 ## Hotload controller (`core/hotload.toml`)
 
 | Key | Default | Description |
 |-----|---------|-------------|
 | `enabled` | `true` | Enables managed config file watching. Disabling it requires manual reloads or restarts. |
-| `pollIntervalMs` | `500` | Watcher queue-drain interval, clamped to at least 100 ms. Operating-system event delivery can add latency. |
+| `pollIntervalMs` | `500` | Filesystem-event polling interval, clamped to at least 100 ms. Automatic apply batches remain limited to one every three seconds. |
 | `maxDiffMessagesPerFile` | `12` | Maximum changed-key messages included in each operator summary. |
 | `notifyOperators` | `true` | Sends hotload summaries to online operators in addition to console output. |
 

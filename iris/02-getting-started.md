@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,7 +73,7 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 
 **Everything else, including Spigot.** Create builds the managed `iris:*` world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world). Spigot supports this create path even though it cannot cold-replace a vanilla slot.
 
-For a player, the immediate create path opens an Iris-colored boss bar and action-bar meter before validation begins. The stage label advances through pack validation, datapack installation, snapshot copy, generator preparation, spawn generation, registration, safe entry, optional creation-time pregen, and finalization. Spawn generation also shows generated/required chunk counts when available. Console creates receive the same truthful stages as a bounded colored text bar rather than per-chunk log spam. A red terminal bar means create failed and the detailed cause remains in the server console.
+For a player, the immediate create path opens an arbitrated large title and labeled bottom action-bar meter before validation begins. The stage label advances through pack validation, datapack installation, snapshot copy, generator preparation, spawn generation, registration, safe entry, optional creation-time pregen, and finalization. Spawn generation also shows generated/required chunk counts when available. Console creates receive the same truthful stages as a bounded colored text bar rather than per-chunk log spam. Completion or failure remains in chat and the detailed cause remains in the server console. The optional creation-time pregeneration phase retains its dedicated long-running boss bar.
 
 ```text
 /iris create name=myworld type=overworld seed=1337

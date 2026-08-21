@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Gloss documentation: Container Previews"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -664,8 +664,9 @@ Editing a shipped document in place also works and hot-reloads. A reset undoes t
 
 ## Hot reload
 
-`previews/` has its own watcher on a fixed 5-tick pass. That pass handles edits, creations and
-deletions together. It does **not** honor `[hotload] watchIntervalTicks`.
+`previews/` is an entry on the shared `DataWatchdog`. It is checked at
+`[hotload] watchIntervalTicks`, handles edits, creations and deletions together, and shares the
+completion-anchored 3-second latest-state batch gate with the other automatic hotloads.
 
 A recompiled document logs `Preview document "<name>" changed and was recompiled.`, a new one
 `Preview document "<name>" was detected and compiled.`, and a deleted one

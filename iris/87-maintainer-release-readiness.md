@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -824,10 +824,14 @@ Release decision:
       ownership. They resolve the structure's authored loot through the
       shared Bukkit/modded placement path. They do not replace global
       loot or consume generation RNG.
-- [x] VolmLib is pinned to commit
-      `5486ac97ad6d6833e27275dc768222d377721522`. Local-development and
-      clean remote-resolution modes propagate through every nested
-      platform build.
+- [ ] Iris still pins VolmLib commit
+      `e6574cf814b3dd670385a4d632a63fde2038e186`, which predates the
+      purpose-scoped action-bar retirement API used by foreground job
+      progress. Publish the current VolmLib change, update every Iris
+      fallback coordinate to that immutable commit, then rerun the clean
+      `-PuseLocalVolmLib=false` gates. Local composite-build mode passes;
+      remote mode currently fails at the two scoped `HudActionBar.retire`
+      calls in `JobProgressDisplay`.
 - [x] Headless classload validation scans all 1,166 compiled core
       classes, including all 353 nested classfiles. 331 nested classes
       initialize without server APIs. The remaining 22 match exact

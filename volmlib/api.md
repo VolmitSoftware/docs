@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -36,7 +36,8 @@ the server, and each plugin compiles and shades it into its jar.
 | `util.hunk`, `util.matter`, `util.mantle` | Three-dimensional chunk-shaped buffers, palette-backed storage, and the persistent world-data layer |
 | `util.noise`, `util.interpolation`, `util.stream` | Noise generators, interpolators, and composable procedural streams |
 | `util.collection`, `util.cache`, `util.data` | `KList`/`KMap`/`KSet`, chunk caches, palettes, cuboids, varint helpers |
-| `util.io`, `util.json` | IO adapters and the JSON implementation |
+| `util.io`, `util.json` | IO adapters, native-plus-reconciled file/folder watchers, reactive folder batching, and the JSON implementation |
+| `util.hotload` | `ConfigHotloadEngine`, which stabilizes and coalesces configuration changes before a host applies them |
 | `util.network` | Downloads, metered streams, download progress reporting |
 | `integration` | The cross-plugin metric handshake types. Read the relocation rule below before you touch these |
 
@@ -44,6 +45,12 @@ the server, and each plugin compiles and shades it into its jar.
 legacy `Material` aliases before block-data inspection or item-name publication. Registry
 discovery does not initialize CraftLegacy support. Its placement-support contract classifies
 cactus as a decorant and permits cactus only on sand, red sand, or another cactus.
+
+`FileWatcher` and `FolderWatcher` consume native `WatchService` events and reconcile filesystem state, including atomic replacements, overflow, directory deletion/recreation, and watcher-key loss. They do not follow directory symlinks. Both own operating-system resources and must be closed when their host is replaced or disabled.
+
+`ReactiveFolder` adds bounded rolling content reconciliation, temporary-artifact filtering, delete grace, and a completion-anchored 3-second latest-state queue to a recursive folder watch. `ConfigHotloadEngine.configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` provides the same completion-anchored queue with a host-supplied interval; Volmit hosts use 3 seconds. It also provides self-write suppression and periodic content reconciliation for silent or same-metadata saves. The shared reconcilers advance at most 8 MiB or 256 files per fallback pass. `ConfigHotloadEngine` caps exact-content capture at 2 MiB per file; larger targets remain visible to metadata reconciliation but are not eligible for an automatic content apply. A failed host apply remains pending for retry; `clear()` closes all watcher resources and discards pending work.
+
+`ConfigFileSupport.load(..., overwriteOnReadFailure=false, ...)` is a passive load: it parses and normalizes in memory but never canonicalizes, migrates, deletes, or creates files. Startup and explicit migration paths opt into writes by passing `true`.
 
 Everything else under `art.arcane.volmlib` is scaffolding for the Volmit plugins. Those types
 are public because Java has no better word for "visible to the plugins in this repository".
@@ -384,9 +391,9 @@ thread is the placeholder snapshot machinery.
 plugin that ships this package, including copies relocated into different namespaces. The
 action bar is **cooperative**. Plugins publish text segments. Every copy composes the same
 single merged line. The title (title + subtitle + times, one atomic surface) stays
-**exclusive** and is arbitrated by bid. Boss bars are neither. They are reserved for Iris
-loading bars. Iris renders them directly through `HudBossBarLane`. Nothing falls back to
-them.
+**exclusive** and is arbitrated by bid. Boss bars are neither. Iris uses them only for
+persistent background pregeneration status through `HudBossBarLane`; transient foreground
+progress never falls back to them.
 
 Coordination never crosses a plugin boundary through a VolmLib type. Each copy posts an
 encoded String into Bukkit player metadata. Every copy runs the same deterministic layout or
@@ -396,8 +403,10 @@ winner function over all posted values.
 
 A plugin publishes with
 `hudBar.publish(player, new HudSegment(purpose, priority, ttlMillis, slots, text))`. It
-withdraws with `clear(player, purpose)`. `text` is a legacy `§` string. `slots` is an ordered
-`HudSlot` preference list (`LEFT`, `CENTER`, `RIGHT`).
+withdraws with `clear(player, purpose)`. A disconnected-player cleanup uses
+`retire(playerId, purpose)` to drop only that local segment, or `retire(playerId)` to drop
+every local segment. `text` is a legacy `§` string. `slots` is an ordered `HudSlot`
+preference list (`LEFT`, `CENTER`, `RIGHT`).
 
 Every publish re-encodes the plugin's live segments under one metadata value. It then
 composes **all** plugins' live segments into one line and sends it. The fastest publisher
@@ -429,14 +438,16 @@ loop. `true` means it may render the title this frame, in its own text pipeline.
 The bid protocol is unchanged from v1. Metadata key: `volmit.hud.title`. Encoding:
 `1\|priority\|sinceMillis\|assertedMillis\|ttlMillis\|purpose`. Winner by highest priority,
 then smallest `sinceMillis`, then plugin name, then purpose. Re-asserting keeps `sinceMillis`
-stable. That lets a holder keep an equal-priority slot. `release()` withdraws the bid. By
-fleet convention only Wormholes and React's monitor edit mode use this surface.
+stable. That lets a holder keep an equal-priority slot. `release()` withdraws the bid. Iris
+foreground progress, Wormholes prompts, and React's monitor edit mode use this surface.
 
 ### Threading and retirement
 
 `publish`, `clear`, `resolve`, `release`, and boss-bar `show`/`hide` touch the Bukkit player
 and must run on that player's owning scheduler. An entity-scheduler retirement callback
-instead calls `HudActionBar.retire(playerId)`, `HudTitleClaim.retire()`, or
-`HudBossBarLane.retire(playerId, laneId)`. Those UUID-only operations drop local state. They
-do not touch the retired player or its metadata. Segments and bids from a crashed or disabled
-plugin expire by TTL. No service registration, election, or reflection is involved.
+instead calls `HudActionBar.retire(playerId, purpose)`, `HudTitleClaim.retire()`, or
+`HudBossBarLane.retire(playerId, laneId)`. Use `HudActionBar.retire(playerId)` only when every
+local action-bar purpose belongs to the retiring lifecycle. Those UUID-only operations drop
+local state. They do not touch the retired player or its metadata. Segments and bids from a
+crashed or disabled plugin expire by TTL. No service registration, election, or reflection
+is involved.

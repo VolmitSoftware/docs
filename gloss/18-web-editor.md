@@ -27,10 +27,13 @@ Everything above works offline as file editing. Export from the editor. Drop the
 `plugins/Gloss/`. The hot reload described in [Data Files & Hot Reload](/gloss/03-data-files) picks
 it up.
 
-The top bar carries a mode tab per document kind, plus `All`. Picking one scopes the whole shell to
-that kind: the library rail lists only those documents and hides folders holding none of them, the
-heading counts what is in scope, creating a document defaults to that kind, and an empty rail names
-the kind it is empty of. The mode persists between visits and follows the documents you open.
+The editor uses square, seam-based, IntelliJ-style chrome. Its upper command row identifies the
+active document and keeps the primary **Import** and **Export** file actions labelled. The lower
+context row carries permanent compact selectors that name the current document-kind scope and view.
+Selecting a kind, or `All`, scopes the whole shell: the library rail lists only those documents and
+hides folders holding none of them, the heading counts what is in scope, creating a document
+defaults to that kind, and an empty rail names the kind it is empty of. The mode persists between
+visits and follows the documents you open.
 
 Every kind has the same four views. **Visual** is that kind's editing surface. **Preview** frames
 the same surface inside a Minecraft game screen — a scoreboard anchored to the right edge the way
@@ -45,20 +48,26 @@ styles and tablists from their JSON shape, previews validation issues, and repla
 document only after confirmation; dropping a JSON file creates a new document instead. Export has
 one download action plus Copy JSON, names `motd.json` and `tablist.json` canonically, and shows the
 exact runtime destination for every other kind. The same actions remain searchable in the command
-palette, and Mod+S opens Export. On tablet widths, the overflow contains only controls hidden from
-the bar; on phones it becomes the complete action surface without leaving authoring controls
-unreachable.
+palette, and Mod+S opens Export. Secondary commands live in **More**; as the command row narrows,
+complete action groups move into that same menu, remain available exactly once, and never duplicate
+a visible command. The active kind and view stay named in their permanent selectors. Command-bar
+and canvas chrome never use horizontal scrolling to conceal actions; compact controls and
+deterministic **More** handoffs keep every command reachable instead.
 
-The editor shell adapts to narrow screens by moving the library and inspector into drawers. The
-document creation controls reflow into a grid, and the template kind selector scrolls horizontally
-on phones so every document kind remains reachable. The Gloss cube is used for the application
-mark, favicons and install icons.
+On phones the command and context tiers remain two distinct rows. Labelled **Files** and **Inspect**
+controls open the Library and Inspector drawers, and touch targets are enlarged across the command
+bar, canvas and preview tools, library, inspector and dialogs. A touch drag beginning on empty canvas
+pans the workspace instead of starting a selection marquee. Either drawer dismisses from its scrim
+or the Escape key. The command rows and canvas toolbar retain their current-state labels without
+horizontal action scrollers. The Gloss cube is used for the application mark, favicons and install
+icons.
 
 Documents may live directly at the workspace root; folders are optional organization rather than a
-required `Unfiled` container. Library documents and folders, menu components and container-preview
-elements expose the same management actions through right-click and a touch-accessible actions
-button. These menus include the applicable rename, duplicate, move, link and confirmed delete
-operations without being clipped by a pane edge.
+required `Unfiled` container. The Library creation row has a labelled **Folder** action and a **New
+document** menu whose entries name each document kind. Library documents and folders, menu
+components and container-preview elements expose the same management actions through right-click
+and a touch-accessible actions button. These menus include the applicable rename, duplicate, move,
+link and confirmed delete operations without being clipped by a pane edge.
 
 The container-preview inspector exposes the complete match and variant targeting surface, including
 blocks, entities, special target, priority, variables and preserved extension keys. Card and match

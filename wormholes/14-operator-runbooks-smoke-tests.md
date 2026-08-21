@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,6 +26,19 @@ Architecture context:
 | 4 | Under `[main]`, edit a harmless key such as `verbose-logging = true`. Then run `/wh reload` as op (`wormholes.admin.reload`). | Reload success message. No retained-settings error. |
 | 5 | Toggle `/wh debug` (`wormholes.admin`). | Verbose logs and one-second telemetry toggle. The console shows the change. |
 | 6 | If you test doors on non-Paper, restart the server once after the first Spigot-only pocket datapack install. | The log no longer requires a restart for the pocket datapack. Doors can start when enabled. |
+
+## File hotload burst and recovery
+
+Use harmless settings and restore their original values after this check.
+
+| Step | Action | Pass criteria |
+|------|--------|---------------|
+| 1 | Change `quality` or `verbose-logging`, save `wormholes.toml`, and do not run a command. | The file remains unchanged by the passive reload. After 350 ms of stable content, the console reports one successful hotload and the live setting changes. |
+| 2 | Save several valid variants over a few seconds, ending with a known final value. Include an editor atomic-save or FTP upload/rename when that is the deployment path. | Automatic applications are single-flight and start no more often than three seconds after the preceding completion. Intermediate candidates coalesce and the final value applies. |
+| 3 | While one automatic application is pending, save one more valid value. | The later snapshot remains queued and applies after the active application and cooldown; it is not acknowledged or lost early. |
+| 4 | Temporarily move or delete `wormholes.toml`, then restore a valid file. | Wormholes does not create defaults or apply an empty intermediate state. The restored stable file hotloads. |
+| 5 | Save malformed TOML, then correct it with a different valid snapshot. | The malformed snapshot logs a stacktrace and keeps the last-known-good live settings. The corrected snapshot applies without a restart. |
+| 6 | Queue automatic edits, then run `/wh reload`. | The manual reload applies immediately without waiting for the automatic cooldown. An older queued snapshot does not apply afterward. |
 
 ## Build two local portals and link
 
@@ -164,6 +177,8 @@ Permission: `wormholes.admin.projection`.
 | RTP never ready | The world is not loaded. Radius or border is too tight. Safety rejects all candidates. Search is on cooldown. |
 | Doors missing | `[main] dimensional-doors-enabled` is false. A pocket datapack restart is still required. Drain is in progress. |
 | Network import fails | The network is not initialized. The code is invalid or truncated. The identity is the same. The peer is offline (`/wh network doctor`). |
+| Config edit does not hotload | Confirm the target is exactly `config/wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 2`, and remains stable for 350 ms. Check the full watcher or parse stacktrace. |
+| Repeated edits appear delayed | Automatic hotload is intentionally single-flight and completion-cooled for three seconds. The latest stable snapshot stays queued. Use `/wh reload` for an immediate explicit application. |
 
 ## Cross-references
 

@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -74,15 +74,14 @@ On mod loaders only `settings.json` and the parity dumps use the `iris/`
 root. Every pack, config, and generated artifact uses `irisworldgen/`.
 Both roots sit under the loader config directory.
 
-Hotload is polled on both platforms, at different rates:
+Both platforms use native filesystem events with content reconciliation, stable snapshots, and a completion-anchored 3-second latest-state queue. Their host check rates differ:
 
 | Watcher | Bukkit | Modded |
 |---------|--------|--------|
-| Pack / studio content | 1 s scan over the shared reactive folder | 250 ms scan, 1 s check latch, 2 s hold-off after recent generation |
-| `settings.json` | Reloaded through the same reactive path | Dedicated 3 s poll |
+| Pack / studio content | About 1 s shared reactive-folder checks; 4 s during maintenance | 250 ms eligibility sweep and about 1 s per-pack checks, with a 2 s hold-off after recent generation and a pregeneration hold-off |
+| `settings.json` | Exact-file check every 500 ms | Exact-file check every 500 ms |
 
-Both use the same invalidate, reload, and locale path once a change is
-detected.
+Both parse automatic settings changes from immutable bytes without rewriting the operator's file. Locale overrides are content-checked on the same 500 ms tick. Manual reload remains immediate.
 
 ## World model
 

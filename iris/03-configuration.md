@@ -2,12 +2,12 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris keeps its shared runtime settings in `settings.json` under the platform data folder. On first boot Iris writes a full defaults file if one is missing. Every successful load rewrites the file so new keys appear with defaults. Bukkit adds `compat.json`. Mod loaders add `modded.json`.
+Iris keeps its shared runtime settings in `settings.json` under the platform data folder. On first boot Iris writes a full defaults file if one is missing. Startup and manual loads rewrite a valid file so new keys appear with defaults; passive automatic hotload parses an immutable snapshot and never writes it back. Bukkit adds `compat.json`. Mod loaders add `modded.json`.
 
 See [01 - Installation & Platforms](/iris/01-installation-platforms) for data paths. See [33 - Performance Tuning](/iris/33-performance-tuning) for how to measure a tuning change.
 
@@ -42,11 +42,11 @@ The modded split is real and easy to get wrong. The engine data folder is `<conf
 1. Start Iris once so it writes the current schema and defaults.
 2. Copy `settings.json` outside the server directory as a rollback file.
 3. Change one key. Keep its JSON type. Quoted values such as `"false"` are strings, not booleans.
-4. Save the file. Then run `/iris reload` or wait for the hotload poll. The poll is about 3 seconds on modded, and about 6 seconds on Bukkit after the file stays stable.
+4. Save the file. Then run `/iris reload` or wait for automatic hotload. Both platforms check about every 500 ms, wait for a stable snapshot, and apply automatic batches no more than once every 3 seconds.
 5. Confirm the console logs `Hotloaded settings.json` or the reload success message, with no parse error.
 6. Exercise the affected feature. If nothing changed, check the "Takes effect" column below. Several keys are captured when a service, pool, or cache is constructed and need a restart.
 
-If parsing fails, restore the saved file and restart. Do not delete `settings.json` unless resetting every setting to defaults is what you want.
+If automatic parsing fails, Iris keeps the previously active settings and leaves the edited file untouched. Fix the JSON or restore the backup, then save again. Deleting `settings.json` during automatic watching retains the live settings and does not recreate the file; a later manual reload or restart recreates defaults.
 
 To change only the server locale, edit the existing `general` object in place:
 
@@ -58,7 +58,7 @@ To change only the server locale, edit the existing `general` object in place:
 }
 ```
 
-That fragment shows the field location. Do not replace a populated settings file with it. After `/iris reload`, run `/iris help` and confirm the selected locale is active. Iris rewrites the complete settings file after a successful load, including defaults for fields that were absent.
+That fragment shows the field location. Do not replace a populated settings file with it. After `/iris reload`, run `/iris help` and confirm the selected locale is active. The manual command rewrites the complete settings file after a successful load, including defaults for fields that were absent; automatic hotload does not.
 
 ### Validation and rollback
 
@@ -66,7 +66,7 @@ That fragment shows the field location. Do not replace a populated settings file
 |---|---|---|
 | Reload succeeds and the feature changes | The file parsed and the setting is read live | Keep the backup until the next clean restart |
 | Reload succeeds but behavior is unchanged | The value was captured when a service, pool, or cache was built | Restart, then retest the same workload |
-| Parse error in console, file unchanged | Gson threw before the rewrite, so your broken file is still on disk and Iris is running built-in defaults | Fix the JSON, reload. Restore the backup if you cannot |
+| Automatic parse error in console, file unchanged | The immutable snapshot was rejected, so the broken edit stays on disk and the previous runtime settings remain active | Fix the JSON and save again. Restore the backup if you cannot |
 | File is rewritten with defaults | Missing or unknown fields were normalized by `IrisSettings` | Reapply only intentional overrides. Do not restore an obsolete full file over new defaults |
 | Modded and Bukkit paths differ | The wrong data root was edited | Use the path table above and confirm the file timestamp changed before reloading |
 
@@ -76,11 +76,11 @@ That fragment shows the field location. Do not replace a populated settings file
 |--------|----------|
 | First boot | Create `settings.json` with current defaults if the file is absent |
 | Load | Parse with Gson into `IrisSettings`. On failure, log `Configuration Error in settings.json!` and run on built-in defaults for that boot — the bad file is left untouched, because the rewrite never runs |
-| After a successful load | Rewrite `settings.json` as pretty JSON so new keys and migrated values persist. Comments and hand formatting are lost |
+| After a successful startup or manual load | Rewrite `settings.json` as pretty JSON so new keys and migrated values persist. Comments and hand formatting are lost |
 | `/iris reload` | Invalidate the cached settings, re-read the file, reload the locale. On modded it also schedules a forced datapack regeneration. It does not restart services, reload packs, or rebuild engines |
-| Hotload (Bukkit) | `SettingsHotloadWatch` polls every 60 ticks (about 3 s) through the VolmLib `ConfigHotloadEngine`. A `lastModified` or size change is held for one extra poll so a half-written save is not applied. The reload only runs if the normalized file content actually differs. Logs `Hotloaded settings.json` |
-| Hotload (modded) | `ModdedSettingsHotloadService` polls `lastModified` every 3 s. Because a load rewrites the file, a touch with no edit still produces one reload (it does not loop). Logs `Hotloaded settings.json` |
-| Locale refresh | Bukkit calls `IrisLanguage.update()` on every poll. Modded calls it only when the file is unchanged, and calls a full `IrisLanguage.reload()` when it did change |
+| Hotload (Bukkit) | `SettingsHotloadWatch` checks every 10 ticks (about 500 ms) through `ConfigHotloadEngine`. Native exact-file events and bounded exact-content reconciliation detect atomic, FTP, and same-metadata saves. A stable immutable snapshot of at most 2 MiB is applied without rewriting the file, at most once every 3 seconds with one latest-state trailing batch. Logs `Hotloaded settings.json` |
+| Hotload (modded) | `ModdedSettingsHotloadService` uses the same 500 ms checks, 2 MiB immutable snapshot ceiling, content reconciliation, and completion-anchored 3-second queue. It does not rewrite a passive save. Logs `Hotloaded settings.json` |
+| Locale refresh | Both platforms content-check the active override on the 500 ms settings tick. Automatic locale changes use the same 3-second latest-state limit; `/iris reload` remains immediate |
 | `forceSave()` | Only `/iris debug` writes settings back from memory |
 
 Legacy migration: if the raw JSON still contains `world.anbientEntitySpawningSystem`, the value is copied to `world.ambientEntitySpawningSystem` and logged once.

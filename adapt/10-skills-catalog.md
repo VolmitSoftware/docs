@@ -2,7 +2,7 @@
 title: "Skills Catalog"
 description: "Adapt documentation: Skills Catalog"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -234,7 +234,7 @@ Adapt declares 312 adaptation types. 311 register on a plain server. The twelfth
 | Chronos (`chronos`) | `chronos-pocket-watch` | Pocket Watch | Sneak while falling with a clock in your inventory to drift in slow motion. The duration is limited and level scaled each airtime. |
 | Chronos (`chronos`) | `chronos-deja-vu` | Deja Vu | Your body remembers recent pain. Taking the same kind of damage again within a short window hurts less. |
 | Crafting (`crafting`) | `crafting-deconstruction` | Deconstruction | Return half of a crafted item's most-used recipe component with shears. Armor must be fully repaired. |
-| Crafting (`crafting`) | `crafting-xp` | Crafting XP | Gain passive XP when crafting. |
+| Crafting (`crafting`) | `crafting-xp` | Crafting XP | Periodically gain a bounded vanilla XP orb from committed crafts. |
 | Crafting (`crafting`) | `crafting-leather` | Craftable Leather | Craft Leather from Rotten Flesh. |
 | Crafting (`crafting`) | `crafting-skulls` | Craftable Skulls | Unlocks recipes for mob skulls. |
 | Crafting (`crafting`) | `crafting-backpacks` | Backpacks | Craft a Backpack that stores whole stacks and opens as its own container. |
@@ -263,11 +263,11 @@ Adapt declares 312 adaptation types. 311 register on a plain server. The twelfth
 | Discovery (`discovery`) | `discovery-keen-eye` | Keen Eye | Chests and spawners in your line of sight briefly appear as private glowing block displays. |
 | Enchanting (`enchanting`) | `enchanting-quick-enchant` | Quick-Click Enchant | Enchant items by clicking enchant books directly on them. |
 | Enchanting (`enchanting`) | `enchanting-lapis-return` | Lapis Return | Enchanting at a table has a chance to refund lapis, more at higher levels. |
-| Enchanting (`enchanting`) | `enchanting-xp-return` | XP Return | Enchanting XP is returned to you when you enchant an item. |
+| Enchanting (`enchanting`) | `enchanting-xp-return` | XP Return | Committed enchants periodically return a bounded vanilla XP orb. |
 | Enchanting (`enchanting`) | `enchanting-anvil-savant` | Anvil Savant | Reduce anvil XP cost when combining, repairing, and renaming. |
 | Enchanting (`enchanting`) | `enchanting-offer-reroll` | Offer Reroll | Sneak-right-click an enchanting table to reroll its offers. Each reroll costs lapis and XP levels. |
 | Enchanting (`enchanting`) | `enchanting-bookshelf-attunement` | Bookshelf Attunement | Gain virtual bookshelf power to improve enchanting table offer quality. |
-| Enchanting (`enchanting`) | `enchanting-grindstone-recovery` | Grindstone Recovery | Disenchanting can recover one removed enchantment onto a book with bonus XP. |
+| Enchanting (`enchanting`) | `enchanting-grindstone-recovery` | Grindstone Recovery | Disenchanting can recover one removed enchantment onto a book with tuned vanilla and skill XP. |
 | Enchanting (`enchanting`) | `enchanting-curse-cleansing` | Curse Cleansing | Sneak while taking a grindstone result to remove curses from the original item first. Every other property is preserved. You gain Enchanting XP. |
 | Enchanting (`enchanting`) | `enchanting-tome-rebinding` | Tome Rebinding | Drop one multi-enchant book while aiming at an anvil to divide it into single-enchant books. Lossy at low levels. Lossless at max. |
 | Enchanting (`enchanting`) | `enchanting-soul-link` | Soul Link | Sneak-right-click an anvil to soul-link an enchanted item so it survives death. An XP level buffer gates the save. |
@@ -359,7 +359,7 @@ Adapt declares 312 adaptation types. 311 register on a plain server. The twelfth
 | Pickaxes (`pickaxe`) | `pickaxe-obsidian-rush` | Obsidian Rush | Mining obsidian with a diamond or netherite pickaxe grants a strong Haste burst. |
 | Pickaxes (`pickaxe`) | `pickaxe-unbreakable-pact` | Unbreakable Pact | Your pickaxe refuses to break, surviving at 1 durability instead. |
 | Pickaxes (`pickaxe`) | `pickaxe-repair-rhythm` | Repair Rhythm | Sustained mining has a chance to restore durability to your pickaxe. |
-| Pickaxes (`pickaxe`) | `pickaxe-gem-polish` | Gem Polish | Mining gem ores grants bonus XP orbs and a chance for an extra gem. |
+| Pickaxes (`pickaxe`) | `pickaxe-gem-polish` | Trophy Polish | Mine naturally generated heads, skulls, or dragon eggs for bounded vanilla XP. |
 | Pickaxes (`pickaxe`) | `pickaxe-stone-skin` | Stone Skin | Breaking stone-type blocks builds short-lived stacking damage resistance. |
 | Ranged (`ranged`) | `ranged-force` | Force Shot | Shoot projectiles farther and faster. |
 | Ranged (`ranged`) | `ranged-piercing` | Arrow Piercing | Adds piercing so projectiles can pass through targets. |
@@ -388,7 +388,7 @@ Adapt declares 312 adaptation types. 311 register on a plain server. The twelfth
 | Rift (`rift`) | `rift-conduit` | Rift Conduit | Sneak-right-click a container with an ender pearl to capture a conduit taglock. Then right-click a second container to link them. Items left in one linked container flow into the other when you close it. At max level the two containers can be in different dimensions. |
 | Seaborne (`seaborne`) | `seaborne-oxygen` | Organic Oxygen Tank | Increases underwater air capacity. |
 | Seaborne (`seaborne`) | `seaborne-speed` | Dolphin's Grace | Gain passive water speed. Sprint-swimming also applies Dolphin's Grace for a level-scaled duration. |
-| Seaborne (`seaborne`) | `seaborne-fishers-fantasy` | Fisher's Fantasy | Fishing can grant additional XP and fish. |
+| Seaborne (`seaborne`) | `seaborne-fishers-fantasy` | Fisher's Fantasy | Fishing can grant one bounded bonus item, vanilla XP, and Seaborne XP. |
 | Seaborne (`seaborne`) | `seaborne-turtles-vision` | Turtle's Vision | While underwater, you gain Night Vision. |
 | Seaborne (`seaborne`) | `seaborne-turtles-mining-speed` | Turtle Miner | Gain an attribute-based underwater mining boost that stacks with Aqua Affinity and compensates for the floating penalty. |
 | Seaborne (`seaborne`) | `seaborne-tidecaller` | Tidecaller | Surge forward with a water burst while in water or rain, triggered by sneaking or an attack swing depending on server settings. |

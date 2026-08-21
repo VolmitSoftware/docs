@@ -2,15 +2,15 @@
 title: "BileTools — Configuration"
 description: "Every config.yml key with its shipped default"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 `plugins/BileTools/config.yml`. Values below are the defaults written on first
-run. BileTools rewrites the file after loading. The rewrite drops unknown keys
-and restores missing keys.
+run. BileTools rewrites supported values after loading and restores missing
+keys.
 
 ## Watcher
 
@@ -18,10 +18,9 @@ Controls automatic hot-reload.
 
 | Key | Default | Effect |
 |---|---|---|
-| `watcher.idle-poll-ticks` | `20` | Poll interval when nothing has changed recently. Minimum `1` |
-| `watcher.active-poll-ticks` | `5` | Poll interval after a change is detected. Minimum `1` |
-| `watcher.fingerprint-debounce-ticks` | `8` | Ticks a jar's fingerprint must stay stable before acting. Minimum `1` |
-| `watcher.coalesce-window-ticks` | `10` | Batches nearby jar changes into one dependency-aware reload flush. Minimum `0` |
+| `watcher.idle-poll-ticks` | `20` | Coordinator check interval when no watcher, staging, deletion, or reload work is pending. Minimum `1` |
+| `watcher.active-poll-ticks` | `5` | Coordinator check interval while watcher, staging, deletion, or reload work is pending. Minimum `1` |
+| `watcher.fingerprint-debounce-ticks` | `8` | Consecutive stable file-stamp checks required before staging a jar. Minimum `1` |
 | `watcher.ignore` | see below | Plugin names the watcher will never auto-manage |
 | `watcher.only` | `[]` | If non-empty, switches to allowlist mode — **only** these are auto-managed |
 {.dense}
@@ -44,9 +43,22 @@ These plugins are excluded by default. Hot-reload is often dangerous or
 pointless for them. They hold static state. They register protocol hooks. Other
 plugins depend on them.
 
-The debounce exists because a Gradle or Maven build writes the jar
-incrementally. Acting on the first write would load a truncated file. BileTools
-waits for the fingerprint to settle.
+The debounce exists because builds and FTP clients can write a jar
+incrementally. After the source stamp settles, BileTools creates and validates
+an immutable off-thread snapshot. If the source changes during the copy, the
+snapshot is rejected and the newest generation is retried. Temporary files
+such as `.jar.part` are ignored until they are renamed to `.jar`.
+
+After an automatic reload batch finishes, the next automatic batch cannot start
+for three seconds. Only one batch runs at a time; changes that arrive during it
+are coalesced by plugin into one latest-wins trailing batch. Jar deletion also
+uses a fixed three-second grace period that recreation cancels. These two
+intervals are not configurable.
+The former `watcher.coalesce-window-ticks` key is removed when the configuration
+is next loaded.
+
+Manual `/bile load`, `/bile unload`, and `/bile reload` operations bypass the
+automatic filter and cadence.
 
 ## Lifecycle and observability
 

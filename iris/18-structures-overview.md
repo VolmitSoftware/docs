@@ -83,6 +83,8 @@ The whole workflow is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 Native means anything in Minecraft live structure registry: vanilla, a datapack, or a mod. Minecraft builds it, so you get full fidelity: processors, entities, spawners, and real loot tables. Iris job is to decide whether it generates, where, and how it meets Iris terrain.
 
+Keep a structure native when only its terrain fit or placement needs changing. Convert it to an Iris graph only when its block geometry or graph topology must be edited; conversion creates a separate, potentially lossy copy rather than modifying the registered source.
+
 Four things you can do:
 
 - Leave it generating natively and fix how it sits, with `importedStructures.adjustments` (y shift, stilts, encasing, Y bands).
@@ -133,7 +135,7 @@ Ingest, adjustment, disabling, and conversion back into editable Iris resources 
 | Make a datapack structures generate natively | `datapackImports` plus ingest | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Keep a datapack buildings but choose the locations | Disable the namespace, then a `nativeStructures` placement | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Replace a vanilla structure with Iris-positioned starts | Dimension placement with `nativeSuppression: REPLACE_SOURCE` | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
-| Edit one registered vanilla or datapack jigsaw | `/iris jigsaw convert`, then edit the Iris copy | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| Edit one registered vanilla or datapack jigsaw's geometry or graph | `/iris jigsaw convert`, then edit the separate Iris copy | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Bulk-import registered structures and templates | `/iris structure import`, then inspect the copies | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Edit an existing Iris graph you do not own | `/iris jigsaw adopt inspect`, then apply the reviewed plan | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Builds shipped as vanilla `.nbt` | Ship them in a datapack, or import them as objects | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |

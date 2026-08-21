@@ -2,13 +2,13 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 Gloss runs two different display renderers. It uses a single ordered enable sequence with a
-stack-shaped teardown. It uses one shared file watcher. It uses a small set of repeating driver
+stack-shaped teardown. It uses one shared watchdog task. It uses a small set of repeating driver
 tasks whose periods come straight from `config.toml`.
 
 This page describes what actually runs so that entity counts, restart behavior, timing and jar
@@ -191,10 +191,11 @@ poll callbacks. It is started with the period from `[hotload] watchIntervalTicks
 
 ### The IO thread
 
-The repeating task is a tick pump and nothing else. On each fire it hands the pass to a single
-daemon thread named `Gloss-Watchdog-IO`, and only if no pass is already in flight — a pass that
-outruns the interval causes the next tick to be skipped, never queued, so a slow or contended disk
-cannot stack passes behind each other.
+The repeating task is a tick pump and nothing else. On each fire it requests work from a single
+daemon thread named `Gloss-Watchdog-IO`. Only one pass is in flight. Requests made while a pass or
+its authoritative-thread apply phase is active collapse into one latest-state trailing pass behind
+the 3-second completion cooldown, so a slow or contended disk cannot stack work or lose the final
+save.
 
 Everything that can run off-thread does: `stat`, the file read, the SHA-256 self-write hash, and the
 JSON parse. Only the apply half hops back, and it hops to the right place — the server thread on
@@ -211,20 +212,27 @@ entity or a player. The console shows the split on every hot reload:
 ```
 
 On a region-threaded server the second line reads `[Folia Region Scheduler Thread #N/INFO]`
-instead. The cadence and the semantics are unchanged from when the whole pass ran on the tick; what
-moved is where the disk work happens. On an otherwise idle server the polling cost is now entirely
-on `Gloss-Watchdog-IO`, and it scales with the number of watched files times the poll rate — the
-knob for that is `watchIntervalTicks`.
+instead. `watchIntervalTicks` controls how often a pass is requested, while the completion-anchored
+gate starts automatic passes no more than once every 3 seconds and retains one latest-state trailing
+request. Native events drive the common path and bounded rolling SHA-256 reconciliation catches
+silent or same-metadata saves. Disk work stays on `Gloss-Watchdog-IO`.
+
+Document registries stage immutable parsed snapshots without publishing them. A successful
+consumer apply acknowledges and publishes the staged document exactly once. A refused scheduler
+handoff or an exception during preparation or apply leaves the committed runtime snapshot intact,
+logs the full failure when one exists, and requeues the affected ids against the newest bytes on
+the next eligible pass. An accepted callback is leased to that batch, so a late or repeated callback
+cannot apply it twice.
 
 One task instead of twelve matters for two more reasons. Each service would otherwise hold its own
 repeating task and its own timer slot. That would multiply the fixed per-task overhead for work that
-is almost always a no-op modification-time check.
+usually drains no native events and advances only a bounded reconciliation slice.
 
 More importantly, a Bukkit or Folia repeating task that throws is cancelled by the platform. A
 single bad document could permanently kill that service's hot reload with no obvious symptom. The
-watchdog catches every `Throwable` per entry. It logs `<entry>: hot reload pass failed: <reason>`
-at warning. It continues with the next entry on the same pass. One broken folder cannot stop the
-others. The task itself never dies.
+watchdog catches every `Throwable` per entry. It logs the full stacktrace with
+`<entry>: hot reload pass failed.` and continues with the next entry on the same pass. One broken
+folder cannot stop the others. The task itself never dies.
 
 Changing `watchIntervalTicks` on disk restarts the watchdog with the new period as part of the
 config reload. Nothing else restarts it. A `/gloss reload` reuses the running task unless the
@@ -236,10 +244,9 @@ two entries that carry extra work beyond a document reload. Both are entries lik
 - `menus` is a folder-tree `DocumentRegistry` on the same spine as `holograms/` and `boards/`.
   Discovery, own-write suppression by content hash and per-file parse failure therefore behave the
   way they do for every other kind, nested subdirectories included; a menu carries no envelope, so
-  the content hash the registry already computes is its revision. One walk reports changed, created
-  and deleted files together, and a `FolderWatcher` consumes each modification-time and size delta
-  exactly once, which is why the phases cannot be split across separate tasks — whichever ran first
-  would eat a change the other one needed. On top of the reload the entry closes every open session
+  the content hash the registry already computes is its revision. One reconciliation reports
+  changed, created and deleted files together, so the phases cannot be split across separate tasks
+  that independently consume the same native and content delta. On top of the reload the entry closes every open session
   of a changed menu, publishes the new definition and notifies the affected players. Its read is
   taken under the persistence lease, because `menus/` is one of the collections an editor sync
   transaction stages and swaps, and a pass that read the folder mid-publish would load half a
@@ -249,15 +256,17 @@ two entries that carry extra work beyond a document reload. Both are entries lik
   preview is closed so the raycast rebuilds it.
 
 `images` is deliberately not a document registry. An image is bytes an operator dropped in, with no
-id, no envelope and no revision to compare, and a poll that read every file to decide whether it
-changed would decode the whole folder several times a second. It stays a plain folder watch that
-reports paths, and any reported change refreshes the visuals of open menu sessions and panel views.
-`locale` is the third small entry: it refreshes the localization overlay from `language.yml`.
+id or envelope. Its `ReactiveFolder` drains native events and rolls SHA-256 reconciliation through
+the folder without decoding images; any verified change refreshes open menu sessions and panel
+views. `locale` is the third small entry: two identical immutable SHA-256 snapshots must agree
+before it refreshes the localization overlay from `language.yml`.
 
 None of these entries creates its folder. `menus/`, `images/` and `panels/` are created by the
 paths that write into them, discovery tolerates a missing root, and a folder that appears later has
 its contents reported as creations. That is why a server whose operator never authors a menu never
-grows a `menus/` folder, and why deleting one does not bring it back on the next pass.
+grows a `menus/` folder, and why deleting one does not bring it back on the next pass. Loaded
+documents below a missing root enter the same 3-second deletion grace as individual files; restoring
+the root cancels the unload.
 
 `panels/` is deliberately not watched at all. Panel documents are server-owned and revision-checked.
 A watcher republishing a half-written or revision-stale file would fight the editor sync and

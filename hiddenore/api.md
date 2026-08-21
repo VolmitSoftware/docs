@@ -2,7 +2,7 @@
 title: "HiddenOre API"
 description: "Developer API index"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -169,9 +169,15 @@ the second when you want events and no service.
 6. **Drain** — plugin disable, or a hot unload by a development tool —
    unregisters the service and the PlaceholderAPI expansion.
 
-The watcher uses operating-system events when they arrive. It also compares
-`config.yml` and `language.yml` signatures about once a second. A silent
-bind-mount write still reaches a finished save.
+The watcher consumes exact operating-system events and also compares bounded
+SHA-256 signatures for `config.yml` and `language.yml` about once a second.
+It waits 250 ms for stable bytes, tolerates atomic and FTP replacement gaps,
+and collapses bursts into one latest-state reload no more than once every 3
+seconds. A silent bind-mount write still reaches a finished save. Files over
+8 MiB require the immediate manual reload path. Startup and manual reload bind
+the watcher baseline to the exact config-and-language pair that was parsed and
+published; a disk edit that lands before watcher admission resumes remains a
+new candidate rather than being silently adopted as the baseline.
 
 Your `HiddenOreService` reference stays valid. Its answers can change.
 `isSeeded()` can flip. A material can stop being managed. The seeded vein

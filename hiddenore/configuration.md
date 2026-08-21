@@ -2,13 +2,15 @@
 title: "HiddenOre — Configuration"
 description: "Every config.yml key and default"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 `plugins/HiddenOre/config.yml`. Values shown are the shipped defaults.
+
+HiddenOre watches `config.yml` and `language.yml` with exact native file events plus a bounded SHA-256 reconciliation about once a second. A save must stay stable for 250 ms, and automatic reloads complete no more than once every 3 seconds; later saves replace the queued state and run as one trailing reload. The automatic apply parses the exact captured bytes rather than rereading a newer or half-written disk version. Watcher startup and manual-reload reset use the exact config-and-language pair that became live, so a newer save arriving in either window remains detectable and queues normally. Atomic editor moves and FTP delete-and-recreate gaps wait for both files to return, while common temporary upload names are ignored. Files larger than 8 MiB are not automatically loaded. `/hiddenore reload` remains immediate.
 
 ## Top level
 

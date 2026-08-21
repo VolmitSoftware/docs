@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Adapt documentation: Skill - Enchanting"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,7 +43,7 @@ There is a 20 second window between refunds. The chance is rolled first and the 
 
 ### XP Return (`enchanting-xp-return`)
 
-Every enchant can spit an experience orb back out at you, worth `xpReturn * level * level` experience points. Same 20 second spacing as Lapis Return. It works on its own once learned.
+Each committed enchant can return one bounded vanilla XP orb. The default reward is `2 + 4 * (level - 1)` points, or 2-26 points across the seven levels, with a 30-second per-player cooldown. It is a fixed adaptation reward rather than a percentage of the enchant's actual cost.
 
 ### Anvil Savant (`enchanting-anvil-savant`)
 
@@ -284,16 +284,19 @@ Refund chance is `min(maxRefundChance, refundChanceBase + levelPercent * refundC
 | Tick interval (ms) | 13001 |
 | Localization key | `enchanting.return` |
 | Config file | `plugins/Adapt/adapt/adaptations/enchanting-xp-return.toml` |
-| Listened events | `EnchantItemEvent` (HIGHEST) |
-| Menu stat lines | Experience spent has a chance to be refunded when you enchant an item. Experience per Enchant |
+| Listened events | `EnchantItemEvent` (MONITOR, cancelled events ignored) |
+| Menu stat lines | Committed enchants return vanilla XP after a cooldown. Vanilla XP per Enchant |
 | Stat key | `enchanting.xp-return.levels-saved` (counts experience points, not levels) |
 | Milestones | `challenge_enchanting_xp_100` (100, reward 400) |
 
-Orb value is `xpReturn * level * level` experience points. Hardcoded 20000 ms cooldown between refunds.
+Orb value is `min(maximumXpPerEnchant, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)` experience points.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `xpReturn` | `2` | Experience points per squared adaptation level in the refunded orb. |
+| `vanillaXpAtLevelOne` | `2` | Vanilla XP points returned at adaptation level one. |
+| `vanillaXpPerAdditionalLevel` | `4` | XP points added for every level after level one. |
+| `maximumXpPerEnchant` | `32` | Hard cap on one enchant refund. |
+| `cooldownMillis` | `30000` | Minimum milliseconds between refunds for one player. |
 
 ### Anvil Savant
 
@@ -390,18 +393,20 @@ Virtual power is `max(1, round(powerBase + levelPercent * powerFactor))`. Each o
 | Stat key | `enchanting.grindstone-recovery.enchants-recovered` |
 | Milestones | `challenge_enchanting_grindstone_50` (50, reward 300), `challenge_enchanting_grindstone_500` (500, reward 1000) |
 
-Recovery chance is `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Vanilla XP granted is `round(bonusXpBase + levelPercent * bonusXpFactor)`. Cooldown is `max(10, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks on `GRINDSTONE`. Recovered book level is clamped to the enchantment's maximum.
+Recovery chance is `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Vanilla XP granted is `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))`. Cooldown is `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks on `GRINDSTONE`. Recovered book level is clamped to the enchantment's maximum. Defaults scale from 15% recovery, 2 vanilla XP, and 9.2 seconds at level one to 35%, 5 XP, and 6 seconds at level five.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `recoverChanceBase` | `0.15` | Recovery chance at level 0 progress, 0-1. |
-| `recoverChanceFactor` | `0.45` | Extra recovery chance added at full level, 0-1. |
-| `maxRecoverChance` | `0.7` | Hard ceiling on recovery chance, 0-1. |
-| `bonusXpBase` | `2` | Vanilla experience points granted at level 0 progress. |
-| `bonusXpFactor` | `8` | Extra vanilla experience points granted at full level. |
-| `cooldownTicksBase` | `120` | Recovery cooldown at level 0 progress, in server ticks. |
-| `cooldownTicksFactor` | `70` | Ticks removed from the cooldown at full level. |
-| `skillXpOnRecovery` | `13` | Enchanting skill XP granted per recovery. |
+| `recoverChanceBase` | `0.1` | Recovery chance at level 0 progress, 0-1. |
+| `recoverChanceFactor` | `0.25` | Extra recovery chance added at full level, 0-1. |
+| `maxRecoverChance` | `0.35` | Hard ceiling on recovery chance, 0-1. |
+| `bonusXpBase` | `1` | Vanilla experience points granted at level 0 progress. |
+| `bonusXpFactor` | `4` | Extra vanilla experience points granted at full level. |
+| `maximumBonusXp` | `8` | Hard cap on one vanilla XP recovery reward. |
+| `cooldownTicksBase` | `200` | Recovery cooldown at level 0 progress, in server ticks. |
+| `cooldownTicksFactor` | `80` | Ticks removed from the cooldown at full level. |
+| `minimumCooldownTicks` | `40` | Hard floor for the recovery cooldown. |
+| `skillXpOnRecovery` | `8` | Enchanting skill XP granted per recovery. |
 
 ### Curse Cleansing
 

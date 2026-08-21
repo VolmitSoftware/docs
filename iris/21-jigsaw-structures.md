@@ -223,6 +223,16 @@ It reuses the startup-loaded datapack runtime only while the pinned compiler-inp
 The dedicated synthetic generator skips the procedural generation-cache warm, complete mantle-radius preparation, and native structure-start generation. Paper requests the one entry chunk urgently and asynchronously. The owner is teleported once through the Jigsaw destination path after that chunk is retained and ready. The transient world sets `spawn_mobs=false` and independently cancels natural creature-spawn events.
 Explicitly summoned test entities still work.
 
+The transient world still compiles the selected dimension, so Jigsaw Studio requires the whole pack to have a loadable validation result. Run `/iris pack validate pack=<dimension>`, fix the first blocking error, and retry. A validation denial reports every cached reason to the player and one warning to the console; it is an expected refusal, not an internal Studio exception. Startup registry and restart gates still apply.
+
+Choose the command from the kind of source you have:
+
+| Starting point | Command | Key form |
+|---|---|---|
+| Owned editable Iris graph | `jigsaw open` | Internal Iris path such as `minecraft_ancient_city` |
+| Existing unowned or managed Iris graph | `jigsaw adopt inspect`, then `adopt apply` | Internal Iris path |
+| Live registered vanilla or datapack jigsaw | `jigsaw convert` | Namespaced registry key such as `minecraft:ancient_city` |
+
 ## Re-edit an existing Studio jigsaw
 
 Do not run `create` again — creation is add-only. Reopen a Studio-owned graph by its original dimension and structure key:
@@ -233,6 +243,8 @@ Do not run `create` again — creation is add-only. Reopen a Studio-owned graph 
 
 `/iris jigsaw edit ...` and `/iris jigsaw reopen ...` are aliases. All three reconstruct workcell capacities and labels, enabled states, variant dimensions and labels, themes, rules, and pool memberships from the saved graph. Changes inside loaded owned variants autosave as usual.
 **Flush Autosave Now** only requests an immediate recovery flush and leaves blocked work queued for retry. The automatic seed-`1337` evaluation and permanent preview rebuild after each committed change. A loaded variant without editable ownership shows as Read-only and cannot be changed.
+
+`open` never looks up Minecraft's live structure registry. For example, `minecraft_ancient_city` means `structures/minecraft_ancient_city.json` in the Iris pack. If that legacy graph has no ownership manifest, inspect and adopt it before editing.
 
 ## Adopt an existing Iris graph
 
@@ -265,6 +277,14 @@ Raw registered structures are not Iris graph files, so they cannot go through `a
 ```
 
 The source must be a live namespaced registry key and a jigsaw structure. With `target=auto`, `minecraft:village_plains` becomes `minecraft_village_plains`.
+
+For an Ancient City, use a fresh target when the automatic name is already occupied:
+
+```text
+/iris jigsaw convert overworld minecraft:ancient_city target=minecraft_ancient_city_edit seed=1337
+```
+
+This creates and edits a separate Iris graph; it does not mutate Mojang's registered `minecraft:ancient_city`. Keep the source native when only its terrain integration needs changing. To replace natural Ancient Cities with the edited copy, place that Iris target from the dimension and use dimension-level `nativeSuppression: REPLACE_SOURCE`; the converted graph's `vanillaSource` supplies the source key.
 
 Conversion follows the registered start pool and the reachable template pools, templates, connectors, weights, empty entries, and fallbacks. It stores source provenance and fidelity warnings in the ownership manifest. A native list pool entry stays one weighted choice. Iris keeps its recursively first physical template and outer connectors. Additional colocated children and their processors are omitted and recorded as `LIST_ELEMENTS` fidelity loss. A captured template with no non-air states is marked `collidable: false` so its connector-scaffold bounds can overlap an attached physical piece.
 Nonempty converted pieces stay collidable.

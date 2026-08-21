@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`. Completion lists installed pack/dimension values and does not advertise the internal `default` sentinel. Bukkit refuses the names `iris` and `benchmark`. It also refuses any name whose dimension folder already exists.
 
-On non-Folia Bukkit, create immediately opens the standard Iris boss-bar/action-bar progress presentation. Its localized stage and overall percent cover validation, datapacks, pack snapshot publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`.
+On non-Folia Bukkit, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, pack snapshot publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`.
 
 On Folia the world is staged directly in Paper 26.2's current per-dimension format. Iris prints that staging succeeded, then it automatically requests a controlled restart. Reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
@@ -159,7 +159,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `Developer` | `dev` | Both | see Developer | Diagnostics. The group name is registered with a capital `D`, but matching is case-insensitive |
 | `world` | `w` | **Modded** | see World | Runtime dimension enable/disable |
 
-Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through its localized progress display. That is an always-on boss bar plus a progress line merged into the shared action-bar compositor. Bounded chat and console updates also appear. A direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue. A dedicated server paused because it is empty still prints completion. A finished on-disk install does not stay queued.
+Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through an arbitrated large title and a labeled bottom action-bar meter, without a boss bar. Bounded chat and console updates also appear. A direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue. A dedicated server paused because it is empty still prints completion. A finished on-disk install does not stay queued.
 
 The supported exact shipping-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With automatic ingest enabled, restart once to let Bukkit install those dependencies. Complete the ensuing required restart so Minecraft loads their keys with the Iris dimension types and biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. With automatic ingest disabled, follow [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
@@ -226,7 +226,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `pause` | `resume` | — | Toggle pause/resume |
 | `status` | | — | Progress, chunks/s, ETA, elapsed, method, failures |
 
-**Bukkit:** `serial=true` requires a Paper-compatible server (strict serial chunk generation) and is rejected elsewhere. **Modded:** `sync` is the serial-like flag. `gui` opens the boss-bar/GUI path when available.
+**Bukkit:** `serial=true` requires a Paper-compatible server (strict serial chunk generation) and is rejected elsewhere. **Modded:** `sync` is the serial-like flag. `gui` requests the platform's available pregeneration status UI.
 
 See [07 - Pregeneration](/iris/07-pregeneration).
 
@@ -240,7 +240,7 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 |---------|---------|-----------|--------|-------------|
 | `wand` | | Both | — | Give the Iris object wand |
 | `dust` | `d` | Both | — | Give reveal dust |
-| `save` | | Both | **Bukkit:** `<name> [overwrite=false] [legacy=true]` (`overwrite` alias `force`. A contextual `dimension` is resolved from your world, or passed as `dimension=`). **Modded:** `[overwrite] <name>` | Save the wand selection as `.iob` |
+| `save` | | Both | **Bukkit:** `<name> [overwrite=false] [legacy=true]` (`overwrite` alias `force`. A contextual `dimension` is resolved from your world, or passed as `dimension=`). **Modded:** `[overwrite] <name>` | Save the wand selection as `.iob`. Bukkit shows scan/write progress as a large title plus labeled bottom action-bar meter, never a boss bar |
 | `paste` | | Both | **Bukkit:** `<object> [edit=false] [rotate=0] [scale=1]`. **Modded:** `[at x y z] [rotate degrees] <key>` | Paste an object |
 | `expand` | | **Modded** | `[amount=1]`, range `1..256` | Expand the selection along your look direction |
 | `contract` | `-` | Both | `[amount=1]` | Contract the selection along your look direction |
@@ -290,13 +290,15 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 **Bukkit-only. Player origin.** This opens a transient Jigsaw Studio through the same single active Studio lifecycle. Saved Iris jigsaw resources run through the shared core on every platform, but Fabric/Forge/NeoForge do not register this authoring command tree.
 
+`open` accepts an internal Iris structure path such as `minecraft_ancient_city`. `convert` accepts a live namespaced registry key such as `minecraft:ancient_city` and writes a separate add-only Iris graph. Existing unowned or managed Iris graphs go through `adopt inspect` and `adopt apply`. Every open requires a loadable whole-pack validation result; expected validation refusals list their reasons and do not emit an internal-error stack trace.
+
 | Command | Params | Description |
 |---|---|---|
 | `create` | `<dimension> <key> [mode=planar] [compatibility=iris] [width=15] [height=15] [depth=15] [seed=1337]` | Add-only atomic graph creation followed by open. `key` aliases `structure` and `name`. `mode` completes `planar`/`spatial`, compatibility completes `iris`/`vanilla`. Planar X/Z `3..128`, spatial X/Z `1..128`, Y `1..192`, volume `<=2,097,152` |
-| `convert` | `<dimension> <source> [target=auto] [seed=1337]` | Add-only conversion of one live registered vanilla/datapack jigsaw into an owned Iris graph, then open it. Aliases `import`, `import-vanilla` |
+| `convert` | `<dimension> <source> [target=auto] [seed=1337]` | Add-only conversion of one live namespaced vanilla/datapack jigsaw into an owned Iris graph, then open it. The source uses `namespace:path`; the target is an unused Iris path. Aliases `import`, `import-vanilla` |
 | `adopt inspect` | `<dimension> <source> [target=auto] [strategy=auto]` | Asynchronously inspect an existing Iris closure and issue a hash-pinned `IN_PLACE`, `CLONE_REQUIRED`, or `BLOCKED` plan. Strategy completes `auto`, `in-place`, `clone` |
 | `adopt apply` | `<planId>` | Revalidate and atomically apply that player's unexpired plan, then open the target at seed `1337`. An active or opening Jigsaw Studio is rejected |
-| `open` | `<dimension> <key> [seed=1337]` | Open an existing graph in compact workcells. Aliases `edit`, `reopen`. Existing Iris structure keys tab-complete. Owner, autosave, and operation barriers protect replacement |
+| `open` | `<dimension> <key> [seed=1337]` | Open an existing Iris graph in compact workcells. The key is its internal `structures/<key>.json` path, not a registered `namespace:path`. Aliases `edit`, `reopen`. Existing Iris structure keys tab-complete. Owner, autosave, and operation barriers protect replacement |
 | `close` | `[discard=false]` | Close Studio. Refuse active autosave/load/graph work or a pending dirty capture unless deliberately discarded |
 | `status` | — | Show project/workcell state and the current automatic seed-`1337` evaluation, theme, piece count, and diagnostic |
 | `menu` | — | Open the six-row controls also opened by the generated chest or three sneaks within 1.5 seconds |

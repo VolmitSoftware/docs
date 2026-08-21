@@ -20,7 +20,7 @@ Prerequisites: a writable pack, operator access on a Bukkit-family server, and s
 
 1. **Select.** Left-click one corner of the build. Right-click the opposite corner. The selection lives on the wand item. Particles outline the box out to 256 blocks from you.
 2. **Tighten.** Run `/iris object x+y`. It walks the selection upward until the slab is empty air. It then backs off one. It pulls the four side faces in until each touches a block. Use `/iris object x&y` instead if the selection also needs to find its own floor. The saved volume is exactly the selection box. Any air you leave in it moves the object origin.
-3. **Save into the pack.** `/iris object save tutorial/lookout`. Inside an Iris world the target pack resolves automatically. Anywhere else pass `dimension=<pack>`. Add `overwrite=true` to replace an existing file. There is no backup. If the build contains chests, signs, banners, or spawners you care about, add `legacy=false` (section 3).
+3. **Save into the pack.** `/iris object save tutorial/lookout`. Inside an Iris world the target pack resolves automatically. Anywhere else pass `dimension=<pack>`. Add `overwrite=true` to replace an existing file. There is no backup. If the build contains chests, signs, banners, or spawners you care about, add `legacy=false` (section 3). On Bukkit, selection scanning and file writing use a foreground display while each phase lasts: a large job title with percentage and a labeled 44-cell bottom action-bar meter. Object save does not use a boss bar.
    Success looks like: a chat line naming the pack and the object, and a new file at `<data>/packs/<dimension load key>/objects/tutorial/lookout.iob`.
 4. **Verify it loads.** `/iris object analyze tutorial/lookout` reads the file back and reports width x height x depth, total block count, and the ten most common materials. If those numbers match what you selected, the file is good.
 5. **Verify it pastes.** `/iris object paste tutorial/lookout edit=true` stamps a copy where you are looking and hands you a wand already fitted to it. Walk the copy. Check the orientation. Check that chests still have contents and signs still have text. Fix anything wrong in place. Then re-save the same key with `overwrite=true`. `/iris object undo` removes the pasted copy.
@@ -116,6 +116,8 @@ Rough-select the base of a build, then run `x+y` to wrap it tightly.
 
 The file lands at `<data>/packs/<dimension load key>/objects/<name>.iob`.
 
+During a real Bukkit save, the active phase is labeled `Scanning Selection` or `Saving Object` while the bottom action-bar meter advances. A completed, failed, or disconnected save retires its own display without clearing a newer Iris job. If a short foreground job temporarily takes over, the still-running earlier job resumes from its latest progress when that job ends.
+
 **Footgun:** the target folder is the **dimension load key**, not the folder the dimension came from. A pack in `packs/mypack/` whose dimension file is `dimensions/overworld.json` writes its objects into `packs/overworld/`. Keep the dimension JSON filename equal to the pack folder name and this never bites.
 
 ```
@@ -171,6 +173,7 @@ What survives and what does not:
 - **Blocks only.** The converter reads the palette and block indices and nothing else. **Block entities, entities, and biomes are all lost**: chests come out empty, signs blank, spawners default.
 - The source `.schem` is **deleted** after a successful conversion. Keep a copy elsewhere.
 - Files outside that folder, or not ending in `.schem`, produce no output at all.
+- Large Bukkit conversions use the same large title and bottom action-bar meter as object saves, without a boss bar.
 
 ### 6.2 Keeping block entities: paste, then wand
 

@@ -224,11 +224,20 @@ Conversion does not.
    /iris jigsaw convert <dimension> <namespace:path> target=auto seed=1337
    ```
 
+   An Ancient City example is:
+
+   ```text
+   /iris jigsaw convert overworld minecraft:ancient_city target=minecraft_ancient_city_edit seed=1337
+   ```
+
+   Use a fresh target if `structures/minecraft_ancient_city.json` already exists; `target=auto` never overwrites it. `/iris jigsaw open overworld minecraft_ancient_city` opens that existing Iris key instead of the live registered structure. If the existing graph has no editable ownership manifest, use `adopt inspect` and `adopt apply` rather than converting over it.
+
 3. Conversion follows the registered start pool and the reachable template-pool closure. It writes a new add-only owned Iris graph. It reports the imported piece and pool counts plus the fidelity-warning count. It then opens Jigsaw Studio. `target=auto` turns `minecraft:village_plains` into `minecraft_village_plains`.
 Pass `target=<iris-path>` for a deliberate key.
 4. Load each variant from the Studio control chest or triple-sneak menu and inspect its real blocks and Mojang marker fields. Once a workcell finishes loading and hydrating, block and container changes autosave.
 **Save Now** only forces an immediate flush. Review the automatic seed-`1337` evaluation and the permanent read-only block preview before accepting the fidelity.
 5. For a non-jigsaw template or a bulk pass, use `/iris structure import <dimension>` instead (section 5). Review every per-structure result: successful bundles can sit alongside failures.
+6. To generate the edited copy naturally, add its Iris target to a dimension-level `structures` placement and set `nativeSuppression: "REPLACE_SOURCE"`. The converted graph records `vanillaSource`, which tells Iris which registered source to suppress. Validate the complete graph before shipping because replacement has no native fallback.
 
 **Success:** the owned copy reopens with `/iris jigsaw open <dimension> <target>` and its preview matches the native original closely enough for your purpose.
 
@@ -355,11 +364,11 @@ Three structures honor only `yShift` among these controls. `minecraft:monument` 
 
 | Mode | Behavior |
 |---|---|
-| `SOURCE` (default) | Replay the structure's registered terrain adaptation, including vanilla BURY/ENCAPSULATE fill. Surface fitting bends terrain up or down with a fixed 12-block falloff from rigid floors, jigsaw junctions, and processed lowest-solid cells in terrain-matching path pieces. Template air and non-solid decoration do not become anchors. |
+| `SOURCE` (default) | Replay the registered terrain adaptation, including vanilla BURY/ENCAPSULATE fill. Automatic top-surface fitting runs only for `SURFACE_STRUCTURES`. It uses real processed foundation columns and jigsaw junctions, seats ordinary gaps exactly, caps each upward or downward correction at 6 blocks, and blends that correction through a fixed 12-block quadratic skirt. Template air, roofs, and non-solid decoration do not become foundation anchors. Underground steps such as Ancient Cities do not reshape the top surface through `BEARD_BOX`. |
 | `PRESERVE` | Disable terrain integration. |
 | `BORE` | Clear the padded piece volume (box) before placement. |
 | `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
-| `VACUUM` | Raise surface terrain to the structure's ground planes with a fixed 12-block falloff. Never lowers ground. |
+| `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground and is unchanged by the bounded default `SOURCE` behavior. |
 | `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
 
 Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding` (0..64, where 0 preserves the floor). ERODED adds `erosionStrength` (default 0.8), `erosionFrequency` (0.07), `lobeFrequency`, and `lobeStrength` (0.85).

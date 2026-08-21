@@ -2,7 +2,7 @@
 title: "BileTools — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-20T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,10 +37,16 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Verifying it works
 
-Build any plugin directly into the server's `plugins/` folder. BileTools unloads
-and reloads it within one or two seconds. If nothing happens, check
+Build any plugin directly into the server's `plugins/` folder. BileTools waits
+for the jar to become stable and stages an immutable copy. After an automatic
+reload batch finishes, the next automatic batch waits at least three seconds. A
+burst of changes is queued into a latest-wins trailing batch. If nothing happens, check
 [Configuration](/biletools/configuration). The plugin may be in
 `watcher.ignore`. `watcher.only` may be an allowlist that excludes the plugin.
+
+Build and FTP workflows may write to a temporary name and atomically rename it
+to `.jar`. BileTools ignores `.jar.part` files. A brief delete-and-recreate of a
+known jar is protected by a three-second deletion grace period.
 
 ## Language
 
@@ -53,6 +59,11 @@ Canonical English lives in the Java catalog at
 `src/main/java/com/volmit/bile/localization/BileMessages.java`. There is no
 English bundle file. Entries in `language.yml` are sparse overrides. Omitted
 entries resolve from the selected bundle, then from code-owned English.
+
+Automatic `language.yml` changes use the same three-second minimum cadence and
+queue the newest change while a reload is pending. Invalid intermediate files
+are retried. The language watcher is closed when BileTools is disabled or
+reloaded.
 
 ## Building from source
 
