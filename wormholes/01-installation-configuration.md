@@ -143,6 +143,46 @@ on disk while the live value is bounded.
 | `enable-particles` | `true` | Independent global particle switch |
 | `replace-nether-and-end-portals` | `true` | Auto-link vanilla Nether/End frames as Wormholes portals |
 | `dimensional-doors-enabled` | `true` | Full Dimensional Doors feature set. Live disable is allowed |
+| `pocket-room-size` | `32` | Cube edge in blocks of a newly created pocket room, walls included. Clamped to 8–128. Existing pockets keep their own size |
+| `pocket-shell-material` | `SMOOTH_STONE` | Wall, floor, and ceiling block of a newly created pocket. Must be solid and non-falling. Existing pockets keep their own material |
+| `pocket-return-door-material` | `CRIMSON_DOOR` | Exit door of a newly created pocket. Must be hand-operable, so iron doors are rejected. Existing pockets keep their own door |
+
+### Traversal API-related main keys
+
+| Key | Role |
+|-----|------|
+| `traversal-api-enabled` | Master switch for third-party cost providers and traversal events |
+| `traversal-api-provider-failure-policy` | `allow` vs `deny` on provider failure |
+| `traversal-api-provider-fault-limit` | Session quarantine threshold |
+| `traversal-api-slow-provider-millis` | Slow-call warning threshold |
+
+API surface details:
+[21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
+
+
+## `[recipes]`
+
+One table per Dimensional Door product plus the two reskin toggles. Full
+grammar, ingredient groups, and fallback behavior:
+[07 - Dimensional Doors](/wormholes/07-dimensional-doors#configuring-recipes).
+
+| Table | Keys | Default |
+|-------|------|---------|
+| `[recipes.pair-kit]` | `enabled`, `shape`, `ingredients` | `EDE\|ORO\| D ` |
+| `[recipes.personal-door]` | `enabled`, `shape`, `ingredients` | ` R \|CDE` |
+| `[recipes.public-door]` | `enabled`, `shape`, `ingredients` | `RDR\| E \| L ` |
+| `[recipes.trapdoor-pair-kit]` | `enabled`, `shape`, `ingredients` | as the door kit, with `#trapdoors` |
+| `[recipes.personal-trapdoor]` | `enabled`, `shape`, `ingredients` | as the personal door, with `#trapdoors` |
+| `[recipes.public-trapdoor]` | `enabled`, `shape`, `ingredients` | as the public door, with `#trapdoors` |
+| `[recipes.door-skin]` | `enabled` | `true` |
+| `[recipes.trapdoor-skin]` | `enabled` | `true` |
+
+The Portal Wand recipe is outside this block and is not configurable. Runes have
+no recipe.
+
+`enabled = false` removes that recipe from the server. A `shape` or
+`ingredients` value that does not parse, or that names a block this server does
+not have, is logged and falls back to the shipped recipe.
 | `portal-collapse-speed` | `0.91` | Collapse animation factor |
 | `verbose-logging` | `false` | Verbose console logs (`Settings.DEBUG`) |
 | `debug-rendering` | `false` | Debug rendering aids |
@@ -167,18 +207,6 @@ on disk while the live value is bounded.
 | `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
-
-### Traversal API-related main keys
-
-| Key | Role |
-|-----|------|
-| `traversal-api-enabled` | Master switch for third-party cost providers and traversal events |
-| `traversal-api-provider-failure-policy` | `allow` vs `deny` on provider failure |
-| `traversal-api-provider-fault-limit` | Session quarantine threshold |
-| `traversal-api-slow-provider-millis` | Slow-call warning threshold |
-
-API surface details:
-[21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
 
 ## `[network]`
 

@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,9 +19,11 @@ attach after the portal exists.
 | Item | Material | Craft recipe registered? |
 |------|----------|--------------------------|
 | Portal Wand | Enchanted blaze rod | Yes — `portal_wand` |
-| Portal rune | Enchanted prismarine | Yes — `portal_rune` (yields 4) |
-| Wormhole rune | Enchanted dark prismarine | Yes — `wormhole_rune` (yields 4) |
-| Gateway rune | Enchanted black stained glass | No — admin supply only |
+| Portal rune | Enchanted prismarine | No |
+| Wormhole rune | Enchanted dark prismarine | No |
+
+Runes are not craftable. They come from an administrator, or from breaking a
+rune block that is already placed, which returns the matching rune in survival.
 
 ### Craft shapes
 
@@ -35,27 +37,10 @@ d d
 
 `d` = glowstone dust, `r` = blaze rod.
 
-**Portal rune** (`portal_rune`, 4):
-
-```
-p b p
-b d b
-p b p
-```
-
-`p` = ender pearl, `b` = prismarine crystals, `d` = blaze powder.
-
-**Wormhole rune** (`wormhole_rune`, 4):
-
-```
-p b p
-b d b
-p b p
-```
-
-`p` = eye of ender, `b` = prismarine shard, `d` = nether star.
-
-Admin give remains available for all runes.
+The wand is the only Wormholes recipe outside the Dimensional Door set. It is
+unlocked in every player's recipe book on join, and its shape is not
+configurable. A wand on its own is still useful: wand box construction needs no
+runes, and the wand opens the menu of an existing portal.
 
 ### Admin supply
 
@@ -64,9 +49,12 @@ Permission: `wormholes.admin.items`.
 | Command | Result |
 |---------|--------|
 | `/wormholes wand` | One Portal Wand + one wormhole rune |
-| `/wormholes wand rune=portal count=N` | Portal runes (N clamped 1–64) |
-| `/wormholes wand rune=wormhole count=N` | Wormhole runes |
-| `/wormholes wand rune=gateway count=N` | Gateway runes |
+| `/wormholes wand rune=false` | One Portal Wand only |
+
+This is the only source of new runes on a server, so rune supply is an
+administrator decision. The command has no rune-type or count arguments. Portal
+type is a per-portal
+setting chosen in the portal menu, so a rune does not need to encode it.
 
 Aliases: `/wh`, `/wormhole`. Full command list:
 [09 - Commands & Permissions](/wormholes/09-commands-permissions).
@@ -95,7 +83,7 @@ menu instead of editing the selection. See Menu access.
 
 ## Rune construction
 
-1. Place portal, wormhole, or gateway runes. Any 6-face-connected shape of the
+1. Place portal or wormhole runes. Any 6-face-connected shape of the
    **same** rune type works (rectangles, lines, L-shapes, single blocks, and
    similar). Diagonal contact alone does not connect sets.
 2. All runes of the connected set must be **coplanar** (one flat axis-aligned
@@ -124,8 +112,8 @@ the matching rune item. Breaking with the wand is cancelled.
 
 While you look at a portal, operators and owners may apply a skin:
 
-- Main hand holds a **non-tool** item (not the wand or a portal, wormhole, or
-  gateway rune).
+- Main hand holds a **non-tool** item (not the wand or a portal or wormhole
+  rune).
 - **Right-click** air or a block with that hand.
 
 | Held item | Skin applied |

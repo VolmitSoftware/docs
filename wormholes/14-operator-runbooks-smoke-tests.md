@@ -44,7 +44,7 @@ Use harmless settings and restore their original values after this check.
 
 | Step | Action | Pass criteria |
 |------|--------|---------------|
-| 1 | Use `/wh wand` or `/wh wand rune=<portal|wormhole|gateway> count=<n>` with `wormholes.admin.items`. | Wand and required runes are in inventory. |
+| 1 | Use `/wh wand` with `wormholes.admin.items`, once per rune needed. Runes are not craftable. | Wand and a wormhole rune are in inventory. |
 | 2 | Build frame A. Complete construction so a portal is created. | The portal appears. It is saved under `plugins/Wormholes/portals/`. |
 | 3 | Build frame B in the same or another loaded world. | Second portal exists. |
 | 4 | Open the portal A menu. Link A to B (tunnel). If return travel is required, link B to A separately. | A shows B as destination. B does not show A automatically. Bidirectional travel needs the reverse link. |

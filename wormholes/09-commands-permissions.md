@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,10 +22,10 @@ without admin rights.
 | Command | `/wormholes` |
 | Aliases | `/wh`, `/wormhole` |
 | Declared in | `plugin.yml` (`commands:`). Paper also registers via lifecycle (`paper-plugin.yml` has permissions only) |
-| Root gate | Any of: `wormholes.admin`, `wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`, `wormholes.admin.projection`, `wormholes.admin.reset` |
+| Root gate | Any of: `wormholes.admin`, `wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`, `wormholes.admin.projection`, `wormholes.admin.reset`, `wormholes.admin.pocket` |
 | Without root gate | Only bare `help`/`?` (or empty) and `info` run. Other args get no-permission |
 | Public tab complete | `help`, `info` only when lacking all admin command leaves |
-| Admin help | Shared 19-line Director panel when the root gate passes: up to 17 root entries or 16 subtree entries after the Back row; shorter trees print every entry |
+| Admin help | Shared Director panel when the root gate passes: up to 19 entries per page at the root and in subtrees alike; shorter trees print every entry on one page |
 
 Handlers still require their own node (for example reload needs
 `wormholes.admin.reload`). Holding only a leaf is enough to enter Director
@@ -33,12 +33,13 @@ routing. Lacking that leaf still fails inside the handler.
 
 ## Command tree
 
-### Public (none of the six admin-command leaves)
+### Public (none of the seven admin-command leaves)
 
 The public path runs when the sender has **none** of `wormholes.admin`,
 `wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`,
-`wormholes.admin.projection`, or `wormholes.admin.reset`. Lacking only
-`wormholes.admin` is not enough if a leaf is granted.
+`wormholes.admin.projection`, `wormholes.admin.reset`, or
+`wormholes.admin.pocket`. Lacking only `wormholes.admin` is not enough if a leaf
+is granted.
 
 | Syntax | Permission | Effect |
 |--------|------------|--------|
@@ -49,8 +50,7 @@ The public path runs when the sender has **none** of `wormholes.admin`,
 
 | Syntax | Origin | Permission (after root gate) | Effect |
 |--------|--------|------------------------------|--------|
-| `/wormholes wand` | player | `wormholes.admin.items` | Give Portal Wand + 1 Wormhole Rune |
-| `/wormholes wand rune=<portal\|wormhole\|gateway> [count=1]` | player | `wormholes.admin.items` | Give 1–64 runes of that type |
+| `/wormholes wand [rune=true]` | player | `wormholes.admin.items` | Give Portal Wand + 1 Wormhole Rune. `rune=false` gives only the wand |
 | `/wormholes door [type=pair]` | player | `wormholes.admin.items` | Give Dimensional Door item. Requires doors enabled |
 | `/wormholes reload` | both | `wormholes.admin.reload` | Reload config + language |
 | `/wormholes debug` | both | `wormholes.admin` | Toggle verbose logs + one-second console telemetry (silent in-game). Reload clears this override so it matches `[main] verbose-logging`. |
@@ -59,6 +59,33 @@ The public path runs when the sender has **none** of `wormholes.admin`,
 
 Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`,
 `personal_trapdoor`, `public_trapdoor`.
+
+### `/wormholes pocket` (`CommandPocket`)
+
+| Syntax | Origin | Permission | Effect |
+|--------|--------|------------|--------|
+| `pocket info` | player | `wormholes.admin.pocket` | Show the size, materials, and bounds of the pocket you are standing in |
+| `pocket resize [size=0] [material=keep] [door=keep] [confirm=false]` | player | `wormholes.admin.pocket` | Rebuild the pocket you are standing in |
+| `pocket resizeall [size=0] [material=keep] [door=keep] [confirm=false]` | both | `wormholes.admin.pocket` | Rebuild every allocated pocket |
+
+`size` is the cube edge in blocks, 8 to 128; `0` keeps the pocket's current
+size. `material` is the wall, floor, and ceiling block and must be solid and
+non-falling. `door` is the exit door and must be a hand-operable door, so iron
+doors are rejected. Both material arguments accept `minecraft:`-prefixed or
+bare names and take `keep` to leave them alone.
+
+Every argument tab-completes. `size` offers a short ladder with no prefix typed
+and searches every supported size once there is one. `material` and `door` offer
+a small palette with no prefix typed and search the server's full block list
+once there is one, so only blocks that are actually valid for that slot are ever
+suggested. `confirm` completes `true`/`false`.
+
+A resize that would destroy placed blocks or displace entities is refused and
+reports the counts; `confirm=true` runs it anyway. Growing a pocket destroys
+nothing and never needs confirmation. `resizeall` validates its arguments once,
+then reports how many pockets were rebuilt, skipped, and failed. See
+[08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) for what a resize does
+to the room's contents.
 
 ### `/wormholes admin` (`CommandAdmin`)
 
@@ -103,12 +130,13 @@ dictionaries, UDS paths, and the stats snapshot are outside that deletion set.
 | Node | Default | Description / children |
 |------|---------|------------------------|
 | `wormholes.*` | op | All Wormholes nodes → `admin`, `portals`, `gateway`, `doors.craft`, `doors.place` |
-| `wormholes.admin` | op | All admin → `admin.reload`, `admin.items`, `admin.network`, `admin.projection`, `admin.reset`, `doors.bypass` |
+| `wormholes.admin` | op | All admin → `admin.reload`, `admin.items`, `admin.network`, `admin.projection`, `admin.reset`, `admin.pocket`, `doors.bypass` |
 | `wormholes.admin.reload` | op | Reload configuration |
 | `wormholes.admin.items` | op | Spawn wand, runes, door items |
 | `wormholes.admin.network` | op | Network/server import export list remove status doctor connect |
 | `wormholes.admin.projection` | op | Freeze / flush projections |
 | `wormholes.admin.reset` | op | deleteallportals / deleteeverything |
+| `wormholes.admin.pocket` | op | Inspect and resize pocket dimensions |
 | `wormholes.doors.bypass` | op | Bypass dimensional door access lists (also op / `wormholes.admin` pass access checks) |
 | `wormholes.doors.craft` | op | Craft and reskin Dimensional Door and trapdoor products |
 | `wormholes.doors.place` | op | Place Dimensional Door and trapdoor products as live portal endpoints |

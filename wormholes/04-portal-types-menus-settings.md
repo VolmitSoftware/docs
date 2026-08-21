@@ -2,7 +2,7 @@
 title: "Portal Types Menus & Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -236,7 +236,8 @@ seal. Opaque surface skins block projection entirely (`blocksProjection`).
   left-click does not delete.
 - Wand box construction always starts as type `PORTAL` regardless of intent.
   Change type in the type menu or build with the matching rune.
-- Gateway runes have **no craft recipe**. Use `/wormholes wand rune=gateway`.
+- There is no gateway rune. Build with either rune and switch the portal to
+  `GATEWAY` in the type menu.
 - All frame types can project. Use projection mode OFF to disable the view.
   Construction and type changes need `wormholes.portals.portal` (PORTAL/RTP),
   `wormholes.portals.wormhole` (WORMHOLE), or `wormholes.gateway` (GATEWAY).

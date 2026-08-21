@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,31 +45,48 @@ after start, PERSONAL/PUBLIC entry cannot provision or enter pockets.
 | Slot reuse | Never. Slots are monotonic |
 
 Each allocation stores a `PocketSpace`: stable `spaceId` (name-UUID from
-binding), binding, slot index, and center coordinates. Restoring from disk
-reloads existing spaces. `nextSlot` must stay greater than every allocated
-slot.
+binding), binding, slot index, center coordinates, and the room's own shell
+(size and materials). Restoring from disk reloads existing spaces. `nextSlot`
+must stay greater than every allocated slot.
+
+A pocket's shell is fixed at creation from the `pocket-room-size`,
+`pocket-shell-material`, and `pocket-return-door-material` settings and is then
+stored with the pocket. Changing those settings later shapes only pockets
+created after the change; existing pockets keep what they were built with until
+an operator resizes them. Pockets written before shells were configurable load
+as the original 32-block smooth-stone room.
+
+The 8,192-block stride leaves room for any supported size, so a pocket never
+grows into its neighbour.
 
 ## Layout (`PocketLayout`)
 
-| Constant | Value | Meaning |
+| Property | Value | Meaning |
 |----------|-------|---------|
-| `CHUNK_SIZE` | 16 | |
-| `ROOM_CHUNKS` | 2 | Room spans 2×2 chunks |
-| `ROOM_SIZE` | 32 | Outer shell edge length |
-| Interior | 30³ usable | Shell faces are protected. Interior is not shell |
-| Shell material | Smooth stone | Outer faces of the 32³ volume |
-| `RETURN_DOOR_CENTER_OFFSET` | 15 | `(ROOM_SIZE / 2) - 1` |
+| Room shape | Cube | Same edge length on X, Y, and Z |
+| Edge length | Per pocket, 8 to 128 | Default 32. Stored on the pocket, not global |
+| Interior | `(size − 2)³` usable | Shell faces are protected. Interior is not shell |
+| Shell material | Per pocket | Default smooth stone. Outer faces of the cube |
+| Return door offset | `(size / 2) − 1` | Keeps the exit centred on the wall at any size |
+| Anchor | Minimum corner | `minX`/`minY`/`minZ` never move when a pocket is resized |
 
-Bounds are chunk-aligned from the pocket center. Shell blocks are protected
-(`isProtected` = shell only). Interior blocks are player-editable.
-Provisioning fills the shell once. Later provision calls leave player interior
-space and always repair the return door and its support.
+Bounds are chunk-aligned from the pocket center, and the minimum corner is the
+anchor: the floor and the minimum-X/minimum-Z walls stay where they are at every
+size, and only the maximum walls, the ceiling, and the return door move. Shell
+blocks are protected (`isProtected` = shell only). Interior blocks are
+player-editable. Provisioning fills the shell once. Later provision calls leave
+player interior space and always repair the return door and its support.
+
+Larger rooms cost more per entry, because the shell integrity check reads every
+shell block before a traveler is allowed to arrive, and every chunk the room
+covers is loaded on entry. A 32-block room spans 2×2 chunks; a 128-block room
+spans 8×8.
 
 ## Return door
 
 | Property | Value |
 |----------|--------|
-| Material | Crimson door (`RETURN_DOOR_MATERIAL`) |
+| Material | Per pocket. Default crimson door. Must be a hand-operable door; iron doors are rejected |
 | Kind / form | `RETURN` / `DOOR` only |
 | Wall | +Z face of the shell (`maxZ`) |
 | Position | Centered on the wall at floor level: lower block at `minY + 1`, facing south, left hinge, starts closed |
@@ -82,6 +99,42 @@ The return route uses the traveler’s saved `ReturnTicket` (source endpoint,
 world, position, look). If the ticket world is missing or is itself a pocket
 world, rescue uses a fallback. If the point is obstructed, rescue also uses a
 fallback. The fallback is a safe location near a loaded non-pocket world spawn.
+
+## Resizing an existing pocket
+
+`/wormholes pocket resize` rebuilds the pocket the operator is standing in.
+`/wormholes pocket resizeall` applies the same change to every allocated pocket.
+Both take `size=`, `material=`, `door=`, and `confirm=`; omitted values keep what
+the pocket already has. See
+[09 - Commands & Permissions](/wormholes/09-commands-permissions) for the exact
+syntax.
+
+Because the room is anchored at its minimum corner:
+
+- **Growing** adds space beyond the old maximum walls and ceiling. Nothing
+  already built moves. The old walls and ceiling are carved back to open space
+  where they are still the pocket's own shell material, so player blocks placed
+  against them survive.
+- **Shrinking** destroys everything left outside the new walls, and the new walls
+  are laid through what used to be interior.
+
+Before touching anything, a resize counts what it would destroy: placed blocks
+that are neither air nor the pocket's shell material, how many of those hold
+items, and how many entities would be displaced. If that count is not zero the
+command refuses and reports it; re-running with `confirm=true` proceeds.
+
+A confirmed resize is not a plain deletion. Container contents in the destroyed
+volume are emptied and dropped at the room's entry rather than voided, and every
+entity left outside the new interior — players included — is teleported to the
+entry. Everything else in that volume is lost.
+
+Changing only materials relays the shell in place at the same size and replaces
+the exit door. A resize also moves the stored return-door endpoint to its new
+wall position, so the exit keeps working without a restart.
+
+A resize is refused when the requested room would not fit the pocket
+dimension's build height, when the pocket world is not loaded, or when the size
+falls outside 8 to 128 blocks.
 
 ## Escape and lethal damage
 

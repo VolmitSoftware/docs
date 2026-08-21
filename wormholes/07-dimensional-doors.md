@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ destinations.
 | `PAIR` | Crafted pair kit or admin item | The other linked endpoint of the same `pairId` | Kit unpacks A/B. Either endpoint may move without losing the link |
 | `PERSONAL` | Crafted or admin item | Traveler’s personal pocket (keyed by traveler UUID) | One pocket per player across all personal doors |
 | `PUBLIC` | Crafted or admin item | Pocket keyed by this door’s immutable `itemId` | Breaking and re-placing the same item keeps the pocket. A new craft mints a new `itemId` and a different pocket |
-| `RETURN` | Pocket structure only | Traveler’s saved return ticket | Never craftable. Always `DOOR` form. Crimson door material. Not breakable by players |
+| `RETURN` | Pocket structure only | Traveler’s saved return ticket | Never craftable. Always `DOOR` form. Door material is per pocket, crimson by default. Not breakable by players |
 
 ## Forms
 
@@ -143,8 +143,10 @@ cross-dimension travel is supported for eligible kinds.
 
 All product and reskin recipes require `wormholes.doors.craft`, which defaults
 to `op`. Without that permission, the crafting result is hidden and the craft
-click is rejected. Product recipes also require the exact **Wormhole Rune**
-item (`R`). Shift-crafting identity products is blocked so one craft cannot
+click is rejected. The shipped product recipes also require the exact **Wormhole
+Rune** item (`R`), which is not craftable and comes from an administrator, so
+door supply is gated on rune supply unless the recipes are reconfigured to drop
+that ingredient. Shift-crafting identity products is blocked so one craft cannot
 mint bulk identities.
 
 ```text
@@ -163,14 +165,16 @@ _ D _                                     _ L _
 | `C` | Recovery Compass |
 | `L` | Lodestone |
 
-Trapdoor products use the same shapes with trapdoor `D`. Defaults:
+Trapdoor products use the same shapes with trapdoor `D`. The table above is the
+shipped default; every product's grid, ingredients, and whether it exists at all
+are configurable. See **Configuring recipes** below. Default products:
 
 | Product | Default material |
 |---------|------------------|
 | Pair door / trapdoor kit endpoints | Oak door / oak trapdoor |
 | Personal door / trapdoor | Dark oak door / dark oak trapdoor |
 | Public door / trapdoor | Pale oak door / pale oak trapdoor |
-| Return (structure) | Crimson door |
+| Return (structure) | Per pocket. Crimson door by default |
 
 **Ingredient vs product:** hinged-door recipes accept any vanilla door,
 including iron and copper. Trapdoor recipes accept only hand-openable wooden
@@ -179,6 +183,14 @@ not the ingredient material. Return doors have no recipe. Crafters cannot mint
 identities or apply skins (`CrafterCraftEvent` is cancelled for those recipes).
 Identity is minted only on a player craft click.
 
+**Recipe book:** every enabled recipe is unlocked in the vanilla recipe book for
+players holding `wormholes.doors.craft`, on join and again whenever the recipe
+set changes. Players without that permission have them removed from the book.
+The Portal Wand recipe carries no permission and is unlocked for everyone; runes
+have no recipe at all. A Bukkit recipe arrives at the client locked, so without this it would
+never appear in the recipe browser and, with the `doLimitedCrafting` gamerule
+on, could not be crafted at all.
+
 **Pair kit:** craft yields a bundle. Right-click air or block unpacks linked
 A/B items and registers the pair. Creative and survival consume the kit on
 unpack.
@@ -186,6 +198,62 @@ unpack.
 Placing any crafted or granted Pair, Personal, or Public door/trapdoor requires
 `wormholes.doors.place`, which defaults to `op`. `wormholes.admin` and ops also
 pass. Craft permission alone does not allow placement.
+
+## Configuring recipes
+
+The `[recipes]` block of `config/wormholes.toml` holds one table per product
+plus the two reskin toggles. Changes hot-reload: `/wormholes reload`
+re-registers the recipes and re-sends every online player's recipe book.
+
+| Table | Controls |
+|-------|----------|
+| `[recipes.pair-kit]` | Entangled door pair kit |
+| `[recipes.personal-door]` | Personal dimensional door |
+| `[recipes.public-door]` | Public dimensional door |
+| `[recipes.trapdoor-pair-kit]` | Entangled trapdoor pair kit |
+| `[recipes.personal-trapdoor]` | Personal dimensional trapdoor |
+| `[recipes.public-trapdoor]` | Public dimensional trapdoor |
+| `[recipes.door-skin]` | Door reskin. `enabled` only |
+| `[recipes.trapdoor-skin]` | Trapdoor reskin. `enabled` only |
+
+Each product table takes three keys:
+
+| Key | Meaning |
+|-----|---------|
+| `enabled` | `false` removes the recipe from the server entirely. The product can still be granted with `/wormholes door` |
+| `shape` | The grid, rows separated by `\|`, a space for an empty slot. At most 3 rows of 3 |
+| `ingredients` | `symbol=material` pairs separated by commas, one per slot symbol |
+
+```toml
+[recipes.personal-door]
+enabled = true
+shape = " R |CDE"
+ingredients = "R=#wormhole-rune, C=RECOVERY_COMPASS, D=#doors, E=ENDER_CHEST"
+```
+
+An ingredient is a block name (`OBSIDIAN`, or `minecraft:obsidian`), several
+names separated by `/` to accept any of them (`OAK_DOOR/SPRUCE_DOOR`), or one of
+the built-in groups:
+
+| Group | Matches |
+|-------|---------|
+| `#doors` | Any vanilla hinged door |
+| `#trapdoors` | Hand-openable wooden trapdoors only |
+| `#any-trapdoors` | Any vanilla trapdoor, iron and copper included |
+| `#wormhole-rune` | The exact Wormhole Rune item |
+
+Rules the parser enforces: at most 3 rows of 3, all rows the same width (a short
+row is padded, so a lost trailing space is harmless), every slot symbol has an
+ingredient, and every ingredient is actually used by the shape. A recipe that
+breaks one of those, or that names a block this server does not have, is logged
+and falls back to its shipped recipe — a typo never leaves a product silently
+uncraftable.
+
+The reskin recipes have no configurable grid because their result is derived
+from the exact two items placed in rather than from a fixed shape; they only
+toggle.
+
+The Portal Wand recipe is not configurable. Runes are not craftable.
 
 ## Reskin
 
