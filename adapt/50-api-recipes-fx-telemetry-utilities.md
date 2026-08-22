@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Adapt documentation: API - Recipes, FX, Telemetry & Utilities"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,11 +51,15 @@ one particle effect. It still respects global and per-player effect settings.
 
 Two classes expose read-only counters. Both take `System.currentTimeMillis()`
 as their `now` argument. `AbilityCheckTelemetry` covers ability-check rates,
-cache hit and miss rates, and average check time. It also covers the share of
-the tick budget those checks consume, and an immutable `AbilitySnapshot` per
-ability. `AdaptRuntimeTelemetry` covers XP per minute, XP payout count,
-provenance operation count, and event-handler operation count over the current
-minute.
+cache hit and miss rates, and average uncached guard-check time. Its
+`estimatedTimingMillisPerSecond` is the guard-check time accumulated over the
+rolling 60-second window divided by 60. `timingBudgetPercent` expresses that
+value against a 50 ms/s budget, so `100` means guard checks averaged 50
+milliseconds of work per second. Operation rates remain throughput telemetry;
+they do not by themselves establish performance impact. The class also exposes
+an immutable `AbilitySnapshot` per ability. `AdaptRuntimeTelemetry` covers XP
+per minute, XP payout count, provenance operation count, and event-handler
+operation count over the current minute.
 
 Their `record...`, `beginExecution`, `endExecution`, and `clear` methods are Adapt-owned instrumentation. Calling them corrupts the numbers your own dashboard is reading. `AdaptTelemetryClock` is the ticker-refreshed clock feeding those counters. Read the wall clock yourself. Never call `refresh()`.
 

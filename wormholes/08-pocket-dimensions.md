@@ -64,7 +64,7 @@ grows into its neighbour.
 | Property | Value | Meaning |
 |----------|-------|---------|
 | Room shape | Cube | Same edge length on X, Y, and Z |
-| Edge length | Per pocket, 8 to 128 | Default 32. Stored on the pocket, not global |
+| Edge length | Per pocket, 8 to 128 | Default 16 (16×16×16 blocks, shell included). Stored on the pocket, not global |
 | Interior | `(size − 2)³` usable | Shell faces are protected. Interior is not shell |
 | Shell material | Per pocket | Default smooth stone. Outer faces of the cube |
 | Return door offset | `(size / 2) − 1` | Keeps the exit centred on the wall at any size |
@@ -79,8 +79,8 @@ player interior space and always repair the return door and its support.
 
 Larger rooms cost more per entry, because the shell integrity check reads every
 shell block before a traveler is allowed to arrive, and every chunk the room
-covers is loaded on entry. A 32-block room spans 2×2 chunks; a 128-block room
-spans 8×8.
+covers is loaded on entry. The default 16-block room covers 1×1 chunk
+horizontally; a 32-block room covers 2×2, and a 128-block room covers 8×8.
 
 ## Return door
 

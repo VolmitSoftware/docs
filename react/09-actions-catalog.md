@@ -2,7 +2,7 @@
 title: "Actions Catalog"
 description: "React documentation: Actions Catalog"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Operator-invoked actions queue one-shot cleanup or lag-response jobs. Every action TOML contains inherited `enabled = true`. Command and API invocation parameters are separate objects created for each ticket. React does not persist them to TOML.
 
 List actions with `/react action audit` (aliases `list`, `ls`). Disabling an action prevents new tickets from running.
+
+The HTTP action API marks `purge-entities`, `purge-chunks`, `collect-garbage`, `action-quarantine-hot-chunks`, `action-trim-entities-by-age-priority`, and `action-incident-playbook` as destructive. Executing any of those exact IDs requires an admin token and `confirm:true`; operator tokens can execute only non-destructive actions. The canonical runtime IDs are also the authorization-gate IDs, so the three `action-`-prefixed actions cannot bypass confirmation.
 
 ### `collect-garbage`
 

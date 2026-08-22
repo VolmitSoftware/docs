@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,6 +26,9 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 | Path | Role |
 |------|------|
 | `plugins/React/config.toml` | Global settings |
+| `plugins/React/web.toml` | Opt-in embedded management API settings |
+| `plugins/React/web/tokens.toml` | Paired API token records and roles; keep private |
+| `plugins/React/web/audit.log` | Append-only audit records for remote mutations |
 | `plugins/React/core/<controller-id>.toml` | Controller settings, including hotload, maps, and config-input sessions |
 | `plugins/React/feature/<id>.toml` | Per-feature config |
 | `plugins/React/tweak/<id>.toml` | Per-tweak config |
@@ -57,7 +60,7 @@ Primary operator-facing keys:
 | `integrationSecretsEnabled` | `false` | Allows Iris/Adapt secret integration bundles when deps present |
 | `unsafeBytecode` | `false` | Eagerly attaches React's general ByteBuddy agent during startup. Versioned NMS features may attach their own instrumentation independently when active. Attached instrumentation remains until JVM restart. |
 | `metrics` | `true` | bStats anonymous metrics |
-| `adaptAbilityOpsMetricMode` | `SUCCESSFUL_CHECKS` | Which Adapt ability-ops metric React uses |
+| `adaptAbilityOpsMetricMode` | `SUCCESSFUL_CHECKS` | Selects the Adapt ability-operation rate used by displays, samplers, and alert context only; performance-pressure thresholds use measured timing instead |
 | `monitoring` | default groups | Default action-bar monitor layout |
 
 Nested `monitoring` fields (`ReactConfiguration.Monitoring`):
@@ -78,7 +81,7 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 
 ## Reload
 
-The hotload controller watches `config.toml`, locale overrides, and managed config files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. It consumes operating-system file events and periodically reconciles signatures so Docker, Pterodactyl, and other mounts that omit events still converge. A detected file must stay stable for an extra watcher poll before it is eligible.
+The hotload controller watches `config.toml`, locale overrides, and managed config files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. Routine polls drain operating-system events without checking every watched file's metadata when native recursive watching is active. Scheduled full scans still reconcile watcher state, and exact-content fallback work continues across polls. A reconciliation pass yields between files after 32 files, 8 MiB, or roughly 10 milliseconds; directory enumeration, a full watcher scan, or one individual file read can take longer. This keeps Docker, Pterodactyl, and other mounts that omit events convergent while bounding ordinary fallback work. A detected file must stay stable for an extra watcher poll before it is eligible.
 
 React normalizes watched paths and coalesces repeated events by path. An automatic apply batch cannot start until three monotonic seconds after the preceding drain and any deferred watcher reconfiguration finish. Saves received while a batch is waiting or running collapse into one trailing drain that reads the latest stable state. A successful `core/hotload.toml` change reconfigures the watcher only after every file in the current batch has been processed; React compares digests before and after that reconfiguration so the watcher reset cannot discard a concurrent save.
 
@@ -107,6 +110,30 @@ React rejects invalid component, controller, global-config, or localization hotl
 
 - `core/config-input.toml`: `sessionTimeoutSeconds = 45` controls the in-game config editor's text-input timeout and is clamped to at least five seconds.
 - `core/map.toml` controls map repair, redraw, packet delivery, and megamap behavior. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
+
+## Embedded management API (`web.toml`)
+
+The embedded HTTP/WebSocket listener is disabled by default. It always speaks plain HTTP on its bound socket. For remote access, keep the listener on a trusted interface and terminate HTTPS at a reverse proxy; `advertisedUrl` tells paired direct clients which public HTTPS base URL to use and does not enable TLS inside React.
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `enabled` | `false` | Starts the embedded listener when true. |
+| `bindAddress` | `127.0.0.1` | Listener interface. Use a non-loopback address only with an intentional network boundary. |
+| `port` | `9696` | Listener port. |
+| `advertisedUrl` | empty | Absolute HTTP or HTTPS base URL placed in RCT2 pairing payloads. Credentials, query strings, and fragments are rejected. |
+| `corsOrigins` | empty | Allowed browser origins. An empty list permits any origin. |
+| `wsPushHz` | `5` | Metrics WebSocket push frequency. |
+| `requireTokenForReads` | `true` | Requires bearer authentication for ordinary read endpoints. Console log endpoints remain authenticated even when this is false. |
+| `relayEnabled` | `false` | Opens React's authenticated outbound channel to the configured relay for NAT traversal. |
+| `relayUrl` | empty | Base `wss://` relay URL. React appends `/agent`; React Web connects to `/app`. |
+
+`GET /api/v1/ping` is intentionally unauthenticated. It returns only protocol version `2`, the server identity's full SHA-256 fingerprint, and whether a relay session is currently registered. It does not expose the server name, address, public key, token data, or configured URLs.
+
+Generate an RCT2 payload with `/react web pair <label> [role]`, then paste the complete value into React Web. A browser loaded over HTTPS cannot call React's plain-HTTP listener through mixed content. For a hosted React Web client, either place the listener behind an HTTPS reverse proxy and set `advertisedUrl`, or enable the outbound relay with a production `wss://` endpoint. Restrict `corsOrigins` to the exact React Web origin when using direct browser access.
+
+Bearer-authenticated mutations require a strictly increasing `X-React-Counter` per token. `GET /api/v1/logs` and `/ws/logs` capture the complete server logger, including other plugins and stack traces, and require the admin-only `console:read` scope. `POST /api/v1/console/execute` requires the admin-only `console:execute` scope, accepts one control-character-free command of at most 512 characters, dispatches through the server/global scheduler, and writes a redacted audit record that excludes command arguments. Treat console access as equivalent to server-console access.
+
+Per-world budget updates accept the canonical namespaced key in `PUT /api/v1/worlds/update`. `PUT /api/v1/worlds/{name}` is also available for clients that address a world by its displayed name; React resolves that name back to the canonical key before applying the update.
 
 
 ## Localization

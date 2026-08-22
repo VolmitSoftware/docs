@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -271,11 +271,11 @@ Adapt:
 | `adapt-player-sessions`        | players    | Players with an active Adapt session              |
 | `adapt-learned-adaptations`    | count      | Adaptations learned across online players         |
 | `adapt-session-load`           | percent    | Session processing load                           |
-| `adapt-ability-ops`            | ops/min    | Ability operations per minute                     |
+| `adapt-ability-ops`            | ops/min    | Displayed ability-operation rate; telemetry and alert context only, not a performance-pressure threshold |
 | `adapt-ability-checks-per-tick` | ops/tick  | Ability checks per tick                           |
 | `adapt-check-latency`          | µs         | Mean ability-check latency, microseconds          |
 | `adapt-cache-hit-ratio`        | ratio 0–1  | Ability cache hit ratio                           |
-| `adapt-timing-budget`          | percent    | Share of the ability timing budget consumed       |
+| `adapt-timing-budget`          | percent    | Rolling 60-second guard-check cost as a percentage of a 50 ms/s budget |
 | `adapt-event-ops`              | ops/min    | Event handler operations per minute               |
 | `adapt-xp-rate`                | xp/min     | Experience awarded per minute                     |
 | `adapt-xp-payouts`             | ops/min    | Experience payout operations per minute           |

@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -333,8 +333,9 @@ Labels can combine the same values with inventory functions and localization:
 
 The full furnace walkthrough, including variants, surge state and live-field cadence, is in
 [Container Previews](/gloss/15-container-previews#furnace-expression-walkthrough). The web editor's
-random container-preview action produces another editable furnace lab with randomized theme and
-geometry, so its Code view can be used as a working expression sample.
+fixed furnace template remains a complete working expression sample. Its random container-preview
+action instead chooses among storage, furnace, brewing, beehive, cauldron, jukebox, ender-storage,
+mobile-cargo and server-vitals archetypes with target-specific expressions and geometry.
 
 ### Expression-capable fields
 

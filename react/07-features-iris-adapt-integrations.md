@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,7 @@ Use `/react integration status` for live capability status. Global `integrationS
   - missing required plugin install → do not register
 - `FeatureController` re-checks activation every two seconds. With a live integration controller, capability requires an accepting or healthy metrics node. Installed-plugin detection is only the fallback when that controller is unavailable.
 - Secret features only appear under `plugins/React/feature/` after they successfully register. That requires secrets on and the plugins present.
+- Adapt ability-operation volume remains neutral telemetry and never creates an integration-timeline alert by itself. React alerts only after three consecutive samples where Adapt's measured rolling guard-check timing budget is at least 100 percent and server MSPT is at least 50 milliseconds; either signal recovering resets the streak. The current operation rate remains in the alert as context, not as a trigger.
 
 ## Map overlays (cross-ref)
 
@@ -46,7 +47,7 @@ Requires `adapt`. Secret: yes. While surging, this feature rate-limits player in
 | `tickIntervalMS` | int | `1000` | Evaluation interval (ms). |
 | `triggerTickMS` | double | `58` | Tick-time surge trigger (ms). |
 | `triggerSessionLoadPercent` | double | `70` | Adapt session-load surge trigger. |
-| `triggerAbilityOpsPerMinute` | double | `260` | Ability-ops surge trigger. |
+| `triggerAbilityTimingBudgetPercent` | double | `100` | Measured Adapt guard-check timing-budget trigger. |
 | `windowMS` | int | `1800` | Rate-limit window (ms). |
 | `maxInteractionsPerWindow` | int | `8` | Max interactions per window. |
 | `maxCombatOpsPerWindow` | int | `10` | Max combat ops per window. |
@@ -88,7 +89,7 @@ Requires `iris` **and** `adapt`. Secret: yes. It enters when either Iris or Adap
 | `enterTickMS` | double | `62` | Tick ms enter threshold. |
 | `enterIrisQueue` | double | `340` | Iris pregen queue pressure threshold. |
 | `enterAdaptSessionLoad` | double | `72` | Adapt session-load pressure threshold. |
-| `enterAdaptAbilityOps` | double | `280` | Adapt ability-ops pressure threshold. |
+| `enterAdaptAbilityTimingBudgetPercent` | double | `100` | Adapt measured guard-check timing-budget pressure threshold. |
 | `minimumEngageMS` | int | `12000` | Minimum engage duration (ms). |
 | `playbookCooldownMS` | int | `20000` | Min time between playbook queues (ms). |
 | `verboseTransitions` | boolean | `true` | Log engage/release transitions. |

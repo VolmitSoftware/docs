@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "React documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,18 +45,19 @@ The current shaded artifact is `build/libs/React-2.0.0-26.2.jar`. A successful b
 
 ## Hotload and full reload
 
-1. Change a reversible value such as `slowTickLogMode` in `config.toml` and confirm it applies without `/react reload`.
-2. Save two different valid values to the same file in quick succession, then change a second managed file before three seconds elapse. Confirm automatic apply batches are at least three seconds apart and the one trailing batch applies the latest value for each path.
-3. Change one active feature or tweak field and confirm the component restarts. Toggle its `enabled` field and confirm activation changes.
-4. Change `core/hotload.toml` while also changing another managed file. Confirm the other change is not lost and the new watcher cadence or notification setting takes effect only after the current batch finishes.
-5. Change the active locale override and confirm valid text applies. Edit an inactive locale override and confirm it does not replace the active locale.
-6. Write a valid config through a temporary file such as `config.toml.tmp`, then atomically rename it over the canonical target. Confirm the temporary artifact is ignored and the canonical file applies once.
-7. Temporarily move a managed config away and restore it during the grace window. Confirm React neither recreates nor deletes the target, the live state remains active, and the restored latest bytes eventually apply.
-8. Introduce invalid TOML temporarily. Confirm the live global and localization snapshot stays active, React leaves the invalid file bytes unchanged, and the rejection is reported.
-9. During an automatic apply, save a newer valid value externally. Confirm React does not canonicalize over that save and the newer digest is applied by the trailing batch.
-10. Run `/react reload`. Confirm it begins immediately rather than waiting for the automatic cooldown, the complete disable and enable lifecycle drains, and React returns on the same version.
-11. If React reports that the old ticker did not drain, restart the server. Do not retry reload.
-12. Restore every edited value.
+1. Leave the complete generated config tree unchanged for at least ten seconds. Confirm no `controller:hotload` slow-tick warning appears during idle event polls or exact-content reconciliation.
+2. Change a reversible value such as `slowTickLogMode` in `config.toml` and confirm it applies without `/react reload`.
+3. Save two different valid values to the same file in quick succession, then change a second managed file before three seconds elapse. Confirm automatic apply batches are at least three seconds apart and the one trailing batch applies the latest value for each path.
+4. Change one active feature or tweak field and confirm the component restarts. Toggle its `enabled` field and confirm activation changes.
+5. Change `core/hotload.toml` while also changing another managed file. Confirm the other change is not lost and the new watcher cadence or notification setting takes effect only after the current batch finishes.
+6. Change the active locale override and confirm valid text applies. Edit an inactive locale override and confirm it does not replace the active locale.
+7. Write a valid config through a temporary file such as `config.toml.tmp`, then atomically rename it over the canonical target. Confirm the temporary artifact is ignored and the canonical file applies once.
+8. Temporarily move a managed config away and restore it during the grace window. Confirm React neither recreates nor deletes the target, the live state remains active, and the restored latest bytes eventually apply.
+9. Introduce invalid TOML temporarily. Confirm the live global and localization snapshot stays active, React leaves the invalid file bytes unchanged, and the rejection is reported.
+10. During an automatic apply, save a newer valid value externally. Confirm React does not canonicalize over that save and the newer digest is applied by the trailing batch.
+11. Run `/react reload`. Confirm it begins immediately rather than waiting for the automatic cooldown, the complete disable and enable lifecycle drains, and React returns on the same version.
+12. If React reports that the old ticker did not drain, restart the server. Do not retry reload.
+13. Restore every edited value.
 
 ## PlaceholderAPI
 
@@ -73,6 +74,7 @@ The current shaded artifact is `build/libs/React-2.0.0-26.2.jar`. A successful b
 4. Place adjacent cloned maps in item frames. Confirm distinct ids and megamap tiling when enabled.
 5. Reload React and confirm inventory and framed maps repair during the startup boost.
 6. Test absent and present peer plugins separately. Integration renderers are not selectable until their capability is present.
+7. With Adapt publishing high ability-operation volume while its guard-check timing budget stays below 100 percent, confirm React creates no Adapt timing-pressure integration alert and adds no operation-derived pressure to the Adapt overlay or secret surge gates. Raise measured guard-check timing to at least 100 percent while MSPT remains below 50 milliseconds and confirm the alert still stays clear. Measured callback and event-handler time must remain the only weights in their corresponding impact maps.
 
 ## Built-in runtime test commands
 

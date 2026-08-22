@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt documentation: Commands & Permissions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,7 +46,7 @@ There are two tools here and they are not interchangeable.
 
 `/adapt debug` (alias `dev`) holds the tools you should not hand out. `/adapt debug mode` reveals every skill and adaptation regardless of progression. It makes learning free and uncapped, by short-circuit of the power budget, the knowledge spend, and the over-budget pruner. It uses `adapt.debug`, the same node as `migrate-configs`.
 
-Everything else under `debug` sits behind `adapt.idontknowwhatimdoingiswear`. `verbose` flips diagnostic logging in memory without writing the config file. `pap` and `psp` print the generated `adapt.use` nodes for adaptations and skills to the console. `particle` and `sound` fire one at your feet for testing. `perf` prints ability-check rates, cache hit ratio, timing budget, and the top ticker hotspots. It can reset those counters afterwards.
+Everything else under `debug` sits behind `adapt.idontknowwhatimdoingiswear`. `verbose` flips diagnostic logging in memory without writing the config file. `pap` and `psp` print the generated `adapt.use` nodes for adaptations and skills to the console. `particle` and `sound` fire one at your feet for testing. `perf` prints ability-check rates, cache hit ratio, the rolling 60-second guard-check timing cost and budget, and the top ticker hotspots. It can reset those counters afterwards.
 
 ## Mutations
 

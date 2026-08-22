@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -46,9 +46,9 @@ legacy `Material` aliases before block-data inspection or item-name publication.
 discovery does not initialize CraftLegacy support. Its placement-support contract classifies
 cactus as a decorant and permits cactus only on sand, red sand, or another cactus.
 
-`FileWatcher` and `FolderWatcher` consume native `WatchService` events and reconcile filesystem state, including atomic replacements, overflow, directory deletion/recreation, and watcher-key loss. They do not follow directory symlinks. Both own operating-system resources and must be closed when their host is replaced or disabled.
+`FileWatcher` and `FolderWatcher` consume native `WatchService` events and reconcile filesystem state, including atomic replacements, overflow, directory deletion/recreation, and watcher-key loss. `FolderWatcher.checkModifiedEvents()` drains recursive native events without checking every known leaf's metadata while complete registrations are active and falls back to the fast state scan when native watching is unavailable or only partially registered; `checkModified()` still performs full state reconciliation. Event-only callers should still run periodic full reconciliation. They do not follow directory symlinks. Both own operating-system resources and must be closed when their host is replaced or disabled.
 
-`ReactiveFolder` adds bounded rolling content reconciliation, temporary-artifact filtering, delete grace, and a completion-anchored 3-second latest-state queue to a recursive folder watch. `ConfigHotloadEngine.configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` provides the same completion-anchored queue with a host-supplied interval; Volmit hosts use 3 seconds. It also provides self-write suppression and periodic content reconciliation for silent or same-metadata saves. The shared reconcilers advance at most 8 MiB or 256 files per fallback pass. `ConfigHotloadEngine` caps exact-content capture at 2 MiB per file; larger targets remain visible to metadata reconciliation but are not eligible for an automatic content apply. A failed host apply remains pending for retry; `clear()` closes all watcher resources and discards pending work.
+`ReactiveFolder` adds bounded rolling content reconciliation, temporary-artifact filtering, delete grace, and a completion-anchored 3-second latest-state queue to a recursive folder watch. `ConfigHotloadEngine.configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` provides the same completion-anchored queue with a host-supplied interval; Volmit hosts use 3 seconds. It also provides self-write suppression and periodic content reconciliation for silent or same-metadata saves. `ReactiveFolder` advances at most 8 MiB or 256 files per content-reconciliation pass. `ConfigHotloadEngine` continues exact-content reconciliation across polls and yields between files after 8 MiB, 32 files, or roughly 10 milliseconds. Snapshot enumeration, full watcher scans, and one individual read sit outside that between-file limit. Exact-content capture is capped at 2 MiB per file; larger targets remain visible to metadata reconciliation but are not eligible for an automatic content apply. A failed host apply remains pending for retry; `clear()` closes all watcher resources and discards pending work.
 
 `ConfigFileSupport.load(..., overwriteOnReadFailure=false, ...)` is a passive load: it parses and normalizes in memory but never canonicalizes, migrates, deletes, or creates files. Startup and explicit migration paths opt into writes by passing `true`.
 

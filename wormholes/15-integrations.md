@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Wormholes documentation: Integrations"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
 |--------|-------------------|-------------|
 | PlaceholderAPI | Registers `%wormholes_…%` expansion | No placeholders |
 | Vault (+ economy provider) | Portal menu travel cost type **Vault Economy** | Vault cost mode is unavailable. Free and item costs still work |
-| Iris | RTP candidate safety probe for fluid surface | Probe returns null. RTP uses non-Iris checks only |
+| Iris | Pre-load RTP fluid and biome probes | RTP falls back to ordinary chunk-backed biome and landing-safety checks |
 
 None of these are required to enable Wormholes.
 
@@ -67,11 +67,14 @@ That path is independent of the portal menu cost types.
 
 ## Iris
 
-Soft-depend only. When Iris is enabled, RTP candidate loading calls
-`IrisTerrainProbe` reflectively (`art.arcane.iris.core.tools.IrisToolbelt`). If
-the world is under Iris fluid at the candidate column, the candidate is
-rejected. If Iris is missing, disabled, or the reflective path fails, the probe
-returns null and does not block non-Iris worlds.
+Soft-depend only. When Iris is enabled and its world engine is open, Wormholes
+probes the terrain model for fluid columns and the biome model for pack load
+keys and vanilla derivative keys before loading a candidate chunk. Fluid
+columns and enforced biome mismatches are rejected before generation.
+
+If Iris is missing, disabled, unloading, or a probe is unavailable, Wormholes
+falls back to its ordinary chunk-backed biome and landing-safety checks. This
+fallback also applies to an Iris world whose engine is unavailable.
 
 No Iris world-gen or pack APIs are exposed to third parties through Wormholes.
 

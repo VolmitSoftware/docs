@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -44,6 +44,8 @@ This tree registers **154** sampler ids (excluding internal `unknown`).
 | `adapt-world-policy-latency` |
 | `adapt-xp-payouts` |
 | `adapt-xp-rate` |
+
+`adapt-ability-ops` is throughput telemetry for displays, samplers, and alert context; operation volume alone is not treated as performance pressure. `adapt-timing-budget` is the rolling 60-second guard-check cost expressed as a percentage of a 50 ms/s budget, so `100` means Adapt guard checks averaged 50 milliseconds of work per second across that window. React's Adapt pressure features and alerts use measured timing rather than the operation-rate setting.
 
 ### biletools
 

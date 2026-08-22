@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,8 +63,8 @@ Built by `RtpSettings.builder(world)` / `defaults(world)`:
 
 | Value | Meaning |
 |-------|---------|
-| `PORTAL_RELATIVE` | Search ring centered on the portal’s source center. |
-| `CUSTOM` | Search ring centered on stored `customCenterX` / `customCenterZ` (both required when CUSTOM). |
+| `PORTAL_RELATIVE` | Uses the source portal center's numeric X/Z as the annulus origin in the target world. Coordinates are copied unchanged; target spawn and dimensional scaling are not used. |
+| `CUSTOM` | Uses stored `customCenterX` / `customCenterZ` as the annulus origin in the target world (both required when CUSTOM). |
 
 ### Vertical — `RtpVerticalMode`
 
@@ -77,7 +77,7 @@ Built by `RtpSettings.builder(world)` / `defaults(world)`:
 
 | Value | Meaning |
 |-------|---------|
-| `SHARED` | One shared destination for the portal’s viewers/travelers. |
+| `SHARED` | One active destination shared by the portal's viewers/travelers, plus a distinct prepared standby column. Initial READY requires both. |
 | `PER_PLAYER` | Per-player destinations and private reservation pool behavior. |
 
 ### Shared rotation — `RtpRotationMode`
@@ -129,7 +129,8 @@ sweet berry bush, and wither rose. They also include pointed dripstone, cobweb,
 nether portal, end portal, end gateway, and lit campfire or lit soul campfire. Surface mode rejects
 tree-structure landings. Clear ground under a high canopy can still pass when
 support and body checks succeed. Liquids and waterlogged aquatic landings fail.
-The Iris integration rejects terrain probes that Iris identifies as fluid.
+The Iris integration rejects terrain probes that Iris identifies as fluid and
+can reject enforced biome mismatches before a candidate chunk is generated.
 Travel uses the same entity envelope that passed validation.
 
 ## Target biome
@@ -157,14 +158,19 @@ identity: existing destinations are discarded and resampled.
 ## Sampling and retry limits
 
 Horizontal coordinates are sampled uniformly by area within the configured
-annulus, not uniformly by radius. Pocket worlds are excluded from the
-target-world list. `PREFERRED_AVERAGE` probes the preferred Y first, then
-alternates upward and downward inside the bounds. Surface mode uses a separate
-Nether scan that avoids the roof band.
+annulus, not uniformly by radius. The sampled integer block column is produced
+by flooring X/Z, so its block center can differ from a configured radius
+boundary by less than one block. Pocket worlds are excluded from the target-world
+list. `PREFERRED_AVERAGE` probes the preferred Y first, then alternates upward
+and downward inside the bounds. Surface mode uses a separate Nether scan that
+avoids the roof band.
 
-A search campaign starts at most 32 candidates and runs for at most five
-seconds. A campaign that cannot publish a safe destination enters exponential
-retry backoff, from one second up to 30 seconds. The existing READY view stays
+Candidate attempts run serially. A search campaign starts at most 32 candidates
+and runs for at most 30 seconds. This lets a cold Iris chunk finish generation
+instead of discarding it after five seconds and sampling another new chunk. A
+timed-out preparation is cancelled and its Wormholes chunk leases are released.
+A campaign that cannot publish a safe destination enters exponential retry
+backoff, from one second up to 30 seconds. The existing READY view stays
 published during refill or authorization work until a replacement can be shown
 safely.
 
@@ -177,6 +183,12 @@ leave the view AABB.
 
 - New RTP portals with default rotation **ON_TRAVERSAL** reroll the shared
   destination after a successful trip.
+- Shared routing prepares an active destination and a distinct standby. The
+  portal becomes READY only when both are retained, allowing a rotation to
+  promote the standby without exposing an unprepared route.
+- A route edit is not treated as active until its runtime registration succeeds.
+  Failed registration stays closed and retries, so the editor cannot show new
+  radii while travel continues through an older route.
 - Per-player allocation rotates reservations on the cycle duration and uses
   private release timing for reservation teardown. The saved shared rotation
   choice remains available if allocation switches back to SHARED.

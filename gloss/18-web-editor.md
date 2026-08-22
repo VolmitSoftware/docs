@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -69,6 +69,12 @@ components and container-preview elements expose the same management actions thr
 and a touch-accessible actions button. These menus include the applicable rename, duplicate, move,
 link and confirmed delete operations without being clipped by a pane edge.
 
+New, imported and duplicated runtime documents and menu components allocate readable identifiers
+without overwriting an existing one. The first copy keeps its requested id, then conflicts advance
+case-insensitively as `id-02`, `id-03` and onward; requesting an already numbered id continues that
+sequence. Container-preview elements remain ordered by array position because their runtime format
+has no element-id field.
+
 The container-preview inspector exposes the complete match and variant targeting surface, including
 blocks, entities, special target, priority, variables and preserved extension keys. Card and match
 extension keys are editable there as well; code view remains available for direct JSON authoring.
@@ -82,23 +88,45 @@ seconds as you type.
 
 Random showcases are contextual. Right-click a library document and choose `Create random <kind>`
 to replace that document's JSON with a valid editable example while preserving its identity,
-folder and runtime id. Right-click a menu component to randomize that component without moving or
-renaming it. The generators procedurally vary layouts, values, colors, animation modes, time-based
-RGB expressions, math and bars. Player and server values use Gloss's native getters; optional PAPI
-expansion data and integration metrics are demonstrated with explicit fallbacks rather than used
-for values Gloss already owns. Random scoreboards also demonstrate the per-board 1.20.3+ hidden
-number format. The recurring staff names are scattered easter eggs rather than a fixed script.
+folder and runtime id. Right-click a menu component or container-preview element to randomize that
+component in place without moving, renaming or changing its type. The generators build bounded
+feature-showcase documents rather than changing a few
+values on one fixed preset. Menu results choose among distinct layouts and coherent command,
+travel, network, navigation and toggle controls; they exercise player and server commands, click
+triggers, sound sources, navigation modes, custom hitboxes, hover easing, player heads and every
+locally available image or custom-item icon type. Player and server values use Gloss's native
+getters; optional PAPI expansion data and integration metrics are demonstrated with explicit
+fallbacks rather than used for values Gloss already owns. Random scoreboards vary their row
+structure, selection rules and 1.20.3+ hidden-number setting. Holograms vary occlusion, billboard
+mode and authored yaw and pitch; animations cover every playback mode; emoji cover token-only,
+shorthand, literal and compound Unicode forms; and tablists vary header/footer and group-format
+behavior. The recurring staff names are scattered easter eggs rather than a fixed script.
 MOTDs deliberately use only viewer-free time and server values: the status response is sent
 before the same request's latency is measured, so a current-ping conditional MOTD cannot exist.
-Random container previews become a furnace expression lab rather than arbitrary decoration. The
-generated document claims furnace, blast-furnace and smoker targets; opens against the furnace
-simulation; includes panel, cell, slot and label elements; and demonstrates `match.vars`, variants,
-repeats, centered layout math, timer ratios, conditional state, `sin`/`mix` color pulses, `palette`
-animation, inventory functions, `bar`, `fixed`, `select` and localized `lang` text. Its palette,
-segment geometry, pulse rate and card dimensions vary procedurally while remaining valid runtime
-JSON.
-Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise visible-character wrapping, multiline formatting, lifetime, offset, follow/hide behavior and procedural translation, scale, rotation and opacity expressions. Their presets include editable fly-up, fade, shrink and arcing motion. The bubble inspector exposes the shimmer's two pass switches, solid RGB band color, visible-glyph width, sweep duration, spawn delay and departure lead, plus an `Original Gloss` preset. That preset waits 400 ms, moves one solid-white three-glyph band across the complete multiline block over 700 ms, and repeats the same bounded pass during the final 700 ms of fly-away. Wrapped rows share one continuous band instead of starting independent shimmers. The preview uses `requestAnimationFrame` and the server uses its high-frequency packet animator so long wrapped messages refresh smoothly. Random tablists populate dynamic
-headers, footers and group formats. Minecraft samples an MOTD animation frame when it answers each
+Random container previews choose among all 13 shipped target families: beehive, brewing stand,
+cauldron, chest, chiseled bookshelf, dispenser, ender chest, furnace, hopper, jukebox, locked,
+minecart and shelf. Each produces a distinct editable layout with appropriate simulated state,
+variants, bounded repeats, explicit depth, framed or bare cards, conditional visibility, backed
+labels and live expressions spanning the runtime's arithmetic, interpolation, color, time, player,
+inventory, PlaceholderAPI and metric functions. Occupied slots render their actual catalog item
+texture instead of an abbreviation tile. The fixed furnace expression-lab template remains
+available as the complete teaching sample, and every random result remains valid runtime JSON
+rather than an editor-only animation.
+Random Real Drops documents regenerate a complete coherent behavior instead of only moving
+sliders: each result chooses compatible physics, script expressions, material maps, profiles,
+clips, triggers, tracks, easing, and keyframes within bounded preview and runtime budgets.
+Random holograms immediately refresh the open stage. Random BubbleStyle documents exercise
+visible-character wrapping, multiline formatting, bounded lifetime, offset, follow/hide behavior,
+optional world/group selection, independently enabled shimmer passes and procedural translation,
+scale, rotation and opacity expressions. Their motion families include editable fly-up, fade,
+shrink, orbit and arcing behavior. The bubble inspector exposes the shimmer's two pass switches,
+solid RGB band color, visible-glyph width, sweep duration, spawn delay and departure lead, plus an
+`Original Gloss` preset. That preset waits 400 ms, moves one solid-white three-glyph band across the
+complete multiline block over 700 ms, and repeats the same bounded pass during the final 700 ms of
+fly-away. Wrapped rows share one continuous band instead of starting independent shimmers. The
+preview uses `requestAnimationFrame` and the server uses its high-frequency packet animator so long
+wrapped messages refresh smoothly. Random tablists populate dynamic headers, footers and group
+formats. Minecraft samples an MOTD animation frame when it answers each
 server-list request rather than continuously redrawing an already displayed row. Each replacement
 is one undo step.
 
@@ -113,7 +141,7 @@ pressing Shift+F10 opens creation at that exact snapped position for text, image
 living entities, items, blocks, buttons and toggles. Media creation opens the same image manager and
 inserts the chosen static or animated asset as one undoable component edit. A standalone hologram
 document remains a text-display line list; mixed icon components belong to menu documents. Living-
-entity icons use real Minecraft entity sprites instead of geometric stand-ins. A standalone hologram's Presentation section exposes `seeThrough`, enabled by default, so the authored JSON and server agree on whether terrain occludes the text. The **Real drops** document provides a live item-stage preview and GUI controls for the complete `real-drops/default.json` profile: update budgets, density, model scales, tumble speed and axes, bounce changes, landing pose, label height and visibility, background channels, world/material filters, and player-drop filtering. Its export path is fixed to `plugins/Gloss/real-drops/default.json`; the master `[features] realDrops` boolean remains in `config.toml`.
+entity icons use real Minecraft entity sprites instead of geometric stand-ins. A standalone hologram's Presentation section exposes `seeThrough`, enabled by default, so the authored JSON and server agree on whether terrain occludes the text. The **Real drops** document provides a live item-stage preview and GUI controls for the complete `real-drops/default.json` profile: update budgets, density, model scales, throw-momentum tumble, submerged spin, distance-driven ground roll, face attraction and stable delay, entity physics, advanced modifiers, labels, filters, and typed keyframe animation profiles. Placeable samples use textured six-face block geometry with material-specific bounds; only true items use the item-sprite renderer. Showcase drops default to one item and use only occasional two- or three-item stacks, keeping the model readable instead of demonstrating large inventory counts. The stage shadow is a circular disc on the ground plane, so camera perspective produces the ellipse naturally instead of stretching a screen-space shadow. The animation inspector authors material property maps, profile priority and globs, trigger clips, tracks, blend/easing, and keyframes for scale pulses, hovering, glow/light, physics handoff, spiral rotation, visibility, and offsets. Its transport includes stepping and timeline scrubbing with the current animation phase visible. The code editor schema covers the same contract. Its export path is fixed to `plugins/Gloss/real-drops/default.json`; the master `[features] realDrops` boolean remains in `config.toml`.
 The bundled Java 26.2 item/block catalog contains 1,691 materials and 1,644 textured atlas entries;
 the entity catalog contains 91 living renders using Java 26.2 textures and the renderer's latest
 supported 26.1 geometry definitions. Maintainers refresh both catalogs with

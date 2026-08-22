@@ -2,7 +2,7 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -98,7 +98,7 @@ This feature captures spike origins when `tick-time` is at or above the threshol
 
 ### `plugin-event-impact-list-map`
 
-Ranked plugin event cost from `PluginEventImpactSeries`.
+Ranked plugin event cost from `PluginEventImpactSeries`. Ranking uses measured event-handler milliseconds only; call counts remain display metadata and cannot create an impact row by themselves.
 
 - **Class:** `FeaturePluginEventImpactListMap`
 
@@ -109,7 +109,7 @@ Ranked plugin event cost from `PluginEventImpactSeries`.
 
 ### `adapt-ability-impact-list-map`
 
-Ranks Adapt ability detail metrics. The feature object registers normally. `MapController` omits the renderer until the Adapt capability is present.
+Ranks Adapt ability detail metrics. An ability needs measured execution time to receive a row; operation count is display and tie-break metadata, not a substitute for performance cost. The feature object registers normally. `MapController` omits the renderer until the Adapt capability is present.
 
 - **Class:** `FeatureAdaptAbilityImpactListMap`
 
@@ -122,7 +122,7 @@ Ranks Adapt ability detail metrics. The feature object registers normally. `MapC
 
 ### `plugin-event-impact-pie-map`
 
-Pie of rolling plugin event impact. Config: `enabled` only.
+Pie of rolling measured plugin event-handler time. Call volume without measured time contributes no slice. Config: `enabled` only.
 
 - **Class:** `FeaturePluginEventImpactPieMap`
 
@@ -142,7 +142,7 @@ Buckets Iris world groups by loaded chunks. `MapController` omits the renderer u
 
 ### `adapt-runtime-pressure-overlay`
 
-Requires capability `adapt` (not a secret bundle). Score blends chunk total score with Adapt session load and ability ops.
+Requires capability `adapt` (not a secret bundle). Score blends chunk total score with Adapt session load and measured guard-check timing-budget use. Raw ability-operation volume does not add pressure.
 
 - **Class:** `FeatureAdaptRuntimePressureOverlay`
 - **Notes:** Activated when Adapt capability is present. Config: base heatmap keys only.

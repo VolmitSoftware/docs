@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -131,6 +131,24 @@ Example: `/react bridge status`.
 | `loadtest <confirm> [players=1000] [duration=600]` | `load` | Two-pass synthetic load test on world 0. `confirm=true` is required |
 
 Both test commands mutate their test world. `run` queues cleanup actions around world spawn. It creates and removes map-frame fixtures. It also spawns falling sand. `loadtest` generates heavy synthetic load. It currently does not bound `players` or `duration`. Run them only in a disposable isolated server. Or run them after you back up the target world. See [15 - Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
+
+## `/react web` (`w`)
+
+| Subcommand | Description |
+|------------|-------------|
+| `pair <label> [role=viewer]` | Create and persist a bearer token, then print its RCT2 pairing payload and fingerprints. Roles are `viewer`, `operator`, or `admin`. |
+| `list` | List active token IDs, labels, and issue times. |
+| `revoke <id>` | Revoke a token ID and persist the token store. |
+
+Omitting `role` creates a viewer token. Token records without a role also resolve to viewer, so an old or incomplete record cannot inherit administrative authority. RCT2 carries `directUrl`, optional `relayUrl`, the server public key and full SHA-256 fingerprint, and the token ID/signature. It contains no confirmation word.
+
+| Role | Effective scopes |
+|------|------------------|
+| `viewer` | `read` |
+| `operator` | `read`, `op:execute` |
+| `admin` | `read`, `op:execute`, `admin`, `console:read`, `console:execute` |
+
+Only admin tokens can read the full server-console tail/stream or execute a console command through the API. Pairing and revocation write to `plugins/React/web/audit.log`.
 
 ## Shorthand commands (tweak `shorthands`)
 

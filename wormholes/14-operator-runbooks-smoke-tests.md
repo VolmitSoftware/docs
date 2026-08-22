@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -72,10 +72,11 @@ See [03 - Building Portals](/wormholes/03-building-portals) and
 | 1 | Portal menu → type **RTP** → **Random Destination**. | Editor opens (overview with Destination/Landing/Routing/Effects). |
 | 2 | Change min radius (for example +128). | The change applies immediately (applied notification). No Apply Changes control is required. |
 | 3 | If you did not change them, confirm defaults. Min 512. Max 4096. Center is portal-relative. Vertical surface. Allocation is shared. Rotation is on-traversal. Rim and sound are on. | Status and settings match [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals). |
-| 4 | Wait until the destination is ready. Then look through the portal. | When state is ready, projection shows a remote landing. |
+| 4 | Wait until the destination is ready. Then look through the portal. | When both shared active and standby columns are prepared, state is ready and projection shows a remote landing. A cold Iris candidate may use the 30-second search window rather than being discarded after five seconds. |
 | 5 | Traverse the RTP portal. | Teleport is safe. A shared ON_TRAVERSAL portal starts a reroll (state may show `rerolling` / `warming`). |
 | 6 | If PlaceholderAPI is present, check `%wormholes_rtp.state%` and `%wormholes_rtp.cooldown%` near the portal. | States among `rerolling` / `warming` / `ready` / `cooldown` / `idle`. |
 | 7 | Optional: set rotation to STATIC. Then traverse again. | The destination does not reroll automatically after the trip. |
+| 8 | Optional: target a fresh Iris world, first with Any Biome and then with a pack biome. | Each route reaches READY without repeated five-second cold-chunk churn, and the landing remains inside the configured annulus. |
 
 ## Dimensional door pair: craft, place, travel
 
@@ -174,7 +175,7 @@ Permission: `wormholes.admin.projection`.
 |---------|--------|
 | Plugin fails enable | Check the console stacktrace. Check for a schema-less or wrong `schema` in TOML. Check dependency load. |
 | No projection | Projection is OFF. You are outside the view AABB. Freeze is active. The portal is not projectable (RTP not ready). Budgets are starved under PERFORMANCE. |
-| RTP never ready | The world is not loaded. Radius or border is too tight. Safety rejects all candidates. Search is on cooldown. |
+| RTP never ready | Initial shared routing needs two distinct safe columns. A cold Iris candidate may take up to the 30-second campaign window. Also check world availability, radius versus border, safety rejections, and search cooldown. |
 | Doors missing | `[main] dimensional-doors-enabled` is false. A pocket datapack restart is still required. Drain is in progress. |
 | Network import fails | The network is not initialized. The code is invalid or truncated. The identity is the same. The peer is offline (`/wh network doctor`). |
 | Config edit does not hotload | Confirm the target is exactly `config/wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 2`, and remains stable for 350 ms. Check the full watcher or parse stacktrace. |

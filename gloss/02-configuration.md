@@ -176,7 +176,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `bundleEntryFormat` | `"&7- &f{count}x {type}"` | — | One vertical line per material; `{count}` and `{type}` are replaced |
 | `bundleMoreFormat` | `"&8+{remaining} more"` | — | Final line for hidden material types; `{remaining}` is replaced |
 | `preserveCustomNames` | `true` | — | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
-| `useItemDisplayNames` | `true` | — | Use an item's display name from its item meta as `{type}` instead of the pretty material name |
+| `useItemDisplayNames` | `false` | — | Opt in to using an item's display name from its item meta as `{type}` instead of the pretty material name |
 
 ## `real-drops/default.json`
 
@@ -188,7 +188,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 |---|---:|---|---|
 | `updateIntervalTicks` | `2` | 1 – 20 | Airborne carrier-position and transformation cadence; client interpolation smooths the interval |
 | `settledPollIntervalTicks` | `20` | 2 – 200 | Movement and stack-change poll cadence after consecutive stable ground samples; landing slides retain the moving cadence |
-| `maxVisualsPerStack` | `3` | 1 – 5 | Maximum one-count ItemDisplay models used to suggest stack size |
+| `maxVisualsPerStack` | `3` | 1 – 5 | Maximum one-count display models used to suggest stack size |
 | `maxVisualsPerChunk` | `128` | 8 – 1024 | Shared chunk budget for item models and labels; an item stays vanilla-visible if its complete presentation cannot fit |
 | `viewRange` | `32.0` | 4 – 128 | Item-model tracking range in blocks |
 | `spread` | `0.18` | 0 – 1 | Separation in blocks between additional stack models |
@@ -198,7 +198,7 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
 | `defaultScale` | `0.4` | 0.05 – 2 | Ordinary three-dimensional block model scale |
-| `flatItems` | `0.65` | 0.05 – 2 | Non-block item and vanilla sprite-modeled placeable-item scale, including doors, rails, signs, panes, torches, and plants |
+| `flatItems` | `0.65` | 0.05 – 2 | Non-block ItemDisplay scale |
 | `thinBlocks` | `0.45` | 0.05 – 2 | Slab, carpet, pressure-plate, and snow-layer model scale |
 
 ### `motion`
@@ -212,6 +212,9 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `degreesPerSecondZ` | `100.0` | -1440 – 1440 | Base Z-axis tumble speed |
 | `variance` | `0.2` | 0 – 1 | Stable per-item variation applied to each configured speed |
 | `changeOnBounce` | `true` | — | Select another deterministic spin after an upward bounce |
+| `velocityInfluence` | `0.35` | 0 – 4 | Increase angular speed from the authoritative item's real throw velocity |
+| `submergedSpinMultiplier` | `0.35` | 0 – 1 | Angular-speed multiplier while submerged |
+| `groundRollMultiplier` | `1.0` | 0 – 4 | Rotation generated from actual supported travel; `0` slides and `1` rolls at the model radius |
 
 ### `landing`
 
@@ -220,7 +223,11 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `mode` | `"NATURAL"` | `NATURAL`, `FLAT`, `UPRIGHT` | Grounded pose policy; NATURAL block models may settle on any of six faces |
 | `tiltDegrees` | `10.0` | 0 – 45 | Maximum in-face variation for stationary/rebuilt NATURAL block models; momentum landings preserve their physical heading |
 | `randomYaw` | `true` | — | Give direct landing modes and stationary/rebuilt models a stable UUID-derived yaw |
-| `transitionTicks` | `4` | 0 – 20 | Client interpolation duration for the final carrier movement and landing pose; settled polling does not slow the touchdown |
+| `transitionTicks` | `4` | 0 – 20 | Client interpolation duration between continuous animation samples |
+| `faceAttraction` | `0.55` | 0 – 1 | Portion of the remaining face-alignment angle removed per nearly-still sample |
+| `movingFaceAttraction` | `0.15` | 0 – 1 | Face attraction retained while rolling; lower values preserve momentum longer |
+| `alignmentDegrees` | `0.5` | 0.05 – 10 | Subvisual tolerance for the final exact face alignment |
+| `settleDelayTicks` | `4` | 0 – 100 | Stable ticks required before sparse settled polling |
 
 ### `labels`
 
@@ -247,7 +254,29 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla item rendering |
 | `onlyPlayerDrops` | `false` | Require the item entity to carry a non-null thrower UUID |
 
-Real drops use one non-persistent `ItemDisplay` carrier per item, with additional models and the label mounted to it, while the real item keeps all physics and inventory behavior. Only the carrier receives position updates. Turning the feature off removes Gloss-owned displays and restores native item and name visibility. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) for lifecycle, performance, and React bundle integration details.
+### `physics`
+
+| Key | Default | Range | Meaning |
+|---|---:|---|---|
+| `enabled` | `false` | — | Permit Gloss to modify the authoritative item entity |
+| `gravityMultiplier` | `1.0` | 0 – 4 | Gravity scale; `0` clears vertical velocity and gravity while active |
+| `bounce` | `0.0` | 0 – 0.9 | Restitution applied from the measured downward impact speed |
+| `waterBuoyancy` | `0.0` | 0 – 1 | Additional upward velocity while submerged |
+| `waterDrag` | `0.0` | 0 – 1 | Fraction of velocity removed per submerged tick |
+
+### `script`
+
+The optional advanced modifier compiles expression-driven `offset`, `rotation`, `scale`, `glow`, and `visible` outputs. It exposes `phase`, `stateTime`, and `impactSpeed` alongside motion, fluid, material, light, and stack inputs. Script output composes over the typed animation timeline: offsets and rotations add, scales multiply, visibility combines, and a non-zero script glow overrides the timeline glow. Expressions without `index` evaluate once per stack sample; static settled plans are not reevaluated until animation state changes. Scripted offsets remain visual-only and do not move the pickup entity.
+
+### `animation`
+
+`animation.enabled` activates ordered animation profiles. Each profile has an `id`, integer `priority`, material glob list, and clips. Higher priority profiles match first; declaration order resolves equal priority.
+
+Clips specify a `trigger`, `durationTicks`, `loop`, and ordered tracks. Triggers include `SPAWN`, every runtime phase, and `IMPACT`, `BOUNCE`, `ENTER_FLUID`, `EXIT_FLUID`, `START_ROLL`, `SETTLE`, and `WAKE`. Targets are `OFFSET_X/Y/Z`, `ROTATION_X/Y/Z`, `SCALE_X/Y/Z`, `GLOW`, `VISIBLE`, `PHYSICS`, and `LIGHT_LEVEL`. Every track carries scalar keyframes with `tick`, numeric `value`, optional `materialMap`, and `LINEAR`, `HOLD`, `EASE_IN`, `EASE_OUT`, `EASE_IN_OUT`, or `BACK_OUT` easing. `REPLACE` works on every target, `ADD` is valid for offsets and rotations, and `MULTIPLY` is valid for scales.
+
+`materialProperties` is a map of named material maps. Each exact or glob material entry supplies `glow` as numeric ARGB and `lightLevel` from 0 through 15; `GLOW` and `LIGHT_LEVEL` keyframes can name the map and retain their literal value as the fallback. `PHYSICS` values below `0.5` hold the item and preserve its incoming velocity, while values at or above `0.5` release it. `LIGHT_LEVEL` applies display brightness and an air-only temporary light block, capped at eight active lights per chunk and moved no faster than every four ticks.
+
+Real drops use a non-persistent `BlockDisplay` carrier for placeable materials and `ItemDisplay` for true items, with additional models and the label mounted to it. Only the carrier receives position updates. Turning the feature off removes Gloss-owned displays, temporary lights, and restores native item and name visibility. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) for lifecycle, performance, and React bundle integration details.
 
 ## `[commands]`
 

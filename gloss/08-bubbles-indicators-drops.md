@@ -263,9 +263,9 @@ With `[features] drops = true` (the default) every item entity that spawns gets 
 | Token | Replaced with |
 |---|---|
 | `{count}` | The stack size |
-| `{type}` | The item's display name from its item meta when it has one and `[drops] useItemDisplayNames` is on (the default). Otherwise the material name lowercased with underscores turned into spaces, so `DIAMOND_SWORD` becomes `diamond sword` |
+| `{type}` | The material name lowercased with underscores turned into spaces, so `DIAMOND_SWORD` becomes `diamond sword`. When `[drops] useItemDisplayNames` is explicitly enabled and item meta has a display name, that renamed value is used instead |
 
-The shipped default is `"&7{count}x {type}"`, giving `64x cobblestone` — or `1x Excalibur` for a renamed sword. If `[drops] useItemDisplayNames = false`, Gloss always labels by material. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
+The shipped default is `"&7{count}x {type}"`, giving `64x cobblestone` and `1x diamond sword` even when that sword was renamed in an anvil. Set `[drops] useItemDisplayNames = true` to show `1x Excalibur` instead. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
 
 ### Bundles
 
@@ -305,9 +305,9 @@ Spawn, vanilla merge, pickup, hopper pickup, despawn, entity load, and entity un
 
 ### Real drops
 
-`[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. One non-persistent `ItemDisplay` in explicit `FIXED` render mode follows the item as the visible carrier; additional stack models and the optional `TextDisplay` label ride that carrier as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. This feature uses Bukkit display entities and the Gloss scheduler; it does not use ProtocolLib or a new packet dependency.
+`[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. Placeable materials render through `BlockDisplay` with their placed block state; true items render through `ItemDisplay` in explicit `FIXED` mode. The first model is the non-persistent carrier, while additional stack models and the optional `TextDisplay` label ride it as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. Once settled, unchanged poses are not resent and microscopic item-position noise is ignored; meaningful movement still wakes and moves the carrier.
 
-The feature switch remains `[features] realDrops` in `config.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. Airborne models update their carrier position and transformation every `limits.updateIntervalTicks`; every changed tumble or landing target restarts client interpolation across that interval instead of snapping between samples. After ground contact, Gloss keeps the fast cadence while horizontal velocity remains and until the same grounded rotation has naturally reached a flush face, so the display follows the real item's short ground slide continuously. It switches to `limits.settledPollIntervalTicks` only after both motion and pose are stable. The three authored axis speeds are multiplied by `motion.speedMultiplier`, which ships at `1.35`; setting it to `1` uses the axis values unchanged. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. If the complete initial presentation does not fit, Gloss leaves that item vanilla-visible.
+The feature switch remains `[features] realDrops` in `config.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. If the complete initial presentation does not fit, Gloss leaves that item vanilla-visible.
 
 | Key | Default | Range / behavior |
 |---|---:|---|
@@ -319,7 +319,7 @@ The feature switch remains `[features] realDrops` in `config.toml`. Every presen
 | `limits.viewRange` | `32.0` | Item-model tracking range; 4 – 128 blocks |
 | `limits.spread` | `0.18` | Separation of additional stack models; 0 – 1 block |
 | `scale.defaultScale` | `0.4` | Ordinary three-dimensional block models; 0.05 – 2 |
-| `scale.flatItems` | `0.65` | Non-block items and vanilla sprite-modeled placeable items, including doors, rails, signs, panes, torches, and plants; 0.05 – 2 |
+| `scale.flatItems` | `0.65` | Non-block ItemDisplay models; 0.05 – 2 |
 | `scale.thinBlocks` | `0.45` | Slabs, carpets, pressure plates, and snow layers; 0.05 – 2 |
 | `motion.tumble` | `true` | Rotates airborne models |
 | `motion.speedMultiplier` | `1.35` | Multiplies all three axis speeds; 0.1 – 4 |
@@ -328,10 +328,17 @@ The feature switch remains `[features] realDrops` in `config.toml`. Every presen
 | `motion.degreesPerSecondZ` | `100.0` | Z speed; -1440 – 1440 |
 | `motion.variance` | `0.2` | Deterministic per-item speed variation; 0 – 1 |
 | `motion.changeOnBounce` | `true` | Selects another deterministic spin after an upward bounce |
+| `motion.velocityInfluence` | `0.35` | Throw-speed contribution to tumble; 0 – 4 |
+| `motion.submergedSpinMultiplier` | `0.35` | Angular-speed multiplier in water; 0 – 1 |
+| `motion.groundRollMultiplier` | `1.0` | Rotation generated from supported travel; 0 – 4 |
 | `landing.mode` | `"NATURAL"` | `NATURAL`, `FLAT`, or `UPRIGHT` |
 | `landing.tiltDegrees` | `10.0` | Maximum in-face variation for stationary/rebuilt NATURAL blocks; momentum landings preserve their physical heading; 0 – 45 degrees |
 | `landing.randomYaw` | `true` | Gives direct landing modes and stationary/rebuilt models a stable yaw |
-| `landing.transitionTicks` | `4` | Client interpolation for the final carrier movement and landing pose; 0 – 20 |
+| `landing.transitionTicks` | `4` | Client interpolation between continuous pose samples; 0 – 20 |
+| `landing.faceAttraction` | `0.55` | Nearly-still attraction toward the stable face; 0 – 1 |
+| `landing.movingFaceAttraction` | `0.15` | Face attraction retained during rolling; 0 – 1 |
+| `landing.alignmentDegrees` | `0.5` | Final subvisual alignment tolerance; 0.05 – 10 degrees |
+| `landing.settleDelayTicks` | `4` | Stable ticks before sparse polling; 0 – 100 |
 | `labels.enabled` | `true` | Mirrors the effective drop name through one TextDisplay |
 | `labels.yOffset` | `0.55` | Label translation above the model; 0 – 4 blocks |
 | `labels.scale` | `0.85` | Label scale; 0.1 – 4 |
@@ -345,7 +352,11 @@ The feature switch remains `[features] realDrops` in `config.toml`. Every presen
 | `filters.materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
 | `filters.onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
 
-`NATURAL` carries an ordinary three-dimensional block's airborne quaternion directly through impact. Real horizontal ground travel continues rotating it face-to-face, while a continuous gravity component tips the currently lowest face toward the surface; that attraction strengthens as vanilla friction removes momentum. There is no later face-selection or correction phase: the same rotation reaches flush before Gloss permits settled polling. The model rises by its rotated vertical extent throughout the motion, so no face or corner intersects the surface. Extra stack-copy rotation turns only around the surface normal and cannot lift an edge. Thin horizontal blocks remain level, while non-block items and sprite-modeled placeable items lie flush with the surface. Sprite recognition covers the vanilla placeable items whose supported 26.1.2–26.2 client models inherit the generated-item geometry, including doors, rails, signs, panes, torches, and plants. `FLAT` lays every model down. `UPRIGHT` removes pitch and roll. Airborne tumble directions, offsets, and variation derive from the item UUID and remain stable until a configured bounce change. Custom resource packs can replace client model geometry that the server cannot inspect; those models retain their base material classification. Drop labels ship see-through so cave walls do not occlude the name; set `labels.seeThrough` to `false` for ordinary depth-tested text.
+`NATURAL` carries the airborne quaternion directly through impact. Real horizontal travel continues rotating placed blocks face-to-face, while gravity attraction tips the currently lowest face toward the surface as momentum decays. Flat items select whichever broad side is already nearest the ground and preserve their in-plane heading; no UUID-selected landing pose replaces that motion afterward. Block models are centered on their placed geometry and rise by the rotated support extent, so cubes, slabs, carpets, snow, candles, beds, and other partial bounds rest flush rather than intersecting the carrier surface.
+
+The optional `animation` block is the visual and physics timeline. Ordered profiles match material globs, then clips run from `SPAWN`, a live phase, or events such as `IMPACT`, `BOUNCE`, `ENTER_FLUID`, `START_ROLL`, and `SETTLE`. Scalar tracks control offset, rotation, scale, glow, visibility, physics hold/release, and light level through tick keyframes with hold, linear, ease-in, ease-out, ease-in-out, or back-out interpolation. Offset and rotation tracks can add, scale tracks can multiply, and any target can replace its prior value. A `PHYSICS` value below `0.5` freezes the authoritative item while retaining its throw velocity; releasing it restores that velocity, so an authored hover can flow directly into the real fall and roll.
+
+Named `animation.materialProperties` maps associate exact or globbed materials with glow colors and light levels. A keyframe can read one of those maps, allowing one light-source profile to color torches, soul torches, lanterns, and other configured materials independently. `GLOW` controls the display outline. `LIGHT_LEVEL` also applies display brightness and, while above zero, may place a temporary invisible light block only into air. Dynamic lights move at most every four ticks, are limited to eight per chunk, never replace a non-air block, and are ownership-checked and removed on movement, pickup, teardown, reload, and orderly shutdown.
 
 Presentations are removed on merge, pickup, despawn, entity unload, feature reload, and plugin shutdown. New `ItemSpawnEvent` entities reconcile one entity tick after the event, when Bukkit marks them valid; loaded items are rebuilt after enable and entity load. Persistent ownership and restore markers heal an item after an interrupted lifecycle; Gloss restores the prior native visibility and name visibility before rebuilding or falling back. The display carrier and its passengers are non-persistent.
 
