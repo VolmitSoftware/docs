@@ -2,7 +2,7 @@
 title: "API: Previews"
 description: "Gloss documentation: API: Previews"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -85,6 +85,7 @@ Preview provider namespace '<name>' is reserved by a built-in variable; provider
 | Beehive | `bees`, `maxBees`, `honey`, `maxHoney` |
 | Cauldron | `level`, `maxLevel`, `fluid` |
 | Jukebox | `playing`, `record` |
+| Powered minecart | `fuelTicks`, `fuelSeconds`, `powered` |
 
 The set is derived from the built-in catalog at class load. It grows whenever a built-in variable
 is added. A namespace equal to your plugin id will not collide with any of it.

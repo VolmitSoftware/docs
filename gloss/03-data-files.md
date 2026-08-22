@@ -116,7 +116,7 @@ A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skip
 | Real-drop settings | `real-drops/default.json` | yes | `default` | — | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Menus | `menus/**.json` | no, hash revision | none | — | [Hologram Menus](/gloss/09-menus) |
 | Images | `images/<file>` | not JSON | none | — | [Icons](/gloss/11-icons) |
-| Container previews | `previews/<id>.json` | no | 13 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
+| Container previews | `previews/<id>.json` | no | 14 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
 | Panels | `panels/<id>.json` | own id/uuid/revision | none | — | [Panels](/gloss/16-panels) |
 
 `tablist.json` and `motd.json` live at the root of `plugins/Gloss/`. They do not live inside a folder of their own.

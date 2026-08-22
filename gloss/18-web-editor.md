@@ -129,12 +129,12 @@ shorthand, literal and compound Unicode forms; and tablists vary header/footer a
 behavior. The recurring staff names are scattered easter eggs rather than a fixed script.
 MOTDs deliberately use only viewer-free time and server values: the status response is sent
 before the same request's latency is measured, so a current-ping conditional MOTD cannot exist.
-Random container previews choose among all 13 shipped target families: beehive, brewing stand,
-cauldron, chest, chiseled bookshelf, dispenser, ender chest, furnace, hopper, jukebox, locked,
-minecart and shelf. Each produces a distinct editable layout with appropriate simulated state,
-variants, bounded repeats, explicit depth, framed or bare cards, conditional visibility, backed
-labels and live expressions spanning the runtime's arithmetic, interpolation, color, time, player,
-inventory, PlaceholderAPI and metric functions. Occupied slots render their actual catalog item
+Random container previews choose among all 14 shipped target families: beehive, brewing stand,
+cauldron, chest, chiseled bookshelf, dispenser, ender chest, furnace, furnace minecart, hopper,
+jukebox, locked, minecart and shelf. Each produces a distinct editable layout with appropriate
+simulated state, variants, bounded repeats, explicit depth, framed or bare cards, conditional
+visibility, backed labels and live expressions spanning the runtime's arithmetic, interpolation,
+color, time, player, inventory, PlaceholderAPI and metric functions. Occupied slots render their actual catalog item
 texture instead of an abbreviation tile. The fixed furnace expression-lab template remains
 available as the complete teaching sample, and every random result remains valid runtime JSON
 rather than an editor-only animation.

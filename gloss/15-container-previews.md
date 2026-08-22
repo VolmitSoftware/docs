@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Gloss documentation: Container Previews"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -11,7 +11,7 @@ Look at a chest and a holographic card appears in front of you. The card shows w
 Nothing is clicked. No inventory is opened.
 
 An eye raycast runs every tick. When it lands on a container, a card is built from a JSON document
-in `plugins/Gloss/previews/`. Thirteen documents ship. They hot-reload. A document you write can
+in `plugins/Gloss/previews/`. Fourteen documents ship. They hot-reload. A document you write can
 shadow any of them.
 
 ## What triggers a preview
@@ -21,8 +21,9 @@ ray goes out to `[preview] lookDistance` blocks (default `10.0`, clamped `1.0`�
 ignored. Passable blocks are skipped. Two rays are cast:
 
 - one against blocks, keeping the hit only when some loaded document names that material.
-- one against entities within a 0.35-block ray radius. That hit is kept only when the entity is an
-  inventory-holding minecart or chest boat that some document claims.
+- one against entities within a 0.35-block ray radius. An exact or glob `match.entities` claim makes
+  that entity type eligible. The `anyInventoryHolder` fallback remains limited to inventory-holding
+  minecarts and chest boats.
 
 If only one hits, that is the target. If both hit, the entity wins unless the block is closer by
 more than 0.01 blocks. When the target changes, the open preview is closed and a new one is built.
@@ -313,8 +314,9 @@ A document gets the `universal` group always. It gets the `inventory` group when
 an inventory (furnaces, brewing stands and jukeboxes included). It also gets the group for its own
 category.
 
-The category is chosen once from the target. The order is ender chest, brewing stand, furnace,
-container, jukebox, other inventory holder, beehive or bee nest, cauldron, then static.
+The category is chosen once from the target. Block categories use ender chest, brewing stand,
+furnace, container, jukebox, other inventory holder, beehive or bee nest, cauldron, then static.
+Entities select the powered-minecart category before the ordinary inventory or static category.
 
 | Group | Variables |
 |---|---|
@@ -325,6 +327,7 @@ container, jukebox, other inventory holder, beehive or bee nest, cauldron, then 
 | beehive | `bees`, `maxBees`, `honey`, `maxHoney` |
 | cauldron | `level`, `maxLevel`, `fluid` |
 | jukebox | `playing`, `record` |
+| poweredMinecart | `fuelTicks`, `fuelSeconds`, `powered` |
 
 Notes that matter when writing a document:
 
@@ -334,6 +337,8 @@ Notes that matter when writing a document:
   locked card.
 - `customName` is the name a player gave the container, or `""`. A whitespace-only name collapses to `""`,
   so `customName != ''` is the idiom.
+- The shipped chest card falls back to `readable(blockType)` when both `customName` and the resolved
+  localized title are empty, so an unnamed ordinary chest still says `Chest`.
 - `fuelSeconds` is whole seconds, truncated.
 - `bankedXp` is `-1` on a server whose API cannot report banked experience.
 - `brewTotal` is fixed at `400` ticks and `maxFuel` at `20` blaze powder — neither is exposed by Bukkit.
@@ -497,10 +502,10 @@ result is normal editable JSON and one undo step, not a preview-only effect.
 
 ## The shipped documents
 
-Thirteen documents are extracted into `previews/`, only where the file is missing and only while
+Fourteen documents are extracted into `previews/`, only where the file is missing and only while
 `[features] previews` is on. With the feature off nothing is extracted and the folder does not
 exist; the registry is built during enable, so turning previews on takes a restart before the folder
-appears. All thirteen use `priority: 10`.
+appears. All fourteen use `priority: 10`.
 
 | Document | Matches | Notes |
 |---|---|---|
@@ -509,6 +514,7 @@ appears. All thirteen use `priority: 10`.
 | `dispenser.json` | `DISPENSER`, `DROPPER` | 3×3 grid |
 | `hopper.json` | `HOPPER` | 5 slots in a row |
 | `furnace.json` | `FURNACE`, `BLAST_FURNACE`, `SMOKER` | Three slots, a progress bar, an animated flame, fuel and state lines |
+| `furnace_minecart.json` | `FURNACE_MINECART` | Dedicated no-inventory card with an animated heat strip and remaining fuel |
 | `brewing_stand.json` | `BREWING_STAND` | Three bottle slots, a brew bar, a fuel gauge, state lines |
 | `beehive.json` | `BEEHIVE`, `BEE_NEST` | Honey cells plus a bee and honey count |
 | `cauldron.json` | `CAULDRON`, `WATER_CAULDRON`, `LAVA_CAULDRON`, `POWDER_SNOW_CAULDRON` | Fill cells colored per fluid through variants |
@@ -692,7 +698,7 @@ documents, and vice versa.
 every variant's. `chest.json` reports far more than three blocks. `special` shows `-` when the
 document has none.
 
-`reset` runs off the main thread because it can perform thirteen file writes plus a full reparse. A
+`reset` runs off the main thread because it can perform fourteen file writes plus a full reparse. A
 name that is not a shipped document writes nothing and reports so. It never deletes documents you
 added.
 

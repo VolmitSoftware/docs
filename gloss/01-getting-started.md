@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Gloss documentation: Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -45,7 +45,7 @@ plugins/Gloss/
 ├── emoji/                 one JSON per emoji (67 shipped)
 ├── animations/            one JSON per text animation (rainbow.json shipped)
 ├── bubbles/               one JSON per chat bubble style (default.json shipped)
-└── previews/              container preview documents (13 shipped)
+└── previews/              container preview documents (14 shipped)
 ```
 
 `tablist.json` sits at the root of the data folder. It does not sit inside a `tablist/` folder, and
