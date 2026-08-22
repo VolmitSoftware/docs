@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -277,7 +277,7 @@ does the same. Omitting the fallback preserves the strict behavior.
 | `papi('vault_prefix', '&7Member')` | Resolves a PlaceholderAPI key; surrounding `%` are optional. The optional string fallback is used when it cannot resolve |
 | `papiNumber('vault_eco_balance', 0)` | Resolves PAPI and parses its first numeric value for math. The optional numeric fallback covers an absent expansion or non-numeric answer |
 | `metric('react.tick-ms', 1000 / server.tps)` | Reads a numeric integration metric and activates demand-driven sampling. The optional numeric fallback covers an absent publisher or unsampled key |
-| `select(list, index)` | Wraps the floored index and returns any list entry |
+| `select(list, index)` | Floors the index to a signed 64-bit value, wraps it and returns any list entry |
 | `number(value)` | Parses the first number from a number or formatted string |
 | `bar(value, maximum, width, filled, empty)` | Builds a clamped 1–64-character progress bar |
 | `hex(color)` | Converts an expression color to `[RRGGBB]` for the later color stage |
@@ -285,6 +285,15 @@ does the same. Omitting the fallback preserves the strict behavior.
 The existing math, ternary, string, color and list functions described below also apply. Inline
 expressions are re-evaluated at the consuming surface's update cadence. `time` expressions animate
 without a separate animation document; `|animation.<id>|` remains useful for reusable frame sets.
+`select` and `palette` floor into a signed 64-bit index before wrapping, so epoch-scale
+`time.seconds` values retain their phase instead of saturating at a 32-bit limit. The web editor uses
+the same wrapping rule.
+
+A surface cannot display intermediate frames that it does not sample. With the defaults, a board
+samples every 20 ticks and a tablist every 40 ticks. Use `floor(time.seconds)` to advance a list once
+per second on a board, or `floor(time.seconds / 2)` to advance it once every two seconds on a tablist.
+Advancing by an exact multiple of the list length between refreshes repeatedly selects the same
+entry.
 
 ## The preview expression DSL
 
@@ -487,7 +496,8 @@ throws `<name> argument <1-based index> must be a number`, `... a string` or `..
 | `argb(a, r, g, b)` | 4 | number ×4 | color | As `rgb`, with an explicit alpha channel |
 | `alpha(color, a)` | 2 | color, number | color | Replaces only the alpha byte.`a` rounded and clamped to `[0, 255]` |
 | `mix(c1, c2, t)` | 3 | color, color, number | color | Per-channel blend including alpha, `round(a + (b - a) * t)`, with `t` clamped to `[0, 1]` |
-| `palette(list, index)` | 2 | list of numbers, number | number | `list[floorMod(floor(index), size)]`. An empty list throws `palette list must not be empty`. A non-number entry throws `palette list entries must be numbers` |
+| `palette(list, index)` | 2 | list of numbers, number | number | Floors the index to a signed 64-bit value, then returns `list[floorMod(index, size)]`. An empty list throws `palette list must not be empty`. A non-number entry throws `palette list entries must be numbers` |
+| `select(list, index)` | 2 | list, number | any list entry | Floors the index to a signed 64-bit value, then returns `list[floorMod(index, size)]`. An empty list throws `select list must not be empty` |
 | `str(x)` | 1 | number, string or boolean | string | The stringify rule above |
 | `fixed(x, digits)` | 2 | number, whole number in `[0, 20]` | string | Root-locale `%.<digits>f`. Fractional, negative or `> 20` digits throw |
 | `plain(s)` | 1 | string | string | Removes legacy codes matching `&[0-9A-Fa-fK-Ok-oRr]`. Every other `&` survives |

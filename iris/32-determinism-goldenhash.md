@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,6 +41,8 @@ An older baseline may differ where a surface-breaking cave meets an ocean
 or lake. Capture a replacement only after you confirm the mismatch is
 limited to the expected generated-block change and remains identical
 across repeated, threaded, and cross-platform runs.
+
+Connected rivers add two order-sensitive surfaces to this gate. Routing tiles overlap by their maximum meander, channel, bank, and stream-order reach, so a coordinate must resolve to the same graph segment regardless of which neighboring tile or chunk requested it first. River-fed caves are planned from stable anchors against immutable baseline cave matter, arbitrated by stable source identity, revalidated as complete transactions, and published as per-chunk overlay cells. A threaded or mantle-reset mismatch around a channel, terminal, bore, grotto, or seal guard is therefore a determinism defect, not an acceptable cache artifact.
 
 ## What GoldenHash actually does
 

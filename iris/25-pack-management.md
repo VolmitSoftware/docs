@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -174,6 +174,7 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Legacy cave-profile field names, in dimensions/regions/biomes and in `snippet/cave-profile/` | Blocking, with the replacement name named |
 | Loot graph — every referenced loot table resolves | Blocking |
 | Removed worldgen fields (currently `fluidBodies`) | Blocking |
+| River topology, incision, water-head, biome-pool, override, and cave-containment contracts | Invalid or over-budget derived topology footprints, recursive final/river stream dependencies, missing river biome keys, impossible grotto envelopes, inconsistent terraced drops, and reachable sinkhole terminals without active mantle carving, cave hydrology, or a positive entry cap are blocking; authored biome-role mismatches are warnings |
 | Object surface support | Blocking |
 | `rotation` / `translate` / `scale` on surfaces that do not support them | Blocking |
 | Structure graph and compiled structure graph | Errors blocking, warnings advisory |

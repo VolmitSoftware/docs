@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -687,7 +687,7 @@ Otherwise trimmed, case-normalized keys with or without a namespace are rechecke
 
 On a structure placement, `underwater: true` **allows** submerged starts and `false` skips them. That is the opposite of object placement, where `underwater: true` means seafloor-only. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
-For cave anchors, `underwater` checks `MatterCavern` at the actual anchor rather than the surface ocean height. A null or non-cavern cell never qualifies. With `underwater: false`, ordinary cavern air must be above the dimension `caveLavaHeight`. Explicit water and lava are rejected. Forced-air cavern matter stays dry even below that threshold. With `underwater: true`, fluid cavern cells are allowed but the cell must still be carved cavern matter.
+For cave anchors, `underwater` checks composed cavern state at the actual anchor rather than the surface ocean height. A null or non-cavern cell never qualifies. With `underwater: false`, ordinary cavern air must be above the dimension `caveLavaHeight`. Explicit water and lava are rejected. Forced-air cavern matter stays dry even below that threshold. With `underwater: true`, ordinary fluid cavern cells are allowed. River-fed wet cells and seal guards always reject anchors because a later structure stamp could breach containment; see [36 - Rivers](/iris/36-rivers).
 
 Cave placement scope is sampled at the start chunk's center. A cave-biome `structures[]` list contributes cave anchors only.
 Region and dimension placements stay broader, and a placement-level `caveBiomes` list revalidates the actual anchor. Lookup uses existing Iris carved-space mantle data, so a locator cannot resolve an ungenerated distant cave anchor until terrain generation has produced that mantle.

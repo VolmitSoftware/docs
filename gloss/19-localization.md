@@ -17,13 +17,13 @@ wrong.
 
 ## The catalog
 
-`GlossMessages` declares 451 keys in code. Each key carries its own English source text. That is
+`GlossMessages` declares typed keys in code. Each key carries its own English source text. That is
 the whole surface: command help, parameter descriptions, validation errors, chat feedback and the
 container preview status lines.
 
-The catalog Gloss actually runs with is those 451 keys plus VolmLib's `director.*` keys for the
-shared command framework. Those keys are added first. Director's own labels and errors then
-translate through the same file.
+The catalog Gloss actually runs with also includes VolmLib's `director.*` keys for the shared
+command framework. Those keys are added first. Director's own labels and errors then translate
+through the same file.
 
 English is not a locale file. It lives in the key declarations. The catalog's base locale is
 `en_US`. There is deliberately no `en_US.yml` anywhere. When the active locale is `en_US`, only
@@ -40,6 +40,13 @@ locale: "de_DE"
 ```
 
 An absent, blank or freshly generated file means `en_US`.
+
+The companion web editor has an independent browser-local choice. Its top-right language button
+does not read or write `plugins/Gloss/language.yml`, and changing the server locale does not change
+an open editor. The editor supports the same 18 locale ids, remembers its choice in browser local
+storage and falls back from a supported browser language to `en_US`. `he_IL` renders the editor
+right-to-left. Its JSON catalogs and validation rules are documented under
+[Web Editor & Sync](/gloss/18-web-editor).
 
 If `locale` names a locale in the shared fleet manifest but the matching file is missing from the
 jar, loading fails and the reload is rejected. If it names something outside the manifest, the
@@ -84,20 +91,20 @@ fails the load.
 Key ids are dot-delimited and map onto YAML nesting. Two top-level namespaces exist because the
 command framework has its own.
 
-| Prefix | Count | Contents |
-|---|---|---|
-| `director.*` | from VolmLib | Director's own help navigation labels and runtime errors |
-| `command.help.*` | 197 | Command, subcommand and parameter descriptions shown in `/gloss help` |
-| `command.*` (other) | 63 | Hologram and scoreboard command feedback, permission and usage errors |
-| `gloss.message.*` | 126 | Chat feedback for menus, panels, previews, items, sync, imports and preview scaling |
-| `gloss.preview.*` | 55 | Container preview status lines, statistic lines and card titles |
-| `gloss.error.*` | 9 | Argument validation errors raised while parsing a command |
+| Prefix | Contents |
+|---|---|
+| `director.*` | Director's own help navigation labels and runtime errors |
+| `command.help.*` | Command, subcommand and parameter descriptions shown in `/gloss help` |
+| `command.*` (other) | Hologram and scoreboard command feedback, permission and usage errors |
+| `gloss.message.*` | Chat feedback for menus, panels, previews, items, sync, imports and preview scaling |
+| `gloss.preview.*` | Container preview status lines, statistic lines and card titles |
+| `gloss.error.*` | Argument validation errors raised while parsing a command |
 
 The `command.help.*` family is what Director resolves. The command classes name those ids directly
 in their annotations. Change a command or parameter description through its `command.help.*` key.
 
-> The `gloss.command.*` (68 keys) and `gloss.parameter.*` (41 keys) families were deleted from the
-> catalog and from all seventeen bundled locales. They were a duplicate set of command and parameter
+> The `gloss.command.*` and `gloss.parameter.*` families were deleted from the catalog and from all
+> seventeen bundled locales. They were a duplicate set of command and parameter
 > descriptions that Director never resolved, so editing them changed nothing. A locale override file
 > that still sets one of those ids is now an unknown key and will be rejected on load — delete those
 > entries and use `command.help.*` instead.
@@ -211,7 +218,7 @@ key's own placeholder names in the order the English template declares them. Wit
 last placeholder are simply unused. Values are inserted as untrusted text. A container's custom
 name can never smuggle color codes into a preview card.
 
-The 55 `gloss.preview.*` keys split into `gloss.preview.state.*` for status lines,
+The `gloss.preview.*` keys split into `gloss.preview.state.*` for status lines,
 `gloss.preview.stat.*` for statistic lines, and `gloss.preview.theme.title.*` for card titles.
 Retranslating them changes every shipped preview card at once. No document edit is needed.
 

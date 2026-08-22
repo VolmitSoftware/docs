@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -14,7 +14,8 @@ not see it. Command trees and permissions are in
 [04 - Commands & Permissions](/iris/04-commands-permissions). Pregeneration
 options are in [07 - Pregeneration](/iris/07-pregeneration). Platform
 capability differences are in
-[30 - Platform Differences](/iris/30-platform-differences).
+[30 - Platform Differences](/iris/30-platform-differences). River pack
+authoring and containment rules are in [36 - Rivers](/iris/36-rivers).
 
 ## How to use these
 
@@ -44,6 +45,10 @@ Use the same values whenever you compare platforms or runs:
 
 GoldenHash file layout and interpretation:
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
+
+## River acceptance pass
+
+Use a disposable world, a fixed seed, and a pack with visibly frequent rivers. Validate the pack, inspect the **River network** Vision render, and then generate the same untouched area with one and several generation threads. Confirm wet channels remain connected, dry terminals contain no fluid or shoreline vegetation, terraced pools use their local head, and banks transition into the authored biome pools. For cave hydrology, test one sealed configuration and one enabled configuration: only stable wet-bed anchors may bore, accepted caves must retain their complete guard shell and configured headroom, and rejected candidates must publish no partial throat or water. Finish with a GoldenHash capture/verify pair and restart the world before accepting the build.
 
 ## A. Fresh install and first world (Bukkit-family)
 

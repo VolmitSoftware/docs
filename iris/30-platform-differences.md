@@ -39,8 +39,9 @@ Five categories cover almost everything an operator runs into:
   modded side splits it. Settings live under one root and packs under
   another.
 
-Terrain, biomes, objects, jigsaw runtime, caves, and structures behave the
-same on all four. If generated terrain differs between platforms, that is
+Terrain, connected rivers and their contained cave hydrology, biomes,
+objects, jigsaw runtime, caves, and structures behave the same on all four.
+If generated terrain differs between platforms, that is
 a determinism defect, not a platform difference. See
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
 
@@ -148,7 +149,7 @@ Full command tables and stubs:
 
 | Feature | Bukkit | Fabric | Forge | NeoForge |
 |---------|--------|--------|-------|----------|
-| Core terrain / biomes / objects / jigsaw | yes | yes | yes | yes |
+| Core terrain / rivers / cave hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
 | Saved planar/spatial Iris jigsaw runtime | yes | yes | yes | yes |
 | Jigsaw Studio (`/iris jigsaw` authoring tree) | yes | not registered | not registered | not registered |
 | Pack validate / cleanup / restore / status | yes | yes | yes | yes |

@@ -27,6 +27,28 @@ Everything above works offline as file editing. Export from the editor. Drop the
 `plugins/Gloss/`. The hot reload described in [Data Files & Hot Reload](/gloss/03-data-files) picks
 it up.
 
+## Browser language
+
+The language button in the top-right command row switches the complete editor immediately. It
+supports `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`,
+`nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`. The choice is local to
+the browser under `gloss.locale`; it does not edit the server's `plugins/Gloss/language.yml`.
+
+On a first visit the editor selects the first supported entry in the browser language list,
+including a base-language match, then falls back to `en_US`. A valid stored choice wins on later
+visits. The HTML language, page title and description follow the active catalog. `he_IL` uses
+right-to-left document direction; every other supported locale uses left-to-right direction.
+
+Translator-facing catalogs are ordinary JSON files at `HUI-Web-Editor/l10n/<locale>.json`; the
+matching files under `web/languages/` are generated deployment copies. Each catalog separates
+normal `messages`, context-specific `contexts`, locale-aware `plurals` and the plugin-owned
+`previewMessages`; translators edit only the source values and retain the keys, named placeholders
+and embedded protocol tokens. An unsupported or invalid
+candidate is never partially applied: a live switch keeps the current catalog, while initial
+startup falls back to English. The selected editor locale also selects the matching Gloss
+`gloss.preview.*` templates used by container-preview `lang()` simulation, without changing the
+authored document.
+
 The editor uses square, seam-based, IntelliJ-style chrome. Its upper command row identifies the
 active document and keeps the primary **Import** and **Export** file actions labelled. The lower
 context row carries permanent compact selectors that name the current document-kind scope and view.
@@ -84,7 +106,8 @@ plugin repository; a field whose schema wording is silent or hides a runtime tra
 hand-written note instead, each one citing the plugin source line it was read from. A field that
 has a default shows it with a one-click reset, inspector sections collapse and remember it, colour
 fields open a colour picker, and a field measured in ticks or milliseconds shows the equivalent in
-seconds as you type.
+seconds as you type. The text-icon colour picker inserts one MiniMessage colour tag after the
+selection is committed; dragging inside the native picker does not insert its intermediate colours.
 
 Random showcases are contextual. Right-click a library document and choose `Create random <kind>`
 to replace that document's JSON with a valid editable example while preserving its identity,
@@ -97,7 +120,10 @@ triggers, sound sources, navigation modes, custom hitboxes, hover easing, player
 locally available image or custom-item icon type. Player and server values use Gloss's native
 getters; optional PAPI expansion data and integration metrics are demonstrated with explicit
 fallbacks rather than used for values Gloss already owns. Random scoreboards vary their row
-structure, selection rules and 1.20.3+ hidden-number setting. Holograms vary occlusion, billboard
+structure, selection rules and 1.20.3+ hidden-number setting. Their generated color sequences and
+the fixed scoreboard showcase advance once per second to match the runtime's default 20-tick board
+refresh; generated tablist sequences advance once every two seconds to match its default 40-tick
+refresh. Holograms vary occlusion, billboard
 mode and authored yaw and pitch; animations cover every playback mode; emoji cover token-only,
 shorthand, literal and compound Unicode forms; and tablists vary header/footer and group-format
 behavior. The recurring staff names are scattered easter eggs rather than a fixed script.
@@ -187,7 +213,9 @@ the editor preview and never alter the exported document.
 Rendered text on every surface carries Minecraft's own text shadow. A board with an empty title
 falls back to the board id, which is what the plugin does. The per-board hidden-number option says
 plainly that a client older than 1.20.3 still draws the numbers. A text animation can be played and
-paused on every surface, not only on the menu canvas. A viewer simulator resolves which board a
+paused on every surface, not only on the menu canvas. Expression previews give `select` and
+`palette` the server's signed 64-bit index wrapping, so real epoch-time expressions select the same
+frame in the editor and at runtime. A viewer simulator resolves which board a
 player with a given primary group and permission would actually be given, following the plugin's
 own selection order.
 

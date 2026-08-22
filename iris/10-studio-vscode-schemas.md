@@ -9,7 +9,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Studio is the live pack-authoring loop. Open a pack as a throwaway world and edit its JSON against schemas generated from the Java models. Save, then watch the running engine rebuild itself. This page covers the loop, the commands, the hotload rules, and how schemas are produced.
 
-Related: see [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences).
+Related: see [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), and [36 - Rivers](/iris/36-rivers).
 
 ## The edit loop
 
@@ -201,7 +201,7 @@ The same call also merges the mappings into `<pack>/.idea/jsonSchemas.xml` so In
 - Registry annotations become `enum` lists. `@RegistryListResource` covers pack resource keys of a given type. `@RegistryListFunction` covers computed lists such as mantle component flags. Platform registry annotations cover live server registries: `@RegistryListBlockType`, `@RegistryListBiome`, `@RegistryListEntityType`, `@RegistryListItemType`, `@RegistryListStructure`, `@RegistryListVanillaStructure`, `@RegistryListVanillaStructureSet`, `@RegistryListNativeJigsawPool`, `@RegistryListPotionEffect`, `@RegistryListEnchantment`, `@RegistryListSpecialEntity`, `@RegistryListFont`, `@RegistryMapBlockState`.
 - A field with no `@Desc` still emits, with the description `No Field Description`. The builder logs a warning naming the field and class when the schema is generated. A type with no `@Desc` logs a similar warning. Every enum-valued deposit option and every selectable enum value carries authored `@Desc` text. Dimension, Biome, and Region schema generation therefore exposes complete deposit hover help without missing-description warnings.
 
-**These annotations are editor hints only.** Nothing validates `@Required`, `@MinNumber` or `@MaxNumber` at load time. The schema will underline an out-of-range value in your editor. The engine will load it anyway. The dimension-type height rules in [11 - Dimensions](/iris/11-dimensions) are the exception. Those are enforced in code and throw.
+**These annotations are editor hints only.** Nothing validates `@Required`, `@MinNumber` or `@MaxNumber` at load time by itself. The schema will underline an out-of-range value in your editor, but a feature needs an explicit runtime validator to reject it. Dimension-type height rules in [11 - Dimensions](/iris/11-dimensions) and the river network contracts in [36 - Rivers](/iris/36-rivers) have those runtime validators.
 
 ### Snippets
 
@@ -302,3 +302,5 @@ This command tree is Bukkit-only. Saved `PLANAR_JIGSAW` and `SPATIAL_JIGSAW` pac
 | Fabric / Forge / NeoForge | Studio open/create/workspace/package and a subset of tooling. No Bukkit-only importers or inventory GUIs. `studioMode` ignored. No Jigsaw Studio authoring commands |
 
 Pack JSON contracts are shared across every platform. Schemas are built from the same core models. A pack authored on one platform loads on all of them.
+
+River authoring uses the ordinary dimension, region, and biome schemas: `IrisDimension.rivers` owns the connected network, while region and biome `riverOverride` values alter local routing, geometry, cave-entry probability, terminal behavior, and biome pools without changing graph identity. After regenerating schemas, the editor exposes the nested topology, terrain, water, biome, and cave controls with their enum values and numeric bounds. Use the **River network** Iris Vision render to distinguish wet channels, mouths, banks, dry channels, and areas without a river footprint while tuning those fields.

@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Gloss documentation: Scoreboards & Groups"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -137,7 +137,7 @@ Every command edit rewrites the document with `revision` bumped by one, through 
 
 ## Rendering
 
-The sidebar is driven by VolmLib board manager on the `[boards] updateIntervalTicks` cadence (default 20, clamped 1..200). If you change that interval on reload, Gloss tears down the driver and rebuilds it.
+The sidebar is driven by VolmLib board manager on the `[boards] updateIntervalTicks` cadence (default 20, clamped 1..200). If you change that interval on reload, Gloss tears down the driver and rebuilds it. Each title and line expression is sampled once per cycle, so the default can show one new time-driven frame per second. For a four-entry sequence, `select(colors, floor(time.seconds))` advances one entry per default refresh; an index that advances by all four entries between samples can appear fixed because it wraps to the same entry.
 
 Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. Fitting happens after that pipeline: the title has a 32-UTF-16-unit wire limit, and each row uses a 16-unit team prefix plus a 16-unit suffix with its active colour state carried into the suffix. Colour codes consume that budget. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Surrogate pairs, legacy colour pairs and complete legacy RGB runs are never cut in half. At most 15 rows render; the rest are dropped.
 

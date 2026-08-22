@@ -2,12 +2,14 @@
 title: "Localization"
 description: "React documentation: Localization"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-React uses a typed code-owned English catalog, optional bundled locale overlays, and an optional server-local override. Locale changes and override edits can hotload without a React restart.
+React and React Web use separate locale selections over the same 18-language set. The server uses a
+typed code-owned English catalog, bundled overlays and an optional server-local override. The
+browser uses JSON catalogs and remembers its own choice locally.
 
 ## Server locale selection
 
@@ -16,11 +18,34 @@ React uses a typed code-owned English catalog, optional bundled locale overlays,
 - Optional overrides live in `plugins/React/languages/overrides/<locale>.toml`. Only listed keys are replaced. The filename must match the configured locale id exactly.
 - If no bundle exists for a valid locale id, React warns. It then uses code-owned English plus any matching local override.
 
-## Bundled locales
+## Supported locales
 
-Bundled locale ids are `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`. Locale ids accept letters, digits, `_`, and `-`. Japanese uses `ja-JP` on purpose.
+The server and browser support `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`,
+`ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and
+`zh_TW`. These ids are literal fleet identifiers: Japanese uses `ja-JP`, and Vietnamese uses
+`vi_VI`.
 
-## Catalogs
+## React Web locale selection
+
+The language button in the top-right command bar switches the complete browser interface without
+reloading the page. React Web stores the selected id under `reactor.locale` in browser local
+storage. On a first visit it tries a supported browser language, including a base-language match,
+then the build-time `REACTOR_LANGUAGE` value, then `en_US`. Browser languages are considered in
+preference order. A valid stored choice wins on later visits. The browser choice does not change
+the React server's `language` setting.
+
+The page writes the matching BCP 47 language to the HTML document. `he_IL` uses right-to-left
+document direction; every other supported locale uses left-to-right direction.
+
+English defaults remain typed in Dart. Editable complete catalogs live at
+`react-web/web/languages/<locale>.json`, including `en_US.json`. The optional deployment-wide
+`react-web/web/reactor-language.json` overlay is applied only when the selected locale matches the
+build-time `REACTOR_LANGUAGE` locale, so it cannot leak one language into another picker choice.
+Each switch loads and validates the complete candidate before publishing it. A fetch, JSON,
+unknown-key or placeholder failure keeps the previous active language and does not persist the
+rejected choice. At initial startup, English remains active when the preferred catalog cannot load.
+
+## Server catalogs
 
 Server messages are typed Java catalogs under `art.arcane.react.localization.catalog`. Examples are command, runtime, action, and config messages. Feature and tweak display strings and `@ConfigDoc` English are separate from player-facing command chat. Catalogs apply to that command chat.
 

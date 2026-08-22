@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -208,6 +208,7 @@ Everything here applies anywhere this region is selected, on top of what the bio
 | `depositVariants` | `IrisDepositVariant[]` | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
 | `ores` | `IrisOreGenerator[]` | empty | Vein-style ores. Each generator declares whether it is a surface or underground generator. Iris keeps two separate lists. |
 | `caveProfile` | `IrisCaveProfile` | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
+| `riverOverride` | `IrisRiverOverride` or `null` | `null` | Routing policy, local geometry/chance multipliers, terminal behavior, and replacement river biome pools. See [36 - Rivers](/iris/36-rivers). |
 
 Deposit precedence across tiers: biome variants, then region variants, then dimension variants. First match wins within each tier.
 
@@ -215,7 +216,7 @@ Deposit precedence across tiers: biome variants, then region variants, then dime
 
 | Field | Status |
 |-------|--------|
-| `riverStyle` | Removed. It was never read at generation time. Rivers come from biomes (for example `temperate/sea/river`) with negative generator heights. Old packs that still carry the key load fine. It is ignored. |
+| `riverStyle` | Removed. It was never read at generation time. Connected rivers use the dimension `rivers` network plus this region's `riverOverride`. Old packs that still carry `riverStyle` load fine; it remains ignored. |
 | `lakeStyle` | Removed, same reasoning. |
 
 They are still valid JSON and will not fail validation. Do not spend time tuning them.
@@ -229,7 +230,7 @@ Path in the shipping pack: `packs/overworld/regions/temperate.json`.
 | `name` / `color` | `Temperate` / `#9BEE61` | |
 | `rarity` | `1` | Most common region. The world default character. |
 | `landBiomes` | 28 keys, e.g. `temperate/plains`, `temperate/cherry-blossom-forest`, `vanilla/cherry_grove` | A large list keeps a single region visually varied without needing many regions. |
-| `seaBiomes` | 8 keys, e.g. `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river` | Rivers are sea biomes here, not a separate system. |
+| `seaBiomes` | 8 keys, e.g. `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river` | The current shipping pack still includes a legacy river-shaped sea biome. A dimension may additionally enable the connected network. |
 | `shoreBiomes` | 5 keys, e.g. `temperate/shore/beach`, `vanilla/stony_shore` | |
 | `caveBiomes` | 5 keys, e.g. `carving/drip`, `carving/moss-pillars` | |
 | `landBiomeZoom` / `seaBiomeZoom` | `3.5` / `6` | Oceans stay recognisable across long swims. |
@@ -257,6 +258,6 @@ Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terral
 | Empty `landBiomes` | Invalid region. Land columns have no candidates |
 | Wrong biome key path | `temperate/plains` must be `biomes/temperate/plains.json`, case and folder included |
 | Tuning region `rarity` when the region never appears | Selection also depends on the dimension `regionStyle` and `regionZoom`. Measure first with `/iris studio regions` |
-| Expecting `riverStyle` / `lakeStyle` to do something | The fields were removed (they were read by nothing). Make rivers and lakes as sea biomes with negative generator heights |
+| Expecting `riverStyle` / `lakeStyle` to do something | The fields were removed because nothing read them. Use dimension `rivers` and `riverOverride` for connected rivers; use ordinary sea biomes for other authored water depressions |
 | Empty `seaBiomes` in a dimension whose terrain dips below `fluidHeight` | Sea columns have no candidate biome |
 | Comparing changes in already generated chunks | Region and zoom changes only affect newly generated chunks. Always fly to fresh terrain |

@@ -92,7 +92,7 @@ Other plugins can override both per player through `GlossAPI.setTab(player, head
 | `[features] tablist` | `true` | Enables header/footer and list-name management |
 | `[tablist] updateIntervalTicks` | `40` | 1..400 |
 
-Every cycle the driver walks the online players and applies to each one on that player own region thread. It is Folia-safe. If you change the interval, Gloss restarts the driver on reload.
+Every cycle the driver walks the online players and applies to each one on that player own region thread. It is Folia-safe. If you change the interval, Gloss restarts the driver on reload. Header, footer and list-name expressions are sampled once per cycle, so the default can show one new time-driven frame every two seconds; `floor(time.seconds / 2)` advances one list entry per default refresh.
 
 If you turn things off, Gloss cleans up after itself:
 

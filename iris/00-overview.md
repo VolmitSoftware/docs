@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ The four platforms generate identical chunks when artifacts, pack bytes, seed, a
 
 ## Who this documentation is for
 
-There are three audiences. The page numbers reflect them. Pages `00`–`35` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
+There are three audiences. The page numbers reflect them. Pages `00`–`36` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
 
 Do not read the set from front to back. Pick the outcome you want from the table below. Follow only that row.
 
@@ -76,6 +76,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Biomes | Biome JSON, layers, custom biomes, spawns | [13 - Biomes](/iris/13-biomes) |
 | Generators and noise | Generators, styles, expressions, images | [14 - Generators & Noise](/iris/14-generators-noise) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
+| Rivers | Connected routing, terrain incision, terraced water, river biomes, cave hydrology | [36 - Rivers](/iris/36-rivers) |
 | Surfaces | Decorators, deposits, palettes | [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
 | Procedural decoration | Trees, fungi, coral, crystals, formations, ruins | [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 | Structures overview | Objects vs jigsaw vs native | [18 - Structures Overview](/iris/18-structures-overview) |

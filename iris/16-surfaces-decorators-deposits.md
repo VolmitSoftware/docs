@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -252,8 +252,8 @@ Vines get their attachment faces recomputed against surrounding blocks. Stacked 
 | Value | Pass, and exactly when it fires |
 |-------|--------------------------------|
 | `NONE` | The ordinary surface pass, on every column. Also reused by the carve modifier for cave floors |
-| `SHORE_LINE` | Only where the terrain height equals `fluidHeight` exactly **and** at least one of the four cardinal neighbors is below the fluid line. This is a one-block-wide waterline ring, which is why sugar cane grows only at the edge |
-| `SEA_SURFACE` | Where the terrain is below the fluid line and there is water directly above the seafloor block. Places at `fluidHeight + 1`, so lily pads sit on top of the water |
+| `SHORE_LINE` | Only where terrain equals the column's solved water head and at least one cardinal neighbor is below its own head. Ordinary coasts use `fluidHeight`; connected terraced rivers use their local pool head. Dry channels never run this part |
+| `SEA_SURFACE` | Where terrain is below the column's solved water head and there is fluid directly above the floor. Places at local head `+ 1`, so lily pads sit on top of oceans or elevated river pools |
 | `SEA_FLOOR` | Same gate as `SEA_SURFACE`, but writes into the first water block above the seafloor, replacing it. Use it for kelp, seagrass, and coral fans |
 | `CEILING` | Applied by the carve modifier at cave and overhang ceilings, stacking downward |
 

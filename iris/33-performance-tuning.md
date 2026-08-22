@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -93,6 +93,10 @@ lowered again for the life of the process. The Bukkit plugin already sets
 `iris.cache.fast` during startup. On mod loaders it only comes on with
 the first pregeneration. Pass `-Diris.cache.fast=true` on the JVM
 command line there if you want it covering ordinary generation too.
+
+### River-heavy packs
+
+River routing is paid once per cold immutable topology tile; nearby chunks reuse the tile and perform indexed column lookups. A cold tile can take seconds when the route-proof horizon is long, but the default 3,072-by-3,072-block tile amortizes that work over 36,864 chunks. Smaller `rivers.topology.cellSize`, smaller `tileCells`, higher source chance, larger `maxRouteReaches`, stronger meanders, wider channel and bank ranges, and more alternate sink searches increase cold work or how often it is repeated. Iris rejects a derived topology footprint whose routing-source window would exceed its bounded work envelope even when each individual field is numerically valid. Cave cost is separate: larger `maxFloodRadius`, `maxFloodDepth`, and especially `maxFloodVolume` enlarge the bounded containment proof. Measure these pack fields one at a time over the same seed and frontier. Do not weaken the closure, surface-opening, world-boundary, or lava checks to recover throughput; reduce candidate frequency, maximum entries per reach, or proof bounds instead.
 
 ## Symptom: the first chunks pause while strongholds initialize
 

@@ -2,15 +2,16 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 `art.arcane.iris.api.terrain` answers what the Iris generator says about
 a coordinate. It reports whether a world is Iris-generated, which biome
-and region the pack places, and the surface height. It also reports whether
-that surface is land, shore, ocean, or void. It reads the **generator**, not the world. No chunk load,
+and region the pack places, the natural and final surface heights, and the
+river state, distance, flow, and local water head. It also reports whether
+that surface is land, shore, river, river shore, dry channel, ocean, or void. It reads the **generator**, not the world. No chunk load,
 no forced generation, no placed-block read, and no knowledge of player
 edits. Reads are non-blocking noise evaluation over a shared per-chunk
 cache.
@@ -105,8 +106,8 @@ or asks the server to generate.
 |---|---|---|---|---|---|
 | `isIrisWorld` | `World#getGenerator()` + `instanceof` | same | No | No | `false` |
 | `worldInfo` | field reads off live engine/dimension | same | No | No | `Optional.empty()` |
-| `surfaceHeight` | one height sample (region + base-biome streams) | array read | No | No | `OptionalInt.empty()` |
-| `surfaceKind` | height sample. Surface-biome only when column is above fluid and not void floor | array read | No | No | `IrisSurfaceKind.UNKNOWN` |
+| `surfaceHeight` | one final height sample, including river incision | array read | No | No | `OptionalInt.empty()` |
+| `surfaceKind` | final height and river sample. Surface-biome only when needed outside an explicit river role | array read | No | No | `IrisSurfaceKind.UNKNOWN` |
 | `surfaceBiomeKey` / `surfaceBiomeName` | surface-biome sample (height, base biome, region) | array read | No | No | `Optional.empty()` |
 | `biomeKey` at/near surface | as surface biome + height to choose surface vs cave | array read | No | No | `Optional.empty()` |
 | `biomeKey` well below surface | above + cave-biome stream and carving resolution | array reads | No | No | `Optional.empty()` |
@@ -128,9 +129,11 @@ use Bukkit `World#getHighestBlockYAt` (chunk load cost). For pack intent
 ### Surface height, precisely
 
 `surfaceHeight` returns absolute Y of the **topmost generated terrain
-block**. Standing height is `surfaceHeight + 1`. Fluid is ignored: under
-ocean you get the sea floor. Compare with `IrisWorldInfo.fluidHeight()`
-or use `surfaceKind`.
+block**, including river incision. Standing height is `surfaceHeight + 1`.
+Fluid is ignored: under an ocean or river you get the bed. Compare with
+`IrisWorldInfo.fluidHeight()` only for the dimension sea level; terraced
+rivers may have a different per-column head. Request
+`RIVER_WATER_SURFACE_Y` or use `surfaceKind` for river-aware work.
 
 ---
 
@@ -229,30 +232,58 @@ when the operator edits settings and reloads.
 ```java
 @FunctionalInterface
 public interface IrisColumnSink {
-    void accept(int blockX, int blockZ, int surfaceHeight, IrisSurfaceKind kind, String biomeKey);
+    void accept(IrisColumnSample sample);
 }
 ```
 
-Every column produces one `accept`. Placeholders for unrequested fields
-are not distinguishable from real data by value alone:
+Every column produces one immutable typed sample:
 
-| Field requested | Parameter | If requested | If not |
+```java
+public record IrisColumnSample(
+        int blockX,
+        int blockZ,
+        int surfaceHeight,
+        int naturalHeight,
+        IrisSurfaceKind surfaceKind,
+        String biomeKey,
+        IrisRiverState riverState,
+        double riverDistance,
+        int riverFlow,
+        int riverWaterSurfaceY) {
+
+    public static final int UNAVAILABLE_HEIGHT = Integer.MIN_VALUE;
+    public static final double UNAVAILABLE_RIVER_DISTANCE = Double.NaN;
+    public static final int UNAVAILABLE_RIVER_FLOW = -1;
+}
+```
+
+| Field requested | Accessor | If requested | If unavailable or not requested |
 |---|---|---|---|
-| `SURFACE_HEIGHT` | `surfaceHeight` | absolute world Y of topmost terrain | `-1` |
-| `SURFACE_KIND` | `kind` | `LAND`, `SHORE`, `OCEAN`, or `VOID` | `IrisSurfaceKind.UNKNOWN` |
-| `BIOME_KEY` | `biomeKey` | surface biome load key | `null` |
+| `SURFACE_HEIGHT` | `surfaceHeight()` | absolute world Y of final topmost terrain | `UNAVAILABLE_HEIGHT` |
+| `NATURAL_HEIGHT` | `naturalHeight()` | absolute world Y before river incision | `UNAVAILABLE_HEIGHT` |
+| `SURFACE_KIND` | `surfaceKind()` | any concrete `IrisSurfaceKind` | `UNKNOWN` |
+| `BIOME_KEY` | `biomeKey()` | final surface-biome load key | `null` |
+| `RIVER_STATE` | `riverState()` | `WET`, `DRY`, or `NONE` | `NONE` |
+| `RIVER_DISTANCE` | `riverDistance()` | non-negative distance to the active centerline | `NaN` |
+| `RIVER_FLOW` | `riverFlow()` | non-negative merged upstream flow count | `-1` |
+| `RIVER_WATER_SURFACE_Y` | `riverWaterSurfaceY()` | absolute local head for a wet river footprint | `UNAVAILABLE_HEIGHT` |
 
-`-1` is a legal absolute Y in worlds with negative min height. **Never
-treat `-1` as absent.** Branch on your field set. `biomeKey` may be
-`null` even when requested if the column has no biome.
+Use the sample's `hasSurfaceHeight()`, `hasNaturalHeight()`,
+`hasSurfaceKind()`, `hasBiomeKey()`, `hasRiverDistance()`,
+`hasRiverFlow()`, and `hasRiverWaterSurfaceY()` helpers rather than
+comparing ordinary world values to sentinels. `hasRiverState()` means the
+sample is inside a wet or dry river footprint; `NONE` covers both an
+unrequested field and a requested column without a river.
 
 The sink's `biomeKey` is the **surface** biome. The same value
 `surfaceBiomeKey` returns for that column, never a cave biome. There is
 no 3D equivalent of `biomeKey(world, x, y, z)` in a column walk.
 
-Fewer fields cost less. `SURFACE_KIND` alone skips the biome stream for
-void-floor and at-or-below-fluid columns. `BIOME_KEY` pays for the biome
-stream every column.
+Fewer fields cost less. `NATURAL_HEIGHT` alone skips final river sampling.
+River state, distance, flow, and local head share one river sample.
+`SURFACE_KIND` samples river state and skips the biome stream when an
+explicit river section or fluid/void result already determines the kind.
+`BIOME_KEY` pays for the final surface-biome stream every column.
 
 ### Visit order
 
@@ -287,6 +318,7 @@ package com.example.settlement;
 
 import art.arcane.iris.api.terrain.IrisColumnField;
 import art.arcane.iris.api.terrain.IrisColumnQuery;
+import art.arcane.iris.api.terrain.IrisColumnSample;
 import art.arcane.iris.api.terrain.IrisColumnSink;
 import art.arcane.iris.api.terrain.IrisSurfaceKind;
 import art.arcane.iris.api.terrain.IrisTerrainService;
@@ -354,19 +386,20 @@ public final class SettlementSiteFinder {
         int fluidHeight = info.get().fluidHeight();
         Best best = new Best();
 
-        IrisColumnSink sink = (int blockX, int blockZ, int surfaceHeight, IrisSurfaceKind kind, String biomeKey) -> {
-            if (kind != IrisSurfaceKind.LAND || surfaceHeight <= fluidHeight) {
+        IrisColumnSink sink = (IrisColumnSample sample) -> {
+            if (sample.surfaceKind() != IrisSurfaceKind.LAND
+                    || sample.surfaceHeight() <= fluidHeight) {
                 return;
             }
 
-            long score = (long) Math.abs(surfaceHeight - fluidHeight) * 1024L
-                    + Math.abs(blockX - centreX) + Math.abs(blockZ - centreZ);
+            long score = (long) Math.abs(sample.surfaceHeight() - fluidHeight) * 1024L
+                    + Math.abs(sample.blockX() - centreX) + Math.abs(sample.blockZ() - centreZ);
 
             if (score < best.score) {
                 best.score = score;
-                best.x = blockX;
-                best.y = surfaceHeight;
-                best.z = blockZ;
+                best.x = sample.blockX();
+                best.y = sample.surfaceHeight();
+                best.z = sample.blockZ();
             }
         };
 
@@ -513,12 +546,16 @@ Iris engine. Absent otherwise.
 |---|---|---|
 | `LAND` | Dry ground | Surface above fluid height. Biome not shore |
 | `SHORE` | Beach or bank | Surface above fluid. Pack classifies biome as shore |
+| `RIVER` | Wet channel or mouth | Active wet river section, including a terraced river above global sea level |
+| `RIVER_SHORE` | Wet river bank | Active wet bank transition resolved against its local water head |
+| `DRY_CHANNEL` | Dry channel bed | Active dry channel section; dry banks remain `LAND` |
 | `OCEAN` | Under water / sea floor at sea level | Surface at or below fluid height (and above void floor) |
 | `VOID` | Nothing generated | Engine surface height ≤ 0 → absolute surface ≤ `minHeight()` |
 | `UNKNOWN` | No answer | Not Iris / unavailable / fault / `SURFACE_KIND` not requested |
 
-**`VOID` wins first.** Then fluid check, then shore vs land. Mutually
-exclusive.
+**`VOID` wins first.** An explicit river section follows, then the
+ordinary fluid check and shore-versus-land classification. The values are
+mutually exclusive.
 
 `OCEAN` is inclusive at fluid height. Compare `surfaceHeight` to
 `fluidHeight` yourself if the one-block boundary matters.
@@ -528,11 +565,17 @@ exclusive.
 | Constant | Fills | Extra work |
 |---|---|---|
 | `SURFACE_HEIGHT` | `surfaceHeight` | one height sample per column |
-| `SURFACE_KIND` | `kind` | height sample. Biome only when above void floor and above fluid |
+| `NATURAL_HEIGHT` | `naturalHeight` | natural height sample before river incision |
+| `SURFACE_KIND` | `surfaceKind` | final height and river sample; biome only when the river/fluid/void result does not decide the kind |
 | `BIOME_KEY` | `biomeKey` | biome sample per column, always |
+| `RIVER_STATE` | `riverState` | shared river sample |
+| `RIVER_DISTANCE` | `riverDistance` | shared river sample |
+| `RIVER_FLOW` | `riverFlow` | shared river sample |
+| `RIVER_WATER_SURFACE_Y` | `riverWaterSurfaceY` | shared river sample; available only for a wet footprint |
 
-`SURFACE_HEIGHT` and `SURFACE_KIND` share the height sample when both are
-requested.
+`SURFACE_HEIGHT` and `SURFACE_KIND` share the final height sample when
+both are requested. All river fields and `SURFACE_KIND` share one river
+sample.
 
 Write a `default` arm when switching enums:
 [90 - API - Getting Started](/iris/90-api-getting-started).

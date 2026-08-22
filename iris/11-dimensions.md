@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,7 @@ Related:
 - [12 - Regions](/iris/12-regions)
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
+- [36 - Rivers](/iris/36-rivers)
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
@@ -217,6 +218,7 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |
+| `rivers` | `IrisRiverNetwork` | disabled | Dimension-owned connected routing, incision, local water heads, river biome pools, and optional contained cave connections. See [36 - Rivers](/iris/36-rivers) |
 
 ## Ores and deposits
 
@@ -286,7 +288,7 @@ Three fields at dimension scope decide whether caves exist and what they look li
 | `caveProfile` | `IrisCaveProfile` | disabled default object | The dimension default 3D cave system: density styles, vertical range, threshold, surface clearance. Regions and biomes override it when they enable their own. Full field reference in [15 - Caves & Carving](/iris/15-caves-carving) |
 | `carving` | `IrisDimensionCarvingEntry[]` | empty | Cave-biome overrides keyed to absolute world-Y bands. Each has a stable `id`, a `biome`, a `worldYRange`, optional `children`, `childStyle`, `childShrinkFactor`, and `childRecursionDepth`. Use it for depth-banded cave themes such as a deep dark layer |
 | `useMantle` | boolean | `true` | Disables the entire mantle when false. No objects, jigsaw structures, features, entities or deferred block updates. Terrain and decoration still run. Only useful for isolating mantle cost or debugging |
-| `disabledComponents` | mantle flag strings | empty | Turns off individual mantle components by flag. The registered components are `OBJECT`, `JIGSAW`, `CARVED`, and `FLOATING_OBJECT`. Cheaper than `useMantle: false` when you only need to silence one subsystem |
+| `disabledComponents` | mantle flag strings | empty | Turns off individual mantle components by flag. The registered generation components include `OBJECT`, `JIGSAW`, `CARVED`, `RIVER_HYDROLOGY`, and `FLOATING_OBJECT`. Cheaper than `useMantle: false` when you only need to silence one subsystem |
 
 ## Objects, decoration, and post-processing
 
