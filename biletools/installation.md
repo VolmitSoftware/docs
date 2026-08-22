@@ -2,7 +2,7 @@
 title: "BileTools — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,10 +60,16 @@ Canonical English lives in the Java catalog at
 English bundle file. Entries in `language.yml` are sparse overrides. Omitted
 entries resolve from the selected bundle, then from code-owned English.
 
-Automatic `language.yml` changes use the same three-second minimum cadence and
-queue the newest change while a reload is pending. Invalid intermediate files
-are retried. The language watcher is closed when BileTools is disabled or
-reloaded.
+Automatic `language.yml` changes drain native events without reading the file
+on each coordinator pass. A daemon IO worker captures immutable bytes after an
+event and runs an exact-content fallback every 2.5 seconds, including for a
+same-metadata save missed by native watching. Successful automatic reloads use
+the same three-second minimum cadence and queue the newest snapshot while a
+reload is pending. Invalid intermediate files are retried, and a temporary
+missing file is left untouched rather than being replaced during an atomic or
+FTP save. Startup or an explicit reload still creates the default when the file
+is genuinely absent. The watcher and its IO worker close when BileTools is
+disabled or reloaded.
 
 ## Building from source
 

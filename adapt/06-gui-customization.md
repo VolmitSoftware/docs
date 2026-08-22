@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Adapt documentation: GUI Customization"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Adapt's menus can be reshaped without touching code. You choose how tall the skills menu is, which item represents each skill and adaptation, and what order they appear in. Everything lives in `plugins/Adapt/adapt/adapt.toml` under the `gui` table, plus the one top-level toggle `guiShowAllSkills`.
 
-Every setting on this page hot-reloads. A file watcher polls the Adapt config files twice a second. A save that parses cleanly re-reads the config and reopens any Adapt window a player currently has on screen. You see the change without a restart.
+Every setting on this page hot-reloads. Adapt checks native filesystem events twice a second, periodically reconciles exact content to recover events the platform missed, and applies only a stable latest-state save. A save that parses cleanly re-reads the config and reopens any Adapt window a player currently has on screen. You see the change without a restart.
 
 There are three menu surfaces. The skills menu is a 5-wide card grid with a navigation row at the bottom. It is the only one whose height you set directly. The adaptation list inside a skill and the level buttons inside an adaptation are 9-wide. They size themselves from their own contents.
 

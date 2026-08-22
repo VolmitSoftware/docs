@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ Use harmless settings and restore their original values after this check.
 
 | Step | Action | Pass criteria |
 |------|--------|---------------|
-| 1 | Change `quality` or `verbose-logging`, save `wormholes.toml`, and do not run a command. | The file remains unchanged by the passive reload. After 350 ms of stable content, the console reports one successful hotload and the live setting changes. |
+| 1 | Change `quality` or `verbose-logging`, save `wormholes.toml`, and do not run a command. | The file remains unchanged by the passive reload. A native event prompts the snapshot check; after 350 ms of stable content, the console reports one successful hotload and the live setting changes. |
 | 2 | Save several valid variants over a few seconds, ending with a known final value. Include an editor atomic-save or FTP upload/rename when that is the deployment path. | Automatic applications are single-flight and start no more often than three seconds after the preceding completion. Intermediate candidates coalesce and the final value applies. |
 | 3 | While one automatic application is pending, save one more valid value. | The later snapshot remains queued and applies after the active application and cooldown; it is not acknowledged or lost early. |
 | 4 | Temporarily move or delete `wormholes.toml`, then restore a valid file. | Wormholes does not create defaults or apply an empty intermediate state. The restored stable file hotloads. |
@@ -178,7 +178,7 @@ Permission: `wormholes.admin.projection`.
 | RTP never ready | Initial shared routing needs two distinct safe columns. A cold Iris candidate may take up to the 30-second campaign window. Also check world availability, radius versus border, safety rejections, and search cooldown. |
 | Doors missing | `[main] dimensional-doors-enabled` is false. A pocket datapack restart is still required. Drain is in progress. |
 | Network import fails | The network is not initialized. The code is invalid or truncated. The identity is the same. The peer is offline (`/wh network doctor`). |
-| Config edit does not hotload | Confirm the target is exactly `config/wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 2`, and remains stable for 350 ms. Check the full watcher or parse stacktrace. |
+| Config edit does not hotload | Confirm the target is exactly `config/wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 2`, and remains stable for 350 ms. A missed native event is recovered by the 2.5-second exact-content pass; check the watcher or parse stacktrace. |
 | Repeated edits appear delayed | Automatic hotload is intentionally single-flight and completion-cooled for three seconds. The latest stable snapshot stays queued. Use `/wh reload` for an immediate explicit application. |
 
 ## Cross-references

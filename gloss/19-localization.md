@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Gloss documentation: Localization"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -164,10 +164,11 @@ or a number where a string is expected fails the load.
 
 ## Hot reload
 
-The shared `DataWatchdog` checks `language.yml` at `[hotload] watchIntervalTicks`. Each eligible
-watchdog pass drains native events and captures an immutable SHA-256 snapshot; two consecutive
-identical captures must agree before the overlay can reload. Automatic batches complete no more
-than once every 3 seconds, with the
+The shared `DataWatchdog` checks `language.yml` at `[hotload] watchIntervalTicks`. Ordinary idle
+passes only drain native events. An event, a pending stability verification, or the 9-second
+exact-content reconciliation captures an immutable SHA-256 snapshot; two consecutive identical
+captures must agree before the overlay can reload. Automatic batches complete no more than once
+every 3 seconds, with the
 latest edit retained as one trailing pass. `/gloss reload` does not reload `language.yml`; the file
 watch remains the automatic path.
 

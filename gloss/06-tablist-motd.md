@@ -2,7 +2,7 @@
 title: "Tablist & Server List MOTD"
 description: "Gloss documentation: Tablist & Server List MOTD"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -161,7 +161,10 @@ players, native `server.tps`, integration metrics and the native `server_online`
 and `server_tps` PAPI aliases instead. A player-backed PAPI key is only safe with an explicit fallback,
 for example `papi('player_name', 'Visitor')`; it cannot reveal the unjoined client.
 
-Animation functions ignore the viewer and resolve from wall-clock time. `|animation.rainbow|` does work in an MOTD. It will visibly cycle between pings. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
+Animation functions ignore the viewer and resolve from wall-clock time. `|animation.rainbow|` does
+work in an MOTD and samples a new color between common three-second status polls. A custom animation
+whose complete cycle exactly matches a poller's interval can repeatedly sample the same frame; use a
+different `frameIntervalMs` when that happens. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 
 If rendering throws, Gloss logs `MOTD render failed: <reason>` once and leaves that ping MOTD untouched. The warning is armed again by the next reload.
 

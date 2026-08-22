@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,9 +81,11 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 
 ## Reload
 
-The hotload controller watches `config.toml`, locale overrides, and managed config files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. Routine polls drain operating-system events without checking every watched file's metadata when native recursive watching is active. Scheduled full scans still reconcile watcher state, and exact-content fallback work continues across polls. A reconciliation pass yields between files after 32 files, 8 MiB, or roughly 10 milliseconds; directory enumeration, a full watcher scan, or one individual file read can take longer. This keeps Docker, Pterodactyl, and other mounts that omit events convergent while bounding ordinary fallback work. A detected file must stay stable for an extra watcher poll before it is eligible.
+The hotload controller watches `config.toml`, locale overrides, and managed config files under `core/`, `feature/`, `tweak/`, `action/`, and `sampler/`. Routine polls drain operating-system events without checking watched-file metadata when native exact-file or recursive watching is active. Scheduled full scans still reconcile watcher state, and exact-content fallback work continues across polls. A reconciliation pass yields between files after 32 files, 8 MiB, or roughly 10 milliseconds; directory enumeration, a full watcher scan, or one individual file read can take longer. This keeps Docker, Pterodactyl, and other mounts that omit events convergent while bounding ordinary fallback work. A detected file must stay stable for an extra watcher poll before it is eligible.
 
-React normalizes watched paths and coalesces repeated events by path. An automatic apply batch cannot start until three monotonic seconds after the preceding drain and any deferred watcher reconfiguration finish. Saves received while a batch is waiting or running collapse into one trailing drain that reads the latest stable state. A successful `core/hotload.toml` change reconfigures the watcher only after every file in the current batch has been processed; React compares digests before and after that reconfiguration so the watcher reset cannot discard a concurrent save.
+The measured React ticker only coalesces a poll request onto one dedicated `React-Hotload-IO` worker. That worker drains filesystem events, performs fallback enumeration and reconciliation, captures and hashes stable snapshots, parses TOML, JSON, and localization candidates, and prepares operator diffs. Once a batch is prepared, one global server task copies the prepared values into live configuration, performs component lifecycle and Bukkit work, and sends operator messages. Stopping or restarting the controller retires its worker and prevents stale prepared work from reaching the replacement runtime.
+
+React normalizes watched paths and coalesces repeated events by path. An automatic apply batch cannot start until three monotonic seconds after the preceding drain and any deferred watcher reconfiguration finish. Saves received while a batch is waiting or running collapse into one trailing drain that reads the latest stable state. Every touched path and React-owned write advances a per-path revision; the global task skips a prepared snapshot whose revision is stale, and completion cannot overwrite tracking established by the newer save. A successful `core/hotload.toml` change reconfigures the watcher only after every file in the current batch has been processed; React compares digests before and after that reconfiguration so the watcher reset cannot discard a concurrent save.
 
 Before applying a file, React captures a strict-UTF-8 snapshot of at most 2 MiB and requires two identical reads with stable file attributes. It applies those immutable bytes, acknowledges that exact digest, and reads the file again afterward. If newer bytes arrived during parsing or application, that path is queued for the trailing batch instead of being marked complete. Common editor, browser-download, and FTP temporary artifacts are ignored.
 

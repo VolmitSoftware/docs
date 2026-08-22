@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -139,9 +139,9 @@ refuses while players are inside or mid-transit in a pocket dimension.
 | Trigger | Behavior |
 |---------|----------|
 | `/wh reload` | Permission `wormholes.admin.reload`. Immediately loads and canonicalizes `wormholes.toml`, prepares localization, and applies on the global scheduler next tick. It is not subject to the automatic cooldown and invalidates older queued automatic work. |
-| File hotload | Native create/modify/delete events plus periodic SHA-256 reconciliation watch only `config/wormholes.toml`. A candidate must remain byte-identical for 350 ms. Passive parsing does not canonicalize or write the file. |
+| File hotload | A cheap 200 ms loop drains native create/modify/delete events for only `config/wormholes.toml`. Full snapshot reads occur on an event, pending stability verification, or 2.5-second exact-content reconciliation. A candidate must remain byte-identical for 350 ms. Passive parsing does not canonicalize or write the file. |
 
-The watcher reads at most 8 MiB into an immutable snapshot and validates that
+Idle event polls do not read or hash the config. When a read is due, the watcher reads at most 8 MiB into an immutable snapshot and validates that
 the file did not change during the read. This detects atomic replacement and
 same-size/same-timestamp edits while ignoring unrelated temporary files. A
 temporary missing or empty target is held as an incomplete FTP/editor save; a

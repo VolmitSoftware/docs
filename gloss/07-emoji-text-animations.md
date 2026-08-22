@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Gloss documentation: Emoji, Text & Animations"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -210,7 +210,7 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
   "schemaVersion": 1,
   "revision": 1,
   "mode": "ascend",
-  "frameIntervalMs": 50,
+  "frameIntervalMs": 53,
   "frames": [
     "[FF0000]",
     "[FF1A00]",
@@ -285,13 +285,14 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 | `frames` | yes | At least one string, otherwise `animation requires at least one frame`. A `null` entry becomes `""` |
 
 `rainbow.json` is the only shipped animation. It walks the complete RGB hue wheel through 60
-color-only frames at one Minecraft tick per frame, so the transition is a smooth three-second
-gradient rather than a small legacy-color cycle. `|animation.rainbow|&lONLINE` changes the
+color-only frames at 53 milliseconds per frame, so the transition is a smooth 3.18-second gradient
+rather than a small legacy-color cycle. The non-round cycle keeps three-second status pollers from
+repeatedly sampling the same MOTD color. `|animation.rainbow|&lONLINE` changes the
 following text's color without inserting a word. Like emoji, it is re-extracted whenever the file
-is missing. On startup Gloss also replaces either exact unchanged prior shipped file: the original
-four `Gloss`-prefixed frames and the later four color-only frames. Any edited or merely reformatted
-copy is preserved as user content; use `/gloss animations reset name=rainbow` when that copy should
-be replaced deliberately.
+is missing. On startup Gloss also replaces any exact unchanged prior shipped file: the original
+four `Gloss`-prefixed frames, the later four color-only frames, and the phase-locked 60-frame 50 ms
+gradient. Any edited or merely reformatted copy is preserved as user content; use `/gloss animations
+reset name=rainbow` when that copy should be replaced deliberately.
 
 The RGB frame expands to a full legacy hex sequence after the text pipeline. That is appropriate
 for holograms, MOTDs, tablists, bubbles and other component text. A sidebar row has the stricter

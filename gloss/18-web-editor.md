@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -123,7 +123,10 @@ shrink, orbit and arcing behavior. The bubble inspector exposes the shimmer's tw
 solid RGB band color, visible-glyph width, sweep duration, spawn delay and departure lead, plus an
 `Original Gloss` preset. That preset waits 400 ms, moves one solid-white three-glyph band across the
 complete multiline block over 700 ms, and repeats the same bounded pass during the final 700 ms of
-fly-away. Wrapped rows share one continuous band instead of starting independent shimmers. The
+fly-away. Wrapped rows share one continuous band instead of starting independent shimmers. Prefix
+functions and expressions resolve before the preview applies that band, so raw authored formatting
+never flashes during the first sweep. Multiline message blocks reserve their measured line height
+and do not overlap adjacent bubbles in the stack. The
 preview uses `requestAnimationFrame` and the server uses its high-frequency packet animator so long
 wrapped messages refresh smoothly. Random tablists populate dynamic headers, footers and group
 formats. Minecraft samples an MOTD animation frame when it answers each

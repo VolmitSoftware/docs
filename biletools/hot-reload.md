@@ -2,7 +2,7 @@
 title: "BileTools — Hot Reload Behavior"
 description: "What hot-reload does, what it cannot do, and how to tell when it failed"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,9 +11,14 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ## What happens on a change
 
 1. A native directory watcher receives direct `.jar` create, modify, and delete
-   events. A reconciliation scan runs every 2.5 seconds to recover from missed
-   or overflowed events, unavailable native watching, and deletion or
-   recreation of the `plugins/` directory.
+   events. A metadata reconciliation scan runs every 2.5 seconds to recover
+   from missed or overflowed events, unavailable native watching, and deletion
+   or recreation of the `plugins/` directory. A staggered exact SHA-256 sweep
+   detects same-size, same-time replacements, advancing by at most one jar,
+   1 MiB, and roughly 2 milliseconds per coordinator pass before the next sweep
+   begins 2.5 seconds after completion. When native watching is unavailable,
+   BileTools keeps the metadata cadence instead of scanning on every coordinator
+   pass.
 2. A changed jar's file stamp must remain stable for the configured fingerprint
    checks. BileTools then copies the bytes off-thread into an immutable staged
    jar, computes its SHA-256 fingerprint, validates its descriptor, and retries

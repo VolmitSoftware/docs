@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Gloss documentation: Data Files & Hot Reload"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -43,7 +43,7 @@ Writes are atomic. The document is serialized to a temporary file in the same fo
 
 ## Hot reload
 
-One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes. Automatic passes start no more than once every 3 seconds after the preceding apply batch completes, and requests made while one is waiting or running collapse into one trailing latest-state pass. JSON registries also reconcile raw content on a rolling 8 MiB/256-file budget, reject documents above 2 MiB, and hold deletions for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and requeues the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss restarts the task on the next reload.
+One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes, and an ordinary idle pass only drains those events. JSON registries perform a full directory-membership safety scan about every 18 seconds and start exact-content reconciliation about every 6 seconds; both windows restart when their preceding work completes. The ten registry kinds are split evenly between two 3-second start slots so their safety work does not all land in one pass. Exact reconciliation walks already-known documents in stable id order. Across every registry in one watchdog pass, it yields after 32 files, 8 MiB, or about 10 ms; a single file or full membership scan may exceed the time budget, and documents above 2 MiB are rejected before their content is hashed or parsed. An unfinished walk continues on a later pass, and its reconciliation batch is published only after the complete walk finishes. Automatic passes start no more than once every 3 seconds after the preceding apply batch completes, and requests made while one is waiting or running collapse into one trailing latest-state pass. Deletions are held for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and rereads that pending file against the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss reschedules the tick pump without releasing the active batch; the new interval begins behind that batch's completion cooldown.
 
 The polling itself runs on a dedicated `Gloss-Watchdog-IO` thread. Stat, read and parse never touch the server tick. Anything that has to touch the world hops back to the server thread, or on Folia and Canvas to the owning region thread, before it applies. The console shows both halves:
 

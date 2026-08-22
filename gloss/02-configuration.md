@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -30,7 +30,7 @@ Every table below is emitted the same way. Each key has its own comment line bef
 
 **Canonicalization.** Startup and explicit importer writes parse, normalize, re-serialize, and write the file back when the canonical result differs. That is how out-of-range numbers are clamped into the file, missing keys reappear, and comments regenerate after an upgrade. Automatic hotload and `/gloss reload` normalize only the captured in-memory value; they never rewrite a file an editor or FTP client may still be replacing.
 
-**Hot reload.** The same watchdog that checks the data folders also checks `config.toml` at `[hotload] watchIntervalTicks`. Native file events and a SHA-256 content check detect ordinary writes, atomic replacements, FTP saves, and same-size edits with preserved timestamps. Automatic work is queued into at most one completed batch every 3 seconds, with one latest-state trailing pass when more saves arrive. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
+**Hot reload.** The same watchdog that checks the data folders also checks `config.toml` at `[hotload] watchIntervalTicks`. Ordinary passes only drain native file events; an idle pass does not reread the file. A pending stability check or the 6-second exact-content reconciliation captures immutable bytes and compares their SHA-256, so atomic replacements, FTP saves, and same-size edits with preserved timestamps still apply. Automatic work is queued into at most one completed batch every 3 seconds, with one latest-state trailing pass when more saves arrive. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
 
 **Failure behavior differs between boot and reload.**
 

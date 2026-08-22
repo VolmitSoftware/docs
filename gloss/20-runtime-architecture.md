@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -184,6 +184,7 @@ poll callbacks. It is started with the period from `[hotload] watchIntervalTicks
 | `tablist` | `tablist.json` |
 | `bubbles` | `bubbles/` |
 | `motd` | `motd.json` |
+| `real-drops` | `real-drops/` |
 | `menus` | `menus/`, subdirectories included |
 | `images` | `images/` |
 | `locale` | `language.yml` |
@@ -215,7 +216,13 @@ On a region-threaded server the second line reads `[Folia Region Scheduler Threa
 instead. `watchIntervalTicks` controls how often a pass is requested, while the completion-anchored
 gate starts automatic passes no more than once every 3 seconds and retains one latest-state trailing
 request. Native events drive the common path and bounded rolling SHA-256 reconciliation catches
-silent or same-metadata saves. Disk work stays on `Gloss-Watchdog-IO`.
+silent or same-metadata saves. JSON registries perform their full membership fallback about every
+18 seconds and begin exact-content reconciliation about every 6 seconds, with both windows anchored
+to completion. The ten registry kinds split evenly across two 3-second start slots. Their shared
+per-pass reconciliation budget yields after 32 files, 8 MiB, or about 10 ms, and a registry publishes
+its reconciliation batch only after its complete walk. Config and localization likewise avoid byte
+capture on idle passes and use their pending verification or 6-second and 9-second exact fallbacks.
+Disk work stays on `Gloss-Watchdog-IO`.
 
 Document registries stage immutable parsed snapshots without publishing them. A successful
 consumer apply acknowledges and publishes the staged document exactly once. A refused scheduler
@@ -234,9 +241,9 @@ watchdog catches every `Throwable` per entry. It logs the full stacktrace with
 `<entry>: hot reload pass failed.` and continues with the next entry on the same pass. One broken
 folder cannot stop the others. The task itself never dies.
 
-Changing `watchIntervalTicks` on disk restarts the watchdog with the new period as part of the
-config reload. Nothing else restarts it. A `/gloss reload` reuses the running task unless the
-interval actually changed.
+Changing `watchIntervalTicks` on disk reschedules the tick pump with the new period as part of the
+config reload without replacing the IO worker or releasing the active batch. A `/gloss reload`
+keeps the current pump when the interval is unchanged.
 
 No subsystem owns a hot-reload task of its own. `MenuCatalog` and `PreviewDocumentRegistry` are the
 two entries that carry extra work beyond a document reload. Both are entries like any other:

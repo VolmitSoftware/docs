@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -327,7 +327,7 @@ Projection behavior detail:
 
 | Path | Mechanism |
 |------|-----------|
-| `config/wormholes.toml` change | Native filesystem events wake `HotloadManager`; periodic SHA-256 content reconciliation catches missed events, atomic replacement, and content changes whose size and timestamp are unchanged |
+| `config/wormholes.toml` change | A cheap 200 ms loop drains native filesystem events without rereading idle content. It reads on an event, pending stability verification, or the 2.5-second exact-content reconciliation that catches missed events and content changes whose size and timestamp are unchanged |
 | `languages/*.toml` change | Not watched directly. Use `/wormholes reload` or touch the config file |
 | `/wormholes reload` | Immediate, unthrottled reload of configuration and language files (`wormholes.admin.reload`). It invalidates older queued automatic work before applying |
 | Failed language load on reload | Config may still apply. Last valid language is kept. Console reports the cause |

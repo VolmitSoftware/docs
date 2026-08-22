@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Gloss documentation: Chat Bubbles, Indicators & Drops"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -108,7 +108,7 @@ The style is resolved **once per chat message**, before the text is wrapped. The
 
 The bubble hook runs on `AsyncPlayerChatEvent` at `MONITOR` priority, after Gloss has applied its chat emoji and permitted color stages. Bubbles preserve that final message formatting. For example, `&1Hello!!!` reaches the bubble as blue text when the chat color stage translated it; an unauthorized raw `&1` stays literal instead of gaining color only in the bubble.
 
-Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines, left-aligned and sent to one `TextDisplay`, so one chat message is one aligned multiline entity and one background block rather than several independently moving bubbles.
+Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines, left-aligned and sent to one `TextDisplay`, so one chat message is one aligned multiline entity and one background block rather than several independently moving bubbles. The newest message remains at the authored offset; each older block rises by the complete wrapped-line height of newer blocks beneath it, so multiline backgrounds never occupy the same stack space.
 
 The authored `prefix` is rendered separately through the full text pipeline with the speaker as viewer and prepended to the already-formatted message. It therefore supports `|function|`, `{{ player.* }}`, `papi`, raw PlaceholderAPI tokens, emoji and colors just like a scoreboard. Dynamic prefixes refresh on the speaker entity thread while the bubble lives. Player chat itself is not reinterpreted as Gloss code. The resulting bubble lives for `maxAliveMs` milliseconds. Immediately before spawn, Gloss re-checks that chat bubbles are enabled, the speaker is online and outside a blacklisted world, and the speaker still holds `gloss.bubbles.send`.
 

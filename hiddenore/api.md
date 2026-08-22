@@ -2,7 +2,7 @@
 title: "HiddenOre API"
 description: "Developer API index"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -170,7 +170,8 @@ the second when you want events and no service.
    unregisters the service and the PlaceholderAPI expansion.
 
 The watcher consumes exact operating-system events and also compares bounded
-SHA-256 signatures for `config.yml` and `language.yml` about once a second.
+SHA-256 signatures for `config.yml` and `language.yml` every 2.5 seconds. Idle
+event polls do not read or hash either file between those safety passes.
 It waits 250 ms for stable bytes, tolerates atomic and FTP replacement gaps,
 and collapses bursts into one latest-state reload no more than once every 3
 seconds. A silent bind-mount write still reaches a finished save. Files over

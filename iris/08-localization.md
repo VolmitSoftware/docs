@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,7 +34,7 @@ Prerequisites: write access to the Iris data folder, a backup of `settings.json`
 
 Success looks like your override text appearing verbatim. Everything else in the same session — help output, pregen status, Studio messages — should be in German from the bundled `de_DE` overlay. Any key that neither file defines falls back to the built-in English rather than printing a raw key id.
 
-Edit the file again and save it. The settings hotload poll calls `IrisLanguage.update()` about every 500 ms. It identifies the active override by path, file identity, metadata, and SHA-256 content, so a same-size replacement with a preserved timestamp is still found. The stable latest save is queued and automatic locale loads occur no more than once every 3 seconds. No command or restart is required. Delete the test override when you are done.
+Edit the file again and save it. The shared settings and locale coordinator drains native filesystem events about every 500 ms and uses bounded exact-content reconciliation to catch silent, atomic, FTP, and same-metadata replacements. The stable latest save is queued and automatic locale loads occur no more than once every 3 seconds. Repeated unreadable UTF-8 and oversized capture failures are reported once until a readable or missing snapshot resets the diagnostic, while the last-good catalog stays active. A manual `/iris reload` acknowledges the exact override it applied so the queued automatic path does not replay it. No command or restart is required for ordinary valid saves. Delete the test override when you are done.
 
 If you are authoring a whole new locale, translate one command group first and confirm it loads before you translate the rest. A single bad key rejects the entire file.
 
@@ -128,7 +128,7 @@ Overrides are partial by design. Define only the keys you want to change. The re
 | Nesting | Nested objects flatten into dotted keys, so `{"iris": {"command": {"unknown": "..."}}}` is the same as `"iris.command.unknown"`. The exception is a plural key, where an object is read as the plural forms |
 | Placeholders | The set of `{name}` tokens must match the English template exactly. A lines key must also match the English line count, and each line's placeholder set |
 | Size | Max 2 MiB |
-| Hotload | Native identity/metadata and SHA-256 content are checked about every 500 ms. Stable automatic changes use a latest-state 3-second queue; manual `/iris reload` is immediate |
+| Hotload | Native filesystem events drain about every 500 ms without idle file reads. Bounded exact-content reconciliation begins about every 2.5 seconds to recover missed and same-metadata saves. Stable automatic changes use a latest-state 3-second queue; manual `/iris reload` is immediate |
 
 Validation is all-or-nothing. A rejected reload leaves the previous locale fully intact and logs the first 12 errors plus a count of the remainder.
 

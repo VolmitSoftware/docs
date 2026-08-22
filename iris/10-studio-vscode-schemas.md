@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -62,7 +62,7 @@ A rejected height or dimension-type change is not evidence that hotload is broke
 |---------|----------|
 | Pack workspace | Packs live under the platform data directory in the folder named `packs` (`StudioSVC.WORKSPACE_NAME`) |
 | Studio world | Opened from a pack dimension key. Uses a studio chunk generator bound to the live pack folder with file watching |
-| Hotload | Studio worlds only. Native recursive events plus SHA-256 reconciliation detect stable pack saves. Changes collapse into a latest-state queue with no more than one completed hotload every 3 seconds. `EngineHotloader` waits for already-admitted top-level Bukkit chunk stages, reloads the pack data, and rebuilds the engine runtime under exclusive generator control. Fair stage admission keeps later chunk stages behind the waiting transition, and Studio close uses the same drain boundary. Biome Buffet resolves its chunk focus and completes any required complex hotload under exclusive admission. Then that noise stage opens a generation session and downgrades directly to one ordinary stage permit |
+| Hotload | Studio worlds only. Routine checks drain native recursive events without statting every known pack leaf. Scheduled full scans plus rolling SHA-256 reconciliation detect silent and same-metadata saves; reconciliation yields between files after 32 files, 8 MiB, or roughly 10 milliseconds. Changes collapse into a latest-state queue with no more than one completed hotload every 3 seconds. `EngineHotloader` waits for already-admitted top-level Bukkit chunk stages, reloads the pack data, and rebuilds the engine runtime under exclusive generator control. Fair stage admission keeps later chunk stages behind the waiting transition, and Studio close uses the same drain boundary. Biome Buffet resolves its chunk focus and completes any required complex hotload under exclusive admission. Then that noise stage opens a generation session and downgrades directly to one ordinary stage permit |
 | Hotload contract | `IrisDimensionRuntimeContract` refuses hotload if the dimension type key, min height, total height, or logical height change |
 | Non-studio worlds | No pack file watcher. Production worlds keep the pack snapshot installed at create or update time |
 
@@ -78,7 +78,7 @@ Studio settings live in `settings.json` under `studio` (`IrisSettings.IrisSettin
 ## Hotload rules
 
 - The watcher runs only when `PlatformChunkGenerator.isStudio()` is true, the world is not closing, and no Jigsaw Studio session is active. Jigsaw Studio deliberately suppresses ordinary pack-file hotload.
-- Native events are reconciled with SHA-256 content, covering atomic replacements, FTP handoffs, watcher overflow, and same-metadata edits. Common temporary files and `.iris` output are ignored. A failed apply remains queued, and saves made during the 3-second cooldown replace the queued state rather than adding reloads.
+- Routine polls consume native events instead of walking every pack file. Scheduled state scans and rolling SHA-256 content reconciliation cover silent mounts, atomic replacements, FTP handoffs, watcher overflow, and same-metadata edits. The reconciliation limits apply between files; directory enumeration, a full watcher scan, or one individual file read can take longer. Common temporary files and `.iris` output are ignored. A failed apply remains queued, and saves made during the 3-second cooldown replace the queued state rather than adding reloads.
 - On change: load a new `IrisData` from the same folder. Reload the dimension key and check the hotload contract. Build a new engine runtime and retire the previous data. Refresh the workspace and schemas. Reload datapacks when a platform world is bound. Broadcast a client studio-hotload toast on success or failure.
 - `hotloadComplex` is a narrower rebuild that reconstructs `IrisComplex` without reopening the pack.
 - A failed hotload rolls the runtime back where possible and reports the error.

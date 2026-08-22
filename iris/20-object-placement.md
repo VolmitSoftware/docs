@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -129,7 +129,7 @@ These are engine-internal Y values: 0 to (dimension height), not world Y. In a `
 
 The default (`0` to `10`) is treated as "no condition" and skips the check entirely. `maximumSlope: 2` keeps buildings off hillsides. Going below about 1 excludes nearly all natural terrain. `rotateTowardsSlope: true` finds whichever of the four footprint edges sits lowest. It rotates the object to face that way in 90 degree steps. It adds the `yAxis` `min`. It discards `yAxis` `max` and `interval`.
 
-**Neighbors.** `forbiddenCollisions` lists object keys this object refuses to intersect. If any block of an already-placed object with that key falls inside this object bounding box, the attempt is dropped. `allowedCollisions` names exceptions that win over the forbidden list. Both are empty by default. The check only runs when at least one of them is non-empty.
+**Neighbors.** `forbiddenCollisions` lists object keys this object refuses to intersect. If any block of an already-placed object with that key falls inside this object transformed bounding box, the attempt is dropped. Rotation, rotated translation, warp reach, ceiling inversion, and random Y translation are included. `allowedCollisions` names exceptions that win over the forbidden list. Both are empty by default. The check only runs when at least one of them is non-empty.
 
 **Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
 
@@ -159,7 +159,7 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 { "mode": "MAX_HEIGHT" }
 ```
 
-`MAX_HEIGHT` samples every column in the footprint and takes the highest. Nothing gets buried but the object floats off cliffs. `MIN_HEIGHT` takes the lowest. Nothing overhangs but slopes swallow it. The `FAST_` variants sample four points instead of the full footprint. `PAINT` is the outlier. It drops each column of the object to that column own surface height. The object melts over the terrain rather than placing as a rigid block. Vines are exempt so they keep hanging.
+`MAX_HEIGHT` samples every column in the transformed footprint and takes the highest. The footprint includes rotation, rotated translation, and warp reach. Nothing gets buried but the object floats off cliffs. `MIN_HEIGHT` takes the lowest. Nothing overhangs but slopes swallow it. The `FAST_` variants sample representative edge points instead of the full footprint. `PAINT` is the outlier. It drops each column of the object to that column own surface height. The object melts over the terrain rather than placing as a rigid block. Vines are exempt so they keep hanging.
 
 **Stilts.** Stilt modes take a height mode, then repeat the object bottom blocks downward until they hit ground.
 
@@ -233,7 +233,7 @@ Per axis (`xAxis`, `yAxis`, `zAxis`, each `{enabled, min, max, interval}`): `min
 { "snow": 0.5 }
 ```
 
-The value scales to vanilla eight layers. Each column gets a random count from 0 to `floor(snow * 7)`, placed one block above the object highest block in that column. Small values are effectively fixed. `snow: 0.1` is always a single layer.
+The value scales to vanilla eight layers. Each column gets a random count from 0 to `floor(snow * 7)`, placed one block above the highest block that the placement wrote in that column. Schematic air and blocks skipped by placement rules do not raise the snow surface. Small values are effectively fixed. `snow: 0.1` is always a single layer.
 
 **Air pockets and interiors.** By default the object only writes its own blocks. Terrain left standing inside a hollow object stays there.
 
@@ -241,7 +241,7 @@ The value scales to vanilla eight layers. Each column gets a random count from 0
 { "bore": true, "boreExtendMaxY": 4, "boreExtendMinY": 0 }
 ```
 
-`bore: true` clears the whole bounding cuboid to air before the object writes, which is blunt but predictable. `boreExtendMaxY` and `boreExtendMinY` grow that box upward and downward. `smartBore: true` instead raytraces the volume on three axes and fills only the enclosed interior. A house keeps its rooms clear without erasing the trees around it. Smart boring is a one-time cost per object at load, not per placement.
+`bore: true` clears the whole transformed bounding cuboid to air before the object writes, which is blunt but predictable. The cuboid follows rotation, rotated translation, warp reach, ceiling inversion, and random Y translation. `boreExtendMaxY` and `boreExtendMinY` grow that final box upward and downward. `smartBore: true` instead raytraces the volume on three axes and fills only the enclosed interior. A house keeps its rooms clear without erasing the trees around it. Smart boring is a one-time cost per object at load, not per placement. Debug rendering changes only the current placement and does not alter the loader-cached object.
 
 `meld: true` inverts the rule. The object only writes where a solid block already exists, which carves the object into terrain rather than adding to it. It is expensive. The placer samples the world per block.
 

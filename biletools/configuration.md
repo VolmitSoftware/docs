@@ -2,7 +2,7 @@
 title: "BileTools — Configuration"
 description: "Every config.yml key with its shipped default"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,6 +48,14 @@ incrementally. After the source stamp settles, BileTools creates and validates
 an immutable off-thread snapshot. If the source changes during the copy, the
 snapshot is rejected and the newest generation is retried. Temporary files
 such as `.jar.part` are ignored until they are renamed to `.jar`.
+
+Native jar events are reconciled against the plugins directory metadata every
+2.5 seconds. An exact SHA-256 safety sweep also covers same-metadata changes,
+but advances by at most one jar, 1 MiB, and roughly 2 milliseconds on each
+coordinator pass. The next exact sweep starts 2.5 seconds after the preceding
+sweep completes. If native watching is unavailable, metadata fallback scans
+retain their fixed cadence rather than following the faster active or idle
+coordinator interval.
 
 After an automatic reload batch finishes, the next automatic batch cannot start
 for three seconds. Only one batch runs at a time; changes that arrive during it

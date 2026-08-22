@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -79,9 +79,9 @@ Both platforms use native filesystem events with content reconciliation, stable 
 | Watcher | Bukkit | Modded |
 |---------|--------|--------|
 | Pack / studio content | About 1 s shared reactive-folder checks; 4 s during maintenance | 250 ms eligibility sweep and about 1 s per-pack checks, with a 2 s hold-off after recent generation and a pregeneration hold-off |
-| `settings.json` | Exact-file check every 500 ms | Exact-file check every 500 ms |
+| `settings.json` | Native events drain about every 500 ms; bounded exact-content reconciliation begins about every 2.5 s | Native events drain about every 500 ms; bounded exact-content reconciliation begins about every 2.5 s |
 
-Both parse automatic settings changes from immutable bytes without rewriting the operator's file. Locale overrides are content-checked on the same 500 ms tick. Manual reload remains immediate.
+Both parse automatic settings changes from immutable bytes without rewriting the operator's file. Locale override native events drain on the same 500 ms coordinator cadence, with bounded exact-content reconciliation beginning about every 2.5 seconds. Manual reload remains immediate.
 
 ## World model
 
