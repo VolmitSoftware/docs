@@ -36,8 +36,10 @@ the browser under `gloss.locale`; it does not edit the server's `plugins/Gloss/l
 
 On a first visit the editor selects the first supported entry in the browser language list,
 including a base-language match, then falls back to `en_US`. A valid stored choice wins on later
-visits. The HTML language, page title and description follow the active catalog. `he_IL` uses
-right-to-left document direction; every other supported locale uses left-to-right direction.
+visits. The HTML language, page title, description and installable-app manifest follow the active
+catalog, including a language-specific installed name and description. `he_IL` uses right-to-left
+document direction; every other supported locale uses left-to-right direction. Protocol values,
+identifiers, file names and player names remain isolated left-to-right inputs in every locale.
 
 Translator-facing catalogs are ordinary JSON files at `HUI-Web-Editor/l10n/<locale>.json`; the
 matching files under `web/languages/` are generated deployment copies. Each catalog separates
@@ -155,12 +157,13 @@ never flashes during the first sweep. Multiline message blocks reserve their mea
 and do not overlap adjacent bubbles in the stack. The
 preview uses `requestAnimationFrame` and the server uses its high-frequency packet animator so long
 wrapped messages refresh smoothly. Random tablists populate dynamic headers, footers and group
-formats. Minecraft samples an MOTD animation frame when it answers each
-server-list request rather than continuously redrawing an already displayed row. Each replacement
-is one undo step.
+formats. Minecraft samples an MOTD animation frame when it answers each server-list request rather
+than continuously redrawing an already displayed row. The MOTD editor therefore holds that sampled
+frame still; **Refresh** samples the current wall-clock frame again, and choosing another entry
+represents another ping. Each replacement is one undo step.
 
 The image and animated-image icon inspectors accept PNG, JPEG, WebP and GIF uploads directly.
-Oversized uploads are aspect-fit to the 64-pixel Gloss ceiling automatically instead of requiring a
+Oversized uploads are aspect-fit to the 16-pixel text-image ceiling automatically instead of requiring a
 separate resize step. A GIF is resized frame by frame, expanded into ordered PNG paths under
 `plugins/Gloss/images/` and attached to an `animatedTextImage` component, up to 128 imported frames.
 The image manager can also import a 64x32, 64x64 or proportional high-resolution Minecraft skin:
@@ -494,7 +497,7 @@ anything else happens.
 | Bytes per menu document | 2 MiB |
 | Image assets | 512 |
 | Bytes per image | 512 KiB |
-| Image dimensions | at most 64 by 64, and at most 4,096 pixels |
+| Image dimensions | at most 16 by 16, and at most 256 pixels |
 | Aggregate stored image pixels | 262,144 |
 | Aggregate image rows | 4,096 |
 | Warnings | 256, each at most 512 characters |

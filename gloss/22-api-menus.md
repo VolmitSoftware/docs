@@ -2,7 +2,7 @@
 title: "API: Menus"
 description: "Gloss documentation: API: Menus"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -209,7 +209,7 @@ public sealed interface HoloIcon permits HoloIcon.Text, HoloIcon.Item, HoloIcon.
 | `Item` | A floating item display | `NullPointerException("stack")` on null. Cloned on construction and on every `stack()` read, so your `ItemStack` stays yours to mutate |
 | `Block` | A packet-only block display using the default state | Non-null Bukkit material. A live server rejects any material whose `isBlock()` is false |
 | `Image` | A picture from `plugins/Gloss/images/` | `IllegalArgumentException` when blank, over 256 characters, containing a control character or `:`, starting with `/`, or containing a `..` segment. `\` becomes `/` |
-| `AnimatedImage` | Those frames in order, advancing every `tickSpeed` ticks | Every path sanitized as above. List copied. Empty or null list rejected with `IllegalArgumentException`.`tickSpeed` clamped to at least `1` |
+| `AnimatedImage` | Those frames in order, advancing every `tickSpeed` ticks | Every path sanitized as above. List copied. Empty or null list rejected with `IllegalArgumentException`. `tickSpeed` must be 2 through 1200 |
 | `Entity` | A packet-only living entity anchored at its feet | Non-null Bukkit type with `isSpawnable()` and `isAlive()`. Width and height must be finite, greater than `0`, and no larger than `64` |
 
 The image path validation messages name the directory they describe:

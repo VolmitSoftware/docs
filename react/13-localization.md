@@ -35,7 +35,9 @@ preference order. A valid stored choice wins on later visits. The browser choice
 the React server's `language` setting.
 
 The page writes the matching BCP 47 language to the HTML document. `he_IL` uses right-to-left
-document direction; every other supported locale uses left-to-right direction.
+document direction; every other supported locale uses left-to-right direction. Commands, pairing
+codes and other technical values remain left-to-right. The document title, description, social
+metadata and install manifest switch with the interface language.
 
 English defaults remain typed in Dart. Editable complete catalogs live at
 `react-web/web/languages/<locale>.json`, including `en_US.json`. The optional deployment-wide
@@ -44,6 +46,8 @@ build-time `REACTOR_LANGUAGE` locale, so it cannot leak one language into anothe
 Each switch loads and validates the complete candidate before publishing it. A fetch, JSON,
 unknown-key or placeholder failure keeps the previous active language and does not persist the
 rejected choice. At initial startup, English remains active when the preferred catalog cannot load.
+Localized files under `react-web/web/manifests/` are generated from each catalog's app title and
+description; translators edit only the JSON catalog.
 
 ## Server catalogs
 

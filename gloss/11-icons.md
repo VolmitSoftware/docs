@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Gloss documentation: Icons"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -197,7 +197,17 @@ One text display is emitted per pixel row, walking `x` left to right:
 
 Transparency is binary. Any alpha below 255 is fully transparent. Anything else is fully opaque. The JPEG exemption exists because JPEG carries no alpha channel.
 
-Image size drives entity count directly. A 64 by 64 image is 64 text displays of 64 glyphs each, sent to one viewer.
+Text images are limited to 16 by 16 pixels. The limit is deliberate: every source row is a text
+display and every source pixel is still a font glyph. Consecutive pixels with the same color are
+encoded as one text run to reduce component and packet work. The vanilla full-block glyph retains
+font advance and line spacing, so this renderer is intended for small pixel art rather than
+continuous photographs. An oversized local image fails the icon and renders the missing-image
+checkerboard.
+
+A seamless raster cannot be substituted transparently with vanilla maps. Map pixels render only on
+item frames, which snap to the block grid and cannot honor menu scale, arbitrary rotation,
+billboarding or follow-player movement. Gloss therefore does not expose a map renderer on ordinary
+menu image icons.
 
 ## `animatedTextImage`
 
@@ -208,7 +218,7 @@ Image size drives entity count directly. A 64 by 64 image is 64 text displays of
 | Key | Type | Required | Default | Notes |
 |---|---|---|---|---|
 | `source` | array of string, or a single string | yes (schema) | `null` | Each entry is a separate image file. There is no GIF frame extraction |
-| `speed` | integer | no | `0` | Ticks between frame advances |
+| `speed` | integer from 2 through 1200 | yes | none | Ticks between frame advances |
 
 Pixel mapping is the same as `textImage` with two differences. The JPEG
 exemption is absent, so the alpha test runs for every format. Every
@@ -216,9 +226,14 @@ frame shorter than the tallest frame is padded at the bottom. The pad
 is blank rows built from that frame own width, using the same
 bold-space and space pair. All frames end up with the same line count.
 
-The frame counter increments every server tick and advances when it reaches `speed`. Because the comparison runs after the increment, `speed: 1` advances every tick. `speed: 0` — the value when the key is omitted — also advances every tick. The tick source is the menu session one-tick task. It reaches only components that are currently open.
+The frame counter increments every server tick and advances when it reaches `speed`. The two-tick
+minimum caps the renderer at ten frames per second. The tick source is the menu session one-tick
+task. It reaches only components that are currently open.
 
-A frame advance sends one metadata packet per row. There is no respawn and no repositioning. The entity count is fixed at spawn from frame 0 line count. The bottom padding guarantees that count matches every other frame.
+A frame advance sends metadata only for rows whose rendered component changed, and submits those
+packets as one batch to the viewer. There is no respawn and no repositioning. The entity count is
+fixed at spawn from frame 0 line count. The bottom padding guarantees that count matches every
+other frame.
 
 Each frame file is decoded once while the icon is constructed. Icons are reconstructed on component open and on every visual refresh. An image hot reload re-reads every frame of each affected icon.
 
@@ -395,10 +410,14 @@ An absent or `null` `icon` is not an error. It produces the missing icon with no
 
 `{"type":"itemStack"}` fails with `Unknown type: itemStack`. Serializing one fails the same way. There is no NBT or serialized-stack JSON form of an icon. See [API: Menus](/gloss/22-api-menus).
 
-The other API icon factories map straight onto the JSON records. `HoloIcon.text` becomes a `text` icon with default `refreshTicks`. `block` becomes `block`. `image` becomes `textImage`. `animatedImage` becomes `animatedTextImage` with its tick speed floored at 1. `entity` becomes `entity`. None of them carries a style block. An API-applied icon always renders with the style defaults.
+The other API icon factories map straight onto the JSON records. `HoloIcon.text` becomes a `text`
+icon with default `refreshTicks`. `block` becomes `block`. `image` becomes `textImage`.
+`animatedImage` becomes `animatedTextImage` and rejects a tick speed outside 2 through 1200.
+`entity` becomes `entity`. None of them carries a style block. An API-applied icon always renders
+with the style defaults.
 
 ## Schema
 
-`schema/gloss.schema.json` defines `$defs.icon` as the union above. It requires `type`. It requires a namespaced block key and entity key. It requires integer item counts. It requires non-blank image and item paths. It requires at least one non-blank animation source. It allows an optional integer animation speed. It constrains text refresh intervals to 0 – 1200. It allows an integer `customModelValue` with no minimum. It constrains entity dimensions to greater than 0 and at most 64. The entity branch explicitly forbids `style`. `itemStack` is unlisted because it has no JSON form.
+`schema/gloss.schema.json` defines `$defs.icon` as the union above. It requires `type`. It requires a namespaced block key and entity key. It requires integer item counts. It requires non-blank image and item paths. It requires at least one non-blank animation source and an animation speed from 2 through 1200. It constrains text refresh intervals to 0 – 1200. It allows an integer `customModelValue` with no minimum. It constrains entity dimensions to greater than 0 and at most 64. The entity branch explicitly forbids `style`. `itemStack` is unlisted because it has no JSON form.
 
 The schema is advisory. It is not read at runtime. No JSON Schema validator runs in the loader. Gson is the behavioral authority. That is why unknown icon keys are silently ignored in a running server even though the style object marks them invalid. The schema is what the web editor validates against. See [Web Editor & Sync](/gloss/18-web-editor).
