@@ -85,7 +85,7 @@ Every command edit rewrites the document with `revision` bumped by one. Writes a
 
 ## Rendering
 
-Each display is spawned non-persistent with a `CENTER` billboard, no shadow, and the document's `seeThrough` value. The shipped baseline and the absent-key fallback both enable see-through, so terrain does not hide a hologram unless its document explicitly sets `false`. The value hot-reloads on an existing shared or per-viewer display. Its client view range is set to `[holograms] viewRange` divided by the 64-block Paper base. Text is refreshed every `[holograms] updateIntervalTicks` (default 10). Text is only re-sent when the rendered string actually changed.
+Each display is spawned non-persistent with a `CENTER` billboard, no shadow, and the document's `seeThrough` value. The shipped baseline and the absent-key fallback both enable see-through, so terrain does not hide a hologram unless its document explicitly sets `false`. The value hot-reloads on an existing shared or per-viewer display. Its client view range is set to `[holograms] viewRange` divided by the 64-block Paper base. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10). If any persistent hologram contains a clock-driven expression or complete named-animation token, the persistent driver samples every tick until that content is removed. Text is only re-sent when the rendered string actually changed.
 
 Spawning requires the anchor chunk to be loaded. An unloaded chunk retries on later ticks. A hologram whose world is not loaded, or whose `lines` list is empty, despawns every display it owns. It renders nothing until that changes. If you move the anchor, Gloss teleports the existing displays. It does not respawn them.
 

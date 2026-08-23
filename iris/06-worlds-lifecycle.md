@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -110,6 +110,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 |---|---|---|
 | "busy" response | Another lifecycle operation holds the coordinator. It is one global mutex, so a pack download or publish blocks world create just as much as another create does | Wait for the running operation. Retrying concurrently will not help |
 | Startup validation pending / failed / restart-required on login or create | External datapack ingestion or dimension-pack validation has not reached a safe state | Fix the first logged failure, or complete the requested restart. Do not hand-create world folders or hand-edit `bukkit.yml` |
+| A configured startup world is reported as generation-locked | The immediate startup restart or shutdown did not complete, or startup validation failed before world loading. Iris bound a non-generating safety generator so Bukkit cannot fall back to vanilla terrain | Fix the first logged restart or validation failure, then restart. Do not force chunk generation while the lock remains |
 | Folia create succeeded but teleport says no such world | Folia create only stages files and registration | Restart, then load or teleport |
 | Create reports that automatic teleport failed | The world was created, but the 60-second entry attempt failed, returned false, or did not finish | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
 | Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the `iris/pack` snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |

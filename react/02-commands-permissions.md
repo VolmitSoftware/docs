@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-22T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -136,7 +136,7 @@ Both test commands mutate their test world. `run` queues cleanup actions around 
 
 | Subcommand | Description |
 |------------|-------------|
-| `pair <label> [role=viewer]` | Create and persist a bearer token, then print its RCT2 pairing payload and fingerprints. Roles are `viewer`, `operator`, or `admin`. |
+| `pair <label> [role=viewer]` | Create and persist a bearer token, then report its RCT2 pairing payload and fingerprints. Players receive a click-to-copy action instead of the raw payload in chat; console and RCON receive raw text. Roles are `viewer`, `operator`, or `admin`. |
 | `list` | List active token IDs, labels, and issue times. |
 | `revoke <id>` | Revoke a token ID and persist the token store. |
 

@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,6 +73,8 @@ A command that responds is not proof the generator can produce chunks. Finish wi
 Iris blocks player login until external datapack validation and dimension-pack validation both complete. The kick message names the reason and tells you to check the console.
 
 The two gates behave differently. A failed or restart-pending **external datapack** state keeps login locked. It also blocks all Iris world creation until you fix it and restart. Iris tells you when a restart is what is required.
+
+When validated external datapacks change, Iris completes its initialization and then invokes the server's restart directly, before Paper begins loading default worlds. If that restart API throws or returns unexpectedly, Iris requests shutdown and keeps every configured Iris default world bound to a non-generating refusal; CraftBukkit cannot substitute vanilla terrain.
 
 Unchanged, already-validated datapacks and packs reuse their persisted results. Iris still reads the local authored bytes to confirm the exact fingerprint. It skips remote resolution, semantic revalidation, copying, installation, and pack compilation.
 

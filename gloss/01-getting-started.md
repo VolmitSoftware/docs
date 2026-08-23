@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Gloss documentation: Getting Started"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -43,7 +43,7 @@ plugins/Gloss/
 ├── tablist.json           tablist header, footer and per-group list-name formats
 ├── boards/                one JSON per scoreboard sidebar (default.json shipped)
 ├── emoji/                 one JSON per emoji (67 shipped)
-├── animations/            one JSON per text animation (rainbow.json shipped)
+├── animations/            one JSON per text animation (10 effects shipped)
 ├── bubbles/               one JSON per chat bubble style (default.json shipped)
 └── previews/              container preview documents (14 shipped)
 ```
@@ -78,7 +78,7 @@ Gloss extracts default documents only where the target file is missing. An edite
 | Folder | Documents | Extracted while |
 |---|---|---|
 | `emoji/` | 67 | `[features] emoji` |
-| `animations/` | `rainbow.json` | `[features] animations` |
+| `animations/` | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `[features] animations` |
 | `boards/` | `default.json` | `[features] boards` |
 | `bubbles/` | `default.json` | `[features] chatBubbles` |
 | `previews/` | 13 | `[features] previews` |

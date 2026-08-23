@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -123,12 +123,17 @@ locally available image or custom-item icon type. Player and server values use G
 getters; optional PAPI expansion data and integration metrics are demonstrated with explicit
 fallbacks rather than used for values Gloss already owns. Random scoreboards vary their row
 structure, selection rules and 1.20.3+ hidden-number setting. Their generated color sequences and
-the fixed scoreboard showcase advance once per second to match the runtime's default 20-tick board
-refresh; generated tablist sequences advance once every two seconds to match its default 40-tick
-refresh. Holograms vary occlusion, billboard
-mode and authored yaw and pitch; animations cover every playback mode; emoji cover token-only,
-shorthand, literal and compound Unicode forms; and tablists vary header/footer and group-format
-behavior. The recurring staff names are scattered easter eggs rather than a fixed script.
+the fixed scoreboard showcase author their own visible rates while runtime and preview both sample
+clock-driven text every 50 ms. Random tablists choose compact, welcome, status, event, community or staff structures,
+compose one to five header and footer rows independently, vary one to seven group-name formats and
+choose among all ten animation families. Their authored expressions choose the visible rate while
+the runtime and editor sample clock-driven expressions and named animations every 50 ms. Holograms vary occlusion, billboard
+mode and authored yaw and pitch; animations choose among rainbow, marquee, timeline, typewriter,
+flash/pulse, wipe, scanner, scramble/decode, odometer and wave/chase while covering every playback
+mode; emoji cover token-only,
+shorthand, literal and compound Unicode forms. Generated tablists keep both active halves enabled,
+always include a valid `default` list-name format, and refuse to reproduce the document they replace.
+The recurring staff names are scattered easter eggs rather than a fixed script.
 MOTDs deliberately use only viewer-free time and server values: the status response is sent
 before the same request's latency is measured, so a current-ping conditional MOTD cannot exist.
 Random container previews choose among all 14 shipped target families: beehive, brewing stand,
@@ -156,8 +161,7 @@ functions and expressions resolve before the preview applies that band, so raw a
 never flashes during the first sweep. Multiline message blocks reserve their measured line height
 and do not overlap adjacent bubbles in the stack. The
 preview uses `requestAnimationFrame` and the server uses its high-frequency packet animator so long
-wrapped messages refresh smoothly. Random tablists populate dynamic headers, footers and group
-formats. Minecraft samples an MOTD animation frame when it answers each server-list request rather
+wrapped messages refresh smoothly. Minecraft samples an MOTD animation frame when it answers each server-list request rather
 than continuously redrawing an already displayed row. The MOTD editor therefore holds that sampled
 frame still; **Refresh** samples the current wall-clock frame again, and choosing another entry
 represents another ping. Each replacement is one undo step.
@@ -192,11 +196,15 @@ toggle hitboxes rather than demonstrating only an instant fixed nudge. Menu text
 player/server samples and optional PAPI fallbacks, using each icon's runtime refresh interval.
 
 The template picker includes an Everything showcase menu, a furnace expression lab using all four
-container-preview element types, the shipped defaults, richer examples for every Gloss document
-kind and all four animation modes. Gloss's shipped 60-step, one-tick RGB `rainbow` gradient is
-available to previews even when no workspace animation document exists, matching a clean server
-installation. Procedurally randomized animations also generate dense continuous hue gradients
-instead of short legacy-color cycles. A color-only frame is shown against the preview-only word
+container-preview element types, the shipped defaults, a scoreboard with one row for each animation
+effect, and richer examples for every Gloss document
+kind, all four animation modes, and matching templates for rainbow, marquee, timeline, typewriter,
+flash, wipe, scanner, decode, odometer and wave. Time-driven single-frame effects repaint live and
+pause with their sampled expression time. All ten shipped animations are available to previews
+even when no workspace animation document exists, matching a clean server installation. The
+60-step RGB `rainbow` gradient and the randomized rainbow variant use dense continuous hues instead
+of short legacy-color cycles; the other randomized variants author their matching expression helper
+directly into the generated document. A color-only frame is shown against the preview-only word
 `RAINBOW`, making its actual color visible without adding that word to the document or server output.
 The library rail carries a labelled
 **Workspace actions** menu holding workspace-bundle Import and Export and `Erase all local data`;

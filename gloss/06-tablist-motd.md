@@ -2,7 +2,7 @@
 title: "Tablist & Server List MOTD"
 description: "Gloss documentation: Tablist & Server List MOTD"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -92,7 +92,7 @@ Other plugins can override both per player through `GlossAPI.setTab(player, head
 | `[features] tablist` | `true` | Enables header/footer and list-name management |
 | `[tablist] updateIntervalTicks` | `40` | 1..400 |
 
-Every cycle the driver walks the online players and applies to each one on that player own region thread. It is Folia-safe. If you change the interval, Gloss restarts the driver on reload. Header, footer and list-name expressions are sampled once per cycle, so the default can show one new time-driven frame every two seconds; `floor(time.seconds / 2)` advances one list entry per default refresh.
+Every cycle the driver walks the online players and applies to each one on that player's own region thread. It is Folia-safe. The configured 40-tick default remains the ordinary cadence for static text, PlaceholderAPI, metrics, and player or server expressions. A clock-driven expression (`time.ms`, `time.seconds` or `time.ticks`) or complete `|animation.<id>|` token switches the enabled tablist surface to every-tick sampling, up to 20 FPS. Rendered header/footer and list-name values are change-deduplicated, so fast sampling does not resend unchanged packets. Hot document edits and API override changes switch cadence without a reload; changing the configured interval restarts the driver on config reload.
 
 If you turn things off, Gloss cleans up after itself:
 

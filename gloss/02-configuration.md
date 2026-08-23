@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -86,7 +86,7 @@ Shipped defaults follow the toggle. A feature that is off extracts nothing and l
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `stackDistance` | `0.26` | 0.05 – 2.0 | Vertical distance in blocks between stacked temporary holograms, and the value exposed to the API as the stack spread |
-| `updateIntervalTicks` | `10` | 1 – 200 | Ticks between persistent hologram text refreshes |
+| `updateIntervalTicks` | `10` | 1 – 200 | Ticks between ordinary persistent hologram refreshes; clock-driven expressions and named animations automatically sample every tick |
 | `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which per-viewer copies are rendered |
 | `perViewerPlaceholders` | `true` | — | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
 | `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, API temporaries) |
@@ -102,13 +102,13 @@ A non-finite `stackDistance` or `viewRange` falls back to its default. It does n
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `updateIntervalTicks` | `20` | 1 – 200 | Ticks between scoreboard refreshes |
+| `updateIntervalTicks` | `20` | 1 – 200 | Ticks between ordinary scoreboard refreshes; active clock-driven boards automatically use a separate every-tick driver |
 
 ## `[tablist]`
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `updateIntervalTicks` | `40` | 1 – 400 | Ticks between tablist refreshes |
+| `updateIntervalTicks` | `40` | 1 – 400 | Ticks between ordinary tablist refreshes. Clock-driven expressions and complete `\|animation.<id>\|` tokens automatically sample every tick |
 
 The header, footer and per-group list-name formats are not here. They are in `tablist.json`. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
 
