@@ -171,9 +171,10 @@ For a text icon, each line of the `text` value — split on `\n` — is rendered
 5. **Legacy and bracket-hex colors**, followed by MiniMessage parsing.
 
 Because a placeholder is resolved per viewer, two players looking at
-the same menu id see two different renderings. A text icon re-resolves
-its dynamic text every `refreshTicks` (default `10`, `0` disables the
-refresh, maximum `1200`). It does this when the source has a complete `%name%`,
+the same menu id see two different renderings. An explicit `refreshTicks` value controls the
+refresh exactly (`0` disables it, maximum `1200`). When the key is omitted, ordinary dynamic text
+uses 10 ticks while clock-driven expressions and complete named-animation tokens use one tick.
+The icon refreshes when the source has a complete `%name%`,
 `|function|` or `{{ expression }}` token. A refresh that throws
 keeps the previously rendered text and logs once per session.
 

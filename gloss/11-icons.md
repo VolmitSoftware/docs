@@ -108,7 +108,7 @@ An out-of-range number, a malformed ARGB string, an unpaired brightness value or
 | Key | Type | Required | Default | Notes |
 |---|---|---|---|---|
 | `text` | string | yes (schema) | `null` | `null` is treated as `""` and renders as one empty line |
-| `refreshTicks` | integer 0 – 1200 | no | `10` | Ticks between live placeholder re-renders. `0` freezes the text after the first render |
+| `refreshTicks` | integer 0 – 1200 | no | automatic | Explicit ticks between live re-renders. `0` freezes after the first render. When omitted, ordinary dynamic text uses 10 ticks and clock-driven or named-animation text uses 1 tick |
 
 `text` is split on the literal newline character `\n`. Each authored line becomes its own text display entity. A `refreshTicks` outside 0 – 1200 throws `refreshTicks must be between 0 and 1200` and rejects the menu file.
 

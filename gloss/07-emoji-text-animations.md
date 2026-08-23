@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Gloss documentation: Emoji, Text & Animations"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -284,7 +284,7 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 | `frameIntervalMs` | yes | Milliseconds per frame, clamped to `1`..`60000` |
 | `frames` | yes | At least one string, otherwise `animation requires at least one frame`. A `null` entry becomes `""` |
 
-`rainbow.json` is the only shipped animation. It walks the complete RGB hue wheel through 60
+`rainbow.json` walks the complete RGB hue wheel through 60
 color-only frames at 53 milliseconds per frame, so the transition is a smooth 3.18-second gradient
 rather than a small legacy-color cycle. The non-round cycle keeps three-second status pollers from
 repeatedly sampling the same MOTD color. `|animation.rainbow|&lONLINE` changes the
@@ -294,12 +294,69 @@ four `Gloss`-prefixed frames, the later four color-only frames, and the phase-lo
 gradient. Any edited or merely reformatted copy is preserved as user content; use `/gloss animations
 reset name=rainbow` when that copy should be replaced deliberately.
 
+Gloss also ships `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`,
+`odometer` and `wave`. Each is a scoreboard-safe example built from a reusable inline-expression
+helper. Use `|animation.marquee|` to play the shipped example, or call `marquee(...)` directly to
+animate your own text.
+
+Already extracted examples are not rewritten when their authored step rate changes. Delete those
+files or run `/gloss animations reset` to regenerate the current defaults. The same rule applies to
+`boards/animation-showcase.json` through `/gloss board reset name=animation-showcase`.
+
 The RGB frame expands to a full legacy hex sequence after the text pipeline. That is appropriate
 for holograms, MOTDs, tablists, bubbles and other component text. A sidebar row has the stricter
 32-unit team-prefix/suffix budget documented in [Scoreboards & Groups](/gloss/05-scoreboards-groups),
 so generated scoreboard examples use a compact animated glyph instead of spending that row's budget
 on the RGB prefix. The editor's scoreboard validator shows the exact delivered result if a custom
 board references `rainbow` directly.
+
+### Reusable animation helpers
+
+Every helper is pure and receives an explicit step, elapsed time or progress value. Nothing starts a
+hidden task or keeps per-player state; two surfaces given the same arguments return the same text.
+
+| Helper | Result |
+|---|---|
+| `marquee(text, width, step)` | Scrolls text left through a 1–64-character window |
+| `timeline([[text, seconds], ...], elapsedSeconds)` | Loops through 1–64 scenes, each with its own positive duration |
+| `typewriter(text, step, holdSteps)` | Types, holds and erases text |
+| `flash(first, second, step)` | Alternates two complete snippets, including their formatting |
+| `wipe(text, step)` | Reveals and hides text while preserving its width |
+| `scanner(text, baseStyle, highlightStyle, step)` | Moves one highlighted character across the text |
+| `scramble(text, step)` | Deterministically resolves randomized glyphs into the target text |
+| `odometer(from, to, progress, digits)` | Interpolates safe whole numbers and zero-pads to 1–16 digits |
+| `wave(text, styles, step)` | Chases 1–16 color/style prefixes across the characters |
+
+This timeline scrolls a welcome message, flashes a boost notice, then replaces it with an event
+message:
+
+```text
+{{ timeline([
+  ['&b' + marquee('WELCOME', 10, floor(time.seconds * 4)), 4],
+  [flash('&a&lBOOSTED', '&7BOOSTED', floor(time.seconds * 4)), 4],
+  ['&bEVENT LIVE', 4]
+], time.seconds) }}
+```
+
+`marquee`, `typewriter`, `wipe`, `scanner`, `scramble` and `wave` transform characters. Their text
+argument must therefore be plain, single-line text; put color outside that argument or use the
+dedicated style arguments. Formatting tokens and common multi-code-point sequences such as flags,
+skin-tone modifiers and joined emoji are rejected instead of being split. PlaceholderAPI tokens are
+also rejected; resolve them first with `papi(...)` and pass that result to the helper. `scanner` and
+`wave` styles must start with a legacy color/reset or
+`[RRGGBB]` and may contain one additional formatting code. Text is bounded to 256 characters, or 64
+for the per-character styled helpers. Timeline duration is bounded to one hour.
+
+The shipped examples advance four steps per second. Animated boards, tablists, persistent holograms,
+and menu text with no explicit `refreshTicks` sample clock-driven expressions and named animations
+every tick, while each expression still controls when its visible state changes. The one-frame shipped examples use a
+nominal `frameIntervalMs` of 1000; their expression time, not that frame interval, determines the
+result.
+
+The web editor's **Randomize** action for an animation document chooses across the complete shipped
+set: rainbow, marquee, timeline, typewriter, flash/pulse, wipe, scanner, scramble/decode, odometer
+and wave/chase. The generated document contains ordinary editable frames and helper expressions;
+it does not depend on editor-only playback behavior.
 
 ### Modes
 
@@ -316,16 +373,18 @@ A single-frame animation always renders that frame, whatever the mode.
 
 ### Using an animation
 
-`|animation.<id>|` works anywhere the text pipeline runs: hologram lines, board titles and lines, tablist header, footer and name formats, `[drops] nameFormat` and MOTD lines. It does **not** work in menu or panel documents. Those do not run the pipeline.
+`|animation.<id>|` works anywhere the text pipeline runs: hologram lines, board titles and lines,
+tablist header, footer and name formats, menu and panel text, `[drops] nameFormat` and MOTD lines.
+Container-preview live labels call the expression helpers directly; they do not resolve a named
+animation token.
 
 The frame is chosen from the server clock at render time. Two surfaces
 that show the same animation always show the same frame. How often the
-change is *visible* is bounded by the consuming surface refresh
-interval, not by `frameIntervalMs`. Holograms use
-`[holograms] updateIntervalTicks` (default 10, so 500 ms). Boards use
-`[boards] updateIntervalTicks` (default 20). The tablist uses
-`[tablist] updateIntervalTicks` (default 40). If you set
-`frameIntervalMs` below the consuming interval, frames are skipped.
+change is *visible* is bounded by the consuming surface sampler, not by `frameIntervalMs`. Active
+boards, tablists and persistent holograms containing clock variables or named animations sample once
+per tick. Menu and panel text does the same when `refreshTicks` is omitted; an explicit value wins.
+Static, PlaceholderAPI, metric, player and server-only text retains the configured ordinary cadence.
+If you set `frameIntervalMs` below 50 ms outside the hologram fast path, frames are skipped.
 
 Hologram lines are the exception. A clip faster than 20 fps (`frameIntervalMs` below 50) is driven by the dedicated high-frequency animator thread at up to `[holograms] maxAnimationFps` (default 120). It sends sub-tick text updates as packets instead of waiting for the tick refresh. Clips at 20 fps or below stay tick-driven everywhere. See [Holograms](/gloss/04-holograms) for the mechanics and the `highFrequencyAnimations`, `maxAnimationFps` and `animationPacketBudget` knobs.
 
@@ -340,9 +399,9 @@ directly without a named animation document; see [Expressions & Placeholders](/g
 /gloss animations reset [name=*]
 ```
 
-`animation` is an alias for `animations`. `list` prints the loaded animation ids fifteen per page behind a count header and the shared pager footer. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores `rainbow.json` from the jar.
+`animation` is an alias for `animations`. `list` prints the loaded animation ids fifteen per page behind a count header and the shared pager footer. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten shipped animation documents from the jar.
 
-> `/gloss animations reset` overwrites `animations/rainbow.json`. Only shipped ids are affected. Your own animation files are never touched.
+> `/gloss animations reset` overwrites the ten shipped animation ids. Only shipped ids are affected. Your own animation files are never touched.
 {.is-warning}
 
 ### Turning animations off

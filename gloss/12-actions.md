@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Gloss documentation: Actions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -51,7 +51,7 @@ Gloss accepts left and right clicks from the main hand only. It samples sneak st
 
 | Key | Required | Default | Meaning |
 |---|---|---|---|
-| `command` | yes | none | The command line. One leading slash is optional |
+| `command` | yes | none | The command line. One leading slash is optional; `%player%` and `%player_name%` become the clicking player's name |
 | `source` | no | `player` | `player` or `server` |
 
 The command is trimmed and exactly one leading slash is removed. A missing, blank or slash-only command is warned once and dropped when the actions are resolved.
@@ -62,7 +62,7 @@ The command is trimmed and exactly one leading slash is removed. A missing, blan
 > A `server` command is console authority handed to whoever can click the button. Gate the button with a `gloss.open.<menuId>` permission, or put the privileged step behind a command that does its own checks.
 {.is-warning}
 
-Command strings are not placeholder-expanded. `%player%` is not substituted. `%player_name%` reaches the target command literally. A deferred `server` command may run after later inline actions in the same list, because the scheduler hop returns immediately.
+Before either dispatch path, Gloss replaces every literal `%player%` and `%player_name%` token with the clicking player's Minecraft name. This makes a privileged action such as `{ "type": "command", "source": "server", "command": "give %player% minecraft:obsidian 1" }` target the clicker without requiring that player to have command permission. Other PlaceholderAPI tokens are not expanded and reach the target command literally. A deferred `server` command may run after later inline actions in the same list, because the scheduler hop returns immediately.
 
 ## `sound`
 

@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Gloss documentation: Scoreboards & Groups"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -46,9 +46,11 @@ There is no `id` key. The document id is the file name with `.json` removed. If 
 
 A document that fails to parse is logged as `boards/<id>.json: <reason>` and skipped. The copy Gloss already holds stays live. A deleted file removes the board. Any player currently on it loses their sticky selection and is re-evaluated.
 
-### The shipped default
+### Shipped defaults
 
-`boards/default.json` is extracted on first run when it is missing, and only while `[features] boards` is on. With the feature off there is no `boards/` folder at all; turning it on extracts the default on that reload:
+`boards/default.json` and `boards/animation-showcase.json` are extracted when missing, and only
+while `[features] boards` is on. With the feature off there is no `boards/` folder at all; turning
+it on extracts both defaults on that reload. The ordinary default is:
 
 ```json
 {
@@ -68,9 +70,41 @@ A document that fails to parse is logged as `boards/<id>.json: <reason>` and ski
 
 Note `"primary": false`. Out of the box nothing selects this board. No player sees a sidebar until you set `primary`, add a `groups` entry or set a `permission` someone holds.
 
-`/gloss board reset [name=*]` rewrites the shipped defaults over whatever is on disk. `default` is the only board Gloss ships. `*` and `default` do the same thing. It requires `gloss.boards.edit`.
+`animation-showcase.json` provides one bounded row for each shipped animation effect:
 
-> `/gloss board reset` overwrites `boards/default.json` without a backup. Boards you created yourself are not shipped defaults. The command never touches them.
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "title": "&d&lANIMATION LAB",
+  "lines": [
+    "{{ select(['&c', '&6', '&e', '&a', '&b', '&d'], floor(time.seconds * 4)) }}&lRAINBOW",
+    "&b{{ marquee('MARQUEE', 7, floor(time.seconds * 4)) }}",
+    "{{ timeline([['&aTIMELINE', 2], ['&eNEXT SCENE', 2]], time.seconds) }}",
+    "&f{{ typewriter('TYPEWRITER', floor(time.seconds * 4) + 9, 1) }}",
+    "{{ flash('&d&lFLASH', '&7FLASH', floor(time.seconds * 4)) }}",
+    "&d{{ wipe('WIPE', floor(time.seconds * 4) + 4) }}",
+    "{{ scanner('SCANNER', '&7', '&a', floor(time.seconds * 4)) }}",
+    "&5{{ scramble('DECODE', floor(time.seconds * 4)) }}",
+    "&6ODO {{ odometer(0, 999, mod(time.seconds, 10) / 10, 3) }}",
+    "{{ wave('WAVE', ['&a', '&7'], floor(time.seconds * 4)) }}"
+  ],
+  "primary": false,
+  "hideNumbers": true,
+  "permission": "default",
+  "groups": []
+}
+```
+
+The board is deliberately not primary. Its rainbow row uses compact legacy colors because a full
+RGB prefix consumes a scoreboard team's carried suffix before any visible letters fit. Use `/gloss
+board show animation-showcase` to inspect it without changing automatic selection, or edit its
+selection fields normally.
+
+`/gloss board reset [name=*]` rewrites shipped defaults over whatever is on disk. Use `default` or
+`animation-showcase` for one file; `*` restores both. It requires `gloss.boards.edit`.
+
+> `/gloss board reset` overwrites the selected shipped board files without a backup. Boards you created yourself are not shipped defaults. The command never touches them.
 {.is-warning}
 
 ## Selection order
@@ -137,7 +171,7 @@ Every command edit rewrites the document with `revision` bumped by one, through 
 
 ## Rendering
 
-The sidebar is driven by VolmLib board manager on the `[boards] updateIntervalTicks` cadence (default 20, clamped 1..200). If you change that interval on reload, Gloss tears down the driver and rebuilds it. Each title and line expression is sampled once per cycle, so the default can show one new time-driven frame per second. For a four-entry sequence, `select(colors, floor(time.seconds))` advances one entry per default refresh; an index that advances by all four entries between samples can appear fixed because it wraps to the same entry.
+Ordinary sidebars use `[boards] updateIntervalTicks` (default 20, clamped 1..200). An actively selected board containing a clock-driven expression (`time.ms`, `time.seconds` or `time.ticks`) or a complete `|animation.<id>|` token moves to a separate every-tick driver, so it can display authored animation at up to 20 FPS. Static boards and boards containing only player, server, metric or PlaceholderAPI values stay on the ordinary driver even while another player watches an animated board. Rendered rows are change-deduplicated before they reach the client.
 
 Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. Fitting happens after that pipeline: the title has a 32-UTF-16-unit wire limit, and each row uses a 16-unit team prefix plus a 16-unit suffix with its active colour state carried into the suffix. Colour codes consume that budget. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Surrogate pairs, legacy colour pairs and complete legacy RGB runs are never cut in half. At most 15 rows render; the rest are dropped.
 

@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Gloss documentation: Data Files & Hot Reload"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -107,11 +107,11 @@ A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skip
 | Kind | Path | Envelope | Shipped defaults | Reset command | Documented on |
 |---|---|---|---|---|---|
 | Holograms | `holograms/<id>.json` | yes | none | — | [Holograms](/gloss/04-holograms) |
-| Boards | `boards/<id>.json` | yes | `default` | `/gloss board reset [name=*]` | [Scoreboards & Groups](/gloss/05-scoreboards-groups) |
+| Boards | `boards/<id>.json` | yes | `default`, `animation-showcase` | `/gloss board reset [name=*]` | [Scoreboards & Groups](/gloss/05-scoreboards-groups) |
 | Tablist | `tablist.json` | yes | one document | `/gloss tablist reset` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
 | MOTD | `motd.json` | yes | one document | `/gloss motd reset` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
 | Emoji | `emoji/<id>.json` | yes | 67 documents | `/gloss emoji reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
-| Animations | `animations/<id>.json` | yes | `rainbow` | `/gloss animations reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
+| Animations | `animations/<id>.json` | yes | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `/gloss animations reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Bubble styles | `bubbles/<id>.json` | yes | `default` | `/gloss bubbles reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Real-drop settings | `real-drops/default.json` | yes | `default` | — | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Menus | `menus/**.json` | no, hash revision | none | — | [Hologram Menus](/gloss/09-menus) |

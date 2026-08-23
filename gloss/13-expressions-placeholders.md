@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -281,6 +281,15 @@ does the same. Omitting the fallback preserves the strict behavior.
 | `number(value)` | Parses the first number from a number or formatted string |
 | `bar(value, maximum, width, filled, empty)` | Builds a clamped 1–64-character progress bar |
 | `hex(color)` | Converts an expression color to `[RRGGBB]` for the later color stage |
+| `marquee(text, width, step)` | Scrolls plain text through a fixed-width window |
+| `timeline([[text, seconds], ...], elapsedSeconds)` | Loops independently timed text scenes |
+| `typewriter(text, step, holdSteps)` | Types, holds and erases plain text |
+| `flash(first, second, step)` | Alternates complete snippets |
+| `wipe(text, step)` | Reveals and hides plain text at stable width |
+| `scanner(text, baseStyle, highlightStyle, step)` | Moves a formatting highlight across text |
+| `scramble(text, step)` | Resolves deterministic randomized glyphs into text |
+| `odometer(from, to, progress, digits)` | Interpolates and zero-pads a whole number |
+| `wave(text, styles, step)` | Chases formatting styles across text |
 
 The existing math, ternary, string, color and list functions described below also apply. Inline
 expressions are re-evaluated at the consuming surface's update cadence. `time` expressions animate
@@ -294,6 +303,12 @@ samples every 20 ticks and a tablist every 40 ticks. Use `floor(time.seconds)` t
 per second on a board, or `floor(time.seconds / 2)` to advance it once every two seconds on a tablist.
 Advancing by an exact multiple of the list length between refreshes repeatedly selects the same
 entry.
+
+The animation helpers are bounded, stateless string transforms. Pass `floor(time.seconds / 2)` as
+the step for content intended to remain visible on the default tablist cadence. Character-transform
+helpers require plain single-line input so they cannot split a color token or common combined glyph. See
+[Emoji, Text & Animations](/gloss/07-emoji-text-animations) for signatures, limits and the composed
+timeline example.
 
 ## The preview expression DSL
 

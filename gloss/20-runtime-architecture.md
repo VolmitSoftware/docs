@@ -2,14 +2,14 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 Gloss runs two different display renderers. It uses a single ordered enable sequence with a
 stack-shaped teardown. It uses one shared watchdog task. It uses a small set of repeating driver
-tasks whose periods come straight from `config.toml`.
+tasks whose ordinary periods come from `config.toml`.
 
 This page describes what actually runs so that entity counts, restart behavior, timing and jar
 contents are predictable. Configuration keys referenced here are documented in
@@ -363,21 +363,19 @@ Refresh cadences per surface:
 
 | Surface | Period | Source |
 |---|---|---|
-| Holograms | `[holograms] updateIntervalTicks` (default 10) | `HologramService` driver task |
+| Holograms | `[holograms] updateIntervalTicks` (default 10); clock-driven text uses 1 tick | `HologramService` driver task |
 | Temporary holograms (bubbles, indicators) | `[holograms] temporaryUpdateIntervalTicks` (default 2) | `HologramService` temporary task |
 | Fast hologram animation frames (clips over 20 fps) | adaptive, floor `1000 / [holograms] maxAnimationFps` ms | `Gloss Animator` thread |
-| Scoreboards | `[boards] updateIntervalTicks` (default 20) | `BoardService` sidebar driver |
-| Tablist | `[tablist] updateIntervalTicks` (default 40) | `TablistService` driver task |
+| Scoreboards | `[boards] updateIntervalTicks` (default 20); active clock-driven boards use a separate 1-tick driver | `BoardService` sidebar drivers |
+| Tablist | `[tablist] updateIntervalTicks` (default 40); clock-driven expressions and named animations use 1 tick | `TablistService` driver task |
 | Menu, panel and preview sessions | every tick | session tick loop |
 | Preview live fields | every 4 session ticks | `ContainerPreview` refresh interval |
 | Preview access recheck | every 10 session ticks | `ContainerPreview` access interval |
 | Document folders, `images/`, `language.yml` and `config.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
 
-Hologram text is only re-sent when the rendered string actually changed. Bubble motion likewise applies only presentation values that changed, and one multiline entity replaces the previous per-row bubble entities. Preview cells, labels and
+Hologram, scoreboard and tablist text are only re-sent when the rendered string actually changed. Hologram and tablist drivers change cadence automatically when hot-loaded documents or API updates add or remove clock dependencies and named animations. Scoreboards place animated and ordinary players on separate drivers so one animated sidebar does not force every other player's PAPI board onto the fast path. Bubble motion likewise applies only presentation values that changed, and one multiline entity replaces the previous per-row bubble entities. Preview cells, labels and
 slots are likewise only re-sent when the computed color, component or item differs from what was
-last applied. A preview whose contents are static costs nothing beyond the comparison. Changing a
-hologram driver interval takes effect on the next reload of that service. The session tick loop is
-fixed at one tick and is not configurable.
+last applied. A preview whose contents are static costs nothing beyond the comparison. The session tick loop is fixed at one tick and is not configurable.
 
 The `Gloss Animator` thread is the one deliberate exception to tick-driven rendering.
 `HologramAnimator` is a daemon thread that exists only while a hologram or temporary hologram
