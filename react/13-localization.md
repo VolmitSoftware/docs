@@ -53,6 +53,8 @@ description; translators edit only the JSON catalog.
 
 Server messages are typed Java catalogs under `art.arcane.react.localization.catalog`. Examples are command, runtime, action, and config messages. Feature and tweak display strings and `@ConfigDoc` English are separate from player-facing command chat. Catalogs apply to that command chat.
 
+React sends catalog components through VolmLib for command chat, action bars, clickable output, and plugin logging. Paper-family destinations retain RGB, decorations, and click or hover events. Plain Bukkit, console, RCON, and Java-logger fallbacks receive destination-safe text, so formatting remains visible to players without exposing raw `§` markers in operator consoles.
+
 ## Validation
 
 An overlay may contain nested TOML string values or arrays of strings. The file limit is 2 MiB. Templates use strict MiniMessage. Message placeholders cannot appear inside MiniMessage tags. Hotload rejects a null value, a non-string scalar, or an invalid array member. It also rejects an invalid template, invalid placeholder placement, an oversized file, or an invalid locale name.

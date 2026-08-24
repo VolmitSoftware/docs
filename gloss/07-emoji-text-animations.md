@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Gloss documentation: Emoji, Text & Animations"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -61,6 +61,8 @@ Two syntaxes work anywhere colors apply:
 | `[RRGGBB]` | Exactly six hex digits with `]` immediately after. `[ff00aa]Gloss` works, `[f0a]` and `[ff00aaa]` are left untouched |
 
 Bracket hex is case-insensitive and is converted before `&` codes. Both can appear in the same line.
+
+Gloss passes the rendered text through VolmLib's shared component delivery instead of sending serialized section text directly. Player and Paper-family destinations retain colors, RGB, decorations, and menu click or hover events. Console, RCON, and plain Bukkit fallbacks receive clean plain text rather than visible `§` markers. The same destination rules cover command feedback and the startup splash.
 
 ### Chat
 
