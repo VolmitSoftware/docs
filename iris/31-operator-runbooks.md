@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -74,16 +74,12 @@ Use a disposable world, a fixed seed, and a pack with visibly frequent rivers. V
    /iris tp test-ow
    ```
 
-   Expect on Paper-family servers other than Folia: the world is created
-   and loaded as an Iris world, and you land in generated terrain.
-
-   Expect on Folia: Iris publishes current Paper 26.2 per-dimension
-   storage, prints the successful staging message, and requests a
-   controlled restart. After the host relaunches the JVM, `iris:test-ow`
-   loads with seed `1337`. The console must not print
-   `World storage migration is required during startup` or
-   `Starting Vanilla import` for that world. Either message means the
-   staged world was incomplete and is a blocking defect.
+   Expect on every Bukkit-family server, including Folia: the world is
+   created and loaded as an Iris world in the current process, and you
+   land in generated terrain. Folia must report `paper_like_runtime` as
+   the creation backend and must not request a restart. The console must
+   not print `World storage migration is required during startup` or
+   `Starting Vanilla import` for that world.
 
 4. Walk or fly a few hundred blocks.
 

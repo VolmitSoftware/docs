@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Adapt documentation: Overview"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,11 +10,11 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Adapt is a skills plugin for Paper, Purpur, and Folia servers. Players earn experience in twenty-three skill lines by play and spend the knowledge on adaptations. Ability power limits how many adaptation levels a player can hold at once. Players unlock adaptations by activity, not from an operator.
 
-In play it works like this. You mine for a while. Pickaxes levels up and pays you knowledge. You right-click a bookshelf. The Adapt menu opens. You spend that knowledge on something like faster ore breaking.
+In play it works like this. You mine for a while. Pickaxes levels up and pays you knowledge. You right-click the side of a bookshelf. The Adapt menu opens. You spend that knowledge on something like faster ore breaking.
 
-Some adaptations are passive. They work from the moment you buy them. Others give you a gesture. Examples include sneak-right-click with a certain item, left-click the air mid-jump, or raise a shield just before a hit lands. The menu is the only place a player spends anything. Nobody needs to learn a command.
+Some adaptations are passive. They work from the moment you buy them. Others give you a gesture. Examples include sneak-right-click with a certain item, left-click the air mid-jump, or raise a shield just before a hit lands. The menu is the normal player-facing place to spend knowledge, commit ability power, and pay any configured Vault price for adaptation levels. Nobody needs to learn a command.
 
-Optional systems sit around that core. Experimental Mutations add a second, late-game progression track. Protectors make adaptations respect WorldGuard regions and claim plugins. PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics hook in when those plugins are present. A Velocity and Redis companion module shares player data across a network. A Java API lets other plugins price, deny, or watch ability use.
+Optional systems sit around that core. Experimental Mutations add a second, late-game progression track. Protectors make adaptations respect WorldGuard regions and claim plugins. PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics hook in when those plugins are present. SQL-backed servers can use backend-to-backend Redis handoff across a proxy network without a proxy plugin. A Java API lets other plugins price, deny, or watch ability use.
 
 This file is the map. Each section below says what a piece is and which doc owns the detail.
 
@@ -22,7 +22,7 @@ This file is the map. Each section below says what a piece is and which doc owns
 
 **Skills** are the progress lines. The lines include Agility, Pickaxes, Chronos, and twenty more. Each skill watches for its own activities. Each skill pays skill XP and owns a set of adaptations. [10 - Skills Catalog](/adapt/10-skills-catalog) indexes them. Docs `11` through `33` cover one skill each. Each skill page lists where its XP comes from. It lists how every adaptation activates.
 
-**Adaptations** are the abilities a player buys. Each adaptation has levels. Each level has a knowledge price. Each held adaptation also charges an ability power price. Each adaptation has its own file under `plugins/Adapt/adapt/adaptations/`. An operator can retune or disable one ability without change to the rest.
+**Adaptations** are the abilities a player buys. Each adaptation has levels. Each level has a knowledge price and may also have a configured Vault price. Each held adaptation also charges an ability power price. Each adaptation has its own file under `plugins/Adapt/adapt/adaptations/`. An operator can retune or disable one ability without change to the rest.
 
 **Progression** converts skill XP to skill level and knowledge. Skill level also feeds a shared master level. Master level sets the ability power budget. Knowledge decides what you can afford. Power decides how much you can carry at once. See [02 - Concepts](/adapt/02-concepts) for the model and [05 - Configuration Math](/adapt/05-configuration-math) for the curves.
 
@@ -74,7 +74,7 @@ Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Ru
 | [36 - Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects) | Orbs and skill items |
 | [37 - Recipes, Brewing & Value](/adapt/37-recipes-brewing-value) | Recipes and brewing |
 | [38 - Runtime Architecture](/adapt/38-runtime-architecture) | Boot, tick, data, Folia |
-| [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server) | Proxy module |
+| [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server) | Backend handoff and ownership fencing |
 | [40 - Operator Runbooks](/adapt/40-operator-runbooks) | Pre-launch and upgrade procedures |
 | `41`-`50` | Public API |
 
@@ -98,8 +98,7 @@ Docs `00` through `40` are written for operators and players in reading order. D
 | `src/main/java/art/arcane/adapt/papi/` | PlaceholderAPI expansion |
 | `src/main/java/art/arcane/adapt/service/` | Hotload, mutation, command services |
 | `src/main/resources/` | `plugin.yml` and the shipped locale TOMLs |
-| `velocity/` | Velocity and Redis companion module |
-| `docs/` | This documentation tree |
+| `src/main/java/art/arcane/adapt/util/project/redis/` | SQL-fenced backend Redis handoff and wire codec |
 
 Soft depends declared in `plugin.yml`: PlaceholderAPI, WorldGuard, Factions, ChestProtect, Residence, GriefDefender, GriefPrevention, LockettePro, HiddenOre, Iris, Vault, AdvancedChests, MagicCosmetics.
 

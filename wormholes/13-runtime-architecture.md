@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,8 +40,8 @@ Order from `Wormholes.onEnable`, then network bootstrap:
 5. `VaultEconomy`, `WormholesLocalization`, then localization reload from
    settings.
 6. Wormholes installs the scheduler bridge
-   (`SchedulerRuntime` / FoliaScheduler), the chunk lease registry, and
-   `ChunkSendRateTuner`.
+   (`SchedulerRuntime` / FoliaScheduler), the region-task provider, chunk lease
+   registry, chunk pre-send provider, and `ChunkSendRateTuner`.
 7. PacketEvents `init()`. Audience and HUD services start.
 8. Core managers:
    - `BlockManager`
@@ -61,21 +61,22 @@ Order from `Wormholes.onEnable`, then network bootstrap:
 10. Register listeners for block, effect, construction, wand, vanilla travel
     cost, portal skins, portal manager, and traversable. Also register
     projection, projection change, vanilla portal replacer, and chat input.
-11. Repeating tasks start: RTP attendance sweep (20t), arrival warmer sweep
-    (40t), vanilla dimensional-frame validation (40t).
+11. The RTP attendance sweep starts (20t).
 12. `network.bootstrap(settings)` starts the remote registry, `NetworkManager`,
     import/export, portal sync, and traversal service. It also starts the remote
     view cache, view subscriptions, view server, message and peer sinks, the
     transfer channel, and network start.
-13. `WormholesCommandService.register()`.
-14. `WormholesIntegrationService.register()`.
-15. When PlaceholderAPI is present, the PlaceholderAPI expansion registers.
-16. `TraversalCostGateway` from traversal API settings.
-17. The hotload manager starts. It registers a filesystem watcher for
+13. The arrival warmer sweep (40t) and vanilla dimensional-frame validation
+    (40t) start.
+14. `WormholesCommandService.register()`.
+15. `WormholesIntegrationService.register()`.
+16. When PlaceholderAPI is present, the PlaceholderAPI expansion registers.
+17. `TraversalCostGateway` from traversal API settings.
+18. The hotload manager starts. It registers a filesystem watcher for
     `config/wormholes.toml` and keeps content-digest reconciliation as a
     fallback.
-18. Diagnostics start. Network capture runtime start.
-19. The splash screen prints. On failure, Wormholes tears down fully and
+19. Diagnostics start. Network capture runtime start.
+20. The splash screen prints. On failure, Wormholes tears down fully and
     self-disables.
 
 ### Disable / pre-unload
@@ -85,16 +86,19 @@ Order from `Wormholes.onEnable`, then network bootstrap:
 1. Invalidate hotload admission, close the filesystem watcher, and join its
    worker thread.
 2. Unregister integration and placeholders.
-3. Shut the traversal cost gateway.
-4. Shut the door manager, then the pocket world.
-5. Close RTP.
-6. Shut down projection.
-7. Shut the view server.
-8. Shut the arrival warmer.
-9. Release chunk leases.
-10. Shut effects.
-11. Cancel plugin and Folia tasks.
-12. Drain remaining static state.
+3. Shut portal sync, including inbound portal-settings application.
+4. Shut the door manager and pocket world, close RTP, and drain pending
+   cross-server traversals.
+5. Shut the portal manager so no new local traversal can start.
+6. Wait up to 2s for active traversal-cost evaluations, give existing callbacks
+   500ms to publish an outcome, then drain owner settlements for up to 2s on
+   traveler entity owners.
+7. Retire accepted region tasks. This remains after traversal rollback so RTP
+   and source-region recovery can finish first.
+8. Shut down projection, the view server, the arrival warmer, chunk pre-send,
+   chunk leases, and effects.
+9. Cancel plugin and Folia tasks.
+10. Drain remaining runtime and static state.
 
 BileTools `onPreUnload` uses the same tear-down path.
 
@@ -102,9 +106,9 @@ BileTools `onPreUnload` uses the same tear-down path.
 
 | Path | Contents |
 |------|----------|
-| `config/wormholes.toml` | Consolidated settings schema **2**: `schema`, `quality`, `[main]`, `[network]`, `[projection]`, `[render]`. Wormholes writes this file in canonical form on load and save. |
+| `config/wormholes.toml` | Consolidated settings schema **2**: `schema`, `quality`, `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`. Wormholes writes this file in canonical form on load and save. |
 | `portals/` | Local portal JSON files in a nested UUID layout (`portals/<segment>/<segment>/<uuid>.json`). |
-| `doors/` | Dimensional door store: `doors/state.json` plus per-player return tickets under `doors/state.json.tickets/`. |
+| `doors/` | Dimensional door store: `doors/state.json`, per-player return tickets under `doors/state.json.tickets/`, and replayable resize intents under `doors/pending-resizes/<space-id>.json`. |
 | `languages/` | Optional per-locale TOML overrides (`<locale>.toml`). Bundled locales ship in the jar. English is owned by the code catalog. |
 | `routes/` | Cross-server route data for imported peers and portals. |
 | `trust/` | Peer trust keys (`PeerTrustStore`). |
@@ -123,14 +127,53 @@ refuses while players are inside or mid-transit in a pocket dimension.
 - The plugin declares `folia-supported: true` (Paper plugin metadata).
 - World and entity work uses VolmLib `FoliaScheduler` region, entity, and global
   runners. It does not use raw Bukkit async world mutation.
-- **Projection:** A global tick schedules observer frames with
-  `FoliaScheduler.runEntity` on each observer. Packet and claim work then run on
-  the observer entity thread. On Folia, world sampling uses
-  `RegionSnapshotWorldViewProvider`. Other platforms use live views.
+- Region-task callbacks are retired exactly once if their world unloads, the
+  plugin shuts down, or the scheduler rejects or throws while submitting them.
+  Submission exceptions include the world, chunk, delay, and full stacktrace in
+  the server log.
+- **Projection:** A global tick admits a bounded, fairly rotating subset of
+  observer frames with `FoliaScheduler.runEntity`. The default shared cap is 64
+  player-owner frames per tick across normal projection and surface skins;
+  packet and claim work then run on the observer entity thread. On Folia, world sampling uses
+  `RegionSnapshotWorldViewProvider`. Other platforms use live views. Projected
+  entity animation and hurt forwarding uses exact entity-to-projector
+  membership, coalesces duplicate work into one owner task per observer, and
+  drains at most 256 distinct entities from that observer queue per task.
+- Placed-rune animation does not inspect players while no runes are tracked;
+  otherwise it admits at most 64 player entity tasks per nine-tick pass and
+  rotates fairly through the online population. Portal-tool validation admits
+  at most 64 tasks per three-tick scan, prioritizes dirty inventory state and
+  confirmed holders, and reserves capacity for fallback discovery. Retired or
+  rejected tasks keep their work eligible for retry, and player quit or plugin
+  shutdown removes their scheduler state.
 - When work is not already on the portal source region, portal RTP settings
   apply on that region.
+- Settings received from a remote gateway are coalesced per portal and applied
+  on that portal's owning region. Open menu refreshes run on each viewer's
+  entity scheduler. Rejected region/global submissions retain and retry the
+  latest update.
+- Due portal updates on Folia are grouped by exact world and portal-center chunk,
+  so portals with the same owner share one region task without combining work
+  across ownership boundaries.
 - Network traversal maintenance is global-scheduled. The view subscription sweep
-  is async-repeating.
+  is async-repeating, retries scheduler rejection, and rechecks a concurrent
+  subscription while releasing an idle loop. A failed partial initial bulk
+  subscription is reset and retried instead of being marked ready, with its
+  cancellation handle published before scheduling can execute or reject it. Initial
+  subscriptions share one fair global pump that starts at most eight chunk-column
+  captures every two ticks instead of multiplying that allowance per session.
+  Ongoing entity snapshots use a separate fair global queue with at most eight
+  new captures and eight captures in flight every two-tick maintenance pass.
+  Dirty replication chunks rotate through a global limit of 64 drains per tick;
+  Folia admits at most one owner-region task per chunk until that drain retires,
+  and a rejected global drain cycle retries after one second.
+- Dimensional-door visuals share one two-tick maintenance loop. Attendance is
+  spread across 20 buckets, with at most 64 overlay entity-owner tasks admitted
+  and 64 in flight per pass; teardown retires queued and active leases exactly.
+- Eventless dimensional-door objects share one owner-dispatched chain and one
+  entity-array read per reached chunk each tick. Door memberships are combined
+  within that chunk. Rejected owner chains retain their memberships and retry;
+  unloaded target chunks pause without recurring work and resume on chunk load.
 - Chunk leases and the arrival warmer hold destination chunks without projecting
   them.
 
@@ -180,6 +223,9 @@ Paper plugin dependencies (optional, `load: BEFORE`, join-classpath):
 | PlaceholderAPI | `%wormholes_…%` expansion (`WormholesPlaceholders`). |
 | Iris | Terrain/probe integration for RTP and worldgen-aware features where present. |
 | Vault | Economy for travel costs via `VaultEconomy`. |
+
+WorldGuard is discovered reflectively rather than declared as a soft dependency.
+When available, its `ENTRY` flag participates in RTP destination admission.
 
 Wormholes load uses Paper metadata `load: STARTUP`. Legacy `plugin.yml` uses
 `POSTWORLD`. Soft depends are not required. Missing plugins skip their

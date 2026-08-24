@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, real-drop settings and the tablist. Everything hot-reloads through a queued automatic batch. No command and no restart is required.
+All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, real-drop settings and the tablist. Watched kinds hot-reload through a queued automatic batch; panel placement documents are the explicit manual-reload exception.
 
 ## The document envelope
 
@@ -44,6 +44,8 @@ Writes are atomic. The document is serialized to a temporary file in the same fo
 ## Hot reload
 
 One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes, and an ordinary idle pass only drains those events. JSON registries perform a full directory-membership safety scan about every 18 seconds and start exact-content reconciliation about every 6 seconds; both windows restart when their preceding work completes. The ten registry kinds are split evenly between two 3-second start slots so their safety work does not all land in one pass. Exact reconciliation walks already-known documents in stable id order. Across every registry in one watchdog pass, it yields after 32 files, 8 MiB, or about 10 ms; a single file or full membership scan may exceed the time budget, and documents above 2 MiB are rejected before their content is hashed or parsed. An unfinished walk continues on a later pass, and its reconciliation batch is published only after the complete walk finishes. Automatic passes start no more than once every 3 seconds after the preceding apply batch completes, and requests made while one is waiting or running collapse into one trailing latest-state pass. Deletions are held for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and rereads that pending file against the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss reschedules the tick pump without releasing the active batch; the new interval begins behind that batch's completion cooldown.
+
+After a successful automatic batch, every online player with `gloss.admin` receives one coalesced action-bar notice naming the changed kinds and one Gloss success chime. Several files or kinds changed in the same pass still produce only one notice and one sound. `[commands] sounds` controls the chime; the visual notice remains enabled. Startup loads, `/gloss reload`, Gloss-owned writes, rejected documents and failed apply attempts do not produce this automatic success feedback.
 
 The polling itself runs on a dedicated `Gloss-Watchdog-IO` thread. Stat, read and parse never touch the server tick. Anything that has to touch the world hops back to the server thread, or on Folia and Canvas to the owning region thread, before it applies. The console shows both halves:
 
@@ -93,14 +95,13 @@ section moved. Config sections compare as whole values, so editing
 server the way it once did. Document watchers are unaffected either way:
 a hologram file edit still hot-reloads that hologram.
 
-`/gloss reload` is the deliberate exception. It cycles every service
-unconditionally, because an operator asking for a reload is asking for
-everything on disk to be re-read, not just the parts `config.toml`
-happens to mention.
+`/gloss reload` is the deliberate config exception. It cycles every config-driven core service
+unconditionally instead of only the services whose section changed. Panel placement documents
+remain outside that path and use `/gloss panel reload`.
 
 Panels are not watched at all. If you edit a panel file by hand, apply it with `/gloss panel reload`.
 
-A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skipped. The copy already in memory stays live. A bad edit stops applying. It does not delete working content. Fix the file. The next poll picks it up.
+A document that fails to parse is skipped and the copy already in memory stays live. Automatic watching waits for the same invalid bytes to be observed on two separate passes before logging `<kind>/<id>.json <reason>`. This absorbs the zero-byte interval produced by editors that truncate and then rewrite a file. If valid or different bytes arrive on the next pass, no stale warning is emitted; unchanged invalid content logs once and remains rejected until fixed. Startup and `/gloss reload` remain immediate and report invalid files on their first read.
 
 ## Document kinds
 
@@ -113,7 +114,7 @@ A document that fails to parse is logged as `<kind>/<id>.json <reason>` and skip
 | Emoji | `emoji/<id>.json` | yes | 67 documents | `/gloss emoji reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Animations | `animations/<id>.json` | yes | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `/gloss animations reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Bubble styles | `bubbles/<id>.json` | yes | `default` | `/gloss bubbles reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
-| Real-drop settings | `real-drops/default.json` | yes | `default` | — | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
+| Real-drop settings | `real-drops/default.json` | yes | `default` | `/gloss drops reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Menus | `menus/**.json` | no, hash revision | none | — | [Hologram Menus](/gloss/09-menus) |
 | Images | `images/<file>` | not JSON | none | — | [Icons](/gloss/11-icons) |
 | Container previews | `previews/<id>.json` | no | 14 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
@@ -138,6 +139,7 @@ The reset commands re-extract on demand and **do** overwrite. Each takes an opti
 | `/gloss emoji reset [name=*]` | `gloss.emoji.reset` |
 | `/gloss animations reset [name=*]` | `gloss.animations.reset` |
 | `/gloss bubbles reset [name=*]` | `gloss.bubbles.reset` |
+| `/gloss drops reset [name=*]` | `gloss.drops.reset` |
 | `/gloss board reset [name=*]` | `gloss.boards.edit` |
 | `/gloss tablist reset` | `gloss.tablist.reset` |
 | `/gloss motd reset` | `gloss.motd.reset` |
@@ -148,7 +150,7 @@ The reset commands re-extract on demand and **do** overwrite. Each takes an opti
 
 A reset only restores shipped documents. It never deletes extra documents you added. A board or a preview you created yourself survives `reset *` untouched. That includes one whose id shadows a shipped name in a folder that resolves by priority.
 
-The five reset permissions `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.bubbles.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are children of `gloss.admin`. Board and preview resets sit under their own subsystem nodes instead.
+The six reset permissions `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.bubbles.reset`, `gloss.drops.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are children of `gloss.admin`. Board and preview resets sit under their own subsystem nodes instead.
 
 ## Baselines are never extracted
 

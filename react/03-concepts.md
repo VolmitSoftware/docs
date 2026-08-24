@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "React documentation: Concepts"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,6 +36,9 @@ React creates missing files from Java field defaults. Fields are documented with
 - Some features call `setEnabled(false)` at runtime when required platform APIs or NMS bridges are missing. Examples include pathfinder budget without navigation bridges, dynamic view distance without Paper world distance setters, and AFK view shedding without send-view-distance methods.
 - Disabling keeps the config file. The component does not activate. Actions do not appear in normal queues.
 - Capability-gated secret features also require peer plugins and `integrationSecretsEnabled`.
+- Feature and tweak runtime activation publishes a component as active only after `onActivate()`, listener registration, and ticker registration succeed. A failed runtime step unregisters any ticker/listener it attempted and calls `onDeactivate()` to unwind the component. Configuration discovery and loading occur earlier while the registry is built; they are not part of that runtime activation transaction. Deactivation removes the active/ticked registration first, unregisters the ticker and listener, then calls `onDeactivate()`. Features that schedule delayed owner work also use their own lifecycle generations or completion claims where documented so retired callbacks cannot mutate a replacement activation.
+- Managed entity AI and awareness cleanup is claim-aware and drains in batches of at most 256 tracked entries per pass. Reload therefore restores large paused populations over successive ticks instead of submitting an unbounded task burst; a new claim is never released by an older cleanup pass.
+- Accelerated entity-removal countdowns clear their temporary name and persistent marker on the entity owner before their scheduler is retired. Reload and startup also reconcile leftover countdown markers on loaded entities.
 
 ## Monitoring-only mode
 

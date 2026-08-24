@@ -2,13 +2,13 @@
 title: "Integrations"
 description: "Adapt documentation: Integrations"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt looks for thirteen optional plugins while it enables. It wires itself to whichever ones are running. Nothing here is required. A missing plugin is skipped silently. Adapt runs the same as it would on a bare server.
+Adapt looks for thirteen optional plugins while it enables. It wires itself to whichever ones are running. Nothing here is required, and an absent plugin never stops startup. Adapt can warn when a configured or installed integration cannot be used, such as Vault pricing without an economy provider or an installed-but-disabled HiddenOre.
 
 Because the discovery happens once during enable, installing, removing, enabling or disabling any of these plugins needs a server restart. Bukkit load order decides what Adapt can see. Adapt's protector and adaptation registries are built from what it saw.
 
@@ -67,9 +67,9 @@ Indirect Rift container use and transfers from live item entities also dispatch 
 
 Flags, exact config names, per-adaptation overrides and failure behavior are in [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
 
-## Velocity and Redis
+## Cross-server SQL and Redis
 
-The Velocity companion publishes a Redis data request before a player connects to a backend. Backends with SQL enabled publish the player's JSON and cache it for one minute. SQL stays authoritative. Installation, configuration and operational limits are in [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server).
+Adapt needs no proxy plugin. SQL-backed backends use Redis directly during pre-login to request a response correlated to the exact preceding owner token and epoch. SQL remains authoritative, unsolicited payloads are ignored, and stale owners cannot overwrite a newer fence. Installation, the `Adapt:data:v2` hard break, and operational limits are in [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
 
 ## Third-party Java API
 
@@ -136,5 +136,5 @@ Outside that event the bridge also answers nearest-vein and vein-radius queries 
 
 - [01 - Installation & Configuration](/adapt/01-installation-configuration)
 - [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
-- [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server)
+- [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)
 - [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi)

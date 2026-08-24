@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -100,7 +100,7 @@ Thirteen keys exist. Twelve are fixed. One is a group.
 | `%react_top-world-mspt%` | milliseconds       | The share of the current tick attributed to the single most expensive world. This is not that world's own tick duration. It is the fraction of total sampled cost times `mspt` |
 | `%react_entities%`      | count               | Entities across all loaded chunks                                                                |
 | `%react_chunks%`        | count               | Loaded chunks across all worlds                                                                  |
-| `%react_ground-items%`  | count               | Dropped item entities lying on the ground                                                        |
+| `%react_ground-items%`  | count               | Dropped item entities lying on the ground. Lifecycle events maintain the value; Folia reconciles it through a bounded loaded-chunk rotation |
 | `%react_memory.used%`   | mebibytes (integer) | JVM heap in use: total heap minus free heap, divided by 1048576 and rounded                     |
 | `%react_memory.free%`   | mebibytes (integer) | Heap **headroom to the maximum**: max heap minus used heap, divided by 1048576 and rounded. This is not `Runtime.freeMemory()`. It does not shrink as the JVM grows its heap |
 
@@ -137,6 +137,8 @@ Three things to know:
 ## Sampler catalog
 
 Every id below can be used as `%react_sampler.<id>%`. All are server-wide.
+
+React also registers the internal `unknown` fallback used by unresolved monitor configuration. It returns zero as a raw sample and renders `---`, but it is intentionally omitted from the operator metric catalog and sampler picker.
 
 ### Tick and health
 
@@ -209,6 +211,8 @@ Every id below can be used as `%react_sampler.<id>%`. All are server-wide.
 
 ### Entities
 
+`entities` is an event-maintained total corrected from the server's per-world entity counters every ten seconds. Its per-chunk observer attribution transfers on explicit movement and teleport events, while the shared census repairs movement without an event before removal. The remaining entity category samplers are UUID-deduplicated and event-maintained. Paper and Spigot reconcile at most 128 weakly referenced entities per world every two seconds; their progressive startup repair reads one loaded coordinate and at most 256 entities per tick. Folia reconciles up to 32 owned coordinates from the observer's event-maintained loaded-coordinate index and 128 entities per chunk per refresh, including unoccupied chunks. Observer startup or reload converts at most 256 entries from the one-time loaded-chunk arrays per second and releases those arrays when drained or stopped; after that seed, full Folia chunk coverage takes `ceil(loaded chunks / 32) * 2 seconds`, with additional rotations for chunks above 128 entities.
+
 | Id                       | Unit      | Meaning                                                            |
 |--------------------------|-----------|---------------------------------------------------------------------|
 | `entities`               | count     | Same series as `%react_entities%`                                   |
@@ -216,7 +220,7 @@ Every id below can be used as `%react_sampler.<id>%`. All are server-wide.
 | `entities-hostile`       | count     | Hostile mobs                                                        |
 | `villagers`              | count     | Villagers                                                           |
 | `projectiles`            | count     | Projectile entities                                                 |
-| `physics-entities`       | count     | Entities subject to physics — falling blocks, minecarts and the like |
+| `physics-entities`       | count     | Primed TNT and falling blocks                                       |
 | `ground-items`           | count     | Same series as `%react_ground-items%`                               |
 | `entities-spawns`        | spawns/s  | Entity spawn events per second, all causes                          |
 | `spawner-spawns`         | spawns/s  | Spawns that came from a mob spawner or trial spawner                |

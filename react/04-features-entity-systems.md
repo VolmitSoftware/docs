@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "React documentation: Features - Entity Systems"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ This feature merges compatible living entities into stacks. Stack count uses hea
 
 - **Class:** `FeatureMobStacking`
 - **Listener:** yes
-- **Notes:** Honors `ReactProtection` / `STACK`. Folia uses region-aware dirty-chunk processing. The feature skips tamed pets. You can skip custom mobs. You can limit stacking to spawner-origin mobs. Default stackable types: all alive+spawnable minus `PLAYER`, `ARMOR_STAND`, `VILLAGER`, `WANDERING_TRADER`, `FALLING_BLOCK`.
+- **Notes:** Honors `ReactProtection` / `STACK`. Each batch submits at most 64 distinct dirty chunks, keeps pending and in-flight claims separate, and retries a rejected or failed scan. Dense chunks resume across owning-region callbacks with at most 256 candidate entities and 4,096 pair comparisons per callback. A capped weak spatial index supplies candidates from adjacent chunks without reading those chunks from the anchor callback; canonical chunk ordering prevents duplicate neighbor coverage, and Folia filters ownership before reading candidate state. Equipped, affected, custom-named, injured, attribute-modified, and variant-bearing mobs are excluded so a merge cannot discard vanilla state. Death replacement for an existing legacy stack preserves equipment/drop chances, effects, and maximum health. The feature skips tamed pets. You can skip custom mobs. You can limit stacking to spawner-origin mobs. Default stackable types: all alive+spawnable minus `PLAYER`, `ARMOR_STAND`, `VILLAGER`, `WANDERING_TRADER`, `FALLING_BLOCK`.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -38,7 +38,7 @@ This feature puts distant living entities into sleep or pause under load. Option
 
 - **Class:** `FeatureAdaptiveEntitySleep`
 - **Listener:** yes
-- **Notes:** Honors `ReactProtection` / `SLEEP`. Folia has a dedicated sleep scan path. Duty-cycle requires `setAware`/`isAware` or is disabled.
+- **Notes:** Honors `ReactProtection` / `SLEEP`. The evaluation interval is clamped to at least 50 ms. Paper consumes at most `maxEntitiesSampledPerCycle` entries from the shared event-maintained weak entity rotation instead of copying each world's entity list. Folia reuses a one-second global-thread player snapshot, rotates unique player anchors, divides the same aggregate budget across them, and keeps one exact-completion scan flight until every accepted anchor and cross-owner entity handoff runs, retires, or is rejected. Delayed regions suppress later cycles instead of accumulating scheduled work, and an earlier activation's callbacks cannot inspect or mutate the reloaded feature. Damage and targeting wakes are dispatched to each affected entity owner before entity state is read. Duty-cycle requires `setAware`/`isAware` or is disabled. React tracks its pause ownership separately from `dynamic-activation-range`: disabling either feature releases only that feature's claim, and the entity wakes when no React owner remains. An entity whose AI was already disabled by another plugin is never claimed or re-enabled. Disabling Adaptive Entity Sleep also restores awareness that its duty cycle disabled. Orphaned React pause/doze markers are reconciled as entities load, during progressive Paper startup reconciliation, and near Folia players as they join.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -64,27 +64,28 @@ This feature puts distant living entities into sleep or pause under load. Option
 When entity counts exceed soft caps, this feature removes lowest-priority eligible entities in batches. Soft caps apply per chunk, per player, and per world.
 
 - **Class:** `FeatureEntityTrimmer`
-- **Listener:** yes (tick-driven)
-- **Notes:** Honors `TRIM` protection. Folia: `trimEntitiesFolia()`. Hardcoded minimum age `ticksLived < 400` (not configurable).
+- **Listener:** no (tick-driven)
+- **Notes:** Honors `TRIM` protection. Player-named entities are protected by default and remain protected if they receive a name after selection but before delayed removal. Set `protectNamedEntities = false` to make them eligible. The hardcoded minimum age is `ticksLived >= 400`. Paper and Folia rotate through at most 24 unique player anchors per cycle instead of rebuilding whole-world entity lists. Each anchor evaluates its configured player radius, exact current world count, and exact counts for chunks containing eligible observations; Folia ignores cross-region observations until an anchor owns that region. Candidate inspection is limited to 512 entities per anchor, low-priority candidates are de-duplicated within bounded per-scope and per-cycle pools, and `minKillBatchSize` is enforced only after the complete cycle applies `opporunityThreshold`. A cycle queues at most 512 removals. Every delayed removal is revalidated and runs on the entity-owning scheduler; work left from an older activation cannot remove entities.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
 | `skipCustomMobs` | boolean | `false` | Skip custom mobs. |
+| `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names. Disable to make them eligible for trimming. |
 | `playerMobBlockDistance` | int | `32` | Player proximity radius (blocks). |
 | `blacklist` | `List<EntityType>` | displays, player, armor stands, frames, carts, boats, projectiles, items, TNT, … | Types never trimmed. |
 | `printEntityPurgeSuccess` | boolean | `true` | Log successful purges. |
 | `softMaxEntitiesPerChunk` | int | `11` | Soft max entities per chunk. |
 | `softMaxEntitiesPerPlayer` | int | `100` | Soft max entities per player. |
 | `softMaxEntitiesPerWorld` | int | `1000` | Soft max entities per world. |
-| `priorityPercentCutoff` | double | `0.1` | Priority cutoff when ordering targets. |
+| `priorityPercentCutoff` | double | `0.1` | Priority cutoff fraction when ordering targets; finite values clamp to `0..1`. |
 | `tickIntervalMS` | int | `1000` | Evaluation interval (ms). |
 | `opporunityThreshold` | double | `0.25` | Opportunity threshold for trim passes. |
-| `minKillBatchSize` | int | `100` | Minimum kill batch size. |
+| `minKillBatchSize` | int | `100` | Minimum kill batch size; values above the 512-removal cycle limit prevent a trim pass. |
 
 ### `item-super-stacker`
 
-This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. Matching ordinary stacks now consolidate directly up to their native stack limit instead of waiting for Minecraft's item-merge timer, so dense cobblestone and similar mining drops collapse on the first deferred spawn pass. One pass can consume several nearby entities but stops at its configured budget; only its first merge emits the particle trail. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous target item. React removes the Gloss presentation before deleting a bundle, republishes loaded flagged bundles, and reconciles sampled bundles through a 30-second per-entity cache. Gloss owns display creation and renders the React-configured bundle header, material rows, and remainder row vertically while real drops are active.
+This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. Matching ordinary stacks consolidate directly up to their native stack limit instead of waiting for Minecraft's item-merge timer. Spawn and sampled signals feed a capped weak chunk index and one queued flight per bucket instead of starting a nearby-entity enumeration for every item; at most 64 buckets dispatch per 50 ms evaluation, and one owner pass acquires no more than the configured merge budget plus its collector, hard-capped at 65 candidates. Adjacent indexed chunks preserve radius coverage, while Folia filters ownership before reading a target. One pass can consume several nearby entities but stops at its configured budget; only its first merge emits the particle trail. Merge sounds use the immutable nearby-player index, reach at most 64 recipients within a 32-block horizontal radius, and run each send on that player's owner. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous target item. React removes the Gloss presentation before deleting a bundle, republishes loaded flagged bundles, and reconciles sampled bundles through a 30-second per-entity cache. Gloss owns display creation and renders the React-configured bundle header, material rows, and remainder row vertically while real drops are active.
 
 - **Class:** `FeatureItemSuperStacker`
 - **Listener:** yes
@@ -109,8 +110,8 @@ Every scalar field in this table is exposed automatically in Reactor's web `Conf
 Under high tick time or entity count, this feature removes remote ground items away from players. Per-world pressure can also trigger it. Age, name, and valuable protections apply.
 
 - **Class:** `FeatureItemBackpressure`
-- **Listener:** no
-- **Notes:** Folia samples near players and only removes region-owned items.
+- **Listener:** EntityController item sampling on Folia
+- **Notes:** Paper consumes the shared event-maintained weak entity rotation and inspects at most the aggregate configured budget across rotating worlds. Folia consumes a capped weak item index populated on entity owners, submits at most the same aggregate candidate budget to item owners, and never materializes an unbounded nearby-entity list. Both platforms use one single-flight scan and one aggregate candidate/removal budget per evaluation. Deactivation serializes with the final removal boundary, so no accepted callback can remove an item after disable returns.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -118,7 +119,7 @@ Under high tick time or entity count, this feature removes remote ground items a
 | `tickIntervalMS` | int | `1000` | Evaluation interval (ms). |
 | `triggerTickTimeMS` | double | `60` | Tick-time trigger (ms). |
 | `triggerEntityCount` | int | `5000` | Entity-count trigger. |
-| `maxItemsScannedPerWorld` | int | `220` | Max items scanned per world. |
+| `maxItemsScannedPerWorld` | int | `220` | Aggregate candidate scan budget per evaluation. The retained config key predates the cross-world budget. |
 | `maxItemsRemovedPerCycle` | int | `90` | Max items removed per cycle. |
 | `minimumItemAgeTicks` | int | `200` | Minimum item age. |
 | `noPlayerRadius` | double | `40` | No-player radius (blocks). |
@@ -203,7 +204,7 @@ This feature zeroes velocity on minecart entity types when no player is within `
 
 ### `portal-traffic-smoother`
 
-This feature throttles player and non-player portal traffic per chunk over a window. When over caps, it cancels the portal and re-teleports after a short delay.
+This feature atomically throttles player and non-player portal traffic per destination chunk over a window. When over caps, it first claims global delayed capacity, then cancels the portal and starts an asynchronous teleport after a short entity-owned delay, allowing Paper or Folia to marshal cross-region and cross-world traversal safely. A full queue, zero capacity, or duplicate entity claim leaves the event uncancelled for vanilla handling. An accepted claim stays held until the teleport future settles; expired, retired, failed, or completed work releases its exact claim. Delayed callbacks are generation-gated and cannot start traversal after the feature is deactivated or restarted.
 
 - **Class:** `FeaturePortalTrafficSmoother`
 - **Listener:** yes
@@ -218,7 +219,7 @@ This feature throttles player and non-player portal traffic per chunk over a win
 | `cooloffMS` | int | `5000` | Cool-off after throttle (ms). |
 | `playerDelayTicks` | int | `2` | Player re-teleport delay (ticks). |
 | `entityDelayTicks` | int | `4` | Entity re-teleport delay (ticks). |
-| `maxQueuedDelays` | int | `512` | Max queued delays. A full queue cancels only. |
+| `maxQueuedDelays` | int | `512` | Global maximum number of delayed teleports across all regions. Rejected admission leaves vanilla portal handling unchanged. |
 | `onlyDuringPressure` | boolean | `true` | Only under pressure. |
 | `pressureIncidentScore` | double | `40` | Pressure incident threshold. |
 | `pressureTickMS` | double | `52` | Pressure tick-time threshold (ms). |
@@ -227,40 +228,47 @@ This feature throttles player and non-player portal traffic per chunk over a win
 
 ### `explosion-packet-batching`
 
-This feature collects same-tick explosions and clusters them by `mergeRadius`. With an NMS suppressor and pressure gate, it can suppress per-explosion packets and broadcast merged packets.
+This feature collects pressure-gated explosions and clusters them by `mergeRadius`. Cluster lookup uses a three-dimensional spatial index, so a full per-world buffer does not compare every explosion with every other explosion. The NMS hook binds its suppression decision to the exact packet object and marks which candidates actually had their vanilla packets intercepted; only those candidates can produce a merged broadcast. Suppression admission reserves one slot from the global `maxSuppressedExplosionDebt`; saturation leaves additional packets vanilla. Merged clusters are retained and a Paper main-thread task successfully broadcasts at most `maxMergedBroadcastsPerTick` across all worlds each server tick, so a worst-case 4096-cluster debt takes at most 64 successful ticks to flush with the defaults. A failed send stays at the head for a later tick without releasing its debt. A collected world is resolved again by UUID if its weak reference expires; transient resolution failures retain the batch, while a world that Bukkit confirms is no longer loaded records the affected suppressed-explosion count, emits a full contextual error, and releases only that world's remaining debt so later worlds can continue. Deactivation serializes against an in-flight drain and attempts every retained replacement broadcast for at most `shutdownDrainTimeoutMS`; a send failure, unresolved world or bridge, or timeout fails deactivation while retaining all unsent debt for an exact retry. Near-player candidates, buffer overflow, hook mismatches, and lifecycle races keep vanilla packets.
 
 - **Class:** `FeatureExplosionPacketBatching`
 - **Listener:** yes
-- **Notes:** Measurement-only without suppressor. Tick interval floored to `max(250, tickIntervalMS)`.
+- **Notes:** Measurement-only without a suppressor and on Folia. The current merged broadcast uses Paper's global player list, so React does not suppress packets on a region-threaded server. Tick interval is floored to `max(250, tickIntervalMS)`.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
 | `tickIntervalMS` | int | `1000` | Evaluation interval (ms). |
-| `bypassRadius` | int | `16` | Player bypass radius for clusters (blocks). |
-| `mergeRadius` | int | `12` | Cluster merge radius (blocks). |
+| `bypassRadius` | int | `16` | Player bypass radius in blocks; negative values act as `0`. |
+| `mergeRadius` | int | `12` | Cluster merge radius in blocks; values below `1` act as `1`. |
 | `engageIncidentScore` | double | `55` | Incident score to engage. |
 | `engageTickTimeMs` | double | `55` | Tick ms to engage. |
 | `releaseTickTimeMs` | double | `42` | Tick ms to release. |
 | `sustainEngageMs` | long | `6000` | Sustained pressure before engage (ms). |
 | `sustainReleaseMs` | long | `30000` | Sustained recovery before release (ms). |
-| `maxBufferedPerWorld` | int | `4096` | Max pending explosions per world. |
-| `mergedBroadcastRangeBlocks` | int | `64` | Merged broadcast range (blocks). |
+| `maxBufferedPerWorld` | int | `4096` | Per-world candidate buffer; values below `64` act as `64`. |
+| `mergedBroadcastRangeBlocks` | int | `64` | Merged broadcast range in blocks; values below `16` act as `16`. |
+| `maxMergedBroadcastsPerTick` | int | `64` | Global retained-cluster broadcasts per server tick; clamped to `1..1024`. |
+| `maxSuppressedExplosionDebt` | int | `4096` | Global suppressed explosions awaiting merged delivery; clamped to `0..65536`. |
+| `shutdownDrainTimeoutMS` | int | `2000` | Maximum deactivation drain time; negative values act as `0`. A timeout retains debt and fails deactivation. |
 
 ### `fast-explosions`
 
-This feature staggers primed TNT fuse offsets. It caps primed TNT left in explosion block lists. It can disable TNT chain priming. It also applies fast block updates.
+This feature handles block and entity explosions. It admits affected blocks only while both the global and per-world pending limits have capacity; admitted blocks leave vanilla event handling, while overflow stays in the event block list. Paper retains one ordered server-thread batch and Folia groups admitted work by world and chunk. Every owner callback processes a bounded slice, failed blocks remain reserved for a later retry, and successful or no-longer-matching locations release capacity exactly once. A world unload is held while that world still has admitted destruction and is allowed on the next unload attempt after its owner batches drain. During main-thread disable, React claims accepted Paper slices inline so shutdown cannot deadlock waiting for its own scheduler. Optional chain permits are reserved in original source order before independent chunk tasks run. Container contents, ordinary block drops, optional TNT chain explosions, and fast block updates retain their configured behavior.
 
 - **Class:** `FeatureFastExplosions`
 - **Listener:** yes
-- **Notes:** Effective tick interval override `250` for counters. No ReactProtection/NMS bridge.
+- **Notes:** Prime and chain budgets reset on the feature's `50` ms ticker interval; server lag can defer the reset until the next ticker pass. No ReactProtection/NMS bridge.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
-| `maxPrimesPerTick` | int | `3` | Max primes per tick. |
+| `maxPrimesPerTick` | int | `3` | Max TNT blocks retained for vanilla chain priming per 50 ms budget window. |
 | `spreadPrimedFuseTicks` | int | `7` | Fuse spread between chained primed TNT (ticks). |
-| `maxExplosionChainsPerTick` | int | `3` | Max explosion chains per tick. |
+| `maxExplosionChainsPerTick` | int | `3` | Max optional TNT chain explosions per 50 ms budget window. |
 | `fastBlockUpdates` | boolean | `true` | Fast block updates. |
 | `disableEntityChainReactions` | boolean | `false` | Disable entity chain reactions. |
 | `explosionChainReactions` | boolean | `false` | Allow limited chain explosions. |
+| `shutdownDrainTimeoutMS` | int | `2000` | Maximum disable drain time for admitted work (ms). |
+| `maxPendingBlocksGlobal` | int | `16384` | Maximum admitted blocks retained across all worlds. |
+| `maxPendingBlocksPerWorld` | int | `8192` | Maximum admitted blocks retained for one world. |
+| `maxBlocksPerOwnerExecution` | int | `128` | Maximum blocks processed by one owner callback, hard-capped at `4096`. |

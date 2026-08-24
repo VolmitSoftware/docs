@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Gloss documentation: Icons"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -27,6 +27,7 @@ built. Where components live and how they are clicked is on
 | `textImage` | `TextImageMenuIcon` | One text display per image row |
 | `animatedTextImage` | `AnimatedTextImageMenuIcon` | One text display per row of frame 0 |
 | `item` | `ItemMenuIcon` | One item display, plus one text display when the stack amount is above 1 |
+| `playerHead` | `PlayerHeadMenuIcon` | One item display using a resolved player-head stack or the configured fallback |
 | `block` | `BlockMenuIcon` | One block display using the material's default block state |
 | `customItem` | `ItemMenuIcon` | Same as `item` |
 | `entity` | `EntityMenuIcon` | One packet-only living entity |
@@ -93,7 +94,7 @@ Every JSON-authorable icon type except `entity` accepts the same optional `style
 | `glowColor` | `#AARRGGBB` or `null` | `null` | Sets the glowing entity flag and supplies its color override |
 | `scaleX`, `scaleY`, `scaleZ` | finite number 0.01 – 64 | `1` | Multiplies the session scale per axis. Automatic click geometry uses X and Y. Z is visual only |
 
-The text-specific keys (`shadow`, `seeThrough`, `textAlignment`, `backgroundArgb`, `textOpacity`, `lineWidth`) apply to every display produced by `text`, `textImage` and `animatedTextImage`. `item`, `block` and `customItem` apply the generic display keys to their own display entity. The text keys apply only to an item optional count label.
+The text-specific keys (`shadow`, `seeThrough`, `textAlignment`, `backgroundArgb`, `textOpacity`, `lineWidth`) apply to every display produced by `text`, `textImage` and `animatedTextImage`. `item`, `playerHead`, `block` and `customItem` apply the generic display keys to their own display entity. The text keys apply only to an item's optional count label; a player head always has amount one and creates no count label.
 
 An out-of-range number, a malformed ARGB string, an unpaired brightness value or an unknown enum constant throws during deserialization. The whole menu file fails to load rather than the one icon. ARGB strings must match `#` followed by exactly eight hex digits. Anything else fails with `ARGB colors must use #AARRGGBB`.
 
@@ -271,6 +272,44 @@ Both item flavours render through the same runtime class. They differ only in ho
 | Count changes | Adding or removing the label shifts the item display by `±0.09` in local space. Otherwise the existing label is renamed |
 | Orientation | Fixed item displays follow the session transform. Display yaw and the block depth orbit are reapplied together whenever the transform changes |
 
+## `playerHead`
+
+```json
+{
+  "type": "playerHead",
+  "player": "%player_name%",
+  "refreshTicks": 20
+}
+```
+
+| Key | Type | Required | Default | Notes |
+|---|---|---|---|---|
+| `player` | string | yes | none | Literal Minecraft username or a viewer-aware text-pipeline value. Blank fails icon construction |
+| `refreshTicks` | integer 0 – 1200 | no | `20` | Ticks between re-reading the authored value and profile cache. `0` never refreshes |
+| `style` | display style | no | defaults | The generic item-display style described above |
+
+The authored `player` value is trimmed and runs through the viewer-aware text pipeline.
+`%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without
+PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders
+need the integration that provides them. A result is eligible for a profile request only when it is
+1–16 ASCII letters, digits or underscores. An invalid name or unresolved placeholder uses the
+configured fallback without making an outbound request.
+
+Resolution is asynchronous and cached case-insensitively. A fresh valid name first draws an
+unowned player head. A later refresh swaps in the resolved profile texture, while a confirmed
+unknown name draws `[playerHeads] unknownFallbackItem`. Online players reuse their live profile
+without an outbound update. Offline resolution is bounded and time-limited; the full cache and
+queue contract is in [Configuration](/gloss/02-configuration).
+
+A literal name stops refreshing after it resolves. A dynamic source, pending request or unknown
+name continues at `refreshTicks`, allowing cache expiry and retries to take effect. With
+`refreshTicks = 0`, a request that was pending at spawn remains the unowned head until that
+component is rebuilt. With `[playerHeads] enabled = false`, every player-head icon draws the
+fallback and no profile request is made.
+
+`playerHead` is authored in JSON or the web editor. The `seticon` command has no player-head type,
+and the public `HoloIcon` API has no player-head factory.
+
 ## `block`
 
 ```json
@@ -380,6 +419,7 @@ Validation and loading failures inside an icon constructor are reported as `Menu
 | `block` | `Block icon material "%s" is not a block` | The material resolves but cannot be represented as a block display |
 | `block` | `Unable to create the default block state for "%s"` | The server could not create the material's default block data |
 | `customItem` | `Unable to resolve custom item "%s" from provider "%s"` | The provider registry returned nothing. A blank provider is reported as `auto` |
+| `playerHead` | `Player head icon has no player name` | `player` is absent, blank or only whitespace |
 | `entity` | `Entity icon has an unknown or invalid entity id` | `entity` is absent, malformed, or absent from the entity registry |
 | `entity` | `Entity icon type "%s" is not a spawnable living entity` | The id resolves to a player, item, projectile, display, interaction or another unsafe type |
 | `entity` | `Unable to resolve packet entity type "%s"` | The packet layer threw while mapping the type |
@@ -410,14 +450,14 @@ An absent or `null` `icon` is not an error. It produces the missing icon with no
 
 `{"type":"itemStack"}` fails with `Unknown type: itemStack`. Serializing one fails the same way. There is no NBT or serialized-stack JSON form of an icon. See [API: Menus](/gloss/22-api-menus).
 
-The other API icon factories map straight onto the JSON records. `HoloIcon.text` becomes a `text`
+The API icon factories map straight onto their corresponding JSON records. `HoloIcon.text` becomes a `text`
 icon with default `refreshTicks`. `block` becomes `block`. `image` becomes `textImage`.
 `animatedImage` becomes `animatedTextImage` and rejects a tick speed outside 2 through 1200.
 `entity` becomes `entity`. None of them carries a style block. An API-applied icon always renders
-with the style defaults.
+with the style defaults. JSON `customItem` and `playerHead` icons have no public `HoloIcon` factory.
 
 ## Schema
 
-`schema/gloss.schema.json` defines `$defs.icon` as the union above. It requires `type`. It requires a namespaced block key and entity key. It requires integer item counts. It requires non-blank image and item paths. It requires at least one non-blank animation source and an animation speed from 2 through 1200. It constrains text refresh intervals to 0 – 1200. It allows an integer `customModelValue` with no minimum. It constrains entity dimensions to greater than 0 and at most 64. The entity branch explicitly forbids `style`. `itemStack` is unlisted because it has no JSON form.
+`schema/gloss.schema.json` defines `$defs.icon` as the union above. It requires `type`. It requires a namespaced block key and entity key. It requires integer item counts. It requires non-blank image, item and player-head names. It requires at least one non-blank animation source and an animation speed from 2 through 1200. It constrains text and player-head refresh intervals to 0 – 1200. It allows an integer `customModelValue` with no minimum. It constrains entity dimensions to greater than 0 and at most 64. The entity branch explicitly forbids `style`. `itemStack` is unlisted because it has no JSON form.
 
 The schema is advisory. It is not read at runtime. No JSON Schema validator runs in the loader. Gson is the behavioral authority. That is why unknown icon keys are silently ignored in a running server even though the style object marks them invalid. The schema is what the web editor validates against. See [Web Editor & Sync](/gloss/18-web-editor).

@@ -2,13 +2,13 @@
 title: "Concepts"
 description: "Adapt documentation: Concepts"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt runs on two currencies. Play of a skill earns skill XP. Skill XP raises that skill's level and pays knowledge you can spend only inside that skill. Leveling any skill also feeds a single account-wide master level. Master level sets your ability power. Ability power is the budget that limits how many adaptation levels you can hold at once.
+Adapt's core progression uses knowledge and ability power. Play of a skill earns skill XP. Skill XP raises that skill's level and pays knowledge you can spend only inside that skill. Leveling any skill also feeds a single account-wide master level. Master level sets your ability power. Ability power is the budget that limits how many adaptation levels you can hold at once. A server can optionally charge Vault currency on top of knowledge when learning adaptations.
 
 Knowledge answers "can I afford this?". Power answers "can I carry it?". A player with lots of knowledge in one line and no spare power has to unlearn something before buying anything new. That limit stops a long-lived character from owning every ability at once.
 
@@ -16,7 +16,7 @@ Adaptations only do anything when they are learned and enabled. They must also b
 
 ## Skills
 
-A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. It ticks every 50ms so it can also pay for ongoing states like sprinting. It tracks stats and advancements. It owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/adapt/skills/<id>.toml`.
+A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. Skills share a 50 ms dispatcher, but each callback runs only when its own interval is due and it reports runtime demand. That lets skills pay for ongoing states like sprinting without running every skill's work every server tick. A skill also tracks stats and advancements and owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/adapt/skills/<id>.toml`.
 
 Skill level comes from skill XP through the global `xpCurve`. The default curve, `ADAPT_BALANCED`, needs `100 * L^2 + 1200 * L` XP to reach level `L`. Early levels come quickly. Later ones stretch out. Level lookups are clamped at `experienceMaxLevel`.
 
@@ -68,7 +68,7 @@ Mutations are a separate, opt-in track: two slots, paired domains, a combat lock
 
 ## Player data
 
-`PlayerData` and `AdaptPlayer` hold everything per player: skill lines, learned adaptations, discoveries, stats, mutation state, effect preferences, and XP multipliers. Storage is one JSON file per player under `data/players/` unless `sql.enabled` is on. When SQL is on, it lives in the `ADAPT_DATA` table.
+`PlayerData` and `AdaptPlayer` hold everything per player: skill lines, learned adaptations, discoveries, stats, mutation state, effect preferences, and XP multipliers. Storage is one JSON file per player under `data/players/` unless `sql.enabled` is on. In SQL mode, `ADAPT_DATA` stores the JSON and `ADAPT_DATA_FENCE` stores its ownership epoch and committed sequence.
 
 ## Reference
 
@@ -100,7 +100,7 @@ Mutations are a separate, opt-in track: two slots, paired domains, a combat lock
 | `allowAdaptationsInCreative` | `false` | When true, adaptations still run for creative-mode players |
 | `blacklistedWorlds` | 2 example entries | Worlds where adaptation effects and XP are suppressed |
 | `adaptationUsageConflicts` | empty | Adaptation id to the list of adaptation ids that block it when learned |
-| `sql.enabled` | `false` | Store player data in MySQL instead of per-player JSON files |
+| `sql.enabled` | `false` | Store player JSON and its ownership fence in MySQL instead of using per-player JSON as the authority |
 
 ### Adaptation config flags shared by every adaptation
 

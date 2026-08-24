@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Adapt documentation: Skill - Excavation"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -203,7 +203,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries the
 | Key | Behavior |
 |-----|----------|
 | `enabled` | Turns this adaptation off when false. |
-| `permanent` | Treats the adaptation as always learned, bypassing learn and unlearn. |
+| `permanent` | Purchases normally; once learned, normal players cannot unlearn it. Administrative bypass can lower it without a refund. |
 | `showParticles` | Plays this adaptation's particle effects. |
 | `showSounds` | Plays this adaptation's sound effects. |
 | `baseCost`, `costFactor`, `maxLevel`, `initialCost` | Knowledge cost curve and level cap. Defaults per adaptation below. |

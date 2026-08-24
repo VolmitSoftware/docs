@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,33 +10,37 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/adapt/`.
 
+Advancement grants, tree refreshes, and unlock toasts use the platform scheduler on Paper, Purpur, and Folia. On Folia, these updates remain live instead of falling back to persistence-only grants.
+
 Most of what you will change is hot-reloadable. Native filesystem events are reconciled with content checks, so atomic editor saves, FTP replacements, and same-size edits with an unchanged timestamp are still found. Adapt waits for a stable snapshot of at most 2 MiB and applies at most one automatic batch every 3 seconds; saves made during that interval replace the queued state and run in one trailing batch. Temporary upload artifacts and brief delete-and-recreate gaps are ignored. Automatic loads parse the captured file without rewriting, migrating, deleting, or recreating watched files; canonical rewrites remain startup and explicit migration work. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected, and the settings already in memory keep running.
 
 These things are not hot-reloadable. Adapt wires them only while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
 
-Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders. Without Vault, learning stays knowledge-only. Without a protection plugin, Adapt never asks one for permission. Missing integrations are silent, not fatal.
+Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders. Without Vault, learning stays knowledge-only. Without a protection plugin, Adapt never asks one for permission. An absent integration does not stop startup, but Adapt can warn when a configured or installed integration cannot be used, such as Vault pricing without an economy provider or an installed-but-disabled HiddenOre.
 
 Settings live in three places. `adapt.toml` holds global behavior. One file per skill and per adaptation lives under `adapt/skills/` and `adapt/adaptations/`. `adapt/mutations.toml` holds the experimental Mutation layer. That layer is off until you turn it on.
 
 ## Installing
 
 1. Run a Paper, Purpur, or Folia server on the Minecraft 26.1 API line, on Java 25. Adapt declares `folia-supported: true`, so Folia needs no separate build.
-2. Copy the shaded Adapt jar (`Adapt-<version>.jar`) into the backend's `plugins/` folder. On a Velocity network it goes on each backend, never on the proxy.
+2. Copy the shaded Adapt jar (`Adapt-<version>.jar`) into the backend's `plugins/` folder. On a proxy network it goes on every backend, never on the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
 4. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
 5. Grant `adapt.main` to anyone who should reach `/adapt` at all, then add the specific command nodes. The gameplay `adapt.use.*` nodes default to true but do not get anyone past that root gate.
 
 ## Sharing player data across servers
 
-By default a player's progression lives in `data/players/<uuid>.json`. That file is the truth. SQL moves the truth into an `ADAPT_DATA` table. Use SQL when several backends share one player base. Redis sits in front of SQL as a one-minute handoff cache. A player who switches servers does not wait on a database round trip. Redis is not a second storage backend.
+By default a player's progression lives in `data/players/<uuid>.json`. SQL mode moves authority into two InnoDB tables: `ADAPT_DATA` holds JSON and `ADAPT_DATA_FENCE` holds the current owner, epoch, and committed sequence. Use the same SQL schema on every backend that shares a player base. Redis carries request-correlated handoff snapshots for the exact preceding SQL owner and stages them for 60 seconds; it is not a cache or a second storage backend. No proxy plugin is required.
 
-1. Create the database schema yourself and give the account SELECT, INSERT, UPDATE, DELETE, and CREATE TABLE on it. Adapt creates its table inside the schema but never the schema.
+1. Create the database schema yourself and give the account SELECT, INSERT, UPDATE, DELETE, and CREATE TABLE on it. Adapt creates both tables inside the schema but never the schema.
 2. Fill in the `sql.*` host, port, database, username, and password keys, then set `sql.enabled = true`.
 3. For Redis, set `redis.host` and `redis.port`, add `redis.username` and `redis.password` only if your Redis uses ACLs, then set `redis.enabled = true`. Redis stays inert unless `sql.enabled` is also true.
 4. Restart. Both clients are only built during enable.
-5. Confirm the table appears and that a test player's progression survives a relog and a server switch.
+5. Confirm both tables are InnoDB and that a test player's progression survives a relog and a server switch.
 
-Adapt puts the SQL credentials straight into the JDBC URL. It has no TLS switch of its own. Configure transport security on the database endpoint and in the driver environment. A shutdown write that cannot reach SQL is parked beside the player file as `<uuid>.json.pending-sql`. It is not dropped. See [38 - Runtime Architecture](/adapt/38-runtime-architecture) and [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server).
+Adapt puts the SQL credentials straight into the JDBC URL. It has no TLS switch of its own. Configure transport security on the database endpoint and in the driver environment. SQL startup fails closed unless both tables are InnoDB. After backing up the schema, convert legacy tables with `ALTER TABLE ADAPT_DATA ENGINE=InnoDB;` and `ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;`, then restart every backend.
+
+A fenced SQL write that exhausts its retries is retained beside the player file as `<uuid>.json.pending-sql`. The file starts with `ADAPT_SQL_RECOVERY_V1` and records the UUID, owner token, fence epoch, sequence, and JSON. Old raw-JSON `.pending-sql` files are deliberately rejected and preserved. Stop every backend, back up the database and file, reconcile which profile is authoritative, delete only the incompatible recovery file after that decision, then restart so Adapt can write a fenced envelope. `.pending-delete` is a local-JSON-mode delete or delete-then-save journal; SQL reset and purge instead rotate the ownership fence transactionally. See [38 - Runtime Architecture](/adapt/38-runtime-architecture) and [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
 
 ## Charging money for learning
 
@@ -114,7 +118,8 @@ plugins/Adapt/
   languages/<active-locale>.toml
   languages/overrides/<locale>.toml
   data/players/<uuid>.json
-  data/players/<uuid>.json.pending-sql
+  data/players/<uuid>.json.pending-sql   # SQL mode only
+  data/players/<uuid>.json.pending-delete # local JSON mode only
   data/server-data.json
   data/value-cache.json
   data/advancements.db
@@ -129,15 +134,15 @@ plugins/Adapt/
 |---|---:|---|
 | `debug` | `false` | Prints Adapt's developer debug lines to the console |
 | `verbose` | `false` | Prints per-action diagnostic logging. `/adapt debug verbose` flips the in-memory value without writing the file |
-| `autoUpdateCheck` | `true` | Runs the update check during enable |
+| `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
 | `splashScreen` | `true` | Prints the startup splash |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
 | `language` | `en_US` | Active locale, and the filename used for overrides |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
 | `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the level-search cursor clamps to |
-| `playerXpPerSkillLevelUpBase` | `489` | Flat master XP granted per skill level crossed |
-| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
-| `powerPerLevel` | `0.65` | Power budget granted per master level, truncated to a whole number |
+| `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP granted per skill level crossed |
+| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Finite non-negative extra master XP per level already reached |
+| `powerPerLevel` | `0.65` | Finite non-negative power budget per master level, truncated to a whole number |
 | `xpInCreative` | `false` | Allows skill XP while in creative or spectator |
 | `allowAdaptationsInCreative` | `false` | Allows adaptation effects while in creative |
 | `blacklistedWorlds` | two placeholder keys | Namespaced world keys where Adapt gameplay is off |
@@ -156,7 +161,7 @@ Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_r
 
 | Key | Default | What it does |
 |---|---:|---|
-| `adaptActivatorBlock` | `BOOKSHELF` | Bukkit material a player clicks to open the Adapt menu |
+| `adaptActivatorBlock` | `BOOKSHELF` | Bukkit block material a player clicks to open the Adapt menu. Unknown, non-block, and air values normalize to `BOOKSHELF` at config load |
 | `adaptActivatorBlockName` | `a Bookshelf` | Text used when a message names that block |
 | `adaptActivatorAllowVerticalFaces` | `false` | Also accepts clicks on the top and bottom faces |
 | `useEnchantmentTableParticleForActiveEffects` | `true` | Uses the enchantment-table particle style for active effects and XP bursts |
@@ -212,15 +217,15 @@ An unrecognized failure-mode string falls back to `deny` for use policies and `a
 
 | Key | Default | What it does |
 |---|---:|---|
-| `sql.enabled` | `false` | Makes the `ADAPT_DATA` table authoritative instead of local JSON |
+| `sql.enabled` | `false` | Makes the InnoDB `ADAPT_DATA` and `ADAPT_DATA_FENCE` tables authoritative instead of local JSON |
 | `sql.host` | `localhost` | MySQL-compatible server hostname |
 | `sql.port` | `3306` | Server port |
 | `sql.database` | `adapt` | Existing schema the table lives in. Adapt creates the table, never the schema |
 | `sql.username` | `user` | SQL account |
 | `sql.password` | `password` | SQL account password, sent in plain text unless the server enforces TLS |
 | `sql.poolSize` | `10` | Connection pool size requested by the advancement backend only |
-| `sql.connectionTimeout` | `5000` | Milliseconds allowed for the JDBC connect handshake. Raised to 1000 if set lower. The socket timeout is twice the result |
-| `sql.secondsCheckverify` | `30` | Seconds passed to `Connection.isValid`. The startup probe clamps it to 1-10. The reconnect probe uses the raw value |
+| `sql.connectionTimeout` | `5000` | Milliseconds allowed for the JDBC connect handshake. Clamped to 1000-5000; the socket timeout is twice the result but is also capped at 5000 so bounded persistence retries finish before shutdown recovery |
+| `sql.secondsCheckverify` | `30` | Seconds passed to `Connection.isValid`. Startup and reconnect probes clamp it to 1-5, and a successful probe is reused for five seconds |
 
 ### `[redis]`
 
@@ -232,7 +237,7 @@ An unrecognized failure-mode string falls back to `deny` for use policies and `a
 | `redis.username` | empty | ACL username. Credentials are only attached when username or password is non-empty |
 | `redis.password` | empty | Redis password |
 
-Cached entries expire one minute after write. Channel: `Adapt:data`.
+Backends exchange request-correlated, fence-qualified snapshots through the `Adapt:data:v2` channel family. Unsolicited profile payloads are ignored.
 
 ### Conflicts and protection overrides
 
@@ -333,4 +338,4 @@ The watcher drains native events every 500 ms and runs bounded exact-content fal
 - [06 - GUI Customization](/adapt/06-gui-customization)
 - [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
 - [38 - Runtime Architecture](/adapt/38-runtime-architecture)
-- [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server)
+- [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)

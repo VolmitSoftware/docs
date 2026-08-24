@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,7 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 | Path | Role |
 |------|------|
 | `plugins/React/config.toml` | Global settings |
-| `plugins/React/web.toml` | Opt-in embedded management API settings |
+| `plugins/React/web.toml` | Embedded management API listener, authentication, and relay settings |
 | `plugins/React/web/tokens.toml` | Paired API token records and roles; keep private |
 | `plugins/React/web/audit.log` | Append-only audit records for remote mutations |
 | `plugins/React/core/<controller-id>.toml` | Controller settings, including hotload, maps, and config-input sessions |
@@ -35,7 +35,7 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 | `plugins/React/action/<id>.toml` | Per-action config |
 | `plugins/React/sampler/<id>.toml` | Per-sampler config when present |
 | `plugins/React/languages/overrides/<locale>.toml` | Optional message overrides |
-| `plugins/React/player-settings/<uuid>.json` | Persisted action-bar monitor preferences |
+| `plugins/React/player-settings/<uuid>.json` | Persisted action-bar monitor preferences. Writes are coalesced off-thread and atomically replace the prior file. |
 | `plugins/React/data/value-cache.json` | Cached material-value analysis |
 | `plugins/React/benchmark/` | Benchmark output written by benchmark commands |
 | `plugins/React/info/` | Generated command, permission, and plugin metadata |
@@ -95,6 +95,8 @@ Feature and tweak changes deactivate and reactivate active components. Enable-st
 
 Global changes refresh language, entity priority, and active player monitors. Changes to `metrics` and the startup `unsafeBytecode` decision still require a full server restart.
 
+Player profiles are preloaded during asynchronous login so joining does not read JSON on the player-owning thread. A reload with players already online reads those profiles sequentially on one I/O worker and attaches each runtime on that player's scheduler; transient rejected or retired owner dispatches retry within the same controller generation, and exhausted attempts retain the loaded profile for the next owner-local join path. Repeated saves for one UUID collapse to the newest JSON, and shutdown waits up to 30 seconds for the atomic write queue to drain before reporting an error.
+
 `/react reload` performs a complete React disable and enable lifecycle. If the old ticker cannot drain, React refuses to re-enable and requires a server restart.
 
 React rejects invalid component, controller, global-config, or localization hotloads. The current live snapshot stays active. Passive hotload parses the captured bytes without canonical rewrites, legacy migration, or target deletion, so it cannot overwrite a newer external save. Transient capture, verification, scheduling, or application failures retain the last-good state, stay queued when retryable, and log their full stack traces. Startup and explicit manual reloads keep their normal canonicalization, migration, backup, and recovery behavior.
@@ -115,14 +117,16 @@ React rejects invalid component, controller, global-config, or localization hotl
 
 ## Embedded management API (`web.toml`)
 
-The embedded HTTP/WebSocket listener is disabled by default. It always speaks plain HTTP on its bound socket. For remote access, keep the listener on a trusted interface and terminate HTTPS at a reverse proxy; `advertisedUrl` tells paired direct clients which public HTTPS base URL to use and does not enable TLS inside React.
+New installations start the token-protected HTTP/WebSocket listener on the IPv6 wildcard. On the usual dual-stack JVM/kernel configuration this accepts both IPv6 and IPv4-mapped traffic, including LAN, container, and port-forwarded connections. React always speaks plain HTTP on its bound socket. Place internet-facing deployments behind a firewall or HTTPS reverse proxy; `advertisedUrl` tells paired direct clients which reachable base URL to use and does not enable TLS inside React.
+
+The listener schema is a hard break. A `web.toml` containing the former `enabled` or `bindAddress` keys, a file missing either new listener key, or any legacy `web.json` makes the Web controller fail closed. React does not create a listener or pairing token from that configuration. Delete the obsolete file, accepting that its local edits are lost, restart to generate the current `web.toml`, then reapply the intended values under the new keys. There is no automatic migration.
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `enabled` | `false` | Starts the embedded listener when true. |
-| `bindAddress` | `127.0.0.1` | Listener interface. Use a non-loopback address only with an intentional network boundary. |
+| `listenerEnabled` | `true` | Starts the embedded listener. Set false to disable every direct HTTP and WebSocket endpoint. |
+| `listenAddress` | `::` | Listener interface. The default is dual-stack where the OS/JVM permits IPv4-mapped wildcard traffic. On an IPv6-disabled or IPv6-only wildcard host, use `0.0.0.0` for IPv4. |
 | `port` | `9696` | Listener port. |
-| `advertisedUrl` | empty | Absolute HTTP or HTTPS base URL placed in RCT2 pairing payloads. Credentials, query strings, and fragments are rejected. |
+| `advertisedUrl` | empty | Absolute HTTP or HTTPS base URL placed in RCT2 pairing payloads. A reverse-proxy path is preserved; credentials, query strings, and fragments are rejected. |
 | `corsOrigins` | empty | Allowed browser origins. An empty list permits any origin. |
 | `wsPushHz` | `5` | Metrics WebSocket push frequency. |
 | `requireTokenForReads` | `true` | Requires bearer authentication for ordinary read endpoints. Console log endpoints remain authenticated even when this is false. |
@@ -131,9 +135,17 @@ The embedded HTTP/WebSocket listener is disabled by default. It always speaks pl
 
 `GET /api/v1/ping` is intentionally unauthenticated. It returns only protocol version `2`, the server identity's full SHA-256 fingerprint, and whether a relay session is currently registered. It does not expose the server name, address, public key, token data, or configured URLs.
 
-Generate an RCT2 payload with `/react web pair <label> [role]`. Players receive an in-game click-to-copy action that copies the complete payload without displaying it in chat; console and RCON senders receive the raw payload as text. Paste the copied value into React Web. A browser loaded over HTTPS cannot call React's plain-HTTP listener through mixed content. For a hosted React Web client, either place the listener behind an HTTPS reverse proxy and set `advertisedUrl`, or enable the outbound relay with a production `wss://` endpoint. Restrict `corsOrigins` to the exact React Web origin when using direct browser access.
+For a rented or NAT/port-forwarded server, forward the chosen public TCP port to React's internal `9696` port and allow that port through the host firewall. Set `advertisedUrl` to the public HTTP(S) URL, including any reverse-proxy base path. When `advertisedUrl` is empty, the pairing payload cannot discover the router's public address and advertises a local fallback; after pasting the code, replace that value in React Web's editable **Direct host** field with the public URL. IPv6 literals and reverse-proxy paths are preserved for HTTP and both WebSocket streams.
+
+Generate an RCT2 payload with `/react web pair <label> [role]`. Pairing succeeds only after the configured socket is live and bound; disabled, starting, failed, stopped, or unbound listeners create and persist no token. Players receive an in-game click-to-copy action that copies the complete payload without displaying it in chat; console and RCON senders receive the raw payload as text. React Web checks the unauthenticated ping fingerprint against the RCT2 fingerprint before it stores a direct-only profile. A mismatch, malformed response, or unreachable endpoint fails closed before authenticated identity access.
+
+A browser loaded over HTTPS cannot call React's plain-HTTP listener through mixed content. For a hosted React Web client, either place the listener behind an HTTPS reverse proxy and set `advertisedUrl`, or enable the outbound relay with a production `wss://` endpoint. Restrict `corsOrigins` to the exact React Web origin when using direct browser access. Bearer authentication remains required for ordinary reads by default even though the socket listens on all interfaces.
 
 Bearer-authenticated mutations require a strictly increasing `X-React-Counter` per token. `GET /api/v1/logs` and `/ws/logs` capture the complete server logger, including other plugins and stack traces, and require the admin-only `console:read` scope. `POST /api/v1/console/execute` requires the admin-only `console:execute` scope, accepts one control-character-free command of at most 512 characters, dispatches through the server/global scheduler, and writes a redacted audit record that excludes command arguments. Treat console access as equivalent to server-console access.
+
+WebSocket bearer values never appear in `/ws/metrics` or `/ws/logs` URLs. An authenticated client sends one JSON text frame shaped exactly as `{"type":"auth","token":"<bearer>"}` before it can join a live session. Malformed, invalid, binary, unexpected, or repeated authentication frames close with policy code `1008`. Pending authentication is capped at 2,048 sockets and expires after five seconds. Metrics remains available without authentication only when `requireTokenForReads = false`; that mode still accepts one valid first-frame credential from clients that always authenticate. Logs always require `console:read`.
+
+WebSocket delivery uses four daemon send workers and a bounded 2,048-task queue rather than creating one native thread per slow client. Each metrics or log session retains only its newest pending live frame under backpressure; the bounded HTTP log tail remains available when an intermediate live log frame is coalesced.
 
 Per-world budget updates accept the canonical namespaced key in `PUT /api/v1/worlds/update`. `PUT /api/v1/worlds/{name}` is also available for clients that address a world by its displayed name; React resolves that name back to the canonical key before applying the update.
 

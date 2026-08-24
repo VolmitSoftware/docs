@@ -2,7 +2,7 @@
 title: "API - Metric Publishing"
 description: "React documentation: API - Metric Publishing"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -80,7 +80,7 @@ The publishing half accepts calls from any thread. Nothing in `publish`, `withdr
 
 `readHostMetric` is the one call with a cost you do not control. It reaches into React's sampler. When that sampler's cache has expired, the refresh happens inside your call. Most samplers hand the expensive part to another thread and return the previous value.
 
-A few gather from every player's region on Folia and wait up to 200 ms for the answer. Those samplers are the entity census (`entities-animals`, `entities-hostile`, `villagers`, `projectiles`, `physics-entities`, `ground-items`) and `entity-ai-active-count`. That wait happens at most once per refresh window. It still happens on your thread. Do not call `readHostMetric` from a tick handler or a packet path. Sample it on your own timer and keep the number.
+The shared entity census (`entities-animals`, `entities-hostile`, `villagers`, `projectiles`, `physics-entities`, `ground-items`, and `entity-ai-active-count`) never waits in `readHostMetric`. Counts are maintained from entity lifecycle events. Paper and Spigot reconcile at most 128 weakly referenced entities per world during each two-second refresh; their progressive startup repair reads one loaded coordinate and at most 256 entities per tick. Folia takes at most 32 immutable coordinates from the observer index and reconciles no more than 128 entities per owned chunk in the background. The caller immediately receives the latest value. The coordinate rotation includes loaded chunks without players and retains no `Chunk` handles after its bounded startup seed waves. After Folia startup seeding, nominal chunk coverage is `ceil(loaded chunks / 32) * 2 seconds`, multiplied by `ceil(densest chunk entities / 128)` for complete dense-chunk coverage. Latency-sensitive callers should still cache host readings on their own timer instead of resolving them inside a tick or packet path.
 
 ---
 

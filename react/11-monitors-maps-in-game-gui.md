@@ -2,7 +2,7 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,21 +17,22 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - While the player is sneaking and not in the monitor's falling or flying cooldown, hotbar scrolling selects a group. Press sneak twice within 250 ms to lock or unlock that group. While locked, sneak and scroll to change its head sampler.
 - The main row publishes into the shared cooperative action-bar compositor. That compositor is pinned to the center of the line. Other plugins' segments merge to its left and right instead of displacing it. Adapt HUDs, Wormholes notices, and Iris progress are examples. Nothing falls back to a boss bar.
 - The focused group still requests the exclusive title and subtitle surface while editing. React drops its segment and releases the title when monitoring stops.
-- Explicit monitor and GUI changes save immediately. A periodic dirty check runs once per minute. Quitting forces a final save.
+- Explicit monitor and GUI changes queue a save immediately. A periodic dirty check runs once per minute. Quitting forces a final save. Saves for one player coalesce to the newest profile and publish by atomic file replacement.
 
 ## Map selection and item handling
 
 - `/react map` opens the renderer selector. `/react map <renderer-id>` selects a renderer directly.
 - Selecting with a normal left click, or using the direct command, puts a newly created React map in the main hand. An existing main-hand item is moved into inventory. React drops it at the player's location only if inventory overflows.
 - Shift-clicking a renderer in the selector adds its map to inventory instead. It drops only overflow.
-- React map items carry persistent renderer metadata. Inventory maps are repaired on join and in maintenance batches. Item-frame maps are rediscovered and repaired after startup or reload.
+- React map items carry persistent renderer metadata. Inventory maps are repaired on join and in maintenance batches. Item-frame repair takes one loaded-chunk snapshot per world at startup or reload, seeds its coordinate queue in configured-size waves, keeps that queue current from chunk load and unload events, and scans only the configured chunk batch on each maintenance pass. It does not repeatedly copy every world's loaded-chunk array or dispatch every loaded chunk at once.
+- Every renderer pipe belongs to one map-controller activation. Shutdown closes and detaches those pipes; delayed maintenance and render callbacks reject the retired owner, so reload cannot retain an old renderer or its canvas buffers.
 - A framed map uses the item frame as the renderer's spatial anchor. A held map falls back to the viewer location. Then it uses the map world's spawn if no viewer is available.
 
 Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Monitoring-only mode keeps configured renderer features active while it pauses other features and tweaks, so map collection and rendering continue. Integration-prefixed renderers are omitted until their peer capability is present. `iris-biome-chunk-share-pie-map` is explicitly disabled by `MapController`. It is not selectable.
 
 ## Item-frame delivery and megamaps
 
-- Active frame maps are pushed only to eligible viewers. Distance, aim direction, line of sight, held-map bypass, and idle-view cadence are configurable.
+- Active frame maps are pushed only to eligible viewers. Distance, aim direction, line of sight, held-map bypass, and idle-view cadence are configurable. On Folia, React resolves indexed viewer ids on the global region and dispatches every position, inventory, visibility, and packet operation to that player's entity owner. A line-of-sight push is skipped when the player's owner does not also own the frame location, avoiding a cross-region world read.
 - Adjacent item frames with the same renderer can form one tiled megamap. Walls above `megamapMaxTiles` fall back to independent single-map rendering.
 - When `megamapSplitDuplicates` is enabled, cloned React maps placed in frames receive distinct map ids. Neighboring copies can then occupy separate tiles.
 - Held maps redraw more frequently than framed maps by default. Startup and reload temporarily increase repair batches and frame pushes. Restored displays then converge sooner.
@@ -44,10 +45,10 @@ Every built-in sampler and every feature implementing `ReactRenderer` is conside
 | `inventoryRepairCadenceMs` | `250` | Minimum interval between inventory repair passes. |
 | `inventoryRepairBatchSize` | `3` | Online player inventories repaired per pass. |
 | `itemFrameRepairCadenceMs` | `250` | Minimum interval between loaded-chunk frame scans. |
-| `itemFrameChunkBatchSize` | `8` | Loaded chunks scanned for framed maps per pass. |
+| `itemFrameChunkBatchSize` | `8` | Maximum queued loaded chunks considered for framed-map repair per pass. A chunk has at most one owner-region repair in flight. |
 | `startupBoostDurationMs` | `12000` | Duration of aggressive repair and delivery after startup/reload. |
 | `startupBoostInventoryBatchSize` | `12` | Inventory repair batch during startup boost. |
-| `startupBoostItemFrameChunkBatchSize` | `32` | Frame-repair chunk batch during startup boost. |
+| `startupBoostItemFrameChunkBatchSize` | `32` | Maximum queued frame-repair chunks considered per pass during startup boost. |
 | `frameMapPushIntervalMs` | `600` | Push interval for actively viewed frame maps. |
 | `startupFrameMapPushIntervalMs` | `100` | Frame-map push interval during startup boost. |
 | `frameMapIdlePushIntervalMs` | `6000` | Push interval for nearby viewers not actively looking at the frame. |
@@ -59,6 +60,7 @@ Every built-in sampler and every feature implementing `ReactRenderer` is conside
 | `heldMapRedrawIntervalMs` | `150` | Minimum canvas redraw interval for held maps. |
 | `frameMapRedrawIntervalMs` | `300` | Minimum canvas redraw interval for framed maps. |
 | `frameMapValidateIntervalMs` | `2000` | Interval between full item-stack validation for tracked frames. |
+| `frameMapPushBatchSize` | `128` | Maximum tracked frame maps considered for delivery per maintenance pass. Each frame has one owner dispatch in flight. |
 | `megamapEnabled` | `true` | Combines adjacent same-renderer frame maps into a tiled display. |
 | `megamapMaxTiles` | `32` | Maximum tiles in one megamap wall. |
 | `megamapSplitDuplicates` | `true` | Assigns cloned framed maps distinct ids for tiling. |

@@ -27,6 +27,8 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       "minimumSourcesPerTile": 9,
       "sinkSearchReaches": 5,
       "routingBasinCells": 112,
+      "routingDeviationScaleCells": 24,
+      "routingDeviationStrengthCells": 8,
       "routingPlateauHeight": 1.5,
       "source": {
         "chance": 0.08,
@@ -40,10 +42,14 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       },
       "routingStyle": {
         "style": "VASCULAR_IRIS",
-        "zoom": 2048,
-        "fracture": {"style": "IRIS", "zoom": 683, "multiplier": 1152}
+        "zoom": 6144,
+        "fracture": {"style": "IRIS", "zoom": 2048, "multiplier": 768}
       },
-      "routingNoiseWeight": 360,
+      "routingNoiseWeight": 96,
+      "flowAlignmentWeight": 32,
+      "confluenceWeight": 192,
+      "branchSoftCap": 4,
+      "branchChildShrinkFactor": 0.35,
       "terrainHeightWeight": 0,
       "terrainSlopeWeight": 0,
       "oceanAttraction": 8,
@@ -51,9 +57,13 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
     },
     "terrain": {
       "channelWidth": {
-        "min": 2.5,
-        "max": 7.5,
-        "style": {"style": "VASCULAR_IRIS", "zoom": 512}
+        "min": 1,
+        "max": 7,
+        "style": {
+          "style": "IRIS",
+          "zoom": 768,
+          "fracture": {"style": "SIMPLEX", "zoom": 1920, "multiplier": 160}
+        }
       },
       "bankWidth": {
         "min": 0.75,
@@ -65,7 +75,7 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
         "max": 8.5,
         "style": {"style": "SIMPLEX", "zoom": 896}
       },
-      "maxChannelWidth": 10,
+      "maxChannelWidth": 7,
       "maxBankWidth": 3,
       "maxDepth": 10,
       "orderWidthFactor": 0.18,
@@ -77,15 +87,24 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       },
       "maxIncision": 15,
       "bankExponent": 1.05,
+      "tunnelMouthBlend": 2,
+      "tunnelFloorStyle": {"style": "IRIS", "zoom": 48},
+      "tunnelFloorVariation": 2,
+      "tunnelRoofStyle": {"style": "IRIS", "zoom": 64},
+      "tunnelRoofVariation": 3,
       "meanderStyle": {
-        "style": "VASCULAR_IRIS",
-        "zoom": 128,
-        "fracture": {"style": "IRIS", "zoom": 384, "multiplier": 1920}
+        "style": "IRIS",
+        "zoom": 384,
+        "fracture": {"style": "IRIS", "zoom": 1024, "multiplier": 160}
       },
-      "meanderStrength": 1024,
-      "meanderSubdivisions": 21,
-      "bedRoughnessStyle": {"style": "IRIS", "zoom": 112},
-      "bedRoughness": 0.65,
+      "meanderStrength": 384,
+      "meanderSubdivisions": 48,
+      "bedRoughnessStyle": {
+        "style": "IRIS",
+        "zoom": 96,
+        "fracture": {"style": "SIMPLEX", "zoom": 256, "multiplier": 32}
+      },
+      "bedRoughness": 1,
       "terminalMode": "DRY_CHANNEL",
       "terminalTaper": 112,
       "dryContinuationChance": 0.3
@@ -105,20 +124,26 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       "floodedCave": []
     },
     "caves": {
-      "mode": "WATERFALL_POOL",
+      "mode": "GENERATE_GROTTO",
       "entry": {
-        "chance": 0.12,
+        "chance": 0.35,
         "style": {"style": "IRIS", "zoom": 2048},
-        "influence": 0.04
+        "influence": 0.2
       },
-      "minimumSpacing": 256,
-      "maximumPerReach": 2,
-      "maxBoreDepth": 32,
+      "minimumSpacing": 384,
+      "maximumPerReach": 1,
+      "maxBoreDepth": 64,
       "throatRadius": 2,
-      "waterLevelOffset": -2,
+      "waterLevelOffset": -16,
+      "dryHeadroom": 4,
+      "grottoHorizontalRadius": 10,
+      "grottoVerticalRadius": 6,
+      "grottoShapeStyle": {"style": "IRIS", "zoom": 28},
+      "grottoWarpStyle": {"style": "IRIS", "zoom": 56},
+      "grottoWarpStrength": 1.5,
       "maxFloodRadius": 16,
-      "maxFloodDepth": 32,
-      "maxFloodVolume": 3072,
+      "maxFloodDepth": 64,
+      "maxFloodVolume": 8192,
       "fallback": "SEALED",
       "existingFluidPolicy": "REJECT"
     }
@@ -132,17 +157,17 @@ The normal biome and height views show the final generated result. The river vie
 
 ## How the network stays connected
 
-Iris creates one jittered graph node per routing cell and joins neighboring nodes with a stable planar graph. A second coarse lattice places deterministic jittered drainage sinks `routingBasinCells` apart; every node measures its distance to the nearest sink. A downstream edge must reduce that distance, while the configured natural-height and slope weights, alignment with the low-frequency routing field, ocean attraction, and local routing cost choose among the inward candidates. The result can turn repeatedly and merge like a drainage tree without becoming trapped at every small terrain or noise minimum. Basin distance plus stable node identity is a strict total order, so every node has at most one downstream edge and the graph cannot cycle.
+Iris creates one jittered graph node per routing cell and joins neighboring nodes with a stable planar graph. A second coarse lattice places deterministic jittered drainage sinks `routingBasinCells` apart; every node measures its distance to the nearest sink. Before that distance is measured, a smooth low-frequency domain warp displaces the node by up to `routingDeviationStrengthCells`, with `routingDeviationScaleCells` controlling the wavelength. A downstream edge must reduce this single warped distance, while the configured natural-height and slope weights, alignment with the low-frequency routing field, ocean attraction, local routing cost, and `confluenceWeight` choose among the inward candidates. Confluence attraction is a node-stable preference shared by nearby upstream reaches, so it forms repeated Y branches and dominant trunks instead of unrelated parallel squiggles. Each node admits its first `branchSoftCap` upstream children, then applies `branchChildShrinkFactor` multiplicatively to later children. That local rule repeats at every generation, allowing arbitrarily deep recursive tributary trees while making three or four immediate branches the common visual limit. The warped potential produces long directional changes across several reaches without abandoning convergence. Basin distance plus stable node identity remains a strict total order, so every node has at most one downstream edge and the graph cannot cycle; visual splits are upstream tributary branches that merge in the direction of flow.
 
 Terraced hydraulic heads are derived from the same decreasing basin distance. `routingPlateauHeight` is the horizontal basin-distance span per one block of upstream water rise, so a permitted reach remains level or descends even when exact incision carries it across a local natural rise. Terrain never rises to meet the route. When reaching the solved head would cut farther than `maxIncision`, the wet reach becomes a sealed subterranean bore until surface incision is sufficient again.
 
 A sparse source gate selects complete routes, not isolated pixels. With the normal 512-block cells and 16-reach horizon, one accepted route can persist for several kilometres. `minimumSourcesPerTile` selects stable eligible nodes from the routing tile's outer drainage shell, with seeded identity breaking near-ties; it does not force `source.chance: 0` back on. Nearby sources independently follow the same node-owned downstream edge, causing tributaries to merge into a shared suffix whose flow, order, width, and depth grow deterministically. A continuation or incision failure ends or suppresses the route; it never removes a middle segment and leaves two disconnected wet pieces.
 
-Each reach is bent into a deterministic cubic curve without moving its graph endpoints. Its endpoint tangents follow the low-frequency routing field at shared nodes, while the higher-frequency meander field adds residual curl that fades to zero in both position and derivative at each endpoint. Connected reaches therefore creep through common flow corridors instead of restarting as unrelated bows. Route feasibility uses deterministic centerline probes at roughly one-block spacing for short reaches and at most 65 evenly spaced probes for long reaches. A sampled `BLOCK` area or failed incision gate rejects or reroutes the reach; high solid terrain can instead carry the route in a contained bore. Width, banks, meanders, and stream-order growth are included in the cache halo, so sampling the same coordinate from neighboring tiles returns the same reach.
+Each reach is bent into a deterministic cubic curve without moving its graph endpoints. Its endpoint tangents follow the low-frequency routing field at shared nodes. An edge-stable personality chooses among quiet leans, broad one-sided sweeps, early or late hooks, S-curves, coils, nonperiodic wandering, paired oxbow lobes, and accelerating chirps. Each personality independently varies handedness, amplitude, frequency, phase, and longitudinal skew, so adjacent reaches do not repeat one sinusoidal stamp. World-space `meanderStyle` noise warps the active personality's spacing and amplitude, and every displacement follows the cubic curve's changing local normal instead of one fixed chord normal. Iris samples that authored noise at no more than twelve stable knots per reach and interpolates it across the flattened curve, preserving organic variation without paying one generator evaluation per curve vertex. A quartic envelope removes added displacement and its derivative at both endpoints, so connected reaches keep shared positions and tangents while retaining long turns, asymmetric shapes, and occasional fine curls. Route feasibility uses deterministic centerline probes at roughly one-block spacing for short reaches and at most 65 evenly spaced probes for long reaches. A sampled `BLOCK` area or failed incision gate rejects or reroutes the reach; high solid terrain can instead carry the route in a contained bore. Width, banks, meanders, and stream-order growth are included in the cache halo, so sampling the same coordinate from neighboring tiles returns the same reach.
 
 Physical alternatives and organic stopping are separate decisions. Iris tries another ranked downstream candidate only when the preferred reach is physically invalid. Once it finds the first valid reach, a failed `continuation` roll stops that route instead of silently trying every alternate until one passes.
 
-`requireOcean: true` admits a wet route only when its own bounded trace reaches a sea outlet within `maxRouteReaches`. `SEA_LEVEL` networks use the cached continental land/sea intent for this graph-level decision, avoiding full terrain and biome generation for every distant routing node; actual river columns still carve against their natural height and resolve their final surface biome normally. `TERRACED` networks retain height-resolved natural sea classification. Converging traces still share the same deterministic downstream edges, but Iris does not assume that a route beyond the configured proof horizon reaches an outlet. A route that cannot prove an outlet follows `terminalMode`. With `requireOcean: false`, ordinary failed terminals remain wet unless a region or biome explicitly overrides terminal behavior.
+`requireOcean: true` admits a wet route only when its own bounded trace reaches a sea outlet within `maxRouteReaches`. Ocean intent is only a prefilter: the natural surface at that node must also be below the solved fluid head, so an elevated cliff inside an ocean-intent biome cannot terminate a route before its bore is planned. Converging traces still share the same deterministic downstream edges, but Iris does not assume that a route beyond the configured proof horizon reaches an outlet. A route that cannot prove an outlet follows `terminalMode`. With `requireOcean: false`, reaching `maxRouteReaches` is only the end of that source's evaluation window, not a physical river terminal; overlapping source traces continue the same node-owned graph. Only a real sink, failed continuation, or authored terminal policy ends it.
 
 Topology is dimension-owned. Region and biome overrides can permit, avoid, or block routing and can scale geometry, but they do not create a second graph with incompatible cell boundaries.
 
@@ -157,11 +182,17 @@ Topology is dimension-owned. Region and biome overrides can permit, avoid, or bl
 | `minimumSourcesPerTile` | `0` | Minimum stable outer-shell headwaters selected from each routing tile while source chance is above zero. `1` prevents blank regional tiles without filling every graph node; `0` allows complete local gaps |
 | `sinkSearchReaches` | `4` | Alternate downstream candidates considered per routing step when the cheapest reach is invalid, from `0` to `7` |
 | `routingBasinCells` | `64` | Spacing of jittered drainage sinks in routing cells. Larger values create wider trees and longer trunks before a basin terminal |
+| `routingDeviationScaleCells` | `24` | Wavelength in routing cells of the smooth drainage-domain warp |
+| `routingDeviationStrengthCells` | `0` | Maximum drainage-domain displacement in routing cells. Nonzero values produce long multi-reach directional deviations while preserving one acyclic rank |
 | `routingPlateauHeight` | `8` | Horizontal basin-distance span in routing cells per one block of terraced water rise |
 | `source` | `0.05` chance | Noise-modulated probability that a graph node begins a route |
 | `continuation` | `0.99` chance | Noise-modulated probability for each complete continuation reach |
 | `routingStyle` | `VASCULAR`, zoom `8192` | Low-frequency stable field whose tangent guides long creeping corridors and convergent branches |
-| `routingNoiseWeight` | `24` | Penalty for candidates that do not align with the local `routingStyle` tangent |
+| `routingNoiseWeight` | `24` | Maximum candidate routing-cost contribution sampled from `routingStyle` |
+| `flowAlignmentWeight` | `24` | Penalty for candidates that do not follow the local `routingStyle` tangent |
+| `confluenceWeight` | `0` | Stable attraction toward shared downstream nodes. Higher values form more visible tributary branches and trunk junctions without permitting cycles |
+| `branchSoftCap` | `4` | Number of upstream children admitted at a node before probabilistic branch shrinking begins |
+| `branchChildShrinkFactor` | `0.35` | Multiplicative survival probability for each child beyond the soft cap. The rule repeats independently at every branch generation |
 | `terrainHeightWeight` | `0.7` | Preference for lower natural terrain |
 | `terrainSlopeWeight` | `0.35` | Additional cost for steep natural terrain |
 | `oceanAttraction` | `1` | Preference for a natural sea outlet |
@@ -181,7 +212,7 @@ Iris samples the configured noise once at the stable graph-event anchor, maps it
 
 ## Terrain incision and dry channels
 
-River terrain is a second surface derived from the natural height. Iris never raises terrain for a river. It blends downward toward the river bed across the channel and bank footprint, clamps the cut to `maxIncision`, and leaves the natural height available to diagnostics and expressions as `NATURAL_HEIGHT`. Final channel width, bank width, and depth are capped after stream-order, region, and biome scaling. After local depth scaling, wet depth is also clamped above bed roughness by one block so a shallow authored style cannot round its entire wet core back to the water surface.
+River terrain is a second surface derived from the natural height. Iris never raises terrain for a river. It blends downward toward the river bed across the channel and bank footprint, clamps the cut to `maxIncision`, and leaves the natural height available to diagnostics and expressions as `NATURAL_HEIGHT`. Channel-width noise is sampled into a compact profile along each reach and interpolated per column, so the same tube can narrow and widen organically without evaluating generator noise for every block. The profile maximum owns spatial indexing while the local width controls channel section, incision, and bore radius. Final local channel width is at least one block and channel width, bank width, and depth retain their authored caps after stream-order, region, and biome scaling. After local depth scaling, wet depth is also clamped above bed roughness by one block so a shallow authored style cannot round its entire wet core back to the water surface.
 
 | Field | Default | Meaning |
 |---|---:|---|
@@ -196,9 +227,14 @@ River terrain is a second surface derived from the natural height. Iris never ra
 | `incision` | chance `1` | Noise gate deciding whether a complete reach may cut terrain |
 | `maxIncision` | `48` | Maximum cut below natural terrain, before local multipliers |
 | `bankExponent` | `2` | Cross-section curve from channel to natural bank |
-| `meanderStyle` | `IRIS`, zoom `512` | Signed perpendicular bend along each reach |
-| `meanderStrength` | `72` | Maximum bend displacement in blocks, also limited by reach length |
-| `meanderSubdivisions` | `8` | Segments used to flatten the bent reach |
+| `tunnelMouthBlend` | `2` | Extra lateral bore blend on each side of a surface-to-solid entrance or exit |
+| `tunnelFloorStyle` | `IRIS`, zoom `48` | Noise shaping the submerged floor of a contained river tunnel |
+| `tunnelFloorVariation` | `2` | Maximum tunnel-floor displacement in blocks |
+| `tunnelRoofStyle` | `IRIS`, zoom `64` | Noise shaping the dry roof of a contained river tunnel |
+| `tunnelRoofVariation` | `3` | Maximum tunnel-roof displacement in blocks |
+| `meanderStyle` | `IRIS`, zoom `512` | Warps the spacing and amplitude inside each reach's deterministic shape personality |
+| `meanderStrength` | `72` | Total bend envelope in blocks, shared by the endpoint spline and varied noise-driven personality and also limited by reach length |
+| `meanderSubdivisions` | `8` | Segments used to flatten the bent reach; higher values permit the coil and chirp personalities to resolve more complex bends |
 | `bedRoughnessStyle` | `IRIS`, zoom `96` | Small-scale bed variation |
 | `bedRoughness` | `0.75` | Maximum bed variation in blocks |
 | `terminalMode` | `DRY_CHANNEL` | `SUPPRESS`, `DRY_CHANNEL`, or `SINKHOLE_GROTTO` |
@@ -211,9 +247,9 @@ Dry channels expose no surface fluid. They do not run shoreline or underwater de
 
 ### Surface incision and ridge bores
 
-A wet centerline remains a surface river while the capped terrain result rounds below its local water head. If it would require more incision, the complete local channel section leaves the surface: natural terrain and its biome, decorators, structures, and public surface classification remain unchanged above it, while the River network Vision view and river expression streams still expose the connected route.
+A wet column remains a surface river while its own capped terrain result rounds below its local water head. If it would require more incision, that column leaves the surface: natural terrain and its biome, decorators, structures, and public surface classification remain unchanged above it, while the River network Vision view and river expression streams still expose the connected route. This decision is column-local, so low/open shoreline cells remain valid surface mouths beside high columns that become a bore. At each surface-to-solid transition, `tunnelMouthBlend` widens the aperture laterally without widening the complete surface river.
 
-The mantle pass carves an elliptical bore with river fluid from bed to head and `caves.dryHeadroom` above it. Every carved cell and its six-neighbor shell must be baseline solid immediately before publication. Contact with an unrelated cave, lava, existing water, a world boundary, or an unproved neighbor caps the bore at solid terrain instead of opening the cave. Only the exact transition to an adjacent surface river reservoir may form a mouth. Each chunk derives the same halo plan and publishes only its owned cells, so a bore cannot become a cross-chunk partial opening.
+The mantle pass carves a rounded lower and upper bore with river fluid from bed to head and `caves.dryHeadroom` above it. Independent floor and roof styles modulate that profile without flattening either surface; their displacement collapses toward the tube sides so the guarded shell remains closed. Every interior carved cell and its six-neighbor shell must be baseline solid immediately before publication. Contact with an unrelated cave, lava, existing water, a world boundary, or an unproved neighbor caps the bore at solid terrain instead of opening the cave. The complete wet core and dry roof may transition into the adjacent surface river reservoir, preventing a one-column terrain plug at the portal. Each chunk plans against the underlying carved-terrain baseline while reading already-published river actions separately, then iteratively stabilizes its contained column set and publishes only its owned cells. Cross-chunk order therefore cannot make one part of a bore or grotto invalidate another.
 
 Ridge bores require mantle and carving plus the `CARVED` and `RIVER_HYDROLOGY` components, but they do not require optional cave flooding. `caves.mode: SEALED` therefore disables random cave entries while still allowing a river to pass safely under high terrain.
 
@@ -297,7 +333,7 @@ Overrides cannot change `cellSize`, graph identity, water mode, or containment p
 
 ## River-fed caves
 
-Optional river-to-cave connections require `useMantle: true`, `carvingEnabled: true`, enabled `CARVED` and `RIVER_HYDROLOGY` mantle flags, a `caves.mode` other than `SEALED`, and `maximumPerReach` above zero. An ordinary candidate begins at a stable anchor on a wet surface river bed, applies the configured entry chance and local multiplier, respects `minimumSpacing`, and searches downward no farther than `maxBoreDepth`. The earliest noise-eligible anchors up to `maximumPerReach` receive deterministic containment attempts; a failed proof does not promote a later anchor, so chunk order cannot change which candidates were tried.
+Optional river-to-cave connections require `useMantle: true`, `carvingEnabled: true`, enabled `CARVED` and `RIVER_HYDROLOGY` mantle flags, a `caves.mode` other than `SEALED`, and `maximumPerReach` above zero. An ordinary candidate begins at a stable anchor on either a wet surface river bed or the floor of a contained subterranean bore, applies the configured entry chance and local multiplier, respects `minimumSpacing`, and searches downward no farther than `maxBoreDepth`. Anchors that cannot physically source a surface or tunnel inlet do not consume the per-reach cap. The earliest noise-eligible, sourceable anchors up to `maximumPerReach` receive deterministic containment attempts; a failed proof does not promote a later anchor, so chunk order cannot change which candidates were tried.
 
 Iris never turns ordinary cave aquifers on to make this connection. It plans a separate persistent overlay after baseline caves are carved and before cave objects and structures are placed. Baseline cave matter is not mutated. Accepted wet cells and their seal guards reject later object or structure stamps that could open the containment boundary.
 
@@ -320,6 +356,7 @@ Iris never turns ordinary cave aquifers on to make this connection. It plans a s
   "grottoShapeStyle": {"style": "IRIS", "zoom": 24},
   "grottoWarpStyle": {"style": "IRIS", "zoom": 48},
   "grottoWarpStrength": 2,
+  "parentBiomeInheritance": 0.5,
   "maxFloodRadius": 48,
   "maxFloodDepth": 32,
   "maxFloodVolume": 8192,
@@ -334,7 +371,7 @@ Iris never turns ordinary cave aquifers on to make this connection. It plans a s
 |---|---|
 | `SEALED` | Disable optional cave entries; contained ridge bores may still pass through solid terrain |
 | `FLOOD_CLOSED_COMPONENT` | Bore into and fill only a complete existing cave component that passes closure proof |
-| `GENERATE_GROTTO` | Carve a bounded noisy chamber with a proven solid shell |
+| `GENERATE_GROTTO` | Carve a bounded noisy chamber with a proven solid shell and pour the river through its throat into the lower pool |
 | `GROTTO_OR_CLOSED_COMPONENT` | Use a proven existing component when present; otherwise try a bounded generated grotto |
 | `WATERFALL_POOL` | Emit falling fluid through a bounded throat into a proven closed pool; a direct surface-connected pit receives only the throat water and its connected cave component is not pre-filled |
 
@@ -344,7 +381,11 @@ A `SINKHOLE_GROTTO` terminal is a forced generated-grotto connection, not an ord
 
 For an existing cave, Iris performs a six-neighbor flood proof from the target. The entire fluid-reachable component must remain inside `maxFloodRadius`, `maxFloodDepth`, and `maxFloodVolume`. It is rejected if the proof touches the world boundary, an opening to the surface, lava, an incompatible existing fluid under the selected policy, or any unprovable cell. `WATERFALL_POOL` is the narrow exception for an opening already connected to the surface: Iris validates and publishes only the vertical throat, uses falling fluid above the configured pool head, and does not turn the open cave component into source water.
 
-For a generated grotto, `grottoShapeStyle` perturbs the chamber boundary and `grottoWarpStyle` displaces its coordinate field by at most `grottoWarpStrength`. The complete warped chamber, throat, and surrounding solid shell must still fit inside the proof limits. `dryHeadroom` retains air above `river head + waterLevelOffset`; `throatRadius` controls the inlet bore.
+For a generated grotto, `grottoShapeStyle` perturbs the chamber boundary and `grottoWarpStyle` displaces its coordinate field by at most `grottoWarpStrength`. The complete warped chamber, throat, and surrounding solid shell must still fit inside the proof limits. Iris constrains the chamber roof below the river bed; if the configured pool head and `dryHeadroom` cannot both fit beneath that roof, the candidate is rejected instead of intersecting the open surface channel. Throat cells above the pool head contain falling river fluid, while the chamber retains dry air above the pool. `throatRadius` controls the inlet bore.
+
+`parentBiomeInheritance` selects the fraction of four-by-four boundary columns whose floor and ceiling layers come from the naturally resolved parent instead of the selected `floodedCave` biome. Deep columns inherit the effective cave biome, including dimension carving entries; shallow columns inherit the pre-river natural surface biome. The choice is deterministic and shared by the floor and roof of a column, producing coherent patches rather than block speckle. The remaining columns use the flooded-cave override. Iris may replace a containment guard only with a solid, non-fluid layer, and rejects gravity-affected roof layers, so palette inheritance cannot puncture or destabilize the shell.
+
+The managed Overworld and Underworld use `GENERATE_GROTTO` at 35% base entry chance with 20% IRIS modulation, at most one accepted candidate per reach, and 384-block spacing. Their pool head is 16 blocks below the river surface, leaving four blocks of contained headroom beneath channels up to the authored 10-block depth cap. A 64-block bore search and an 8,192-cell transaction budget allow the chamber to fit without authorizing a flood search through unrelated caves. The complete configured river-facing throat aperture is the only permitted open boundary; contact elsewhere with existing air, fluid, lava, or an open shell still seals the attempt completely.
 
 Mantle dependencies are sized to the active cave behavior. A generated-grotto-only network depends on its grotto, throat, warp, and shell envelope instead of inheriting `maxFloodRadius`; modes that can enter an existing cave retain the larger closed-component proof radius. Sinkhole terminals and generated fallbacks remain included in the envelope whenever their configured mode can select them.
 
@@ -379,9 +420,9 @@ The Bukkit terrain API adds `RIVER`, `RIVER_SHORE`, and `DRY_CHANNEL` surface ki
 
 ## Performance and determinism
 
-River tiles are immutable and cached. A cold tile performs graph routing and reach indexing; warm column samples are direct spatial-index lookups, and one default tile covers 2,048 by 2,048 blocks. Candidate ranking keeps meander geometry lazy, accumulated reaches outside the requested tile are discarded before curve and dimension sampling, and long feasibility proofs are capped at 65 deterministic centerline probes. When no reachable region or biome can block routing, contained-bore feasibility bypasses those local policy probes entirely. Effective region/biome settings are cached by resource identity, unreachable biome overrides do not trigger natural-biome sampling, node and source inputs are resolved once, zero-weight height and slope streams are not evaluated, and `SEA_LEVEL` graph ocean checks reuse the continental mask. Reach routing cost resolves its regional multiplier once at the reach midpoint. Each source tile orders partial floor candidates by stable identity; a full floor skips sorting and directly tests each node once. Every non-winner is still rejected against the dimension-wide maximum source multiplier before natural height or region/biome settings are sampled. Empty river footprints also skip the mantle tunnel-column scan entirely.
+River tiles are immutable and cached. A cold tile performs graph routing and reach indexing; warm column samples are direct spatial-index lookups, and one default tile covers 2,048 by 2,048 blocks. Candidate ranking keeps meander geometry lazy, accumulated reaches outside the requested tile are discarded before curve and dimension sampling, and long feasibility proofs are capped at 65 deterministic centerline probes. When no reachable region or biome can block routing, contained-bore feasibility bypasses those local policy probes entirely. Effective region/biome settings are cached by resource identity, unreachable biome overrides do not trigger natural-biome sampling, node and source inputs are resolved once, and zero-weight height and slope streams are not evaluated. Ocean intent short-circuits non-ocean nodes; only possible outlet nodes sample natural height to reject elevated false oceans. Per-column bore classification reuses the height, bed, head, and incision values already resolved for that column instead of repeating centerline sampling. Reach routing cost resolves its regional multiplier once at the reach midpoint. Each source tile orders partial floor candidates by stable identity; a full floor skips sorting and directly tests each node once. Every non-winner is still rejected against the dimension-wide maximum source multiplier before natural height or region/biome settings are sampled. Empty river footprints also skip the mantle tunnel-column scan entirely.
 
-Cold work grows quickly with `maxRouteReaches` because that value expands both the source window and the number of steps traced from each candidate source. `meanderSubdivisions` increases curve and spatial-index work for every accepted reach. The shipped Overworld and Underworld use 1,700-block cells, three cells per cache tile, `maxRouteReaches: 8`, all nine cell nodes admitted as guaranteed sources, `routingBasinCells: 112`, and `meanderSubdivisions: 21`. This is 2.999 times the headwater density and 3.031 times the curve sampling density of the immediately preceding 2,944-block setup. Routing and residual-meander wavelengths are one third as large, routing alignment weight and meander fracture displacement are tripled, and the maximum meander strength remains at its validated 1,024-block cap. One source proves 13,600 blocks, while the dense overlapping sources and physically equivalent roughly 190,000-block drainage basins preserve long global trunks. Shipping routes intentionally set terrain height and slope routing weights to zero: topology crosses mountain chains according to the cached continental mask and vascular field, while actual columns bend terrain down by up to 15 blocks and then pass through higher relief in sealed water-bearing bores. Regional incision and continuation multipliers no longer shorten those mountain crossings, and ordinary regional dry or suppressed terminals now inherit the wet dimension behavior; Terralost retains its intentional sinkhole grotto. The full source floor remains cheap because it bypasses sorting and samples each candidate once. Derived cold source-window work is 8.2% lower, route work 18.4% lower, and worst-case bucket writes 10.4% lower than the preceding configuration. In the offline Overworld probe, the final configuration completed its first chunk in about 14.0 seconds versus 23.1 seconds before the cold-path work, with a 34.2 ms measured warm median. Its waterfall proof is limited to a 16-block radius, 32-block depth, and 3,072 cells; open pits publish only a throat rather than scanning and filling the component. Increase the route or subdivision limits only after profiling representative cold generation. Wider channels, stronger meanders, smaller cells or tiles, a larger source floor, and higher source chance also increase cold-tile work or repeat it more often. Pack validation and runtime construction reject derived routing footprints outside the bounded work envelope even when every individual setting is within its numeric range. Pregeneration amortizes accepted work naturally because nearby chunks share tiles.
+Cold work grows quickly with `maxRouteReaches` because that value expands both the source window and the number of steps traced from each candidate source. `meanderSubdivisions` increases curve and spatial-index work for every accepted reach. The shipped Overworld and Underworld use 1,700-block cells, three cells per cache tile, `maxRouteReaches: 8`, all nine cell nodes admitted as guaranteed sources, `routingBasinCells: 112`, and `meanderSubdivisions: 48`. This retains the 2.999-times headwater density of the immediately preceding 2,944-block setup and raises its curve sampling density to 6.927 times that setup. A 6,144-block VASCULAR_IRIS routing field guides multi-reach flow, the 24-cell drainage warp supplies long directional changes, and one- and two-cycle macro bends sit beneath the six locally noise-warped curls. The 384-block total bend envelope prevents either layer from escaping its reach's deterministic cache halo. One source proves 13,600 blocks, while dense overlapping sources and physically equivalent roughly 190,000-block drainage basins preserve long global trunks. Shipping routes intentionally set terrain height and slope routing weights to zero: topology crosses mountain chains according to the cached continental mask and routing field, while actual columns bend terrain down by up to 15 blocks and then pass through higher relief in sealed water-bearing bores. Regional incision and continuation multipliers no longer shorten those mountain crossings, and ordinary regional dry or suppressed terminals now inherit the wet dimension behavior; Terralost retains its intentional sinkhole grotto. The full source floor remains cheap because it bypasses sorting and samples each candidate once. The topology's pessimistic 134,832 spatial-index writes per reach remain well below the enforced 1,048,576 limit. Generated grottos use one sparse candidate per reach and never run a component flood through unrelated cave air. Increase the route or subdivision limits only after profiling representative cold generation. Wider channels, stronger meanders, smaller cells or tiles, a larger source floor, and higher source chance also increase cold-tile work or repeat it more often. Pack validation and runtime construction reject derived routing footprints outside the bounded work envelope even when every individual setting is within its numeric range. Pregeneration amortizes accepted work naturally because nearby chunks share tiles.
 
 Do not use final river-derived engine streams inside river configuration noise. Besides being rejected by validation, that would make topology depend on the result it is currently building. Use natural height, ordinary generator styles, region/biome identity, and fixed authored multipliers instead.
 
@@ -394,7 +435,7 @@ Run `/iris pack validate pack=<pack-key>` before opening a studio or production 
 | Symptom | Check |
 |---|---|
 | No rivers in the normal biome view | Confirm `enabled: true`, inspect the River network Vision mode at a regional zoom, then set `minimumSourcesPerTile: 1` or raise `source.chance` if complete local gaps are not intended |
-| Rivers look like short scattered arcs | Use `routingBasinCells` around four times `maxRouteReaches`, keep continuation and incision chances near `1`, set `minimumSourcesPerTile: 1`, and increase `meanderStrength` for visibly creeping turns |
+| Rivers look like short scattered arcs | Use `routingBasinCells` well above `maxRouteReaches`, keep continuation and incision chances near `1`, and set a positive source floor. For one-bow curves, use signed `IRIS` meander noise, raise `meanderSubdivisions`, and keep fracture displacement below the parent noise wavelength |
 | Routes appear but no terrain cuts | A high route may be a hidden ridge bore. Check River network Vision, then check `incision`, `maxIncision`, local `maxIncisionMultiplier`, and `BLOCK` overrides |
 | Most sources disappear | `requireOcean` needs a provable outlet; raise `maxRouteReaches`, reduce blocking areas, or choose an explicit terminal policy |
 | Dry channels contain water or run shoreline plants | Regenerate untouched chunks with the same build; dry channels have no surface-fluid head |

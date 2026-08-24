@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Gloss documentation: Container Previews"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,15 +10,17 @@ dateCreated: 2026-08-19T00:00:00.000Z
 Look at a chest and a holographic card appears in front of you. The card shows what is inside.
 Nothing is clicked. No inventory is opened.
 
-An eye raycast runs every tick. When it lands on a container, a card is built from a JSON document
-in `plugins/Gloss/previews/`. Fourteen documents ship. They hot-reload. A document you write can
+Joining, moving and teleporting queue a look-at scan. Gloss admits at most ten queued players per
+tick in first-in, first-out order and spreads stationary fallback discovery across 100 ticks. Once a
+card is open, its target still follows the viewer on the entity tick. The card is built from a JSON
+document in `plugins/Gloss/previews/`. Fourteen documents ship. They hot-reload. A document you write can
 shadow any of them.
 
 ## What triggers a preview
 
-Every tick, for every online player, Gloss casts a ray from the eye along the look direction. The
-ray goes out to `[preview] lookDistance` blocks (default `10.0`, clamped `1.0`–`24.0`). Fluids are
-ignored. Passable blocks are skipped. Two rays are cast:
+When a queued player reaches the capped discovery drain, Gloss casts a ray from the eye along the
+look direction. The ray goes out to `[preview] lookDistance` blocks (default `10.0`, clamped
+`1.0`–`24.0`). Fluids are ignored. Passable blocks are skipped. Two rays are cast:
 
 - one against blocks, keeping the hit only when some loaded document names that material.
 - one against entities within a 0.35-block ray radius. An exact or glob `match.entities` claim makes
@@ -678,9 +680,10 @@ A recompiled document logs `Preview document "<name>" changed and was recompiled
 `Preview document "<name>" was detected and compiled.`, and a deleted one
 `Preview document "<name>" was removed.`
 
-Any change closes **every** open preview on the server. They rebuild from the new snapshot on the
-next tick. A preview holds the element list it was built from and cannot be re-pointed in place. A
-priority change can also move a target from one document to another. Menus are untouched.
+Any change closes **every** open preview on the server and immediately returns those viewers to the
+bounded discovery queue. They rebuild from the new snapshot as their queue turns arrive. A preview
+holds the element list it was built from and cannot be re-pointed in place. A priority change can
+also move a target from one document to another. Menus are untouched.
 
 ## Commands
 
@@ -720,8 +723,10 @@ Preview scale is **not** a command. It is the sneak gesture described above.
 ## Notes
 
 - Previews are drawn with per-viewer display entities. Nobody else sees your card.
-- The card is rebuilt whenever the target changes. The raycast cost is one ray pair per online
-  player per tick. The content cost is one sample every four ticks per open preview.
+- The card is rebuilt whenever the target changes. New-target scans share a deduplicated, fair queue
+  capped at ten players per tick; repeated movement cannot move a player ahead of anyone already
+  waiting. Open cards keep their separate entity-tick target checks. The content cost is one sample
+  every four ticks per open preview.
 - A preview whose target is an ender chest reads the viewer's own ender chest, dispatched onto the
   viewer's thread. The block itself only decides that the ender-chest document won.
 - Removing `special` from `ender_chest.json` makes ender chests take the ordinary block path rather than

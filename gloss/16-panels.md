@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Gloss documentation: Panels"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -172,7 +172,9 @@ personal menu.
 
 A panel can be pinned to an online player. The stored transform then holds a target-relative offset
 rather than an absolute position. The runtime resamples the target on their own scheduler. It
-publishes a resolved absolute pose.
+publishes a resolved absolute pose. One target movement resolves only panels following that player
+and updates only their old and new spatial buckets; unrelated panel definitions and distant viewer
+candidate caches stay untouched.
 
 | Rotation | Offset behavior | Facing |
 |---|---|---|

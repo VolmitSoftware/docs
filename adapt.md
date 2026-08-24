@@ -2,48 +2,48 @@
 title: "Adapt"
 description: "Adapt passive skills and abilities for Paper and Folia"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt adds skills and abilities on vanilla gameplay. Players open the skill tree with a right-click on a bookshelf face. Skills gain levels from matching activity and award knowledge. Players spend knowledge on adaptations.
+Adapt adds skills and abilities on vanilla gameplay. Players open the skill tree by right-clicking a side face of the configured activator block, a bookshelf by default. Top and bottom faces work only when `adaptActivatorAllowVerticalFaces` is enabled. Skills gain levels from matching activity and award knowledge. Players spend knowledge on adaptations.
 
 | | |
 |---|---|
 | Command | `/adapt` |
 | Folia | Supported |
 | Skills | 23 |
-| Adaptations | 331 |
-| Player entry point | Right-click a bookshelf face |
+| Adaptations | 312 declared, 311 active without Iris |
+| Player entry point | Right-click a side face of the activator block |
 
 ## Skills
 
 | Skill | Adaptations |
 |---|---|
-| [Agility](/adapt/11-skill-agility) | 14 |
-| [Architect](/adapt/12-skill-architect) | 14 |
-| [Axes](/adapt/13-skill-axes) | 14 |
+| [Agility](/adapt/11-skill-agility) | 13 |
+| [Architect](/adapt/12-skill-architect) | 12 |
+| [Axes](/adapt/13-skill-axes) | 11 plus 1 Iris-conditional |
 | [Blocking](/adapt/14-skill-blocking) | 14 |
 | [Brewing](/adapt/15-skill-brewing) | 13 |
-| [Chronos](/adapt/16-skill-chronos) | 17 |
-| [Crafting](/adapt/17-skill-crafting) | 15 |
+| [Chronos](/adapt/16-skill-chronos) | 13 |
+| [Crafting](/adapt/17-skill-crafting) | 14 |
 | [Discovery](/adapt/18-skill-discovery) | 14 |
 | [Enchanting](/adapt/19-skill-enchanting) | 14 |
 | [Excavation](/adapt/20-skill-excavation) | 12 |
 | [Herbalism](/adapt/21-skill-herbalism) | 15 |
 | [Hunter](/adapt/22-skill-hunter) | 14 |
-| [Kinetics](/adapt/23-skill-kinetics) | 19 |
+| [Kinetics](/adapt/23-skill-kinetics) | 18 |
 | [Nether](/adapt/24-skill-nether) | 14 |
 | [Pickaxes](/adapt/25-skill-pickaxes) | 13 |
-| [Ranged](/adapt/26-skill-ranged) | 15 |
-| [Rift](/adapt/27-skill-rift) | 15 |
+| [Ranged](/adapt/26-skill-ranged) | 12 |
+| [Rift](/adapt/27-skill-rift) | 13 |
 | [Seaborne](/adapt/28-skill-seaborne) | 14 |
-| [Stealth](/adapt/29-skill-stealth) | 15 |
+| [Stealth](/adapt/29-skill-stealth) | 14 |
 | [Swords](/adapt/30-skill-swords) | 14 |
-| [Taming](/adapt/31-skill-taming) | 15 |
-| [TragOul](/adapt/32-skill-tragoul) | 15 |
+| [Taming](/adapt/31-skill-taming) | 14 |
+| [TragOul](/adapt/32-skill-tragoul) | 14 |
 | [Unarmed](/adapt/33-skill-unarmed) | 12 |
 {.dense}
 
@@ -122,7 +122,7 @@ Full command syntax is in [Commands & Permissions](/adapt/04-commands-permission
 ### Architecture and operations
 
 - [Runtime Architecture](/adapt/38-runtime-architecture)
-- [Velocity & Cross-Server](/adapt/39-velocity-cross-server)
+- [Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)
 - [Operator Runbooks](/adapt/40-operator-runbooks)
 {.links-list}
 

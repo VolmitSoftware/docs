@@ -2,7 +2,7 @@
 title: "Overview"
 description: "What Wormholes is, feature map, runtime, and build"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ cross-server gateways, PlaceholderAPI keys, and a public traversal pricing API.
 | PlaceholderAPI | Operator `%wormholes_…%` keys | [12 - PlaceholderAPI](/wormholes/12-placeholderapi) |
 | Runtime architecture | Managers, Folia, storage | [13 - Runtime Architecture](/wormholes/13-runtime-architecture) |
 | Operator runbooks | Manual smoke checks | [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests) |
-| Integrations | Vault, Iris, soft depends | [15 - Integrations](/wormholes/15-integrations) |
+| Integrations | PlaceholderAPI, Vault, Iris, WorldGuard | [15 - Integrations](/wormholes/15-integrations) |
 | Maintainer reference | Production packages, boundaries, build tasks | [16 - Maintainer Component & Build Reference](/wormholes/16-maintainer-component-build-reference) |
 | Public API | apiJar, traversal cost, metrics | `20`–`23` API docs |
 
@@ -73,7 +73,7 @@ Docs `20`–`23` are for plugin developers. Numbers `17`–`19` are reserved.
 | Servers | Paper, Purpur, and Folia **26.1.2–26.2** (`folia-supported: true` in paper-plugin metadata) |
 | Spigot | 26.2 compile (`compileSpigotCompatibility`) and runtime fallbacks. Paper and Folia keep native paths |
 | Soft depends | PlaceholderAPI, Iris, Vault (optional). Load them before Wormholes when they are present |
-| Runtime library | `zstd-jni` 1.5.7-11 via SlimJar plus `plugin.yml` `libraries`. Not shaded into the jar |
+| Runtime libraries | PacketEvents, bStats, TOML4J, Kyori, and zstd-jni are resolved and cached by SlimJar. The Java-only libraries are relocated for Wormholes; zstd-jni keeps its native-compatible package |
 
 Include `--enable-native-access=ALL-UNNAMED` on the server JVM and the test JVM.
 Then zstd-jni can load its native library without restricted-access warnings.
@@ -86,13 +86,14 @@ From `WormholesPlugin/`:
 |------|---------|
 | `./gradlew build` | Full gate. Also builds shadow jar and api jar |
 | `./gradlew test` | Unit tests (uses `--enable-native-access=ALL-UNNAMED`) |
-| `./gradlew shadowJar` | Shaded runtime plugin jar |
+| `./gradlew shadowJar` | Runtime plugin jar with relocated loader classes and SlimJar dependency metadata |
 | `./gradlew apiJar` | Compile-only public API (`art.arcane.wormholes.api/**`, excluding `internal`) |
 | `./gradlew compileSpigotCompatibility` | Compile supported source against Spigot API |
 | `./gradlew bandwidthHarness` | Run the transport/entity/replication comparison harness |
 
-Use the shaded jar on servers. Use `*-api.jar` for third-party compile-only
-consumers.
+Use `Wormholes-<version>.jar` on servers. Its first start needs access to the
+configured dependency repositories unless the SlimJar cache is already warm.
+Use `*-api.jar` only for third-party compile-only consumers.
 
 ## Commands
 

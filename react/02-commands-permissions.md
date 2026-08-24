@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -136,11 +136,11 @@ Both test commands mutate their test world. `run` queues cleanup actions around 
 
 | Subcommand | Description |
 |------------|-------------|
-| `pair <label> [role=viewer]` | Create and persist a bearer token, then report its RCT2 pairing payload and fingerprints. Players receive a click-to-copy action instead of the raw payload in chat; console and RCON receive raw text. Roles are `viewer`, `operator`, or `admin`. |
+| `pair <label> [role=viewer]` | After the embedded listener is live and bound, create and persist a bearer token, then report its RCT2 pairing payload and fingerprints. A disabled, starting, failed, stopped, or unbound listener creates no token. Players receive a click-to-copy action instead of the raw payload in chat; console and RCON receive raw text. Roles are `viewer`, `operator`, or `admin`. |
 | `list` | List active token IDs, labels, and issue times. |
 | `revoke <id>` | Revoke a token ID and persist the token store. |
 
-Omitting `role` creates a viewer token. Token records without a role also resolve to viewer, so an old or incomplete record cannot inherit administrative authority. RCT2 carries `directUrl`, optional `relayUrl`, the server public key and full SHA-256 fingerprint, and the token ID/signature. It contains no confirmation word.
+Omitting `role` creates a viewer token. Token records without a role also resolve to viewer, so an old or incomplete record cannot inherit administrative authority. RCT2 carries `directUrl`, optional `relayUrl`, the server public key and full SHA-256 fingerprint, and the token ID/signature. It contains no confirmation word. When a wildcard listener has no `advertisedUrl`, React Web lets the operator replace the local fallback with the public port-forward or reverse-proxy URL before pairing. Direct-only pairing verifies the unauthenticated endpoint fingerprint before authenticated identity access or browser-local persistence.
 
 | Role | Effective scopes |
 |------|------------------|
@@ -152,7 +152,7 @@ Only admin tokens can read the full server-console tail/stream or execute a cons
 
 ## Shorthand commands (tweak `shorthands`)
 
-When the `shorthands` tweak is enabled, optional bare commands register. Set `enabled = true` in TOML. The constructor default is **off**. If EssentialsX (plugin name `Essentials`) or CMI is installed, React forces the entire tweak off before activation. React then registers none of its built-in or custom shorthand commands. The TOML setting cannot override this collision guard.
+When the `shorthands` tweak is enabled, optional bare commands register. Set `enabled = true` in TOML; the constructor default is **off**. Built-in labels intentionally replace any matching bare command while the tweak is active, including labels supplied by EssentialsX, CMI, or vanilla. React restores the previous mappings when the tweak is disabled. Custom entries skip occupied labels unless `overrideExisting = true`.
 
 | Command | Permission | Behavior |
 |---------|------------|----------|

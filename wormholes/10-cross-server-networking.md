@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -97,6 +97,15 @@ Peers with the old key will reject it until trust is deliberately replaced. The
 signatures authenticate peer identity and message ownership. They do not
 encrypt the sideband connection.
 
+## Raw peer admission
+
+TCP and Unix-domain listeners share a hard ceiling of 128 inbound connections
+that have not completed their peer handshake. A connection releases its slot
+when it becomes ready, fails, or closes; ready peers and outbound dial/reconnect
+attempts do not consume the ceiling. Excess connections and connections that
+arrive while the network is stopping are closed immediately. Each admitted raw
+connection uses named Java 25 virtual reader and writer threads.
+
 ## Transfer mode
 
 `[network] transfer-mode` (`PlayerTransfer.resolveMethod`):
@@ -157,8 +166,8 @@ Destination checks include:
 
 ### Handoff timeout
 
-`[network] handoff-timeout-ms` (default `5000`) bounds the admission/request
-window.
+`[network] handoff-timeout-ms` (default `5000`, normalized to 50–60000 ms)
+bounds the admission/request window.
 
 ## Paper transfers and auto-accept
 
@@ -176,15 +185,45 @@ platform reports accepting transfers. Direct transfers fail admission with
 | Constant | Value |
 |----------|--------|
 | `WireCodec.PROTOCOL_VERSION` | **19** |
+| Signed status-sideband envelope | **6** |
 
-Handshake Hello carries the protocol, Minecraft, and Wormholes versions. Raw
-peer links require an exact match for all three. Mismatches reject the
-handshake with the peer and local values. Linked servers therefore need the
-same Minecraft version and exact Wormholes plugin version, which also makes
-sure protocol **19** matches.
+Handshake Hello and signed game-port status-sideband envelopes carry the wire
+protocol, Minecraft, and Wormholes versions. Raw and sideband admission require
+an exact match for all three before the peer can become trusted, discovered, or
+ready. Envelope **6** is a hard break: envelope 5 is rejected before its frames
+are decoded, and an envelope 6 packet with an incompatible wire protocol is
+rejected during admission. Upgrade every linked server to the same Wormholes
+build and restart them together; no persisted network data needs to be deleted.
 
 Optional compression and dictionary negotiation ride the same wire once Hello
 succeeds (`[network.transport]`).
+
+## Remote portal views
+
+An interested observer subscribes the linked peer to the gateway portal's
+block and entity stream. The source retains the session's chunks, sends an
+initial bulk snapshot, then publishes diffs, entity state, and world time until
+the last observer stops touching the view. Initial bulk delivery across every
+session shares one fair global pump capped at eight chunk-column starts every
+two ticks; failed partial delivery resets and retries instead of publishing an
+incomplete ready state. Ongoing entity snapshots use a separate fair global
+queue capped at eight new captures and eight captures in flight every two
+ticks. Animation and hurt events use the captured entity-to-session membership
+instead of checking every remote-view session.
+
+Dirty replicated chunks rotate through a global limit of 64 drains per tick.
+On Folia, each chunk has at most one owning-region drain in flight; rejected or
+retired work remains eligible for a later pass, and a rejected global drain
+cycle retries after one second.
+
+The per-portal network-view preset controls block depth, resample heartbeat,
+entity interval, and unsubscribe grace; exact values and custom clamps are in
+[04 - Portal Types, Menus & Settings](/wormholes/04-portal-types-menus-settings).
+After the grace expires, Wormholes sends `ViewUnsubscribe`, releases replication
+state, and removes the remote cache. A view with no data resends its subscription
+at most once every five seconds. Raw peers negotiate optional Zstandard
+compression and dictionaries; status-sideband frames use bounded whole-envelope
+compression and are intended for lower-volume fallback transport.
 
 ## Non-player entity transfer
 
@@ -227,9 +266,10 @@ points at `/wh network status`.
 4. Make sure `accepts-transfers=true` (or rely on auto-accept) on destinations
    that receive direct transfers
 5. Open the game port and the actual raw peer port reported by
-   `/wormholes network status`. The listener tries configured `listen-port`
-   through `listen-port + 50` when ports are busy. Reserve the configured port
-   or permit the reported bound port/range.
+   `/wormholes network status`. `listen-port` must be 1–65535; an invalid value
+   is canonicalized to 8901. The listener tries the configured port through the
+   next 50 valid ports, capped at 65535, when ports are busy. Reserve the
+   configured port or permit the reported bound port/range.
 6. Link gateways: portal Export (`WHP5.…`) on one side, import + Link menu on
    the other
 7. Verify: `/wormholes network status`, `/wormholes server list`,

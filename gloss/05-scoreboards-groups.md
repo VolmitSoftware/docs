@@ -175,6 +175,8 @@ Ordinary sidebars use `[boards] updateIntervalTicks` (default 20, clamped 1..200
 
 Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. Fitting happens after that pipeline: the title has a 32-UTF-16-unit wire limit, and each row uses a 16-unit team prefix plus a 16-unit suffix with its active colour state carried into the suffix. Colour codes consume that budget. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Surrogate pairs, legacy colour pairs and complete legacy RGB runs are never cut in half. At most 15 rows render; the rest are dropped.
 
+`scanner()` emits colour codes only when its highlight state changes. Its base colour is not repeated before every unchanged glyph, so labels such as `GLOSS SCOREBOARD` retain the full visible text within the row budget.
+
 `"hideNumbers": true` applies Minecraft's blank score number format per board on native 1.20.3+
 servers and clients. It removes the red score column without changing the internal 15-to-1 values
 that keep the rows ordered. On a server older than 1.20.3, ViaVersion's global
@@ -193,6 +195,7 @@ Gloss has no group files. The `groups/` YAML directory is retired. There is no `
 
 - With `[groups] useVault = true` (the default) and Vault installed, Gloss asks the registered Vault `Permission` provider for the player primary group. It trims it and lowercases it.
 - The answer is cached per player for **5 seconds**, then re-asked. The cache entry is dropped when the player quits. The whole cache is cleared on `/gloss reload`.
+- Vault provider reads run on the player's entity-owning thread. A direct board, tablist or bubble selection fills a cold cache there; cache-only refreshes are dispatched to the same owner rather than an asynchronous worker.
 - Any failure inside the Vault provider is swallowed and treated as "no group".
 
 The resolved name is what board `groups` arrays and tablist `nameFormats` keys are matched against. That is why both are lowercased when they are loaded.

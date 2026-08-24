@@ -2,7 +2,7 @@
 title: "Configuration Math"
 description: "Adapt documentation: Configuration Math"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,7 +69,7 @@ lineMultiplier = m * playerMultiplier
 
 Boosts add together inside their own bracket and multiply across brackets. Expired entries are dropped while the sums are taken.
 
-The two brackets have different sources. `/adapt boost` and `/adapt global-boost` both land in the player bracket. Line boosts come from the API, `XP.boostXP(player, skill, percent, ms)`, and from `AdaptPlayer.boostXPToRandom` and `boostXPToRecents`.
+The two brackets have different sources. `/adapt boost` and `/adapt global-boost` both land in the player bracket. Line boosts come from the API, `XP.boostXP(player, skill, percent, durationMillis)`, and from `AdaptPlayer.boostXPToRandom` and `boostXPToRecents`. Those duration parameters are `long`; expiry saturates rather than wrapping when a caller supplies an extreme duration.
 
 ### Permission multipliers
 
@@ -201,7 +201,7 @@ Runtime lookups pass `maxError = 0.000001`, which is a few dozen forward evaluat
 
 `experienceMaxLevel` defaults to 1000 and is checked once per second per skill line. If the line's XP exceeds `getXPForLevel(experienceMaxLevel)` and the player is not busy, the player gains 1 wisdom. The line's XP is set back to `getXPForLevel(experienceMaxLevel - 1)`.
 
-The bisection clamps its cursor to the same value. On an `XL*` curve this is a hard ceiling on any reported level. Closed-form families are not clamped. They can briefly report a level above the cap, between the overflow and the next tick's reset.
+Every runtime XP-to-level conversion clamps its result to this value, including the closed-form curve families. Level-to-XP conversion also clamps its input, so callers cannot request a threshold above the configured cap. Overflow still grants wisdom and resets the skill line on its one-second progression tick, but no public level lookup can report a value above the cap while that reset is pending.
 
 ## Master XP, master level and power
 
@@ -242,9 +242,9 @@ Debug mode (`/adapt debug mode`) short-circuits `hasPowerAvailable`, `spendKnowl
 |---|---:|---|
 | `xpCurve` | `ADAPT_BALANCED` | Curve family used by every skill line and by master level |
 | `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the bisection cursor clamps to |
-| `playerXpPerSkillLevelUpBase` | `489` | Flat master XP per skill level crossed |
-| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
-| `powerPerLevel` | `0.65` | Power per master level, truncated to a whole number |
+| `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP per skill level crossed |
+| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Finite non-negative extra master XP per level already reached |
+| `powerPerLevel` | `0.65` | Finite non-negative power per master level, truncated to a whole number |
 
 ### Curve families
 

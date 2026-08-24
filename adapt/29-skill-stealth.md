@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Adapt documentation: Skill - Stealth"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,6 +71,8 @@ refused outright. Any invisible player near you gets a private outline that only
 you can see. Stand up and all three go away, including the Night Vision the adaptation applied.
 
 It only cleans up its own Night Vision. A potion you drank yourself is left alone.
+
+Invisible-player outlines refresh on a shared best-effort queue. At high concurrency the outline pass can arrive later than 500 ms and a private outline can briefly lapse before its next refresh; the Night Vision and Blindness behavior still reacts to your own sneak and potion events.
 
 Passive, single level. Learn it and sneak.
 
@@ -426,7 +428,7 @@ Listened events:
 - `EntityPotionEffectEvent` (`MONITOR`, ignore cancelled) - drops ownership when something else changes the player's Night Vision
 - `PlayerQuitEvent` (`LOWEST`) - clears tracked state and owned outlines
 
-Tracking runs at most every `500` ms per player, at most `16` players per tick. Invisible-player outlines are private viewer glows on a `1500` ms lease, refreshed while both players stay in range. Search range is the server view distance in blocks, floored at 16 and capped at `160`, and at most `128` players are inspected per pass. Milestone: `challenge_stealth_sight_sneak_1h` on `stealth.sight.sneaking-ticks` at 72000, reward 400.
+The `500` ms tracking interval is the earliest per-viewer refresh target, not a guaranteed cadence. One de-duplicated global queue serves every sneaking learner and visits at most `16` viewers per 50 ms adaptation tick. Under load, remaining viewers stay queued for later ticks. Invisible-player outlines are private viewer glows on a `1500` ms lease, so a delayed refresh can let an outline briefly expire. Search range is the server view distance in blocks, floored at 16 and capped at `160`, and each pass inspects at most `128` nearby players. Milestone: `challenge_stealth_sight_sneak_1h` on `stealth.sight.sneaking-ticks` at 72000, reward 400.
 
 No adaptation-specific config knobs.
 

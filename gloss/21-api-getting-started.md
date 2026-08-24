@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Gloss documentation: API: Getting Started"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -74,7 +74,8 @@ Gloss registers exactly one provider from `GlossApiServiceImpl#register(GlossAPI
 |---|---|---|
 | `GlossAPI` | interface | Holograms, boards, tablist, text and menus. Also the `ServicesManager` service type |
 | `GlossAPIProvider` | final class | Static holder behind `GlossAPI.get()` |
-| `Hologram` | interface | One persistent hologram |
+| `Hologram` | interface | Shared text and position operations for persistent and temporary holograms |
+| `AnchoredHologram` | interface | One persistent hologram, including billboard, yaw and pitch. Extends `Hologram` |
 | `TemporaryHologram` | interface | A hologram that expires. Extends `Hologram` |
 | `HologramPresentation` | record | Normalized scale, three-axis rotation and opacity for a temporary hologram |
 | `HologramViewers` | interface | Viewer filter on a temporary hologram |
@@ -308,10 +309,11 @@ in [API: Menus](/gloss/22-api-menus). The preview access event is in
 ## Holograms
 
 ```java
-Hologram sign = gloss.createHologram("shop-sign", location);
+AnchoredHologram sign = gloss.createHologram("shop-sign", location);
 sign.addLine("&dOpen daily");
 sign.setLine(0, "&d&lOpen daily");
 sign.setLines(List.of("&d&lOpen daily", "&7Trade at spawn"));
+sign.setOrientation("FIXED", 30.0, -10.0);
 sign.teleport(newLocation);
 gloss.deleteHologram("shop-sign");
 ```
@@ -328,6 +330,13 @@ public interface Hologram {
   void removeLine(int index);
   void clearLines();
 }
+
+public interface AnchoredHologram extends Hologram {
+  String billboard();
+  double yaw();
+  double pitch();
+  void setOrientation(String billboard, double yaw, double pitch);
+}
 ```
 
 `createHologram` returns the existing hologram when the id is already taken. It only persists the
@@ -337,12 +346,21 @@ document when it actually created one. Ids are validated first: `null` throws
 throws `IllegalArgumentException("Hologram id may not contain path characters.")`.
 `deleteHologram` applies the same validation.
 
-Created holograms are persistent. Every mutation writes `plugins/Gloss/holograms/<id>.json` on the
-background IO thread and bumps the document `revision`. They render exactly like file-defined
+Created holograms are persistent. Every mutation bumps the document `revision` and publishes its
+latest state to a keyed background-IO queue for `plugins/Gloss/holograms/<id>.json`. Repeated
+mutations of one id collapse into one bounded queue slot; the latest document is written without
+letting an earlier queued write overtake a delete. They render exactly like file-defined
 holograms, including per-viewer placeholder mode. `setLines(List<String>)` replaces the whole list
-in one mutation and therefore one file write. `hologram(id)` returns an `Optional`.
+in one mutation. `hologram(id)` returns an `Optional`.
 `hasHologram(id)` is a containment check. `holograms()` returns a snapshot list. The document
 shape and the render pipeline are in [Holograms](/gloss/04-holograms).
+
+`billboard()` returns `CENTER`, `FIXED`, `HORIZONTAL` or `VERTICAL`. `setOrientation` trims and
+uppercases that argument; `null` or blank means `CENTER`, while any other value throws.
+Yaw must be finite and between `-180` and `180` degrees. Pitch must be finite and between `-90` and
+`90`. Gloss validates all three arguments before changing the hologram, updating its existing
+display, and persisting one revision. If any argument is invalid, the
+billboard, angles, displays, revision and file all remain unchanged.
 
 ## Temporary holograms
 
@@ -350,8 +368,8 @@ shape and the render pipeline are in [Holograms](/gloss/04-holograms).
 public interface TemporaryHologram extends Hologram {
   void setRenderedLines(List<String> lines);
   void bindRenderedFrames(LongFunction<List<String>> frames);
-  void bindPosition(Supplier<Location> binder);
-  void bindPresentation(Supplier<HologramPresentation> binder);
+  void bindPosition(Entity owner, Supplier<Location> binder);
+  void bindPresentation(Entity owner, Supplier<HologramPresentation> binder);
   long remainingMs();
   HologramViewers viewers();
   void destroy();
@@ -366,8 +384,8 @@ public record HologramPresentation(
 ```java
 TemporaryHologram tag = gloss.createTemporaryHologram("combat-tag", start, 4000L);
 tag.setRenderedLines(List.of("\u00a7c-4", "\u00a77Critical hit"));
-tag.bindPosition(() -> entity.getLocation().add(0, 2.2, 0));
-tag.bindPresentation(() -> new HologramPresentation(
+tag.bindPosition(entity, () -> entity.getLocation().add(0, 2.2, 0));
+tag.bindPresentation(entity, () -> new HologramPresentation(
     1.0, 1.0, 1.0,
     0.0, 0.0, (4000L - tag.remainingMs()) * 0.09,
     Math.min(1.0, tag.remainingMs() / 500.0)));
@@ -377,9 +395,17 @@ tag.viewers().add(player.getUniqueId());
 
 Temporary holograms are never written to disk. They expire after `durationMs`, which
 `remainingMs()` reports the remainder of. They are driven every
-`[holograms] temporaryUpdateIntervalTicks` (default 2). The `bindPosition` supplier, if set, is
-polled on each drive and the display follows it. Translation remains position movement through
-`bindPosition`; it is not part of `HologramPresentation`.
+`[holograms] temporaryUpdateIntervalTicks` (default 2). Each binding names the Bukkit entity that
+owns the supplier's reads. Gloss evaluates the supplier on that entity's scheduler and copies the
+result before it touches the display, so a binding may safely follow an entity in another Folia
+region. Position and presentation bindings owned by the same entity are sampled in one owner task.
+The initial location and explicit teleports must name a loaded world; a bound sample without one is
+ignored. Translation remains position movement through `bindPosition`; it is not part of
+`HologramPresentation`.
+
+The ownerless `bindPosition(Supplier<Location>)` and
+`bindPresentation(Supplier<HologramPresentation>)` overloads were removed. Consumers must pass the
+entity whose state each supplier reads and recompile against this API.
 
 Inherited `setLines(List<String>)` accepts authored Gloss text. It renders statically, so
 placeholder tokens are not resolved while functions, inline expressions, emoji and colors still
@@ -391,7 +417,7 @@ alignment so server-produced wrapping stays one aligned block. `bindRenderedFram
 already-rendered block time-dependent and samples it through the high-frequency animator when that
 feature is enabled.
 
-`bindPresentation(Supplier<HologramPresentation>)` supplies scale, three-axis rotation and opacity
+`bindPresentation(Entity, Supplier<HologramPresentation>)` supplies scale, three-axis rotation and opacity
 on each drive. Scale axes are multipliers clamped to `0`..`16`; rotation axes are degrees normalized
 modulo 360; and opacity is normalized and clamped to `0`..`1`. The record replaces a non-finite
 scale or opacity with `1`, and a non-finite rotation with `0`. `HologramPresentation.identity()` is
@@ -400,6 +426,10 @@ the neutral value. Presentation changes are applied on the entity-owning thread;
 drives.
 
 `viewers()` returns a `HologramViewers` filter over a UUID set plus a mode flag:
+
+Gloss applies that filter to the temporary hologram's exact anchor audience after the
+`[holograms] viewRange` distance check. “Everyone” below means every eligible nearby viewer, not
+the full online population.
 
 | Call | Effect |
 |---|---|

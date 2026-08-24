@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Adapt documentation: API - Skills & Adaptations"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -108,7 +108,7 @@ The base TOML shape for a first-party adaptation. External code may read these b
 | Key | Type | Default | What it does |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Turns the adaptation off without removing files |
-| `permanent` | boolean | `false` | Treats the adaptation as always learned and blocks unlearning |
+| `permanent` | boolean | `false` | Purchases normally; once learned, normal unlearning is refused. Administrative bypass can lower it without a refund |
 | `showParticles` | boolean | `true` | Plays this adaptation's particle effects |
 | `showSounds` | boolean | `true` | Plays this adaptation's sound effects |
 | `baseCost` | int | `4` | Knowledge charged per level before the scaling factor |
@@ -145,6 +145,7 @@ Java-public so Adapt's catalogue can be assembled across packages. Not third-par
 | `PlayerStateRegistry` | Tracks first-party per-player maps and owns the quit listener. `reset()` clears every registered map |
 | `VelocityBurstRuntime` | Global movement-burst scheduler and its `Client`, `Profile`, `BurstRequest`, `Feedback` and `StartResult` nested types. Adapt owns startup, ticking and shutdown |
 | `ChunkLoading` | Folia and Paper chunk-loading helper used by built-in adaptations. Not an external scheduling contract |
+| `AdaptationOwnerPulse` | Internal bounded adaptation-maintenance pulse. Adapt owns registration and lifecycle |
 | `SkillOwnerPulse` | Internal learner-index refresh pulse |
 
 `AdaptationRuntimeGuards` and `SkillRuntimeGuards` are package-private implementation classes, not API types and not annotations. The only public markers are `RunsWithoutLearnedAdaptation` and `ReceiveCancelledEvents`, both `@Target(ElementType.METHOD)` with runtime retention.

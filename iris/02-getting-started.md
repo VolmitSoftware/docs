@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,17 +69,15 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 
 **Already exists.** Create aborts if the managed dimension folder is already there. On Paper-family servers that folder is `<level-root>/dimensions/iris/<name>`. Plain Spigot uses `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>` so CraftBukkit can bind the outer world and the canonical `iris:<name>` storage together. Use the separate replacement command when replacing an existing safe slot is intentional. Exact vanilla-slot replacement is unavailable on Spigot.
 
-**Folia.** Runtime creation is disabled. Iris stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, and automatically requests a controlled restart after every staging step succeeds. After the server returns, the world generates and loads on its own from that registration. You do not need `/iris load`. Your host must provide a working restart script or supervisor. If the restart command cannot relaunch the JVM, Iris stops the server and the supervisor must start it again.
+**Bukkit-family servers, including Folia and Spigot.** Create builds the managed `iris:*` world immediately through `IrisToolbelt.createWorld()`, as a production world rather than a Studio world. Folia uses Iris's Paper-like runtime lifecycle backend and does not restart for ordinary creation. Spigot uses the public Bukkit path even though it cannot cold-replace a vanilla slot.
 
-**Everything else, including Spigot.** Create builds the managed `iris:*` world immediately through `IrisToolbelt.createWorld()`, as a production world (not a studio world). Spigot supports this create path even though it cannot cold-replace a vanilla slot.
-
-For a player, the immediate create path opens an arbitrated large title and labeled bottom action-bar meter before validation begins. The stage label advances through pack validation, datapack installation, snapshot copy, generator preparation, spawn generation, registration, safe entry, optional creation-time pregen, and finalization. Spawn generation also shows generated/required chunk counts when available. Console creates receive the same truthful stages as a bounded colored text bar rather than per-chunk log spam. Completion or failure remains in chat and the detailed cause remains in the server console. The optional creation-time pregeneration phase retains its dedicated long-running boss bar.
+For a player, the immediate create path opens a labeled bottom action-bar meter before validation begins. The stage label advances through pack validation, datapack installation, snapshot copy, generator preparation, spawn generation, registration, direct automatic entry, optional creation-time pregen, and finalization. Spawn generation also shows generated/required chunk counts when available. Console creates receive the same truthful stages as a bounded colored text bar rather than per-chunk log spam. Completion or failure remains in chat and the detailed cause remains in the server console. The optional creation-time pregeneration phase retains its dedicated long-running boss bar.
 
 ```text
 /iris create name=myworld type=overworld seed=1337
 ```
 
-Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. On a non-Folia server `myworld` must appear under Iris worlds. On Folia, wait for the automatic restart and reconnect before continuing.
+Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. `myworld` must appear under Iris worlds immediately after creation completes, including on Folia.
 
 #### Replace an existing Bukkit world
 
@@ -125,7 +123,7 @@ The existing Overworld and Nether target directories must already be initialized
 
 Alias `c`. You cannot pass `seed` without also passing `pack`.
 
-The `pack:dimension` form has to be **quoted** — `"overworld:overworld"` — because Brigadier's unquoted string type does not accept a colon. Iris's own help text says the same thing.
+The `pack:dimension` form has to be **quoted** — for example, `"custom_pack:dimensions/sky"` — because Brigadier's unquoted string type does not accept a colon. Use a bare pack such as `overworld` when its dimension key matches its name.
 
 If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Before using the shipping Overworld, manually place the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 datapacks in this save's `datapacks/` directory. Modded `/iris datapack ingest` is only a stub. Restart after all three are present, then run create.
 
@@ -291,10 +289,9 @@ The Studio gate passes when the transient world opens. The workspace must point 
 
 1. Confirm the pack: `overworld` (or yours) exists under the platform packs directory.
 2. Create the world using the form for your platform.
-3. On Folia only: wait for Iris's automatic restart request to complete. If the server stops without returning, start it through the host supervisor. The world then loads on its own.
-4. Teleport in and fly around a little to confirm chunks generate.
-5. Optional: `/iris pregen start radius=352 …` for a 45×45-chunk area.
-6. Optional: `/iris studio open <pack>` and use the VSCode schemas for block, item, and entity autocomplete. Mod content is included in those schemas on mod loaders.
+3. Teleport in and fly around a little to confirm chunks generate.
+4. Optional: `/iris pregen start radius=352 …` for a 45×45-chunk area.
+5. Optional: `/iris studio open <pack>` and use the VSCode schemas for block, item, and entity autocomplete. Mod content is included in those schemas on mod loaders.
 
 The session is finished when you restart the server cleanly. The production world must load again. It must generate new chunks from its copied pack snapshot. Remove a disposable world through the lifecycle command after evacuating players, never by deleting folders. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
@@ -308,12 +305,12 @@ The session is finished when you restart the server cleanly. The production worl
 | World named `iris` or `benchmark` | Create rejected | Pick another name, e.g. `irisworld` |
 | Editing `packs/<pack>` after creating a production world | **No effect** on that world, ever | Production engines read `<world>/iris/pack`. Push changes with `/iris developer update-world world=<world> pack=<dimension> confirm=true` and restart, or accept that only new chunks change. Studio reads the live pack |
 | Expecting pack edits to change existing chunks | Only newly generated chunks use the new config | Fly to unexplored terrain, pregen a fresh radius, or use a Studio world |
-| Folia: create then teleport immediately | The world is not live yet | Restart after the staging message, then teleport |
+| Folia create reports `paper_like_runtime` unavailable | Iris cannot safely use Folia's unsupported public world creator | Keep the world data untouched and update to a compatible Folia/Iris build before retrying |
 | Modded: new pack's heights or biomes missing | The forced datapack was not applied before registries loaded | Restart once with the pack already installed |
 | Modded Overworld reports missing Towns & Towers or Dungeons & Taverns keys | Bukkit-only ingest cannot install its declared dependencies on a mod loader | Put Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 in that save's `datapacks/`, then restart before loading the Overworld |
 | `/iris load` from console | Player-origin only. Console cannot run it | Rely on the `bukkit.yml` registration plus a restart, or run it as a player |
 | `/iris load` on modded | No such subcommand | Use create or `world enable`, then teleport |
-| Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote it: `"overworld:overworld"` |
+| Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote a genuinely distinct pair, for example `"custom_pack:dimensions/sky"` |
 | Modded pregen flags before `at x z` | Syntax error | Put `at <x> <z>` before any flag |
 | Starting a pregen while one is running | Start fails | `/iris pregen stop` first |
 | `/iris pregen resume` expected to only resume | It is an alias of `pause`, which toggles | Check `/iris pregen status` instead of assuming |

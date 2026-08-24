@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Adapt documentation: Player Usage"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ A brand-new player opens the menu and sees nothing. That is normal. Skills appea
 4. Right-click it while standing, with an empty hand or a non-block item. The menu opens.
 5. Click the skill you want to spend in.
 6. Click an adaptation to open its level list.
-7. Click the level you want to buy. If you can afford it in both knowledge and power, you learn it right there.
+7. Click the level you want to buy. If you can afford its knowledge, power, and any configured Vault price, you learn it right there.
 8. Go use it. Passive adaptations work immediately. The rest need the gesture described in that skill's doc.
 
 ## Opening the menu
@@ -59,14 +59,14 @@ The bottom row is navigation. If there is more than one page you get first, prev
 2. Read the icon lore. It lists the knowledge price and the power the level costs. It lists the money price if the server charges Vault currency. It lists the ability's numbers at that level.
 3. Levels you already own are shown with an enchant glint.
 4. Click the level you want. Buying level 4 from level 0 charges the sum of levels 1 through 4 in knowledge and 4 in power.
-5. If the adaptation is marked permanent, the first click only asks for confirmation. Click the same level again within 6 seconds to commit. You will never be able to unlearn it.
+5. If the adaptation is marked permanent, the first click only asks for confirmation. Click the same level again within 6 seconds to commit. Normal players cannot later unlearn it; an administrative bypass can lower it without a refund.
 6. On success the menu closes and reopens with the new level, and a short title tells you what you learned.
 
-A click that does nothing but play a dull thud means you could not afford it. Either you do not have enough knowledge in that line, or you do not have enough free power.
+A click that does nothing but play a dull thud means you could not afford it. You may lack knowledge in that line, free power, or the configured Vault funds.
 
 ## Unlearning
 
-Click a level you already own to drop back to the level below it. Knowledge comes back at the same price you paid. Any Vault money comes back at the server's configured refund percentage. If the server runs `hardcoreNoRefunds` you get nothing back, so think before you buy. Permanent adaptations refuse to unlearn at all.
+Click a level you already own to drop back to the level below it. Knowledge comes back at the same price you paid. Any Vault money comes back at the server's configured refund percentage. If the server runs `hardcoreNoRefunds` you get nothing back, so think before you buy. Permanent adaptations refuse normal unlearning; an administrative bypass can lower one without paying any refund.
 
 ## Using what you learned
 
@@ -95,7 +95,7 @@ Logging in after time away grants a temporary XP boost sized from how long you w
 | Block face | Side faces only unless `adaptActivatorAllowVerticalFaces = true` |
 | Main hand | Empty or a non-block item |
 | Off hand | Empty or a non-block item |
-| Block type | Must match `adaptActivatorBlock`, default `BOOKSHELF` |
+| Block type | Must match `adaptActivatorBlock`, default `BOOKSHELF`. Unknown, non-block, and air configuration values fall back to `BOOKSHELF` |
 | Protection | Every default protector must allow interaction at that location |
 | Result | Event cancelled, page-turn and enchantment-table sounds, crit and enchantment particles, skills menu opens |
 

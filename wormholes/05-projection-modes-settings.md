@@ -2,7 +2,7 @@
 title: "Projection Modes & Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -77,8 +77,17 @@ Global per-tick budgets (from `[projection]`, refreshed into `Settings`):
 |-----|---------|-------|------|
 | `max-projectors-per-tick` | `24` | 1–512 | Total block-update projector slots per tick across all observers. |
 | `max-portals-per-observer-tick` | `4` | 1–64 | Cap on portals one observer may block-update in one frame. |
-| `max-new-observer-scans-per-tick` | `64` | 1–4096 | How many players may be scanned as new/continuing observers per tick. |
+| `max-new-observer-scans-per-tick` | `64` | 1–4096 | Shared cap on player-owner reconciliation frames per tick across normal projection and surface skins. |
 | `max-projected-cells` | `250000` | 0–50000000 | Hard ceiling on candidate block positions scanned for one portal pass. `0` disables the ceiling (not recommended). |
+
+Observer admission uses independent rotating lanes. Existing projector or skin
+state receives most available slots so stale client state is removed promptly,
+while discovery receives at least one slot whenever the budget is at least two;
+a one-slot budget gives discovery every fourth tick. An observer with an
+already-running owner task is skipped without consuming the frame cap, and a
+rejected or retired owner task clears its in-flight lease so a later tick can
+retry it. The same admitted owner task reconciles both projection and surface
+skin state when both are active.
 
 Budget fitting shortens lateral padding first. Depth is reduced only if the
 aperture-aligned scan still exceeds the cell ceiling. An aperture that cannot
@@ -191,6 +200,12 @@ projection is off. Water and lava use client block claims. Other skins use
 client-side display panes. Opaque skins suppress through-projection.
 Transparent skins can remain in front of it.
 
+Plugin shutdown sends display teardown and fluid-claim release on each online
+observer's entity owner before render state is cleared. At most the configured
+observer reconciliation budget is in flight during that bounded drain; states
+whose owner scheduler cannot complete before the shutdown deadline are retained
+instead of being cleared off-owner.
+
 Entity projection covers players, living entities, and supported non-living
 entities. It carries position, pose, velocity, metadata, equipment, passengers,
 leash relationships, animations, hurt state, item-frame contents, and map data
@@ -205,7 +220,7 @@ These are separate systems:
 | System | Config keys (`[main]`) | Default | Behavior |
 |--------|------------------------|---------|----------|
 | **Arrival warmer** | `arrival-prewarm-on-interest`, `arrival-warm-radius-chunks`, `arrival-warm-max-radius-chunks`, `arrival-warm-hold-millis`, `arrival-warm-throttle-millis` | prewarm **true**. Radius **4**. Max radius **10**. Hold **5000** ms. Throttle **1000** ms | When an observer is live-interested in a linked local destination, holds destination chunks via chunk leases so arrival geometry is warmer. Also used for imminent warm with view-distance-aware radius. |
-| **Chunk pre-send** | `chunk-pre-send-enabled`, `chunk-pre-send-radius-chunks`, `chunk-pre-send-max-chunks`, `chunk-pre-send-budget-micros` | **enabled false**. Radius **3**. Max **32**. Budget **2000** µs | At traversal commit, optionally pre-sends destination chunks to the traveler within a microsecond budget. Off by default until verified on a live server. |
+| **Chunk pre-send** | `chunk-pre-send-enabled`, `chunk-pre-send-radius-chunks`, `chunk-pre-send-max-chunks`, `chunk-pre-send-budget-micros` | **enabled false**. Radius **3**. Max **32**. Budget **2000** µs | Immediately before a local, RTP, or dimensional-door player teleport, sends already-loaded destination chunks from the destination-owned task within a microsecond budget, then initiates movement on the traveler entity owner. It does not load chunks. A rejected traveler dispatch restores the source view and refunds traversal cost through owner-safe recovery; if the source scheduler has retired, Wormholes consumes the transaction instead of running rollback off-owner. Cross-server transfer skips it. |
 
 Related transition mask: `arrival-transition-mask` default **true**,
 `arrival-transition-mask-ticks` default **25**. Chunk send rate tuner
@@ -235,7 +250,9 @@ See [09 - Commands & Permissions](/wormholes/09-commands-permissions) and
 - `foveated-unrendering` defaults **false**. Interest is then purely
   view-AABB based.
 - `chunk-pre-send-enabled` defaults **false**. Arrival prewarm on interest
-  defaults **true**.
+  defaults **true**. Pre-send also skips when the packet bridge is unsupported,
+  the player is offline, the destination region is not owned, or the destination
+  centre chunk is not loaded.
 - Quality profile `performance` forces `[render] entity-spoofing` and
   `lighting-fidelity` off in addition to its numeric clamps.
 - `max-projected-cells = 0` disables the cell ceiling and can make a single

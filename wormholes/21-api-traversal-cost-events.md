@@ -2,7 +2,7 @@
 title: "API - Traversal Cost & Events"
 description: "Wormholes documentation: API - Traversal Cost & Events"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,30 +46,48 @@ Guarantees:
   another provider denied.
 - `reserve` runs only for `PAYABLE` quotes after every provider quoted without
   denying.
-- **All-or-nothing:** any reserve failure refunds already-reserved providers in
-  reverse order. Nobody pays.
-- Exactly one of `commit` or `refund` runs per receipt. The first call wins.
+- **Rollback attempt:** any reserve failure requests refunds from every
+  already-reserved provider in reverse order. A provider that throws during
+  `refund` is logged and struck; Wormholes continues the rollback but cannot
+  guarantee that faulty provider reversed its own charge.
+- At most one of `commit` or `refund` runs per receipt. The first terminal
+  intent wins, and normal lifecycle paths deliver it exactly once. The
+  ownership-unavailable shutdown case described below deliberately calls
+  neither.
 - **`commit` is final.** Refund after commit is a no-op and never reaches you.
-- Unresolved receipts older than 30s refund with `EXPIRED`. The sweep runs at
-  the head of the next traversal evaluation, at most once per second. Idle
-  servers wait until the next attempt or shutdown.
-- Shutdown refunds unresolved receipts with `SERVER_SHUTDOWN`.
+- An outcome-less receipt older than 30s receives a terminal `EXPIRED` refund
+  request. A receipt that already has a commit or refund intent keeps that
+  original outcome; TTL marks it expired and starts another owner-dispatch
+  retry cycle instead of replacing the outcome. The sweep runs at the head of
+  the next traversal evaluation, including when the API is disabled, at most
+  once per second. Idle servers wait until the next attempt or shutdown.
+- Player quit honors any stored terminal outcome. An outcome-less receipt
+  refunds with `TRAVELER_LEFT` while the player entity is still owned.
+- Shutdown stops traversal producers, waits up to 2s for active `quote` and
+  `reserve` evaluations, gives callbacks 500ms to publish their outcome, then
+  gives accepted owner settlements up to 2s to drain. Tickets still without an
+  outcome request a `SERVER_SHUTDOWN` refund.
 - One in-flight traversal per player. A second attempt is refused before any
   provider (`DENIED_IN_PROGRESS`).
 
 ## Threading
 
-`quote`, `reserve`, and `commit` run on the portal's region thread. Inventory,
-XP, and location of the traveler are legal there.
+`quote`, `reserve`, and the pre-traversal event run inline on the source
+traveler-owned traversal task. Inventory, XP, and the traveler's source
+location are legal there.
 
-`refund` is the same thread except:
+For local portals, RTP, and Dimensional Doors, `commit` runs on the destination
+traveler entity task after movement succeeds. Cross-server `commit` runs on the
+source traveler entity task after the transfer send succeeds. Every terminal
+provider call and traversal event, including `EXPIRED`, `TRAVELER_LEFT`, and
+`SERVER_SHUTDOWN`, runs only while Wormholes owns the current traveler entity.
 
-- `EXPIRED` — region of whichever portal triggered the next evaluation
-- `SERVER_SHUTDOWN` — unload thread
-
-On those two paths the traveler may be on another region or offline. Reverse
-against your own ledger only, unless you hop to the player entity scheduler and
-handle refusal.
+If entity dispatch is rejected or retired, Wormholes retains the exact terminal
+intent and retries globally after 1, 2, 4, and 8 ticks. Expiry, player join,
+player quit, and shutdown provide further recovery opportunities. Wormholes
+never substitutes an off-owner provider call. If shutdown still cannot acquire
+the entity owner, it leaves the provider receipt unresolved and writes a severe
+console error naming the traversal ticket; the provider is not called.
 
 Do not block any of the four methods. Slow providers get a throttled warning.
 The decision is not changed.
@@ -241,20 +259,21 @@ public void onTraversed(WormholesPortalTraversedEvent event) {
 }
 ```
 
-- `WormholesPortalTraverseEvent`: before any quote. Cancel is free. Portal
-  region thread. No blocking.
-- `WormholesPortalTraversedEvent`: after commit. Traveler entity scheduler.
-  Dropped with a warning if the scheduler refuses. Not a ledger of record.
+- `WormholesPortalTraverseEvent`: before any quote. Cancel is free. Source
+  traveler-owned traversal task. No blocking.
+- `WormholesPortalTraversedEvent`: after commit on the same traveler entity
+  owner. Dispatch failures are logged. Not a ledger of record.
 - Both extend `org.bukkit.event.Event` with their own `HandlerList`. Not async.
-  Not dispatched with zero listeners. Neither fires when `traversal-api-enabled`
-  is false.
+  Not dispatched with zero listeners. Disabling `traversal-api-enabled` skips
+  events for new evaluations; an already-open ticket can still fire its
+  completion event.
 
 ## Hostile-provider policy
 
 | Misbehavior | Response |
 |--------------|----------|
-| `quote` throws or null | Fault is logged (stack if throw). Treated as a refusal to charge |
-| `reserve` throws or null | Reverse-order refund of prior reserves. Nobody pays |
+| `quote` throws or returns null | Fault is logged (stack if throw). `allow` continues without charging; `deny` rejects this attempt |
+| `reserve` throws or null | Reverse-order refund is requested from every prior reserve; a provider refund fault is logged and may leave that provider's charge unresolved |
 | Receipt `toString`/`equals`/`hashCode` throws | Irrelevant — never called |
 | `reserve` returns `failed(reason)` | Not a fault. Rollback then deny with your reason |
 | `commit` throws | Logged. The trip is not undone |
@@ -281,8 +300,8 @@ origin reject null.
 
 | Key | Default | Meaning |
 |-----|---------|---------|
-| `traversal-api-enabled` | `true` | Master switch. When false, no providers and no events |
-| `traversal-api-provider-failure-policy` | `allow` | `allow` = fault becomes a free pass. `deny` = fault closes the portal |
+| `traversal-api-enabled` | `true` | Master switch. When false, new evaluations skip providers and the pre-event; existing tickets still settle or expire and may fire their completion event |
+| `traversal-api-provider-failure-policy` | `allow` | `allow` = fault becomes a free pass. `deny` = reject only this traversal attempt |
 | `traversal-api-provider-fault-limit` | `5` | Quarantine on Nth fault. `0` disables. Clamped 0–1000 |
 | `traversal-api-slow-provider-millis` | `5` | Warn threshold. `0` disables. Clamped 0–60000 |
 
@@ -299,7 +318,9 @@ clears it. Nothing persists across restart.
 `TraversalReservationStatus`: `RESERVED`, `FAILED` (use factories. `RESERVED`
 without receipt throws).
 
-`TraversalRefundReason` (all reach `refund`):
+`TraversalRefundReason` (requested through `refund` once traveler ownership is
+available; the documented shutdown-owner exception can leave a receipt
+unresolved):
 
 | Constant | Meaning |
 |----------|---------|
@@ -312,8 +333,8 @@ without receipt throws).
 | `TRAVELER_LEFT` | Disconnected |
 | `RATE_LIMITED` | Throttled |
 | `CHARGE_ROLLBACK` | Another provider failed reserve |
-| `EXPIRED` | 30s reclaim |
-| `SERVER_SHUTDOWN` | Unload |
+| `EXPIRED` | Outcome-less after 30s |
+| `SERVER_SHUTDOWN` | Outcome-less at unload |
 
 `TraversalOutcome` (`allowed()` true for the four allow cases):
 

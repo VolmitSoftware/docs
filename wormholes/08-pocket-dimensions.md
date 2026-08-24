@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -119,18 +119,30 @@ Because the room is anchored at its minimum corner:
   are laid through what used to be interior.
 
 Before touching anything, a resize counts what it would destroy: placed blocks
-that are neither air nor the pocket's shell material, how many of those hold
-items, and how many entities would be displaced. If that count is not zero the
-command refuses and reports it; re-running with `confirm=true` proceeds.
+that are neither air nor the pocket's shell material, non-empty containers, and
+entities that would be displaced. Any non-empty container makes the resize
+refuse even with `confirm=true`; empty those containers first. Other destructive
+changes are refused and reported until the operator re-runs with `confirm=true`.
 
-A confirmed resize is not a plain deletion. Container contents in the destroyed
-volume are emptied and dropped at the room's entry rather than voided, and every
-entity left outside the new interior — players included — is teleported to the
-entry. Everything else in that volume is lost.
+A confirmed resize destroys the eligible blocks in the removed volume and
+teleports every displaced entity, players included, to the room entry. It never
+empties or drops stored container items because a non-empty container blocks the
+operation before world mutation begins.
 
 Changing only materials relays the shell in place at the same size and replaces
 the exit door. A resize also moves the stored return-door endpoint to its new
 wall position, so the exit keeps working without a restart.
+
+Before world mutation, Wormholes writes a per-pocket resize intent under
+`doors/pending-resizes/`. The intent is removed only after the room geometry,
+every displaced-entity teleport, stored shell, return endpoint, and runtime
+index agree. On Folia, the old and new shells must both belong to the one region
+running the resize; an unsupported cross-region shape is refused before an
+intent is written. If the server stops during the operation, startup immediately
+quarantines only each pocket named by a pending intent while replaying it. A
+failed intent stays on disk for the next restart; unrelated door entries are
+never paused, and occupants of an affected pocket can still use its return door
+or rescue route to leave.
 
 A resize is refused when the requested room would not fit the pocket
 dimension's build height, when the pocket world is not loaded, or when the size

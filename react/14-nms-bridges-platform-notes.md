@@ -2,7 +2,7 @@
 title: "NMS Bridges & Platform Notes"
 description: "React documentation: NMS Bridges & Platform Notes"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,6 +23,8 @@ React has two separate NMS integration systems. One is a reflective descriptor r
 The `bridge-api` module defines `art.arcane.react.nms.NmsBridge`. Compiled implementations live under `nms/`. This tree ships `v26_2_R1`. React selects it for detected version strings `26.2`, `26.1.2`, and `1.21.11`.
 
 The version bridge installs ByteBuddy redefinitions for eligible furnace, brewing-stand, falling-block, explosion, explosion-packet, and hopper paths when their owning features activate. These hooks support furnace and brewing batching, lazy gravity, explosion packet batching, and hopper-chain act mode. Unavailable or failed hooks leave those features passive or measurement-only. The feature catalogs document that outcome.
+
+Explosion packet suppression is active only on non-Folia servers. The substitution caches a decision only for the exact `ClientboundExplodePacket` instance being fanned out to recipients, so a later explosion with identical coordinates and radius is evaluated independently. Folia remains measurement-only because the current merged broadcast is global-player-list based; React keeps every vanilla packet there rather than sending across player ownership boundaries.
 
 ## Bytecode configuration and reporting
 

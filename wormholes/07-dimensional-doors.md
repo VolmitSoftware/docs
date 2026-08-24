@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -113,7 +113,10 @@ state, Wormholes shows an animated client-visible surface. The surface uses
 crying obsidian and Nether-portal block displays. Nearby viewers receive the
 animated overlay. Particles follow the global particle setting.
 Dimensional-door sounds follow the global portal sound volume. The display is
-removed when the endpoint is no longer live or the feature drains.
+removed when the endpoint is no longer live or the feature drains. All door
+surfaces share one two-tick animation loop. Viewer checks within 128 blocks are
+staggered across 20 passes, and each pass admits at most 64 overlay entity-owner
+animation tasks with at most 64 in flight.
 
 Registered dimensional doors, their hinged-door support blocks, and pocket core
 blocks are protected from fire, piston movement, entity block changes, and
@@ -124,7 +127,11 @@ rules below. Return doors remain unbreakable.
 
 Travelers are classified as `LIVING` (players, mobs, vehicles) or `OBJECT`
 (projectiles, dropped items, experience orbs). Objects are swept each tick
-around live doors when they do not fire move events. Aperture fit for
+around live doors when they do not fire move events. Live doors that reach the
+same chunk share one owner task and one chunk-entity read for that tick, and
+each eligible object is fed once when it is near any active door plane. Rejected
+chunk tasks retry without losing the door membership; unloaded edge chunks
+pause until their chunk-load event resumes them. Aperture fit for
 non-players is at most width 1.0 and height 2.0. Travelers inside a vehicle,
 with passengers, or leashed cannot enter.
 

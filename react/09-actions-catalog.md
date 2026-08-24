@@ -2,7 +2,7 @@
 title: "Actions Catalog"
 description: "React documentation: Actions Catalog"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ This action requests JVM garbage collection. It reports reclaimed heap.
 
 ### `purge-chunks`
 
-This action attempts to unload selected chunks in a world or area.
+This action attempts a saved unload of selected chunks in a world or area. It does not delete the entities stored in those chunks. If a pending React kill countdown retires during unload, reload reconciliation removes only React's marker or temporary countdown name and preserves an existing player-assigned name.
 
 - **Class:** `ActionPurgeChunks`
 - **Config:** `plugins/React/action/purge-chunks.toml`
@@ -41,12 +41,12 @@ This action attempts to unload selected chunks in a world or area.
 
 ### `purge-entities`
 
-This action purges matching entities in an area. Age and filter guards apply.
+This action purges matching entities in an area. Type, named-entity, and protection guards apply.
 
 - **Class:** `ActionPurgeEntities`
 - **Config:** `plugins/React/action/purge-entities.toml`
 - **CLI:** `/react action purge-entities [radius=0] [world=ALL]` (alias `pe`). A positive player radius is clamped to 10 chunks. Zero does not add a radius restriction.
-- **Notes:** honors entity protection
+- **Notes:** honors entity protection. A real custom name is never replaced by React's kill countdown.
 
 TOML fields:
 
@@ -55,7 +55,8 @@ TOML fields:
 | `enabled` | boolean | `true` | Enables or disables this action. |
 | `blacklist` | list of entity types | built-in protected list | Entity types excluded when `defaultBlacklist` is enabled. |
 | `defaultBlacklist` | boolean | `true` | Applies the built-in entity type blacklist. |
-| `secondsToPurge` | int | `5` | Minimum age in seconds before matching entities are removed. |
+| `secondsToPurge` | int | `5` | Baseline for the randomized 4–6 second kill countdown chosen by the action instance. It is not an entity-age check. |
+| `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names in default action parameters. Disable to make them eligible. |
 
 Execution parameters:
 
@@ -63,6 +64,7 @@ Execution parameters:
 |---|---|---|---|
 | `area` | `AreaActionParams` | builder defaults | Area selection for target entities. |
 | `entityFilter` | `FilterParams<EntityType>` | builder defaults | Include/exclude entity type filter. |
+| `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names. Set false explicitly to include them. |
 
 ### `action-quarantine-hot-chunks`
 

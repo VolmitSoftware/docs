@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,7 +42,7 @@ One plugin jar covers the whole Bukkit family. Each mod loader gets its own jar.
 |---|---|---|---|
 | Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing. This is the reference plugin target |
 | Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
-| Folia | plugin jar | 26.1.2 – 26.2 | Region-safe scheduling. `/iris create` cannot build a live world at runtime, so it stages the world and automatically requests a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Folia | plugin jar | 26.1.2 – 26.2 | Region-safe scheduling. `/iris create` builds the managed world live through Iris's Paper-like runtime backend without an ordinary restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD. Current acceptance target is Fabric Loader 0.19.3 on Java 25 |
 | Forge | mod jar | 26.2 | Same. Current acceptance target is Forge 26.2-65.1.1 |
 | NeoForge | mod jar | 26.2 | Same. Current acceptance target is NeoForge 26.2.0.59 |

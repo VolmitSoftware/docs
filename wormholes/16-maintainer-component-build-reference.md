@@ -2,7 +2,7 @@
 title: "Maintainer Component & Build Reference"
 description: "Wormholes documentation: Maintainer Component & Build Reference"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -85,16 +85,17 @@ Run tasks from `WormholesPlugin/` with Java 25.
 
 | Task | Result |
 |------|--------|
-| `./gradlew test` | JUnit suite with native access enabled for zstd. Builds and verifies the shaded runtime jar platform method descriptors |
+| `./gradlew test` | JUnit suite with native access enabled for zstd. Builds and verifies runtime-jar platform method descriptors |
 | `./gradlew compileSpigotCompatibility` | Compiles supported source against Spigot API after excluding Paper-only bootstrap/listener/registrar classes |
 | `./gradlew check` | Unit tests plus Spigot compatibility compilation |
-| `./gradlew shadowJar` | Runtime plugin jar with configured relocations and SlimJar metadata |
+| `./gradlew shadowJar` | Runtime plugin jar with relocated SlimJar loader classes and dependency metadata; resolved libraries are not embedded |
 | `./gradlew apiJar` | Compile-only public traversal API jar. Excludes `api.traversal.internal` |
 | `./gradlew build` | Full check plus runtime and API artifacts |
 | `./gradlew bandwidthHarness` | Entity, transport, and replication comparison harness. Scenario settings are supplied as JVM system properties |
 | `./gradlew buildPsychoLT` | Full check plus managed test-server drop-in deployment. Use this only for the workspace Multiplexor test environment |
 
-`build/libs/Wormholes-<version>.jar` is the server artifact.
+`build/libs/Wormholes-<version>.jar` is the server artifact. Its first runtime
+start needs repository access unless the SlimJar cache is already populated.
 `build/libs/Wormholes-<version>-api.jar` is compile-only. A green build proves
 compilation and automated behavior. It does not prove client-visible projection,
 door interaction, cross-server transfer, or Folia ownership under a live

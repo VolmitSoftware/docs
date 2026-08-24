@@ -2,7 +2,7 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,9 @@ All heatmaps and overlays below inherit these fields unless noted.
 | `drawLabel` | boolean | `true` | Title in header. |
 | `minSignificantScore` | double | `0.001` | Below peak score → quiet map (no noise-scale colors). |
 
-Scan uses loaded chunks in a circular chunk radius. Rotation with player yaw is optional. Scan cache is 45 ms. Megamap wall support is included.
+In-game scans use loaded chunks in a circular chunk radius. Rotation with player yaw is optional. Scan cache is 45 ms. Megamap wall support is included.
+
+React Web renders exported heatmaps as a north-up absolute world-coordinate plane: each square is one outlined chunk, X increases east, and Z increases south. The center and zero axes have complete perimeter rings, empty coordinates remain visible, and the operator can select a canonical world key plus center X/Z and radius. The server answers from immutable world metadata and its event-maintained loaded-coordinate index; web requests do not enumerate worlds or call Bukkit world/chunk APIs from the HTTP thread.
 
 ## Shared pie base (`FeatureIrisChunkSharePieBase`)
 
@@ -77,7 +79,7 @@ Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay dr
 
 ### `tick-spike-origin-replay-map`
 
-This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. The Folia path region-schedules capture. It does not apply per-chunk total-score weighting.
+This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. Paper queries immutable Observer coordinates only inside the configured radius instead of sweeping every loaded chunk. The Folia path region-schedules capture. Neither path carries Bukkit `Chunk` handles across region boundaries, and the map does not apply per-chunk total-score weighting.
 
 - **Class:** `FeatureTickSpikeOriginReplayMap`
 

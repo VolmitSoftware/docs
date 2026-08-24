@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,16 +24,18 @@ Related:
 
 ## Decide these before you create a world
 
-When a world binds to an engine, Iris pins four values. The values are the dimension type key (from the dimension load key), the minimum Y, the total height (`max - min`), and `logicalHeight`. That record is `IrisDimensionRuntimeContract`. Hotload compares the record before and after every pack reload. If any of the four values changed, Iris refuses the reload. Close and reopen Studio after a height edit in a running Studio world. On a production world, Minecraft stores the values in the generated dimension type. If you change them, recreate the world.
+When a world binds to an engine, Iris pins the dimension type key, the exact `environment`, and the effective generated dimension type. The generated type contains the minimum Y, total height (`max - min`), `logicalHeight`, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Hotload compares that contract before every pack reload and refuses a change. Close and reopen Studio after a contract edit in a running Studio world. On a production world, Minecraft stores the generated type in its registry. If you change the contract, recreate the world.
 
 | Field | Why it is a contract |
 |-------|----------------------|
 | Dimension file name (load key) | Becomes the dimension type key `iris:<sanitized load key>`. If you rename the file, the world looks for a dimension type that no longer exists |
 | `dimensionHeight` | Min Y and total height go into the Minecraft dimension type and into every stored mantle and chunk coordinate |
 | `logicalHeight` | Written into the same dimension type |
-| `environment` | Selects the vanilla dimension template for the generated type. That changes the type identity |
+| `environment` | Selects the vanilla dimension template and the Bukkit world environment. `NORMAL` and `CUSTOM` share an Overworld type template but remain distinct world environments |
+| `dimensionOptions` | Overrides the generated type's portal scale, light, time, clouds, spawning limits, and gameplay flags |
+| `fullbright` | Forces the generated type's effective ambient light to `1.0` |
 
-Everything else reloads live in Studio and applies to newly generated chunks. That set includes regions, zooms, noise styles, palettes, ores, deposits, caves, structures, decoration, and loot. Iterate on those freely. Already generated chunks keep the content they were built with.
+Everything outside that registry contract reloads live in Studio and applies to newly generated chunks. That set includes regions, zooms, noise styles, palettes, ores, deposits, caves, structures, decoration, and loot. Iterate on those freely. Already generated chunks keep the content they were built with. An edit from an inherited `dimensionOptions` value to the same explicit effective value does not change the contract.
 
 ## File location and load key
 
@@ -455,14 +457,14 @@ Path: `packs/overworld/dimensions/overworld.json` under the platform data direct
 ## Build a dimension, step by step
 
 1. Create the pack. `/iris studio create name=mypack` on Bukkit writes a four-file starter skeleton. `/iris studio create mypack` on a mod loader copies the `example` template instead. Either way you get a loadable pack to edit.
-2. Open `dimensions/mypack.json`. Set the contract fields deliberately: `dimensionHeight`, `logicalHeight`, `fluidHeight`, `environment`, and `mode.type`. Check the multiple-of-16 rules now, not after the world exists.
+2. Open `dimensions/mypack.json`. Set the contract fields deliberately: `dimensionHeight`, `logicalHeight`, `environment`, `dimensionOptions`, and `fullbright`. Set terrain fields such as `fluidHeight` and `mode.type` for the world you want. Check the multiple-of-16 rules now, not after the world exists.
 3. Make sure every key in `regions` has a file under `regions/`. That region must have at least one land biome with at least one generator ([12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes)).
 4. Validate. Use `/iris pack validate pack=mypack` on Bukkit. Use `/iris pack validate mypack` on modded. Fix blocking errors before you open Studio. Studio refuses to open a pack whose validation is not loadable.
 5. Open Studio on a fixed seed. Use `/iris studio open mypack seed=1337` on Bukkit. Use `/iris studio open mypack 1337` on modded.
 6. Walk into fresh chunks and check the baseline. Confirm solid terrain and the build floor where you put it. Confirm fluid at the right Y. Confirm the expected biome from `/iris what biome`. Confirm no unresolved-key errors in the console. Fix this before you touch noise.
 7. Isolate while you tune. Set `"focusRegion": "starter"` or `"focus": "starter"`. Save. Generate a new area. Remove both before packaging.
 8. Tune land/sea and zoom. Then add subsystems one at a time: caves, then ores and deposits, then objects, then structures. Validate after each new resource edge so a broken key is attributable.
-9. Close and reopen Studio after you edit `dimensionHeight`, `logicalHeight`, `environment`, or the dimension file name. Hotload rejects those by design.
+9. Close and reopen Studio after you edit `dimensionHeight`, `logicalHeight`, `environment`, `dimensionOptions`, `fullbright`, or the dimension file name in a way that changes the effective contract. Hotload rejects those changes by design.
 10. Create the production world only after Studio is clean: `/iris create name=mypack-test type=mypack seed=1337`. Recreate the world rather than edit its height contract later.
 
 The baseline passes when Studio opens clean. Validation must report no blocking errors. The same seed must reproduce the same terrain after a close and reopen.
@@ -476,7 +478,7 @@ The baseline passes when Studio opens clean. Validation must report no blocking 
 | Treating `fluidHeight` as an offset from the build floor | It is world Y. The engine converts it to internal Y by subtracting `dimensionHeight.min` |
 | `dimensionHeight` span or `min` not a multiple of 16 | Blocked by `pack validate` (the same bounds the dimension-type compiler enforces) |
 | `logicalHeight` greater than `max - min` | Rejected when the dimension type is constructed |
-| Editing height, logical height, environment, or the dimension file name mid-Studio | Hotload is refused by the runtime contract. Close and reopen |
+| Editing height, logical height, environment, effective dimension options, `fullbright`, or the dimension file name mid-Studio | Hotload is refused by the runtime contract. Close and reopen |
 | Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |
 | Leaving `focus` or `focusRegion` set when packaging | The shipped pack generates exactly one biome or region |
 | Changing pack files and expecting an existing world to change | Production worlds run from `<world>/iris/pack/`. See [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |

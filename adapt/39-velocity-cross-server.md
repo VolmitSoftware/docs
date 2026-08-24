@@ -1,83 +1,80 @@
 ---
-title: "Velocity & Cross-Server"
-description: "Adapt documentation: Velocity & Cross-Server"
+title: "Cross-Server SQL & Redis"
+description: "Adapt documentation: Cross-Server SQL & Redis"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt ships a small Velocity plugin. Its only job is to give backends a heads-up over Redis when a player is about to switch servers. SQL stays the authority for progression. The companion does not move data by itself. It does not sync local JSON files. It is not a replacement for a shared database.
+Adapt coordinates cross-server player progression directly between backend servers. SQL is the authority and Redis carries request-correlated snapshots for the exact SQL owner being replaced. There is no proxy companion; remove any old Adapt jar from the proxy.
 
-The problem it solves is timing. Without it, a player who hops from backend A to backend B can arrive before A's last write has landed in SQL. B then loads a slightly stale profile. With it, the proxy fires a request the moment it knows where the player is headed. Backend A answers with the profile it currently holds. B has a fresh copy waiting in a short-lived Redis cache when the login arrives.
+This path is active only when `sql.enabled` and `redis.enabled` are both true. Every participating backend must use the same SQL schema and Redis service. A backend with Redis disabled uses fenced SQL alone and cannot recover an uncommitted in-memory handoff snapshot from another backend.
 
-That is the whole design. It is a cache warm-up, not a transfer protocol. If Redis is down, or a backend has Redis off, the player still loads from SQL. Nothing breaks. The profile is just as current as SQL happens to be.
+## Ownership and handoff
 
-## What the pieces do
+`ADAPT_DATA` stores canonical player JSON. `ADAPT_DATA_FENCE` stores the current owner token, epoch, committed sequence, and any effective predecessor. Both tables must use InnoDB. A backend claims a player before constructing the runtime; login fails rather than creating an unfenced SQL-backed player when claim or adoption cannot be verified.
 
-The proxy plugin listens for a server pre-connect. It publishes a data request on the fixed `Adapt:data` channel. It waits up to three seconds for Redis to report how many subscribers received the publish. Then it moves on. It never waits for a backend to answer. A timeout produces no message unless `debug` is on. Because the listener is synchronous, a slow or unreachable Redis stalls the connection for up to those three seconds.
+When a claimed row has a predecessor, the destination subscribes to a request-specific reply channel and publishes the same request up to three times during a 250 ms window. The request names the player, request id, predecessor owner token, and predecessor epoch. Only a snapshot matching that exact fence can participate in adoption. At most eight candidate fences are retained, the highest sequence for the expected fence wins, and equal-sequence conflicting JSON is rejected.
 
-Each backend subscribes to the same channel. When it sees a request it looks the player up among the profiles it currently holds in memory. It publishes that profile if it has one. Backends also publish after every successful SQL write. Anything a backend receives is kept in a one-minute cache. That cache is used ahead of a SQL read on that player's next login.
+The source handles the request on the player's owning entity scheduler. If its live runtime owns the requested fence, it freezes that runtime, removes transient region grants, advances the snapshot sequence, and stages the snapshot in Redis for 60 seconds before publishing the direct reply. Repeated requests reuse the retired snapshot. The destination also checks the exact staged key after the reply window, so a completed stage survives lost pub/sub replies or a source failure. Successful SQL adoption writes the new owner at sequence 1 and asynchronously deletes the staged predecessor record.
 
-The channel name is fixed. Two separate Adapt networks pointed at one Redis service will see each other's traffic. Isolate their Redis instances or their networks. There is no channel setting to change.
+SQL adoption also considers a matching in-process pending write and a valid `ADAPT_SQL_RECOVERY_V1` file. Those sources still require the claimed predecessor fence. Old raw-JSON `.pending-sql` files and every pre-fence `.pending-delete` file found in SQL mode are preserved and rejected for operator reconciliation. `.pending-delete` is valid only in local JSON mode.
+
+## Reset and purge
+
+SQL reset and purge rotate the owner token and advance the epoch transactionally. Redis notices contain only the player, operation id, new epoch, and purge flag; ownership credentials are never shared between backends. Receivers remember the epoch as a stale-claim watermark and retire and disconnect any older live runtime. A rejected owner-scheduler dispatch invalidates the old fence immediately so that runtime cannot keep writing.
 
 ## Setting it up
 
-1. Back up the shared Adapt database and every backend's `plugins/Adapt/` directory.
-2. Get SQL working on one backend first. Confirm a full player round trip before you touch Redis.
-3. Lock Redis down with network rules and ACL credentials. The client has no TLS option, no Redis database-number option, and no channel-name option, so the network is the only boundary you get.
-4. Set identical SQL settings and identical Redis settings on every backend, with `sql.enabled` and `redis.enabled` both true.
-5. Build the companion and drop `velocity/build/libs/velocity.jar` into the proxy's `plugins/`. Backends keep the normal shaded Adapt jar.
-6. Restart the proxy and every backend. Backend SQL and Redis settings are read at enable, so config edits there need a restart.
-7. Confirm every backend logs a successful SQL connection and a successful Redis subscription, and that no `.pending-sql` recovery file is failing to replay.
-8. Move a disposable player between two backends. Compare skill XP, knowledge,
-   learned adaptations, effect preferences, and mutation equipment against the
-   SQL authority after each hop.
+1. Stop every backend and back up the shared Adapt database plus each `plugins/Adapt/` directory.
+2. Remove any obsolete Adapt or Velocity companion jar from the proxy. Install the same current shaded Adapt jar on every backend.
+3. Configure identical SQL and Redis endpoints on every backend. Set `sql.enabled = true` and `redis.enabled = true`.
+4. Lock Redis down with network rules and ACL credentials. Adapt exposes no TLS, Redis database-number, or channel-name setting.
+5. Start one disposable backend first. Confirm both SQL tables exist and use InnoDB, then complete a player login, save, quit, and reload.
+6. Start the remaining backends. Confirm SQL initialization and Redis subscription on each one, with no recovery or decoding errors.
+7. Move a disposable player between two backends. Compare skill XP, knowledge, learned adaptations, effect preferences, and mutation equipment after each hop.
+8. Test a reset and purge with backed-up disposable profiles. Confirm stale-owner writes are fenced and an older live session is disconnected.
 
-`/velocity reload` is only for the companion's own `config.toml`. It unregisters the handler, closes the Redis client, reloads and rewrites the file, and registers a fresh handler.
+The `Adapt:data:v2` format is a hard break. Stop the whole network and replace every backend jar in one maintenance window. Mixed versions cannot exchange snapshots, and there is no compatibility decoder or proxy-side bridge.
 
-## Reading the results honestly
+## Fixed Redis surfaces
 
-A successful proxy connection proves only that Redis accepted a publish. It does not prove a backend answered. It does not prove the answer was current. It does not prove that the destination's SQL load is up to date. Verify the profile on the destination backend, not in the proxy log. A backend with Redis disabled, SQL disabled, or a failed Redis startup silently stays out of this path. It falls back to plain SQL loads.
-
-`config.toml` and the backend credentials are plain text. Keep them off world-readable paths.
-
-## Reference
-
-### Required topology
-
-| Component | Requirement |
+| Surface | Purpose |
 |---|---|
-| Backend Adapt | Same SQL host, port, and database as every other backend, plus `redis.enabled`, `redis.host`, `redis.port`, `redis.username`, `redis.password` |
-| Velocity companion | `config.toml` with `debug`, `host`, `port`, `username`, `password` |
-| Redis | Reachable from the proxy and from every backend with the configured ACL credentials |
+| `Adapt:data:v2` | Fenced transfer requests and epoch-only reset or purge notices |
+| `Adapt:data:v2:reply:<request-id>` | Request-scoped direct snapshot replies |
+| `Adapt:data:v2:stage:<player>:<owner>:<epoch>` | Exact-fence staged snapshot with a 60-second TTL |
 
-### Companion config
+The channel family and staging prefix are fixed. Separate Adapt networks sharing one Redis service can observe each other's traffic even though fence validation rejects unrelated player ownership. Use separate Redis services or network boundaries.
 
-The companion's data directory comes from its plugin id, so it is normally `plugins/adapt/`. That folder holds `config.toml`, the legacy `config.yml` if one survives, and the `.libs/` download cache.
+Snapshot JSON is strict UTF-8 and may contain at most 16,777,215 encoded bytes, matching MySQL `MEDIUMTEXT`. The staged record adds a fixed 60-byte binary header. Staged reads check the Redis length before fetching and then validate the header, player, owner, epoch, sequence, payload length, and UTF-8. Invalid or unavailable staging reads fail the handoff instead of silently accepting uncertain state.
 
-| Key | Default | What it does |
-|---|---|---|
-| `debug` | `false` | Prints a line per data request published, with the player name and the subscriber count |
-| `host` | `"127.0.0.1"` | Redis address the proxy connects to |
-| `port` | `6379` | Redis TCP port |
-| `username` | `""` | Redis ACL username. Credentials are attached only when the username or password is non-empty |
-| `password` | `""` | Redis password. Same rule as the username |
+## Failure boundaries
 
-On load the companion rewrites `config.toml` in canonical form when the file differs from canonical output. If only a legacy `config.yml` exists it is read with the JSON parser and converted. A `config.yml` that is genuine YAML rather than the JSON older builds wrote will fail to parse. If neither file exists, defaults are written.
+Redis staging closes the lost-reply window only after `SETEX` completes. A source process failure after its runtime freezes but before that asynchronous write completes can still lose the final uncommitted delta. A staging failure followed by lost direct replies has the same limitation. Once staging succeeds, the exact predecessor is recoverable for 60 seconds; after the TTL, SQL and any matching fenced recovery envelope remain the available authorities.
 
-Two message types travel on `Adapt:data` in both directions. `DataRequest` is a
-player UUID. `DataMessage` is a player UUID plus that player's profile JSON.
-
-### Failure checks
+If Redis is intentionally disabled, the destination adopts from committed SQL and matching local fenced recovery only. If Redis is enabled but transfer verification errors, login fails closed. A healthy Redis publish is not proof of a complete handoff; verify the adopted profile and SQL fence on the destination.
 
 | Symptom | What to check |
 |---|---|
-| Proxy fails to initialize or reload | Redis host, port, ACL credentials, reachability, and the full Velocity exception |
-| Proxy reports zero recipients | No backend is subscribed to `Adapt:data`, or Redis routing differs between proxy and backends |
-| Stale data after a switch | Shared SQL identity, backend Redis enablement, leftover `.pending-sql` files, and the destination backend's load log |
-| Only one backend syncs | Compare canonical `adapt.toml` across every backend and confirm each was restarted |
-| Traffic from an unrelated network | Two Adapt networks share the fixed channel. Give them separate Redis services |
+| Backend fails during Redis initialization | Redis host, port, ACL credentials, reachability, and the full backend exception |
+| Transfer verification rejects login | Redis subscription and staging connection, exact predecessor fence, staged-record validation, and backend exceptions |
+| Stale data after a switch | Shared SQL identity, both InnoDB tables, Redis enablement on both backends, source shutdown timing, and matching `.pending-sql` recovery |
+| Decode errors after an update | At least one backend still uses the pre-v2 frame; stop the network and replace every backend jar together |
+| Traffic from an unrelated network | Multiple Adapt networks share the fixed channel family; isolate their Redis services |
+
+## Backend Redis config
+
+| Key | Default | What it does |
+|---|---|---|
+| `redis.enabled` | `false` | Enables fenced handoff only when SQL is also enabled |
+| `redis.host` | `"127.0.0.1"` | Redis address used by pub/sub and transfer staging |
+| `redis.port` | `6379` | Redis TCP port |
+| `redis.username` | `""` | Redis ACL username; credentials attach when username or password is non-empty |
+| `redis.password` | `""` | Redis password; stored in the backend configuration as plain text |
+
+SQL and Redis settings are restart-bound. Hotloading the core config does not reconnect either service.
 
 ## See also
 

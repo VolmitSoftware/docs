@@ -2,7 +2,7 @@
 title: "API - Entity Protection"
 description: "React documentation: API - Entity Protection"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ Rules match entity type, world name, scoreboard tags, persistent-data keys, and 
 |-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `STACK`     | React merges the entity into a nearby identical mob. React removes the merged entity with `Entity#remove()`. The survivor stack count increases by yours. The merged entity loses its UUID, persistent data, name, equipment, and AI state. React checks both sides. A protected entity is never absorbed and is never a merge target. |
 | `TRIM`      | React deletes the entity to bring a world, chunk, or entity-type group under a configured budget. React selects the oldest and least valuable entities first. A trim can fire while the server is healthy. |
-| `PURGE`     | React deletes the entity in a deliberate sweep. Sources are an operator action, an entity-crowd cull, or a hot-chunk quarantine. Purge is indiscriminate within its filter. It does not rank candidates. |
+| `PURGE`     | React deletes the entity in a deliberate sweep. Sources are an operator action, an entity-crowd cull, or a hot-chunk quarantine. Purge does not rank candidates. The purge action, crowd prevention, and hot-chunk quarantine protect nonblank custom names by default; their explicit named-protection options can make those entities eligible. |
 | `SLEEP`     | React stops the entity from thinking. React sets `Mob#setAware(false)` or pauses the entity when no player is within the activation range. React wakes it when a player returns. The entity still exists and still renders. Pathfinding, targeting, item pickup, and ticking behavior stop. |
 | `DESPAWN`   | React removes the entity early through an accelerated-cleanup path. Those paths finish burning mobs out of player sight. They also dispose of bubbled entities instead of ticking them. |
 | `SPAWN_CAP` | React refuses to let an entity of that kind exist. React cancels the spawn event when a chunk is over its entity budget. `SPAWN_CAP` protection exempts the spawn from the cap. The spawn then proceeds. |

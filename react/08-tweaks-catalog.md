@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "React documentation: Tweaks Catalog"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ This tweak removes selected projectile and utility entities stuck in bubble colu
 
 ### `entity-crowd-prevention`
 
-This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protection. Config field `preventEntityBubbling` is currently unused at runtime.
+This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protection and protects player-named entities by default. Config field `preventEntityBubbling` is currently unused at runtime.
 
 - **Class:** `TweakEntityCrowdPrevention` · **Listener:** yes
 
@@ -34,6 +34,7 @@ This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protect
 | `maxEntitiesPerClusterCrowd` | int | `10` | Max entities per cluster. |
 | `mobsToPreventFromCrowding` | `List<EntityType>` | COW, CHICKEN, PIG, SHEEP, PIG | Monitored types. |
 | `preventEntityBubbling` | boolean | `true` | Declared. Not referenced by runtime logic. |
+| `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names. Disable to make them eligible for crowd removal. |
 
 ### `entity-hardstop`
 
@@ -50,7 +51,7 @@ This tweak hard-caps per-chunk entity population. It cancels spawns, breeds, and
 
 ### `experience-orb-merge`
 
-On XP orb spawn, this tweak merges nearby orbs into the new orb.
+On XP orb spawn, this tweak merges owner-local nearby orbs into the new orb. A capped collector takes only the experience it can hold and leaves any overflow on the source orb; Folia skips foreign-region orbs instead of risking cross-owner experience loss.
 
 - **Class:** `TweakExperienceOrbMerge` · **Listener:** yes
 
@@ -149,7 +150,7 @@ This tweak short-circuits snow form and fade into `FastWorld` set and break.
 
 ### `hopper-index`
 
-This tweak pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit vanilla AABB scans. Optional idle empty-hopper cooldown stretch is available. **Fail-closed** without NMS bridges.
+This tweak pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit vanilla AABB scans. A rotating cursor inspects at most 64 item-bearing chunks across all worlds per tick by default, caches each world's chunk snapshot until that rotation is exhausted, and permits only one in-flight pickup task per chunk until that task completes, is rejected, or the tweak lifecycle resets. Hopper chunks adjacent to an item-bearing chunk are included when an edge pickup box crosses the chunk boundary. Each task resolves an indexed item once, maps it into only the geometrically reachable hopper pickup cells, rechecks the exact pickup boundary, and preserves hopper scan order when pickup areas overlap. Dense-chunk candidate work therefore follows reachable pickup pairs instead of multiplying every hopper by every item. Optional idle empty-hopper cooldown stretch is spread across the index, hard-capped at 256 probes per tick, and clamped below the probe interval so each hopper reaches vanilla's zero-cooldown path before React can stretch it again. **Fail-closed** without NMS bridges.
 
 - **Class:** `TweakHopperIndex` · **Listener:** no
 
@@ -157,9 +158,10 @@ This tweak pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit van
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
 | `idleStretch` | boolean | `true` | Stretch cooldown on empty idle hoppers under load. |
-| `idleStretchTicks` | int | `40` | Cooldown ticks when stretching. |
-| `idleStretchSpreadPasses` | int | `40` | Spread passes for idle probes. |
+| `idleStretchTicks` | int | `40` | Requested stretch cooldown; runtime uses at most `idleStretchSpreadPasses - 1`. |
+| `idleStretchSpreadPasses` | int | `40` | Spread passes for idle probes; values at or below `1` disable stretching so vanilla probes every tick. |
 | `idleStretchMinTickMs` | double | `45` | Tick ms before idle stretch engages. |
+| `itemChunkBudgetPerTick` | int | `64` | Global item-bearing chunk inspection budget per tick; clamped to `1..4096`. |
 
 ### `hopper-limit`
 
@@ -219,14 +221,14 @@ Experimental empty-server hibernation. When its safety gate is enabled and the s
 
 ### `shorthands`
 
-This tweak registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor). When EssentialsX (plugin name `Essentials`) or CMI is installed, React forces this tweak off before activation. React then registers no built-in or custom shorthand commands, even if the config enables it.
+This tweak registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor). Built-in labels intentionally replace matching bare commands while active and restore the previous mappings when disabled. Custom entries skip occupied labels unless their `overrideExisting` field is enabled.
 
 - **Class:** `TweakShorthands` · **Listener:** no
 - **Permissions:** `react.shorthands.*` and children — see [02 - Commands & Permissions](/react/02-commands-permissions).
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `enabled` | boolean | `false` | Enables or disables this tweak unless EssentialsX or CMI is installed. Either plugin forces it off. |
+| `enabled` | boolean | `false` | Enables or disables this tweak. Review command-label conflicts before enabling it. |
 | `gms` | boolean | `true` | Register `/gms`. |
 | `gmsp` | boolean | `true` | Register `/gmsp`. |
 | `gmc` | boolean | `true` | Register `/gmc`. |
@@ -260,7 +262,7 @@ This tweak cancels spawner and trial-spawner creature spawns when no player is w
 
 ### `vehicle-idle-brake`
 
-This tweak zeroes velocity on distant empty minecarts and boats.
+This tweak zeroes velocity on distant empty minecarts and boats. Evaluations are single-flight and use one rotating aggregate vehicle budget across all worlds. Paper consumes a bounded weak vehicle index populated by EntityController sampling instead of materializing every vehicle in each world. Folia rotates unique player anchors, de-duplicates vehicles seen by overlapping anchors, and applies changes only from the current activation on the owning region.
 
 - **Class:** `TweakVehicleIdleBrake` · **Listener:** no (ticked)
 
@@ -268,7 +270,7 @@ This tweak zeroes velocity on distant empty minecarts and boats.
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
 | `tickIntervalMS` | int | `1000` | Evaluation interval (ms). |
-| `maxVehiclesSampledPerWorld` | int | `180` | Max vehicles sampled per world. |
+| `maxVehiclesSampledPerWorld` | int | `180` | Aggregate vehicles sampled per evaluation, clamped to 1–4096. The retained config key predates the cross-world budget. |
 | `minVelocitySquared` | double | `0.0004` | Min velocity² to consider. |
 | `maxDistanceWithoutPlayer` | double | `48` | Max distance without player. |
 | `onlyEmptyVehicles` | boolean | `true` | Only empty vehicles. |

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,11 +24,9 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`. Completion lists installed pack/dimension values and does not advertise the internal `default` sentinel. Bukkit refuses the names `iris` and `benchmark`. It also refuses any name whose dimension folder already exists.
 
-On non-Folia Bukkit, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, pack snapshot publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`.
+On Bukkit-family servers, including Folia, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, frozen-pack publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. Frozen-pack publication is represented by that lifecycle stage only; Iris does not print a separate synthetic pack/dimension snapshot identifier. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. When it works, Bukkit prints `Successfully created your world!` and the world is immediately teleportable with `/iris tp tutorial`. Folia uses the Paper-like runtime lifecycle backend without restarting. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
-On Folia the world is staged directly in Paper 26.2's current per-dimension format. Iris prints that staging succeeded, then it automatically requests a controlled restart. Reconnect after the server returns. A restart script or external supervisor must relaunch the JVM, otherwise Iris can only stop it. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
-
-For a player-issued Bukkit create, Iris also attempts to move that player into the new world after its entry chunk and safe position are ready. This automatic entry attempt has a 60-second limit. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
+For a player-issued Bukkit create, Iris delegates the teleport immediately to the world's resolved entry anchor after creation. Paper's asynchronous teleport owns any destination-chunk readiness; Iris does not serially preload the chunk or scan thousands of blocks for a separate safe location first. The operation has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
 
 If the pack is missing, Iris identifies the exact supported download form — `pack=overworld`, `pack=underworld`, or `link=<zip-url>` — and does not create the world.
 
@@ -52,7 +50,7 @@ Confirm with `/iris pregen status`. A running job prints the target world, gener
 /iris studio open overworld 1337             # modded
 ```
 
-A transient studio world opens and you are teleported into it. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+A transient studio world opens and you are teleported into it in spectator mode. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio remain creative editing workspaces. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ### Check a pack before you rely on it
 

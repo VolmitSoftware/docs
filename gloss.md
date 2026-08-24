@@ -2,13 +2,13 @@
 title: "Gloss"
 description: "Gloss display suite: holograms, menus, panels, container previews, scoreboards, tablist, chat"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels, and a randomized server-list MOTD.
+Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels and display-backed drop models, and a randomized server-list MOTD.
 
 | | |
 |---|---|
@@ -24,7 +24,7 @@ Gloss draws holograms, holographic menus, and world-anchored panels. It also dra
 > **HoloUI is part of Gloss.** Menus, panels (former HoloUI "boards"), container previews, custom item icons, and the web editor live in this plugin. The `/holoui` command, the `holoui.*` permissions, and `plugins/holoui/` are gone. Gloss imports an existing `plugins/holoui/` folder on first start. [Commands & Permissions](/gloss/17-commands-permissions) lists the command and permission map.
 {.is-info}
 
-> Gloss ships two descriptors. Paper-family servers read `paper-plugin.yml` and load at `STARTUP`. Spigot reads `plugin.yml` and loads at `POSTWORLD`.
+> Gloss ships two descriptors. Paper-family servers read `paper-plugin.yml`, load at `STARTUP`, and receive the three commands through Paper's lifecycle command registrar. Spigot reads `plugin.yml`, loads at `POSTWORLD`, and receives the commands declared there.
 {.is-info}
 
 ### Getting started

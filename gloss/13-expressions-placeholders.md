@@ -51,7 +51,7 @@ separates the surfaces:
 
 | Surface | Viewer | Placeholders resolve |
 |---|---|---|
-| Per-viewer hologram lines | the player the copy belongs to | yes |
+| Personalized hologram lines | the player receiving metadata for the shared entity | yes |
 | Shared hologram lines | none | no |
 | Board title and lines | the board's holder | yes |
 | Tablist header, footer, name formats | the player being formatted | yes |
@@ -62,8 +62,10 @@ separates the surfaces:
 | MOTD lines | none | no |
 | Damage indicators | none | no |
 
-A hologram uses per-viewer rendering when a line contains a complete `%name%`, `|function|` or
-`{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`. That key defaults to `true`.
+A hologram uses personalized rendering when a line contains a complete `%name%`, `|function|` or
+viewer-backed `{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`. That key
+defaults to `true`. One real display retains blank base text while each in-range player receives
+their resolved text as metadata for that shared entity id.
 
 If you set that key to `false`, every hologram renders once for all viewers. Lines with `%` then keep
 the tokens. See [Holograms](/gloss/04-holograms).

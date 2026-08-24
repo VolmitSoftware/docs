@@ -2,7 +2,7 @@
 title: "React"
 description: "React performance monitoring and optimization for Paper and Folia"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ React measures where server time goes. It then gives operators tools to act on t
 | `react.shorthands.rl` | `op` | Allows use of /rl when React Shorthands is enabled |
 | `react.use` | `op` | Allows use of the /react command root |
 
-> The `react.shorthands.*` nodes gate a separate feature. That feature is off by default. It can register aliases such as `/gms`, `/gmc`, `/more`, and `/rl`. If EssentialsX or CMI is installed, React forces the shorthand tweak off. React then registers none of its built-in or custom commands. The `shorthands.toml` setting does not override this.
+> The `react.shorthands.*` nodes gate a separate tweak that is off by default. Its built-in labels intentionally replace matching bare commands while active and restore the previous mappings when disabled. Custom shorthands skip existing labels unless their `overrideExisting` field is enabled. Review command conflicts before enabling it alongside another command suite.
 {.is-warning}
 
 ### Getting started

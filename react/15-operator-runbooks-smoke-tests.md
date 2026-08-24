@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "React documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -86,6 +86,14 @@ The current shaded artifact is `build/libs/React-2.0.0-26.2.jar`. A successful b
 - `/react test loadtest true [players=1000] [duration=600]` runs two heavy passes on world 0. The current command does not bound `players` or `duration`.
 
 If the instance is not disposable, back up the target world first. Use these commands only on a disposable isolated instance or a restored backup. Requested JSON reports are written under `plugins/React/test-reports/`. Keep them outside the repository if you need them for comparison.
+
+## Named-entity removal safeguards
+
+1. Use a vanilla name tag to give a mob a nonblank custom name and record its UUID.
+2. Run `purge-chunks` on its chunk, load the chunk again, and confirm the same UUID and custom name remain.
+3. With default configuration, exercise `purge-entities`, Entity Trimmer, and Entity Crowd Prevention. Confirm the named mob remains after every delayed-removal window.
+4. On a disposable entity, set `protectNamedEntities = false` only for the path under test, hotload the component, and confirm that path can remove the named entity.
+5. Restore `protectNamedEntities = true` in `action/purge-entities.toml`, `feature/entity-trimmer.toml`, and `tweak/entity-crowd-prevention.toml`.
 
 ## Fast fluids
 

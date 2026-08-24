@@ -2,16 +2,16 @@
 title: "Runtime Architecture"
 description: "Adapt documentation: Runtime Architecture"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 This page covers what Adapt does to a server between boot and shutdown. It covers the start order, where player progression lives, what a reload really touches, and what a clean stop looks like. It is for operators who need to tell "the plugin is working" from "the plugin enabled without printing an error".
 
-Adapt runs skills, adaptations, and per-player state on its own ticker. It does not scatter repeating tasks across the plugin scheduler. Anything that touches a player, an entity, or a world is handed to that thing's owning scheduler first. That is what lets the same jar behave on Paper and on Folia.
+Adapt runs skills, adaptations, and per-player state through a deadline-indexed ticker. Idle entries are not scanned on every scheduler pulse. Recurring player maintenance shares a bounded owner pulse instead of dispatching one scheduler task per ability and player. Anything that touches a player, an entity, or a world is handed to that thing's owning scheduler first. That is what lets the same jar behave on Paper and on Folia.
 
-Optional plugin support is opportunistic. A missing plugin switches off only its own integration and nothing else. Configured external services are not opportunistic. SQL and Redis fail on their own terms. Adapt keeps running on the fallback path. A plugin that enabled cleanly is not proof that shared storage is live. Read the exception and the startup config summary before you believe storage works.
+Optional plugin support is opportunistic. A missing plugin switches off only its own integration and nothing else. Configured persistence is not opportunistic: SQL mode has no local fallback for login ownership, and a failed SQL connection, schema check, or non-InnoDB table stops enablement. A configured Redis startup failure is also visible during enable. Read the full startup log before trusting shared storage.
 
 ## Startup
 
@@ -22,10 +22,10 @@ Enable then runs in this order:
 1. Back up legacy JSON configs once, then delete retired adaptation config files.
 2. Bring up platform bindings, the Adventure audience provider, and HUD support, then discover services by scanning the `art.arcane.adapt.service` package.
 3. Load language, the Vault economy hook, custom models, and the PlaceholderAPI registration, then print server information.
-4. Open SQL when `sql.enabled` is true. Create the Redis client only when `sql.enabled` and `redis.enabled` are both true, because Redis only caches what SQL owns. Start the persistence queue and glow support.
+4. Open SQL when `sql.enabled` is true, create `ADAPT_DATA` and `ADAPT_DATA_FENCE`, and require both tables to use InnoDB. Create the backend Redis client only when SQL and Redis are both enabled, then start the persistence queue and glow support.
 5. Start the simulation: ticker, FX director, `AdaptServer` and its `SkillRegistry`, and register every `adapt.use.*` and XP multiplier permission node.
 6. Canonicalize skill and adaptation configs to TOML, then register the gameplay listeners: brewing, XP provenance, XP novelty, and the version bindings.
-7. Start metrics, the splash, and the update check, then install the Ability API gateways.
+7. Start metrics and the splash, queue the timeout-bounded update check on the async workgroup, then install the Ability API gateways without waiting for the network.
 8. Register a protector for each protection plugin that is actually enabled.
    Install the WorldGuard region policy and the HiddenOre bridge. Build the item
    and entity listings. Then enable and register every service.
@@ -34,31 +34,25 @@ Enable then runs in this order:
 
 `AdaptServer` owns the skill registry, the server-scoped listeners, and the online `AdaptPlayer` objects. Skill and adaptation tick intervals run through `Ticked`, `TickedObject`, and `Ticker`.
 
-When a player joins, Adapt resolves their progression through a precedence chain and takes the first hit:
+Local JSON mode resolves a durable `.pending-delete` delete or delete-then-save journal first, then an in-process queued save, the local player JSON, or a new profile. The journal is local-mode only. Invalid journals are preserved and fail closed instead of becoming deletion instructions.
 
-1. A purge marker for that UUID, which resolves to default data.
-2. A save still sitting unwritten in the persistence queue.
-3. A `<uuid>.json.pending-sql` recovery file, which is also requeued as a normal save so it stops being a recovery file.
-4. The Redis cache entry, if Redis is active.
-5. The SQL row.
-6. The local `<uuid>.json`, which is also uploaded to SQL when SQL is enabled but had no row for that player.
-7. A fresh empty profile.
+SQL mode claims ownership during async pre-login before constructing an `AdaptPlayer`. Claims for a burst gather for 25 milliseconds, sort by UUID, deduplicate concurrent requests for the same player, and transact in groups of at most 128. A claim rotates the owner token and epoch while retaining the effective predecessor when an earlier claim was abandoned. Adapt then compares only snapshots carrying that exact predecessor fence: the committed SQL row and sequence, a queued fenced save, a valid `ADAPT_SQL_RECOVERY_V1` `.pending-sql` envelope, and a request-correlated Redis handoff. The Redis source freezes its entity-owned runtime and stages the snapshot for 60 seconds before replying; the destination retries for 250 milliseconds and checks that exact stage if all replies are lost. The highest non-conflicting sequence wins and is transactionally adopted as sequence 1 under the new owner. Local JSON can seed only a player's first SQL fence.
 
-If a step fails to parse, Adapt logs it and marks the player as a failed load. Later saves for that player are skipped. A half-read file is never overwritten with worse data.
+An SQL claim, parse, conflict, or adoption failure rejects login. It never constructs an unfenced runtime and never uploads a local fallback over an uncertain SQL row. Old raw-JSON `.pending-sql` files and pre-fence `.pending-delete` files in SQL mode are preserved with an operator recovery error. A stale writer cannot overwrite a newer owner; SQL rejects its token and the backend retires that live runtime.
 
-On quit, state is queued for persistence. Player-scoped tasks, HUD state, and temporary runtime objects are released. The in-memory object is kept for a minute in case the player reconnects at once. PlaceholderAPI keeps its own snapshot of recently offline players for the same minute. That snapshot is a display fallback, not a persistence authority. It is never written back.
+On quit, state is queued for persistence. Repeated writes for one UUID coalesce to the newest fence sequence. SQL saves gather for 25 ms and commit in batches of at most 128 profiles, then retry with bounded backoff. A failed terminal SQL write keeps its fenced recovery envelope. Player-scoped tasks, HUD state, and temporary runtime objects are released. The in-memory object is kept for a minute for late listeners and cleanup; it is not treated as an online member. PlaceholderAPI keeps its own display-only snapshot for the same minute and never writes it back.
 
 ## Reloading and restarting
 
 A watcher drains native file events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. Stable saves are queued into a latest-state batch and applied no more than once every 3 seconds; a save that lands while a batch is waiting or running becomes one trailing batch. Atomic moves, brief FTP replacement gaps, and same-metadata edits are covered. Automatic loads are passive and do not canonicalize, migrate, delete, or recreate watched files. While a legacy `.json` file still sits next to a canonical `.toml`, the watcher ignores the JSON.
 
-A core config reload refreshes language, custom models, advancement synchronization, default-active protector membership, and online mutation qualification. It also throws away the material value cache. Ability API policy settings are read fresh on every call. They follow the core config without a restart. SQL and Redis clients, metrics, protector registration, plugin load order, and the Velocity companion are restart boundaries. [01 - Installation & Configuration](/adapt/01-installation-configuration) carries the full matrix.
+A core config reload refreshes language, custom models, advancement synchronization, default-active protector membership, and online mutation qualification. It also throws away the material value cache. Ability API policy settings are read fresh on every call. They follow the core config without a restart. SQL and Redis clients, metrics, protector registration, and plugin load order are restart boundaries. [01 - Installation & Configuration](/adapt/01-installation-configuration) carries the full matrix.
 
 `/adapt migrate-configs` needs `adapt.debug`. It rewrites every skill and adaptation config in canonical TOML. Then it walks everything below `adapt/` and deletes each legacy JSON file that already has a TOML twin. A JSON file with no TOML twin is left alone. Normal startup runs the same canonicalization pass.
 
 ## Shutdown
 
-Disable unregisters the PlaceholderAPI expansion, disables services, and stops metrics. Then it tears the simulation down: ticker, minion runtime, `AdaptServer`, attribute service, advancement manager, and a final write of the material value cache. HUD work stops. Then the persistence queue gets up to 30 seconds to flush. Redis and SQL close after that. Glow state is cleared with a 2 second wait. The Ability API, region policy, and protector registrations are dropped.
+Disable unregisters the PlaceholderAPI expansion and Ability API first, then disables services and metrics. It stops world scans and the ticker before unregistering `AdaptServer`, then awaits owner-thread cleanup of private displays, minion modifiers, and Adapt-owned attributes for up to 5 seconds per subsystem. Advancements, world data, custom models, material values, and HUD work follow. The persistence queue then gets up to 30 seconds to flush before Redis and SQL close. Private glow state gets a 2 second cleanup wait, followed by region policy, protector registrations, the async workgroup, scheduler tasks, and listeners. Each phase is best-effort: one failure prints its full stack trace but does not prevent later cleanup phases from running.
 
 Watch the console during a stop. A stop that hangs or errors can mean queued live player data never reached disk or SQL. Read the shutdown log rather than assuming the flush happened.
 
@@ -69,9 +63,10 @@ Watch the console during a stop. A stop that hangs or errors can mean queued liv
 | Mode | Authority | Behavior |
 |---|---|---|
 | Local JSON | `plugins/Adapt/data/players/<uuid>.json` | Default whenever `sql.enabled` is false. Writes go through the persistence queue |
-| SQL | `ADAPT_DATA` table in the configured MySQL-compatible schema | Enabled by `sql.enabled`. Adapt creates the table but never the database |
-| SQL recovery file | `plugins/Adapt/data/players/<uuid>.json.pending-sql` | Written when a shutdown save could not reach SQL. Replayed and deleted on that player's next load |
-| Redis cache | `Adapt:data` pub/sub channel | Only active when SQL and Redis are both enabled. See [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server) |
+| SQL | InnoDB `ADAPT_DATA` plus `ADAPT_DATA_FENCE` in the configured MySQL-compatible schema | JSON and transactional owner token, epoch, adoption state, and committed sequence. Enabled by `sql.enabled`; Adapt creates the tables but never the database |
+| SQL recovery file | `plugins/Adapt/data/players/<uuid>.json.pending-sql` | `ADAPT_SQL_RECOVERY_V1` envelope atomically retaining UUID, owner, epoch, sequence, and JSON after bounded SQL retries or shutdown fallback. Only an exact predecessor fence can enter adoption |
+| Delete recovery journal | `plugins/Adapt/data/players/<uuid>.json.pending-delete` | Local-JSON-mode delete or delete-then-save journal. SQL reset and purge rotate the SQL fence transactionally and do not use this file |
+| Redis handoff | `Adapt:data:v2` channel family and `Adapt:data:v2:stage:*` keys | Correlated request, 60-second exact-fence staging, request-scoped replies, and epoch-only reset/purge notices. Only active when SQL and Redis are both enabled. See [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server) |
 
 ### Runtime services
 
@@ -93,9 +88,18 @@ The watcher covers `adapt/adapt.toml` and `adapt/adapt.json`, `adapt/models.toml
 | Automatic hotload cooldown | At least 3 s between batch starts |
 | In-memory player retention after quit | 60 s |
 | PlaceholderAPI offline snapshot grace | 60 s |
-| Prefetched login data cache | 2 minutes, 2048 entries |
+| Prefetched login data cache | 30 seconds, 2048 entries, consumed by join |
 | Persistence write retry backoff | 50 ms, 250 ms, 1000 ms |
+| SQL save gather window / batch cap | 25 ms / 128 profiles |
+| SQL claim gather window / batch cap | 25 ms / 128 profiles |
+| SQL claim attempts / per-attempt wait / pre-login outer wait | 4 / 8 s / 40 s |
+| Redis predecessor response wait | 250 ms |
+| Skill owner dispatch | Up to 64 players per server tick |
+| Adaptation owner dispatch | Up to 200 players examined and 64 owner tasks per server tick |
+| Private display admission | 4,096 global and 128 per viewer, including reservations |
+| JDBC connect, socket, and validation timeout cap | 5 s each |
 | Shutdown flush allowance | 30 s |
+| Display, minion, and attribute shutdown cleanup | Up to 5 s per subsystem |
 | Glow cleanup wait on shutdown | 2 s |
 
 XP provenance, spatial novelty, entropy, stillness, field-cycle, and pooled-payout listeners are all governed by the `xpIntegrity` block. The version bindings supply attribute access, custom model application, potion construction, and the invalid-damageable-entity list. They also detect whether `InventoryView.setTitle` exists on the running server.
@@ -105,5 +109,5 @@ XP provenance, spatial novelty, entropy, stillness, field-cycle, and pooled-payo
 - [01 - Installation & Configuration](/adapt/01-installation-configuration)
 - [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
 - [09 - Integrations](/adapt/09-integrations)
-- [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server)
+- [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)
 - [40 - Operator Runbooks](/adapt/40-operator-runbooks)

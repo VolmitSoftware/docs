@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Wormholes documentation: API - Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -135,10 +135,11 @@ Folia has region and entity ownership. There is no global main thread.
 
 | Surface | Thread |
 |---------|--------|
-| Provider `quote` / `reserve` / `commit` | Region thread owning the portal |
-| Provider `refund` | Same, except `EXPIRED` (next evaluation portal region) and `SERVER_SHUTDOWN` (unload thread) — see [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
-| `WormholesPortalTraverseEvent` | Portal region thread, inline |
-| `WormholesPortalTraversedEvent` | Traveler entity scheduler |
+| Provider `quote` / `reserve` | Source traveler-owned traversal task |
+| Provider `commit` | Destination traveler-owned task after local/RTP/door movement; source traveler-owned task after a cross-server transfer send succeeds |
+| Provider `refund` | Current traveler-owned task for every reason, including `EXPIRED`, `TRAVELER_LEFT`, and `SERVER_SHUTDOWN`. If ownership remains unavailable at shutdown, Wormholes logs the unresolved receipt instead of calling off-owner |
+| `WormholesPortalTraverseEvent` | Source traveler-owned traversal task, inline |
+| `WormholesPortalTraversedEvent` | Traveler entity scheduler after commit |
 | Placeholder resolve | Caller thread. Wormholes resolvers are non-blocking snapshot reads |
 | `IntegrationServiceContract` sample | Caller thread. Volatile counters / concurrent structures only |
 

@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,11 +19,13 @@ attach after the portal exists.
 | Item | Material | Craft recipe registered? |
 |------|----------|--------------------------|
 | Portal Wand | Enchanted blaze rod | Yes — `portal_wand` |
-| Portal rune | Enchanted prismarine | No |
-| Wormhole rune | Enchanted dark prismarine | No |
+| Portal Rune | Enchanted prismarine | No; recognized only for legacy placed items |
+| Wormhole Rune | Enchanted dark prismarine | No; supplied by an administrator |
 
-Runes are not craftable. They come from an administrator, or from breaking a
-rune block that is already placed, which returns the matching rune in survival.
+Runes are not craftable. `/wormholes wand` supplies only a Wormhole Rune.
+Breaking a tracked Portal or Wormhole rune block returns the matching item in
+survival. A tracked legacy Gateway rune block returns a Wormhole Rune; a tracked
+RTP rune block returns nothing.
 
 ### Craft shapes
 
@@ -51,10 +53,9 @@ Permission: `wormholes.admin.items`.
 | `/wormholes wand` | One Portal Wand + one wormhole rune |
 | `/wormholes wand rune=false` | One Portal Wand only |
 
-This is the only source of new runes on a server, so rune supply is an
-administrator decision. The command has no rune-type or count arguments. Portal
-type is a per-portal
-setting chosen in the portal menu, so a rune does not need to encode it.
+This is the only source of new Wormhole Runes, so supply is an administrator
+decision. The command has no rune-type or count arguments. Portal type remains
+a per-portal setting in the type menu.
 
 Aliases: `/wh`, `/wormhole`. Full command list:
 [09 - Commands & Permissions](/wormholes/09-commands-permissions).
@@ -83,7 +84,8 @@ menu instead of editing the selection. See Menu access.
 
 ## Rune construction
 
-1. Place portal or wormhole runes. Any 6-face-connected shape of the
+1. Place Wormhole Runes, or already-owned legacy Portal Runes. Any
+   6-face-connected shape of the
    **same** rune type works (rectangles, lines, L-shapes, single blocks, and
    similar). Diagonal contact alone does not connect sets.
 2. All runes of the connected set must be **coplanar** (one flat axis-aligned
@@ -96,17 +98,15 @@ menu instead of editing the selection. See Menu access.
 |-----------|------------------------|
 | Portal | `PORTAL` |
 | Wormhole | `WORMHOLE` |
-| Gateway | `GATEWAY` |
 
-There is no RTP rune product. Wand and rune construction create `PORTAL`,
-`WORMHOLE`, or `GATEWAY` only. Switch a finished portal to RTP from the type
-menu.
+There is no Gateway or RTP rune product. Switch a finished portal to `GATEWAY`
+or `RTP` from the type menu.
 
 Wormholes rejects non-coplanar connected sets before consumption. The placed,
 tracked runes stay in the world. If construction fails after a valid set has
 been reserved and consumed, rollback restores or refunds the matching runes
-and releases their reservations. Breaking a placed rune in survival returns
-the matching rune item. Breaking with the wand is cancelled.
+and releases their reservations. Breaking a placed rune in survival follows the
+drop policy above. Breaking with the wand is cancelled.
 
 ## Surface skin
 
@@ -183,7 +183,8 @@ tree.
 
 ## Quick path
 
-1. Admin: `/wormholes wand` (or craft wand + runes).
+1. Get a wand by `/wormholes wand` or crafting it. An administrator must supply
+   any Wormhole Runes.
 2. Place coplanar runes **or** box-select with the wand and left-click to open.
 3. Open the menu (wand look-click or sneak empty-hand right-click on the frame).
 4. Set type if needed. Pick a destination (or RTP editor / gateway codes). Then

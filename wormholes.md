@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Through-portal projection and traversal plugin"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,8 +16,8 @@ dimensions, and cross-server gateways.
 |---|---|
 | Command | `/wormholes` (`wh`, `wormhole`) |
 | Folia | Supported (via `paper-plugin.yml`) |
-| Permissions | 14 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` |
-| Integrations | PlaceholderAPI, Iris, Vault |
+| Permissions | 15 declared yml nodes plus dynamic `wormholes.portal.<sanitized-name>` |
+| Integrations | PlaceholderAPI, Iris, Vault, WorldGuard |
 
 > Wormholes ships two descriptors that disagree on load order. Paper reads
 > `paper-plugin.yml` and bootstraps at `STARTUP`. Spigot falls back to

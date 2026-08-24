@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,8 +20,8 @@ Architecture context:
 
 | Step | Action | Pass criteria |
 |------|--------|---------------|
-| 1 | Place the shaded Wormholes jar in `plugins/` on Paper or Folia. If you test those paths, also install PlaceholderAPI, Vault, or Iris. | Server starts without enable failure splash. |
-| 2 | Confirm `plugins/Wormholes/config/wormholes.toml` exists with `schema = 2`. | File is present. It has quality and sections `[main]`, `[network]`, `[projection]`, `[render]`. |
+| 1 | Place `Wormholes-<version>.jar` in `plugins/` on Paper or Folia. Ensure SlimJar can reach its dependency repositories or has a prewarmed cache. If you test those paths, also install PlaceholderAPI, Vault, Iris, or WorldGuard. | Dependencies resolve and the server starts without an enable failure splash. |
+| 2 | Confirm `plugins/Wormholes/config/wormholes.toml` exists with `schema = 2`. | File is present. It has quality and sections `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`. |
 | 3 | `/wh info` | Building instructions print. |
 | 4 | Under `[main]`, edit a harmless key such as `verbose-logging = true`. Then run `/wh reload` as op (`wormholes.admin.reload`). | Reload success message. No retained-settings error. |
 | 5 | Toggle `/wh debug` (`wormholes.admin`). | Verbose logs and one-second telemetry toggle. The console shows the change. |
@@ -72,7 +72,7 @@ See [03 - Building Portals](/wormholes/03-building-portals) and
 | 1 | Portal menu → type **RTP** → **Random Destination**. | Editor opens (overview with Destination/Landing/Routing/Effects). |
 | 2 | Change min radius (for example +128). | The change applies immediately (applied notification). No Apply Changes control is required. |
 | 3 | If you did not change them, confirm defaults. Min 512. Max 4096. Center is portal-relative. Vertical surface. Allocation is shared. Rotation is on-traversal. Rim and sound are on. | Status and settings match [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals). |
-| 4 | Wait until the destination is ready. Then look through the portal. | When both shared active and standby columns are prepared, state is ready and projection shows a remote landing. A cold Iris candidate may use the 30-second search window rather than being discarded after five seconds. |
+| 4 | Wait until the destination is ready. Then look through the portal. | The first safe retained shared destination makes the portal ready and projection shows the remote landing. The distinct standby continues preparing in the background. A cold Iris candidate may use the 30-second search window rather than being discarded after five seconds. |
 | 5 | Traverse the RTP portal. | Teleport is safe. A shared ON_TRAVERSAL portal starts a reroll (state may show `rerolling` / `warming`). |
 | 6 | If PlaceholderAPI is present, check `%wormholes_rtp.state%` and `%wormholes_rtp.cooldown%` near the portal. | States among `rerolling` / `warming` / `ready` / `cooldown` / `idle`. |
 | 7 | Optional: set rotation to STATIC. Then traverse again. | The destination does not reroll automatically after the trip. |
@@ -175,7 +175,7 @@ Permission: `wormholes.admin.projection`.
 |---------|--------|
 | Plugin fails enable | Check the console stacktrace. Check for a schema-less or wrong `schema` in TOML. Check dependency load. |
 | No projection | Projection is OFF. You are outside the view AABB. Freeze is active. The portal is not projectable (RTP not ready). Budgets are starved under PERFORMANCE. |
-| RTP never ready | Initial shared routing needs two distinct safe columns. A cold Iris candidate may take up to the 30-second campaign window. Also check world availability, radius versus border, safety rejections, and search cooldown. |
+| RTP never ready | The first retained safe destination is sufficient; standby preparation continues in the background. A cold Iris candidate may take up to the 30-second campaign window. Also check world availability, radius versus border, safety rejections, and search cooldown. |
 | Doors missing | `[main] dimensional-doors-enabled` is false. A pocket datapack restart is still required. Drain is in progress. |
 | Network import fails | The network is not initialized. The code is invalid or truncated. The identity is the same. The peer is offline (`/wh network doctor`). |
 | Config edit does not hotload | Confirm the target is exactly `config/wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 2`, and remains stable for 350 ms. A missed native event is recovered by the 2.5-second exact-content pass; check the watcher or parse stacktrace. |

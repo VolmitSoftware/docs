@@ -74,7 +74,7 @@ Iris blocks player login until external datapack validation and dimension-pack v
 
 The two gates behave differently. A failed or restart-pending **external datapack** state keeps login locked. It also blocks all Iris world creation until you fix it and restart. Iris tells you when a restart is what is required.
 
-When validated external datapacks change, Iris completes its initialization and then invokes the server's restart directly, before Paper begins loading default worlds. If that restart API throws or returns unexpectedly, Iris requests shutdown and keeps every configured Iris default world bound to a non-generating refusal; CraftBukkit cannot substitute vanilla terrain.
+When validated external datapacks change, Iris completes its initialization and then invokes the server's immediate restart capability, when present, before default worlds begin loading. Plain Spigot has no such API, so Iris stops at that startup boundary instead; if an available restart API throws or returns unexpectedly, Iris also requests shutdown. Every configured Iris default world remains bound to a non-generating refusal, so CraftBukkit cannot substitute vanilla terrain.
 
 Unchanged, already-validated datapacks and packs reuse their persisted results. Iris still reads the local authored bytes to confirm the exact fingerprint. It skips remote resolution, semantic revalidation, copying, installation, and pack compilation.
 
@@ -99,7 +99,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Folia
 
-`folia-supported: true`, and engine work uses region-safe scheduling. The one behavioral difference that matters at install time: `/iris create` cannot build a live world at runtime on Folia. Instead it stages the world files, installs the pack snapshot, registers the world in `bukkit.yml`, reports success, and automatically requests a controlled server restart. After the server returns, the world generates and loads on its own from that `bukkit.yml` entry. You do not need to run `/iris load`. The host still needs a working restart script or external supervisor that can relaunch the JVM. If the restart command does not complete, Iris falls back to stopping the server and the supervisor must bring it back. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+`folia-supported: true`, and engine work uses region-safe scheduling. `/iris create` builds and loads the managed world in the current process through Iris's Paper-like runtime lifecycle backend; ordinary creation does not stage the world for startup or restart the server. Iris fails before calling Folia's unsupported public world creator if that runtime backend is unavailable. Pack or datapack changes that alter already-loaded registries still require their normal restart before creation can begin. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 ### Installing the first pack
 

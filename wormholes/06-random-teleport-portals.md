@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -77,8 +77,8 @@ Built by `RtpSettings.builder(world)` / `defaults(world)`:
 
 | Value | Meaning |
 |-------|---------|
-| `SHARED` | One active destination shared by the portal's viewers/travelers, plus a distinct prepared standby column. Initial READY requires both. |
-| `PER_PLAYER` | Per-player destinations and private reservation pool behavior. |
+| `SHARED` | One active destination shared by the portal's viewers/travelers. It becomes READY after the first safe retained destination while a distinct standby column prepares in the background. |
+| `PER_PLAYER` | Per-player destinations and private reservation pool behavior. The first safe candidate is assigned immediately while spare capacity prepares in the background. |
 
 ### Shared rotation — `RtpRotationMode`
 
@@ -102,9 +102,12 @@ each private reservation on `cycleDurationMillis`. The editor labels that field
 | Routing | SHARED / PER_PLAYER. Shared STATIC / TIMED / ON_TRAVERSAL choices. Shared timed or private rotation interval. Lease idle. Private release. Manual reroll/pool rebuild |
 | Effects | Rim on/off, portal-specific sound on/off |
 
-Numeric fields use decrease/increase steps and optional typed entry. Radii, Y,
-timings, and coordinates are clamped by editor and `RtpSettings` limits (radius
-max 30_000_000. Cycle/lease/reservation bounds as above).
+Numeric fields use decrease/increase steps and optional typed entry. Custom X/Z
+must stay from -30_000_000 through 30_000_000, and maximum radius is capped at
+30_000_000 in both the editor and `RtpSettings`. Hand-edited stored coordinates
+outside that range normalize to portal-relative; invalid stored radii, including
+oversized or fractional values, normalize to the 512/4096 defaults. Y and timing
+bounds remain as listed above.
 
 ## Surface safety rules
 
@@ -169,6 +172,10 @@ Candidate attempts run serially. A search campaign starts at most 32 candidates
 and runs for at most 30 seconds. This lets a cold Iris chunk finish generation
 instead of discarding it after five seconds and sampling another new chunk. A
 timed-out preparation is cancelled and its Wormholes chunk leases are released.
+A cold portal publishes its first validated, retained destination immediately;
+it does not wait through another serial campaign for a shared standby or two
+private spares. Those redundancy searches continue through the same single-
+campaign pipeline after the portal is usable.
 A campaign that cannot publish a safe destination enters exponential retry
 backoff, from one second up to 30 seconds. The existing READY view stays
 published during refill or authorization work until a replacement can be shown
@@ -183,17 +190,19 @@ leave the view AABB.
 
 - New RTP portals with default rotation **ON_TRAVERSAL** reroll the shared
   destination after a successful trip.
-- Shared routing prepares an active destination and a distinct standby. The
-  portal becomes READY only when both are retained, allowing a rotation to
-  promote the standby without exposing an unprepared route.
+- Shared routing becomes READY when its active destination is retained, then
+  prepares a distinct standby in the background. A successful ON_TRAVERSAL trip
+  promotes that standby when present; if the first trip consumes a lone active,
+  the portal returns to warming until the next validated destination arrives.
 - A route edit is not treated as active until its runtime registration succeeds.
   Failed registration stays closed and retries, so the editor cannot show new
   radii while travel continues through an older route.
 - Per-player allocation rotates reservations on the cycle duration and uses
   private release timing for reservation teardown. The saved shared rotation
   choice remains available if allocation switches back to SHARED.
-- Per-player routing keeps at most 16 prepared or assigned destinations and
-  reserves two free spares when capacity permits.
+- Per-player routing keeps at most 16 prepared or assigned destinations, assigns
+  the first safe destination without waiting, and replenishes up to two free
+  spares when capacity permits. All 16 slots may be assigned under load.
 - Rim feedback and portal-specific sounds are independently togglable. Muting
   sounds does not disable particles.
 - Rim feedback is yellow while preparing. It is red for closing or a

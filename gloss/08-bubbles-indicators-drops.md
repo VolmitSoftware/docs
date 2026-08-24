@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Gloss documentation: Chat Bubbles, Indicators & Drops"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -88,6 +88,8 @@ There is no config table for bubble styles. `config.toml` carries exactly one bu
 
 Primary groups come from Vault. A `groups` list only ever matches when `[groups] useVault = true` and a Vault permission provider is installed. Without one the primary group is unknown. Any style with a non-empty `groups` list is skipped. See [Scoreboards & Groups](/gloss/05-scoreboards-groups).
 
+Style resolution runs on the speaker's entity-owning thread. The first group-selected bubble reads the speaker's current Vault primary group directly and caches it there, so it does not depend on an earlier cache warmup; later background refreshes are also dispatched through that owner.
+
 ### Style resolution
 
 For each chat message Gloss resolves one style, in this order:
@@ -110,7 +112,9 @@ The bubble hook runs on `AsyncPlayerChatEvent` at `MONITOR` priority, after Glos
 
 Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines, left-aligned and sent to one `TextDisplay`, so one chat message is one aligned multiline entity and one background block rather than several independently moving bubbles. The newest message remains at the authored offset; each older block rises by the complete wrapped-line height of newer blocks beneath it, so multiline backgrounds never occupy the same stack space.
 
-The authored `prefix` is rendered separately through the full text pipeline with the speaker as viewer and prepended to the already-formatted message. It therefore supports `|function|`, `{{ player.* }}`, `papi`, raw PlaceholderAPI tokens, emoji and colors just like a scoreboard. Dynamic prefixes refresh on the speaker entity thread while the bubble lives. Player chat itself is not reinterpreted as Gloss code. The resulting bubble lives for `maxAliveMs` milliseconds. Immediately before spawn, Gloss re-checks that chat bubbles are enabled, the speaker is online and outside a blacklisted world, and the speaker still holds `gloss.bubbles.send`.
+The authored `prefix` is rendered separately through the full text pipeline with the speaker as viewer and prepended to the already-formatted message. It therefore supports `|function|`, `{{ player.* }}`, `papi`, raw PlaceholderAPI tokens, emoji and colors just like a scoreboard. Dynamic prefixes refresh on the speaker entity thread as part of that bubble's owner-bound temporary-hologram sample; Gloss does not schedule a second per-speaker update task. Player chat itself is not reinterpreted as Gloss code. The resulting bubble lives for `maxAliveMs` milliseconds. Immediately before spawn, Gloss re-checks that chat bubbles are enabled, the speaker is online and outside a blacklisted world, and the speaker still holds `gloss.bubbles.send`.
+
+Gloss retains at most four live messages per speaker. After a new bubble secures server-wide capacity, admitting it retires that speaker's oldest bubble when necessary. The server-wide ceiling is 2,048 live bubbles; messages above that ceiling are dropped without disturbing the speaker's existing stack. Quit and explicit retirement release admission immediately, while natural expiry is reconciled by a fixed one-second accounting sweep. Both limits are fixed runtime safety bounds rather than configuration knobs.
 
 ### Shimmer
 
@@ -215,7 +219,7 @@ The file is written whenever a player sets or clears a style. It is read once wh
 
 ### Turning bubbles off
 
-`[features] chatBubbles = false` stops the chat hook and the per-tick eye sampler. It destroys every live bubble. Style documents still load. They still hot-reload. `/gloss bubbles style` still records a choice. Nothing renders.
+`[features] chatBubbles = false` stops the chat hook and destroys every live bubble, which removes their owner-bound eye and prefix sampling. Style documents still load. They still hot-reload. `/gloss bubbles style` still records a choice. Nothing renders.
 
 ## Damage and heal indicators
 
@@ -228,12 +232,13 @@ Filtering before an indicator spawns:
 - A per-entity 3-tick debounce coalesces bursts. One entity produces at most one indicator per 3 ticks.
 - A delta with an absolute value of `0.009` or less is discarded.
 - A server-wide sliding window drops anything over `[damageIndicators] maxPerSecond`.
+- Live admission is the smaller of `ceil(maxPerSecond * maxMsAlive / 1000)` and `2048`. The shipped settings therefore allow at most 120 simultaneous indicators. A new indicator is dropped while that capacity is full.
 
 Damage numbers spawn `0.7` blocks above the entity location with `damagePrefix`. Heal numbers spawn `0.1` blocks below it with `healPrefix`. Both scatter horizontally by up to `randomThrowForce` in each direction and pop upward by `initialUpForce`. Damage numbers then fall by `gravityFactor` per driver step. Heal numbers instead rise by `gravityFactor` divided by 19.5 per step. Steps happen on the temporary hologram driver, every `[holograms] temporaryUpdateIntervalTicks` (default `2`).
 
 The value is formatted by `decimals`. `0` prints a rounded whole number. `1` or `2` print that many decimal places.
 
-Visibility is decided once, at spawn. If every online player holds `gloss.indicators.show`, nothing is computed at all. Otherwise Gloss walks the players within `[holograms] viewRange` of the entity and excludes the ones that do **not** hold the permission. Players further away than that are not in the set, because they cannot see the display anyway.
+Visibility is decided once, at spawn. Gloss queries the movement-fed spatial index for players within `[holograms] viewRange` of the entity and reads a cached `gloss.indicators.show` snapshot; spawning an indicator does not dispatch one permission task per nearby viewer. Enable and reload queue the online population for bounded entity-thread sampling instead of dispatching every player at once. Join, respawn, world change, and chunk crossing refresh that player immediately. Periodic snapshots remain current for five seconds; a due-time cohort refreshes at most 16 players every two ticks, taking about 6.25 seconds to populate or rotate through 1,000 stationary players at 20 TPS. An unknown player is hidden until their first snapshot is available. Players further away than the view range are not checked because they cannot see the display anyway.
 
 That set is never revisited. A player who walks into range while an indicator is still alive sees it, permission or not. This is deliberate: indicators live at most `maxMsAlive` (default `3000`, three seconds) and re-scanning the audience every driver step for a three-second display costs more than the leak is worth. If you need the permission enforced strictly, lower `maxMsAlive`.
 
@@ -245,8 +250,8 @@ That set is never revisited. A player who walks into range while an indicator is
 | `[damageIndicators] gravityFactor` | `0.0093` | `0.0`..`1.0` |
 | `[damageIndicators] maxPerSecond` | `40` | `1`..`1000` |
 | `[damageIndicators] maxMsAlive` | `3000` | `250`..`30000` |
-| `[damageIndicators] damagePrefix` | `"&c&l"` | any string. Blank restores the default |
-| `[damageIndicators] healPrefix` | `"&a&l"` | any string. Blank restores the default |
+| `[damageIndicators] damagePrefix` | `"&c&l"` | any string. `null` restores the default; an empty string suppresses the prefix |
+| `[damageIndicators] healPrefix` | `"&a&l"` | any string. `null` restores the default; an empty string suppresses the prefix |
 | `[damageIndicators] decimals` | `0` | `0`..`2` |
 | `[damageIndicators] showHeals` | `true` | heal indicators in addition to damage |
 
@@ -303,11 +308,13 @@ unconditional overwrite.
 
 Spawn, vanilla merge, pickup, hopper pickup, despawn, entity load, and entity unload are coordinated at `MONITOR`. Full removal destroys the attached presentation. Partial pickup refreshes one tick later, after the server has replaced the remaining stack. All world and entity work runs on the owning entity or region thread.
 
+On enable, reload and real-drop document changes, Gloss queues already-loaded chunks for label and presentation reconciliation and admits at most 32 chunks per tick. A newer reload or shutdown cancels the stale queue. Newly loaded chunks still reconcile from their entity-load event.
+
 ### Real drops
 
 `[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. Placeable materials render through `BlockDisplay` with their placed block state; true items render through `ItemDisplay` in explicit `FIXED` mode. The first model is the non-persistent carrier, while additional stack models and the optional `TextDisplay` label ride it as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. Once settled, unchanged poses are not resent and microscopic item-position noise is ignored; meaningful movement still wakes and moves the carrier.
 
-The feature switch remains `[features] realDrops` in `config.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. If the complete initial presentation does not fit, Gloss leaves that item vanilla-visible.
+The feature switch remains `[features] realDrops` in `config.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
 
 | Key | Default | Range / behavior |
 |---|---:|---|
@@ -368,7 +375,10 @@ If `[features] drops = false`, Gloss removes its owned custom names as loaded it
 |---|---|---|
 | `/gloss bubbles style` | `<style>` (a style id, or `clear`) | `gloss.bubbles.style` |
 | `/gloss bubbles reset` | `[name=*]` | `gloss.bubbles.reset` |
+| `/gloss drops reset` | `[name=*]` | `gloss.drops.reset` |
 
-Optional arguments must be written as `key=value`. A stray positional value is rejected. Indicators and drop labels have no commands.
+Optional arguments must be written as `key=value`. A stray positional value is rejected. The drop
+reset overwrites matching shipped `real-drops/` documents without deleting extra documents;
+indicators have no command subtree.
 
 `bubbles/` is watched by the shared `DataWatchdog` at `[hotload] watchIntervalTicks` (default 5 ticks). If you add, edit, rename or delete a style file, the change applies live. A style document that fails to parse is logged and skipped. The copy already in memory keeps working. See [Data Files & Hot Reload](/gloss/03-data-files). For the temporary holograms all of this is built on, see [Holograms](/gloss/04-holograms).

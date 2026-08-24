@@ -2,7 +2,7 @@
 title: "Portal Types Menus & Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -197,7 +197,15 @@ interval, and view grace editors.
 Invalid stored travel cost loads as free and logs a warning. Third-party
 `TraversalCostProvider` is separate
 ([21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events))
-and gated by `traversalApiEnabled`.
+and gated by `[main] traversal-api-enabled`.
+
+Vanilla-item and Vault charges reserve on the traveler owner and commit only
+after the traversal succeeds. A failed traversal restores the item or Vault
+charge only after reacquiring that owner; rejected, retired, or accepted-but-
+cancelled entity tasks retry eight times with exponential backoff and a
+watchdog. Exhausted retries, plugin shutdown, or retry-executor rejection fail
+closed without off-owner inventory/economy access and emit a severe log naming
+the traveler.
 
 ## Orientation menu
 
@@ -235,9 +243,10 @@ seal. Opaque surface skins block projection entirely (`blocksProjection`).
 - Destroy needs **shift-left-click** on the destroy element. A normal
   left-click does not delete.
 - Wand box construction always starts as type `PORTAL` regardless of intent.
-  Change type in the type menu or build with the matching rune.
-- There is no gateway rune. Build with either rune and switch the portal to
-  `GATEWAY` in the type menu.
+  Wormhole Runes form `WORMHOLE`; already-placed legacy Portal Runes can still
+  form `PORTAL`.
+- There is no Gateway rune. Switch an existing portal to `GATEWAY` in the type
+  menu.
 - All frame types can project. Use projection mode OFF to disable the view.
   Construction and type changes need `wormholes.portals.portal` (PORTAL/RTP),
   `wormholes.portals.wormhole` (WORMHOLE), or `wormholes.gateway` (GATEWAY).

@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Gloss documentation: Localization"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -178,6 +178,11 @@ captures must agree before the overlay can reload. Automatic batches complete no
 every 3 seconds, with the
 latest edit retained as one trailing pass. `/gloss reload` does not reload `language.yml`; the file
 watch remains the automatic path.
+
+A successful automatic batch publishes one localized cooperative action-bar notice to each online
+`gloss.admin` player. It uses `gloss.message.hotload.singular` or
+`gloss.message.hotload.plural`, including the changed kind names and total change count. Startup,
+manual reloads, rejected files and failed apply attempts do not publish that notice.
 
 An invalid, unreadable or missing automatic snapshot keeps the last-good locale. Deleting
 `language.yml` does not recreate or rewrite it; startup restores the default file if it is still

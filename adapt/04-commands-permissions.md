@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt documentation: Commands & Permissions"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Almost every node defaults to op. The exceptions are `adapt.effects` and `adapt.
 
 ## Giving progression
 
-`/adapt boost` gives one player a temporary XP multiplier. `/adapt global-boost` does it for the whole server. Both take a duration in seconds and a multiplier. Both expire on their own.
+`/adapt boost` gives one player a temporary additive XP multiplier. `/adapt global-boost` does it for the whole server. Both require a positive duration and a finite multiplier from `-0.99` through `999`; invalid or overflowing input is rejected. Active boosts add together, the final XP multiplier is clamped to `0.01` through `1000`, and every boost expires on its own.
 
 `/adapt experience` and `/adapt knowledge` grant nothing directly. They put a snowball orb in the target's inventory that pays out when thrown. The skill argument takes a skill name, `all` for an orb covering every registered skill, or `random`. Both need `adapt.cheatitem`.
 
@@ -33,6 +33,8 @@ Almost every node defaults to op. The exceptions are `adapt.effects` and `adapt.
 There are two tools here and they are not interchangeable.
 
 `/adapt clear` is surgical and works on online players only. Each subcommand wipes one slice: XP, knowledge, adaptations, the stats map, discovery data, or all of the above. Clearing XP is heavier than the name suggests. It also empties every skill line's adaptations, resets the anti-farm pressure state, and resets master XP and the Inspired skill. Mutation data survives it. `/adapt mutations reset` is the way to wipe only that. There is no standalone clear for advancements or wisdom. `/adapt clear all` is the only path to those.
+
+Commands that mutate an online target run on that player's owning scheduler. If the player retires before Folia accepts the task, Adapt reports the rejected operation instead of claiming success; a confirmed full reset also restores its confirmation window so it can be retried.
 
 `/adapt reset confirm` is the full delete and accepts offline targets. Run it once to get the warning. Then run it again with the same target within 30 seconds. An online target has their profile replaced in place. Attribute modifiers are unlearned. The mutation loadout dissolves. Adaptation recipes are un-discovered. The empty profile is saved immediately. They are not kicked, despite the wording of the message they receive. An offline target has their stored data purged instead. Both commands need `adapt.clear`.
 

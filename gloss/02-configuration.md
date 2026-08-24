@@ -53,7 +53,7 @@ A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
 
 ## `[features]`
 
-Master switches. If you turn one off, that subsystem stops rendering or listening. For most kinds the documents still load, still hot-reload and are still editable by command. `emoji`, `animations` and `previews` are the three that shut down completely: with those off nothing of theirs is loaded or watched at all.
+Master switches. An effective off state stops that subsystem from rendering or listening. For most kinds the documents still load, still hot-reload and are still editable by command. `emoji` and `animations` shut down completely while off and can start on a later reload. `panels` and `previews` instead decide service construction once during enable; when either is off at startup, none of its documents are loaded.
 
 | Key | Default | Gates |
 |---|---|---|
@@ -87,16 +87,16 @@ Shipped defaults follow the toggle. A feature that is off extracts nothing and l
 |---|---|---|---|
 | `stackDistance` | `0.26` | 0.05 – 2.0 | Vertical distance in blocks between stacked temporary holograms, and the value exposed to the API as the stack spread |
 | `updateIntervalTicks` | `10` | 1 – 200 | Ticks between ordinary persistent hologram refreshes; clock-driven expressions and named animations automatically sample every tick |
-| `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which per-viewer copies are rendered |
+| `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which personalized metadata is sent |
 | `perViewerPlaceholders` | `true` | — | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
 | `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, API temporaries) |
 | `interpolatedMotion` | `true` | — | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
 | `textArtMaxWidth` | `48` | 8 – 128 | Maximum character width of `/gloss hologram rendertext` output |
 | `highFrequencyAnimations` | `true` | — | Drive animation clips faster than 20 fps from the dedicated `Gloss Animator` thread with sub-tick packet updates. Off restores the tick-bounded behavior exactly |
 | `maxAnimationFps` | `120` | 1 – 240 | Frame-rate ceiling of the high-frequency animator loop. Sets its adaptive floor to `1000 / fps` ms (at least 4 ms) |
-| `animationPacketBudget` | `20000` | 100 – 1000000 | Animation text packets per second allowed across each animated display's audience. Large audiences degrade the effective frame rate proportionally |
+| `animationPacketBudget` | `20000` | 100 – 1000000 | Hologram text-metadata recipients per second, shared by animated targets, personalized updates and personalized clears. Large aggregate audiences degrade animation frame rate proportionally |
 
-A non-finite `stackDistance` or `viewRange` falls back to its default. It does not clamp. See [Holograms](/gloss/04-holograms).
+A non-finite `stackDistance` or `viewRange` falls back to its default. A finite value outside its documented range is clamped. See [Holograms](/gloss/04-holograms).
 
 ## `[boards]`
 
@@ -108,7 +108,7 @@ A non-finite `stackDistance` or `viewRange` falls back to its default. It does n
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `updateIntervalTicks` | `40` | 1 – 400 | Ticks between ordinary tablist refreshes. Clock-driven expressions and complete `\|animation.<id>\|` tokens automatically sample every tick |
+| `updateIntervalTicks` | `40` | 1 – 400 | Ticks between ordinary tablist refreshes. Animated header/footer text samples all recipients every tick; animated list-name formats and API overrides fast-tick only the players selecting them |
 
 The header, footer and per-group list-name formats are not here. They are in `tablist.json`. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
 
@@ -164,6 +164,10 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `decimals` | `0` | 0 – 2 | Decimal places shown on indicator numbers |
 | `showHeals` | `true` | — | Show heal indicators as well as damage indicators |
 
+The live-indicator admission limit is derived from `maxPerSecond * maxMsAlive`, rounded up to a
+whole indicator, and hard-capped at 2,048. The defaults admit 120 simultaneous indicators. Once
+full, Gloss drops new indicators until an existing one expires or is destroyed.
+
 ## `[drops]`
 
 | Key | Default | Range | Meaning |
@@ -192,6 +196,10 @@ Bubble wrapping, appearance, lifetime and expression-driven motion are per-style
 | `maxVisualsPerChunk` | `128` | 8 – 1024 | Shared chunk budget for item models and labels; an item stays vanilla-visible if its complete presentation cannot fit |
 | `viewRange` | `32.0` | 4 – 128 | Item-model tracking range in blocks |
 | `spread` | `0.18` | 0 – 1 | Separation in blocks between additional stack models |
+
+The chunk budget is complemented by a fixed server-wide ceiling of 2,048 active presentations.
+An item rejected by either bound keeps its native model and visible fallback name and receives no
+real-drop update loop.
 
 ### `scale`
 
@@ -282,7 +290,7 @@ Real drops use a non-persistent `BlockDisplay` carrier for placeable materials a
 
 | Key | Default | Meaning |
 |---|---|---|
-| `sounds` | `true` | Play feedback sounds when command output is delivered to a player. Console senders never get sounds |
+| `sounds` | `true` | Play player command feedback and the coalesced administrator chime after a successful automatic hotload batch. Console senders never get sounds |
 
 ## `[debug]`
 
@@ -357,6 +365,32 @@ If you change `scale` or `uiScale`, Gloss invalidates the item provider cache. I
 | `customItemProviders` | `[]` | Provider allowlist by provider or plugin name. An empty list allows every provider |
 
 Allowlist entries are trimmed, lowercased and de-duplicated on load. The file shows the normalized form. If you change either key, Gloss reloads the provider registry on the next config reload. See [Custom Items & Item Providers](/gloss/14-custom-items).
+
+## `[playerHeads]`
+
+Settings for JSON `playerHead` menu icons. Profile resolution is asynchronous; it never blocks a
+menu tick or performs network work on the calling thread.
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `enabled` | `true` | — | Resolve real player profiles. Off renders every player-head icon as the configured fallback and makes no outbound profile request |
+| `cacheMinutes` | `360` | 1 – 10080 | Minutes a resolved profile remains cached |
+| `unknownCacheMinutes` | `10` | 1 – 1440 | Minutes a confirmed nonexistent name remains cached |
+| `maxCachedProfiles` | `2048` | 16 – 65536 | Settled cache ceiling; expired and nearest-expiry entries are removed first. Size this at least to the number of distinct player heads expected in the active menu and panel working set |
+| `unknownFallbackItem` | `"minecraft:skeleton_skull"` | block material id | Block shown for invalid or confirmed-unknown names and while resolution is disabled. An unknown, air or non-block material falls back to `minecraft:skeleton_skull` |
+
+Names must be 1–16 ASCII letters, digits or underscores. An invalid name or unresolved placeholder
+uses the fallback without starting a request. The first render of a fresh valid name is an unowned
+player head while the lookup runs; a later icon refresh applies the resolved texture. Confirmed
+misses use `unknownCacheMinutes`; transient failures and an overloaded resolution queue retry after
+one minute.
+
+An online player is resolved directly from the live Bukkit profile without an outbound update.
+Offline lookups have a 15-second timeout, at most 16 run concurrently, and at most 1024 wait in the
+queue. In-flight cache entries are shared by all viewers and are not evicted, so the map may briefly
+exceed `maxCachedProfiles`; completion immediately evicts settled entries back to the ceiling.
+Changing any value in this section replaces the profile service and clears its cache. See
+[Icons](/gloss/11-icons) for the authored icon contract.
 
 ## `[integration]`
 

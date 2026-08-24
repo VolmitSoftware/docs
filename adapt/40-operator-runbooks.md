@@ -2,14 +2,14 @@
 title: "Operator Runbooks"
 description: "Adapt documentation: Operator Runbooks"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
 ---
 These are the checks worth running before you trust an Adapt install with a real player base. Each section is a short procedure you can follow on a throwaway server. Run them with a disposable player on an isolated Paper or Folia instance. Several steps delete progression on purpose.
 
-A clean startup, working live gameplay, correct cross-server behavior, and a clean shutdown are four separate things. A plugin that enabled without an error says nothing about whether SQL is actually reachable. A working session says nothing about whether queued player data reached disk on the way down.
+A clean startup, working live gameplay, correct cross-server behavior, and a clean shutdown are four separate things. In SQL mode, enablement proves the initial connection and InnoDB schema gate passed; it does not prove the database remains reachable. A working session says nothing about whether queued player data reached storage on the way down.
 
 Check with a non-op account whose permissions are written out explicitly. Operator status quietly satisfies almost every gate in the plugin. It will hide a missing grant until a real player hits it.
 
@@ -19,20 +19,21 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 2. For an upgrade, stop the server first and back up `plugins/Adapt/` plus the SQL database if you use one.
 3. Start once. Confirm the plugin enables, `plugins/Adapt/adapt/adapt.toml` and the skill and adaptation TOML files are generated or canonicalized, and no version binding error appears.
 4. Read the rest of the boot log. Check legacy migration and backup lines,
-   optional integration lines, and the config summary. Also check any
-   `plugins/Adapt/data/players/<uuid>.json.pending-sql` files left from a
-   previous run.
+   optional integration lines, and the config summary. Treat
+   `plugins/Adapt/data/players/<uuid>.json.pending-sql` as fenced SQL recovery
+   and `<uuid>.json.pending-delete` as local-mode delete recovery; neither is a
+   disposable temporary file.
 5. Join in Survival and right-click the side of a bookshelf with neither hand holding a placeable block. The skills menu should open. Sneaking, clicking the top or bottom face, or holding a placeable block in either hand should do nothing.
 6. Stop cleanly. Confirm no persistence flush, Redis close, SQL close, or scheduler error on the way down.
 
 ## Progression and permissions
 
 1. Earn XP in one skill and check its XP, level, and knowledge against the formulas in [02 - Concepts](/adapt/02-concepts) and [05 - Configuration Math](/adapt/05-configuration-math).
-2. Learn and then unlearn a cheap adaptation. Watch the prerequisite, knowledge cost, power cost, world blacklist, `adapt.use.<skill>.<adaptation>` grant, refund, and recipe book behavior on both halves.
+2. Learn and then unlearn a cheap adaptation. Watch the prerequisite, knowledge cost, power cost, world blacklist, the separate flat `adapt.use.<skillNameWithoutHyphens>` and `adapt.use.<adaptationNameWithoutHyphens>` grants, refund, and recipe book behavior on both halves. For example, Air Dash uses `adapt.use.agilityairdash`, not a nested skill-and-adaptation node.
 3. Run `/adapt help`, `/adapt help 2`, and `/adapt ?`. Only commands that account can actually run should be listed.
 4. As an administrator holding `adapt.gui`, run `/adapt gui target=skill:<name> force=true` and `/adapt gui target=adaptation:<id> force=true`. The menu should open, and `force` should bypass only the target's use permission. An adaptation disabled in config stays closed either way.
 5. Use `/adapt clear` on a disposable profile only. Use `/adapt reset` only after backing that profile up. It needs `adapt.clear` and a second run to confirm.
-6. Reset an offline player as well as an online one. An online reset swaps the live data so the player keeps playing. An offline reset deletes the stored file and marks that UUID so a stale in-memory copy cannot write it back.
+6. Reset an offline player as well as an online one. An online local reset swaps the live data so the player keeps playing. A local-mode offline reset deletes the JSON behind the purge guard. SQL purge deletes `ADAPT_DATA` while atomically retaining a rotated fence tombstone; SQL reset writes default JSON and rotates the fence before live replacement. A reset notice received by another backend retires and disconnects any older live runtime instead of sharing the new ownership credential.
 
 ## Items, recipes, and brewing
 
@@ -75,7 +76,7 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 ## Config, localization, and migration
 
 1. Make one reversible edit in each hotloaded family: `adapt.toml`, a skill file, an adaptation file, `models.toml`, `mutations.toml`, and a locale override. Confirm the behavior changes without a restart, and that malformed TOML is rejected with an error rather than corrupting the file already in memory.
-2. Change a restart-bound setting (SQL, Redis, metrics, plugin load order, Velocity) and confirm nothing claims it reloaded live. Restart before you accept it. Ability API policy settings are core-hotloaded and should change without a restart.
+2. Change a restart-bound setting (SQL, Redis, metrics, or plugin load order) and confirm nothing claims it reloaded live. Restart before you accept it. Ability API policy settings are core-hotloaded and should change without a restart.
 3. Put a legacy JSON file inside an Adapt-managed config tree. Run
    `/adapt migrate-configs` as an account holding `adapt.main` and
    `adapt.debug`. Verify the TOML equivalent before you accept that the JSON
@@ -86,9 +87,12 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 ## SQL persistence and recovery
 
 1. Test local JSON first. Earn progression, quit, stop cleanly, restart, and confirm the same state comes back.
-2. Enable SQL against a disposable database, restart, and confirm table access plus a complete player round trip.
-3. Interrupt SQL during a save, then stop cleanly after the retries fail. Confirm `plugins/Adapt/data/players/<uuid>.json.pending-sql` appears. Restore SQL, load that player, and confirm the recovery file is replayed and removed before you delete any recovery data by hand.
-4. Confirm a reset never removes an online player's active data, and only exercise resets against backed-up disposable records.
+2. Enable SQL against a disposable database. Confirm `ADAPT_DATA` and `ADAPT_DATA_FENCE` both exist and report `ENGINE=InnoDB`, then complete a player round trip. To test the hard gate, convert a disposable table to MyISAM and confirm Adapt refuses to enable with the exact recovery commands. Back up the schema, run `ALTER TABLE ADAPT_DATA ENGINE=InnoDB;` and `ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;`, and restart.
+3. Interrupt SQL during a save and let the bounded retries fail. Confirm `plugins/Adapt/data/players/<uuid>.json.pending-sql` appears without requiring a clean stop and begins with `ADAPT_SQL_RECOVERY_V1`. Restore SQL, log in that player, and confirm only the snapshot matching the claimed predecessor fence is adopted and the file is removed after commit.
+4. Put an old raw-JSON `.pending-sql` file beside a backed-up disposable profile. Confirm login fails and the file is preserved. Stop every backend, compare the SQL row, backup, and recovery payload, choose the authoritative profile, delete only the incompatible file after reconciliation, then restart. Do not rename raw JSON into the new envelope.
+5. Reset an online SQL profile and purge an offline SQL profile. Confirm each operation rotates the owner token and advances the epoch in one transaction, sends a Redis reset notice when enabled, and does not create `.pending-delete`. Attempt a write with the retired token and confirm SQL rejects it.
+6. In local mode, interrupt a reset or purge and confirm `.pending-delete` suppresses stale JSON. If a fresh save follows, confirm the revisioned delete-then-save journal restores it after restart. Malformed journals must be preserved and load-guarded.
+7. Confirm an online reset replaces the active profile in place, and only exercise resets against backed-up disposable records.
 
 ## Mutations
 
@@ -101,12 +105,13 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 3. Test `EXPLICIT`, `PARTY`, `FRIEND`, and `DISABLED` consent with separate players. `FRIEND` currently has no friendship provider behind it, so it accepts nobody.
 4. Confirm `%adapt_mutation.enabled%`, `%adapt_mutation.slot-1%`, `%adapt_mutation.slot-1-id%`, and a type key such as `%adapt_mutation.gale-lung.state%`.
 
-## Velocity handoff
+## Cross-server handoff
 
-1. Put identical SQL and Redis settings on two disposable backends and install the companion on Velocity as described in [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server).
-2. Verify proxy publication and backend SQL/Redis startup as two separate facts.
+1. Put identical SQL and Redis settings on two disposable backends as described in [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server). Remove any obsolete Adapt companion jar from the proxy.
+2. Verify SQL ownership startup and each backend's `Adapt:data:v2` Redis subscription as separate facts.
 3. Change progression and mutation equipment on backend A, switch normally, connect to backend B, and compare the whole profile.
-4. Repeat with one Redis connection unavailable. The failure should be visible in the log, and SQL plus pending-write behavior should match the authority model.
+4. With Redis still enabled, make transfer staging unavailable and confirm destination login fails closed with the complete Redis error. Then disable Redis on both backends, restart them, and confirm switching uses committed SQL plus matching fenced recovery only.
+5. Drop every request-scoped pub/sub reply after a source stage succeeds. Confirm the destination recovers the exact predecessor from the 60-second staged key, adopts it into SQL, and acknowledges the key with `DEL`.
 
 ## Folia and lifecycle
 
@@ -125,6 +130,13 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 | Custom brew duration | 320 ticks for every registered recipe |
 | Locale override size limit | 2 MiB |
 | Shutdown flush allowance | 30 s |
+| SQL save batch | Up to 128 profiles after a 25 ms gather window |
+| SQL claim batch | Up to 128 profiles after a 25 ms gather window |
+| Redis predecessor wait | 250 ms |
+| Redis transfer requests | Up to 3 identical requests in the predecessor window |
+| Redis staged transfer TTL | 60 s |
+| Redis snapshot JSON limit | 16,777,215 UTF-8 bytes |
+| JDBC connect, socket, and validation timeout cap | 5 seconds each |
 | Default activator | `BOOKSHELF`, side faces only, both hands free of placeable blocks, not sneaking |
 | `/adapt migrate-configs` | `adapt.main` plus `adapt.debug` |
 | `/adapt reset` | `adapt.clear`, confirmed by running it twice |
@@ -135,4 +147,4 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 - [04 - Commands & Permissions](/adapt/04-commands-permissions)
 - [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
 - [34 - Mutations Overview](/adapt/34-mutations-overview)
-- [39 - Velocity & Cross-Server](/adapt/39-velocity-cross-server)
+- [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)

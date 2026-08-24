@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Gloss documentation: Holograms"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -26,7 +26,10 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
     "&d&lSpawn",
     "Welcome, %player_name%!"
   ],
-  "seeThrough": true
+  "seeThrough": true,
+  "billboard": "FIXED",
+  "yaw": 45.0,
+  "pitch": -10.0
 }
 ```
 
@@ -38,6 +41,9 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
 | `anchor.position` | yes | `[x, y, z]` array of doubles. Missing rejects the file with `hologram anchor requires a position` |
 | `lines` | no | Absent or `null` becomes an empty list. A `null` entry becomes an empty string |
 | `seeThrough` | no | Defaults to `true`. When true, solid blocks do not occlude the TextDisplay |
+| `billboard` | no | `CENTER`, `FIXED`, `HORIZONTAL` or `VERTICAL`, matched after trimming and uppercasing. Blank or absent defaults to `CENTER`; any other value rejects the file |
+| `yaw` | no | Finite degrees from `-180` through `180`; defaults to `0` |
+| `pitch` | no | Finite degrees from `-90` through `90`; defaults to `0` |
 
 There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the hologram. Only files directly inside `holograms/` are read. Subfolders are ignored.
 
@@ -48,7 +54,7 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 
 ### The shipped baseline
 
-`/gloss hologram create` and `/gloss hologram rendertext` seed new holograms from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled.
+`/gloss hologram create` and `/gloss hologram rendertext` seed new holograms from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
 
 ## Creating and editing by command
 
@@ -57,10 +63,11 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 /gloss hologram addline <id> "&dWelcome to spawn"
 /gloss hologram setline <id> 2 "%player_name%"
 /gloss hologram move <id> y=0.5
+/gloss hologram orient <id> billboard=FIXED yaw=45 pitch=-10
 /gloss hologram rendertext <id> "GLOSS" scale=2
 ```
 
-Required arguments are positional in the order shown. Optional arguments must be written as `key=value` (`x=`, `y=`, `z=`, `scale=`). A stray positional value is rejected. Quote any text that contains spaces.
+Required arguments are positional in the order shown. Optional arguments must be written as `key=value` (`x=`, `y=`, `z=`, `scale=`, `billboard=`, `yaw=`, `pitch=`). A stray positional value is rejected. Quote any text that contains spaces.
 
 | Node | Arguments | Permission |
 |---|---|---|
@@ -70,32 +77,56 @@ Required arguments are positional in the order shown. Optional arguments must be
 | `setline` | `<id> <line> <text>` | `gloss.holograms.edit` |
 | `removeline` | `<id> <line>` | `gloss.holograms.edit` |
 | `clear` | `<id>` | `gloss.holograms.edit` |
+| `orient` | `<id> [billboard=CENTER] [yaw=0] [pitch=0]` | `gloss.holograms.edit` |
 | `delete` | `<id>` | `gloss.holograms.delete` |
 | `movehere` | `<id>` | `gloss.holograms.move` |
 | `move` | `<id> [x=0] [y=0] [z=0]` | `gloss.holograms.move` |
 | `tp` | `<id>` | `gloss.holograms.teleport` |
-| `list` | none | none |
+| `list` | `[page=1]` | none |
 | `info` | `<id>` | none |
 
 Line numbers start at 1. `create`, `movehere`, `tp` and `rendertext` are player-only. Every node above is reachable both as `/gloss hologram ...` and through the root command `/hologram` (aliases `holo`, `h`). `/gloss holo` and `/gloss h` work as well.
 
+`orient` accepts `CENTER`, `VERTICAL`, `HORIZONTAL` or `FIXED`. Yaw must be finite and between `-180` and `180`; pitch must be finite and between `-90` and `90`. Gloss validates all three values before changing the live display or document, so a rejected command changes nothing.
+
 Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the file name.
 
-Every command edit rewrites the document with `revision` bumped by one. Writes are queued onto a single background IO thread. The folder watcher compares each changed file SHA-256 against the hash Gloss just wrote. A command edit never bounces back through the hot-reload path. Hot reload itself is covered in [Data Files & Hot Reload](/gloss/03-data-files).
+Every command edit publishes a new document revision. One keyed slot per hologram retains the
+latest pending state for the single background IO thread, so rapid edits do not grow an unbounded
+write queue. A delete supersedes older queued writes and a stale deleted object cannot recreate its
+file. The folder watcher compares each changed file SHA-256 against the hash Gloss just wrote. A
+command edit never bounces back through the hot-reload path. Hot reload itself is covered in [Data
+Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
-Each display is spawned non-persistent with a `CENTER` billboard, no shadow, and the document's `seeThrough` value. The shipped baseline and the absent-key fallback both enable see-through, so terrain does not hide a hologram unless its document explicitly sets `false`. The value hot-reloads on an existing shared or per-viewer display. Its client view range is set to `[holograms] viewRange` divided by the 64-block Paper base. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10). If any persistent hologram contains a clock-driven expression or complete named-animation token, the persistent driver samples every tick until that content is removed. Text is only re-sent when the rendered string actually changed.
+Each display is spawned non-persistent with the document's billboard, yaw, pitch and `seeThrough`
+values, and with no shadow. The shipped baseline and absent-key fallback use `CENTER`, yaw `0`,
+pitch `0` and see-through enabled. Editing any orientation key hot-reloads the existing display
+without respawning it. Its client view range is set to `[holograms] viewRange`
+divided by the 64-block Paper base. Ordinary text refreshes every `[holograms]
+updateIntervalTicks` (default 10). If any persistent hologram contains a clock-driven expression or
+complete named-animation token, the persistent driver samples every tick until that content is
+removed. Text is only re-sent when the rendered string actually changed.
 
-Spawning requires the anchor chunk to be loaded. An unloaded chunk retries on later ticks. A hologram whose world is not loaded, or whose `lines` list is empty, despawns every display it owns. It renders nothing until that changes. If you move the anchor, Gloss teleports the existing displays. It does not respawn them.
+Spawning requires the anchor chunk to be loaded. An unloaded chunk retries on later ticks. A hologram whose world is not loaded, or whose `lines` list is empty, despawns its display. It renders nothing until that changes. If you move the anchor, Gloss teleports the existing display. It does not respawn it.
 
 If you set `[features] holograms = false`, Gloss despawns every hologram on the next driver tick. Documents still load and hot-reload. The commands still edit them. Nothing renders.
 
-### Shared and per-viewer modes
+### Shared and personalized modes
 
-When any line contains a complete `%name%` placeholder, `|function|` token or `{{ expression }}` block and `[holograms] perViewerPlaceholders` is on (the default), the hologram switches to per-viewer rendering. Every player in the anchor world within `[holograms] viewRange` blocks of the anchor gets a private `TextDisplay`. Player variables, PlaceholderAPI and viewer-aware functions resolve for that player. The copy is hidden from everyone else through the entity visible-by-default flag where the server API exposes it. Otherwise Gloss issues per-player hide calls at spawn time. Players who leave the range lose their copy.
+When a line contains a complete `%name%` placeholder, viewer-backed expression, or non-animation
+`|function|` token and `[holograms] perViewerPlaceholders` is on (the default), the hologram switches
+to per-viewer rendering. A named animation also switches when any of its clip frames contains one
+of those viewer dependencies. The hologram still owns one real `TextDisplay`, whose server-side
+text is blank. Every player in the anchor world within `[holograms] viewRange` receives text
+metadata for that same entity id with player variables, PlaceholderAPI and viewer-aware functions
+resolved for that player. Leaving the configured range clears that player's metadata, while join,
+teleport, world-change, respawn and a bounded reconciliation sweep repair client retracking. This
+keeps the server entity count at one per persistent hologram rather than one per viewer. A player
+who tracks the entity without an addressed update sees only its blank authoritative text.
 
-Plain viewer-independent lines use one shared display. Functions, expressions, emoji and colors still apply in that static context. If you set `[holograms] perViewerPlaceholders = false`, Gloss forces shared mode; player-backed values then remain unresolved, while native server/time values and explicit fallbacks still work. Removing the last complete dynamic token collapses the hologram back to one shared display. A lone percent sign such as `100%` does not create private displays.
+Plain viewer-independent lines use shared text on that one display. Functions, expressions, emoji and colors still apply in that static context. If you set `[holograms] perViewerPlaceholders = false`, Gloss forces shared mode; player-backed values then remain unresolved, while native server/time values and explicit fallbacks still work. Removing the last complete dynamic token switches the entity back to shared text. A lone percent sign such as `100%` does not enable personalized metadata.
 
 ### The line pipeline
 
@@ -108,6 +139,10 @@ Each line is rendered in this order:
 5. Colors: `[RRGGBB]` bracket hex first, then `&` codes.
 
 Animation frames substitute on every refresh. For tick-driven clips the visible frame rate is bounded by `[holograms] updateIntervalTicks`. Clips faster than 20 fps are driven by the high-frequency animator below. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations) and [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+
+Animation and text-pipeline reload generations invalidate compiled hologram templates, including a
+clip replaced under the same id. Literal segments are memoized only when they are independent of
+time, functions and viewer state, so a dynamic expression beside an animation keeps updating.
 
 ### High-frequency animations
 
@@ -131,9 +166,9 @@ dirty-checked per entity. An animated hologram whose visible frame did
 not change costs zero packets. The server-side entity text is left
 untouched while the animator owns the line.
 
-The loop is adaptive. It mirrors the legacy Gloss scheduler. It starts at `1000 / [holograms] maxAnimationFps` milliseconds (default 120 fps, so ~8 ms, clamped to at least 4 ms). It backs off by one floor step whenever a pass exceeds 1.25x its budget. It recovers by one step when it does not. It never exceeds 250 ms. The thread only exists while at least one fast-animated display is live. It exits by itself shortly after the last one goes away. `[holograms] animationPacketBudget` (default 20000) caps text packets per second per animated display. With large audiences the effective frame rate degrades in proportion. One hologram in a crowd cannot flood the connection. All three knobs hot-reload. `[debug] animator = true` logs the loop settled interval, target count and send count every 10 seconds.
+The loop is adaptive. It mirrors the legacy Gloss scheduler. It starts at `1000 / [holograms] maxAnimationFps` milliseconds (default 120 fps, so ~8 ms, clamped to at least 4 ms). It backs off by one floor step whenever a pass exceeds 1.25x its budget. It recovers by one step when it does not. It never exceeds 250 ms. The thread only exists while hologram text work is pending and exits by itself shortly after the last target or personalized update goes away. `[holograms] animationPacketBudget` (default 20000) is a hard recipient ceiling shared by fast animation frames, personalized metadata updates and personalized clears. The loop rotates fairly across targets and coalesces each pending viewer/entity update to its latest text; large aggregate audiences therefore degrade animation frame rate instead of multiplying the ceiling. All three knobs hot-reload. `[debug] animator = true` logs the loop settled interval, target count and send count every 10 seconds.
 
-The animator is gated on proximity before it is gated on anything else. A hologram with nobody inside `[holograms] viewRange` never spawns a display at all, so it never publishes an animator target, so the animator thread is never started. A hologram carrying a 125 fps clip on an empty server costs nothing: `/gloss status` reports it under `Holograms` with `0 entities`, no `Gloss Animator` thread exists, and `[debug] animator = true` prints nothing because there is no loop to report on. When the last viewer walks out of range the target is dropped and the thread exits shortly after. Frame rate is bought per audience, never per hologram.
+The animator is gated on proximity before it is gated on anything else. A hologram with nobody inside `[holograms] viewRange` never spawns a display at all, so it never publishes an animator target, so the animator thread is never started. A hologram carrying a 125 fps clip on an empty server costs nothing: `/gloss status` reports it under `Holograms` with `0 entities`, no `Gloss Animator` thread exists, and `[debug] animator = true` prints nothing because there is no loop to report on. When the last viewer walks out of range the target is dropped and the thread exits shortly after. Every target-recipient pair draws from one server-wide animation budget.
 
 If you set `[holograms] highFrequencyAnimations = false`, Gloss restores the previous behavior exactly. Every clip is substituted by the tick refresh. The animator thread stops.
 
@@ -151,11 +186,28 @@ The result is an ordinary hologram document. You can edit it, move it and delete
 
 ## Orphan cleanup
 
-Every Gloss display carries the scoreboard tag `gloss_display` and the persistent data key `gloss:hologram`. At startup every loaded chunk is swept. Afterwards each `EntitiesLoadEvent` sweeps the chunk it loaded. Any tagged `TextDisplay` that the running service does not currently own is removed. Leftovers from a crash or a hard kill are purged. Displays are also spawned non-persistent. An orderly shutdown never writes them into the region files.
+Every Gloss display carries the scoreboard tag `gloss_display` and the persistent data key `gloss:hologram`. At startup loaded chunks are queued and swept at no more than 32 chunks per tick. Afterwards each `EntitiesLoadEvent` sweeps the chunk it loaded. Any tagged `TextDisplay` that the running service does not currently own is removed. Leftovers from a crash or a hard kill are purged. Displays are also spawned non-persistent. An orderly shutdown never writes them into the region files.
 
 ## Temporary holograms
 
-Chat bubbles and damage indicators are built on temporary holograms. They are never written to disk. They are driven every `[holograms] temporaryUpdateIntervalTicks` (default 2). They can be position-bound and filtered to a whitelist or blacklist of viewers. Temporary holograms always render statically. Placeholder tokens in their lines are not resolved. Lines that contain fast animation clips ride the same high-frequency animator as persistent holograms. The audience snapshot honors the viewer whitelist or blacklist.
+Chat bubbles and damage indicators are built on temporary holograms. They are never written to
+disk. They are driven every `[holograms] temporaryUpdateIntervalTicks` (default 2). They can be
+position-bound and filtered to a whitelist or blacklist of viewers. Each binding names its source
+entity; Gloss samples the supplier on that entity's owner scheduler, and samples position plus
+presentation together when both use the same owner. Temporary holograms always render statically.
+Placeholder tokens in their lines are not resolved. Lines that contain fast animation clips ride
+the same high-frequency animator as persistent holograms. During one temporary-driver pass,
+effects in the same 16-block spatial cell and with the same range reuse one immutable audience
+snapshot. Players guaranteed to be in range for every anchor in that cell are reused directly;
+only cell-edge candidates receive an exact distance check for the individual anchor. A nonempty
+whitelist or blacklist is then applied to that exact audience. This keeps a new animated temporary
+populated on its first drive without repeating a 1,000-player index query for every clustered
+effect or exposing an out-of-range player. A temporary with no exact eligible nearby viewer defers
+its spawn and retries on later drives.
+On servers without the visible-by-default entity API, a whitelist performs one full reconciliation
+when the mode or display resets. Later drives apply only membership diffs, while player lifecycle
+events reconcile the joining or moving player directly instead of rescanning the online roster for
+every temporary.
 
 One chat message is one temporary `TextDisplay`. Its visible-character wrapper inserts newlines into that display instead of spawning one entity per row, so its formatting, background, position and lifetime remain one unit. BubbleStyle schema 2 can also bind translation, scale, three-axis rotation and opacity expressions to that display. These presentation values are applied on the entity-owning thread with the same dirty checks as position and text.
 

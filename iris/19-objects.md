@@ -11,7 +11,7 @@ An Iris object is a sparse voxel volume: block states plus block-entity data. It
 
 ## Capture and save an object
 
-Prerequisites: a writable pack, operator access on a Bukkit-family server, and something built to capture. A Studio world is the shortest path because it hotloads pack edits and starts you in creative.
+Prerequisites: a writable pack, operator access on a Bukkit-family server, and something built to capture. A Studio world is the shortest path because it hotloads pack edits; ordinary Studio starts in spectator, while Object Studio remains creative for block editing.
 
 ```text
 /iris studio open <pack> seed=1337

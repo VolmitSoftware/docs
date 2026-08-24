@@ -2,15 +2,17 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Copy the shaded Wormholes jar into `plugins/`. Start the server once so
-Wormholes creates `plugins/Wormholes/`. Then edit `config/wormholes.toml`
-(`schema = 2`). A missing optional plugin skips its bridge.
+Copy `Wormholes-<version>.jar` into `plugins/`. On first start SlimJar resolves,
+verifies, and caches the plugin's internal libraries, relocating the selected
+Java-only libraries while zstd-jni keeps its native-compatible package. Then
+Wormholes creates `plugins/Wormholes/`. Edit `config/wormholes.toml` (`schema =
+2`) after startup. A missing optional plugin skips its bridge.
 
 ## Requirements
 
@@ -20,12 +22,14 @@ Wormholes creates `plugins/Wormholes/`. Then edit `config/wormholes.toml`
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
 | Soft depends | PlaceholderAPI, Iris, Vault (optional). Load them BEFORE when they are present |
-| Artifact | Shaded plugin jar from `./gradlew shadowJar` (prefer over thin/api jars for runtime) |
+| Artifact | Runtime `Wormholes-<version>.jar` from `./gradlew shadowJar`; the `-api.jar` is compile-only |
+| First start | Dependency-repository access for SlimJar, or a prewarmed SlimJar cache |
 
 ## Install
 
-1. Copy the shaded jar into `plugins/`.
-2. Start the server. Wormholes creates the data folder and writes
+1. Copy `Wormholes-<version>.jar` into `plugins/`.
+2. Start the server. SlimJar downloads and caches its declared libraries when
+   they are not already cached. Wormholes then creates the data folder and writes
    `config/wormholes.toml` if the file is missing.
 3. Edit `plugins/Wormholes/config/wormholes.toml`. Wormholes rejects files that
    have no schema or a wrong schema. The file must use `schema = 2`.
@@ -41,7 +45,7 @@ Dimensional Doors pack and registry changes need a full server restart. See
 plugins/Wormholes/
   config/wormholes.toml     consolidated settings (schema 2)
   portals/                  saved local portal files
-  doors/                    dimensional door / pocket state (`state.json` plus `state.json.tickets/`)
+  doors/                    dimensional door / pocket state (`state.json`, `state.json.tickets/`, `pending-resizes/`)
   languages/                optional per-locale TOML overrides
   routes/peers.properties   learned peer routes (not in wormholes.toml)
   trust/peers.properties    trusted peer public keys
@@ -62,7 +66,7 @@ and trust under `routes/` and `trust/`. See
 | Path | `plugins/Wormholes/config/wormholes.toml` |
 | Schema | `schema = 2` (`WormholesConfigFile.CURRENT_SCHEMA`) |
 | Quality key | top-level `quality` (not inside a table) |
-| Sections | `[main]`, `[network]` (+ nested), `[projection]`, `[render]` |
+| Sections | `[main]`, `[recipes]` (+ product tables), `[network]` (+ nested), `[projection]`, `[render]` |
 | Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
 
 Startup and explicit `/wormholes reload` loads rewrite the file in canonical
@@ -85,9 +89,12 @@ global particle switch. `quality` controls the projection and render profile.
 
 ## Runtime clamps (`Settings.refresh`)
 
-Wormholes clamps config values when it applies them to runtime. Canonical
-rewriting happens before runtime clamps. An out-of-range source value can stay
-on disk while the live value is bounded.
+Wormholes clamps config values when it applies them to runtime. Network port,
+handoff, and replication bounds are normalized before startup or explicit
+reload writes the canonical file, so those corrected values persist. Other
+`Settings.refresh` clamps occur after canonical rewriting; those source values
+can remain on disk while the live value is bounded. Passive hotload never writes
+the watched file.
 
 | Runtime field source | Clamp |
 |----------------------|--------|
@@ -126,6 +133,15 @@ on disk while the live value is bounded.
 | `entity-candidate-cache-ticks` | 1–40 |
 | `max-spoofed-entities` | 0–256 |
 | `capture-zone-radius` | 1.0–64.0 |
+| `network.listen-port` | 1–65535; invalid values become 8901 before canonical write |
+| `network.handoff-timeout-ms` | 50–60000 before canonical write |
+| `network.replication.hash-probe-interval-sec` | minimum 1 before canonical write |
+| `network.replication.hash-probe-chunks-per-tick` | 1–1024 before canonical write |
+| `network.replication.diff-window-size` | minimum 1 before canonical write |
+| `network.replication.resync-timeout-sec` | minimum 0 before canonical write |
+| `network.replication.max-queued-diffs-per-peer` | minimum 1 before canonical write |
+| `network.replication.capture-snapshot-interval-ticks` | minimum 20 before canonical write |
+| `network.replication.capture-max-queued-diffs-per-chunk` | minimum 16 before canonical write |
 
 ## Top-level keys
 
@@ -146,19 +162,33 @@ on disk while the live value is bounded.
 | `pocket-room-size` | `16` | Cube edge in blocks of a newly created pocket room, walls included. The default is a 16×16×16-block cube with a 14×14×14 interior. Clamped to 8–128. Existing pockets keep their own size |
 | `pocket-shell-material` | `SMOOTH_STONE` | Wall, floor, and ceiling block of a newly created pocket. Must be solid and non-falling. Existing pockets keep their own material |
 | `pocket-return-door-material` | `CRIMSON_DOOR` | Exit door of a newly created pocket. Must be hand-operable, so iron doors are rejected. Existing pockets keep their own door |
+| `portal-collapse-speed` | `0.91` | Collapse animation factor |
+| `verbose-logging` | `false` | Verbose console logs (`Settings.DEBUG`) |
+| `debug-rendering` | `false` | Debug rendering aids |
+| `teleport-cooldown-millis` | `1000` | Local teleport cooldown. Also floors cross-server handoff rate limit (min 1000 ms) |
+| `portal-pushback-multiplier` | `1.0` | Rejected-traversal push scale. 0 mutes knockback |
+| `portal-sound-volume-multiplier` | `1.0` | Portal/door/traversal sound scale. 0 mutes |
+| `traversal-api-enabled` | `true` | If false, new evaluations skip cost providers and the pre-event. Existing tickets still settle or expire and may fire their completion event |
+| `traversal-api-provider-failure-policy` | `allow` | `allow` treats a provider fault as a free pass; `deny` rejects only that traversal attempt |
+| `traversal-api-provider-fault-limit` | `5` | Faults before provider quarantine. `0` disables quarantine |
+| `traversal-api-slow-provider-millis` | `5` | Warn when a provider call meets or exceeds this ms. `0` disables |
+| `chunk-pre-send-enabled` | `false` | Before a local, RTP, or dimensional-door teleport, pre-send already-loaded destination chunks to the player. Cross-server transfers skip it |
+| `chunk-pre-send-radius-chunks` | `3` | Radius of pre-send |
+| `chunk-pre-send-max-chunks` | `32` | Hard ceiling per traversal |
+| `chunk-pre-send-budget-micros` | `2000` | Microseconds the pre-teleport send may use before stopping with a partial result |
+| `arrival-prewarm-on-interest` | `true` | Pre-warm arrival chunks when observers show interest |
+| `arrival-warm-radius-chunks` | `4` | Warm radius |
+| `arrival-warm-max-radius-chunks` | `10` | Max warm radius |
+| `arrival-warm-hold-millis` | `5000` | Hold warm state |
+| `arrival-warm-throttle-millis` | `1000` | Throttle between warm actions |
+| `arrival-transition-mask` | `true` | Transition mask at arrival |
+| `arrival-transition-mask-ticks` | `25` | Mask duration |
+| `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
+| `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
+| `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
-### Traversal API-related main keys
-
-| Key | Role |
-|-----|------|
-| `traversal-api-enabled` | Master switch for third-party cost providers and traversal events |
-| `traversal-api-provider-failure-policy` | `allow` vs `deny` on provider failure |
-| `traversal-api-provider-fault-limit` | Session quarantine threshold |
-| `traversal-api-slow-provider-millis` | Slow-call warning threshold |
-
-API surface details:
+Traversal API behavior and provider contracts are in
 [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
-
 
 ## `[recipes]`
 
@@ -183,30 +213,6 @@ no recipe.
 `enabled = false` removes that recipe from the server. A `shape` or
 `ingredients` value that does not parse, or that names a block this server does
 not have, is logged and falls back to the shipped recipe.
-| `portal-collapse-speed` | `0.91` | Collapse animation factor |
-| `verbose-logging` | `false` | Verbose console logs (`Settings.DEBUG`) |
-| `debug-rendering` | `false` | Debug rendering aids |
-| `teleport-cooldown-millis` | `1000` | Local teleport cooldown. Also floors cross-server handoff rate limit (min 1000 ms) |
-| `portal-pushback-multiplier` | `1.0` | Rejected-traversal push scale. 0 mutes knockback |
-| `portal-sound-volume-multiplier` | `1.0` | Portal/door/traversal sound scale. 0 mutes |
-| `traversal-api-enabled` | `true` | If false, no cost provider runs and traversal events do not fire |
-| `traversal-api-provider-failure-policy` | `allow` | `allow` (treat fault as free pass) or `deny` (close portal) on provider throw/misbehavior |
-| `traversal-api-provider-fault-limit` | `5` | Faults before provider quarantine. `0` disables quarantine |
-| `traversal-api-slow-provider-millis` | `5` | Warn when a provider call meets or exceeds this ms. `0` disables |
-| `chunk-pre-send-enabled` | `false` | Pre-send destination chunks at traversal commit (off until verified) |
-| `chunk-pre-send-radius-chunks` | `3` | Radius of pre-send |
-| `chunk-pre-send-max-chunks` | `32` | Hard ceiling per traversal |
-| `chunk-pre-send-budget-micros` | `2000` | Microseconds of the commit tick the pre-send may use |
-| `arrival-prewarm-on-interest` | `true` | Pre-warm arrival chunks when observers show interest |
-| `arrival-warm-radius-chunks` | `4` | Warm radius |
-| `arrival-warm-max-radius-chunks` | `10` | Max warm radius |
-| `arrival-warm-hold-millis` | `5000` | Hold warm state |
-| `arrival-warm-throttle-millis` | `1000` | Throttle between warm actions |
-| `arrival-transition-mask` | `true` | Transition mask at arrival |
-| `arrival-transition-mask-ticks` | `25` | Mask duration |
-| `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
-| `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
-| `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
 ## `[network]`
 
@@ -218,13 +224,13 @@ Cross-server networking. Default `enabled = false`. Import and export set
 |-----|---------|--------|
 | `enabled` | `false` | Cross-server portals / peers |
 | `listen-enabled` | `true` | Accept inbound peer connections |
-| `listen-port` | `8901` | Preferred raw-stream port. Bind scans this port through +50. Otherwise game-port sideband is used |
+| `listen-port` | `8901` | Preferred raw-stream port, 1–65535; invalid values become 8901. Bind scans through the next 50 valid ports, capped at 65535. Otherwise game-port sideband is used |
 | `trust-on-first-use` | `true` | Trust unknown peer keys on first approved contact when no stored key |
 | `entity-transfer-deny-types` | `""` | Comma-separated entity type names denied for entity transfer |
 | `advertise-host-override` | `""` | Force advertised host in export codes |
 | `server-name` | `""` | Local network name override (empty uses identity default) |
 | `transfer-mode` | `auto` | `auto` \| `proxy` \| `direct` (see networking doc) |
-| `handoff-timeout-ms` | `5000` | Admission / handoff deadline |
+| `handoff-timeout-ms` | `5000` | Admission / handoff deadline, normalized to 50–60000 ms |
 | `auto-accept-transfers` | `true` | Compatibility rewrite of TRANSFER handshakes to LOGIN when native `accepts-transfers` is not set |
 
 Static `[[peers]]` are not written into this file. Peers live in
@@ -272,13 +278,13 @@ still schedule at most once per server tick.
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `hash-probe-interval-sec` | `30` | Hash probe cadence. Runtime minimum 1 s |
-| `hash-probe-chunks-per-tick` | `16` | Probe budget. Runtime minimum 1 |
-| `diff-window-size` | `32` | Diff window. Runtime minimum 1 |
-| `resync-timeout-sec` | `5` | Resync timeout. Runtime minimum 0 |
-| `max-queued-diffs-per-peer` | `4096` | Queue cap |
-| `capture-snapshot-interval-ticks` | `100` | Snapshot interval. Runtime minimum 20 ticks |
-| `capture-max-queued-diffs-per-chunk` | `256` | Per-chunk queue. Runtime minimum 16 |
+| `hash-probe-interval-sec` | `30` | Hash probe cadence. Minimum 1 s; reload reschedules the running probe task |
+| `hash-probe-chunks-per-tick` | `16` | Probe budget, normalized to 1–1024 |
+| `diff-window-size` | `32` | Diff window. Minimum 1 |
+| `resync-timeout-sec` | `5` | Resync timeout. Minimum 0 |
+| `max-queued-diffs-per-peer` | `4096` | Per-peer queue cap. Minimum 1 |
+| `capture-snapshot-interval-ticks` | `100` | Snapshot interval. Minimum 20 ticks |
+| `capture-max-queued-diffs-per-chunk` | `256` | Per-chunk queue. Minimum 16 |
 | `capture-light-enabled` | `true` | Capture light in replication |
 | `capture-block-entity-enabled` | `false` | Block-entity NBT capture. Disabled by default (renderer does not consume it) |
 
@@ -300,7 +306,7 @@ still schedule at most once per server tick.
 | `side-grace-dot` | `0.12` | Portal-side grace |
 | `max-projectors-per-tick` | `24` | Global projector budget |
 | `max-portals-per-observer-tick` | `4` | Per-observer portal budget |
-| `max-new-observer-scans-per-tick` | `64` | New observer scan budget |
+| `max-new-observer-scans-per-tick` | `64` | Shared cap for player-owner projection and surface-skin reconciliation frames. Existing observer cleanup/continuation has priority while a rotating discovery lane remains reserved |
 | `interest-grace-ticks` | `5` | Ticks a projector stays open after live interest is lost (unrender-on-loss delay) |
 | `initial-resend-passes` | `1` | Full sends after view create (raise only to diagnose packet loss) |
 | `max-projected-cells` | `250000` | Hard scan ceiling. Budget drops lateral pad first then depth. `0` disables (not recommended) |

@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,8 +33,10 @@ types can project under the same conditions. See
 
 RTP cannot be a tunnel destination. If you switch a portal to `RTP` or away
 from `RTP`, Wormholes force-closes it and clears the tunnel. The portal stays
-closed until RTP is READY or a new tunnel is set. There is no RTP rune product.
-Wand and rune construction create `PORTAL`, `WORMHOLE`, or `GATEWAY` only.
+closed until RTP is READY or a new tunnel is set. There is no RTP or Gateway
+rune product. Wand box construction creates `PORTAL`; Wormhole Runes create
+`WORMHOLE`; already-placed legacy Portal Runes can still create `PORTAL`.
+Choose `GATEWAY` or `RTP` later in the type menu.
 
 ## Projection mode vs render mode
 
@@ -145,8 +147,9 @@ Public `TraversalKind` values for cost providers and events
 | `RANDOM_TELEPORT` | RTP portal trip |
 | `DIMENSIONAL_DOOR` | Dimensional door / pocket transit |
 
-If `traversalApiEnabled` is false in main config, Wormholes does not invoke
-third-party cost providers or traversal events.
+If `[main] traversal-api-enabled` is false, new traversals skip third-party cost
+providers and the pre-traversal event. Tickets opened before the switch still
+settle or expire on their traveler owner and may fire the completion event.
 
 ## Access policy (frame portals)
 

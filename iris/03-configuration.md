@@ -120,6 +120,7 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `splashLogoStartup` | `true` | **Restart** | Prints the ASCII logo and version block at startup. Set false for quieter console logs |
 | `useConsoleCustomColors` | `true` | Live | Gradient/hex coloring for console output. Set false if your log viewer mangles it — you still get legacy color codes. Iris also forces both color keys off in memory if Adventure fails to bind |
 | `useCustomColorsIngame` | `true` | Live | Same, for messages sent to players |
+| `progressBossBar` | `true` | Live | Enables boss-bar progress for supported jobs, Studio opens, chunk jobs, and pack downloads. Ordinary `/iris create` always uses its action-bar lifecycle meter instead; creation-time pregeneration retains its dedicated long-running boss bar |
 | `adjustVanillaHeight` | `false` | **Restart** | **Bukkit only.** Overwrites the vanilla `overworld`/`the_nether`/`the_end` dimension-type JSON with Iris height when compiling the datapack. It is part of the datapack fingerprint, so flipping it forces a datapack rebuild |
 | `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Downloads and installs configured `datapackImports` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating. Managed structures stay scoped to the declaring Iris dimensions |
 | `autoImportDatapackStructures` | `false` | Live (next ingest) | **Bukkit only.** Converts every registered datapack structure into editable Iris pools, pieces, and objects — thousands of files in your pack folder. Native generation never needs those copies, so leave it off and run `/iris structure import <dimension>` when you actually want them |
@@ -251,7 +252,7 @@ Requires permission `iris.treefeller` on Bukkit, or the platform tree-feller nod
 | Key | Default | What it does |
 |-----|---------|--------------|
 | `openVSCode` | `true` | Whether `/iris studio vscode` launches an editor after writing the workspace file. Set false on a headless box |
-| `entitySpawning` | `true` | Whether mobs spawn inside studio worlds. Has no effect on normal worlds |
+| `entitySpawning` | `true` | Whether mobs may spawn inside studio worlds. Ordinary Studio opens players in spectator, so vanilla natural spawning still requires another eligible non-spectator player. Has no effect on normal worlds |
 | `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds (gamerules are set on studio open). Set false to let time and weather run while authoring |
 | `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot. Only useful on a dedicated authoring server |
 

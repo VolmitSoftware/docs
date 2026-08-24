@@ -22,27 +22,43 @@ decides what happens to it when the server stops.
 
 | Backend | Used by | Entities exist server-side | Visible to |
 |---|---|---|---|
-| Real `TextDisplay` entities | Holograms, chat bubbles, damage indicators | Yes | Everyone in range |
+| Real server display entities | Holograms, chat bubbles, damage indicators, and real-drop block/item models and labels | Yes | The feature's tracked audience |
 | Packet-only display entities | Hologram menus, panels, container previews | No | One player |
 
-Drop labels use neither. They set the dropped item entity's own custom name and make it visible.
-They follow vanilla nameplate rules.
+Drop naming always keeps a native custom-name fallback on the authoritative item entity. With real
+drops off or unavailable, that visible name follows vanilla nameplate rules. With real drops on,
+Gloss hides the native item and name from client tracking and shows non-persistent `BlockDisplay` or
+`ItemDisplay` models plus an optional `TextDisplay` label instead. The original item still owns
+physics, merging, pickup and despawn.
 
-**Real entities.** `HologramService` spawns actual `TextDisplay` entities into the world. The server
-owns them. Every client in range sees them without Gloss sending anything per viewer. They appear
-in entity counts and in commands that select entities.
+**Real entities.** `HologramService` spawns actual `TextDisplay` entities into the world.
+`RealDropService` spawns actual block, item and text displays and mounts extra models and the label
+to the first model. The server owns all of these displays. Server entity tracking distributes them;
+Gloss can still filter a hologram or temporary effect to selected viewers. They appear in entity
+counts and in commands that select entities.
+
+A personalized persistent hologram still owns one real `TextDisplay`. Its authoritative text is
+blank, and Gloss sends each in-range player viewer-specific text metadata for that shared entity
+id. Personalization therefore scales packet rendering with the due audience without multiplying
+the number of server entities by the audience size.
 
 Each live chat message is one real multiline `TextDisplay`, regardless of how many visible-character rows its BubbleStyle wrap produces. Its position, scale, rotation and opacity are expression-driven presentation state on that same entity; they do not create child displays.
 
 They are spawned with `setPersistent(false)`. An orderly shutdown never writes them into the region
-files. Nothing about a hologram survives a restart as an entity. The JSON document in
-`plugins/Gloss/holograms/` is the only persistent state. Every display is recreated from it on the
-next boot.
+files. Nothing about a hologram or real-drop presentation survives a restart as a display entity.
+Hologram JSON and `real-drops/default.json` are the persistent definitions; the displays are rebuilt
+from them and the live item entities.
 
-Every display Gloss owns carries the scoreboard tag `gloss_display` and the persistent data key
-`gloss:hologram`. Any tagged display that the running service does not own is swept on startup and
-on each `EntitiesLoadEvent`. A crash or a hard kill does not leave permanent leftovers. Details
-are in [Holograms](/gloss/04-holograms).
+Hologram-service displays carry the scoreboard tag `gloss_display` and persistent data key
+`gloss:hologram`; orphaned tagged text displays are swept on startup and `EntitiesLoadEvent`.
+Startup admits at most 32 already-loaded chunks to that sweep per tick, and cancellation discards
+the remaining backlog with the hologram service.
+Real-drop displays carry a separate owner marker keyed to the native item's UUID, while that item
+stores the visibility values Gloss must restore. Pickup, merge, unload, reload and shutdown remove
+the presentation; load-time reconciliation heals an interrupted lifecycle. Enable, reload and
+real-drop document publication queue already-loaded chunks at no more than 32 per tick, with each
+chunk applied on its owning region; a newer queue or shutdown cancels the stale backlog. Details are in
+[Holograms](/gloss/04-holograms) and [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
 **Packet-only displays.** Menus, panels and container previews never create an entity.
 `DisplayEntity` builds `WrapperPlayServerSpawnEntity`, `WrapperPlayServerEntityMetadata`,
@@ -113,7 +129,8 @@ setting.
 12. Push the `panel-creation-intake` entry, start the `menu-catalog`, `image-assets` and
     `locale-watcher` watch entries and the preview scale service (`preview-scale`), and register the
     outgoing `BungeeCord` plugin channel.
-13. Register commands (`commands`), start bStats, register the integration service (`integration`),
+13. Register commands (`commands`) by binding `plugin.yml` on Spigot or installing Paper's
+    `LifecycleEvents.COMMANDS` handler, start bStats, register the integration service (`integration`),
     start the integration bridge (`integration-bridge`), register the API service (`api-service`) and
     the PlaceholderAPI expansion (`placeholders`), then publish `GlossAPIProvider`.
 
@@ -161,6 +178,12 @@ Folia is supported. `paper-plugin.yml` declares `folia-supported: true`. All ent
 goes through `FoliaScheduler` / `SchedulerUtils`. Those helpers dispatch onto the owning region for
 the entity or location involved instead of a global main thread. Direct `Bukkit.getScheduler()`
 calls are not used anywhere in Gloss.
+
+The hologram viewer index is updated by join, quit, movement, teleport, world-change, respawn and
+vehicle passenger events. A round-robin reconciliation also samples at most 32 distinct indexed
+players per tick on each player's entity scheduler. That bounded sweep corrects passenger and
+platform movement that produces no `PlayerMoveEvent`, without turning one tick into a 1,000-player
+scan.
 
 Asynchronous work is submitted through `FoliaScheduler.runAsync`. If the platform refuses the task,
 for example during shutdown, Gloss logs
@@ -367,15 +390,49 @@ Refresh cadences per surface:
 | Temporary holograms (bubbles, indicators) | `[holograms] temporaryUpdateIntervalTicks` (default 2) | `HologramService` temporary task |
 | Fast hologram animation frames (clips over 20 fps) | adaptive, floor `1000 / [holograms] maxAnimationFps` ms | `Gloss Animator` thread |
 | Scoreboards | `[boards] updateIntervalTicks` (default 20); active clock-driven boards use a separate 1-tick driver | `BoardService` sidebar drivers |
-| Tablist | `[tablist] updateIntervalTicks` (default 40); clock-driven expressions and named animations use 1 tick | `TablistService` driver task |
+| Tablist | `[tablist] updateIntervalTicks` (default 40); animated header/footer uses 1 tick for all recipients, while animated names and API overrides use a selected-player 1-tick cohort | `TablistService` ordinary and fast-cohort tasks |
+| Bubble expiry accounting | fixed 20 ticks | `ChatBubblesService` coarse sweep; movement and dynamic prefixes reuse each bubble's owner-bound temporary-hologram sample |
 | Menu, panel and preview sessions | every tick | session tick loop |
+| Preview target discovery | at most 10 queued players per tick; stationary fallback is spread over 100 ticks | `MenuSessionManager` fair discovery queue |
 | Preview live fields | every 4 session ticks | `ContainerPreview` refresh interval |
 | Preview access recheck | every 10 session ticks | `ContainerPreview` access interval |
 | Document folders, `images/`, `language.yml` and `config.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
 
-Hologram, scoreboard and tablist text are only re-sent when the rendered string actually changed. Hologram and tablist drivers change cadence automatically when hot-loaded documents or API updates add or remove clock dependencies and named animations. Scoreboards place animated and ordinary players on separate drivers so one animated sidebar does not force every other player's PAPI board onto the fast path. Bubble motion likewise applies only presentation values that changed, and one multiline entity replaces the previous per-row bubble entities. Preview cells, labels and
+Hologram and scoreboard text are only re-sent when the rendered string actually changed. Tablist
+content uses the same change gate, plus a staggered header/footer anti-entropy heartbeat capped at 64
+recipients per ordinary cycle; list names reconcile only when the server-side value was overwritten.
+Hologram and tablist drivers change cadence automatically when hot-loaded documents or API updates
+add or remove clock dependencies and named animations. Tablist list-name selection is tracked per
+player, so an animated group format does not promote unrelated players to the fast task, and repeated
+requests for a lagging player collapse into one latest owner-thread update.
+Personalized hologram animation templates are memoized before player-owner dispatch; due work for
+all holograms targeting one player is keyed and latest-write-wins behind one player-scheduler drain.
+Each persistent hologram retains one real display while its recipient-specific text travels as
+metadata for that shared entity id. Clock-driven literal segments still become due every tick,
+while stable personalized templates use the configured persistent cadence. Scoreboards place
+animated and ordinary players on separate drivers so one animated sidebar does not force every
+other player's PAPI board onto the fast path. Bubble motion likewise applies only presentation
+values that changed, and one multiline entity replaces the previous per-row bubble entities.
+Temporary effects in the same 16-block cell and range reuse immutable guaranteed-in-range and
+boundary snapshots for the whole temporary-driver pass. Each exact anchor checks only the boundary;
+nonempty visibility filters derive from that exact audience. Preview cells, labels and
 slots are likewise only re-sent when the computed color, component or item differs from what was
 last applied. A preview whose contents are static costs nothing beyond the comparison. The session tick loop is fixed at one tick and is not configurable.
+
+Panel follow poses are indexed by target player. A movement sample resolves only that target's
+panels, copy-on-write updates only their definition partitions and old/new chunk buckets, and marks
+only those buckets changed. A standing viewer therefore keeps its candidate snapshot when a followed
+panel moves outside the viewer's padded query window; an intersecting move invalidates it immediately.
+
+High-population display admission is bounded independently of world distribution. Damage indicators
+admit at most the configured rate multiplied by lifetime, rounded up, with a hard ceiling of 2,048;
+the shipped configuration admits 120. Real drops admit at most 2,048 presentations server-wide in
+addition to their per-chunk display budget. Rejected real drops keep the native item visible and do
+not start an item-owned update loop. Indicator permission visibility reads an entity-thread-owned
+snapshot refreshed immediately by player lifecycle and chunk-transition events plus five-second
+periodic reconciliation in a due-time cohort of at most 16 players every two ticks. Enable and
+reload feed the same bounded cohort instead of dispatching the whole online population at once, and
+an indicator never dispatches a player task for each nearby viewer.
 
 The `Gloss Animator` thread is the one deliberate exception to tick-driven rendering.
 `HologramAnimator` is a daemon thread that exists only while a hologram or temporary hologram
@@ -394,12 +451,14 @@ packet.
 Its sleep loop mirrors the legacy Gloss scheduler. Sleep is floor
 `1000 / [holograms] maxAnimationFps` ms, minimum 4 ms. A pass over 1.25x its budget adds floor
 backoff. Recovery subtracts that floor, with a 250 ms ceiling.
-`[holograms] animationPacketBudget` throttles per-display sends as the audience grows.
+`[holograms] animationPacketBudget` is a hard recipient ceiling shared across animated targets, personalized metadata updates and personalized clears. Fair target rotation and latest-wins personalized coalescing keep aggregate audience growth from multiplying the configured server-wide send ceiling.
 The thread parks while idle and exits about two seconds after the last animated target disappears.
 `Gloss.onEnable` registers it as the `hologram-animator` service so teardown interrupts and joins
 it.
 
-The audience snapshot is what gates the whole thing, and it gates it early. A display is only
+The audience snapshot is what gates the whole thing, and it gates it early. The thread-safe viewer
+index is checked before a persistent anchor-region task is scheduled, so a far hologram with no
+candidate viewer performs no region dispatch. A display is only
 spawned once someone is inside `[holograms] viewRange`, and only a spawned display publishes an
 animator target. On a server with no one near an animated hologram there is no target, so the
 thread is never started at all — not started and idling, not started and skipping. `/gloss status`
@@ -414,7 +473,7 @@ visible audience, never document count.
 |---|---|---|
 | `Gloss-Watchdog-IO` | plugin enable to disable | Hot-reload polling: stat, read, hash, parse. Never touches world state |
 | `Gloss Animator` | only while a fast-animated display has an audience | Splices animation frames and writes text-index packets |
-| `Gloss Hologram IO` | on demand | Hologram document store writes |
+| `Gloss Hologram IO` | on demand | Latest-write-wins hologram document drains, one pending slot per id |
 | `Gloss-Panel-Storage-N` | plugin enable to disable | Panel document publication |
 
 Everything else Gloss does runs on the server thread, or on the owning region thread where the
@@ -531,16 +590,19 @@ provider and clears the cache.
 ## HUD action bar
 
 Gloss publishes to VolmLib's cooperative action bar rather than sending action bar text directly.
-It merges with other plugins writing to the same slots instead of fighting them. It uses two
+It merges with other plugins writing to the same slots instead of fighting them. It uses three
 purposes:
 
 | Purpose | Priority | Time to live | Raised by |
 |---|---|---|---|
 | `gloss:preview` | interactive | 1500 ms | the preview scale service, while a preview is being scaled |
 | `gloss:reload` | notice | 2500 ms | `MenuCatalog`, when an open menu's document changed on disk |
+| `gloss:hotload` | notice | 2500 ms | `DataWatchdog`, once per successful automatic batch, for online `gloss.admin` players |
 
-Both write to the center and right slots. `gloss:preview` is cleared explicitly when the preview
-ends. Every Gloss segment is cleared for a player on quit.
+All three write to the center and right slots. `gloss:reload` tells affected viewers that their open
+menu definition changed; `gloss:hotload` is the coalesced operator summary across every successful
+kind in the batch. `gloss:preview` is cleared explicitly when the preview ends. Every Gloss segment
+is cleared for a player on quit.
 
 ## Build and packaging
 
@@ -562,7 +624,9 @@ Two descriptors ship in the jar. Paper and Folia read `paper-plugin.yml`, which 
 `folia-supported: true`, `load: STARTUP`, and its soft dependencies as `load: BEFORE` with
 `join-classpath: true`. Spigot reads `plugin.yml`, which declares `load: POSTWORLD`, the
 `softdepend` list, the three root commands and the whole permission tree. Both are filled in at
-build time with the name, version, main class and api-version.
+build time with the name, version, main class and api-version. The Paper descriptor has no command
+block; `GlossPaperCommandRegistrar` registers `/gloss`, `/hologram`, `/board` and their aliases from
+`LifecycleEvents.COMMANDS`.
 
 **Spigot compatibility.** The build compiles the whole source tree a second time against the Spigot
 API with `src/main/java/art/arcane/gloss/paper/**` excluded. That compile is part of `build`. The
@@ -575,12 +639,13 @@ freely for Gloss's own values and inside packet payloads. It just may not appear
 server API. Conversely, `art.arcane.gloss.paper` is the only package allowed to touch `io.papermc`
 or `com.destroystokyo` types. It is the only package that may not use Adventure at all.
 
-That package holds exactly one Bukkit listener, `PaperTabCompleteListener`. That listener adds emoji
+That package holds four classes. `PaperTabCompleteListener` adds emoji
 suggestions to Paper's `AsyncTabCompleteEvent` for non-command chat input. Servers without that
-event simply do not get emoji tab completion. The other two classes in the package are a lock-check
-adapter that fires Paper's `BlockLockCheckEvent` for container previews and the Paper command
-registrar. All three are reached by class name through reflection. They are silently skipped when
-the class or the platform is absent.
+event simply do not get emoji tab completion. `PaperBlockLockListener` fires Paper's
+`BlockLockCheckEvent` for container previews. Those two optional hooks are reached by class name and
+skipped when the Paper API is absent. `GlossPaperCommandRegistrar` and `GlossPaperCommand` implement
+the lifecycle command path; failure to load or register them on a server that selected that path is
+a fatal command-service enable failure.
 
 ## Frozen container-preview arithmetic
 

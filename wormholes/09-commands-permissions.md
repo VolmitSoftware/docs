@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Wormholes exposes a single root command through the Director framework
 (`CommandWormholes` and nested `CommandAdmin`, `CommandNetwork`,
-`CommandServer`). `WormholesCommandService` opens the admin command path when
+`CommandServer`, `CommandPocket`). `WormholesCommandService` opens the admin command path when
 the sender has **any** admin command leaf (or `wormholes.admin`). Each handler
 still checks its own permission. Public `help` / `info` remain available
 without admin rights.
@@ -81,9 +81,12 @@ once there is one, so only blocks that are actually valid for that slot are ever
 suggested. `confirm` completes `true`/`false`.
 
 A resize that would destroy placed blocks or displace entities is refused and
-reports the counts; `confirm=true` runs it anyway. Growing a pocket destroys
-nothing and never needs confirmation. `resizeall` validates its arguments once,
-then reports how many pockets were rebuilt, skipped, and failed. See
+reports the counts; `confirm=true` permits those changes. A non-empty container
+always refuses the operation even when confirmed and must be emptied first.
+Growing a pocket destroys nothing and never needs confirmation. `resizeall`
+validates its arguments once, then reports how many pockets were rebuilt,
+skipped, and failed; pockets blocked by non-empty containers count as skipped.
+See
 [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) for what a resize does
 to the room's contents.
 
@@ -132,7 +135,7 @@ dictionaries, UDS paths, and the stats snapshot are outside that deletion set.
 | `wormholes.*` | op | All Wormholes nodes → `admin`, `portals`, `gateway`, `doors.craft`, `doors.place` |
 | `wormholes.admin` | op | All admin → `admin.reload`, `admin.items`, `admin.network`, `admin.projection`, `admin.reset`, `admin.pocket`, `doors.bypass` |
 | `wormholes.admin.reload` | op | Reload configuration |
-| `wormholes.admin.items` | op | Spawn wand, runes, door items |
+| `wormholes.admin.items` | op | Spawn the Portal Wand, Wormhole Rune, and Dimensional Door items |
 | `wormholes.admin.network` | op | Network/server import export list remove status doctor connect |
 | `wormholes.admin.projection` | op | Freeze / flush projections |
 | `wormholes.admin.reset` | op | deleteallportals / deleteeverything |

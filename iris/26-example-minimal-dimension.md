@@ -2,7 +2,7 @@
 title: "Example - Minimal Dimension"
 description: "Iris documentation: Example - Minimal Dimension"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -90,7 +90,7 @@ The Bukkit starter writes the same four resource types described below. Modded s
 | `fluidHeight` | World Y of sea level: 63, the vanilla value. Biome generator heights are measured from here |
 | `version` | A stamp you control so pack generations are distinguishable. Iris never acts on it |
 
-`dimensionHeight`, `logicalHeight`, `environment`, and the file name are the world contract. Once a world exists on this pack, changing any of them means recreating the world. Studio hotload refuses them outright. Everything else in this guide is safe to iterate on.
+`dimensionHeight`, `logicalHeight`, `environment`, `dimensionOptions`, `fullbright`, and the file name feed the world contract. Once a world exists on this pack, an edit that changes the file-derived type key, exact environment, or effective generated dimension type means recreating the world. Studio hotload refuses that change. Everything else in this guide is safe to iterate on.
 
 Useful while testing, and removed before shipping: `"focus": "starter"` forces a single biome and `"focusRegion": "starter"` forces a single region.
 
@@ -211,7 +211,7 @@ Validation checks that the dimension load key resolves. It checks that every reg
 
 **What you do.**
 
-1. Create: Bukkit `/iris create name=minimal-test type=minimal seed=1337`, modded `/iris create minimal-test minimal 1337`. On Folia, creation stages the world and automatically requests a restart. Wait for the supervised server to return before you enter it.
+1. Create: Bukkit `/iris create name=minimal-test type=minimal seed=1337`, modded `/iris create minimal-test minimal 1337`. Folia creates the world live through Iris's Paper-like runtime backend without restarting.
 2. Teleport: Bukkit `/iris tp minimal-test`, modded `/iris tp irisworldgen:minimal-test`.
 3. Generate ordinary new chunks and confirm the same flat grass result you saw in Studio.
 4. Stop the server cleanly, start it again, teleport back, and generate another new area.

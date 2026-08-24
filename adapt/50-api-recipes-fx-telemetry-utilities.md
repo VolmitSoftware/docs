@@ -43,7 +43,9 @@ one particle effect. It still respects global and per-player effect settings.
 
 `FxTimeline` is the multi-frame version. `at(source, location)` pins it in place. `follow(source, entity)` tracks a moving target. Set a duration in ticks, a priority, a cull radius, and a `Frame` callback. Then `start()` on the owning thread and `cancel()` to stop it. `FxPresets` holds the built-in sequences Adapt's own content uses. `FxViewers.dispatch(...)` is the low-level helper underneath. It runs your action for a supplied collection of players or for everyone inside a world radius. What gets sent is up to your action.
 
-`ViewerDisplayDirector` owns per-viewer fake block and line displays keyed by channel and key. Pick a channel name unique to your plugin and clear that channel on disable. `ViewerGlowCoordinator` owns private per-viewer glow layers over GlowingEntities. The live instance is `Adapt.instance.getViewerGlowCoordinator()`. You must pick a specific `Layer`. Every successful `set(...)` needs a matching `unset(...)` or `clearLayer(...)`. Never construct a second coordinator.
+`ViewerDisplayDirector` owns per-viewer fake block and line displays keyed by channel and key. It admits at most 4,096 live or reserved displays globally and 128 per viewer; a `show...` call returns `false` when ingress is stopped, the bound is full, or owner dispatch is rejected. Repeated pending requests for the same viewer, channel, key, and block position coalesce to the latest request. Pick a channel name unique to your plugin and clear that channel on disable. Channel, viewer, and keyed clears use scoped indexes and invalidate already-dispatched stale work.
+
+`ViewerGlowCoordinator` owns private per-viewer glow layers over GlowingEntities. The live instance is `Adapt.instance.getViewerGlowCoordinator()`. You must pick a specific `Layer`. Every successful `set(...)` needs a matching `unset(...)` or `clearLayer(...)`. Never construct a second coordinator.
 
 `FxDirector` is Adapt's timeline ticker and lifecycle owner, not an integration point. `FxDispatch` is package-private and deliberately absent from the public surface.
 

@@ -2,7 +2,7 @@
 title: "API - Player Data, XP & World"
 description: "Adapt documentation: API - Player Data, XP & World"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Almost all of it is thread-bound. Adapt runs a player's data on the thread that 
 
 Get the server through `Adapt.instance.getAdaptServer()`, or through the checked plugin lookup shown in [42 - API - Skills & Adaptations](/adapt/42-api-skills-adaptations), once Adapt has enabled.
 
-Two lookups are easy to mix up. `getPlayerData(UUID)` reads only the in-memory online map and returns an empty `Optional` for anyone who is not loaded. It never touches storage. `peekData(UUID)` is the one that can do real work. It checks the purge tombstone, the online map, the prefetch cache, then SQL if SQL is enabled, then the player's local json file. It returns a fresh empty `PlayerData` rather than `null` when it finds nothing. Keep `peekData` off tick paths.
+Two lookups are easy to mix up. `getPlayerData(UUID)` reads the in-memory player map and never touches storage. That map retains a retired wrapper for about 60 seconds after quit, so use `getOnlineAdaptPlayer(UUID)` when online membership matters. `peekData(UUID)` is an inspection read, not the fenced login path. It checks the purge guard and in-memory state, may reuse a stable prefetch, then inspects a pending local queue operation, direct SQL or local JSON as applicable. It never claims SQL ownership or performs a Redis handoff. A failed SQL inspection can return preserved local data with its save guard set, and a missing profile returns a fresh empty `PlayerData`. Keep `peekData` off tick paths.
 
 `AdaptPlayer` is the online wrapper. Read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAdaptation(id)`, `hasSkill(skill)`, `isBusy()`, the food-charge queries, and `saveNow()` when you need an immediate flush. Do not construct one. Do not call its runtime, tick, login, or unregister methods. Do not use its random or recency XP routing from outside Adapt. Its nested `FxPosition` and `FoodCharge` records are plain value results.
 
@@ -45,7 +45,7 @@ payout is large enough and the config allows it.
 
 `Adaptation.xp(...)` and `Adaptation.xpSilent(...)` forward to the owning skill after rewriting the reward key to `adaptation:<adaptation-id>:<your key>`. They fall back to `adaptation:<adaptation-id>:use` when you pass none. Pass a stable `rewardKey` for a repeated source. Novelty scoring uses it to tell one source of XP from another. A shared or missing key makes two unrelated grinds look like the same one.
 
-`XP` also carries `knowledge(...)`, `wisdom(...)`, `boostXP(...)`, and `spatialXP(...)` for a delayed reward claimable inside a radius. It also carries pure curve helpers converting between XP, level, and progress. `XpNovelty` and `XpProvenance` are the anti-farm layer behind those multipliers. They can be called directly for the same numbers. `XpNoveltyListener` and `XpProvenanceListener` are Adapt-owned Bukkit listeners. Registering either a second time double-counts every event.
+`XP` also carries `knowledge(...)`, `wisdom(...)`, `boostXP(...)`, and `spatialXP(...)` for a delayed reward claimable inside a radius. Boost durations are `long` milliseconds throughout `XP`, `AdaptPlayer`, `PlayerData`, and `PlayerSkillLine`; expiry saturates instead of overflowing. It also carries pure curve helpers converting between XP, level, and progress. `XpNovelty` and `XpProvenance` are the anti-farm layer behind those multipliers. They can be called directly for the same numbers. `XpNoveltyListener` and `XpProvenanceListener` are Adapt-owned Bukkit listeners. Registering either a second time double-counts every event.
 
 ## World-scoped data
 
@@ -59,8 +59,8 @@ payout is large enough and the config allows it.
 |------|--------|
 | `AdaptPlayer getOnlineAdaptPlayer(UUID)` | Live `AdaptPlayer`, or `null` when the player is not online and loaded |
 | `AdaptPlayer getPlayer(Player)` | Live wrapper for an online Bukkit player. Creates and starts one with a warning if it is missing. Owning thread only |
-| `Optional<PlayerData> getPlayerData(UUID)` | Online in-memory data only. Empty for anyone not currently loaded. Performs no storage work |
-| `PlayerData peekData(UUID)` | Purge guard, then online map, then prefetch cache, then SQL, then the local json file. Caches what it loads. Returns a new empty `PlayerData` when nothing is found, never `null`. Not a tick-path query |
+| `Optional<PlayerData> getPlayerData(UUID)` | In-memory data only. May include the wrapper retained for about 60 seconds after quit. Performs no storage work |
+| `PlayerData peekData(UUID)` | Unfenced inspection through the purge guard, in-memory state, safe prefetch, pending local operation, direct SQL, and local fallback. It does not claim ownership or request Redis transfer data. Returns a new empty `PlayerData` when nothing is found, never `null`. Not a tick-path query |
 | `int getOnlineAdaptationLevel(UUID, String skillName, String adaptationName)` | Stored online learned level for that adaptation, `0` when the player is offline or their runtime is not ready. The `skillName` argument is accepted and never read |
 | `boolean hasOnlineLearner(String adaptationName)` | Whether any online player has learned it |
 | `boolean hasOnlineLearner(UUID, String adaptationName)` | Whether that specific online player has learned it |
@@ -87,7 +87,7 @@ Every path applies the player's XP multiplier (permission multipliers plus globa
 | Type | Contract |
 |------|----------|
 | `Curves` | The configured curve enum. `getCurve()` returns its `NewtonCurve` |
-| `NewtonCurve` | `getXPForLevel(level)` and `computeLevelForXP(xp, maxError)` are pure conversions. The default bisection inverse clamps at `experienceMaxLevel`. The closed-form entries do not |
+| `NewtonCurve` | Low-level curve conversion. Adapt's public `XP.getXpForLevel` and `XP.getLevelForXp` helpers clamp every curve family to `experienceMaxLevel` and fall back to the balanced curve if a configured curve produces a non-finite result |
 | `XPMultiplier` | Mutable timed multiplier record stored inside player data |
 | `SpatialXP` | Adapt-owned pending spatial reward. Create it through `XP.spatialXP`, never by constructing one and offering it to `AdaptServer` |
 | `XpNovelty` | `noveltyMultiplier(player, location, rewardKey)`, `adjacencyBonusMultiplier(player, placedBlock)`, `fieldCycleMultiplier(player, cropBlock)`, `clear(uuid)`. Owning region thread only |
@@ -104,9 +104,10 @@ Every path applies the player's XP multiplier (permission multipliers plus globa
 | `PlayerData` | Live mutable progression record. Reads such as `getLevel()`, `getMaxPower()`, `getUsedPower()`, `getAvailablePower()`, `hasPowerAvailable(...)`, `getStat(...)`, `getSkillLine(...)` and `getMutationData()` are fine. All writes bypass transaction, integrity, publication and persistence ownership |
 | `PlayerSkillLine` | Live mutable skill line. Level, XP, knowledge, multiplier, progress, learned adaptation level and recent-earn reads are fine. Writes are not |
 | `PlayerAdaptation` | Mutable serialized adaptation record. `REGION_GRANTED_KEY`, `isRegionGranted()` and `setRegionGranted(...)` belong to region-grant reconciliation |
+| `FencedPlayerSnapshot` | Exact player, owner, epoch, sequence and JSON transfer/persistence value. It is not an external save API |
 | `AdaptServerData`, `AdaptStatTracker`, `AdvancementHandler`, `Discovery<T>` | First-party server and player state plus advancement helpers, not lifecycle contracts |
 | `AdaptPlayerTracker` | An empty public class with no members and no behavior |
-| `PlayerDataPersistenceQueue` | Owns async local and SQL save/delete ordering and the shutdown flush. A second queue can race or resurrect data |
+| `PlayerDataPersistenceQueue` | Owns local save/delete journals plus fenced SQL save, reset, purge, recovery, retries, batching, and shutdown flush. A second queue can race or resurrect data |
 | `PlayerDataPurgeGuard` | Global tombstone set that stops queued writes landing after a deletion. Adapt owns mark, clear and reset |
 | `AdaptComponent` | Large first-party convenience interface for item classification, server and player access, value, FX and event helpers. Some signatures use relocated or version-specific types |
 | `AdaptDebugMode` | Global operator debug-bypass state. Use `/adapt debug mode`. Setting it externally bypasses normal authorization |

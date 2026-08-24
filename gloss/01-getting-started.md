@@ -15,21 +15,21 @@ Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data
 | Item | Value |
 |---|---|
 | Server | Paper, Purpur, Leaf, Folia, Canvas or Spigot |
-| Minecraft | `26.1.2 - 26.2` (the range `/gloss version` reports) |
+| Minecraft | `26.1.2 - 26.2` |
 | Java | 25 |
 | Plugin version | `3.0.0-26.2`, api-version `26.1` |
 
 Nothing else is required. Gloss soft-depends on PlaceholderAPI, Vault, ProtocolLib, ProtocolSupport, ViaVersion, ViaBackwards, ViaRewind, Geyser-Spigot, CraftEngine, ItemsAdder, Oraxen, Nexo, MMOItems, ExecutableItems, EcoItems, Slimefun, MythicMobs, HeadDatabase and WorldGuard. Each of those loads before Gloss when it is installed. Gloss skips a missing one. Without PlaceholderAPI, `%...%` tokens stay raw. Without Vault, no player resolves a group.
 
-On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`. That file also declares `folia-supported: true`. On Spigot it loads at `POSTWORLD` from `plugin.yml`. Both descriptors declare the same permission tree and the same three root commands: `/gloss` (aliases `gl`, `glo`, `gg`), `/hologram` (`holo`, `h`) and `/board` (`sb`, `bd`).
+On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`. That file also declares `folia-supported: true`; the three root commands are registered through Paper's `LifecycleEvents.COMMANDS` registrar. On Spigot it loads at `POSTWORLD` and binds the commands declared in `plugin.yml`: `/gloss` (aliases `gl`, `glo`, `gg`), `/hologram` (`holo`, `h`) and `/board` (`sb`, `bd`). Both descriptors declare the same permission tree.
 
 ## Install
 
 1. Put the Gloss jar in `plugins/`.
-2. Start the server. Gloss creates `plugins/Gloss/`, writes `config.toml`, extracts the shipped default documents, and prints a splash banner that ends in a startup status. `READY` means every service enabled. `DEGRADED` means one did not. A `Startup error: <exception>` warning then names the cause. The plugin stays loaded. The failed services stay shut down.
+2. Start the server. Gloss creates `plugins/Gloss/`, writes `config.toml`, extracts the shipped default documents, and prints a splash banner that ends in a startup status. `READY` means every service enabled. If any enable step throws, Gloss prints the failed startup status, tears down everything already started, and rethrows so the server disables the plugin instead of leaving a partial runtime loaded.
 3. Edit `config.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
 
-If you set `splashScreen = false`, Gloss hides the banner for clean startups only. A failed enable always prints the banner. That banner is the source of the `DEGRADED` status and the error line.
+If you set `splashScreen = false`, Gloss hides the banner for clean startups only. A failed enable always prints the banner and the startup error before the exception is propagated.
 
 ## What the first boot creates
 
@@ -41,10 +41,11 @@ plugins/Gloss/
 ├── config.toml            every runtime knob, commented, clamped and hot-reloading
 ├── language.yml           locale selection and message overrides
 ├── tablist.json           tablist header, footer and per-group list-name formats
-├── boards/                one JSON per scoreboard sidebar (default.json shipped)
+├── boards/                one JSON per scoreboard sidebar (default.json and animation-showcase.json shipped)
 ├── emoji/                 one JSON per emoji (67 shipped)
 ├── animations/            one JSON per text animation (10 effects shipped)
 ├── bubbles/               one JSON per chat bubble style (default.json shipped)
+├── real-drops/             display-backed drop settings (default.json shipped)
 └── previews/              container preview documents (14 shipped)
 ```
 
@@ -79,15 +80,16 @@ Gloss extracts default documents only where the target file is missing. An edite
 |---|---|---|
 | `emoji/` | 67 | `[features] emoji` |
 | `animations/` | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `[features] animations` |
-| `boards/` | `default.json` | `[features] boards` |
+| `boards/` | `default.json`, `animation-showcase.json` | `[features] boards` |
 | `bubbles/` | `default.json` | `[features] chatBubbles` |
-| `previews/` | 13 | `[features] previews` |
+| `real-drops/` | `default.json` | `[features] realDrops` |
+| `previews/` | 14 | `[features] previews` |
 | `tablist.json` | one singleton document | `[features] tablist` |
 | `motd.json` | one singleton document | `[features] motd` |
 
 A feature that is off ships nothing, which is why a stock first boot has no `motd.json` — `motd` is
-the one feature that defaults to `false`. Turning `motd`, `tablist`, `emoji`, `animations`, `boards`
-or `chatBubbles` on extracts its defaults on the config reload, without a restart. `previews` is the
+the one feature that defaults to `false`. Turning `motd`, `tablist`, `emoji`, `animations`, `boards`,
+`chatBubbles` or `realDrops` on extracts its defaults on the config reload, without a restart. `previews` is the
 exception: the preview registry is only built during enable, so turning that feature on takes a
 restart before `previews/` appears.
 
@@ -95,7 +97,11 @@ Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those folders 
 
 ## Feature toggles
 
-`[features]` in `config.toml` gates each subsystem. If you turn one off, that subsystem stops rendering or listening. Its documents still load. Its commands still edit them.
+`[features]` in `config.toml` gates each subsystem. An effective off state stops that subsystem
+from rendering or listening. Most document-backed features keep their documents loaded and editable;
+`emoji` and `animations` shut down their loaders completely but can restart on reload. Panels and
+previews are selected during enable, so enabling either after it was disabled at startup requires a
+restart to construct that subsystem.
 
 | Key | Default | Gates |
 |---|---|---|
@@ -107,6 +113,7 @@ Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those folders 
 | `chatBubbles` | `true` | Chat bubbles above players |
 | `damageIndicators` | `true` | Floating damage and heal indicators |
 | `drops` | `true` | Custom names on dropped item stacks |
+| `realDrops` | `true` | Display-backed dropped-item models, motion and labels |
 | `menus` | `true` | Holographic menus |
 | `panels` | `true` | World-anchored panels |
 | `previews` | `true` | Look-at container previews |

@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Gloss documentation: Hologram Menus"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -184,7 +184,9 @@ A toggle `condition` uses the same full viewer-aware renderer, but only once whe
 
 Menu documents are parsed with the lenient Gson instance shared across VolmLib.
 
-- Unquoted keys, single-quoted strings and trailing commas are accepted.
+- Unquoted keys and single-quoted strings are accepted. A trailing comma in an object is rejected. A
+  trailing separator in an array is read as a `null` element, so use standard JSON rather than relying
+  on that lenient edge case.
 - Unknown keys are silently ignored, so a `"$schema"` member added for editor tooling is harmless.
 - A single object is accepted where an array is expected, for `components`, `actions`, `trueActions` and `falseActions`. `"components": {…}` parses the same as `"components": [{…}]`.
 
@@ -198,7 +200,7 @@ the menu.
 
 ### Parse failures
 
-A failed file logs one warning line, `menus/<id>.json: <reason>`, exactly as every other document kind does. A zero-byte file reports `menu document must not be empty`. In both cases the previously registered definition, if there was one, stays live. A bad edit does not delete a working menu. It just stops applying until the file parses again. A failed file never partially registers.
+A failed file keeps the previously registered definition live and never partially registers. Automatic watching waits for the same invalid bytes on two separate passes before logging one `menus/<id>.json: <reason>` warning. A zero-byte truncate followed by valid replacement bytes therefore reloads without a false warning; a stable zero-byte file reports `menu document must not be empty` on the second observation.
 
 ## Hot reload
 
@@ -206,8 +208,10 @@ A failed file logs one warning line, `menus/<id>.json: <reason>`, exactly as eve
 
 | Entry | Effect |
 |---|---|
-| `menus` | Changed, created and deleted files are reported by one folder walk. A file whose content hash actually differs is re-parsed and its registry entry replaced, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice and an experience-orb pickup sound, and any panel showing that menu reloads it. A deletion enters a 3-second grace period before its id is unregistered and matching sessions close silently |
+| `menus` | Changed, created and deleted files are reported by one folder walk. A file whose content hash actually differs is re-parsed and its registry entry replaced, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice, and any panel showing that menu reloads it. A deletion enters a 3-second grace period before its id is unregistered and matching sessions close silently |
 | `images` | A changed, added or removed image refreshes the visuals of open sessions and panel views |
+
+All successful automatic entries in one watchdog batch produce one additional action-bar summary and one Gloss success chime for online `gloss.admin` players. `[commands] sounds` can silence that chime without hiding the summary.
 
 The walk applies the same recursive filter as the boot scan, so subdirectories are covered. If you create a directory, Gloss registers every accepted file beneath it. If you delete a directory, Gloss unregisters every menu id under that path prefix, one by one.
 

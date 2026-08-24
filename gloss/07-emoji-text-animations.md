@@ -184,7 +184,7 @@ The listener re-reads `[features] emoji` and `[emoji] tabComplete` on every even
 /gloss emoji reset [name=*]
 ```
 
-`list` prints a page of 45 enabled emoji, three to a line. A full page occupies 19 chat lines including the banner, page status, next-page action and bottom bar. Each glyph is clickable to insert its `:id:` token into your chat input. It needs `gloss.emoji.use`. The page closes with a `Page X/Y` line. When there is more to see, it also shows the full `Next page` command. Out-of-range page numbers are clamped to the first or last page.
+`list` prints a page of 51 enabled emoji, three to a line. A full page occupies 19 chat lines including the banner and integrated navigation bar. Each glyph is clickable to insert its `:id:` token into your chat input. It needs `gloss.emoji.use`. Multi-page banners include `{current/total}`; the bottom bar exposes clickable previous and next controls whenever those pages exist. Out-of-range page numbers are clamped to the first or last page.
 
 `reset` rewrites shipped emoji documents from the jar and needs `gloss.emoji.reset` (op). `name=*` (the default) restores all 67. A single name restores just that one. A trailing `.json` on the name is accepted.
 
@@ -327,6 +327,10 @@ hidden task or keeps per-player state; two surfaces given the same arguments ret
 | `odometer(from, to, progress, digits)` | Interpolates safe whole numbers and zero-pads to 1–16 digits |
 | `wave(text, styles, step)` | Chases 1–16 color/style prefixes across the characters |
 
+`scanner` emits its base and highlight styles only when the active state changes. It does not repeat
+the base style before every unchanged glyph, so longer labels retain the available text capacity on
+bounded surfaces such as scoreboard rows.
+
 This timeline scrolls a welcome message, flashes a boost notice, then replaces it with an event
 message:
 
@@ -399,7 +403,7 @@ directly without a named animation document; see [Expressions & Placeholders](/g
 /gloss animations reset [name=*]
 ```
 
-`animation` is an alias for `animations`. `list` prints the loaded animation ids fifteen per page behind a count header and the shared pager footer. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten shipped animation documents from the jar.
+`animation` is an alias for `animations`. `list` prints the loaded animation ids seventeen per page using the shared command-page banner and navigation bar. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten shipped animation documents from the jar.
 
 > `/gloss animations reset` overwrites the ten shipped animation ids. Only shipped ids are affected. Your own animation files are never touched.
 {.is-warning}

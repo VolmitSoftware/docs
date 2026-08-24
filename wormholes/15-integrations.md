@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Wormholes documentation: Integrations"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,10 @@ Vault costs use VolmLib `VaultEconomy` built at Wormholes enable
   `UNAVAILABLE` if Vault or the economy is missing. Status is `FAILED` on
   transaction failure.
 - Reserve withdraws with reason `Wormholes portal travel for <uuid>`. Commit
-  finalizes the charge. Refund reverses it if traversal aborts after reserve.
+  finalizes the charge. Refund reacquires the traveler entity owner before
+  reversing it; rejected, retired, or stalled owner dispatch retries with a
+  bounded exponential backoff. Exhaustion or shutdown is logged at severe
+  rather than calling the economy provider off-owner.
 - Messages cover insufficient funds, Vault unavailable, and failed transactions.
   Selecting Vault mode in the menu without Vault and an economy is rejected with
   a notice.
@@ -96,11 +99,14 @@ acquisition rules, unavailable reasons, and protocol details live in
 
 No direct React API dependency exists inside Wormholes.
 
-## PacketEvents (internal, shaded)
+## PacketEvents (internal, SlimJar-managed)
 
-PacketEvents is relocated into the shaded plugin jar
-(`com.github.retrooper.packetevents` / `io.github.retrooper.packetevents` →
-plugin-internal packages). Operators do not install PacketEvents separately.
+PacketEvents is a SlimJar dependency. At first start SlimJar downloads, verifies,
+and caches it when needed, then exposes it under Wormholes' relocated internal
+packages (`com.github.retrooper.packetevents` /
+`io.github.retrooper.packetevents` → plugin-internal packages). The runtime jar
+does not embed PacketEvents itself, and operators do not install a separate
+PacketEvents plugin. Repository access or a prewarmed SlimJar cache is required.
 
 Used for:
 

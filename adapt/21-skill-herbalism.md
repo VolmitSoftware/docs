@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Adapt documentation: Skill - Herbalism"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,14 +19,13 @@ Two adaptations point sideways. Hungry Shield pays your incoming damage out of y
 
 Everything below needs the same four things. The adaptation is learned at level 1 or higher in the Adapt menu. The Herbalism skill and that adaptation are both enabled in config. An `adapt.use.` permission has not been revoked for you. Any protection or region plugin allows the block or entity you are acting on. Those are not repeated per entry.
 
-Five of them ship with `permanent = true`. They act as already learned and skip the learn and unlearn flow. Those five are Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
+Five of them ship with `permanent = true`. They are purchased normally, and the first purchase asks for confirmation. Once learned, normal players cannot unlearn them; an administrative bypass can lower them without a refund. Those five are Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
 
 ### Growth Aura (`herbalism-growth-aura`)
 
 Crops near you grow on their own, paid for out of your hunger. Stand in a field and it ticks forward around you without any input. It works on its own once learned.
 
-Each pulse throws random samples around you. Samples that land on a crop below full growth get queued. A second or two later
-the crop jumps forward by a few age steps. Each step costs a fraction of a food point, so a big field drains you fast. Higher levels widen the radius, push more age steps per hit, and cost less food per step.
+Each pulse throws random samples around you. Samples that land on a crop below full growth get queued. They normally mutate 1.5 to 3 seconds after inspection, but all learners share bounded work queues, so heavy load can delay the result or skip excess attempts. Each successful step costs a fraction of a food point, so a big field drains you fast. Higher levels widen the radius, push more age steps per hit, and cost less food per step.
 
 By default it only touches crops sitting on the surface, so it will not run a hidden underground farm for you.
 
@@ -127,7 +126,7 @@ How to use it:
 
 1. Hold any flower in your main hand or your off hand. Tulips, dandelion, poppy, blue orchid, allium, azure bluet, oxeye daisy, and cornflower all count. Lily of the valley, wither rose, sunflower, lilac, rose bush, peony, torchflower, and pink petals also count.
 2. Stand near crops. Pulses fire on their own while you keep holding the flower and have enough food.
-3. Each pulse spends food, makes a batch of growth attempts inside its radius, and tugs up to eight nearby bees toward you.
+3. Each pulse spends food, makes a batch of growth attempts inside its radius, and tugs up to eight nearby bees toward you. The configured interval is an earliest target: shared server-wide budgets can spread a pulse across later ticks, and bounded queues skip excess growth or bee-pull work under sustained overload.
 
 Bees you have herded add extra growth attempts, up to a configured cap, so keeping a swarm around pays off. Bees pulled this way have their attack target cleared.
 
@@ -229,7 +228,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries the
 | Key | Behavior |
 |-----|----------|
 | `enabled` | Turns this adaptation off when false. |
-| `permanent` | Treats the adaptation as always learned, bypassing learn and unlearn. |
+| `permanent` | Purchases normally; once learned, normal players cannot unlearn it. Administrative bypass can lower it without a refund. |
 | `showParticles` | Plays this adaptation's particle effects. |
 | `showSounds` | Plays this adaptation's sound effects. |
 | `baseCost`, `costFactor`, `maxLevel`, `initialCost` | Knowledge cost curve and level cap. Defaults per adaptation below. |
@@ -253,7 +252,7 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | Stat key | `herbalism.growth-aura.blocks-grown` |
 | Milestones | `challenge_herbalism_growth_1k` (1000, reward 300), `challenge_herbalism_growth_25k` (25000, reward 1000) |
 
-Ticking is learner-bound. A player is re-evaluated every 850 ms while pulsing and every 250 ms while idle. Radius is `levelPercent * radiusFactor`. Samples per pulse are `ceil(clamp(radius * radius, 3, 256))`. Strength is `level * strengthFactor` age steps per hit, capped by the crop's remaining age. Food per step is interpolated from `maxFoodCost` at no progress down to `minFoodCost` at full level. Mutations are applied 1500 to 3000 ms after their sample. Per-tick work caps are 32 player checks, 32 samples, 16 mutations, and 16 completions.
+Ticking is learner-bound. The 850 ms active and 250 ms idle values are earliest re-evaluation targets, not per-player guarantees. Radius is `levelPercent * radiusFactor`. Samples per pulse are `ceil(clamp(radius * radius, 3, 256))`. Strength is `level * strengthFactor` age steps per hit, capped by the crop's remaining age. Food per step is interpolated from `maxFoodCost` at no progress down to `minFoodCost` at full level. Mutations become eligible 1500 to 3000 ms after their sample. The 32 player checks, 32 samples, 16 mutations, and 16 completions per tick are global caps shared by every learner. Excess work carries into later ticks; bounded sample, mutation, and completion queues shed overflow, so a pulse can finish late and some attempts can be skipped under sustained load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -593,7 +592,7 @@ Trample protection cancels the physical interact on `FARMLAND`. Its effect is th
 | Stat key | `herbalism.bee-shepherd.bees-attracted` |
 | Milestones | `challenge_herbalism_bee_100` (100, reward 300) |
 
-Ticking is learner-bound. Requires a flower in the main or off hand. Radius is `radiusBase + levelPercent * radiusFactor`. Growth attempts are `round(growthAttemptsBase + levelPercent * growthAttemptsFactor)`, then multiplied by `1 + min(bees, maxBonusBees) * growthBonusPerBee`. Growth step is `round(growthStepBase + levelPercent * growthStepFactor)` age stages. Food cost is `max(1, round(foodCostBase - levelPercent * foodCostFactor))`, charged once per pulse at the first committed growth. Pulse spacing is `max(250, round(pulseMillisBase - levelPercent * pulseMillisFactor))` milliseconds. At most 8 bees are pulled per pulse. The attracted-bee stat only counts each bee once per 60 seconds. Per-tick work caps are 32 player checks, 96 growth samples, 8 bee pulls, and 16 completions.
+Ticking is learner-bound and requires a flower in the main or off hand. Radius is `radiusBase + levelPercent * radiusFactor`. Growth attempts are `round(growthAttemptsBase + levelPercent * growthAttemptsFactor)`, then multiplied by `1 + min(bees, maxBonusBees) * growthBonusPerBee`. Growth step is `round(growthStepBase + levelPercent * growthStepFactor)` age stages. Food cost is `max(1, round(foodCostBase - levelPercent * foodCostFactor))`, charged once per pulse at the first committed growth. Pulse spacing is `max(250, round(pulseMillisBase - levelPercent * pulseMillisFactor))` milliseconds, but that is the earliest per-player target rather than a guaranteed cadence. At most 8 bees are pulled per pulse. The attracted-bee stat only counts each bee once per 60 seconds. The 32 player checks, 96 growth samples, 8 bee pulls, and 16 completions per tick are global caps shared by every learner. Excess work carries into later ticks; bounded growth, bee-pull, and completion queues shed overflow instead of growing without limit, so pulses can finish late and some attempts can be skipped under sustained load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

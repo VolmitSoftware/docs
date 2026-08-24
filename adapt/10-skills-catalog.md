@@ -2,7 +2,7 @@
 title: "Skills Catalog"
 description: "Adapt documentation: Skills Catalog"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ This page is the index. Each line has its own numbered doc from `11` through `33
 
 1. Open the Adapt menu with the activator block. The default activator is a bookshelf. You can also run `/adapt gui`.
 2. Pick a line. Then do the activity it tracks. Chop wood for Axes. Place blocks for Architect. Take hits for TragOul. Experience arrives on its own.
-3. Levels pay knowledge. Open that line's menu. Spend knowledge to learn adaptations and raise their levels. Knowledge is the only currency.
+3. Levels pay knowledge. Open that line's menu. Spend knowledge to learn adaptations and raise their levels. Knowledge is always required; a server can also charge Vault currency when `learningEconomy.enabled` is true.
 4. Use what you bought. Many adaptations are passive. They start when you learn them. The rest need a gesture. The skill doc lists each gesture.
 
 Every adaptation also needs its skill enabled in config. The adaptation itself must be enabled. You need the matching `adapt.use` permission. Protection plugins and region policy must allow the action at your location.

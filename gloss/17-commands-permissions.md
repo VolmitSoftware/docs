@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Gloss documentation: Commands & Permissions"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -22,9 +22,9 @@ behind each command lives on the feature page it belongs to.
 | `/hologram` | `holo`, `h` | A shortcut that prefixes `hologram`, so `/hologram create id` is `/gloss hologram create id` |
 | `/board` | `sb`, `bd` | A shortcut that prefixes `board`, so `/board list` is `/gloss board list` |
 
-The same three names and aliases are declared in both `plugin.yml` and `paper-plugin.yml`. Gloss
-binds whichever registration path the server offers. The spellings are identical on Spigot, Paper
-and Folia.
+Spigot reads the names and aliases from `plugin.yml`. Paper and Folia register the same spellings
+through Paper's `LifecycleEvents.COMMANDS` registrar; `paper-plugin.yml` does not contain a command
+block.
 
 Inside the tree the `hologram` node also answers to `holo` and `h`. The `board` node also answers to
 `boards`, `sb` and `bd`. `/gloss holo create id` and `/gloss boards list` both work. `boards` is
@@ -36,12 +36,11 @@ Direct leaves on `/gloss`:
 |---|---|---|---|
 | `status` | none | `gloss.admin` | Prints hologram, temporary-hologram, entity, board, emoji, animation, bubble, indicator and drop counts |
 | `reload` | none | `gloss.admin` | Runs the full `reloadAll` cycle. A broken `config.toml` is refused and the last good configuration stays live |
-| `version` | none | none beyond the base gate | Prints the plugin version and the supported Minecraft range `26.1.2 - 26.2` |
 
 ## Who can run anything at all
 
 Before Director sees the arguments, Gloss checks a single gate. The sender must hold at least one of
-the 39 command permissions listed in `GlossCommandService.BASE_COMMAND_PERMISSIONS`. A sender
+the 40 command permissions listed in `GlossCommandService.BASE_COMMAND_PERMISSIONS`. A sender
 holding none of them gets the "no permission" message and the failure chime for `/gloss`,
 `/hologram` and `/board` alike. Tab completion returns an empty list.
 
@@ -60,6 +59,7 @@ value where a keyed one is expected is rejected. The sender gets the usage line.
 /gloss board reset name=default
 /gloss emoji list page=3
 /gloss hologram rendertext banner "GLOSS" scale=2
+/gloss hologram orient spawn billboard=FIXED yaw=45 pitch=-10
 ```
 
 ### Multi-word values
@@ -133,6 +133,7 @@ Also reachable as `/hologram`. Covered in [Holograms](/gloss/04-holograms).
 | `setline` | `<id> <line> <text>` | `gloss.holograms.edit` | Line numbers start at 1 |
 | `removeline` | `<id> <line>` | `gloss.holograms.edit` | |
 | `clear` | `<id>` | `gloss.holograms.edit` | Removes every line |
+| `orient` | `<id> [billboard=CENTER] [yaw=0] [pitch=0]` | `gloss.holograms.edit` | Billboard plus finite yaw `-180`..`180` and pitch `-90`..`90` |
 | `delete` | `<id>` | `gloss.holograms.delete` | |
 | `movehere` | `<id>` | `gloss.holograms.move` | Player only |
 | `move` | `<id> [x=0] [y=0] [z=0]` | `gloss.holograms.move` | Relative block offsets |
@@ -158,10 +159,10 @@ Gloss scoreboards, not panels. Also reachable as `/board`. Covered in
 | `reset` | `[name=*]` | `gloss.boards.edit` | Restores shipped board documents |
 | `show` | `<id>` | `gloss.boards.show` | Player only |
 | `hide` | none | `gloss.boards.hide` | Player only |
-| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking runs `info`. Fifteen per page |
+| `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking runs `info`. Seventeen per page |
 | `info` | `<id>` | none beyond the base gate | Title, primary flag, permission and lines |
 
-## `/gloss emoji`, `animations`, `bubbles`, `tablist`, `motd`
+## `/gloss emoji`, `animations`, `bubbles`, `drops`, `tablist`, `motd`
 
 Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) and
@@ -169,16 +170,17 @@ Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `emoji list` | `[page=1]` | `gloss.emoji.use` | Forty-five per page, three glyphs per line. Clicking suggests `:id:` in chat |
+| `emoji list` | `[page=1]` | `gloss.emoji.use` | Fifty-one per page, three glyphs per line. Clicking suggests `:id:` in chat |
 | `emoji reset` | `[name=*]` | `gloss.emoji.reset` | Restores shipped emoji documents |
-| `animations list` | `[page=1]` | none beyond the base gate | Plain list of animation ids, fifteen per page |
+| `animations list` | `[page=1]` | none beyond the base gate | Styled list of animation ids, seventeen per page |
 | `animations reset` | `[name=*]` | `gloss.animations.reset` | |
 | `bubbles style` | `<style>` | `gloss.bubbles.style` | Player only. `style=clear` returns to automatic selection |
 | `bubbles reset` | `[name=*]` | `gloss.bubbles.reset` | |
+| `drops reset` | `[name=*]` | `gloss.drops.reset` | Restores shipped real-drop settings |
 | `tablist reset` | none | `gloss.tablist.reset` | Always resets the singleton document |
 | `motd reset` | none | `gloss.motd.reset` | Always resets the singleton document |
 
-`animations` also answers to `animation`. `bubbles` answers to `bubble`.
+`animations` also answers to `animation`. `bubbles` answers to `bubble`. `drops` answers to `drop`.
 
 Choosing a style with `bubbles style` only takes effect if the player also holds
 `gloss.bubbles.style.<styleId>`. The resolution order is on the bubbles page.
@@ -227,9 +229,9 @@ Every node below is gated by `gloss.panels`, except `web`, which is gated by `gl
 
 | Node | Arguments | Notes |
 |---|---|---|
-| `list` | `[page=1]` | Fifteen entries per page |
+| `list` | `[page=1]` | Seventeen entries per page |
 | `reload` | none | Re-reads the panel files from disk |
-| `near` | `[radius=64]` `[page=1]` | Player only. Horizontal search radius, fifteen entries per page |
+| `near` | `[radius=64]` `[page=1]` | Player only. Horizontal search radius, seventeen entries per page |
 | `info` | `<board>` | Full state of one panel |
 | `create` | `<board> [menu=*]` | Player only. `menu=*` means a menu whose id equals the panel id. That menu must already exist |
 | `delete` (`remove`) | `<board>` | |
@@ -269,7 +271,7 @@ Container preview documents. Also answers to `/gloss previews`. Covered in
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `list` | `[page=1]` | `gloss.previews` | Names plus each document's block, entity, special and priority match summary, fifteen per page |
+| `list` | `[page=1]` | `gloss.previews` | Names plus each document's block, entity, special and priority match summary, seventeen per page |
 | `reset` | `[name=*]` | `gloss.previews.reset` | Runs asynchronously. Restores shipped documents without deleting extra user documents that shadow them |
 | `dump` | `<name>` | `gloss.previews.dump` | Builds the document once and prints panel, cell, slot and label counts plus up to three build errors |
 
@@ -285,7 +287,7 @@ Custom item providers. Also answers to `/gloss items`. Covered in
 
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
-| `status` | `[page=1]` | `gloss.items` | One line per provider with its plugin and state, thirteen per page. Holders of `gloss.items.export` also get a clickable export hint |
+| `status` | `[page=1]` | `gloss.items` | One line per provider with its plugin and state, fifteen per page. Holders of `gloss.items.export` also get a clickable export hint |
 | `export` | none | `gloss.items.export` | Writes the catalog asynchronously and reports the item count, provider count and path when it finishes |
 
 Both refuse with a message when `[items] customItems` is off. `export` refuses while a previous
@@ -298,7 +300,7 @@ Web editor sync sessions. Every node is gated by `gloss.sync`. Covered in
 
 | Node | Arguments | Notes |
 |---|---|---|
-| `list` | `[page=1]` | Active sessions with kind, subject, seconds to expiry, last publication revision and pending state, fifteen per page |
+| `list` | `[page=1]` | Active sessions with kind, subject, seconds to expiry, last publication revision and pending state, seventeen per page |
 | `status` | `<session>` | The same fields for one session |
 | `revoke` | `<session>` | Revokes the capability |
 | `pull` (`poll`) | `<session>` | Polls the relay immediately |
@@ -336,10 +338,10 @@ Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
 | Node | Default | Grants |
 |---|---|---|
 | `gloss.*` | op | Every node below |
-| `gloss.admin` | op | `/gloss status`, `/gloss reload`, and the five reset nodes as children |
+| `gloss.admin` | op | `/gloss status`, `/gloss reload`, and the six reset nodes as children |
 | `gloss.holograms` | op | The five hologram children |
 | `gloss.holograms.create` | op | `hologram create`, `hologram rendertext` |
-| `gloss.holograms.edit` | op | `addline`, `setline`, `removeline`, `clear` |
+| `gloss.holograms.edit` | op | `addline`, `setline`, `removeline`, `clear`, `orient` |
 | `gloss.holograms.delete` | op | `hologram delete` |
 | `gloss.holograms.move` | op | `hologram move`, `hologram movehere` |
 | `gloss.holograms.teleport` | op | `hologram tp` |
@@ -376,12 +378,14 @@ Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
 | `gloss.bubbles.send` | **true** | This player's chat messages render as chat bubbles |
 | `gloss.bubbles.style` | op | `/gloss bubbles style` |
 | `gloss.bubbles.reset` | op | `bubbles reset` |
+| `gloss.drops.reset` | op | `drops reset` |
 | `gloss.tablist.reset` | op | `tablist reset` |
 | `gloss.motd.reset` | op | `motd reset` |
 | `gloss.indicators.show` | **true** | This player sees damage and heal indicators |
 
-`gloss.bubbles.reset`, `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.tablist.reset` and
-`gloss.motd.reset` are reached through `gloss.admin` rather than being direct children of `gloss.*`.
+`gloss.bubbles.reset`, `gloss.drops.reset`, `gloss.emoji.reset`, `gloss.animations.reset`,
+`gloss.tablist.reset` and `gloss.motd.reset` are reached through `gloss.admin` rather than being
+direct children of `gloss.*`.
 
 ### Dynamic nodes
 
@@ -403,21 +407,23 @@ list`. Every configured menu id appears in the list. The per-menu node is only t
 
 Every multi-entry list takes an optional `page=<n>`: `hologram list`, `board list`, `emoji list`,
 `animations list`, `menu list`, `panel list`, `panel near`, `preview list`, `item status` and
-`sync list`. Text lists show fifteen entries per page. `item status` reserves two additional lines
-for its summary and export action, so it shows thirteen. `emoji list` shows forty-five, three glyphs
+`sync list`. Text lists show seventeen entries per page. `item status` reserves two additional lines
+for its summary and export action, so it shows fifteen. `emoji list` shows fifty-one, three glyphs
 to a line. These limits keep a full player menu within nineteen chat lines, including its top and
 bottom chrome.
 
-Every one of them prints its own header, then the entries, then the same two-line footer:
+Every one uses the same layout as Iris command help: the banner includes `{current/total}` when a
+list spans multiple pages, and the bottom bar contains the available navigation controls. A middle
+page therefore has both directions:
 
 ```
-Page 1/2 - showing 1-45 of 67
-Next page: /gloss emoji list page=2
+〈 Page 1                                                    Page 3 ❭
 ```
 
-The `Next page` line only appears when a further page exists. It prints the command in full so it
-works from the console. In chat it is also clickable. `page` is clamped rather than rejected.
-`page=0` and any page past the end land on the first and last page respectively.
+Each visible direction is clickable and runs the corresponding keyed page command. The first page
+omits the previous control, the last omits the next control, and a single-page list ends in a plain
+bar. `page` is clamped rather than rejected. `page=0` and any page past the end land on the first and
+last page respectively.
 
 `/gloss panel list <n>` still works as a positional shorthand for `panel list page=<n>`. Every other
 list takes the keyed form only.
@@ -449,8 +455,9 @@ the base permission gate. A sender who fails that gate gets the permission messa
 
 ## Command sounds
 
-`[commands] sounds` in `config.toml` (default `true`) controls the outcome chime. Chimes only play
-for player senders. Console never hears anything.
+`[commands] sounds` in `config.toml` (default `true`) controls command outcome chimes and the single
+success chime sent to online `gloss.admin` players after a successful automatic hotload batch.
+Console never hears anything. Hotload notices remain visible when sounds are disabled.
 
 | Outcome | Sound |
 |---|---|
