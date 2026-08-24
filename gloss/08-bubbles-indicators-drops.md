@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Gloss documentation: Chat Bubbles, Indicators & Drops"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -66,7 +66,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 
 `followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
 
-There is no config table for bubble styles. `config.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
+There is no config table for bubble styles. `gloss.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
 
 ### The `select` block
 
@@ -314,7 +314,7 @@ On enable, reload and real-drop document changes, Gloss queues already-loaded ch
 
 `[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. Placeable materials render through `BlockDisplay` with their placed block state; true items render through `ItemDisplay` in explicit `FIXED` mode. The first model is the non-persistent carrier, while additional stack models and the optional `TextDisplay` label ride it as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. Once settled, unchanged poses are not resent and microscopic item-position noise is ignored; meaningful movement still wakes and moves the carrier.
 
-The feature switch remains `[features] realDrops` in `config.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
+The feature switch remains `[features] realDrops` in `gloss.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
 
 | Key | Default | Range / behavior |
 |---|---:|---|
@@ -367,7 +367,7 @@ Named `animation.materialProperties` maps associate exact or globbed materials w
 
 Presentations are removed on merge, pickup, despawn, entity unload, feature reload, and plugin shutdown. New `ItemSpawnEvent` entities reconcile one entity tick after the event, when Bukkit marks them valid; loaded items are rebuilt after enable and entity load. Persistent ownership and restore markers heal an item after an interrupted lifecycle; Gloss restores the prior native visibility and name visibility before rebuilding or falling back. The display carrier and its passengers are non-persistent.
 
-If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both `config.toml` and the real-drop document hot-reload.
+If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both `gloss.toml` and the real-drop document hot-reload.
 
 ## Reference
 

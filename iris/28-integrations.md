@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -210,7 +210,7 @@ Iris removes the whole tree. This runs on Bukkit-family **and** on
 Fabric/Forge/NeoForge. The settings and the traversal code are the same.
 Only the permission plumbing differs.
 
-### Settings (`settings.json`)
+### Settings (`iris.json`)
 
 | Key | Default | Meaning |
 |---|---|---|

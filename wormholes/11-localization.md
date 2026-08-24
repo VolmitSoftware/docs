@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Locales, overrides, and fallbacks"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,9 +16,9 @@ fall through to code-owned English.
 ## Config
 
 ```toml
-# plugins/Wormholes/config/wormholes.toml
-[main]
+# plugins/Wormholes/wormholes.toml
 language = "en_US"
+metrics = true
 language-fallbacks = ""
 ```
 
@@ -128,7 +128,7 @@ catalog.
 | Trigger | Behavior |
 |---------|----------|
 | `/wormholes reload` | Reloads config and language (`wormholes.admin.reload` + root gate. See [09 - Commands & Permissions](/wormholes/09-commands-permissions)) |
-| `config/wormholes.toml` hotload | Reloads the selected language after the config load succeeds |
+| `wormholes.toml` hotload | Reloads the selected language after the config load succeeds |
 | Direct `languages/*.toml` edit | Not watched. Use `/wormholes reload` or touch the config file |
 | Language rejected | Last valid language remains. Config may still apply. Console reports the cause |
 

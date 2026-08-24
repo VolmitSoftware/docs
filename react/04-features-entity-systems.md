@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "React documentation: Features - Entity Systems"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ This feature merges compatible living entities into stacks. Stack count uses hea
 
 - **Class:** `FeatureMobStacking`
 - **Listener:** yes
-- **Notes:** Honors `ReactProtection` / `STACK`. Each batch submits at most 64 distinct dirty chunks, keeps pending and in-flight claims separate, and retries a rejected or failed scan. Dense chunks resume across owning-region callbacks with at most 256 candidate entities and 4,096 pair comparisons per callback. A capped weak spatial index supplies candidates from adjacent chunks without reading those chunks from the anchor callback; canonical chunk ordering prevents duplicate neighbor coverage, and Folia filters ownership before reading candidate state. Equipped, affected, custom-named, injured, attribute-modified, and variant-bearing mobs are excluded so a merge cannot discard vanilla state. Death replacement for an existing legacy stack preserves equipment/drop chances, effects, and maximum health. The feature skips tamed pets. You can skip custom mobs. You can limit stacking to spawner-origin mobs. Default stackable types: all alive+spawnable minus `PLAYER`, `ARMOR_STAND`, `VILLAGER`, `WANDERING_TRADER`, `FALLING_BLOCK`.
+- **Notes:** Honors `ReactProtection` / `STACK`. At most 64 distinct chunk claims may be in flight across all batches, and one dispatcher pass inspects at most 128 pending keys; saturated batches return without scanning the backlog. Pending and in-flight claims stay separate, a dirty signal received during a claim queues one follow-up pass, and rejected or failed scans retry. Dense chunks resume across owning-region callbacks with at most 256 candidate entities and 4,096 pair comparisons per callback. A capped weak spatial index supplies candidates from adjacent chunks without reading those chunks from the anchor callback and reuses unchanged entity/chunk records; canonical chunk ordering prevents duplicate neighbor coverage, and Folia filters ownership before reading candidate state. Equipped, affected, custom-named, injured, attribute-modified, and variant-bearing mobs are excluded so a merge cannot discard vanilla state. Death replacement for an existing legacy stack preserves equipment/drop chances, effects, and maximum health. The feature skips tamed pets. You can skip custom mobs. You can limit stacking to spawner-origin mobs. Default stackable types: all alive+spawnable minus `PLAYER`, `ARMOR_STAND`, `VILLAGER`, `WANDERING_TRADER`, `FALLING_BLOCK`.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

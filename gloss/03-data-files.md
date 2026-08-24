@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Gloss documentation: Data Files & Hot Reload"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -37,7 +37,7 @@ Panels are the other exception. They keep an id and a UUID inside the document. 
 
 ## Content hashing and self-writes
 
-Each loaded document is kept with the SHA-256 of its raw text beside the parsed value. Holograms and boards write through a store that records the hash of the bytes it just wrote. When the folder watcher later sees that file change, it compares the file current hash against the recorded one. It skips the file if they match. That is what stops a command edit from bouncing back through the hot-reload path. `config.toml` uses the same guard against its own canonicalization rewrites.
+Each loaded document is kept with the SHA-256 of its raw text beside the parsed value. Holograms and boards write through a store that records the hash of the bytes it just wrote. When the folder watcher later sees that file change, it compares the file current hash against the recorded one. It skips the file if they match. That is what stops a command edit from bouncing back through the hot-reload path. `gloss.toml` uses the same guard against its own canonicalization rewrites.
 
 Writes are atomic. The document is serialized to a temporary file in the same folder and moved into place. A reader never sees a half-written document.
 
@@ -50,7 +50,7 @@ After a successful automatic batch, every online player with `gloss.admin` recei
 The polling itself runs on a dedicated `Gloss-Watchdog-IO` thread. Stat, read and parse never touch the server tick. Anything that has to touch the world hops back to the server thread, or on Folia and Canvas to the owning region thread, before it applies. The console shows both halves:
 
 ```text
-[Gloss-Watchdog-IO/INFO]: [Gloss] config.toml changed on disk; reloading.
+[Gloss-Watchdog-IO/INFO]: [Gloss] gloss.toml changed on disk; reloading.
 [Server thread/INFO]: [Gloss] Reloaded in-place from disk.
 ```
 
@@ -58,7 +58,7 @@ Only one pass is ever in flight. If another request arrives while a disk scan or
 
 | Watcher | What a change does |
 |---|---|
-| `config` | Re-reads `config.toml` and reloads the services whose own config section actually changed |
+| `config` | Re-reads `gloss.toml` and reloads the services whose own config section actually changed |
 | `holograms` | Applies each changed document to its live display and logs `Hotloaded hologram <id>.json`. A deleted file despawns the hologram and logs `Hologram <id> removed from disk.` |
 | `boards` | Rebuilds the metadata for changed ids, drops removed ones, then re-runs board selection for every player |
 | `emoji` | Rebuilds the entire replacement table from the folder snapshot, ordered by document id |
@@ -176,8 +176,8 @@ The importer copies. It never moves. It never deletes. It never modifies anythin
 | `boards/**` | `panels/**` | HoloUi boards are Gloss panels. `.json` files only |
 | `previews/*.json` | `previews/` | `holoui.preview.*` localization keys are rewritten to `gloss.preview.*` |
 | `preview-scales.json` | `preview-scales.json` | verbatim |
-| `language.yml` | `language.yml` | verbatim |
-| `settings.json` | `config.toml` | keys overlaid, then the whole config re-serialized so comments regenerate |
+| `language.yml` | `language.yml` | message overrides copy verbatim; remove any copied top-level `locale` key because selection is authoritative in `gloss.toml` and the stale key is rejected |
+| `settings.json` | `gloss.toml` | keys overlaid, then the whole config re-serialized so comments regenerate |
 
 Files and folders whose path contains a dot-prefixed segment are skipped. Symbolic links are never followed. A rewritten preview whose bytes end up identical to a shipped Gloss default is not written. The shipped copy is already there.
 
@@ -245,7 +245,7 @@ A file is legacy when it has no `schemaVersion` key. Its original bytes are copi
 
 `groups/` is absorbed rather than converted. Each `groups/<name>.yml` contributes its `tablist-name` to `tablist.json` under the lowercased group name. Its `default-board` appends the group onto that board document `groups` list. A `default-board` that names a board that does not exist is recorded as a note and skipped. When every group file processed without error, the whole `groups/` directory is **moved** into the timestamped backup. That is why the folder disappears from the data tree.
 
-A legacy `config.yml` is overlaid last. Its mechanical keys land in `config.toml`. Its tablist keys merge into `tablist.json`. Its `chat-bubbles` prefix, offset, wrap, lifetime, follow and hide values merge into the matching fields of the schema-2 `bubbles/default.json`. Legacy fly-away on keeps the shipped late-fly motion; fly-away off writes identity translation, scale, rotation and opacity expressions. Line stagger is discarded because one message is now one multiline display. Its `motd.texts` merge into `motd.json` (each text split on newlines and truncated to the 2-line MOTD limit). Bubble and MOTD content are only applied while the target document is still byte-identical to the shipped default. A customized document is left alone. A note explains that the content was not applied. The file is then renamed to `config.yml.imported`.
+A legacy `config.yml` is overlaid last. Its mechanical keys land in `gloss.toml`. Its tablist keys merge into `tablist.json`. Its `chat-bubbles` prefix, offset, wrap, lifetime, follow and hide values merge into the matching fields of the schema-2 `bubbles/default.json`. Legacy fly-away on keeps the shipped late-fly motion; fly-away off writes identity translation, scale, rotation and opacity expressions. Line stagger is discarded because one message is now one multiline display. Its `motd.texts` merge into `motd.json` (each text split on newlines and truncated to the 2-line MOTD limit). Bubble and MOTD content are only applied while the target document is still byte-identical to the shipped default. A customized document is left alone. A note explains that the content was not applied. The file is then renamed to `config.yml.imported`.
 
 Both importers report their failures and keep going. An importer that throws logs `HoloUi data import failed; continuing enable.` or `Legacy Gloss data migration failed; continuing enable.` Startup proceeds.
 

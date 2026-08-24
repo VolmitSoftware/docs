@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Adapt documentation: Skill - Enchanting"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -169,7 +169,7 @@ The book stops charging once every enchantment on it is at its vanilla cap. High
 | Icon | `KNOWLEDGE_BOOK` |
 | Color | `LIGHT_PURPLE` |
 | Interval (ms) | `3909` |
-| Skill config | `plugins/Adapt/adapt/skills/enchanting.toml` |
+| Skill config | `plugins/Adapt/skills/enchanting.toml` |
 | Adaptation count | 14 |
 
 ### Skill XP and stats
@@ -185,7 +185,7 @@ XP comes from `EnchantItemEvent` at MONITOR priority. Award is `enchantPowerXPMu
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/enchanting.toml` on first load.
+Written to `plugins/Adapt/skills/enchanting.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -210,7 +210,7 @@ Written to `plugins/Adapt/adapt/skills/enchanting.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries these in addition to the knobs listed below.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these in addition to the knobs listed below.
 
 | Key | Behavior |
 |-----|----------|
@@ -233,7 +233,7 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | Base knowledge cost | 6 |
 | Cost factor | 0.9 |
 | Tick interval (ms) | 15100 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-quick-enchant.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-quick-enchant.toml` |
 | Listened events | `InventoryClickEvent` (HIGHEST) |
 | Menu stat line | Max Combined Levels |
 | Stat key | `enchanting.quick-enchant.books-applied` |
@@ -257,7 +257,7 @@ Power cap is `level + (level / maxPowerBonus1PerLevels)` once `level` exceeds `m
 | Base knowledge cost | 5 |
 | Cost factor | 0.9 |
 | Tick interval (ms) | 20999 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-lapis-return.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-lapis-return.toml` |
 | Listened events | `EnchantItemEvent` (`MONITOR`, cancelled events ignored) |
 | Menu stat line | Chance to drop free lapis when you enchant. The amount scales with your level |
 | Stat key | `enchanting.lapis-return.lapis-saved` |
@@ -283,7 +283,7 @@ Refund chance is `min(maxRefundChance, refundChanceBase + levelPercent * refundC
 | Cost factor | 0.9 |
 | Tick interval (ms) | 13001 |
 | Localization key | `enchanting.return` |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-xp-return.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-xp-return.toml` |
 | Listened events | `EnchantItemEvent` (MONITOR, cancelled events ignored) |
 | Menu stat lines | Committed enchants return vanilla XP after a cooldown. Vanilla XP per Enchant |
 | Stat key | `enchanting.xp-return.levels-saved` (counts experience points, not levels) |
@@ -309,7 +309,7 @@ Orb value is `min(maximumXpPerEnchant, vanillaXpAtLevelOne + (level - 1) * vanil
 | Base knowledge cost | 5 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 2200 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-anvil-savant.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-anvil-savant.toml` |
 | Listened events | `PrepareAnvilEvent` (HIGHEST), `InventoryClickEvent` (MONITOR) |
 | Menu stat line | Anvil Cost Reduction |
 | Stat key | `enchanting.anvil-savant.levels-saved` |
@@ -335,7 +335,7 @@ Reduction is `min(maximumReduction, reductionBase + levelPercent * reductionFact
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1800 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-offer-reroll.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-offer-reroll.toml` |
 | Listened events | `PlayerInteractEvent` (HIGHEST) |
 | Menu stat lines | Reroll Cooldown. Lapis Cost. XP Level Cost |
 | Stat key | `enchanting.offer-reroll.rerolls` |
@@ -363,7 +363,7 @@ Lapis cost is `max(1, round(lapisCostBase - levelPercent * lapisCostFactor))`. C
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1400 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-bookshelf-attunement.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-bookshelf-attunement.toml` |
 | Listened events | `PrepareItemEnchantEvent` (HIGHEST), `EnchantItemEvent` (MONITOR, effects only) |
 | Menu stat line | Virtual Bookshelf Power |
 | Stat key | `enchanting.bookshelf-attunement.enchants-boosted` |
@@ -387,7 +387,7 @@ Virtual power is `max(1, round(powerBase + levelPercent * powerFactor))`. Each o
 | Base knowledge cost | 4 |
 | Cost factor | 0.74 |
 | Tick interval (ms) | 1700 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-grindstone-recovery.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-grindstone-recovery.toml` |
 | Listened events | `InventoryClickEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Recovery Chance. Bonus XP. Recovery Cooldown |
 | Stat key | `enchanting.grindstone-recovery.enchants-recovered` |
@@ -419,7 +419,7 @@ Recovery chance is `min(maxRecoverChance, recoverChanceBase + levelPercent * rec
 | Base knowledge cost | 5 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 1900 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-curse-cleansing.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-curse-cleansing.toml` |
 | Listened events | `InventoryClickEvent` (LOWEST, cancelled events ignored) |
 | Menu stat line | Enchanting XP per Curse |
 | Stat key | `enchanting.curse-cleansing.curses-removed` |
@@ -442,7 +442,7 @@ Curses recognized are `BINDING_CURSE` and `VANISHING_CURSE`, on both direct ench
 | Base knowledge cost | 5 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 2100 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-tome-rebinding.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-tome-rebinding.toml` |
 | Listened events | `PlayerDropItemEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Enchant Loss Chance. XP Level Cost |
 | Stat key | `enchanting.tome-rebinding.books-split` |
@@ -470,7 +470,7 @@ Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which
 | Base knowledge cost | 6 |
 | Cost factor | 0.85 |
 | Tick interval (ms) | 2400 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-soul-link.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-soul-link.toml` |
 | Listened events | `PlayerInteractEvent` (HIGHEST, also receives cancelled events), `PlayerDeathEvent` (HIGH), `PlayerRespawnEvent` (MONITOR), `PlayerJoinEvent` (MONITOR), `PlayerQuitEvent` (MONITOR) |
 | Menu stat lines | XP Save Cost. Re-Mark Cooldown |
 | Stat key | `enchanting.soul-link.items-saved` |
@@ -499,7 +499,7 @@ The mark is a random token written to the item's persistent data under `adapt:so
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 2600 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-arcane-siphon.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-arcane-siphon.toml` |
 | Listened events | `EntityDeathEvent` (HIGH, cancelled events ignored) |
 | Menu stat lines | Book Drop Chance. Enchant Quality Bonus |
 | Stat key | `enchanting.arcane-siphon.books-siphoned` |
@@ -526,7 +526,7 @@ Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand. Du
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1600 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-rune-sight.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-rune-sight.toml` |
 | Listened events | `PrepareItemEnchantEvent` (MONITOR) |
 | Menu stat line | Offers Revealed |
 | Stat key | `enchanting.rune-sight.offers-revealed` |
@@ -550,7 +550,7 @@ Reveal depth is `max(1, min(maxRevealDepth, 1 + floor(levelPercent * (maxRevealD
 | Base knowledge cost | 6 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 2300 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-infusion-transfer.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-infusion-transfer.toml` |
 | Listened events | `InventoryClickEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Source Survival Chance. XP Level Cost |
 | Stat key | `enchanting.infusion-transfer.transfers` |
@@ -579,7 +579,7 @@ The transferred enchantment is the highest-level one on the donor that the base 
 | Base knowledge cost | 5 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1500 |
-| Config file | `plugins/Adapt/adapt/adaptations/enchanting-echo-of-knowledge.toml` |
+| Config file | `plugins/Adapt/adaptations/enchanting-echo-of-knowledge.toml` |
 | Listened events | `PlayerExpChangeEvent` (MONITOR) |
 | Menu stat line | XP Charge Rate |
 | Stat key | `enchanting.echo-of-knowledge.levels-charged` |

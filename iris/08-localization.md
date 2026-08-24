@@ -2,12 +2,12 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris ships its command, Studio, runtime, HUD, and UI text as typed Java message catalogs. Translated overlays cover seventeen languages. An operator-editable override file exists per locale. You pick the server language with `general.language` in `settings.json`. You change individual strings by dropping a partial JSON file into `languages/overrides/`.
+Iris ships its command, Studio, runtime, HUD, and UI text as typed Java message catalogs. Translated overlays cover seventeen languages. An operator-editable override file exists per locale. You pick the server language with `general.language` in `iris.json`. You change individual strings by dropping a partial JSON file into `languages/overrides/`.
 
 Client keybind labels are a separate surface. They live in the mod jar's Minecraft lang assets. See also [03 - Configuration](/iris/03-configuration), [04 - Commands & Permissions](/iris/04-commands-permissions), and [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
 
@@ -15,9 +15,9 @@ Client keybind labels are a separate surface. They live in the mod jar's Minecra
 
 Say you want German, but you dislike the wording Iris uses when someone mistypes a subcommand. You need two things: the locale setting, and an override file that redefines exactly that one key.
 
-Prerequisites: write access to the Iris data folder, a backup of `settings.json`, and an account that can run `/iris reload`.
+Prerequisites: write access to the Iris data folder, a backup of `iris.json`, and an account that can run `/iris reload`.
 
-1. Set `general.language` to `de_DE` in `settings.json` (`plugins/Iris/settings.json` on Bukkit-family, `<data folder>/settings.json` on a mod loader).
+1. Set `general.language` to `de_DE` in `iris.json` (`plugins/Iris/iris.json` on Bukkit-family, `<data folder>/iris.json` on a mod loader).
 2. Create `<Iris data folder>/languages/overrides/de_DE.json`. Iris creates the `languages/overrides/` folder itself on the first locale load, so it should already exist.
 
    ```json
@@ -42,7 +42,7 @@ If you are authoring a whole new locale, translate one command group first and c
 
 | Symptom | What actually happened | Fix |
 |---|---|---|
-| `Rejected locale setting '...'` in the log | The value does not match `[A-Za-z0-9_-]+`, so it never reached the loader | Correct the string in `settings.json`. The previously active locale keeps running in the meantime |
+| `Rejected locale setting '...'` in the log | The value does not match `[A-Za-z0-9_-]+`, so it never reached the loader | Correct the string in `iris.json`. The previously active locale keeps running in the meantime |
 | `Rejected locale reload for <locale>` | The overlay failed validation. The console then lists up to 12 concrete errors and a count of any it omitted | Fix the listed keys and reload. Nothing partial is applied. The previous locale stays active in full |
 | `Locale overlay key is not declared by the message catalog` | You invented a key name. Overrides can only redefine keys that already exist in code | Copy the exact key id from the bundled locale file for your language |
 | `Expected [x, y] but found [x]` | Your text dropped or renamed a `{name}` placeholder | Match the English template's placeholder set exactly. Order and surrounding words are free. The set of names is not |
@@ -72,7 +72,7 @@ Code resolves text through `IrisLanguage.text(...)` when color codes should surv
 
 | Setting | Default | Location |
 |---|---|---|
-| `general.language` | `en_US` | `plugins/Iris/settings.json` (plugin) or `<data folder>/settings.json` (mod) |
+| `general.language` | `en_US` | `plugins/Iris/iris.json` (plugin) or `<data folder>/iris.json` (mod) |
 
 The value must match `[A-Za-z0-9_-]+`. Anything else is rejected outright and the previously active locale keeps running. Both `/iris reload` and the automatic settings hotload re-read the setting and reload the locale. The command reports the requested and the active id so you can tell a successful switch from a silent no-op.
 

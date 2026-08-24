@@ -2,7 +2,7 @@
 title: "Overview"
 description: "What Wormholes is, feature map, runtime, and build"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ cross-server gateways, PlaceholderAPI keys, and a public traversal pricing API.
 | Maintainer reference | Production packages, boundaries, build tasks | [16 - Maintainer Component & Build Reference](/wormholes/16-maintainer-component-build-reference) |
 | Public API | apiJar, traversal cost, metrics | `20`–`23` API docs |
 
-Install and `config/wormholes.toml` are in
+Install and `wormholes.toml` are in
 [01 - Installation & Configuration](/wormholes/01-installation-configuration).
 
 ## Documentation index
@@ -41,7 +41,7 @@ Install and `config/wormholes.toml` are in
 | File | Covers |
 |------|--------|
 | [00 - Overview](/wormholes/00-overview) | What Wormholes is, feature map, runtime, build |
-| [01 - Installation & Configuration](/wormholes/01-installation-configuration) | Install, data folder, `config/wormholes.toml`, quality profiles |
+| [01 - Installation & Configuration](/wormholes/01-installation-configuration) | Install, data folder, `wormholes.toml`, quality profiles |
 | [02 - Concepts](/wormholes/02-concepts) | Portals, projection, tunnels, RTP, doors, pockets, cross-server |
 | [03 - Building Portals](/wormholes/03-building-portals) | Wand, runes, construction, skins, vanilla portal replace |
 | [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings) | Types, menus, travel, access, costs, cosmetics |

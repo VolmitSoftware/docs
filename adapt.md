@@ -2,7 +2,7 @@
 title: "Adapt"
 description: "Adapt passive skills and abilities for Paper and Folia"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,7 +58,7 @@ You can configure and disable each skill and each adaptation. Mutations are a se
 | `adapt.cheatitem` | `op` | Allows creation of a Cheat Item (one-time-use XP items) |
 | `adapt.clear` | `op` | Allows clearing of player progression data |
 | `adapt.configurator` | `op` | Allows use of the config editor and reset of configs to defaults |
-| `adapt.debug` | `op` | Allows Adapt debug tools, including debug mode and config migration |
+| `adapt.debug` | `op` | Allows Adapt debug mode |
 | `adapt.determine` | `op` | Allows direct assignment of skill lines and adaptations to players |
 | `adapt.effects` | `True` | Allows toggle of Adapt effect visibility for yourself |
 | `adapt.gui` | `op` | Allows opening of the Adapt GUI with /adapt gui |

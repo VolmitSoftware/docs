@@ -2,7 +2,7 @@
 title: "API - Metric Publishing"
 description: "React documentation: API - Metric Publishing"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -384,7 +384,7 @@ React accepts 16 sources and 24 metrics per source. It reads at most 64 metrics 
 
 Quarantine starts after 5 faults. A slow warning fires at 5 ms. Discovery runs every 5 seconds. Re-declaration runs every 60 seconds.
 
-`verbose = false` in `plugins/React/config.toml` hides most `[metric]` diagnostics. Enable it when a source is not appearing to see source refusals, faults, accepted declaration counts, and withdrawal notices. Invalid individual metric descriptors are omitted from the accepted declaration rather than logged one by one. Sampler-id collisions and failed reconcile passes are warnings regardless of verbose mode.
+`verbose = false` in `plugins/React/react.toml` hides most `[metric]` diagnostics. Enable it when a source is not appearing to see source refusals, faults, accepted declaration counts, and withdrawal notices. Invalid individual metric descriptors are omitted from the accepted declaration rather than logged one by one. Sampler-id collisions and failed reconcile passes are warnings regardless of verbose mode.
 
 ---
 

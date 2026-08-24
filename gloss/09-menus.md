@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Gloss documentation: Hologram Menus"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -156,7 +156,7 @@ Sessions tick once per tick. Each tick drains any pending API icon updates, then
 
 Navigation keeps a per-player history stack and a recorded root menu. A `navigate` action can push, replace, go back or go home. `/gloss menu back` reopens the previous entry. If the player quits, Gloss closes the session and clears the history.
 
-If you set `[features] menus = false` in `config.toml`, every open path refuses. `/gloss menu open`, `navigate` actions and the API all decline without a message. Documents still load and hot-reload. The content commands still edit them. Nothing opens.
+If you set `[features] menus = false` in `gloss.toml`, every open path refuses. `/gloss menu open`, `navigate` actions and the API all decline without a message. Documents still load and hot-reload. The content commands still edit them. Nothing opens.
 
 ## Text inside menus
 
@@ -227,7 +227,7 @@ Changes under `images/` do not reload menu documents. Because icons are rebuilt 
 | `[features] menus` | `true` | When `false`, no menu can be opened by command, action or API |
 | `[menus] uiScale` | `1.0` | Global render scale multiplier for menus and panels. Clamped to `0.25` – `4.0` |
 
-`uiScale` multiplies component offsets, icon geometry and hitbox dimensions. It does not multiply the menu-level `offset`. If you change it in `config.toml`, the change takes effect on the next hot reload without reopening. Open sessions and panel views rebuild their visuals in place.
+`uiScale` multiplies component offsets, icon geometry and hitbox dimensions. It does not multiply the menu-level `offset`. If you change it in `gloss.toml`, the change takes effect on the next hot reload without reopening. Open sessions and panel views rebuild their visuals in place.
 
 `[debug] hitbox` and `[debug] position` draw particle overlays for open sessions and are also applied live. They are described in [Components & Hitboxes](/gloss/10-components-hitboxes).
 
@@ -363,7 +363,7 @@ What changed around them:
 - the folder is `plugins/Gloss/menus/`, not `plugins/holoui/menus/`
 - the commands are `/gloss menu …`, and `/holoui menu create` is now `/gloss menu new`
 - the permissions are `gloss.menus.*` and `gloss.open.<menuId>`
-- `uiScale` is `[menus] uiScale` in `config.toml`, not `UI_SCALE` in `settings.json`
+- `uiScale` is `[menus] uiScale` in `gloss.toml`, not `UI_SCALE` in `settings.json`
 - HoloUi world-anchored **boards** are Gloss **panels**. `/gloss board` is the scoreboard tree and has nothing to do with menus
 - the id contract is enforced at load, so a menu path that HoloUi tolerated may now be refused
 

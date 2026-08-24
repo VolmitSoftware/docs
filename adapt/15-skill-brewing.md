@@ -2,7 +2,7 @@
 title: "Skill - Brewing"
 description: "Adapt documentation: Skill - Brewing"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -114,14 +114,14 @@ Adds Potions of Saturation, which refill hunger instantly instead of over time. 
 | Icon | `LINGERING_POTION` |
 | Color | `LIGHT_PURPLE` |
 | Interval (ms) | `5851` |
-| Skill config | `plugins/Adapt/adapt/skills/brewing.toml` |
+| Skill config | `plugins/Adapt/skills/brewing.toml` |
 | Adaptation count | 13 |
 
 `SkillBrewing` also registers the `BrewingStandOwnerMatter` spatial slice type, which is what stores brewing-stand ownership per world.
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/brewing.toml` on first load.
+Written to `plugins/Adapt/skills/brewing.toml` on first load.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -167,7 +167,7 @@ Written to `plugins/Adapt/adapt/skills/brewing.toml` on first load.
 
 ### Shared adaptation config keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries these keys on top of its own.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these keys on top of its own.
 
 | Key | Default | What it does |
 |-----|---------|--------------|
@@ -197,7 +197,7 @@ Initial knowledge cost is 2. Base knowledge cost is 3. Cost factor is 1.
 | Base knowledge cost | 3 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 4788 |
-| Config file | `plugins/Adapt/adapt/adaptations/brewing-lingering.toml` |
+| Config file | `plugins/Adapt/adaptations/brewing-lingering.toml` |
 
 Listened events: `BrewEvent`.
 
@@ -222,7 +222,7 @@ New duration for each non-instant effect is the flat tick bonus plus the origina
 | Base knowledge cost | 3 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 253 |
-| Config file | `plugins/Adapt/adapt/adaptations/brewing-super-heated.toml` |
+| Config file | `plugins/Adapt/adaptations/brewing-super-heated.toml` |
 
 Listened events: `InventoryMoveItemEvent`, `BrewEvent` and `InventoryClickEvent`, all of which mark the stand as recently active so it gets ticked.
 
@@ -238,7 +238,7 @@ times the lava block count. A stand with no brew running is checked a few more t
 
 ### Bottled Absorption
 
-Icon `QUARTZ`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptations/brewing-absorption.toml`, class `BrewingAbsorption`.
+Icon `QUARTZ`, tick interval 1333 ms, config `plugins/Adapt/adaptations/brewing-absorption.toml`, class `BrewingAbsorption`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -247,7 +247,7 @@ Icon `QUARTZ`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptations/br
 
 ### Bottled Blindness
 
-Icon `INK_SAC`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptations/brewing-blindness.toml`, class `BrewingBlindness`.
+Icon `INK_SAC`, tick interval 1333 ms, config `plugins/Adapt/adaptations/brewing-blindness.toml`, class `BrewingBlindness`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -256,7 +256,7 @@ Icon `INK_SAC`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptations/b
 
 ### Bottled Darkness
 
-Icon `BLACK_CONCRETE`, tick interval 1335 ms, config `plugins/Adapt/adapt/adaptations/brewing-darkness.toml`, class `BrewingDarkness`.
+Icon `BLACK_CONCRETE`, tick interval 1335 ms, config `plugins/Adapt/adaptations/brewing-darkness.toml`, class `BrewingDarkness`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -264,7 +264,7 @@ Icon `BLACK_CONCRETE`, tick interval 1335 ms, config `plugins/Adapt/adapt/adapta
 
 ### Bottled Decay
 
-Icon `WITHER_ROSE`, tick interval 1334 ms, config `plugins/Adapt/adapt/adaptations/brewing-decay.toml`, class `BrewingDecay`.
+Icon `WITHER_ROSE`, tick interval 1334 ms, config `plugins/Adapt/adaptations/brewing-decay.toml`, class `BrewingDecay`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -273,7 +273,7 @@ Icon `WITHER_ROSE`, tick interval 1334 ms, config `plugins/Adapt/adapt/adaptatio
 
 ### Bottled Fatigue
 
-Icon `SLIME_BALL`, tick interval 1332 ms, config `plugins/Adapt/adapt/adaptations/brewing-fatigue.toml`, class `BrewingFatigue`.
+Icon `SLIME_BALL`, tick interval 1332 ms, config `plugins/Adapt/adaptations/brewing-fatigue.toml`, class `BrewingFatigue`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -282,7 +282,7 @@ Icon `SLIME_BALL`, tick interval 1332 ms, config `plugins/Adapt/adapt/adaptation
 
 ### Bottled Haste
 
-Icon `AMETHYST_SHARD`, tick interval 1334 ms, config `plugins/Adapt/adapt/adaptations/brewing-haste.toml`, class `BrewingHaste`.
+Icon `AMETHYST_SHARD`, tick interval 1334 ms, config `plugins/Adapt/adaptations/brewing-haste.toml`, class `BrewingHaste`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -291,7 +291,7 @@ Icon `AMETHYST_SHARD`, tick interval 1334 ms, config `plugins/Adapt/adapt/adapta
 
 ### Bottled Life
 
-Icon `ENCHANTED_GOLDEN_APPLE`, tick interval 1330 ms, config `plugins/Adapt/adapt/adaptations/brewing-healthboost.toml`, class `BrewingHealthBoost`.
+Icon `ENCHANTED_GOLDEN_APPLE`, tick interval 1330 ms, config `plugins/Adapt/adaptations/brewing-healthboost.toml`, class `BrewingHealthBoost`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -300,7 +300,7 @@ Icon `ENCHANTED_GOLDEN_APPLE`, tick interval 1330 ms, config `plugins/Adapt/adap
 
 ### Bottled Hunger
 
-Icon `ROTTEN_FLESH`, tick interval 1331 ms, config `plugins/Adapt/adapt/adaptations/brewing-hunger.toml`, class `BrewingHunger`.
+Icon `ROTTEN_FLESH`, tick interval 1331 ms, config `plugins/Adapt/adaptations/brewing-hunger.toml`, class `BrewingHunger`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -309,7 +309,7 @@ Icon `ROTTEN_FLESH`, tick interval 1331 ms, config `plugins/Adapt/adapt/adaptati
 
 ### Bottled Nausea
 
-Icon `CRIMSON_FUNGUS`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptations/brewing-nausea.toml`, class `BrewingNausea`.
+Icon `CRIMSON_FUNGUS`, tick interval 1333 ms, config `plugins/Adapt/adaptations/brewing-nausea.toml`, class `BrewingNausea`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -318,7 +318,7 @@ Icon `CRIMSON_FUNGUS`, tick interval 1333 ms, config `plugins/Adapt/adapt/adapta
 
 ### Bottled Resistance
 
-Icon `IRON_BLOCK`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptations/brewing-resistance.toml`, class `BrewingResistance`.
+Icon `IRON_BLOCK`, tick interval 1333 ms, config `plugins/Adapt/adaptations/brewing-resistance.toml`, class `BrewingResistance`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|
@@ -327,7 +327,7 @@ Icon `IRON_BLOCK`, tick interval 1333 ms, config `plugins/Adapt/adapt/adaptation
 
 ### Bottled Saturation
 
-Icon `BAKED_POTATO`, tick interval 1334 ms, config `plugins/Adapt/adapt/adaptations/brewing-saturation.toml`, class `BrewingSaturation`.
+Icon `BAKED_POTATO`, tick interval 1334 ms, config `plugins/Adapt/adaptations/brewing-saturation.toml`, class `BrewingSaturation`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
 |-----------|-------------|------------|--------|----------|-----------|------|

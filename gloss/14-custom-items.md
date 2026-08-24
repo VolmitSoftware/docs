@@ -2,7 +2,7 @@
 title: "Custom Items & Item Providers"
 description: "Gloss documentation: Custom Items & Item Providers"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -195,7 +195,7 @@ add an item provider at runtime.
 
 ## Configuration
 
-`config.toml`, table `[items]`:
+`gloss.toml`, table `[items]`:
 
 | Key | Default | Meaning |
 |---|---|---|
@@ -218,7 +218,7 @@ are on [Configuration](/gloss/02-configuration).
 | `/gloss item export` | `gloss.items.export` | Writes the catalog. Refuses while an export is already running |
 
 `items` is an alias of `item`. `/gloss items status` works too. Both subcommands abort with
-`Custom items are disabled. Set customItems to true in config.toml.` when `[items] customItems` is
+`Custom items are disabled. Set customItems to true in gloss.toml.` when `[items] customItems` is
 false.
 
 `status` shows four states per provider:

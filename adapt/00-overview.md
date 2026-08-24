@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Adapt documentation: Overview"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ This file is the map. Each section below says what a piece is and which doc owns
 
 **Skills** are the progress lines. The lines include Agility, Pickaxes, Chronos, and twenty more. Each skill watches for its own activities. Each skill pays skill XP and owns a set of adaptations. [10 - Skills Catalog](/adapt/10-skills-catalog) indexes them. Docs `11` through `33` cover one skill each. Each skill page lists where its XP comes from. It lists how every adaptation activates.
 
-**Adaptations** are the abilities a player buys. Each adaptation has levels. Each level has a knowledge price and may also have a configured Vault price. Each held adaptation also charges an ability power price. Each adaptation has its own file under `plugins/Adapt/adapt/adaptations/`. An operator can retune or disable one ability without change to the rest.
+**Adaptations** are the abilities a player buys. Each adaptation has levels. Each level has a knowledge price and may also have a configured Vault price. Each held adaptation also charges an ability power price. Each adaptation has its own file under `plugins/Adapt/adaptations/`. An operator can retune or disable one ability without change to the rest.
 
 **Progression** converts skill XP to skill level and knowledge. Skill level also feeds a shared master level. Master level sets the ability power budget. Knowledge decides what you can afford. Power decides how much you can carry at once. See [02 - Concepts](/adapt/02-concepts) for the model and [05 - Configuration Math](/adapt/05-configuration-math) for the curves.
 

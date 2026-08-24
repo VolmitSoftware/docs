@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -57,7 +57,7 @@ Use a disposable world, a fixed seed, and a pack with visibly frequent rivers. V
    [01 - Installation & Platforms](/iris/01-installation-platforms).
 2. Start the server once.
 
-   Expect: Iris enables without downloading packs. `settings.json` appears
+   Expect: Iris enables without downloading packs. `iris.json` appears
    in the Iris data directory.
 
    If Iris does not enable, check Java version and platform artifact before

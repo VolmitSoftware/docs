@@ -2,13 +2,13 @@
 title: "GUI Customization"
 description: "Adapt documentation: GUI Customization"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt's menus can be reshaped without touching code. You choose how tall the skills menu is, which item represents each skill and adaptation, and what order they appear in. Everything lives in `plugins/Adapt/adapt/adapt.toml` under the `gui` table, plus the one top-level toggle `guiShowAllSkills`.
+Adapt's menus can be reshaped without touching code. You choose how tall the skills menu is, which item represents each skill and adaptation, and what order they appear in. Everything lives in `plugins/Adapt/adapt.toml` under the `gui` table, plus the one top-level toggle `guiShowAllSkills`.
 
 Every setting on this page hot-reloads. Adapt checks native filesystem events twice a second, periodically reconciles exact content to recover events the platform missed, and applies only a stable latest-state save. A save that parses cleanly re-reads the config and reopens any Adapt window a player currently has on screen. You see the change without a restart.
 
@@ -18,7 +18,7 @@ Icons resolve through the same lookup on all three surfaces. One key can change 
 
 ## Setting the skills menu height
 
-1. Open `plugins/Adapt/adapt/adapt.toml`.
+1. Open `plugins/Adapt/adapt.toml`.
 2. Set `gui.skillsGuiRows` under the `[gui]` table.
 3. Save. The watcher picks it up and any open menu reopens at the new size.
 
@@ -43,7 +43,7 @@ Keys are matched exactly first, then case-insensitively. A value Adapt cannot tu
 
 ### When models.toml wins
 
-`plugins/Adapt/adapt/models.toml` is the resource-pack side of icons. It outranks `gui.skillIcons` and `gui.adaptationIcons` whenever it actually overrides something. Your configured material is folded into the model before the model becomes an item. The test for "actually overrides" is narrow:
+`plugins/Adapt/models.toml` is the resource-pack side of icons. It outranks `gui.skillIcons` and `gui.adaptationIcons` whenever it actually overrides something. Your configured material is folded into the model before the model becomes an item. The test for "actually overrides" is narrow:
 
 - No configured material, or one equal to the class's hardcoded default, leaves the model untouched.
 - A model with a non-zero `model` number, or with a `material` different from the hardcoded default, wins outright and your configured material is ignored.
@@ -53,7 +53,7 @@ That middle case matters because `models.toml` populates itself. The first looku
 
 With `customModels = false`, model lookups return the hardcoded fallback with no model number and no key. That is never an override, so the `gui.*Icons` material always applies.
 
-Missing `models.toml` paths are created with defaults on first read. The file is rewritten on a background thread. A legacy `models.json` is migrated to `models.toml` on startup.
+Missing `models.toml` paths are created with defaults on first read. The file is rewritten on a background thread. Adapt reads model mappings only from the root `plugins/Adapt/models.toml` file.
 
 ## Reordering menus
 
@@ -162,7 +162,7 @@ models.toml (when it actually overrides, and customModels = true)
 
 ### models.toml format
 
-`plugins/Adapt/adapt/models.toml`, dotted-path tables holding `material`, `model` and `modelKey`:
+`plugins/Adapt/models.toml`, dotted-path tables holding `material`, `model` and `modelKey`:
 
 ```toml
 [skill.stealth]

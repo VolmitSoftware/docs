@@ -1,21 +1,27 @@
 ---
 title: "HiddenOre — Configuration"
-description: "Every config.yml key and default"
+description: "Every hiddenore.yml key and default"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`plugins/HiddenOre/config.yml`. Values shown are the shipped defaults.
+`plugins/HiddenOre/hiddenore.yml`. Values shown are the shipped defaults.
 
-HiddenOre watches `config.yml` and `language.yml` with exact native file events plus a bounded SHA-256 reconciliation every 2.5 seconds. Idle event polls do not read or hash either file between reconciliation deadlines. A save must stay stable for 250 ms, and automatic reloads complete no more than once every 3 seconds; later saves replace the queued state and run as one trailing reload. The automatic apply parses the exact captured bytes rather than rereading a newer or half-written disk version. Watcher startup and manual-reload reset use the exact config-and-language pair that became live, so a newer save arriving in either window remains detectable and queues normally. Atomic editor moves and FTP delete-and-recreate gaps wait for both files to return, while common temporary upload names are ignored. Files larger than 8 MiB are not automatically loaded. `/hiddenore reload` remains immediate.
+HiddenOre watches `hiddenore.yml` and `language.yml` with exact native file events plus a bounded SHA-256 reconciliation every 2.5 seconds. Idle event polls do not read or hash either file between reconciliation deadlines. A save must stay stable for 250 ms, and automatic reloads complete no more than once every 3 seconds; later saves replace the queued state and run as one trailing reload. The automatic apply parses the exact captured bytes rather than rereading a newer or half-written disk version. Watcher startup and manual-reload reset use the exact config-and-language pair that became live, so a newer save arriving in either window remains detectable and queues normally. Atomic editor moves and FTP delete-and-recreate gaps wait for both files to return, while common temporary upload names are ignored. Files larger than 8 MiB are not automatically loaded. `/hiddenore reload` remains immediate.
+
+`language.yml` is not a locale selector. A retained `locale:` entry is an unknown
+override key and rejects the reload; select the locale with `language` in
+`hiddenore.yml`.
 
 ## Top level
 
 | Key | Default | Effect |
 |---|---|---|
+| `language` | `en_US` | Select the bundled message locale; `language.yml` only contains overrides and reload sounds |
+| `metrics` | `true` | Enable anonymous bStats reporting after a restart |
 | `auto_pickup_drops` | `false` | Send hidden drops straight to the player's inventory |
 | `suppress_block_drop_on_custom_drop` | `true` | Suppress the block's normal drop when a reward fires |
 

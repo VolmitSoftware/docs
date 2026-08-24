@@ -28,7 +28,7 @@ This action requests JVM garbage collection. It reports reclaimed heap.
 
 ### `purge-chunks`
 
-This action attempts a saved unload of selected chunks in a world or area. It does not delete the entities stored in those chunks. If a pending React kill countdown retires during unload, reload reconciliation removes only React's marker or temporary countdown name and preserves an existing player-assigned name.
+This action attempts a saved unload of selected chunks in a world or area. It does not delete the entities stored in those chunks. All-world selection waits for Observer's startup coordinate seed, then streams loaded coordinates in waves of at most 256, retains no `Chunk` handles, and rechecks loaded state on each owning region without loading missing chunks. If a pending React kill countdown retires during unload, reload reconciliation removes only React's marker or temporary countdown name and preserves an existing player-assigned name.
 
 - **Class:** `ActionPurgeChunks`
 - **Config:** `plugins/React/action/purge-chunks.toml`
@@ -37,11 +37,11 @@ This action attempts a saved unload of selected chunks in a world or area. It do
 
 | Execution parameter | Type | Default | Description |
 |---|---|---|---|
-| `area` | `AreaActionParams` | builder defaults | Area selection for target chunks. |
+| `area` | `AreaActionParams` | builder defaults | Loaded-coordinate selection for target chunks; explicit coordinates take precedence over all-world traversal. |
 
 ### `purge-entities`
 
-This action purges matching entities in an area. Type, named-entity, and protection guards apply.
+This action purges matching entities in an area. Type, named-entity, and protection guards apply. All-world traversal waits for Observer's startup coordinate seed, streams loaded coordinates in waves of at most 256, and resolves each chunk only on its owner without retaining chunk handles or loading missing chunks.
 
 - **Class:** `ActionPurgeEntities`
 - **Config:** `plugins/React/action/purge-entities.toml`
@@ -62,7 +62,7 @@ Execution parameters:
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `area` | `AreaActionParams` | builder defaults | Area selection for target entities. |
+| `area` | `AreaActionParams` | builder defaults | Loaded-coordinate selection for target entities; an explicit player radius stays limited to that selection. |
 | `entityFilter` | `FilterParams<EntityType>` | builder defaults | Include/exclude entity type filter. |
 | `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names. Set false explicitly to include them. |
 

@@ -2,7 +2,7 @@
 title: "Skill - Chronos"
 description: "Adapt documentation: Skill - Chronos"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,7 +158,7 @@ Every adaptation config file also carries the shared keys `enabled`, `permanent`
 | Icon | `CLOCK` |
 | Color | `AQUA` |
 | Interval (ms) | `5050` (from `setInterval`) |
-| Skill config | `plugins/Adapt/adapt/skills/chronos.toml` |
+| Skill config | `plugins/Adapt/skills/chronos.toml` |
 | Adaptation count | 13 |
 
 ### XP sources
@@ -191,7 +191,7 @@ Clock multipliers apply to every one of these. Lingering Speed clouds are stampe
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/chronos.toml` on first load.
+Written to `plugins/Adapt/skills/chronos.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -242,7 +242,7 @@ A `speedPotionBaseXP` of exactly `45` in an existing config is rewritten to `120
 | Base knowledge cost | 6 |
 | Cost factor | 0.35 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-time-bottle.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-time-bottle.toml` |
 
 Recipe key `chronos-time-bottle`, shapeless: `CLOCK` + `POTION` + `GLASS_BOTTLE`, with a craft-time check that the potion is `SWIFTNESS`.
 
@@ -338,7 +338,7 @@ The stored-second price of one growth step is `naturalSeconds / steps`, times th
 | Base knowledge cost | 7 |
 | Cost factor | 0.38 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-aberrant-touch.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-aberrant-touch.toml` |
 
 Milestone: `challenge_chronos_aberrant_500` on `chronos.aberrant-touch.slowness-stacks-applied` at 500, rewarding 400. A second advancement, `challenge_chronos_aberrant_frozen`, has no milestone threshold and is granted directly in code.
 
@@ -378,7 +378,7 @@ Listened events:
 | Base knowledge cost | 3 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-instant-recall.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-instant-recall.toml` |
 
 Milestones: `challenge_chronos_recall_50` and `challenge_chronos_recall_1k` on `chronos.instant-recall.recalls` at 50 and 1000, rewarding 300 and 1500. `challenge_chronos_recall_cheat_death` has no milestone threshold and is granted directly in code.
 
@@ -454,7 +454,7 @@ Listened events:
 | Base knowledge cost | 8 |
 | Cost factor | 0.42 |
 | Tick interval (ms) | idle until a field is active, then 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-time-bomb.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-time-bomb.toml` |
 
 Recipe key `chronos-time-bomb`, shapeless: `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND`, producing a lingering potion item.
 
@@ -524,7 +524,7 @@ Listened events:
 | Base knowledge cost | 5 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 1600 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-temporal-echo.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-temporal-echo.toml` |
 
 Milestone: `challenge_chronos_echo_200` on `chronos.temporal-echo.echo-hits` at 200, rewarding 400.
 
@@ -555,7 +555,7 @@ Listened events:
 | Base knowledge cost | 7 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-stasis-field.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-stasis-field.toml` |
 
 Milestones: `challenge_chronos_stasis_50` and `challenge_chronos_stasis_500` on `chronos.stasis-field.casts` at 50 and 500, rewarding 400 and 1500.
 
@@ -596,7 +596,7 @@ Listened events:
 | Base knowledge cost | 6 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-rewind.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-rewind.toml` |
 
 Milestones: `challenge_chronos_rewind_50` and `challenge_chronos_rewind_500` on `chronos.rewind.rewinds` at 50 and 500, rewarding 350 and 1400.
 
@@ -627,7 +627,7 @@ Listened events:
 | Base knowledge cost | 6 |
 | Cost factor | 0.42 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-borrowed-time.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-borrowed-time.toml` |
 
 Milestone: `challenge_chronos_borrowed_2500` on `chronos.borrowed-time.damage-deferred` at 2500, rewarding 900.
 
@@ -657,7 +657,7 @@ Listened events:
 | Base knowledge cost | 5 |
 | Cost factor | 0.38 |
 | Tick interval (ms) | 60000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-overtime.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-overtime.toml` |
 
 Milestone: `challenge_chronos_overtime_1k` on `chronos.overtime.seconds-extended` at 1000, rewarding 750.
 
@@ -691,7 +691,7 @@ Listened events:
 | Base knowledge cost | 5 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | `pulseIntervalMillis`, default 3000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-accelerate.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-accelerate.toml` |
 
 Milestone: `challenge_chronos_accelerate_1k` on `chronos.accelerate.blocks-accelerated` at 1000, rewarding 600.
 
@@ -726,7 +726,7 @@ Listened events:
 | Base knowledge cost | 9 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-hourglass-guard.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-hourglass-guard.toml` |
 
 Milestone: `challenge_chronos_hourglass_10` on `chronos.hourglass-guard.saves` at 10, rewarding 800.
 
@@ -760,7 +760,7 @@ Listened events:
 | Base knowledge cost | 4 |
 | Cost factor | 0.35 |
 | Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-pocket-watch.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-pocket-watch.toml` |
 
 Milestone: `challenge_chronos_pocket_watch_500` on `chronos.pocket-watch.slow-fall-seconds` at 500, rewarding 650.
 
@@ -789,7 +789,7 @@ Listened events:
 | Base knowledge cost | 4 |
 | Cost factor | 0.35 |
 | Tick interval (ms) | 60000 |
-| Config file | `plugins/Adapt/adapt/adaptations/chronos-deja-vu.toml` |
+| Config file | `plugins/Adapt/adaptations/chronos-deja-vu.toml` |
 
 Milestone: `challenge_chronos_deja_vu_500` on `chronos.deja-vu.damage-absorbed` at 500, rewarding 700.
 

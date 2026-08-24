@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Gloss documentation: Components & Hitboxes"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -407,7 +407,7 @@ No stage of this path imposes a click cooldown or rate limit on JSON-defined com
 
 ## Debug overlays
 
-Two `config.toml` switches draw particle overlays. Both default to `false`. Both are applied live when `config.toml` is edited or `/gloss reload` runs. Both drive their own repeating task at 2 ticks.
+Two `gloss.toml` switches draw particle overlays. Both default to `false`. Both are applied live when `gloss.toml` is edited or `/gloss reload` runs. Both drive their own repeating task at 2 ticks.
 
 | Key | What it draws |
 |---|---|

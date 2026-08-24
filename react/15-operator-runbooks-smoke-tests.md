@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "React documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ The current shaded artifact is `build/libs/React-2.0.0-26.2.jar`. A successful b
 
 1. Start an isolated Paper, Purpur, or Folia instance matching the artifact's target API.
 2. Confirm React enables once.
-3. Confirm React creates `plugins/React/config.toml` and the `core/`, `feature/`, `tweak/`, `action/`, and `sampler/` TOML trees.
+3. Confirm React creates `plugins/React/react.toml` and the `core/`, `feature/`, `tweak/`, `action/`, and `sampler/` TOML trees.
 4. Confirm React prints no uncaught exception.
 5. Run `/react version`, `/react action audit`, `/react integration status`, and `/react bridge status`.
 6. Join with `react.use`.
@@ -34,24 +34,15 @@ The current shaded artifact is `build/libs/React-2.0.0-26.2.jar`. A successful b
 9. Stop the server normally.
 10. Confirm React controllers and the ticker shut down without an ownership or drain error.
 
-## Legacy JSON migration
-
-1. Work from a copy of an existing React data folder that contains legacy JSON and no canonical TOML for the same ids.
-2. Start React.
-3. Confirm a timestamped ZIP appears under `plugins/React/migrations/backups/` before React removes migrated JSON.
-4. Confirm the migration marker exists.
-5. Confirm equivalent TOML files were written and startup completes with the expected values.
-6. Restart once more and confirm migration does not repeat.
-
 ## Hotload and full reload
 
 1. Leave the complete generated config tree unchanged for at least ten seconds. Confirm no `controller:hotload` slow-tick warning appears during idle event polls or exact-content reconciliation.
-2. Change a reversible value such as `slowTickLogMode` in `config.toml` and confirm it applies without `/react reload`.
+2. Change a reversible value such as `slowTickLogMode` in `react.toml` and confirm it applies without `/react reload`.
 3. Save two different valid values to the same file in quick succession, then change a second managed file before three seconds elapse. Confirm automatic apply batches are at least three seconds apart and the one trailing batch applies the latest value for each path.
 4. Change one active feature or tweak field and confirm the component restarts. Toggle its `enabled` field and confirm activation changes.
 5. Change `core/hotload.toml` while also changing another managed file. Confirm the other change is not lost and the new watcher cadence or notification setting takes effect only after the current batch finishes.
 6. Change the active locale override and confirm valid text applies. Edit an inactive locale override and confirm it does not replace the active locale.
-7. Write a valid config through a temporary file such as `config.toml.tmp`, then atomically rename it over the canonical target. Confirm the temporary artifact is ignored and the canonical file applies once.
+7. Write a valid config through a temporary file such as `react.toml.tmp`, then atomically rename it over the canonical target. Confirm the temporary artifact is ignored and the canonical file applies once.
 8. Temporarily move a managed config away and restore it during the grace window. Confirm React neither recreates nor deletes the target, the live state remains active, and the restored latest bytes eventually apply.
 9. Introduce invalid TOML temporarily. Confirm the live global and localization snapshot stays active, React leaves the invalid file bytes unchanged, and the rejection is reported.
 10. During an automatic apply, save a newer valid value externally. Confirm React does not canonicalize over that save and the newer digest is applied by the trailing batch.

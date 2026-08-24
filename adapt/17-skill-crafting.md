@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Adapt documentation: Skill - Crafting"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -168,7 +168,7 @@ Every adaptation config file also carries the shared keys `enabled`, `permanent`
 | Icon | `CRAFTING_TABLE` |
 | Color | `YELLOW` |
 | Interval (ms) | `3789` |
-| Skill config | `plugins/Adapt/adapt/skills/crafting.toml` |
+| Skill config | `plugins/Adapt/skills/crafting.toml` |
 | Adaptation count | 14 |
 
 ### XP sources
@@ -200,7 +200,7 @@ The three `crafted.items` tiers all pay the same reward, unlike the other chains
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/crafting.toml` on first load.
+Written to `plugins/Adapt/skills/crafting.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -227,7 +227,7 @@ Written to `plugins/Adapt/adapt/skills/crafting.toml` on first load.
 | Base knowledge cost | 9 |
 | Cost factor | 1.0 |
 | Tick interval (ms) | 5590 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-deconstruction.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-deconstruction.toml` |
 
 Milestones: `challenge_crafting_decon_200` and `challenge_crafting_decon_5k` on `crafting.deconstruction.items-deconstructed` at 200 and 5000, rewarding 300 and 1000.
 
@@ -251,7 +251,7 @@ Listened events:
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 5580 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-xp.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-xp.toml` |
 
 Milestones: `challenge_crafting_xp_1k` and `challenge_crafting_xp_25k` on `crafting.xp.items-crafted` at 1000 and 25000, rewarding 300 and 1500.
 
@@ -280,7 +280,7 @@ The vanilla XP reward is `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 
 | Cost factor | 1 |
 | Permanent | `true` |
 | Tick interval (ms) | 17776 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-leather.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-leather.toml` |
 
 Recipe key `crafting-leather`, campfire: `ROTTEN_FLESH` to `LEATHER`, cook time 100 ticks, 1 vanilla experience.
 
@@ -302,7 +302,7 @@ Listened events:
 | Cost factor | 1 |
 | Permanent | `true` |
 | Tick interval (ms) | 17776 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-skulls.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-skulls.toml` |
 
 Five shaped recipes each use eight of a ring material around one `BONE_BLOCK`.
 `crafting-skeletonskull` maps `BONE` to `SKELETON_SKULL`.
@@ -329,7 +329,7 @@ Listened events:
 | Cost factor | 1 |
 | Permanent | `true` |
 | Tick interval (ms) | 17779 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-backpacks.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-backpacks.toml` |
 
 Two registered recipes: a shaped craft from `LEATHER` and `CHEST`, and a shapeless single-`BUNDLE` recipe used for the mode cycle. The cycle recipe is a real registered recipe on purpose, so the swap consumes exactly one backpack and returns exactly one instead of duplicating it.
 
@@ -369,7 +369,7 @@ Listened events:
 | Cost factor | 1 |
 | Permanent | `true` |
 | Tick interval (ms) | 9248 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-stations.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-stations.toml` |
 
 Recognized held items and the inventory each opens follow. `CRAFTING_TABLE`
 opens `WORKBENCH`. `GRINDSTONE` opens `GRINDSTONE`. `ANVIL` opens `ANVIL`.
@@ -399,7 +399,7 @@ Listened events:
 | Cost factor | 1 |
 | Permanent | `true` |
 | Tick interval (ms) | 80248 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-reconstruction.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-reconstruction.toml` |
 
 Nineteen shapeless recipes, each one host block plus eight drops. `STONE` hosts `IRON_INGOT`, `GOLD_INGOT`, `COPPER_INGOT`, `LAPIS_LAZULI`, `REDSTONE`, `EMERALD`, `DIAMOND`, and `COAL` into the matching plain ore. `DEEPSLATE` hosts the same eight into the matching `DEEPSLATE_*` ore. `NETHER_BRICKS` hosts `GOLD_INGOT` into `NETHER_GOLD_ORE`, `QUARTZ` into `NETHER_QUARTZ_ORE`, and `NETHERITE_SCRAP` into `ANCIENT_DEBRIS`.
 
@@ -419,7 +419,7 @@ Listened events:
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.3 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-bulk-artisan.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-bulk-artisan.toml` |
 
 Milestones: `challenge_crafting_bulk_1k` and `challenge_crafting_bulk_10k` on `crafting.bulk-artisan.batch-crafted` at 1000 and 10000, rewarding 400 and 1500.
 
@@ -444,7 +444,7 @@ Listened events:
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.3 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-thrifty-hands.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-thrifty-hands.toml` |
 
 Milestones: `challenge_crafting_thrifty_500` and `challenge_crafting_thrifty_5k` on `crafting.thrifty-hands.ingredients-refunded` at 500 and 5000, rewarding 400 and 1500.
 
@@ -468,7 +468,7 @@ Listened events:
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-masterwork.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-masterwork.toml` |
 
 Milestones: `challenge_crafting_masterwork_50` and `challenge_crafting_masterwork_500` on `crafting.masterwork.pieces-forged` at 50 and 500, rewarding 400 and 1500.
 
@@ -502,7 +502,7 @@ Listened events:
 | Base knowledge cost | 3 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-compactor.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-compactor.toml` |
 
 Activation requires all four conditions. You must sneak. Active level must be
 above 0. No container may be open beyond the default inventory view. A
@@ -529,7 +529,7 @@ Listened events:
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-tinkerer.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-tinkerer.toml` |
 
 Milestones: `challenge_crafting_tinkerer_50` and `challenge_crafting_tinkerer_500` on `crafting.tinkerer.tools-tinkered` at 50 and 500, rewarding 400 and 1500.
 
@@ -556,7 +556,7 @@ by the inventory's stale preview.
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.3 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-provisioner.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-provisioner.toml` |
 
 Milestones: `challenge_crafting_provisioner_500` and `challenge_crafting_provisioner_5k` on `crafting.provisioner.bonus-portions` at 500 and 5000, rewarding 400 and 1500.
 
@@ -584,7 +584,7 @@ Listened events:
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.3 |
-| Config file | `plugins/Adapt/adapt/adaptations/crafting-signature.toml` |
+| Config file | `plugins/Adapt/adaptations/crafting-signature.toml` |
 
 The signature is a persistent-data string holding the crafter's UUID, plus a lore line. The trade bonus is a `HERO_OF_THE_VILLAGE` potion effect applied on villager interaction, skipped if the player already has that effect.
 

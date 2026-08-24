@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "Mining drop-control and anti-xray plugin"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,7 +45,7 @@ Fortune, tool-tier, and experience changes leave positions intact.
 
 - [Installation *Requirements and first-run setup*](/hiddenore/installation)
 - [Commands & Permissions *`/hiddenore` and its one node*](/hiddenore/commands)
-- [Configuration *Every `config.yml` key and default*](/hiddenore/configuration)
+- [Configuration *Every `hiddenore.yml` key and default*](/hiddenore/configuration)
 - [API Overview *Developer API index*](/hiddenore/api)
 - [API — Events *`HiddenOreDropsEvent` and others*](/hiddenore/api/events)
 - [API — Service *The service interface*](/hiddenore/api/service)

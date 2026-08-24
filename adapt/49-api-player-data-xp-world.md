@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt lets you look up an online player's progression and award them XP, knowledge, and wisdom. It does not offer a general persistence API. The objects behind those lookups, `PlayerData` and `PlayerSkillLine`, are the live mutable runtime state Adapt itself ticks, saves, and publishes. Reading them is fine. Writing to them is not.
+Adapt lets you look up a ready online player's progression and award them XP, knowledge, and wisdom. A Bukkit-online player can deliberately have no Adapt runtime when their profile is still loading, failed safe validation, or lost its SQL fence. It does not offer a general persistence API. The objects behind successful lookups, `PlayerData` and `PlayerSkillLine`, are the live mutable runtime state Adapt itself ticks, saves, and publishes. Reading them is fine. Writing to them is not.
 
 The three things you will actually use are `AdaptServer` for lookup, the `XP` / `Skill` / `Adaptation` helpers for rewards, and `WorldData` for block-scoped storage. Everything else on this page is documented so that public visibility is not mistaken for a promise.
 
@@ -17,7 +17,9 @@ Almost all of it is thread-bound. Adapt runs a player's data on the thread that 
 
 Get the server through `Adapt.instance.getAdaptServer()`, or through the checked plugin lookup shown in [42 - API - Skills & Adaptations](/adapt/42-api-skills-adaptations), once Adapt has enabled.
 
-Two lookups are easy to mix up. `getPlayerData(UUID)` reads the in-memory player map and never touches storage. That map retains a retired wrapper for about 60 seconds after quit, so use `getOnlineAdaptPlayer(UUID)` when online membership matters. `peekData(UUID)` is an inspection read, not the fenced login path. It checks the purge guard and in-memory state, may reuse a stable prefetch, then inspects a pending local queue operation, direct SQL or local JSON as applicable. It never claims SQL ownership or performs a Redis handoff. A failed SQL inspection can return preserved local data with its save guard set, and a missing profile returns a fresh empty `PlayerData`. Keep `peekData` off tick paths.
+The lookups are easy to mix up. `getPlayerData(UUID)` reads the in-memory player map and never touches storage. That map retains a retired wrapper for about 60 seconds after a normal quit, but returns empty for an online player whose current Adapt runtime is unavailable. Use `getOnlineAdaptPlayer(UUID)` when online membership matters; it also returns `null` for a Bukkit-online player without a current ready runtime. `getPlayer(Player)` is the same kind of lookup for an exact current Bukkit session. It returns `null` rather than loading data or constructing a wrapper.
+
+`peekData(UUID)` is an inspection read, not the fenced login path. It returns an empty `PlayerData` immediately for an online player whose current Adapt runtime is unavailable. Otherwise it checks the purge guard and in-memory state, may reuse a stable prefetch, then inspects a pending local queue operation, direct SQL or local JSON as applicable. It never claims SQL ownership or performs a Redis handoff, and it never caches load-failed data. A missing offline profile returns a fresh empty `PlayerData`. Keep `peekData` off tick paths.
 
 `AdaptPlayer` is the online wrapper. Read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAdaptation(id)`, `hasSkill(skill)`, `isBusy()`, the food-charge queries, and `saveNow()` when you need an immediate flush. Do not construct one. Do not call its runtime, tick, login, or unregister methods. Do not use its random or recency XP routing from outside Adapt. Its nested `FxPosition` and `FoodCharge` records are plain value results.
 
@@ -47,6 +49,8 @@ payout is large enough and the config allows it.
 
 `XP` also carries `knowledge(...)`, `wisdom(...)`, `boostXP(...)`, and `spatialXP(...)` for a delayed reward claimable inside a radius. Boost durations are `long` milliseconds throughout `XP`, `AdaptPlayer`, `PlayerData`, and `PlayerSkillLine`; expiry saturates instead of overflowing. It also carries pure curve helpers converting between XP, level, and progress. `XpNovelty` and `XpProvenance` are the anti-farm layer behind those multipliers. They can be called directly for the same numbers. `XpNoveltyListener` and `XpProvenanceListener` are Adapt-owned Bukkit listeners. Registering either a second time double-counts every event.
 
+Every player reward entry point is a no-op unless the exact current player session has a ready Adapt runtime. This includes XP, knowledge, wisdom, boosts, skill and adaptation rewards, spatial claims, and advancement side effects. Callers must tolerate a connected player remaining unavailable; no reward helper creates a fallback profile.
+
 ## World-scoped data
 
 `WorldData.of(world)` returns Adapt's live per-world store. It attaches typed values to individual blocks and drives the anti-farm earnings bookkeeping on top of that. `Earnings` and `PlacementStamp` are the stored unit types behind it and behind `XpProvenance`. Their nested matter serializers are implementation detail. Use the higher-level provenance methods instead of instantiating serializers.
@@ -57,10 +61,10 @@ payout is large enough and the config allows it.
 
 | Call | Result |
 |------|--------|
-| `AdaptPlayer getOnlineAdaptPlayer(UUID)` | Live `AdaptPlayer`, or `null` when the player is not online and loaded |
-| `AdaptPlayer getPlayer(Player)` | Live wrapper for an online Bukkit player. Creates and starts one with a warning if it is missing. Owning thread only |
-| `Optional<PlayerData> getPlayerData(UUID)` | In-memory data only. May include the wrapper retained for about 60 seconds after quit. Performs no storage work |
-| `PlayerData peekData(UUID)` | Unfenced inspection through the purge guard, in-memory state, safe prefetch, pending local operation, direct SQL, and local fallback. It does not claim ownership or request Redis transfer data. Returns a new empty `PlayerData` when nothing is found, never `null`. Not a tick-path query |
+| `AdaptPlayer getOnlineAdaptPlayer(UUID)` | Current ready `AdaptPlayer`, or `null` when the player is offline or Bukkit-online with Adapt unavailable |
+| `AdaptPlayer getPlayer(Player)` | Lookup-only wrapper for that exact current, ready Bukkit session, or `null`. It never loads data or creates a runtime. Owning thread only |
+| `Optional<PlayerData> getPlayerData(UUID)` | In-memory data only. Empty for an online unavailable player; otherwise may include the wrapper retained for about 60 seconds after a normal quit. Performs no storage work |
+| `PlayerData peekData(UUID)` | Unfenced inspection through the purge guard, in-memory state, safe prefetch, pending local operation, direct SQL, and local JSON as applicable. It does not claim ownership or request Redis transfer data, never caches load-failed data, and returns an empty value immediately for an online unavailable player. Returns a new empty `PlayerData` when no offline profile is found, never `null`. Not a tick-path query |
 | `int getOnlineAdaptationLevel(UUID, String skillName, String adaptationName)` | Stored online learned level for that adaptation, `0` when the player is offline or their runtime is not ready. The `skillName` argument is accepted and never read |
 | `boolean hasOnlineLearner(String adaptationName)` | Whether any online player has learned it |
 | `boolean hasOnlineLearner(UUID, String adaptationName)` | Whether that specific online player has learned it |
@@ -78,7 +82,7 @@ payout is large enough and the config allows it.
 | `Adaptation.xp(...)` / `Adaptation.xpSilent(...)`, keyed `adaptation:<id>:<key>` | as the `Skill` call it forwards to | | |
 | `XP.xp(...)`, `XP.xpSilent(...)` | no | no | no |
 
-Other rewards: `Skill.knowledge(Player, long)`, `Skill.xp(Location, double, int radius, long duration)` and `XP.spatialXP(Location, Skill, double, int radius, long duration)` for a spatial pulse, and `XP.knowledge(...)` / `XP.wisdom(...)` / `XP.boostXP(...)`.
+Other rewards: `Skill.knowledge(Player, long)`, `Skill.xp(Location, double, int radius, long duration)` and `XP.spatialXP(Location, Skill, double, int radius, long duration)` for a spatial pulse, and `XP.knowledge(...)` / `XP.wisdom(...)` / `XP.boostXP(...)`. Player-targeted application is inert unless the exact current session has a ready Adapt runtime.
 
 Every path applies the player's XP multiplier (permission multipliers plus global and per-skill boosts) and the monotony multiplier inside `PlayerSkillLine.giveXP`. It honors pooled payout batching when `xpIntegrity.pooledPayoutEnabled` is on.
 

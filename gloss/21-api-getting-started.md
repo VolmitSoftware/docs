@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Gloss documentation: API: Getting Started"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -210,7 +210,7 @@ Both routes come up late in `onEnable` and go down together.
 | Before Gloss enables | throws `NullPointerException("Gloss is not enabled")` | `getRegistration` returns `null` |
 | After a successful enable | returns the live instance | one provider at `ServicePriority.Normal` |
 | Enable threw partway | provider is cleared, so it throws again | unregistered by the failure teardown |
-| `/gloss reload`, or a `config.toml` edit picked up by the watchdog | unchanged and live | unchanged and live |
+| `/gloss reload`, or a `gloss.toml` edit picked up by the watchdog | unchanged and live | unchanged and live |
 | The BileTools `onPreUnload` hook | still returns the instance, but its services are torn down | unregistered |
 | `onDisable` | cleared, so it throws | unregistered |
 
@@ -219,7 +219,7 @@ Both routes come up late in `onEnable` and go down together.
 services are already down. Treat `onPreUnload` as the point where Gloss stops working, not the
 point where `GlossAPI.get()` starts throwing.
 
-`reloadAll` re-reads `config.toml` and reloads the text, animation, emoji, hologram, board, group,
+`reloadAll` re-reads `gloss.toml` and reloads the text, animation, emoji, hologram, board, group,
 tablist, MOTD, bubble, indicator and drop services. It does not touch `GlossAPIProvider`. It does
 not unregister the service. A reference you hold across a reload keeps working. A reference you
 hold across a full disable does not.

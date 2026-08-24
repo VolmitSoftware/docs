@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Gloss documentation: Holograms"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -166,7 +166,7 @@ dirty-checked per entity. An animated hologram whose visible frame did
 not change costs zero packets. The server-side entity text is left
 untouched while the animator owns the line.
 
-The loop is adaptive. It mirrors the legacy Gloss scheduler. It starts at `1000 / [holograms] maxAnimationFps` milliseconds (default 120 fps, so ~8 ms, clamped to at least 4 ms). It backs off by one floor step whenever a pass exceeds 1.25x its budget. It recovers by one step when it does not. It never exceeds 250 ms. The thread only exists while hologram text work is pending and exits by itself shortly after the last target or personalized update goes away. `[holograms] animationPacketBudget` (default 20000) is a hard recipient ceiling shared by fast animation frames, personalized metadata updates and personalized clears. The loop rotates fairly across targets and coalesces each pending viewer/entity update to its latest text; large aggregate audiences therefore degrade animation frame rate instead of multiplying the ceiling. All three knobs hot-reload. `[debug] animator = true` logs the loop settled interval, target count and send count every 10 seconds.
+The loop is adaptive. It mirrors the legacy Gloss scheduler. It starts at `1000 / [holograms] maxAnimationFps` milliseconds (default 120 fps, so ~8 ms, clamped to at least 4 ms). It backs off by one floor step whenever a pass exceeds 1.25x its budget. It recovers by one step when it does not. It never exceeds 250 ms. The thread only exists while hologram text work is pending and exits by itself shortly after the last target or personalized update goes away. `[holograms] animationPacketBudget` (default 20000) is a hard recipient ceiling shared by fast animation frames, personalized metadata updates and personalized clears. The loop rotates fairly across targets and coalesces each pending viewer/entity update to its latest text; large aggregate audiences therefore degrade animation frame rate instead of multiplying the ceiling. All three knobs hot-reload. `[debug] animator = true` emits a `FINE` diagnostic with the settled interval, target count and send count every 10 seconds; it does not add routine `INFO` traffic.
 
 The animator is gated on proximity before it is gated on anything else. A hologram with nobody inside `[holograms] viewRange` never spawns a display at all, so it never publishes an animator target, so the animator thread is never started. A hologram carrying a 125 fps clip on an empty server costs nothing: `/gloss status` reports it under `Holograms` with `0 entities`, no `Gloss Animator` thread exists, and `[debug] animator = true` prints nothing because there is no loop to report on. When the last viewer walks out of range the target is dropped and the thread exits shortly after. Every target-recipient pair draws from one server-wide animation budget.
 

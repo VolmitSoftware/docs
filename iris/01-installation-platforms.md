@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 Whichever path you take, you are done when all three of these are true:
 
 1. Iris reached its enabled/ready state with no exception in the startup log.
-2. The data directory has a `settings.json`. After you install a pack, `packs/<key>/` is loadable.
+2. The data directory has a `iris.json`. After you install a pack, `packs/<key>/` is loadable.
 3. `/iris` prints help from the server console.
 
 On a modded client, the Iris keybind category shows that the client mod loaded. It does not prove that the server can generate chunks. Always check the server.
@@ -50,9 +50,15 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 
 1. Drop the CraftBukkit-labeled plugin jar into `plugins/`.
 2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first.
-3. First boot writes `plugins/Iris/settings.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download.
+3. First boot writes `plugins/Iris/iris.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download.
 4. Run `/iris download pack=overworld` and/or `/iris download pack=underworld`. Wait for validation and atomic installation to finish. The command does not restart or stop the process itself.
 5. Restart before you use either pack. The shipping Overworld also declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With the default `general.autoIngestDatapacks=true`, this first boot ingests those two dependencies and leaves startup admission restart-required. Complete the ensuing clean restart so Minecraft can load their registry keys. If automatic ingest is disabled, run `/iris datapack ingest restart=true` after the downloads instead.
+
+Upgrading is a hard break. Back up any values you need, delete the obsolete
+`plugins/Iris/settings.json` file (or `<configDir>/iris/settings.json` on a mod
+loader), and restart to generate `iris.json` in the same data directory.
+Deleting the old file removes its local changes; reapply required values
+manually. Iris does not read or migrate `settings.json`.
 
 Then verify from the server console:
 
@@ -146,7 +152,7 @@ The HUD talks to both modded Iris servers and Bukkit/Paper Iris over channel `ir
 
 | Path | What lives there |
 |---|---|
-| `plugins/Iris/settings.json` | Engine settings. Written with defaults if absent, and rewritten on every read. New keys appear with defaults. Your edits survive |
+| `plugins/Iris/iris.json` | Engine settings. Written with defaults if absent, and rewritten on every read. New keys appear with defaults. Your edits survive |
 | `plugins/Iris/packs/<key>/` | Installed packs. This is the live tree the Studio reads and edits |
 | `plugins/Iris/bootstrap/` | First-boot provisioning marker (`provisioned.properties`) recording what was installed and against which compiler identity |
 | `plugins/Iris/datapacks/` | External datapack imports pulled from Modrinth by `/iris datapack`, plus a `staging/` subfolder used mid-download |
@@ -169,7 +175,7 @@ Paths are relative to the game instance's `config/` directory.
 | `config/irisworldgen/packs/<pack>/` | Installed packs. A pack counts as installed when `dimensions/<dimension>.json` exists |
 | `config/irisworldgen/generated/datapack/iris/` | The generated forced datapack (datapack id `iris_worldgen`), plus a hash sidecar used to detect staleness. Iris owns this. Do not edit it |
 | `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override |
-| `config/iris/` | Engine data directory — `settings.json` and per-world engine state |
+| `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
 | `<save>/datapacks/` | Save-local external datapacks. Install the shipping Overworld's compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives here before that Overworld loads |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.
@@ -218,7 +224,7 @@ Successful downloads update only the pack directory and validation result. Iris 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `/iris version` does nothing | Wrong directory, wrong platform jar, a duplicate Iris jar, Java below 25, or an exception during enable | Stop the server. Leave exactly one matching artifact in place. Confirm Java 25. Fix the **first** Iris exception in the startup log. Later ones are usually fallout |
-| `settings.json` exists but no world packs exist | This is the normal first-start state | Run `/iris download pack=overworld`, `/iris download pack=underworld`, or install a complete pack folder, then complete that pack's external-datapack and registry-restart workflow |
+| `iris.json` exists but no world packs exist | This is the normal first-start state | Run `/iris download pack=overworld`, `/iris download pack=underworld`, or install a complete pack folder, then complete that pack's external-datapack and registry-restart workflow |
 | Players are kicked at login with an Iris message | Startup validation has not passed | Read the reason in the kick text and the console. External datapack failures lock login. Fix the datapack state and restart |
 | Pack validates, but modded heights and biomes are wrong | The forced datapack was generated after registries had already loaded | Restart once with the pack already on disk, then create a fresh disposable world to confirm |
 | A non-op cannot run any Iris command | `iris.all` is not granted | Grant `iris.all`. `iris.treefeller` only covers survival tree felling and grants no commands |

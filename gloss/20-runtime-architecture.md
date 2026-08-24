@@ -2,14 +2,14 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 Gloss runs two different display renderers. It uses a single ordered enable sequence with a
 stack-shaped teardown. It uses one shared watchdog task. It uses a small set of repeating driver
-tasks whose ordinary periods come from `config.toml`.
+tasks whose ordinary periods come from `gloss.toml`.
 
 This page describes what actually runs so that entity counts, restart behavior, timing and jar
 contents are predictable. Configuration keys referenced here are documented in
@@ -113,13 +113,13 @@ setting.
 3. Start PacketEvents (`packetevents`). Online users are pre-warmed into the PacketEvents user map
    first. If `init()` still fails with the known channel-injector null pointer, Gloss pre-warms again
    and retries once.
-4. Construct the config loader and load `config.toml` for boot.
+4. Construct the config loader and load `gloss.toml` for boot.
 5. Run the data importers.
 6. Snapshot the typed configuration, construct the `DataWatchdog`, and start it (`data-watchdog`).
 7. Construct and enable the text pipeline, then animations, emoji, holograms, boards, groups, tablist,
    MOTD, chat, bubbles, indicators and drops, in that order.
-8. Construct the HUD action bar, the localization engine, the persistence coordinator and the project
-   transaction, then recover the transaction.
+8. Construct the HUD action bar and the localization engine using the leading `language` value from
+   `gloss.toml`, then construct the persistence coordinator and project transaction and recover it.
 9. Construct `MenuCatalog` (which scans `menus/` in its constructor) and `ImageAssets`, then
    `PanelService` (`panels`).
 10. Construct the preview document registry and start watching it (`previews`).
@@ -136,7 +136,7 @@ setting.
 
 Four ordering constraints in that list are load-bearing:
 
-- **Importers run after `config.toml` loads and before any service scans.** The HoloUi importer
+- **Importers run after `gloss.toml` loads and before any service scans.** The HoloUi importer
   overlays `settings.json` keys onto the in-memory boot config. It has to run after the file is
   read but before the typed snapshot is taken. It also writes documents into `menus/`, `panels/` and
   the rest. It has to finish before `MenuCatalog` scans `menus/` in its constructor. It also has
@@ -199,7 +199,7 @@ poll callbacks. It is started with the period from `[hotload] watchIntervalTicks
 
 | Entry | Watches |
 |---|---|
-| `config` | `config.toml` |
+| `config` | `gloss.toml` |
 | `holograms` | `holograms/` |
 | `boards` | `boards/` |
 | `emoji` | `emoji/` |
@@ -227,7 +227,7 @@ Paper and Spigot, the owning region thread on Folia and Canvas — before it tou
 entity or a player. The console shows the split on every hot reload:
 
 ```text
-[Gloss-Watchdog-IO/INFO]: [Gloss] config.toml changed on disk; reloading.
+[Gloss-Watchdog-IO/INFO]: [Gloss] gloss.toml changed on disk; reloading.
 [Server thread/INFO]: [Gloss] Reloaded in-place from disk.
 ```
 
@@ -349,7 +349,7 @@ changed, the registry asks the store whether the file's current SHA-256 matches 
 recorded. If it does, the change is Gloss's own write and is skipped.
 
 That is why a command edit does not bounce back through the hot reload path and re-trigger a full
-reapply. A hand edit made in a text editor does. `config.toml` uses the same idea through
+reapply. A hand edit made in a text editor does. `gloss.toml` uses the same idea through
 `GlossConfigLoader.isSelfWrite()`, which stops canonicalization rewrites from looping.
 
 ## Text rendering and refresh cadences
@@ -396,7 +396,7 @@ Refresh cadences per surface:
 | Preview target discovery | at most 10 queued players per tick; stationary fallback is spread over 100 ticks | `MenuSessionManager` fair discovery queue |
 | Preview live fields | every 4 session ticks | `ContainerPreview` refresh interval |
 | Preview access recheck | every 10 session ticks | `ContainerPreview` access interval |
-| Document folders, `images/`, `language.yml` and `config.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
+| Document folders, `images/`, `language.yml` and `gloss.toml` | `[hotload] watchIntervalTicks` (default 5) | `DataWatchdog` |
 
 Hologram and scoreboard text are only re-sent when the rendered string actually changed. Tablist
 content uses the same change gate, plus a staggered header/footer anti-entropy heartbeat capped at 64
@@ -536,6 +536,8 @@ React consumes these through its `SamplerGloss*` samplers, one per key, with ids
 Separately, `[root] metrics` controls anonymous bStats reporting. That reporting submits two custom
 charts (`holograms_enabled` and `boards_enabled`). Gloss reports under bStats plugin id `33525`.
 Setting `metrics = false` disables submission entirely.
+Changing the value through automatic hotload or `/gloss reload` shuts down the current reporter or
+starts a new one immediately; it is not a restart-only setting.
 
 ## What Gloss reads from other plugins
 
@@ -603,6 +605,20 @@ All three write to the center and right slots. `gloss:reload` tells affected vie
 menu definition changed; `gloss:hotload` is the coalesced operator summary across every successful
 kind in the batch. `gloss:preview` is cleared explicitly when the preview ends. Every Gloss segment
 is cleared for a player on quit.
+
+## Operator logging
+
+Runtime diagnostics use the Gloss plugin logger, so ordinary server log lines retain the server's
+`[Gloss]` source label. `INFO` is reserved for startup and shutdown state, security-provider
+selection, document hotloads, imports and explicit exports. Integration registration and animator
+telemetry are `FINE` diagnostics. Routine player activity does not write success messages to the
+console.
+
+Failures in animator, tablist, hologram-viewer, panel, preview, chat-hook, indicator, real-drop and
+scheduler hot paths are grouped by category and emitted at most once per minute. The first line
+keeps the full stack trace; if the category continues failing, the next emitted line reports how
+many equivalent failures were suppressed. The only direct console send is the colored, branded
+startup splash.
 
 ## Build and packaging
 

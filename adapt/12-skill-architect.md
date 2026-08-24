@@ -2,7 +2,7 @@
 title: "Skill - Architect"
 description: "Adapt documentation: Skill - Architect"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -136,14 +136,14 @@ The stonecutter menu opens where you stand. Operators can require the stonecutte
 | Icon | `SMITHING_TABLE` |
 | Color | `AQUA` |
 | Interval (ms) | `3100` |
-| Skill config | `plugins/Adapt/adapt/skills/architect.toml` |
+| Skill config | `plugins/Adapt/skills/architect.toml` |
 | Adaptation count | 12 |
 
 `SkillArchitect` calls `setIcon` twice, first with `IRON_BARS` and again with `SMITHING_TABLE` after the milestone registrations. The second call wins, so `SMITHING_TABLE` is the icon actually used.
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/architect.toml` on first load.
+Written to `plugins/Adapt/skills/architect.toml` on first load.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -174,7 +174,7 @@ Written to `plugins/Adapt/adapt/skills/architect.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also
 carries `enabled`, `permanent`, `showParticles`, and `showSounds`. The
 learn-cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` are
 listed per adaptation below. `permanent` means the adaptation cannot be unlearned once bought, and the menu asks for a confirmation click before selling you the first level.
@@ -193,7 +193,7 @@ listed per adaptation below. `permanent` means the adaptation cannot be unlearne
 | Tick interval (ms) | 25000 |
 | Menu lines | Your hands gain silk touch for Glass |
 | Milestones | `challenge_architect_glass_200` on `architect.glass.blocks-recovered` at 200, reward 300. `challenge_architect_glass_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-glass.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-glass.toml` |
 
 Listened events: `BlockBreakEvent`.
 
@@ -212,7 +212,7 @@ Fires only when the main hand is empty or holding a non-tool. Matches any materi
 | Tick interval (ms) | 988 |
 | Menu lines | Magically create N blocks beneath you. |
 | Milestones | `challenge_architect_foundation_1k` on `architect.foundation.blocks-placed` at 1000, reward 300. `challenge_architect_foundation_10k` at 10000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-foundation.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-foundation.toml` |
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerMoveEvent`, `BlockBreakEvent`, `BlockPistonExtendEvent`, `BlockPistonRetractEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`, `ChunkLoadEvent`, `PlayerQuitEvent`.
 
@@ -238,7 +238,7 @@ Placed blocks are `TINTED_GLASS`. Creative and Spectator cannot activate it. Eve
 | Tick interval (ms) | 500, adjusted down while preview batches are still being drawn |
 | Menu lines | You need N blocks in your hand to place this. A Material Builders Wand |
 | Milestones | `challenge_architect_placement_1k` on `architect.placement.blocks-placed` at 1000, reward 300. `challenge_architect_placement_25k` at 25000, reward 1500 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-placement.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-placement.toml` |
 
 Listened events: `BlockPlaceEvent`, `PlayerToggleSneakEvent`, `PlayerMoveEvent`, `PlayerQuitEvent`.
 
@@ -264,7 +264,7 @@ Target block range is 5. Containers are excluded. Every replicated block passes 
 | Tick interval (ms) | 1000 (framework default) |
 | Menu lines | Target + Redstone Torch + Ender Pearl = 1 Redstone Remote |
 | Milestones | `challenge_architect_wireless_100` on `architect.wireless-redstone.pulses` at 100, reward 300. `challenge_architect_wireless_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-wireless-redstone.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-wireless-redstone.toml` |
 
 Listened events: `BlockPlaceEvent` (`onPlaceBlock`), `PlayerInteractEvent` (`onPlayerInteract`), `ChunkUnloadEvent` (`onChunkUnload`).
 
@@ -287,7 +287,7 @@ Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a
 | Tick interval (ms) | 988 |
 | Menu lines | Unlocks elevator recipe. X is wool. Y is an ender pearl. Pattern XXX / XYX / XXX |
 | Milestone | `challenge_architect_elevator_100` on `architect.elevator.trips` at 100, reward 300 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-elevator.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-elevator.toml` |
 
 Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `BlockPlaceEvent`, `PlayerJoinEvent`, `CustomBlockDataMoveEvent`, `CustomBlockDataRemoveEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`.
 
@@ -313,7 +313,7 @@ A `challenge_architect_elevator_penthouse` advancement is registered and granted
 | Tick interval (ms) | 800 |
 | Menu lines | Rotates directional and axis block states. Requires empty main hand |
 | Milestones | `challenge_architect_smart_shape_200` on `architect.smart-shape.rotations` at 200, reward 300. `challenge_architect_smart_shape_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-smart-shape.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-smart-shape.toml` |
 
 Listened events: `PlayerInteractEvent`, main hand left-click only.
 
@@ -337,7 +337,7 @@ Rotation walks a fixed 16-step compass order for directional blocks and an X, Y,
 | Tick interval (ms) | 9220 |
 | Menu lines | Sneak-placed blocks dissolve automatically. Seconds before a scaffold dissolves and refunds |
 | Milestones | `challenge_architect_scaffolder_500` on `architect.scaffolder.blocks-scaffolded` at 500, reward 300. `challenge_architect_scaffolder_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-scaffolder.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-scaffolder.toml` |
 
 Listened events: `BlockPlaceEvent`, `BlockBreakEvent`.
 
@@ -365,7 +365,7 @@ A scaffold with more than 30 ticks of life left plays a warning puff 20 ticks be
 | Tick interval (ms) | 13780 |
 | Menu lines | Hand auto-refills from shulkers and bundles. Refills per minute |
 | Milestones | `challenge_architect_supply_line_100` on `architect.supply-line.refills` at 100, reward 300. `challenge_architect_supply_line_1k` at 1000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-supply-line.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-supply-line.toml` |
 
 Listened events: `BlockPlaceEvent`.
 
@@ -390,7 +390,7 @@ The refill only triggers when the placed stack was down to its last item. Search
 | Tick interval (ms) | 10440 |
 | Menu lines | No knockback while bridging. Blocks of fall damage shielded |
 | Milestones | `challenge_architect_steady_hands_500` on `architect.steady-hands.bridge-blocks` at 500, reward 300. `challenge_architect_steady_hands_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-steady-hands.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-steady-hands.toml` |
 
 Listened events: `BlockPlaceEvent`, `PlayerToggleSneakEvent`.
 
@@ -417,7 +417,7 @@ It only triggers on a sneak-placement whose block below is air. It applies timed
 | Tick interval (ms) | Parked at `Long.MAX_VALUE` while idle. Drops to roughly 250 ms while a chalk wand is held |
 | Menu lines | New wand recipes appear in your vanilla recipe book |
 | Milestones | `challenge_architect_chalk_line_50` on `architect.chalk-line.guides-drafted` at 50, reward 300. `challenge_architect_chalk_line_500` at 500, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-chalk-line.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-chalk-line.toml` |
 
 Listened events: `PlayerInteractEvent`, `BlockPlaceEvent`, `CraftItemEvent`, `CrafterCraftEvent`, `PlayerInventorySlotChangeEvent`, `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `PlayerGameModeChangeEvent`, `PlayerChangedWorldEvent`, `PlayerRespawnEvent`, `PlayerJoinEvent`, `PlayerQuitEvent`.
 
@@ -453,7 +453,7 @@ All four recipes are shaped, using `S` for `STRING` and `T` for `STICK`:
 | Tick interval (ms) | 10880 |
 | Menu lines | Your fresh placements break near-instantly. Seconds a placement counts as fresh |
 | Milestones | `challenge_architect_demolition_500` on `architect.demolition.blocks-demolished` at 500, reward 300. `challenge_architect_demolition_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-demolition.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-demolition.toml` |
 
 Listened events: `BlockPlaceEvent`, `BlockDamageEvent`, `BlockBreakEvent`, `PlayerQuitEvent`.
 
@@ -481,7 +481,7 @@ to the ground after your inventory fills. The effective window is floored at 100
 | Tick interval (ms) | 24420 |
 | Menu lines | Portable stonecutter on demand. Then either Requires a stonecutter item in your inventory or Requires a stonecutter in your offhand, depending on `requireOffhand` |
 | Milestones | `challenge_architect_stonecutter_savant_50` on `architect.stonecutter-savant.uses` at 50, reward 300. `challenge_architect_stonecutter_savant_500` at 500, reward 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/architect-stonecutter-savant.toml` |
+| Config file | `plugins/Adapt/adaptations/architect-stonecutter-savant.toml` |
 
 Listened events: `PlayerInteractEvent` (main hand left-click only), `PlayerJoinEvent`.
 

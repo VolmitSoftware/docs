@@ -2,7 +2,7 @@
 title: "BileTools — Remote Deploy"
 description: "Push plugin jars to other servers, and the security model"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ over a TCP socket. Both the master and the slave are disabled by default.
 
 > **Read this before you enable remote deploy.** The slave authenticates the
 > master with a shared secret. The secret is stored in plaintext in
-> `config.yml`. The master stores each target password in plaintext in
+> `biletools.yml`. The master stores each target password in plaintext in
 > `master-deploy-to`. The transport is a raw socket.
 >
 > Anyone who can reach the listener port and knows or guesses the secret can

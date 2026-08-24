@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Gloss documentation: Commands & Permissions"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -35,7 +35,7 @@ Direct leaves on `/gloss`:
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
 | `status` | none | `gloss.admin` | Prints hologram, temporary-hologram, entity, board, emoji, animation, bubble, indicator and drop counts |
-| `reload` | none | `gloss.admin` | Runs the full `reloadAll` cycle. A broken `config.toml` is refused and the last good configuration stays live |
+| `reload` | none | `gloss.admin` | Runs the full `reloadAll` cycle. A broken `gloss.toml` is refused and the last good configuration stays live |
 
 ## Who can run anything at all
 
@@ -455,7 +455,7 @@ the base permission gate. A sender who fails that gate gets the permission messa
 
 ## Command sounds
 
-`[commands] sounds` in `config.toml` (default `true`) controls command outcome chimes and the single
+`[commands] sounds` in `gloss.toml` (default `true`) controls command outcome chimes and the single
 success chime sent to online `gloss.admin` players after a successful automatic hotload batch.
 Console never hears anything. Hotload notices remain visible when sounds are disabled.
 

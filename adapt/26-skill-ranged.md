@@ -2,7 +2,7 @@
 title: "Skill - Ranged"
 description: "Adapt documentation: Skill - Ranged"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -122,14 +122,14 @@ With Arrow Piercing learned, or with Ricochet Bolt bounce capacity left, the arr
 | Icon | `CROSSBOW` |
 | Color | `DARK_GREEN` |
 | Interval (ms) | `3044` |
-| Skill config | `plugins/Adapt/adapt/skills/ranged.toml` |
+| Skill config | `plugins/Adapt/skills/ranged.toml` |
 | Adaptation count | 12 |
 
 Hit XP formula, from `SkillRanged`: `hitDamageXPMultiplier * damage + distance * hitDistanceXPMultiplier`, where distance is measured from the shooter to the target at the moment of impact. Launch XP is the flat `shootXP`, awarded only for `AbstractArrow` projectiles (arrows, spectral arrows, tridents).
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/ranged.toml` on first load.
+Written to `plugins/Adapt/skills/ranged.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -170,7 +170,7 @@ hits beyond 30 blocks. `ranged.kills` counts kills made while holding a `BOW` or
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
 
 ### Force Shot
 
@@ -183,7 +183,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `en
 | Base knowledge cost | 2 |
 | Cost factor | 0.225 |
 | Tick interval (ms) | 4900 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-force.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-force.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, NORMAL). `EntityDamageByEntityEvent` (`on`, NORMAL) |
 | Stats | `ranged.force.long-range-hits` |
 | Milestones | `challenge_ranged_force_500` at 500 long-range hits, 500 XP. `challenge_force_30` ("Long Shot") granted once on the first hit past 30 blocks |
@@ -207,7 +207,7 @@ Launch velocity is multiplied by `1 + (levelPercent * speedFactor)` for any proj
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4791 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-piercing.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-piercing.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, NORMAL). `EntityDamageByEntityEvent` (`on`, HIGHEST) |
 | Stats | `ranged.piercing.extra-hits` |
 | Milestones | `challenge_ranged_piercing_500` at 500 extra hits, 400 XP. `challenge_ranged_piercing_4` granted once when a single arrow lands 4 hits |
@@ -226,7 +226,7 @@ The arrow's existing pierce level is increased by the adaptation level at launch
 | Base knowledge cost | 5 |
 | Cost factor | 0.78 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-recovery.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-recovery.toml` |
 | Listened events | `EntityShootBowEvent` (`onEntityShootBow`, NORMAL). `ProjectileHitEvent` (`onProjectileHit`, NORMAL) |
 | Stats | `ranged.arrow-recovery.arrows-recovered` |
 | Milestones | `challenge_ranged_arrow_500` at 500 arrows, 300 XP. `challenge_ranged_arrow_10k` at 10000 arrows, 1000 XP |
@@ -249,7 +249,7 @@ Only `Arrow` projectiles fired from a bow without Infinity are eligible, and the
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4859 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-lunge-shot.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-lunge-shot.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, NORMAL) |
 | Stats | `ranged.lunge-shot.lunges` |
 | Milestones | `challenge_ranged_lunge_200` at 200 lunges, 300 XP. `challenge_ranged_lunge_2500` at 2500 lunges, 1000 XP |
@@ -272,7 +272,7 @@ Only fires for `AbstractArrow` launches while the player is off the ground. The 
 | Base knowledge cost | 5 |
 | Cost factor | 0.9 |
 | Tick interval (ms) | 4900 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-webshot.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-webshot.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `ProjectileHitEvent` (`on`, NORMAL). `EntityRemoveEvent` (`on`, MONITOR). `ChunkLoadEvent` (`on`, MONITOR). `BlockPistonExtendEvent` (`on`, HIGHEST). `BlockPistonRetractEvent` (`on`, HIGHEST). `BlockExplodeEvent` (`on`, HIGHEST). `BlockBreakEvent` (`on`, HIGHEST). `EntityExplodeEvent` (`on`, HIGHEST) |
 | Stats | `ranged.web-bomb.mobs-trapped` |
 | Milestone | `challenge_ranged_web_200` at 200 mobs trapped, 300 XP |
@@ -295,7 +295,7 @@ tick. Active webs cancel `BlockBreakEvent` and piston moves, and are stripped ou
 | Base knowledge cost | 4 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-trajectory-sight.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-trajectory-sight.toml` |
 | Listened events | `PlayerQuitEvent`, `PlayerChangedWorldEvent`, `PlayerDeathEvent`, `PlayerDropItemEvent`, `PlayerInteractEvent`, `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `PlayerToggleSneakEvent`, `EntityShootBowEvent`, `ProjectileLaunchEvent`, `EntityDeathEvent` (all `on`). `PlayerStopUsingItemEvent` via a companion listener registered only when the Paper class exists |
 | Stats | `ranged.trajectory-sight.kills-while-aiming` |
 | Milestone | `challenge_ranged_trajectory_100` at 100 kills while aiming, 400 XP |
@@ -352,7 +352,7 @@ Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, 
 | Base knowledge cost | 4 |
 | Cost factor | 0.78 |
 | Tick interval (ms) | 2400 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-floaters.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-floaters.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `EntityDamageByEntityEvent` (`on`, MONITOR) |
 | Stats | `ranged.floaters.targets-levitated` |
 | Milestone | `challenge_ranged_floaters_200` at 200 targets, 300 XP |
@@ -382,7 +382,7 @@ The effect follows that shot even if the shooter changes level or logs out. Prot
 | Base knowledge cost | 4 |
 | Cost factor | 0.74 |
 | Tick interval (ms) | 2200 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-pinning-shot.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-pinning-shot.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `EntityDamageByEntityEvent` (`on`, MONITOR) |
 | Stats | `ranged.pinning-shot.targets-pinned` |
 | Milestone | `challenge_ranged_pinning_300` at 300 targets, 400 XP |
@@ -418,7 +418,7 @@ The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion eff
 | Base knowledge cost | 4 |
 | Cost factor | 0.74 |
 | Tick interval (ms) | 1400 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-ricochet-bolt.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-ricochet-bolt.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `ProjectileHitEvent` (`on`, HIGHEST). `EntityDamageByEntityEvent` (`on`, HIGHEST). `EntityDeathEvent` (`on`, NORMAL) |
 | Stats | `ranged.ricochet-bolt.total-ricochets`, `ranged.ricochet-bolt.ricochet-kills` |
 | Milestones | `challenge_ranged_ricochet_kills_50` at 50 kills, 500 XP. `challenge_ranged_ricochet_kills_500` at 500 kills, 2000 XP |
@@ -464,7 +464,7 @@ Bounces are capped at 12 regardless of config. A bounce replaces the projectile 
 | Base knowledge cost | 3 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 2751 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-fetch-shot.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-fetch-shot.toml` |
 | Listened events | `ProjectileHitEvent` (`on`, MONITOR) |
 | Stats | `ranged.fetch-shot.items-fetched` |
 | Milestones | `challenge_ranged_fetch_500` at 500 items, 400 XP. `challenge_ranged_fetch_5k` at 5000 items, 1500 XP |
@@ -492,7 +492,7 @@ Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the norm
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 3277 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-heavy-draw.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-heavy-draw.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`, HIGH). `EntityDamageByEntityEvent` (`on`, HIGHEST) |
 | Stats | `ranged.heavy-draw.heavy-hits` |
 | Milestones | `challenge_ranged_heavy_hits_250` at 250 hits, 500 XP. `challenge_ranged_heavy_hits_2500` at 2500 hits, 2000 XP |
@@ -519,7 +519,7 @@ Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penal
 | Base knowledge cost | 6 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/ranged-heartseeker.toml` |
+| Config file | `plugins/Adapt/adaptations/ranged-heartseeker.toml` |
 | Listened events | `PlayerInteractEvent` (`on`, MONITOR). `EntityShootBowEvent` (`on`, LOWEST). `EntityAddToWorldEvent` (`on`). `ProjectileHitEvent` (`on`). `EntityDamageByEntityEvent` (`on`). `EntityRemoveEvent` (`on`). `PlayerQuitEvent` (`on`) |
 | Stats | `ranged.heartseeker.seeks`, `ranged.heartseeker.hits` |
 | Milestones | `challenge_ranged_heartseeker_100` at 100 hits, 500 XP. `challenge_ranged_heartseeker_1k` at 1000 hits, 2000 XP |

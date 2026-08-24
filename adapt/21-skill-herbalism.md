@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Adapt documentation: Skill - Herbalism"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -155,7 +155,7 @@ Mycelium seeds a mycelium bloom, podzol seeds a podzol bloom. Warm-colored flowe
 | Icon | `WHEAT` |
 | Color | `GREEN` |
 | Interval (ms) | `3990` |
-| Skill config | `plugins/Adapt/adapt/skills/herbalism.toml` |
+| Skill config | `plugins/Adapt/skills/herbalism.toml` |
 | Adaptation count | 15 |
 
 ### Skill XP and stats
@@ -177,7 +177,7 @@ Composter XP is checked one tick after the interaction. If the composter level r
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/herbalism.toml` on first load.
+Written to `plugins/Adapt/skills/herbalism.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -223,7 +223,7 @@ Written to `plugins/Adapt/adapt/skills/herbalism.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries these in addition to the knobs listed below.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these in addition to the knobs listed below.
 
 | Key | Behavior |
 |-----|----------|
@@ -246,7 +246,7 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | Base knowledge cost | 8 |
 | Cost factor | 0.325 |
 | Tick interval (ms) | 10 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-growth-aura.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-growth-aura.toml` |
 | Listened events | `PlayerQuitEvent`. The work itself runs on the adaptation tick |
 | Menu stat lines | Block Radius. Growth Aura Strength. Food Cost |
 | Stat key | `herbalism.growth-aura.blocks-grown` |
@@ -273,7 +273,7 @@ Ticking is learner-bound. The 850 ms active and 250 ms idle values are earliest 
 | Base knowledge cost | 6 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 6090 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-replant.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-replant.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, cancelled events ignored) |
 | Menu stat line | Blocks Replant Radius |
 | Stat keys | `herbalism.replant.crops-replanted`, plus the skill's `harvest.blocks` and `harvest.planted` |
@@ -300,7 +300,7 @@ Radius is `level - radiusSub`, so level 1 harvests only the clicked crop. Above 
 | Base knowledge cost | 7 |
 | Cost factor | 0.78 |
 | Tick interval (ms) | 875 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-hungry-shield.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-hungry-shield.toml` |
 | Listened events | `EntityDamageEvent` (HIGHEST) |
 | Menu stat lines | Resisted by Hunger. Contact, Crushing & Weather Damage Shielded. Melee & Thorns Damage Shielded. Fire & Lava Damage Shielded. Projectile & Explosion Damage Shielded. Magic, Poison & Wither Damage Shielded |
 | Stat key | `herbalism.hungry-shield.damage-absorbed` |
@@ -330,7 +330,7 @@ Effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. Ab
 | Base knowledge cost | 8 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 8111 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-hippo.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-hippo.toml` |
 | Listened events | `PlayerItemConsumeEvent` (NORMAL) |
 | Menu stat line | Food) additional saturation points on consumption |
 | Stat key | `herbalism.hungry-hippo.bonus-saturation` |
@@ -349,7 +349,7 @@ Bonus is `2 + level`, applied to food (capped at 20) and to saturation (capped a
 | Base knowledge cost | 1 |
 | Cost factor | 1 |
 | Tick interval (ms) | 7999 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-drop-to-inventory.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-drop-to-inventory.toml` |
 | Listened events | `BlockDropItemEvent` (HIGHEST) |
 | Menu stat line | Whenever an item is dropped from a block you break it goes into your inventory if it can. |
 | Stat key | `herbalism.drop-to-inv.items-caught` |
@@ -368,7 +368,7 @@ Requires survival mode and a hoe from `ItemListings.toolHoes` in the main hand. 
 | Base knowledge cost | 8 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 8121 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-luck.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-luck.toml` |
 | Listened events | `BlockDropItemEvent` (NORMAL) |
 | Menu stat lines | Flowers = Food, and Grass = Seeds. Chance to get an item from breaking Flowers. Chance to get an item from breaking Grass |
 | Stat key | `herbalism.luck.lucky-drops` |
@@ -393,7 +393,7 @@ Chance is `min(highChance, level * level + lowChance)` rolled against a 0 to 100
 | Cost factor | 0.75 |
 | Permanent by default | Yes |
 | Tick interval (ms) | 17771 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-myconid.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-myconid.toml` |
 | Listened events | `CraftItemEvent` (MONITOR) |
 | Menu stat line | Any Dirt, and a Brown & Red Mushroom will craft Mycelium. |
 | Stat key | `herbalism.myconid.mycelium-crafted` |
@@ -413,7 +413,7 @@ Recipe `adapt:herbalism-dirt-myconid`, shapeless, `DIRT` + `RED_MUSHROOM` + `BRO
 | Cost factor | 0.75 |
 | Permanent by default | Yes |
 | Tick interval (ms) | 17771 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-terralid.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-terralid.toml` |
 | Listened events | `CraftItemEvent` (MONITOR) |
 | Menu stat line | Three Seeds, over 3 Dirt, will craft 3 Grass Blocks. |
 | Stat key | `herbalism.terralid.grass-crafted` |
@@ -433,7 +433,7 @@ Recipe `adapt:herbalism-dirt-terralid`, shaped `SSS` over `DDD` where `S` is `WH
 | Cost factor | 1 |
 | Permanent by default | Yes |
 | Tick interval (ms) | 17772 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-mushroom-blocks.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-mushroom-blocks.toml` |
 | Listened events | `CraftItemEvent` (MONITOR) |
 | Menu stat line | Four Mushrooms to make a block, or a block to make a stem. |
 | Stat key | `herbalism.mushroom-blocks.crafted` |
@@ -453,7 +453,7 @@ Recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are
 | Cost factor | 1 |
 | Permanent by default | Yes |
 | Tick interval (ms) | 17771 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-cobweb.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-cobweb.toml` |
 | Listened events | `CraftItemEvent` (MONITOR) |
 | Menu stat line | Nine String, will craft a Cobweb. |
 | Stat key | `herbalism.cobweb.cobwebs-crafted` |
@@ -472,7 +472,7 @@ Recipe `adapt:herbalism-cobwebblock`, shaped 3x3 of `STRING` to one `COBWEB`. No
 | Base knowledge cost | 3 |
 | Cost factor | 0.675 |
 | Tick interval (ms) | 6920 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-seed-sower.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-seed-sower.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, also receives cancelled events) |
 | Menu stat lines | Plant Radius. Max Crops Per Use. Sowing Cooldown |
 | Stat keys | `herbalism.seed-sower.seeds-planted`, plus the skill's `harvest.planted` |
@@ -504,7 +504,7 @@ torchflower crop. Nether wart maps to nether wart. Valid base is `FARMLAND`, or 
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 600 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-compost-cascade.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-compost-cascade.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, cancelled events ignored) |
 | Menu stat lines | Cascade Radius. Max Items Processed. Compost Fill Chance. Cascade Cooldown |
 | Stat keys | `herbalism.compost-cascade.items-composted`, plus the skill's `harvest.composted` |
@@ -560,7 +560,7 @@ percent, emerald at 9 percent, and diamond at 3 percent. Dropped rewards are tag
 | Cost factor | 0.65 |
 | Permanent by default | Yes |
 | Tick interval (ms) | 2050 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-rooted-footing.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-rooted-footing.toml` |
 | Listened events | `PlayerInteractEvent` (HIGHEST, `PHYSICAL` action only), `EntityDamageEvent` (HIGH) |
 | Menu stat lines | Fall Damage Converted. Food Per Damage. Prevents Farmland Trample |
 | Stat key | `herbalism.rooted-footing.farmland-saved` |
@@ -586,7 +586,7 @@ Trample protection cancels the physical interact on `FARMLAND`. Its effect is th
 | Base knowledge cost | 3 |
 | Cost factor | 0.64 |
 | Tick interval (ms) | 10 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-bee-shepherd.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-bee-shepherd.toml` |
 | Listened events | `PlayerQuitEvent`. The work itself runs on the adaptation tick |
 | Menu stat lines | Pulse Radius. Growth Attempts. Pulse Cooldown. Bee Growth Bonus |
 | Stat key | `herbalism.bee-shepherd.bees-attracted` |
@@ -624,7 +624,7 @@ Ticking is learner-bound and requires a flower in the main or off hand. Radius i
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 2100 |
-| Config file | `plugins/Adapt/adapt/adaptations/herbalism-spore-bloom.toml` |
+| Config file | `plugins/Adapt/adaptations/herbalism-spore-bloom.toml` |
 | Listened events | `BlockPlaceEvent` (MONITOR, cancelled events ignored) |
 | Menu stat lines | Bloom Attempts. Bloom Radius. Bloom Cooldown. Mushroom Cost |
 | Stat key | `herbalism.spore-bloom.blocks-spread` |

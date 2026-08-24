@@ -2,7 +2,7 @@
 title: "BileTools"
 description: "Plugin hot-reload and deployment utility"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,7 @@ plugman-style lifecycle commands and optional remote deployment.
 
 - [Installation *Requirements, install, first build*](/biletools/installation)
 - [Commands & Permissions *The `/bile` tree*](/biletools/commands)
-- [Configuration *Every `config.yml` key and default*](/biletools/configuration)
+- [Configuration *Every `biletools.yml` key and default*](/biletools/configuration)
 - [Hot Reload Behavior *What works, what is best-effort, and why*](/biletools/hot-reload)
 - [Remote Deploy *Master/slave jar distribution, and its security model*](/biletools/remote-deploy)
 {.links-list}

@@ -2,7 +2,7 @@
 title: "Localization"
 description: "React documentation: Localization"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,6 +57,6 @@ Server messages are typed Java catalogs under `art.arcane.react.localization.cat
 
 An overlay may contain nested TOML string values or arrays of strings. The file limit is 2 MiB. Templates use strict MiniMessage. Message placeholders cannot appear inside MiniMessage tags. Hotload rejects a null value, a non-string scalar, or an invalid array member. It also rejects an invalid template, invalid placeholder placement, an oversized file, or an invalid locale name.
 
-Hotload validates the complete candidate before it swaps the locale in. On rejection React keeps the current active locale. It reports up to 12 validation errors. It prints the underlying failure stack trace when present. Missing translated keys are warnings. They resolve through the selected bundle and then code-owned English.
+Hotload validates the complete candidate before it swaps the locale in. On rejection React keeps the current active locale. It reports up to 12 validation errors. An underlying failure is logged as a contextual React error with its complete exception diagnostics. Missing translated keys are warnings. They resolve through the selected bundle and then code-owned English.
 
 Localization tests and completeness gates live in the React test suites. Add new server-visible strings to the typed English catalog. Locale overlays may omit them and use fallback.

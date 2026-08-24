@@ -2,7 +2,7 @@
 title: "API - Protection"
 description: "Adapt documentation: API - Protection"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -304,7 +304,7 @@ There is exactly one slot. `RegionPolicyService.install(source)` replaces whatev
 
 ## Configuration
 
-Everything lives in `plugins/Adapt/adapt/adapt.toml`.
+Everything lives in `plugins/Adapt/adapt.toml`.
 
 `[protectorSupport]` toggles the built-in protectors' `isEnabledByDefault()`. It has no effect on a third-party protector, whose default comes from your own `isEnabledByDefault()`. A built-in protector is only constructed at all when its plugin is enabled. These keys switch off support that would otherwise be active. A successful core-config hotload refreshes the default-active snapshot. Adding or removing the provider plugin still needs an Adapt restart.
 

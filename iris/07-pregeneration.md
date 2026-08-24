@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -150,7 +150,7 @@ The cache records which chunks are already generated so a restarted or repeated 
 | Piece | Where | Behavior |
 |---|---|---|
 | Per-world skip cache | `<dimensionRoot>/iris/pregen/` | Created through `GlobalCacheSVC.createDefault`. Records generated chunks and regions. Only consulted when the `CachedPregenMethod` wrapper is active |
-| `world.globalPregenCache` | `settings.json`, default `false` | When true, Iris also maintains the cache during ordinary play. It creates the cache at world init and marks chunks on every `ChunkLoadEvent`. Normal exploration counts toward it. When false, the pregen job still gets a real on-disk cache. It just is not fed by ordinary chunk loads |
+| `world.globalPregenCache` | `iris.json`, default `false` | When true, Iris also maintains the cache during ordinary play. It creates the cache at world init and marks chunks on every `ChunkLoadEvent`. Normal exploration counts toward it. When false, the pregen job still gets a real on-disk cache. It just is not fed by ordinary chunk loads |
 | Folia | Resolved runtime scheduler is Folia | The cached wrapper is disabled entirely for pregen |
 | No engine | Non-Iris world | The wrapper is skipped, since the cache is keyed to the engine's world identity |
 

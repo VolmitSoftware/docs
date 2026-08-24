@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Adapt documentation: Skill - Unarmed"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -140,12 +140,12 @@ Moving, unsneaking, picking anything up, or taking or dealing a hit ends the ses
 | Icon | `FIRE_CHARGE` |
 | Color | `YELLOW` |
 | Interval (ms) | `2579` |
-| Skill config | `plugins/Adapt/adapt/skills/unarmed.toml` |
+| Skill config | `plugins/Adapt/skills/unarmed.toml` |
 | Adaptation count | 12 |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/unarmed.toml` on first load.
+Written to `plugins/Adapt/skills/unarmed.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -179,7 +179,7 @@ Written to `plugins/Adapt/adapt/skills/unarmed.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost`.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost`.
 
 "Level percent" below is the learned level divided by the adaptation's max level (0 to 1).
 
@@ -198,7 +198,7 @@ on that tick. The rest are event-driven and their interval is inert.
 | Base knowledge cost | 2 |
 | Cost factor | 0.225 |
 | Tick interval (ms) | 4944 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-sucker-punch.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-sucker-punch.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (applies the multiplier), `EntityDeathEvent` (counts one-punch kills).
 
@@ -224,7 +224,7 @@ XP is hardcoded: 6.221 times the resulting damage per punch, plus 0.42 times the
 | Base knowledge cost | 3 |
 | Cost factor | 0.425 |
 | Tick interval (ms) | 4444 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-power.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-power.toml` |
 
 Listened events: `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `InventoryCloseEvent`, `PlayerDropItemEvent`, `EntityPickupItemEvent`, `PlayerItemBreakEvent`, `PlayerRespawnEvent`, and `PlayerChangedWorldEvent` all reapply or strip the modifier. `EntityDamageByEntityEvent` pays XP and reapplies. `EntityDeathEvent` counts bare-hand kills. The tick pass also reconciles learners.
 
@@ -249,7 +249,7 @@ The bonus is an attack-damage modifier of level percent times `damageFactor`, ap
 | Base knowledge cost | 3 |
 | Cost factor | 0.425 |
 | Tick interval (ms) | 4544 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-glass-cannon.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-glass-cannon.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (adjusts the damage), `EntityDeathEvent` (counts kills made with zero armor).
 
@@ -277,7 +277,7 @@ leather helmet is 0.04. An iron helmet is 0.08. A diamond helmet is 0.12. With z
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-battering-charge.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-battering-charge.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, `EntityDeathEvent`, `PlayerMoveEvent`, and `PlayerToggleSprintEvent`.
 
@@ -315,7 +315,7 @@ The movement sample must be under 750 ms old to count. Riding a vehicle blocks t
 | Base knowledge cost | 3 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1800 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-combo-chain.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-combo-chain.toml` |
 
 Listened events: `EntityDamageByEntityEvent` and `PlayerInteractEvent`.
 
@@ -351,7 +351,7 @@ Only the main hand is checked here. Dropping a combo below 3 stacks plays no eff
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 5125 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-disarm.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-disarm.toml` |
 
 Listened events: `EntityDamageByEntityEvent`. The tick pass only expires per-target cooldowns.
 
@@ -382,7 +382,7 @@ The main-hand item is taken first. An off-hand shield is only taken when the mai
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4733 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-pressure-point.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-pressure-point.toml` |
 
 Listened events: `EntityDamageByEntityEvent`.
 
@@ -413,7 +413,7 @@ Each hit raises the existing amplifier by one, up to the cap, and refreshes the 
 | Base knowledge cost | 5 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 5230 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-shockwave-clap.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-shockwave-clap.toml` |
 
 Listened events: `PlayerInteractEvent` (sneak plus left-click air or block).
 
@@ -451,7 +451,7 @@ Hunger is spent on activation, before targets are resolved. Cooldown is floored 
 | Base knowledge cost | 3 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 4622 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-iron-fists.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-iron-fists.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (flat damage bonus), `BlockDamageEvent` (soft-block mining buff, which requires an empty main hand rather than just no tool).
 
@@ -481,7 +481,7 @@ The mining buff is a block-break-speed modifier of 0.2 x (amplifier + 1), not a 
 | Base knowledge cost | 5 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-grapple.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-grapple.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (grabs while sneaking, or hurls if a grab is already held), `PlayerToggleSneakEvent` (releasing sneak hurls).
 
@@ -515,7 +515,7 @@ Bosses cannot be grabbed. The cooldown is marked on the hurl, not the grab, and 
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4960 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-second-wind.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-second-wind.toml` |
 
 Listened events: `EntityDeathEvent` (a non-player mob whose direct and causing damage-source entity are both the bare-handed player). Projectiles, indirect damage, weapons, and friendly targets do not qualify.
 
@@ -547,7 +547,7 @@ Friendly targets, including your own pets, are skipped. Food is clamped to 20 an
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/unarmed-meditation.toml` |
+| Config file | `plugins/Adapt/adaptations/unarmed-meditation.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, `PlayerToggleSneakEvent`, and `PlayerQuitEvent`.
 

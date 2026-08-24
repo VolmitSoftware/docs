@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -746,4 +746,4 @@ Unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
 | `/iris goto unregistered` | | |
 | `/iris developer update-world` | | `world=<w> pack=<dim> confirm=true` — all keyed |
 
-Related dimension fields: `datapackImports`, `importedStructures`, `structures[]`. Settings in `plugins/Iris/settings.json`: `general.autoIngestDatapacks` (default true), `general.autoImportDatapackStructures` (default false).
+Related dimension fields: `datapackImports`, `importedStructures`, `structures[]`. Settings in `plugins/Iris/iris.json`: `general.autoIngestDatapacks` (default true), `general.autoImportDatapackStructures` (default false).

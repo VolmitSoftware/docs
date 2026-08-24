@@ -106,7 +106,7 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 - `dimensionHeight.min` must be a multiple of 16, and between -2032 and 2031.
 - `logicalHeight` must be between 0 and the total height.
 
-`/iris pack validate` does not check these. It only checks that structure placements fit inside the declared range. A bad height passes validation. It then fails when Iris compiles the dimension type, at boot or at studio open. Check the arithmetic yourself before you create the world.
+`/iris pack validate` checks all three rules and reports them as blocking errors before world creation or Studio open. Dimension-type compilation enforces the same contract again as a runtime safeguard.
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|

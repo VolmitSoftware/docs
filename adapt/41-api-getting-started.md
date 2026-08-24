@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Adapt documentation: API - Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -211,7 +211,7 @@ masterwork-bond  deepblood        mycelial-nerve   gravebloom       resonant-for
 
 ### Configuration
 
-Everything an admin can tune about these surfaces lives in `plugins/Adapt/adapt/adapt.toml`.
+Everything an admin can tune about these surfaces lives in `plugins/Adapt/adapt.toml`.
 
 | Section | Governs | Document |
 |---|---|---|

@@ -2,7 +2,7 @@
 title: "API - Mutations"
 description: "Adapt documentation: API - Mutations"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,7 +73,7 @@ string, and per-type qualification data. `MutationSnapshot.empty()` builds the
 
 | Type | Runtime role and restriction |
 |------|------------------------------|
-| `MutationConfig` | Owns `plugins/Adapt/adapt/mutations.toml`, the per-mutation profile subclasses, consent mode, reload and world checks, and live static config state. Read [34 - Mutations Overview](/adapt/34-mutations-overview) instead of calling its lifecycle methods |
+| `MutationConfig` | Owns `plugins/Adapt/mutations.toml`, the per-mutation profile subclasses, consent mode, reload and world checks, and live static config state. Read [34 - Mutations Overview](/adapt/34-mutations-overview) instead of calling its lifecycle methods |
 | `MutationManager` | Owns qualification, reconciliation, selection, bookshelf authorization, overrides, cooldowns, cleanup, reload and shutdown. `new MutationManager(config)` creates disconnected state |
 | `PlayerMutationData` | Mutable serialized fields inside `PlayerData`. Direct writes bypass reconciliation and publication |
 | `MutationCombatLock` | Mutable dealer and receiver combat-tag clock owned by the live manager |

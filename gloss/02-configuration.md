@@ -2,17 +2,17 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Feature switches and general runtime settings live in `plugins/Gloss/config.toml`. Gloss generates the file with a comment above each knob, canonicalizes it during startup and explicit importer writes, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
+Feature switches and general runtime settings live in `plugins/Gloss/gloss.toml`. Gloss generates the file with a comment above each knob, canonicalizes it during startup and explicit importer writes, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## The file model
 
-`config.toml` opens with a generated header and then lists each knob under its comment:
+`gloss.toml` opens with a generated header and then lists each knob under its comment:
 
 ```toml
 # Configuration - gloss
@@ -20,22 +20,24 @@ Feature switches and general runtime settings live in `plugins/Gloss/config.toml
 #
 # Gloss runtime configuration. Every knob is emitted with a comment, values outside their documented range are clamped back on load, and edits hot-reload while the server runs.
 
-# Prints the Gloss splash screen during startup.
-splashScreen = true
+# Server-wide locale used for in-game text. Blank values fall back to en_US; language.yml only overrides individual messages.
+language = "en_US"
 # Sends anonymous bStats usage metrics.
 metrics = true
+# Prints the Gloss splash screen during startup.
+splashScreen = true
 ```
 
 Every table below is emitted the same way. Each key has its own comment line before it.
 
 **Canonicalization.** Startup and explicit importer writes parse, normalize, re-serialize, and write the file back when the canonical result differs. That is how out-of-range numbers are clamped into the file, missing keys reappear, and comments regenerate after an upgrade. Automatic hotload and `/gloss reload` normalize only the captured in-memory value; they never rewrite a file an editor or FTP client may still be replacing.
 
-**Hot reload.** The same watchdog that checks the data folders also checks `config.toml` at `[hotload] watchIntervalTicks`. Ordinary passes only drain native file events; an idle pass does not reread the file. A pending stability check or the 6-second exact-content reconciliation captures immutable bytes and compares their SHA-256, so atomic replacements, FTP saves, and same-size edits with preserved timestamps still apply. Automatic work is queued into at most one completed batch every 3 seconds, with one latest-state trailing pass when more saves arrive. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
+**Hot reload.** The same watchdog that checks the data folders also checks `gloss.toml` at `[hotload] watchIntervalTicks`. Ordinary passes only drain native file events; an idle pass does not reread the file. A pending stability check or the 6-second exact-content reconciliation captures immutable bytes and compares their SHA-256, so atomic replacements, FTP saves, and same-size edits with preserved timestamps still apply. Automatic work is queued into at most one completed batch every 3 seconds, with one latest-state trailing pass when more saves arrive. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
 
 **Failure behavior differs between boot and reload.**
 
-- At startup, Gloss replaces an unreadable or invalid `config.toml` with a fresh default file. A warning names the reason. Enable continues.
-- On hot reload and on `/gloss reload`, Gloss refuses an invalid file. Gloss logs `config.toml is invalid; keeping the last good configuration.` Nothing changes. The previously loaded configuration stays live. No service is touched.
+- At startup, Gloss replaces an unreadable or invalid `gloss.toml` with a fresh default file. A warning names the reason. Enable continues.
+- On hot reload and on `/gloss reload`, Gloss refuses an invalid file. Gloss logs `gloss.toml is invalid; keeping the last good configuration.` Nothing changes. The previously loaded configuration stays live. No service is touched.
 
 A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
 
@@ -45,10 +47,12 @@ A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
 
 | Key | Default | Notes |
 |---|---|---|
-| `splashScreen` | `true` | Print the console splash banner during startup. `false` suppresses it for clean startups. A failed enable always prints it |
+| `language` | `"en_US"` | Server-wide locale. The 18 fleet locale ids use bundled catalogs; a custom nonblank id uses English plus matching `language.yml` overrides. Blank values normalize to `en_US`; `language.yml` cannot change the selection |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
+| `splashScreen` | `true` | Print the console splash banner during startup. `false` suppresses it for clean startups. A failed enable always prints it |
 
-> Metrics report under bStats plugin id `33525`. If you set this to `false`, all submission stops.
+> Metrics report under bStats plugin id `33525`. Changing the key hot-starts or shuts down the
+> reporter with the rest of the config reload; `false` stops all submission.
 {.is-info}
 
 ## `[features]`
@@ -184,7 +188,7 @@ full, Gloss drops new indicators until an existing one expires or is destroyed.
 
 ## `real-drops/default.json`
 
-`[features] realDrops` is the only real-drop setting in `config.toml`. The complete presentation profile lives in `plugins/Gloss/real-drops/default.json`, is extracted when the feature is enabled, and hot-reloads without a full config reload. The web editor's **Real drops** document exposes every field below and exports directly to that path.
+`[features] realDrops` is the only real-drop setting in `gloss.toml`. The complete presentation profile lives in `plugins/Gloss/real-drops/default.json`, is extracted when the feature is enabled, and hot-reloads without a full config reload. The web editor's **Real drops** document exposes every field below and exports directly to that path.
 
 ### `limits`
 
@@ -402,7 +406,7 @@ The integration bridge only samples metric keys something has asked for. This in
 
 ## What is no longer in configuration
 
-`config.yml` does not exist. Pre-merger Gloss used it. `/gloss import legacy` now migrates and retires the file. It overlays the mechanical keys onto `config.toml`. It moves the content keys into the JSON documents. It renames the original to `config.yml.imported`. The old HoloUi `settings.json` is overlaid the same way. Gloss does not read it as a live file.
+`config.yml` does not exist. Pre-merger Gloss used it. `/gloss import legacy` now migrates and retires the file. It overlays the mechanical keys onto `gloss.toml`. It moves the content keys into the JSON documents. It renames the original to `config.yml.imported`. The old HoloUi `settings.json` is overlaid the same way. Gloss does not read it as a live file.
 
 Three groups of settings moved out of configuration. They are now content documents:
 

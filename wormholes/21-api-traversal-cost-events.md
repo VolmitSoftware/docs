@@ -2,7 +2,7 @@
 title: "API - Traversal Cost & Events"
 description: "Wormholes documentation: API - Traversal Cost & Events"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -296,7 +296,7 @@ non-null receipt. The context and destination records normalize nullable
 optionals to empty. The required traversal ID, kind, traveler, portal ID, and
 origin reject null.
 
-### Configuration (`config/wormholes.toml` `[main]`)
+### Configuration (`wormholes.toml` `[main]`)
 
 | Key | Default | Meaning |
 |-----|---------|---------|

@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "Adapt documentation: Skill - TragOul"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -125,12 +125,12 @@ Every hostile mob within range that was targeting you forgets about you. The coo
 | Icon | `CRIMSON_ROOTS` |
 | Color | `AQUA` |
 | Interval (ms) | `2755` |
-| Skill config | `plugins/Adapt/adapt/skills/tragoul.toml` |
+| Skill config | `plugins/Adapt/skills/tragoul.toml` |
 | Adaptation count | 14 |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/tragoul.toml` on first load.
+Written to `plugins/Adapt/skills/tragoul.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -158,7 +158,7 @@ The stat key `trag.hitsrecieved` is spelled that way in code.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost`.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost`.
 
 "Level percent" below is the learned level divided by the adaptation's max level (0 to 1). Where a value is described as scaling from level 1 to max level, the code lerps on `(level - 1) / (maxLevel - 1)` instead.
 
@@ -177,7 +177,7 @@ Skeletal Servant actually run work on that tick. The rest are event-driven and t
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-thorns.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-thorns.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (you are the victim). Reflected damage runs inside the reactive-damage guard so it cannot re-trigger TragOul handlers.
 
@@ -202,7 +202,7 @@ Fixed in code: 1500 ms between reflections per player. Reflected damage is `dama
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-globe.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-globe.toml` |
 
 Listened events: `EntityDamageByEntityEvent` at HIGHEST (you are the damager).
 
@@ -230,7 +230,7 @@ Per hit, damage per entity is `originalDamage / (sharedTargets + 1)` plus the le
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-healing.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-healing.toml` |
 
 Listened events: `EntityDamageEvent` (you are the victim. The attacker is resolved from the damage source or the projectile shooter).
 
@@ -256,7 +256,7 @@ Your own skeletal servants cannot be drained. Healing is capped by your missing 
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-lance.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-lance.toml` |
 
 Listened events: `EntityDeathEvent` at LOWEST (starts a chain from a kill you caused), `PlayerQuitEvent` and `PlayerDeathEvent` (cancel any chain in flight).
 
@@ -291,7 +291,7 @@ are abandoned after 30 seconds. Lance damage is the killing blow's final damage 
 | Base knowledge cost | 4 |
 | Cost factor | 0.62 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-blood-pact.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-blood-pact.toml` |
 
 Listened events: `EntityDamageEvent` (rolls the proc), `EntityDeathEvent` (counts kills made while an Absorption or Resistance effect is on you).
 
@@ -328,7 +328,7 @@ Effect pool: Speed, Regeneration, Resistance, Fire Resistance, Absorption, Jump 
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 10000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-bone-harvest.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-bone-harvest.toml` |
 
 Listened events: `EntityDeathEvent` (rolls a globe on your kill), `EntityPickupItemEvent` (consumes a globe and applies its buff), `InventoryPickupItemEvent` (blocks hoppers from eating globes). The tick pass only prunes expired globe tracking.
 
@@ -366,7 +366,7 @@ They are owner-locked to you with a 10 tick pickup delay. They are tagged with
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-corpse-explosion.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-corpse-explosion.toml` |
 
 Listened events: `EntityDeathEvent` (any mob you killed). Skeletal Servant also calls into this adaptation for servant kills.
 
@@ -399,7 +399,7 @@ Only entities implementing Bukkit's `Enemy` interface are damaged. Each victim i
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-soul-siphon.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-soul-siphon.toml` |
 
 Listened events: `EntityDamageEvent` (any damage credited to you). Credit resolves through the damage source, projectile shooters, primed TNT, area effect clouds, and evoker fangs.
 
@@ -428,7 +428,7 @@ Healing is the smallest of the damage share, the remaining per-second cap, and y
 | Base knowledge cost | 5 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-skeletal-servant.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-skeletal-servant.toml` |
 
 Listened events:
 
@@ -485,7 +485,7 @@ Servants are `Skeleton` entities tagged with `adapt:tragoul_servant_owner`, excl
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-marrow-armor.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-marrow-armor.toml` |
 
 Listened events: `EntityDamageEvent` at HIGHEST (you are the victim).
 
@@ -514,7 +514,7 @@ Stats and milestones: `tragoul.marrow-armor.damage-absorbed` at 500 (reward 400)
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 5000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-curse-of-frailty.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-curse-of-frailty.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (you are the victim. Projectile shooters are cursed rather than the projectile). The tick pass only expires attacker cooldowns.
 
@@ -544,7 +544,7 @@ Weakness amplifier steps to 1 at level percent 0.8. Your own pets, marker armor 
 | Base knowledge cost | 3 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-death-sense.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-death-sense.toml` |
 
 Listened events: `EntityDamageEvent` (starts tracking a damaged entity), `EntityDeathEvent` and `EntitiesUnloadEvent` (stop tracking), `EntitiesLoadEvent` (picks up already-weakened entities), `PlayerQuitEvent` (drops the viewer's glows).
 
@@ -577,7 +577,7 @@ Glow color follows remaining health fraction. Dark red is 0.25 and below. Red is
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-plague-bearer.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-plague-bearer.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (marks a poisoned or withered mob you hit as yours), `EntityDeathEvent` (spreads the affliction if the mark is still fresh).
 
@@ -610,7 +610,7 @@ Marks are stored on the mob as `adapt:tragoul_plague_owner`, `adapt:tragoul_plag
 | Base knowledge cost | 6 |
 | Cost factor | 0.85 |
 | Tick interval (ms) | 25000 |
-| Config file | `plugins/Adapt/adapt/adaptations/tragoul-last-rites.toml` |
+| Config file | `plugins/Adapt/adaptations/tragoul-last-rites.toml` |
 
 Listened events: `EntityDamageEvent` at HIGHEST (a hit whose final damage is at least your current health).
 

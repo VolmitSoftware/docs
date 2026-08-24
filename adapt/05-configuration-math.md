@@ -2,13 +2,13 @@
 title: "Configuration Math"
 description: "Adapt documentation: Configuration Math"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-This page explains how Adapt turns an action into XP and XP into levels. Levels set the power budget. The budget caps how many adaptations a player can hold at once. Every config path below lives in `plugins/Adapt/adapt/adapt.toml`.
+This page explains how Adapt turns an action into XP and XP into levels. Levels set the power budget. The budget caps how many adaptations a player can hold at once. Every config path below lives in `plugins/Adapt/adapt.toml`.
 
 The short version of an XP award: a skill hands Adapt a number. Then a chain of multipliers works on it before it reaches the skill line. Two of them exist to make automation unprofitable. One comes from region policy. Two are boost brackets. Order matters. A region that denies XP kills the award outright. Two of the stages clamp.
 

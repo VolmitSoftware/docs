@@ -49,7 +49,7 @@ The immediate path starts its lifecycle progress presentation before validation,
 
 **Success looks like:** `release_candidate` appears in `/iris worlds` as a loaded Iris world, you spawn in it, and chunks generate as you fly.
 
-When a player runs the create command, Iris immediately delegates teleport to the resolved entry anchor after the world is created. It does not add a serial chunk preload or exhaustive safe-position scan before that delegation. Paper's asynchronous teleport handles destination readiness and has a 60-second watchdog. A failure or timeout is non-terminal. Iris cancels only that entry attempt, keeps the successfully created world loaded and registered, and does not request a restart. Wait for initial generation to settle and run `/iris tp release_candidate` again.
+When a player runs the create command, Iris first generates the resolved entry chunk, searches the generated column area for a collision-free supported position, and only then delegates Paper's asynchronous teleport. The operation has a 60-second watchdog. A failure or timeout is non-terminal: Iris cancels only that entry attempt, keeps the successfully created world loaded and registered, and does not request a restart. Wait for initial generation to settle and run `/iris tp release_candidate` again.
 
 Now prove it survives a restart. A world that only works in the session that created it is not actually created:
 
@@ -112,7 +112,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | Startup validation pending / failed / restart-required on login or create | External datapack ingestion or dimension-pack validation has not reached a safe state | Fix the first logged failure, or complete the requested restart. Do not hand-create world folders or hand-edit `bukkit.yml` |
 | A configured startup world is reported as generation-locked | The immediate startup restart or shutdown did not complete, or startup validation failed before world loading. Iris bound a non-generating safety generator so Bukkit cannot fall back to vanilla terrain | Fix the first logged restart or validation failure, then restart. Do not force chunk generation while the lock remains |
 | Folia create reports `paper_like_runtime` unavailable | Iris cannot prove a safe runtime world-creation backend and refuses before invoking Folia's unsupported public path | Update to a compatible Folia/Iris build, then retry without hand-editing world storage |
-| Create reports that automatic teleport failed | The world was created, but Paper's immediate asynchronous entry-anchor teleport failed, returned false, or did not finish within 60 seconds | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
+| Create reports that automatic teleport failed | The world was created, but entry-chunk generation, safe-position resolution, or Paper's asynchronous teleport failed or did not finish within 60 seconds | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
 | Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the `iris/pack` snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |
 | Unload hits its terminal timeout | Work did not drain in 150 s | Allow the restart. Do not force-delete the live directory |
 | Remove returns `DELETE_QUEUED` | Files were quarantined for startup deletion | Restart, confirm the target is gone, then reuse the name |
@@ -176,7 +176,7 @@ On an unchanged create, Iris reuses the compiler-input fingerprint already produ
 5. Build a `WorldCreator` with the Iris generator and `studio=false`.
 6. Create the world through `WorldLifecycleService` / NMS async create, with a 120-second timeout. A timeout triggers a server restart rather than leaving a half-created world.
 7. Register the world in `bukkit.yml` with the Iris generator, dimension key, and seed. Update the Multiverse link if Multiverse is present — that step has its own 30-second budget and also escalates to a restart.
-8. For a player-issued create, delegate one asynchronous teleport directly to the resolved entry anchor without a preceding chunk preload or safe-location scan. The operation has a 60-second watchdog. Failure cancels the teleport only and retains the created world without requesting a restart.
+8. For a player-issued create, generate the entry chunk, resolve a supported collision-free position, and delegate one asynchronous teleport there. The operation has a 60-second watchdog. Failure cancels the teleport only and retains the created world without requesting a restart.
 9. Run creation-time pregen if the caller attached a `PregenTask` through the API.
 
 Rollback phases carry the same 120-second budget.

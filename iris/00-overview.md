@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,7 +63,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 |---|---|---|
 | Install and platforms | Plugin vs mod jars, data dirs, first boot, native worldgen matrix | [01 - Installation & Platforms](/iris/01-installation-platforms) |
 | First steps | Create, load, teleport, pregen, studio | [02 - Getting Started](/iris/02-getting-started) |
-| Configuration | `settings.json` keys, defaults, hotload | [03 - Configuration](/iris/03-configuration) |
+| Configuration | `iris.json` keys, defaults, hotload | [03 - Configuration](/iris/03-configuration) |
 | Commands and permissions | Full `/iris` tree, Bukkit vs modded argument style | [04 - Commands & Permissions](/iris/04-commands-permissions) |
 | Pack layout | Roots, keys, snippets, world snapshot vs studio | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 | Worlds | create / load / unload / remove, main world, Folia, pack copy | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |

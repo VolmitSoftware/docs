@@ -207,7 +207,7 @@ This feature tracks redstone circuits. When redstone tick time exceeds `maxCircu
 
 ### `hopper-chain-coalescing`
 
-This feature detects linear hopper chains and projects savings. Default mode is measurement-only. `featureActMode` plus an NMS hopper hook skips intermediate ticks. Chunk load, unload, and hopper movement events maintain an incremental chain index. Maintenance admits at most `repairChunksPerTick` deduplicated coordinates from an 8,192-entry queue, reads each chunk only on its owner, and never performs a full-world rebuild. Act mode submits at most 128 synthesized transfer tasks per tick.
+This feature detects linear hopper chains and projects savings. Default mode is measurement-only. `featureActMode` plus an NMS hopper hook skips intermediate ticks. Chunk load, unload, and hopper movement events maintain an incremental chain index. Maintenance admits at most `repairChunksPerTick` deduplicated coordinates from an 8,192-entry queue, reads each chunk only on its owner, and never performs a full-world rebuild. Act mode submits at most 128 synthesized transfer tasks per tick. When `featureBucketBypass` is `false`, a synthesized transfer consumes the active hopper token bucket's source-chunk budget; a rejected or incomplete transfer leaves that chain on vanilla ticking.
 
 - **Class:** `FeatureHopperChainCoalescing` · **Listener:** yes
 
@@ -223,7 +223,7 @@ This feature detects linear hopper chains and projects savings. Default mode is 
 | `engageOnTickMs` | double | `58` | Tick ms to engage. |
 | `releaseOnTickMs` | double | `45` | Tick ms to release. |
 | `featureActMode` | boolean | `false` | Skip intermediate hopper ticks when eligible. |
-| `featureBucketBypass` | boolean | `false` | Bypass token-bucket when synthesizing transfers (act mode). |
+| `featureBucketBypass` | boolean | `false` | Bypass the active hopper token bucket for synthesized transfers (act mode). |
 
 ### `hopper-item-index`
 
@@ -239,7 +239,7 @@ This feature maintains spatial indices of dropped items and hoppers for `TweakHo
 
 ### `hopper-token-bucket`
 
-This feature applies a per-chunk token bucket that limits hopper item moves. It cancels moves when the bucket is empty.
+This feature applies a per-chunk token bucket that limits hopper item moves. It cancels event-driven moves when the bucket is empty and supplies the same source-chunk budget to hopper-chain synthesized transfers.
 
 - **Class:** `FeatureHopperTokenBucket` · **Listener:** yes
 

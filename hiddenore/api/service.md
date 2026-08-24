@@ -2,7 +2,7 @@
 title: "service"
 description: "HiddenOreService read API"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -608,7 +608,7 @@ read API. The cost of misuse is entirely yours.
 
 ## Configuration keys that change the answers
 
-`plugins/HiddenOre/config.yml`:
+`plugins/HiddenOre/hiddenore.yml`:
 
 | Key                                 | Default in the shipped file | Meaning for this API                                                          |
 |-------------------------------------|-----------------------------|--------------------------------------------------------------------------------|

@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ Related: see [04 - Commands & Permissions](/iris/04-commands-permissions), [05 -
 
 ## The edit loop
 
-Prerequisites: a writable packs directory. You also need operator access on Bukkit or gamemaster access on a mod loader. Put VSCode/Cursor (or IntelliJ) on the machine that holds the pack folder. Keep the server console visible — hotload reports success and failure there.
+Prerequisites: a writable packs directory. You also need operator access on Bukkit or gamemaster access on a mod loader. Put VSCode/Cursor (or IntelliJ) on the machine that holds the pack folder. Keep the server console visible — hotload failures are always reported there, while routine success and timing detail require `/iris debug`.
 
 ### Bukkit-family
 
@@ -25,7 +25,7 @@ Prerequisites: a writable packs directory. You also need operator access on Bukk
    Refreshes `<pack>/<pack>.code-workspace`, rewrites `.iris/schema/*`, and opens that exact workspace. Generation still completes when `studio.openVSCode` is false or the server is headless; only the desktop launch is skipped. Copy the pack folder to your machine and open the workspace file yourself.
    *Success condition:* typing `"` inside any object in `biomes/starter.json` offers field names, and hovering a field shows its description, type, and default value. If it does not, the workspace was not opened or the schemas were never written — run `/iris studio update dimension=tutorial`.
 4. **Make one change.** Edit `packs/tutorial/biomes/starter.json` and change only its display `name`. Save once.
-5. **Wait for the hotload result** in console before saving anything else. A failed hotload leaves the previous runtime active and reports the error. Stacking more edits on top makes the first failure hard to find.
+5. **Wait for the hotload result** before saving anything else. A failed hotload leaves the previous runtime active and reports the error; enable `/iris debug` when you need a console confirmation for routine success. Stacking more edits on top makes the first failure hard to find.
 6. **Verify in fresh terrain.** Walk into chunks that have never generated and run `/iris what biome`. The new display name appears there. Hotload never rewrites blocks that already exist, so standing still and expecting the world to change is the usual false negative.
 7. **Validate.** `/iris pack validate pack=tutorial` — no blocking errors.
 8. **Close.** `/iris studio close`
@@ -38,7 +38,7 @@ Same loop, positional arguments, and the modded studio create always copies a te
 2. `/iris studio open tutorial 1337`
 3. `/iris studio vscode tutorial`
 4. Trace the active dimension to one referenced biome, change one display or palette value, save once.
-5. Wait for the hotload result, then enter newly generated terrain and check it with `/iris what biome`.
+5. Wait for the hotload result, using debug output when you need a routine-success confirmation, then enter newly generated terrain and check it with `/iris what biome`.
 6. `/iris pack validate tutorial`, then `/iris studio close`.
 
 The loop passes when the editor binds the generated schema, hotload succeeds, validation reports no blocking errors, and newly generated chunks show the change. Create a production world only after that gate.
@@ -66,7 +66,7 @@ A rejected height or dimension-type change is not evidence that hotload is broke
 | Hotload contract | Iris refuses hotload if the dimension type key, exact environment, or effective generated dimension type changes. The generated type includes min height, total height, logical height, resolved `dimensionOptions`, and the `fullbright` ambient-light override |
 | Non-studio worlds | No pack file watcher. Production worlds keep the pack snapshot installed at create or update time |
 
-Studio settings live in `settings.json` under `studio` (`IrisSettings.IrisSettingsStudio`):
+Studio settings live in `iris.json` under `studio` (`IrisSettings.IrisSettingsStudio`):
 
 | Key | Default | Meaning |
 |-----|---------|---------|

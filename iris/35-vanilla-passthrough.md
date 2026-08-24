@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -221,7 +221,7 @@ Vanilla sapling growth continues until you opt in. Pack procedural trees and `ob
 
 `mode: FIRST` uses biome matches and only falls back to region matches when the biome has none. `ALL` pools both and picks randomly. Dimension-level object placements are never consulted. `anyTree` and `anySize` were never read and are gone. Matching is case-insensitive on `treeTypes` only.
 
-This is unrelated to the tree feller (`settings.json` `treeFeller.enabled`, permission `iris.treefeller`).
+This is unrelated to the tree feller (`iris.json` `treeFeller.enabled`, permission `iris.treefeller`).
 
 ## Task 5: Dimension-type gameplay
 
@@ -280,7 +280,7 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 | Sea biome with a land `vanillaDerivative` | Iris hands structure selection `minecraft:the_void`. Ocean monuments need an ocean-like key. See [13 - Biomes](/iris/13-biomes) |
 | `#minecraft:has_structure/*` tags | Not inherited onto custom biomes. Native placement already uses the structure derivative. Inheriting them would double-place |
 | `customDerivitives` | That spelling is the engine key. `customDerivatives` is silently ignored |
-| Two `preventLeafDecay` flags | `settings.json` `generator.preventLeafDecay` defaults **true** and bakes persistent into resolved leaf data. Dimension `preventLeafDecay` defaults **false**. The shipping overworld sets the dimension flag true. They are unrelated |
+| Two `preventLeafDecay` flags | `iris.json` `generator.preventLeafDecay` defaults **true** and bakes persistent into resolved leaf data. Dimension `preventLeafDecay` defaults **false**. The shipping overworld sets the dimension flag true. They are unrelated |
 | `hideOresForHiddenOre` | Replaces every ore the generator would write — terrain ores, deposits, and ores inside objects — with host stone |
 | `forcePlace: true` | Skips slope, carving, surface support, water, clamp, bedrock, and collision gates. It never skips the native-structure volume veto. Trees still vanish inside villages |
 | `isDolphinTarget` | Only works with `underwater`. Marks placed storage chests as buried-treasure points of interest |

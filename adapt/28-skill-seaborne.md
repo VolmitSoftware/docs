@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Adapt documentation: Skill - Seaborne"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -138,7 +138,7 @@ Passive.
 
 ## Reference
 
-Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
+Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
 
 ### Identity
 
@@ -149,7 +149,7 @@ Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adap
 | Icon | `TRIDENT` |
 | Color | `BLUE` |
 | Interval (ms) | `2120` |
-| Skill config | `plugins/Adapt/adapt/skills/seaborne.toml` |
+| Skill config | `plugins/Adapt/skills/seaborne.toml` |
 | Adaptation count | 14 |
 
 ### Skill XP sources
@@ -166,7 +166,7 @@ Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adap
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/seaborne.toml` on first load.
+Written to `plugins/Adapt/skills/seaborne.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -215,7 +215,7 @@ Written to `plugins/Adapt/adapt/skills/seaborne.toml` on first load.
 | Base knowledge cost | 3 |
 | Cost factor | 0.525 |
 | Tick interval (ms) | 3750 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-oxygen.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-oxygen.toml` |
 
 Menu stat line: Oxygen Capacity Increase.
 
@@ -237,7 +237,7 @@ Milestone: `challenge_seaborne_oxygen_12k` on `seaborne.oxygen.bonus-air-ticks` 
 | Initial knowledge cost | 2 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.525 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-speed.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-speed.toml` |
 
 Listened events:
 
@@ -262,7 +262,7 @@ No adaptation-specific config knobs.
 | Base knowledge cost | 5 |
 | Cost factor | 0.9 |
 | Tick interval (ms) | 8080 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-fishers-fantasy.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-fishers-fantasy.toml` |
 
 Menu stat line: Chance for one bonus fishing reward bundle.
 
@@ -295,7 +295,7 @@ Milestones: `challenge_seaborne_fish_500` on `seaborne.fishers-fantasy.fish-caug
 | Base knowledge cost | 5 |
 | Cost factor | 1 |
 | Tick interval (ms) | 3000 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-turtles-vision.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-turtles-vision.toml` |
 
 Menu stat line: Gain continuously refreshed Night Vision while underwater.
 
@@ -325,7 +325,7 @@ Milestone: `challenge_seaborne_vision_72k` on `seaborne.turtles-vision.time-unde
 | Base knowledge cost | 15 |
 | Cost factor | 1 |
 | Tick interval (ms) | 3000 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-turtles-mining-speed.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-turtles-mining-speed.toml` |
 
 Menu stat line: Boosts submerged mining speed, stacks with Aqua Affinity, and compensates for the floating mining penalty.
 
@@ -359,7 +359,7 @@ Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 1600 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-tidecaller.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-tidecaller.toml` |
 
 Menu stat lines: Surge Distance. Surge Cooldown. Plus a generated Trigger line per enabled trigger and an Environment line.
 
@@ -413,7 +413,7 @@ Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` 
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 20 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-pressure-diver.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-pressure-diver.toml` |
 
 Menu stat lines: Minimum Depth Requirement. Depth Damage Reduction. Mining Fatigue Reduction Chance. Depth Absorption Hearts.
 
@@ -459,7 +459,7 @@ Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blo
 | Initial knowledge cost | 3 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-coral-gardener.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-coral-gardener.toml` |
 
 Menu stat lines: Coral Survival Time. Bonemeal Growth Chance.
 
@@ -493,7 +493,7 @@ Milestones: `challenge_seaborne_coral_500` on `seaborne.coral-gardener.coral-pla
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 3000 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-deep-salvager.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-deep-salvager.toml` |
 
 Menu stat lines: Detection Range (blocks). Bonus Treasure Rolls.
 
@@ -533,7 +533,7 @@ Milestones: `challenge_seaborne_salvage_100` on `seaborne.deep-salvager.containe
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-ink-veil.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-ink-veil.toml` |
 
 Menu stat lines: Ink Cloud Size (blocks). Ink Burst Cooldown.
 
@@ -571,7 +571,7 @@ Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.6 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-trident-mastery.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-trident-mastery.toml` |
 
 Menu stat lines: Bonus Trident Damage. Recall Speed.
 
@@ -608,7 +608,7 @@ Milestones: `challenge_seaborne_trident_250` on `seaborne.trident-mastery.triden
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 4000 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-fish-whisperer.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-fish-whisperer.toml` |
 
 Menu stat lines: Luck of the Sea Tier. Creature Affinity Range (blocks).
 
@@ -642,7 +642,7 @@ Milestones: `challenge_seaborne_charm_2k` on `seaborne.fish-whisperer.charmed` a
 | Initial knowledge cost | 3 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-hydro-jet.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-hydro-jet.toml` |
 
 Menu stat lines: Burst Force. Jet Charges.
 
@@ -676,7 +676,7 @@ Milestones: `challenge_seaborne_hydro_200` on `seaborne.hydro-jet.jets` at 200 (
 | Base knowledge cost | 3 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/seaborne-brine-skin.toml` |
+| Config file | `plugins/Adapt/adaptations/seaborne-brine-skin.toml` |
 
 Menu stat lines: Brine Regeneration Tier. Damage Reduction While Wet.
 

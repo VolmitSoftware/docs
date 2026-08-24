@@ -2,7 +2,7 @@
 title: "Projection Modes & Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ crossing. If foveated unrendering is enabled, the observer must look toward
 the aperture. By default, the portal view AABB sets interest.
 
 Per-portal mode and render mode combine with global `[projection]` and
-`[render]` keys in `plugins/Wormholes/config/wormholes.toml` (schema 2).
+`[render]` keys in `plugins/Wormholes/wormholes.toml` (schema 3).
 
 ## What projection does for a viewer
 

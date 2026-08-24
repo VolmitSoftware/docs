@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Adapt documentation: Skill - Swords"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -159,7 +159,7 @@ store it, or hand it to someone else.
 
 ## Reference
 
-Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
+Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
 
 Adapt treats `WOODEN_SWORD`, `STONE_SWORD`, `COPPER_SWORD`, `IRON_SWORD`, `GOLDEN_SWORD`, `DIAMOND_SWORD`, and `NETHERITE_SWORD` as swords.
 
@@ -172,7 +172,7 @@ Adapt treats `WOODEN_SWORD`, `STONE_SWORD`, `COPPER_SWORD`, `IRON_SWORD`, `GOLDE
 | Icon | `DIAMOND_SWORD` |
 | Color | `YELLOW` |
 | Interval (ms) | `2150` |
-| Skill config | `plugins/Adapt/adapt/skills/swords.toml` |
+| Skill config | `plugins/Adapt/skills/swords.toml` |
 | Adaptation count | 14 |
 
 ### Skill XP sources
@@ -186,7 +186,7 @@ A hit counts as critical for `sword.critical` when the attacker's fall distance 
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/swords.toml` on first load.
+Written to `plugins/Adapt/skills/swords.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -227,7 +227,7 @@ Written to `plugins/Adapt/adapt/skills/swords.toml` on first load.
 | Base knowledge cost | 4 |
 | Cost factor | 0.225 |
 | Tick interval (ms) | 5234 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-machete.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-machete.toml` |
 
 Menu stat lines: Slash Radius. Chop Cooldown. Tool Wear.
 
@@ -264,7 +264,7 @@ Milestones: `challenge_swords_machete_2500` on `swords.machete.foliage-cut` at 2
 | Base knowledge cost | 7 |
 | Cost factor | 0.325 |
 | Tick interval (ms) | 4984 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-poison-blade.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-poison-blade.toml` |
 
 Menu stat lines: Striking a Living entity with your Sword causes Poison. Poison Duration. Poison Cooldown.
 
@@ -297,7 +297,7 @@ Milestones: `challenge_swords_poison_500` on `swords.poisoned-blade.poison-appli
 | Base knowledge cost | 7 |
 | Cost factor | 0.325 |
 | Tick interval (ms) | 5534 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-bloody-blade.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-bloody-blade.toml` |
 
 Menu stat lines: Striking a Living entity with your Sword causes Bleeding. Bleed Duration. Bleed Cooldown.
 
@@ -330,7 +330,7 @@ Milestones: `challenge_swords_bloody_500` on `swords.bloody-blade.bleed-damage` 
 | Base knowledge cost | 5 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1800 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-dual-wield.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-dual-wield.toml` |
 
 Menu stat lines: Matching Sword Bonus. Mixed Sword Bonus.
 
@@ -361,7 +361,7 @@ Milestones: `challenge_swords_dual_1k` on `swords.dual-wield.bonus-damage` at 10
 | Base knowledge cost | 3 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 1900 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-executioners-edge.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-executioners-edge.toml` |
 
 Menu stat lines: Bonus Damage. Health Threshold.
 
@@ -393,7 +393,7 @@ Milestones: `challenge_swords_execute_200` on `swords.executioners-edge.executio
 | Base knowledge cost | 4 |
 | Cost factor | 0.71 |
 | Tick interval (ms) | 2100 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-riposte-window.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-riposte-window.toml` |
 
 Menu stat lines: Riposte Window. Riposte Damage Bonus.
 
@@ -424,7 +424,7 @@ Milestones: `challenge_swords_riposte_200` on `swords.riposte.ripostes-landed` a
 | Base knowledge cost | 5 |
 | Cost factor | 0.76 |
 | Tick interval (ms) | 2400 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-crimson-cyclone.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-crimson-cyclone.toml` |
 
 Menu stat lines: Cyclone Radius. Cyclone Damage. Cyclone Cooldown.
 
@@ -470,7 +470,7 @@ Milestones: `challenge_swords_cyclone_500` on `swords.crimson-cyclone.mobs-hit` 
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-lunge-strike.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-lunge-strike.toml` |
 
 Menu stat lines: Lunge Force. Bonus Reach.
 
@@ -505,7 +505,7 @@ Milestones: `challenge_swords_lunge_250` on `swords.lunge-strike.lunges` at 250 
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.62 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-blade-flow.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-blade-flow.toml` |
 
 Menu stat lines: Max Flow Stacks. Attack Speed / Stack.
 
@@ -537,7 +537,7 @@ Milestones: `challenge_swords_flow_1k` on `swords.blade-flow.stacks-built` at 10
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.68 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-duelists-focus.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-duelists-focus.toml` |
 
 Menu stat lines: Bonus Damage. Damage Reduction.
 
@@ -572,7 +572,7 @@ Milestones: `challenge_swords_duelist_200` on `swords.duelists-focus.focused-hit
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.7 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-whetstone-ritual.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-whetstone-ritual.toml` |
 
 Menu stat lines: Sharpness Level. Buff Duration.
 
@@ -606,7 +606,7 @@ Milestones: `challenge_swords_whetstone_100` on `swords.whetstone-ritual.rituals
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.66 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-crescent-guard.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-crescent-guard.toml` |
 
 Menu stat lines: Absorption Hearts. Guard Duration.
 
@@ -636,7 +636,7 @@ Milestones: `challenge_swords_crescent_200` on `swords.crescent-guard.guarded-ki
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-hamstring.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-hamstring.toml` |
 
 Menu stat lines: Slowness Tier. Slow Duration.
 
@@ -669,7 +669,7 @@ Milestones: `challenge_swords_hamstring_200` on `swords.hamstring.hamstrings` at
 | Initial knowledge cost | 6 |
 | Base knowledge cost | 6 |
 | Cost factor | 0.72 |
-| Config file | `plugins/Adapt/adapt/adaptations/sword-heirloom-edge.toml` |
+| Config file | `plugins/Adapt/adaptations/sword-heirloom-edge.toml` |
 
 Menu stat lines: Damage Per Bank. Kills Per Bank. Banked Damage Cap.
 

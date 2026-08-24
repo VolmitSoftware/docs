@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Adapt documentation: Skill - Rift"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -153,14 +153,14 @@ Binding range grows a long way with level, and at max level the two containers c
 | Icon | `ENDER_EYE` |
 | Color | `DARK_PURPLE` |
 | Interval (ms) | `1154` |
-| Skill config | `plugins/Adapt/adapt/skills/rift.toml` |
+| Skill config | `plugins/Adapt/skills/rift.toml` |
 | Adaptation count | 13 |
 
 End-creature XP is `multiplier * min(damage, target base max health)`, so overkill damage does not pay extra. Teleport XP is granted silently (no floating text) and is rate limited by `teleportXPCooldown`. Teleports suppressed by Chronos Instant Recall are ignored entirely.
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/rift.toml` on first load.
+Written to `plugins/Adapt/skills/rift.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -196,7 +196,7 @@ Written to `plugins/Adapt/adapt/skills/rift.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
 
 ### Rift Resistance
 
@@ -209,7 +209,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `en
 | Base knowledge cost | 3 |
 | Cost factor | 1 |
 | Tick interval (ms) | 10288 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-resist.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-resist.toml` |
 | Listened events | `PlayerInteractEvent` (`on`, HIGHEST) |
 | Stats | `rift.resist.activations` |
 | Milestone | `challenge_rift_resist_200` at 200 activations, 300 XP |
@@ -236,7 +236,7 @@ chest and Rift Resistance is learned.
 | Base knowledge cost | 3 |
 | Cost factor | 0.2 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-access.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-access.toml` |
 | Listened events | `PlayerInteractEvent`, `BlockBurnEvent`, `BlockPistonRetractEvent`, `BlockPistonExtendEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`, `BlockBreakEvent`, `InventoryCloseEvent`, `PlayerQuitEvent`, `ChunkUnloadEvent` (all `on`) |
 | Stats | `rift.access.remote-opens` |
 | Milestones | `challenge_rift_access_100` at 100 remote opens, 300 XP. `challenge_rift_access_2500` at 2500 remote opens, 1000 XP |
@@ -258,7 +258,7 @@ deny a double chest. A remote double-chest session indexes both blocks and every
 | Base knowledge cost | 0 |
 | Cost factor | 0.0 |
 | Tick interval (ms) | 9248 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-enderchest.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-enderchest.toml` |
 | Listened events | `PlayerInteractEvent` (`on`, NORMAL) |
 | Stats | `rift.enderchest.opens` |
 | Milestone | `challenge_rift_enderchest_200` at 200 opens, 300 XP |
@@ -277,7 +277,7 @@ Triggers on right-click air, left-click air, or left-click block with `ENDER_CHE
 | Base knowledge cost | 0 |
 | Cost factor | 0.0 |
 | Tick interval (ms) | 1322 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-gate.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-gate.toml` |
 | Listened events | `PlayerInteractEvent` (`on`). `PlayerQuitEvent` (`on`). `PlayerJoinEvent` (`on`) |
 | Stats | `rift.gate.teleports`, `rift.gate.total-distance` |
 | Milestones | `challenge_rift_gate_100` at 100 gate teleports, 400 XP. `challenge_rift_gate_50k_dist` at 50000 blocks travelled, 1500 XP |
@@ -302,7 +302,7 @@ Channel length is 85 ticks. During the channel the player gets Blindness for 100
 | Base knowledge cost | 7 |
 | Cost factor | 0.12 |
 | Tick interval (ms) | 9288 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-blink.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-blink.toml` |
 | Listened events | `PlayerMoveEvent` (`on`, MONITOR) |
 | Stats | `rift.blink.blinks`, `rift.blink.distance-blinked`, `rift.teleports` |
 | Milestones | `challenge_rift_blink_500` at 500 blinks, 400 XP. `challenge_rift_blink_5k` at 5000 blocks blinked, 1500 XP |
@@ -334,7 +334,7 @@ Requires survival game mode. The gesture is a double jump detected from movement
 | Base knowledge cost | 1 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 9544 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-descent.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-descent.toml` |
 | Listened events | `PlayerToggleSneakEvent` (`on`, HIGHEST) |
 | Stats | `rift.descent.levitation-cancelled` |
 | Milestones | `challenge_rift_descent_100` at 100 cancels, 300 XP. `challenge_rift_descent_1k` at 1000 cancels, 1000 XP |
@@ -358,7 +358,7 @@ Removes the Levitation effect and applies a `FALL_DAMAGE_MULTIPLIER` modifier of
 | Base knowledge cost | 8 |
 | Cost factor | 0 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-visage.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-visage.toml` |
 | Listened events | `EntityTargetEvent` (`onEntityTarget`, NORMAL) |
 | Stats | `rift.visage.stares-survived` |
 | Milestones | `challenge_rift_visage_100` at 100 stares, 300 XP. `challenge_rift_visage_1k` at 1000 stares, 1000 XP |
@@ -378,7 +378,7 @@ Cancels the target event whenever an enderman tries to target a player carrying 
 | Base knowledge cost | 7 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 1200 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-ender-taglock.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-ender-taglock.toml` |
 | Listened events | `EntityDamageByEntityEvent` (`on`, HIGHEST). `PlayerInteractEvent` (`on`, HIGHEST, receives cancelled events). `PlayerTeleportEvent` (`on`). `ProjectileHitEvent` (`on`). `PlayerQuitEvent` (`on`) |
 | Stats | `rift.ender-taglock.entities-tagged`, `rift.ender-taglock.taglocked-teleports` |
 | Milestones | `challenge_rift_taglock_100` at 100 tags, 400 XP. `challenge_rift_taglock_500` at 500 taglocked teleports, 1000 XP |
@@ -409,7 +409,7 @@ Tagging requires a sneaking melee hit with a plain `ENDER_PEARL` in the main han
 | Base knowledge cost | 7 |
 | Cost factor | 1 |
 | Tick interval (ms) | 600 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-inflated-pocket-dimension.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-inflated-pocket-dimension.toml` |
 | Listened events | `PlayerInteractEvent` (`on`). `BlockPlaceEvent` (`on`). `PlayerDropItemEvent` (`on`) |
 | Stats | `rift.inflated-pocket.items-pulled`, `rift.inflated-pocket.items-stored` |
 | Milestones | `challenge_rift_pocket_5k` at 5000 items pulled, 400 XP. `challenge_rift_pocket_store_10k` at 10000 items stored, 1000 XP |
@@ -437,7 +437,7 @@ blocks. Build refill tops the held stack back up to `buildRefillAmount` or the m
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-void-magnet.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-void-magnet.toml` |
 | Listened events | `PlayerToggleSneakEvent` (`on`). `PlayerQuitEvent` (`on`) |
 | Stats | `rift.void-magnet.items-pulled` |
 | Milestones | `challenge_rift_void_magnet_5k` at 5000 items, 400 XP. `challenge_rift_void_magnet_50k` at 50000 items, 1500 XP |
@@ -469,7 +469,7 @@ cover session visits, scans, and item handoffs. Pulse delay has a floor of 2 tic
 | Base knowledge cost | 8 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-void-skin.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-void-skin.toml` |
 | Listened events | `EntityDamageEvent` (`on`, HIGHEST). `PlayerQuitEvent` (`on`). `PlayerJoinEvent` (`on`) |
 | Stats | `rift.void-skin.escapes`, `rift.teleports` |
 | Milestones | `challenge_rift_void_skin_50` at 50 escapes, 400 XP. `challenge_rift_void_skin_500` at 500 escapes, 1500 XP |
@@ -501,7 +501,7 @@ usable world spawn the escape is skipped and the damage lands.
 | Base knowledge cost | 5 |
 | Cost factor | 0.35 |
 | Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-pearl-rebound.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-pearl-rebound.toml` |
 | Listened events | `ProjectileLaunchEvent` (`on`). `ProjectileHitEvent` (`on`, HIGH). `EntityDamageEvent` (`on`, LOWEST) |
 | Stats | `rift.pearl-rebound.rebounds` |
 | Milestones | `challenge_rift_rebound_100` at 100 rebounds, 400 XP. `challenge_rift_rebound_1k` at 1000 rebounds, 1500 XP |
@@ -529,7 +529,7 @@ Only plain ender pearls rebound, and only once each: pearls already claimed by a
 | Base knowledge cost | 8 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/rift-conduit.toml` |
+| Config file | `plugins/Adapt/adaptations/rift-conduit.toml` |
 | Listened events | `PlayerInteractEvent` (`on`). `InventoryCloseEvent` (`on`, MONITOR). `PlayerQuitEvent` (`on`). `PlayerJoinEvent` (`on`) |
 | Stats | `rift.conduit.links-formed`, `rift.conduit.items-flowed` |
 | Milestones | `challenge_rift_conduit_10` at 10 links, 500 XP. `challenge_rift_conduit_10k` at 10000 items flowed, 1500 XP |

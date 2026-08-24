@@ -2,12 +2,12 @@
 title: "Mutations Overview"
 description: "Adapt documentation: Mutations Overview"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Mutations are an experimental trait system next to skill adaptations. A player wears up to two traits. Each trait has a benefit and a burden. The feature is off until you set `enabled = true` in `plugins/Adapt/adapt/mutations.toml`.
+Mutations are an experimental trait system next to skill adaptations. A player wears up to two traits. Each trait has a benefit and a burden. The feature is off until you set `enabled = true` in `plugins/Adapt/mutations.toml`.
 
 A player learns adaptations and spends knowledge on them. A Mutation is a commitment the player wears. Gale Lung makes you fast and dangerous while you move. Hits you take also shove you farther. Bastion Spine turns a still stance into a weapon. You cannot sprint while you brace. All fifteen types work this way. Each type has a benefit, a burden, and one trigger action. At master level 200 the burdens stop.
 
@@ -15,7 +15,7 @@ Time enforces the commitment. Slots unlock at master level 25 and 50. A change n
 
 ## Enable the feature
 
-1. Start the server once with Adapt installed. Adapt writes `plugins/Adapt/adapt/mutations.toml`.
+1. Start the server once with Adapt installed. Adapt writes `plugins/Adapt/mutations.toml`.
 2. Set `enabled = true` and save. The config watcher applies the change. It reconciles every online player. `/adapt mutations reload` does the same on demand.
 3. Grant `adapt.mutations` to players. Also grant `adapt.use.mutation.<id>` for each type you want available.
 4. Give `adapt.mutations.admin` to staff.
@@ -62,7 +62,7 @@ Two different types can always be worn together unless a profile's `conflicts` l
 
 | Requirement | Detail |
 |-------------|--------|
-| Config | `adapt/mutations.toml`, `enabled = true` |
+| Config | `mutations.toml`, `enabled = true` |
 | Player permission | `adapt.mutations`, plus `adapt.use.mutation.<id>` per type |
 | Admin permission | `adapt.mutations.admin` for equip, clear, discover, cooldown, refresh, slot-override, reset, perfect-test, reload, and viewing another player |
 | Editing gate | Non-admin slot changes need a bookshelf authorization token, taken from the last Adapt activator block click, held for `bookshelfTokenMillis` within `bookshelfMaximumDistance` in the same world |

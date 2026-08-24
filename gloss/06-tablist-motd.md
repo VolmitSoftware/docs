@@ -2,13 +2,13 @@
 title: "Tablist & Server List MOTD"
 description: "Gloss documentation: Tablist & Server List MOTD"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-The tablist header, footer and per-group list names live in the single document `plugins/Gloss/tablist.json`. The server list MOTD lives in `plugins/Gloss/motd.json`. Both are enveloped JSON. Both hot-reload from disk. Neither has any content left in `config.toml`. The only tablist knob still in the config file is its refresh interval.
+The tablist header, footer and per-group list names live in the single document `plugins/Gloss/tablist.json`. The server list MOTD lives in `plugins/Gloss/motd.json`. Both are enveloped JSON. Both hot-reload from disk. Neither has any content left in `gloss.toml`. The only tablist knob still in the config file is its refresh interval.
 
 ## The tablist document
 
@@ -103,7 +103,7 @@ If you turn things off, Gloss cleans up after itself:
 - `groupListNames: false` resets applied list names on the next document reload.
 - On plugin disable, headers and footers are cleared. List names are reset for every online player.
 
-If you edit `tablist.json` on disk, the change applies without a reload. `[features] tablist` and `[tablist] updateIntervalTicks` live in `config.toml`. That file also hot-reloads. An on-disk config edit restarts the driver on its own. `/gloss reload` does the same.
+If you edit `tablist.json` on disk, the change applies without a reload. `[features] tablist` and `[tablist] updateIntervalTicks` live in `gloss.toml`. That file also hot-reloads. An on-disk config edit restarts the driver on its own. `/gloss reload` does the same.
 
 The web editor can author and export the tablist document. It is not a live-sync subject, so install
 the exported file manually or edit it on disk. `/gloss tablist reset` restores the shipped copy.

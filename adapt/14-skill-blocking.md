@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Adapt documentation: Skill - Blocking"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -204,12 +204,12 @@ The redirected damage does not hit your health. It costs your shield durability 
 | Icon | `SHIELD` |
 | Color | `DARK_GRAY` |
 | Interval (ms) | `5000` |
-| Skill config | `plugins/Adapt/adapt/skills/blocking.toml` |
+| Skill config | `plugins/Adapt/skills/blocking.toml` |
 | Adaptation count | 14 |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/blocking.toml` on first load.
+Written to `plugins/Adapt/skills/blocking.toml` on first load.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -267,7 +267,7 @@ the first netherite shield crafted.
 
 ### Shared adaptation config keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries these keys on top of its own.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these keys on top of its own.
 
 | Key | Default | What it does |
 |-----|---------|--------------|
@@ -293,7 +293,7 @@ The tick interval below is the adaptation's background tick rate. Only Bastion S
 | Base knowledge cost | 1 |
 | Cost factor | 1 |
 | Tick interval (ms) | 20202 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-multiarmor.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-multiarmor.toml` |
 
 Listened events: `PlayerMoveEvent` (auto swap), `PlayerDropItemEvent` (sneak-drop to unbind), `InventoryClickEvent` (left-click merge).
 
@@ -314,7 +314,7 @@ Swap cooldown is a hard-coded 3000 ms. The elytra form takes over once fall dist
 | Base knowledge cost | 1 |
 | Cost factor | 0 |
 | Tick interval (ms) | 17774 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-chainarmorer.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-chainarmorer.toml` |
 
 Listened events: `CraftItemEvent`.
 
@@ -331,7 +331,7 @@ Recipes: `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `bl
 | Base knowledge cost | 5 |
 | Cost factor | 0 |
 | Tick interval (ms) | 17774 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-saddlecrafter.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-saddlecrafter.toml` |
 
 Listened events: `CraftItemEvent`.
 
@@ -348,7 +348,7 @@ Recipe `blocking-saddlecrafter`: five `LEATHER` shaped as `I I` over `III`. `per
 | Base knowledge cost | 5 |
 | Cost factor | 0 |
 | Tick interval (ms) | 17774 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-horsearmorer.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-horsearmorer.toml` |
 
 Listened events: `CraftItemEvent`.
 
@@ -365,7 +365,7 @@ Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-h
 | Base knowledge cost | 5 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-counter-guard.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-counter-guard.toml` |
 
 Listened events: `EntityDamageByEntityEvent`. Stack gains and confirmed spends queue a coalesced action-bar status showing the current and maximum stack counts.
 
@@ -393,7 +393,7 @@ Listened events: `EntityDamageByEntityEvent`. Stack gains and confirmed spends q
 | Base knowledge cost | 4 |
 | Cost factor | 0.68 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-bastion-stance.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-bastion-stance.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (projectile softening), `PlayerVelocityEvent` (impact effect only), `PlayerToggleSneakEvent`, `PlayerMoveEvent` and `PlayerGameModeChangeEvent` (stance start and stop).
 
@@ -424,7 +424,7 @@ Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBA
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1200 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-mirror-block.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-mirror-block.toml` |
 
 Listened events: `EntityDamageByEntityEvent`.
 
@@ -456,7 +456,7 @@ Listened events: `EntityDamageByEntityEvent`.
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-bulwark-bash.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-bulwark-bash.toml` |
 
 Listened events: `PlayerToggleSprintEvent` (records the sprint timestamp), `EntityDamageByEntityEvent` (fires the bash).
 
@@ -495,7 +495,7 @@ Listened events: `PlayerToggleSprintEvent` (records the sprint timestamp), `Enti
 | Base knowledge cost | 4 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-shield-wall.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-shield-wall.toml` |
 
 Listened events: `EntityDamageByEntityEvent`. Only fires when the entity taking the projectile is a player.
 
@@ -522,7 +522,7 @@ Listened events: `EntityDamageByEntityEvent`. Only fires when the entity taking 
 | Base knowledge cost | 4 |
 | Cost factor | 0.78 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-perfect-guard.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-perfect-guard.toml` |
 
 Listened events: `PlayerInteractEvent` (records the shield raise), `EntityDamageByEntityEvent` (negates and staggers).
 
@@ -550,7 +550,7 @@ Listened events: `PlayerInteractEvent` (records the shield raise), `EntityDamage
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-tempered-guard.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-tempered-guard.toml` |
 
 Listened events: `PlayerItemDamageEvent` (`MONITOR`, cancelled events ignored). Only positive durability damage to a shield qualifies, and the repair is scheduled one tick later so it follows vanilla wear.
 
@@ -574,7 +574,7 @@ Listened events: `PlayerItemDamageEvent` (`MONITOR`, cancelled events ignored). 
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-shieldbearers-resolve.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-shieldbearers-resolve.toml` |
 
 Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so the shield cooldown has actually been set.
 
@@ -601,7 +601,7 @@ Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so t
 | Base knowledge cost | 3 |
 | Cost factor | 0 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-phalanx-crafter.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-phalanx-crafter.toml` |
 
 Listened events: `PrepareItemCraftEvent` and `CraftItemEvent`.
 
@@ -622,7 +622,7 @@ repaired shield with max durability 1200 named "Netherite-Reinforced Shield". Th
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/blocking-interpose.toml` |
+| Config file | `plugins/Adapt/adaptations/blocking-interpose.toml` |
 
 Listened events: `EntityDamageEvent`. Only fires when the entity taking damage is a player.
 

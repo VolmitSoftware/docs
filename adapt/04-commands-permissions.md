@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt documentation: Commands & Permissions"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,6 +13,8 @@ Adapt registers exactly one Bukkit command, `/adapt`. Everything else is a subco
 Almost every node defaults to op. The exceptions are `adapt.effects` and `adapt.mutations`. Those default to true so ordinary players can toggle their own visuals and manage their own mutations. The whole dynamically registered `adapt.use.*` family controls gameplay rather than commands. Holding a default-true node still does not get anyone past `adapt.main`.
 
 `/adapt help`, `/adapt ?`, and any partial path render a paginated tree of subcommands and their parameters. Player help uses the shared 19-line panel: up to 17 entries at the root, or 16 inside a subtree where one line is reserved for Back. Shorter trees print every entry without padding; console help remains a flat, unpaginated listing. Tab completion for skill and adaptation arguments only offers components that are currently enabled. Console can run most subcommands but has no implicit "you". It refuses wherever a handler needs a player and you did not name one. The player-only subcommands are `/adapt effects`, `/adapt configure`, `/adapt mutations menu`, `/adapt mutations cooperative`, `/adapt debug particle`, and `/adapt debug sound`.
+
+Every command that reads or changes an online target requires that target's current Adapt runtime to be ready. If their profile is still loading, failed safe validation, or lost its SQL fence, the command reports that Adapt is unavailable and changes nothing. It never creates an empty or unfenced wrapper as a command fallback.
 
 ## Giving progression
 
@@ -36,17 +38,15 @@ There are two tools here and they are not interchangeable.
 
 Commands that mutate an online target run on that player's owning scheduler. If the player retires before Folia accepts the task, Adapt reports the rejected operation instead of claiming success; a confirmed full reset also restores its confirmation window so it can be retried.
 
-`/adapt reset confirm` is the full delete and accepts offline targets. Run it once to get the warning. Then run it again with the same target within 30 seconds. An online target has their profile replaced in place. Attribute modifiers are unlearned. The mutation loadout dissolves. Adaptation recipes are un-discovered. The empty profile is saved immediately. They are not kicked, despite the wording of the message they receive. An offline target has their stored data purged instead. Both commands need `adapt.clear`.
+`/adapt reset confirm` is the full delete and accepts offline targets. Run it once to get the warning. Then run it again with the same target within 30 seconds. When the target is online on the initiating backend, both local JSON and SQL mode replace the profile live in place; SQL rotates and adopts the new fence before activating the empty profile. Attribute modifiers are unlearned. The mutation loadout dissolves. Adaptation recipes are un-discovered. The empty profile is saved immediately. Neither path kicks the Minecraft player. An offline target has their stored data purged instead. A different backend that receives the SQL reset notice retires its older Adapt runtime and requires reconnect, as described in [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server). Both commands need `adapt.clear`.
 
-## Resetting and migrating configs
+## Resetting configs
 
 `/adapt default skill`, `/adapt default adaptation`, and `/adapt default all` delete the relevant TOML, regenerate it from defaults, and reconcile mutations for online players. `default all` archives what it deletes first. These need `adapt.configurator`. See [01 - Installation & Configuration](/adapt/01-installation-configuration) for what `default all` does and does not touch.
 
-`/adapt migrate-configs` rewrites every skill and adaptation config in canonical TOML form. Then it walks everything below `adapt/` and deletes each legacy JSON file that already has a TOML peer, reporting the counts. It needs `adapt.debug`.
-
 ## Developer tools
 
-`/adapt debug` (alias `dev`) holds the tools you should not hand out. `/adapt debug mode` reveals every skill and adaptation regardless of progression. It makes learning free and uncapped, by short-circuit of the power budget, the knowledge spend, and the over-budget pruner. It uses `adapt.debug`, the same node as `migrate-configs`.
+`/adapt debug` (alias `dev`) holds the tools you should not hand out. `/adapt debug mode` reveals every skill and adaptation regardless of progression. It makes learning free and uncapped, by short-circuit of the power budget, the knowledge spend, and the over-budget pruner. It uses `adapt.debug`.
 
 Everything else under `debug` sits behind `adapt.idontknowwhatimdoingiswear`. `verbose` flips diagnostic logging in memory without writing the config file. `pap` and `psp` print the generated `adapt.use` nodes for adaptations and skills to the console. `particle` and `sound` fire one at your feet for testing. `perf` prints ability-check rates, cache hit ratio, the rolling 60-second guard-check timing cost and budget, and the top ticker hotspots. It can reset those counters afterwards.
 
@@ -88,7 +88,6 @@ If you turn on `permissionXpMultipliers`, those nodes are registered too. Unlike
 | `/adapt determine <skill:adaptation> <assign> <force> <level> [player]` | both | `adapt.determine` |
 | `/adapt claim-skill <skill> <level> [player]` | both | `adapt.determine` |
 | `/adapt claim-adaptation <skill:adaptation> <level> [force=false] [player]` | both | `adapt.determine` |
-| `/adapt migrate-configs` | both | `adapt.debug` |
 
 `claim-skill` accepts levels 0-100 and writes `XP.getXpForLevel(level)` onto the line. `claim-adaptation` accepts 0-100 and then clamps to `adaptation.getMaxLevel()`.
 
@@ -109,9 +108,9 @@ Permission on every subcommand: `adapt.clear`. Online targets only.
 
 | Syntax | Permission | Effect |
 |---|---|---|
-| `/adapt reset confirm [player]` | `adapt.clear` | Two-step confirm within 30 seconds, then `AdaptServer.resetPlayerData` |
+| `/adapt reset confirm [player]` | `adapt.clear` | Two-step confirm within 30 seconds, then `AdaptServer.resetPlayerData`; an online target on this backend receives the empty profile live, including adoption of a new SQL fence |
 
-Accepts offline targets. The pending confirmation is keyed by sender and target. Console uses the zero UUID as its sender key. Online resets replace the profile in place and send `DATA_DELETED_KICK` in chat without kicking.
+Accepts offline targets. The pending confirmation is keyed by sender and target. Console uses the zero UUID as its sender key. Online resets initiated on the hosting backend replace the profile in place in both local and SQL mode; the SQL path adopts its newly rotated fence. The target receives the configured deletion notice in chat without being kicked. Only an older runtime on another backend retires until reconnect when it receives the reset notice.
 
 ### `/adapt default` (`CommandDefault`)
 
@@ -167,7 +166,7 @@ The `skill` and `adaptation` subcommands only accept `SimpleSkill` and `SimpleAd
 | `adapt.boost.global` | op | Server-wide XP boost |
 | `adapt.gui` | op | Opening the GUI via command |
 | `adapt.determine` | op | `determine`, `claim-skill`, `claim-adaptation` |
-| `adapt.debug` | op | Debug mode and `migrate-configs` |
+| `adapt.debug` | op | Debug mode |
 | `adapt.configurator` | op | Config editor and config resets |
 | `adapt.effects` | true | Toggling your own effects |
 | `adapt.mutations` | true | Your own mutations, once the feature is enabled |

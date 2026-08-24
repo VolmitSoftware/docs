@@ -2,7 +2,7 @@
 title: "Gloss"
 description: "Gloss display suite: holograms, menus, panels, container previews, scoreboards, tablist, chat"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -16,7 +16,7 @@ Gloss draws holograms, holographic menus, and world-anchored panels. It also dra
 | Servers | Paper, Purpur, Leaf, Folia, Canvas, Spigot — Minecraft 26.1.2 – 26.2 |
 | Java | 25 |
 | Folia | Supported (`folia-supported: true` in `paper-plugin.yml`) |
-| Configuration | `plugins/Gloss/config.toml`, commented and hot-reloading |
+| Configuration | `plugins/Gloss/gloss.toml`, commented and hot-reloading |
 | Content | JSON documents under `plugins/Gloss/`, with shipped defaults |
 | Web editor | [Web Editor & Sync](/gloss/18-web-editor) |
 | Integrations | PlaceholderAPI, Vault, WorldGuard, ten item plugins, and live metrics from the other Volmit plugins — all optional |

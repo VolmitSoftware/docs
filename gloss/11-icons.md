@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Gloss documentation: Icons"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -346,7 +346,7 @@ provider and item id and handed out as clones. No caller ever holds a
 live registry instance. The registry returns nothing in several cases.
 That result becomes an icon failure and the missing-icon fallback. It
 happens when the item id is null or blank, or when
-`[items] customItems` is off in `config.toml`. It also happens when no
+`[items] customItems` is off in `gloss.toml`. It also happens when no
 provider matches the id or the named provider is not ready. A
 main-thread-only provider called off-thread returns nothing as well. A
 skipped off-thread provider is warned once per provider.
@@ -381,7 +381,7 @@ Because the icon is a raw entity rather than a display entity, none of the displ
 
 | Layer | Source |
 |---|---|
-| Session scale | `[menus] uiScale` in `config.toml`, default `1.0`, clamped to 0.25 – 4.0 |
+| Session scale | `[menus] uiScale` in `gloss.toml`, default `1.0`, clamped to 0.25 – 4.0 |
 | Panel multiplier | A panel's own `scale`, applied on top: a panel's menu renders at `panelScale × uiScale` |
 | Per-icon scale | `style.scaleX` / `scaleY` / `scaleZ`, each 0.01 – 64, multiplied onto the session scale for that icon only |
 

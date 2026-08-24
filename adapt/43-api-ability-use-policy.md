@@ -2,7 +2,7 @@
 title: "API - Ability Use Policy"
 description: "Adapt documentation: API - Ability Use Policy"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -292,7 +292,7 @@ Adapt's warning throttle is one message per minute per key. The key is the provi
 
 ### Configuration
 
-`plugins/Adapt/adapt/adapt.toml`, `[abilityApi]`:
+`plugins/Adapt/adapt.toml`, `[abilityApi]`:
 
 | Key | Default | What it does |
 |---|---|---|

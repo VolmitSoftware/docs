@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -37,6 +37,7 @@ the server, and each plugin compiles and shades it into its jar.
 | `util.noise`, `util.interpolation`, `util.stream` | Noise generators, interpolators, and composable procedural streams |
 | `util.collection`, `util.cache`, `util.data` | `KList`/`KMap`/`KSet`, chunk caches, palettes, cuboids, varint helpers |
 | `util.io`, `util.json` | IO adapters, native-plus-reconciled file/folder watchers, reactive folder batching, and the JSON implementation |
+| `util.config` | Typed TOML parsing, canonical writing, generated field and section documentation, and configuration load policy |
 | `util.hotload` | `ConfigHotloadEngine`, which stabilizes and coalesces configuration changes before a host applies them |
 | `util.network` | Downloads, metered streams, download progress reporting |
 | `integration` | The cross-plugin metric handshake types. Read the relocation rule below before you touch these |
@@ -48,9 +49,19 @@ cactus as a decorant and permits cactus only on sand, red sand, or another cactu
 
 `FileWatcher` and `FolderWatcher` consume native `WatchService` events and reconcile filesystem state, including atomic replacements, overflow, directory deletion/recreation, and watcher-key loss. Their `checkModifiedEvents()` methods drain native events without checking unchanged leaf metadata while complete registrations are active and fall back to state scanning when native watching is unavailable or only partially registered; `checkModified()` still performs full state reconciliation. A folder watch created before its missing root appears registers that new tree after fallback discovery. Event-only callers should still run periodic full reconciliation. The folder watcher does not follow directory symlinks. Both own operating-system resources and must be closed when their host is replaced or disabled.
 
+`IO.lock` reports a blocked file-channel lock once after five seconds with a
+`[VolmLib/IO]` warning, then stays quiet until its 60-second timeout. The thrown
+timeout retains the final wait duration for the host plugin's failure logger.
+VolmLib-owned runtime and default failure sinks use `[VolmLib/<component>]`
+records with the original throwable attached. Expected interruption and
+reflection-probe diagnostics use `FINE`; actionable shared-service failures use
+`WARNING` or `SEVERE`.
+
 `ReactiveFolder` adds bounded rolling content reconciliation, temporary-artifact filtering, delete grace, and a completion-anchored 3-second latest-state queue to a recursive folder watch. It drains events on ordinary checks, runs a full membership reconciliation about every 5 seconds, and starts exact SHA-256 reconciliation about every 2.5 seconds. Each exact-content slice advances at most 8 MiB or 32 files and yields between files after roughly 10 milliseconds. `ConfigHotloadEngine.configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` provides the same completion-anchored queue with a host-supplied interval; Volmit hosts use 3 seconds. It also provides self-write suppression and periodic content reconciliation for silent or same-metadata saves. `ConfigHotloadEngine` likewise continues exact reconciliation across polls and yields between files after 8 MiB, 32 files, or roughly 10 milliseconds. Snapshot enumeration, full watcher scans, and one individual read sit outside those between-file limits. Exact-content capture is capped at 2 MiB per file; larger targets remain visible to metadata reconciliation but are not eligible for an automatic content apply. A failed host apply remains pending for retry; `clear()` closes all watcher resources and discards pending work.
 
 `ConfigFileSupport.load(..., overwriteOnReadFailure=false, ...)` is a passive load: it parses and normalizes in memory but never canonicalizes, migrates, deletes, or creates files. Startup and explicit migration paths opt into writes by passing `true`.
+`TomlCodec` emits an explicit `@ConfigDoc` attached to a nested POJO field immediately above that
+section header; unannotated sections retain the generated `Settings for <section>` fallback.
 
 `LocalizationManager.install(preparedSnapshot)` atomically installs the exact immutable `LocalizationSnapshot` a caller already created and validated. Hotload hosts can therefore parse, validate, and compile a localization candidate on an I/O worker, then perform only the prepared reference swap on their authoritative server thread.
 

@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -177,7 +177,7 @@ pressing Shift+F10 opens creation at that exact snapped position for text, image
 living entities, items, blocks, buttons and toggles. Media creation opens the same image manager and
 inserts the chosen static or animated asset as one undoable component edit. A standalone hologram
 document remains a text-display line list; mixed icon components belong to menu documents. Living-
-entity icons use real Minecraft entity sprites instead of geometric stand-ins. A standalone hologram's Presentation section exposes `seeThrough`, enabled by default, so the authored JSON and server agree on whether terrain occludes the text. The **Real drops** document provides a live item-stage preview and GUI controls for the complete `real-drops/default.json` profile: update budgets, density, model scales, throw-momentum tumble, submerged spin, distance-driven ground roll, face attraction and stable delay, entity physics, advanced modifiers, labels, filters, and typed keyframe animation profiles. Placeable samples use textured six-face block geometry with material-specific bounds; only true items use the item-sprite renderer. Showcase drops default to one item and use only occasional two- or three-item stacks, keeping the model readable instead of demonstrating large inventory counts. The stage shadow is a circular disc on the ground plane, so camera perspective produces the ellipse naturally instead of stretching a screen-space shadow. The animation inspector authors material property maps, profile priority and globs, trigger clips, tracks, blend/easing, and keyframes for scale pulses, hovering, glow/light, physics handoff, spiral rotation, visibility, and offsets. Its transport includes stepping and timeline scrubbing with the current animation phase visible. The code editor schema covers the same contract. Its export path is fixed to `plugins/Gloss/real-drops/default.json`; the master `[features] realDrops` boolean remains in `config.toml`.
+entity icons use real Minecraft entity sprites instead of geometric stand-ins. A standalone hologram's Presentation section exposes `seeThrough`, enabled by default, so the authored JSON and server agree on whether terrain occludes the text. The **Real drops** document provides a live item-stage preview and GUI controls for the complete `real-drops/default.json` profile: update budgets, density, model scales, throw-momentum tumble, submerged spin, distance-driven ground roll, face attraction and stable delay, entity physics, advanced modifiers, labels, filters, and typed keyframe animation profiles. Placeable samples use textured six-face block geometry with material-specific bounds; only true items use the item-sprite renderer. Showcase drops default to one item and use only occasional two- or three-item stacks, keeping the model readable instead of demonstrating large inventory counts. The stage shadow is a circular disc on the ground plane, so camera perspective produces the ellipse naturally instead of stretching a screen-space shadow. The animation inspector authors material property maps, profile priority and globs, trigger clips, tracks, blend/easing, and keyframes for scale pulses, hovering, glow/light, physics handoff, spiral rotation, visibility, and offsets. Its transport includes stepping and timeline scrubbing with the current animation phase visible. The code editor schema covers the same contract. Its export path is fixed to `plugins/Gloss/real-drops/default.json`; the master `[features] realDrops` boolean remains in `gloss.toml`.
 The bundled Java 26.2 item/block catalog contains 1,691 materials and 1,644 textured atlas entries;
 the entity catalog contains 91 living renders using Java 26.2 textures and the renderer's latest
 supported 26.1 geometry definitions. Maintainers refresh both catalogs with
@@ -343,7 +343,7 @@ The two never connect directly.
 | `[editor.sync] pollSeconds` | `3` | Clamped 1..60. Delay between relay polls |
 | `[editor.sync] maxProjectMiB` | `8` | Clamped 1..32. Cap on one canonical project |
 
-All six live in `config.toml` and hot reload with it. See [Configuration](/gloss/02-configuration).
+All six live in `gloss.toml` and hot reload with it. See [Configuration](/gloss/02-configuration).
 
 When `endpoint` is still the shipped default and `createToken` is blank, session creation is refused
 before any request is sent, with `the official editor sync relay requires editorSyncCreateToken`. No

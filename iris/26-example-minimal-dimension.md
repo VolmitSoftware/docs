@@ -192,7 +192,7 @@ With `fluidHeight` 63 and `min` = `max` = 96, every column resolves to exactly 9
 
 **What you should see.** No blocking errors. If validation reports a missing region or biome, the key in the parent file and the file path under the type folder disagree. Compare them character for character, including the folder prefix.
 
-Validation checks that the dimension load key resolves. It checks that every region key in `regions` loads. It checks that every biome key on a region loads. It checks that structure placements fit inside the declared height range. It does **not** check the multiple-of-16 rule on `dimensionHeight`. A bad height passes here and fails later when Iris compiles the dimension type.
+Validation checks that the dimension load key resolves, every region and biome key loads, structure placements fit inside the declared height range, both dimension-height values satisfy Minecraft's bounds and multiple-of-16 rules, and `logicalHeight` fits inside the span. These are blocking errors; dimension-type compilation enforces the same contract again at runtime.
 
 ## 7. Prove it in Studio
 

@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Iris runs the same generation core on Bukkit-family servers and on Fabric,
 Forge, and NeoForge. Terrain output is identical. Everything around it
 differs. This page is the reference matrix for those differences. Shared
-configuration is `settings.json`. Mod loaders add `modded.json`. Related
+configuration is `iris.json`. Mod loaders add `modded.json`. Related
 detail lives in
 [01 - Installation & Platforms](/iris/01-installation-platforms),
 [03 - Configuration](/iris/03-configuration), and
@@ -61,7 +61,7 @@ SPI: `spi/`.
 
 | Item | Bukkit | Fabric / Forge / NeoForge |
 |------|--------|---------------------------|
-| Settings | `plugins/Iris/settings.json` | `<configDir>/iris/settings.json` |
+| Settings | `plugins/Iris/iris.json` | `<configDir>/iris/iris.json` |
 | Packs | `plugins/Iris/packs/` | `<configDir>/irisworldgen/packs/` |
 | Mod config | — | `<configDir>/irisworldgen/modded.json` |
 | GoldenHash baselines | `plugins/Iris/golden/` | `<configDir>/irisworldgen/golden/` |
@@ -71,7 +71,7 @@ SPI: `spi/`.
 | Persistent dynamic-world registry | `<level-root>/iris/worlds.json`, plus exact save-filtered `bukkit.yml` startup bindings | `<world-root>/iris/iris-dimensions.json` |
 | Managed dimension storage | Paper-family: `<level-root>/dimensions/iris/<key>/`. Plain Spigot: `<world-container>/<level-name>_iris_<key>/dimensions/iris/<key>/` | Minecraft's dynamic-dimension storage under the save, registered through `iris-dimensions.json` |
 
-On mod loaders only `settings.json` and the parity dumps use the `iris/`
+On mod loaders only `iris.json` and the parity dumps use the `iris/`
 root. Every pack, config, and generated artifact uses `irisworldgen/`.
 Both roots sit under the loader config directory.
 
@@ -80,7 +80,7 @@ Both platforms use native filesystem events with content reconciliation, stable 
 | Watcher | Bukkit | Modded |
 |---------|--------|--------|
 | Pack / studio content | About 1 s shared reactive-folder checks; 4 s during maintenance | 250 ms eligibility sweep and about 1 s per-pack checks, with a 2 s hold-off after recent generation and a pregeneration hold-off |
-| `settings.json` | Native events drain about every 500 ms; bounded exact-content reconciliation begins about every 2.5 s | Native events drain about every 500 ms; bounded exact-content reconciliation begins about every 2.5 s |
+| `iris.json` | Native events drain about every 500 ms; bounded exact-content reconciliation begins about every 2.5 s | Native events drain about every 500 ms; bounded exact-content reconciliation begins about every 2.5 s |
 
 Both parse automatic settings changes from immutable bytes without rewriting the operator's file. Locale override native events drain on the same 500 ms coordinator cadence, with bounded exact-content reconciliation beginning about every 2.5 seconds. Manual reload remains immediate.
 
@@ -250,7 +250,7 @@ string differently. Full procedure:
    Bukkit world folder into a modded world or the reverse.
 4. Restart so destination registries and forced datapacks are built before
    any world is created.
-5. Align the `settings.json` keys that affect generation (`generator`,
+5. Align the `iris.json` keys that affect generation (`generator`,
    `performance`, `treeFeller`). Bukkit-only `autoConfiguration` keys can
    be ignored.
 6. On mod loaders, set `modded.json` `primaryWorld` if you need overworld

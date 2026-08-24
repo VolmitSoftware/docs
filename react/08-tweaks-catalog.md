@@ -38,7 +38,7 @@ This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protect
 
 ### `entity-hardstop`
 
-This tweak hard-caps per-chunk entity population. It cancels spawns, breeds, and drops once the count is at or above the limit. Spawn denial is the `SPAWN_CAP` protection operation path. See [17 - API - Entity Protection](/react/17-api-entity-protection).
+This tweak hard-caps per-chunk entity population. It cancels spawns, breeds, and drops once the count is at or above the limit. Rejected chunks use a world-qualified cache capped at 65,536 entries, with at most eight expiry checks per spawn; creature spawns are counted once through their reason-aware handler. Spawn denial is the `SPAWN_CAP` protection operation path. See [17 - API - Entity Protection](/react/17-api-entity-protection).
 
 - **Class:** `TweakEntityHardstop` · **Listener:** yes
 

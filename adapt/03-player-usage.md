@@ -72,9 +72,11 @@ Click a level you already own to drop back to the level below it. Knowledge come
 
 Most adaptations need no input. Others have a gesture: sneaking, jumping, breaking a block, drawing a bow, right-clicking with a particular item. Each skill doc lists the exact trigger for every one of its adaptations under `11` through `33`.
 
-An adaptation that is learned can still stay silent. It does nothing while you are in spectator mode. It does nothing while you are in creative mode on a server that has not enabled `allowAdaptationsInCreative`. It does nothing in a blacklisted world. It does nothing inside a region or claim that denies the action. It does nothing when another plugin denies the use through Adapt's ability API.
+An adaptation that is learned can still stay silent. It does nothing while you are in spectator mode. It does nothing while you are in creative mode on a server that has not enabled `allowAdaptationsInCreative`. It does nothing in a blacklisted world. It does nothing inside a region or claim that denies the action. It does nothing when another plugin denies the use through Adapt's ability API. It also stays silent when Adapt could not safely load or claim your profile.
 
-Some adaptations create items: backpacks, chalk wands, time bottles, bound rift objects. Those items only do their special thing for someone who has the owning adaptation. Experience and knowledge orbs are different. They are admin-made snowballs. Anyone can throw one to collect the reward stored inside it, with no adaptation needed. See [36 - Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects).
+Some adaptations create items: backpacks, chalk wands, time bottles, bound rift objects. Those items only do their special thing for someone who has the owning adaptation. Experience and knowledge orbs are different. They are admin-made snowballs. Anyone with a ready Adapt profile can throw one to collect the reward stored inside it, with no adaptation needed; Adapt refuses the custom launch and awards nothing while the profile is unavailable. See [36 - Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects).
+
+An unsafe, corrupt, timed-out, or unclaimable profile never prevents you from joining the Minecraft server. Adapt stays unavailable for that session instead: its menus and player-scoped commands refuse the action, and XP, knowledge, skills, adaptations, mutations, custom brewing, and custom orbs remain inactive without creating an empty replacement profile. Adapt makes three bounded online retries; if recovery still fails, reconnect after the operator has fixed the storage problem.
 
 ## Other things worth knowing
 

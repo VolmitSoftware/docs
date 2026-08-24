@@ -15,7 +15,7 @@ At master level 200 the player reaches perfect adaptation. The burden then stops
 
 ## The fifteen Mutations
 
-Everything below assumes the same starting conditions. The Mutation feature is enabled in `adapt/mutations.toml`. The type's own `enabled` flag is true. The player holds `adapt.mutations` and `adapt.use.mutation.<id>`. The type is equipped in an unlocked slot and reads as `EXPRESSED`.
+Everything below assumes the same starting conditions. The Mutation feature is enabled in `mutations.toml`. The type's own `enabled` flag is true. The player holds `adapt.mutations` and `adapt.use.mutation.<id>`. The type is equipped in an unlocked slot and reads as `EXPRESSED`.
 
 The player is in survival or adventure mode. The world is not blacklisted globally or for that type. Any protection plugin allows the block or entity action involved. PvP-facing effects also need both the global and per-type `pvpEnabled` flags. Where an entry says "control effect", that is a short potion effect on the target. The effect is chosen from the weapon or tool family: glowing, weakness, slowness, or levitation.
 
@@ -197,7 +197,7 @@ Every type also has the permission `adapt.use.mutation.<id>`.
 
 ### Type config
 
-Each type has its own camel-case section in `adapt/mutations.toml`, such as `[galeLung]`. That section holds the shared profile keys from [34 - Mutations Overview](/adapt/34-mutations-overview) plus the keys below. All millisecond values clamp to a maximum of 31,536,000,000 (one year). All tick values clamp to a maximum of 72,000. Only the per-key minimum is listed where that is the only bound.
+Each type has its own camel-case section in `mutations.toml`, such as `[galeLung]`. That section holds the shared profile keys from [34 - Mutations Overview](/adapt/34-mutations-overview) plus the keys below. All millisecond values clamp to a maximum of 31,536,000,000 (one year). All tick values clamp to a maximum of 72,000. Only the per-key minimum is listed where that is the only bound.
 
 #### Gale Lung
 

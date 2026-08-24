@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Adapt documentation: Skill - Kinetics"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -168,12 +168,12 @@ Something attacks you at knife range while you hold a spear and it gets shoved o
 | Icon | `MACE` |
 | Color | `GOLD` |
 | Interval (ms) | `1000` |
-| Skill config | `plugins/Adapt/adapt/skills/kinetics.toml` |
+| Skill config | `plugins/Adapt/skills/kinetics.toml` |
 | Adaptation count | 18 |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/kinetics.toml` on first load.
+Written to `plugins/Adapt/skills/kinetics.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -240,7 +240,7 @@ ledger and crush. A separate Paper-only companion listener adds `EntityAttemptSm
 
 ### Shared adaptation keys
 
-Every adaptation TOML carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost` on top of its own knobs. TOML overrides live at `plugins/Adapt/adapt/adaptations/<id>.toml`.
+Every adaptation TOML carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost` on top of its own knobs. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`.
 
 ### Moon Jump
 
@@ -253,7 +253,7 @@ Every adaptation TOML carries `enabled`, `permanent`, `showParticles`, `showSoun
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-moon-jump.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-moon-jump.toml` |
 
 Listened events: `PlayerJumpEvent`. The tick is learner-bound and reapplies the passive jump strength modifier.
 
@@ -279,7 +279,7 @@ Passive jump height is vanilla height plus 0.5 blocks per level, converted to a 
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-rubber-soul.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-rubber-soul.toml` |
 
 Listened events: `PlayerMoveEvent` (detects the landing). The learner-bound tick maintains the passive bounciness modifier and needs the bounciness attribute to exist.
 
@@ -302,7 +302,7 @@ Listened events: `PlayerMoveEvent` (detects the landing). The learner-bound tick
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-soft-catch.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-soft-catch.toml` |
 
 Listened events: `PlayerMoveEvent` (records bounces), `EntityDamageEvent` at `HIGHEST` (reduces `FALL` damage only).
 
@@ -327,7 +327,7 @@ Soft landing surfaces are slime, honey, any bed, hay bale, powder snow, sponge, 
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-surface-skate.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-surface-skate.toml` |
 
 Listened events: `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, and `PlayerMoveEvent`. When available, sprint sliding is a `MULTIPLY_SCALAR_1` friction-attribute modifier and the learner-bound tick reconciles it against current sprint/sneak state. The configured slide percentage cancels that percentage of each surface's own friction loss rather than assigning every block one friction value. When the attribute is absent, the move handler derives the supporting block's slipperiness and applies the same formula only while grounded. It preserves vertical velocity, ignores teleports, and bounds sliding to observed movement so it cannot inject speed from rest or grow knockback indefinitely. Sneak braking is grounded and event-driven on both paths, changes only horizontal velocity, and is applied once when sneak is pressed.
 
@@ -350,7 +350,7 @@ The generated config is canonicalized on load. The previous `slideFrictionBase`,
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-terminal-toggle.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-terminal-toggle.toml` |
 
 Listened events: `PlayerToggleSneakEvent` (flips mode), `PlayerMoveEvent` (refreshes the modifiers every move while airborne and clears them on landing).
 
@@ -375,7 +375,7 @@ Dive applies negative air drag and positive gravity. Hang applies the opposite. 
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-heavy-frame.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-heavy-frame.toml` |
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerItemHeldEvent`. The learner-bound tick reconciles the stance so it cannot get stuck on.
 
@@ -401,7 +401,7 @@ The stance uses transient `KNOCKBACK_RESISTANCE`, `EXPLOSION_KNOCKBACK_RESISTANC
 | Base knowledge cost | 6 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-mass-shift.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-mass-shift.toml` |
 
 Listened events: `PlayerSwapHandItemsEvent` (cancelled when it triggers a form change), `PlayerQuitEvent`, `PlayerDeathEvent` (both reset to Normal). The tick only runs while at least one player holds a form, and it refreshes the movement effect and reapplies modifiers after a level change.
 
@@ -427,7 +427,7 @@ and 0.2 down for Pocket. It applies to both attack damage and max health as
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-meteor-cadence.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-meteor-cadence.toml` |
 
 Listened events: `PlayerToggleSneakEvent`, `PlayerMoveEvent`. Requires you to be airborne, moving downward, sneaking, and holding a mace. Modifiers are refreshed in 8-tick slices and the velocity push is applied at most once per game tick.
 
@@ -454,7 +454,7 @@ Meteor Cadence never applies damage itself. The faster descent builds fall dista
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-breachwright.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-breachwright.toml` |
 
 Listened events: `EntityAttemptSmashAttackEvent`. PvP or PvE policy is checked against the target's location before the shred lands. The tick only clears expired per-target cooldowns.
 
@@ -479,7 +479,7 @@ Listened events: `EntityAttemptSmashAttackEvent`. PvP or PvE policy is checked a
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-windburst.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-windburst.toml` |
 
 Listened events: `EntityAttemptSmashAttackEvent`.
 
@@ -507,7 +507,7 @@ Hard limits not exposed in config: at most 32 candidate entities scanned, 16 act
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-quake-guard.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-quake-guard.toml` |
 
 Listened events: `EntityAttemptSmashAttackEvent`.
 
@@ -533,7 +533,7 @@ Listened events: `EntityAttemptSmashAttackEvent`.
 | Base knowledge cost | 5 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-rebound-anvil.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-rebound-anvil.toml` |
 
 Listened events: `EntityAttemptSmashAttackEvent`.
 
@@ -557,7 +557,7 @@ Listened events: `EntityAttemptSmashAttackEvent`.
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-phalanx-reach.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-phalanx-reach.toml` |
 
 Listened events: `PlayerItemHeldEvent`. The learner-bound tick reconciles the modifier against whatever is currently in your main hand.
 
@@ -577,7 +577,7 @@ Listened events: `PlayerItemHeldEvent`. The learner-bound tick reconciles the mo
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-charge-lance.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-charge-lance.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand. Skipped while the attacker is in a vehicle. Bonus is `min(cap, horizontalSpeed * factor)` applied as a damage multiplier.
 
@@ -601,7 +601,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Base knowledge cost | 4 |
 | Cost factor | 0.45 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-impale-pin.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-impale-pin.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand. Sweet-range distance is measured from the attacker's eye to the nearest point of the target bounding box. A successful pin emits a chain sound, critical ring, and colored dust burst. The tick only clears expired per-target cooldowns.
 
@@ -627,7 +627,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-lunge-conductor.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-lunge-conductor.toml` |
 
 Listened events: `EntityLungeEvent` twice, once at `HIGHEST` (`on`, raises lunge power) and once at `MONITOR` (`finalizeLunge`, snapshots facing and marks the cooldown). The horizontal-only velocity assist runs on the player's owning scheduler one tick later, after the native impulse, and leaves vertical velocity unchanged. Only cooldown-ready events receive either boost. Intervening lunges use vanilla power and distance.
 
@@ -650,7 +650,7 @@ Listened events: `EntityLungeEvent` twice, once at `HIGHEST` (`on`, raises lunge
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-mounted-shock.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-mounted-shock.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spear in the main hand while riding a vehicle. Bonus is `min(cap, mountSpeed * factor)` applied as a damage multiplier. Stacks with Taming's mounted damage bonus.
 
@@ -673,7 +673,7 @@ Listened events: `EntityDamageByEntityEvent`, resolved as a melee hit with a spe
 | Base knowledge cost | 5 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 9999 |
-| Config file | `plugins/Adapt/adapt/adaptations/kinetics-dead-zone.toml` |
+| Config file | `plugins/Adapt/adaptations/kinetics-dead-zone.toml` |
 
 Listened events: `EntityDamageByEntityEvent`, handling both halves. The shove half fires when you are the victim, holding a spear, and the attacker is a living entity inside the dead zone. PvP or PvE policy is checked first. The riposte half fires on your next spear melee hit while the window is open and is consumed by that hit. Shoved attackers keep 20 percent of their velocity plus the shove, with a fixed 0.25 upward lift.
 

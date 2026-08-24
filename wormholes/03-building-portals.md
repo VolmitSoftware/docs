@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -143,7 +143,7 @@ click).
 
 ## Vanilla nether and end portals
 
-Config: `[main] replace-nether-and-end-portals` in `config/wormholes.toml`
+Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 (default `true`). Hot-reloads with other main gameplay settings.
 
 If this is enabled, lighting a vanilla nether portal converts the nether

@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Adapt documentation: Skill - Discovery"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -149,7 +149,7 @@ Every adaptation config file also carries the shared keys `enabled`, `permanent`
 | Icon | `FILLED_MAP` |
 | Color | `AQUA` |
 | Interval (ms) | `50` |
-| Skill config | `plugins/Adapt/adapt/skills/discovery.toml` |
+| Skill config | `plugins/Adapt/skills/discovery.toml` |
 | Adaptation count | 14 |
 
 ### XP sources
@@ -194,7 +194,7 @@ Discoveries with a value of 24 or more play the rare-find timeline effect instea
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/discovery.toml` on first load.
+Written to `plugins/Adapt/skills/discovery.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -229,7 +229,7 @@ Written to `plugins/Adapt/adapt/skills/discovery.toml` on first load.
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 666 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-unity.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-unity.toml` |
 
 It grants a flat 5 Discovery XP per orb pickup. It then picks one random skill
 line and gives it `amount * xpGainedMultiplier * levelPercent` fresh XP.
@@ -257,7 +257,7 @@ Listened events:
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-world-armor.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-world-armor.toml` |
 
 Milestone: `challenge_discovery_armor_1hr` on `discovery.armor.ticks-with-bonus` at 72000, rewarding 400.
 
@@ -281,7 +281,7 @@ Listened events:
 | Base knowledge cost | 5 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 5215 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-xp-resist.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-xp-resist.toml` |
 
 The trigger predicts post-hit health from `EntityDamageEvent.getFinalDamage()`, so armor and the damage modifiers already committed to the event are part of the threshold decision. Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels`. The built-in charge uses Bukkit's authoritative level-accounting path, preserves bar progress, immediately pushes the new XP display, and shows a `-N XP Levels` notice. A registered ability cost provider may waive or replace that built-in charge, in which case no vanilla levels or vanilla-cost notice are applied. Already-cancelled damage events do not charge. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
 
@@ -311,7 +311,7 @@ Listened events:
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 1 |
 | Cost factor | 0.01 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-villager-att.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-villager-att.toml` |
 
 Proc chance is `min(clamp(maxEffectiveness, 0, 1), levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, ceil(levelCostAdd * amplifier - level * levelDrain))`.
 
@@ -343,7 +343,7 @@ Listened events:
 | Base knowledge cost | 4 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 2400 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-better-mending.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-better-mending.toml` |
 
 Milestones: `challenge_discovery_mending_10k` and `challenge_discovery_mending_100k` on `discovery.better-mending.durability-restored` at 10000 and 100000, rewarding 400 and 1500.
 
@@ -374,7 +374,7 @@ Listened events:
 | Base knowledge cost | 4 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 10 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-archaeologist.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-archaeologist.toml` |
 
 Brush completions arrive through a `BrushEventBridge` built by reflection at construction against `BlockBrushEvent`. When the server does not expose that event the bridge is null. The right-click
 handler's queued pending brush plus its fallback window is what resolves the
@@ -413,7 +413,7 @@ Listened events:
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-cartographer-pulse.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-cartographer-pulse.toml` |
 
 Milestones: `challenge_discovery_cartographer_100` and `challenge_discovery_cartographer_1k` on `discovery.cartographer-pulse.pulses` at 100 and 1000, rewarding 300 and 1000.
 
@@ -442,7 +442,7 @@ Listened events:
 | Base knowledge cost | 2 |
 | Cost factor | 0.2 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-insight.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-insight.toml` |
 
 Milestones: `challenge_discovery_insight_100` and `challenge_discovery_insight_1000` on `discovery.insight.entities-inspected` at 100 and 1000, rewarding 300 and 1200.
 
@@ -479,7 +479,7 @@ Listened events:
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 600 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-trailblazer.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-trailblazer.toml` |
 
 Milestones: `challenge_discovery_trailblazer_25` and `challenge_discovery_trailblazer_100` on `discovery.trailblazer.discoveries` at 25 and 100, rewarding 400 and 1200.
 
@@ -505,7 +505,7 @@ No event handlers. It runs entirely on its tick. A first-visit award immediately
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4400 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-field-notes.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-field-notes.toml` |
 
 Milestones: `challenge_discovery_fieldnotes_25` and `challenge_discovery_fieldnotes_100` on `discovery.field-notes.species` at 25 and 100, rewarding 500 and 2000.
 
@@ -533,7 +533,7 @@ Listened events:
 | Base knowledge cost | 3 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 3000 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-polymath.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-polymath.toml` |
 
 Milestones: `challenge_discovery_polymath_500` and `challenge_discovery_polymath_5k` on `discovery.polymath.boosts` at 500 and 5000, rewarding 400 and 1500.
 
@@ -557,7 +557,7 @@ No event handlers. It refreshes on its tick.
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 3300 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-relic-appraiser.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-relic-appraiser.toml` |
 
 An appraised item gets a persistent-data byte and a lore tag, and is refused on a second attempt. A successful appraisal also chooses one enabled and permitted skill other than Discovery and grants it a random XP amount between the configured bounds. If no eligible skill exists, or both normalized bounds are zero, only the normal Discovery XP is granted.
 
@@ -593,7 +593,7 @@ Listened events:
 | Base knowledge cost | 2 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-sixth-sense.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-sixth-sense.toml` |
 
 Milestones: `challenge_discovery_sixthsense_100` and `challenge_discovery_sixthsense_1k` on `discovery.sixth-sense.senses` at 100 and 1000, rewarding 300 and 1000.
 
@@ -627,7 +627,7 @@ clears. No stored experience value is read or changed.
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adapt/adaptations/discovery-keen-eye.toml` |
+| Config file | `plugins/Adapt/adaptations/discovery-keen-eye.toml` |
 
 Milestones: `challenge_discovery_keeneye_250` and `challenge_discovery_keeneye_2500` on `discovery.keen-eye.glimmers` at 250 and 2500, rewarding 300 and 1200.
 

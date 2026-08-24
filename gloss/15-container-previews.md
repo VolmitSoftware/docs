@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Gloss documentation: Container Previews"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -94,7 +94,7 @@ the card as you back away from the container.
 
 | Source | Range | Scope |
 |---|---|---|
-| `[preview] scale` in `config.toml` | `0.25`–`4.0`, default `0.65` | server-wide |
+| `[preview] scale` in `gloss.toml` | `0.25`–`4.0`, default `0.65` | server-wide |
 | The per-player factor | `0.25`–`2.5`, default `1.0` | one player |
 
 The per-player factor is not a command. While a preview is on screen, **double-tap sneak** to enter
@@ -112,7 +112,7 @@ of inactivity. The value is saved either way. Values are stored per player UUID 
 `plugins/Gloss/preview-scales.json`, rounded to two decimals. A player left at exactly `1.0` is not
 written to the file at all.
 
-Changing `[preview] scale` in `config.toml` re-renders open previews immediately.
+Changing `[preview] scale` in `gloss.toml` re-renders open previews immediately.
 
 ## The preview document
 

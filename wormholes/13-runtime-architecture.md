@@ -2,14 +2,14 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Wormholes starts as a Paper/Folia Java plugin
-(`art.arcane.wormholes.Wormholes`). It loads schema-2 TOML settings. It then
+(`art.arcane.wormholes.Wormholes`). It loads schema-3 TOML settings. It then
 builds managers for portals, projection, RTP, dimensional doors, and optional
 cross-server networking. This page covers enable order, storage layout, Folia
 scheduling, hot reload, and soft-dependency load order.
@@ -73,7 +73,7 @@ Order from `Wormholes.onEnable`, then network bootstrap:
 16. When PlaceholderAPI is present, the PlaceholderAPI expansion registers.
 17. `TraversalCostGateway` from traversal API settings.
 18. The hotload manager starts. It registers a filesystem watcher for
-    `config/wormholes.toml` and keeps content-digest reconciliation as a
+    `wormholes.toml` and keeps content-digest reconciliation as a
     fallback.
 19. Diagnostics start. Network capture runtime start.
 20. The splash screen prints. On failure, Wormholes tears down fully and
@@ -106,7 +106,7 @@ BileTools `onPreUnload` uses the same tear-down path.
 
 | Path | Contents |
 |------|----------|
-| `config/wormholes.toml` | Consolidated settings schema **2**: `schema`, `quality`, `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`. Wormholes writes this file in canonical form on load and save. |
+| `wormholes.toml` | Consolidated settings schema **3**: top-level `language`, `metrics`, `language-fallbacks`, `schema`, and `quality`, followed by `[main]`, `[recipes]`, `[network]`, `[projection]`, and `[render]`. Wormholes writes this file in canonical form on load and save. |
 | `portals/` | Local portal JSON files in a nested UUID layout (`portals/<segment>/<segment>/<uuid>.json`). |
 | `doors/` | Dimensional door store: `doors/state.json`, per-player return tickets under `doors/state.json.tickets/`, and replayable resize intents under `doors/pending-resizes/<space-id>.json`. |
 | `languages/` | Optional per-locale TOML overrides (`<locale>.toml`). Bundled locales ship in the jar. English is owned by the code catalog. |
@@ -182,7 +182,7 @@ refuses while players are inside or mid-transit in a pocket dimension.
 | Trigger | Behavior |
 |---------|----------|
 | `/wh reload` | Permission `wormholes.admin.reload`. Immediately loads and canonicalizes `wormholes.toml`, prepares localization, and applies on the global scheduler next tick. It is not subject to the automatic cooldown and invalidates older queued automatic work. |
-| File hotload | A cheap 200 ms loop drains native create/modify/delete events for only `config/wormholes.toml`. Full snapshot reads occur on an event, pending stability verification, or 2.5-second exact-content reconciliation. A candidate must remain byte-identical for 350 ms. Passive parsing does not canonicalize or write the file. |
+| File hotload | A cheap 200 ms loop drains native create/modify/delete events for only `wormholes.toml`. Full snapshot reads occur on an event, pending stability verification, or 2.5-second exact-content reconciliation. A candidate must remain byte-identical for 350 ms. Passive parsing does not canonicalize or write the file. |
 
 Idle event polls do not read or hash the config. When a read is due, the watcher reads at most 8 MiB into an immutable snapshot and validates that
 the file did not change during the read. This detects atomic replacement and

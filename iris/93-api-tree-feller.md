@@ -2,7 +2,7 @@
 title: "API - Tree Feller"
 description: "Iris documentation: API - Tree Feller"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -483,7 +483,7 @@ quit/`onDisable`.
 
 ## Configuration
 
-`plugins/Iris/settings.json`:
+`plugins/Iris/iris.json`:
 
 | Key | Default | Meaning |
 |---|---|---|

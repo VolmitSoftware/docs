@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "Adapt documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ Paths are lowercased before resolution, so `%adapt_Player.Level%` works. Nothing
 
 The literal text means you got the key wrong. Adapt returned `null` and PlaceholderAPI left your text alone. `%adapt_skil.pickaxe.level%` renders as itself. So does a real key with a bad attribute (`%adapt_skill.pickaxe.levle%`) and a real attribute on an unknown id (`%adapt_skill.mynng.level%`). Fix the key.
 
-`---` means the key is real but there is no data behind it right now. There is no snapshot for that player, no catalogue published yet, or the mutation runtime has nothing for them. Render a dash, or hide the row.
+`---` means the key is real but there is no data behind it right now. There is no snapshot for that player, their Adapt profile is unavailable, no catalogue has been published yet, or the mutation runtime has nothing for them. Render a dash, or hide the row.
 
 `0`, `0.00`, and `false` are genuine values. A skill the player has never trained answers with real level-zero numbers rather than `---`. Adapt substitutes a level-zero line instead of pretending it has no data.
 
@@ -48,7 +48,9 @@ The snapshot is rebuilt and published by the player's own Adapt tick, roughly on
 
 Nothing is ever loaded for an offline player. A player who has not been online since the server started has no snapshot. Every per-player key answers `---`.
 
-When a player quits, Adapt keeps their snapshot and stamps it with an expiry sixty seconds out. For that minute every per-player key keeps serving the last published values. `%adapt_available%` stays `true`. After it, the entry is evicted on the next read. Every per-player key answers `---`. `%adapt_available%` answers `false`. That exists so quit messages, leaderboards, and logout hooks that render a moment after the player is gone still have something to show.
+When a player quits normally, Adapt keeps their snapshot and stamps it with an expiry sixty seconds out. For that minute every per-player key keeps serving the last published values. `%adapt_available%` stays `true`. After it, the entry is evicted on the next read. Every per-player key answers `---`. `%adapt_available%` answers `false`. That exists so quit messages, leaderboards, and logout hooks that render a moment after the player is gone still have something to show.
+
+The grace does not apply to an online player whose profile is awaiting a safe load, failed validation, or lost its SQL fence. Adapt evicts any stale snapshot immediately. `%adapt_available%` and `%adapt_mutation.available%` answer `false`, every other per-player or mutation key answers `---`, and `catalog.*` remains available. The Minecraft session remains connected while Adapt stays inert.
 
 Design around the staleness. A value can be up to one second old while the player is online. It can be up to sixty-one seconds old immediately after they leave. Do not use placeholders as the source of truth for anything transactional.
 
@@ -231,6 +233,7 @@ masterwork-bond  deepblood        mycelial-nerve    gravebloom       resonant-fo
 |-----------|--------------|
 | PlaceholderAPI is not installed | Nothing registers. `%adapt_...%` is inert text everywhere |
 | Adapt is disabled or shutting down | Both snapshot stores are cleared. `%adapt_available%` is `false` and every value key answers `---` |
+| The reading player is online but their Adapt profile is unavailable | Any stale snapshot is evicted immediately. `%adapt_available%` and `%adapt_mutation.available%` are `false`; every other per-player or mutation key is `---`; `catalog.*` still answers |
 | The reading player is offline, within 60 s of quitting | The last published snapshot, unchanged |
 | The reading player is offline, past 60 s | `---` for every per-player key, `false` for `%adapt_available%` |
 | No player at all, a console request or a null player | `---` for per-player keys, `false` for `%adapt_available%`. `catalog.*` still answers |

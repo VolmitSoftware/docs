@@ -2,7 +2,7 @@
 title: "HiddenOre — Commands & Permissions"
 description: "The /hiddenore command tree and permission node"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "hiddenore, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ Both subcommands check `hiddenore.admin` at runtime. They also match the
 
 ## Notes
 
-**`reload`** reads `config.yml` and the language files again. It rebuilds the
+**`reload`** reads `hiddenore.yml` and the language files again. It rebuilds the
 runtime configuration. If the reload throws, HiddenOre logs the failure.
 HiddenOre keeps the previous runtime configuration. It does not leave the server
 half-applied.

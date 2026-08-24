@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ Two independent pipelines share the loot table format.
 
 **Containers.** When a chunk finishes generating, Iris walks the blocks it recorded and fills every storage chest it placed. It builds a list of loot tables for that exact block, then rolls each one and drops the results into the inventory. The list comes from up to four sources, in this order. First is the object placement that owns the block. Then come the dimension, region, surface biome, and cave biome the block sits in. Each source can add to the list, wipe it, or only contribute when nothing else did.
 
-**Ambient mobs.** A background loop ticks each Iris world roughly twice a second. Each tick it measures how crowded the world is. If there is room, it picks a handful of loaded chunks and tries one spawn in each. A spawn attempt gathers every spawner the dimension, region, and surface biome list. It throws out the ones whose time, weather, rate, or crowding gates fail. It then pools their entries, picks exactly one, and places one to a few mobs.
+**Ambient mobs.** A background loop ticks each Iris world roughly twice a second. Each tick it measures how crowded the world is. If there is room, it picks a handful of chunks from the loaded-chunk snapshot refreshed by the three-second world-maintenance pass and tries one spawn in each, after confirming that the chunk is still loaded. A spawn attempt gathers every spawner the dimension, region, and surface biome list. It throws out the ones whose time, weather, rate, or crowding gates fail. It then pools their entries, picks exactly one, and places one to a few mobs.
 
 Vanilla natural spawning is a third pipeline. It stays on via the biome `vanillaDerivative` unless you replace that table. Iris spawners do not turn it off. Custom biome `spawns` merge with it. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
@@ -83,7 +83,7 @@ The goal is a chest inside one placed object that rolls your table and ignores t
 
 **3. Verify.** Open the pack in Studio, find a placement, and open the chest. Every chest in that object should hold 2-4 stacks drawn from the four entries. Diamonds show up in roughly one placement in six. Swords show up in roughly one in eight. To check without hunting for a placement, stand on a block and run `/iris studio loot`. It previews the tables that would fill a chest at your feet. It adds debug lore naming the source table and its combined chance. That command is Bukkit and Studio only.
 
-**4. If chests come up empty.** Check that the block is a storage chest. Iris only fills chest-family containers. It only ever requests the `STORAGE` slot type. `FUEL`/`FURNACE`/`BLAST_FURNACE`/`SMOKER` entries never land in a generated container. Check `world.postLoadBlockUpdates` is on in `settings.json`.
+**4. If chests come up empty.** Check that the block is a storage chest. Iris only fills chest-family containers. It only ever requests the `STORAGE` slot type. `FUEL`/`FURNACE`/`BLAST_FURNACE`/`SMOKER` entries never land in a generated container. Check `world.postLoadBlockUpdates` is on in `iris.json`.
 The container fill runs as part of that post-load pass. Check that the loot table key resolves — a missing table logs a warning and contributes nothing. Double chests fill from one half only (the one with the lower X, then lower Z). That half fills the combined inventory. An empty-looking half is normal.
 
 ## Walkthrough: make a custom mob spawn in one biome
@@ -372,7 +372,7 @@ Bukkit and modded both apply AI and awareness flags, spawn effects, and raw comm
 
 ## Ambient effects (`IrisEffect`, snippet type `effect`)
 
-Biomes and regions accept `effects[]`. Each entry runs at most once per `interval` milliseconds and, when it runs, has a 1-in-`chance` shot at firing. A single entry can apply a potion, play a sound, emit particles, and run commands. The whole system is gated by `world.effectSystem` in `settings.json`.
+Biomes and regions accept `effects[]`. Each entry runs at most once per `interval` milliseconds and, when it runs, has a 1-in-`chance` shot at firing. A single entry can apply a potion, play a sound, emit particles, and run commands. The whole system is gated by `world.effectSystem` in `iris.json`.
 
 | Field | Default / range | What it does |
 |-------|-----------------|--------------|
@@ -512,8 +512,8 @@ Attach it on a dimension, region, or biome:
 The loop runs once per Iris world every `world.asyncTickIntervalMS` milliseconds (700 by default, 3000 when both spawn systems are off). Each pass:
 
 1. Recount living entities in the world, throttled so it does not run every tick. If the count cannot be completed — the scheduler refuses the task, or it times out — Iris pauses spawning entirely rather than guessing. This is deliberate: an incomplete count must never authorize a spawn.
-2. Compute saturation as living entities divided by loaded chunks plus one, scaled by 1.28. Above `world.targetSpawnEntitiesPerChunk` the pass sleeps 5 seconds and returns.
-3. Pick between 2 and 12 random loaded chunks and run one spawn attempt in each, on the region thread that owns the chunk.
+2. Compute saturation as living entities divided by the latest three-second loaded-chunk snapshot count plus one, scaled by 1.28. Above `world.targetSpawnEntitiesPerChunk` the pass sleeps 5 seconds and returns.
+3. Pick between 2 and 12 random entries from that snapshot, reject any chunk that has since unloaded, and run one spawn attempt in each remaining chunk on its owning region thread.
 4. Pregeneration and world maintenance suppress spawning for that world entirely while they run.
 
 In Studio worlds, spawning also requires `studio.entitySpawning`.
@@ -584,7 +584,7 @@ This runs on Bukkit and on Fabric, Forge, and NeoForge. Each loader hooks its ow
 
 ## Runtime settings that gate these systems
 
-From `settings.json` under `world` (see [03 - Configuration](/iris/03-configuration)):
+From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)):
 
 | Key | Default | Effect |
 |-----|---------|--------|

@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Adapt documentation: Skill - Excavation"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -147,7 +147,7 @@ Wet means standing in water, or standing under open sky during a storm. The bonu
 | Icon | `DIAMOND_SHOVEL` |
 | Color | `YELLOW` |
 | Interval (ms) | `5953` |
-| Skill config | `plugins/Adapt/adapt/skills/excavation.toml` |
+| Skill config | `plugins/Adapt/skills/excavation.toml` |
 | Adaptation count | 12 |
 
 ### Skill XP and stats
@@ -168,7 +168,7 @@ Block value is `MaterialValue * valueXPMultiplier + min(maxHardnessBonus, hardne
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/excavation.toml` on first load.
+Written to `plugins/Adapt/skills/excavation.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -198,7 +198,7 @@ Written to `plugins/Adapt/adapt/skills/excavation.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries these in addition to the knobs listed below.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these in addition to the knobs listed below.
 
 | Key | Behavior |
 |-----|----------|
@@ -221,7 +221,7 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | Base knowledge cost | 2 |
 | Cost factor | 0.3 |
 | Tick interval (ms) | 4388 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-haste.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-haste.toml` |
 | Listened events | `BlockDamageEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Gain Haste while excavating. X Levels of Haste while actively excavating. |
 | Stat key | `excavation.haste.blocks-while-hasted` |
@@ -244,7 +244,7 @@ Applies `BLOCK_BREAK_SPEED` as an `ADD_SCALAR` modifier of `0.20 * level`, refre
 | Base knowledge cost | 5 |
 | Cost factor | 1 |
 | Tick interval (ms) | 20388 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-spelunker.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-spelunker.toml` |
 | Listened events | `PlayerToggleSneakEvent` (HIGH), `EntityRemoveEvent` (MONITOR), `PlayerQuitEvent` |
 | Menu stat lines | Ore in your offhand, Glowberries in your main hand, and Sneak!. Block Range: {range}. Consumes Glowberry on use |
 | Stat key | `excavation.spelunker.ores-revealed` |
@@ -274,7 +274,7 @@ Scan radius is `rangeMultiplier * level`, clamped to 1 through 32 blocks. Marker
 | Cost factor | 0.20 |
 | Tick interval (ms) | 20202 |
 | Localization key | `excavation.omni_tool` |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-omnitool.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-omnitool.toml` |
 | Listened events | `EntityDamageByEntityEvent` (HIGH), `BlockBreakEvent` (HIGH), `PlayerInteractEvent` (HIGH), `BlockDamageEvent` (HIGH), `PlayerDropItemEvent` (HIGHEST), `InventoryClickEvent` (HIGHEST) |
 | Menu stat lines | Merges your tools into a single omni-tool that dynamically swaps to the right tool on the fly. To merge, shift-click an item over another in your inventory. To unbind tools, sneak-drop the item and it will disassemble. Merged tools never break, but tools at zero durability cannot be used. Total merge-able items. You could use five or six tools, or just one! |
 | Stat key | `excavation.omni-tool.auto-swaps` |
@@ -297,7 +297,7 @@ Merged items are recognized by `Leatherman` appearing in their lore. Component c
 | Base knowledge cost | 1 |
 | Cost factor | 1 |
 | Tick interval (ms) | 11777 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-drop-to-inventory.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-drop-to-inventory.toml` |
 | Listened events | `BlockDropItemEvent` (HIGHEST) |
 | Menu stat line | Whenever an item is dropped from a block you break it goes into your inventory if it can. |
 | Stat key | `excavation.drop-to-inv.items-caught` |
@@ -316,7 +316,7 @@ Awards a flat 2 skill XP per item caught. The display name comes from `excavatio
 | Base knowledge cost | 4 |
 | Cost factor | 0.78 |
 | Tick interval (ms) | 2200 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-seismic-ping.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-seismic-ping.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored), `PlayerQuitEvent` |
 | Menu stat lines | Scan Range. Ping Chance. Ping Cooldown |
 | Stat key | `excavation.seismic-ping.pings-triggered` |
@@ -349,7 +349,7 @@ Triggers on any block broken while holding an item whose name ends in `_SHOVEL` 
 | Base knowledge cost | 5 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 3170 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-tunneler.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-tunneler.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Bonus Blocks Per Dig. Extra Durability Per Bonus Block |
 | Stat key | `excavation.tunneler.blocks-tunneled` |
@@ -376,7 +376,7 @@ red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 3370 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-treasure-hunter.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-treasure-hunter.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Treasure Chance. Treasures roll from a weighted archaeology table |
 | Stat key | `excavation.treasure-hunter.treasures-found` |
@@ -403,7 +403,7 @@ Eligible blocks are `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, and `CLAY`. Chance is `
 | Base knowledge cost | 3 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 3530 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-soft-fall.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-soft-fall.toml` |
 | Listened events | `EntityDamageEvent` (HIGHEST) |
 | Menu stat lines | Fall Damage Reduction. Applies when landing on dirt, sand, gravel, clay, mud, or soul sand |
 | Stat key | `excavation.soft-fall.damage-prevented` |
@@ -429,7 +429,7 @@ Only `FALL` damage on a player is considered. Reduction is `min(maxReduction, re
 | Base knowledge cost | 6 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 3730 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-earth-mover.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-earth-mover.toml` |
 | Listened events | `PlayerInteractEvent` (HIGHEST) |
 | Menu stat lines | Wave Radius. Shovel Damage Multiplier. Knockback Force. Slow Duration. Wave Cooldown. Hunger Cost |
 | Stat keys | `excavation.earth-mover.waves-unleashed`, `excavation.earth-mover.mobs-launched` |
@@ -477,7 +477,7 @@ and 12 effect targets. The batch finishes after 20 ticks regardless.
 | Base knowledge cost | 5 |
 | Cost factor | 0.78 |
 | Tick interval (ms) | 4130 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-burrow.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-burrow.toml` |
 | Listened events | `PlayerInteractEvent` (MONITOR, also receives cancelled events) |
 | Menu stat lines | Max Burrow Depth. Durability Per Block. Burrow Cooldown. Hunger Cost |
 | Stat keys | `excavation.burrow.burrows-dug`, `excavation.burrow.blocks-burrowed` |
@@ -510,7 +510,7 @@ and at any block a protection plugin refuses. Shovel-friendly blocks match Tunne
 | Base knowledge cost | 4 |
 | Cost factor | 0.68 |
 | Tick interval (ms) | 4310 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-grave-digger.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-grave-digger.toml` |
 | Listened events | `BlockBreakEvent` (HIGHEST, cancelled events ignored), `EntityDeathEvent` (MONITOR, effects only) |
 | Menu stat lines | Bone Loot Chance. Disturbed Grave Chance |
 | Stat keys | `excavation.grave-digger.bones-unearthed`, `excavation.grave-digger.graves-disturbed` |
@@ -542,7 +542,7 @@ Eligible blocks are `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL
 | Base knowledge cost | 3 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 4530 |
-| Config file | `plugins/Adapt/adapt/adaptations/excavation-mudlark.toml` |
+| Config file | `plugins/Adapt/adaptations/excavation-mudlark.toml` |
 | Listened events | `BlockDamageEvent` (HIGHEST), `BlockBreakEvent` (HIGHEST, cancelled events ignored) |
 | Menu stat lines | Bonus Drop Chance. X Levels of haste while digging wet |
 | Stat key | `excavation.mudlark.bonus-drops` |

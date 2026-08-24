@@ -20,7 +20,7 @@ Adapt also asks Bukkit. Indirect container and item actions dispatch the normal 
 
 WorldGuard has to be installed for any of the flags. Adapt registers them in `onLoad`. That is the only point WorldGuard accepts new flags. This cannot be done later by a reload.
 
-`protectorSupport.worldguard` in `adapt/adapt.toml` must be `true`, which it is by default. Turn it off and the region policy source short-circuits to the default policy on every lookup. Then `adapt-xp`, `adapt-xp-multiplier`, `adapt-power-bonus` and `adapt-unlock-adaptations` all go inert. The `use-adaptations` flag goes through the protector instead. Turning the setting off drops the WorldGuard protector out of the default-active set. A per-adaptation `WorldGuard = true` override still re-adds it. That protector keeps reading the flag.
+`protectorSupport.worldguard` in `adapt.toml` must be `true`, which it is by default. Turn it off and the region policy source short-circuits to the default policy on every lookup. Then `adapt-xp`, `adapt-xp-multiplier`, `adapt-power-bonus` and `adapt-unlock-adaptations` all go inert. The `use-adaptations` flag goes through the protector instead. Turning the setting off drops the WorldGuard protector out of the default-active set. A per-adaptation `WorldGuard = true` override still re-adds it. That protector keeps reading the flag.
 
 Registration is defensive. A flag name already claimed by another plugin with a matching type is reused. A name claimed with a different type disables that one flag for the session and leaves the rest working. If Adapt registers too late, it falls back to injecting the flag into WorldGuard's flag map by reflection, with a warning either way.
 

@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ Architecture context:
 | Step | Action | Pass criteria |
 |------|--------|---------------|
 | 1 | Place `Wormholes-<version>.jar` in `plugins/` on Paper or Folia. Ensure SlimJar can reach its dependency repositories or has a prewarmed cache. If you test those paths, also install PlaceholderAPI, Vault, Iris, or WorldGuard. | Dependencies resolve and the server starts without an enable failure splash. |
-| 2 | Confirm `plugins/Wormholes/config/wormholes.toml` exists with `schema = 2`. | File is present. It has quality and sections `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`. |
+| 2 | Confirm `plugins/Wormholes/wormholes.toml` exists with `language`, `metrics`, and `schema = 3` at the start. | File is present. It has quality and sections `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`. |
 | 3 | `/wh info` | Building instructions print. |
 | 4 | Under `[main]`, edit a harmless key such as `verbose-logging = true`. Then run `/wh reload` as op (`wormholes.admin.reload`). | Reload success message. No retained-settings error. |
 | 5 | Toggle `/wh debug` (`wormholes.admin`). | Verbose logs and one-second telemetry toggle. The console shows the change. |
@@ -178,7 +178,7 @@ Permission: `wormholes.admin.projection`.
 | RTP never ready | The first retained safe destination is sufficient; standby preparation continues in the background. A cold Iris candidate may take up to the 30-second campaign window. Also check world availability, radius versus border, safety rejections, and search cooldown. |
 | Doors missing | `[main] dimensional-doors-enabled` is false. A pocket datapack restart is still required. Drain is in progress. |
 | Network import fails | The network is not initialized. The code is invalid or truncated. The identity is the same. The peer is offline (`/wh network doctor`). |
-| Config edit does not hotload | Confirm the target is exactly `config/wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 2`, and remains stable for 350 ms. A missed native event is recovered by the 2.5-second exact-content pass; check the watcher or parse stacktrace. |
+| Config edit does not hotload | Confirm the target is exactly `wormholes.toml`, is a regular file no larger than 8 MiB, contains `schema = 3`, and remains stable for 350 ms. A missed native event is recovered by the 2.5-second exact-content pass; check the watcher or parse stacktrace. |
 | Repeated edits appear delayed | Automatic hotload is intentionally single-flight and completion-cooled for three seconds. The latest stable snapshot stays queued. Use `/wh reload` for an immediate explicit application. |
 
 ## Cross-references

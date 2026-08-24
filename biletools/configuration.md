@@ -1,16 +1,23 @@
 ---
 title: "BileTools — Configuration"
-description: "Every config.yml key with its shipped default"
+description: "Every biletools.yml key with its shipped default"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`plugins/BileTools/config.yml`. Values below are the defaults written on first
+`plugins/BileTools/biletools.yml`. Values below are the defaults written on first
 run. BileTools rewrites supported values after loading and restores missing
 keys.
+
+## Runtime
+
+| Key | Default | Effect |
+|---|---|---|
+| `language` | `en_US` | Selects the bundled locale used for player and operator text. `language.yml` contains sparse overrides only |
+| `metrics` | `true` | Starts anonymous bStats reporting during enable. Requires a restart to change |
 
 ## Watcher
 
@@ -78,6 +85,8 @@ automatic filter and cadence.
 
 Leave `health-check` on. If you turn it off, a plugin that throws during
 `onEnable` reports a successful reload. The plugin stays inert.
+
+BileTools logs one normal-level summary for lifecycle operations and retains warnings or stack traces for failures that need operator action. Jar tracking, queue bookkeeping, reflective load steps, command-node cleanup, and other routine watcher diagnostics use the logger's `FINE` level and are hidden by the normal server logging configuration. The startup splash remains a deliberately branded console block. `observability.log-timings` controls the normal-level timing summaries independently.
 
 ## Remote deploy
 

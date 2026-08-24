@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Adapt documentation: Localization"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Reloads are all-or-nothing and validated before anything goes live. A bad overri
 
 ```
 plugins/Adapt/
-  adapt/adapt.toml            language = "en_US"
+  adapt.toml                  language = "en_US"
   languages/
     en_US.toml                generated reference, always present, never read back
     <locale>.toml             generated copy of the active bundled locale, never read back
@@ -26,7 +26,7 @@ plugins/Adapt/
 
 ## Picking a language
 
-1. Open `plugins/Adapt/adapt/adapt.toml`.
+1. Open `plugins/Adapt/adapt.toml`.
 2. Set `language` to one of the bundled names in the Reference below, matching the spelling exactly. `ja-JP` uses a hyphen. The other sixteen use an underscore.
 3. Save. The hotload watcher sees the `adapt.toml` change, reloads the config, and reloads the language with it.
 
@@ -134,7 +134,7 @@ Missing keys are warnings, not errors. Only errors block a reload.
 | Maximum override file size | 2 MiB |
 | Issues logged per rejected reload | 12, then a count of the remainder |
 | Override watcher poll interval | 500 ms |
-| Watched for language reloads | `languages/overrides/*.toml`. `adapt/adapt.toml` also reloads the language as part of its config reload |
+| Watched for language reloads | `languages/overrides/*.toml`. `adapt.toml` also reloads the language as part of its config reload |
 | Not watched | `languages/en_US.toml`, `languages/<locale>.toml` |
 | Generated file write | Temp file plus atomic move, falling back to a plain move |
 

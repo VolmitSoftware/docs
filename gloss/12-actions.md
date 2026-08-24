@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Gloss documentation: Actions"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -185,7 +185,7 @@ If you open a personal menu, Gloss closes the previous session and records it ac
 
 Panels apply one deliberate exception. Navigating to the panel own **root** menu skips the `gloss.open.<menuId>` check. A viewer who can see the panel is already looking at that menu. Every other target on a panel is checked normally. See [Panels](/gloss/16-panels).
 
-When `[features] menus` is `false` in `config.toml`, every navigation mode except `close` is denied.
+When `[features] menus` is `false` in `gloss.toml`, every navigation mode except `close` is denied.
 
 A missing target menu sends the "menu unavailable" message. A denied permission sends the "permission denied" message. Both leave the flow exactly as it was.
 

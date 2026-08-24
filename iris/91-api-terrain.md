@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -527,7 +527,7 @@ No checked exceptions. Unchecked throws only from `IrisColumnQuery` /
 
 ## Configuration
 
-`plugins/Iris/settings.json`:
+`plugins/Iris/iris.json`:
 
 | Key | Default | Effect |
 |---|---|---|

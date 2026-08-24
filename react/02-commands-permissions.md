@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -140,7 +140,7 @@ Both test commands mutate their test world. `run` queues cleanup actions around 
 | `list` | List active token IDs, labels, and issue times. |
 | `revoke <id>` | Revoke a token ID and persist the token store. |
 
-Omitting `role` creates a viewer token. Token records without a role also resolve to viewer, so an old or incomplete record cannot inherit administrative authority. RCT2 carries `directUrl`, optional `relayUrl`, the server public key and full SHA-256 fingerprint, and the token ID/signature. It contains no confirmation word. When a wildcard listener has no `advertisedUrl`, React Web lets the operator replace the local fallback with the public port-forward or reverse-proxy URL before pairing. Direct-only pairing verifies the unauthenticated endpoint fingerprint before authenticated identity access or browser-local persistence.
+Omitting `role` creates a viewer token. Typing `role=` offers `viewer`, `operator`, and `admin` through tab completion. Token records without a role also resolve to viewer, so an old or incomplete record cannot inherit administrative authority. RCT2 carries `directUrl`, optional `relayUrl`, the server public key and full SHA-256 fingerprint, and the token ID/signature. It contains no confirmation word. When a wildcard listener has no `advertisedUrl`, React Web lets the operator replace the local fallback with the public port-forward or reverse-proxy URL before pairing. Direct-only pairing verifies the unauthenticated endpoint fingerprint before authenticated identity access or browser-local persistence.
 
 | Role | Effective scopes |
 |------|------------------|
@@ -148,7 +148,7 @@ Omitting `role` creates a viewer token. Token records without a role also resolv
 | `operator` | `read`, `op:execute` |
 | `admin` | `read`, `op:execute`, `admin`, `console:read`, `console:execute` |
 
-Only admin tokens can read the full server-console tail/stream or execute a console command through the API. Pairing and revocation write to `plugins/React/web/audit.log`.
+Only admin tokens can read the full server-console tail/stream or execute a console command through the API. Every accepted Web mutation writes to `plugins/React/web/audit.log` and sends online operators a localized chat summary naming the signed token label, role, token ID, and changed target without exposing submitted values or console arguments. Rejected, rolled-back, and undispatched requests produce no success notice.
 
 ## Shorthand commands (tweak `shorthands`)
 

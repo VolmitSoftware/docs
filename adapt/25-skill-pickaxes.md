@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Adapt documentation: Skill - Pickaxes"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -124,14 +124,14 @@ Mining stone builds stacks that turn into Resistance. Every few stone blocks add
 | Icon | `NETHERITE_PICKAXE` |
 | Color | `GOLD` |
 | Interval (ms) | `2750` |
-| Skill config | `plugins/Adapt/adapt/skills/pickaxe.toml` |
+| Skill config | `plugins/Adapt/skills/pickaxe.toml` |
 | Adaptation count | 13 |
 
 Block break XP formula, from `SkillPickaxes.getValue`: `(materialValue * blockValueMultiplier + min(maxHardnessBonus, hardness) + min(maxBlastResistanceBonus, blastResistance) + oreBonus) * 0.48`, then multiplied by the world anti-farm multiplier. Deepslate ore variants use their base ore bonus times `deepslateMultiplier`.
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/pickaxe.toml` on first load.
+Written to `plugins/Adapt/skills/pickaxe.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -174,7 +174,7 @@ Written to `plugins/Adapt/adapt/skills/pickaxe.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
 
 ### Ore Chisel
 
@@ -187,7 +187,7 @@ Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries `en
 | Base knowledge cost | 6 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 7433 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-chisel.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-chisel.toml` |
 | Listened events | `PlayerInteractEvent` (`on`, MONITOR) |
 | Stats | `pickaxe.chisel.extra-ores` |
 | Milestone | `challenge_pickaxe_chisel_500` at 500 extra ores, 400 XP |
@@ -220,7 +220,7 @@ The ore must pass a cancellable block-break probe before Chisel applies its cool
 | Base knowledge cost | 6 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 8484 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-veinminer.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-veinminer.toml` |
 | Listened events | `BlockBreakEvent` (`on`, HIGH) |
 | Stats | `pickaxe.veinminer.ores-veinmined` |
 | Milestones | `challenge_pickaxe_veinminer_2500` at 2500 blocks, 500 XP. `challenge_pickaxe_veinminer_20` granted when one vein yields 20 or more blocks |
@@ -244,7 +244,7 @@ Vein search radius is `level + baseRange`. Eligible blocks are any material endi
 | Base knowledge cost | 6 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 7444 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-autosmelt.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-autosmelt.toml` |
 | Listened events | `BlockDropItemEvent` (`on`, MONITOR) |
 | Stats | `pickaxe.autosmelt.ores-smelted` |
 | Milestones | `challenge_pickaxe_autosmelt_1k` at 1000 ores, 400 XP. `challenge_pickaxe_autosmelt_25k` at 25000 ores, 1500 XP |
@@ -263,7 +263,7 @@ Converted ores: iron ore to iron ingot, gold ore to gold ingot, copper ore to co
 | Base knowledge cost | 1 |
 | Cost factor | 1 |
 | Tick interval (ms) | 7944 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-drop-to-inventory.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-drop-to-inventory.toml` |
 | Listened events | `BlockDropItemEvent` (`on`, MONITOR) |
 | Stats | `pickaxe.drop-to-inv.items-caught` |
 | Milestone | `challenge_pickaxe_dti_25k` at 25000 items, 500 XP |
@@ -282,7 +282,7 @@ Each drop must pass a simulated pickup event before it is pulled out of the bloc
 | Base knowledge cost | 6 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 8444 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-silk-spawner.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-silk-spawner.toml` |
 | Listened events | `BlockDropItemEvent` (`onBlockDropPrepare`, HIGH). `BlockDropItemEvent` (`onBlockDropCommit`, MONITOR) |
 | Stats | `pickaxe.silk-spawner.spawners-collected` |
 | Milestones | `challenge_pickaxe_spawner_10` at 10 spawners, 500 XP. `challenge_pickaxe_spawner_50` at 50 spawners, 2000 XP |
@@ -301,7 +301,7 @@ Gate in code: a Silk Touch pickaxe works at any level. Without Silk Touch the le
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1200 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-quarry-sense.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-quarry-sense.toml` |
 | Listened events | `PlayerInteractEvent` (`on`, HIGHEST). `PlayerQuitEvent` (`on`) |
 | Stats | `pickaxe.quarry-sense.scans` |
 | Milestone | `challenge_pickaxe_quarry_200` at 200 scans, 300 XP |
@@ -341,7 +341,7 @@ at least 1 point. Only iron, diamond, and netherite pickaxes qualify. Quitting c
 | Base knowledge cost | 5 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 8123 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-tunnel-bore.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-tunnel-bore.toml` |
 | Listened events | `BlockBreakEvent` (`on`, HIGHEST) |
 | Stats | `pickaxe.tunnel-bore.blocks-bored` |
 | Milestone | `challenge_pickaxe_tunnelbore_10k` at 10000 blocks, 500 XP |
@@ -364,7 +364,7 @@ Bore face: 1x2 at level 1, 3x2 at level 2, 3x3 at level 3. Eligible block types:
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 5825 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-deep-core.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-deep-core.toml` |
 | Listened events | `BlockDamageEvent` (`on`, HIGHEST). `BlockBreakEvent` (`on`, MONITOR) |
 | Stats | `pickaxe.deep-core.deepslate-mined` |
 | Milestone | `challenge_pickaxe_deepcore_5k` at 5000 blocks, 400 XP |
@@ -389,7 +389,7 @@ The bonus is a timed `BLOCK_BREAK_SPEED` attribute modifier, not a Haste potion 
 | Base knowledge cost | 5 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 6233 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-obsidian-rush.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-obsidian-rush.toml` |
 | Listened events | `BlockDamageEvent` (`on`, HIGHEST). `BlockBreakEvent` (`on`, MONITOR) |
 | Stats | `pickaxe.obsidian-rush.obsidian-mined` |
 | Milestone | `challenge_pickaxe_obsidianrush_1k` at 1000 blocks, 500 XP |
@@ -414,7 +414,7 @@ Also a timed `BLOCK_BREAK_SPEED` modifier. Amplifier is `min(maxAmplifier, ampli
 | Base knowledge cost | 6 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 9122 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-unbreakable-pact.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-unbreakable-pact.toml` |
 | Listened events | `PlayerItemDamageEvent` (`on`, HIGHEST) |
 | Stats | `pickaxe.unbreakable-pact.damage-ignored`, `pickaxe.unbreakable-pact.saves` |
 | Milestone | `challenge_pickaxe_pact_100` at 100 saves, 400 XP |
@@ -439,7 +439,7 @@ is cancelled. The item's damage is clamped to one point below its maximum.
 | Base knowledge cost | 5 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 7561 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-repair-rhythm.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-repair-rhythm.toml` |
 | Listened events | `BlockBreakEvent` (`on`, MONITOR, cancelled events ignored) to arm the proc. `PlayerItemDamageEvent` (`on`, HIGHEST) to commit after vanilla wear, with a one-tick fallback when no wear event fires |
 | Stats | `pickaxe.repair-rhythm.durability-restored` |
 | Milestone | `challenge_pickaxe_rhythm_5k` at 5000 durability, 500 XP |
@@ -466,7 +466,7 @@ Repair chance is `min(maxChance, chanceBase + level * chancePerLevel)`. It fires
 | Base knowledge cost | 6 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 6844 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-gem-polish.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-gem-polish.toml` |
 | Listened events | `BlockBreakEvent` (`MONITOR`, cancelled events ignored) |
 | Stats | `pickaxe.gem-polish.trophies-polished` |
 | Milestone | `challenge_pickaxe_gempolish_25` at 25 trophies, 400 XP |
@@ -494,7 +494,7 @@ Eligible heads are skeleton, wither skeleton, zombie, player, creeper, dragon, a
 | Base knowledge cost | 5 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 5377 |
-| Config file | `plugins/Adapt/adapt/adaptations/pickaxe-stone-skin.toml` |
+| Config file | `plugins/Adapt/adaptations/pickaxe-stone-skin.toml` |
 | Listened events | `BlockBreakEvent` (`on`, HIGHEST) |
 | Stats | `pickaxe.stone-skin.stacks-gained` |
 | Milestone | `challenge_pickaxe_stoneskin_10k` at 10000 stacks, 500 XP |

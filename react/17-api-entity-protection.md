@@ -2,7 +2,7 @@
 title: "API - Entity Protection"
 description: "React documentation: API - Entity Protection"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -450,7 +450,7 @@ Two operator settings affect integration behavior and diagnostics:
 
 | File                              | Key       | Effect                                                                            |
 |-----------------------------------|-----------|-----------------------------------------------------------------------------------|
-| `plugins/React/config.toml`       | `verbose` | `false` by default. Every `[protect]` diagnostic that concerns your provider — refusals, faults, quarantine, slow-provider warnings, off-region write refusals — is verbose-level. Turn it on when your rules are not taking effect |
+| `plugins/React/react.toml`       | `verbose` | `false` by default. Every `[protect]` diagnostic that concerns your provider — refusals, faults, quarantine, slow-provider warnings, off-region write refusals — is verbose-level. Turn it on when your rules are not taking effect |
 | `plugins/React/feature/*.toml`, `plugins/React/tweak/*.toml` | `enabled` | Turning off the feature that performs an operation removes that operation from the server entirely |
 
 The following component files perform each operation:

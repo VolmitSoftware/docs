@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ Use `/react integration status` for live capability status. Global `integrationS
 | `adapt-runtime-pressure-overlay` | `adapt` | no |
 | `iris-generation-pressure-overlay` | `iris` | no |
 | `adapt-ability-impact-list-map` | `adapt` renderer availability | no |
-| `iris-biome-chunk-share-pie-map` | disabled by `MapController` | no |
+| `iris-biome-chunk-share-pie-map` | `iris` | no |
 | `iris-world-chunk-share-pie-map` | `iris` renderer availability | no |
 
 ## Secret gated features

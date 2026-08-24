@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,8 +11,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Copy `Wormholes-<version>.jar` into `plugins/`. On first start SlimJar resolves,
 verifies, and caches the plugin's internal libraries, relocating the selected
 Java-only libraries while zstd-jni keeps its native-compatible package. Then
-Wormholes creates `plugins/Wormholes/`. Edit `config/wormholes.toml` (`schema =
-2`) after startup. A missing optional plugin skips its bridge.
+Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
+3`) after startup. A missing optional plugin skips its bridge.
 
 ## Requirements
 
@@ -30,10 +30,15 @@ Wormholes creates `plugins/Wormholes/`. Edit `config/wormholes.toml` (`schema =
 1. Copy `Wormholes-<version>.jar` into `plugins/`.
 2. Start the server. SlimJar downloads and caches its declared libraries when
    they are not already cached. Wormholes then creates the data folder and writes
-   `config/wormholes.toml` if the file is missing.
-3. Edit `plugins/Wormholes/config/wormholes.toml`. Wormholes rejects files that
-   have no schema or a wrong schema. The file must use `schema = 2`.
+   `wormholes.toml` if the file is missing.
+3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
+   have no schema or a wrong schema. The file must use `schema = 3`.
 4. Apply config changes with `/wormholes reload` or the config file watcher.
+
+Upgrading is a hard break. Back up any values you need, then delete the obsolete
+`plugins/Wormholes/config/` directory; deleting it removes its local changes.
+Restart the server to generate `plugins/Wormholes/wormholes.toml`, then reapply
+the values manually. Wormholes does not read or migrate the old directory.
 
 Direct edits to `languages/*.toml` need `/wormholes reload` or a config change.
 Dimensional Doors pack and registry changes need a full server restart. See
@@ -43,7 +48,7 @@ Dimensional Doors pack and registry changes need a full server restart. See
 
 ```
 plugins/Wormholes/
-  config/wormholes.toml     consolidated settings (schema 2)
+  wormholes.toml             consolidated settings (schema 3)
   portals/                  saved local portal files
   doors/                    dimensional door / pocket state (`state.json`, `state.json.tickets/`, `pending-resizes/`)
   languages/                optional per-locale TOML overrides
@@ -63,8 +68,8 @@ and trust under `routes/` and `trust/`. See
 
 | Property | Value |
 |----------|--------|
-| Path | `plugins/Wormholes/config/wormholes.toml` |
-| Schema | `schema = 2` (`WormholesConfigFile.CURRENT_SCHEMA`) |
+| Path | `plugins/Wormholes/wormholes.toml` |
+| Schema | `schema = 3` (`WormholesConfigFile.CURRENT_SCHEMA`) |
 | Quality key | top-level `quality` (not inside a table) |
 | Sections | `[main]`, `[recipes]` (+ product tables), `[network]` (+ nested), `[projection]`, `[render]` |
 | Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
@@ -147,15 +152,16 @@ the watched file.
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `schema` | `2` | Must match exactly |
+| `language` | `en_US` | Active locale name. See [11 - Localization](/wormholes/11-localization) |
+| `metrics` | `true` | Enables anonymous bStats reporting after a restart |
+| `language-fallbacks` | `""` | Comma-separated fallback locales. Code English is always final |
+| `schema` | `3` | Must match exactly |
 | `quality` | `auto` | `auto` \| `performance` \| `balanced` \| `cinematic` |
 
 ## `[main]`
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `language` | `en_US` | Active locale name. See [11 - Localization](/wormholes/11-localization) |
-| `language-fallbacks` | `""` | Comma-separated fallback locales. Code English is always final |
 | `enable-particles` | `true` | Independent global particle switch |
 | `replace-nether-and-end-portals` | `true` | Auto-link vanilla Nether/End frames as Wormholes portals |
 | `dimensional-doors-enabled` | `true` | Full Dimensional Doors feature set. Live disable is allowed |
@@ -186,6 +192,13 @@ the watched file.
 | `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
+
+Normal console output is plugin-branded and limited to lifecycle changes,
+capability changes, and actionable failures. Per-recipe registration, routine
+vanilla-portal formation, successful handoff and arrival details, and expected
+admission denials require `verbose-logging`. Repeated portal update, save,
+traversal infrastructure, and peer-frame encoding failures are throttled while
+retaining a full sampled stacktrace and failure counters.
 
 Traversal API behavior and provider contracts are in
 [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
@@ -333,7 +346,7 @@ Projection behavior detail:
 
 | Path | Mechanism |
 |------|-----------|
-| `config/wormholes.toml` change | A cheap 200 ms loop drains native filesystem events without rereading idle content. It reads on an event, pending stability verification, or the 2.5-second exact-content reconciliation that catches missed events and content changes whose size and timestamp are unchanged |
+| `wormholes.toml` change | A cheap 200 ms loop drains native filesystem events without rereading idle content. It reads on an event, pending stability verification, or the 2.5-second exact-content reconciliation that catches missed events and content changes whose size and timestamp are unchanged |
 | `languages/*.toml` change | Not watched directly. Use `/wormholes reload` or touch the config file |
 | `/wormholes reload` | Immediate, unthrottled reload of configuration and language files (`wormholes.admin.reload`). It invalidates older queued automatic work before applying |
 | Failed language load on reload | Config may still apply. Last valid language is kept. Console reports the cause |

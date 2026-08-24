@@ -2,7 +2,7 @@
 title: "Client HUD & Protocol"
 description: "Iris documentation: Client HUD & Protocol"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-23T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -140,12 +140,16 @@ delivered over plugin messaging.
 |---|---|---|
 | Vision map (`M`) | Ready session, an Iris dimension, and `CAPABILITY_VISION` from the server | Full-screen. Drag to pan, scroll to zoom, Esc to close |
 | What overlay (`J`) | Ready session, an Iris dimension, and `CAPABILITY_CURSOR` | Reports biome, region, cave biome when present, and height for the cursor column |
-| Studio toasts | The client advertises `CAPABILITY_STUDIO` | Hotload and toast frames render when the server sends them |
+| Studio toasts | The client advertises `CAPABILITY_STUDIO` | One hotload frame renders one toast. A successful hotload for the current pack also clears Vision tiles, markers, and What data so the next request reflects the new runtime |
 | Dimension status | Only a completed handshake | Carries pack key, dimension key, seed, and height bounds. A world that is not Iris-generated clears the client's tiles and markers |
 
 Zoom level is part of the tile cache key. If you change zoom, every cached
 tile becomes invalid. The map repaints as new tiles arrive under the
 8-per-second request budget. That is expected behavior, not a stall.
+The server retains at most eight pending tiles per session, coalesces repeated
+requests for the same tile, and rotates across sessions while two bounded
+encoder workers drain the global queue. Under saturation, one client cannot
+fill the queue indefinitely or exclude every other connected client.
 
 Vision tiles are split across frames: 24000 bytes of payload per chunk
 after a 25-byte header. One markers frame carries at most 256 markers.
@@ -165,9 +169,10 @@ after a 25-byte header. One markers frame carries at most 256 markers.
 | Max queryable block coordinate | ±29,999,999 |
 
 Cursor lookups get their own budget rather than a slice of the frame
-budget. Each one costs three engine column queries. A client that spent
-its whole frame allowance on them would be 32 column resolves per second
-per player.
+budget. Each one resolves biome, region, cave biome, and height: four engine
+column queries. The server coalesces each session to its latest pending cursor
+position and resolves it off the authoritative game thread. A client at the
+four-per-second limit therefore performs at most 16 column resolves per second.
 
 Message types (`IrisProtocol.TYPE_*`):
 

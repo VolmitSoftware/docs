@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -148,7 +148,7 @@ To push pack edits into an existing production world, see `update-world` in [25 
 | What | Bukkit-family | Fabric / Forge / NeoForge |
 |---|---|---|
 | Packs you author and download into | `plugins/Iris/packs/<key>/` | `config/irisworldgen/packs/<key>/` |
-| Platform data dir (`settings.json`, languages, caches) | `plugins/Iris/` | `config/iris/` |
+| Platform data dir (`iris.json`, languages, caches) | `plugins/Iris/` | `config/iris/` |
 | A world's frozen snapshot | `<dimensionRoot>/iris/pack/` | same, under the modded world root |
 | Prefetch key indexes | `<platform data dir>/prefetch/<dimId>/<hash>.ipfch` | same |
 | Studio schemas | `<packRoot>/.iris/schema/` | same |

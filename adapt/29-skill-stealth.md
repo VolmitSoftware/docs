@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Adapt documentation: Skill - Stealth"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -170,7 +170,7 @@ Passive. Kill while sneaking.
 
 ## Reference
 
-Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
+Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
 
 ### Identity
 
@@ -181,7 +181,7 @@ Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adap
 | Icon | `WITHER_ROSE` |
 | Color | `DARK_GRAY` |
 | Interval (ms) | `1412` |
-| Skill config | `plugins/Adapt/adapt/skills/stealth.toml` |
+| Skill config | `plugins/Adapt/skills/stealth.toml` |
 | Adaptation count | 14 |
 
 ### Skill XP sources
@@ -195,7 +195,7 @@ Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adap
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/stealth.toml` on first load.
+Written to `plugins/Adapt/skills/stealth.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -242,7 +242,7 @@ Written to `plugins/Adapt/adapt/skills/stealth.toml` on first load.
 | Base knowledge cost | 2 |
 | Cost factor | 0.325 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-silent-step.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-silent-step.toml` |
 
 Menu stat lines: Mob Detection Suppression Radius. Mob Backstab Damage Bonus. Player Backstab Damage Bonus.
 
@@ -299,7 +299,7 @@ Milestones: `challenge_stealth_silent_200` on `stealth.silent-step.backstabs` at
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | `setInterval`, default 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-speed.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-speed.toml` |
 
 Menu stat line: Sneaking Speed.
 
@@ -355,7 +355,7 @@ unless `requireGrounded` is false. Water disables it unless `allowWhileInWater` 
 | Base knowledge cost | 4 |
 | Cost factor | 0.125 |
 | Tick interval (ms) | 50 while a snatch session is open, 1000 when idle |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-snatch.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-snatch.toml` |
 
 Menu stat line: Snatch Radius.
 
@@ -383,7 +383,7 @@ It searches a box of radius by radius over 1.5 by radius around the player. Ever
 | Base knowledge cost | 3 |
 | Cost factor | 0.335 |
 | Tick interval (ms) | 5353 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-ghost-armor.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-ghost-armor.toml` |
 
 Menu stat lines: Max Ghost Armor. Speed.
 
@@ -417,7 +417,7 @@ max knob by level percent. Both are clamped to 0-20. XP on consumption is `min(1
 | Base knowledge cost | 2 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-vision.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-vision.toml` |
 
 Menu stat lines: Gain a burst of night vision while sneaking. Blindness immunity while sneaking. Invisible players glow while sneaking.
 
@@ -443,7 +443,7 @@ No adaptation-specific config knobs.
 | Base knowledge cost | 6 |
 | Cost factor | 1.0 |
 | Tick interval (ms) | 9182 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-enderveil.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-enderveil.toml` |
 
 Menu stat line: Prevent enderman attacks while sneaking at level 1, Prevent all enderman attacks at level 2.
 
@@ -468,7 +468,7 @@ No adaptation-specific config knobs.
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 5 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-shadow-decoy.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-shadow-decoy.toml` |
 
 Menu stat lines: Decoy Duration. Decoy Attraction Radius. Decoy Cooldown.
 
@@ -523,7 +523,7 @@ The decoy is an invisible, non-persistent armor stand anchor plus a packet-only 
 | Base knowledge cost | 5 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-shadowmeld.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-shadowmeld.toml` |
 
 Menu stat line: Undetected Sneak Delay.
 
@@ -554,7 +554,7 @@ Eligibility is sneaking plus either a Smoke Pellet lease or Stealth reporting yo
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-smoke-pellet.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-smoke-pellet.toml` |
 
 Menu stat lines: Cloud Radius. Cloud Duration.
 
@@ -587,7 +587,7 @@ The cloud pulses every `10` ticks. Each pulse blinds living entities inside for 
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-cutpurse.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-cutpurse.toml` |
 
 Menu stat lines: Steal Chance. Loot Stacks.
 
@@ -621,7 +621,7 @@ report you undetected. Spawn reason is not checked. On a successful chance roll 
 | Base knowledge cost | 3 |
 | Cost factor | 0.35 |
 | Tick interval (ms) | 400 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-trap-sense.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-trap-sense.toml` |
 
 Menu stat lines: Detection Range. Sculk Movement Suppression.
 
@@ -650,7 +650,7 @@ Revealed blocks are `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`
 | Initial knowledge cost | 6 |
 | Base knowledge cost | 6 |
 | Cost factor | 0.85 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-assassinate.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-assassinate.toml` |
 
 Menu stat lines: Executable Health Cap. Cooldown.
 
@@ -678,7 +678,7 @@ Excludes players, anything implementing `Boss`, and `WARDEN`. Eligibility compar
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-decoy-swap.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-decoy-swap.toml` |
 
 Menu stat lines: Swap Range. Cooldown.
 
@@ -708,7 +708,7 @@ Requires Shadow Decoy learned and an active decoy. Both teleports run asynchrono
 | Initial knowledge cost | 3 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.35 |
-| Config file | `plugins/Adapt/adapt/adaptations/stealth-umbral-recovery.toml` |
+| Config file | `plugins/Adapt/adaptations/stealth-umbral-recovery.toml` |
 
 Menu stat lines: Hunger Refund. Invisibility Extension.
 

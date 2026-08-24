@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -208,7 +208,7 @@ pass. Craft permission alone does not allow placement.
 
 ## Configuring recipes
 
-The `[recipes]` block of `config/wormholes.toml` holds one table per product
+The `[recipes]` block of `wormholes.toml` holds one table per product
 plus the two reskin toggles. Changes hot-reload: `/wormholes reload`
 re-registers the recipes and re-sends every online player's recipe book.
 
@@ -305,7 +305,7 @@ Default `type` is `pair`. Overflow drops at the player’s feet.
 
 | Setting | Location | Effect |
 |---------|----------|--------|
-| `dimensional-doors-enabled` | `[main]` in `plugins/Wormholes/config/wormholes.toml` (field default `true`) | Live enable/disable of the full dimensional-doors feature |
+| `dimensional-doors-enabled` | `[main]` in `plugins/Wormholes/wormholes.toml` (field default `true`) | Live enable/disable of the full dimensional-doors feature |
 
 If you set this `false` while running: new entries stop. Active travelers and
 pocket occupants may finish through return routes. Recipes, protection, and

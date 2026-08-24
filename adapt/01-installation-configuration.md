@@ -2,23 +2,23 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/adapt/`.
+Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
 
 Advancement grants, tree refreshes, and unlock toasts use the platform scheduler on Paper, Purpur, and Folia. On Folia, these updates remain live instead of falling back to persistence-only grants.
 
-Most of what you will change is hot-reloadable. Native filesystem events are reconciled with content checks, so atomic editor saves, FTP replacements, and same-size edits with an unchanged timestamp are still found. Adapt waits for a stable snapshot of at most 2 MiB and applies at most one automatic batch every 3 seconds; saves made during that interval replace the queued state and run in one trailing batch. Temporary upload artifacts and brief delete-and-recreate gaps are ignored. Automatic loads parse the captured file without rewriting, migrating, deleting, or recreating watched files; canonical rewrites remain startup and explicit migration work. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected, and the settings already in memory keep running.
+Most of what you will change is hot-reloadable. Native filesystem events are reconciled with content checks, so atomic editor saves, FTP replacements, and same-size edits with an unchanged timestamp are still found. Adapt waits for a stable snapshot of at most 2 MiB and applies at most one automatic batch every 3 seconds; saves made during that interval replace the queued state and run in one trailing batch. Temporary upload artifacts and brief delete-and-recreate gaps are ignored. Automatic loads parse the captured TOML without rewriting, deleting, or recreating watched files. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected, and the settings already in memory keep running.
 
 These things are not hot-reloadable. Adapt wires them only while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
 
 Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders. Without Vault, learning stays knowledge-only. Without a protection plugin, Adapt never asks one for permission. An absent integration does not stop startup, but Adapt can warn when a configured or installed integration cannot be used, such as Vault pricing without an economy provider or an installed-but-disabled HiddenOre.
 
-Settings live in three places. `adapt.toml` holds global behavior. One file per skill and per adaptation lives under `adapt/skills/` and `adapt/adaptations/`. `adapt/mutations.toml` holds the experimental Mutation layer. That layer is off until you turn it on.
+Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutations.toml`, plus one TOML per skill and adaptation under `skills/` and `adaptations/`. The Mutation layer is off until you turn it on.
 
 ## Installing
 
@@ -70,7 +70,7 @@ Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, no
 
 `/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` delete that file, regenerate it from defaults, and reconcile mutations. `/adapt default all` archives `adapt.toml` and every skill and adaptation TOML into `config-archive/<timestamp>/` first, then deletes, regenerates, and reloads them. It leaves `mutations.toml`, `models.toml`, language overrides, SQL and Redis data, and player progression alone. All three need `adapt.configurator`.
 
-Older installs used `.json` config files. Adapt still recognizes the TOML peer for `adapt/adapt.json`, `adapt/models.json`, `adapt/mutations.json`, `adapt/skills/<id>.json`, and `adapt/adaptations/<id>.json`. When a startup migration is needed, Adapt first zips every legacy JSON file under `adapt/` into `adapt/migrations/backups/<timestamp>-pre-toml-migration.zip`. It drops a `.legacy-json-backed-up` marker so it never repeats. `/adapt migrate-configs` then rewrites skill and adaptation TOML in canonical form. It deletes each legacy JSON file below `adapt/` that already has a TOML peer. While a legacy JSON file still shadows an existing TOML file, the hotload watcher ignores the JSON. The old misspelled key `value.valueMutlipliers` is folded into `value.valueMultipliers` when the core config loads. Correctly spelled entries win a collision.
+This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` directory before upgrading, which permanently removes any local settings stored there, then start the server to generate `adapt.toml`, `models.toml`, `mutations.toml`, `skills/`, and `adaptations/` directly under `plugins/Adapt/`. Adapt does not migrate the old directory, JSON configuration files, or the former misspelled value-multiplier key; restart after applying the desired settings.
 
 ## Reference
 
@@ -105,14 +105,11 @@ Activation and failure behavior: [08 - Protection & Region Policy](/adapt/08-pro
 
 ```text
 plugins/Adapt/
-  adapt/
-    adapt.toml
-    models.toml
-    mutations.toml
-    skills/<skill-id>.toml
-    adaptations/<adaptation-id>.toml
-    migrations/.legacy-json-backed-up
-    migrations/backups/<timestamp>-pre-toml-migration.zip
+  adapt.toml
+  models.toml
+  mutations.toml
+  skills/<skill-id>.toml
+  adaptations/<adaptation-id>.toml
   config-archive/<timestamp>/
   languages/en_US.toml
   languages/<active-locale>.toml
@@ -126,14 +123,14 @@ plugins/Adapt/
   data/mantle/<namespace>/<world-key>/
 ```
 
-`data/advancements.db` is the SQLite advancement store used while `sql.enabled` is false. `config-archive` timestamps use `yyyy-MM-dd_HHmmss`. Migration backup zips use `yyyyMMdd-HHmmss`.
+`data/advancements.db` is the SQLite advancement store used while `sql.enabled` is false. `config-archive` timestamps use `yyyy-MM-dd_HHmmss`.
 
-### `adapt/adapt.toml`, general and progression
+### `adapt.toml`, general and progression
 
 | Key | Default | What it does |
 |---|---:|---|
 | `debug` | `false` | Prints Adapt's developer debug lines to the console |
-| `verbose` | `false` | Prints per-action diagnostic logging. `/adapt debug verbose` flips the in-memory value without writing the file |
+| `verbose` | `false` | Prints gated profile, permission, XP, and per-action diagnostics. `/adapt debug verbose` flips the in-memory value without writing the file |
 | `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
 | `splashScreen` | `true` | Prints the startup splash |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
@@ -157,7 +154,7 @@ plugins/Adapt/
 
 Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_run_in` and `example:another_world`, neither of which matches a real world.
 
-### `adapt/adapt.toml`, activator, GUI, and presentation
+### `adapt.toml`, activator, GUI, and presentation
 
 | Key | Default | What it does |
 |---|---:|---|
@@ -167,7 +164,7 @@ Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_r
 | `useEnchantmentTableParticleForActiveEffects` | `true` | Uses the enchantment-table particle style for active effects and XP bursts |
 | `escClosesAllGuis` | `false` | Escape closes the whole menu stack instead of returning to the parent menu |
 | `guiBackButton` | `true` | Shows Back buttons in menus that have a parent |
-| `customModels` | `true` | Applies the model mappings in `adapt/models.toml` |
+| `customModels` | `true` | Applies the model mappings in `models.toml` |
 | `automaticGradients` | `false` | Applies the automatic rendered-text gradient |
 | `learnUnlearnButtonDelayTicks` | `14` | Debounce, in ticks, between learn and unlearn clicks |
 | `maxRecipeListPrecaution` | `25` | Depth bound on recursive recipe-value traversal |
@@ -266,7 +263,7 @@ Conflict pairs are symmetric at runtime. Listing `agility-air-dash` under `rift-
 | `permissionXpMultipliers` | [05 - Configuration Math](/adapt/05-configuration-math) |
 | `protectorSupport` | [08 - Protection & Region Policy](/adapt/08-protection-region-policy) |
 
-### `adapt/mutations.toml`, global keys
+### `mutations.toml`, global keys
 
 | Key | Default | What it does |
 |---|---:|---|
@@ -292,7 +289,7 @@ Conflict pairs are symmetric at runtime. Listing `agility-air-dash` under `rift-
 
 Every consent mode also requires the recipient's saved opt-in. `EXPLICIT` accepts any opted-in eligible recipient. `PARTY` also requires both players to share a Bukkit scoreboard and be on the same team. `FRIEND` and `DISABLED` both accept nobody (no friend provider is implemented). Every type profile also carries `enabled = true`, `pvpEnabled = true`, `particlesEnabled = true`, `soundsEnabled = true`, an empty `worldBlacklist`, and an empty `conflicts`. World keys and conflict lists are normalized on load.
 
-### `adapt/mutations.toml`, per-type tables
+### `mutations.toml`, per-type tables
 
 | Table | Keys and defaults |
 |---|---|
@@ -316,7 +313,7 @@ Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server t
 
 ### Reload matrix
 
-The watcher drains native events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. It watches `adapt.toml` and its legacy JSON peer. It also watches `models.toml` and its legacy peer, `mutations.toml`, and the locale override folder. It watches everything directly inside `adapt/skills/` and `adapt/adaptations/`. Automatic snapshots are capped at 2 MiB and normalized into one latest-state batch, with at most one application every 3 seconds and one trailing batch when more saves arrive during the cooldown. Passive automatic loads never canonicalize or migrate the source file.
+The watcher drains native events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. It watches `adapt.toml`, `models.toml`, `mutations.toml`, the locale override folder, and every TOML directly inside `skills/` and `adaptations/`. Automatic snapshots are capped at 2 MiB and normalized into one latest-state batch, with at most one application every 3 seconds and one trailing batch when more saves arrive during the cooldown. Passive automatic loads never rewrite or recreate the source file.
 
 | Change | Hot reload | Restart required |
 |---|---|---|

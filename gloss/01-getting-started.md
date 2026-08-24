@@ -2,13 +2,13 @@
 title: "Getting Started"
 description: "Gloss documentation: Getting Started"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data tree with working defaults. Settings live in `plugins/Gloss/config.toml`. Content lives in JSON documents beside that file. Both reload from disk while the server runs. Most changes need no restart and no command.
+Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data tree with working defaults. Settings live in `plugins/Gloss/gloss.toml`. Content lives in JSON documents beside that file. Both reload from disk while the server runs. Most changes need no restart and no command.
 
 ## Requirements
 
@@ -26,8 +26,8 @@ On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`. That f
 ## Install
 
 1. Put the Gloss jar in `plugins/`.
-2. Start the server. Gloss creates `plugins/Gloss/`, writes `config.toml`, extracts the shipped default documents, and prints a splash banner that ends in a startup status. `READY` means every service enabled. If any enable step throws, Gloss prints the failed startup status, tears down everything already started, and rethrows so the server disables the plugin instead of leaving a partial runtime loaded.
-3. Edit `config.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
+2. Start the server. Gloss creates `plugins/Gloss/`, writes `gloss.toml`, extracts the shipped default documents, and prints a splash banner that ends in a startup status. `READY` means every service enabled. If any enable step throws, Gloss prints the failed startup status, tears down everything already started, and rethrows so the server disables the plugin instead of leaving a partial runtime loaded.
+3. Edit `gloss.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
 
 If you set `splashScreen = false`, Gloss hides the banner for clean startups only. A failed enable always prints the banner and the startup error before the exception is propagated.
 
@@ -38,8 +38,8 @@ file and the shipped defaults of the features that are enabled. Nothing else exi
 
 ```
 plugins/Gloss/
-├── config.toml            every runtime knob, commented, clamped and hot-reloading
-├── language.yml           locale selection and message overrides
+├── gloss.toml            every runtime knob, commented, clamped and hot-reloading
+├── language.yml           sparse message overrides; locale selection stays in gloss.toml
 ├── tablist.json           tablist header, footer and per-group list-name formats
 ├── boards/                one JSON per scoreboard sidebar (default.json and animation-showcase.json shipped)
 ├── emoji/                 one JSON per emoji (67 shipped)
@@ -97,7 +97,7 @@ Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those folders 
 
 ## Feature toggles
 
-`[features]` in `config.toml` gates each subsystem. An effective off state stops that subsystem
+`[features]` in `gloss.toml` gates each subsystem. An effective off state stops that subsystem
 from rendering or listening. Most document-backed features keep their documents loaded and editable;
 `emoji` and `animations` shut down their loaders completely but can restart on reload. Panels and
 previews are selected during enable, so enabling either after it was disabled at startup requires a
@@ -129,7 +129,7 @@ Commands, permissions and placeholders all moved. `/holoui ...` is gone. Use the
 
 ## Where to go next
 
-- [Configuration *Every knob in config.toml, with defaults and ranges*](/gloss/02-configuration)
+- [Configuration *Every knob in gloss.toml, with defaults and ranges*](/gloss/02-configuration)
 - [Data Files & Hot Reload *The JSON document system, importers and reset commands*](/gloss/03-data-files)
 - [Holograms *Persistent text displays*](/gloss/04-holograms)
 - [Scoreboards & Groups *Sidebars and Vault group resolution*](/gloss/05-scoreboards-groups)

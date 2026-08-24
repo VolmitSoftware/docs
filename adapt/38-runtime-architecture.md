@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Adapt documentation: Runtime Architecture"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ This page covers what Adapt does to a server between boot and shutdown. It cover
 
 Adapt runs skills, adaptations, and per-player state through a deadline-indexed ticker. Idle entries are not scanned on every scheduler pulse. Recurring player maintenance shares a bounded owner pulse instead of dispatching one scheduler task per ability and player. Anything that touches a player, an entity, or a world is handed to that thing's owning scheduler first. That is what lets the same jar behave on Paper and on Folia.
 
-Optional plugin support is opportunistic. A missing plugin switches off only its own integration and nothing else. Configured persistence is not opportunistic: SQL mode has no local fallback for login ownership, and a failed SQL connection, schema check, or non-InnoDB table stops enablement. A configured Redis startup failure is also visible during enable. Read the full startup log before trusting shared storage.
+Optional plugin support is opportunistic. A missing plugin switches off only its own integration and nothing else. Configured persistence is not opportunistic: SQL mode has no local fallback for Adapt profile ownership, and a failed SQL connection, schema check, or non-InnoDB table stops enablement. A configured Redis startup failure is also visible during enable. Once the server is running, a player-profile failure disables Adapt for that player without rejecting or kicking their Minecraft session. Read the full startup log before trusting shared storage.
 
 ## Startup
 
@@ -19,12 +19,12 @@ Optional plugin support is opportunistic. A missing plugin switches off only its
 
 Enable then runs in this order:
 
-1. Back up legacy JSON configs once, then delete retired adaptation config files.
+1. Load the plugin-root TOML configuration layout.
 2. Bring up platform bindings, the Adventure audience provider, and HUD support, then discover services by scanning the `art.arcane.adapt.service` package.
 3. Load language, the Vault economy hook, custom models, and the PlaceholderAPI registration, then print server information.
 4. Open SQL when `sql.enabled` is true, create `ADAPT_DATA` and `ADAPT_DATA_FENCE`, and require both tables to use InnoDB. Create the backend Redis client only when SQL and Redis are both enabled, then start the persistence queue and glow support.
 5. Start the simulation: ticker, FX director, `AdaptServer` and its `SkillRegistry`, and register every `adapt.use.*` and XP multiplier permission node.
-6. Canonicalize skill and adaptation configs to TOML, then register the gameplay listeners: brewing, XP provenance, XP novelty, and the version bindings.
+6. Register the gameplay listeners: brewing, XP provenance, XP novelty, and the version bindings.
 7. Start metrics and the splash, queue the timeout-bounded update check on the async workgroup, then install the Ability API gateways without waiting for the network.
 8. Register a protector for each protection plugin that is actually enabled.
    Install the WorldGuard region policy and the HiddenOre bridge. Build the item
@@ -34,21 +34,21 @@ Enable then runs in this order:
 
 `AdaptServer` owns the skill registry, the server-scoped listeners, and the online `AdaptPlayer` objects. Skill and adaptation tick intervals run through `Ticked`, `TickedObject`, and `Ticker`.
 
-Local JSON mode resolves a durable `.pending-delete` delete or delete-then-save journal first, then an in-process queued save, the local player JSON, or a new profile. The journal is local-mode only. Invalid journals are preserved and fail closed instead of becoming deletion instructions.
+Local JSON mode resolves a durable `.pending-delete` delete or delete-then-save journal first, then an in-process queued save, the local player JSON, or a new profile. A successful local claim is deliberately unfenced; SQL ownership checks never apply to it. The journal is local-mode only. Invalid journals and corrupt player JSON are preserved and fail closed instead of becoming deletion instructions or empty profiles.
 
-SQL mode claims ownership during async pre-login before constructing an `AdaptPlayer`. Claims for a burst gather for 25 milliseconds, sort by UUID, deduplicate concurrent requests for the same player, and transact in groups of at most 128. A claim rotates the owner token and epoch while retaining the effective predecessor when an earlier claim was abandoned. Adapt then compares only snapshots carrying that exact predecessor fence: the committed SQL row and sequence, a queued fenced save, a valid `ADAPT_SQL_RECOVERY_V1` `.pending-sql` envelope, and a request-correlated Redis handoff. The Redis source freezes its entity-owned runtime and stages the snapshot for 60 seconds before replying; the destination retries for 250 milliseconds and checks that exact stage if all replies are lost. The highest non-conflicting sequence wins and is transactionally adopted as sequence 1 under the new owner. Local JSON can seed only a player's first SQL fence.
+SQL mode starts the ownership claim during async pre-login, then returns from that event immediately. Claim completion may arrive after the Minecraft join, but Adapt constructs an `AdaptPlayer` only after a claim completes successfully. Claims for a burst gather for 25 milliseconds, sort by UUID, deduplicate concurrent requests for the same player, and transact in groups of at most 128. A claim rotates the owner token and epoch while retaining the effective predecessor when an earlier claim was abandoned. Adapt then compares only snapshots carrying that exact predecessor fence: the committed SQL row and sequence, a queued fenced save, a valid `ADAPT_SQL_RECOVERY_V1` `.pending-sql` envelope, and a request-correlated Redis handoff. The Redis source freezes its entity-owned runtime and stages the snapshot for 60 seconds before replying; the destination retries for 250 milliseconds and checks that exact stage if all replies are lost. The highest non-conflicting sequence wins and is transactionally adopted as sequence 1 under the new owner. Local JSON can seed only a player's first SQL fence.
 
-An SQL claim, parse, conflict, or adoption failure rejects login. It never constructs an unfenced runtime and never uploads a local fallback over an uncertain SQL row. Old raw-JSON `.pending-sql` files and pre-fence `.pending-delete` files in SQL mode are preserved with an operator recovery error. A stale writer cannot overwrite a newer owner; SQL rejects its token and the backend retires that live runtime.
+An unsafe, corrupt, timed-out, conflicting, or failed local or SQL claim never rejects Minecraft admission. The player remains connected without an `AdaptPlayer`: XP, knowledge, commands, skills, adaptations, mutations, custom brewing, custom orbs, persistence, menus, effects, and per-player PlaceholderAPI publication remain inactive. Adapt never constructs an empty or unfenced fallback, never uploads local data over an uncertain SQL row, and immediately cleans any stale Adapt-owned runtime state. Successful profile activation is silent at normal logging levels. With `verbose` enabled, the branded Adapt logger reports the player, UUID, and active `local JSON` or `SQL` storage mode.
 
-On quit, state is queued for persistence. Repeated writes for one UUID coalesce to the newest fence sequence. SQL saves gather for 25 ms and commit in batches of at most 128 profiles, then retry with bounded backoff. A failed terminal SQL write keeps its fenced recovery envelope. Player-scoped tasks, HUD state, and temporary runtime objects are released. The in-memory object is kept for a minute for late listeners and cleanup; it is not treated as an online member. PlaceholderAPI keeps its own display-only snapshot for the same minute and never writes it back.
+The initial claim is followed by at most three online retries after 2, 4, and 8 seconds, each with deterministic UUID-based jitter from 0 through 19 ticks, for four total claim cycles. Reconnecting starts a new bounded cycle. Old raw-JSON `.pending-sql` files and pre-fence `.pending-delete` files in SQL mode are preserved with an operator recovery error. A stale writer cannot overwrite a newer owner; SQL rejects its token and the backend retires that Adapt runtime while leaving the Minecraft player connected. Ownership transfer or a reset/purge notice from another backend requires that retired player to reconnect. A reset initiated on the backend currently hosting the player instead adopts the newly rotated SQL fence and replaces their Adapt profile live.
+
+On quit, state is queued for persistence. Repeated writes for one UUID coalesce to the newest fence sequence. SQL saves gather for 25 ms and commit in batches of at most 128 profiles, then retry with bounded backoff. A failed terminal SQL write keeps its fenced recovery envelope. Player-scoped tasks, HUD state, and temporary runtime objects are released. The in-memory object is kept for a minute for late listeners and cleanup; it is not treated as an online member. PlaceholderAPI keeps its own display-only snapshot for the same minute after a normal quit and never writes it back. A newly unavailable online session evicts any stale snapshot immediately instead.
 
 ## Reloading and restarting
 
-A watcher drains native file events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. Stable saves are queued into a latest-state batch and applied no more than once every 3 seconds; a save that lands while a batch is waiting or running becomes one trailing batch. Atomic moves, brief FTP replacement gaps, and same-metadata edits are covered. Automatic loads are passive and do not canonicalize, migrate, delete, or recreate watched files. While a legacy `.json` file still sits next to a canonical `.toml`, the watcher ignores the JSON.
+A watcher drains native file events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. Stable TOML saves are queued into a latest-state batch and applied no more than once every 3 seconds; a save that lands while a batch is waiting or running becomes one trailing batch. Atomic moves, brief FTP replacement gaps, and same-metadata edits are covered. Automatic loads are passive and do not rewrite, delete, or recreate watched files.
 
-A core config reload refreshes language, custom models, advancement synchronization, default-active protector membership, and online mutation qualification. It also throws away the material value cache. Ability API policy settings are read fresh on every call. They follow the core config without a restart. SQL and Redis clients, metrics, protector registration, and plugin load order are restart boundaries. [01 - Installation & Configuration](/adapt/01-installation-configuration) carries the full matrix.
-
-`/adapt migrate-configs` needs `adapt.debug`. It rewrites every skill and adaptation config in canonical TOML. Then it walks everything below `adapt/` and deletes each legacy JSON file that already has a TOML twin. A JSON file with no TOML twin is left alone. Normal startup runs the same canonicalization pass.
+A core config reload refreshes language, custom models, advancement synchronization, default-active protector membership, and online mutation qualification. It also throws away the material value cache. Ability API policy settings are read fresh on every call. They follow the core config without a restart. SQL, Redis, and metrics settings and their live services are restart boundaries; hotload preserves the values selected at startup instead of crossing storage modes or reconnecting a service. Protector registration and plugin load order are also restart boundaries. [01 - Installation & Configuration](/adapt/01-installation-configuration) carries the full matrix.
 
 ## Shutdown
 
@@ -80,7 +80,7 @@ Watch the console during a stop. A stop that hangs or errors can mean queued liv
 
 ### Watched paths and timings
 
-The watcher covers `adapt/adapt.toml` and `adapt/adapt.json`, `adapt/models.toml` and `adapt/models.json`, `adapt/mutations.toml`, every file directly inside `adapt/skills/` and `adapt/adaptations/`, and the `languages/overrides/` folder. Mutation config changes also reconcile online players.
+The watcher covers `adapt.toml`, `models.toml`, `mutations.toml`, every TOML directly inside `skills/` and `adaptations/`, and the `languages/overrides/` folder. Mutation config changes also reconcile online players.
 
 | Item | Value |
 |---|---|
@@ -92,7 +92,8 @@ The watcher covers `adapt/adapt.toml` and `adapt/adapt.json`, `adapt/models.toml
 | Persistence write retry backoff | 50 ms, 250 ms, 1000 ms |
 | SQL save gather window / batch cap | 25 ms / 128 profiles |
 | SQL claim gather window / batch cap | 25 ms / 128 profiles |
-| SQL claim attempts / per-attempt wait / pre-login outer wait | 4 / 8 s / 40 s |
+| SQL backend claim attempts / per-attempt wait / claim-future wait | 4 / 8 s / 40 s; async pre-login itself returns immediately |
+| Online profile recovery | Three retries after 2 s, 4 s, and 8 s, each plus deterministic 0-19 tick jitter; four total claim cycles |
 | Redis predecessor response wait | 250 ms |
 | Skill owner dispatch | Up to 64 players per server tick |
 | Adaptation owner dispatch | Up to 200 players examined and 64 owner tasks per server tick |

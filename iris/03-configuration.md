@@ -2,12 +2,12 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris keeps its shared runtime settings in `settings.json` under the platform data folder. On first boot Iris writes a full defaults file if one is missing. Startup and manual loads rewrite a valid file so new keys appear with defaults; passive automatic hotload parses an immutable snapshot and never writes it back. Bukkit adds `compat.json`. Mod loaders add `modded.json`.
+Iris keeps its shared runtime settings in `iris.json` under the platform data folder. On first boot Iris writes a full defaults file if one is missing. Startup and manual loads rewrite a valid file so new keys appear with defaults; passive automatic hotload parses an immutable snapshot and never writes it back. Bukkit adds `compat.json`. Mod loaders add `modded.json`.
 
 See [01 - Installation & Platforms](/iris/01-installation-platforms) for data paths. See [33 - Performance Tuning](/iris/33-performance-tuning) for how to measure a tuning change.
 
@@ -30,30 +30,31 @@ Everything else is either already right, only meaningful while diagnosing a spec
 
 | Platform | Shared settings | Packs root | Platform-only config |
 |----------|-----------------|------------|----------------------|
-| Bukkit / Paper / Folia | `plugins/Iris/settings.json` | `plugins/Iris/packs/` | `plugins/Iris/compat.json` |
-| Fabric / Forge / NeoForge | `<configDir>/iris/settings.json` | `<configDir>/irisworldgen/packs/` | `<configDir>/irisworldgen/modded.json` |
+| Bukkit / Paper / Folia | `plugins/Iris/iris.json` | `plugins/Iris/packs/` | `plugins/Iris/compat.json` |
+| Fabric / Forge / NeoForge | `<configDir>/iris/iris.json` | `<configDir>/irisworldgen/packs/` | `<configDir>/irisworldgen/modded.json` |
 
-`<configDir>` is the loader config directory (game `config/` on Fabric, Forge, and NeoForge). Both surfaces use the same `IrisSettings` schema for `settings.json`.
+`<configDir>` is the loader config directory (game `config/` on Fabric, Forge, and NeoForge). Both surfaces use the same `IrisSettings` schema for `iris.json`.
 
 The modded split is real and easy to get wrong. The engine data folder is `<configDir>/iris`. Installed packs, the generated datapack, and `modded.json` live under `<configDir>/irisworldgen`. Iris also creates an empty `<configDir>/iris/packs` directory. That is not the pack root. A pack there will not load.
 
 ## Changing a setting safely
 
 1. Start Iris once so it writes the current schema and defaults.
-2. Copy `settings.json` outside the server directory as a rollback file.
+2. Copy `iris.json` outside the server directory as a rollback file.
 3. Change one key. Keep its JSON type. Quoted values such as `"false"` are strings, not booleans.
 4. Save the file. Then run `/iris reload` or wait for automatic hotload. Both platforms drain filesystem events about every 500 ms, wait for a stable snapshot, and apply automatic batches no more than once every 3 seconds.
-5. Confirm the console logs `Hotloaded settings.json` or the reload success message, with no parse error.
+5. Confirm the reload success message, or enable `/iris debug` to see passive hotload success, with no parse error.
 6. Exercise the affected feature. If nothing changed, check the "Takes effect" column below. Several keys are captured when a service, pool, or cache is constructed and need a restart.
 
-If automatic parsing fails, Iris keeps the previously active settings and leaves the edited file untouched. Fix the JSON or restore the backup, then save again. Deleting `settings.json` during automatic watching retains the live settings and does not recreate the file; a later manual reload or restart recreates defaults.
+If automatic parsing fails, Iris keeps the previously active settings and leaves the edited file untouched. Fix the JSON or restore the backup, then save again. Deleting `iris.json` during automatic watching retains the live settings and does not recreate the file; a later manual reload or restart recreates defaults.
 
 To change only the server locale, edit the existing `general` object in place:
 
 ```json
 {
   "general": {
-    "language": "de_DE"
+    "language": "de_DE",
+    "metrics": true
   }
 }
 ```
@@ -74,16 +75,14 @@ That fragment shows the field location. Do not replace a populated settings file
 
 | Action | Behavior |
 |--------|----------|
-| First boot | Create `settings.json` with current defaults if the file is absent |
-| Load | Parse with Gson into `IrisSettings`. On failure, log `Configuration Error in settings.json!` and run on built-in defaults for that boot — the bad file is left untouched, because the rewrite never runs |
-| After a successful startup or manual load | Rewrite `settings.json` as pretty JSON so new keys and migrated values persist. Comments and hand formatting are lost |
+| First boot | Create `iris.json` with current defaults if the file is absent |
+| Load | Parse with Gson into `IrisSettings`. On failure, log `Configuration Error in iris.json!` and run on built-in defaults for that boot — the bad file is left untouched, because the rewrite never runs |
+| After a successful startup or manual load | Rewrite `iris.json` as pretty JSON so current keys and defaults persist. Comments and hand formatting are lost |
 | `/iris reload` | Invalidate the cached settings, re-read the file, reload the locale. On modded it also schedules a forced datapack regeneration. It does not restart services, reload packs, or rebuild engines |
-| Hotload (Bukkit) | The shared core `SettingsHotloadWatch` drains native events about every 500 ms for `settings.json` and `languages/overrides/`. Bounded exact-content reconciliation detects silent, atomic, FTP, and same-metadata saves. A stable strict-UTF-8 snapshot of at most 2 MiB is applied without rewriting the file, at most once every 3 seconds with one latest-state trailing batch. Logs `Hotloaded settings.json` |
-| Hotload (modded) | `ModdedSettingsHotloadService` schedules the same core watcher and therefore has the same event-first checks, 2 MiB immutable snapshot ceiling, content reconciliation, and completion-anchored 3-second queue. It does not rewrite a passive save. Logs `Hotloaded settings.json` |
+| Hotload (Bukkit) | The shared core `SettingsHotloadWatch` drains native events about every 500 ms for `iris.json` and `languages/overrides/`. Bounded exact-content reconciliation detects silent, atomic, FTP, and same-metadata saves. A stable strict-UTF-8 snapshot of at most 2 MiB is applied without rewriting the file, at most once every 3 seconds with one latest-state trailing batch. Successful passive hotloads are debug-only; invalid or rejected changes remain normal console errors |
+| Hotload (modded) | `ModdedSettingsHotloadService` schedules the same core watcher and therefore has the same event-first checks, 2 MiB immutable snapshot ceiling, content reconciliation, and completion-anchored 3-second queue. It does not rewrite a passive save. Successful passive hotloads are debug-only; invalid or rejected changes remain normal console errors |
 | Locale refresh | Native directory events queue locale overrides without rereading the active file every 500 ms while idle. Only the configured locale applies; inactive overrides are tracked without changing the runtime. Deleting the active override falls back to its bundled translation or the code-owned English catalog, invalid bytes keep the last-good catalog, and `/iris reload` remains immediate |
 | `forceSave()` | Only `/iris debug` writes settings back from memory |
-
-Legacy migration: if the raw JSON still contains `world.anbientEntitySpawningSystem`, the value is copied to `world.ambientEntitySpawningSystem` and logged once.
 
 ## Root object
 
@@ -112,11 +111,11 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
 | `language` | `"en_US"` | Live | Selects the locale catalog for all Iris messages. Reloaded by `/iris reload` and by the shared Bukkit/modded hotload watcher |
+| `metrics` | `true` | **Restart** | **Bukkit only.** Registers the bStats reporter at enable |
 | `commandSounds` | `true` | Live | **Bukkit only.** Plays the amethyst chime on `/iris` tab completion and success/failure sounds after a command. Turn off if the noise annoys staff |
-| `debug` | `false` | Live | Enables verbose engine tracing on the console and writes per-chunk crash dumps under `debug/chunk-errors/`. Toggle with `/iris debug` rather than editing by hand. Leave off in production because it is loud |
+| `debug` | `false` | Live | Enables verbose engine tracing on the console, including passive hotload success, Studio timing, adapter discovery, object-placement and structure diagnostics, and writes per-chunk crash dumps under `debug/chunk-errors/`. Failures remain visible when debug is off. Toggle with `/iris debug` rather than editing by hand. Leave off in production because it is loud |
 | `dumpMantleOnError` | `false` | Live | When a tectonic plate read reports an error, dump the decoded region to `dump/<name>.bin` instead of logging a timing line. Turn on only when investigating mantle corruption |
 | `disableNMS` | `false` | **Restart** | **Bukkit only.** Forces the no-op NMS binding. Iris logs a warning and world creation stops working entirely, so this is a diagnostic escape hatch, not a compatibility switch. Read in a class initializer, so a reload will not change it |
-| `pluginMetrics` | `true` | **Restart** | **Bukkit only.** Registers the bStats reporter at enable |
 | `splashLogoStartup` | `true` | **Restart** | Prints the ASCII logo and version block at startup. Set false for quieter console logs |
 | `useConsoleCustomColors` | `true` | Live | Gradient/hex coloring for console output. Set false if your log viewer mangles it — you still get legacy color codes. Iris also forces both color keys off in memory if Adventure fails to bind |
 | `useCustomColorsIngame` | `true` | Live | Same, for messages sent to players |
@@ -129,6 +128,8 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `spins` | `7` | Live | Saturation factor of the same gradient |
 | `spinb` | `8` | Live | Brightness factor of the same gradient |
 
+The early library-loader trace is separate from `general.debug` and is silent by default. `-Diris.debug-slimjar=true` enables it through the Iris plugin logger only for loader investigation; it never writes those debug lines through the process streams or triggers Paper's direct-stream warning.
+
 ## `world` — entity systems and the async world tick
 
 Iris runs its own spawning and effects pass on a background loop, separate from vanilla mob spawning. These keys decide whether that loop does anything and how often. Turning the spawn systems off makes Iris worlds feel emptier but removes an entire class of tick cost. The defaults are the intended experience.
@@ -137,7 +138,7 @@ Iris runs its own spawning and effects pass on a background loop, separate from 
 |-----|---------|--------------|--------------|
 | `postLoadBlockUpdates` | `true` | Live | Runs a block-update pass over freshly generated chunks near players so placed objects settle (physics and waterlogging fixups). Turning it off is faster but leaves floating or unwatered blocks from some objects |
 | `forcePersistEntities` | `true` | Live | Marks every Iris-spawned entity persistent so vanilla mob-cap and distance rules do not despawn it. Turn off if pack-spawned mobs are accumulating |
-| `ambientEntitySpawningSystem` | `true` | Live | Enables the biome/region ambient spawn lists on the async tick (legacy key `anbientEntitySpawningSystem` is migrated automatically) |
+| `ambientEntitySpawningSystem` | `true` | Live | Enables the biome/region ambient spawn lists on the async tick |
 | `asyncTickIntervalMS` | `700` | Live (next tick) | Milliseconds between world-manager passes that handle spawning, effects, and cleanup. Raise it to cut background cost on a busy server. Lower it only if pack spawns feel too sparse |
 | `targetSpawnEntitiesPerChunk` | `0.95` | Live | Entity saturation ceiling. Once entities per loaded chunk exceed this, Iris stops spawning (the Bukkit path also backs off for 5 seconds). Lower it on servers already near their entity budget |
 | `markerEntitySpawningSystem` | `true` | Live | Enables spawning driven by mantle marker blocks, which is how packs place specific mobs at specific generated features |
@@ -177,7 +178,7 @@ These keys are no-ops on mod loaders.
 
 ## `concurrency` — nothing to configure
 
-There is no `concurrency` block in `settings.json`. The values are derived from CPU count at runtime. Older files that still carry a `concurrency` key are ignored on load and dropped on the next rewrite:
+There is no `concurrency` block in `iris.json`. The values are derived from CPU count at runtime. Older files that still carry a `concurrency` key are ignored on load and dropped on the next rewrite:
 
 | Method | Result | Used by |
 |--------|--------|---------|
@@ -287,7 +288,7 @@ One quirk to know: when `compat.json` is absent, Iris seeds it with a copy of th
 
 ## Modded-only: `modded.json`
 
-Path: `<configDir>/irisworldgen/modded.json`, written with defaults on first load if missing. Not used by the Bukkit plugin. Unlike `settings.json` this file is parsed by hand rather than Gson, is cached once, and has no hotload. A restart is required except for the keys that Iris rewrites itself. Malformed JSON logs `Iris modded config at … is invalid; using defaults` and runs on defaults **without** rewriting your file.
+Path: `<configDir>/irisworldgen/modded.json`, written with defaults on first load if missing. Not used by the Bukkit plugin. Unlike `iris.json` this file is parsed by hand rather than Gson, is cached once, and has no hotload. A restart is required except for the keys that Iris rewrites itself. Malformed JSON logs `Iris modded config at … is invalid; using defaults` and runs on defaults **without** rewriting your file.
 
 | Key | Default | What it does |
 |-----|---------|--------------|

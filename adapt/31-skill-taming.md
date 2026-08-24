@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Adapt documentation: Skill - Taming"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -149,12 +149,12 @@ A killing blow on a pet is refused. The pet is set to 1 HP, made immune for a sh
 | Icon | `LEAD` |
 | Color | `GOLD` |
 | Interval (ms) | `3480` |
-| Skill config | `plugins/Adapt/adapt/skills/taming.toml` |
+| Skill config | `plugins/Adapt/skills/taming.toml` |
 | Adaptation count | 14 |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/taming.toml` on first load.
+Written to `plugins/Adapt/skills/taming.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -186,7 +186,7 @@ Written to `plugins/Adapt/adapt/skills/taming.toml` on first load.
 
 ### Shared adaptation keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost`.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also carries `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, and `initialCost`.
 
 Level scaling below uses "level percent", which is the learned level divided by the adaptation's max level (0 to 1).
 
@@ -205,7 +205,7 @@ Leader Aura, Mounted Tactics, and Fetch actually run work on that tick. The rest
 | Base knowledge cost | 6 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-health.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-health.toml` |
 
 Listened events: `EntityDeathEvent`, `EntitiesUnloadEvent` (both only clear cached state for the dead or unloaded entity).
 
@@ -230,7 +230,7 @@ Milestone: `challenge_taming_health_boost_72k` on `taming.health-boost.ticks-act
 | Base knowledge cost | 6 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-damage.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-damage.toml` |
 
 Listened events: `EntityDeathEvent` (credits `taming.damage.pet-kills` when your pet dealt the killing blow, and clears cached state), `EntitiesUnloadEvent` (clears cached state).
 
@@ -255,7 +255,7 @@ Milestones: `challenge_taming_damage_500` and `challenge_taming_damage_5k` on `t
 | Base knowledge cost | 7 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-health-regeneration.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-health-regeneration.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (queues a heal for the damaged pet), `EntityDeathEvent` (drops the pet's heal cooldown).
 
@@ -281,7 +281,7 @@ Per-pet heal cooldown is fixed at 8000 ms in code. Heal amount is `regenBase` pl
 | Base knowledge cost | 3 |
 | Cost factor | 0.65 |
 | Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-pack-leader-aura.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-pack-leader-aura.toml` |
 
 Listened events: `PlayerQuitEvent` (drops the owner's aura snapshot).
 
@@ -309,7 +309,7 @@ Milestone: `challenge_taming_pack_72k` on `taming.pack-leader.buffed-ticks` at 7
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 2200 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-beast-recall.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-beast-recall.toml` |
 
 Listened events: `PlayerInteractEvent` (sneak plus right-click with a lead in the main hand. The handler also receives cancelled events).
 
@@ -340,7 +340,7 @@ Milestones: `challenge_taming_recall_100` and `challenge_taming_recall_1k` on `t
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 1700 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-shared-pain.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-shared-pain.toml` |
 
 Listened events: `EntityDamageEvent` (any damage to the owner).
 
@@ -371,7 +371,7 @@ Milestones: `challenge_taming_shared_500` and `challenge_taming_shared_5k` on `t
 | Base knowledge cost | 4 |
 | Cost factor | 0.72 |
 | Tick interval (ms) | 10 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-mounted-tactics.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-mounted-tactics.toml` |
 
 Listened events:
 
@@ -421,7 +421,7 @@ Milestones: `challenge_taming_mounted_200` on `taming.mounted-tactics.mounted-ki
 | Base knowledge cost | 3 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1500 |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-fetch.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-fetch.toml` |
 
 Listened events: `PlayerQuitEvent` (aborts that owner's walking fetches).
 
@@ -460,7 +460,7 @@ Vanilla yanks pets back at that distance. An aborted job returns any already-car
 | Base knowledge cost | 4 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-alphas-command.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-alphas-command.toml` |
 
 Listened events: `PlayerInteractEvent`, `EntityDamageByEntityEvent`, and `PlayerQuitEvent`.
 
@@ -497,7 +497,7 @@ Focus is re-asserted every 10 ticks and revalidated against PVP/PVE policy each 
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-guardian-instinct.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-guardian-instinct.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (projectile damage to the owner only).
 
@@ -530,7 +530,7 @@ Milestones: `challenge_taming_guardian_250` and `challenge_taming_guardian_2500`
 | Base knowledge cost | 5 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-stable-hand.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-stable-hand.toml` |
 
 Listened events: `EntityTameEvent` (applies the bias to the tamed animal), `EntityBreedEvent` (applies it to the offspring one tick later).
 
@@ -559,7 +559,7 @@ health. It is also a flat block bonus to safe fall distance equal to bias x 10.
 | Base knowledge cost | 4 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-wild-empathy.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-wild-empathy.toml` |
 
 Listened events: `PlayerInteractEntityEvent` (right-click an untamed tameable with its taming food), `EntityTargetLivingEntityEvent` (a neutral mob targeting you).
 
@@ -590,7 +590,7 @@ Taming foods in code: `BONE` for wolves. `COD` and `SALMON` for cats and ocelots
 | Base knowledge cost | 3 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-battle-bond.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-battle-bond.toml` |
 
 Listened events: `EntityDeathEvent` (the killing blow came from a tameable).
 
@@ -621,7 +621,7 @@ Buffs applied are Speed, Regeneration, and the strength effect where the server 
 | Base knowledge cost | 4 |
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 (default. No tick work) |
-| Config file | `plugins/Adapt/adapt/adaptations/tame-last-breath.toml` |
+| Config file | `plugins/Adapt/adaptations/tame-last-breath.toml` |
 
 Listened events: `EntityDamageEvent` twice. `onProtectedWindow` runs at LOWEST and cancels all damage to a pet inside its invulnerability window. `on` runs at HIGHEST and performs the save when the hit would be lethal.
 

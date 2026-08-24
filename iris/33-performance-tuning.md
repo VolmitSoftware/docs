@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ platform will let Iris generate at once. Second, how much mantle stays
 resident in heap. Third, how often pack resources are reloaded from disk.
 Fourth, whether the JVM has the incubator Vector API. This page is organized by the symptom you are
 looking at, not by settings file order. Every knob lives in
-`settings.json` under the Iris data directory
+`iris.json` under the Iris data directory
 ([03 - Configuration](/iris/03-configuration)). Pregeneration operations
 are in [07 - Pregeneration](/iris/07-pregeneration). Tuning must leave
 GoldenHash unchanged. A deliberate generation-contract change must be
@@ -264,7 +264,7 @@ Related: `world.globalPregenCache` (default `false`) — see
 
 ## Reference: derived concurrency
 
-There is no `concurrency` section in `settings.json`. The values are
+There is no `concurrency` section in `iris.json`. The values are
 computed from CPU count at runtime and cannot be overridden from the
 file:
 

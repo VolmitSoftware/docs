@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ snapshot-and-ack path.
 | Import / export | — | Sets `enabled = true`, persists config, and starts `NetworkManager` if not running |
 
 Manual enable: set `enabled = true` in
-`plugins/Wormholes/config/wormholes.toml` and reload or restart. Codes also
+`plugins/Wormholes/wormholes.toml` and reload or restart. Codes also
 enable networking without a separate edit (see `ImportExportService`).
 
 Other network keys:
@@ -287,6 +287,12 @@ points at `/wh network status`.
 Direct transfer debug lines include client address, LAN classification,
 selected `host:port`, and configured endpoints. The destination logs
 transfer-gate handshake rewrite when auto-accept runs.
+
+With verbose logging enabled, `[handoff]` and `[arrival]` lines describe actual
+portal transfers, including admission, placement, expected denial, replay, and
+dispatch details. Ordinary joins without a pending handoff are silent. Retry,
+exhaustion, stranded-arrival, and other operator-actionable failures remain
+normal branded warnings; repeated failure classes are throttled.
 
 For an entity-transfer denial check, add a Bukkit entity type name to
 `entity-transfer-deny-types` and verify the source entity is restored. The

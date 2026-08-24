@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Adapt documentation: Concepts"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Adaptations only do anything when they are learned and enabled. They must also b
 
 ## Skills
 
-A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. Skills share a 50 ms dispatcher, but each callback runs only when its own interval is due and it reports runtime demand. That lets skills pay for ongoing states like sprinting without running every skill's work every server tick. A skill also tracks stats and advancements and owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/adapt/skills/<id>.toml`.
+A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. Skills share a 50 ms dispatcher, but each callback runs only when its own interval is due and it reports runtime demand. That lets skills pay for ongoing states like sprinting without running every skill's work every server tick. A skill also tracks stats and advancements and owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/skills/<id>.toml`.
 
 Skill level comes from skill XP through the global `xpCurve`. The default curve, `ADAPT_BALANCED`, needs `100 * L^2 + 1200 * L` XP to reach level `L`. Early levels come quickly. Later ones stretch out. Level lookups are clamped at `experienceMaxLevel`.
 
@@ -28,7 +28,7 @@ One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Le
 
 Power is simpler. Holding an adaptation at level `L` costs `L` power. A move from level `m` to level `L` costs `L - m` more. Region-granted adaptation levels are excluded from that total. A region can hand out an ability without eating the player's budget.
 
-Each adaptation gets its own file at `plugins/Adapt/adapt/adaptations/<id>.toml`. The file has its own knobs plus the shared `enabled`, `permanent`, `showParticles`, and `showSounds` flags. Some adaptations also carry a tick interval, cooldowns, or per-use hunger, item, and durability costs.
+Each adaptation gets its own file at `plugins/Adapt/adaptations/<id>.toml`. The file has its own knobs plus the shared `enabled`, `permanent`, `showParticles`, and `showSounds` flags. Some adaptations also carry a tick interval, cooldowns, or per-use hunger, item, and durability costs.
 
 Learning and unlearning both run through `AdaptationLearningTransaction`. That path covers a click from the menu and a click from an admin command. If a step fails partway, the transaction rolls back. That covers Vault taking the money when the level cannot be applied. The rollback restores the level, the knowledge, and the money. An adaptation marked `permanent` refuses to unlearn at all unless an admin forces it.
 

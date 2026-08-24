@@ -18,14 +18,14 @@ The integrations fall into three groups. Protection plugins get to veto what ada
 
 If PlaceholderAPI is enabled when Adapt enables, Adapt registers a persistent expansion under the identifier `adapt`. Placeholder paths are dot-separated segments after `%adapt_`. You get things like `%adapt_player.level%`, `%adapt_skill.agility.level%` and `%adapt_mutation.slot-1%`.
 
-Values come from a snapshot, not a live read. That keeps placeholder-heavy scoreboards off Adapt's data structures. Each online player's snapshot is republished about once per second on that player's owning thread. When a player leaves, their last snapshot stays readable for sixty seconds and then resolves to `---`. The complete key and result table is in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
+Values come from a snapshot, not a live read. That keeps placeholder-heavy scoreboards off Adapt's data structures. Each ready online player's snapshot is republished about once per second on that player's owning thread. When a player leaves normally, their last snapshot stays readable for sixty seconds and then resolves to `---`. When a profile cannot be loaded safely or loses its SQL fence, the snapshot is removed immediately: `%adapt_available%` is `false` and per-player values are `---` while the Minecraft session remains connected. The complete key and result table is in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
 
 ## Vault
 
 Vault lets you charge real currency for learning adaptations on top of the normal knowledge cost.
 
 1. Install Vault and an economy provider.
-2. Set `learningEconomy.enabled = true` in `adapt/adapt.toml`.
+2. Set `learningEconomy.enabled = true` in `adapt.toml`.
 3. Set `learningEconomy.moneyPerKnowledge` to the price per point of knowledge.
 4. Set `learningEconomy.refundPercent` to how much of that comes back on unlearn, or `0` for none.
 
@@ -69,7 +69,7 @@ Flags, exact config names, per-adaptation overrides and failure behavior are in 
 
 ## Cross-server SQL and Redis
 
-Adapt needs no proxy plugin. SQL-backed backends use Redis directly during pre-login to request a response correlated to the exact preceding owner token and epoch. SQL remains authoritative, unsolicited payloads are ignored, and stale owners cannot overwrite a newer fence. Installation, the `Adapt:data:v2` hard break, and operational limits are in [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
+Adapt needs no proxy plugin. SQL-backed backends use Redis directly during pre-login to request a response correlated to the exact preceding owner token and epoch. SQL remains authoritative, unsolicited payloads are ignored, and stale owners cannot overwrite a newer fence. A failed claim never rejects the Minecraft login: Adapt stays inactive and makes bounded online retries without creating a fallback profile. Installation, the `Adapt:data:v2` hard break, and operational limits are in [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
 
 ## Third-party Java API
 

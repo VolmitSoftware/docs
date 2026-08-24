@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Gloss documentation: Panels"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -359,7 +359,7 @@ Panel views are built directly from menu documents rather than through the perso
 ## Reload behavior
 
 `panels/` is not watched. Editing a panel file on disk does nothing until `/gloss panel reload`
-runs. `/gloss reload` reloads `config.toml` and the config-driven services without re-reading
+runs. `/gloss reload` reloads `gloss.toml` and the config-driven services without re-reading
 `panels/`. This is deliberate. Panel writes are revision-checked. A watcher that republished
 half-written or revision-stale files would fight the editor sync and staged-edit paths.
 

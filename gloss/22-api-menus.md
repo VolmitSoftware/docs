@@ -2,7 +2,7 @@
 title: "API: Menus"
 description: "Gloss documentation: API: Menus"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -108,7 +108,7 @@ eye every tick. A button stays clickable from any angle it is visible from.
 
 The menu-level `offset(...)` is applied verbatim. `MenuTransform#menuOrigin` places it at a local
 scale of `1`. Component offsets go through `componentPosition`, which multiplies them by the
-transform's scale — `[menus] uiScale` from `config.toml`, default `1.0`, clamped to `0.25 .. 4.0`.
+transform's scale — `[menus] uiScale` from `gloss.toml`, default `1.0`, clamped to `0.25 .. 4.0`.
 A menu laid out at `uiScale = 1.0` therefore spreads or tightens when an operator changes it. The
 overall standoff distance stays put. `[debug] hitbox` and `[debug] position` draw button hitboxes
 and anchors as particles. No other configuration knob affects API menus.

@@ -79,7 +79,7 @@ Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay dr
 
 ### `tick-spike-origin-replay-map`
 
-This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. Paper queries immutable Observer coordinates only inside the configured radius instead of sweeping every loaded chunk. The Folia path region-schedules capture. Neither path carries Bukkit `Chunk` handles across region boundaries, and the map does not apply per-chunk total-score weighting.
+This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. The worst sample supplies only immutable world UUID/key and chunk X/Z identity. Paper queries immutable Observer coordinates only inside the configured radius instead of sweeping every loaded chunk; the Folia path resolves the live world by UUID and dispatches the capture to that chunk's owning scheduler. Neither path carries Bukkit `Chunk` handles across region boundaries, and the map does not apply per-chunk total-score weighting.
 
 - **Class:** `FeatureTickSpikeOriginReplayMap`
 
@@ -130,7 +130,9 @@ Pie of rolling measured plugin event-handler time. Call volume without measured 
 
 ### `iris-biome-chunk-share-pie-map`
 
-Loaded chunks in the map world by biome label. `MapController` currently hard-disables this renderer id. It is not selectable. Config: `enabled` only.
+Loaded chunks in the map world by biome label. The feature incrementally samples immutable Observer world/chunk coordinates at the owning region, using the world's clamped sea level as a deterministic Y coordinate. Each one-second pass schedules at most 32 chunk-owner samples, reserves up to 16 of those slots for chunk-load lifecycle work, caps queued lifecycle coordinates at 8,192 and outstanding owner tasks at 128, and removes counts immediately on chunk or world unload. Rendering copies only the per-biome counters; it does not enumerate the loaded-chunk index or retain Bukkit `Chunk` handles. The distribution converges as the bounded rotation covers the loaded coordinates and remains current through load/unload events.
+
+The feature and renderer require the live `iris` capability, so non-Iris servers schedule no biome sampling and do not show the map. With Iris available, the renderer is selectable. Config: `enabled` only.
 
 - **Class:** `FeatureIrisBiomeChunkSharePieMap`
 

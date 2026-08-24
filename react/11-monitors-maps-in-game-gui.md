@@ -28,7 +28,7 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - Every renderer pipe belongs to one map-controller activation. Shutdown closes and detaches those pipes; delayed maintenance and render callbacks reject the retired owner, so reload cannot retain an old renderer or its canvas buffers.
 - A framed map uses the item frame as the renderer's spatial anchor. A held map falls back to the viewer location. Then it uses the map world's spawn if no viewer is available.
 
-Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Monitoring-only mode keeps configured renderer features active while it pauses other features and tweaks, so map collection and rendering continue. Integration-prefixed renderers are omitted until their peer capability is present. `iris-biome-chunk-share-pie-map` is explicitly disabled by `MapController`. It is not selectable.
+Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Monitoring-only mode keeps configured renderer features active while it pauses other features and tweaks, so map collection and rendering continue. Integration-prefixed renderers are omitted until their peer capability is present. The `iris-biome-chunk-share-pie-map` renderer is selectable while the Iris capability is present; its sampling feature uses the same capability gate, so it schedules no owner work on non-Iris servers.
 
 ## Item-frame delivery and megamaps
 

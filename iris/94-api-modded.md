@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -496,7 +496,7 @@ Paths relative to the loader config directory (`config/`):
 | `config/irisworldgen/packs/<pack>/` | Installed packs (`dimensions/<dimension>.json` required) |
 | `config/irisworldgen/generated/datapack/iris/` | Generated forced datapack — Iris-owned |
 | `config/irisworldgen/modded.json` | Default pack and primary world routing |
-| `config/iris/` | Engine data: `settings.json` and `worlds.json` |
+| `config/iris/` | Engine data: `iris.json` and `worlds.json` |
 
 Pack install root is `config/irisworldgen/packs`, not `config/iris`.
 Per-level engine state that must travel with the save

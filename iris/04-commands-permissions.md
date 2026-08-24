@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -138,7 +138,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
 | `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a hardcoded beta-release pack or direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics. Player origin on Bukkit |
-| `reload` | | Both | — | Reload `settings.json` and locale. Modded also schedules forced datapack regeneration |
+| `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
 | `regen` | `rg` | **Modded** root. Bukkit under `Developer` | `[radius]` — modded default `0`, range `0..64` | Delete and regenerate nearby chunks |
 | `goldenhash` | `gold` | **Modded** root. Bukkit under `Developer` | `[radius=8] [threads=8] [capture\|verify]`, radius `0..256`, threads `1..64` | Deterministic buffer hashes |

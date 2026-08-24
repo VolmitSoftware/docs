@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Adapt documentation: Skill - Hunter"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -111,12 +111,12 @@ Learning this unlocks a crafting recipe for the Hunter's Snare, a tripwire hook 
 | Icon | `BONE` |
 | Color | `RED` |
 | Interval (ms) | `4150` |
-| Skill config | `plugins/Adapt/adapt/skills/hunter.toml` |
+| Skill config | `plugins/Adapt/skills/hunter.toml` |
 | Adaptation count | 14 |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/hunter.toml` on first load.
+Written to `plugins/Adapt/skills/hunter.toml` on first load.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -150,7 +150,7 @@ Skill-level events: `EntityDeathEvent` (kill XP, stats, boss celebration) and `C
 
 ### Shared adaptation keys
 
-Every adaptation TOML carries these on top of its own knobs: `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, `initialCost`. TOML overrides live at `plugins/Adapt/adapt/adaptations/<id>.toml`.
+Every adaptation TOML carries these on top of its own knobs: `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, `initialCost`. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`.
 
 The seven struck buffs also share this knob set:
 
@@ -178,7 +178,7 @@ The seven struck buffs also share this knob set:
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1911 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-adrenaline.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-adrenaline.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (player is the direct damager).
 
@@ -200,7 +200,7 @@ Milestones: `challenge_hunter_adrenaline_100` and `challenge_hunter_adrenaline_2
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9744 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-regen.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-regen.toml` |
 
 Listened events: `EntityDamageEvent`.
 
@@ -231,7 +231,7 @@ Milestone: `challenge_hunter_regen_500` on `hunter.regen.health-regened`, 500 ac
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9444 |
 | Localization key | `hunter.invisibility` |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-invis.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-invis.toml` |
 
 Listened events: `EntityDamageEvent`.
 
@@ -262,7 +262,7 @@ Milestone: `challenge_hunter_invis_200` on `hunter.invis.activations`, 200 activ
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9544 |
 | Localization key | `hunter.jump_boost` |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-jumpboost.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-jumpboost.toml` |
 
 Listened events: `EntityDamageEvent`.
 
@@ -294,7 +294,7 @@ Milestone: `challenge_hunter_jump_200` on `hunter.jump-boost.activations`, 200 a
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9644 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-luck.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-luck.toml` |
 
 Listened events: `EntityDamageEvent`, `PlayerDeathEvent` (clears the buff and penalty timers).
 
@@ -325,7 +325,7 @@ Milestone: `challenge_hunter_luck_200` on `hunter.luck.activations`, 200 activat
 | Initial knowledge cost | 8 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-speed.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-speed.toml` |
 
 No tick interval is set. Listened events: `EntityDamageEvent`.
 
@@ -364,7 +364,7 @@ Milestone: `challenge_hunter_speed_200` on `hunter.speed.activations`, 200 activ
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9044 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-strength.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-strength.toml` |
 
 Listened events: `EntityDamageEvent`, `PlayerDeathEvent` (clears the buff timer).
 
@@ -396,7 +396,7 @@ Milestone: `challenge_hunter_strength_200` on `hunter.strength.activations`, 200
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9844 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-resistance.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-resistance.toml` |
 
 Listened events: `EntityDamageEvent`.
 
@@ -426,7 +426,7 @@ Milestone: `challenge_hunter_resistance_500` on `hunter.resistance.activations`,
 | Base knowledge cost | 1 |
 | Cost factor | 1 |
 | Tick interval (ms) | 18440 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-drop-to-inventory.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-drop-to-inventory.toml` |
 
 Listened events: `BlockDropItemEvent` and `EntityDeathEvent`.
 
@@ -452,7 +452,7 @@ Milestone: `challenge_hunter_dti_10k` on `hunter.drop-to-inv.items-caught`, 1000
 | Base knowledge cost | 5 |
 | Cost factor | 0.8 |
 | Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-trophy-skinner.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-trophy-skinner.toml` |
 
 Listened events: `EntityDeathEvent`.
 
@@ -484,7 +484,7 @@ Milestones: `challenge_hunter_trophy_50` on `hunter.trophy-skinner.trophies-coll
 | Initial knowledge cost | 6 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.45 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-predator-focus.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-predator-focus.toml` |
 
 No tick interval is set. Listened events: `EntityDamageByEntityEvent` (player is the direct damager).
 
@@ -510,7 +510,7 @@ Milestones: `challenge_hunter_predator_focus_500` and `challenge_hunter_predator
 | Initial knowledge cost | 7 |
 | Base knowledge cost | 6 |
 | Cost factor | 0.6 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-big-game.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-big-game.toml` |
 
 No tick interval is set. Listened events: `EntityDamageByEntityEvent` (player is the direct damager) and `EntityDeathEvent`.
 
@@ -539,7 +539,7 @@ Milestones: `challenge_hunter_big_game_100` and `challenge_hunter_big_game_1k` o
 | Base knowledge cost | 4 |
 | Cost factor | 0.4 |
 | Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-blood-trail.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-blood-trail.toml` |
 
 Listened events: `EntityDamageByEntityEvent` (player is the direct damager) and `PlayerQuitEvent` (drops that player's wounds and clears their display channel). The tick only runs while at least one wound is tracked.
 
@@ -570,7 +570,7 @@ Milestones: `challenge_hunter_blood_trail_250` and `challenge_hunter_blood_trail
 | Base knowledge cost | 5 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adapt/adaptations/hunter-snare-line.toml` |
+| Config file | `plugins/Adapt/adaptations/hunter-snare-line.toml` |
 
 Listened events: `PlayerInteractEvent` (right-click on a block, receives cancelled events) and `PlayerQuitEvent` (removes that player's snares). The tick only runs while at least one snare is placed.
 

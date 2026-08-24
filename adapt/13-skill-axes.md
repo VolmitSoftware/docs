@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Adapt documentation: Skill - Axes"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -166,12 +166,12 @@ These are internal helpers, not player-facing adaptations.
 | Icon | `GOLDEN_AXE` |
 | Color | `YELLOW` |
 | Interval (ms) | `5251` |
-| Skill config | `plugins/Adapt/adapt/skills/axes.toml` |
+| Skill config | `plugins/Adapt/skills/axes.toml` |
 | Adaptation count | 11 normally, 12 with Iris installed |
 
 ### Skill configuration defaults
 
-Written to `plugins/Adapt/adapt/skills/axes.toml` on first load.
+Written to `plugins/Adapt/skills/axes.toml` on first load.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -226,7 +226,7 @@ Other stats tracked but not tied to a milestone: `axe.throwing-axe.thrown`. The 
 
 ### Shared adaptation config keys
 
-Every adaptation TOML at `plugins/Adapt/adapt/adaptations/<id>.toml` carries these keys on top of its own.
+Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these keys on top of its own.
 
 | Key | Default | What it does |
 |-----|---------|--------------|
@@ -252,7 +252,7 @@ The tick interval below is the adaptation's background tick rate. Only Cleave ac
 | Base knowledge cost | 6 |
 | Cost factor | 0.75 |
 | Tick interval (ms) | 4333 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-ground-smash.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-ground-smash.toml` |
 
 Listened events: `PlayerToggleSneakEvent` (arms the smash), `PlayerMoveEvent` (fires it on landing).
 
@@ -277,7 +277,7 @@ Listened events: `PlayerToggleSneakEvent` (arms the smash), `PlayerMoveEvent` (f
 | Base knowledge cost | 3 |
 | Cost factor | 0.35 |
 | Tick interval (ms) | 6911 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-chop.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-chop.toml` |
 
 Listened events: `PlayerInteractEvent` (right-click block, or right-click air off Folia).
 
@@ -300,7 +300,7 @@ Listened events: `PlayerInteractEvent` (right-click block, or right-click air of
 | Base knowledge cost | 1 |
 | Cost factor | 1 |
 | Tick interval (ms) | 8800 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-drop-to-inventory.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-drop-to-inventory.toml` |
 
 Listened events: `BlockDropItemEvent`.
 
@@ -317,7 +317,7 @@ No adaptation-specific config keys.
 | Base knowledge cost | 6 |
 | Cost factor | 0.325 |
 | Tick interval (ms) | 5849 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-leaf-veinminer.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-leaf-veinminer.toml` |
 
 Listened events: `BlockBreakEvent`.
 
@@ -337,7 +337,7 @@ Listened events: `BlockBreakEvent`.
 | Base knowledge cost | 3 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 6127 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-iris-feller.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-iris-feller.toml` |
 
 Listened events: `BlockBreakEvent`.
 
@@ -359,7 +359,7 @@ Durability preservation chance is hard-coded per level, not configurable: level 
 | Base knowledge cost | 3 |
 | Cost factor | 0.95 |
 | Tick interval (ms) | 5849 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-wood-veinminer.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-wood-veinminer.toml` |
 
 Listened events: `BlockBreakEvent`.
 
@@ -379,7 +379,7 @@ Listened events: `BlockBreakEvent`.
 | Base knowledge cost | 2 |
 | Cost factor | 1 |
 | Tick interval (ms) | 17773 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-logswap.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-logswap.toml` |
 
 Listened events: `CraftItemEvent`.
 
@@ -398,7 +398,7 @@ No adaptation-specific config keys.
 | Base knowledge cost | 5 |
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (framework default) |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-throwing-axe.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-throwing-axe.toml` |
 
 Listened events: `PlayerInteractEvent` (throw on left-click air), `BlockBreakEvent` (marks the swing guard), `ProjectileHitEvent`, `EntityRemoveEvent`, `EntityDamageByEntityEvent`, `EntityDeathEvent` (kill credit), `PlayerJoinEvent` and `PlayerQuitEvent` (recovery bookkeeping).
 
@@ -428,7 +428,7 @@ At most 512 thrown axes are tracked in flight server-wide.
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-sunder.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-sunder.toml` |
 
 Listened events: `EntityDamageByEntityEvent`.
 
@@ -453,7 +453,7 @@ Listened events: `EntityDamageByEntityEvent`.
 | Base knowledge cost | 5 |
 | Cost factor | 0.6 |
 | Tick interval (ms) | 9973 |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-cleave.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-cleave.toml` |
 
 Listened events: `EntityDamageByEntityEvent`. This is the one Axes adaptation that uses its background tick, to drop expired cleave marks.
 
@@ -481,7 +481,7 @@ Listened events: `EntityDamageByEntityEvent`. This is the one Axes adaptation th
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-bark-hide.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-bark-hide.toml` |
 
 Listened events: `BlockBreakEvent`, `PlayerDeathEvent`.
 
@@ -506,7 +506,7 @@ Each stack is 4 absorption points, which is 2 hearts.
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
-| Config file | `plugins/Adapt/adapt/adaptations/axe-shield-splitter.toml` |
+| Config file | `plugins/Adapt/adaptations/axe-shield-splitter.toml` |
 
 Listened events: `EntityDamageByEntityEvent`.
 
