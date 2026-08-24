@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,6 +17,8 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [36 - Rivers](/iris/36-rivers)
+- [37 - Image Map Concepts](/iris/37-image-map-concepts)
+- [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
@@ -35,7 +37,7 @@ When a world binds to an engine, Iris pins the dimension type key, the exact `en
 | `dimensionOptions` | Overrides the generated type's portal scale, light, time, clouds, spawning limits, and gameplay flags |
 | `fullbright` | Forces the generated type's effective ambient light to `1.0` |
 
-Everything outside that registry contract reloads live in Studio and applies to newly generated chunks. That set includes regions, zooms, noise styles, palettes, ores, deposits, caves, structures, decoration, and loot. Iterate on those freely. Already generated chunks keep the content they were built with. An edit from an inherited `dimensionOptions` value to the same explicit effective value does not change the contract.
+Everything outside that registry contract reloads live in Studio and applies to newly generated chunks. That set includes regions, zooms, noise styles, image-map resources and bindings, palettes, ores, deposits, caves, structures, decoration, loot, and `worldBoundary`. Iterate on those freely. Already generated chunks keep the content they were built with. A boundary reload updates the native border but does not regenerate terrain. An edit from an inherited `dimensionOptions` value to the same explicit effective value does not change the contract.
 
 ## File location and load key
 
@@ -50,6 +52,7 @@ Iris also sanitizes the key into the dimension type key. It lowercases the key. 
 ```
 Dimension → regions[] → Region → land/sea/shore/cave biomes[] → Biome → generators[]
           → ores, deposits, depositVariants, overlayNoise
+          → imageMaps[] → image-maps/<key>.json → images/<source>.png
           → caveProfile, carving[], structures[], importedStructures, importedFeatures
           → loot, entitySpawners, blockDrops
 ```
@@ -396,6 +399,48 @@ These are dimension-wide fallbacks. Regions and biomes layer on top of them.
 | `entitySpawners` | string[] | empty | `IrisSpawner` load keys that continually replenish mobs like vanilla does. Dimension scope means "everywhere in this world" |
 | `blockDrops` | `IrisBlockDrops[]` | empty | Custom drop overrides for specific blocks in this dimension |
 
+## Image maps
+
+`imageMaps` is a typed list of named bindings. Each entry has a unique `key`, references one reusable resource under `image-maps/` through `map`, selects an `application`, and may compose named mask bindings in order.
+
+```json
+{
+  "imageMaps": [
+    { "key": "land", "map": "masks/land", "application": "MASK" },
+    {
+      "key": "terrain-height",
+      "map": "terrain/height",
+      "application": "TERRAIN_HEIGHT",
+      "masks": [{ "map": "land", "operation": "MULTIPLY" }]
+    }
+  ]
+}
+```
+
+Applications are `TERRAIN_HEIGHT`, `BIOME`, `REGION`, `SURFACE_BLOCK`, `MASK`, and `CUSTOM`. A mask reference names another binding key in this same list, and that binding must use `MASK`. Missing resources, duplicate keys, incompatible map types, invalid targets, and cyclic or non-mask references are blocking validation errors.
+
+Generator styles reference the first-class `image-maps` resource key directly through `imageMap`; the resource is not embedded in the style. The source PNG remains under `images/`. Read [37 - Image Map Concepts](/iris/37-image-map-concepts) before authoring and use [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for every field and coordinate rule.
+
+## World boundary
+
+`worldBoundary` configures Minecraft's native world border for worlds using this dimension:
+
+```json
+{
+  "worldBoundary": {
+    "center": { "x": 0, "z": 0 },
+    "size": 16384,
+    "warningDistance": 16,
+    "damageBuffer": 5,
+    "damageAmount": 0.2
+  }
+}
+```
+
+`size` is the full diameter. Iris applies the boundary at initialization and after a successful reload on the platform's correct scheduling context. Omitting `worldBoundary` leaves the world's current native border unchanged, including operator changes or a boundary applied by an earlier pack revision.
+
+The border does not crop, clamp, or repeat an image map. Configure the map's `outOfBounds` rule separately. Image Map Studio and Vision display the border over source coverage. Complete limits and extent calculations are in [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
+
 ## Studio and debug fields
 
 These exist to help you look at the generator, not to ship. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
@@ -411,7 +456,7 @@ These exist to help you look at the generator, not to ship. `studioMode` is appl
 
 ## Annotations are editor hints, not runtime validation
 
-`@Required`, `@MinNumber`, and `@MaxNumber` are consumed only by the schema generator. Nothing enforces them at load time. A value outside the documented range loads without complaint. The engine then produces whatever it does with that value. The exceptions are the dimension-type constraints listed under vertical layout. Those throw during dimension-type compilation. Treat the ranges in the tables above as design guidance backed by editor warnings. Verify unusual values in Studio.
+`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `worldBoundary`, rivers, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
 
 ## A complete minimal dimension
 
@@ -479,6 +524,9 @@ The baseline passes when Studio opens clean. Validation must report no blocking 
 | `dimensionHeight` span or `min` not a multiple of 16 | Blocked by `pack validate` (the same bounds the dimension-type compiler enforces) |
 | `logicalHeight` greater than `max - min` | Rejected when the dimension type is constructed |
 | Editing height, logical height, environment, effective dimension options, `fullbright`, or the dimension file name mid-Studio | Hotload is refused by the runtime contract. Close and reopen |
+| Treating `worldBoundary.size` as a radius | It is Minecraft's full border diameter. Each edge is half the size from the center |
+| Expecting `worldBoundary` to crop an image | Border and image coverage are separate. Set the image map `outOfBounds` policy |
+| Embedding image-map settings inside a generator style | `imageMap` is a first-class resource key under `image-maps/` |
 | Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |
 | Leaving `focus` or `focusRegion` set when packaging | The shipped pack generates exactly one biome or region |
 | Changing pack files and expecting an existing world to change | Production worlds run from `<world>/iris/pack/`. See [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |

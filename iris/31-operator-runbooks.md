@@ -489,6 +489,23 @@ failure, no chunk-system crash. A failed hotload must fail closed without
 poisoning the live engine for non-studio worlds. Studio details:
 [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
+### Image-map acceptance
+
+Use a disposable pack, a fixed seed, and a small canonical PNG with known values. The complete authoring contract is in [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow).
+
+1. Import or place a valid PNG under `images/`. Confirm Studio inspection reports the expected dimensions, channel layout, bit depth, alpha, and raw sample values.
+2. Create the typed `image-maps/<key>.json` resource and a dimension `imageMaps` binding. For a height test, include black, midpoint, and white samples. For a color test, include exact, unknown, and deliberately overlapping-tolerance samples.
+3. Set known coordinate checkpoints on both sides of world zero. Exercise a nonzero `sourceOrigin`, one rotation, one mirror, `blocksPerPixel` above one, and an explicit out-of-bounds policy.
+4. Add a named `MASK` binding and compose it on the primary binding. Confirm threshold, falloff, inversion, and operation in the interpreted preview.
+5. Configure `worldBoundary` so one edge crosses the image coverage. Confirm the boundary is drawn at `center ± size/2` and `size` is treated as full diameter.
+6. Validate the pack. Unknown or ambiguous colors under `ERROR`, unsupported source data, missing targets, invalid mask graphs, excessive image dimensions, and uncovered required coordinates must be blocking errors before generation.
+7. Repair the deliberate failures. Export, reopen the project, and select the named image-map layer in Vision. Hover the same checkpoints and compare decoded values and targets.
+8. Open ordinary Studio with seed `1337` and generate fresh chunks at the checkpoints. Close and reopen, then regenerate in a clean disposable world with the same pack bytes and seed.
+9. Repeat validation and the checkpoint generation on each supported platform family used in production.
+10. Record the current native border, remove `worldBoundary`, hotload, and confirm every native border value remains unchanged.
+
+**Expected:** Studio interpreted preview, Vision hover, and fresh chunk output agree; invalid and ambiguous data fail before chunk generation; masks and negative coordinates are deterministic; packaging contains every referenced PNG and image-map resource; restart and cross-platform output match; removing the boundary preserves the current native border.
+
 ### Jigsaw Studio: planar authoring and atomicity (Bukkit)
 
 Use a disposable pack and structure key, and the owning builder account.

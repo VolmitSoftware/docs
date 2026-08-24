@@ -2,7 +2,7 @@
 title: "Generators & Noise"
 description: "Iris documentation: Generators & Noise"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -205,10 +205,10 @@ Available as the `style` snippet, and accepted anywhere Iris configures noise: g
 | `cellularFrequency` | double | `0` | Above 0, post-processes the style into cells, so continuous noise becomes flat-valued patches. |
 | `cellularZoom` | double | `1` | Cell size after cellularising. Ignored when `cellularFrequency` is 0. |
 | `expression` | expression key | `null` | Use `expressions/<key>.json` as the noise source instead of `style`. |
-| `imageMap` | `IrisImageMap` | `null` | Use a PNG as the noise source instead of `style`. |
+| `imageMap` | image-map key | `null` | Use a typed resource under `image-maps/` as the noise source instead of `style`. |
 | `cacheSize` | int 0..8192 | `0` | Above 0, the built noise is cached to a `.cnm` file under the pack `.cache` folder. Worth it for expensive expression or heavily fractured styles that are sampled repeatedly. Wasted on cheap styles. |
 
-Source priority: if `expression` is set, Iris loads it and uses it. If the expression fails to load, the style falls straight back to `NoiseStyle`. `imageMap` is not tried. `imageMap` is only consulted when `expression` is unset.
+Source priority: if `expression` is set, Iris loads it and uses it. If the expression fails to load, the style falls straight back to `NoiseStyle`; `imageMap` is not tried. `imageMap` is consulted only when `expression` is unset. A missing or invalid image-map resource is a blocking pack error before world generation.
 
 ### Choosing a `NoiseStyle`
 
@@ -262,23 +262,23 @@ A function with neither `styleValue` nor `engineStreamValue` is skipped at parse
 
 Parse and load failures are logged and leave the style falling back to its `NoiseStyle`. If an expression-based generator suddenly looks like plain noise, check the console for a script load error before you edit the formula.
 
-## Image maps (`IrisImageMap` + `IrisImage`)
+## Image-map styles
 
-Any PNG in `images/` becomes an `IrisImage` keyed by its path. A style points at one:
+A style references a reusable typed resource by its key under `image-maps/`:
 
-| Field | Type | Default | What it does |
-|-------|------|---------|--------------|
-| `image` | image key | `""` | Which PNG to read. |
-| `coordinateScale` | double >= 1 | `32` | Blocks per pixel. `32` means one pixel covers a 32x32 block area. The style own `zoom` still applies on top. |
-| `interpolationMethod` | `InterpolationMethod` | `BILINEAR_STARCAST_6` | How pixels are blended across their block area. Use `NONE` for hard nearest-neighbor edges, which is what you want for a mask. |
-| `channel` | `IrisImageChannel` | `COMPOSITE_ADD_HSB` | How a pixel becomes a number. |
-| `inverted` | boolean | `false` | Returns `1 - value`. |
-| `tiled` | boolean | `false` | Wraps coordinates modulo the image size, so the map repeats forever. Without it, everything outside the image reads as 0. |
-| `centered` | boolean | `true` | Puts world origin at the image center instead of its top-left corner. |
+```json
+{
+  "style": {
+    "imageMap": "terrain/height",
+    "zoom": 1,
+    "exponent": 1
+  }
+}
+```
 
-Channels: `RED`, `GREEN`, `BLUE`, `SATURATION`, `HUE`, `BRIGHTNESS`, `COMPOSITE_ADD_RGB`, `COMPOSITE_MUL_RGB`, `COMPOSITE_MAX_RGB`, `COMPOSITE_ADD_HSB`, `COMPOSITE_MUL_HSB`, `COMPOSITE_MAX_HSB`, `RAW`. All of them return 0..1 except `RAW`, which returns the packed pixel integer and is only useful as an input to an expression.
+The resource selects its PNG source, scalar map type, coordinate transform, raw decoding, sampling, height range, alpha, and out-of-bounds behavior. PNGs remain under `images/`; generator JSON does not embed those settings. `COLOR_MAP` is not a scalar source and is rejected here. Direct generator styles may transform coordinates before callers transform them again, so their map must use `FALLBACK`, `CLAMP`, `REPEAT`, or `MIRROR`; `ERROR` is rejected because a finite sampling domain cannot be proved. Studio, validation, runtime generation, and packaging preflight compile the same resource definition.
 
-A missing image logs an error and reads as 0 everywhere. That produces a flat world rather than a crash.
+Use [37 - Image Map Concepts](/iris/37-image-map-concepts) for the model, [38 - Supported Image Inputs](/iris/38-supported-image-inputs) for source limits, and [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for the complete reference.
 
 ## Dimension-level noise
 
@@ -353,7 +353,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 }
 ```
 
-The shipping overworld uses neither `expression` nor `imageMap` in any generator. It ships `images/prototype-rivers.png` and `images/vascularcliffs.png` for authors who want to try image-driven terrain.
+The shipping overworld uses neither `expression` nor `imageMap` in any generator.
 
 ## Practical notes
 

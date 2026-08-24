@@ -80,7 +80,7 @@ Nested `value` fields (`ReactConfiguration.ValueConfig`):
 
 ## Console logging
 
-React sends normal messages through the plugin logger. Warnings retain `WARNING` severity, errors retain `SEVERE` severity, and caught failures include their complete exception diagnostics with a React-owned context message. Routine startup registration counts, successful action execution, hotload-watcher readiness, format-only config rewrites, per-player UI scheduling diagnostics, scheduler-thread shutdown bookkeeping, and transient relay reconnect failures are emitted only when `verbose = true`; `debug` output requires `debug = true`.
+React sends normal messages through the plugin logger. Paper, Purpur, and Folia consoles receive parsed rich components, so status output and the startup splash render their legacy colors without exposing `§` codes. A platform without component-logger support receives plain text with formatting removed. Warnings retain `WARNING` severity, errors retain `SEVERE` severity, and caught failures include their complete exception diagnostics with a React-owned context message. Routine startup registration counts, successful action execution, hotload-watcher readiness, format-only config rewrites, per-player UI scheduling diagnostics, scheduler-thread shutdown bookkeeping, and transient relay reconnect failures are emitted only when `verbose = true`; `debug` output requires `debug = true`.
 
 Repeated fast-leaf-decay scan failures are limited to one warning with a full exception per ten seconds. Emergency ticker logging falls back directly to branded standard error only if the normal logging path itself fails.
 

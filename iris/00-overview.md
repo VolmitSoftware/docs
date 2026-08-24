@@ -13,7 +13,7 @@ The four platforms generate identical chunks when artifacts, pack bytes, seed, a
 
 ## Who this documentation is for
 
-There are three audiences. The page numbers reflect them. Pages `00`–`36` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
+There are three audiences. The page numbers reflect them. Pages `00`–`43` are for **server operators** who install Iris and **pack authors** who write dimensions. Read them in the order a newcomer needs. Pages `85`–`87` are **maintainer** checklists for a release. Pages `90`–`94` are for **Java developers** who use the Iris API from a plugin or mod.
 
 Do not read the set from front to back. Pick the outcome you want from the table below. Follow only that row.
 
@@ -24,6 +24,7 @@ Do not read the set from front to back. Pick the outcome you want from the table
 | Get Iris running and make one world | [01 - Installation & Platforms](/iris/01-installation-platforms) → [02 - Getting Started](/iris/02-getting-started) → [31 - Operator Runbooks](/iris/31-operator-runbooks) |
 | Write a pack from scratch | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) → [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) → [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) |
+| Drive generation from PNG data | [37 - Image Map Concepts](/iris/37-image-map-concepts) → [38 - Supported Image Inputs](/iris/38-supported-image-inputs) → the relevant type guide → [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) → [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
 | Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 | Place a building or structure | [18 - Structures Overview](/iris/18-structures-overview) → [19 - Objects](/iris/19-objects) → [20 - Object Placement](/iris/20-object-placement) → [21 - Jigsaw Structures](/iris/21-jigsaw-structures) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Control what vanilla still generates | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for structures |
@@ -77,6 +78,13 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Generators and noise | Generators, styles, expressions, images | [14 - Generators & Noise](/iris/14-generators-noise) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
 | Rivers | Connected routing, terrain incision, terraced water, river biomes, cave hydrology | [36 - Rivers](/iris/36-rivers) |
+| Image-map concepts | Typed resources, applications, runtime compiler, deterministic behavior | [37 - Image Map Concepts](/iris/37-image-map-concepts) |
+| Supported image inputs | PNG dimensions, channel layouts, bit depths, and raw sample rules | [38 - Supported Image Inputs](/iris/38-supported-image-inputs) |
+| Grayscale heightmaps | 8-bit and 16-bit scalar terrain decoding | [39 - Grayscale Heightmaps](/iris/39-grayscale-heightmaps) |
+| RGB heightmaps | Canonical raw 24-bit height encoding | [40 - RGB Heightmaps](/iris/40-rgb-heightmaps) |
+| Color maps and masks | Legends, raw sRGB tolerance, alpha, and mask composition | [41 - Color Maps & Masks](/iris/41-color-maps-masks) |
+| Image Map Studio | Import, inspection, interpreted preview, presets, export, and validation | [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) |
+| Image-map reference | Complete JSON, axes, transforms, sampling, and `worldBoundary` | [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
 | Surfaces | Decorators, deposits, palettes | [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
 | Procedural decoration | Trees, fungi, coral, crystals, formations, ruins | [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 | Structures overview | Objects vs jigsaw vs native | [18 - Structures Overview](/iris/18-structures-overview) |
@@ -108,7 +116,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 
 ## Content model
 
-Six terms carry most of the documentation. Learn them here. The rest of the set then reads faster.
+Seven terms carry most of the documentation. Learn them here. The rest of the set then reads faster.
 
 | Term | What it is |
 |---|---|
@@ -116,6 +124,7 @@ Six terms carry most of the documentation. Learn them here. The rest of the set 
 | Dimension | The root config for one world type: height range, generation modes, which regions it uses, what native content it imports. One dimension file is one world's ruleset |
 | Region / biome / generator | The authoring units under a dimension. Regions divide the map, biomes fill regions, generators produce the actual heightmap noise |
 | Object / structure | Placed content. An object is a single saved build (`.iob`). A structure is either an Iris jigsaw of several objects, or a vanilla/datapack/mod structure Iris allows through |
+| Image map | A typed `image-maps/<key>.json` resource that decodes and places one canonical PNG as height, categorical, or mask data. Dimensions bind maps to generation applications |
 | Studio | A throwaway authoring world that reads the live pack folder and hotloads your edits into new chunks. Deleted when you close it, and any leftovers are purged at startup |
 | World pack snapshot | A production world copies the pack into `<world>/iris/pack` at creation and reads only that copy forever after. This is the single most common source of "my edits did nothing" — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 

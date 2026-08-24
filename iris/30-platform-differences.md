@@ -39,7 +39,7 @@ Five categories cover almost everything an operator runs into:
   modded side splits it. Settings live under one root and packs under
   another.
 
-Terrain, connected rivers and their contained cave hydrology, biomes,
+Terrain, typed image maps, native world boundaries, connected rivers and their contained cave hydrology, biomes,
 objects, jigsaw runtime, caves, and structures behave the same on all four.
 If generated terrain differs between platforms, that is
 a determinism defect, not a platform difference. See
@@ -150,6 +150,9 @@ Full command tables and stubs:
 | Feature | Bukkit | Fabric | Forge | NeoForge |
 |---------|--------|--------|-------|----------|
 | Core terrain / rivers / cave hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
+| Typed image-map runtime / validation / packaging | yes | yes | yes | yes |
+| Image-map desktop authoring and Vision layers | graphical host | graphical host | graphical host | graphical host |
+| Dimension `worldBoundary` | native border | native border | native border | native border |
 | Saved planar/spatial Iris jigsaw runtime | yes | yes | yes | yes |
 | Jigsaw Studio (`/iris jigsaw` authoring tree) | yes | not registered | not registered | not registered |
 | Pack validate / cleanup / restore / status | yes | yes | yes | yes |
@@ -239,6 +242,8 @@ Minecraft-version warning because the two platforms report the version
 string differently. Full procedure:
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
 
+Image maps use the same compiler, raw PNG channel rules, floor-based coordinates, and compiled sampling data on all platforms. A difference in decoded height, legend target, mask weight, image coverage, or applied boundary for identical pack bytes is a parity defect.
+
 ## Moving a pack between platform families
 
 1. Freeze the pack bytes and seed. Validate and package on the source
@@ -248,6 +253,7 @@ string differently. Full procedure:
    Complete the atomic saves before copying.
 3. Copy only `packs/<key>/` into the destination packs root. Never copy a
    Bukkit world folder into a modded world or the reverse.
+   Include referenced `images/` PNGs and `image-maps/` JSON resources; pack validation and packaging reject an incomplete image-map closure.
 4. Restart so destination registries and forced datapacks are built before
    any world is created.
 5. Align the `iris.json` keys that affect generation (`generator`,
@@ -277,4 +283,6 @@ context. The hash comparison is what counts.
 - [29 - Client HUD & Protocol](/iris/29-client-hud-protocol)
 - [31 - Operator Runbooks](/iris/31-operator-runbooks)
 - [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
+- [37 - Image Map Concepts](/iris/37-image-map-concepts)
+- [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [94 - API - Modded](/iris/94-api-modded)

@@ -72,6 +72,10 @@ Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, no
 
 This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` directory before upgrading, which permanently removes any local settings stored there, then start the server to generate `adapt.toml`, `models.toml`, `mutations.toml`, `skills/`, and `adaptations/` directly under `plugins/Adapt/`. Adapt does not migrate the old directory, JSON configuration files, or the former misspelled value-multiplier key; restart after applying the desired settings.
 
+## Console logging
+
+Adapt sends operator output through a severity-aware logger. Paper, Purpur, and Folia consoles receive parsed rich components, so the startup splash and status messages render their legacy colors without exposing `§` codes. A platform without component-logger support receives plain text with formatting removed; warning and error severity and complete exception causes are retained on both paths.
+
 ## Reference
 
 ### Identity

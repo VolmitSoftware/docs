@@ -183,7 +183,7 @@ Folders whose names start with `.` are skipped when Iris lists packs, which is w
 
 Anything else in a pack directory is not a resource type. The shipping overworld ships empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
 
-A reduced init path used by the datapack compiler registers only `biomes` and `dimensions`. That is internal and not something a pack author configures.
+A reduced init path used by the datapack compiler registers `biomes`, `regions`, `dimensions`, `generators`, `expressions`, `images`, and `image-maps` so validation can inspect the complete reachable image-driven generation graph. That is internal and not something a pack author configures.
 
 ## What makes a pack loadable
 

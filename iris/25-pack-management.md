@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -91,7 +91,7 @@ Success is `exports/<key>.iris` plus a completion message. The source pack and e
 
 **7. Only then consider replacing an existing world snapshot.** Take a backup first and use the update-world procedure at the bottom of this page.
 
-The loop passes when the source closure validates. The package command must produce the expected export. A fresh world from that export must reload cleanly. The world snapshot must match what you intended to ship. If your release process distributes the `.iris` file rather than the source tree, unpack it and validate it separately. The packager output is not automatically validated.
+The loop passes when the source closure validates. Both package commands automatically run the shared read-only pack validator and image-map compiler before clearing staging or copying files. The package command must still produce the expected export, and a fresh world from that export must reload cleanly. If your release process distributes the `.iris` file rather than the source tree, unpack and validate that final closure separately; source preflight does not replace artifact verification.
 
 ## Pack workspace
 
@@ -124,6 +124,8 @@ There is no listing lookup, arbitrary repository-name lookup, Git branch selecto
 
 A successful download performs registry-independent pack validation and atomically publishes the pack on disk. It then asks the operator to restart. The command reports connecting, transfer, unpacking, validation, and publication as styled phases. Bukkit players receive an arbitrated large title and a rate-limited labeled bottom action-bar meter with percentage, transferred size, total size, and transfer rate when the server supplies a content length; pack downloads do not use a boss bar. Unknown-length transfers and non-transfer phases use an indeterminate percentage animation. Console progress is limited to 10-percent boundaries or five-second intervals. Success, failure, cancellation, already-installed, and restart-required outcomes remain in chat or console history. On Fabric, Forge, and NeoForge, phase and terminal feedback runs through Minecraft server task queue rather than Iris tick queue. Completion is still delivered after an empty dedicated server enters its vanilla paused state. Direct-link output identifies a Remote ZIP without echoing the URL or any signed query parameters. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically. Bootstrap validation proves the pack tree is structurally sound. It does not prove that external keys referenced through `datapackImports` exist in the current live registry.
 
+Each network attempt has a 10-second connection timeout and a 10-second no-data timeout. Iris retries transient connection, timeout, truncated-response, HTTP 408/425/429, and server-error failures up to three total attempts with one- and two-second backoffs. Permanent client errors such as HTTP 404 and archive size violations fail immediately. A terminal failure reports the actual network or HTTP cause, removes its incomplete transfer stage, preserves any prior complete cache entry, and releases the download slot so the command can be retried after connectivity is stable.
+
 The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. Use this deterministic Paper-family sequence (plain Spigot supports managed `/iris create`, but not exact-slot `/iris replace`):
 
 ```text
@@ -146,13 +148,13 @@ On Fabric, Forge, and NeoForge, `/iris datapack ingest` cannot install these dep
 
 1. Acquire the one server-wide download slot. If any explicit pack download is already active, Iris rejects the new request immediately before network or staging work. Repeated requests for the same pack, requests for another pack, and direct-link requests are never queued.
 2. If a built-in pack is already present, return without touching the network. Direct links are fetched before their dimension key is known, but publication still refuses an existing target.
-3. Download the zip under hard limits. The archive is at most 512 MiB. It has at most 100,000 entries. Total uncompressed size is at most 2 GiB. Each file is at most 256 MiB. Exceeding any of these aborts the install.
+3. Download the zip into a sibling temporary file under bounded connection, no-data, retry, and size limits. The archive is at most 512 MiB. It has at most 100,000 entries. Total uncompressed size is at most 2 GiB. Each file is at most 256 MiB. Exceeding any size limit aborts without retrying or replacing a prior complete cache entry.
 4. Unpack into a temporary staging directory and identify one pack home containing `dimensions/`. Repository metadata beside that directory is ignored.
 5. Open the staging tree with the datapack-compiler loader and pick the dimension. A `link=` download uses the shortest key, then alphabetical order, when the archive has multiple dimensions. A built-in download names its expected key, requires exactly one dimension matching it, and keeps any additional dimension resources in the pack.
 6. Run `PackValidator.validateForDatapackBootstrap` against the staging tree. Structural blocking errors abort the install and print the errors. Live-registry checks wait until the restart, after external datapacks are registered.
 7. Publish atomically into `packs/<key>/`, refusing symlinked targets and refusing a key that conflicts with a different folder dimension key. The validation result is published to the registry as part of the same step.
 
-Only one explicit pack download runs at a time on Bukkit and modded. The slot is released after success or failure. Existing complete packs and symbolic-link sources are retained. This command surface has no overwrite mode.
+Only one explicit pack download runs at a time on Bukkit and modded. The slot remains owned while transient attempts retry and is released after success, cancellation, or terminal failure. Existing complete packs and symbolic-link sources are retained. This command surface has no overwrite mode.
 
 ## Validate
 
@@ -239,7 +241,7 @@ Restore operates on the **latest** dump only. It refuses the whole operation whe
 | `obfuscate` | `false` | Rename every object to a random UUID in the export and rewrite placement references to match. Bukkit only |
 | `minify` | `true` | Write JSON with no indentation. Bukkit only. The modded packager always minifies |
 
-Output is `exports/<dimensionKey>.iris` — under the plugin data folder on Bukkit, under `config/irisworldgen/exports/` on modded. The staging folder is deleted after zipping (compression level 9). Neither the source pack nor any world snapshot is modified.
+Output is `exports/<dimensionKey>.iris` — under the plugin data folder on Bukkit, under `config/irisworldgen/exports/` on modded. Before touching an existing staging tree, both adapters run the shared read-only pack validator, including image-map source decoding and compilation. A blocking error leaves staging and the prior archive untouched. Successful staging is deleted after zipping (compression level 9). Neither the source pack nor any world snapshot is modified.
 
 ### What the package actually contains
 
@@ -247,14 +249,14 @@ Both compilers walk the dimension, its regions, their biomes, and collect genera
 
 Written to the export:
 
-`dimensions/`, `regions/`, `biomes/`, `generators/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, the structure closure, `package.json`.
+`dimensions/`, `regions/`, `biomes/`, `generators/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, `spawners/`, `markers/`, `image-maps/`, referenced `images/` PNGs, the structure closure, and `package.json`.
 
 The ambient-spawning graph is exported in full. `spawners/` and `markers/` are written. Object placements on regions as well as biomes are followed (markers on those placements pull in their spawners). Spawner entities are collected from both `spawns` and `initialSpawns`. Entity loot tables land in `loot/`. Adding spawner or marker files changes `package.json` hash, so re-exported packages hash differently than older ones.
 
 **Not written by either compiler:**
 
 - `mods/` — never collected or written. Harmless, since nothing applies them (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)).
-- `expressions/`, `caves/`, `images/` and other folders outside the collected set.
+- `expressions/`, `caves/`, and other folders outside the collected set.
 
 One platform difference beyond that: Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle. Validate the unpacked tree before you publish an `.iris` artifact.
 
