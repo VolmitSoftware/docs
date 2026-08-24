@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,7 +42,7 @@ or lake. Capture a replacement only after you confirm the mismatch is
 limited to the expected generated-block change and remains identical
 across repeated, threaded, and cross-platform runs.
 
-Connected rivers add two order-sensitive surfaces to this gate. Routing tiles overlap by their maximum meander, channel, bank, and stream-order reach, so a coordinate must resolve to the same graph segment regardless of which neighboring tile or chunk requested it first. River-fed caves are planned from stable anchors against immutable baseline cave matter, arbitrated by stable source identity, revalidated as complete transactions, and published as per-chunk overlay cells. A threaded or mantle-reset mismatch around a channel, terminal, bore, grotto, or seal guard is therefore a determinism defect, not an acceptable cache artifact.
+Connected rivers add two order-sensitive surfaces to this gate. Routing tiles overlap by the largest configured Perlin-worm displacement, channel, bank, and stream-order reach. A geometry-independent drainage skeleton selects one stable weighted root family and resolves inherited child transitions downstream-to-upstream; actual terrain routing cannot feed back into that lineage. A coordinate must therefore resolve to the same family, child style, integrated centerline, and synchronized body-profile values for channel width, basin width, depth, and roof clearance regardless of which neighboring tile or chunk requested it first. Those values come from seeded world-space Perlin fields and are stored with the reach, so query order cannot re-roll its anatomy. River-fed caves are planned from stable anchors against immutable baseline cave matter, arbitrated by stable source identity, revalidated as complete transactions, and published as per-chunk overlay cells. A threaded or mantle-reset mismatch around a channel, terminal, bore, grotto, or seal guard is therefore a determinism defect, not an acceptable cache artifact.
 
 ## What GoldenHash actually does
 

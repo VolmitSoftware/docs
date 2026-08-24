@@ -128,7 +128,7 @@ Also reachable as `/hologram`. Covered in [Holograms](/gloss/04-holograms).
 | Node | Arguments | Permission | Notes |
 |---|---|---|---|
 | `create` | `<id>` | `gloss.holograms.create` | Player only. Seeds from the shipped baseline at your position |
-| `rendertext` | `<id> <text> [scale=1]` | `gloss.holograms.create` | Player only. Rasterizes text into block-art lines |
+| `rendertext` | `<id> <text> [scale=1]` | `gloss.holograms.create` | Player only. Creates one native text line and uniformly scales its `TextDisplay`; scale range `0.05` – `16.0` |
 | `addline` | `<id> <text>` | `gloss.holograms.edit` | Appends one line |
 | `setline` | `<id> <line> <text>` | `gloss.holograms.edit` | Line numbers start at 1 |
 | `removeline` | `<id> <line>` | `gloss.holograms.edit` | |
@@ -200,8 +200,6 @@ Hologram menus. Also answers to `/gloss menus`. Covered in [Hologram Menus](/glo
 | `create` | `<hologram> [text=]` | `gloss.menus.create` **and** `gloss.panels` | Player only. Creates a panel plus a same-id menu at your position |
 | `new` | `<menu>` | `gloss.menus.edit` | Creates a blank menu document from the shipped baseline |
 | `copy` | `<menu> <newMenu>` | `gloss.menus.edit` | |
-| `edit` | `<menu>` | `gloss.menus.edit` | Opens the menu in the web editor. Live sync also needs `gloss.sync` |
-| `builder` | none | `gloss.menus.builder` | Prints the configured `[editor] builderUrl` |
 | `addrow` | `<menu> <text>` | `gloss.menus.edit` | |
 | `insertrow` | `<menu> <row> <text>` | `gloss.menus.edit` | Rows are one-based |
 | `setrow` | `<menu> <row> <text>` | `gloss.menus.edit` | |
@@ -225,7 +223,7 @@ The style properties accepted by `style` are `billboard`, `shadow`, `seeThrough`
 
 World-anchored panels. Also answers to `/gloss panels`. Covered in [Panels](/gloss/16-panels).
 
-Every node below is gated by `gloss.panels`, except `web`, which is gated by `gloss.panels.editweb`.
+Every node below is gated by `gloss.panels`.
 
 | Node | Arguments | Notes |
 |---|---|---|
@@ -260,7 +258,6 @@ Every node below is gated by `gloss.panels`, except `web`, which is gated by `gl
 | `edit` | `<board>` | Player only. Starts a staged edit session |
 | `save` | none | Player only. Commits your staged edit |
 | `cancel` | none | Player only. Discards your staged edit |
-| `web` (`editweb`, `webedit`) | `<board>` | `gloss.panels.editweb`. Live sync also needs `gloss.sync` |
 
 A staged edit session is discarded automatically when the player quits.
 
@@ -293,17 +290,30 @@ Custom item providers. Also answers to `/gloss items`. Covered in
 Both refuse with a message when `[items] customItems` is off. `export` refuses while a previous
 export is still running.
 
-## `/gloss sync`
+## `/gloss web`
 
-Web editor sync sessions. Every node is gated by `gloss.sync`. Covered in
+The hosted editor and its live v3 sessions. Covered in
 [Web Editor & Sync](/gloss/18-web-editor).
 
-| Node | Arguments | Notes |
-|---|---|---|
-| `list` | `[page=1]` | Active sessions with kind, subject, seconds to expiry, last publication revision and pending state, seventeen per page |
-| `status` | `<session>` | The same fields for one session |
-| `revoke` | `<session>` | Revokes the capability |
-| `pull` (`poll`) | `<session>` | Polls the relay immediately |
+| Node | Arguments | Permission | Notes |
+|---|---|---|---|
+| `open` | none | `gloss.web.open` | Opens an empty editor with no server capability |
+| `edit menu` | `<id>` | `gloss.web.edit` | One menu document and its images |
+| `edit panel` | `<id>` | `gloss.web.edit` | One panel, its reachable menu graph and images |
+| `edit container-preview` | `<id>` | `gloss.web.edit` | One container-preview document |
+| `edit hologram` | `<id>` | `gloss.web.edit` | One persistent hologram document |
+| `edit animation` | `<id>` | `gloss.web.edit` | One animation document |
+| `edit scoreboard` | `<id>` | `gloss.web.edit` | One scoreboard document |
+| `edit motd` | `motd` | `gloss.web.edit` | The MOTD singleton |
+| `edit emoji` | `<id>` | `gloss.web.edit` | One emoji document |
+| `edit bubble-style` | `<id>` | `gloss.web.edit` | One bubble-style document |
+| `edit tablist` | `tablist` | `gloss.web.edit` | The tablist singleton |
+| `edit real-drops` | `default` | `gloss.web.edit` | The active Real Drops document |
+| `workspace` | none | `gloss.web.workspace` | Exact live mirror of all editor-authored documents and images |
+| `sessions list` | `[page=1]` | `gloss.web.sessions` | Active sessions with kind, subject, expiry, publication revision and pending state |
+| `sessions status` | `<session>` | `gloss.web.sessions` | Shows one session |
+| `sessions revoke` | `<session>` | `gloss.web.sessions` | Revokes the capability |
+| `sessions pull` | `<session>` | `gloss.web.sessions` | Polls the relay immediately |
 
 Session ids are displayed abbreviated to 12 characters. `status`, `revoke` and `pull` accept either
 the exact id or a unique prefix of at least 12 characters. A shorter prefix is not resolved. An
@@ -358,17 +368,19 @@ Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
 | `gloss.menus.move` | op | `menu move` |
 | `gloss.menus.back` | op | `menu back` |
 | `gloss.menus.create` | op | `menu create`, together with `gloss.panels` — the command writes both a menu and a panel |
-| `gloss.menus.edit` | op | `menu edit`, `new`, `copy` and every menu content node |
-| `gloss.menus.builder` | op | `menu builder` |
-| `gloss.panels` | op | Every `/gloss panel` node except `web`, plus the panel half of `/gloss menu create` |
-| `gloss.panels.editweb` | op | `panel web` |
+| `gloss.menus.edit` | op | `menu new`, `copy` and every menu content node |
+| `gloss.panels` | op | Every `/gloss panel` node, plus the panel half of `/gloss menu create` |
 | `gloss.preview` | op | Seeing container previews at all, and adjusting their scale with sneak plus hotbar scroll. Not a command permission |
 | `gloss.previews` | op | `preview list`, plus the two children |
 | `gloss.previews.reset` | op | `preview reset` |
 | `gloss.previews.dump` | op | `preview dump` |
 | `gloss.items` | op | `item status`, plus the export child |
 | `gloss.items.export` | op | `item export` |
-| `gloss.sync` | op | Every `/gloss sync` node, and the live-sync path of `menu edit` and `panel web` |
+| `gloss.web` | op | The four web-editor permission children |
+| `gloss.web.open` | op | `/gloss web open` |
+| `gloss.web.edit` | op | Every `/gloss web edit <kind> <id>` node |
+| `gloss.web.workspace` | op | `/gloss web workspace` |
+| `gloss.web.sessions` | op | Every `/gloss web sessions` node |
 | `gloss.import` | op | `import preview`, `import holoui`, `import legacy`, plus the apply child |
 | `gloss.import.apply` | op | `import apply` |
 | `gloss.emoji.use` | **true** | Emoji replacement in this player's chat, and `/gloss emoji list` |
@@ -494,16 +506,16 @@ included. See [Configuration](/gloss/02-configuration).
 | `/holoui back` | `/gloss menu back` |
 | `/holoui close` | `/gloss menu close` |
 | `/holoui move` | `/gloss menu move` |
-| `/holoui builder` | `/gloss menu builder` |
-| `/holoui edit <menu>` | `/gloss menu edit <menu>` |
+| `/holoui builder` | `/gloss web open` |
+| `/holoui edit <menu>` | `/gloss web edit menu <menu>` |
 | `/holoui menu create <menu>` | `/gloss menu new <menu>` |
 | `/holoui menu copy <menu> <newMenu>` | `/gloss menu copy <menu> <newMenu>` |
 | `/holoui menu addrow\|insertrow\|setrow\|removerow\|offsetrow\|seticon\|style\|image ...` | `/gloss menu <same node> ...` |
 | `/holoui board ...` | `/gloss panel ...` — every board node keeps its name and arguments |
-| `/holoui board web\|editweb\|webedit <board>` | `/gloss panel web <board>` |
+| `/holoui board web\|editweb\|webedit <board>` | `/gloss web edit panel <board>` |
 | `/holoui preview list\|reset\|dump ...` | `/gloss preview <same node> ...` |
 | `/holoui item status\|export` | `/gloss item <same node>` |
-| `/holoui sync list\|status\|revoke\|pull\|poll ...` | `/gloss sync <same node> ...` |
+| `/holoui sync list\|status\|revoke\|pull ...` | `/gloss web sessions <same node> ...` |
 | `/holoui import preview\|dry-run\|dryrun <source>` | `/gloss import preview <source>` |
 | `/holoui import apply <source>` | `/gloss import apply <source>` |
 
@@ -524,17 +536,17 @@ Two renames are easy to trip over:
 | `holoui.command.back` | `gloss.menus.back` |
 | `holoui.command.close` | `gloss.menus.close` |
 | `holoui.command.move` | `gloss.menus.move` |
-| `holoui.command.builder` | `gloss.menus.builder` |
-| `holoui.command.edit` | `gloss.menus.edit` |
+| `holoui.command.builder` | `gloss.web.open` |
+| `holoui.command.edit` | `gloss.web.edit` |
 | `holoui.command.menus` | `gloss.menus.edit` |
 | `holoui.command.boards` | `gloss.panels` (also needed by `/gloss menu create`, alongside `gloss.menus.create`) |
-| `holoui.command.boards.editweb` | `gloss.panels.editweb` |
+| `holoui.command.boards.editweb` | `gloss.web.edit` |
 | `holoui.command.previews` | `gloss.previews` |
 | `holoui.command.previews.reset` | `gloss.previews.reset` |
 | `holoui.command.previews.dump` | `gloss.previews.dump` |
 | `holoui.command.items` | `gloss.items` |
 | `holoui.command.items.export` | `gloss.items.export` |
-| `holoui.command.sync` | `gloss.sync` |
+| `holoui.command.sync` | `gloss.web.sessions` |
 | `holoui.command.import` | `gloss.import` |
 | `holoui.command.import.apply` | `gloss.import.apply` |
 | `holoui.open.<menuId>` | `gloss.open.<menuId>` |

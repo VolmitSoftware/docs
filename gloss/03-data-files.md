@@ -21,7 +21,7 @@ Every hologram, board, emoji, animation, bubble style, real-drop settings, tabli
 }
 ```
 
-`schemaVersion` must match that document kind. Holograms, boards, emoji, animations, real-drop settings, tablist and MOTD use `1`; bubble styles use `2`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder or file kind (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `real-drops`, `tablist`, `motd`). On enable, Gloss atomically replaces only a `bubbles/default.json` whose bytes are identical to the former shipped schema-1 default with the new shipped schema-2 default and logs the upgrade. An edited or reformatted schema-1 bubble style is not interpreted as schema 2: update its shape before loading it on this release.
+`schemaVersion` must match that document kind. Holograms, boards, emoji, animations, real-drop settings, tablist and MOTD use `1`; bubble styles use `2`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder or file kind (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `real-drops`, `tablist`, `motd`). Holograms require the native `TextDisplay` scale field. On enable, Gloss atomically replaces only a `bubbles/default.json` whose bytes are identical to the former shipped schema-1 default with the new shipped schema-2 default and logs the upgrade. An edited or reformatted schema-1 bubble style is not interpreted as schema 2: update its shape before loading it on this release.
 
 `revision` must be between `1` and `9007199254740991`. That is the largest integer a browser can represent exactly. Anything outside that range is rejected with `<kind> revision must be between 1 and 9007199254740991`. The revision is server-owned. Gloss increments it by one on every write it makes. Revision-checked mutations refuse to run when the document on disk has moved on. They report `document <id> is at revision <actual>, expected <expected>`. A hand edit of a file does not need you to bump the revision. If you leave it alone, the web editor and the command layer both see the file as unchanged in revision terms. Bump it if you care about that.
 
@@ -158,7 +158,7 @@ Two documents inside the jar are read on demand. They are never written to the d
 
 | Baseline | Used by |
 |---|---|
-| `baselines/hologram.json` | `/gloss hologram create` and `/gloss hologram rendertext` |
+| `baselines/hologram.json` | `/gloss hologram create` |
 | `baselines/menu-blank.json` | `/gloss menu new` |
 
 There is no baseline file to edit. Change what a new hologram or a new menu looks like. Edit the document the command produced.
@@ -189,7 +189,7 @@ Three things are never copied under any circumstances. The receipt records why:
 | `editor-sync-transactions/`, `editor-sync-backups/` | Editor sync state is never imported |
 | `custom-items.json` | Regenerable with `/gloss item export` |
 
-A HoloUi `editorSyncEndpoint` ending in `/v1` is also refused. A v1 relay cannot speak the v2 sync protocol. The Gloss default endpoint is kept instead.
+A HoloUi `editorSyncEndpoint` is not imported. Gloss uses its current v3 editor-sync endpoint.
 
 ### The receipt
 

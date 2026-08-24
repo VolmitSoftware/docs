@@ -18,7 +18,7 @@ Gloss draws holograms, holographic menus, and world-anchored panels. It also dra
 | Folia | Supported (`folia-supported: true` in `paper-plugin.yml`) |
 | Configuration | `plugins/Gloss/gloss.toml`, commented and hot-reloading |
 | Content | JSON documents under `plugins/Gloss/`, with shipped defaults |
-| Web editor | [Web Editor & Sync](/gloss/18-web-editor) |
+| Web editor | Focused live documents or the complete editor-authored runtime workspace through `/gloss web` — [Web Editor & Sync](/gloss/18-web-editor) |
 | Integrations | PlaceholderAPI, Vault, WorldGuard, ten item plugins, and live metrics from the other Volmit plugins — all optional |
 
 > **HoloUI is part of Gloss.** Menus, panels (former HoloUI "boards"), container previews, custom item icons, and the web editor live in this plugin. The `/holoui` command, the `holoui.*` permissions, and `plugins/holoui/` are gone. Gloss imports an existing `plugins/holoui/` folder on first start. [Commands & Permissions](/gloss/17-commands-permissions) lists the command and permission map.

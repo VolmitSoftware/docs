@@ -10,6 +10,9 @@ dateCreated: 2026-08-19T00:00:00.000Z
 Look at a chest and a holographic card appears in front of you. The card shows what is inside.
 Nothing is clicked. No inventory is opened.
 
+`/gloss web edit container-preview <id>` opens one preview in a restricted live editor session;
+`/gloss web workspace` includes every preview document.
+
 Joining, moving and teleporting queue a look-at scan. Gloss admits at most ten queued players per
 tick in first-in, first-out order and spreads stationary fallback discovery across 100 ticks. Once a
 card is open, its target still follows the viewer on the entity tick. The card is built from a JSON

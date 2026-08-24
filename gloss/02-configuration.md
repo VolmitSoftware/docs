@@ -95,7 +95,6 @@ Shipped defaults follow the toggle. A feature that is off extracts nothing and l
 | `perViewerPlaceholders` | `true` | — | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
 | `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, API temporaries) |
 | `interpolatedMotion` | `true` | — | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
-| `textArtMaxWidth` | `48` | 8 – 128 | Maximum character width of `/gloss hologram rendertext` output |
 | `highFrequencyAnimations` | `true` | — | Drive animation clips faster than 20 fps from the dedicated `Gloss Animator` thread with sub-tick packet updates. Off restores the tick-bounded behavior exactly |
 | `maxAnimationFps` | `120` | 1 – 240 | Frame-rate ceiling of the high-frequency animator loop. Sets its adaptive floor to `1000 / fps` ms (at least 4 ms) |
 | `animationPacketBudget` | `20000` | 100 – 1000000 | Hologram text-metadata recipients per second, shared by animated targets, personalized updates and personalized clears. Large aggregate audiences degrade animation frame rate proportionally |
@@ -318,7 +317,7 @@ value must also contain no character at or below a space, and none of
 `'`, `"`, `<`, `>` or `\`. A rejected value is replaced with the default.
 There is no partial repair.
 
-> Both editor hostnames moved off the retired HoloUI names. The builder default is `gloss.volmitsoftware.com`. The sync endpoint default is `sync.gloss.volmitsoftware.com/v2`. If a host is not reachable yet, point `builderUrl` at your own build of the editor.
+> Both editor hostnames moved off the retired HoloUI names. The builder default is `gloss.volmitsoftware.com`. The sync endpoint default is `sync.gloss.volmitsoftware.com/v3`. If a host is not reachable yet, point `builderUrl` at your own build of the editor.
 {.is-info}
 
 ## `[editor.sync]`
@@ -326,7 +325,7 @@ There is no partial repair.
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `enabled` | `true` | — | Enable live editor sync sessions through the relay |
-| `endpoint` | `"https://sync.gloss.volmitsoftware.com/v2"` | — | Relay endpoint URL |
+| `endpoint` | `"https://sync.gloss.volmitsoftware.com/v3"` | — | Relay endpoint URL |
 | `createToken` | `""` | — | Relay session creation token |
 | `sessionMinutes` | `60` | 5 – 1440 | Minutes an editor sync session stays alive |
 | `pollSeconds` | `3` | 1 – 60 | Seconds between relay polls during an active session |
@@ -337,7 +336,7 @@ There is no partial repair.
 - it parses as an absolute URI with a scheme and a host
 - no user info, no query string and no fragment
 - scheme `https`, or scheme `http` with host `localhost`, `127.0.0.1`, `::1` or `[::1]`
-- a path ending in `/v2`, containing none of `//`, `/../` or `/./`
+- a path ending in `/v3`, containing none of `//`, `/../` or `/./`
 - a rebuilt, lowercase-scheme, lowercase-host form no longer than 1024 characters
 
 The stored value is that rebuilt form. The endpoint you read back may differ in case from what you typed.

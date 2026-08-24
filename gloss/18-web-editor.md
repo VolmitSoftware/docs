@@ -8,20 +8,20 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 Gloss has a companion browser editor for authoring its JSON documents on a calibrated canvas. The
-plugin does not ship it, host it or need it. It only knows how to hand a document to it. For two
-document kinds, it also knows how to accept edits back.
+plugin does not ship or host it. Gloss can open one runtime document for focused editing or mirror
+its complete editor-authored workspace through an outbound-only live-sync relay.
 
-This page covers what the editor can do. It also covers what live sync actually covers, the two
-link paths, the v2 sync protocol and the schema files in the plugin repository.
+This page covers the editor, focused and workspace sessions, the v3 sync protocol and the schema
+files in the plugin repository.
 
 ## What the editor is
 
 The editor is a separate browser application. It needs no account. It keeps its workspace in
-browser storage. It exports the same JSON files the plugin reads. It can open, edit and export ten
+browser storage. It exports the same JSON files the plugin reads. It can open, edit and export eleven
 Gloss document kinds locally:
 
 hologram menus, container previews, panels, holograms, animations, scoreboards, MOTD, emoji, bubble
-styles and tablist.
+styles, tablist and Real Drops.
 
 Everything above works offline as file editing. Export from the editor. Drop the file into
 `plugins/Gloss/`. The hot reload described in [Data Files & Hot Reload](/gloss/03-data-files) picks
@@ -233,31 +233,29 @@ own selection order.
 Hover and keyboard-focus help is rendered in a viewport-level overlay. Tooltips flip and clamp at
 screen edges instead of being cut off by the library, inspector, canvas, preview or dialog bounds.
 
-## Live sync covers menus and panels only
+## Live sync scopes
 
-Live sync is a much narrower feature than local editing. The plugin side declares exactly two
-syncable subjects — `EditorSyncKind` has `MENU` and `PANEL`. A publication carrying any other kind
-is refused with `sync document '<id>' has kind '<kind>', which this Gloss build cannot edit;
-update Gloss`.
+Every editor-authored runtime document kind can be opened individually or included in a full
+workspace session.
 
-| Document kind | Editable in the editor | Published back through live sync |
+| Document kind | Wire kind | Focused command |
 |---|---|---|
-| Hologram menus | yes | **yes** |
-| Panels | yes | **yes** |
-| Container previews | yes | no |
-| Holograms | yes | no |
-| Scoreboards | yes | no |
-| Tablist | yes | no |
-| MOTD | yes | no |
-| Emoji | yes | no |
-| Animations | yes | no |
-| Bubble styles | yes | no |
+| Hologram menu | `menu` | `/gloss web edit menu <id>` |
+| Panel | `panel` | `/gloss web edit panel <id>` |
+| Container preview | `container-preview` | `/gloss web edit container-preview <id>` |
+| Hologram | `hologram` | `/gloss web edit hologram <id>` |
+| Animation | `animation` | `/gloss web edit animation <id>` |
+| Scoreboard | `scoreboard` | `/gloss web edit scoreboard <id>` |
+| MOTD | `motd` | `/gloss web edit motd motd` |
+| Emoji | `emoji` | `/gloss web edit emoji <id>` |
+| Bubble style | `bubble-style` | `/gloss web edit bubble-style <id>` |
+| Tablist | `tablist` | `/gloss web edit tablist tablist` |
+| Real Drops | `real-drops` | `/gloss web edit real-drops default` |
 
-> Scoreboards, tablist, MOTD, emoji, animations, bubble styles and holograms can all be authored in
-> the editor and exported as runtime files, but there is no path that publishes them back into a
-> running server. Install the exported file under `plugins/Gloss/`; do not expect a sync session to
-> carry it.
-{.is-info}
+`/gloss web workspace` opens an exact mirror of all eleven kinds and every file under `images/`.
+Publishing that scope can create, replace and delete runtime documents and images. Gloss config,
+localization, player state, preview scales, generated custom-item catalogs, sync credentials,
+import receipts and transaction journals or backups remain server-local.
 
 ## Hosting and URLs
 
@@ -266,7 +264,7 @@ Two independent addresses are configured. Neither is served by the plugin.
 | Key | Default | What it points at |
 |---|---|---|
 | `[editor] builderUrl` | `https://gloss.volmitsoftware.com` | The browser editor itself |
-| `[editor.sync] endpoint` | `https://sync.gloss.volmitsoftware.com/v2` | The relay that brokers live sessions |
+| `[editor.sync] endpoint` | `https://sync.gloss.volmitsoftware.com/v3` | The relay that brokers live sessions |
 
 The hosted editor moved off the retired HoloUi hostname onto `gloss.volmitsoftware.com`. The relay
 default moved with it. Gloss neither ships nor hosts either service. It cannot guarantee that
@@ -279,52 +277,27 @@ default. Beyond that it is free-form. `https://editor.example.com/gloss` and `ht
 are both accepted.
 
 `endpoint` is stricter. It must be `https`, or `http` to `localhost`, `127.0.0.1` or `::1`. It must
-carry no userinfo, query or fragment. Its path must end in `/v2` and contain no `//`, `/./` or
+carry no userinfo, query or fragment. Its path must end in `/v3` and contain no `//`, `/./` or
 `/../`. The normalized form must be at most 1024 characters. A value failing any of those is
 replaced by the default. Scheme and host are lowercased. Trailing slashes are trimmed on write.
 
 Gloss never accepts an inbound web connection. Every exchange is an outbound HTTPS request the
 plugin makes to the relay.
 
-## The one-way handoff
+## Command surface
 
-When live sync is not in play, Gloss builds a self-contained link. The link carries the document
-inside the URL fragment. Nothing comes back. Edits made in the editor stay in the browser. You must
-export them and copy them to the server by hand.
+The web workflow is rooted at one command tree.
 
-| Command | Permission | What it does |
-|---|---|---|
-| `/gloss menu builder` | `gloss.menus.builder` | Prints the configured `builderUrl` as a clickable link, with no document attached |
-| `/gloss menu edit <menu>` | `gloss.menus.edit` | Live session if possible, one-way handoff otherwise |
-| `/gloss panel web <board>` | `gloss.panels.editweb` | Live session if possible, one-way handoff otherwise |
+| Command | What it does |
+|---|---|
+| `/gloss web open` | Opens the configured editor without a server workspace |
+| `/gloss web edit <kind> <id>` | Opens one live, restricted runtime subject |
+| `/gloss web workspace` | Opens the complete live editor-authored workspace |
+| `/gloss web sessions ...` | Lists, inspects, pulls or revokes live capabilities |
 
-The handoff falls out of `menu edit` or `panel web` when live sync cannot run. That happens when
-`[editor.sync] enabled` is `false`, the sync service is not available, the sender does not hold
-`gloss.sync`, or session creation failed. In every one of those cases the sender is told first, in as many words,
-that live sync is unavailable. The editor copy's saves do not return to this server. A failed
-create is additionally logged with its cause.
-
-For a panel, the one-way link carries the panel's **root menu**, not the panel document. A panel's
-placement, ranges, visibility and follow settings only round-trip through a live session.
-
-The link has the form:
-
-```
-<builderUrl>/#/import/menu/<payload>
-```
-
-`builderUrl` is normalized first: scheme and host lowercased, a trailing slash added, and a URL with
-userinfo or a non-HTTP scheme rejected outright. The payload is unpadded base64url of a
-gzip-compressed UTF-8 envelope:
-
-```json
-{ "version": 1, "kind": "menu", "runtimeId": "shops/main", "json": "{ ...the menu file... }" }
-```
-
-The compressed payload is capped at 48,000 URL characters. A menu that exceeds it is refused with a
-message telling you to export the file instead. Because the document rides in the fragment, it never
-reaches the editor's web server. The browser decodes it locally, previews it and adds it as a new
-document only after you confirm.
+`open` is the offline authoring path. The `edit` and `workspace` commands require live sync and fail
+clearly when session creation is unavailable; they never fall back to a one-way document link.
+Browser autosave remains local in every scope. Only **Publish to Server** sends changes to Gloss.
 
 ## Live sync sessions
 
@@ -336,8 +309,8 @@ The two never connect directly.
 
 | Key | Default | Range and notes |
 |---|---|---|
-| `[editor.sync] enabled` | `true` | Turns the whole live path off. Commands fall back to the one-way handoff |
-| `[editor.sync] endpoint` | `https://sync.gloss.volmitsoftware.com/v2` | Validated as described above |
+| `[editor.sync] enabled` | `true` | Turns the live path off. Live edit and workspace commands fail until it is enabled |
+| `[editor.sync] endpoint` | `https://sync.gloss.volmitsoftware.com/v3` | Validated as described above |
 | `[editor.sync] createToken` | `""` | 22 to 128 characters of `A-Z a-z 0-9 _ -`. Anything else is blanked with a warning |
 | `[editor.sync] sessionMinutes` | `60` | Clamped 5..1440. Requested session lifetime |
 | `[editor.sync] pollSeconds` | `3` | Clamped 1..60. Delay between relay polls |
@@ -347,8 +320,8 @@ All six live in `gloss.toml` and hot reload with it. See [Configuration](/gloss/
 
 When `endpoint` is still the shipped default and `createToken` is blank, session creation is refused
 before any request is sent, with `the official editor sync relay requires editorSyncCreateToken`. No
-static secret ships in Gloss. Out of the box the commands produce the one-way handoff. That lasts
-until an operator supplies a token or points the endpoint at a relay that admits anonymous creation.
+static secret ships in Gloss. Out of the box live edit and workspace commands fail until an
+operator supplies a token or points the endpoint at a relay that admits anonymous creation.
 
 ### The capability link
 
@@ -365,10 +338,11 @@ sent to the editor's web server. They do not appear in ordinary access logs or r
 > Treat the whole link as a secret.
 {.is-danger}
 
-A player is given three buttons — Open Editor, Copy Link and Revoke — rather than the raw URL. The
-capability is never pasted into chat where others can read it. The Revoke button runs
-`/gloss sync revoke` for that session. Console gets the bare URL, preceded by an explicit warning
-that it can publish to the server until revoked or expired.
+A player is given Open Editor and Copy Link buttons rather than the raw URL. Senders who also hold
+`gloss.web.sessions` receive a Revoke button that runs `/gloss web sessions revoke` for that
+session. The capability is never pasted into player chat where others can read it. Console gets the
+bare URL, preceded by an explicit warning that it can publish to the server until revoked or
+expired.
 
 The editor token is the browser's credential. A separate **server token** never leaves the server.
 It is stored locally. It is what Gloss uses to poll, acknowledge and revoke.
@@ -387,7 +361,7 @@ Sessions live in `plugins/Gloss/editor-sync-sessions.json`. The file holds `vers
 Gloss refuses to use the store if it is a symbolic link. It also refuses if any ancestor of the data
 directory is a symlink or missing, or if the file exceeds 80 MiB. A malformed entry is quarantined
 — kept verbatim in the file, excluded from polling, and logged — rather than discarding the whole
-store. Sessions carrying a retired v1 project are quarantined the same way at startup.
+store.
 
 If the store is replaced but its durability cannot be confirmed, Gloss marks persistence unhealthy.
 It logs at `SEVERE`. It pauses new sessions and publication pulls until the server is restarted.
@@ -408,17 +382,17 @@ before parsing.
 
 ### Commands
 
-Every node is gated by `gloss.sync`.
+Every node is gated by `gloss.web.sessions`.
 
 | Command | What it does |
 |---|---|
-| `/gloss sync list` | Every active session with its kind, subject, seconds to expiry, last publication revision and pending state |
-| `/gloss sync status <session>` | The same fields for one session |
-| `/gloss sync revoke <session>` | Revokes the capability at the relay and drops the session locally |
-| `/gloss sync pull <session>` | Polls that session immediately instead of waiting for the next tick |
+| `/gloss web sessions list` | Every active session with its kind, subject, seconds to expiry, last publication revision and pending state |
+| `/gloss web sessions status <session>` | The same fields for one session |
+| `/gloss web sessions revoke <session>` | Revokes the capability at the relay and drops the session locally |
+| `/gloss web sessions pull <session>` | Polls that session immediately instead of waiting for the next tick |
 
-`pull` also answers to `poll`. Session ids are displayed abbreviated to their first 12 characters.
-`status`, `revoke` and `pull` accept either the exact id or a unique prefix of at least 12
+Session ids are displayed abbreviated to their first 12 characters. `status`, `revoke` and `pull`
+accept either the exact id or a unique prefix of at least 12
 characters. A shorter prefix does not resolve. An ambiguous one is rejected.
 
 `revoke` refuses while that session is processing a publication. `pull` reports that the session is
@@ -426,29 +400,27 @@ already being polled rather than queueing a second poll. The full command tree a
 are on [Commands & Permissions](/gloss/17-commands-permissions). The panel commands a session edits
 are on [Panels](/gloss/16-panels).
 
-## Protocol v2
+## Protocol v3
 
-A sync project is one JSON object. `format` is `gloss-sync-project` and `version` is `2`.
+A sync project is one JSON object. `format` is `gloss-sync-project` and `version` is `3`.
 
 ```json
 {
   "format": "gloss-sync-project",
-  "version": 2,
-  "kind": "panel",
-  "subjectId": "spawn-hub",
+  "version": 3,
+  "kind": "workspace",
+  "subjectId": "workspace",
   "documents": [
-    { "kind": "menu",  "id": "spawn-hub",       "json": "{ ... }" },
-    { "kind": "menu",  "id": "spawn-hub/shop",  "json": "{ ... }" },
-    { "kind": "panel", "id": "spawn-hub",       "json": "{ ... }" }
+    { "kind": "animation", "id": "rainbow", "revision": 4, "json": "{ ... }" },
+    { "kind": "menu", "id": "spawn-hub", "json": "{ ... }" },
+    { "kind": "panel", "id": "spawn-hub", "revision": 8, "json": "{ ... }" }
   ],
   "images": [ { "path": "sync/spawn-hub/icon.png", "data": "data:image/png;base64,..." } ],
   "constraints": {
-    "subjectId": "spawn-hub",
-    "menuIds": ["spawn-hub", "spawn-hub/shop"],
-    "imagePaths": ["sync/spawn-hub/icon.png"],
-    "newMenuPrefix": "spawn-hub/",
-    "newImagePrefix": "sync/spawn-hub/",
-    "allowDeletes": false
+    "subjectId": "workspace",
+    "documentKinds": ["animation", "bubble-style", "container-preview", "emoji", "hologram", "menu", "motd", "panel", "real-drops", "scoreboard", "tablist"],
+    "createDocumentKinds": ["animation", "bubble-style", "container-preview", "emoji", "hologram", "menu", "motd", "panel", "real-drops", "scoreboard", "tablist"],
+    "allowDeletes": true
   },
   "warnings": [],
   "baseRevision": "sha256:<64 lowercase hex characters>"
@@ -457,13 +429,12 @@ A sync project is one JSON object. `format` is `gloss-sync-project` and `version
 
 ### The documents array
 
-`documents[]` replaced v1's separate `menus[]` array and conditional `board` object with one uniform
-list. Each entry is `{kind, id, json}` or `{kind, id, revision, json}` — no other field combination
-is accepted.
+Each document entry is `{kind, id, json}` or `{kind, id, revision, json}` — no other field
+combination is accepted.
 
 | Rule | Value |
 |---|---|
-| Entries per project | 1 to 512 |
+| Entries per project | 0 to 512 for a workspace; at least 1 for a focused session |
 | Ordering | sorted by kind, then id. Out-of-order is rejected |
 | Uniqueness | one entry per (kind, id) pair |
 | `id` length | at most 256 characters |
@@ -471,10 +442,9 @@ is accepted.
 | `revision` | optional. When present, an integer from 1 to 9007199254740991 |
 
 `kind` is an open slug on the wire, matching `^[a-z][a-z0-9-]{0,31}$`. The relay never interprets
-it. It is kind-agnostic and stores whatever slug the editor sends. Gloss then maps the slug onto
-the kinds it has a codec for. It rejects the rest with the actionable per-document error quoted
-above. The two slugs Gloss handles are `menu` and `panel`. `panel` is the wire name for a
-world-anchored panel, which was `board` in HoloUi.
+it. It is kind-agnostic and stores whatever slug the editor sends. Gloss handles `animation`,
+`bubble-style`, `container-preview`, `emoji`, `hologram`, `menu`, `motd`, `panel`, `real-drops`,
+`scoreboard` and `tablist`. `panel` is the wire name for a world-anchored panel.
 
 A panel entry's `json` must already be canonical JSON text. A panel document whose text does not
 re-canonicalize to itself is refused.
@@ -501,29 +471,30 @@ anything else happens.
 | JSON nodes | 200,000 |
 | Characters in one string | 2,000,000 |
 | Characters in one property name | 256 |
-| Menu documents | 1 to 256 |
-| Bytes per menu document | 2 MiB |
+| Documents | 0 to 512 in workspace scope |
+| Bytes per document | 2 MiB |
 | Image assets | 512 |
 | Bytes per image | 512 KiB |
-| Image dimensions | at most 16 by 16, and at most 256 pixels |
-| Aggregate stored image pixels | 262,144 |
-| Aggregate image rows | 4,096 |
+| Workspace image dimensions | at most 4,096 by 4,096 and 16,777,216 pixels per image |
+| Workspace image pixels | 67,108,864 across the project |
+| Menu-referenced image dimensions | at most 16 by 16 and 256 pixels per image |
+| Menu render pixels and rows | 262,144 pixels and 4,096 rows across the project |
 | Warnings | 256, each at most 512 characters |
 
 Image data arrives as a base64 data URL. The declared media type must be one of `image/png`,
 `image/jpeg`, `image/gif`, `image/webp` or `image/bmp`. It must match what the leading bytes
-actually are. A referenced image that is absent from the project is rejected. A newly added image
-that nothing references is rejected.
+actually are. Workspace sessions retain every safe file under `images/`, including files not
+currently referenced by a menu. The stricter 16 by 16 render limit applies to images referenced by
+menu text-image components, matching the runtime renderer.
 
 ### Constraints and what a session may change
 
 `constraints` is captured when the session opens. It is immutable for its lifetime. A publication
 that alters it is rejected with `sync publication cannot change its capability constraints`.
 
-- `allowDeletes` is always `false`. Nothing in the session base may be dropped from a later
-  publication — not a menu, not a panel, not an image.
-- A menu session may publish only its own subject menu, may not create additional menus, and may not
-  publish a panel document at all.
+- `documentKinds` lists the kinds that may be replaced. `createDocumentKinds` lists the kinds a
+  publication may add. Both arrays are sorted, unique wire slugs.
+- A menu session may publish only its own subject menu and may not create additional documents.
 - A panel session must publish exactly its subject panel document. Its menu set is the root menu plus
   every loaded menu reachable from it. Traversal follows `navigate` actions in `push`, `replace` or
   absent mode. It also follows `command` actions with an absent or `player` source that run a
@@ -535,6 +506,9 @@ that alters it is rejected with `sync publication cannot change its capability c
   `shops/` and a root of `spawn-hub` gives `spawn-hub/`.
 - New images must sit under `constraints.newImagePrefix` — `sync/<panelId>/` for a panel session,
   `sync/menus/<menuId>/` for a menu session.
+- Other focused sessions may replace only their subject document and may not create or delete files.
+- A workspace session carries all eleven kinds in both kind arrays, has `allowDeletes: true`, and
+  can create, replace and delete any safe runtime document or image in the mirrored workspace.
 - The panel's `id`, `uuid`, `schemaVersion` and `revision` are server-owned. The editor sees the
   revision it opened with. Gloss assigns the next one on publication.
 
@@ -545,26 +519,12 @@ statuses.
 
 | Status | When | What the server does |
 |---|---|---|
-| `applied` | Everything validated and committed | Writes the files, republishes the menus, hot reloads the panel, and returns the fresh server snapshot |
+| `applied` | Everything validated and committed | Creates, replaces and deletes the requested files, reloads changed runtime kinds, and returns the exact fresh server snapshot |
 | `conflict` | The server project moved since the session opened, so `baseRevision` no longer matches | Changes nothing and returns the current server snapshot for the editor to rebase on |
 | `rejected` | The payload failed validation, or the subject no longer exists | Changes nothing and returns the reason |
 
 Acknowledgement is idempotent and is retried. A session with an unsent acknowledgement reconciles
 it on the next poll before fetching anything new.
-
-### Version 1 is gone
-
-A project whose `format` is `holoui-sync-project`, or whose `version` is `1`, is refused outright:
-
-```
-sync project uses protocol v1 (holoui-sync-project); Gloss speaks v2 only.
-Open a fresh session with a v2 editor and relay.
-```
-
-Stored sessions carrying a v1 project are quarantined at startup and never polled. A HoloUi
-`editorSyncEndpoint` ending in `/v1` is likewise refused by the importer. The importer keeps the
-Gloss default instead. There is no migration path for an in-flight v1 session. Revoke it on the old
-server and open a fresh one.
 
 ### Relay surface
 
@@ -598,7 +558,7 @@ Two working directories sit in the data folder:
 | `editor-sync-backups/` | Archived transactions, pruned to the most recent 20 |
 
 Neither directory exists until a publication actually runs; recovery at enable creates neither. The
-`backup/` tree is created by the first replacement that overwrites an existing file, so a
+`backup/` tree is created by the first replacement or deletion of an existing file, so a
 publication carrying only new documents archives no backup directory at all. Archiving prunes empty
 directories on the way out, so an archived transaction holds only the files it really staged or
 replaced.
@@ -613,10 +573,12 @@ is archived. Anything else is rolled back from its backup tree, marked `rolledba
 Unjournaled leftovers are validated and cleaned. If recovery cannot complete, Gloss refuses to
 enable rather than starting on an inconsistent data folder.
 
-Two failure modes are surfaced rather than swallowed. If commit succeeded but backup cleanup did
-not, it is logged as a warning and retried at the next startup. If the commit marker itself could
-not be made durable, the session is flagged as needing restart recovery. Its relay acknowledgement
-is paused. `/gloss sync pull` on it reports that the session requires server restart recovery.
+The journal records every staged write and delete so recovery restores the pre-publication
+workspace exactly. Two failure modes are surfaced rather than swallowed. If commit succeeded but
+backup cleanup did not, it is logged as a warning and retried at the next startup. If the commit
+marker itself could not be made durable, the session is flagged as needing restart recovery. Its
+relay acknowledgement is paused. `/gloss web sessions pull` on it reports that the session requires
+server restart recovery.
 
 A publication holds the single write permit for the whole store, so a publication that never
 finishes would park the menu hot-reload watcher, the panel queue and every later write behind it for

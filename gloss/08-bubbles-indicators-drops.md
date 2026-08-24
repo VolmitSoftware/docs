@@ -10,6 +10,9 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Chat bubbles float a player message above their head. Damage indicators throw the applied health delta off an entity. Drop labels identify item entities, while real drops replace their vanilla client model with grounded and tumbling display entities. Bubbles and indicators use temporary holograms; dropped-item presentation has its own display-carrier lifecycle.
 
+`/gloss web edit bubble-style <id>` opens one bubble style. `/gloss web edit real-drops default`
+opens the Real Drops document. `/gloss web workspace` includes both.
+
 ## Chat bubbles
 
 ### Style documents

@@ -105,8 +105,9 @@ If you turn things off, Gloss cleans up after itself:
 
 If you edit `tablist.json` on disk, the change applies without a reload. `[features] tablist` and `[tablist] updateIntervalTicks` live in `gloss.toml`. That file also hot-reloads. An on-disk config edit restarts the driver on its own. `/gloss reload` does the same.
 
-The web editor can author and export the tablist document. It is not a live-sync subject, so install
-the exported file manually or edit it on disk. `/gloss tablist reset` restores the shipped copy.
+The web editor can author, export and live-sync the tablist document. Open it alone with
+`/gloss web edit tablist tablist`, or include it in `/gloss web workspace`. `/gloss tablist reset`
+restores the shipped copy.
 
 ## Server list MOTD
 
@@ -171,6 +172,9 @@ different `frameIntervalMs` when that happens. See [Emoji, Text & Animations](/g
 If rendering throws, Gloss logs `MOTD render failed: <reason>` once and leaves that ping MOTD untouched. The warning is armed again by the next reload.
 
 If you edit `motd.json`, the change applies without a reload. If you flip `[features] motd`, that is a config change. It hot-reloads on its own or on `/gloss reload`. Gloss then re-registers or unregisters the listener.
+
+The web editor can live-sync this singleton with `/gloss web edit motd motd`, or include it in
+`/gloss web workspace`.
 
 ## Coming from the pre-merge layout
 

@@ -13,7 +13,7 @@ Director keys). Wormholes does **not** ship an `en_US.toml` bundle. Non-English
 locales load from jar resources and optional data-folder overlays. Missing keys
 fall through to code-owned English.
 
-Resolved messages are delivered through VolmLib components for chat, action bars, titles, command feedback, and the startup splash. Paper-family players retain RGB, decorations, and authored click or hover events. Plain Bukkit, console, and RCON fallbacks receive destination-safe serialization, so operator terminals never show raw `§` markers.
+Resolved messages are delivered through VolmLib components for chat, action bars, titles, command feedback, and the startup splash. Paper-family players and component-aware consoles retain RGB, decorations, and authored click or hover events, and operator-visible component logs keep one `[Wormholes]` discriminator. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so operator terminals never show raw `§` markers.
 
 ## Config
 

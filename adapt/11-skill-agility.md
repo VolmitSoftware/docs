@@ -42,6 +42,7 @@ Turns any flat wall into a ladder you can chain. Use it on shafts, cliffs, and h
 4. Repeat until you run out of air jumps. Touching the ground refills them.
 
 If you are steering away from the wall as you release, you get an extra push backward off it. Levels raise both the launch strength and how many latches you get per airtime.
+While latched, stored fall distance stays cleared. Releasing shift or losing wall contact starts a fresh fall, so descending along the wall does not become delayed landing damage.
 
 ### Super Jump (`agility-super-jump`)
 

@@ -88,7 +88,7 @@ Leave `health-check` on. If you turn it off, a plugin that throws during
 
 BileTools logs one normal-level summary for lifecycle operations and retains warnings or stack traces for failures that need operator action. Jar tracking, queue bookkeeping, reflective load steps, command-node cleanup, and other routine watcher diagnostics use the logger's `FINE` level and are hidden by the normal server logging configuration. The startup splash remains a deliberately branded console block. `observability.log-timings` controls the normal-level timing summaries independently.
 
-Localized `&` colors are rendered once into components for player chat, command replies, and the splash. Paper-family consoles receive the rich component; console, RCON, and Java-logger fallbacks receive plain text with formatting removed. BileTools therefore never exposes raw `§` sequences in an operator terminal, while player colors and decorations remain intact.
+Localized `&` colors are rendered once into components for player chat, command replies, and the splash. Paper-family consoles receive the rich component with one `[BileTools]` discriminator; unsupported console APIs, RCON, and Java-logger fallbacks receive plain text with formatting removed. BileTools therefore never exposes raw `§` sequences in an operator terminal, while supported player and console colors remain intact.
 
 ## Remote deploy
 

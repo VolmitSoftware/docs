@@ -75,7 +75,7 @@ Gloss registers exactly one provider from `GlossApiServiceImpl#register(GlossAPI
 | `GlossAPI` | interface | Holograms, boards, tablist, text and menus. Also the `ServicesManager` service type |
 | `GlossAPIProvider` | final class | Static holder behind `GlossAPI.get()` |
 | `Hologram` | interface | Shared text and position operations for persistent and temporary holograms |
-| `AnchoredHologram` | interface | One persistent hologram, including billboard, yaw and pitch. Extends `Hologram` |
+| `AnchoredHologram` | interface | One persistent hologram, including native scale, billboard, yaw and pitch. Extends `Hologram` |
 | `TemporaryHologram` | interface | A hologram that expires. Extends `Hologram` |
 | `HologramPresentation` | record | Normalized scale, three-axis rotation and opacity for a temporary hologram |
 | `HologramViewers` | interface | Viewer filter on a temporary hologram |
@@ -313,6 +313,7 @@ AnchoredHologram sign = gloss.createHologram("shop-sign", location);
 sign.addLine("&dOpen daily");
 sign.setLine(0, "&d&lOpen daily");
 sign.setLines(List.of("&d&lOpen daily", "&7Trade at spawn"));
+sign.setScale(2.0);
 sign.setOrientation("FIXED", 30.0, -10.0);
 sign.teleport(newLocation);
 gloss.deleteHologram("shop-sign");
@@ -332,9 +333,11 @@ public interface Hologram {
 }
 
 public interface AnchoredHologram extends Hologram {
+  double scale();
   String billboard();
   double yaw();
   double pitch();
+  void setScale(double scale);
   void setOrientation(String billboard, double yaw, double pitch);
 }
 ```
@@ -354,6 +357,10 @@ holograms, including per-viewer placeholder mode. `setLines(List<String>)` repla
 in one mutation. `hologram(id)` returns an `Optional`.
 `hasHologram(id)` is a containment check. `holograms()` returns a snapshot list. The document
 shape and the render pipeline are in [Holograms](/gloss/04-holograms).
+
+`scale()` is the persistent hologram's uniform native `TextDisplay` scale. `setScale` accepts finite
+values from `0.05` through `16.0`, updates a live display on its owning scheduler and persists the
+new revision. An invalid value throws without changing the display, revision or document.
 
 `billboard()` returns `CENTER`, `FIXED`, `HORIZONTAL` or `VERTICAL`. `setOrientation` trims and
 uppercases that argument; `null` or blank means `CENTER`, while any other value throws.

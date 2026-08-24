@@ -10,6 +10,9 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Gloss authored display text uses one viewer-aware text capability contract. Holograms, boards, tablists, menu and panel labels and messages, bubble prefixes, drop labels and the MOTD all use the shared pipeline. Container previews use the same expression runtime as a whole-field DSL. Emoji and animations are enveloped JSON documents in `plugins/Gloss/emoji/` and `plugins/Gloss/animations/`. Player chat gets a deliberately shorter, non-executable path.
 
+`/gloss web edit emoji <id>` and `/gloss web edit animation <id>` open focused live editor
+sessions; `/gloss web workspace` includes both document families.
+
 ## The text pipeline
 
 `text/TextPipeline.java` renders a raw string in exactly five stages, in this order:
@@ -62,7 +65,7 @@ Two syntaxes work anywhere colors apply:
 
 Bracket hex is case-insensitive and is converted before `&` codes. Both can appear in the same line.
 
-Gloss passes the rendered text through VolmLib's shared component delivery instead of sending serialized section text directly. Player and Paper-family destinations retain colors, RGB, decorations, and menu click or hover events. Console, RCON, and plain Bukkit fallbacks receive clean plain text rather than visible `§` markers. The same destination rules cover command feedback and the startup splash.
+Gloss passes the rendered text through VolmLib's shared component delivery instead of sending serialized section text directly. Players and component-aware Paper consoles retain colors, RGB, decorations, and menu click or hover events; operator-visible component logs keep one `[Gloss]` discriminator. Unsupported console APIs, RCON, and plain Bukkit fallbacks receive clean plain text rather than visible `§` markers. The same destination rules cover command feedback and the startup splash. Default in-game command feedback and help use purple accents with dark-grey structure and grey descriptions, while success, warning, error, and required-argument colors retain their semantic green, yellow, red, and bright-red roles.
 
 ### Chat
 

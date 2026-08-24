@@ -64,7 +64,7 @@ Overrides are sparse by design. Copy in only the keys you want to change. Everyt
 
 Colors use `&` codes and are translated when the message renders. Runtime values substituted into a message are trusted or untrusted. Trusted values render as markup. Untrusted values have colors stripped. `&` becomes a full-width `＆`. The code that raises the message decides which. An override cannot promote an untrusted value.
 
-Adapt delivers the rendered result as a component for chat, command replies, action bars, GUI feedback, and the startup splash. Paper-family senders retain colors, RGB, decorations, and authored click or hover events. Plain Bukkit, console, RCON, and Java-logger fallbacks receive a serializer appropriate to that destination, so formatting is preserved for players but raw `§` markers are never printed to an operator terminal.
+Adapt delivers the rendered result as a component for chat, command replies, action bars, GUI feedback, and the startup splash. Paper-family players and component-aware consoles retain colors, RGB, decorations, and authored click or hover events. Operator-visible component logs keep one `[Adapt]` discriminator. Plain Bukkit, unsupported console APIs, RCON, and Java-logger fallbacks receive a serializer appropriate to that destination, so formatting is preserved where supported but raw `§` markers are never printed to an operator terminal.
 
 ## Watching a reload
 

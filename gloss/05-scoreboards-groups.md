@@ -2,13 +2,16 @@
 title: "Scoreboards & Groups"
 description: "Gloss documentation: Scoreboards & Groups"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 Scoreboards are enveloped JSON documents in `plugins/Gloss/boards/`. One file is one board. The file name is the board id. Each player gets at most one board. Gloss picks it from the board own `groups`, `permission` and `primary` fields. Groups are no longer files. Gloss reads the player primary group live from Vault and nothing else.
+
+`/gloss web edit scoreboard <id>` opens one board in a restricted live editor session;
+`/gloss web workspace` includes every board.
 
 ## The board document
 

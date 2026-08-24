@@ -10,6 +10,9 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Holograms are `TextDisplay` entities driven from enveloped JSON documents in `plugins/Gloss/holograms/`. One file is one hologram. The file name is its id. Commands and on-disk edits both apply live. Every line runs through the full text pipeline: functions, placeholders, emoji, then colors.
 
+`/gloss web edit hologram <id>` opens one hologram in a restricted live editor session;
+`/gloss web workspace` includes every hologram.
+
 ## The hologram document
 
 `plugins/Gloss/holograms/spawn.json`:
@@ -27,6 +30,7 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
     "Welcome, %player_name%!"
   ],
   "seeThrough": true,
+  "scale": 2.0,
   "billboard": "FIXED",
   "yaw": 45.0,
   "pitch": -10.0
@@ -41,6 +45,7 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
 | `anchor.position` | yes | `[x, y, z]` array of doubles. Missing rejects the file with `hologram anchor requires a position` |
 | `lines` | no | Absent or `null` becomes an empty list. A `null` entry becomes an empty string |
 | `seeThrough` | no | Defaults to `true`. When true, solid blocks do not occlude the TextDisplay |
+| `scale` | yes | Uniform native `TextDisplay` scale from `0.05` through `16.0` |
 | `billboard` | no | `CENTER`, `FIXED`, `HORIZONTAL` or `VERTICAL`, matched after trimming and uppercasing. Blank or absent defaults to `CENTER`; any other value rejects the file |
 | `yaw` | no | Finite degrees from `-180` through `180`; defaults to `0` |
 | `pitch` | no | Finite degrees from `-90` through `90`; defaults to `0` |
@@ -54,7 +59,7 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 
 ### The shipped baseline
 
-`/gloss hologram create` and `/gloss hologram rendertext` seed new holograms from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
+`/gloss hologram create` seeds its line from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled and scale `1.0`. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
 
 ## Creating and editing by command
 
@@ -100,10 +105,10 @@ Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
-Each display is spawned non-persistent with the document's billboard, yaw, pitch and `seeThrough`
-values, and with no shadow. The shipped baseline and absent-key fallback use `CENTER`, yaw `0`,
-pitch `0` and see-through enabled. Editing any orientation key hot-reloads the existing display
-without respawning it. Its client view range is set to `[holograms] viewRange`
+Each display is spawned non-persistent with the document's uniform native scale, billboard, yaw,
+pitch and `seeThrough` values, and with no shadow. The shipped baseline uses scale `1.0`, `CENTER`,
+yaw `0`, pitch `0` and see-through enabled. Editing scale or any orientation key hot-reloads the
+existing display without respawning it. Its client view range is set to `[holograms] viewRange`
 divided by the 64-block Paper base. Ordinary text refreshes every `[holograms]
 updateIntervalTicks` (default 10). If any persistent hologram contains a clock-driven expression or
 complete named-animation token, the persistent driver samples every tick until that content is
@@ -172,17 +177,20 @@ The animator is gated on proximity before it is gated on anything else. A hologr
 
 If you set `[holograms] highFrequencyAnimations = false`, Gloss restores the previous behavior exactly. Every clip is substituted by the tick refresh. The animator thread stops.
 
-## Block-art text
+## Native text scaling
 
 ```
 /gloss hologram rendertext banner "GLOSS" scale=2
 ```
 
-This command rasterizes the text with the JVM logical monospaced font (antialiasing off). It creates a hologram whose lines are rows of `█` characters. `scale` multiplies the base 12 pt size. The result is clamped to 6 – 32 pt. A non-finite or non-positive scale is treated as `1`. A pixel is set when its average channel value exceeds 128.
+This command stores `GLOSS` as one ordinary hologram line and applies `scale=2` directly to the
+single `TextDisplay` entity's transformation. The client renders its normal font at twice the
+display size; Gloss does not convert glyphs into block characters or create one entity per pixel.
+Scale must be finite and between `0.05` and `16.0`. Blank text or a scale outside that range creates
+nothing.
 
-The raster is cropped to its ink bounding box. It is capped at `[holograms] textArtMaxWidth` columns (default 48) and right-trimmed row by row. The exact shape depends on the JVM font rendering. The same command on two different hosts can produce slightly different art. If the raster comes out empty, nothing is created.
-
-The result is an ordinary hologram document. You can edit it, move it and delete it like any other.
+The result is an ordinary hologram document. You can edit its text, scale, position and
+orientation on disk, and move or delete it by command like any other hologram.
 
 ## Orphan cleanup
 

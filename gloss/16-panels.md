@@ -323,24 +323,18 @@ stays open. You can re-run it or cancel.
 ## Opening a panel in the web editor
 
 ```
-/gloss panel web <panel>
+/gloss web edit panel <panel>
 ```
 
-Aliases `editweb` and `webedit`. This node requires `gloss.panels.editweb` instead of
-`gloss.panels`.
-
-When editor sync is enabled and available and the sender also holds `gloss.sync`, Gloss opens a live
-sync session for the whole panel project. That project is the panel document, every menu reachable
-from its root menu, and the images those menus use. Edits made in the browser are pulled back and
-applied under the same revision checks as a command edit.
-
-Otherwise — sync disabled, the relay unavailable, `gloss.sync` missing, or session creation failed —
-the command falls back to a one-way handoff link. That link carries only the root menu source. It is
-an export. Nothing it produces comes back to the server on its own. If the panel's root menu cannot
-be resolved at all, the command reports the menu as unavailable and does nothing.
+This node requires `gloss.web.edit`. Gloss opens a live session containing the panel document,
+every menu reachable from its root menu, and the images those menus use. Browser autosave remains
+local; **Publish to Server** sends the project back for revision checks and transactional apply.
+The command fails clearly when sync is disabled or unavailable. It never substitutes a one-way
+copy for a command that promises a live session.
 
 See [Web Editor & Sync](/gloss/18-web-editor) for the sync session lifecycle, size limits and the
-`/gloss sync` management commands.
+`/gloss web sessions` management commands. `/gloss web workspace` opens every editor-authored
+Gloss document and image instead of one panel graph.
 
 ## Configuration
 
@@ -372,9 +366,9 @@ Placement edits need one.
 
 | Node | Default | Grants |
 |---|---|---|
-| `gloss.panels` | op | Every `/gloss panel` node except `web`, plus `/gloss menu create` |
-| `gloss.panels.editweb` | op | `/gloss panel web` |
-| `gloss.sync` | op | Upgrades `/gloss panel web` from a one-way handoff to a live sync session |
+| `gloss.panels` | op | Every `/gloss panel` node, plus `/gloss menu create` |
+| `gloss.web.edit` | op | `/gloss web edit panel <panel>` |
+| `gloss.web.workspace` | op | `/gloss web workspace` |
 | `gloss.open.<menuId>` | op | Navigating from a panel into a non-root menu |
 
 `gloss.panels` also covers `/gloss menu create`. That command writes a menu document and a panel

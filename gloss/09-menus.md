@@ -258,12 +258,14 @@ Every node below is reachable as `/gloss menu …` or `/gloss menus …`. The fu
 | `style <menu> <row> <property> <value>` | Sets one display-style property on the row's icon. `value=*` clears it. Entity icons have no display style |
 | `image <menu> <path>` | Replaces the entire component list with one centered image component |
 | `create <hologram> [text=]` | Creates a **panel** plus a same-id menu at your position |
-| `edit <menu>` | Hands the document to the web editor, with live sync when available |
-| `list`, `open`, `back`, `close`, `move`, `builder` | Session and navigation control. They do not write |
+| `list`, `open`, `back`, `close`, `move` | Session and navigation control. They do not write |
 
 Row numbers are one-based and count components in document order. `seticon` with an image type verifies the file exists under `images/` before writing. `style` writes into the icon `style` object and removes the object entirely when the last property is cleared.
 
 Writes are queued through a single-threaded mutation service. Two commands against the same menu are serialized. Each one reports its resulting revision. If the file changed on disk between the read and the write, the command reports a revision conflict and writes nothing.
+
+`/gloss web edit menu <menu>` opens one menu in a restricted live web session.
+`/gloss web workspace` opens every editor-authored runtime document and image.
 
 > `/gloss menu create` and `/gloss menu new` are different commands. `create` makes a persistent world-anchored panel plus its root menu, is player only, and is gated by `gloss.panels`. `new` makes a blank menu document only and is gated by `gloss.menus.edit`.
 {.is-info}
@@ -322,8 +324,7 @@ Writes are queued through a single-threaded mutation service. Two commands again
 | `gloss.menus.list` | `/gloss menu list`, and the `menu open menu=*` form which falls through to it |
 | `gloss.menus.open` | `/gloss menu open` with a real id |
 | `gloss.menus.back` / `.close` / `.move` | The matching command |
-| `gloss.menus.edit` | `new`, `copy`, `edit` and every content node |
-| `gloss.menus.builder` | `/gloss menu builder` |
+| `gloss.menus.edit` | `new`, `copy` and every content node |
 | `gloss.panels` | `/gloss menu create` |
 | `gloss.open.<menuId>` | Opening that specific menu |
 
