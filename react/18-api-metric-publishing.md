@@ -2,7 +2,7 @@
 title: "API - Metric Publishing"
 description: "React documentation: API - Metric Publishing"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,7 +63,7 @@ you unregister, or your plugin disables
 within 5 seconds React retires the samplers and drops the readings
 ```
 
-`metrics()` is re-read when the registered instance changes. Otherwise it is re-read every 60 seconds. Returning a different list from a later call adds and removes samplers accordingly. A metric set that depends on which of your features are enabled works without re-registering.
+`metrics()` is re-read when the registered instance changes. Otherwise it is re-read every 60 seconds. Returning a different list from a later call adds and removes samplers accordingly. Unchanged declarations retain their latest readings, while changed descriptors update their existing sampler in place. A metric set that depends on which of your features are enabled works without re-registering.
 
 ---
 

@@ -2,7 +2,7 @@
 title: "Incident Mode & Playbooks"
 description: "React documentation: Incident Mode & Playbooks"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ The `incident-score` sampler combines eight pressure signals into a 0–100 valu
 
 ## Incident score
 
-React linearly normalizes each input between the listed minimum and maximum. It then clamps the value to 0–1, multiplies by the weight, and sums the results. React uses positive backlog growth. Negative growth contributes zero.
+React captures all eight inputs once into one immutable score snapshot. The API score, current contributor list, and incident entry decision use that same snapshot. Each available input is linearly normalized between the listed minimum and maximum, clamped to 0–1, and multiplied by its effective weight. If a sampler is unavailable, React marks it unavailable and renormalizes the remaining weights instead of treating an unsupported value as a healthy zero. React uses positive backlog growth; negative growth contributes zero.
 
 | Sampler | Normalization range | Weight |
 |---|---:|---:|
@@ -41,6 +41,16 @@ During each one-second rate window it allows the configured number of events. It
 | Redstone transitions | 220 | Restore the old current | Yes, 14 blocks by default |
 
 The complete field and default table is in [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics). Incident mode is its own limiter. Other governors continue to evaluate their own pressure gates.
+
+Incident entry stores the exact score evidence, tick-time trigger, thresholds, strongest measured contributor, severity, and activated guardrails. Resolution stores whether the feature recovered or was disabled and the counts of blocked spawns, portal events, hopper moves, and redstone transitions. These counters are atomic runtime aggregates; React does not allocate or persist one record per blocked event.
+
+## Structured incident history
+
+The `incident` controller retains up to 256 structured events and atomically persists them to `plugins/React/incidents.json` by default. `plugins/React/core/incident.toml` controls persistence and retention. Startup loads the current canonical file; there is no legacy timeline migration.
+
+`GET /api/v1/incidents?limit=20` returns newest events first together with the current atomic score snapshot and Incident Mode state. Each event includes its incident and event IDs, kind, phase, severity, occurrence and start time, source, title, summary, cause, optional world location, evidence, mitigation actions, and context values. Circuit Manager records its selected component, bounds, current-window events, global redstone event span, threshold, and fixed throttle. Trinity coordination records engagement, recovery, Iris and Adapt trigger evidence, guard activation, and playbook queue or terminal status.
+
+React Web's Incident Center refreshes this endpoint every five seconds. Its current diagnosis ranks available contributors by actual score points, its factor bars show normalized pressure rather than static configured weight, and its history cards render the stored cause, location, evidence, action outcome, and context without parsing console text.
 
 ## Action `action-incident-playbook`
 

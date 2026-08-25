@@ -2,12 +2,12 @@
 title: "Concepts"
 description: "React documentation: Concepts"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-React content is registered into four primary catalogs: **features**, **tweaks**, **actions**, and **samplers**. Every registered object has a stable string id and may have a TOML config under `plugins/React/<category>/<id>.toml`. Features, tweaks, and actions have an `enabled` flag. Samplers do not.
+React content is registered into four primary catalogs: **features**, **tweaks**, **actions**, and **samplers**. Every registered object has a stable string id. Package-scanned objects may have a TOML config under `plugins/React/<category>/<id>.toml`; controller-owned runtime telemetry samplers do not create one. Features, tweaks, and actions have an `enabled` flag. Samplers do not.
 
 ## Categories
 
@@ -48,7 +48,7 @@ The mode survives `/react reload` within the current server process and resets o
 
 ## Observation and sampling
 
-- Samplers that nothing consumes can remain idle (sleep-when-unobserved).
+- When durable history is enabled, its whole-registry pump keeps every sampler observed. With history disabled, samplers that no monitor, map, placeholder, integration consumer, or feature reads can remain idle.
 - Monitors, maps, and PlaceholderAPI mark samplers live after first use. PlaceholderAPI publishes demanded values on its one-second snapshot cadence.
 - Features often call `sample(samplerId)` with a fallback when reading pressure. Pressure examples include tick time, incident score, and entity counts.
 

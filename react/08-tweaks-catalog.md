@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "React documentation: Tweaks Catalog"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -165,14 +165,14 @@ This tweak pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit van
 
 ### `hopper-limit`
 
-This tweak cancels inventory transfers whose destination holder is a hopper. It does so when the hopper tick-time sampler exceeds the threshold. Transfers out of hoppers into non-hopper destinations are not handled by this tweak.
+This tweak cancels inventory transfers whose destination holder is a hopper. It does so when the within-tick `hopper-event-span` sampler exceeds the threshold. Transfers out of hoppers into non-hopper destinations are not handled by this tweak.
 
 - **Class:** `TweakHopperLimit` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
-| `maxHopperTickTime` | double | `0.75` | Max hopper tick time before cancel. |
+| `maxHopperEventSpan` | double | `0.75` | Maximum observed within-tick hopper-event span before canceling. The former field is not read or migrated. |
 
 ### `item-despawn-accelerator`
 

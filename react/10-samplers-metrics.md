@@ -14,6 +14,7 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
 - Registered samplers start with the sample controller. Cached samplers perform their measurement when sampled. They reuse that measurement for their cache interval. Ticked samplers update on their own schedule.
 - The history controller is the authoritative whole-registry sampling pump. By default it evaluates each sampler once every 500 ms, attaches one capture timestamp and sequence, and shares the resulting scalar snapshot with live HTTP, WebSocket, in-process graph, and one-second persistence consumers. The web push rate no longer multiplies sampler evaluations or sends a history array per metric.
 - Durable sampler history is stored under `plugins/React/history/` in exact one-second segments and spike-preserving aggregate tiers. Unavailable values are gaps. The historical catalog keeps metrics discoverable after a dynamic or cross-plugin sampler stops publishing. Retention, compression, recovery, and bounded query behavior are documented in [01 - Installation & Configuration](/react/01-installation-configuration#metric-history-corehistorytoml).
+- Capability-dependent local samplers report unavailable after an unsupported or failed platform query instead of publishing a valid-looking zero. Collection-health samplers expose unavailable and failed counts directly.
 - PlaceholderAPI demand controls which sampler values its once-per-second publisher requests. It does not enable or disable sampler objects.
 - Built-in cross-plugin samplers are registered even when their source plugin is absent. Their renderer formatting is `---` until data arrives. Raw sampler reads return zero before the first value. They retain the last received value afterward.
 - Metrics published through `ReactMetrics` create dynamic samplers while their source is registered. They disappear when that source unregisters or its plugin disables.
@@ -26,7 +27,7 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
 
 ## Built-in sampler count
 
-The package scan registers **155** built-in sampler ids: the **154** operator-facing ids below plus the internal `unknown` fallback. `unknown` backs unresolved monitor configuration, returns zero as a raw sample, renders `---`, and is omitted from the sampler picker and public metric catalog.
+The package scan registers **155** built-in sampler ids. The telemetry controller adds **41** runtime samplers for collection health, host/JVM state, and player activity, producing **196** built-in ids: the **195** operator-facing ids below plus the internal `unknown` fallback. `unknown` backs unresolved monitor configuration, returns zero as a raw sample, renders `---`, and is omitted from the sampler picker and public metric catalog.
 
 ### adapt
 
@@ -105,7 +106,6 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 | `gc-time-percent` |
 | `ground-items` |
 | `incident-score` |
-| `jvm-threads` |
 | `lazy-gravity-skipped` |
 | `pdc-write-batcher` |
 | `per-world-tick-time` |
@@ -119,7 +119,7 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 | `top-chunk-cost` |
 | `top-world-mspt` |
 | `villagers` |
-| `world-save-duration` |
+| `world-save-event-interval` |
 | `worlds` |
 
 ### gloss
@@ -172,6 +172,36 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 | `iris-pregen-queue` |
 | `iris-pregen-throughput` |
 
+### host
+
+| Sampler id |
+|---|
+| `disk-read-rate` |
+| `disk-usable` |
+| `disk-write-rate` |
+| `network-receive-drops` |
+| `network-receive-errors` |
+| `network-receive-rate` |
+| `network-send-errors` |
+| `network-send-rate` |
+| `physical-memory-free` |
+| `physical-memory-used` |
+
+### jvm
+
+| Sampler id |
+|---|
+| `jvm-direct-buffer-bytes` |
+| `jvm-direct-buffer-count` |
+| `jvm-gc-collections-rate` |
+| `jvm-heap-committed` |
+| `jvm-heap-max` |
+| `jvm-heap-utilization` |
+| `jvm-loaded-classes` |
+| `jvm-nonheap-used` |
+| `jvm-process-uptime` |
+| `jvm-threads` |
+
 ### memory
 
 | Sampler id |
@@ -190,6 +220,14 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 | `processor-process-load` |
 | `processor-system-load` |
 
+### player-activity
+
+| Sampler id |
+|---|
+| `player-joins-rate` |
+| `player-quits-rate` |
+| `players-unique-24h` |
+
 ### react-internal
 
 | Sampler id |
@@ -199,6 +237,25 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 | `react-job-queue-time` |
 | `react-jobs-queue` |
 | `react-sync-tick-time` |
+| `react-history-capture-ms` |
+| `react-history-disk-bytes` |
+| `react-history-drop-rate` |
+| `react-history-dropped-snapshots` |
+| `react-history-persist-lag` |
+| `react-history-storage-error` |
+| `react-history-storage-operational` |
+| `react-history-wal-bytes` |
+| `react-history-write-ms` |
+| `react-history-writer-capacity` |
+| `react-history-writer-queue` |
+| `react-published-metrics-accepted` |
+| `react-published-metrics-dropped` |
+| `react-samplers-available` |
+| `react-samplers-failed` |
+| `react-samplers-registered` |
+| `react-samplers-unavailable` |
+| `react-websocket-coalesced-frames` |
+| `react-websocket-sessions` |
 
 ### tick
 
@@ -216,16 +273,16 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 | Sampler id |
 |---|
 | `fluid` |
-| `fluid-tick-time` |
+| `fluid-event-span` |
 | `hopper` |
 | `hopper-chain-coalescing` |
-| `hopper-tick-time` |
+| `hopper-event-span` |
 | `physics` |
 | `physics-entities` |
-| `physics-tick-time` |
+| `physics-event-span` |
 | `redstone` |
 | `redstone-burst-rate` |
-| `redstone-tick-time` |
+| `redstone-event-span` |
 
 ### wormholes
 
@@ -256,7 +313,7 @@ The package scan registers **155** built-in sampler ids: the **154** operator-fa
 
 ## Sampler configuration
 
-Sampler configuration lives at `plugins/React/sampler/<id>.toml`. Fields not listed here have no sampler-specific setting. Non-positive history and averaging lengths are clamped to one; rate windows are clamped to at least 1000 ms.
+Package-scanned sampler configuration lives at `plugins/React/sampler/<id>.toml`. Controller-owned runtime telemetry samplers create no sampler TOML. Fields not listed here have no sampler-specific setting. Non-positive history and averaging lengths are clamped to one; rate windows are clamped to at least 1000 ms.
 
 | Sampler id(s) | Field | Default | Meaning |
 |---|---|---:|---|
@@ -272,7 +329,9 @@ Sampler configuration lives at `plugins/React/sampler/<id>.toml`. Fields not lis
 | `redstone-burst-rate` | `burstThresholdPerTick` | `64` | Redstone updates in one tick required to record a burst; clamped to at least one. |
 | `redstone-burst-rate` | `windowMS` | `60000` | Rolling redstone-burst window. |
 | `ticks-per-second` | `countUpTickTimeThresholdMS` | `3000` | Stall duration before formatted output changes from TPS to elapsed time; clamped to at least 1 ms. |
-| `fluid-tick-time`, `hopper-tick-time`, `physics-tick-time`, `redstone-tick-time` | `tickAverage` | `15` | Timing samples in the rolling mean; clamped to at least one. |
+| `fluid-event-span`, `hopper-event-span`, `physics-event-span`, `redstone-event-span` | `tickAverage` | `15` | Within-tick event-span samples in the rolling mean; clamped to at least one. These spans measure the elapsed wall time between the first and last matching event in a tick, not engine subsystem CPU time. |
+
+The event-span ids and `world-save-event-interval` are hard replacements for the former tick-time and save-duration ids. Old sampler TOML filenames and saved monitor ids are not read or migrated.
 
 ## Convenience PlaceholderAPI keys
 

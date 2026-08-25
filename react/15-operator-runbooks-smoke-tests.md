@@ -112,7 +112,7 @@ React does not replace vanilla fluid registry entries. Repeated runtime bridge f
 
 ## Redstone guardrails
 
-1. Build a repeatable redstone clock. Confirm `redstone`, `redstone-burst-rate`, and `redstone-tick-time` respond without an NMS redstone replacement.
+1. Build a repeatable redstone clock. Confirm `redstone`, `redstone-burst-rate`, and `redstone-event-span` respond without an NMS redstone replacement.
 2. Enable `redstone-clock-governor`. Place the clock away from players. Confirm transitions clamp after `maxTransitionsPerWindow` for `cooloffMS`.
 3. With `onlyThrottleWithoutNearbyPlayers = true`, move inside `bypassWithinPlayerRadius` and confirm the nearby-player bypass.
 4. Repeat near a region boundary on Folia and check the console for ownership errors.

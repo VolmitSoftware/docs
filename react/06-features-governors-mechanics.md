@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "React documentation: Features - Governors & Mechanics"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -195,15 +195,19 @@ This feature scores hot chunks from spawns, redstone, physics, and hoppers. It q
 
 ### `circuit-manager`
 
-This feature tracks redstone circuits. When redstone tick time exceeds `maxCircuitMS`, it stops the worst circuit. It then freezes further current changes.
+This feature tracks components of adjacent blocks that produced redstone or piston events. It is an observed-activity model rather than a claim that React reconstructed Minecraft's complete electrical graph. One Bukkit callback counts as one event. Adjacent active components merge completely, a successful block break splits disconnected components, and inactive topology expires deterministically instead of being sampled or randomly discarded.
+
+Once per second React rolls the component event window. If the global `redstone-event-span` exceeds `maxCircuitMS`, React temporarily throttles the busiest unblocked component from that same current window. Redstone current changes are restored and piston events are cancelled until `throttleDurationMS` expires. Attempted events never extend that deadline. The world, representative coordinate, bounds, active-node count, event count, measured span, threshold, and throttle action are stored as a structured incident for React Web.
 
 - **Class:** `FeatureCircuitManager` · **Listener:** yes
-- **Notes:** Tick interval hard-coded `1000`.
+- **Notes:** Tick interval hard-coded `1000`. World indexes are synchronized independently so concurrent Folia region callbacks cannot corrupt component membership.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
-| `maxCircuitMS` | double | `15` | Max circuit redstone ms before stop. |
+| `maxCircuitMS` | double | `15` | Global redstone event-span threshold before throttling the busiest current component. |
+| `throttleDurationMS` | int | `10000` | Fixed redstone and piston throttle duration. |
+| `activityRetentionMS` | int | `15000` | Inactivity time before an observed component and its topology are forgotten. |
 
 ### `hopper-chain-coalescing`
 

@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -175,7 +175,7 @@ React also registers the internal `unknown` fallback used by unresolved monitor 
 
 | Id                     | Unit      | Meaning                                                            |
 |------------------------|-----------|---------------------------------------------------------------------|
-| `bukkit-pending-tasks` | count     | Tasks queued in the Bukkit scheduler. Reads `0` where the server does not support the query |
+| `bukkit-pending-tasks` | count     | Tasks queued in the Bukkit scheduler. Reports unavailable where the server does not support the query |
 | `scheduler-backlog`    | count     | Jobs queued in React's own sync job controller                      |
 | `backlog-growth-rate`  | jobs/s    | Rate of change of that queue. Sustained positive means React is falling behind |
 | `react-jobs-queue`     | count     | The same React job-controller queue depth                           |
@@ -205,7 +205,7 @@ React also registers the internal `unknown` fallback used by unresolved monitor 
 | `chunk-tickets`       | count       | Plugin chunk tickets held across all worlds                     |
 | `chunk-load-ms`       | ms          | Mean handling time of a chunk load                              |
 | `chunk-gen-ms`        | ms          | Mean handling time of a chunk load that generated a new chunk   |
-| `world-save-duration` | ms          | Duration of the last world save                                 |
+| `world-save-event-interval` | ms     | Elapsed time between successive save events for the same world  |
 | `block-entities`      | count       | Block entities (tile entities) across all worlds                |
 | `block-entities-ticking` | count    | Block entities that actually tick                               |
 
@@ -233,21 +233,76 @@ React also registers the internal `unknown` fallback used by unresolved monitor 
 | `players`        | count | Players online                                               |
 | `player-ping-p95` | ms   | 95th-percentile player ping                                  |
 | `ping-jitter`    | ms    | Mean change in ping between samples, across online players   |
+| `player-joins-rate` | joins/min | Join events during the rolling one-minute window          |
+| `player-quits-rate` | quits/min | Quit events during the rolling one-minute window            |
+| `players-unique-24h` | count | Unique players seen in this server process during the rolling 24-hour window; active players remain counted until quit and a restart resets the window |
+
+### Host and JVM
+
+One shared asynchronous host snapshot supplies these metrics and the Environment API. Disk and network counters are aggregated across the host interfaces returned by OSHI; disk usable space is the filesystem containing React's data folder.
+
+| Id | Unit | Meaning |
+|---|---|---|
+| `physical-memory-used` | bytes | Physical memory currently used |
+| `physical-memory-free` | bytes | Physical memory currently available |
+| `disk-usable` | bytes | Usable space on React's data filesystem |
+| `disk-read-rate` | bytes/s | Aggregate disk read throughput |
+| `disk-write-rate` | bytes/s | Aggregate disk write throughput |
+| `network-receive-rate` | bytes/s | Aggregate network receive throughput |
+| `network-send-rate` | bytes/s | Aggregate network send throughput |
+| `network-receive-drops` | count | Cumulative receive drops across interfaces |
+| `network-receive-errors` | count | Cumulative receive errors across interfaces |
+| `network-send-errors` | count | Cumulative send errors across interfaces |
+| `jvm-heap-max` | bytes | Maximum JVM heap |
+| `jvm-heap-committed` | bytes | JVM heap committed to the process |
+| `jvm-heap-utilization` | percent | Used heap as a percentage of maximum heap |
+| `jvm-nonheap-used` | bytes | JVM non-heap memory in use |
+| `jvm-direct-buffer-bytes` | bytes | Memory held by direct buffers |
+| `jvm-direct-buffer-count` | count | Direct buffer count |
+| `jvm-gc-collections-rate` | collections/min | Garbage-collection count rate |
+| `jvm-loaded-classes` | count | Currently loaded JVM classes |
+| `jvm-process-uptime` | ms | JVM process uptime |
+
+### React collection health
+
+These metrics describe whether React's own telemetry is keeping up. Storage state uses `1` for true and `0` for false; the error series is `1` while the latest storage failure remains active.
+
+| Id | Unit | Meaning |
+|---|---|---|
+| `react-history-writer-queue` | snapshots | Persist snapshots waiting for the writer |
+| `react-history-writer-capacity` | snapshots | Writer queue capacity |
+| `react-history-dropped-snapshots` | total | Persist snapshots rejected by the writer |
+| `react-history-drop-rate` | snapshots/min | Recent drop rate |
+| `react-history-persist-lag` | ms | Age of the last successful persisted snapshot |
+| `react-history-storage-operational` | 0/1 | History storage is initialized and operational |
+| `react-history-storage-error` | 0/1 | History storage has a current failure |
+| `react-history-capture-ms` | ms | Duration of the latest whole-registry capture |
+| `react-history-write-ms` | ms | Duration of the latest persistence operation |
+| `react-history-disk-bytes` | bytes | Immutable and active history disk usage |
+| `react-history-wal-bytes` | bytes | Active history journal size |
+| `react-samplers-registered` | count | Samplers visited by the latest capture |
+| `react-samplers-available` | count | Available finite sampler values in the latest capture |
+| `react-samplers-unavailable` | count | Unavailable values in the latest capture |
+| `react-samplers-failed` | count | Samplers that threw during the latest capture |
+| `react-published-metrics-accepted` | total | Accepted third-party publications |
+| `react-published-metrics-dropped` | total | Rejected third-party publications |
+| `react-websocket-sessions` | count | Active metrics and log WebSocket sessions |
+| `react-websocket-coalesced-frames` | total | Live frames replaced under client backpressure |
 
 ### Block activity
 
 | Id                            | Unit        | Meaning                                                              |
 |-------------------------------|-------------|------------------------------------------------------------------------|
 | `redstone`                    | updates/s   | Redstone change events per second                                      |
-| `redstone-tick-time`          | ms          | Time spent on redstone per tick                                        |
+| `redstone-event-span`         | ms          | Elapsed span from the first to last redstone event within a tick       |
 | `redstone-burst-rate`         | bursts/min  | Redstone bursts detected, extrapolated to a per-minute rate            |
 | `hopper`                      | updates/s   | Hopper transfers and hopper physics per second                         |
-| `hopper-tick-time`            | ms          | Time spent on hoppers per tick                                         |
+| `hopper-event-span`           | ms          | Elapsed span from the first to last hopper event within a tick         |
 | `hopper-chain-coalescing`     | ticks/s     | Hopper ticks saved per second by React's chain coalescing              |
 | `fluid`                       | flows/s     | Fluid flow events per second                                           |
-| `fluid-tick-time`            | ms          | Time spent on fluids per tick                                          |
+| `fluid-event-span`            | ms          | Elapsed span from the first to last fluid event within a tick          |
 | `physics`                     | updates/s   | Block physics and piston events per second                             |
-| `physics-tick-time`           | ms          | Time spent on block physics per tick                                   |
+| `physics-event-span`          | ms          | Elapsed span from the first to last physics event within a tick        |
 | `commands`                    | commands/s  | Commands executed per second, from players, console and RCON           |
 | `crop-fast-forward`           | blocks/s    | Crop growth stages advanced per second by React's fast-forward feature |
 | `lazy-gravity-skipped`        | ticks/s     | Falling-block ticks skipped per second by React's lazy gravity         |
