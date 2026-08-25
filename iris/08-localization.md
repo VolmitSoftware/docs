@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Canonical English is owned by code in `core/.../localization`. `IrisMessages` as
 
 Code resolves text through `IrisLanguage.text(...)` when color codes should survive, or `IrisLanguage.plain(...)` when they should be stripped. Argument-free `plain` calls are memoized per locale snapshot because HUD code calls them several times per frame. A locale reload publishes a new snapshot and throws the whole memo away.
 
-On Bukkit-family servers, Iris delivers the resulting text through the shared VolmLib component pipeline for command chat, action bars, rich components, and post-bootstrap plugin logging. Its informational and diagnostic logging use the same severity-aware component entrypoint as the other plugins, with the styled `[Iris]` discriminator composed exactly once. Player colors, RGB, decorations, and authored click or hover events survive. Console, RCON, and plain-server fallbacks receive plain text instead of raw `§` markers. Bootstrap and last-resort failure output remains platform-native, and Iris's modded adapters retain their native component and dedicated-server delivery paths.
+On Bukkit-family servers, Iris delivers the resulting text through the shared VolmLib component pipeline for command chat, action bars, rich components, and post-bootstrap plugin logging. Its informational and diagnostic logging use the same severity-aware component entrypoint as the other plugins, with the styled `[Iris]` discriminator composed exactly once; the name follows Iris's stable green, warning gold, or unstable red safeguard mode. Player colors, RGB, decorations, and authored click or hover events survive. Console, RCON, and plain-server fallbacks receive plain text instead of raw `§` markers. Bootstrap and last-resort failure output remains platform-native, and Iris's modded adapters retain their native component and dedicated-server delivery paths.
 
 ## Selecting a locale
 

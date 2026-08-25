@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Gloss documentation: Panels"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -73,7 +73,7 @@ form of its id is rejected.
 
 | Key | Required | Notes |
 |---|---|---|
-| `schemaVersion` | yes | Must be `1`. Anything else rejects the file with `unsupported board schemaVersion: <n>` |
+| `schemaVersion` | yes | Must be `1`. Any other version is silently ignored |
 | `id` | yes | Canonical lowercase path. Must equal the file path under `panels/` with `.json` removed |
 | `uuid` | yes | Stable identity. Cannot change across an update or a reload, and no two panels may share one |
 | `revision` | yes | `1` to `9007199254740991`. Gloss owns it and bumps it by one on every write it makes |

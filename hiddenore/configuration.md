@@ -2,7 +2,7 @@
 title: "HiddenOre — Configuration"
 description: "Every hiddenore.yml key and default"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ HiddenOre watches `hiddenore.yml` and `language.yml` with exact native file even
 override key and rejects the reload; select the locale with `language` in
 `hiddenore.yml`.
 
-HiddenOre renders localized text as components for command replies, mining feedback, hotload notices, and the startup splash. Paper-family players and component-aware consoles retain authored color, RGB, and interactive metadata, and operator-visible component logs keep one `[HiddenOre]` discriminator. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so supported formatting remains visible without printing raw `§` markers to an operator terminal.
+HiddenOre renders localized text as components for command replies, mining feedback, hotload notices, and the startup splash. Paper-family players and component-aware consoles retain authored color, RGB, and interactive metadata, and operator-visible component logs keep one `[HiddenOre]` discriminator with dark-grey brackets and the HiddenOre name in gold. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so supported formatting remains visible without printing raw `§` markers to an operator terminal.
 
 ## Top level
 

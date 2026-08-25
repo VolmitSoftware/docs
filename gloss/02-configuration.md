@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -77,7 +77,7 @@ Master switches. An effective off state stops that subsystem from rendering or l
 
 `motd` is the only feature that ships off. Gloss reads `panels` and `previews` once during enable. The panel service and the preview registry start only when their feature is on at that moment.
 
-Shipped defaults follow the toggle. A feature that is off extracts nothing and leaves no folder behind, which is why a stock data folder has no `motd.json` and a server with previews off has no `previews/`. Turning a feature on extracts its defaults on that reload, except for `previews`, which needs the restart described above. See [Getting Started](/gloss/01-getting-started).
+Shipped defaults follow the toggle. A feature that is off extracts nothing and leaves no folder behind, which is why a stock data folder has no `motd.json` and a server with previews off has no `previews/`. Menus now follow the same rule and ship one inert `menus/default.json`. Turning a feature on extracts its defaults on that reload, except for `previews`, which needs the restart described above. See [Getting Started](/gloss/01-getting-started).
 
 ## `[hotload]`
 
@@ -466,4 +466,4 @@ The `groups/` YAML directory is retired as well. Group membership is resolved li
 
 The former `line-stagger-ticks` and `fly-away` switches have no direct schema-3 keys. One wrapped message is one multiline entity, and translation, scale, rotation and opacity are authored as BubbleStyle motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
 
-Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss rejects those document versions and does not migrate them. Rewrite custom content to the current schema or reset it to the shipped default.
+Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss silently ignores those document versions and does not migrate them during startup. Rewrite custom content to the current schema or reset it to the shipped default.

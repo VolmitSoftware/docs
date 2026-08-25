@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Gloss documentation: Data Files & Hot Reload"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -21,7 +21,7 @@ Every hologram, board, emoji, animation, bubble style, real-drop settings, tabli
 }
 ```
 
-`schemaVersion` must match that document kind. Holograms, emoji, animations, and MOTD use `1`; boards, damage-indicator settings, real-drop settings, and tablist use `2`; bubble styles use `3`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder or file kind (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `damage-indicators`, `real-drops`, `tablist`, `motd`). Holograms require the native `TextDisplay` scale field.
+`schemaVersion` must match that document kind. Holograms, emoji, animations, and MOTD use `1`; boards, damage-indicator settings, real-drop settings, and tablist use `2`; bubble styles use `3`. A document with any other version, including a missing version parsed as `0`, is silently ignored. It produces no warning or stack trace and is never rewritten. On hot reload the last-good current-schema document stays live; on startup the mismatched document contributes no configuration. Holograms require the native `TextDisplay` scale field.
 
 `revision` must be between `1` and `9007199254740991`. That is the largest integer a browser can represent exactly. Anything outside that range is rejected with `<kind> revision must be between 1 and 9007199254740991`. The revision is server-owned. Gloss increments it by one on every write it makes. Revision-checked mutations refuse to run when the document on disk has moved on. They report `document <id> is at revision <actual>, expected <expected>`. A hand edit of a file does not need you to bump the revision. If you leave it alone, the web editor and the command layer both see the file as unchanged in revision terms. Bump it if you care about that.
 
@@ -102,7 +102,7 @@ remain outside that path and use `/gloss panel reload`.
 
 Panels are not watched at all. If you edit a panel file by hand, apply it with `/gloss panel reload`.
 
-A document that fails to parse is skipped and the copy already in memory stays live. Automatic watching waits for the same invalid bytes to be observed on two separate passes before logging `<kind>/<id>.json <reason>`. This absorbs the zero-byte interval produced by editors that truncate and then rewrite a file. If valid or different bytes arrive on the next pass, no stale warning is emitted; unchanged invalid content logs once and remains rejected until fixed. Startup and `/gloss reload` remain immediate and report invalid files on their first read.
+A current-schema document that fails to parse is skipped and the copy already in memory stays live. Automatic watching waits for the same invalid bytes to be observed on two separate passes before logging `<kind>/<id>.json <reason>`. This absorbs the zero-byte interval produced by editors that truncate and then rewrite a file. If valid or different bytes arrive on the next pass, no stale warning is emitted; unchanged invalid content logs once and remains rejected until fixed. Startup and `/gloss reload` remain immediate and report malformed current-schema files on their first read. Schema mismatches use the silent behavior above instead.
 
 ## Document kinds
 
@@ -117,20 +117,20 @@ A document that fails to parse is skipped and the copy already in memory stays l
 | Bubble styles | `bubbles/<id>.json` | yes | `default` | `/gloss bubbles reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Damage-indicator settings | `damage-indicators/default.json` | yes | `default` | `/gloss indicators reset` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Real-drop settings | `real-drops/default.json` | yes | `default` | `/gloss drops reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
-| Menus | `menus/**.json` | no, hash revision | none | — | [Hologram Menus](/gloss/09-menus) |
+| Menus | `menus/**.json` | no, hash revision | `default` | — | [Hologram Menus](/gloss/09-menus) |
 | Images | `images/<file>` | not JSON | none | — | [Icons](/gloss/11-icons) |
 | Container previews | `previews/<id>.json` | no | 14 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
 | Panels | `panels/<id>.json` | own id/uuid/revision | none | — | [Panels](/gloss/16-panels) |
 
 `tablist.json` and `motd.json` live at the root of `plugins/Gloss/`. They do not live inside a folder of their own.
 
-A folder in that table exists only once there is something in it. Gloss creates `holograms/`, `menus/`, `images/` and `panels/` when the first document or asset is written to them, not at enable, and it never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it; it comes back the next time a document of that kind is saved. Every document below a removed folder enters the same 3-second deletion grace and unregisters only if still absent; restoration cancels the pending unload.
+A folder in that table exists only once there is something in it. Enabled menus have a shipped default, so `menus/` exists on a stock install; `holograms/`, `images/` and `panels/` still appear only when the first document, asset or placement is written. Gloss never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it during a hotload; a shipped-default folder returns at the next extraction and other folders return on the next authored write. Every document below a removed folder enters the same 3-second deletion grace and unregisters only if still absent; restoration cancels the pending unload.
 
 ## Shipped defaults and resets
 
 At enable, each kind that ships defaults extracts only the files that are missing from its folder. An edited file is never overwritten. A deleted file returns on the next boot. A file that is missing from the jar logs `<kind>/<name>.json: missing from the jar, not extracted.` and is skipped.
 
-Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `bubbles/` only while `chatBubbles` is on, `damage-indicators/` only while `damageIndicators` is on, `real-drops/` only while `realDrops` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
+Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `menus/` only while `menus` is on, `bubbles/` only while `chatBubbles` is on, `damage-indicators/` only while `damageIndicators` is on, `real-drops/` only while `realDrops` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
 
 Turning one of those features on extracts its defaults on the config reload rather than at the next restart. `previews` is again the exception: the preview registry is only constructed during enable, so `previews/` does not appear until the server restarts.
 
@@ -155,16 +155,14 @@ A reset only restores shipped documents. It never deletes extra documents you ad
 
 The seven reset permissions `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.bubbles.reset`, `gloss.indicators.reset`, `gloss.drops.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are children of `gloss.admin`. Board and preview resets sit under their own subsystem nodes instead.
 
-## Baselines are never extracted
+## Creation baselines
 
-Two documents inside the jar are read on demand. They are never written to the data folder:
+The hologram baseline inside the jar is read on demand and is never written to the data folder:
 
 | Baseline | Used by |
 |---|---|
 | `baselines/hologram.json` | `/gloss hologram create` |
-| `baselines/menu-blank.json` | `/gloss menu new` |
-
-There is no baseline file to edit. Change what a new hologram or a new menu looks like. Edit the document the command produced.
+The menu baseline is the shipped `defaults/menus/default.json`. It extracts as `menus/default.json` while menus are enabled, and `/gloss menu new` reads the same resource so the starter document and newly created menus cannot drift.
 
 ## Importing HoloUi data
 
@@ -229,7 +227,7 @@ If no source folder is present, the command reports that and does nothing.
 
 ## Migrating pre-merger Gloss data
 
-The legacy import is separate. It works in place on supported files already inside `plugins/Gloss/` and runs on every boot. You can re-run it with:
+The legacy import is separate and runs only when explicitly requested. It works in place on supported files already inside `plugins/Gloss/`:
 
 ```
 /gloss import legacy
@@ -237,7 +235,7 @@ The legacy import is separate. It works in place on supported files already insi
 
 Permission `gloss.import`. It reloads Gloss in place when it finishes.
 
-A file is legacy when it has no `schemaVersion` key. Its original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/<kind>/<file>` before it is rewritten. The rewritten document starts at `revision` 1. Files that already carry an envelope are skipped. That makes the pass a no-op on every boot after the first.
+A file is legacy when it has no `schemaVersion` key. Its original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/<kind>/<file>` before the explicit command rewrites it. The rewritten document starts at `revision` 1. Files that already carry an envelope are skipped. Without this command, unversioned files are silently ignored like every other schema mismatch.
 
 | Kind | Conversion |
 |---|---|
@@ -247,9 +245,9 @@ A file is legacy when it has no `schemaVersion` key. Its original bytes are copi
 
 A legacy `config.yml` is overlaid last. Supported mechanical keys land in `gloss.toml`. Supported `chat-bubbles` prefix, offset, wrap, lifetime, follow and hide values merge into the current schema-3 `bubbles/default.json`. Legacy fly-away on keeps the shipped late-fly motion; fly-away off writes identity translation, scale, rotation and opacity expressions. Line stagger is discarded because one message is one multiline display. Its `motd.texts` merge into `motd.json` (each text split on newlines and truncated to the 2-line MOTD limit). Bubble and MOTD content are applied only while the target document is byte-identical to the shipped default. A customized document is left alone and the report explains why. The file is then renamed to `config.yml.imported`.
 
-The importer does not convert legacy boards, group YAML or tablist formats. Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks: those files are rejected rather than translated, renamed or policed. Rewrite custom documents to their current schemas or reset shipped files.
+The importer does not convert legacy boards, group YAML or tablist formats. Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks: those files are silently ignored rather than translated, renamed or policed. Rewrite custom documents to their current schemas or reset shipped files.
 
-Both importers report their failures and keep going. An importer that throws logs `HoloUi data import failed; continuing enable.` or `Legacy Gloss data migration failed; continuing enable.` Startup proceeds.
+The automatic HoloUi importer reports failures and keeps startup moving. The explicit legacy import command reports its own per-file failures to the operator.
 
 ## Importing holograms from other plugins
 

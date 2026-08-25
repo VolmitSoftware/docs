@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Gloss documentation: Scoreboards & Groups"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -226,7 +226,7 @@ If Vault is present but the hook fails to construct, Gloss logs `Vault permissio
 
 ## Coming from the pre-merge layout
 
-Board schema 2 is a hard format break. Gloss does not read or migrate schema-1 board documents.
+Board schema 2 is a hard format break. Gloss silently ignores schema-1 board documents and does not migrate them.
 Rewrite custom files to the shape above or use `/gloss board reset` for a shipped default. The legacy
 import command is not a board-schema upgrader. Full document behavior is in
 [Data Files & Hot Reload](/gloss/03-data-files).

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -148,7 +148,7 @@ Omitting `role` creates a viewer token. Typing `role=` offers `viewer`, `operato
 | `operator` | `read`, `op:execute` |
 | `admin` | `read`, `op:execute`, `admin`, `console:read`, `console:execute` |
 
-Only admin tokens can read the full server-console tail/stream or execute a console command through the API. Every accepted Web mutation writes to `plugins/React/web/audit.log` and sends online operators a localized chat summary naming the signed token label, role, token ID, and changed target without exposing submitted values or console arguments. Rejected, rolled-back, and undispatched requests produce no success notice.
+Only admin tokens can read the full server-console tail/stream, execute a console command, list teleportable online players, or queue a heatmap teleport through the API. Viewer and operator sessions can still select a heatmap square and copy its browser-local `world X Z` position; they receive no player list or teleport control. Every accepted Web mutation writes to `plugins/React/web/audit.log` and sends online operators a localized chat summary naming the signed token label, role, token ID, and changed target without exposing submitted values or console arguments. Rejected, rolled-back, and undispatched requests produce no success notice; a player-teleport notice records queue acceptance rather than eventual teleport completion.
 
 ## Shorthand commands (tweak `shorthands`)
 

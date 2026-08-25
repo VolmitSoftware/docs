@@ -2,7 +2,7 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,6 +27,7 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - React map items carry persistent renderer metadata. Inventory maps are repaired on join and in maintenance batches. Item-frame repair takes one loaded-chunk snapshot per world at startup or reload, seeds its coordinate queue in configured-size waves, keeps that queue current from chunk load and unload events, and scans only the configured chunk batch on each maintenance pass. It does not repeatedly copy every world's loaded-chunk array or dispatch every loaded chunk at once.
 - Every renderer pipe belongs to one map-controller activation. Shutdown closes and detaches those pipes; delayed maintenance and render callbacks reject the retired owner, so reload cannot retain an old renderer or its canvas buffers.
 - A framed map uses the item frame as the renderer's spatial anchor. A held map falls back to the viewer location. Then it uses the map world's spawn if no viewer is available.
+- Chunk heatmaps are literal north-up grids rather than player-yaw blobs. Chunk cells stay aligned to absolute X/Z coordinates, show the complete surrounding grid even where no sample is loaded, distinguish quiet and active chunks, emphasize MCA region boundaries, and identify the center coordinate with a complete perimeter.
 
 Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Monitoring-only mode keeps configured renderer features active while it pauses other features and tweaks, so map collection and rendering continue. Integration-prefixed renderers are omitted until their peer capability is present. The `iris-biome-chunk-share-pie-map` renderer is selectable while the Iris capability is present; its sampling feature uses the same capability gate, so it schedules no owner work on non-Iris servers.
 

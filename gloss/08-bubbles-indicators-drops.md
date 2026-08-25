@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Gloss documentation: Chat Bubbles, Indicators & Drops"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -56,7 +56,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 
 | Key | Default when absent | Clamp / notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `3`, otherwise `unsupported bubbles schemaVersion: <n>` |
+| `schemaVersion` | required | Must be `3`. Any other version is silently ignored |
 | `revision` | required | `1` to `9007199254740991` |
 | `prefix` | `"&7"` | Authored text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
 | `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
@@ -534,7 +534,7 @@ If `[features] drops = false`, Gloss removes its owned custom names as loaded it
 
 ## Reference
 
-Bubble schema 3, damage-indicator schema 2 and real-drop schema 2 are hard breaks. Older documents are rejected rather than migrated; rewrite custom files to the current shapes or reset them to the shipped defaults.
+Bubble schema 3, damage-indicator schema 2 and real-drop schema 2 are hard breaks. Older documents are silently ignored rather than migrated; rewrite custom files to the current shapes or reset them to the shipped defaults.
 
 | Command | Arguments | Permission |
 |---|---|---|

@@ -2,7 +2,7 @@
 title: "Localization"
 description: "React documentation: Localization"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,7 +53,7 @@ description; translators edit only the JSON catalog.
 
 Server messages are typed Java catalogs under `art.arcane.react.localization.catalog`. Examples are command, runtime, action, and config messages. Feature and tweak display strings and `@ConfigDoc` English are separate from player-facing command chat. Catalogs apply to that command chat.
 
-React sends catalog components through VolmLib for command chat, action bars, clickable output, and plugin logging. Paper-family players and component-aware consoles retain RGB, decorations, and click or hover events; operator-visible component logs keep one `[React]` discriminator. Plain Bukkit, unsupported console APIs, RCON, and Java-logger fallbacks receive destination-safe text, so supported formatting remains visible without exposing raw `§` markers in operator consoles.
+React sends catalog components through VolmLib for command chat, action bars, clickable output, and plugin logging. Paper-family players and component-aware consoles retain RGB, decorations, and click or hover events; operator-visible component logs keep one `[React]` discriminator with dark-grey brackets and the React name in aqua. Plain Bukkit, unsupported console APIs, RCON, and Java-logger fallbacks receive destination-safe text, so supported formatting remains visible without exposing raw `§` markers in operator consoles.
 
 ## Validation
 

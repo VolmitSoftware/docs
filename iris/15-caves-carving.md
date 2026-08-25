@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -204,7 +204,7 @@ Whether a cave can reach daylight is decided per column before any density sampl
 breakColumn = allowSurfaceBreak && surfaceBreakNoise2D(x, z) >= surfaceBreakNoiseThreshold
 ```
 
-In a break column, carving is allowed all the way up to the terrain surface. Within `surfaceBreakDepth` blocks of the surface the carve threshold is relaxed by `surfaceBreakThresholdBoost` so the opening actually punches through instead of pinching shut. In every other column, carving stops `surfaceClearance` blocks below the surface. The natural surface-fluid boundary described above remains solid even in a break column. This contains oceans and lakes at their generated level instead of creating a floating source plane or a cave-spanning flood.
+In a break column, carving is allowed all the way up to the terrain surface. Within `surfaceBreakDepth` blocks of the surface the carve threshold is relaxed by `surfaceBreakThresholdBoost` so the opening actually punches through instead of pinching shut. In every other column, `surfaceY - surfaceClearance` is the highest legal carve position. The final 12 blocks below that boundary taper the carve threshold toward solid, letting the 3D density field close the cave at varied heights instead of slicing a large cave into a horizontal ceiling. `surfaceClearance` therefore remains the guaranteed minimum roof thickness. The natural surface-fluid boundary described above remains solid even in a break column. This contains oceans and lakes at their generated level instead of creating a floating source plane or a cave-spanning flood.
 
 After materials are applied, an ore block sitting on the surface directly above a carved, unsupported cell is deleted. That prevents a floating ore cap over a cave mouth. Supported surface ores and underground ores are untouched.
 
@@ -260,7 +260,7 @@ Adaptive classification also falls back to exact evaluation whenever fewer than 
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `surfaceClearance` | int 0..64 | `4` | Solid blocks kept below the terrain surface in non-breaking columns. This is your roof thickness |
+| `surfaceClearance` | int 0..64 | `4` | Minimum solid roof thickness below terrain in non-breaking columns. A 12-block density taper below that limit closes large caves without a flat clipped ceiling |
 | `allowSurfaceBreak` | boolean | `true` | Master switch for cave mouths. False makes every column obey `surfaceClearance` |
 | `surfaceBreakStyle` | `IrisGeneratorStyle` | simplex, zoom `0.08` | 2D field that decides which columns may break through. Its zoom sets how large a single opening is |
 | `surfaceBreakNoiseThreshold` | double -1..1 | `0.62` | Signed cutoff on that field. Lower means more and wider openings |

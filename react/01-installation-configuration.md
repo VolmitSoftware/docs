@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 ## Install
 
 1. Place the React jar in `plugins/`.
-2. Start the server. React creates `plugins/React/` and writes missing default TOML files for registered content.
+2. Start the server. React creates `plugins/React/`, writes missing default TOML files for registered content, and prints `Control Panel: https://react.volmitsoftware.com` in its startup splash.
 3. Grant `react.use` (or `react.*`) to operators.
 
 ## Data folder layout
@@ -29,6 +29,7 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 | `plugins/React/web.toml` | Embedded management API listener, authentication, and relay settings |
 | `plugins/React/web/tokens.toml` | Paired API token records and roles; keep private |
 | `plugins/React/web/audit.log` | Append-only audit records for remote mutations |
+| `plugins/React/history/` | Compressed metric segments and the crash-recovery journal |
 | `plugins/React/core/<controller-id>.toml` | Controller settings, including hotload, maps, and config-input sessions |
 | `plugins/React/feature/<id>.toml` | Per-feature config |
 | `plugins/React/tweak/<id>.toml` | Per-tweak config |
@@ -120,7 +121,40 @@ React rejects invalid component, controller, global-config, or localization hotl
 ## Other controller configuration
 
 - `core/config-input.toml`: `sessionTimeoutSeconds = 45` controls the in-game config editor's text-input timeout and is clamped to at least five seconds.
+- `core/history.toml` controls the authoritative sampler capture and durable metric history described below.
 - `core/map.toml` controls map repair, redraw, packet delivery, and megamap behavior. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
+
+## Metric history (`core/history.toml`)
+
+React captures every registered sampler once per live snapshot and reuses that timestamped snapshot for the live API, WebSocket delivery, short in-process graphs, and persistence. The default live capture interval is 500 ms. Durable storage writes at most one exact sample per metric per aligned second; an unavailable or failed sampler and a saturated writer queue produce a gap rather than a fabricated zero.
+
+The writer is one bounded background worker. It journals each persisted snapshot before adding it to the active in-memory segment, forces the journal at most every five seconds by default, seals segments through a forced temporary file and atomic replacement, and validates journal frames and segment series with CRC32C. Startup replays complete journal frames through the last valid checksum and truncates an incomplete or corrupt tail. A clean shutdown seals the active segment and resets the journal. Storage failures retain live monitoring and report their complete exception diagnostics.
+
+Segments use exact per-column codecs selected independently for each metric: constants, run lengths, integral deltas, IEEE-754 XOR deltas, or raw values. DEFLATE at the configured level is retained only when it makes that encoded column smaller. No native database or compression library is required. Rollups preserve first, last, minimum, maximum, sum, sample count, and gaps, so averages remain weighted and spikes are not erased when old raw points expire.
+
+| Tier | Segment span | Default retention |
+|------|--------------|-------------------|
+| 1 second | 15 minutes | 48 hours |
+| 10 seconds | 3 hours | 14 days |
+| 1 minute | 12 hours | 180 days |
+| 15 minutes | 6 days | 730 days |
+| 1 hour | 30 days | Indefinite |
+
+React creates `plugins/React/history/raw`, `10s`, `1m`, `15m`, and `1h`, plus `plugins/React/history/active.wal`. A source segment is deleted only after the covering next-tier segment has been written. Unreadable immutable segments are ignored and reported; other valid segments remain queryable. The segment and journal format is current-format-only: React has no migration reader, dual-read path, or legacy history location.
+
+| Key | Default | Effective bounds and behavior |
+|-----|---------|-------------------------------|
+| `enabled` | `true` | Records new history when true. Existing immutable history remains readable when false. |
+| `liveCaptureIntervalMs` | `500` | Clamped to 250–10,000 ms. |
+| `walForceIntervalMs` | `5000` | Clamped to 1,000–60,000 ms; this is the maximum recent window a host or process crash can lose. |
+| `compressionLevel` | `3` | Clamped to 0–9 and applied only when DEFLATE wins. |
+| `rawRetentionHours` | `48` | Non-positive retains the one-second tier indefinitely. |
+| `tenSecondRetentionDays` | `14` | Non-positive retains the ten-second tier indefinitely. |
+| `minuteRetentionDays` | `180` | Non-positive retains the one-minute tier indefinitely. |
+| `fifteenMinuteRetentionDays` | `730` | Non-positive retains the fifteen-minute tier indefinitely. One-hour history is always indefinite. |
+| `maxQuerySeries` | `16` | Clamped to 1–64 unique metric ids per query. |
+| `maxQueryPoints` | `4096` | Clamped to 64–16,384 buckets per metric for resolution selection. |
+| `queryPagePoints` | `256` | Clamped to 32–512 buckets per metric in one response page. |
 
 ## Embedded management API (`web.toml`)
 
@@ -150,7 +184,13 @@ A browser loaded over HTTPS cannot call React's plain-HTTP listener through mixe
 
 Bearer-authenticated mutations require a strictly increasing `X-React-Counter` per token. `GET /api/v1/logs` and `/ws/logs` capture the complete server logger, including other plugins and stack traces, and require the admin-only `console:read` scope. `POST /api/v1/console/execute` requires the admin-only `console:execute` scope, accepts one control-character-free command of at most 512 characters, dispatches through the server/global scheduler, and writes a redacted audit record that excludes command arguments. Treat console access as equivalent to server-console access.
 
-Feature, tweak, world, global-config, preset, action, and successfully dispatched console mutations are accepted only when the authoritative runtime apply succeeds. Multi-value config and control updates restore earlier values if a later value is rejected instead of returning a false success. Every accepted mutation is appended to `plugins/React/web/audit.log`; online operators receive a localized chat notice containing the signed pairing-device label, role, token ID, target, and a value-free summary. Action notices mean queued, not completed, and console notices include only the command verb and length.
+Player navigation uses one canonical authenticated API: `GET /api/v1/players` lists online player ids and names, and `POST /api/v1/players/{uuid}/teleport` accepts `{"worldKey":"<canonical-key>","blockX":<integer>,"blockZ":<integer>,"confirm":true}`. Both routes always require the `admin` scope, even when `requireTokenForReads` is false, and the POST also requires the token's next `X-React-Counter`. HTTP 202 means the request entered React's scheduler; it does not claim that the later safe-destination lookup or teleport completed.
+
+`GET /api/v1/metrics` and `/ws/metrics` return one scalar snapshot object with `sequence`, `capturedAtMs`, and `samplers`; each sampler carries `id`, `name`, `suffix`, `value`, `display`, and `available`. They do not carry repeated history arrays. `GET /api/v1/metrics/catalog` lists active and historical metric ids with their stored coverage. `GET /api/v1/metrics/history` requires comma-separated `ids` and accepts epoch-millisecond `from`/`to`, `maxPoints`, and `pageSize`. The response pins a sequence/time watermark and returns bounded pages with an opaque `nextCursor`; cursor pages require only that cursor. Each point is `[timestampMs, average, minimum, maximum, last, count]`. The retired `GET /api/v1/metrics/{id}/history` shape is not served.
+
+React Web loads the catalog once, keeps its 128-point live chart history in browser memory, and requests durable history only for the selected metric and range. Its 1h, 24h, 7d, 30d, and All views follow pagination and display the server-selected resolution. Historical-only metrics remain selectable after their source disappears.
+
+Feature, tweak, world, global-config, preset, action, player-teleport, and successfully dispatched console mutations are accepted only when their documented authoritative stage succeeds. Multi-value config and control updates restore earlier values if a later value is rejected instead of returning a false success. Every accepted mutation is appended to `plugins/React/web/audit.log`; online operators receive a localized chat notice containing the signed pairing-device label, role, token ID, target, and a value-free summary. Action and player-teleport notices mean queued, not completed, and console notices include only the command verb and length.
 
 The Environment workspace polls typed disk and network counters every five seconds while open. Disk read/write and network receive/send rates retain a bounded local history with keyboard-accessible hover details; mounted-volume capacity and device/interface summaries retain the exact byte totals returned by the server.
 

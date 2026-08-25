@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Connected Perlin-worm river routing, volatile body anatomy, independent fluids, river biomes, and contained cave hydrology"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -24,16 +24,16 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       "tileCells": 3,
       "siteJitter": 0.48,
       "maxRouteReaches": 8,
-      "minimumSourcesPerTile": 3,
+      "minimumSourcesPerTile": 6,
       "sinkSearchReaches": 5,
       "routingBasinCells": 112,
       "routingDeviationScaleCells": 24,
       "routingDeviationStrengthCells": 8,
       "routingPlateauHeight": 1.5,
       "source": {
-        "chance": 0.12,
+        "chance": 0.24,
         "style": {"style": "IRIS", "zoom": 18432},
-        "influence": 0.08
+        "influence": 0.16
       },
       "continuation": {
         "chance": 0.994,
@@ -86,7 +86,7 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       },
       "maxIncision": 15,
       "bankExponent": 1.05,
-      "tunnelMouthBlend": 2,
+      "tunnelMouthBlend": 6,
       "tunnelWidthMultiplier": {
         "min": 2,
         "max": 4,
@@ -203,7 +203,32 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       "maxFloodDepth": 64,
       "maxFloodVolume": 8192,
       "fallback": "SEALED",
-      "existingFluidPolicy": "REJECT"
+      "existingFluidPolicy": "REJECT",
+      "deepPools": {
+        "enabled": true,
+        "reach": {
+          "chance": 0.3333333333333333,
+          "style": {"style": "IRIS", "zoom": 4096},
+          "influence": 0.08
+        },
+        "minimumSpacing": 768,
+        "maximumPerReach": 1,
+        "minimumFluidY": -224,
+        "maximumFluidY": -108,
+        "searchRadius": 20,
+        "searchAttempts": 12,
+        "horizontalRadius": 24,
+        "verticalRadius": 10,
+        "dryHeadroom": 5,
+        "shapeStyle": {"style": "IRIS", "zoom": 12},
+        "shapeVariation": 0.6,
+        "warpStyle": {"style": "IRIS", "zoom": 24},
+        "warpStrength": 8,
+        "maximumVolume": 65536,
+        "fluidPalette": {
+          "palette": [{"block": "minecraft:lava"}]
+        }
+      }
     }
   }
 }
@@ -254,7 +279,7 @@ Topology is dimension-owned. Region and biome overrides can permit, avoid, or bl
 | `oceanAttraction` | `1` | Preference for a natural sea outlet |
 | `requireOcean` | `false` | Require a proven sea outlet for ordinary wet routes |
 
-`source`, `continuation`, `incision`, and cave `entry` use the same contract:
+`source`, `continuation`, `incision`, ordinary cave `entry`, and deep-pool `reach` use the same contract:
 
 ```json
 {
@@ -284,7 +309,7 @@ River terrain is a second surface derived from the natural height. Iris never ra
 | `incision` | chance `1` | Noise gate deciding whether a complete reach may cut terrain |
 | `maxIncision` | `48` | Maximum cut below natural terrain, before local multipliers |
 | `bankExponent` | `2` | Cross-section curve from channel to natural bank |
-| `tunnelMouthBlend` | `2` | Extra lateral bore blend on each side of a surface-to-solid entrance or exit |
+| `tunnelMouthBlend` | `2` | Longitudinal transition length and maximum lateral and roof flare at a surface-to-solid entrance or exit |
 | `tunnelWidthMultiplier` | `1..1` | Noise-styled subterranean width multiplier. It does not change the capped surface channel |
 | `tunnelFloorStyle` | `IRIS`, zoom `48` | Noise shaping the submerged floor of a contained river tunnel |
 | `tunnelFloorVariation` | `2` | Maximum tunnel-floor displacement in blocks |
@@ -335,7 +360,7 @@ Dry channels expose no surface fluid. They do not run shoreline or underwater de
 
 ### Surface incision and ridge bores
 
-A wet column remains a surface river while its own capped terrain result rounds below its local water head. If it would require more incision, that column leaves the surface: natural terrain and its biome, decorators, structures, and public surface classification remain unchanged above it, while the River network Vision view and river expression streams still expose the connected route. This decision is column-local, so low/open shoreline cells remain valid surface mouths beside high columns that become a bore. At each surface-to-solid transition, `tunnelMouthBlend` widens the aperture laterally without widening the complete surface river.
+A wet column remains a surface river while its own capped terrain result rounds below its local water head. If it would require more incision, that column leaves the surface: natural terrain and its biome, decorators, structures, and public surface classification remain unchanged above it, while the River network Vision view and river expression streams still expose the connected route. This decision is column-local, so low/open shoreline cells remain valid surface mouths beside high columns that become a bore. At each surface-to-solid transition, `tunnelMouthBlend` measures the nearest open centerline boundary and smoothly tapers a rounded lateral and roof flare into the bore. The intentional aperture may meet the complete adjacent wet river footprint, including its bank transition, instead of being clipped back to a flat channel-width wall.
 
 The mantle pass carves a rounded lower and upper bore with river fluid from the locally varying bed to the head and the worm body's locally scaled `caves.dryHeadroom` above it. `tunnelWidthMultiplier` varies the subterranean radius independently of the capped surface channel; the managed Overworld and Underworld use a smooth IRIS range from two to four times the local channel width. Independent floor and roof styles add small cross-section detail on top of the longitudinal body anatomy without flattening either surface; their displacement collapses toward the tube sides. A bore may cut through a closed baseline cave: wet-side cave-air contacts become a one-block solid guard sleeve, while dry-headroom contacts remain walkable apertures into the cave. This produces cave-wall and grotto intersections without authorizing water to spread through the complete cave. Surface-open cave air, lava, existing fluid, a world boundary, or an unproved neighbor still caps the bore. The complete wet core and dry roof may transition into the adjacent surface river reservoir, preventing a one-column terrain plug at the portal. Every cave-air aperture and guard records its exact baseline precondition, so a concurrent baseline change aborts publication. Each chunk plans against the underlying carved-terrain baseline while reading already-published river actions separately, then iteratively stabilizes its contained column set and publishes only its owned cells. Cross-chunk order therefore cannot make one part of a bore or grotto invalidate another.
 
@@ -495,6 +520,31 @@ If proof fails, `fallback: SEALED` writes nothing. `fallback: GENERATE_GROTTO` m
 
 When multiple sources directly overlap, Iris chooses the stable local-priority minimum and accepts one complete plan for those cells. Immediately before publication it rechecks every baseline precondition. Each chunk publishes only its own overlay cells from the same deterministic plan, so generation order and parallel generation do not change the result.
 
+### Deep cave pools
+
+`caves.deepPools` is independent from ordinary river-to-cave connections. It may remain enabled when `caves.mode` is `SEALED`, and its `fluidPalette` does not change surface rivers, ridge bores, ordinary grottos, oceans, or the dimension cave-lava level. Candidate stations still belong to eligible wet river reaches, but Iris searches nearby columns for a closed cave floor whose fluid surface lies inside the authored absolute world-Y interval.
+
+An accepted pool carves one connected noise-shaped chamber downward from that floor. The configured Y interval is a search band rather than a global fill cutoff: the selected cave floor becomes that pool's exact fluid head, the lower chamber receives source fluid, and `dryHeadroom` remains above it. Existing cave air may meet the chamber only above the selected fluid head. Any air or fluid contact at or below the head rejects the complete transaction, so an accepted lava pool cannot leak through an already-open lower cave system. An ordinary river-cave overlay and a deep-pool overlay also reject each other during planning instead of overwriting one another where their proof envelopes meet.
+
+| Field | Default | Behavior |
+|---|---:|---|
+| `enabled` | `false` | Enables the independent deep-pool pass |
+| `reach` | one-third IRIS gate | Stable chance applied once to each complete wet reach; region and biome `caveEntryMultiplier` still applies |
+| `minimumSpacing` | `768` | Candidate spacing along each eligible reach |
+| `maximumPerReach` | `1` | Maximum candidate stations attempted on an eligible reach |
+| `minimumFluidY` / `maximumFluidY` | `-224` / `-104` | Absolute world-Y interval searched for a cave floor and pool head |
+| `searchRadius` / `searchAttempts` | `16` / `12` | Deterministic nearby columns tested around the river anchor |
+| `horizontalRadius` / `verticalRadius` | `18` / `8` | Authored chamber radii before boundary noise and coordinate warping |
+| `dryHeadroom` | `4` | Dry chamber height above the selected pool head; must be smaller than `verticalRadius` |
+| `shapeStyle` / `shapeVariation` | IRIS at 12 / `0.5` | Coarse boundary lobes; variation is capped at `0.75` |
+| `warpStyle` / `warpStrength` | IRIS at 24 / `6` | Coordinate distortion in blocks, producing asymmetric connected blobs |
+| `maximumVolume` | `32768` | Transactional chamber-cell ceiling; insufficient budgets reject the configuration or candidate |
+| `fluidPalette` | lava | Palette used only by accepted deep pools; every resolved entry must be fluid |
+
+The managed Overworld and Underworld use lava from Y -224 through Y -108, 768-block station spacing, a one-third base wet-reach gate with 8% IRIS modulation, and at most one pool per eligible reach. Their 24-by-10 chamber radius, 60% boundary displacement, and eight-block warp produce large irregular lobes instead of round bowls. The complete chamber envelope stays within their -256 to 512 build range.
+
+Deep pools are stored in the same canonical river-hydrology mantle slice as ordinary river cave cells, with an explicit fluid kind on every cell. This is a clean persistent-format break: regenerate affected mantle or worlds created with a build that used the previous river-hydrology payload; Iris does not migrate that retired layout.
+
 ## Expressions and diagnostics
 
 Engine expressions expose:
@@ -516,7 +566,7 @@ The Bukkit terrain API adds `RIVER`, `RIVER_SHORE`, and `DRY_CHANNEL` surface ki
 
 River tiles are immutable and cached. A cold tile performs graph routing and reach indexing; warm column samples are direct spatial-index lookups, and one default tile covers 2,048 by 2,048 blocks. Candidate ranking keeps Perlin-worm geometry lazy, accumulated reaches outside the requested tile are discarded before curve and dimension sampling, and long feasibility proofs are capped at 65 deterministic centerline probes. When no reachable region or biome can block routing, contained-bore feasibility bypasses those local policy probes entirely. Effective region/biome settings are cached by resource identity, unreachable biome overrides do not trigger natural-biome sampling, node and source inputs are resolved once, and zero-weight height and slope streams are not evaluated. Ocean intent short-circuits non-ocean nodes; only possible outlet nodes sample natural height to reject elevated false oceans. Per-column bore classification reuses the height, bed, head, and incision values already resolved for that column instead of repeating centerline sampling. Widened tunnel candidates reject expanded-radius misses before sampling natural height, region, biome, floor, or roof data, and a fixed tunnel-width multiplier bypasses noise evaluation. Reach routing cost resolves its regional multiplier once at the reach midpoint. Each source tile orders partial floor candidates by stable identity; a full floor skips sorting and directly tests each node once. Every non-winner is still rejected against the dimension-wide maximum source multiplier before natural height or region/biome settings are sampled. Empty river footprints also skip the mantle tunnel-column scan entirely.
 
-Cold work grows quickly with `maxRouteReaches` because that value expands both the source window and the number of steps traced from each candidate source. A worm profile's `segments` increases integration and spatial-index work for every reach selecting it, while `maxOffset` enlarges the cache halo. Body anatomy uses wavelength-derived synchronized stations with a 512-station cap; the managed configurations resolve one station every four to ten blocks. Indexed profile traversal begins at the intersecting interval, so dense profiles do not rescan every station for every centerline segment. The shipped Overworld and Underworld use 1,700-block cells, three cells per cache tile, `maxRouteReaches: 8`, three guaranteed sources per tile, `routingBasinCells: 112`, and three weighted root families containing twelve total styles with 28–64 segments and 110–480-block displacement limits. Floodplain trees favor broad shallow trunks, marsh meanders, and reed threads; canyon trees favor straight deep trunks, ravines, fault runs, and gullies; serpentine trees favor large wandering trunks, hairpins, riffles, and springs. Every style has a distinct 8–20-block detail rhythm, 65–88% detail influence, and independent width, basin, depth, and roof amplitudes in addition to different branch caps, sibling decay, confluence strength, and child-transition rates. Both packs add three blocks of channel radius and use a four-to-six-block terrain blend before their 38-block channel cap; Overworld river fluid is water and Underworld river fluid is lava. A 6,144-block VASCULAR_IRIS routing field guides multi-reach flow, and the 24-cell drainage warp supplies long directional changes above the per-reach Perlin integration. One source proves 13,600 blocks, while overlapping sources and physically equivalent roughly 190,000-block drainage basins preserve long global trunks. Shipping routes intentionally set terrain height and slope routing weights to zero: topology crosses mountain chains according to the cached continental mask and routing field, while actual columns bend terrain down by up to 15 blocks and then pass through higher relief in sealed fluid-bearing bores. Regional incision and continuation multipliers no longer shorten those mountain crossings, and ordinary regional dry or suppressed terminals now inherit the wet dimension behavior; Terralost retains its intentional sinkhole grotto. Generated grottos use one sparse candidate per reach and never run a component flood through unrelated cave air. Increase route or worm segment limits only after profiling representative cold generation. Wider channels, larger worm offsets, shorter body wavelengths, smaller cells or tiles, a larger source floor, and higher source chance also increase cold-tile work or repeat it more often. Pack validation and runtime construction reject derived routing footprints outside the bounded work envelope even when every individual setting is within its numeric range. Pregeneration amortizes accepted work naturally because nearby chunks share tiles.
+Cold work grows quickly with `maxRouteReaches` because that value expands both the source window and the number of steps traced from each candidate source. A worm profile's `segments` increases integration and spatial-index work for every reach selecting it, while `maxOffset` enlarges the cache halo. Body anatomy uses wavelength-derived synchronized stations with a 512-station cap; the managed configurations resolve one station every four to ten blocks. Indexed profile traversal begins at the intersecting interval, so dense profiles do not rescan every station for every centerline segment. The shipped Overworld and Underworld use 1,700-block cells, three cells per cache tile, `maxRouteReaches: 8`, six guaranteed sources per tile, a 24% source chance with 16% IRIS modulation, `routingBasinCells: 112`, and three weighted root families containing twelve total styles with 28–64 segments and 110–480-block displacement limits. Floodplain trees favor broad shallow trunks, marsh meanders, and reed threads; canyon trees favor straight deep trunks, ravines, fault runs, and gullies; serpentine trees favor large wandering trunks, hairpins, riffles, and springs. Every style has a distinct 8–20-block detail rhythm, 65–88% detail influence, and independent width, basin, depth, and roof amplitudes in addition to different branch caps, sibling decay, confluence strength, and child-transition rates. Both packs add three blocks of channel radius, use a four-to-six-block terrain blend before their 38-block channel cap, and transition into ridge bores through a six-block tapered mouth flare; Overworld river fluid is water and Underworld river fluid is lava. A 6,144-block VASCULAR_IRIS routing field guides multi-reach flow, and the 24-cell drainage warp supplies long directional changes above the per-reach Perlin integration. One source proves 13,600 blocks, while overlapping sources and physically equivalent roughly 190,000-block drainage basins preserve long global trunks. Shipping routes intentionally set terrain height and slope routing weights to zero: topology crosses mountain chains according to the cached continental mask and routing field, while actual columns bend terrain down by up to 15 blocks and then pass through higher relief in sealed fluid-bearing bores. Regional incision and continuation multipliers no longer shorten those mountain crossings, and ordinary regional dry or suppressed terminals now inherit the wet dimension behavior; Terralost retains its intentional sinkhole grotto. Generated grottos use one sparse candidate per reach and never run a component flood through unrelated cave air. Increase route or worm segment limits only after profiling representative cold generation. Wider channels, larger worm offsets, shorter body wavelengths, smaller cells or tiles, a larger source floor, and higher source chance also increase cold-tile work or repeat it more often. Pack validation and runtime construction reject derived routing footprints outside the bounded work envelope even when every individual setting is within its numeric range. Pregeneration amortizes accepted work naturally because nearby chunks share tiles.
 
 Do not use final river-derived engine streams inside river configuration noise. Besides being rejected by validation, that would make topology depend on the result it is currently building. Use natural height, ordinary generator styles, region/biome identity, and fixed authored multipliers instead.
 

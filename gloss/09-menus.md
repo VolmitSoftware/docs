@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Gloss documentation: Hologram Menus"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -19,7 +19,7 @@ plugins/Gloss/menus/     menu documents
 plugins/Gloss/images/    image assets referenced by textImage and animatedTextImage icons
 ```
 
-Neither directory is created up front and neither is seeded with content. `menus/` appears when the first menu document is written. `images/` appears when you put an image file in it. A fresh install has no menus until you create one, and no folder standing empty waiting for one.
+While `[features] menus` is enabled, Gloss extracts one inert `menus/default.json` starter. It is never displayed until a player opens it or a panel refers to it. `images/` remains operator-owned and appears only when you put an image file in it. Disabling menus before first boot leaves `menus/` absent; enabling them later extracts the starter on that config reload.
 
 Menus are discovered recursively. A file is accepted when every one of these holds:
 
@@ -270,9 +270,9 @@ Writes are queued through a single-threaded mutation service. Two commands again
 > `/gloss menu create` and `/gloss menu new` are different commands. `create` makes a persistent world-anchored panel plus its root menu, is player only, and is gated by `gloss.panels`. `new` makes a blank menu document only and is gated by `gloss.menus.edit`.
 {.is-info}
 
-### The shipped baseline
+### The shipped default and creation baseline
 
-`/gloss menu new` seeds the document from `baselines/menu-blank.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit.
+Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/default.json` when menus are enabled and that file is missing. Existing bytes are never overwritten. `/gloss menu new` reads the same resource, keeping every new blank menu aligned with the shipped starter.
 
 ```json
 {
@@ -287,7 +287,7 @@ Writes are queued through a single-threaded mutation service. Two commands again
       "offset": [0.0, 0.35, 0.0],
       "data": {
         "type": "decoration",
-        "icon": { "type": "text", "text": "&6&lHologram" }
+        "icon": { "type": "text", "text": "&6&lGloss Menu" }
       }
     },
     {
@@ -295,7 +295,7 @@ Writes are queued through a single-threaded mutation service. Two commands again
       "offset": [0.0, 0.05, 0.0],
       "data": {
         "type": "decoration",
-        "icon": { "type": "text", "text": "&7Edit this with /gloss menu or the web editor." }
+        "icon": { "type": "text", "text": "&7Edit menus/default.json or use the web editor." }
       }
     },
     {
@@ -325,10 +325,8 @@ Writes are queued through a single-threaded mutation service. Two commands again
 | `gloss.menus.open` | `/gloss menu open` with a real id |
 | `gloss.menus.back` / `.close` / `.move` | The matching command |
 | `gloss.menus.edit` | `new`, `copy` and every content node |
-| `gloss.panels` | `/gloss menu create` |
+| `gloss.menus.create` and `gloss.panels` | `/gloss menu create` |
 | `gloss.open.<menuId>` | Opening that specific menu |
-
-`gloss.menus.create` is declared in `plugin.yml` but nothing checks it. It is a dead node. Grant `gloss.panels` instead.
 
 ### `gloss.open.<menuId>`
 

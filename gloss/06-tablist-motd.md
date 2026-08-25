@@ -2,7 +2,7 @@
 title: "Tablist & Server List MOTD"
 description: "Gloss documentation: Tablist & Server List MOTD"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -59,7 +59,7 @@ The conditional tablist header, footer and list-name format live in the single d
 
 | Key | Default | Notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `2`. Anything else rejects the file with `unsupported tablist schemaVersion: <n>` |
+| `schemaVersion` | required | Must be `2`. Any other version is silently ignored |
 | `revision` | required | `1` to `9007199254740991` |
 | `headerFooter.enabled` | `true` | When false, Gloss never touches the header or footer |
 | `headerFooter.presentation` | required | Complete base `header` and `footer` pair |
@@ -142,7 +142,7 @@ restores the shipped copy.
 
 | Key | Notes |
 |---|---|
-| `schemaVersion` | Must be `1`. Anything else rejects the file with `unsupported motd schemaVersion: <n>` |
+| `schemaVersion` | Must be `1`. Any other version is silently ignored |
 | `revision` | `1` to `9007199254740991` |
 | `entries` | At least one entry required, otherwise `motd document requires at least one entry` |
 | `entries[].lines` | **1 or 2 lines. Zero lines or three or more is rejected outright** with `motd entry requires 1 to 2 lines` |
@@ -194,4 +194,4 @@ The web editor can live-sync this singleton with `/gloss web edit motd motd`, or
 
 ## Coming from the pre-merge layout
 
-Tablist schema 2 is a hard break. Schema 1 files are rejected and Gloss does not translate old group YAML or legacy tablist formats. Rewrite custom tablist content into complete base presentations and conditional variants, or reset it to the shipped schema 2 document. `/gloss import legacy` does not convert boards, groups or tablists. MOTD remains schema 1; its supported legacy import behavior is documented in [Data Files & Hot Reload](/gloss/03-data-files).
+Tablist schema 2 is a hard break. Schema 1 files are silently ignored and Gloss does not translate old group YAML or legacy tablist formats. Rewrite custom tablist content into complete base presentations and conditional variants, or reset it to the shipped schema 2 document. `/gloss import legacy` does not convert boards, groups or tablists. MOTD remains schema 1; its explicit legacy import behavior is documented in [Data Files & Hot Reload](/gloss/03-data-files).

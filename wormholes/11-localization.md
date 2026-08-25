@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Locales, overrides, and fallbacks"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ Director keys). Wormholes does **not** ship an `en_US.toml` bundle. Non-English
 locales load from jar resources and optional data-folder overlays. Missing keys
 fall through to code-owned English.
 
-Resolved messages are delivered through VolmLib components for chat, action bars, titles, command feedback, and the startup splash. Paper-family players and component-aware consoles retain RGB, decorations, and authored click or hover events, and operator-visible component logs keep one `[Wormholes]` discriminator. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so operator terminals never show raw `§` markers.
+Resolved messages are delivered through VolmLib components for chat, action bars, titles, command feedback, and the startup splash. Paper-family players and component-aware consoles retain RGB, decorations, and authored click or hover events, and operator-visible component logs keep one `[Wormholes]` discriminator with dark-grey brackets and the Wormholes name in its gold brand accent. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so operator terminals never show raw `§` markers.
 
 ## Config
 

@@ -2,7 +2,7 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,14 +20,17 @@ All heatmaps and overlays below inherit these fields unless noted.
 | `enabled` | boolean | `true` | Feature on/off. |
 | `chunkPixelSize` | int | `5` | Pixels per chunk cell (zoom). |
 | `mapRadiusChunks` | int | `0` | `0` = derive from view distance. Else a fixed radius. |
-| `rotateWithPlayer` | boolean | `true` | Rotate with player heading. |
 | `drawCenterMarker` | boolean | `true` | Crosshair at anchor. |
 | `drawLabel` | boolean | `true` | Title in header. |
 | `minSignificantScore` | double | `0.001` | Below peak score → quiet map (no noise-scale colors). |
 
-In-game scans use loaded chunks in a circular chunk radius. Rotation with player yaw is optional. Scan cache is 45 ms. Megamap wall support is included.
+In-game heatmaps are fixed north-up coordinate grids. X increases east/right and Z increases south/down. Every visible chunk has a complete perimeter; unloaded chunks, loaded quiet chunks, measured chunks, the center chunk, and MCA 32×32 boundaries remain visually distinct. Scans use the event-maintained loaded-coordinate index over the exact rectangular grid bounds and are cached across the render cadence.
 
-React Web renders exported heatmaps as a north-up absolute world-coordinate plane: each square is one outlined chunk, X increases east, and Z increases south. The center and zero axes have complete perimeter rings, empty coordinates remain visible, and the operator can select a canonical world key plus center X/Z and radius. The server answers from immutable world metadata and its event-maintained loaded-coordinate index; web requests do not enumerate worlds or call Bukkit world/chunk APIs from the HTTP thread.
+React Web renders one selected exported heatmap as a pan-and-zoom absolute coordinate plane. At close zoom each square is one chunk. Wider views automatically use aligned power-of-two buckets while keeping the response near 33 cells per axis; a 32-chunk cell is exactly one MCA region. Sparse cells carry peak, average, and loaded-sample count, so loaded zero activity remains distinct from a coordinate with no current sample. The server also returns immutable spawn and world-border metadata for recenter and fit-to-border controls. Web requests do not enumerate worlds or call Bukkit world or chunk APIs from the HTTP thread.
+
+Selecting a square exposes its exact cell-center position as `world X Z`. For an aggregate square this is the center of the represented aligned area, not the coordinate of its peak sample. Copying is browser-local and available to every role. React Web never fabricates a Y coordinate or teleports on cell selection; an admin must choose an online player and approve a separate confirmation dialog. The server rechecks the canonical world and border, permits only one in-flight request per target player, resolves solid non-hazardous footing with two open blocks inside the selected chunk, and then uses the owning schedulers and asynchronous teleport path. Destination lookup may load or generate that chunk, and HTTP 202 reports queue acceptance rather than completion.
+
+The coordinate-grid API is a clean break. Detail queries use `centerChunkX`, `centerChunkZ`, and `radius`; the former ambiguous `centerX` and `centerZ` parameters are not accepted. `radius` is bounded to 1–1,875,000 chunks, and invalid requests receive HTTP 400 instead of being silently clamped.
 
 ## Shared pie base (`FeatureIrisChunkSharePieBase`)
 

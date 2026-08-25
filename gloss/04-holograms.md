@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Gloss documentation: Holograms"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -39,7 +39,7 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
 
 | Key | Required | Notes |
 |---|---|---|
-| `schemaVersion` | yes | Must be `1`. Anything else rejects the file with `unsupported holograms schemaVersion: <n>` |
+| `schemaVersion` | yes | Must be `1`. Any other version is silently ignored |
 | `revision` | yes | `1` to `9007199254740991`. Gloss owns this value and bumps it by one on every write it makes |
 | `anchor.world` | yes | World folder name. Missing or blank rejects the file with `hologram anchor requires a world` |
 | `anchor.position` | yes | `[x, y, z]` array of doubles. Missing rejects the file with `hologram anchor requires a position` |
@@ -225,7 +225,7 @@ Other plugins can create them directly. See [API: Getting Started](/gloss/21-api
 
 ## Migrating pre-envelope hologram files
 
-The v1 hologram shape was `{"id": ..., "world": ..., "x": ..., "y": ..., "z": ..., "lines": [...]}` with no envelope. On every boot Gloss scans `holograms/` and rewrites any file that has no `schemaVersion` key:
+The pre-envelope hologram shape was `{"id": ..., "world": ..., "x": ..., "y": ..., "z": ..., "lines": [...]}`. Startup no longer scans or rewrites it; an unversioned document is silently ignored. Convert it only through the explicit legacy import command:
 
 - the original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/holograms/<file>`
 - `x`, `y`, `z` become `anchor.position` and `world` becomes `anchor.world`

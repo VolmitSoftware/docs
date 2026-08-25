@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "React documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -66,6 +66,20 @@ The current shaded artifact is `build/libs/React-2.0.0-26.2.jar`. A successful b
 5. Reload React and confirm inventory and framed maps repair during the startup boost.
 6. Test absent and present peer plugins separately. Integration renderers are not selectable until their capability is present.
 7. With Adapt publishing high ability-operation volume while its guard-check timing budget stays below 100 percent, confirm React creates no Adapt timing-pressure integration alert and adds no operation-derived pressure to the Adapt overlay or secret surge gates. Raise measured guard-check timing to at least 100 percent while MSPT remains below 50 milliseconds and confirm the alert still stays clear. Measured callback and event-handler time must remain the only weights in their corresponding impact maps.
+8. Open one chunk heatmap as a held map and on a 2×2 frame wall. Confirm north stays at the top, X increases right, Z increases down, chunk perimeters remain aligned while the player turns, quiet and active loaded chunks differ from unloaded cells, and the same anchor continues across every wall tile.
+9. Open React Web Heatmaps at a nonzero negative center that crosses one world-zero axis. Select one layer, pan in all four directions, zoom with both controls and the pointer wheel, return to spawn, and fit the world border. Confirm only the selected layer refreshes, exact chunk or aggregate coordinates remain visible, 32×32 MCA boundaries align at region coordinates, the border outline appears when it intersects the viewport, and the grid remains usable at desktop and mobile widths.
+10. Select single-chunk and aggregate squares on both sides of zero. Confirm **Copy position** produces the displayed cell-center `world X Z`, keeps negative coordinates exact, and never adds a Y value. Confirm viewer and operator sessions receive no online-player list or teleport control.
+11. Pair an admin session, select one explicitly named online player, and open **Teleport**. Cancel once and confirm no request is sent. Approve once and confirm the request contains the canonical world, exact displayed X/Z, `confirm: true`, and the next replay counter; React Web must show that the request was queued rather than completed.
+12. On a disposable Paper or Folia instance, exercise an offline player, a coordinate outside the live border, a second request while one is in flight, a chunk with no safe landing column, and a valid destination. Confirm rejected requests create no success audit entry, accepted requests produce one queued audit/operator notice, the valid landing has solid non-hazardous footing and two open blocks, and no cross-region ownership error appears. Destination lookup may load or generate the selected chunk.
+
+## Durable metric history
+
+1. Start React with `core/history.toml` enabled. Wait past one aligned second and confirm `plugins/React/history/active.wal` exists. Wait through a 15-minute boundary or stop cleanly and confirm a `.rht` segment exists under `history/raw/`.
+2. Open React Web Metrics, select one live sampler, and switch among 1h, 24h, 7d, 30d, and All. Confirm the displayed point count and resolution change, hover timestamps are wall-clock times, and the live WebSocket frame contains scalar samplers without a `history` field.
+3. Stop and restart normally. Confirm the previous coverage remains visible and the first new points join it without duplicates. Stop the process uncleanly within a disposable instance, restart, and confirm complete journal frames recover while an incomplete tail is ignored with one warning.
+4. Disable or remove a dynamic metric source after it has stored data. Confirm the catalog labels it historical and its retained range remains queryable.
+5. Set short retention values on a disposable instance and cross the relevant completed segment windows. Confirm the next-tier rollup exists before its covered source segments are removed, and confirm minimum/maximum spikes and gaps survive the lower-resolution view.
+6. Request more than the configured series, point, or page bounds and confirm the API rejects the request. Follow a valid `nextCursor` chain and confirm its sequence/time watermark stays unchanged across pages.
 
 ## Built-in runtime test commands
 

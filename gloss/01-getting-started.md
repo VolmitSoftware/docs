@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Gloss documentation: Getting Started"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -26,7 +26,7 @@ On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`. That f
 ## Install
 
 1. Put the Gloss jar in `plugins/`.
-2. Start the server. Gloss creates `plugins/Gloss/`, writes `gloss.toml`, extracts the shipped default documents, and prints a splash banner that ends in a startup status. `READY` means every service enabled. If any enable step throws, Gloss prints the failed startup status, tears down everything already started, and rethrows so the server disables the plugin instead of leaving a partial runtime loaded.
+2. Start the server. Gloss creates `plugins/Gloss/`, writes `gloss.toml`, extracts the shipped default documents, and prints a splash banner with `Web Editor: https://gloss.volmitsoftware.com` and a startup status. `READY` means every service enabled. If any enable step throws, Gloss prints the failed startup status, tears down everything already started, and rethrows so the server disables the plugin instead of leaving a partial runtime loaded.
 3. Edit `gloss.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
 
 If you set `splashScreen = false`, Gloss hides the banner for clean startups only. A failed enable always prints the banner and the startup error before the exception is propagated.
@@ -47,6 +47,7 @@ plugins/Gloss/
 ├── bubbles/               conditional chat bubble styles (default.json shipped)
 ├── damage-indicators/     conditional damage and healing presentations (default.json shipped)
 ├── real-drops/            conditional display-backed drop presentation (default.json shipped)
+├── menus/                 inert starter menu (default.json shipped)
 └── previews/              container preview documents (14 shipped)
 ```
 
@@ -60,7 +61,6 @@ returns when a document is saved:
 | Path | Written when |
 |---|---|
 | `holograms/` | The first hologram is saved |
-| `menus/` | The first menu document is written |
 | `images/` | You put an image file in |
 | `panels/` | The first panel is created |
 | `motd.json` | `[features] motd` is turned on |
@@ -71,7 +71,7 @@ returns when a document is saved:
 | `editor-sync-backups/<id>/` | A web editor publication replaced at least one file |
 | `custom-items.json` | `/gloss item export` runs. Regenerable, so nothing preserves it |
 | `holoui-import.json` | The HoloUi importer runs. Its presence is what stops the boot-time import re-running |
-| `import-backups/<timestamp>/` | The in-place legacy migration rewrites at least one file |
+| `import-backups/<timestamp>/` | An explicit `/gloss import legacy` rewrites at least one file |
 
 ## Shipped defaults
 
@@ -85,17 +85,18 @@ Gloss extracts default documents only where the target file is missing. An edite
 | `bubbles/` | `default.json` | `[features] chatBubbles` |
 | `damage-indicators/` | `default.json` | `[features] damageIndicators` |
 | `real-drops/` | `default.json` | `[features] realDrops` |
+| `menus/` | `default.json` | `[features] menus` |
 | `previews/` | 14 | `[features] previews` |
 | `tablist.json` | one singleton document | `[features] tablist` |
 | `motd.json` | one singleton document | `[features] motd` |
 
 A feature that is off ships nothing, which is why a stock first boot has no `motd.json` — `motd` is
 the one feature that defaults to `false`. Turning `motd`, `tablist`, `emoji`, `animations`, `boards`,
-`chatBubbles`, `damageIndicators` or `realDrops` on extracts its defaults on the config reload, without a restart. `previews` is the
+`chatBubbles`, `damageIndicators`, `realDrops` or `menus` on extracts its defaults on the config reload, without a restart. `previews` is the
 exception: the preview registry is only built during enable, so turning that feature on takes a
 restart before `previews/` appears.
 
-Nothing ships for `holograms/`, `panels/`, `menus/` or `images/`. Those folders do not exist until you put something in them. The blank hologram and blank menu baselines used by `/gloss hologram create` and `/gloss menu new` are read from inside the jar. They are never written to disk. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
+Nothing ships for `holograms/`, `panels/` or `images/`; boot-seeding a hologram or panel would place content into a real world, while an image is an operator asset. The safe menu baseline ships as `menus/default.json` and is also the source for `/gloss menu new`. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Feature toggles
 
@@ -131,7 +132,7 @@ Commands, permissions and placeholders all moved. `/holoui ...` is gone. Use the
 
 ## Current conditional document versions
 
-Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage indicators use schema 2 and real drops use schema 2. These are hard breaks: Gloss rejects older versions and does not migrate them. Rewrite custom files to the current format or use the relevant reset command for a shipped default. `/gloss import legacy` does not translate old boards, groups or tablist formats. The condition language is documented on [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
+Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage indicators use schema 2 and real drops use schema 2. These are hard breaks: Gloss silently ignores documents on any other schema and does not migrate them during startup. Rewrite custom files to the current format or use the relevant reset command for a shipped default. `/gloss import legacy` does not translate old boards, groups or tablist formats. The condition language is documented on [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
 
 ## Where to go next
 

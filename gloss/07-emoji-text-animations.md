@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Gloss documentation: Emoji, Text & Animations"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -65,7 +65,7 @@ Two syntaxes work anywhere colors apply:
 
 Bracket hex is case-insensitive and is converted before `&` codes. Both can appear in the same line.
 
-Gloss passes the rendered text through VolmLib's shared component delivery instead of sending serialized section text directly. Players and component-aware Paper consoles retain colors, RGB, decorations, and menu click or hover events; operator-visible component logs keep one `[Gloss]` discriminator. Unsupported console APIs, RCON, and plain Bukkit fallbacks receive clean plain text rather than visible `§` markers. The same destination rules cover command feedback and the startup splash. Default in-game command feedback and help use purple accents with dark-grey structure and grey descriptions, while success, warning, error, and required-argument colors retain their semantic green, yellow, red, and bright-red roles.
+Gloss passes the rendered text through VolmLib's shared component delivery instead of sending serialized section text directly. Players and component-aware Paper consoles retain colors, RGB, decorations, and menu click or hover events; operator-visible component logs keep one `[Gloss]` discriminator with dark-grey brackets and the Gloss name in its purple brand accent. Unsupported console APIs, RCON, and plain Bukkit fallbacks receive clean plain text rather than visible `§` markers. The same destination rules cover command feedback and the startup splash. Default in-game command feedback and help use purple accents with dark-grey structure and grey descriptions, while success, warning, error, and required-argument colors retain their semantic green, yellow, red, and bright-red roles.
 
 ### Chat
 
@@ -113,7 +113,7 @@ One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with 
 
 | Key | Required | Notes |
 |---|---|---|
-| `schemaVersion` | yes | Must be `1`. Anything else rejects the file with `unsupported emoji schemaVersion: <n>` |
+| `schemaVersion` | yes | Must be `1`. Any other version is silently ignored |
 | `revision` | yes | `1` to `9007199254740991` |
 | `trigger` | no | A literal string that also expands to the glyph. `null` or absent becomes `""`, which means token-only |
 | `emoji` | yes | The replacement text. Blank or absent rejects the file with `emoji document requires an emoji value` |
@@ -283,7 +283,7 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 
 | Key | Required | Notes |
 |---|---|---|
-| `schemaVersion` | yes | Must be `1`, otherwise `unsupported animations schemaVersion: <n>` |
+| `schemaVersion` | yes | Must be `1`. Any other version is silently ignored |
 | `revision` | yes | `1` to `9007199254740991` |
 | `mode` | yes | One of the four constants below. Matched case-insensitively and stored lowercase. Blank or absent gives `animation requires a mode`. Anything else gives `unknown animation mode: <value>` |
 | `frameIntervalMs` | yes | Milliseconds per frame, clamped to `1`..`60000` |
@@ -294,10 +294,8 @@ color-only frames at 53 milliseconds per frame, so the transition is a smooth 3.
 rather than a small legacy-color cycle. The non-round cycle keeps three-second status pollers from
 repeatedly sampling the same MOTD color. `|animation.rainbow|&lONLINE` changes the
 following text's color without inserting a word. Like emoji, it is re-extracted whenever the file
-is missing. On startup Gloss also replaces any exact unchanged prior shipped file: the original
-four `Gloss`-prefixed frames, the later four color-only frames, and the phase-locked 60-frame 50 ms
-gradient. Any edited or merely reformatted copy is preserved as user content; use `/gloss animations
-reset name=rainbow` when that copy should be replaced deliberately.
+is missing. Gloss never byte-matches or rewrites an existing copy; use `/gloss animations reset
+name=rainbow` when an older extracted copy should be replaced deliberately.
 
 Gloss also ships `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`,
 `odometer` and `wave`. Each is a scoreboard-safe example built from a reusable inline-expression
