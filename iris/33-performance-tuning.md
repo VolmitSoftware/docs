@@ -204,6 +204,35 @@ well. The cost is that hotloaded pack edits regenerate more from scratch
 because less remains cached. A/B this in Studio only. It has no effect on
 production worlds.
 
+## Symptom: Studio entry is slow or times out
+
+Player `open` and `tpstudio` have one absolute 10-second arrival deadline
+measured from command admission. Queued close or replacement work consumes
+the same budget, and a timed-out request cannot teleport late. This is a
+functional bound, not a setting.
+
+Benchmark with one artifact, pack, seed, player, and machine. Record cold
+and warm library, pack, and chunk-cache states separately. On Bukkit use
+the `Studio player <name> arrived in <milliseconds>` line together with
+the `[Studio timing]` phase lines; on modded measure command admission to
+the observed dimension change. Ordinary Bukkit Studio runs its canonical
+generation-cache warm as lifecycle-tracked asynchronous work overlapped
+with native structure-ring activation; runtime worlds retain synchronous
+warming. Generation, Matter generation, Studio hotload, and entry teleport
+wait for completion, and `generation_cache_warm` must report
+`skipped=false`. Treat the overlapping warm and ring durations as one
+wall-clock interval rather than adding them.
+For the native teleport only, Iris caps the entering player's view distance
+at 2 and restores the saved value after success or failure. This removes
+full-radius chunk competition; it does not change how any requested chunk
+is generated.
+Capture JProfiler around any slow pack
+preparation, runtime construction, structure activation, destination-chunk
+generation, or scheduler queue. Do not accelerate entry by changing its
+output: Studio must generate the same blocks, biomes, structures, and
+terrain as a normal world with the same pack and seed, without blank chunks
+or a landing pad.
+
 ## Symptom: the same pack resources reload constantly
 
 `performance.resourceLoaderCacheSize` (default 1024) bounds the cache of

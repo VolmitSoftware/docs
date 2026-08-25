@@ -79,7 +79,7 @@ Normal console output is limited to startup and shutdown state, administrative c
 1. Make one reversible edit in each hotloaded family: `adapt.toml`, a skill file, an adaptation file, `models.toml`, `mutations.toml`, and a locale override. Confirm the behavior changes without a restart, and that malformed TOML is rejected with an error rather than corrupting the file already in memory.
 2. Change a restart-bound setting (SQL, Redis, metrics, or plugin load order) and confirm nothing claims it reloaded live. Restart before you accept it. Ability API policy settings are core-hotloaded and should change without a restart.
 3. On an upgrade from an older nested or JSON config layout, retain a backup, let Adapt generate the current root TOML files, and transfer the settings you still want by hand. Confirm only `plugins/Adapt/adapt.toml`, `models.toml`, `mutations.toml`, `skills/*.toml`, and `adaptations/*.toml` affect runtime; there is no migration command.
-4. Override one localization key, delete the override, and confirm the bundled string comes back. Confirm an override file larger than 2 MiB is rejected.
+4. Set `language` to a supported non-English locale and confirm Adapt downloads only that locale, reports zero fallback entries, and writes it under `languages/downloaded/<source-revision>/`. Restart without network access and confirm the verified cache loads. Override one key, delete the override, and confirm the downloaded string comes back. Confirm an oversized or checksum-mismatched download is ignored and English remains available.
 5. Change a GUI entry and verify the slot, item, name, and lore, while confirming that gameplay costs and gates did not move with it.
 
 ## SQL persistence and recovery
@@ -127,7 +127,7 @@ Normal console output is limited to startup and shutdown state, administrative c
 | Item | Value |
 |---|---|
 | Custom brew duration | 320 ticks for every registered recipe |
-| Locale override size limit | 2 MiB |
+| Downloaded locale and override size limit | 2 MiB per file |
 | Shutdown flush allowance | 30 s |
 | SQL save batch | Up to 128 profiles after a 25 ms gather window |
 | SQL claim batch | Up to 128 profiles after a 25 ms gather window |

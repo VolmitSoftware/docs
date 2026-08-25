@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Feature switches and general runtime settings live in `plugins/Gloss/gloss.toml`. Gloss generates the file with a comment above each knob, canonicalizes it during startup and explicit importer writes, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
+Feature switches and general runtime settings live in `plugins/Gloss/gloss.toml`. Gloss generates the file with a comment above each knob, canonicalizes it during startup and explicit importer writes, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, damage-indicator presentation, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## The file model
 
@@ -105,15 +105,15 @@ A non-finite `stackDistance` or `viewRange` falls back to its default. A finite 
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `updateIntervalTicks` | `20` | 1 – 200 | Ticks between ordinary scoreboard refreshes; active clock-driven boards automatically use a separate every-tick driver |
+| `updateIntervalTicks` | `20` | 1 – 200 | Ticks between ordinary scoreboard condition evaluation and refreshes; active clock-driven boards automatically use a separate every-tick driver |
 
 ## `[tablist]`
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `updateIntervalTicks` | `40` | 1 – 400 | Ticks between ordinary tablist refreshes. Animated header/footer text samples all recipients every tick; animated list-name formats and API overrides fast-tick only the players selecting them |
+| `updateIntervalTicks` | `40` | 1 – 400 | Ticks between ordinary tablist condition evaluation and refreshes. Animated header/footer text samples all recipients every tick; animated selected list-name formats and API overrides fast-tick only their players |
 
-The header, footer and per-group list-name formats are not here. They are in `tablist.json`. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
+The conditional header, footer and list-name presentations are not here. They are in schema-2 `tablist.json`. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
 
 ## `[groups]`
 
@@ -151,25 +151,72 @@ Stage gates for the rendering pipeline. Neither applies to chat messages.
 |---|---|---|
 | `blacklistWorlds` | `[]` | World folder names where chat bubbles never appear. Null entries are dropped. No case folding is applied, so match the folder name exactly |
 
-Bubble wrapping, appearance, lifetime and expression-driven motion are per-style, in schema-2 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Bubble wrapping, appearance, lifetime, conditional selection and expression-driven motion are per-style, in schema-3 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
-## `[damageIndicators]`
+## `damage-indicators/default.json`
+
+`[features] damageIndicators` is the only damage-indicator setting in `gloss.toml`. The complete
+versioned presentation profile lives in `plugins/Gloss/damage-indicators/default.json`, hot-reloads
+without a full config reload, and is editable under **Damage indicators** in the web editor. Its
+schema-2 envelope is followed by `limits`, conditional `damage` and `healing` blocks, and an
+`audience` condition.
+
+### `limits`
 
 | Key | Default | Range | Meaning |
-|---|---|---|---|
-| `randomThrowForce` | `0.08` | 0.0 – 2.0 | Random sideways force applied to a spawned indicator |
-| `initialUpForce` | `0.13` | 0.0 – 2.0 | Initial upward force applied to a spawned indicator |
-| `gravityFactor` | `0.0093` | 0.0 – 1.0 | Gravity pull applied to an indicator each step |
-| `maxPerSecond` | `40` | 1 – 1000 | Indicators spawned per second before new ones are dropped |
-| `maxMsAlive` | `3000` | 250 – 30000 | Milliseconds an indicator stays alive |
-| `damagePrefix` | `"&c&l"` | — | Color-code prefix on damage numbers. A null value restores the default |
-| `healPrefix` | `"&a&l"` | — | Color-code prefix on heal numbers. A null value restores the default |
-| `decimals` | `0` | 0 – 2 | Decimal places shown on indicator numbers |
-| `showHeals` | `true` | — | Show heal indicators as well as damage indicators |
+|---|---:|---|---|
+| `maxPerSecond` | `40` | 1 – 1000 | Indicators admitted by the server-wide sliding one-second window |
+| `lifetimeMs` | `3000` | 250 – 30000 | Lifetime of each indicator in milliseconds |
+| `minimumDelta` | `0.009` | 0 – 1000 | Applied health delta at or below which no indicator is spawned |
+| `decimals` | `0` | 0 – 4 | Decimal places used for the `{amount}` value |
 
-The live-indicator admission limit is derived from `maxPerSecond * maxMsAlive`, rounded up to a
-whole indicator, and hard-capped at 2,048. The defaults admit 120 simultaneous indicators. Once
-full, Gloss drops new indicators until an existing one expires or is destroyed.
+The live-indicator admission limit is derived from `maxPerSecond * lifetimeMs / 1000`, rounded up
+to a whole indicator, and hard-capped at 2,048. The defaults admit 120 simultaneous indicators.
+Once full, Gloss drops new indicators until an existing one expires or is destroyed.
+
+### `damage` and `healing`
+
+Both blocks have the same shape: a base `when`, a complete base `presentation`, and complete
+conditional `variants`. A false base condition disables that event type. Otherwise the matching
+variant with the greatest priority wins, equal priorities sort by lexical id, and no variant match
+uses the base presentation. `presentation.format` is rendered by the Gloss text pipeline after
+`{amount}` is replaced, and `presentation.offset` is an `[x, y, z]` block-space vector from the
+affected entity.
+
+| Key | Damage default | Healing default | Meaning |
+|---|---|---|---|
+| `when` | `"true"` | `"true"` | Condition that gates this event type |
+| `presentation.format` | `"&c&l{amount}"` | `"&a&l{amount}"` | Authored indicator text; the required `{amount}` token is the formatted health delta |
+| `presentation.offset` | `[0, 0.7, 0]` | `[0, -0.1, 0]` | Spawn offset from the entity; each finite component is clamped to -32 – 32 |
+| `variants` | `[]` | `[]` | Complete presentations selected by `priority` and `when` |
+
+Each presentation also carries `motion`:
+
+| Key | Damage default | Healing default | Range | Meaning |
+|---|---:|---:|---|---|
+| `horizontalSpeed` | `0.8` | `0.45` | 0 – 16 blocks/second | Random horizontal launch speed |
+| `verticalSpeed` | `1.3` | `0.65` | -16 – 16 blocks/second | Initial vertical speed |
+| `verticalAcceleration` | `-0.93` | `0.05` | -32 – 32 blocks/second² | Constant vertical acceleration |
+| `spinDegreesPerSecond` | `0` | `0` | -1440 – 1440 | Constant display spin |
+
+The runtime evaluates position and spin from the immutable spawn state and elapsed seconds. The
+result does not depend on the temporary-hologram drive interval.
+
+Each presentation also carries `transform`:
+
+| Key | Damage default | Healing default | Range | Meaning |
+|---|---:|---:|---|---|
+| `startScale` | `1` | `1` | 0 – 16 | Scale at spawn |
+| `endScale` | `0.82` | `1.1` | 0 – 16 | Scale at expiry |
+| `fadeStartFraction` | `0.68` | `0.62` | 0 – 1 | Normalized lifetime fraction at which opacity begins falling toward zero |
+
+### `audience`
+
+| Key | Default | Meaning |
+|---|---|---|
+| `when` | `"hasPermission('viewer', 'gloss.indicators.show')"` | Per-viewer visibility condition |
+
+Damage conditions can use applied-delta event values plus immutable affected-entity and direct-damager snapshots. Audience conditions use a live viewer. World filters, permissions, groups, regions, PlaceholderAPI values and React samplers all use the shared language in [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 ## `[drops]`
 
@@ -187,7 +234,7 @@ full, Gloss drops new indicators until an existing one expires or is destroyed.
 
 ## `real-drops/default.json`
 
-`[features] realDrops` is the only real-drop setting in `gloss.toml`. The complete presentation profile lives in `plugins/Gloss/real-drops/default.json`, is extracted when the feature is enabled, and hot-reloads without a full config reload. The web editor's **Real drops** document exposes every field below and exports directly to that path.
+`[features] realDrops` is the only real-drop setting in `gloss.toml`. The schema-2 document at `plugins/Gloss/real-drops/default.json` contains one complete fallback `presentation`, zero or more complete conditional `variants`, and a per-viewer `audience.when`. It is extracted when the feature is enabled and hot-reloads without a full config reload. The web editor's **Real drops** document exposes every field and exports directly to that path. The headings below are relative to `presentation`; every variant repeats the complete presentation shape.
 
 ### `limits`
 
@@ -405,7 +452,7 @@ The integration bridge only samples metric keys something has asked for. This in
 
 ## What is no longer in configuration
 
-`config.yml` does not exist. Pre-merger Gloss used it. `/gloss import legacy` now migrates and retires the file. It overlays the mechanical keys onto `gloss.toml`. It moves the content keys into the JSON documents. It renames the original to `config.yml.imported`. The old HoloUi `settings.json` is overlaid the same way. Gloss does not read it as a live file.
+`config.yml` does not exist. Pre-merger Gloss used it. `/gloss import legacy` can overlay supported mechanical keys onto `gloss.toml`, apply supported bubble content to the current default bubble document, and import supported MOTD content. The old HoloUi `settings.json` can also contribute supported settings. Gloss does not read either legacy file as a live configuration source.
 
 Three groups of settings moved out of configuration. They are now content documents:
 
@@ -415,6 +462,8 @@ Three groups of settings moved out of configuration. They are now content docume
 | `motd.texts` | `motd.json` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
 | `chat-bubbles.message.*`, `word-wrap-break-chars`, `max-time-alive`, `follow-players`, `hide-own-messages` | `bubbles/<id>.json` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 
-The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Per-group tablist names and default boards are now fields inside `tablist.json` and each board document.
+The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Board schema 2 and tablist schema 2 express group-dependent behavior as ordinary conditions; `/gloss import legacy` does not convert old boards, groups or tablist formats.
 
-The former `line-stagger-ticks` and `fly-away` switches have no direct schema-2 keys. One wrapped message is now one multiline entity, and translation, scale, rotation and opacity are authored as BubbleStyle motion expressions. During one-time legacy `config.yml` import, line stagger is discarded; fly-away on keeps the shipped late-fly motion, while off writes identity motion. Prefix, offset, wrap, lifetime, follow and hide still map directly.
+The former `line-stagger-ticks` and `fly-away` switches have no direct schema-3 keys. One wrapped message is one multiline entity, and translation, scale, rotation and opacity are authored as BubbleStyle motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
+
+Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss rejects those document versions and does not migrate them. Rewrite custom content to the current schema or reset it to the shipped default.

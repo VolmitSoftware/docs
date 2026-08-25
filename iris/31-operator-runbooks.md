@@ -57,8 +57,12 @@ Use a disposable world, a fixed seed, and a pack with visibly frequent rivers. V
    [01 - Installation & Platforms](/iris/01-installation-platforms).
 2. Start the server once.
 
-   Expect: Iris enables without downloading packs. `iris.json` appears
-   in the Iris data directory.
+   Expect on a cold Bukkit library cache: Iris provisions Gson,
+   Caffeine, ConcurrentLinkedHashMap, and Paralithic under
+   `plugins/Iris/cache/libraries/`, then enables without downloading a
+   world pack. `iris.json` appears in the Iris data directory. Restart
+   once without changing the jar and confirm those runtime libraries are
+   reused without another download.
 
    If Iris does not enable, check Java version and platform artifact before
    anything else. If `overworld` is absent, run
@@ -71,17 +75,21 @@ Use a disposable world, a fixed seed, and a pack with visibly frequent rivers. V
 
    ```
    /iris create name=test-ow type=overworld seed=1337
+   /iris create name=test-uw type=underworld seed=7331
    /iris tp test-ow
    ```
 
-   Expect on every Bukkit-family server, including Folia: the world is
-   created and loaded as an Iris world in the current process, and you
-   land in generated terrain. Folia must report `paper_like_runtime` as
-   the creation backend and must not request a restart. The console must
-   not print `World storage migration is required during startup` or
-   `Starting Vanilla import` for that world.
+   Start the Underworld command immediately after the Overworld command
+   reports success. Expect on every Bukkit-family server, including
+   Folia: each success occurs only after that world's actual initial-spawn
+   chunk and owning-region spawn placement complete. Both worlds are
+   loaded in the current process, the second command is not rejected as
+   busy, and an equivalent compiler-input fingerprint does not request a
+   restart. Folia must report `paper_like_runtime` as the creation backend.
+   The console must not print `World storage migration is required during
+   startup` or `Starting Vanilla import` for either world.
 
-4. Walk or fly a few hundred blocks.
+4. Enter each world and walk or fly a few hundred blocks.
 
    Expect: non-empty terrain, surface biomes, no repeating stack traces on
    first chunks.
@@ -250,13 +258,17 @@ blocking defect.
    expect external datapack, Iris dimension-type, and biome registration
    to complete.
 
-3. Create a world (arguments are positional here, not keyed):
+3. Create both managed dimensions (arguments are positional here, not keyed):
 
    ```
    /iris create test-ow overworld 1337
+   /iris create test-uw underworld 7331
    ```
 
-4. Enter the dimension.
+4. Enter each dimension. If the test harness includes a loader listener,
+   record Fabric `ServerLevelEvents.LOAD` or Forge/NeoForge
+   `LevelEvent.Load` for each runtime injection, then disable and re-enable
+   one disposable dimension and require the matching unload/load pair.
 
    Expect: non-empty generation, and custom-biome registration where the
    pack defines custom biomes.
@@ -467,9 +479,38 @@ changing anything. Triage table:
 
 ### General pack Studio
 
+Use the platform syntax and one fixed seed:
+
+```text
+/iris studio open overworld seed=1337        # Bukkit
+/iris studio open overworld 1337             # modded
 ```
-/iris studio open overworld seed=1337
-```
+
+Measure from command admission until the player changes into the Studio
+dimension. On Bukkit use the emitted `Studio player <name> arrived in
+<milliseconds>` line; on modded record the same command-to-dimension-change
+interval in the harness. Require less than 10,000 ms for Overworld, close,
+then repeat for Underworld. Record cold and warm results separately and
+capture JProfiler when a phase is unexpectedly slow.
+
+For ordinary Bukkit Studio, require the canonical generation-cache warm
+to run as lifecycle-tracked asynchronous work overlapped with native
+structure-ring activation. Runtime worlds still run the same warm
+synchronously. Its `generation_cache_warm` timing must report
+`skipped=false`; generation, Matter generation, Studio hotload, and entry
+teleport must remain gated until it completes. Because the warm and ring
+intervals overlap, do not sum their phase durations.
+During native teleport, require only the entering player's view distance
+to become 2 and the prior value to return immediately after success or
+failure. A second player must remain unchanged. Generate beyond the entry
+chunk and confirm every requested chunk still follows the canonical FULL
+pipeline.
+
+Studio must generate the same blocks, biomes, structures, and terrain as
+a normal world with the same pack and seed. At fixed coordinates compare
+the Studio result with a disposable production world. A blank chunk,
+landing pad, simplified biome field, skipped structure, or different
+terrain is a failure.
 
 While moving through fresh chunks so Moonrise has active generation
 stages, edit a pack file on disk. On Bukkit you may also edit through the
@@ -483,6 +524,13 @@ Then close while fresh chunks are still queued:
 Expect: the studio world opens. Hotload applies without a server restart.
 Already-admitted stages finish before the transition and later stages
 resume after it. Close discards the transient studio world cleanly.
+
+As a separate transition test, issue a second `open`, `close`, or
+`tpstudio` while the first transition is still active. Expect strict
+per-owner ordering. The absolute arrival budget remains 10 seconds from
+each command's own admission, queued time consumes that budget, temporary
+modded chunk tickets are released, and an expired request never teleports
+the player later.
 
 **Expected:** no generation-session rejection, no partial chunk-stage
 failure, no chunk-system crash. A failed hotload must fail closed without

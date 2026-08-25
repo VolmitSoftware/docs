@@ -40,7 +40,7 @@ Direct leaves on `/gloss`:
 ## Who can run anything at all
 
 Before Director sees the arguments, Gloss checks a single gate. The sender must hold at least one of
-the 40 command permissions listed in `GlossCommandService.BASE_COMMAND_PERMISSIONS`. A sender
+the 43 command permissions listed in `GlossCommandService.BASE_COMMAND_PERMISSIONS`. A sender
 holding none of them gets the "no permission" message and the failure chime for `/gloss`,
 `/hologram` and `/board` alike. Tab completion returns an empty list.
 
@@ -154,15 +154,14 @@ Gloss scoreboards, not panels. Also reachable as `/board`. Covered in
 | `addline` | `<id> <text>` | `gloss.boards.edit` | |
 | `setline` | `<id> <line> <text>` | `gloss.boards.edit` | Line numbers start at 1 |
 | `removeline` | `<id> <line>` | `gloss.boards.edit` | |
-| `primary` | `<id> [enabled=true]` | `gloss.boards.edit` | Marks the fallback board |
-| `permission` | `<id> <node>` | `gloss.boards.edit` | `node=default` clears the gate |
+| `select` | `<id> <priority> <when>` | `gloss.boards.edit` | Compiles and writes the board's automatic-selection rule |
 | `reset` | `[name=*]` | `gloss.boards.edit` | Restores shipped board documents |
 | `show` | `<id>` | `gloss.boards.show` | Player only |
 | `hide` | none | `gloss.boards.hide` | Player only |
 | `list` | `[page=1]` | none beyond the base gate | Clickable list. Clicking runs `info`. Seventeen per page |
-| `info` | `<id>` | none beyond the base gate | Title, primary flag, permission and lines |
+| `info` | `<id>` | none beyond the base gate | Selection priority and condition, variant count, title and lines |
 
-## `/gloss emoji`, `animations`, `bubbles`, `drops`, `tablist`, `motd`
+## `/gloss emoji`, `animations`, `bubbles`, `indicators`, `drops`, `tablist`, `motd`
 
 Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) and
@@ -176,11 +175,13 @@ Covered in [Emoji, Text & Animations](/gloss/07-emoji-text-animations),
 | `animations reset` | `[name=*]` | `gloss.animations.reset` | |
 | `bubbles style` | `<style>` | `gloss.bubbles.style` | Player only. `style=clear` returns to automatic selection |
 | `bubbles reset` | `[name=*]` | `gloss.bubbles.reset` | |
+| `indicators reset` | none | `gloss.indicators.reset` | Restores `damage-indicators/default.json` |
 | `drops reset` | `[name=*]` | `gloss.drops.reset` | Restores shipped real-drop settings |
 | `tablist reset` | none | `gloss.tablist.reset` | Always resets the singleton document |
 | `motd reset` | none | `gloss.motd.reset` | Always resets the singleton document |
 
-`animations` also answers to `animation`. `bubbles` answers to `bubble`. `drops` answers to `drop`.
+`animations` also answers to `animation`. `bubbles` answers to `bubble`. `indicators` answers to
+`indicator`. `drops` answers to `drop`.
 
 Choosing a style with `bubbles style` only takes effect if the player also holds
 `gloss.bubbles.style.<styleId>`. The resolution order is on the bubbles page.
@@ -326,7 +327,7 @@ ambiguous prefix is rejected.
 | `preview` (`dry-run`, `dryrun`) | `<source>` | `gloss.import` | Non-destructive plan for a third-party hologram plugin's data |
 | `apply` | `<source>` | `gloss.import.apply` | Applies that plan without overwriting anything Gloss already owns |
 | `holoui` | none | `gloss.import` | Copies HoloUi data from `plugins/holoui`, then reloads |
-| `legacy` | none | `gloss.import` | Migrates pre-merger Gloss data files to the enveloped shapes, then reloads |
+| `legacy` | none | `gloss.import` | Imports supported envelope-less holograms, emoji, animations and legacy config content, then reloads; it does not translate old boards, groups or tablist formats |
 
 `source` is one of `gholo`, `decent-holograms`, `holographic-displays` or `fancy-holograms`. Each
 accepts short aliases: `files` for `gholo`, `decent` for `decent-holograms`, `hd` for
@@ -348,7 +349,7 @@ Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
 | Node | Default | Grants |
 |---|---|---|
 | `gloss.*` | op | Every node below |
-| `gloss.admin` | op | `/gloss status`, `/gloss reload`, and the six reset nodes as children |
+| `gloss.admin` | op | `/gloss status`, `/gloss reload`, and the seven reset nodes as children |
 | `gloss.holograms` | op | The five hologram children |
 | `gloss.holograms.create` | op | `hologram create`, `hologram rendertext` |
 | `gloss.holograms.edit` | op | `addline`, `setline`, `removeline`, `clear`, `orient` |
@@ -357,7 +358,7 @@ Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
 | `gloss.holograms.teleport` | op | `hologram tp` |
 | `gloss.boards` | op | The five scoreboard children |
 | `gloss.boards.create` | op | `board create` |
-| `gloss.boards.edit` | op | `title`, `addline`, `setline`, `removeline`, `primary`, `permission`, `reset` |
+| `gloss.boards.edit` | op | `title`, `addline`, `setline`, `removeline`, `select`, `reset` |
 | `gloss.boards.delete` | op | `board delete` |
 | `gloss.boards.show` | op | `board show` |
 | `gloss.boards.hide` | op | `board hide` |
@@ -390,14 +391,15 @@ Every node defaults to `op` except `gloss.emoji.use`, `gloss.bubbles.send` and
 | `gloss.bubbles.send` | **true** | This player's chat messages render as chat bubbles |
 | `gloss.bubbles.style` | op | `/gloss bubbles style` |
 | `gloss.bubbles.reset` | op | `bubbles reset` |
+| `gloss.indicators.reset` | op | `indicators reset` |
 | `gloss.drops.reset` | op | `drops reset` |
 | `gloss.tablist.reset` | op | `tablist reset` |
 | `gloss.motd.reset` | op | `motd reset` |
 | `gloss.indicators.show` | **true** | This player sees damage and heal indicators |
 
-`gloss.bubbles.reset`, `gloss.drops.reset`, `gloss.emoji.reset`, `gloss.animations.reset`,
-`gloss.tablist.reset` and `gloss.motd.reset` are reached through `gloss.admin` rather than being
-direct children of `gloss.*`.
+`gloss.bubbles.reset`, `gloss.indicators.reset`, `gloss.drops.reset`, `gloss.emoji.reset`,
+`gloss.animations.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are reached through
+`gloss.admin` rather than being direct children of `gloss.*`.
 
 ### Dynamic nodes
 
@@ -409,11 +411,13 @@ it.
 |---|---|---|
 | `gloss.open.<menuId>` | A player opens a menu, by command, by clicking a panel, or through the API | [Hologram Menus](/gloss/09-menus) |
 | `gloss.bubbles.style.<styleId>` | Resolving which bubble style a player gets, including their explicit choice | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
-| `gloss.board.<permission>` | Auto-selecting a scoreboard, where `<permission>` is the board document's `permission` value. The value `default` means unrestricted and is never turned into a node | [Scoreboards & Groups](/gloss/05-scoreboards-groups) |
 | `gloss.emoji.<emojiId>` | Replacing one emoji, and only when `[emoji] emojiSpecificPermissions` is `true` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 
 `gloss.open.<menuId>` is checked in addition to `gloss.menus.open`. It is not applied to `menu
 list`. Every configured menu id appears in the list. The per-menu node is only tested on open.
+Scoreboards have no implicit `gloss.board.<value>` permission. Put an explicit
+`hasPermission('viewer', '<node>')` call in `select.when` or a variant condition when access should
+depend on a permission.
 
 ## List paging
 

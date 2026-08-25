@@ -11,19 +11,20 @@ dateCreated: 2026-08-19T00:00:00.000Z
 Chat bubbles float a player message above their head. Damage indicators throw the applied health delta off an entity. Drop labels identify item entities, while real drops replace their vanilla client model with grounded and tumbling display entities. Bubbles and indicators use temporary holograms; dropped-item presentation has its own display-carrier lifecycle.
 
 `/gloss web edit bubble-style <id>` opens one bubble style. `/gloss web edit real-drops default`
-opens the Real Drops document. `/gloss web workspace` includes both.
+opens the Real Drops document. `/gloss web edit damage-indicators default` opens the damage and
+healing profile. `/gloss web workspace` includes all three.
 
 ## Chat bubbles
 
 ### Style documents
 
-Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart. On enable, Gloss atomically replaces the exact byte-identical former schema-1 default, the former 700 ms schema-2 default and the short-lived grey-edge schema-2 default with the file below. Any edited or reformatted copy is preserved.
+Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart.
 
 `plugins/Gloss/bubbles/default.json` as shipped:
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "revision": 1,
   "prefix": "&7",
   "offset": [0, 0.3, 0],
@@ -55,7 +56,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 
 | Key | Default when absent | Clamp / notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `2`, otherwise `unsupported bubbles schemaVersion: <n>` |
+| `schemaVersion` | required | Must be `3`, otherwise `unsupported bubbles schemaVersion: <n>` |
 | `revision` | required | `1` to `9007199254740991` |
 | `prefix` | `"&7"` | Authored text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
 | `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
@@ -67,7 +68,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `shimmer` | shipped shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
 
-`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 2 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message now appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
+`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 3 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
 
 There is no config table for bubble styles. `gloss.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
 
@@ -75,37 +76,31 @@ There is no config table for bubble styles. `gloss.toml` carries exactly one bub
 
 ```json
 "select": {
-  "worlds": ["survival", "resource_*"],
-  "groups": ["vip", "admin"],
-  "priority": 10
+  "priority": 10,
+  "when": "subject.world == 'survival' && oneOf(subject.group, ['vip', 'admin'])"
 }
 ```
 
 | Key | Notes |
 |---|---|
-| `worlds` | Glob patterns matched against the speaker's world folder name. `*` matches any run of characters. `?` matches one. Everything else is literal and the match is case-sensitive and whole-string. An empty or absent list means any world |
-| `groups` | Group names, trimmed and lowercased on load, matched case-insensitively against the speaker's primary Vault group. An empty or absent list means any group |
 | `priority` | Integer, default `0`. Higher wins |
+| `when` | Required boolean condition evaluated with the speaker as `subject`; see [Expressions & Placeholders](/gloss/13-expressions-placeholders) |
 
-`worlds` and `groups` are ANDed. Both conditions must hold. An empty list satisfies its own condition.
-
-Primary groups come from Vault. A `groups` list only ever matches when `[groups] useVault = true` and a Vault permission provider is installed. Without one the primary group is unknown. Any style with a non-empty `groups` list is skipped. See [Scoreboards & Groups](/gloss/05-scoreboards-groups).
-
-Style resolution runs on the speaker's entity-owning thread. The first group-selected bubble reads the speaker's current Vault primary group directly and caches it there, so it does not depend on an earlier cache warmup; later background refreshes are also dispatched through that owner.
+The condition can use the speaker's world, Vault group, health, permissions, regions, PlaceholderAPI values, React samplers, time and the other supported inputs. Style resolution and condition evaluation run on the speaker's entity-owning thread.
 
 ### Style resolution
 
 For each chat message Gloss resolves one style, in this order:
 
 1. **The player's explicit choice.** Used only when the player has chosen a style, that style id still exists on disk, **and** the player holds `gloss.bubbles.style.<id>`. Any of the three failing drops straight to step 2 with no message.
-2. **The best matching `select`.** Every style that has a `select` block and whose block matches the speaker world and primary group is a candidate. The highest `priority` wins. Ties are broken by the lexicographically smallest style id.
+2. **The best matching `select`.** Every style whose `select.when` evaluates true is a candidate. The highest `priority` wins. Ties are broken by the lexicographically smallest style id.
 3. **`default`.** Used when nothing matched and a style with the id `default` exists.
-4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-2 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, and the late upward motion expression. Bubbles never stop working because a file is missing.
+4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-3 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, and the late upward motion expression. Bubbles never stop working because a file is missing.
 
 Two consequences worth stating plainly:
 
 - **A style with no `select` block never auto-matches.** It can only be reached by an explicit `/gloss bubbles style <id>` or by being named `default`. This is the way to publish a style that is opt-in only.
-- **An empty `select` matches everyone.** `"select": {}` or `"select": {"priority": 5}` has no world and no group condition. Both conditions pass. The style becomes a server-wide auto-match at that priority.
+- **An empty `select` is invalid.** Use `"when": "true"` for a server-wide automatic style.
 
 The style is resolved **once per chat message**, before the text is wrapped. The whole message uses it. If you edit a style file, or a player changes their choice, the change applies from the next message onward. Bubbles already in flight keep the values they were spawned with.
 
@@ -140,9 +135,6 @@ The shipped first pass waits 400 ms after chat, then crosses the full block over
 A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine twice. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn pass starts at `spawnDelayMs`; the fly-away pass starts at `max(0, maxAliveMs - flyAwayLeadMs)` and wins if the windows overlap. Each pass stops after `durationMs`. Shimmer timing and the `motion` expressions are independent, so the band can travel while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
 
 Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (shipped `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to the configured temporary-hologram interval, shipped as two ticks, and is visibly coarser.
-
-> Exact untouched former shipped defaults are atomically upgraded to the delayed two-pass style. Edited or reformatted styles remain operator-owned; set `spawnDelayMs` to `400`, `durationMs` to `700`, and `flyAway` to `true` to opt in.
-{.is-info}
 
 ### Motion
 
@@ -226,43 +218,177 @@ The file is written whenever a player sets or clears a style. It is read once wh
 
 ## Damage and heal indicators
 
-Gloss listens to `EntityDamageEvent` and `EntityRegainHealthEvent` at `MONITOR` priority, ignoring cancelled events, on living entities only. `EntityRegainHealthEvent` is ignored entirely when `[damageIndicators] showHeals = false`.
+### Profile document
+
+The complete authored profile is the versioned singleton
+`plugins/Gloss/damage-indicators/default.json`. It ships while `[features] damageIndicators` is on,
+hot-reloads through the shared data watchdog and exports from the web editor to that exact path.
+
+The shipped document is:
+
+```json
+{
+  "schemaVersion": 2,
+  "revision": 1,
+  "limits": {
+    "maxPerSecond": 40,
+    "lifetimeMs": 3000,
+    "minimumDelta": 0.009,
+    "decimals": 0
+  },
+  "damage": {
+    "when": "true",
+    "presentation": {
+      "format": "&c&l{amount}",
+      "offset": [0, 0.7, 0],
+      "motion": {
+        "horizontalSpeed": 0.8,
+        "verticalSpeed": 1.3,
+        "verticalAcceleration": -0.93,
+        "spinDegreesPerSecond": 0
+      },
+      "transform": {
+        "startScale": 1,
+        "endScale": 0.82,
+        "fadeStartFraction": 0.68
+      }
+    },
+    "variants": []
+  },
+  "healing": {
+    "when": "true",
+    "presentation": {
+      "format": "&a&l{amount}",
+      "offset": [0, -0.1, 0],
+      "motion": {
+        "horizontalSpeed": 0.45,
+        "verticalSpeed": 0.65,
+        "verticalAcceleration": 0.05,
+        "spinDegreesPerSecond": 0
+      },
+      "transform": {
+        "startScale": 1,
+        "endScale": 1.1,
+        "fadeStartFraction": 0.62
+      }
+    },
+    "variants": []
+  },
+  "audience": {
+    "when": "hasPermission('viewer', 'gloss.indicators.show')"
+  }
+}
+```
+
+The limits are clamped when the document loads:
+
+| Key | Range |
+|---|---|
+| `maxPerSecond` | `1`..`1000` |
+| `lifetimeMs` | `250`..`30000` |
+| `minimumDelta` | `0`..`1000` |
+| `decimals` | `0`..`4` |
+
+`damage` and `healing` have the same contract. Their base `when` condition gates that event type.
+When it is true, the matching variant with the greatest `priority` wins, equal priorities sort by
+lexical `id`, and no variant match uses the complete base `presentation`. `format` must contain
+`{amount}`; Gloss replaces that token with the formatted absolute health delta and then runs the
+result through the normal text pipeline. `offset` is an `[x, y, z]` block-space vector from the
+affected entity. Every component must be finite and is clamped to `-32`..`32`.
+
+Motion fields use continuous units rather than per-tick impulses:
+
+| Key | Range |
+|---|---|
+| `horizontalSpeed` | `0`..`16` blocks per second |
+| `verticalSpeed` | `-16`..`16` blocks per second |
+| `verticalAcceleration` | `-32`..`32` blocks per second squared |
+| `spinDegreesPerSecond` | `-1440`..`1440` |
+
+Gloss chooses one random horizontal direction at spawn. At elapsed time `t` in seconds, horizontal
+travel is `horizontalSpeed * t`, vertical travel is
+`verticalSpeed * t + 0.5 * verticalAcceleration * t²`, and rotation is
+`spinDegreesPerSecond * t`. Every sample is derived from the immutable spawn pose, so changing
+`[holograms] temporaryUpdateIntervalTicks` changes only the sampling cadence, not the path.
+
+`transform.startScale` and `transform.endScale` accept `0`..`16` and interpolate linearly
+over the indicator lifetime. Opacity stays full until `fadeStartFraction` (`0`..`1`), then falls
+linearly to zero at expiry. World, entity, source, cause and amount filtering belongs in `when`
+conditions rather than a separate disabled-world list.
+
+### Runtime behavior
+
+Gloss listens to `EntityDamageEvent` and `EntityRegainHealthEvent` at `MONITOR` priority, ignoring
+cancelled events, on living entities only. It evaluates the matching `damage.when` or `healing.when`
+after the applied delta is known and discards the event when that condition is false.
 
 The number shown is the **actual applied health delta**, not the event raw amount. Health is read when the event fires. It is read again 2 ticks later on the entity own thread. The difference is what spawns. Armor, resistance, absorption ordering and other plugins modifications are therefore included by construction. A damage event another plugin neutralises produces no indicator.
 
 Filtering before an indicator spawns:
 
 - A per-entity 3-tick debounce coalesces bursts. One entity produces at most one indicator per 3 ticks.
-- A delta with an absolute value of `0.009` or less is discarded.
-- A server-wide sliding window drops anything over `[damageIndicators] maxPerSecond`.
-- Live admission is the smaller of `ceil(maxPerSecond * maxMsAlive / 1000)` and `2048`. The shipped settings therefore allow at most 120 simultaneous indicators. A new indicator is dropped while that capacity is full.
+- A delta at or below `limits.minimumDelta` is discarded.
+- A server-wide sliding window drops anything over `limits.maxPerSecond`.
+- Live admission is the smaller of `ceil(maxPerSecond * lifetimeMs / 1000)` and `2048`. The shipped settings therefore allow at most 120 simultaneous indicators. A new indicator is dropped while that capacity is full.
 
-Damage numbers spawn `0.7` blocks above the entity location with `damagePrefix`. Heal numbers spawn `0.1` blocks below it with `healPrefix`. Both scatter horizontally by up to `randomThrowForce` in each direction and pop upward by `initialUpForce`. Damage numbers then fall by `gravityFactor` per driver step. Heal numbers instead rise by `gravityFactor` divided by 19.5 per step. Steps happen on the temporary hologram driver, every `[holograms] temporaryUpdateIntervalTicks` (default `2`).
+The value is formatted by `limits.decimals`. `0` prints a rounded whole number; `1` through `4`
+print that many decimal places. Hot-loading a different profile destroys every live indicator, then
+new spawns use the new immutable format, trajectory and presentation.
 
-The value is formatted by `decimals`. `0` prints a rounded whole number. `1` or `2` print that many decimal places.
+Style conditions receive `event.type`, `event.cause`, `event.amount`, `event.reportedAmount`,
+`event.damage`, `event.healing`, `event.critical`, `event.criticalKnown`, and
+`event.directSourceType`, plus immutable `subject.*` values for
+the affected entity and, when that entity is owned by the current region, `source.*` values for the
+direct Bukkit damager. Otherwise the source defaults are used. A projectile is never followed to a
+remote shooter. The ordinary condition functions, world and time
+values, PlaceholderAPI access, and React sampler metrics are also available. Evaluation runs on the
+affected entity's owning thread. See [Expressions & Placeholders](/gloss/13-expressions-placeholders)
+for the complete language.
 
-Visibility is decided once, at spawn. Gloss queries the movement-fed spatial index for players within `[holograms] viewRange` of the entity and reads a cached `gloss.indicators.show` snapshot; spawning an indicator does not dispatch one permission task per nearby viewer. Enable and reload queue the online population for bounded entity-thread sampling instead of dispatching every player at once. Join, respawn, world change, and chunk crossing refresh that player immediately. Periodic snapshots remain current for five seconds; a due-time cohort refreshes at most 16 players every two ticks, taking about 6.25 seconds to populate or rotate through 1,000 stationary players at 20 TPS. An unknown player is hidden until their first snapshot is available. Players further away than the view range are not checked because they cannot see the display anyway.
+On Paper, Folia and Paper-derived servers, `event.critical` is the exact critical flag captured from
+the damage event; it covers player critical attacks and critical arrows. `event.criticalKnown` is
+`true` when that result is authoritative. Spigot does not expose the flag, so entity damage there
+uses `false` for both fields instead of guessing from player pose, fall distance or cooldown.
+Healing and non-entity damage are authoritatively non-critical. A portable critical variant normally
+uses `event.criticalKnown && event.critical`.
 
-That set is never revisited. A player who walks into range while an indicator is still alive sees it, permission or not. This is deliberate: indicators live at most `maxMsAlive` (default `3000`, three seconds) and re-scanning the audience every driver step for a three-second display costs more than the leak is worth. If you need the permission enforced strictly, lower `maxMsAlive`.
+At spawn, Gloss spatially bounds evaluation to nearby viewers and evaluates `audience.when`
+separately on each viewer's entity-owning thread. A matching viewer receives the shared indicator
+and a non-matching viewer does not. The shipped condition is
+`hasPermission('viewer', 'gloss.indicators.show')`. Gloss then reevaluates an individual viewer when
+they join, change world, respawn, or cross a chunk boundary, so a live indicator does not retain an
+obsolete permission or location snapshot.
 
-| Config key | Default | Range |
-|---|---|---|
-| `[features] damageIndicators` | `true` | on/off for the whole feature |
-| `[damageIndicators] randomThrowForce` | `0.08` | `0.0`..`2.0` |
-| `[damageIndicators] initialUpForce` | `0.13` | `0.0`..`2.0` |
-| `[damageIndicators] gravityFactor` | `0.0093` | `0.0`..`1.0` |
-| `[damageIndicators] maxPerSecond` | `40` | `1`..`1000` |
-| `[damageIndicators] maxMsAlive` | `3000` | `250`..`30000` |
-| `[damageIndicators] damagePrefix` | `"&c&l"` | any string. `null` restores the default; an empty string suppresses the prefix |
-| `[damageIndicators] healPrefix` | `"&a&l"` | any string. `null` restores the default; an empty string suppresses the prefix |
-| `[damageIndicators] decimals` | `0` | `0`..`2` |
-| `[damageIndicators] showHeals` | `true` | heal indicators in addition to damage |
+### Web renderer
+
+The editor's **Damage indicators** document has Visual, Preview, Code and Split views. Its
+interactive browser renderer uses the same closed-form trajectory, rotation, scale and fade
+equations as the plugin. Damage and healing can be selected independently; the selected type loops
+automatically at the authored lifetime, advances to a new deterministic seeded trajectory on each
+cycle, and retains replay and pause controls. A damage-only **Critical hit** control switches the
+sample event between ordinary and exact critical damage so critical variants can be inspected.
+The sample context includes the complete event, subject, source and viewer role values used by this
+surface. A condition that deliberately excludes the sample viewer shows `condition false` instead
+of an unexplained blank stage. **Randomize** procedurally replaces the complete singleton JSON as one
+undoable edit, varying valid limits, amount formats, offsets, motion, a critical-damage variant, a
+large-heal variant, transforms and preview-visible audience rules while every generated value remains
+editable and exportable.
+
+The browser proves the document math and editing contract, not Minecraft's exact client rendering.
+TextDisplay font rasterization, depth and occlusion, interpolation between server samples, camera
+perspective, tracking range and real entity motion still require in-game validation.
+
+### Commands and permissions
 
 | Permission | Default | Grants |
 |---|---|---|
 | `gloss.indicators.show` | `true` | This player sees damage and heal indicators |
+| `gloss.indicators.reset` | `op` | `/gloss indicators reset`, which restores the shipped singleton |
 
-There are no indicator commands. If you set `[features] damageIndicators = false`, Gloss unregisters the listeners and destroys every live indicator. If you turn it back on, Gloss re-registers them without a restart.
+`/gloss web edit damage-indicators default` opens the focused live document, and `/gloss web
+workspace` includes it. If you set `[features] damageIndicators = false`, Gloss unregisters the
+listeners and destroys every live indicator. If you turn it back on, Gloss extracts a missing
+default, reloads the singleton and re-registers the listeners without a restart.
 
 ## Dropped item labels
 
@@ -317,7 +443,41 @@ On enable, reload and real-drop document changes, Gloss queues already-loaded ch
 
 `[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. Placeable materials render through `BlockDisplay` with their placed block state; true items render through `ItemDisplay` in explicit `FIXED` mode. The first model is the non-persistent carrier, while additional stack models and the optional `TextDisplay` label ride it as passengers. Gloss moves only the carrier at the configured cadence, so a multi-model labelled stack still costs one position update instead of one per display. Once settled, unchanged poses are not resent and microscopic item-position noise is ignored; meaningful movement still wakes and moves the carrier.
 
-The feature switch remains `[features] realDrops` in `gloss.toml`. Every presentation setting below lives in the hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
+The feature switch remains `[features] realDrops` in `gloss.toml`. Every presentation setting below lives in the schema-2, hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `presentation.limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
+
+The document has one complete fallback `presentation`, zero or more complete conditional `variants`, and one per-viewer `audience` condition:
+
+```json
+{
+  "schemaVersion": 2,
+  "revision": 1,
+  "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {} },
+  "variants": [
+    {
+      "id": "nether-valuable",
+      "priority": 100,
+      "when": "drop.world == 'world_nether' && drop.amount >= 16",
+      "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {} }
+    }
+  ],
+  "audience": {
+    "when": "viewer.world == drop.world && hasPermission('viewer', 'gloss.drops.view')"
+  }
+}
+```
+
+Variant conditions are evaluated on the item-owning thread from an immutable event snapshot. The matching variant with the highest `priority` wins; equal priorities use the lexicographically smallest `id`; no match uses the fallback. A variant is a complete presentation and never merges with the fallback. Shared models, physics, animation, and label styling therefore remain one deterministic item presentation. `audience.when` is evaluated separately on each nearby viewer's entity-owning thread. A matching viewer receives those shared displays and label; a non-matching viewer receives the authoritative vanilla item instead. Gloss does not create a different shared-entity style per viewer.
+
+Item selection conditions support `drop.id`, `drop.uuid`, `drop.material`, `drop.amount`, `drop.maxStackSize`, `drop.world`, `drop.x/y/z`, `drop.blockX/blockY/blockZ`, `drop.onGround`, `drop.inWater`, `drop.inLava`, `drop.playerDropped`, `drop.customNamed`, `drop.ticksLived`, and `drop.pickupDelay`. Source values are `source.present`, `source.type`, `source.id`, and `source.uuid`; event values are `event.type` and `event.playerDrop`. Event types are `spawn`, `merge`, `pickup`, `inventory-pickup`, `load`, `rehydrate`, and `refresh`. Immutable item-role values are `subject.name`, `subject.uuid`, `subject.type`, `subject.world`, `subject.x/y/z`, `subject.blockX/blockY/blockZ`, `subject.dead`, `subject.onGround`, `subject.inWater`, `subject.fireTicks`, `subject.freezeTicks`, and `subject.ticksLived`. The snapshot also supplies `world.name`, `world.uuid`, `world.environment`, `world.difficulty`, `world.time`, `world.fullTime`, `world.storm`, `world.thundering`, `world.pvp`, and `world.players`.
+
+The source is an immutable UUID/type snapshot, not a live player condition role. Permission, group,
+region and PlaceholderAPI functions therefore cannot query `source` for a real-drop selection.
+
+Audience conditions add live `viewer.name`, `viewer.uuid`, `viewer.type`, `viewer.world`, `viewer.x/y/z`, `viewer.blockX/blockY/blockZ`, `viewer.yaw`, `viewer.pitch`, `viewer.dead`, `viewer.onGround`, `viewer.inWater`, `viewer.fireTicks`, `viewer.freezeTicks`, `viewer.ticksLived`, `viewer.health`, `viewer.maxHealth`, `viewer.healthPercent`, `viewer.absorption`, `viewer.ai`, `viewer.gliding`, `viewer.swimming`, `viewer.invisible`, `viewer.op`, `viewer.online`, `viewer.food`, `viewer.saturation`, `viewer.level`, `viewer.experience`, `viewer.totalExperience`, `viewer.ping`, `viewer.clientViewDistance`, `viewer.gameMode`, `viewer.locale`, `viewer.sneaking`, `viewer.sprinting`, `viewer.flying`, `viewer.allowFlight`, and `viewer.group`; `player.*` is an alias for the same viewer. Functions include `hasPermission('viewer', '<node>')`, `inGroup('viewer', '<group>')`, `inRegion('viewer', '<region>')`, `papi('viewer', '<key>', '<fallback>')`, and `papiNumber('viewer', '<key>', <fallback>)`. Both condition surfaces can use `server.online`, `server.maxPlayers`, `server.tps`, `time.ms`, `time.seconds`, `time.ticks`, `time.epochMs`, `time.hour`, `time.minute`, `time.second`, `time.dayOfWeek`, `time.dayOfMonth`, `time.month`, and integration samplers through `metric('<key>', <fallback>)`, along with the normal boolean, comparison, arithmetic, string helper, and parentheses syntax.
+
+See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for the shared condition language and failure behavior.
+
+The table below uses paths relative to `presentation`; the same fields exist inside every variant presentation.
 
 | Key | Default | Range / behavior |
 |---|---:|---|
@@ -373,6 +533,8 @@ Presentations are removed on merge, pickup, despawn, entity unload, feature relo
 If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both `gloss.toml` and the real-drop document hot-reload.
 
 ## Reference
+
+Bubble schema 3, damage-indicator schema 2 and real-drop schema 2 are hard breaks. Older documents are rejected rather than migrated; rewrite custom files to the current shapes or reset them to the shipped defaults.
 
 | Command | Arguments | Permission |
 |---|---|---|

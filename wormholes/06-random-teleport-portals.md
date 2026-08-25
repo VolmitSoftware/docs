@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -143,19 +143,21 @@ Iris world the picker lists the pack's reachable biomes by load key. On other
 worlds it lists the vanilla biome registry, including datapack biomes. **Any
 Biome** clears the preference.
 
-The preference is soft. During a search campaign the first 24 of the 32
-candidate attempts require a biome match. Later attempts accept any safe
-landing. Every attempt after two consecutive failed campaigns also accepts any
-safe landing. A portal whose biome does not exist inside the radius band still
-resolves. It does not search forever.
+The preference is soft. During a search campaign, up to the first 24 of the 32
+candidate attempts require a biome match, but strict matching ends after 10
+seconds. Later attempts accept any safe landing. Every attempt after two
+consecutive failed campaigns also accepts any safe landing. A portal whose
+biome does not exist inside the radius band still resolves. It does not search
+forever.
 
 A match compares the stored key against the vanilla biome key at the candidate
 column, namespace optional (`swamp` matches `minecraft:swamp`). On Iris worlds
 the Iris biome load key and the biome's vanilla derivative both match. The
 check runs through the Iris engine before any chunk is loaded. Non-Iris worlds
-check the biome after the candidate chunk loads. Surface mode samples the
-biome at the surface. `PREFERRED_AVERAGE` samples at the preferred Y, so 3D
-cave biomes are targetable. Changing the target biome changes the route
+check the biome after the candidate chunk loads. Surface mode resolves the
+surface and samples its biome in one owning-region pass. `PREFERRED_AVERAGE`
+samples only at the preferred Y, so it avoids an unused surface lookup and 3D
+cave biomes remain targetable. Changing the target biome changes the route
 identity: existing destinations are discarded and resampled.
 
 ## Sampling and retry limits

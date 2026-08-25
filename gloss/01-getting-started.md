@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data tree with working defaults. Settings live in `plugins/Gloss/gloss.toml`. Content lives in JSON documents beside that file. Both reload from disk while the server runs. Most changes need no restart and no command.
+Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data tree with working defaults. Settings live in `plugins/Gloss/gloss.toml`. Content lives in JSON documents beside that file. Both reload from disk while the server runs. Scoreboards, tablist text, bubble styles, indicators and real drops can select presentations with the same player, world, event, PlaceholderAPI and metric conditions. Most changes need no restart and no command.
 
 ## Requirements
 
@@ -40,12 +40,13 @@ file and the shipped defaults of the features that are enabled. Nothing else exi
 plugins/Gloss/
 ├── gloss.toml            every runtime knob, commented, clamped and hot-reloading
 ├── language.yml           sparse message overrides; locale selection stays in gloss.toml
-├── tablist.json           tablist header, footer and per-group list-name formats
-├── boards/                one JSON per scoreboard sidebar (default.json and animation-showcase.json shipped)
+├── tablist.json           conditional tablist header, footer and list-name presentations
+├── boards/                conditional scoreboard sidebars (default.json and animation-showcase.json shipped)
 ├── emoji/                 one JSON per emoji (67 shipped)
 ├── animations/            one JSON per text animation (10 effects shipped)
-├── bubbles/               one JSON per chat bubble style (default.json shipped)
-├── real-drops/             display-backed drop settings (default.json shipped)
+├── bubbles/               conditional chat bubble styles (default.json shipped)
+├── damage-indicators/     conditional damage and healing presentations (default.json shipped)
+├── real-drops/            conditional display-backed drop presentation (default.json shipped)
 └── previews/              container preview documents (14 shipped)
 ```
 
@@ -82,6 +83,7 @@ Gloss extracts default documents only where the target file is missing. An edite
 | `animations/` | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `[features] animations` |
 | `boards/` | `default.json`, `animation-showcase.json` | `[features] boards` |
 | `bubbles/` | `default.json` | `[features] chatBubbles` |
+| `damage-indicators/` | `default.json` | `[features] damageIndicators` |
 | `real-drops/` | `default.json` | `[features] realDrops` |
 | `previews/` | 14 | `[features] previews` |
 | `tablist.json` | one singleton document | `[features] tablist` |
@@ -89,7 +91,7 @@ Gloss extracts default documents only where the target file is missing. An edite
 
 A feature that is off ships nothing, which is why a stock first boot has no `motd.json` — `motd` is
 the one feature that defaults to `false`. Turning `motd`, `tablist`, `emoji`, `animations`, `boards`,
-`chatBubbles` or `realDrops` on extracts its defaults on the config reload, without a restart. `previews` is the
+`chatBubbles`, `damageIndicators` or `realDrops` on extracts its defaults on the config reload, without a restart. `previews` is the
 exception: the preview registry is only built during enable, so turning that feature on takes a
 restart before `previews/` appears.
 
@@ -126,6 +128,10 @@ restart to construct that subsystem.
 HoloUi is merged into Gloss. If a `plugins/holoui` (or `plugins/HoloUi`) folder still exists beside the Gloss data folder on first boot, Gloss copies its data across. The source folder is never modified. The copy runs exactly once. Session secrets are never copied. The import writes `holoui-import.json` and lists every path it touched.
 
 Commands, permissions and placeholders all moved. `/holoui ...` is gone. Use the `/gloss` subtrees. `holoui.*` permissions became `gloss.*`. `%holoui_*%` placeholders became `%gloss_*%`. HoloUi "boards" (world-anchored hologram menus) are now called panels. Gloss keeps the name "board" for scoreboards. The full import contract is on [Data Files & Hot Reload](/gloss/03-data-files).
+
+## Current conditional document versions
+
+Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage indicators use schema 2 and real drops use schema 2. These are hard breaks: Gloss rejects older versions and does not migrate them. Rewrite custom files to the current format or use the relevant reset command for a shipped default. `/gloss import legacy` does not translate old boards, groups or tablist formats. The condition language is documented on [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
 
 ## Where to go next
 

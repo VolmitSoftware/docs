@@ -25,8 +25,9 @@ Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutat
 1. Run a Paper, Purpur, or Folia server on the Minecraft 26.1 API line, on Java 25. Adapt declares `folia-supported: true`, so Folia needs no separate build.
 2. Copy the shaded Adapt jar (`Adapt-<version>.jar`) into the backend's `plugins/` folder. On a proxy network it goes on every backend, never on the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
-4. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
-5. Grant `adapt.main` to anyone who should reach `/adapt` at all, then add the specific command nodes. The gameplay `adapt.use.*` nodes default to true but do not get anyone past that root gate.
+4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads only that locale, verifies it against the build manifest, caches it, and activates it without a restart.
+5. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
+6. Grant `adapt.main` to anyone who should reach `/adapt` at all, then add the specific command nodes. The gameplay `adapt.use.*` nodes default to true but do not get anyone past that root gate.
 
 ## Sharing player data across servers
 
@@ -116,7 +117,7 @@ plugins/Adapt/
   adaptations/<adaptation-id>.toml
   config-archive/<timestamp>/
   languages/en_US.toml
-  languages/<active-locale>.toml
+  languages/downloaded/<source-revision>/<locale>.toml
   languages/overrides/<locale>.toml
   data/players/<uuid>.json
   data/players/<uuid>.json.pending-sql   # SQL mode only
@@ -138,7 +139,7 @@ plugins/Adapt/
 | `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
 | `splashScreen` | `true` | Prints the startup splash |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
-| `language` | `en_US` | Active locale, and the filename used for overrides |
+| `language` | `en_US` | Active locale. Supported non-English values download automatically; the same name selects the optional override file |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
 | `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the level-search cursor clamps to |
 | `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP granted per skill level crossed |

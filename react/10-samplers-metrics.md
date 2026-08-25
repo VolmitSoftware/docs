@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,8 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
 - PlaceholderAPI demand controls which sampler values its once-per-second publisher requests. It does not enable or disable sampler objects.
 - Built-in cross-plugin samplers are registered even when their source plugin is absent. Their renderer formatting is `---` until data arrives. Raw sampler reads return zero before the first value. They retain the last received value afterward.
 - Metrics published through `ReactMetrics` create dynamic samplers while their source is registered. They disappear when that source unregisters or its plugin disables.
+- React's VolmLib integration service advertises every public global sampler as `react.sampler.<id>`. Consumers request a batch of those keys, and React reads only the requested samplers. This bridge never invokes chunk or player-context sampling; the internal `unknown` fallback is not advertised.
+- Gloss can consume those keys directly in any conditional document. For example, `metric('react.sampler.ticks-per-second', 20) < 18` can select a low-TPS board, tablist, bubble, damage style or drop presentation. The explicit fallback is used until React publishes a finite sample; see [Gloss Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
 - A sampler's `sample(Chunk)` path uses observer data when the metric has chunk samples. Otherwise it resolves to zero. Its map renderer graphs the sampler history.
 - Observer chunk samples retain only immutable world UUID, canonical world key, and chunk X/Z identity. `SampledChunk` and `SampledWorld` retain no Bukkit `Chunk` or `World` handle, and coordinate lookup never calls `World#getChunkAt` or loads a chunk. Worst-chunk maps, commands, and action queue builders consume that identity; any later live world or chunk access is resolved at dispatch and performed through the owning chunk scheduler.
 - `entities` and `chunks` use event-maintained totals corrected from Paper's per-world counters every ten seconds. They do not fan out one scan per player. Entity chunk attribution follows load, spawn, explicit movement, teleport, unload, and removal events; the shared census also reconciles entities that cross a chunk without a Bukkit move event so later removal closes the current bucket instead of leaving a source-chunk residue.

@@ -21,7 +21,7 @@ Enable then runs in this order:
 
 1. Load the plugin-root TOML configuration layout.
 2. Bring up platform bindings, the Adventure audience provider, and HUD support, then discover services by scanning the `art.arcane.adapt.service` package.
-3. Load language, the Vault economy hook, custom models, and the PlaceholderAPI registration, then print server information.
+3. Load the current language snapshot, start the selected-locale downloader, then load the Vault economy hook, custom models, and PlaceholderAPI registration before printing server information. A missing non-English locale downloads asynchronously and activates later through the global scheduler.
 4. Open SQL when `sql.enabled` is true, create `ADAPT_DATA` and `ADAPT_DATA_FENCE`, and require both tables to use InnoDB. Create the backend Redis client only when SQL and Redis are both enabled, then start the persistence queue and glow support.
 5. Start the simulation: ticker, FX director, `AdaptServer` and its `SkillRegistry`, and register every `adapt.use.*` and XP multiplier permission node.
 6. Register the gameplay listeners: brewing, XP provenance, XP novelty, and the version bindings.

@@ -49,7 +49,7 @@ a determinism defect, not a platform difference. See
 
 | Surface | Artifact | Bootstrap |
 |---------|----------|-----------|
-| Bukkit / Paper / Folia | CraftBukkit-shaded plugin jar | `plugin.yml` / `paper-plugin.yml`, `folia-supported: true`, load `STARTUP` |
+| Bukkit / Paper / Folia | Slim CraftBukkit-shaded plugin jar | `plugin.yml` / `paper-plugin.yml`, `folia-supported: true`, load `STARTUP`. Four cached runtime libraries are provisioned separately; Paper adds them before early bootstrap and Spigot loads them during plugin initialization |
 | Fabric | Fabric mod jar | `IrisFabricBootstrap` registers commands and services |
 | Forge | Forge mod jar | `IrisForgeBootstrap` |
 | NeoForge | NeoForge mod jar | `IrisNeoForgeBootstrap` |
@@ -62,6 +62,7 @@ SPI: `spi/`.
 | Item | Bukkit | Fabric / Forge / NeoForge |
 |------|--------|---------------------------|
 | Settings | `plugins/Iris/iris.json` | `<configDir>/iris/iris.json` |
+| Runtime-library cache | `plugins/Iris/cache/libraries/` | Not used; each mod jar is self-contained |
 | Packs | `plugins/Iris/packs/` | `<configDir>/irisworldgen/packs/` |
 | Mod config | — | `<configDir>/irisworldgen/modded.json` |
 | GoldenHash baselines | `plugins/Iris/golden/` | `<configDir>/irisworldgen/golden/` |
@@ -95,9 +96,13 @@ Both parse automatic settings changes from immutable bytes without rewriting the
 | Primary / main world | `/iris replace minecraft:overworld type=<pack>` replaces the selected save's existing main slot without changing `level-name`. Fresh whole-save selection is external server provisioning | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`. `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |
 | Evacuate | `/iris evacuate <world>` — world argument required, player-only origin | `/iris evacuate [dimension]` — defaults to the sender's current level. Destination is always the vanilla overworld, and evacuating the overworld itself is refused |
 | Studio world | Transient studio world via StudioSVC. `/iris jigsaw` can select the Jigsaw Studio generator for one activation | Studio dimension under `irisworldgen:studio_*`. No Jigsaw Studio authoring tree |
+| Dynamic level events | Bukkit world lifecycle events from the runtime backend | Fabric `ServerLevelEvents.LOAD/UNLOAD`; Forge and NeoForge `LevelEvent.Load/Unload`, including command-created worlds and Studio dimensions |
 | Folia | Regionized schedulers. Pregen `runtimeSchedulerMode` always resolves to `FOLIA` on a regionized runtime | Not applicable |
 
-Startup never downloads packs. Paper bootstrap compiles the aggregate
+Startup never downloads packs. A fresh Bukkit installation may download
+and relocate its four runtime libraries before Iris code or datapack
+bootstrap runs; unchanged cached boots do not. Mod jars remain
+self-contained. Paper bootstrap compiles the aggregate
 datapack from installed and world-local packs. It accepts an empty pack
 set. Plain Bukkit and modded startup likewise use only pack bytes already
 on disk. Operators use `/iris download pack=overworld`,

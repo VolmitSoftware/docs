@@ -206,6 +206,7 @@ poll callbacks. It is started with the period from `[hotload] watchIntervalTicks
 | `animations` | `animations/` |
 | `tablist` | `tablist.json` |
 | `bubbles` | `bubbles/` |
+| `damage-indicators` | `damage-indicators/default.json` |
 | `motd` | `motd.json` |
 | `real-drops` | `real-drops/` |
 | `menus` | `menus/`, subdirectories included |
@@ -241,7 +242,7 @@ gate starts automatic passes no more than once every 3 seconds and retains one l
 request. Native events drive the common path and bounded rolling SHA-256 reconciliation catches
 silent or same-metadata saves. JSON registries perform their full membership fallback about every
 18 seconds and begin exact-content reconciliation about every 6 seconds, with both windows anchored
-to completion. The ten registry kinds split evenly across two 3-second start slots. Their shared
+to completion. The twelve registry kinds are distributed across two 3-second start slots. Their shared
 per-pass reconciliation budget yields after 32 files, 8 MiB, or about 10 ms, and a registry publishes
 its reconciliation batch only after its complete walk. Config and localization likewise avoid byte
 capture on idle passes and use their pending verification or 6-second and 9-second exact fallbacks.
@@ -254,7 +255,7 @@ logs the full failure when one exists, and requeues the affected ids against the
 the next eligible pass. An accepted callback is leased to that batch, so a late or repeated callback
 cannot apply it twice.
 
-One task instead of twelve matters for two more reasons. Each service would otherwise hold its own
+One task instead of fourteen matters for two more reasons. Each entry would otherwise hold its own
 repeating task and its own timer slot. That would multiply the fixed per-task overhead for work that
 usually drains no native events and advances only a bounded reconciliation slice.
 
@@ -352,6 +353,21 @@ That is why a command edit does not bounce back through the hot reload path and 
 reapply. A hand edit made in a text editor does. `gloss.toml` uses the same idea through
 `GlossConfigLoader.isSelfWrite()`, which stops canonicalization rewrites from looping.
 
+## Conditional selection
+
+Boards, tablist surfaces, bubble styles, damage/healing styles and real-drop presentation and
+audience rules all compile through one condition engine. Compilation validates syntax and role
+access when the document loads. A runtime evaluation error fails closed to `false` and is reported
+through bounded category logging rather than breaking the owning driver.
+
+Condition snapshots are built and evaluated on the thread that owns their live Bukkit subject.
+Boards and tablists evaluate on the player owner; bubble selection evaluates on the speaker owner;
+damage style selection evaluates on the affected entity owner; real-drop variant selection evaluates
+on the item owner. Viewer-specific damage and drop audiences dispatch only to the relevant viewer
+owners. Immutable event and source snapshots cross those boundaries instead of live Bukkit objects.
+Selection priority and lexical id tie-breaks are deterministic on every surface. See
+[Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
+
 ## Text rendering and refresh cadences
 
 Every authored rendered string runs through `TextPipeline.render(viewer, raw)` in a fixed order:
@@ -387,10 +403,10 @@ Refresh cadences per surface:
 | Surface | Period | Source |
 |---|---|---|
 | Holograms | `[holograms] updateIntervalTicks` (default 10); clock-driven text uses 1 tick | `HologramService` driver task |
-| Temporary holograms (bubbles, indicators) | `[holograms] temporaryUpdateIntervalTicks` (default 2) | `HologramService` temporary task |
+| Temporary holograms (bubbles, indicators) | `[holograms] temporaryUpdateIntervalTicks` (default 2). Indicator position, spin, scale and opacity are sampled from elapsed time, so their trajectory is cadence-independent | `HologramService` temporary task |
 | Fast hologram animation frames (clips over 20 fps) | adaptive, floor `1000 / [holograms] maxAnimationFps` ms | `Gloss Animator` thread |
-| Scoreboards | `[boards] updateIntervalTicks` (default 20); active clock-driven boards use a separate 1-tick driver | `BoardService` sidebar drivers |
-| Tablist | `[tablist] updateIntervalTicks` (default 40); animated header/footer uses 1 tick for all recipients, while animated names and API overrides use a selected-player 1-tick cohort | `TablistService` ordinary and fast-cohort tasks |
+| Scoreboards | `[boards] updateIntervalTicks` (default 20) for board/variant conditions and rendering; active clock-driven boards use a separate 1-tick driver | `BoardService` sidebar drivers |
+| Tablist | `[tablist] updateIntervalTicks` (default 40) for both conditional surfaces and rendering; animated header/footer uses 1 tick for all recipients, while animated selected names and API overrides use a selected-player 1-tick cohort | `TablistService` ordinary and fast-cohort tasks |
 | Bubble expiry accounting | fixed 20 ticks | `ChatBubblesService` coarse sweep; movement and dynamic prefixes reuse each bubble's owner-bound temporary-hologram sample |
 | Menu, panel and preview sessions | every tick | session tick loop |
 | Preview target discovery | at most 10 queued players per tick; stationary fallback is spread over 100 ticks | `MenuSessionManager` fair discovery queue |
@@ -403,7 +419,7 @@ content uses the same change gate, plus a staggered header/footer anti-entropy h
 recipients per ordinary cycle; list names reconcile only when the server-side value was overwritten.
 Hologram and tablist drivers change cadence automatically when hot-loaded documents or API updates
 add or remove clock dependencies and named animations. Tablist list-name selection is tracked per
-player, so an animated group format does not promote unrelated players to the fast task, and repeated
+player, so an animated selected format does not promote unrelated players to the fast task, and repeated
 requests for a lagging player collapse into one latest owner-thread update.
 Personalized hologram animation templates are memoized before player-owner dispatch; due work for
 all holograms targeting one player is keyed and latest-write-wins behind one player-scheduler drain.
@@ -425,14 +441,13 @@ only those buckets changed. A standing viewer therefore keeps its candidate snap
 panel moves outside the viewer's padded query window; an intersecting move invalidates it immediately.
 
 High-population display admission is bounded independently of world distribution. Damage indicators
-admit at most the configured rate multiplied by lifetime, rounded up, with a hard ceiling of 2,048;
-the shipped configuration admits 120. Real drops admit at most 2,048 presentations server-wide in
+admit at most `limits.maxPerSecond * limits.lifetimeMs / 1000`, rounded up, with a hard ceiling of
+2,048; the shipped document admits 120. Real drops admit at most 2,048 presentations server-wide in
 addition to their per-chunk display budget. Rejected real drops keep the native item visible and do
-not start an item-owned update loop. Indicator permission visibility reads an entity-thread-owned
-snapshot refreshed immediately by player lifecycle and chunk-transition events plus five-second
-periodic reconciliation in a due-time cohort of at most 16 players every two ticks. Enable and
-reload feed the same bounded cohort instead of dispatching the whole online population at once, and
-an indicator never dispatches a player task for each nearby viewer.
+not start an item-owned update loop. Damage audience evaluation is spatially bounded to nearby
+viewers at spawn and then reevaluated for an individual viewer on join, world change, respawn and
+chunk transitions. Real-drop audience conditions are reevaluated for nearby viewers during each
+presentation reconciliation. Both paths run the viewer condition on that viewer's owner thread.
 
 The `Gloss Animator` thread is the one deliberate exception to tick-driven rendering.
 `HologramAnimator` is a daemon thread that exists only while a hologram or temporary hologram
@@ -571,6 +586,11 @@ One `PreviewStateProvider` is registered per namespace, using the first segment 
 The same values are then readable from preview expressions under their native dotted names. See
 [Emoji, Text & Animations](/gloss/07-emoji-text-animations) and
 [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+
+React advertises each public global sampler as `react.sampler.<id>`. Gloss can therefore use, for
+example, `metric('react.sampler.ticks-per-second', 20)` in a board, tablist, bubble, damage or drop
+condition. React samples only the keys Gloss has demanded; it does not advertise its internal
+`unknown` fallback or player/chunk-context sampler paths.
 
 **Sampling.** A repeating sync task runs every `[integration] sampleIntervalTicks` (default 20,
 range 1 to 200). It calls `sampleMetrics` once per contract, passing only the keys something has

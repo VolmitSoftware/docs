@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-The tablist header, footer and per-group list names live in the single document `plugins/Gloss/tablist.json`. The server list MOTD lives in `plugins/Gloss/motd.json`. Both are enveloped JSON. Both hot-reload from disk. Neither has any content left in `gloss.toml`. The only tablist knob still in the config file is its refresh interval.
+The conditional tablist header, footer and list-name format live in the single document `plugins/Gloss/tablist.json`. The server list MOTD lives in `plugins/Gloss/motd.json`. Both are enveloped JSON and hot-reload from disk. Neither has any content left in `gloss.toml`; the only tablist knob still in the config file is its refresh interval.
 
 ## The tablist document
 
@@ -16,74 +16,90 @@ The tablist header, footer and per-group list names live in the single document 
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "revision": 1,
-  "useHeaderFooter": true,
-  "header": "&d&lGloss",
-  "footer": "&7VolmitSoftware.com",
-  "groupListNames": true,
-  "nameFormats": {
-    "default": "$player",
-    "_op": "&6$player",
-    "moderator": "&9[Mod] &f$player"
+  "headerFooter": {
+    "enabled": true,
+    "presentation": {
+      "header": "&d&lGloss",
+      "footer": "&7VolmitSoftware.com"
+    },
+    "variants": [
+      {
+        "id": "critical-health",
+        "priority": 100,
+        "when": "viewer.health < 5",
+        "presentation": {
+          "header": "&c&lCritical health",
+          "footer": "&7Find safety now"
+        }
+      }
+    ]
+  },
+  "listNames": {
+    "enabled": true,
+    "presentation": { "format": "$player" },
+    "variants": [
+      {
+        "id": "operator",
+        "priority": 100,
+        "when": "subject.op",
+        "presentation": { "format": "&6$player" }
+      },
+      {
+        "id": "moderator",
+        "priority": 50,
+        "when": "subject.group == 'moderator'",
+        "presentation": { "format": "&9[Mod] &f$player" }
+      }
+    ]
   }
 }
 ```
 
 | Key | Default | Notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `1`. Anything else rejects the file with `unsupported tablist schemaVersion: <n>` |
+| `schemaVersion` | required | Must be `2`. Anything else rejects the file with `unsupported tablist schemaVersion: <n>` |
 | `revision` | required | `1` to `9007199254740991` |
-| `useHeaderFooter` | `true` | When false, Gloss never touches the header or footer |
-| `header` | `""` | Rendered per player through the text pipeline |
-| `footer` | `""` | Rendered per player through the text pipeline |
-| `groupListNames` | `true` | When false, Gloss never touches list names and restores any it applied |
-| `nameFormats` | `{}` | Map of group key to list-name template |
+| `headerFooter.enabled` | `true` | When false, Gloss never touches the header or footer |
+| `headerFooter.presentation` | required | Complete base `header` and `footer` pair |
+| `headerFooter.variants` | `[]` | Complete conditional presentations with `id`, `priority` and `when` |
+| `listNames.enabled` | `true` | When false, Gloss never touches list names and restores any it applied |
+| `listNames.presentation.format` | required | Base list-name template |
+| `listNames.variants` | `[]` | Complete conditional formats with `id`, `priority` and `when` |
 
 This is a single file at the root of the data folder. It is not a folder of documents. It is extracted when missing, while `[features] tablist` is on. `/gloss tablist reset` rewrites it from the shipped copy (permission `gloss.tablist.reset`).
 
 If the file is missing or fails to parse at startup, Gloss falls back to
-built-in defaults. Those defaults are `useHeaderFooter` true, header
-`&d&lGloss`, and footer `&7VolmitSoftware.com`. They also include
-`groupListNames` true, plus `nameFormats` of `default` to `$player` and
-`_op` to `&6$player`. If a runtime edit fails to parse, the last good
+built-in defaults. Those defaults enable `headerFooter` with header
+`&d&lGloss` and footer `&7VolmitSoftware.com`, and enable `listNames` with
+base format `$player`. The shipped operator appearance is an ordinary
+variant with priority `100` and condition `subject.op`. If a runtime edit fails to parse, the last good
 document stays live. Either way the failure is logged as
 `tablist/tablist.json: <reason>`. That prefix is the document kind and
 file name, not the path on disk. The path on disk is
 `plugins/Gloss/tablist.json`.
 
-> `nameFormats` keys are trimmed and **lowercased when the document loads**. A key written as `Moderator` or `ADMIN` becomes `moderator` and `admin` on load. Vault group names are also lowercased before the match. A mixed-case key still matches. Write keys in lowercase so that what is on disk matches what is in memory. Blank keys are dropped entirely.
-{.is-info}
-
 ### List name resolution
 
-For each player, `TablistService.chooseListName` picks exactly one template, in this order:
-
-1. **`_op`** — if the player is an operator **and** `nameFormats` contains the key `_op`. This is checked before any group. It is keyed off the server own op flag. It works with no permissions plugin installed.
-2. **The player's group** — the player Vault primary group, lowercased, if `nameFormats` contains that key. Skipped when the player has no primary group. See [Scoreboards & Groups](/gloss/05-scoreboards-groups).
-3. **`default`** — if `nameFormats` contains the key `default`.
-4. **`$player`** — the built-in fallback when there is no `default` key at all.
-
-An operator whose group also has a format never sees the group format. `_op` wins. Remove the `_op` key if you want operators to follow their group.
+For each player, Gloss evaluates every `listNames.variants[]` condition. The matching variant with the greatest `priority` wins; equal priorities sort by lexical `id`. If none match, the base `listNames.presentation` wins. `_op`, `default` and group keys have no special meaning in schema 2. Conditions can test operator state, Vault group, world, health, permissions, regions, PlaceholderAPI values, React metrics and the other values listed in [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 Once a template is picked, `$player` and `$group` are substituted literally. The result is then run through the full text pipeline (functions, PlaceholderAPI, emoji, colors) with the player as the resolution context.
 
 | Token | Substituted with |
 |---|---|
 | `$player` | The player's name |
-| `$group` | The resolved group name — but see below |
-
-When the `_op` branch is taken, `$group` substitutes to the literal string `_op`. It does not substitute to the player real group. When the `default` branch or the built-in fallback is taken, `$group` substitutes to the player group if they have one. It substitutes to an empty string if they do not.
+| `$group` | The player's current Vault primary group, or an empty string when unavailable |
 
 A template that renders to blank clears the player list name back to vanilla. List names are only re-sent to the client when the rendered value actually changed.
 
 ### Header and footer
 
-The header and footer are rendered per player through the same pipeline. PlaceholderAPI placeholders resolve for the viewer. They are re-sent only when the rendered pair changes.
+The header and footer are rendered per player through the same pipeline. Gloss independently evaluates `headerFooter.variants[]` with the viewer as the condition subject. The matching variant with the greatest priority wins, equal priorities sort by lexical id, and the complete base presentation is the fallback. PlaceholderAPI placeholders resolve for the viewer. The pair is re-sent only when its rendered value changes.
 
-`$player` and `$group` are **not** substituted in `header` or `footer`. Those tokens exist only in `nameFormats`. Use a PlaceholderAPI placeholder such as `%player_name%` instead.
+`$player` and `$group` are **not** substituted in `header` or `footer`. Those tokens exist only in list-name formats. Use a PlaceholderAPI placeholder such as `%player_name%` instead.
 
-Other plugins can override both per player through `GlossAPI.setTab(player, header, footer)` and clear the override with `resetTab(player)`. An override replaces the document header and footer as a pair. It is only consulted while `useHeaderFooter` is true. Overrides are dropped when the player quits. See [API: Getting Started](/gloss/21-api-getting-started).
+Other plugins can override both per player through `GlossAPI.setTab(player, header, footer)` and clear the override with `resetTab(player)`. An override replaces the selected document header and footer as a pair. It is only consulted while `headerFooter.enabled` is true. Overrides are dropped when the player quits. See [API: Getting Started](/gloss/21-api-getting-started).
 
 ### Configuration and lifecycle
 
@@ -92,15 +108,15 @@ Other plugins can override both per player through `GlossAPI.setTab(player, head
 | `[features] tablist` | `true` | Enables header/footer and list-name management |
 | `[tablist] updateIntervalTicks` | `40` | 1..400 |
 
-Every ordinary cycle the driver walks the online players and applies to each one on that player's own region thread. It is Folia-safe. The configured 40-tick default remains the ordinary cadence for static text, PlaceholderAPI, metrics, and player or server expressions. A clock-driven expression (`time.ms`, `time.seconds` or `time.ticks`) or complete `|animation.<id>|` token in the header or footer switches that shared surface to every-tick sampling for all recipients. Animated per-group list-name formats instead place only players currently selecting that format on the fast cohort; one animated group does not fast-tick every online player. Animated API header/footer overrides use that same selected-player cohort. Repeated requests for one player collapse into one latest owner-thread update, so a stalled region cannot accumulate a refresh task for every elapsed animation tick.
+Every ordinary cycle the driver walks the online players and evaluates both conditional surfaces on each player's own region thread. It is Folia-safe. The configured 40-tick default remains the ordinary cadence for conditions, static text, PlaceholderAPI, metrics, and player or server expressions. A clock-driven expression (`time.ms`, `time.seconds` or `time.ticks`) or complete `|animation.<id>|` token in the selected header or footer switches that shared surface to every-tick sampling for all recipients. An animated selected list-name format instead places only that player on the fast cohort. Animated API header/footer overrides use that same selected-player cohort. Repeated requests for one player collapse into one latest owner-thread update, so a stalled region cannot accumulate a refresh task for every elapsed animation tick.
 
-Rendered values are change-deduplicated. Unchanged headers and footers are the exception: Gloss sends a staggered anti-entropy heartbeat after long idle periods so a dropped packet, proxy reset or stale client tab overlay does not remain frozen indefinitely. At most 64 heartbeat packets are admitted per ordinary cycle, and first deadlines are distributed by player UUID rather than bursting for the whole server. List names are not heartbeat-broadcast because that would scale quadratically; Gloss instead compares its memo with the server's current list name and repairs only an actual overwrite. Join, respawn and world changes invalidate the player's presentation immediately. Hot document edits, group selection and API override changes reconcile the fast cohort without a reload; changing the configured interval restarts the ordinary driver on config reload.
+Rendered values are change-deduplicated. Unchanged headers and footers are the exception: Gloss sends a staggered anti-entropy heartbeat after long idle periods so a dropped packet, proxy reset or stale client tab overlay does not remain frozen indefinitely. At most 64 heartbeat packets are admitted per ordinary cycle, and first deadlines are distributed by player UUID rather than bursting for the whole server. List names are not heartbeat-broadcast because that would scale quadratically; Gloss instead compares its memo with the server's current list name and repairs only an actual overwrite. Join, respawn and world changes invalidate the player's presentation immediately. Hot document edits, condition outcomes and API override changes reconcile without a reload; changing the configured interval restarts the ordinary driver on config reload.
 
 If you turn things off, Gloss cleans up after itself:
 
 - `[features] tablist = false` stops the driver. On reload it resets any header/footer Gloss applied to empty. It resets any list name it applied back to vanilla.
-- `useHeaderFooter: false` resets applied headers and footers on the next document reload.
-- `groupListNames: false` resets applied list names on the next document reload.
+- `headerFooter.enabled: false` resets applied headers and footers on the next document reload.
+- `listNames.enabled: false` resets applied list names on the next document reload.
 - On plugin disable, headers and footers are cleared. List names are reset for every online player.
 
 If you edit `tablist.json` on disk, the change applies without a reload. `[features] tablist` and `[tablist] updateIntervalTicks` live in `gloss.toml`. That file also hot-reloads. An on-disk config edit restarts the driver on its own. `/gloss reload` does the same.
@@ -178,9 +194,4 @@ The web editor can live-sync this singleton with `/gloss web edit motd motd`, or
 
 ## Coming from the pre-merge layout
 
-`/gloss import legacy` folds the old shapes into these two documents:
-
-- Each `groups/<name>.yml` with a non-blank `tablist-name` becomes a `nameFormats` entry keyed by the lowercased file name. Existing keys in `tablist.json` are kept. The absorbed ones are merged over them. The document `revision` is bumped.
-- `config.yml` `motd.texts` list becomes `entries`. Each string is split on newlines. Any entry longer than two lines is truncated. This runs **only** when `motd.json` is still byte-identical to the shipped default. A customized `motd.json` is left alone. The import records `motd.json was already customized; config.yml motd texts not applied`.
-
-The originals are kept under `import-backups/<timestamp>/`. Full details are in [Data Files & Hot Reload](/gloss/03-data-files).
+Tablist schema 2 is a hard break. Schema 1 files are rejected and Gloss does not translate old group YAML or legacy tablist formats. Rewrite custom tablist content into complete base presentations and conditional variants, or reset it to the shipped schema 2 document. `/gloss import legacy` does not convert boards, groups or tablists. MOTD remains schema 1; its supported legacy import behavior is documented in [Data Files & Hot Reload](/gloss/03-data-files).

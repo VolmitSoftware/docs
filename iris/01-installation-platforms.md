@@ -9,7 +9,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris ships as one Bukkit-family plugin jar and three self-contained mod jars (Fabric, Forge, NeoForge). This page puts the right artifact on your server and shows how to prove the install worked. Java 25 is required on every platform.
 
-First boot never downloads a world pack. Install one with `/iris download`. Satisfy its declared external datapacks. Complete the registry-loading restart sequence before you create an Iris world.
+First boot never downloads a world pack. Install one with `/iris download`. A fresh Bukkit installation does provision its four runtime libraries before Iris starts; later unchanged boots use the local library cache. Satisfy the pack's declared external datapacks and complete the registry-loading restart sequence before you create an Iris world.
 
 Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is already installed and you want a world, skip ahead.
 
@@ -35,7 +35,7 @@ Keep the old jar and the entire Iris data directory until the new build passes t
 | Fabric Loader | 0.19.3+ (current acceptance target: 0.19.3) |
 | Forge | 65.x (current acceptance target: 26.2-65.1.1) |
 | NeoForge | 26.2.x (current acceptance target: 26.2.0.59) |
-| Network | Outbound HTTP or HTTPS for `/iris download` and for Bukkit ingest of unresolved `datapackImports`. A startup whose declared imports are already installed and verified is network-free |
+| Network | Outbound HTTP or HTTPS for `/iris download`, Bukkit ingest of unresolved `datapackImports`, and the first uncached Bukkit runtime-library provision. Once those four libraries and all declared imports are cached and verified, an unchanged startup is network-free. Mod jars remain self-contained |
 
 Before you replace an existing installation:
 
@@ -49,8 +49,8 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
 1. Drop the CraftBukkit-labeled plugin jar into `plugins/`.
-2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first.
-3. First boot writes `plugins/Iris/iris.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download.
+2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first. On a fresh installation it downloads and relocates Gson, Caffeine, ConcurrentLinkedHashMap, and Paralithic under `plugins/Iris/cache/libraries/`. Paper-family servers add those cached jars to Iris's classpath before early datapack bootstrap; plain Spigot loads them during plugin initialization. A provisioning failure stops Iris instead of continuing with missing classes.
+3. First boot writes `plugins/Iris/iris.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download. Later unchanged boots reuse the runtime-library cache without downloading those libraries again.
 4. Run `/iris download pack=overworld` and/or `/iris download pack=underworld`. Wait for validation and atomic installation to finish. The command does not restart or stop the process itself.
 5. Restart before you use either pack. The shipping Overworld also declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With the default `general.autoIngestDatapacks=true`, this first boot ingests those two dependencies and leaves startup admission restart-required. Complete the ensuing clean restart so Minecraft can load their registry keys. If automatic ingest is disabled, run `/iris datapack ingest restart=true` after the downloads instead.
 
@@ -223,6 +223,7 @@ Successful downloads update only the pack directory and validation result. Iris 
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
+| Iris fails before datapack compilation with a runtime-library download, relocation, cache, or classpath error | The fresh Bukkit library cache could not be populated or read | Restore outbound HTTPS access and write permission for `plugins/Iris/cache/libraries/`, then restart. Do not copy arbitrary dependency jars into `plugins/` |
 | `/iris version` does nothing | Wrong directory, wrong platform jar, a duplicate Iris jar, Java below 25, or an exception during enable | Stop the server. Leave exactly one matching artifact in place. Confirm Java 25. Fix the **first** Iris exception in the startup log. Later ones are usually fallout |
 | `iris.json` exists but no world packs exist | This is the normal first-start state | Run `/iris download pack=overworld`, `/iris download pack=underworld`, or install a complete pack folder, then complete that pack's external-datapack and registry-restart workflow |
 | Players are kicked at login with an Iris message | Startup validation has not passed | Read the reason in the kick text and the console. External datapack failures lock login. Fix the datapack state and restart |
@@ -264,6 +265,11 @@ Four jars land in `dist/`. The CraftBukkit jar's version token is the supported 
 | `Iris v<version> [Fabric] 26.2+<loader>.jar` | Fabric |
 | `Iris v<version> [Forge] 26.2+<loader>.jar` | Forge |
 | `Iris v<version> [NeoForge] 26.2+<loader>.jar` | NeoForge |
+
+The CraftBukkit build verifier rejects an artifact above 7,000,000 bytes.
+The slim plugin jar relies on the separately cached runtime libraries
+described in the plugin-install workflow; the three mod jars remain
+self-contained.
 
 Per-platform build tasks and the developer build gate are in [00 - Overview](/iris/00-overview).
 

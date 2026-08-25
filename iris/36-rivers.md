@@ -1,13 +1,13 @@
 ---
 title: "Rivers"
-description: "Connected Perlin-worm river routing, terrain incision, terraced water, river biomes, and contained cave hydrology"
+description: "Connected Perlin-worm river routing, volatile body anatomy, independent fluids, river biomes, and contained cave hydrology"
 published: true
 date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
 ---
-Iris rivers are deterministic branching routes laid over the dimension's natural terrain. Sparse sources grow into long, coherently turning trunks, converge into wider downstream reaches, and may stop at an authored dry channel or contained sinkhole instead of requiring every route to reach an ocean. They can incise wet or dry channels, pass through high terrain in sealed water-bearing bores, choose separate channel, bank, mouth, dry, and flooded-cave biomes, use sea-level or terraced water, and make bounded connections to caves without enabling a dimension-wide cave flood.
+Iris rivers are deterministic branching routes laid over the dimension's natural terrain. Sparse sources grow into long, coherently turning trunks, converge into wider downstream reaches, and may stop at an authored dry channel or contained sinkhole instead of requiring every route to reach an ocean. They can incise wet or dry channels, pass through high terrain in sealed fluid-bearing bores, choose separate channel, bank, mouth, dry, and flooded-cave biomes, use an independent fixed or terraced fluid head and palette, and make bounded connections to caves without enabling a dimension-wide cave flood.
 
 Rivers are disabled by default. Enabling them changes only newly generated chunks; enabling or reshaping a network in an existing world leaves seams where old and new chunks meet.
 
@@ -64,8 +64,8 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
         }
       },
       "bankWidth": {
-        "min": 2,
-        "max": 10,
+        "min": 4,
+        "max": 6,
         "style": {"style": "IRIS", "zoom": 512}
       },
       "depth": {
@@ -73,7 +73,8 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
         "max": 9,
         "style": {"style": "SIMPLEX", "zoom": 896}
       },
-      "maxChannelWidth": 32,
+      "channelRadiusBonus": 3,
+      "maxChannelWidth": 38,
       "maxBankWidth": 24,
       "maxDepth": 24,
       "orderWidthFactor": 0.22,
@@ -109,8 +110,9 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
           "widthMultiplier": 1.9,
           "bankMultiplier": 1.85,
           "depthMultiplier": 0.55,
-          "bodyWavelength": 1400,
-          "bodyDetailWavelength": 320,
+          "bodyWavelength": 96,
+          "bodyDetailWavelength": 20,
+          "bodyDetailInfluence": 0.72,
           "widthVariation": 0.65,
           "bankVariation": 0.75,
           "depthVariation": 0.45,
@@ -134,8 +136,9 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
               "widthMultiplier": 1.15,
               "bankMultiplier": 1.35,
               "depthMultiplier": 0.72,
-              "bodyWavelength": 720,
-              "bodyDetailWavelength": 180,
+              "bodyWavelength": 64,
+              "bodyDetailWavelength": 16,
+              "bodyDetailInfluence": 0.76,
               "widthVariation": 0.55,
               "bankVariation": 0.7,
               "depthVariation": 0.5,
@@ -161,7 +164,11 @@ Add `rivers` to a dimension JSON. This example deliberately uses fairly frequent
       "dryContinuationChance": 0.3
     },
     "water": {
-      "mode": "SEA_LEVEL",
+      "mode": "FIXED",
+      "fluidHeight": 50,
+      "fluidPalette": {
+        "palette": [{"block": "minecraft:water"}]
+      },
       "poolLength": 128,
       "maximumPoolRise": 0,
       "dropHeight": 1
@@ -261,13 +268,14 @@ Iris samples the configured noise once at the stable graph-event anchor, maps it
 
 ## Terrain incision and dry channels
 
-River terrain is a second surface derived from the natural height. Iris never raises terrain for a river. It blends downward toward the river bed across the channel and bank footprint, clamps the cut to `maxIncision`, and leaves the natural height available to diagnostics and expressions as `NATURAL_HEIGHT`. Every selected worm samples independent primary and detail world-space Perlin fields into one synchronized body profile: channel width, bank or basin width, bed depth, and tunnel roof clearance can all swell and pinch at different rates along the same reach. Iris stores 12–32 knots and interpolates them per column, avoiding per-block generator-noise evaluation. Profile maxima own spatial indexing and cache safety; local values own the actual section, incision, bore radius, basin transition, bed, and dry roof. Final local channel width is at least one block and channel width, bank width, and depth retain their authored caps after stream-order, region, and biome scaling. After local depth scaling, wet depth is also clamped above bed roughness by one block so a shallow authored style cannot round its entire wet core back to the water surface.
+River terrain is a second surface derived from the natural height. Iris never raises terrain for a river. It blends downward toward the river bed across the channel and bank footprint, clamps the cut to `maxIncision`, and leaves the natural height available to diagnostics and expressions as `NATURAL_HEIGHT`. Every selected worm samples independent primary and detail world-space Perlin fields into one synchronized body profile: channel width, bank or basin width, bed depth, and tunnel roof clearance can all swell and pinch at different rates along the same reach. Profile stations are spaced at half the smaller body wavelength, up to 512 stations per reach, and local values are interpolated per column. The managed packs use four-to-ten-block station spacing, so a configured high-detail style can change channel thickness by several blocks over about ten blocks instead of reading as one constant tube. Profile maxima own spatial indexing and cache safety; local values own the actual section, incision, bore radius, basin transition, bed, and dry roof. Final local channel width is at least one block and channel width, bank width, and depth retain their authored caps after stream-order, region, and biome scaling. After every multiplier, `channelRadiusBonus` adds the configured radius to both sides before the final width cap. After local depth scaling, wet depth is also clamped above bed roughness by one block so a shallow authored style cannot round its entire wet core back to the fluid surface.
 
 | Field | Default | Meaning |
 |---|---:|---|
 | `channelWidth` | `8..20` | Wet-channel width before stream-order scaling |
 | `bankWidth` | `5..18` | Transition outside the channel |
 | `depth` | `2..7` | Wet-bed depth below the solved water head, or dry-channel depth below natural terrain |
+| `channelRadiusBonus` | `0` | Radius added to both sides after worm, stream-order, region, biome, and local shaping, before `maxChannelWidth` |
 | `maxChannelWidth` | `10` | Final wet-channel width cap after every multiplier and stream-order increase |
 | `maxBankWidth` | `4` | Final bank-transition cap on each side after local multipliers |
 | `maxDepth` | `10` | Final depth cap after every multiplier and stream-order increase |
@@ -307,8 +315,9 @@ Every object in `worms` uses the following fields:
 | `widthMultiplier` | `1` | Channel-width scale applied before `maxChannelWidth` |
 | `bankMultiplier` | `1` | Bank-width scale applied before `maxBankWidth` |
 | `depthMultiplier` | `1` | Depth scale applied before `maxDepth` |
-| `bodyWavelength` | `512` | Primary world-space wavelength for longitudinal swelling and pinching, `32`–`16384` blocks |
-| `bodyDetailWavelength` | `128` | Secondary body wavelength for smaller anatomy changes, `32`–`16384` blocks |
+| `bodyWavelength` | `512` | Primary world-space wavelength for longitudinal swelling and pinching, `8`–`16384` blocks |
+| `bodyDetailWavelength` | `128` | Secondary body wavelength for smaller anatomy changes, `8`–`16384` blocks |
+| `bodyDetailInfluence` | `0.3` | Blend of the detail body field against the primary field, `0`–`1`; raise this for volatile short-range thickness changes |
 | `widthVariation` | `0` | Proportional channel-width variation along the body, `0`–`0.875` |
 | `bankVariation` | `0` | Independent bank or basin-width variation along the body, `0`–`0.875` |
 | `depthVariation` | `0` | Independent bed-depth variation along the body, `0`–`0.875` |
@@ -332,13 +341,17 @@ The mantle pass carves a rounded lower and upper bore with river fluid from the 
 
 Ridge bores require mantle and carving plus the `CARVED` and `RIVER_HYDROLOGY` components, but they do not require optional cave flooding. `caves.mode: SEALED` therefore disables random cave entries while still allowing a river to pass safely under high terrain.
 
-## Water heads
+## Fluid heads and palettes
 
-`SEA_LEVEL` uses the dimension `fluidHeight` as the highest filled water block for every wet reach, so river water cannot sit above the ocean surface. `TERRACED` intentionally permits flat upstream pools above that level, separated by controlled drops:
+River fluid is independent from the dimension ocean. `water.fluidHeight` is an absolute world Y, and `water.fluidPalette` supplies the fluid used by surface channels, ridge bores, cave pools, grottos, and falling throats. This allows, for example, a fixed lava river at Y -48 in a dimension whose ocean remains water at Y 63. `FIXED` keeps ordinary river reaches at the authored river head. `TERRACED` permits flat upstream pools above that river head, separated by controlled drops. A natural ocean mouth alone resolves against the dimension `fluidHeight` so outlet detection and the ocean boundary remain correct.
 
 ```json
 "water": {
   "mode": "TERRACED",
+  "fluidHeight": -48,
+  "fluidPalette": {
+    "palette": [{"block": "minecraft:lava"}]
+  },
   "poolLength": 96,
   "maximumPoolRise": 8,
   "dropHeight": 1
@@ -347,14 +360,16 @@ Ridge bores require mantle and carving plus the `CARVED` and `RIVER_HYDROLOGY` c
 
 | Field | Default | Meaning |
 |---|---:|---|
-| `mode` | `SEA_LEVEL` | `SEA_LEVEL` or `TERRACED` |
+| `mode` | `FIXED` | `FIXED` or `TERRACED` |
+| `fluidHeight` | `63` | Base river fluid surface in absolute world Y, independent from the dimension ocean head |
+| `fluidPalette` | water | Fluid-only material palette for the complete river and river-fed cave system |
 | `poolLength` | `96` | Target along-river length of a flat pool |
-| `maximumPoolRise` | `4` | Greatest permitted upstream head above dimension sea level |
+| `maximumPoolRise` | `4` | Greatest permitted upstream head above `water.fluidHeight` |
 | `dropHeight` | `1` | Height of each controlled drop; cannot exceed `maximumPoolRise` in terraced mode |
 
-The water head is per column. Terrain fill, underwater decorators, shore checks, object placement, native-structure placement, cave reservoir protection, Vision, and the Bukkit terrain API all read that same local value. A terraced head above sea level does not raise the dimension's global cave aquifer or seal unrelated cave columns. As soon as a mouth footprint enters a natural ocean column, its head is clamped to the dimension `fluidHeight`; a terraced river can approach from above but cannot form a raised ribbon over ocean water.
+The fluid head is per column. Terrain fill, underwater decorators, shore checks, object placement, native-structure placement, cave reservoir protection, Vision, and the Bukkit terrain API all read that same local value. A terraced head above sea level does not raise the dimension's global cave aquifer or seal unrelated cave columns. As soon as a mouth footprint enters a natural ocean column, its head is clamped to the dimension `fluidHeight`; a terraced river can approach from above but cannot form a raised ribbon over ocean water.
 
-The actual block comes from the dimension `fluidPalette`, normally water. Inside an accepted river-cave overlay, waterloggable blocks become waterlogged only when their final cell contains river water, while dry and seal-guard cells are cleared. Baseline caves outside that overlay retain their existing aquifer and waterlogging behavior, including when rivers are disabled or sealed.
+The palette must resolve at least one fluid block; solid blocks fail runtime construction. Pack validation also requires the fixed head and the highest possible terraced head to remain inside `dimensionHeight`. Inside an accepted river-cave overlay, waterloggable blocks become waterlogged only when their final cell contains water; a lava or mod-fluid river clears waterlogging while still using its own fluid throughout the contained overlay. Baseline caves outside that overlay retain the dimension aquifer and waterlogging behavior, including when rivers are disabled or sealed.
 
 ## River biomes
 
@@ -501,7 +516,7 @@ The Bukkit terrain API adds `RIVER`, `RIVER_SHORE`, and `DRY_CHANNEL` surface ki
 
 River tiles are immutable and cached. A cold tile performs graph routing and reach indexing; warm column samples are direct spatial-index lookups, and one default tile covers 2,048 by 2,048 blocks. Candidate ranking keeps Perlin-worm geometry lazy, accumulated reaches outside the requested tile are discarded before curve and dimension sampling, and long feasibility proofs are capped at 65 deterministic centerline probes. When no reachable region or biome can block routing, contained-bore feasibility bypasses those local policy probes entirely. Effective region/biome settings are cached by resource identity, unreachable biome overrides do not trigger natural-biome sampling, node and source inputs are resolved once, and zero-weight height and slope streams are not evaluated. Ocean intent short-circuits non-ocean nodes; only possible outlet nodes sample natural height to reject elevated false oceans. Per-column bore classification reuses the height, bed, head, and incision values already resolved for that column instead of repeating centerline sampling. Widened tunnel candidates reject expanded-radius misses before sampling natural height, region, biome, floor, or roof data, and a fixed tunnel-width multiplier bypasses noise evaluation. Reach routing cost resolves its regional multiplier once at the reach midpoint. Each source tile orders partial floor candidates by stable identity; a full floor skips sorting and directly tests each node once. Every non-winner is still rejected against the dimension-wide maximum source multiplier before natural height or region/biome settings are sampled. Empty river footprints also skip the mantle tunnel-column scan entirely.
 
-Cold work grows quickly with `maxRouteReaches` because that value expands both the source window and the number of steps traced from each candidate source. A worm profile's `segments` increases integration and spatial-index work for every reach selecting it, while `maxOffset` enlarges the cache halo. Body anatomy uses 12–32 synchronized knots per reach; shorter `bodyWavelength` or `bodyDetailWavelength` values reach the upper knot count sooner. The shipped Overworld and Underworld use 1,700-block cells, three cells per cache tile, `maxRouteReaches: 8`, three guaranteed sources per tile, `routingBasinCells: 112`, and three weighted root families containing twelve total styles with 28–64 segments and 110–480-block displacement limits. Floodplain trees favor broad shallow trunks, marsh meanders, and reed threads; canyon trees favor straight deep trunks, ravines, fault runs, and gullies; serpentine trees favor large wandering trunks, hairpins, riffles, and springs. Every style has a distinct two-scale body rhythm and independent width, basin, depth, and roof amplitudes in addition to different branch caps, sibling decay, confluence strength, and child-transition rates. A 6,144-block VASCULAR_IRIS routing field guides multi-reach flow, and the 24-cell drainage warp supplies long directional changes above the per-reach Perlin integration. One source proves 13,600 blocks, while overlapping sources and physically equivalent roughly 190,000-block drainage basins preserve long global trunks. Shipping routes intentionally set terrain height and slope routing weights to zero: topology crosses mountain chains according to the cached continental mask and routing field, while actual columns bend terrain down by up to 15 blocks and then pass through higher relief in sealed water-bearing bores. Regional incision and continuation multipliers no longer shorten those mountain crossings, and ordinary regional dry or suppressed terminals now inherit the wet dimension behavior; Terralost retains its intentional sinkhole grotto. Generated grottos use one sparse candidate per reach and never run a component flood through unrelated cave air. Increase route or worm segment limits only after profiling representative cold generation. Wider channels, larger worm offsets, shorter body wavelengths, smaller cells or tiles, a larger source floor, and higher source chance also increase cold-tile work or repeat it more often. Pack validation and runtime construction reject derived routing footprints outside the bounded work envelope even when every individual setting is within its numeric range. Pregeneration amortizes accepted work naturally because nearby chunks share tiles.
+Cold work grows quickly with `maxRouteReaches` because that value expands both the source window and the number of steps traced from each candidate source. A worm profile's `segments` increases integration and spatial-index work for every reach selecting it, while `maxOffset` enlarges the cache halo. Body anatomy uses wavelength-derived synchronized stations with a 512-station cap; the managed configurations resolve one station every four to ten blocks. Indexed profile traversal begins at the intersecting interval, so dense profiles do not rescan every station for every centerline segment. The shipped Overworld and Underworld use 1,700-block cells, three cells per cache tile, `maxRouteReaches: 8`, three guaranteed sources per tile, `routingBasinCells: 112`, and three weighted root families containing twelve total styles with 28–64 segments and 110–480-block displacement limits. Floodplain trees favor broad shallow trunks, marsh meanders, and reed threads; canyon trees favor straight deep trunks, ravines, fault runs, and gullies; serpentine trees favor large wandering trunks, hairpins, riffles, and springs. Every style has a distinct 8–20-block detail rhythm, 65–88% detail influence, and independent width, basin, depth, and roof amplitudes in addition to different branch caps, sibling decay, confluence strength, and child-transition rates. Both packs add three blocks of channel radius and use a four-to-six-block terrain blend before their 38-block channel cap; Overworld river fluid is water and Underworld river fluid is lava. A 6,144-block VASCULAR_IRIS routing field guides multi-reach flow, and the 24-cell drainage warp supplies long directional changes above the per-reach Perlin integration. One source proves 13,600 blocks, while overlapping sources and physically equivalent roughly 190,000-block drainage basins preserve long global trunks. Shipping routes intentionally set terrain height and slope routing weights to zero: topology crosses mountain chains according to the cached continental mask and routing field, while actual columns bend terrain down by up to 15 blocks and then pass through higher relief in sealed fluid-bearing bores. Regional incision and continuation multipliers no longer shorten those mountain crossings, and ordinary regional dry or suppressed terminals now inherit the wet dimension behavior; Terralost retains its intentional sinkhole grotto. Generated grottos use one sparse candidate per reach and never run a component flood through unrelated cave air. Increase route or worm segment limits only after profiling representative cold generation. Wider channels, larger worm offsets, shorter body wavelengths, smaller cells or tiles, a larger source floor, and higher source chance also increase cold-tile work or repeat it more often. Pack validation and runtime construction reject derived routing footprints outside the bounded work envelope even when every individual setting is within its numeric range. Pregeneration amortizes accepted work naturally because nearby chunks share tiles.
 
 Do not use final river-derived engine streams inside river configuration noise. Besides being rejected by validation, that would make topology depend on the result it is currently building. Use natural height, ordinary generator styles, region/biome identity, and fixed authored multipliers instead.
 

@@ -576,8 +576,9 @@ Reads beyond it receive deterministic Iris surface/floor terrain or an empty eph
 Before modded native placement, Iris registers every POI-bearing block already present in the target protochunk. The subsequent structure block transition can then unregister or replace that POI normally after a vertical shift.
 A shifted Trial Chamber that removed four pre-existing Iris barrels finished with air at all four positions and no stale POI mismatch on exact replay.
 
-The current external-pack acceptance still reports authored-content warnings. Those cover unresolved `minecraft:grass` forms and invalid properties on blocks such as `big_dripleaf_stem`, `beetroots`, or `creaking_heart`. They also cover empty third-party pools such as `nova_structures:hamlet/jockey` and the Kaisyn beach-lighthouse pool, a stale `chisled_polished_blackstone` replacement, and stale block-attached-entity `block_pos` values. Iris reports these inputs and uses only Minecraft's safe fallback where one exists.
-It does not rewrite or migrate the third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
+External-pack acceptance can still report authored-content warnings for unresolved `minecraft:grass` forms, invalid block properties, empty third-party pools, stale replacement identifiers, or stale block-attached-entity `block_pos` values. Iris reports those inputs and uses only Minecraft's safe fallback where one exists. It does not rewrite or migrate third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
+
+The managed Overworld pack authors big dripleaf stems with Minecraft 26.2's `facing` and `waterlogged` properties and mature beetroots at age 3. Normal worlds and Studio consume those same pack bytes, so Studio does not substitute a simplified block state or special landing-area content.
 
 ### 3.2 `disabled` and `disabledExact` never block an explicit placement
 

@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -91,6 +91,9 @@ been run.
   - [x] `./gradlew :adapters:bukkit:plugin:test --rerun-tasks -PuseLocalVolmLib=false`
   - [x] `./build-all.sh`
 - [x] Confirm all four baseline jars pass archive integrity checks.
+- [ ] Confirm the current CraftBukkit candidate passes its strict
+      7,000,000-byte ceiling and cold/cached Paper and Spigot runtime-library
+      bootstrap checks.
 - [x] Capture baseline golden hashes for the same pack, seed, radius, and
       thread counts on all platforms.
 - [ ] Preserve a copy of the baseline performance results described in
@@ -537,23 +540,57 @@ and `irisworldgen:accept_underworld` seed `-987654321` before and after
 their final cold restart. They completed both valid-center
 1,000-block-radius pregenerations at 16,129/16,129 with zero failures on
 every loader. After the later Bukkit-only exact-slot storage correction,
-all three modded artifacts were rebuilt from the final source and passed
-packaging and mixin verification again. No modded runtime path changed.
+all three modded artifacts were rebuilt from that source and passed
+packaging and mixin verification again. That historical rebuild predates
+the current modded dynamic-level lifecycle and Studio transition changes.
 A second real content-mod fixture also passes entity, item, block,
 structure loot, death loot, headless initial-spawn, and 2,025-chunk
 pregeneration gates on all three mod loaders. These targeted runs do not
 satisfy every minimum/latest loader, client, lifecycle, Studio, or
 pregen-control item below, so the broader matrix remains open.
 
-**Current world lifecycle and 1,000-block pregen acceptance:
+**Previously recorded world lifecycle and 1,000-block pregen acceptance:
 PASS-WITH-WARN**. Paper, Folia, Leaf, Canvas, Spigot, Fabric, Forge, and
 NeoForge all pass the requested world, seed, restart, and storage
-scenarios. They also pass the requested pregeneration scenarios. The final source also passes every Bukkit and
+scenarios. They also pass the requested pregeneration scenarios. That tested source passed every Bukkit and
 modded packaging verifier. The warning is external: Folia still cannot
 load 35 Dungeons & Taverns functions, and the modded logs retain the
 classified authored-content fallbacks described above. This targeted
 decision does not close the broader client, Studio, minimum/latest-loader,
 performance-baseline, distribution, or publication gates below.
+
+The current candidate changes Bukkit initial-spawn readiness, Studio
+arrival deadlines, modded dynamic-level lifecycle events, and Bukkit
+runtime-library packaging. The historical result above does not cover
+those paths. Re-run the packaged-artifact matrix below before assigning a
+current GO or GO-WARN decision.
+
+**Fresh-process strict Paper Studio timing at source `05a27f17`: PASS.**
+On the reference machine, standard Overworld arrival completed in 8.115
+seconds by player packet and 8.021 seconds by the plugin timer. The
+serialized Underworld replacement completed in 6.336 seconds by player
+packet and 6.255 seconds by the plugin timer. The exact output signatures
+remained `f01487204b1f738b` for Overworld and `12dbddeddcadcbab` for
+Underworld. Both runs kept canonical generation enabled, overlapped the
+lifecycle-tracked generation-cache warm with native structure-ring
+activation, temporarily limited only the entering player's view distance
+to 2 during native teleport, and restored the saved value afterward. This
+targeted proof does not close the wider server and loader matrix below.
+
+**Current 26.2 mod-loader Studio timing: NO-GO pending player proof.**
+The final teleport path now requests only its canonical FULL destination
+chunk instead of a 3x3 FULL range. On the final artifacts, prepared-pack
+console Studio open took 3.850 seconds for Fabric Overworld, 6.112 and
+5.358 seconds for Forge Overworld and Underworld, and about 4 seconds and
+1.874 seconds for NeoForge Overworld and Underworld. The smallest public
+pregen command covers four FULL chunks, not one; those sequential
+four-chunk Studio batches completed without failures in 15 seconds on
+Fabric, 13-15 seconds on Forge, and 14-15 seconds on NeoForge. Persistent
+Forge and NeoForge Overworld/Underworld creation, four-chunk generation,
+region persistence, save, and clean shutdown also passed. A 26.2
+player-arrival capture remains required because the automated player
+harness does not support that protocol; the four-chunk average is not a
+substitute for the exact single-chunk native teleport measurement.
 
 - [ ] Bukkit-family server matrix:
   - [x] Paper current target
@@ -574,6 +611,8 @@ performance-baseline, distribution, or publication gates below.
   - [ ] NeoForge latest compatible loader
 - [ ] On every server target:
   - [ ] Fresh Iris world creation and non-empty chunk generation
+  - [ ] Immediate Overworld then Underworld creation after each truthful
+        initial-spawn-ready success, with no false busy or restart result
   - [ ] Existing Iris world restart and new-chunk generation
   - [ ] Custom biome registration and client synchronization
   - [ ] Structures, objects, loot, spawners, and entities
@@ -582,6 +621,19 @@ performance-baseline, distribution, or publication gates below.
         shutdown
   - [ ] Studio validation, hotload failure recovery, and successful
         hotload where supported
+  - [ ] Overworld and Underworld Studio player arrival under 10 seconds
+        from command admission, with serialized replacement and no late
+        teleport after timeout
+  - [ ] Bukkit standard entry temporarily limits only the entering
+        player's view distance to 2, restores it after success and failure,
+        and keeps every requested chunk on canonical FULL generation
+  - [ ] Ordinary Bukkit Studio overlaps its lifecycle-tracked asynchronous
+        canonical generation-cache warm with native structure-ring
+        activation; generation, Matter generation, hotload, and entry
+        teleport await it, runtime-world warming remains synchronous, and
+        `generation_cache_warm` reports `skipped=false`
+  - [ ] Dynamic modded level load/unload events and rollback load event
+        where applicable
   - [ ] Clean startup and shutdown without leaked threads or incomplete
         futures
 - [x] Content-mod gate on Fabric, Forge, and NeoForge using Nerospace
@@ -609,9 +661,11 @@ intentional capability difference.
       Remove stale `4.0 RC.1.1.6` text.
 - [x] Correct README pregen syntax, including the required radius.
 - [ ] Document how to select an Iris world preset on each mod loader.
-- [x] Remove automatic pack installation. First startup is network-free
-      and pack acquisition is an explicit `/iris download` operation
-      followed by a manual restart.
+- [x] Remove automatic pack installation. Startup never downloads a world
+      pack, and pack acquisition is an explicit `/iris download` operation
+      followed by a manual restart. Document separately that a fresh
+      Bukkit installation provisions four runtime libraries before Iris
+      starts, while cached Bukkit boots and self-contained mod jars do not.
 - [ ] Publish an accurate Bukkit-versus-modded Studio capability matrix.
 - [ ] Document intentional entity-spawn and tooling differences that
       remain.
@@ -628,12 +682,22 @@ intentional capability difference.
 
 ### Confirmed release blockers and follow-ups
 
-- [x] Verify both embedded beta assets remain anonymously downloadable:
+- [ ] Publish and revalidate both embedded beta assets:
       `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip`
       and
       `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip`
-      both return HTTP 200, and isolated acceptance downloaded and
-      installed both packs successfully.
+      both return HTTP 200, but the 2026-08-24 assets predate the current
+      river contract. Isolated Forge 26.2 acceptance rejected Overworld
+      because `rivers.terrain.worms` is absent and rejected both packs'
+      `rivers.water.mode`. Both pack worktrees now gate beta publication
+      on enabled rivers, at least one worm profile, and a current `FIXED`
+      or `TERRACED` water mode, and the gate rejects the stale committed
+      inputs. The workflow also extracts the exact candidate ZIP and
+      requires current Iris bootstrap validation plus Studio-mode chunk
+      generation, recording the Iris validator commit in the release
+      notes. Publish the validated current pack trees, then
+      repeat anonymous download, validation, world creation, chunk load,
+      and Studio acceptance before release.
 - [x] Make modded GoldenHash metadata use the active Iris engine seed.
       Fabric, Forge, and NeoForge generated identical output from Iris
       seed `1337`. Filenames and headers recorded each vanilla level

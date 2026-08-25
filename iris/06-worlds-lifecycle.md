@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -112,6 +112,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | Startup validation pending / failed / restart-required on login or create | External datapack ingestion or dimension-pack validation has not reached a safe state | Fix the first logged failure, or complete the requested restart. Do not hand-create world folders or hand-edit `bukkit.yml` |
 | A configured startup world is reported as generation-locked | The immediate startup restart or shutdown did not complete, or startup validation failed before world loading. Iris bound a non-generating safety generator so Bukkit cannot fall back to vanilla terrain | Fix the first logged restart or validation failure, then restart. Do not force chunk generation while the lock remains |
 | Folia create reports `paper_like_runtime` unavailable | Iris cannot prove a safe runtime world-creation backend and refuses before invoking Folia's unsupported public path | Update to a compatible Folia/Iris build, then retry without hand-editing world storage |
+| Create fails during initial-spawn preparation | The spawn chunk returned null or failed, its owning-region task was rejected, spawn placement failed, or the 120-second initial-spawn wait expired | Treat the create as failed and follow the logged reconciliation or restart instruction. Do not start another lifecycle mutation until Iris releases or fences the operation |
 | Create reports that automatic teleport failed | The world was created, but entry-chunk generation, safe-position resolution, or Paper's asynchronous teleport failed or did not finish within 60 seconds | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
 | Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the `iris/pack` snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |
 | Unload hits its terminal timeout | Work did not drain in 150 s | Allow the restart. Do not force-delete the live directory |
@@ -171,13 +172,14 @@ On an unchanged create, Iris reuses the compiler-input fingerprint already produ
 
 1. Resolve the managed key and dimension. No directory is created yet.
 2. Require startup datapack readiness and a loadable validation result for the owning pack.
-3. Install datapacks for the dimension types. If the types are not loaded yet, queue a restart.
+3. Install datapacks for the dimension types. A changed compiler-input fingerprint does not itself require a restart when the loaded runtime already satisfies every current dimension-type, custom-biome, and biome-tag requirement. A new or changed required registry entry still queues the normal restart.
 4. Copy the pack into `<world>/iris/pack` through `StudioSVC.installIntoWorld` — staged into a temp directory and published atomically. Iris may reuse the source's exact validation result only when a strong content fingerprint of the copied snapshot matches the validated source. Otherwise it runs full semantic validation at the new root. A validation failure rolls the publication back. The lifecycle reporter identifies this as the `Preparing world pack` phase; Iris does not emit a separate synthetic snapshot ID such as `overworld:overworld`.
 5. Build a `WorldCreator` with the Iris generator and `studio=false`.
 6. Create the world through `WorldLifecycleService` / NMS async create, with a 120-second timeout. A timeout triggers a server restart rather than leaving a half-created world.
-7. Register the world in `bukkit.yml` with the Iris generator, dimension key, and seed. Update the Multiverse link if Multiverse is present — that step has its own 30-second budget and also escalates to a restart.
-8. For a player-issued create, generate the entry chunk, resolve a supported collision-free position, and delegate one asynchronous teleport there. The operation has a 60-second watchdog. Failure cancels the teleport only and retains the created world without requesting a restart.
-9. Run creation-time pregen if the caller attached a `PregenTask` through the API.
+7. Wait for the production generator's initial-spawn future. The actual spawn chunk must resolve and spawn placement must complete on that chunk's owning region. A null chunk future or result, scheduling rejection, generation failure, placement failure, or timeout fails creation. Iris does not register the world, report success, or release lifecycle admission early. Studio and benchmark worlds do not use this production-spawn barrier.
+8. Register the world in `bukkit.yml` with the Iris generator, dimension key, and seed. Update the Multiverse link if Multiverse is present — that step has its own 30-second budget and also escalates to a restart.
+9. For a player-issued create, resolve a supported collision-free entry position and delegate one asynchronous teleport there. The operation has a 60-second watchdog. Failure cancels the teleport only and retains the created world without requesting a restart.
+10. Run creation-time pregen if the caller attached a `PregenTask` through the API.
 
 Rollback phases carry the same 120-second budget.
 
@@ -247,6 +249,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 - Startup datapack validation and the pack's own validation must both be loadable before any Studio folder, snapshot, generator, or Bukkit world is created. Missing validation fails closed.
 - The pack is **not** copied into the world folder, except for benchmark runs. The engine reads the live pack directly, which is what enables hotload.
 - Studio worlds are transient. They are never written into Iris's persistent world registry. Unloaded Studio worlds are cleaned up, and their `bukkit.yml` entries are removed during shutdown cleanup.
+- Standard Studio uses the same engine contract as production generation. With identical pack bytes and seed it generates the same blocks, biomes, structures, and terrain; it does not replace terrain with blank chunks or a landing pad.
 - Opening Studio after creating a persistent world from the same pack reuses the already-loaded matching dimension type and custom biomes. The new frozen world snapshot and its `bukkit.yml` LevelStem binding are boot-time persistence inputs. They are not a reason to restart the current server solely to open Studio. New or changed registry content still requires the normal restart boundary.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 - Biome Buffet prepares a changed focus before opening the chunk generation session. Its exclusive fair-stage admission downgrades straight to the retained chunk permit so no other transition can slip in between the focus hotload and that chunk.
@@ -342,6 +345,8 @@ All four fields are required per entry. `id` is the registered dimension id. `pa
 Entries that are individually invalid are logged, kept verbatim, and re-appended on the next write — Iris never silently drops one. Duplicate ids keep the first valid entry and warn.
 
 If the whole file fails to parse, only the startup load path quarantines it as `iris-dimensions.json.broken-<timestamp>`. It salvages whatever ids it can from the raw text into the log. It continues with no persistent Iris dimensions. Every other code path throws rather than discard persistent worlds. Keep the quarantined file, recreate each reported world with `/iris world create`, verify pack, dimension, and seed, then delete the backup.
+
+Runtime enable and removal publish each loader's normal level lifecycle. Fabric fires `ServerLevelEvents.LOAD` and `UNLOAD`; Forge and NeoForge post `LevelEvent.Load` and `Unload`. Unload is published before Iris unbinds and removes the dynamic level. If removal fails after that boundary and Iris restores the retained level, rollback publishes the matching load event again.
 
 ## Pack snapshot vs studio
 

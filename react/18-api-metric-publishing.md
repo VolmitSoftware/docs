@@ -349,6 +349,8 @@ if (Double.isFinite(mspt) && mspt > 45D) {
 
 Sampler ids are React's internal names. They are not part of this contract in the way metric keys are. Guard with `hostMetricAvailable` rather than assuming an id exists.
 
+React also publishes the same public global samplers through its VolmLib `IntegrationServiceContract`. Each descriptor uses the key `react.sampler.<sampler-id>`, numeric type `DOUBLE`, and `scope=global`. `sampleMetrics(Set<String>)` reads only the registered sampler keys in that request, gives the batch one timestamp, and reports missing, failed, or non-finite sampler reads as unavailable. It does not call `Sampler.sample(Chunk)` or introduce player-context sampling, and it omits the internal `unknown` fallback. Synthesized metric keys normalize punctuation to hyphens for their sampler id, so `guardianpets.pets.live` is available to Gloss as `metric('react.sampler.guardianpets-pets-live', 0)`; see [Gloss Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
+
 ---
 
 ## Failure policy

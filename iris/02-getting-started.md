@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -76,6 +76,8 @@ For a player, the immediate create path opens a labeled bottom action-bar meter 
 ```text
 /iris create name=myworld type=overworld seed=1337
 ```
+
+Create does not report success as soon as the Bukkit world object exists. For a production world, Iris waits for the actual initial-spawn chunk and applies the spawn location on that chunk's owning region before it registers the world or releases lifecycle admission. A null chunk result, rejected region task, generation or placement failure, or timeout fails creation instead of publishing a false ready state.
 
 Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. `myworld` must appear under Iris worlds immediately after creation completes, including on Folia.
 
@@ -231,7 +233,7 @@ Run `/iris pregen status` right away and confirm the target dimension, total, an
 
 ## 5. Open a Studio
 
-Studio worlds are transient. They are discarded when you close them and any leftovers are purged at startup. Crucially, a Studio world reads the **live** pack directory and hotloads JSON and object edits into newly generated chunks. Production worlds never do this. They read the frozen snapshot copied into the world at creation. That difference is the reason Studio exists, and the reason pack edits appear to do nothing on a production world.
+Studio worlds are transient. They are discarded when you close them and any leftovers are purged at startup. Crucially, a Studio world reads the **live** pack directory and hotloads JSON and object edits into newly generated chunks. Production worlds never do this. They read the frozen snapshot copied into the world at creation. Studio generates the same blocks, biomes, structures, and terrain as a normal world with the same pack and seed; it does not substitute blank chunks or a landing pad. That live-versus-frozen pack source is the reason Studio exists, and the reason pack edits appear to do nothing on a production world.
 
 ### Plugin
 
@@ -280,6 +282,8 @@ Group aliases are `std` and `s`.
 /iris studio open overworld 1337
 /iris studio vscode overworld
 ```
+
+For a player, both Bukkit and modded Studio open use an absolute 10-second arrival deadline measured from command admission. Time spent behind an existing close or open transition consumes that same budget. An expired request is failed and cannot teleport the player later.
 
 A number of Bukkit studio and content tools refuse on modded. They print an explanatory message rather than half-working. The list is `importvanilla` (`importv`, `iv`), `loot`, `profile`, `spawn`/`summon`, `objects`/`find-objects`, the object `we`, `studio`, and `convert` subcommands. Structure `import`/`import-all`/`reimport` and datapack `ingest`/`pull`/`remove` also refuse. Do authoring work on a Bukkit server and copy the pack folder across. External datapacks are separate: install each compatible archive directly in the target modded save's `datapacks/` directory before loading the Iris world.
 

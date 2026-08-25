@@ -2,7 +2,7 @@
 title: "Maintainer - Release Checklist"
 description: "Iris documentation: Maintainer - Release Checklist"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -80,6 +80,11 @@ announce from an unclean or differently tested tree.
     the loader jars `<target>` is `<minecraftVersion>+<loaderDisplay>`.
     For CraftBukkit it is `bukkitMinecraftRange` (the supported Minecraft
     *range*, currently `26.1.2-26.2`), not `minecraftVersion`.
+- [ ] The final CraftBukkit jar does not exceed the 7,000,000-byte verifier
+      ceiling and remains below it for the distribution target.
+      `verifyBukkitArtifact` enforces this ceiling in the finished archive;
+      report the exact byte count from `dist/`, not a rounded filesystem
+      display.
 - [ ] The SPI jar is built by the same run at
       `spi/build/libs/iris-spi-4.0.0-26.2.jar`. It is the
       adapter/platform contract, not the stable downstream plugin API. It
@@ -95,6 +100,12 @@ announce from an unclean or differently tested tree.
 
 - [ ] `:core:check` and `:probe:deserializationProbe` passed in CI on the
       tag commit (a. covers this).
+- [ ] Boot the final CraftBukkit artifact once on Paper with an empty
+      `plugins/Iris/cache/libraries/`. Confirm Gson, Caffeine,
+      ConcurrentLinkedHashMap, and Paralithic are provisioned and available
+      before early datapack bootstrap. Restart without clearing the cache
+      and confirm no library download occurs. Repeat a cold-cache boot on
+      plain Spigot to verify its plugin-initialization path.
 - [ ] Golden-hash determinism VERIFY passes on all four platforms and
       matches the same hash (see
       [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)):

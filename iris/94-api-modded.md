@@ -117,6 +117,24 @@ private static boolean irisPresent() {
 
 ---
 
+## Dynamic level lifecycle events
+
+Iris publishes the loader's normal lifecycle events when `/iris create`,
+`/iris world enable|disable|delete`, or Studio injects or removes a dynamic
+level. Fabric listeners receive `ServerLevelEvents.LOAD` and `UNLOAD`.
+Forge and NeoForge listeners receive `LevelEvent.Load` and `Unload` on
+their normal event bus. Integrations should use those native events rather
+than polling Iris's persistent registry.
+
+Unload is published while the retained `ServerLevel` and its bound Iris
+engine are still available, before Iris removes the level from the server.
+If removal fails after that event and Iris restores the retained level,
+rollback publishes the matching load event again. Listeners must therefore
+treat a load after an attempted unload as a valid restoration, not a
+duplicate startup notification.
+
+---
+
 ## `IrisModdedAPI`
 
 All static, null-tolerant: null or non-Iris `ServerLevel` → `false`,

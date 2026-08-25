@@ -8,43 +8,45 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt's English text lives in typed Java catalogs, not in a file you can edit. Seventeen translations ship inside the jar. Everything on disk under `plugins/Adapt/languages/` is either a generated reference you read, or an override you write.
+Adapt's English text lives in typed Java catalogs, not in a file you can edit. The plugin jar contains no locale TOMLs. Set one config value and Adapt downloads only the selected non-English translation.
 
-Pick a language with one key in `adapt.toml`. If you want to change wording, put only the keys you care about in an override file. Adapt resolves each key on its own. An override falls back to the bundled translation. A key missing from the bundle falls back to English.
+Pick a language with one key in `adapt.toml`. Adapt fetches that locale from the exact Git revision recorded in the plugin build, checks its SHA-256 digest and complete catalog shape, publishes it atomically, and caches it by source revision. If you want to change wording, put only the keys you care about in an override file. Adapt resolves each key through the override, the verified download, and code-owned English.
 
-Reloads are all-or-nothing and validated before anything goes live. A bad override never reaches players. Adapt logs what was wrong and keeps running on the last good language. Nothing that reads text ever touches disk at runtime. A reload cannot stall gameplay.
+Downloads run away from the server thread. English remains active while the first download is pending or when the network is unavailable. A successful download activates on the global server scheduler and refreshes advancement text and open Adapt menus. Reloads are all-or-nothing and validated before anything goes live. Message lookup uses the published in-memory snapshot and never touches disk.
 
 ```
 plugins/Adapt/
   adapt.toml                  language = "en_US"
   languages/
     en_US.toml                generated reference, always present, never read back
-    <locale>.toml             generated copy of the active bundled locale, never read back
+    downloaded/
+      <source-revision>/
+        <locale>.toml         verified automatic cache, not operator-edited
     overrides/
-      <locale>.toml           yours, sparse, the only file Adapt reads
+      <locale>.toml           yours, sparse, highest precedence
 ```
 
 ## Picking a language
 
-1. Open `plugins/Adapt/adapt.toml`.
-2. Set `language` to one of the bundled names in the Reference below, matching the spelling exactly. `ja-JP` uses a hyphen. The other sixteen use an underscore.
-3. Save. The hotload watcher sees the `adapt.toml` change, reloads the config, and reloads the language with it.
+1. Open `plugins/Adapt/adapt.toml` and set `language` to one of the locale names in the Reference below, matching the spelling exactly. `ja-JP` uses a hyphen. The other sixteen use an underscore.
+2. Save. The hotload watcher sees the config change and requests that one locale.
+3. Watch for `Downloaded Adapt locale <locale>.` followed by `Loaded locale <locale> with 0 fallback entries.` No restart is required.
 
-Setting `language` to a name with no bundled translation is not an error. Adapt warns that no bundled locale exists for that name. Code-owned English is used. Your overrides for that name still apply on top.
+Setting `language` to an unavailable name does not make an HTTP request. Adapt warns and uses code-owned English. An override for that exact name still applies on top.
 
 ```
-No bundled locale exists for <locale>; code-owned English will be used.
+Locale <locale> is not available for automatic download; code-owned English remains active.
 ```
+
+If a download fails, Adapt retains English and retries after the next config reload or restart. A verified cached locale works without network access. A corrupt or checksum-mismatched cache is ignored and replaced by a later successful download; a valid server override still applies while the cache is unavailable.
 
 A name that is not made of letters, digits, underscores and hyphens is rejected outright and the previously loaded language stays live.
 
 ## Reading the generated reference
 
-`languages/en_US.toml` is written first thing in every reload, before the locale is even resolved. It is a dump of the code-owned English catalog in the same TOML shape as the bundled files. It is the authoritative list of every key that exists. Start here when you want to know what a key is called.
+`languages/en_US.toml` is written first thing in every explicit reload, before the locale is even resolved. It is a dump of the code-owned English catalog in the same TOML shape as downloaded locales. It is the authoritative list of every key that exists. Start here when you want to know what a key is called.
 
-`languages/<locale>.toml` appears after a successful reload when `language` is not `en_US`. It holds the bundled translation for that locale exactly as it ships. Only the active locale is extracted. The other sixteen stay in the jar. Set `language = "de_DE"` and you get `languages/de_DE.toml` on the next boot. A rejected reload leaves the previous extraction in place.
-
-Both files are regenerated on every boot and every language reload, through a temp file plus an atomic move. Editing them accomplishes nothing. Your edits are overwritten and were never read in the first place. Each carries a four-line header saying so. A failed write warns and is otherwise ignored. It never blocks language loading.
+The reference is regenerated through a temp file plus an atomic move. Editing it accomplishes nothing because the next explicit reload overwrites it and Adapt never reads it back. A failed write warns and is otherwise ignored. It never blocks language loading.
 
 ## Overriding text
 
@@ -80,9 +82,9 @@ An override reload triggered by the watcher also re-synchronizes advancement tit
 
 ## Reference
 
-### Bundled locales
+### Automatically downloadable locales
 
-Seventeen translations ship inside the jar. English is not one of them. It comes from code.
+Adapt provides seventeen downloadable translations. English comes from code and makes no download request.
 
 `de_DE` `es_ES` `fi_FI` `fr_FR` `he_IL` `it_IT` `ja-JP` `ko_KR` `lt_LT` `nl_NL` `pl_PL` `pt_PT` `ru_RU` `tr_TR` `vi_VI` `zh_CN` `zh_TW`
 
@@ -90,7 +92,7 @@ Seventeen translations ship inside the jar. English is not one of them. It comes
 
 | Key | Default | What it does |
 |---|---|---|
-| `language` | `"en_US"` | Locale name to load. Must match `[A-Za-z0-9_-]+`. An invalid name rejects the reload |
+| `language` | `"en_US"` | Locale name to load. A supported non-English value downloads automatically; names must match `[A-Za-z0-9_-]+` |
 | `automaticGradients` | `false` | Applies a gradient pass over rendered markup after `&` codes are translated |
 
 ### Value shapes
@@ -106,7 +108,7 @@ The key's declaration in the catalog dictates the shape. Use the shape you see i
 ### Precedence
 
 ```
-languages/overrides/<locale>.toml   >   bundled <locale>.toml   >   code-owned English
+languages/overrides/<locale>.toml   >   verified downloaded locale   >   code-owned English
 ```
 
 Resolution is per key, not per file.
@@ -124,7 +126,7 @@ Any one of these fails validation and keeps the previous language:
 | Placeholder set differs from the key's declaration | `Expected {...} but found {...}` |
 | A `null` value anywhere in the file | `Locale value cannot be null: <key>` |
 | File is not valid TOML | `Locale source is not valid TOML: <source>` |
-| Override file larger than 2 MiB | `Locale override is too large: <path>` |
+| Downloaded or override file larger than 2 MiB | `Locale file is too large: <path>` |
 | `language` value not matching `[A-Za-z0-9_-]+` | `Invalid locale name: <value>` |
 
 Missing keys are warnings, not errors. Only errors block a reload.
@@ -133,12 +135,14 @@ Missing keys are warnings, not errors. Only errors block a reload.
 
 | Item | Value |
 |---|---|
-| Maximum override file size | 2 MiB |
+| Maximum downloaded or override file size | 2 MiB |
+| Download connect timeout | 3 seconds |
+| Download read timeout | 5 seconds |
 | Issues logged per rejected reload | 12, then a count of the remainder |
 | Override watcher poll interval | 500 ms |
 | Watched for language reloads | `languages/overrides/*.toml`. `adapt.toml` also reloads the language as part of its config reload |
-| Not watched | `languages/en_US.toml`, `languages/<locale>.toml` |
-| Generated file write | Temp file plus atomic move, falling back to a plain move |
+| Not watched | `languages/en_US.toml`, `languages/downloaded/` |
+| Generated reference write | Temp file plus atomic move, falling back to a plain move |
 
 ### Catalog layout
 

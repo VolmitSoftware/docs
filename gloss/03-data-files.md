@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, real-drop settings and the tablist. Watched kinds hot-reload through a queued automatic batch; panel placement documents are the explicit manual-reload exception.
+All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, damage-indicator settings, real-drop settings and the tablist. Watched kinds hot-reload through a queued automatic batch; panel placement documents are the explicit manual-reload exception.
 
 ## The document envelope
 
@@ -21,7 +21,7 @@ Every hologram, board, emoji, animation, bubble style, real-drop settings, tabli
 }
 ```
 
-`schemaVersion` must match that document kind. Holograms, boards, emoji, animations, real-drop settings, tablist and MOTD use `1`; bubble styles use `2`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder or file kind (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `real-drops`, `tablist`, `motd`). Holograms require the native `TextDisplay` scale field. On enable, Gloss atomically replaces only a `bubbles/default.json` whose bytes are identical to the former shipped schema-1 default with the new shipped schema-2 default and logs the upgrade. An edited or reformatted schema-1 bubble style is not interpreted as schema 2: update its shape before loading it on this release.
+`schemaVersion` must match that document kind. Holograms, emoji, animations, and MOTD use `1`; boards, damage-indicator settings, real-drop settings, and tablist use `2`; bubble styles use `3`. Any other value is a hard reject with `unsupported <kind> schemaVersion: <n>`. `<kind>` is the folder or file kind (`holograms`, `boards`, `emoji`, `animations`, `bubbles`, `damage-indicators`, `real-drops`, `tablist`, `motd`). Holograms require the native `TextDisplay` scale field.
 
 `revision` must be between `1` and `9007199254740991`. That is the largest integer a browser can represent exactly. Anything outside that range is rejected with `<kind> revision must be between 1 and 9007199254740991`. The revision is server-owned. Gloss increments it by one on every write it makes. Revision-checked mutations refuse to run when the document on disk has moved on. They report `document <id> is at revision <actual>, expected <expected>`. A hand edit of a file does not need you to bump the revision. If you leave it alone, the web editor and the command layer both see the file as unchanged in revision terms. Bump it if you care about that.
 
@@ -43,7 +43,7 @@ Writes are atomic. The document is serialized to a temporary file in the same fo
 
 ## Hot reload
 
-One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes, and an ordinary idle pass only drains those events. JSON registries perform a full directory-membership safety scan about every 18 seconds and start exact-content reconciliation about every 6 seconds; both windows restart when their preceding work completes. The ten registry kinds are split evenly between two 3-second start slots so their safety work does not all land in one pass. Exact reconciliation walks already-known documents in stable id order. Across every registry in one watchdog pass, it yields after 32 files, 8 MiB, or about 10 ms; a single file or full membership scan may exceed the time budget, and documents above 2 MiB are rejected before their content is hashed or parsed. An unfinished walk continues on a later pass, and its reconciliation batch is published only after the complete walk finishes. Automatic passes start no more than once every 3 seconds after the preceding apply batch completes, and requests made while one is waiting or running collapse into one trailing latest-state pass. Deletions are held for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and rereads that pending file against the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss reschedules the tick pump without releasing the active batch; the new interval begins behind that batch's completion cooldown.
+One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes, and an ordinary idle pass only drains those events. JSON registries perform a full directory-membership safety scan about every 18 seconds and start exact-content reconciliation about every 6 seconds; both windows restart when their preceding work completes. The twelve registry kinds are distributed across the two 3-second start slots so their safety work does not all land in one pass. Exact reconciliation walks already-known documents in stable id order. Across every registry in one watchdog pass, it yields after 32 files, 8 MiB, or about 10 ms; a single file or full membership scan may exceed the time budget, and documents above 2 MiB are rejected before their content is hashed or parsed. An unfinished walk continues on a later pass, and its reconciliation batch is published only after the complete walk finishes. Automatic passes start no more than once every 3 seconds after the preceding apply batch completes, and requests made while one is waiting or running collapse into one trailing latest-state pass. Deletions are held for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and rereads that pending file against the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss reschedules the tick pump without releasing the active batch; the new interval begins behind that batch's completion cooldown.
 
 After a successful automatic batch, every online player with `gloss.admin` receives one coalesced action-bar notice naming the changed kinds and one Gloss success chime. Several files or kinds changed in the same pass still produce only one notice and one sound. `[commands] sounds` controls the chime; the visual notice remains enabled. Startup loads, `/gloss reload`, Gloss-owned writes, rejected documents and failed apply attempts do not produce this automatic success feedback.
 
@@ -64,6 +64,7 @@ Only one pass is ever in flight. If another request arrives while a disk scan or
 | `emoji` | Rebuilds the entire replacement table from the folder snapshot, ordered by document id |
 | `animations` | Unregisters every `\|animation.<id>\|` text function and re-registers them from the snapshot |
 | `bubbles` | Republishes the style snapshot. Styles are read per bubble, so the change applies to the next bubble |
+| `damage-indicators` | Republishes the singleton profile and destroys every live indicator so no display retains the replaced presentation. New indicators use the new snapshot immediately |
 | `real-drops` | Rebuilds the cached presentation profile, recreates active drop displays, and rehydrates loaded items on their owning threads |
 | `tablist` | Clears the applied header/footer and list-name caches so the next driver tick re-pushes them, or resets them on players when the document turns those features off |
 | `motd` | Republishes the document snapshot. The next ping uses it |
@@ -114,6 +115,7 @@ A document that fails to parse is skipped and the copy already in memory stays l
 | Emoji | `emoji/<id>.json` | yes | 67 documents | `/gloss emoji reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Animations | `animations/<id>.json` | yes | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `/gloss animations reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Bubble styles | `bubbles/<id>.json` | yes | `default` | `/gloss bubbles reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
+| Damage-indicator settings | `damage-indicators/default.json` | yes | `default` | `/gloss indicators reset` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Real-drop settings | `real-drops/default.json` | yes | `default` | `/gloss drops reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
 | Menus | `menus/**.json` | no, hash revision | none | — | [Hologram Menus](/gloss/09-menus) |
 | Images | `images/<file>` | not JSON | none | — | [Icons](/gloss/11-icons) |
@@ -128,17 +130,18 @@ A folder in that table exists only once there is something in it. Gloss creates 
 
 At enable, each kind that ships defaults extracts only the files that are missing from its folder. An edited file is never overwritten. A deleted file returns on the next boot. A file that is missing from the jar logs `<kind>/<name>.json: missing from the jar, not extracted.` and is skipped.
 
-Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `bubbles/` only while `chatBubbles` is on, `real-drops/` only while `realDrops` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
+Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `bubbles/` only while `chatBubbles` is on, `damage-indicators/` only while `damageIndicators` is on, `real-drops/` only while `realDrops` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
 
 Turning one of those features on extracts its defaults on the config reload rather than at the next restart. `previews` is again the exception: the preview registry is only constructed during enable, so `previews/` does not appear until the server restarts.
 
-The reset commands re-extract on demand and **do** overwrite. Each takes an optional name. The default is `*` for every shipped document of that kind. `/gloss tablist reset` and `/gloss motd reset` take no argument. Each has exactly one document.
+The reset commands re-extract on demand and **do** overwrite. Folder kinds with several possible shipped documents take an optional name whose default is `*`. `/gloss indicators reset`, `/gloss tablist reset` and `/gloss motd reset` take no argument because each owns exactly one document.
 
 | Command | Permission |
 |---|---|
 | `/gloss emoji reset [name=*]` | `gloss.emoji.reset` |
 | `/gloss animations reset [name=*]` | `gloss.animations.reset` |
 | `/gloss bubbles reset [name=*]` | `gloss.bubbles.reset` |
+| `/gloss indicators reset` | `gloss.indicators.reset` |
 | `/gloss drops reset [name=*]` | `gloss.drops.reset` |
 | `/gloss board reset [name=*]` | `gloss.boards.edit` |
 | `/gloss tablist reset` | `gloss.tablist.reset` |
@@ -150,7 +153,7 @@ The reset commands re-extract on demand and **do** overwrite. Each takes an opti
 
 A reset only restores shipped documents. It never deletes extra documents you added. A board or a preview you created yourself survives `reset *` untouched. That includes one whose id shadows a shipped name in a folder that resolves by priority.
 
-The six reset permissions `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.bubbles.reset`, `gloss.drops.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are children of `gloss.admin`. Board and preview resets sit under their own subsystem nodes instead.
+The seven reset permissions `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.bubbles.reset`, `gloss.indicators.reset`, `gloss.drops.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are children of `gloss.admin`. Board and preview resets sit under their own subsystem nodes instead.
 
 ## Baselines are never extracted
 
@@ -226,7 +229,7 @@ If no source folder is present, the command reports that and does nothing.
 
 ## Migrating pre-merger Gloss data
 
-The legacy migration is separate. It works in place on files already inside `plugins/Gloss/`. It converts pre-envelope documents to the current shape. It runs on every boot. You can re-run it with:
+The legacy import is separate. It works in place on supported files already inside `plugins/Gloss/` and runs on every boot. You can re-run it with:
 
 ```
 /gloss import legacy
@@ -239,13 +242,12 @@ A file is legacy when it has no `schemaVersion` key. Its original bytes are copi
 | Kind | Conversion |
 |---|---|
 | `holograms/` | `{id, world, x, y, z, lines}` becomes `anchor.world` plus `anchor.position`. The embedded `id` is dropped so the file name is the only id |
-| `boards/` | `{title, content, primary, permission}` becomes the current shape, `content` becomes `lines`, and an empty `groups` list is added |
 | `emoji/` | `{trigger, emoji, enabled}` gains the envelope. The legacy `<uses :id:>` trigger sentinel becomes an empty trigger |
 | `animations/` | `target-framerate` becomes `frameIntervalMs` rounded from `1000 / framerate`, and `animation-type` is lowercased into `mode` |
 
-`groups/` is absorbed rather than converted. Each `groups/<name>.yml` contributes its `tablist-name` to `tablist.json` under the lowercased group name. Its `default-board` appends the group onto that board document `groups` list. A `default-board` that names a board that does not exist is recorded as a note and skipped. When every group file processed without error, the whole `groups/` directory is **moved** into the timestamped backup. That is why the folder disappears from the data tree.
+A legacy `config.yml` is overlaid last. Supported mechanical keys land in `gloss.toml`. Supported `chat-bubbles` prefix, offset, wrap, lifetime, follow and hide values merge into the current schema-3 `bubbles/default.json`. Legacy fly-away on keeps the shipped late-fly motion; fly-away off writes identity translation, scale, rotation and opacity expressions. Line stagger is discarded because one message is one multiline display. Its `motd.texts` merge into `motd.json` (each text split on newlines and truncated to the 2-line MOTD limit). Bubble and MOTD content are applied only while the target document is byte-identical to the shipped default. A customized document is left alone and the report explains why. The file is then renamed to `config.yml.imported`.
 
-A legacy `config.yml` is overlaid last. Its mechanical keys land in `gloss.toml`. Its tablist keys merge into `tablist.json`. Its `chat-bubbles` prefix, offset, wrap, lifetime, follow and hide values merge into the matching fields of the schema-2 `bubbles/default.json`. Legacy fly-away on keeps the shipped late-fly motion; fly-away off writes identity translation, scale, rotation and opacity expressions. Line stagger is discarded because one message is now one multiline display. Its `motd.texts` merge into `motd.json` (each text split on newlines and truncated to the 2-line MOTD limit). Bubble and MOTD content are only applied while the target document is still byte-identical to the shipped default. A customized document is left alone. A note explains that the content was not applied. The file is then renamed to `config.yml.imported`.
+The importer does not convert legacy boards, group YAML or tablist formats. Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks: those files are rejected rather than translated, renamed or policed. Rewrite custom documents to their current schemas or reset shipped files.
 
 Both importers report their failures and keep going. An importer that throws logs `HoloUi data import failed; continuing enable.` or `Legacy Gloss data migration failed; continuing enable.` Startup proceeds.
 

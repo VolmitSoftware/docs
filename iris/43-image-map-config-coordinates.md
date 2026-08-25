@@ -157,7 +157,7 @@ source +X  ─────────────► Minecraft +X (east)
 source +Y / JSON +Z      Minecraft +Z (south)
 ```
 
-`origin` is a Minecraft block-space X/Z coordinate. `sourceOrigin` is the source pixel-space X/Y anchor written with `x` and `z`. With no mirror or rotation, world `origin` samples exactly source `sourceOrigin`.
+`origin` is a Minecraft block-space X/Z coordinate. `sourceOrigin` is the source pixel-space X/Y anchor written with `x` and `z`. Studio schema tooltips identify the nested `x` value as world X or source pixel X and the nested `z` value as world Z or source image Y according to the containing field. With no mirror or rotation, world `origin` samples exactly source `sourceOrigin`.
 
 At `blocksPerPixel: 4`, moving four blocks east advances one source X unit; moving four blocks south advances one source Y unit. Rectangular images retain their authored width and height.
 

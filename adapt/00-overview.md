@@ -36,7 +36,7 @@ This file is the map. Each section below says what a piece is and which doc owns
 
 ## Building from source
 
-Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Run `./gradlew build` to compile and check. Run `./gradlew test` for the JVM suite alone. Run `./gradlew shadowJar` to produce the shaded jar. Use `build/libs/Adapt-*-all.jar` at runtime and as the compile-only dependency for API consumers. See [41 - API - Getting Started](/adapt/41-api-getting-started).
+Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Run `./gradlew build` to compile, check, and produce `build/libs/Adapt-*-all.jar`. Run `./gradlew test` for the JVM suite alone or `./gradlew shadowJar` for only the shaded jar. Use the shaded jar at runtime and as the compile-only dependency for API consumers. Non-English locale TOMLs stay outside the jar; the build embeds a pinned Git revision and SHA-256 checksum for each source so a server can download only its configured locale. See [41 - API - Getting Started](/adapt/41-api-getting-started).
 
 ## Reference
 
@@ -97,7 +97,7 @@ Docs `00` through `40` are written for operators and players in reading order. D
 | `src/main/java/art/arcane/adapt/localization/` | English catalogs and language writer |
 | `src/main/java/art/arcane/adapt/papi/` | PlaceholderAPI expansion |
 | `src/main/java/art/arcane/adapt/service/` | Hotload, mutation, command services |
-| `src/main/resources/` | `plugin.yml` and the shipped locale TOMLs |
+| `src/main/resources/` | `plugin.yml` and the source TOMLs used by verified on-demand locale downloads |
 | `src/main/java/art/arcane/adapt/util/project/redis/` | SQL-fenced backend Redis handoff and wire codec |
 
 Soft depends declared in `plugin.yml`: PlaceholderAPI, WorldGuard, Factions, ChestProtect, Residence, GriefDefender, GriefPrevention, LockettePro, HiddenOre, Iris, Vault, AdvancedChests, MagicCosmetics.

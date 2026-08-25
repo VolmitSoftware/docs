@@ -2,16 +2,16 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-24T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Gloss has five authored substitution and expression systems. PlaceholderAPI fills
+Gloss has six authored substitution and expression systems. PlaceholderAPI fills
 `%expansion_key%` tokens from another plugin. The text pipeline fills `|name|` tokens from a Gloss
 registry. Inline text expressions evaluate `{{ code }}` inside every Gloss text-pipeline surface.
-Bubble motion and container previews use the same expression grammar as whole-field DSLs with their
-own live state.
+Conditional documents, bubble motion and container previews use the same expression grammar as
+whole-field DSLs with their own live state.
 
 ## Which system applies where
 
@@ -20,7 +20,8 @@ own live state.
 | PlaceholderAPI | `%expansion_key%` | Per-viewer hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text icons, menu and panel toggle conditions, menu `message` actions |
 | Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, chat-bubble authored prefixes and damage indicators |
 | Inline text expressions | `{{ expression }}` | Every authored text-pipeline surface above; player/PAPI values require a player-backed surface |
-| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-2 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
+| Conditions | bare boolean expression, no delimiter | Scoreboard selection and variants, tablist variants, bubble-style selection, damage/healing styles and audiences, Real Drops variants and audiences |
+| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-3 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
 | Preview expression DSL | bare expression source, no delimiter | Container preview documents in `plugins/Gloss/previews/` only |
 
 Nothing else in Gloss is substituted. Action commands, item icons, image icons and component ids stay
@@ -32,6 +33,117 @@ The chat message inside a bubble is deliberately not another authored text-pipel
 ### Bubble motion context
 
 Bubble motion uses the same operators and numeric function library documented below, including `pow` and `smoothstep`, but has its own bounded runtime scope. It exposes `t`, `remaining`, `ageMs`, `lifetimeMs`, `stackIndex`, `stackCount`, `lineCount`, `stackY`, `seed` and `pi`. Translation results are blocks clamped to `-64`..`64`; scale multipliers clamp to `0`..`16`; rotations are finite degrees normalized modulo 360; opacity clamps to `0`..`1`; and each source is limited to 512 characters. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops#motion) for the field layout and examples.
+
+## Conditional documents
+
+A condition is the complete JSON string in a `when` field. It has no `{{ }}` wrapper and must
+evaluate to a boolean. Gloss parses and type-checks it when the document loads. A syntax or known
+type error rejects that document; a missing runtime value, unavailable integration, or evaluation
+failure treats that one condition as `false` and leaves the rest of the feature running.
+
+```json
+"when": "viewer.world == 'world_nether' && viewer.health < 5"
+```
+
+Conditions use the literals, parentheses, arrays, ternary operator, arithmetic, comparisons,
+`!`, `&&` and `||` documented below. There is no truthiness conversion: `viewer.health` is a number,
+not a condition by itself. String equality and every string helper are case-sensitive.
+
+### Selection and fallback
+
+Every conditional list follows one deterministic rule: the matching entry with the greatest
+integer `priority` wins, and equal priorities use the lexicographically smallest `id`. A variant is
+a complete presentation and never merges with the base presentation. When no variant matches, the
+base presentation is used. Scoreboard documents add one outer contest: only boards whose
+`select.when` is true enter it, using `select.priority` and then board id; no match means no sidebar.
+
+### Roles and shared variables
+
+`viewer`, `subject` and `source` describe why a value exists. A scoreboard and tablist header/footer
+use the player as both live `viewer` and `subject`; tablist list-name variants and bubble selection
+use the player as live `subject`. A damage style uses the affected entity as live `subject` and
+captures direct-damager values only when that entity is owned by the current region; audience checks
+add the live `viewer`. A Real Drops variant uses the item as live `subject` and captures only the
+thrower identity fields; its audience check adds the live `viewer` separately. `player.*` is an alias
+for `viewer.*`.
+
+The live entity fields below exist under each available role:
+
+| Suffix | Type | Meaning |
+|---|---|---|
+| `name`, `uuid`, `type`, `world` | string | Entity identity, namespaced type key without the namespace, and world folder name |
+| `x`, `y`, `z`, `blockX`, `blockY`, `blockZ`, `yaw`, `pitch` | number | Current or event-snapshot pose |
+| `dead`, `onGround`, `inWater` | boolean | Entity state |
+| `fireTicks`, `freezeTicks`, `ticksLived` | number | Bukkit counters |
+| `health`, `maxHealth`, `healthPercent`, `absorption` | number | Damageable-entity state |
+| `ai`, `gliding`, `swimming`, `invisible` | boolean | Living-entity state |
+| `op`, `online`, `sneaking`, `sprinting`, `flying`, `allowFlight` | boolean | Player-only state |
+| `food`, `saturation`, `level`, `experience`, `totalExperience`, `ping`, `clientViewDistance` | number | Player-only state |
+| `gameMode`, `locale`, `group` | string | Lowercase game mode, client locale and Vault primary group |
+
+`world.name`, `world.uuid`, `world.environment`, `world.difficulty`, `world.time`,
+`world.fullTime`, `world.storm`, `world.thundering`, `world.pvp` and `world.players` describe the
+condition location's world. `viewer.world` is already the world-name string; it is not an object, so
+write `viewer.world == 'world'` or `world.name == 'world'`, not `viewer.world.name`.
+
+Calendar values are `time.epochMs`, `time.hour`, `time.minute`, `time.second`, `time.dayOfWeek`
+(Monday 1 through Sunday 7), `time.dayOfMonth` and `time.month`. The standard text scope also
+supplies `time.ms`, `time.seconds`, `time.ticks`, `server.online`, `server.maxPlayers` and
+`server.tps`.
+
+### Condition functions
+
+Arity is exact in conditions; the explicit fallback is required for PAPI and metric calls.
+
+| Function | Result | Behavior |
+|---|---|---|
+| `oneOf(value, ['a', 'b'])` | boolean | Exact string membership |
+| `contains(value, part)` | boolean | Exact substring test |
+| `startsWith(value, prefix)` / `endsWith(value, suffix)` | boolean | Exact prefix or suffix test |
+| `matchesGlob(value, pattern)` | boolean | Whole-string glob; `*` matches any run and `?` one character |
+| `hasPermission(role, node)` | boolean | Tests a live player role |
+| `inGroup(role, group)` | boolean | Case-insensitive comparison with a live player's Vault primary group |
+| `inRegion(role, region)` | boolean | Tests a live entity role through the optional WorldGuard hook |
+| `papi(role, key, fallback)` | string | Resolves PlaceholderAPI for a live player role; otherwise returns the string fallback |
+| `papiNumber(role, key, fallback)` | number | Numeric PlaceholderAPI result or numeric fallback |
+| `metric(key, fallback)` | number | Demand-driven integration metric or numeric fallback |
+
+The normal math, conversion, color and animation-expression functions remain available, but the
+complete condition must still return a boolean. A role function needs a live role. Immutable
+`source.*` fields captured for damage and drop events do not turn that source into a live player for
+`hasPermission`, `inGroup` or PAPI.
+
+Every public global React sampler is advertised as `react.sampler.<sampler-id>`. For example,
+`metric('react.sampler.ticks-per-second', 20) < 18` responds to React's global TPS sampler. Gloss
+requests only keys a document evaluates and stops requesting them after the ordinary demand window;
+React likewise reads only the sampler keys Gloss requested. Chunk- and player-context sampler paths
+are not exported through this bridge.
+
+### Surface-specific values and cadence
+
+| Surface | Additional values | Evaluation |
+|---|---|---|
+| Scoreboard `select.when` and variants | live viewer/player values | Every `[boards] updateIntervalTicks`; manual sticky selection fixes the board id but its variant still updates |
+| Tablist header/footer variants | live viewer/player values | Every ordinary or shared fast tablist refresh |
+| Tablist list-name variants | live subject/player values | Every ordinary or selected fast tablist refresh |
+| Bubble-style `select.when` | live speaker values | Once per chat message |
+| Damage/healing style and variants | `event.*`, immutable `subject.*` and `source.*` | On the affected entity's owning thread after the applied health delta is known |
+| Damage audience | live `viewer.*` plus the immutable event snapshot | At spawn and when that viewer joins, respawns, changes world or crosses a chunk boundary while the indicator lives |
+| Real Drops variants | `drop.*`, `event.*`, immutable subject/source/world values | On the item-owning thread when its presentation is selected |
+| Real Drops audience | live `viewer.*` plus the immutable item snapshot | Per nearby viewer while the presentation reconciles |
+
+Damage events add `event.type`, `event.cause`, `event.amount`, `event.reportedAmount`,
+`event.damage`, `event.healing`, `event.critical`, `event.criticalKnown` and
+`event.directSourceType`. Paper and Paper-derived servers supply their exact critical-hit flag;
+Spigot supplies `false` for both critical fields on entity damage because its API cannot make that
+determination. Healing and non-entity damage are known non-critical. Use
+`event.criticalKnown && event.critical` when a variant must match only an authoritative critical hit.
+The direct Bukkit damager is captured
+only when owned by the affected entity's current region; otherwise `source.*` and
+`event.directSourceType` use their defaults. A projectile is never followed to a remote shooter.
+Real Drops adds the complete `drop.*`
+catalog documented on [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops#real-drops),
+plus `event.type` and `event.playerDrop`.
 
 ## PlaceholderAPI substitution
 

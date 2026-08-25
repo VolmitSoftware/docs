@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels and display-backed drop models, and a randomized server-list MOTD.
+Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels and display-backed drop models, and a randomized server-list MOTD. Scoreboards, both tablist surfaces, bubble styles, indicators and real drops share one condition language for per-player, per-world and event-driven presentation.
 
 | | |
 |---|---|
@@ -17,8 +17,8 @@ Gloss draws holograms, holographic menus, and world-anchored panels. It also dra
 | Java | 25 |
 | Folia | Supported (`folia-supported: true` in `paper-plugin.yml`) |
 | Configuration | `plugins/Gloss/gloss.toml`, commented and hot-reloading |
-| Content | JSON documents under `plugins/Gloss/`, with shipped defaults |
-| Web editor | Focused live documents or the complete editor-authored runtime workspace through `/gloss web` — [Web Editor & Sync](/gloss/18-web-editor) |
+| Content | Hot-reloading JSON documents under `plugins/Gloss/`, with conditional variants and shipped defaults |
+| Web editor | Twelve focused document kinds, including the interactive damage-indicator renderer, or the complete runtime workspace through `/gloss web` — [Web Editor & Sync](/gloss/18-web-editor) |
 | Integrations | PlaceholderAPI, Vault, WorldGuard, ten item plugins, and live metrics from the other Volmit plugins — all optional |
 
 > **HoloUI is part of Gloss.** Menus, panels (former HoloUI "boards"), container previews, custom item icons, and the web editor live in this plugin. The `/holoui` command, the `holoui.*` permissions, and `plugins/holoui/` are gone. Gloss imports an existing `plugins/holoui/` folder on first start. [Commands & Permissions](/gloss/17-commands-permissions) lists the command and permission map.
