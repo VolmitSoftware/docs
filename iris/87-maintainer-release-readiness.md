@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -685,19 +685,15 @@ intentional capability difference.
 - [ ] Publish and revalidate both embedded beta assets:
       `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip`
       and
-      `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip`
-      both return HTTP 200, but the 2026-08-24 assets predate the current
-      river contract. Isolated Forge 26.2 acceptance rejected Overworld
-      because `rivers.terrain.worms` is absent and rejected both packs'
-      `rivers.water.mode`. Both pack worktrees now gate beta publication
-      on enabled rivers, at least one worm profile, and a current `FIXED`
-      or `TERRACED` water mode, and the gate rejects the stale committed
-      inputs. The workflow also extracts the exact candidate ZIP and
-      requires current Iris bootstrap validation plus Studio-mode chunk
-      generation, recording the Iris validator commit in the release
-      notes. Publish the validated current pack trees, then
-      repeat anonymous download, validation, world creation, chunk load,
-      and Studio acceptance before release.
+      `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip`.
+      Each candidate must contain dimension `hydrology` plus dimension,
+      region, and biome `riverPolicy`; use a nonempty profile array and
+      pass the current hydrology validator. Both Java 25 publication
+      workflows must package the canonical closure, extract and validate
+      that exact archive, and run `:probe:genProbe` before moving the beta
+      tag. Then repeat anonymous download, validation, new-world creation,
+      chunk load, accepted-feature location, and Studio acceptance before
+      release.
 - [x] Make modded GoldenHash metadata use the active Iris engine seed.
       Fabric, Forge, and NeoForge generated identical output from Iris
       seed `1337`. Filenames and headers recorded each vanilla level

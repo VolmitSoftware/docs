@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -46,9 +46,11 @@ Use the same values whenever you compare platforms or runs:
 GoldenHash file layout and interpretation:
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
 
-## River acceptance pass
+## Hydrology acceptance pass
 
-Use a disposable world, a fixed seed, and a pack with visibly frequent rivers. Validate the pack, inspect the **River network** Vision render, and then generate the same untouched area with one and several generation threads. Confirm wet channels remain connected, dry terminals contain no fluid or shoreline vegetation, terraced pools use their local head, and banks transition into the authored biome pools. For cave hydrology, test one sealed configuration and one enabled configuration: only stable wet-bed anchors may bore, accepted caves must retain their complete guard shell and configured headroom, and rejected candidates must publish no partial throat or water. Finish with a GoldenHash capture/verify pair and restart the world before accepting the build.
+Use a new disposable world, a fixed seed, and a pack whose surface and underground budgets are both visibly nonzero. Run `/iris pack validate`, inspect the **River network** accepted footprint, and use `/iris find river` or `/iris goto river` to record coordinates for surface pools, riffles/cascades, waterfalls, ridge bores, underground pools/drops, both grotto types, mouths, and each deep-fluid ID. Generate those untouched areas with one and several generation threads. Confirm every course is connected and non-rising downstream; every positive head loss has falling fluid and a receiving pool; a ridge bore reopens as the same course; underground features retain dry headroom; shore content stays within 1–2 blocks while the 4–10-block outer grade keeps its parent biome; and frozen water changes only through the standard freeze pass.
+
+At the coast, confirm the head reaches sea level before the natural ocean boundary, the mouth or coastal grotto opens directly to the reservoir, and ocean columns contain no river-owned terrain, elevated fluid, shore, or grading writes. For cave and deep hydrology, confirm accepted containment cells and seal guards remain intact while rejected candidates publish no generation or mantle footprint and remain confined to projected diagnostics. Finish with the Java 25 `:probe:genProbe` gate, a GoldenHash capture/verify pair, a restart, and real-client visual checks for falling water or lava.
 
 ## A. Fresh install and first world (Bukkit-family)
 

@@ -2,13 +2,13 @@
 title: "Gloss"
 description: "Gloss display suite: holograms, menus, panels, container previews, scoreboards, tablist, chat"
 published: true
-date: 2026-08-24
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels and display-backed drop models, and a randomized server-list MOTD. Scoreboards, both tablist surfaces, bubble styles, indicators and real drops share one condition language for per-player, per-world and event-driven presentation.
+Gloss draws holograms, holographic menus, and world-anchored panels. It also draws look-at container previews, scoreboards, tablist text, emoji chat, chat bubbles, damage and heal indicators, dropped-item labels and display-backed drop models, and a randomized server-list MOTD. Its in-world renders can carry viewer-targeted particle lines, frames, boxes, text fills and named-letter effects. Scoreboards, both tablist surfaces, bubble styles, indicators and real drops share one condition language for per-player, per-world and event-driven presentation.
 
 | | |
 |---|---|
@@ -65,6 +65,7 @@ Gloss draws holograms, holographic menus, and world-anchored panels. It also dra
 - [Web Editor & Sync](/gloss/18-web-editor)
 - [Localization](/gloss/19-localization)
 - [Runtime Architecture](/gloss/20-runtime-architecture)
+- [Particle Layers](/gloss/25-particle-layers)
 {.links-list}
 
 ### Developer API

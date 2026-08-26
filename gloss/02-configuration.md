@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -74,6 +74,7 @@ Master switches. An effective off state stops that subsystem from rendering or l
 | `panels` | `true` | World-anchored panels |
 | `previews` | `true` | Look-at container previews |
 | `motd` | `false` | The custom server list MOTD |
+| `particles` | `true` | Viewer-targeted particle layers on supported in-world renders |
 
 `motd` is the only feature that ships off. Gloss reads `panels` and `previews` once during enable. The panel service and the preview registry start only when their feature is on at that moment.
 
@@ -100,6 +101,19 @@ Shipped defaults follow the toggle. A feature that is off extracts nothing and l
 | `animationPacketBudget` | `20000` | 100 – 1000000 | Hologram text-metadata recipients per second, shared by animated targets, personalized updates and personalized clears. Large aggregate audiences degrade animation frame rate proportionally |
 
 A non-finite `stackDistance` or `viewRange` falls back to its default. A finite value outside its documented range is clamped. See [Holograms](/gloss/04-holograms).
+
+## `[particles]`
+
+These ceilings are shared by particle layers on holograms, temporary holograms, bubbles, indicators, menus, panels, previews and dropped-item presentations. See [Particle Layers](/gloss/25-particle-layers) for the authoring contract.
+
+| Key | Default | Range | Meaning |
+|---|---:|---:|---|
+| `viewRange` | `48.0` | 4.0 – 128.0 | Independent maximum distance in blocks between a viewer and a particle-layer origin |
+| `samplesPerViewerPerTick` | `128` | 1 – 4096 | Particle points admitted for one viewer during one tick |
+| `samplesPerTick` | `4096` | 16 – 65536 | Particle points admitted server-wide during one tick |
+| `maxCachedSamplesPerLayer` | `512` | 4 – 4096 | Maximum local geometry points sampled for one layer |
+
+`[features] particles = false` stops every product particle layer without changing its source document. Layer geometry, cadence and particle type remain in each owning JSON document or API object.
 
 ## `[boards]`
 
@@ -151,14 +165,14 @@ Stage gates for the rendering pipeline. Neither applies to chat messages.
 |---|---|---|
 | `blacklistWorlds` | `[]` | World folder names where chat bubbles never appear. Null entries are dropped. No case folding is applied, so match the folder name exactly |
 
-Bubble wrapping, appearance, lifetime, conditional selection and expression-driven motion are per-style, in schema-3 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Bubble wrapping, appearance, lifetime, conditional selection, expression-driven motion and particle layers are per-style, in schema-4 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
 ## `damage-indicators/default.json`
 
 `[features] damageIndicators` is the only damage-indicator setting in `gloss.toml`. The complete
 versioned presentation profile lives in `plugins/Gloss/damage-indicators/default.json`, hot-reloads
 without a full config reload, and is editable under **Damage indicators** in the web editor. Its
-schema-2 envelope is followed by `limits`, conditional `damage` and `healing` blocks, and an
+schema-3 envelope is followed by `limits`, conditional `damage` and `healing` blocks, and an
 `audience` condition.
 
 ### `limits`

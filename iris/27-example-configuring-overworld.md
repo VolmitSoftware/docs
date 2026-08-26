@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,7 +158,7 @@ If terrain is empty, confirm `generators/plain.json` still exists in the fork. I
 
 ## 6. Package or recover
 
-**What you do.** Package with Bukkit `/iris studio package dimension=my-overworld` or modded `/iris studio package my-overworld`.
+**What you do.** Package with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris studio package my-overworld`.
 
 **Why.** The validated fork under `packs/` is the source of truth. The `.iris` export and the world snapshot are outputs. Both are reproducible from it.
 
@@ -302,7 +302,7 @@ Never use `update-world` for a change to `dimensionHeight`, `logicalHeight`, `en
 |------|---------|
 | Validate | Bukkit `/iris pack validate pack=my-overworld`. Modded `/iris pack validate my-overworld` |
 | Preview unused-resource cleanup | Bukkit `/iris pack cleanup my-overworld mode=preview`, then `mode=apply`. Modded uses the same `preview`/`apply` literals |
-| Package for distribution | Bukkit `/iris studio package dimension=my-overworld`. Modded `/iris studio package my-overworld` |
+| Package for distribution | Bukkit `/iris pack package dimension=my-overworld`. Modded `/iris studio package my-overworld` |
 | Version stamp | The dimension `version` field. The shipping pack uses large integers such as `4000` |
 
 ## Checklist before a production update

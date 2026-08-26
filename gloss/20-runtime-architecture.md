@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -395,6 +395,18 @@ precompiled numeric expression scope evaluated once per temporary-hologram drive
 before `TextUtils.parse`; complete function, expression and PAPI tokens therefore refresh with the
 viewer. Container preview labels evaluate their whole-field expression first and take the emoji half
 between that result and `TextUtils.parse`.
+
+Particle-capable in-world owners sample their configured layers on the normal owner/session tick
+and call the shared particle service. Geometry samples are cached up to
+`[particles] maxCachedSamplesPerLayer`; emission is then clipped by the per-viewer and whole-server
+sample budgets before Gloss uses player-targeted `Player.spawnParticle`. No particle entity or
+world broadcast is created. Higher-priority layers consume an owner's allowance first, but all
+owners still share the server cap. View range and every budget apply live from `gloss.toml`. See
+[Particle Layers](/gloss/25-particle-layers).
+
+Those owners use `renderParticleText` rather than the ordinary renderer. It records and removes
+authored `<particles:name>...</particles>` tags before the five stages, preserves their ranges
+through renderer expansion, and returns visible text plus span metadata.
 
 Refresh cadences per surface:
 

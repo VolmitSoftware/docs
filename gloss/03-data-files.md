@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Gloss documentation: Data Files & Hot Reload"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -21,7 +21,7 @@ Every hologram, board, emoji, animation, bubble style, real-drop settings, tabli
 }
 ```
 
-`schemaVersion` must match that document kind. Holograms, emoji, animations, and MOTD use `1`; boards, damage-indicator settings, real-drop settings, and tablist use `2`; bubble styles use `3`. A document with any other version, including a missing version parsed as `0`, is silently ignored. It produces no warning or stack trace and is never rewritten. On hot reload the last-good current-schema document stays live; on startup the mismatched document contributes no configuration. Holograms require the native `TextDisplay` scale field.
+`schemaVersion` must match that document kind. Emoji, animations, and MOTD use `1`; holograms and boards use `2`; tablist uses `2`; damage-indicator settings and real-drop settings use `3`; bubble styles use `4`. A document with any other version, including a missing version parsed as `0`, is silently ignored. It produces no warning or stack trace and is never rewritten. On hot reload the last-good current-schema document stays live; on startup the mismatched document contributes no configuration. Holograms require the native `TextDisplay` scale field.
 
 `revision` must be between `1` and `9007199254740991`. That is the largest integer a browser can represent exactly. Anything outside that range is rejected with `<kind> revision must be between 1 and 9007199254740991`. The revision is server-owned. Gloss increments it by one on every write it makes. Revision-checked mutations refuse to run when the document on disk has moved on. They report `document <id> is at revision <actual>, expected <expected>`. A hand edit of a file does not need you to bump the revision. If you leave it alone, the web editor and the command layer both see the file as unchanged in revision terms. Bump it if you care about that.
 
@@ -122,6 +122,8 @@ A current-schema document that fails to parse is skipped and the copy already in
 | Container previews | `previews/<id>.json` | no | 14 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
 | Panels | `panels/<id>.json` | own id/uuid/revision | none | — | [Panels](/gloss/16-panels) |
 
+Holograms, bubble styles, damage-indicator presentations and Real Drops use their new hard schema versions because they can own `particleLayers`. Menus and container previews also accept `particleLayers`, but those two document families remain unversioned. Panels inherit particle layers from their menu and remain schema `1`. The shared layer contract is documented on [Particle Layers](/gloss/25-particle-layers).
+
 `tablist.json` and `motd.json` live at the root of `plugins/Gloss/`. They do not live inside a folder of their own.
 
 A folder in that table exists only once there is something in it. Enabled menus have a shipped default, so `menus/` exists on a stock install; `holograms/`, `images/` and `panels/` still appear only when the first document, asset or placement is written. Gloss never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it during a hotload; a shipped-default folder returns at the next extraction and other folders return on the next authored write. Every document below a removed folder enters the same 3-second deletion grace and unregisters only if still absent; restoration cancels the pending unload.
@@ -161,7 +163,7 @@ The hologram baseline inside the jar is read on demand and is never written to t
 
 | Baseline | Used by |
 |---|---|
-| `baselines/hologram.json` | `/gloss hologram create` |
+| `baselines/hologram.json` | `/gloss hologram create`; schema `2` with an empty `particleLayers` array |
 The menu baseline is the shipped `defaults/menus/default.json`. It extracts as `menus/default.json` while menus are enabled, and `/gloss menu new` reads the same resource so the starter document and newly created menus cannot drift.
 
 ## Importing HoloUi data

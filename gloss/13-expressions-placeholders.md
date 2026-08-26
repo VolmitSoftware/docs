@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -20,8 +20,9 @@ whole-field DSLs with their own live state.
 | PlaceholderAPI | `%expansion_key%` | Per-viewer hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text icons, menu and panel toggle conditions, menu `message` actions |
 | Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, chat-bubble authored prefixes and damage indicators |
 | Inline text expressions | `{{ expression }}` | Every authored text-pipeline surface above; player/PAPI values require a player-backed surface |
+| Particle text ranges | `<particles:name>...</particles>` | Authored text on particle-capable in-world holograms, menus, panels, previews, indicators and drop labels |
 | Conditions | bare boolean expression, no delimiter | Scoreboard selection and variants, tablist variants, bubble-style selection, damage/healing styles and audiences, Real Drops variants and audiences |
-| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-3 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
+| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-4 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
 | Preview expression DSL | bare expression source, no delimiter | Container preview documents in `plugins/Gloss/previews/` only |
 
 Nothing else in Gloss is substituted. Action commands, item icons, image icons and component ids stay
@@ -29,6 +30,12 @@ as written. Panel transforms, emoji `trigger` values and preview `match`/`varian
 as written.
 
 The chat message inside a bubble is deliberately not another authored text-pipeline surface. It arrives after the chat emoji and permitted color stages, keeps the resulting formatting, and is never reinterpreted as a function or expression token. Only the BubbleStyle `prefix` and `motion` fields are authored code.
+
+Particle tags are parsed from authored source before functions, inline expressions and
+PlaceholderAPI run. A placeholder or expression inside a marked range inherits the range, but text
+returned by any renderer cannot introduce a new tag. Tags cannot nest. This prevents player or
+integration data from authoring particle effects. The range and layer contract is documented in
+[Particle Layers](/gloss/25-particle-layers).
 
 ### Bubble motion context
 

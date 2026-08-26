@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -94,9 +94,9 @@ lowered again for the life of the process. The Bukkit plugin already sets
 the first pregeneration. Pass `-Diris.cache.fast=true` on the JVM
 command line there if you want it covering ordinary generation too.
 
-### River-heavy packs
+### Hydrology-heavy packs
 
-River routing is paid once per cold immutable topology tile; nearby chunks reuse the tile and perform indexed column lookups. A cold tile can take seconds when the route-proof horizon is long, but the default 3,072-by-3,072-block tile amortizes that work over 36,864 chunks. Smaller `rivers.topology.cellSize`, smaller `tileCells`, higher source chance, larger `maxRouteReaches`, worm profiles with more `segments` or larger `maxOffset`, wider channel and bank ranges, and more alternate sink searches increase cold work or how often it is repeated. Each reach also stores 12–32 synchronized body knots for channel width, bank width, depth, and roof scale; shorter `bodyWavelength` and `bodyDetailWavelength` settings cause the 32-knot cap to be reached sooner. Root-family and child-style resolution adds only stable neighbor scans and memoized weighted selections, but the largest `segments` and `maxOffset` anywhere in the complete hierarchy determine the safety envelope. Iris rejects a derived topology footprint whose routing-source window would exceed its bounded work envelope even when each individual field is numerically valid. Cave cost is separate: larger `maxFloodRadius`, `maxFloodDepth`, and especially `maxFloodVolume` enlarge the bounded containment proof. Measure these pack fields one at a time over the same seed and frontier. Do not weaken the closure, surface-opening, world-boundary, or lava checks to recover throughput; reduce candidate frequency, maximum entries per reach, or proof bounds instead.
+Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength / refinementSpacing`, the sum of the independent surface and underground source budgets, and the maximum surface, bore, grotto, and deep-fluid footprint. Smaller spacings, longer routes, more sources, and wider envelopes all increase work. A deep-fluid short channel derives its maximum length from `spacing / 3`, never below `refinementSpacing`, and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and derived refined route work at 262,144 samples per tile, and enforces footprint/spacing and containment relationships before generation. Tune one field at a time over the same seed and cold frontier, then compare the Java 25 generation probe and a warm repeat. Preserve outlet proof, ocean ownership, falling-fluid continuity, and containment; reduce density, route length, resolution, or footprint instead.
 
 ## Symptom: the first chunks pause while strongholds initialize
 

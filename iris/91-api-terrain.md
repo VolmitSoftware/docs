@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,11 +10,10 @@ dateCreated: 2026-08-09T00:00:00.000Z
 `art.arcane.iris.api.terrain` answers what the Iris generator says about
 a coordinate. It reports whether a world is Iris-generated, which biome
 and region the pack places, the natural and final surface heights, and the
-river state, distance, flow, and local water head. It also reports whether
+accepted surface-hydrology state, footprint-band code, directional-flow flag, and local fluid head. It also reports whether
 that surface is land, shore, river, river shore, dry channel, ocean, or void. It reads the **generator**, not the world. No chunk load,
 no forced generation, no placed-block read, and no knowledge of player
-edits. Reads are non-blocking noise evaluation over a shared per-chunk
-cache.
+edits. Natural-only reads evaluate procedural terrain. Accepted-plan-dependent reads may synchronously build a cold bounded hydrology tile; warm reads reuse the immutable plan.
 
 Use it when you need the pack's intent for a coordinate without paying to
 generate it. Examples: picking a base or settlement site, rendering a map
@@ -96,29 +95,22 @@ edits it. Both are empty when the value is absent or the empty string.
 
 ## Cost and blocking
 
-Iris's generator is procedural noise. Each read evaluates the stack for
-one column and memoises in a shared per-chunk noise cache. Cold columns
-run pack noise. Warm columns are array reads. Nothing here reads chunk
-storage, loads a region file, takes a contended lock, waits on a future,
-or asks the server to generate.
+Iris's generator is procedural. Natural terrain reads evaluate the stack for one column and memoise in a shared per-chunk noise cache. When hydrology is active, final height, final surface biome, surface kind, and river fields also consume the immutable accepted plan. The first such query in a routing tile can build that tile synchronously; a concurrent query for the same tile can wait for its in-flight result. The runtime retains at most 64 hydrology tiles. Nothing here reads chunk storage, loads a region file, or asks the server to generate.
 
-| Call | Cost when cold | Cost when warm | Forces generation | Can block | When data is absent |
+| Call | Cost when cold | Cost when warm | Forces generation | Can wait | When data is absent |
 |---|---|---|---|---|---|
 | `isIrisWorld` | `World#getGenerator()` + `instanceof` | same | No | No | `false` |
 | `worldInfo` | field reads off live engine/dimension | same | No | No | `Optional.empty()` |
-| `surfaceHeight` | one final height sample, including river incision | array read | No | No | `OptionalInt.empty()` |
-| `surfaceKind` | final height and river sample. Surface-biome only when needed outside an explicit river role | array read | No | No | `IrisSurfaceKind.UNKNOWN` |
-| `surfaceBiomeKey` / `surfaceBiomeName` | surface-biome sample (height, base biome, region) | array read | No | No | `Optional.empty()` |
-| `biomeKey` at/near surface | as surface biome + height to choose surface vs cave | array read | No | No | `Optional.empty()` |
-| `biomeKey` well below surface | above + cave-biome stream and carving resolution | array reads | No | No | `Optional.empty()` |
+| `surfaceHeight` | final terrain sample; may build an accepted hydrology tile | accepted column lookup | No | Cold CPU / same-tile in-flight plan | `OptionalInt.empty()` |
+| `surfaceKind` | final height and accepted surface layer; surface biome only when needed | accepted column lookup | No | Cold CPU / same-tile in-flight plan | `IrisSurfaceKind.UNKNOWN` |
+| `surfaceBiomeKey` / `surfaceBiomeName` | natural biome plus accepted surface content | array/plan lookup | No | Cold CPU / same-tile in-flight plan | `Optional.empty()` |
+| `biomeKey` at/near surface | as surface biome + height to choose surface vs cave | array/plan lookup | No | Cold CPU / same-tile in-flight plan | `Optional.empty()` |
+| `biomeKey` well below surface | final height first to choose surface versus cave, then cave-biome stream and carving resolution | array/plan lookup | No | Cold CPU / same-tile in-flight plan | `Optional.empty()` |
 | `regionKey` / `regionName` | region sample (cheapest biome-family call) | array read | No | No | `Optional.empty()` |
 | `maxSampleColumns` / `maxSampleChunks` | settings fields | same | No | No | positive number always |
-| `sampleColumns` | one of the above per column, chunk-local order | array reads | No | No | `false`, sink untouched |
+| `sampleColumns` | requested fields per column; may cross cold hydrology tiles | array/plan lookups | No | Cold CPU / same-tile in-flight plan | `false`, sink untouched |
 
-**Tight main-thread loops are non-blocking but wasteful.** They can evict
-the generator's noise cache working set shared with live chunk
-generation. Chunk gen slows, not your loop. Use `sampleColumns` for
-anything wider than a handful of columns.
+**Do not run wide cold scans on a tick or region thread.** They can build multiple accepted plans and evict both the hydrology tile cache and the generator's noise-cache working set shared with live chunk generation. Use `sampleColumns` from an appropriate async worker for anything wider than a handful of columns.
 
 **Values are the generator's opinion, not the world's.** `surfaceHeight`
 is the topmost generated terrain block Y. It excludes objects,
@@ -129,24 +121,25 @@ use Bukkit `World#getHighestBlockYAt` (chunk load cost). For pack intent
 ### Surface height, precisely
 
 `surfaceHeight` returns absolute Y of the **topmost generated terrain
-block**, including river incision. Standing height is `surfaceHeight + 1`.
+block**, including an accepted hydrology bed where that layer owns terrain. Standing height is `surfaceHeight + 1`.
 Fluid is ignored: under an ocean or river you get the bed. Compare with
-`IrisWorldInfo.fluidHeight()` only for the dimension sea level; terraced
-rivers may have a different per-column head. Request
+`IrisWorldInfo.fluidHeight()` only for the dimension sea level; an accepted
+river layer may have a different exact per-column head. Request
 `RIVER_WATER_SURFACE_Y` or use `surfaceKind` for river-aware work.
 
 ---
 
 ## Threading
 
-**Every read may be called from any thread, including async.**
+**Every read may be called from any thread, including async.** Plan cold hydrology work accordingly.
 
 - Only Bukkit call on your behalf: `World#getGenerator()` on the world
   object. No chunk, block state, entity, or world-list walk.
-- After that: engine-internal noise over concurrent caches. No
-  region-owned state.
-- No method takes a lock you can contend on, calls `join`, or schedules
-  onto another thread.
+- After that: engine-internal natural sampling and immutable accepted-plan
+  lookup. No region-owned Bukkit state.
+- A cold hydrology query plans on the calling thread. Concurrent callers
+  for the same key share one in-flight tile and may wait for its completion.
+  The API does not schedule that work onto a server thread for you.
 
 Wide scans belong on your own async executor. On Folia there is no single
 correct region thread for a multi-region scan.
@@ -260,13 +253,13 @@ public record IrisColumnSample(
 | Field requested | Accessor | If requested | If unavailable or not requested |
 |---|---|---|---|
 | `SURFACE_HEIGHT` | `surfaceHeight()` | absolute world Y of final topmost terrain | `UNAVAILABLE_HEIGHT` |
-| `NATURAL_HEIGHT` | `naturalHeight()` | absolute world Y before river incision | `UNAVAILABLE_HEIGHT` |
+| `NATURAL_HEIGHT` | `naturalHeight()` | absolute world Y before accepted hydrology shaping | `UNAVAILABLE_HEIGHT` |
 | `SURFACE_KIND` | `surfaceKind()` | any concrete `IrisSurfaceKind` | `UNKNOWN` |
 | `BIOME_KEY` | `biomeKey()` | final surface-biome load key | `null` |
-| `RIVER_STATE` | `riverState()` | `WET`, `DRY`, or `NONE` | `NONE` |
-| `RIVER_DISTANCE` | `riverDistance()` | non-negative distance to the active centerline | `NaN` |
-| `RIVER_FLOW` | `riverFlow()` | non-negative merged upstream flow count | `-1` |
-| `RIVER_WATER_SURFACE_Y` | `riverWaterSurfaceY()` | absolute local head for a wet river footprint | `UNAVAILABLE_HEIGHT` |
+| `RIVER_STATE` | `riverState()` | `WET`, `DRY`, or `NONE` from the primary accepted surface layer | `NONE` |
+| `RIVER_DISTANCE` | `riverDistance()` | categorical footprint band: `0` channel, `1` shore, or `2` outer grade | `NaN` |
+| `RIVER_FLOW` | `riverFlow()` | `1` when a connected accepted surface layer has a nonzero flow vector, otherwise `0` | `-1` |
+| `RIVER_WATER_SURFACE_Y` | `riverWaterSurfaceY()` | absolute `fluidHeadY` for a connected accepted surface layer | `UNAVAILABLE_HEIGHT` |
 
 Use the sample's `hasSurfaceHeight()`, `hasNaturalHeight()`,
 `hasSurfaceKind()`, `hasBiomeKey()`, `hasRiverDistance()`,
@@ -279,10 +272,10 @@ The sink's `biomeKey` is the **surface** biome. The same value
 `surfaceBiomeKey` returns for that column, never a cave biome. There is
 no 3D equivalent of `biomeKey(world, x, y, z)` in a column walk.
 
-Fewer fields cost less. `NATURAL_HEIGHT` alone skips final river sampling.
-River state, distance, flow, and local head share one river sample.
-`SURFACE_KIND` samples river state and skips the biome stream when an
-explicit river section or fluid/void result already determines the kind.
+Fewer fields cost less. `NATURAL_HEIGHT` alone skips accepted hydrology sampling.
+River state, footprint band, directional-flow flag, and local head share one accepted column sample.
+`SURFACE_KIND` samples the primary accepted surface layer and skips the biome stream when an
+explicit hydrology role or fluid/void result already determines the kind.
 `BIOME_KEY` pays for the final surface-biome stream every column.
 
 ### Visit order
@@ -546,14 +539,14 @@ Iris engine. Absent otherwise.
 |---|---|---|
 | `LAND` | Dry ground | Surface above fluid height. Biome not shore |
 | `SHORE` | Beach or bank | Surface above fluid. Pack classifies biome as shore |
-| `RIVER` | Wet channel or mouth | Active wet river section, including a terraced river above global sea level |
-| `RIVER_SHORE` | Wet river bank | Active wet bank transition resolved against its local water head |
-| `DRY_CHANNEL` | Dry channel bed | Active dry channel section; dry banks remain `LAND` |
+| `RIVER` | Wet channel or mouth | Primary accepted surface layer owns a channel with connected fluid |
+| `RIVER_SHORE` | Wet river shore | Primary accepted surface layer marks the narrow shore-content band |
+| `DRY_CHANNEL` | Dry channel bed | Primary accepted surface channel has no connected fluid; dry grades remain `LAND` |
 | `OCEAN` | Under water / sea floor at sea level | Surface at or below fluid height (and above void floor) |
 | `VOID` | Nothing generated | Engine surface height ≤ 0 → absolute surface ≤ `minHeight()` |
 | `UNKNOWN` | No answer | Not Iris / unavailable / fault / `SURFACE_KIND` not requested |
 
-**`VOID` wins first.** An explicit river section follows, then the
+**`VOID` wins first.** An explicit accepted surface-hydrology role follows, then the
 ordinary fluid check and shore-versus-land classification. The values are
 mutually exclusive.
 
@@ -565,17 +558,17 @@ mutually exclusive.
 | Constant | Fills | Extra work |
 |---|---|---|
 | `SURFACE_HEIGHT` | `surfaceHeight` | one height sample per column |
-| `NATURAL_HEIGHT` | `naturalHeight` | natural height sample before river incision |
-| `SURFACE_KIND` | `surfaceKind` | final height and river sample; biome only when the river/fluid/void result does not decide the kind |
+| `NATURAL_HEIGHT` | `naturalHeight` | natural height sample before accepted hydrology shaping |
+| `SURFACE_KIND` | `surfaceKind` | final height and accepted surface-layer sample; biome only when hydrology/fluid/void does not decide the kind |
 | `BIOME_KEY` | `biomeKey` | biome sample per column, always |
-| `RIVER_STATE` | `riverState` | shared river sample |
-| `RIVER_DISTANCE` | `riverDistance` | shared river sample |
-| `RIVER_FLOW` | `riverFlow` | shared river sample |
-| `RIVER_WATER_SURFACE_Y` | `riverWaterSurfaceY` | shared river sample; available only for a wet footprint |
+| `RIVER_STATE` | `riverState` | shared accepted column sample |
+| `RIVER_DISTANCE` | `riverDistance` | shared accepted column sample |
+| `RIVER_FLOW` | `riverFlow` | shared accepted column sample |
+| `RIVER_WATER_SURFACE_Y` | `riverWaterSurfaceY` | shared accepted column sample; available only for connected surface fluid |
 
 `SURFACE_HEIGHT` and `SURFACE_KIND` share the final height sample when
-both are requested. All river fields and `SURFACE_KIND` share one river
-sample.
+both are requested. All river fields and `SURFACE_KIND` share one accepted
+hydrology column sample.
 
 Write a `default` arm when switching enums:
 [90 - API - Getting Started](/iris/90-api-getting-started).

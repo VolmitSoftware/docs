@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -223,7 +223,8 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |
-| `rivers` | `IrisRiverNetwork` | disabled | Dimension-owned connected routing, incision, local water heads, river biome pools, and optional contained cave connections. See [36 - Rivers](/iris/36-rivers) |
+| `hydrology` | `IrisHydrology` | rivers disabled, no deep fluids | Dimension-owned terrain-first surface and underground rivers plus independent `deepFluids`. See [36 - Rivers](/iris/36-rivers) |
+| `riverPolicy` | `IrisRiverPolicy` or `null` | `null` (runtime policy defaults) | Dimension policy for source placement, transit/outlet admission, profiles, river content, and local multipliers. Region and biome non-null fields override it |
 
 ## Ores and deposits
 
@@ -456,7 +457,7 @@ These exist to help you look at the generator, not to ship. `studioMode` is appl
 
 ## Annotations are editor hints, not runtime validation
 
-`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `worldBoundary`, rivers, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
+`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
 
 ## A complete minimal dimension
 

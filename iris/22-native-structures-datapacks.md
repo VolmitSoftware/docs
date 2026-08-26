@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -265,7 +265,7 @@ Every registered structure generates through its own native placement unless its
 
 Iris keeps native-start ownership in the world's Mantle so locate, reference repair, and restart recovery agree on the same structure. A periodic world save immediately persists idle ownership plates. Any plate still used by generation stays dirty for the next save. Iris does not wait on the server thread. A clean engine shutdown drains generation first and requires the remaining ownership records to persist before the Mantle is released.
 
-Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, uses the underlying natural biome rather than a river surface overlay, and shares one generation context plus a dedicated natural-biome cache across each search. Each ring task drops from 3,249 biome evaluations to 225 unique candidate columns. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks.
+Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, uses the underlying natural biome rather than accepted surface-hydrology content, and shares one generation context plus a dedicated natural-biome cache across each search. Each ring task drops from 3,249 biome evaluations to 225 unique candidate columns. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks.
 `/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
 
 ### 1.2 Biome mapping for structure filters

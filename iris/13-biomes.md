@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -47,7 +47,7 @@ column (x, z)
 
 Three of those steps regularly surprise people.
 
-- **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the surface under water. That is how ocean floors and legacy biome-shaped water channels are made. Connected routed rivers instead derive a second surface from this natural height; see [36 - Rivers](/iris/36-rivers).
+- **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the natural surface under water. Terrain-first hydrology samples that natural height and publishes an accepted final bed only inside its owned footprint; see [36 - Rivers](/iris/36-rivers).
 - **A biome has no `type` field.** `carving/drip` is a cave biome only because a region put it in `caveBiomes`. The same file placed in `landBiomes` would generate as land.
 - **The role can be corrected after height is known.** If a land biome height lands below the water line, Iris swaps in a sea biome from the same region. If it lands in the shore band, a shore biome. A "land" biome with a negative generator will simply never render as itself.
 
@@ -345,6 +345,7 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 | `loot` | `IrisLootReference` | Loot tables for containers generated here. |
 | `blockDrops` | `IrisBlockDrops[]` | Custom drops for blocks broken here. |
 | `caveProfile` | `IrisCaveProfile` | Overrides the region cave profile for this biome. |
+| `riverPolicy` | `IrisRiverPolicy` or `null` | Final policy layer for source placement, transit/outlet admission, dimension-owned profiles, hydrology content pools, and local multipliers. Non-null fields override the selected region and dimension; see [36 - Rivers](/iris/36-rivers). |
 
 Placements are gathered per chunk from the biome at the chunk center, the cave biome at the same point, the region and the dimension. A surface biome contributes all of its `structures[]`. The cave biome contributes only placements whose resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER` or `CAVE_ANY`. Surface and height-band placements written into cave-biome files are ignored. A placement own `caveBiomes` list is an additional allowlist rechecked at each candidate anchor. See [15 - Caves & Carving](/iris/15-caves-carving) and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 

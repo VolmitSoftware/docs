@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Gloss documentation: Panels"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -81,6 +81,11 @@ form of its id is rejected.
 | `transform` | yes | World, position, rotation and scale |
 | `follow` | yes | Follow mode, target player and rotation mode |
 | `visibility` | yes | Visibility mode, permissions and ranges |
+
+The panel document stays at schema 1 and has no `particleLayers` field of its own. Its
+`rootMenuId` supplies the menu's particle layers. Each eligible viewer receives those particles
+through the same panel transform, follow behavior, scale and audience gates as the display
+components. See [Particle Layers](/gloss/25-particle-layers).
 
 Panels are the one Gloss document kind that carries its own `id` inside the JSON. The file path and
 the `id` key must agree. A mismatch rejects the file rather than picking a winner.

@@ -2,7 +2,7 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -140,7 +140,7 @@ Skip it when a value appears once. A snippet reference costs a file open and add
 
 Because the adapter writes resolved objects rather than strings, exported packs handle snippets differently per platform:
 
-- **Bukkit `/iris studio package`** re-serializes the loaded object graph. Snippet references are inlined into the dimension, region, biome, and generator JSON. The export has no `snippet/` folder and does not need one.
+- **Bukkit `/iris pack package`** re-serializes the loaded object graph. Snippet references are inlined into the dimension, region, biome, and generator JSON. The export has no `snippet/` folder and does not need one.
 - **Modded `/iris studio package`** copies the source JSON files verbatim and does **not** copy `snippet/`. Snippet references in a modded export are dangling.
 
 See [25 - Pack Management](/iris/25-pack-management) for the full export contents and the gaps in both compilers.

@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Gloss documentation: Chat Bubbles, Indicators & Drops"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -24,7 +24,7 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 
 ```json
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "revision": 1,
   "prefix": "&7",
   "offset": [0, 0.3, 0],
@@ -50,13 +50,14 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
     "durationMs": 700,
     "spawnDelayMs": 400,
     "flyAwayLeadMs": 700
-  }
+  },
+  "particleLayers": []
 }
 ```
 
 | Key | Default when absent | Clamp / notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `3`. Any other version is silently ignored |
+| `schemaVersion` | required | Must be `4`. Any other version is silently ignored |
 | `revision` | required | `1` to `9007199254740991` |
 | `prefix` | `"&7"` | Authored text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
 | `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
@@ -67,8 +68,9 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `motion` | shipped late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
 | `shimmer` | shipped shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
+| `particleLayers` | `[]` | Up to 64 layers attached to the one multiline temporary hologram |
 
-`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 3 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
+`followPlayer` and `hideOwn` are primitive booleans. An absent key is `false`. That is unlike `prefix`, `offset` and `motion`, which have real fallbacks. Write the booleans explicitly in every style you author. Schema 4 has no top-level `flyAway` or `lineStaggerTicks` keys; authored motion replaces the fixed fly-away switch, and one message appears as one multiline display. The unrelated `shimmer.flyAway` switch below is a shine option, not a motion one.
 
 There is no config table for bubble styles. `gloss.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
 
@@ -95,7 +97,7 @@ For each chat message Gloss resolves one style, in this order:
 1. **The player's explicit choice.** Used only when the player has chosen a style, that style id still exists on disk, **and** the player holds `gloss.bubbles.style.<id>`. Any of the three failing drops straight to step 2 with no message.
 2. **The best matching `select`.** Every style whose `select.when` evaluates true is a candidate. The highest `priority` wins. Ties are broken by the lexicographically smallest style id.
 3. **`default`.** Used when nothing matched and a style with the id `default` exists.
-4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-3 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, and the late upward motion expression. Bubbles never stop working because a file is missing.
+4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-4 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, the late upward motion expression and no particle layers. Bubbles never stop working because a file is missing.
 
 Two consequences worth stating plainly:
 
@@ -111,6 +113,8 @@ The bubble hook runs on `AsyncPlayerChatEvent` at `MONITOR` priority, after Glos
 Wrapping counts visible characters and keeps legacy color, hex and decoration state. It breaks on word boundaries when possible and hard-cuts only a single word longer than `wordWrapChars`. The wrapped rows are joined with newlines, left-aligned and sent to one `TextDisplay`, so one chat message is one aligned multiline entity and one background block rather than several independently moving bubbles. The newest message remains at the authored offset; each older block rises by the complete wrapped-line height of newer blocks beneath it, so multiline backgrounds never occupy the same stack space.
 
 The authored `prefix` is rendered separately through the full text pipeline with the speaker as viewer and prepended to the already-formatted message. It therefore supports `|function|`, `{{ player.* }}`, `papi`, raw PlaceholderAPI tokens, emoji and colors just like a scoreboard. Dynamic prefixes refresh on the speaker entity thread as part of that bubble's owner-bound temporary-hologram sample; Gloss does not schedule a second per-speaker update task. Player chat itself is not reinterpreted as Gloss code. The resulting bubble lives for `maxAliveMs` milliseconds. Immediately before spawn, Gloss re-checks that chat bubbles are enabled, the speaker is online and outside a blacklisted world, and the speaker still holds `gloss.bubbles.send`.
+
+Particle layers follow the same position, scale and rotation as the bubble. They can frame the complete block, a one-based wrapped line, an authored span in the style `prefix`, or explicit local geometry. Gloss carries prefix span metadata beside the already-rendered wrapped frames; player chat is appended outside those authored ranges and can never inject `<particles:...>` tags. See [Particle Layers](/gloss/25-particle-layers).
 
 Gloss retains at most four live messages per speaker. After a new bubble secures server-wide capacity, admitting it retires that speaker's oldest bubble when necessary. The server-wide ceiling is 2,048 live bubbles; messages above that ceiling are dropped without disturbing the speaker's existing stack. Quit and explicit retirement release admission immediately, while natural expiry is reconciled by a fixed one-second accounting sweep. Both limits are fixed runtime safety bounds rather than configuration knobs.
 
@@ -228,7 +232,7 @@ The shipped document is:
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "revision": 1,
   "limits": {
     "maxPerSecond": 40,
@@ -251,7 +255,8 @@ The shipped document is:
         "startScale": 1,
         "endScale": 0.82,
         "fadeStartFraction": 0.68
-      }
+      },
+      "particleLayers": []
     },
     "variants": []
   },
@@ -270,7 +275,8 @@ The shipped document is:
         "startScale": 1,
         "endScale": 1.1,
         "fadeStartFraction": 0.62
-      }
+      },
+      "particleLayers": []
     },
     "variants": []
   },
@@ -295,6 +301,8 @@ lexical `id`, and no variant match uses the complete base `presentation`. `forma
 `{amount}`; Gloss replaces that token with the formatted absolute health delta and then runs the
 result through the normal text pipeline. `offset` is an `[x, y, z]` block-space vector from the
 affected entity. Every component must be finite and is clamped to `-32`..`32`.
+
+Every base and variant `presentation` also owns `particleLayers`. The selected layers follow the indicator's trajectory, scale and spin and use the same per-viewer audience whitelist. A format can mark only the amount, for example `<particles:amount>&4{amount}</particles>`, and a `span` layer named `amount` then emits behind those rendered character cells. See [Particle Layers](/gloss/25-particle-layers).
 
 Motion fields use continuous units rather than per-tick impulses:
 
@@ -443,21 +451,21 @@ On enable, reload and real-drop document changes, Gloss queues already-loaded ch
 
 `[features] realDrops = true` is the default. Gloss leaves the real `Item` entity in place as the authority for physics, despawn, merging, and pickup and hides only that entity from client tracking. Placeable materials render through `BlockDisplay` with their placed block state; true items render through `ItemDisplay` in explicit `FIXED` mode. On Paper and Spigot, the first model is the non-persistent carrier and additional stack models plus the optional `TextDisplay` label ride it as passengers. On Folia and Canvas, every display remains detached and follows the authoritative item independently, avoiding the passenger-tree removal and respawn performed by regionized asynchronous teleports. Once settled, unchanged poses are not resent and microscopic item-position noise is ignored; meaningful movement still wakes and moves the presentation.
 
-The feature switch remains `[features] realDrops` in `gloss.toml`. Every presentation setting below lives in the schema-2, hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `presentation.limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
+The feature switch remains `[features] realDrops` in `gloss.toml`. Every presentation setting below lives in the schema-3, hot-reloading `plugins/Gloss/real-drops/default.json` document and is editable under **Real drops** in the web editor. One persistent animation state owns the quaternion and phase from airborne tumble through rebound, real-distance ground roll, continuous face attraction, and settled polling. A bounce remains airborne in its impact sample instead of rendering one grounded frame, and there is no separate landing-pose replacement. `velocityInfluence`, submerged spin, ground roll, moving/resting face attraction, alignment tolerance, and stable delay are independently authored. A stack uses one to five one-count models as a size cue, bounded by `presentation.limits.maxVisualsPerStack`; it never creates one display per carried item. The per-chunk budget counts both item models and labels. A separate fixed server-wide ceiling admits at most 2,048 active presentations, bounding the number of item-owned update loops even when drops are distributed across many chunks. If either the complete initial presentation does not fit its chunk budget or the server-wide ceiling is full, Gloss creates no displays or update task for that item and leaves its native model and name visible.
 
 The document has one complete fallback `presentation`, zero or more complete conditional `variants`, and one per-viewer `audience` condition:
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "revision": 1,
-  "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {} },
+  "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {}, "particleLayers": [] },
   "variants": [
     {
       "id": "nether-valuable",
       "priority": 100,
       "when": "drop.world == 'world_nether' && drop.amount >= 16",
-      "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {} }
+      "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {}, "particleLayers": [] }
     }
   ],
   "audience": {
@@ -521,6 +529,7 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 | `filters.disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
 | `filters.materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
 | `filters.onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
+| `particleLayers` | `[]` | Layers targeting the whole projection, model, label, line, span or local geometry |
 
 `NATURAL` carries the airborne quaternion directly through impact. Real horizontal travel continues rotating placed blocks face-to-face, while gravity attraction tips the currently lowest face toward the surface as momentum decays. Flat items select whichever broad side is already nearest the ground and preserve their in-plane heading; no UUID-selected landing pose replaces that motion afterward. Block models are centered on their placed geometry and rise by the rotated support extent, so cubes, slabs, carpets, snow, candles, beds, and other partial bounds rest flush rather than intersecting the carrier surface.
 
@@ -530,11 +539,11 @@ Named `animation.materialProperties` maps associate exact or globbed materials w
 
 Presentations are removed on merge, pickup, despawn, entity unload, feature reload, and plugin shutdown. New `ItemSpawnEvent` entities reconcile one entity tick after the event, when Bukkit marks them valid; loaded items are rebuilt after enable and entity load. Persistent ownership and restore markers heal an item after an interrupted lifecycle; Gloss restores the prior native visibility and name visibility before rebuilding or falling back. All presentation displays are non-persistent.
 
-If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Both `gloss.toml` and the real-drop document hot-reload.
+If `[features] drops = false`, Gloss removes its owned custom names as loaded items reconcile. Real-drop models can remain active without labels. A foreign visible custom name is still preserved and mirrored when `[drops] preserveCustomNames = true`. If `[features] realDrops = false`, attached displays are destroyed and native item/name visibility is restored. Particle layers from the selected Real Drops presentation can still follow the native dropped-item name and model bounds while display-backed Real Drops are off. This is how a marked span in `[drops] nameFormat` can receive particles without replacing the item model. Both `gloss.toml` and the real-drop document hot-reload. See [Particle Layers](/gloss/25-particle-layers).
 
 ## Reference
 
-Bubble schema 3, damage-indicator schema 2 and real-drop schema 2 are hard breaks. Older documents are silently ignored rather than migrated; rewrite custom files to the current shapes or reset them to the shipped defaults.
+Bubble schema 4, damage-indicator schema 3 and real-drop schema 3 are hard breaks. Older documents are silently ignored rather than migrated; rewrite custom files to the current shapes or reset them to the shipped defaults.
 
 | Command | Arguments | Permission |
 |---|---|---|

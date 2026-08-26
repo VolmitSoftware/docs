@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -354,7 +354,7 @@ Runtime enable and removal publish each loader's normal level lifecycle. Fabric 
 |---|---|
 | Production create | Full pack tree installed under the world's `iris/pack` and frozen there |
 | Studio open | Engine reads the live packs root. Nothing is installed into the world |
-| `/iris studio package` | Exports an archive. No world is touched |
+| Bukkit `/iris pack package`; modded `/iris studio package` | Exports an archive. No world is touched |
 | `/iris dev update-world` | Replaces a world's `iris/pack`. Unsafe, and restarts the server if an engine still holds that pack |
 | Hotload | Studio only. A production snapshot never changes underneath a running world |
 

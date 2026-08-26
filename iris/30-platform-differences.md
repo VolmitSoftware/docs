@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,7 +39,7 @@ Five categories cover almost everything an operator runs into:
   modded side splits it. Settings live under one root and packs under
   another.
 
-Terrain, typed image maps, native world boundaries, connected rivers and their contained cave hydrology, biomes,
+Terrain, typed image maps, native world boundaries, accepted-plan hydrology and its contained mantle publication, biomes,
 objects, jigsaw runtime, caves, and structures behave the same on all four.
 If generated terrain differs between platforms, that is
 a determinism defect, not a platform difference. See
@@ -154,7 +154,7 @@ Full command tables and stubs:
 
 | Feature | Bukkit | Fabric | Forge | NeoForge |
 |---------|--------|--------|-------|----------|
-| Core terrain / rivers / cave hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
+| Core terrain / accepted hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
 | Typed image-map runtime / validation / packaging | yes | yes | yes | yes |
 | Image-map desktop authoring and Vision layers | graphical host | graphical host | graphical host | graphical host |
 | Dimension `worldBoundary` | native border | native border | native border | native border |

@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Gloss documentation: Components & Hitboxes"
 published: true
-date: 2026-08-24
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -406,6 +406,13 @@ The guard applies only to third-party API handlers, never to JSON actions. It sk
 No stage of this path imposes a click cooldown or rate limit on JSON-defined components.
 
 ## Debug overlays
+
+Menu particle layers are independent of these operator debug overlays. Their definitions live at
+the menu top level, can target a component by its sanitized id, and are sent only to that menu or
+panel viewer. Component geometry uses the current component plane and bounds after the menu or panel
+transform. Text-only `line` and `span` targets require a text icon; a non-text component can still
+use component bounds, lines, outlines, planes or cuboids. See
+[Particle Layers](/gloss/25-particle-layers).
 
 Two `gloss.toml` switches draw particle overlays. Both default to `false`. Both are applied live when `gloss.toml` is edited or `/gloss reload` runs. Both drive their own repeating task at 2 ticks.
 

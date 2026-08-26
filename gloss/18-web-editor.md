@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -69,9 +69,17 @@ Panels keep all four buttons visible and say why Preview, Code and Split do not 
 rather than hiding the buttons.
 
 The editor imports, validates, previews and exports the runtime's current conditional formats:
-board schema 2, tablist schema 2, bubble schema 3, damage-indicator schema 2 and real-drop schema 2.
+hologram schema 2, board schema 2, tablist schema 2, bubble schema 4, damage-indicator schema 3 and
+real-drop schema 3.
 Those versions are hard breaks. The editor does not silently convert older documents; rewrite them
 to the current contract or begin from a current template.
+
+The particle-layer inspector is available on particle-capable hologram, menu, preview, bubble,
+damage-indicator and real-drop documents. It authors target, geometry, placement, particle,
+emission and priority fields, including dust color and size, and retains unknown fields on round
+trip. Its stage preview is an authoring approximation; exact Minecraft particle appearance,
+occlusion and client settings still require in-game validation. Panels inherit particle layers
+from their root menu. See [Particle Layers](/gloss/25-particle-layers).
 
 The Import action detects menus, previews, holograms, animations, scoreboards, MOTD, emoji, bubble
 styles, damage-indicator settings, tablists and real-drop settings from their JSON shape, previews validation issues, and replaces the active
@@ -190,7 +198,7 @@ pressing Shift+F10 opens creation at that exact snapped position for text, image
 living entities, items, blocks, buttons and toggles. Media creation opens the same image manager and
 inserts the chosen static or animated asset as one undoable component edit. A standalone hologram
 document remains a text-display line list; mixed icon components belong to menu documents. Living-
-entity icons use real Minecraft entity sprites instead of geometric stand-ins. A standalone hologram's Presentation section exposes `seeThrough`, enabled by default, so the authored JSON and server agree on whether terrain occludes the text. The **Damage indicators** document provides a target-stage renderer and GUI controls for the complete schema-2 `damage-indicators/default.json` profile: admission and lifetime limits, damage/healing gate conditions, complete conditional variants, amount formatting, offsets, continuous launch velocity and acceleration, spin, scale, fade timing and the per-viewer audience condition. Its transport selects damage or healing independently, loops the selected type automatically at the authored lifetime, advances to a new deterministic seeded trajectory on each cycle, and retains replay and pause. A damage-only **Critical hit** control changes the sample's exact Paper critical flag so conditional critical variants can be inspected. The sample supplies the complete event, subject, source and viewer role surface; a false style or audience condition displays `condition false` instead of leaving an unexplained blank stage. **Randomize** procedurally replaces the complete singleton JSON as one undoable edit with valid varied limits, conditions, a critical-damage variant, a large-heal variant, presentations and audience rules guaranteed to include the default sample viewer. Position, rotation, scale and opacity use the plugin's same closed-form elapsed-time equations, so the preview remains stable at different browser frame rates. It does not reproduce Minecraft's TextDisplay rasterization, depth, occlusion, tracking or packet interpolation, which still require in-game validation. The **Real drops** document provides a live item-stage preview and GUI controls for the complete schema-2 `real-drops/default.json` profile: fallback presentation, conditional variants, viewer audience, update budgets, density, model scales, throw-momentum tumble, submerged spin, distance-driven ground roll, face attraction and stable delay, entity physics, advanced modifiers, labels, filters, and typed keyframe animation profiles. Placeable samples use textured six-face block geometry with material-specific bounds; only true items use the item-sprite renderer. Showcase drops default to one item and use only occasional two- or three-item stacks, keeping the model readable instead of demonstrating large inventory counts. The stage shadow is a circular disc on the ground plane, so camera perspective produces the ellipse naturally instead of stretching a screen-space shadow. The animation inspector authors material property maps, profile priority and globs, trigger clips, tracks, blend/easing, and keyframes for scale pulses, hovering, glow/light, physics handoff, spiral rotation, visibility, and offsets. Its transport includes stepping and timeline scrubbing with the current animation phase visible. The code editor schema covers the same contract. Its export path is fixed to `plugins/Gloss/real-drops/default.json`; the master `[features] realDrops` boolean remains in `gloss.toml`.
+entity icons use real Minecraft entity sprites instead of geometric stand-ins. A standalone hologram's Presentation section exposes `seeThrough`, enabled by default, so the authored JSON and server agree on whether terrain occludes the text. The **Damage indicators** document provides a target-stage renderer and GUI controls for the complete schema-3 `damage-indicators/default.json` profile: admission and lifetime limits, damage/healing gate conditions, complete conditional variants, amount formatting, offsets, continuous launch velocity and acceleration, spin, scale, fade timing, particle layers and the per-viewer audience condition. Its transport selects damage or healing independently, loops the selected type automatically at the authored lifetime, advances to a new deterministic seeded trajectory on each cycle, and retains replay and pause. A damage-only **Critical hit** control changes the sample's exact Paper critical flag so conditional critical variants can be inspected. The sample supplies the complete event, subject, source and viewer role surface; a false style or audience condition displays `condition false` instead of leaving an unexplained blank stage. **Randomize** procedurally replaces the complete singleton JSON as one undoable edit with valid varied limits, conditions, a critical-damage variant, a large-heal variant, presentations and audience rules guaranteed to include the default sample viewer. Position, rotation, scale and opacity use the plugin's same closed-form elapsed-time equations, so the preview remains stable at different browser frame rates. It does not reproduce Minecraft's TextDisplay rasterization, depth, occlusion, tracking or packet interpolation, which still require in-game validation. The **Real drops** document provides a live item-stage preview and GUI controls for the complete schema-3 `real-drops/default.json` profile: fallback presentation, conditional variants, viewer audience, update budgets, density, model scales, throw-momentum tumble, submerged spin, distance-driven ground roll, face attraction and stable delay, entity physics, advanced modifiers, labels, filters, particle layers and typed keyframe animation profiles. Placeable samples use textured six-face block geometry with material-specific bounds; only true items use the item-sprite renderer. Showcase drops default to one item and use only occasional two- or three-item stacks, keeping the model readable instead of demonstrating large inventory counts. The stage shadow is a circular disc on the ground plane, so camera perspective produces the ellipse naturally instead of stretching a screen-space shadow. The animation inspector authors material property maps, profile priority and globs, trigger clips, tracks, blend/easing, and keyframes for scale pulses, hovering, glow/light, physics handoff, spiral rotation, visibility, and offsets. Its transport includes stepping and timeline scrubbing with the current animation phase visible. The code editor schema covers the same contract. Its export path is fixed to `plugins/Gloss/real-drops/default.json`; the master `[features] realDrops` boolean remains in `gloss.toml`.
 The bundled Java 26.2 item/block catalog contains 1,691 materials and 1,644 textured atlas entries;
 the entity catalog contains 91 living renders using Java 26.2 textures and the renderer's latest
 supported 26.1 geometry definitions. Maintainers refresh both catalogs with
@@ -648,6 +656,10 @@ pages — [Hologram Menus](/gloss/09-menus), [Components & Hitboxes](/gloss/10-c
 [Icons](/gloss/11-icons), [Actions](/gloss/12-actions) and
 [Container Previews](/gloss/15-container-previews) plus
 [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) — take precedence over both.
+
+All four schemas expose the shared particle-layer definition wherever that document family accepts
+it. Hologram, bubble, damage-indicator and real-drop envelopes use their current hard schema
+versions; menu and preview documents remain unversioned.
 
 ## The custom item catalog
 

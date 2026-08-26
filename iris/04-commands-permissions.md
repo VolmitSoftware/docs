@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-26T20:34:24.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -144,7 +144,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `goldenhash` | `gold` | **Modded** root. Bukkit under `Developer` | `[radius=8] [threads=8] [capture\|verify]`, radius `0..256`, threads `1..64` | Deterministic buffer hashes |
 | `wand` | | **Modded** root (+ `object`) | — | Give object wand |
 | `dust` | `d` | **Modded** root (+ `object`) | — | Give reveal dust |
-| `find` | `goto` | Both | see Find | Locate biome/region/object/structure/POI |
+| `find` | `goto` | Both | see Find | Locate biome/region/object/structure/POI or an accepted hydrology feature |
 | `what` | | Both | see What | Inspect context |
 | `edit` | | Both | see Edit | Open pack JSON in the desktop editor |
 | `pregen` | `pregenerate` | Both | see Pregen | Pregeneration control |
@@ -182,11 +182,12 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `biome` | **Bukkit:** `<biome> [teleport=true]`. **Modded:** `<key>` | Find an Iris biome. Teleport defaults to true on Bukkit |
 | `region` | **Bukkit:** `<region> [teleport=true]`. **Modded:** `<key>` | Find an Iris region |
 | `object` | **Bukkit:** `<object> [teleport=true]`. **Modded:** `<key>` | Find an object placement (Bukkit may teleport to the object studio first) |
+| `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find an accepted hydrology feature. Use `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `ridge_tunnel`, `deep`, or a deep-fluid ID |
 | `structure` | **Bukkit:** `<structure>`, runs sync. **Modded:** `<key>` | Find a vanilla/datapack/Iris structure |
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
 
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes configured dimension, region, and biome river pools plus their selected child biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. Surface river-pool biomes use the final river-aware surface locator on Bukkit and modded platforms.
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the canonical selectors in the table with the active dimension's configured deep-fluid IDs; `deep_lava` is a pack-defined example, not a built-in selector. Hydrology feature location searches immutable accepted plans and never reports an unaccepted route, outlet, or deep-fluid candidate.
 
 ---
 

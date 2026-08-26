@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -190,9 +190,9 @@ Aquifers and deep lava are two independent mechanisms. Neither changes cave geom
 - a detail-noise sample at that point clears a cutoff that **rises with depth**. The cutoff is about `0.35` at the fluid line and `0.55` some 48 blocks below it. It tops out at `0.65` around 72 blocks down. Shallow aquifers are common. Deep ones are rare
 - with `fluidRequiresFloor` on (the default), the cell sits in a cup. Solid is required directly below and two below. At least four of the five remaining neighbors (four horizontal plus above) must also be solid
 
-Natural surface bodies are separate from aquifers. A surface-breaking cave must not remove the seabed. It also must not remove a block beside the generated surface reservoir. Iris keeps that wet interface solid from the first adjacent fluid block through that column's actual water head. Ordinary oceans use `fluidHeight`; connected terraced rivers may use a different local head. Dry channels and unrelated columns do not inherit the maximum possible river head. The cave may continue below the protected band and may open again above the fluid line. The same rule uses the one-block terrain halo across chunk borders, so the result does not depend on chunk generation order.
+Natural surface bodies are separate from aquifers. A surface-breaking cave must not remove the seabed or a block beside a generated surface reservoir. Iris protects the wet interface through the column's actual accepted fluid head. Ordinary oceans use `fluidHeight`; a hydrology channel uses the exact `fluidHeadY` stored in its accepted layer. Dry or unrelated columns do not inherit another feature's head. The cave may continue below the protected band and may open again above the fluid line. The same rule uses the one-block terrain halo across chunk borders, so the result does not depend on chunk generation order.
 
-The river system may deliberately connect a selected wet channel to a cave through a separate containment overlay. That path is off by default and never changes the ordinary aquifer setting. It accepts only a complete closed-component proof or a bounded generated grotto, rechecks the baseline transactionally, and protects wet cells and their seal boundary from later object and structure stamps. See [36 - Rivers](/iris/36-rivers).
+An underground course, ridge bore, grotto, or deep-fluid body is accepted only after Iris checks its complete planned volume against authoritative `CARVED` mantle matter. The check materializes every required carving chunk before the hydrology tile is published, rejects the whole course on an unsafe cave, surface, world-boundary, fluid, overlap, or volume contact, and retains the accepted actions plus exact cave-state preconditions in the immutable tile. Before a chunk writes any of those actions, the hydrology mantle pass rechecks the stored preconditions as one publication gate; a mismatch publishes none of that chunk's hydrology cells. This never changes the ordinary aquifer setting. Accepted cells and their seal boundary remain protected from later object and structure stamps. See [36 - Rivers](/iris/36-rivers).
 
 Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid. Combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava. `allowWater`, `waterMinDepthBelowSurface`, and `waterRequiresFloor` were removed. Pack validation rejects them by name in inline dimension, region, and biome profiles and in `snippet/cave-profile` files. An old dry-cave setting cannot silently fall back to the new `allowFluid: true` default.
 

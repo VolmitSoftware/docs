@@ -2,7 +2,7 @@
 title: "API: Menus"
 description: "Gloss documentation: API: Menus"
 published: true
-date: 2026-08-24
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -34,7 +34,8 @@ invoke an API menu click handler. Panels are covered in [Panels](/gloss/16-panel
 ```java
 public record HoloMenu(String id, double offsetX, double offsetY, double offsetZ, boolean lockPosition,
                        boolean followPlayer, double maxDistance, boolean closeOnDeath,
-                       boolean closeOnTeleport, List<HoloComponent> components)
+                       boolean closeOnTeleport, List<HoloComponent> components,
+                       List<ParticleLayer> particleLayers)
 
 public static HoloMenuBuilder builder()
 ```
@@ -54,6 +55,7 @@ public HoloMenuBuilder maxDistance(double maxDistance)
 public HoloMenuBuilder closeOnDeath(boolean closeOnDeath)
 public HoloMenuBuilder closeOnTeleport(boolean closeOnTeleport)
 public HoloMenuBuilder component(HoloComponent component)
+public HoloMenuBuilder particleLayer(ParticleLayer particleLayer)
 public HoloMenu build()
 ```
 
@@ -67,6 +69,7 @@ public HoloMenu build()
 | `closeOnDeath` | `true` | Close on `PlayerDeathEvent` |
 | `closeOnTeleport` | `true` | Close on any teleport |
 | `component` | empty list | Appends one component. Call repeatedly |
+| `particleLayer` | empty list | Appends one validated in-world particle layer. Call repeatedly |
 
 Every setter returns the builder. No setter validates or sanitizes. `id` stores the raw string.
 `component` accepts anything including a duplicate id or `null`. All validation happens in
@@ -74,6 +77,11 @@ Every setter returns the builder. No setter validates or sanitizes. `id` stores 
 
 The builder is mutable and not thread-safe. `build()` may be called more than once. Each call
 produces an independent `HoloMenu` from the builder's current state.
+
+The compact constructor also validates and copies `particleLayers`, including the 64-layer limit
+and unique layer ids. Particle layers can target the projection, a component id, menu text, a line,
+an authored named span or local coordinates. The session emits them only to its player. See
+[Particle Layers](/gloss/25-particle-layers) for the record shape and examples.
 
 Throw sites reachable from `build()`:
 

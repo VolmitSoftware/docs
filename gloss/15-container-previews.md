@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Gloss documentation: Container Previews"
 published: true
-date: 2026-08-24
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -123,20 +123,29 @@ One `.json` file in `plugins/Gloss/previews/` is one document. The file name wit
 id. Preview documents carry **no** `schemaVersion` and **no** `revision`. The envelope described on
 [Data Files & Hot Reload](/gloss/03-data-files) does not apply here. Subfolders are ignored.
 
-A document has four top-level keys. All are optional:
+A document has five top-level keys. All are optional:
 
 ```json
 {
   "match":    { },
   "variants": [ ],
   "card":     { },
-  "elements": [ ]
+  "elements": [ ],
+  "particleLayers": [ ]
 }
 ```
 
 `match` says what the document draws and how strongly it claims it. `variants` restyle and extend
-that. `card` is the chrome. `elements` is the content, in paint order. A document that emits no
-elements draws no preview.
+that. `card` is the chrome. `elements` is the content, in paint order. `particleLayers` adds
+viewer-targeted effects to the compiled projection. A document that emits no elements draws no
+preview.
+
+Particle targets include the whole `projection`, generated component ids such as zero-based
+`element-0`, `label`, `text`, one-based text `line`, authored text `span`, and `local` geometry.
+Label text expressions inside an authored `<particles:name>...</particles>` range inherit that
+range, but expression or PlaceholderAPI output cannot create a range. Layer placement follows the
+preview's viewer-facing frame. See [Particle Layers](/gloss/25-particle-layers) for the complete
+contract and limitations.
 
 The JSON Schema at `Gloss/schema/gloss-preview.schema.json` describes the same format for editors
 that consume it. It is documentation-grade. The Java parser enforces rules the schema cannot

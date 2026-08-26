@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Gloss documentation: Icons"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -118,6 +118,12 @@ The default `lineWidth` of `16384` disables practical wrapping. Set a smaller va
 ### Text formatting
 
 Each line first goes through the full viewer-aware text pipeline: functions, inline expressions, PlaceholderAPI, emoji and colors. The resulting legacy text is then rewritten into MiniMessage tags and deserialized. `&` and `§` are both accepted as legacy prefixes. The code letter is case-insensitive. A prefix not followed by a known code is copied through verbatim.
+
+An authored `<particles:name>...</particles>` range can select part of a `text` icon for a menu
+particle layer. `letterBounds`, `glyphOutline` and `glyphFill` use formatting-aware rectangular text
+cells, not Minecraft font pixels or resource-pack glyph contours. Other icon types expose only their
+component plane or authored local geometry; particle layers do not trace image alpha, item models,
+block meshes or entity silhouettes. See [Particle Layers](/gloss/25-particle-layers).
 
 | Legacy | MiniMessage tag |
 |---|---|

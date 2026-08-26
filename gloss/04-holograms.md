@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Gloss documentation: Holograms"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -19,7 +19,7 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "revision": 4,
   "anchor": {
     "world": "world",
@@ -33,13 +33,14 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
   "scale": 2.0,
   "billboard": "FIXED",
   "yaw": 45.0,
-  "pitch": -10.0
+  "pitch": -10.0,
+  "particleLayers": []
 }
 ```
 
 | Key | Required | Notes |
 |---|---|---|
-| `schemaVersion` | yes | Must be `1`. Any other version is silently ignored |
+| `schemaVersion` | yes | Must be `2`. Any other version is silently ignored |
 | `revision` | yes | `1` to `9007199254740991`. Gloss owns this value and bumps it by one on every write it makes |
 | `anchor.world` | yes | World folder name. Missing or blank rejects the file with `hologram anchor requires a world` |
 | `anchor.position` | yes | `[x, y, z]` array of doubles. Missing rejects the file with `hologram anchor requires a position` |
@@ -49,6 +50,7 @@ Holograms are `TextDisplay` entities driven from enveloped JSON documents in `pl
 | `billboard` | no | `CENTER`, `FIXED`, `HORIZONTAL` or `VERTICAL`, matched after trimming and uppercasing. Blank or absent defaults to `CENTER`; any other value rejects the file |
 | `yaw` | no | Finite degrees from `-180` through `180`; defaults to `0` |
 | `pitch` | no | Finite degrees from `-90` through `90`; defaults to `0` |
+| `particleLayers` | no | Up to 64 viewer-targeted layers; absent or `null` becomes an empty list |
 
 There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the hologram. Only files directly inside `holograms/` are read. Subfolders are ignored.
 
@@ -59,7 +61,33 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 
 ### The shipped baseline
 
-`/gloss hologram create` seeds its line from `baselines/hologram.json` inside the jar. That baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled and scale `1.0`. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
+`/gloss hologram create` seeds its line from `baselines/hologram.json` inside the jar. That schema-2 baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled, scale `1.0` and an empty `particleLayers` array. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
+
+## Particle layers
+
+A persistent hologram can frame the complete text, one one-based line, a named authored span or explicit local geometry. Billboarded layers calculate their plane independently for each viewer; fixed layers use the hologram orientation. For example, this text and layer place green dust behind the character cells occupied by the dark-red word:
+
+```json
+{
+  "schemaVersion": 2,
+  "revision": 1,
+  "anchor": {"world": "world", "position": [0.5, 82.0, 0.5]},
+  "lines": ["This is: <particles:green>&4GREEN</particles> Colored!"],
+  "scale": 1.0,
+  "particleLayers": [
+    {
+      "id": "green-word",
+      "target": {"scope": "span", "name": "green"},
+      "geometry": {"type": "glyphFill", "spacing": 0.05},
+      "placement": {"layer": "behind", "depth": 0.04},
+      "particle": {"key": "minecraft:dust", "color": "#00ff00", "size": 0.7},
+      "emission": {"intervalTicks": 2, "pattern": "steady"}
+    }
+  ]
+}
+```
+
+The complete target, geometry, placement, particle, pattern and budget contract is on [Particle Layers](/gloss/25-particle-layers).
 
 ## Creating and editing by command
 
@@ -219,13 +247,17 @@ when the mode or display resets. Later drives apply only membership diffs, while
 events reconcile the joining or moving player directly instead of rescanning the online roster for
 every temporary.
 
-One chat message is one temporary `TextDisplay`. Its visible-character wrapper inserts newlines into that display instead of spawning one entity per row, so its formatting, background, position and lifetime remain one unit. BubbleStyle schema 2 can also bind translation, scale, three-axis rotation and opacity expressions to that display. These presentation values are applied on the entity-owning thread with the same dirty checks as position and text.
+One chat message is one temporary `TextDisplay`. Its visible-character wrapper inserts newlines into that display instead of spawning one entity per row, so its formatting, background, position and lifetime remain one unit. BubbleStyle schema 4 can also bind translation, scale, three-axis rotation and opacity expressions and particle layers to that display. These presentation values are applied on the entity-owning thread with the same dirty checks as position and text.
 
 A moving temporary hologram is driven at that same tick cadence, but with `[holograms] interpolatedMotion` on (the default) the client is told to interpolate between drive ticks instead of snapping. Gloss sets the display teleport duration to `temporaryUpdateIntervalTicks` and then teleports on schedule; changing scale or rotation uses display transformation interpolation over the same cadence. This changes how the motion looks, not how often it is driven: raising `temporaryUpdateIntervalTicks` still means fewer position and presentation updates, just with longer client interpolation between them. Servers whose API does not expose the interpolation controls fall back to immediate updates automatically, with no configuration change needed.
 
-Other plugins can create them directly. See [API: Getting Started](/gloss/21-api-getting-started). The features built on them are covered in [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Temporary holograms also accept particle layers through the inherited API. Authored lines retain named span metadata; already-rendered frames do not. Other plugins can create them directly. See [API: Getting Started](/gloss/21-api-getting-started) and [Particle Layers](/gloss/25-particle-layers). The features built on them are covered in [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
 ## Migrating pre-envelope hologram files
+
+Schema 2 is also a hard break from the former schema-1 envelope. A schema-1 hologram is silently
+ignored; rewrite it as schema 2 and add `"particleLayers": []` when no effect is wanted. The legacy
+import command below handles only the older envelope-less shape and is not a schema upgrader.
 
 The pre-envelope hologram shape was `{"id": ..., "world": ..., "x": ..., "y": ..., "z": ..., "lines": [...]}`. Startup no longer scans or rewrites it; an unversioned document is silently ignored. Convert it only through the explicit legacy import command:
 

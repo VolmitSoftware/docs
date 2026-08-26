@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Gloss documentation: API: Getting Started"
 published: true
-date: 2026-08-24
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -78,6 +78,8 @@ Gloss registers exactly one provider from `GlossApiServiceImpl#register(GlossAPI
 | `AnchoredHologram` | interface | One persistent hologram, including native scale, billboard, yaw and pitch. Extends `Hologram` |
 | `TemporaryHologram` | interface | A hologram that expires. Extends `Hologram` |
 | `HologramPresentation` | record | Normalized scale, three-axis rotation and opacity for a temporary hologram |
+| `ParticleLayer` | record | Validated target, geometry, placement, particle and emission definition for in-world effects |
+| `ParticleTextSpan` | record | A named zero-based UTF-16 range attached to final temporary-hologram text |
 | `HologramViewers` | interface | Viewer filter on a temporary hologram |
 | `HoloMenu` | record | Immutable menu definition |
 | `HoloMenuBuilder` | final class | Builds a `HoloMenu`. Reached through `HoloMenu.builder()` |
@@ -325,11 +327,13 @@ public interface Hologram {
   Location location();
   void teleport(Location location);
   List<String> lines();
+  List<ParticleLayer> particleLayers();
   void addLine(String line);
   void setLine(int index, String line);
   void setLines(List<String> lines);
   void removeLine(int index);
   void clearLines();
+  void setParticleLayers(List<ParticleLayer> particleLayers);
 }
 
 public interface AnchoredHologram extends Hologram {
@@ -358,6 +362,14 @@ in one mutation. `hologram(id)` returns an `Optional`.
 `hasHologram(id)` is a containment check. `holograms()` returns a snapshot list. The document
 shape and the render pipeline are in [Holograms](/gloss/04-holograms).
 
+`setParticleLayers` replaces the complete validated list and persists it for an anchored
+hologram. The same method is inherited by temporary holograms without writing a file. Authored
+`setLines` text can use `<particles:name>...</particles>` ranges; final text supplied through
+`setRenderedLines` or `bindRenderedFrames` does not infer range metadata. Call
+`setRenderedParticleText` with validated `ParticleTextSpan` ranges when an already-rendered producer
+needs span targets. Constructors, target and geometry choices, budgets and examples are in
+[Particle Layers](/gloss/25-particle-layers).
+
 `scale()` is the persistent hologram's uniform native `TextDisplay` scale. `setScale` accepts finite
 values from `0.05` through `16.0`, updates a live display on its owning scheduler and persists the
 new revision. An invalid value throws without changing the display, revision or document.
@@ -374,6 +386,7 @@ billboard, angles, displays, revision and file all remain unchanged.
 ```java
 public interface TemporaryHologram extends Hologram {
   void setRenderedLines(List<String> lines);
+  void setRenderedParticleText(String text, List<ParticleTextSpan> spans);
   void bindRenderedFrames(LongFunction<List<String>> frames);
   void bindPosition(Entity owner, Supplier<Location> binder);
   void bindPresentation(Entity owner, Supplier<HologramPresentation> binder);

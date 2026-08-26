@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Gloss documentation: Hologram Menus"
 published: true
-date: 2026-08-25
+date: 2026-08-26
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -74,6 +74,7 @@ Gloss still tracks a revision for menus. It is the SHA-256 hash of the file raw 
 ```json
 {
   "offset": [0, 1.5, 2],
+  "particleLayers": [],
   "components": [
     {
       "id": "greeting",
@@ -96,6 +97,7 @@ Gloss still tracks a revision for menus. It is the SHA-256 hash of the file raw 
 |---|---|---|---|---|
 | `offset` | `vector3` | yes | none | Position of the menu center relative to the session anchor. Never scaled by `uiScale` |
 | `components` | array of component | yes | none | The elements of the menu. A single component object is accepted in place of a one-element array |
+| `particleLayers` | array of particle layer | no | `[]` | Viewer-targeted particles attached to the projection, components or marked text ranges |
 | `lockPosition` | boolean | no | `false` | Freeze the viewer in place while the menu is open |
 | `followPlayer` | boolean | no | `false` | Re-anchor the menu to the viewer on every accepted move, adopting their yaw |
 | `maxDistance` | number | no | `6.0E7` | Blocks between viewer and menu center before the menu closes. Clamped to `[0, 6.0E7]`. `null` or absent gives `6.0E7` |
@@ -179,6 +181,19 @@ The icon refreshes when the source has a complete `%name%`,
 keeps the previously rendered text and logs once per session.
 
 A toggle `condition` uses the same full viewer-aware renderer, but only once when the session is constructed. A `message` action renders through the same pipeline each time it fires. See [Components & Hitboxes](/gloss/10-components-hitboxes).
+
+## Particle layers
+
+`particleLayers` is a top-level menu field. A layer can target the whole `projection`, one
+`component`, all menu `text`, a one-based text `line`, an authored `span`, or `local` coordinates.
+For component-scoped work, `target.component` is the component id. Text, line and span targets can
+also set `target.component` to restrict the match to one text icon. Panels use the same menu field
+and apply the panel's complete world transform to it.
+
+Layers are emitted only to the viewer who owns that menu or panel view. They do not use the
+world-broadcast debug-overlay path described on the components page. The full layer contract,
+including frame, line, box and per-letter examples, is in
+[Particle Layers](/gloss/25-particle-layers).
 
 ## Parsing
 

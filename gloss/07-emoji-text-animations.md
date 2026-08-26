@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Gloss documentation: Emoji, Text & Animations"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-26T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,7 +15,7 @@ sessions; `/gloss web workspace` includes both document families.
 
 ## The text pipeline
 
-`text/TextPipeline.java` renders a raw string in exactly five stages, in this order:
+`text/TextPipeline.java` renders a raw string in exactly five visible-text stages, in this order:
 
 1. **Functions.** `|name|` tokens are replaced by the value of the registered function `name`. Skipped entirely when `[text] functions = false`. Short-circuited when the string contains no `|`.
 2. **Inline expressions.** Each `{{ expression }}` block evaluates against time, server state, viewer values, PlaceholderAPI or integration metrics as available.
@@ -24,6 +24,13 @@ sessions; `/gloss web workspace` includes both document families.
 5. **Colors.** `[RRGGBB]` bracket hex first, then `&` legacy codes.
 
 A "static" render is the same pipeline with no viewer. Player-backed parts of stages 2 and 3 never run. Shared and temporary holograms, damage indicators, drop labels and the MOTD render statically. Native `time.*` and `server.*` variables, server-native PAPI aliases and explicit `papi`/`metric` fallbacks remain truthful there; raw player placeholders stay written. Per-viewer holograms, boards, tablists, menus, panels, preview cards and BubbleStyle prefixes pass a viewer. The player message beside a bubble prefix is already-rendered chat content and is not scanned again for functions, expressions, placeholders, emoji or colors.
+
+On a particle-capable in-world surface, the caller first removes authored particle range tags and
+records their source ranges before invoking those five stages. Functions, expressions, placeholders,
+emoji and colors written inside a marked range inherit that range after expansion. Output produced by
+those stages cannot create a range, tags cannot nest, and malformed tags reject the authored value.
+Boards, tablists, MOTD, action bars and ordinary chat use the normal renderer and never emit particle layers. See
+[Particle Layers](/gloss/25-particle-layers).
 
 ### Functions
 
@@ -80,7 +87,7 @@ Chat bubbles consume that final message rather than reconstructing it. Translate
 
 ### Menu, panel and preview text
 
-Menu and panel text icons and `message` actions run the same five-stage pipeline as scoreboards with the session player as viewer. Toggle conditions use the same renderer before their case-insensitive comparison. Text icons re-render complete placeholder, function and inline-expression sources at their configured `refreshTicks` cadence.
+Menu and panel text icons and `message` actions run the same five visible-text stages as scoreboards with the session player as viewer. Toggle conditions use the same renderer before their case-insensitive comparison. Text icons re-render complete placeholder, function and inline-expression sources at their configured `refreshTicks` cadence. Menu and panel particle layers additionally retain authored particle ranges on text icons; message actions do not create an in-world particle surface.
 
 Container preview fields use whole-field expressions rather than `{{ }}` delimiters:
 
