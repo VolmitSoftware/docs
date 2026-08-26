@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -116,14 +116,16 @@ bounds remain as listed above.
 - Destination world key mismatch with the snapshot world.
 - Zero-size entity envelopes, attached entities, vehicles or passengers, and
   envelopes larger than 8 blocks on any axis.
-- Feet/body outside world height bounds or world border.
+- Feet/body or the one-block horizontal clearance ring outside world height
+  bounds or world border.
 - Nether roof band: envelope top within **5** blocks of the nether logical
   ceiling.
 - Missing, invalid, or too many region/chunk snapshots (max **4** chunks,
   **4** regions for the envelope).
 - Support block missing, liquid (water/lava/bubble column), a built-in hazard,
   or tree-part support/body when `surfaceMode` is true.
-- Body collision with solid collision boxes in the feet-to-top envelope.
+- Body collision with solid collision boxes in the feet-to-top envelope or its
+  one-block horizontal clearance ring.
 - Incomplete support coverage under the footprint (End → `END_VOID`. Otherwise
   `UNSUPPORTED`).
 
@@ -134,7 +136,10 @@ tree-structure landings. Clear ground under a high canopy can still pass when
 support and body checks succeed. Liquids and waterlogged aquatic landings fail.
 The Iris integration rejects terrain probes that Iris identifies as fluid and
 can reject enforced biome mismatches before a candidate chunk is generated.
-Travel uses the same entity envelope that passed validation.
+Travel uses the entity envelope that passed validation. Its fixed one-block
+horizontal body clearance rejects destinations directly beside mountainsides,
+walls, trees, liquids, or hazards without requiring flat support outside the
+traveler's actual footprint.
 
 ## Target biome
 

@@ -91,7 +91,8 @@ it on extracts both defaults on that reload. The ordinary default is:
 Note `"when": "false"`. Out of the box nothing selects this board. Give it a real condition, or
 use `"true"`, before it can appear automatically.
 
-`animation-showcase.json` provides one bounded row for each shipped animation effect:
+`animation-showcase.json` is a complete paste-ready board with one row for every shipped animation
+effect, one obfuscated-text row, and one row for each alignment:
 
 ```json
 {
@@ -101,16 +102,20 @@ use `"true"`, before it can appear automatically.
   "presentation": {
     "title": "&d&lANIMATION LAB",
     "lines": [
-    "{{ select(['&c', '&6', '&e', '&a', '&b', '&d'], floor(time.seconds * 4)) }}&lRAINBOW",
-    "&b{{ marquee('MARQUEE', 7, floor(time.seconds * 4)) }}",
-    "{{ timeline([['&aTIMELINE', 2], ['&eNEXT SCENE', 2]], time.seconds) }}",
-    "&f{{ typewriter('TYPEWRITER', floor(time.seconds * 4) + 9, 1) }}",
-    "{{ flash('&d&lFLASH', '&7FLASH', floor(time.seconds * 4)) }}",
-    "&d{{ wipe('WIPE', floor(time.seconds * 4) + 4) }}",
-    "{{ scanner('SCANNER', '&7', '&a', floor(time.seconds * 4)) }}",
-    "&5{{ scramble('DECODE', floor(time.seconds * 4)) }}",
-    "&6ODO {{ odometer(0, 999, mod(time.seconds, 10) / 10, 3) }}",
-    "{{ wave('WAVE', ['&a', '&7'], floor(time.seconds * 4)) }}"
+      "{{ select(['&c', '&6', '&e', '&a', '&b', '&d'], floor(time.seconds * 4)) }}&lRAINBOW",
+      "&b{{ marquee('MARQUEE', 7, floor(time.seconds * 4)) }}",
+      "{{ timeline([['&aTIMELINE', 2], ['&eNEXT SCENE', 2]], time.seconds) }}",
+      "&f{{ typewriter('TYPEWRITER', floor(time.seconds * 4) + 9, 1) }}",
+      "{{ flash('&d&lFLASH', '&7FLASH', floor(time.seconds * 4)) }}",
+      "&d{{ wipe('WIPE', floor(time.seconds * 4) + 4) }}",
+      "{{ scanner('SCANNER', '&7', '&a', floor(time.seconds * 4)) }}",
+      "&5{{ scramble('DECODE', floor(time.seconds * 4)) }}",
+      "&6ODO {{ odometer(0, 999, mod(time.seconds, 10) / 10, 3) }}",
+      "{{ wave('WAVE', ['&a', '&7'], floor(time.seconds * 4)) }}",
+      "&d&kMAGIC&r",
+      "&a{{ align('GLOSS', 20, 'left') }}",
+      "&e{{ align('GLOSS', 20, 'center') }}",
+      "&c{{ align('GLOSS', 20, 'right') }}"
     ],
     "hideNumbers": true
   },
@@ -118,10 +123,10 @@ use `"true"`, before it can appear automatically.
 }
 ```
 
-The board is deliberately not selected. Its rainbow row uses compact legacy colors because a full
-RGB prefix consumes a scoreboard team's carried suffix before any visible letters fit. Use `/gloss
-board show animation-showcase` to inspect it without changing automatic selection, or edit its
-`select` block normally.
+The board is deliberately not selected. Use `/gloss board show animation-showcase` to inspect it
+without changing automatic selection, or edit its `select` block normally. `middle` is an alias for
+`center`, so the shipped board demonstrates the three distinct layouts without spending a duplicate
+row.
 
 `/gloss board reset [name=*]` rewrites shipped defaults over whatever is on disk. Use `default` or
 `animation-showcase` for one file; `*` restores both. It requires `gloss.boards.edit`.
@@ -188,9 +193,11 @@ Every command edit rewrites the document with `revision` bumped by one, through 
 
 Ordinary sidebars use `[boards] updateIntervalTicks` (default 20, clamped 1..200). An actively selected board containing a clock-driven expression (`time.ms`, `time.seconds` or `time.ticks`) or a complete `|animation.<id>|` token moves to a separate every-tick driver, so it can display authored animation at up to 20 FPS. Static boards and boards containing only player, server, metric or PlaceholderAPI values stay on the ordinary driver even while another player watches an animated board. Rendered rows are change-deduplicated before they reach the client.
 
-Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. Fitting happens after that pipeline: the title has a 32-UTF-16-unit wire limit, and each row uses a 16-unit team prefix plus a 16-unit suffix with its active colour state carried into the suffix. Colour codes consume that budget. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Surrogate pairs, legacy colour pairs and complete legacy RGB runs are never cut in half. At most 15 rows render; the rest are dropped.
+Packet objective state is detached from the server scoreboard. Canvas and Folia therefore render and update a selected board entirely from the player's owning region thread without invoking global-scoreboard mutations.
 
-`scanner()` emits colour codes only when its highlight state changes. Its base colour is not repeated before every unchanged glyph, so labels such as `GLOSS SCOREBOARD` retain the full visible text within the row budget.
+Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. VolmLib sends each rendered title and row as one complete modern component without a character limit or truncation. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Minecraft still exposes at most 15 sidebar rows; the rest are dropped.
+
+Use `align(text, width, mode)` to pad visible text to an explicit number of character cells. `mode` is `left`, `center`, `middle` or `right`; `middle` and `center` are equivalent. Formatting codes do not consume cells, and content longer than `width` is returned whole rather than terminated. This is character-cell alignment, not pixel-perfect alignment for proportional or custom fonts. Resolve PlaceholderAPI content with `papi(...)` inside the call when its rendered width must participate in alignment.
 
 `"hideNumbers": true` applies Minecraft's blank score number format per board on native 1.20.3+
 servers and clients. It removes the red score column without changing the internal 15-to-1 values

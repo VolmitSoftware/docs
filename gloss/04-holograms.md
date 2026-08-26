@@ -133,6 +133,8 @@ who tracks the entity without an addressed update sees only its blank authoritat
 
 Plain viewer-independent lines use shared text on that one display. Functions, expressions, emoji and colors still apply in that static context. If you set `[holograms] perViewerPlaceholders = false`, Gloss forces shared mode; player-backed values then remain unresolved, while native server/time values and explicit fallbacks still work. Removing the last complete dynamic token switches the entity back to shared text. A lone percent sign such as `100%` does not enable personalized metadata.
 
+Persistent and temporary hologram displays use the native maximum line width of `16384`, so Gloss does not impose automatic wrapping or character termination. Authored entries remain separate logical lines, and an explicit legacy reset between them prevents `&k` and other styles from bleeding into the next line.
+
 ### The line pipeline
 
 Each line is rendered in this order:

@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,7 +53,7 @@ A rejected height or dimension-type change is not evidence that hotload is broke
 
 | Symptom | Meaning | Recovery |
 |---|---|---|
-| Ordinary or Jigsaw `open` reports startup validation pending, missing, failed, restart-required, or blocking pack errors | Datapacks or the pack graph cannot safely build the transient world | Complete the requested restart or run the platform's `pack validate` form, fix the first blocking error, and retry. The player receives the cached reasons and the console receives one warning without an expected-failure stack trace. Do not bypass validation |
+| Ordinary or Jigsaw `open` reports startup validation pending, missing, failed, restart-required, or blocking pack errors | Datapacks or the pack graph cannot safely build the transient world | Complete the requested restart or run the platform's `pack validate` form, fix the first blocking error, and retry. The player receives the cached reasons and the console receives one warning without an expected-failure stack trace. Bukkit ordinary Studio alone accepts `force=true` to attempt the currently loaded registry state when only the restart boundary remains; it never bypasses blocking pack validation and may still fail if the required registry entry is absent |
 | Save reports hotload failure | The new data or runtime build failed. The previous runtime may remain active | Fix the first console error and save again before making unrelated edits |
 | Height, environment, or generated dimension-type change is rejected | The edit violates the Studio runtime contract | Close Studio and reopen. On modded, restart when regenerated dimension-type datapacks require a registry reload |
 | A valid change is invisible | The chunks you are standing in are already materialized, or the edited resource is unreachable from the active dimension | Move to new chunks. Trace dimension → region → biome to confirm the resource is actually referenced. Use `focus`/`focusRegion` or a buffet studio mode to isolate |
@@ -103,7 +103,7 @@ Root: `/iris studio`, aliases `std` and `s`. Implemented by `CommandStudio` and 
 | `version [dimension=default]` | | Prints the dimension's `version` field |
 | `pkg [dimension=default] [obfuscate=false] [minify=true]` | `package` | Compiles the pack into a distributable archive |
 | `importvanilla <dimension> [variants=3] [structures=true]` | `importv`, `iv` | Captures vanilla features and structures into the pack through Bukkit NMS |
-| `scoreboard` | `board`, `sidebar`, `sb` | Toggles the studio debug scoreboard. Player must be in the studio world. Its numeric score column is hidden on clients and servers that support the native blank number format |
+| `scoreboard` | `board`, `sidebar`, `sb` | Toggles the studio debug scoreboard. Player must be in the studio world. Its numeric score column is hidden on clients and servers that support the native blank number format. Packet objective state stays detached from the server scoreboard so Canvas can render it from the player's owning region thread |
 | `noise [generator=<key>] [seed=12345]` | `nmap` | Opens the external noise explorer GUI |
 | `map [world=<world>]` | `render` | Opens the external biome/terrain map GUI for an Iris world |
 | `regions [radius=500]` | | Samples region rarity over a chunk spiral. Player must be in an Iris world |
@@ -323,4 +323,4 @@ This command tree is Bukkit-only. Saved `PLANAR_JIGSAW` and `SPATIAL_JIGSAW` pac
 
 Pack JSON contracts are shared across every platform. Schemas are built from the same core models. A pack authored on one platform loads on all of them.
 
-River authoring uses the ordinary dimension, region, and biome schemas: `IrisDimension.rivers` owns the connected network, while region and biome `riverOverride` values alter local routing, geometry, cave-entry probability, terminal behavior, and biome pools without changing graph identity. Enabled networks require `terrain.worms`, a weighted list of 1–16 seeded root gradient-Perlin families. Each profile has a unique `id`, independent centerline wavelength, detail, tortuosity, displacement, and resolution controls; `bodyWavelength` and `bodyDetailWavelength` give its longitudinal anatomy a separate scale, while `widthVariation`, `bankVariation`, `depthVariation`, and `roofVariation` independently swell or pinch its channel, basin, bed, and tunnel clearance. Profiles also own branching and confluence controls plus recursively weighted `children`; hierarchies are limited to four profiles deep and 128 total profiles. After regenerating schemas, the editor exposes the nested topology, terrain, water, biome, and cave controls with their enum values and numeric bounds. Use the **River network** Iris Vision render to distinguish wet channels, mouths, banks, dry channels, and areas without a river footprint while tuning those fields.
+River authoring uses the ordinary dimension, region, and biome schemas: `IrisDimension.rivers` owns the connected network, while region and biome `riverOverride` values alter local routing, geometry, cave-entry probability, terminal behavior, fluid palette, and biome pools without changing graph identity. Enabled networks require `terrain.worms`, a weighted list of 1–16 seeded root gradient-Perlin families. Water settings expose the drainage-root `terrainFollowingChance`, slope-adaptive `dropTransitionLength`, `minimumDropTransitionLength`, `dropTransitionSlopeSensitivity`, and coastal `oceanLevelingDistance`; terrain separately exposes the narrow river-biome `shoreWidth` and the wider physical `bankWidth`. After regenerating schemas, use the **River network** render to distinguish blue terrain-following channels, violet authored-level/bored channels, mouths, inherited banks, dry channels, and pale-cyan waterfall footprints.

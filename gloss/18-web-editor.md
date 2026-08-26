@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Gloss documentation: Web Editor & Sync"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -220,6 +220,9 @@ even when no workspace animation document exists, matching a clean server instal
 of short legacy-color cycles; the other randomized variants author their matching expression helper
 directly into the generated document. A color-only frame is shown against the preview-only word
 `RAINBOW`, making its actual color visible without adding that word to the document or server output.
+The animation randomizer also includes `align`, and every applicable text-bearing document,
+menu-component and preview-element randomizer can procedurally emit left, center/middle or right
+alignment as ordinary runtime expressions.
 The library rail carries a labelled
 **Workspace actions** menu holding workspace-bundle Import and Export and `Erase all local data`;
 none of the three sit in the document creation row any more. The erase confirmation shows the
@@ -228,7 +231,7 @@ leaves the workspace genuinely empty and does not recreate `my-menu`.
 
 Menu and container-preview surfaces retain their own fit, reset and zoom tools. The scoreboard
 preview is centered in the editor while retaining the runtime's descending 15-to-1 scores, 15-row
-cap, single-line normalization, 32-unit title and 16-unit prefix plus 16-unit suffix fitting. It uses
+cap and single-line normalization. Titles and rows stay full-width and are not character-truncated. It uses
 an intrinsic, internally right-aligned Minecraft sidebar; a preview-only control can place it over
 the Minecraft scene backdrop in the client's right-side position. Scoreboard, MOTD,
 chat-bubble and tablist previews have independent 50%-200% zoom controls. The hologram stage
@@ -335,9 +338,11 @@ The two never connect directly.
 All six live in `gloss.toml` and hot reload with it. See [Configuration](/gloss/02-configuration).
 
 When `endpoint` is still the shipped default and `createToken` is blank, session creation is refused
-before any request is sent, with `the official editor sync relay requires editorSyncCreateToken`. No
-static secret ships in Gloss. Out of the box live edit and workspace commands fail until an
-operator supplies a token or points the endpoint at a relay that admits anonymous creation.
+before any request is sent, with `the official editor sync relay requires [editor.sync]
+createToken`. This expected configuration refusal is returned to the command sender without a
+server exception stack. No static secret ships in Gloss. Out of the box live edit and workspace
+commands fail until an operator supplies a token or points the endpoint at a relay that admits
+anonymous creation.
 
 ### The capability link
 

@@ -85,7 +85,7 @@ React sends normal messages through the plugin logger. Paper, Purpur, and Folia 
 
 Repeated fast-leaf-decay scan failures are limited to one warning with a full exception per ten seconds. Emergency ticker logging falls back directly to branded standard error only if the normal logging path itself fails.
 
-The embedded Javalin and Jetty stack uses React's plugin classloader and a private SLF4J sink, so it does not print dependency startup banners, missing-logger advisories, or duplicate listener-failure lines. React reports a failed listener once through its own `SEVERE` logger with the complete cause chain.
+The embedded Javalin and Jetty stack uses React's plugin classloader and a private SLF4J sink, so it does not print dependency startup banners, missing-logger advisories, or duplicate listener-failure lines. An occupied preferred port makes React atomically try the next 99 ports in order, capped at 65535. A successful fallback or an exhausted range produces one concise warning without a stack trace; unrelated listener startup failures remain `SEVERE` and retain their complete cause chain.
 
 ## Reload
 
@@ -168,7 +168,7 @@ The listener schema is a hard break. A `web.toml` containing the former `enabled
 |-----|---------|-------------|
 | `listenerEnabled` | `true` | Starts the embedded listener. Set false to disable every direct HTTP and WebSocket endpoint. |
 | `listenAddress` | `::` | Listener interface. The default is dual-stack where the OS/JVM permits IPv4-mapped wildcard traffic. On an IPv6-disabled or IPv6-only wildcard host, use `0.0.0.0` for IPv4. |
-| `port` | `9696` | Listener port. |
+| `port` | `9696` | Preferred listener port. If occupied, React tries this port followed by the next 99 ports in order, capped at 65535. |
 | `advertisedUrl` | empty | Absolute HTTP or HTTPS base URL placed in RCT2 pairing payloads. A reverse-proxy path is preserved; credentials, query strings, and fragments are rejected. |
 | `corsOrigins` | empty | Allowed browser origins. An empty list permits any origin. |
 | `wsPushHz` | `5` | Metrics WebSocket push frequency. |
@@ -178,7 +178,7 @@ The listener schema is a hard break. A `web.toml` containing the former `enabled
 
 `GET /api/v1/ping` is intentionally unauthenticated. It returns only protocol version `2`, the server identity's full SHA-256 fingerprint, and whether a relay session is currently registered. It does not expose the server name, address, public key, token data, or configured URLs.
 
-For a rented or NAT/port-forwarded server, forward the chosen public TCP port to React's internal `9696` port and allow that port through the host firewall. Set `advertisedUrl` to the public HTTP(S) URL, including any reverse-proxy base path. When `advertisedUrl` is empty, the pairing payload cannot discover the router's public address and advertises a local fallback; after pasting the code, replace that value in React Web's editable **Direct host** field with the public URL. IPv6 literals and reverse-proxy paths are preserved for HTTP and both WebSocket streams.
+For a rented or NAT/port-forwarded server, forward the chosen public TCP port to React's actual bound port and allow that port through the host firewall. React logs the effective port when it differs from the preferred `9696`; keep the preferred port free when a fixed reverse-proxy or forwarding target is required. Set `advertisedUrl` to the public HTTP(S) URL, including any reverse-proxy base path. An explicit `advertisedUrl` remains authoritative and is not rewritten after a local port fallback. When `advertisedUrl` is empty, the pairing payload cannot discover the router's public address and advertises a local fallback using the actual bound port; after pasting the code, replace that value in React Web's editable **Direct host** field with the public URL. IPv6 literals and reverse-proxy paths are preserved for HTTP and both WebSocket streams.
 
 Generate an RCT2 payload with `/react web pair <label> [role=viewer]`. Pairing succeeds only after the configured socket is live and bound; disabled, starting, failed, stopped, or unbound listeners create and persist no token. Players receive an in-game click-to-copy action that copies the complete payload without displaying it in chat; console and RCON senders receive the raw payload as text. React Web checks the unauthenticated ping fingerprint against the RCT2 fingerprint before it stores a direct-only profile. A mismatch, malformed response, or unreachable endpoint fails closed before authenticated identity access.
 

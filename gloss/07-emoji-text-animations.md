@@ -306,12 +306,9 @@ Already extracted examples are not rewritten when their authored step rate chang
 files or run `/gloss animations reset` to regenerate the current defaults. The same rule applies to
 `boards/animation-showcase.json` through `/gloss board reset name=animation-showcase`.
 
-The RGB frame expands to a full legacy hex sequence after the text pipeline. That is appropriate
-for holograms, MOTDs, tablists, bubbles and other component text. A sidebar row has the stricter
-32-unit team-prefix/suffix budget documented in [Scoreboards & Groups](/gloss/05-scoreboards-groups),
-so generated scoreboard examples use a compact animated glyph instead of spending that row's budget
-on the RGB prefix. The editor's scoreboard validator shows the exact delivered result if a custom
-board references `rainbow` directly.
+The RGB frame expands to a full legacy hex sequence after the text pipeline. Holograms, MOTDs,
+tablists, bubbles and scoreboards all receive it as component text. Modern scoreboard titles and
+rows are sent whole rather than through the retired prefix/suffix character budget.
 
 ### Reusable animation helpers
 
@@ -320,6 +317,7 @@ hidden task or keeps per-player state; two surfaces given the same arguments ret
 
 | Helper | Result |
 |---|---|
+| `align(text, width, mode)` | Pads visible text to 1–16384 character cells using `left`, `center`, `middle` or `right`; longer text is never truncated |
 | `marquee(text, width, step)` | Scrolls text left through a 1–64-character window |
 | `timeline([[text, seconds], ...], elapsedSeconds)` | Loops through 1–64 scenes, each with its own positive duration |
 | `typewriter(text, step, holdSteps)` | Types, holds and erases text |
@@ -330,9 +328,10 @@ hidden task or keeps per-player state; two surfaces given the same arguments ret
 | `odometer(from, to, progress, digits)` | Interpolates safe whole numbers and zero-pads to 1–16 digits |
 | `wave(text, styles, step)` | Chases 1–16 color/style prefixes across the characters |
 
-`scanner` emits its base and highlight styles only when the active state changes. It does not repeat
-the base style before every unchanged glyph, so longer labels retain the available text capacity on
-bounded surfaces such as scoreboard rows.
+`align` ignores legacy and bracket-hex formatting when it counts visible Unicode code points.
+`middle` is an alias for `center`. Its padding is character-cell based, so proportional and custom
+fonts can remain visually uneven. It never provides marquee-style termination: content longer than
+the requested width is returned whole.
 
 This timeline scrolls a welcome message, flashes a boost notice, then replaces it with an event
 message:
@@ -354,6 +353,12 @@ also rejected; resolve them first with `papi(...)` and pass that result to the h
 `[RRGGBB]` and may contain one additional formatting code. Text is bounded to 256 characters, or 64
 for the per-character styled helpers. Timeline duration is bounded to one hour.
 
+Legacy `&k` obfuscation works on every authored text-pipeline surface. End it with `&r` or any later
+color code. Gloss also scopes every logical line with a reset so obfuscation cannot leak into the
+next scoreboard row, hologram line or MOTD line. Keep formatting outside a character-transform
+helper, for example `&k{{ marquee('MAGIC', 5, floor(time.seconds * 4)) }}&r`; placing `&k` inside the
+helper's text argument is rejected because the helper accepts plain text.
+
 The shipped examples advance four steps per second. Animated boards, tablists, persistent holograms,
 and menu text with no explicit `refreshTicks` sample clock-driven expressions and named animations
 every tick, while each expression still controls when its visible state changes. The one-frame shipped examples use a
@@ -361,9 +366,11 @@ nominal `frameIntervalMs` of 1000; their expression time, not that frame interva
 result.
 
 The web editor's **Randomize** action for an animation document chooses across the complete shipped
-set: rainbow, marquee, timeline, typewriter, flash/pulse, wipe, scanner, scramble/decode, odometer
-and wave/chase. The generated document contains ordinary editable frames and helper expressions;
-it does not depend on editor-only playback behavior.
+set — rainbow, marquee, timeline, typewriter, flash/pulse, wipe, scanner, scramble/decode, odometer
+and wave/chase — plus the reusable `align` layout helper. Alignment also participates in every
+applicable text-bearing document, menu-component and preview-element randomizer. The generated
+document contains ordinary editable frames and helper expressions; it does not depend on editor-only
+playback behavior.
 
 ### Modes
 

@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Gloss documentation: Icons"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -85,7 +85,7 @@ Every JSON-authorable icon type except `entity` accepts the same optional `style
 | `textAlignment` | `center`, `left`, `right` | `center` | Text alignment flag. An unknown or non-string value rejects the file |
 | `backgroundArgb` | `#AARRGGBB` | `#00000000` | Text background color including alpha |
 | `textOpacity` | integer 0 – 255 | `255` | Text opacity metadata |
-| `lineWidth` | integer 1 – 16384 | `2000` | Client text-wrap width |
+| `lineWidth` | integer 1 – 16384 | `16384` | Client text-wrap width; the default is effectively full width |
 | `blockLight`, `skyLight` | paired integers 0 – 15, or both omitted | omitted | Packed brightness override. Supplying only one rejects the file with `blockLight and skyLight must be supplied together` |
 | `viewRange` | finite number 0.01 – 64 | `1` | Display view-range metadata |
 | `shadowRadius` | finite number 0 – 64 | `0` | Entity shadow radius |
@@ -113,7 +113,7 @@ An out-of-range number, a malformed ARGB string, an unpaired brightness value or
 
 `text` is split on the literal newline character `\n`. Each authored line becomes its own text display entity. A `refreshTicks` outside 0 – 1200 throws `refreshTicks must be between 0 and 1200` and rejects the menu file.
 
-The default `lineWidth` of `2000` effectively prevents wrapping. A smaller styled value lets the client wrap inside that one entity. The automatic hitbox and the web editor preview both measure the authored line. They do not model that internal wrap.
+The default `lineWidth` of `16384` disables practical wrapping. Set a smaller value only when that text display should wrap at an explicit font-pixel width. The automatic hitbox and the web editor preview both measure the authored line. They do not model that internal wrap.
 
 ### Text formatting
 

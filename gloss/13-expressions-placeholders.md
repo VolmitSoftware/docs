@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -395,6 +395,7 @@ does the same. Omitting the fallback preserves the strict behavior.
 | `number(value)` | Parses the first number from a number or formatted string |
 | `bar(value, maximum, width, filled, empty)` | Builds a clamped 1–64-character progress bar |
 | `hex(color)` | Converts an expression color to `[RRGGBB]` for the later color stage |
+| `align(text, width, mode)` | Pads visible text to 1–16384 character cells using `left`, `center`/`middle` or `right`, without truncating longer content |
 | `marquee(text, width, step)` | Scrolls plain text through a fixed-width window |
 | `timeline([[text, seconds], ...], elapsedSeconds)` | Loops independently timed text scenes |
 | `typewriter(text, step, holdSteps)` | Types, holds and erases plain text |
@@ -423,6 +424,12 @@ the step for content intended to remain visible on the default tablist cadence. 
 helpers require plain single-line input so they cannot split a color token or common combined glyph. See
 [Emoji, Text & Animations](/gloss/07-emoji-text-animations) for signatures, limits and the composed
 timeline example.
+
+`align` is a layout helper rather than an animation. It counts visible Unicode code points while
+ignoring legacy and bracket-hex formatting, then adds spaces without terminating content that is
+already wider than the requested width. Alignment is character-cell based, not proportional-font
+pixel measurement. Raw PlaceholderAPI substitution happens after inline expressions; use
+`align(papi('key', ''), 20, 'right')` when the resolved placeholder width must be counted.
 
 ## The preview expression DSL
 
@@ -631,6 +638,7 @@ throws `<name> argument <1-based index> must be a number`, `... a string` or `..
 | `fixed(x, digits)` | 2 | number, whole number in `[0, 20]` | string | Root-locale `%.<digits>f`. Fractional, negative or `> 20` digits throw |
 | `plain(s)` | 1 | string | string | Removes legacy codes matching `&[0-9A-Fa-fK-Ok-oRr]`. Every other `&` survives |
 | `readable(s)` | 1 | string | string | Lowercases, splits on `_`, upper-cases each segment's first character and joins with spaces, so `IRON_ORE` becomes `Iron Ore` |
+| `align(s, width, mode)` | 3 | string, whole number in `[1, 16384]`, string | string | Pads visible code points using `left`, `center`, `middle` or `right`; formatting does not consume width and longer content is returned whole |
 
 ### Preview context functions
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-25T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ On Bukkit-family servers, including Folia, create immediately opens the standard
 
 For a player-issued Bukkit create, Iris delegates the teleport immediately to the world's resolved entry anchor after creation. Paper's asynchronous teleport owns any destination-chunk readiness; Iris does not serially preload the chunk or scan thousands of blocks for a separate safe location first. The operation has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
 
-If the pack is missing, Iris identifies the exact supported download form — `pack=overworld`, `pack=underworld`, or `link=<zip-url>` — and does not create the world.
+If the pack is missing, Iris identifies the exact supported download form — `pack=overworld`, `pack=underworld`, or `link=<zip-url>` — and does not create the world. After a successful runtime pack install, `/iris create` remains locked until the requested server restart loads that pack's registry entries; it reports the restart requirement without restarting or creating a world.
 
 ### Pregenerate an area
 
@@ -186,6 +186,8 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
 
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes configured dimension, region, and biome river pools plus their selected child biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. Surface river-pool biomes use the final river-aware surface locator on Bukkit and modded platforms.
+
 ---
 
 ## What: `/iris what`
@@ -261,7 +263,7 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 
 | Command | Aliases | Platforms | Params | Description |
 |---------|---------|-----------|--------|-------------|
-| `open` | `o` | Both | **Bukkit:** `<dimension> [seed=1337]` (`dimension` alias `dim`, `seed` alias `s`). **Modded:** `<pack> [seed]` | Open a temporary studio dimension. Player arrival has an absolute 10-second command-admission deadline. The owning player may replace an active Jigsaw Studio, and Iris waits for its autosave and active-operation barriers before closing it |
+| `open` | `o` | Both | **Bukkit:** `<dimension> [seed=1337] [force=false]` (`dimension` alias `dim`, `seed` alias `s`, `force` alias `f`). **Modded:** `<pack> [seed]` | Open a temporary studio dimension. Bukkit refuses while a downloaded pack still requires a registry restart. `force=true` deliberately attempts the currently loaded registry state without installing datapacks or restarting, but never bypasses broken-pack validation. Player arrival has an absolute 10-second command-admission deadline. The owning player may replace an active Jigsaw Studio, and Iris waits for its autosave and active-operation barriers before closing it |
 | `close` | `x` | Both | — | Close the studio and discard the world. Bukkit requires `/iris jigsaw close` for an active Jigsaw Studio |
 | `tpstudio` | `stp` | Both | — | Teleport into the open studio under the same absolute 10-second command-admission deadline |
 | `status` | | **Modded** | — | Show the open studio and pack |

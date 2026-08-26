@@ -32,7 +32,7 @@ Every table below is emitted the same way. Each key has its own comment line bef
 
 **Canonicalization.** Startup and explicit importer writes parse, normalize, re-serialize, and write the file back when the canonical result differs. That is how out-of-range numbers are clamped into the file, missing keys reappear, and comments regenerate after an upgrade. Automatic hotload and `/gloss reload` normalize only the captured in-memory value; they never rewrite a file an editor or FTP client may still be replacing.
 
-**Hot reload.** The same watchdog that checks the data folders also checks `gloss.toml` at `[hotload] watchIntervalTicks`. Ordinary passes only drain native file events; an idle pass does not reread the file. A pending stability check or the 6-second exact-content reconciliation captures immutable bytes and compares their SHA-256, so atomic replacements, FTP saves, and same-size edits with preserved timestamps still apply. Automatic work is queued into at most one completed batch every 3 seconds, with one latest-state trailing pass when more saves arrive. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
+**Hot reload.** The same watchdog that checks the data folders also checks `gloss.toml` at `[hotload] watchIntervalTicks`. Ordinary passes only drain native file events; an idle pass does not reread the file. A pending stability check or the 6-second exact-content reconciliation captures immutable bytes and compares their SHA-256, so atomic replacements, FTP saves, and same-size edits with preserved timestamps still apply. Only one automatic batch runs at a time; saves made during a batch collapse into one immediate latest-state trailing pass instead of waiting behind a completion cooldown. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
 
 **Failure behavior differs between boot and reload.**
 
@@ -388,7 +388,7 @@ There is no partial repair.
 
 The stored value is that rebuilt form. The endpoint you read back may differ in case from what you typed.
 
-`createToken` is sanitized separately. Null or blank stays empty. That is not a problem. Anything else must already be free of surrounding whitespace, be 22 to 128 characters long, and consist only of `A-Z`, `a-z`, `0-9`, `_` and `-`. A value that fails any of those is blanked. Gloss logs `editor.sync.createToken is invalid; live editor session creation will use no token.` Session creation then proceeds untokened. It does not fail.
+`createToken` is sanitized separately. Null or blank stays empty. Anything else must already be free of surrounding whitespace, be 22 to 128 characters long, and consist only of `A-Z`, `a-z`, `0-9`, `_` and `-`. A value that fails any of those is blanked. Gloss logs `editor.sync.createToken is invalid; live editor session creation will use no token.` A custom relay that admits anonymous creation receives the untokened request. The shipped official endpoint instead refuses session creation locally and tells the command sender to configure `[editor.sync] createToken`.
 
 See [Web Editor & Sync](/gloss/18-web-editor).
 

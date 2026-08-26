@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-24
+date: 2026-08-25
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -218,9 +218,8 @@ poll callbacks. It is started with the period from `[hotload] watchIntervalTicks
 
 The repeating task is a tick pump and nothing else. On each fire it requests work from a single
 daemon thread named `Gloss-Watchdog-IO`. Only one pass is in flight. Requests made while a pass or
-its authoritative-thread apply phase is active collapse into one latest-state trailing pass behind
-the 3-second completion cooldown, so a slow or contended disk cannot stack work or lose the final
-save.
+its authoritative-thread apply phase is active collapse into one immediate latest-state trailing
+pass, so a slow or contended disk cannot stack work or lose the final save.
 
 Everything that can run off-thread does: `stat`, the file read, the SHA-256 self-write hash, and the
 JSON parse. Only the apply half hops back, and it hops to the right place — the server thread on
@@ -237,12 +236,11 @@ entity or a player. The console shows the split on every hot reload:
 ```
 
 On a region-threaded server the second line reads `[Folia Region Scheduler Thread #N/INFO]`
-instead. `watchIntervalTicks` controls how often a pass is requested, while the completion-anchored
-gate starts automatic passes no more than once every 3 seconds and retains one latest-state trailing
-request. Native events drive the common path and bounded rolling SHA-256 reconciliation catches
+instead. `watchIntervalTicks` controls how often a pass is requested. The in-flight gate retains one
+latest-state trailing request and starts it as soon as the active pass completes. Native events drive the common path and bounded rolling SHA-256 reconciliation catches
 silent or same-metadata saves. JSON registries perform their full membership fallback about every
 18 seconds and begin exact-content reconciliation about every 6 seconds, with both windows anchored
-to completion. The twelve registry kinds are distributed across two 3-second start slots. Their shared
+to completion. Their shared
 per-pass reconciliation budget yields after 32 files, 8 MiB, or about 10 ms, and a registry publishes
 its reconciliation batch only after its complete walk. Config and localization likewise avoid byte
 capture on idle passes and use their pending verification or 6-second and 9-second exact fallbacks.
