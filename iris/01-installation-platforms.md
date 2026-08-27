@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -109,7 +109,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Installing the first pack
 
-Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to hardcoded GitHub beta-release ZIPs. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. For the shipping Overworld, that boot performs the default automatic ingest of Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. The requested registry-loading restart is still required.
+Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to version-pinned GitHub stable-release ZIPs: Overworld 4002 and Underworld 1005. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. For the shipping Overworld, that boot performs the default automatic ingest of Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. The requested registry-loading restart is still required.
 
 Before you create a world you care about, run the Bukkit fresh-install runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks).
 

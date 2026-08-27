@@ -94,10 +94,6 @@ lowered again for the life of the process. The Bukkit plugin already sets
 the first pregeneration. Pass `-Diris.cache.fast=true` on the JVM
 command line there if you want it covering ordinary generation too.
 
-### Hydrology-heavy packs
-
-Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength / refinementSpacing`, the sum of the independent surface and underground source budgets, and the maximum surface, bore, grotto, and deep-fluid footprint. Smaller spacings, longer routes, more sources, and wider envelopes all increase work. A deep-fluid short channel derives its maximum length from `spacing / 3`, never below `refinementSpacing`, and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and derived refined route work at 262,144 samples per tile, and enforces footprint/spacing and containment relationships before generation. Tune one field at a time over the same seed and cold frontier, then compare the Java 25 generation probe and a warm repeat. Preserve outlet proof, ocean ownership, falling-fluid continuity, and containment; reduce density, route length, resolution, or footprint instead.
-
 ## Symptom: the first chunks pause while strongholds initialize
 
 Minecraft 26.2 prepares its concentric stronghold rings before ordinary

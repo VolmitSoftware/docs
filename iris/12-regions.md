@@ -208,9 +208,17 @@ Everything here applies anywhere this region is selected, on top of what the bio
 | `depositVariants` | `IrisDepositVariant[]` | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
 | `ores` | `IrisOreGenerator[]` | empty | Vein-style ores. Each generator declares whether it is a surface or underground generator. Iris keeps two separate lists. |
 | `caveProfile` | `IrisCaveProfile` | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
-| `riverPolicy` | `IrisRiverPolicy` or `null` | `null` | Region-level source placement, transit/outlet admission, profile/content pools, and geometry/routing multipliers. Biome values override these; omitted fields inherit the dimension. See [36 - Rivers](/iris/36-rivers). |
 
 Deposit precedence across tiers: biome variants, then region variants, then dimension variants. First match wins within each tier.
+
+### Fields the generator does not read
+
+| Field | Status |
+|-------|--------|
+| `riverStyle` | Removed. It was never read at generation time. Rivers come from biomes (for example `temperate/sea/river`) with negative generator heights. Old packs that still carry the key load fine. It is ignored. |
+| `lakeStyle` | Removed, same reasoning. |
+
+They are still valid JSON and will not fail validation. Do not spend time tuning them.
 
 ## Overworld sample: `temperate`
 
@@ -221,7 +229,7 @@ Path in the shipping pack: `packs/overworld/regions/temperate.json`.
 | `name` / `color` | `Temperate` / `#9BEE61` | |
 | `rarity` | `1` | Most common region. The world default character. |
 | `landBiomes` | 28 keys, e.g. `temperate/plains`, `temperate/cherry-blossom-forest`, `vanilla/cherry_grove` | A large list keeps a single region visually varied without needing many regions. |
-| `seaBiomes` | 6 keys, e.g. `ocean/deep`, `temperate/sea/ocean` | Natural below-sea-level biome selection. Hydrology surface, mouth, shore, dry, and flooded-cave content comes from the effective `riverPolicy`. |
+| `seaBiomes` | 8 keys, e.g. `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river` | Rivers are sea biomes here, not a separate system. |
 | `shoreBiomes` | 5 keys, e.g. `temperate/shore/beach`, `vanilla/stony_shore` | |
 | `caveBiomes` | 5 keys, e.g. `carving/drip`, `carving/moss-pillars` | |
 | `landBiomeZoom` / `seaBiomeZoom` | `3.5` / `6` | Oceans stay recognisable across long swims. |
@@ -249,6 +257,6 @@ Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terral
 | Empty `landBiomes` | Invalid region. Land columns have no candidates |
 | Wrong biome key path | `temperate/plains` must be `biomes/temperate/plains.json`, case and folder included |
 | Tuning region `rarity` when the region never appears | Selection also depends on the dimension `regionStyle` and `regionZoom`. Measure first with `/iris studio regions` |
-| Putting physical hydrology settings on a region | Regions expose only `riverPolicy`. Put routing, sources, hydraulics, grottos, profiles, and deep fluids on the dimension `hydrology` object |
+| Expecting `riverStyle` / `lakeStyle` to do something | The fields were removed (they were read by nothing). Make rivers and lakes as sea biomes with negative generator heights |
 | Empty `seaBiomes` in a dimension whose terrain dips below `fluidHeight` | Sea columns have no candidate biome |
 | Comparing changes in already generated chunks | Region and zoom changes only affect newly generated chunks. Always fly to fresh terrain |

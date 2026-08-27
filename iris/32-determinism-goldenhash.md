@@ -42,8 +42,6 @@ or lake. Capture a replacement only after you confirm the mismatch is
 limited to the expected generated-block change and remains identical
 across repeated, threaded, and cross-platform runs.
 
-Hydrology adds an accepted-plan determinism surface to this gate. For a fixed seed and pack fingerprint, the bounded terrain/policy lattice must produce the same outlets, acyclic drainage potential, independent surface and underground source sets, refined centerlines, non-rising heads, hydraulic segment types, profile/content choices, and exact column ownership regardless of which tile or chunk requests them first. Stable feature, course, segment, source, and outlet identities resolve ties. The immutable tile then supplies terrain, fluid, biomes, mantle cells, rendering, and locator results; those consumers must not reclassify it independently. A threaded or mantle-reset mismatch around a channel, drop, bore, grotto, mouth, deep-fluid body, or seal guard is a determinism defect.
-
 ## What GoldenHash actually does
 
 1. Optionally deletes the world's mantle so nothing cached from an earlier

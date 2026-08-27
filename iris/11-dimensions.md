@@ -16,7 +16,6 @@ Related:
 - [12 - Regions](/iris/12-regions)
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
-- [36 - Rivers](/iris/36-rivers)
 - [37 - Image Map Concepts](/iris/37-image-map-concepts)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [18 - Structures Overview](/iris/18-structures-overview)
@@ -223,8 +222,6 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |
-| `hydrology` | `IrisHydrology` | rivers disabled, no deep fluids | Dimension-owned terrain-first surface and underground rivers plus independent `deepFluids`. See [36 - Rivers](/iris/36-rivers) |
-| `riverPolicy` | `IrisRiverPolicy` or `null` | `null` (runtime policy defaults) | Dimension policy for source placement, transit/outlet admission, profiles, river content, and local multipliers. Region and biome non-null fields override it |
 
 ## Ores and deposits
 
@@ -294,7 +291,7 @@ Three fields at dimension scope decide whether caves exist and what they look li
 | `caveProfile` | `IrisCaveProfile` | disabled default object | The dimension default 3D cave system: density styles, vertical range, threshold, surface clearance. Regions and biomes override it when they enable their own. Full field reference in [15 - Caves & Carving](/iris/15-caves-carving) |
 | `carving` | `IrisDimensionCarvingEntry[]` | empty | Cave-biome overrides keyed to absolute world-Y bands. Each has a stable `id`, a `biome`, a `worldYRange`, optional `children`, `childStyle`, `childShrinkFactor`, and `childRecursionDepth`. Use it for depth-banded cave themes such as a deep dark layer |
 | `useMantle` | boolean | `true` | Disables the entire mantle when false. No objects, jigsaw structures, features, entities or deferred block updates. Terrain and decoration still run. Only useful for isolating mantle cost or debugging |
-| `disabledComponents` | mantle flag strings | empty | Turns off individual mantle components by flag. The registered generation components include `OBJECT`, `JIGSAW`, `CARVED`, `RIVER_HYDROLOGY`, and `FLOATING_OBJECT`. Cheaper than `useMantle: false` when you only need to silence one subsystem |
+| `disabledComponents` | mantle flag strings | empty | Turns off individual mantle components by flag. The registered generation components include `OBJECT`, `JIGSAW`, `CARVED`, and `FLOATING_OBJECT`. Cheaper than `useMantle: false` when you only need to silence one subsystem |
 
 ## Objects, decoration, and post-processing
 
@@ -457,7 +454,7 @@ These exist to help you look at the generator, not to ship. `studioMode` is appl
 
 ## Annotations are editor hints, not runtime validation
 
-`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
+`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `worldBoundary`, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
 
 ## A complete minimal dimension
 

@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -682,18 +682,10 @@ intentional capability difference.
 
 ### Confirmed release blockers and follow-ups
 
-- [ ] Publish and revalidate both embedded beta assets:
-      `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip`
+- [ ] Revalidate both embedded stable assets:
+      `https://github.com/IrisDimensions/overworld/releases/download/4002/overworld.zip`
       and
-      `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip`.
-      Each candidate must contain dimension `hydrology` plus dimension,
-      region, and biome `riverPolicy`; use a nonempty profile array and
-      pass the current hydrology validator. Both Java 25 publication
-      workflows must package the canonical closure, extract and validate
-      that exact archive, and run `:probe:genProbe` before moving the beta
-      tag. Then repeat anonymous download, validation, new-world creation,
-      chunk load, accepted-feature location, and Studio acceptance before
-      release.
+      `https://github.com/IrisDimensions/underworld/releases/download/1005/underworld.zip`.
 - [x] Make modded GoldenHash metadata use the active Iris engine seed.
       Fabric, Forge, and NeoForge generated identical output from Iris
       seed `1337`. Filenames and headers recorded each vanilla level

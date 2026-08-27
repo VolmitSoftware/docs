@@ -77,7 +77,6 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Biomes | Biome JSON, layers, custom biomes, spawns | [13 - Biomes](/iris/13-biomes) |
 | Generators and noise | Generators, styles, expressions, images | [14 - Generators & Noise](/iris/14-generators-noise) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
-| Rivers | Terrain-first routing, hydraulic transitions, caves, deep fluids, and river policy | [36 - Rivers](/iris/36-rivers) |
 | Image-map concepts | Typed resources, applications, runtime compiler, deterministic behavior | [37 - Image Map Concepts](/iris/37-image-map-concepts) |
 | Supported image inputs | PNG dimensions, channel layouts, bit depths, and raw sample rules | [38 - Supported Image Inputs](/iris/38-supported-image-inputs) |
 | Grayscale heightmaps | 8-bit and 16-bit scalar terrain decoding | [39 - Grayscale Heightmaps](/iris/39-grayscale-heightmaps) |

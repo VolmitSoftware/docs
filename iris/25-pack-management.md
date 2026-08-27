@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,16 +51,6 @@ Run this after the pack works in Studio and before you create or update a produc
 
 `validate` re-runs every check and republishes the result. `status` prints the currently published result, which may be a reused startup result. Run `validate` first if you have edited files. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them. Unresolved content keys become blocking the moment strict content mode is on.
 
-For a hydrology-capable release, also run the Bukkit-free generation probe from the Iris repository with Java 25:
-
-```bash
-./gradlew --no-daemon :probe:genProbe \
-  -PprobePack=/absolute/path/to/pack \
-  -PprobeDimension=<dimension-key>
-```
-
-The probe constructs the real engine and generates chunks into buffers. Publication automation should run it against the exact candidate tree and again only after the packaged archive has been extracted and validated as the canonical closure.
-
 **3. Preview cleanup without writing anything.**
 
 ```
@@ -97,7 +87,7 @@ Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. The
 
 Success is `exports/<key>.iris` plus a completion message. The source pack and every world snapshot are untouched.
 
-**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again. A hydrology or `riverPolicy` change requires a new or fully regenerated world because accepted terrain, fluid, biome, and mantle ownership is fixed into generated chunks.
+**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again.
 
 **7. Only then consider replacing an existing world snapshot.** Take a backup first and use the update-world procedure at the bottom of this page.
 
@@ -123,12 +113,12 @@ The loop passes when the source closure validates. Both package commands automat
 | `pack` | mutually exclusive with `link` | Accepts exactly `overworld` or `underworld`. Values are case-insensitive |
 | `link` | mutually exclusive with `pack` | Direct HTTP(S) URL whose path ends in `.zip` |
 
-`overworld` and `underworld` are built-in packs whose beta-release URLs are embedded in Iris for now.
+`overworld` and `underworld` are built-in packs whose immutable stable-release URLs are embedded in Iris. Updating a release on GitHub does not change an existing Iris jar; the jar must be rebuilt with the new versioned URL.
 
 | Pack | Source |
 |------|--------|
-| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` |
-| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip` |
+| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/4002/overworld.zip` |
+| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/1005/underworld.zip` |
 
 There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
 
@@ -186,7 +176,6 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Legacy cave-profile field names, in dimensions/regions/biomes and in `snippet/cave-profile/` | Blocking, with the replacement name named |
 | Loot graph — every referenced loot table resolves | Blocking |
 | Removed worldgen fields (currently `fluidBodies`) | Blocking |
-| Terrain-first hydrology and `riverPolicy` | Routing lattice/divisibility and refined-route work budgets, independent source budgets, hydraulic relationships, shore-versus-grade widths, fluid palettes, unique profile IDs, deep-fluid and grotto envelopes, profile/biome references, reachable policy closure, dimension-height fit, and required mantle capabilities are blocking contracts |
 | Object surface support | Blocking |
 | `rotation` / `translate` / `scale` on surfaces that do not support them | Blocking |
 | Structure graph and compiled structure graph | Errors blocking, warnings advisory |
@@ -309,8 +298,7 @@ This is unsafe for production without a backup for reasons the command cannot fi
 
 1. Place or download the pack under `packs/<key>/` with at least one `dimensions/*.json`.
 2. Validate until loadable: `/iris pack validate pack=<key>` on Bukkit, `/iris pack validate <key>` on modded.
-3. Run the Java 25 `:probe:genProbe` gate for the selected dimension.
-4. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
-5. Create a new world with `/iris create …`, which copies the pack into the world, or open Studio for live editing.
-6. Package with `/iris pack package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then extract and validate the exact archive.
-7. Replace an existing world snapshot only after a backup, with `/iris dev update-world world=<world> pack=<dimension> confirm=true`. Do not use snapshot replacement to apply a changed hydrology contract to generated chunks.
+3. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
+4. Create a new world with `/iris create …`, which copies the pack into the world, or open Studio for live editing.
+5. Package with `/iris pack package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then extract and validate the exact archive.
+6. Replace an existing world snapshot only after a backup, with `/iris dev update-world world=<world> pack=<dimension> confirm=true`.

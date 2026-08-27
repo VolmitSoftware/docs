@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,7 +41,7 @@ Prerequisites:
 
 A world created from a pack stores its own **copy** at `<world>/iris/pack/`. `StudioSVC.installIntoWorld` and `replaceIntoWorld` write that copy. Normal world generation reads it and never looks at the global `packs/` tree again. Studio worlds are the exception. They run directly off `packs/<key>/`, which is why Studio is where authoring happens.
 
-Iris does not download packs at startup. `/iris download pack=overworld` installs the hardcoded Overworld beta-release ZIP into `packs/`. Restart afterward before you open Studio or create a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
+Iris does not download packs at startup. `/iris download pack=overworld` installs the version-pinned Overworld 4002 stable-release ZIP into `packs/`. Restart afterward before you open Studio or create a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
 
 The pack shape:
 

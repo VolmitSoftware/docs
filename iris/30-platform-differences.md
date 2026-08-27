@@ -39,7 +39,7 @@ Five categories cover almost everything an operator runs into:
   modded side splits it. Settings live under one root and packs under
   another.
 
-Terrain, typed image maps, native world boundaries, accepted-plan hydrology and its contained mantle publication, biomes,
+Terrain, typed image maps, native world boundaries, biomes,
 objects, jigsaw runtime, caves, and structures behave the same on all four.
 If generated terrain differs between platforms, that is
 a determinism defect, not a platform difference. See
@@ -154,7 +154,7 @@ Full command tables and stubs:
 
 | Feature | Bukkit | Fabric | Forge | NeoForge |
 |---------|--------|--------|-------|----------|
-| Core terrain / accepted hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
+| Core terrain / biomes / objects / jigsaw | yes | yes | yes | yes |
 | Typed image-map runtime / validation / packaging | yes | yes | yes | yes |
 | Image-map desktop authoring and Vision layers | graphical host | graphical host | graphical host | graphical host |
 | Dimension `worldBoundary` | native border | native border | native border | native border |

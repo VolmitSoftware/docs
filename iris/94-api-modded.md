@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -527,7 +527,7 @@ expected absolute path (no silent vanilla terrain).
 `mainWorldAutoRestart`.
 
 Modded startup never downloads a pack. `/iris download pack=overworld`
-and `/iris download pack=underworld` resolve hardcoded beta-release ZIP
+and `/iris download pack=underworld` resolve version-pinned stable-release ZIP
 URLs. `/iris download link=<http(s)-zip-url>` installs a custom ZIP. No
 branch, listing, arbitrary-name, overwrite, or implicit-download form
 exists. Successful commands publish only to disk and ask for a manual

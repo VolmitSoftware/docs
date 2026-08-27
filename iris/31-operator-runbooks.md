@@ -14,8 +14,7 @@ not see it. Command trees and permissions are in
 [04 - Commands & Permissions](/iris/04-commands-permissions). Pregeneration
 options are in [07 - Pregeneration](/iris/07-pregeneration). Platform
 capability differences are in
-[30 - Platform Differences](/iris/30-platform-differences). River pack
-authoring and containment rules are in [36 - Rivers](/iris/36-rivers).
+[30 - Platform Differences](/iris/30-platform-differences).
 
 ## How to use these
 
@@ -45,12 +44,6 @@ Use the same values whenever you compare platforms or runs:
 
 GoldenHash file layout and interpretation:
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
-
-## Hydrology acceptance pass
-
-Use a new disposable world, a fixed seed, and a pack whose surface and underground budgets are both visibly nonzero. Run `/iris pack validate`, inspect the **River network** accepted footprint, and use `/iris find river` or `/iris goto river` to record coordinates for surface pools, riffles/cascades, waterfalls, ridge bores, underground pools/drops, both grotto types, mouths, and each deep-fluid ID. Generate those untouched areas with one and several generation threads. Confirm every course is connected and non-rising downstream; every positive head loss has falling fluid and a receiving pool; a ridge bore reopens as the same course; underground features retain dry headroom; shore content stays within 1–2 blocks while the 4–10-block outer grade keeps its parent biome; and frozen water changes only through the standard freeze pass.
-
-At the coast, confirm the head reaches sea level before the natural ocean boundary, the mouth or coastal grotto opens directly to the reservoir, and ocean columns contain no river-owned terrain, elevated fluid, shore, or grading writes. For cave and deep hydrology, confirm accepted containment cells and seal guards remain intact while rejected candidates publish no generation or mantle footprint and remain confined to projected diagnostics. Finish with the Java 25 `:probe:genProbe` gate, a GoldenHash capture/verify pair, a restart, and real-client visual checks for falling water or lava.
 
 ## A. Fresh install and first world (Bukkit-family)
 

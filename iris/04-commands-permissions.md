@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-26T20:34:24.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -136,7 +136,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `loadWorld` | `import` | **Bukkit** | `<world>`, player origin | Load a managed Iris world |
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
-| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a hardcoded beta-release pack or direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
+| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a version-pinned built-in stable-release pack or direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics. Player origin on Bukkit |
 | `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
@@ -144,7 +144,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 | `goldenhash` | `gold` | **Modded** root. Bukkit under `Developer` | `[radius=8] [threads=8] [capture\|verify]`, radius `0..256`, threads `1..64` | Deterministic buffer hashes |
 | `wand` | | **Modded** root (+ `object`) | — | Give object wand |
 | `dust` | `d` | **Modded** root (+ `object`) | — | Give reveal dust |
-| `find` | `goto` | Both | see Find | Locate biome/region/object/structure/POI or an accepted hydrology feature |
+| `find` | `goto` | Both | see Find | Locate biome/region/object/structure/POI |
 | `what` | | Both | see What | Inspect context |
 | `edit` | | Both | see Edit | Open pack JSON in the desktop editor |
 | `pregen` | `pregenerate` | Both | see Pregen | Pregeneration control |
@@ -182,12 +182,9 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `biome` | **Bukkit:** `<biome> [teleport=true]`. **Modded:** `<key>` | Find an Iris biome. Teleport defaults to true on Bukkit |
 | `region` | **Bukkit:** `<region> [teleport=true]`. **Modded:** `<key>` | Find an Iris region |
 | `object` | **Bukkit:** `<object> [teleport=true]`. **Modded:** `<key>` | Find an object placement (Bukkit may teleport to the object studio first) |
-| `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find an accepted hydrology feature. Use `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `ridge_tunnel`, `deep`, or a deep-fluid ID |
 | `structure` | **Bukkit:** `<structure>`, runs sync. **Modded:** `<key>` | Find a vanilla/datapack/Iris structure |
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
-
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the canonical selectors in the table with the active dimension's configured deep-fluid IDs; `deep_lava` is a pack-defined example, not a built-in selector. Hydrology feature location searches immutable accepted plans and never reports an unaccepted route, outlet, or deep-fluid candidate.
 
 ---
 
