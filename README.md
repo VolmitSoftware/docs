@@ -43,6 +43,9 @@ paths such as
 `[04 - Commands & Permissions](/adapt/04-commands-permissions)`. Bump
 `date` when you edit a page.
 
+Use [Wiki.js Page Kitchen Sink](/wiki-page-examples) as the rendered feature,
+layout, CSS, and prompting reference.
+
 ## Contributing
 
 Fork the repository. Edit the markdown. Open a pull request. See
