@@ -71,6 +71,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Color Maps & Masks](/iris/41-color-maps-masks)
 - [Image Map Studio Workflow](/iris/42-image-map-studio-workflow)
 - [Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
+- [Biome Catalog](/iris/44-biome-catalog)
 - [Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
 - [Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
 - [Structures Overview](/iris/18-structures-overview)

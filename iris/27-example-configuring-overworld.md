@@ -20,6 +20,7 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [44 - Biome Catalog](/iris/44-biome-catalog)
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
 - [25 - Pack Management](/iris/25-pack-management)
 - [04 - Commands & Permissions](/iris/04-commands-permissions)

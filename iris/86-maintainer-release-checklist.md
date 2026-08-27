@@ -2,7 +2,7 @@
 title: "Maintainer - Release Checklist"
 description: "Iris documentation: Maintainer - Release Checklist"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,6 +53,14 @@ announce from an unclean or differently tested tree.
       the current shipped state (not superseded intermediate work). The
       file lives at the workspace root, one level above this repo
       (`../MasterChangelog.MD`). The section header is `## Plugin: Iris`.
+- [ ] The built-in Overworld and Underworld commits selected for this
+      release match [44 - Biome Catalog](/iris/44-biome-catalog). Every
+      changed biome, region selector, child, floating biome, carving entry,
+      material treatment, decorator, object family, ecology rule, and
+      reachability change is reflected under `/iris/biomes/`. A stale atlas
+      blocks the pack or Iris release. From the central docs repository run
+      `ruby tools/validate_iris_biome_atlas.rb` against the selected pack
+      checkouts and require a clean result.
 - [ ] Version fields correct in `gradle.properties`: `irisVersion` is the
       release version and its trailing `-<mc>` suffix matches
       `minecraftVersion`. For a Minecraft bump, confirm every step in

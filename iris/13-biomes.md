@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,7 @@ Related:
 - [20 - Object Placement](/iris/20-object-placement)
 - [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [44 - Biome Catalog](/iris/44-biome-catalog)
 
 ## The mental model
 

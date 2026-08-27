@@ -2,7 +2,7 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,7 +128,7 @@ Biome decorator lists take snippet strings as array elements, mixed freely with 
 }
 ```
 
-`biomes/dev.json` in the shipping pack uses the same pattern for a minimal decorator list.
+`biomes/temperate/plains.json` in the built-in Overworld uses the same pattern, mixing inline flower and grass decorators with the shared `leaf` and `bush` snippets.
 
 ## When to use a snippet
 
