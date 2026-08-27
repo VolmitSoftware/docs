@@ -148,9 +148,10 @@ refuses while players are inside or mid-transit in a pocket dimension.
   view-cell rebuilds and are bounded by the fitted candidate volume. Dense
   multi-block sections are ordered by state and position for per-packet
   compression. Projection updates, fluid-skin claims, stale-portal releases, and
-  client-chunk retries share the observer claim frame, so their final section
-  packets are resolved together and flushed once rather than exposing transient
-  intermediate winners. Non-fluid display skins also flush once per portal on
+  client-chunk retries share the observer claim frame, so overlapping cell
+  ownership is resolved once from the final frame state and its section packets
+  are flushed together rather than exposing transient intermediate winners.
+  Non-fluid display skins also flush once per portal on
   that observer task, with uncertain partial spawns retained for owner-thread
   cleanup before any retry. Local-entity occlusion likewise unions retained
   claims from every portal for that observer before applying visibility changes.
