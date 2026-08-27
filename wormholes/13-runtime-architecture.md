@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -139,6 +139,14 @@ refuses while players are inside or mid-transit in a pocket dimension.
   entity animation and hurt forwarding uses exact entity-to-projector
   membership, coalesces duplicate work into one owner task per observer, and
   drains at most 256 distinct entities from that observer queue per task.
+  Venticular visibility uses hierarchical accepted-block occupancy cubes to skip
+  exact empty ray segments while preserving voxel-accurate blockers. Exact
+  target-to-blocker proofs are retained across passes and geometrically
+  revalidated after observer movement. Destination samples survive camera-only
+  view-cell rebuilds and are bounded by the fitted candidate volume. Dense
+  multi-block sections are ordered by state and position for per-packet
+  compression, then all section packets are queued and flushed once per observer
+  frame rather than once per section.
 - Placed-rune animation does not inspect players while no runes are tracked;
   otherwise it admits at most 64 player entity tasks per nine-tick pass and
   rotates fairly through the online population. Portal-tool validation admits
