@@ -96,10 +96,36 @@ commands, and developer APIs.
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/hiddenore" class="d-flex align-center">
-          <img src="/home-assets/hiddenore.svg" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
+          <img src="/home-assets/hiddenore.jpg" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">HiddenOre</strong>
             <span class="d-block text--secondary">Mining rewards with anti-xray built in</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/rift" class="d-flex align-center">
+          <img src="/home-assets/riftworldmanager.jpg" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
+          <span>
+            <strong class="title">Rift World Manager</strong>
+            <span class="d-block text--secondary">Legacy world creation and management for 1.19</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/shapedportals" class="d-flex align-center">
+          <img src="/home-assets/shapedportals.jpg" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
+          <span>
+            <strong class="title">Shaped Portals</strong>
+            <span class="d-block text--secondary">Non-rectangular Nether portals for legacy servers</span>
           </span>
         </a>
       </li>
@@ -173,6 +199,6 @@ commands, and developer APIs.
   </div>
 </div>
 
-> These docs track the actively maintained releases. Each plugin page lists
-> its current Java, Minecraft, and server-platform requirements.
+> Compatibility and support vary by project. Plugin pages identify exact
+> requirements, audited revisions, and legacy status where applicable.
 {.is-info}
