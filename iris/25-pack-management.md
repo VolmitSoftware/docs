@@ -126,23 +126,23 @@ A successful download performs registry-independent pack validation and atomical
 
 Each network attempt has a 10-second connection timeout and a 10-second no-data timeout. Iris retries transient connection, timeout, truncated-response, HTTP 408/425/429, and server-error failures up to three total attempts with one- and two-second backoffs. Permanent client errors such as HTTP 404 and archive size violations fail immediately. A terminal failure reports the actual network or HTTP cause, removes its incomplete transfer stage, preserves any prior complete cache entry, and releases the download slot so the command can be retried after connectivity is stable.
 
-The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. Use this deterministic Paper-family sequence (plain Spigot supports managed `/iris create`, but not exact-slot `/iris replace`):
+The current built-in Overworld and Underworld declare no external datapack imports. Use this deterministic Paper-family sequence (plain Spigot supports managed `/iris create`, but not exact-slot `/iris replace`):
 
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
-Wait for each download to complete before issuing the next command. The download slot never queues a second request. With the default `general.autoIngestDatapacks=true`, restart after both finish. On that boot Iris installs the Overworld two external dependencies and leaves startup admission restart-required. Complete the ensuing clean restart so Minecraft loads those dependencies, the downloaded packs dimension types, and their custom biomes into the live registries. After that server return:
+Wait for each download to complete before issuing the next command. The download slot never queues a second request. Restart after both finish so Minecraft loads the downloaded packs' dimension types and custom biomes into the live registries. After that server return:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both replacements report staged. The default automatic-ingest route therefore uses three restart boundaries. First is discovery and installation of the declared external datapacks. Second is registry loading. Third is cold publication of both exact replacements with the two independently selected seeds. Omit a `seed=` argument to preserve that slot existing saved seed. With automatic ingest disabled, complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Full replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
+Restart once after both replacements report staged. The built-in route therefore uses two restart boundaries: registry loading, then cold publication of both exact replacements with the two independently selected seeds. Omit a `seed=` argument to preserve that slot's existing saved seed. Custom packs that declare `datapackImports` must first complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Full replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
 
-On Fabric, Forge, and NeoForge, `/iris datapack ingest` cannot install these dependencies. Put the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives in the target save `datapacks/` directory before the shipping Iris Overworld loads. Then restart with the Iris pack and both external datapacks already present.
+On Fabric, Forge, and NeoForge, the built-in packs need no external datapacks. For a custom pack that declares `datapackImports`, `/iris datapack ingest` cannot install those dependencies; put compatible archives in the target save's `datapacks/` directory before the Iris pack loads, then restart with every input already present.
 
 ### Install pipeline (`PackDownloader`)
 

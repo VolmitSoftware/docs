@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -306,6 +306,17 @@ Folder: `entities/`. A minimal entity is one field:
 ```
 
 `entities/standard/hostile/zombie.json` is referenced as `standard/hostile/zombie`.
+
+For a MythicMobs entity, keep the required base type explicit and route the custom key through the provider:
+
+```json
+{
+  "type": "unknown",
+  "specialType": "mythicmobs:JumpingSpider"
+}
+```
+
+The `mythicmobs` namespace selects Iris's MythicMobs provider. `JumpingSpider` must be an existing MythicMobs mob key. By default the provider-created entity is returned untouched; set `applySettingsToCustomMobAnyways` to `true` only when Iris should also apply the remaining entity fields.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|

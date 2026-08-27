@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -132,30 +132,13 @@ target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and
 
 3. Manually restart the server once after both downloads complete.
 
-   Expect: with the default `general.autoIngestDatapacks=true`, startup
-   discovers the shipping Overworld's declared Towns & Towers 26.1 and
-   Dungeons & Taverns 5.3.0 dependencies. It installs their managed
-   datapacks. Player admission and Iris world creation stay locked in
-   restart-required state. Do not stage either replacement yet.
+   Expect: Minecraft loads the downloaded packs' dimension types and custom
+   biomes into the live registries. The current built-in packs declare no
+   external datapack imports. A custom replacement pack that does declare
+   `datapackImports` must first complete the workflow in
+   [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
-4. Complete the ensuing clean restart.
-
-   Expect: Minecraft loads both external datapacks, the downloaded packs'
-   dimension types, and their custom biomes into the live registries.
-   Startup ingest reuses its verified installed state and full Overworld
-   validation succeeds. If automatic ingest is disabled, use the explicit
-   workflow in
-   [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
-   before continuing.
-
-   Folia 26.2 exception: Dungeons & Taverns 5.3.0 currently emits 35
-   `nova_structures:*` function-load failures because Folia's dispatcher
-   omits or restricts commands the unchanged pack uses. This reproduces
-   without Iris and does not mean the Iris pack publication failed, but
-   the affected Dungeons & Taverns functions are unavailable. Paper, Leaf,
-   and Canvas must not emit those failures.
-
-5. Stage both exact vanilla slots:
+4. Stage both exact vanilla slots:
 
    ```text
    /iris replace minecraft:overworld type=overworld seed=123456789
@@ -170,7 +153,7 @@ target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and
    `overwrite`, `force`, or portal flag involved. `seed` is optional per
    target. If you omit it, Iris keeps that target's saved seed.
 
-6. Restart once after both replacements are staged.
+5. Restart once after both replacements are staged.
 
    Expect: the same cold reconcile publishes both transactions before
    aggregate-datapack compilation, registry creation, and Bukkit world
@@ -181,14 +164,14 @@ target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and
    Each has its own frozen `iris/pack`. Neither contains the old
    `region`, `entities`, `poi`, or marker chunks.
 
-7. Watch both `WorldLoad` verifications and wait for cleanup.
+6. Watch both `WorldLoad` verifications and wait for cleanup.
 
    Expect: each journal advances only after Iris proves the exact
    namespaced identity, generator, selected dimension, environment, seed,
    and unchanged pack fingerprint. Cleanup then removes both retained
    backups and journals asynchronously.
 
-8. Verify the replacement Overworld's persisted safe spawn before you
+7. Verify the replacement Overworld's persisted safe spawn before you
    admit ordinary players.
 
    Expect: the canonical spawn has a non-air, non-fluid,
@@ -201,7 +184,7 @@ target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and
    new location. The next login must not repeat the one-time redirect. If Iris cannot verify the spawn, guarded login must be
    refused rather than placing the player inside terrain.
 
-9. Build a Nether portal in the replacement Overworld and traverse it.
+8. Build a Nether portal in the replacement Overworld and traverse it.
    Then traverse the resulting Nether-side portal back.
 
    Expect: the forward trip enters the exact `minecraft:the_nether` Iris
@@ -211,11 +194,9 @@ target's `data/paper/metadata.dat`, `data/paper/level_overrides.dat`, and
    replaced in place. Generate fresh chunks on both sides and confirm no
    fatal engine or portal-event stack trace.
 
-The default automatic-ingest fresh-install pathway has three required
-restart boundaries: discovery and installation of the shipping Overworld's
-external datapacks, registry loading, then replacement publication.
-Custom packs and installations with automatic ingest disabled use the
-explicit workflow in
+The built-in fresh-install pathway has two required restart boundaries:
+registry loading, then replacement publication. Custom packs that declare
+external datapacks use the explicit workflow in
 [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 before replacement staging. As a separate resilience check, a later
 ordinary restart should load the same two canonical identities without
@@ -246,12 +227,12 @@ blocking defect.
    `/iris download pack=underworld`. Each command installs on disk, leaves
    the process running, and asks for a restart. Even if the empty
    dedicated server has entered Minecraft's paused state, phase and
-   completion feedback must still arrive. Before restarting, put the exact
-   compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives in
-   this save's `datapacks/` directory because modded `/iris datapack ingest`
-   is a stub. Restart once only after all four inputs are present. Then
-   expect external datapack, Iris dimension-type, and biome registration
-   to complete.
+   completion feedback must still arrive. The current built-in packs declare
+   no external datapack imports. Restart once after both Iris packs are
+   present, then expect Iris dimension-type and biome registration to
+   complete. For a custom pack that declares `datapackImports`, place every
+   compatible external archive in this save's `datapacks/` directory before
+   restarting because modded `/iris datapack ingest` is a stub.
 
 3. Create both managed dimensions (arguments are positional here, not keyed):
 

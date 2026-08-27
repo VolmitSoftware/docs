@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ These tasks are separate workflows. None of them requires the others.
 | Goal | Go to |
 |---|---|
 | A vanilla structure generates but sits badly in Iris terrain | Task 1 |
-| Add a third-party datapack (Terralith-style) to one Iris dimension | Task 2 |
+| Add a third-party structure datapack to one Iris dimension | Task 2 |
 | Stop a structure or a whole namespace from generating | Task 3 |
 | Allow selected vanilla or datapack structures and choose where they go yourself | Task 4 |
 | Edit a registered structure's blocks or graph inside Iris | Task 5 |
@@ -66,29 +66,28 @@ Field details are in 1.5.
 
 ## Task 2: Install a third-party datapack for one Iris dimension
 
-This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The shipping `overworld` pack already declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0.
-These are required inputs for that pack, not optional customization examples.
+This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The current built-in `overworld` and `underworld` packs declare no external datapack imports; this workflow is for custom packs that opt into them.
 
 Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
 
-1. For a custom dimension, add the Modrinth or direct archive URL to `datapackImports` in that declaring dimension only. For the shipping Overworld, leave its existing declarations intact and skip this edit:
+1. Add a Modrinth or direct archive URL to `datapackImports` in the declaring dimension only. Pin a Modrinth version URL when the pack requires an exact release:
 
    ```json
    {
      "datapackImports": [
-       "https://modrinth.com/datapack/towns-and-towers"
+       "https://modrinth.com/datapack/<project>/version/<version>"
      ]
    }
    ```
 
-2. Leave the URL out of the second test dimension, and keep the vanilla world as a control. When testing the shipping Overworld, use its exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 releases rather than substituting a different latest version.
-3. Validate the pack. For a custom source or an installation with automatic ingest disabled, run:
+2. Leave the URL out of the second test dimension, and keep the vanilla world as a control. Confirm the selected datapack release supports the server's Minecraft version.
+3. Validate the pack, then run:
 
    ```text
    /iris datapack ingest restart=true
    ```
 
-   For the unmodified shipping Overworld with `general.autoIngestDatapacks=true`, do not run that command. Restart once to let startup install both declared dependencies. Then complete the ensuing registry-loading restart.
+   With `general.autoIngestDatapacks=true`, startup performs the equivalent installation automatically. A newly installed or repaired source still requires the ensuing clean restart before its registry keys are live.
 
 4. After the full restart, run `/iris datapack list`, then `/iris structure list <declaring-dimension>` and pick one registered structure key from that source.
 5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before the generation test (see 1.2).
@@ -465,8 +464,7 @@ A no-op maintenance pass retains the existing receipt. A change to the URL, the 
 
 Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
 
-For the shipping Overworld on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack download. The first boot discovers and installs Towns & Towers 26.1 and Dungeons & Taverns 5.3.0, then leaves admission restart-required.
-The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
+For a custom pack with imports on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack is installed. The first boot discovers and installs the declared sources, then leaves admission restart-required. The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
 
 Cache reuse is a local validation decision and does not poll remote sources.
 Run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts. Unchanged bootstrap recovery leaves the manifest stable. The next startup can reuse the cached fingerprint. During a full ingest, Iris may keep an exact same-version, Iris-owned installed target in place. Content must match staging. The datapack must need no override stripping. That avoids a temporary copy and replacement.
@@ -475,16 +473,16 @@ Scratch validation rejects links, junction-like special files, and real cross-vo
 
 Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks. It restates each entry and rechecks its `FileStore` immediately before access. It retains the existing cross-volume boundary behavior, including same-device bind mounts.
 
-### 2.3 Folia 26.2 and Dungeons & Taverns 5.3.0
+### 2.3 Optional Dungeons & Taverns caveat on Folia 26.2
 
-Folia 26.2 currently cannot execute the shipping Dungeons & Taverns function set completely. Its own command dispatcher omits `tag` and `data`. It does not expose a usable `item` command in this context. It accepts `ride` while rejecting nested forms used by the pack. The unchanged Dungeons & Taverns bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia.
+The built-in Iris packs do not include Dungeons & Taverns. If a custom pack imports Dungeons & Taverns 5.3.0, Folia 26.2 cannot execute its function set completely. Folia's command dispatcher omits `tag` and `data`. It does not expose a usable `item` command in this context. It accepts `ride` while rejecting nested forms used by the pack. The unchanged datapack bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia.
 Function-backed Dungeons & Taverns behavior is incomplete even though Iris world loading and chunk generation continue.
 
 This is an upstream Folia 26.2 command compatibility limitation, reproduced on a clean Folia server with no Iris plugin installed. Paper, Leaf, and Canvas load the same datapack bytes without those function errors. Iris does not rewrite or silently remove third-party functions. Use a server implementation that supports the pack commands when complete Dungeons & Taverns behavior is required.
 
 ### 2.4 Modded installation
 
-Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every declared external datapack directly in the target save's `datapacks/` directory. For the shipping Overworld, install the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives before that Iris Overworld loads. Then restart with both archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries.
+Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory. Restart with those archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries. The current built-in Overworld and Underworld need no external datapacks.
 
 ### 2.5 Manual commands
 

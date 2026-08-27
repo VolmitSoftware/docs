@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,7 +63,7 @@ Wait for it to finish (see [07 - Pregeneration](/iris/07-pregeneration)). Restar
 
 ### Fabric / Forge / NeoForge
 
-Before the shipping Overworld loads, install Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 in the target save's `datapacks/` directory. Restart with the Iris pack already installed. Modded `/iris datapack ingest` does not perform this Bukkit-only installation.
+The current built-in Overworld and Underworld declare no external datapack imports. Restart with the Iris packs already installed so their registry data loads. For a custom pack that declares `datapackImports`, place every external datapack in the target save's `datapacks/` directory before that pack loads; modded `/iris datapack ingest` does not perform this Bukkit-only installation.
 
 ```text
 /iris pack validate overworld
@@ -213,7 +213,7 @@ For the supported main-world route, initialize both vanilla target folders first
 /iris download pack=underworld
 ```
 
-Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld to finish. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With the default automatic ingest enabled, restart once so Bukkit installs those external datapacks. Complete the ensuing required restart so Minecraft loads their registry keys. That restart also loads the downloaded packs' dimension types and custom biomes.
+Downloads are single-flight, so wait for the Overworld download to finish before starting Underworld, then wait for Underworld to finish. The current built-in packs declare no external datapack imports. Restart once so Minecraft loads the downloaded packs' dimension types and custom biomes.
 
 After the server returns, stage both exact slots:
 
@@ -222,7 +222,7 @@ After the server returns, stage both exact slots:
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both replacements report staged. The default automatic-ingest route on a fresh install therefore crosses three restart boundaries. The first boot discovers and installs the shipping Overworld's external datapacks. The ensuing restart loads those dependencies and the Iris registry data. The final cold reconcile publishes both replacements together. If automatic ingest is disabled, complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
+Restart once after both replacements report staged. A fresh built-in-pair installation therefore crosses two restart boundaries: the first loads the Iris registry data, and the second cold-publishes both replacements together. A custom pack that declares `datapackImports` must complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
 The `type=` values select the Iris pack/dimension. The replacement targets select the Minecraft identities being retained. Each optional `seed=` applies only to that target. There is no main-world, overwrite, force, or portal-routing flag. `override` and `overwrite` are command aliases for `replace`, not behavior switches. After cold publication, vanilla portal mechanics continue to route between `minecraft:overworld` and `minecraft:the_nether`. A separately created or replaced `iris:*` world remains outside that canonical pair.
 

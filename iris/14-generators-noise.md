@@ -1,8 +1,8 @@
 ---
-title: "Generators & Noise"
-description: "Iris documentation: Generators & Noise"
+title: "Generators, Noise & Expressions"
+description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -225,15 +225,106 @@ There are 171 constants. The Studio schema lists all of them. These are the ones
 
 ## Expressions (`IrisExpression`)
 
-An expression file is a Paralithic math expression that can be used anywhere a style is accepted, via a style `expression` field.
+An expression file is a Paralithic 0.8.1 formula that can supply the raw value anywhere an `IrisGeneratorStyle` is accepted. It is still a live pack resource on every Iris platform. Put the file under `expressions/<key>.json`, then reference that key from a style's `expression` field.
+
+This complete 2D example produces concentric 0..1 rings around world origin. In `expressions/tutorial/rings.json`:
+
+```json
+{
+  "expression": "0.5 + sin(sqrt(x*x + y*y) / 16) * 0.5"
+}
+```
+
+Reference it anywhere a style is accepted:
+
+```json
+{
+  "expression": "tutorial/rings",
+  "zoom": 1
+}
+```
+
+In a terrain generator, place that style in a layer exactly as you would a built-in `style`. Generate fresh Studio chunks around `0,0`; the terrain band should alternate through smooth rings. The formula itself returns arbitrary doubles and Iris does not clamp it to 0..1. Keep values in the range the consuming field expects unless extrapolation is deliberate.
 
 | Field | Type | What it does |
 |-------|------|--------------|
 | `expression` | string | Required. The formula. `x`, `y` and `z` are pre-declared. Do not redeclare them as variables. |
-| `variables` | `IrisExpressionLoad[]` | Named values bound before evaluation. |
-| `functions` | `IrisExpressionFunction[]` | Named callable functions available inside the formula. |
+| `variables` | `IrisExpressionLoad[]` | Optional named values bound before evaluation. Omit this field when unused; the schema requires at least one element when the array is present. |
+| `functions` | `IrisExpressionFunction[]` | Optional named noise functions available inside the formula. Omit this field when unused; the schema requires at least one element when the array is present. |
 
-**Coordinate quirk.** Expressions are evaluated in two forms. In the 3D form the variables hold the real `x`, `y`, `z`. Terrain height styles use the 2D form. Arguments are packed as `x`, then the world Z coordinate, then `-1`. So in 2D sampling, `x` is the world X, `y` holds the world Z, and `z` is always `-1`. Write 2D expressions against `x` and `y`. Do not rely on `z` there.
+### Coordinates
+
+The inherited coordinate names depend on how the consuming style samples the expression:
+
+| Sampling form | `x` | `y` | `z` |
+|---|---|---|---|
+| 1D | input X | `-1` | `-1` |
+| 2D | world X | world Z | `-1` |
+| 3D | world X | world Y | world Z |
+
+Terrain-height and map-placement styles normally use 2D sampling. Write those expressions against `x` and `y`; `y` is the horizontal world-Z axis there. A 3D cave or density style receives the ordinary X/Y/Z axes. The outer style's `zoom` scales coordinates before the formula runs, and nested variable/function styles can apply their own zoom again.
+
+### Numbers, constants, and names
+
+Expressions are numeric only and evaluate as Java `double` values. Integer, decimal, and scientific literals such as `12`, `0.25`, and `1e-3` are accepted. Names are case-sensitive. An identifier starts with a letter and then uses letters, digits, or `_`.
+
+Two constants are always present:
+
+| Constant | Value |
+|---|---:|
+| `pi` | 3.141592653589793 |
+| `euler` | 2.718281828459045 |
+
+An expression cannot declare local variables. Paralithic has a `let` syntax, but Iris constructs the parser with that feature disabled. Values must come from `x`, `y`, `z`, the two constants, or the expression file's `variables` list.
+
+### Operators
+
+Operators bind in the following order, highest first. Operators in the same row have equal precedence. Binary chains are left-associative, including power and the two logical operators.
+
+| Binding | Syntax | Result |
+|---|---|---|
+| Grouping / absolute value | `(a)`, `|a|` | Group a subexpression, or return its absolute value |
+| Unary | `+a`, `-a` | Pass through or negate `a` |
+| Power | `a ^ b`, `a ** b` | Raise `a` to `b`; `^` is the conventional Iris spelling |
+| Product | `a * b`, `a / b`, `a % b` | Multiply, divide, or take the remainder |
+| Sum | `a + b`, `a - b` | Add `b`, or subtract `b` from `a` |
+| Comparison | `a < b`, `a <= b`, `a > b`, `a >= b`, `a = b`, `a != b` | Return 1 when true, otherwise 0 |
+| Logical | `a && b`, `a || b` | Numeric AND or OR; return 1 or 0 |
+
+Zero is false. Every nonzero value, including a negative value, is true. `&&`, `||`, and `if` short-circuit, so an unused right side or branch is not evaluated.
+
+The precedence differs from Java in several places:
+
+- Equality is one `=`, not `==`.
+- `&&` and `||` have the same precedence. `1 || 0 && 0` is read left-to-right as `(1 || 0) && 0` and returns 0. Parenthesize mixed logical tests.
+- Power is left-associative. `2 ^ 3 ^ 2` returns 64, not 512.
+- Unary minus binds before power. `-2 ^ 2` returns 4; write `-(2 ^ 2)` for -4.
+
+### Built-in functions
+
+Trigonometric inputs and inverse-function outputs are radians unless `rad` or `deg` converts them.
+
+| Function | Arguments | Runtime behavior |
+|---|---:|---|
+| `floor(a)` | 1 | Greatest integer less than or equal to `a` |
+| `ceil(a)` | 1 | Least integer greater than or equal to `a` |
+| `round(a)` | 1 | Java nearest-integer rounding |
+| `pow(a,b)` | 2 | `a` raised to `b` |
+| `min(a,b)` / `max(a,b)` | 2 | Smaller / larger argument |
+| `sqrt(a)` | 1 | Square root |
+| `sin(a)` / `cos(a)` / `tan(a)` | 1 | Trigonometric functions |
+| `sinh(a)` / `cosh(a)` / `tanh(a)` | 1 | Hyperbolic functions |
+| `asin(a)` / `acos(a)` / `atan(a)` | 1 | Inverse trigonometric functions |
+| `atan2(y,x)` | 2 | Signed angle from the positive X axis to `(x,y)` |
+| `rad(a)` / `deg(a)` | 1 | Degrees to radians / radians to degrees |
+| `abs(a)` | 1 | Absolute value; equivalent to `|a|` |
+| `log(a)` / `ln(a)` | 1 | Base-10 / natural logarithm |
+| `exp(a)` | 1 | `euler` raised to `a` |
+| `sign(a)` | 1 | -1 below zero, 0 at zero, 1 above zero |
+| `sigmoid(a,b)` | 2 | Exactly `1 / exp(-a*b)`, which equals `exp(a*b)`; despite the name, this is not a conventional logistic sigmoid |
+| `if(test,yes,no)` | 3 | Evaluate and return only `yes` when `test` is nonzero, otherwise only `no` |
+
+The legacy expression guide had several incorrect labels: it reversed `floor` and `ceil`, listed `atan` with two arguments, described `<` backwards, and described subtraction backwards. The table above follows the parser Iris actually ships.
 
 ### Variable (`IrisExpressionLoad`)
 
@@ -241,11 +332,31 @@ Available as the `expression-load` snippet.
 
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `name` | `""` | The identifier used in the formula. Required. Must not be `x`, `y` or `z`, and must not repeat. |
+| `name` | `""` | The identifier used in the formula. Required. Must be unique and must not be `x`, `y`, `z`, `pi`, or `euler`. |
 | `engineValue` | `null` | An engine scalar (`IrisEngineValueType`). Highest priority. Requires an active engine. |
 | `engineStreamValue` | `null` | An engine procedural stream (`IrisEngineStreamType`) sampled at the coordinates. Second priority. Requires an active engine. |
 | `styleValue` | `null` | A nested `IrisGeneratorStyle` sampled at the coordinates. Third priority. |
 | `staticValue` | `-1` | A constant. Used only when none of the above are set. Note the default is `-1`, not `0`. |
+
+The engine-backed choices are:
+
+| `engineValue` | Meaning |
+|---|---|
+| `ENGINE_HEIGHT` | Engine height span |
+| `ENGINE_MIN_HEIGHT` | Engine minimum build Y |
+| `ENGINE_MAX_HEIGHT` | Engine maximum build Y |
+| `FLUID_HEIGHT` | Dimension fluid level |
+
+| `engineStreamValue` | Sampled engine field |
+|---|---|
+| `SLOPE` | Terrain slope |
+| `HEIGHT` | Terrain height |
+| `HEIGHT_OR_FLUID` | Greater of terrain and fluid surface |
+| `OVERLAY_NOISE` | Surface-overlay noise |
+| `REGION_STYLE` | Region-selection style value |
+| `REGION_IDENTITY` | Region identity value |
+
+Use engine-backed variables only where the expression runs inside an active world engine. Offline or registry-only tooling has no engine and throws if it tries to evaluate one.
 
 ### Function (`IrisExpressionFunction`)
 
@@ -253,14 +364,18 @@ Available as the `expression-function` snippet.
 
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `name` | none | The identifier called in the formula. Required. |
-| `styleValue` | `null` | Backs the function with a noise style, so `myNoise(a, b)` samples that style at `a, b`. |
+| `name` | none | The identifier called in the formula. Required. Keep it unique and do not reuse a built-in function name. Later duplicate registrations replace earlier ones. |
+| `styleValue` | `null` | Backs the function with a noise style, so `myNoise(a, b)` samples that style at `a, b`. Two arguments sample it in 2D; three sample it in 3D. Arguments beyond the third are accepted when `args` is larger but are not consumed by the underlying style. |
 | `engineStreamValue` | `null` | Backs it with an engine stream instead. Takes priority over `styleValue`. |
 | `args` | `2` (minimum 2) | Argument count. Ignored when `engineStreamValue` is set, which always takes exactly 2. |
 
 A function with neither `styleValue` nor `engineStreamValue` is skipped at parse time. Calling it fails to parse.
 
-Parse and load failures are logged and leave the style falling back to its `NoiseStyle`. If an expression-based generator suddenly looks like plain noise, check the console for a script load error before you edit the formula.
+### Failure behavior and validation limits
+
+A missing or unloadable expression resource makes the containing style fall back to its `NoiseStyle`. A malformed formula is different: Iris logs `Script load failed` when the formula is first sampled, caches no usable expression, and generation can then fail while evaluating it. Fix the formula; do not expect the style fallback to rescue a parse error.
+
+Pack validation resolves expression keys and follows their nested styles so it can find image-map dependencies. It does not parse the formula itself. A successful `/iris pack validate` therefore does not prove expression syntax. Exercise the expression in Studio, watch the console for the first sample, and generate fresh chunks in every sampling context that uses it.
 
 ## Image-map styles
 

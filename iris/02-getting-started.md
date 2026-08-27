@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ Work through the sections in order. Confirm each one before you move on. Confirm
 - A Java 25 server or mod instance running
 - Operator access on Bukkit (the `iris.all` permission), or permission level 2 / gamemaster on modded for anything that mutates state
 - The managed `overworld` and `underworld` packs present, or your own pack installed under the platform's packs directory
-- For the shipping Overworld, Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 loaded in the save's registry through the platform-specific workflow below
+- Any external datapacks declared by a custom pack installed through the platform-specific workflow. The built-in Overworld 4002 and Underworld 1005 declare none
 
 ## The one syntax rule that trips everyone up
 
@@ -93,21 +93,21 @@ Every replacement is staged for cold publication. Stage as many distinct targets
 
 #### Install the shipping Overworld and Nether pair
 
-On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 as external datapacks:
+On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The current built-in pair declares no external datapacks:
 
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
-Wait for each download to report success before starting the next command because downloads are single-flight. With the default `general.autoIngestDatapacks=true`, restart after both downloads. On that boot Iris installs the Overworld's two declared datapacks and holds startup admission in restart-required state. Complete the ensuing clean restart. Minecraft then loads Towns & Towers 26.1, Dungeons & Taverns 5.3.0, the downloaded packs' dimension types, and their custom biomes. After that server return, stage both replacements:
+Wait for each download to report success before starting the next command because downloads are single-flight. Restart after both downloads so Minecraft loads the downloaded packs' dimension types and custom biomes. After the server returns, stage both replacements:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both commands report staged. The default automatic-ingest route therefore has three deliberate restart boundaries on a fresh install. One boot discovers and ingests the downloaded Overworld's external dependencies. The ensuing restart loads those dependencies and the Iris registry data. The final restart publishes both exact world replacements. If automatic ingest is disabled, complete the explicit ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging either replacement.
+Restart once after both commands report staged. The fresh built-in-pair route therefore has two restart boundaries: one loads the downloaded packs' registry data, and the second publishes both exact world replacements. A custom pack with `datapackImports` needs the explicit ingest and registry-restart workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging its replacement.
 
 The existing Overworld and Nether target directories must already be initialized. `allow-nether=true` must remain enabled. `server.properties` `level-name` stays unchanged. The example deliberately gives the two replacement dimensions different seeds. If you omit either `seed=`, that target keeps its existing saved seed. After the restart, the worlds retain the exact `minecraft:overworld` and `minecraft:the_nether` identities, so ordinary Nether portals keep their canonical forward and return routing. An arbitrary `iris:*` world is separate and does not become a vanilla portal destination merely because it uses an Overworld- or Nether-shaped pack.
 
@@ -127,7 +127,7 @@ Alias `c`. You cannot pass `seed` without also passing `pack`.
 
 The `pack:dimension` form has to be **quoted** — for example, `"custom_pack:dimensions/sky"` — because Brigadier's unquoted string type does not accept a colon. Use a bare pack such as `overworld` when its dimension key matches its name.
 
-If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Before using the shipping Overworld, manually place the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 datapacks in this save's `datapacks/` directory. Modded `/iris datapack ingest` is only a stub. Restart after all three are present, then run create.
+If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Modded `/iris datapack ingest` is only a stub, so place any external datapacks declared by a custom pack in this save's `datapacks/` directory yourself. Restart with the Iris pack and all of its declared imports present, then run create. The built-in Overworld and Underworld need no external archives.
 
 ```text
 /iris create myworld overworld 1337
@@ -311,7 +311,7 @@ The session is finished when you restart the server cleanly. The production worl
 | Expecting pack edits to change existing chunks | Only newly generated chunks use the new config | Fly to unexplored terrain, pregen a fresh radius, or use a Studio world |
 | Folia create reports `paper_like_runtime` unavailable | Iris cannot safely use Folia's unsupported public world creator | Keep the world data untouched and update to a compatible Folia/Iris build before retrying |
 | Modded: new pack's heights or biomes missing | The forced datapack was not applied before registries loaded | Restart once with the pack already installed |
-| Modded Overworld reports missing Towns & Towers or Dungeons & Taverns keys | Bukkit-only ingest cannot install its declared dependencies on a mod loader | Put Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 in that save's `datapacks/`, then restart before loading the Overworld |
+| A custom modded pack reports missing external registry keys | Bukkit-only ingest cannot install the pack's declared dependencies on a mod loader | Put the exact datapacks declared by that pack in the save's `datapacks/`, then restart before loading the Iris world |
 | `/iris load` from console | Player-origin only. Console cannot run it | Rely on the `bukkit.yml` registration plus a restart, or run it as a player |
 | `/iris load` on modded | No such subcommand | Use create or `world enable`, then teleport |
 | Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote a genuinely distinct pair, for example `"custom_pack:dimensions/sky"` |

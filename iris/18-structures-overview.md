@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Ask what the thing you want actually is.
 
 - **One build, repeated.** A rock, a tree, a ruined tower, a bandit camp. Always the same geometry, scattered around. That is an **object**.
 - **A build that is different every time.** A village that grows its own road network, a stronghold with rooms and corridors, a fort whose towers vary. That is an **Iris jigsaw structure**.
-- **Something Minecraft already knows how to build.** A vanilla village, a datapack town from Terralith or Towns and Towers, an ocean monument with its real guardians and loot. That is a **native structure**. Your job is to control it, not rebuild it.
+- **Something Minecraft already knows how to build.** A vanilla village, a town from a compatible structure datapack, or an ocean monument with its real guardians and loot. That is a **native structure**. Your job is to control it, not rebuild it.
 
 Do not convert between systems as a first move. Objects are not "small jigsaws". A native structure re-imported as objects loses its processors, entities, and spawners.
 

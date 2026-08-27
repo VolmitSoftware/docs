@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,9 @@ Iris can use these Bukkit plugins and coexist with PlotSquared. WorldEdit
 handles selections. Multiverse-Core handles world management. Nine item,
 block, or entity plugins handle pack content. MythicMobs handles skill
 conditions. PlaceholderAPI handles scoreboard values. PlotSquared's own
-generator discovery calls Iris without becoming an Iris integration.
+generator discovery calls Iris without becoming an Iris integration. React
+consumes Iris's published runtime metrics, and Wormholes consults Iris before
+it loads random-teleport destination chunks.
 All integrations are optional. Iris checks that a plugin is enabled before
 it uses that plugin. A soft-depend only sets load order. It does not make
 sure the plugin is present. Tree felling is a separate feature. It runs on
@@ -160,7 +162,7 @@ claims that namespace for that data type (`ITEM`, `BLOCK`, or `ENTITY`).
 | Nexo | `NexoDataProvider` | Namespace `nexo` | ITEM, BLOCK |
 | ItemsAdder | `ItemAdderDataProvider` | The item and block namespaces ItemsAdder reports at init, tracked separately | ITEM, BLOCK |
 | ExecutableItems | `ExecutableItemsDataProvider` | Namespace `executable_items` | ITEM |
-| MMOItems | `MMOItemsDataProvider` | Blocks: namespace `mmoitems`. Items: any namespace containing one `_`, read as `<type>_<subtype>` | ITEM, BLOCK |
+| MMOItems | `MMOItemsDataProvider` | Items: `mmoitems_<type>:<item-id>`, for example `mmoitems_sword:excalibur`. Blocks: `mmoitems:<numeric-id>` | ITEM, BLOCK |
 | EcoItems | `EcoItemsDataProvider` | Namespace `ecoitems` | ITEM |
 | MythicMobs | `MythicMobsDataProvider` | Namespace `mythicmobs` | ENTITY |
 | MythicCrucible | `MythicCrucibleDataProvider` | Namespace `crucible` | ITEM, BLOCK |
@@ -202,6 +204,21 @@ mob's only spawn gate an Iris condition during startup.
 Expansion id `iris`, soft-depended. Registration timing, all sixteen keys,
 and the pre-2.0 migration table are in
 [09 - PlaceholderAPI](/iris/09-placeholderapi).
+
+## React and Wormholes
+
+These integrations live in the consuming Volmit plugin rather than in Iris's
+optional-dependency list.
+
+| Plugin | Verified Iris use | If Iris is absent |
+|---|---|---|
+| React | Reads Iris's registered integration contract for engine, world, chunk-generation, cache, mantle, and pregeneration metrics. It uses those values in Iris dashboards, samplers, pressure overlays, and surge guards | Iris-gated metrics and features are not registered or activated |
+| Wormholes | Soft-depends on Iris. Its random-teleport search asks an open Iris engine for reachable pack biomes, the biome at a candidate, authored terrain height, and fluid state before loading the destination chunk | Falls back to its ordinary chunk-backed biome and landing-safety checks |
+
+React configuration and gates are documented in
+[React — Iris, Adapt & Integrations](/react/07-features-iris-adapt-integrations).
+Wormholes behavior and fallback rules are documented in
+[Wormholes — Integrations](/wormholes/15-integrations).
 
 ## Tree feller
 

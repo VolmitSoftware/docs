@@ -67,7 +67,7 @@ A clean pack reports no blocking errors. The all-packs form finishes with a brok
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
 |---|---|---|---|
-| Replace the exact vanilla Overworld and Nether with the shipping pair | **Paper-family, not Spigot:** download `overworld`, then `underworld`. Complete automatic external-datapack ingest and its required restart. Stage both replacements and restart once | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Replace the exact vanilla Overworld and Nether with the shipping pair | **Paper-family, not Spigot:** download `overworld`, then `underworld`. Restart once so their registry data loads, stage both replacements, and restart once more | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Create an in-game jigsaw project | `/iris jigsaw create overworld village/demo` | Not available. Author on Bukkit and copy the saved pack | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Inspect an Iris jigsaw graph | `/iris structure info overworld <structure>` | `/iris structure info <structure>` while in its Iris dimension | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Remove a disposable Iris world | Evacuate players, `/iris unloadWorld <world>`, then `/iris remove <world>` | `/iris world delete <dimension>` | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
@@ -83,6 +83,7 @@ If a command fails before doing work, check in this order. Check platform syntax
 - A parameter declared with a blank default counts as required even when the description says otherwise.
 - Names and aliases match case-insensitively.
 - Help uses the shared 19-line Director mini-menu: up to 17 root entries or 16 subtree entries after reserving the Back row. Shorter trees print every entry, console help remains flat and unpaginated, required renders as `<name=…>`, and optional renders as `[name=…]`.
+- Player help rows are interactive. Clicking an invocable command suggests it in chat, while clicking a command group opens that group's help. Hover text shows aliases, description, usage or example text, and each parameter's type plus required or default state. Console help remains plain text.
 - **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) resolve from the sender's current world or look target. Iris marks its operator-overridable contexts for keyed help and completion. Internal context injection remains hidden.
 - Tab completion is not permission-gated. Only execution is.
 
@@ -159,7 +160,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 
 Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through an arbitrated large title and a labeled bottom action-bar meter, without a boss bar. Bounded chat and console updates also appear. A direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue. A dedicated server paused because it is empty still prints completion. A finished on-disk install does not stay queued.
 
-The supported exact shipping-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With automatic ingest enabled, restart once to let Bukkit install those dependencies. Complete the ensuing required restart so Minecraft loads their keys with the Iris dimension types and biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. With automatic ingest disabled, follow [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
+The supported exact shipping-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The current built-in packs declare no external datapack imports. Restart once so Minecraft loads their dimension types and custom biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must complete the installation and registry-loading workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
 ---
 

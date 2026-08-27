@@ -553,9 +553,10 @@ pregen-control item below, so the broader matrix remains open.
 PASS-WITH-WARN**. Paper, Folia, Leaf, Canvas, Spigot, Fabric, Forge, and
 NeoForge all pass the requested world, seed, restart, and storage
 scenarios. They also pass the requested pregeneration scenarios. That tested source passed every Bukkit and
-modded packaging verifier. The warning is external: Folia still cannot
-load 35 Dungeons & Taverns functions, and the modded logs retain the
-classified authored-content fallbacks described above. This targeted
+modded packaging verifier. The warning is external: the optional
+third-party Dungeons & Taverns fixture still loses 35 functions on Folia,
+and the modded logs retain the classified authored-content fallbacks
+described above. This targeted
 decision does not close the broader client, Studio, minimum/latest-loader,
 performance-baseline, distribution, or publication gates below.
 
@@ -743,8 +744,9 @@ intentional capability difference.
       independent seeds, and both 16,129-chunk pregenerations completed.
       Three consecutive post-race-fix cold boots completed without an
       Iris lifecycle rejection or engine-closing exception.
-- [x] Track the upstream Folia 26.2 incompatibility with Dungeons &
-      Taverns 5.3.0. A no-Iris Folia control confirms its command
+- [x] Track the upstream Folia 26.2 incompatibility with the optional
+      third-party Dungeons & Taverns 5.3.0 fixture. A no-Iris Folia control
+      confirms its command
       dispatcher lacks or restricts commands used by the unchanged
       datapack. That produces 35 `nova_structures:*` function-load
       failures and incomplete load/tick tags. Paper, Leaf, and Canvas load the

@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -126,11 +126,12 @@ that reject `bukkit_world_manager_loop` or say a newly loaded engine is
 closing are defects or evidence of an outdated build. They are not
 expected Folia noise.
 
-There is one current third-party datapack exception. Folia 26.2's command
-dispatcher omits or restricts commands used by Dungeons & Taverns 5.3.0.
-This causes 35 `nova_structures:*` function-load failures for the shipping
-Overworld dependency. The same bytes load on Paper, Leaf, and Canvas. The
-absent commands reproduce on Folia without Iris installed. Iris world
+There is one verified third-party datapack exception. The built-in Iris packs
+do not include Dungeons & Taverns, but a custom pack may import it. Folia
+26.2's command dispatcher omits or restricts commands used by Dungeons &
+Taverns 5.3.0. This causes 35 `nova_structures:*` function-load failures.
+The same bytes load on Paper, Leaf, and Canvas. The absent commands
+reproduce on Folia without Iris installed. Iris world
 loading and pregeneration still complete, but the affected Dungeons &
 Taverns functions do not. See
 [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).

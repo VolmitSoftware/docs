@@ -52,7 +52,7 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first. On a fresh installation it downloads and relocates Gson, Caffeine, ConcurrentLinkedHashMap, and Paralithic under `plugins/Iris/cache/libraries/`. Paper-family servers add those cached jars to Iris's classpath before early datapack bootstrap; plain Spigot loads them during plugin initialization. A provisioning failure stops Iris instead of continuing with missing classes.
 3. First boot writes `plugins/Iris/iris.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download. Later unchanged boots reuse the runtime-library cache without downloading those libraries again.
 4. Run `/iris download pack=overworld` and/or `/iris download pack=underworld`. Wait for validation and atomic installation to finish. The command does not restart or stop the process itself.
-5. Restart before you use either pack. The shipping Overworld also declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. With the default `general.autoIngestDatapacks=true`, this first boot ingests those two dependencies and leaves startup admission restart-required. Complete the ensuing clean restart so Minecraft can load their registry keys. If automatic ingest is disabled, run `/iris datapack ingest restart=true` after the downloads instead.
+5. Restart before you use either pack so Minecraft loads the packs' dimension types and custom biomes. Overworld 4002 and Underworld 1005 declare no external `datapackImports`; they do not require Towns & Towers, Dungeons & Taverns, or another add-on. A custom pack that declares imports still needs the workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
 Upgrading is a hard break. Back up any values you need, delete the obsolete
 `plugins/Iris/settings.json` file (or `<configDir>/iris/settings.json` on a mod
@@ -109,7 +109,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Installing the first pack
 
-Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to version-pinned GitHub stable-release ZIPs: Overworld 4002 and Underworld 1005. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. For the shipping Overworld, that boot performs the default automatic ingest of Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. The requested registry-loading restart is still required.
+Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to version-pinned GitHub stable-release ZIPs: Overworld 4002 and Underworld 1005. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. The current built-in pair has no external datapack imports, so that one registry-loading restart is sufficient before ordinary world creation.
 
 Before you create a world you care about, run the Bukkit fresh-install runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks).
 
@@ -118,7 +118,7 @@ Before you create a world you care about, run the Bukkit fresh-install runbook i
 1. Drop the matching mod jar into `mods/`.
 2. Start the dedicated server, or a client if you want singleplayer.
 3. The jar is self-contained — engine, SPI, and the required Fabric API modules are bundled. Mod id is `irisworldgen` on all three loaders.
-4. First boot writes the forced worldgen datapack from packs already on disk. It performs no pack download. Install a pack with `/iris download`. Before the shipping Overworld loads, also install the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 datapack archives in that save's `datapacks/` directory. `/iris datapack ingest` is Bukkit-only and is a stub on mod loaders. Restart only after the pack and both external datapacks are in place.
+4. First boot writes the forced worldgen datapack from packs already on disk. It performs no pack download. Install a pack with `/iris download`, then restart before loading it. `/iris datapack ingest` is Bukkit-only and is a stub on mod loaders, so install any imports declared by a custom pack directly in that save's `datapacks/` directory before the restart. The current built-in Overworld and Underworld declare none.
 
 Verify server-side:
 
@@ -132,7 +132,7 @@ Modded `/iris version` prints more than the Bukkit one. It prints mod version, p
 
 ### Restart once after installing a pack
 
-This is the modded-specific gotcha. Packs register their custom dimension types (which set the world height range) and their custom biomes through the forced datapack. That datapack is read when the server builds its registries at start. A pack installed during *this* boot may land after registries are already built. External datapacks are also save-local registry input. The shipping Overworld's Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives must already be under `<save>/datapacks/` on that boot.
+This is the modded-specific gotcha. Packs register their custom dimension types (which set the world height range) and their custom biomes through the forced datapack. That datapack is read when the server builds its registries at start. A pack installed during *this* boot may land after registries are already built. External datapacks declared by a custom pack are also save-local registry input and must already be under `<save>/datapacks/` on that boot.
 
 So: **restart once after the Iris pack and all of its external datapacks are installed, before creating or loading a world with it.** Worlds created before that restart run with fallback heights. They will not have the pack's real height range, custom biomes, or declared external structure registry. If a pack or its generated dimension-type datapack was installed during the current boot, restart before continuing.
 
@@ -176,7 +176,7 @@ Paths are relative to the game instance's `config/` directory.
 | `config/irisworldgen/generated/datapack/iris/` | The generated forced datapack (datapack id `iris_worldgen`), plus a hash sidecar used to detect staleness. Iris owns this. Do not edit it |
 | `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override |
 | `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
-| `<save>/datapacks/` | Save-local external datapacks. Install the shipping Overworld's compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives here before that Overworld loads |
+| `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The built-in Overworld 4002 and Underworld 1005 need none |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.
 
@@ -217,7 +217,7 @@ Full key list: [03 - Configuration](/iris/03-configuration).
 
 Manual install is `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<http(s)-zip-url>` (alias `dl`). There is no repository listing, arbitrary pack-name lookup, branch selector, or overwrite option. Built-in pack values are normalized case-insensitively. Custom ZIPs are selected only through `link=`.
 
-Successful downloads update only the pack directory and validation result. Iris does not rebuild the live registry datapack, stop the server, or schedule a restart. On Bukkit, the shipping Overworld's declared imports are ingested by the default startup gate and require the ensuing clean restart. On modded, install those exact compatible external datapacks in the save manually because ingest is unavailable there. See [25 - Pack Management](/iris/25-pack-management).
+Successful downloads update only the pack directory and validation result. Iris does not rebuild the live registry datapack, stop the server, or schedule a restart. Restart once so Minecraft loads the downloaded pack's registry data. If a custom pack declares external datapacks, Bukkit can ingest them at startup; modded operators install them in the save manually because ingest is unavailable there. See [25 - Pack Management](/iris/25-pack-management).
 
 ## When the install goes wrong
 
