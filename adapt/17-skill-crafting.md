@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Adapt documentation: Skill - Crafting"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

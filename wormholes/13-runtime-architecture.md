@@ -140,13 +140,22 @@ refuses while players are inside or mid-transit in a pocket dimension.
   membership, coalesces duplicate work into one owner task per observer, and
   drains at most 256 distinct entities from that observer queue per task.
   Venticular visibility uses hierarchical accepted-block occupancy cubes to skip
-  exact empty ray segments while preserving voxel-accurate blockers. Exact
-  target-to-blocker proofs are retained across passes and geometrically
-  revalidated after observer movement. Destination samples survive camera-only
+  exact empty ray segments. Each constant-time jump is conservatively anchored
+  before the next occupied cube boundary so floating-point rounding cannot step
+  past a blocker. Exact target-to-blocker proofs are retained across passes,
+  geometrically revalidated after observer movement, and discarded when their
+  blocker leaves the active projection geometry. Destination samples survive camera-only
   view-cell rebuilds and are bounded by the fitted candidate volume. Dense
   multi-block sections are ordered by state and position for per-packet
-  compression, then all section packets are queued and flushed once per observer
-  frame rather than once per section.
+  compression. Projection updates, fluid-skin claims, stale-portal releases, and
+  client-chunk retries share the observer claim frame, so their final section
+  packets are resolved together and flushed once rather than exposing transient
+  intermediate winners. Non-fluid display skins also flush once per portal on
+  that observer task, with uncertain partial spawns retained for owner-thread
+  cleanup before any retry. Local-entity occlusion likewise unions retained
+  claims from every portal for that observer before applying visibility changes.
+  Entity teardown skips packet-channel lookup and flush work when no projected
+  entity or client-side name-team state exists.
 - Placed-rune animation does not inspect players while no runes are tracked;
   otherwise it admits at most 64 player entity tasks per nine-tick pass and
   rotates fairly through the online population. Portal-tool validation admits

@@ -2,7 +2,7 @@
 title: "Skill - Architect"
 description: "Adapt documentation: Skill - Architect"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -280,7 +280,7 @@ Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a
 |----------|---------|
 | Class | `ArchitectElevator` |
 | Icon | `HEAVY_WEIGHTED_PRESSURE_PLATE` |
-| Max level | 1 (locked in code, config overrides are reset on load) |
+| Max level | 1 |
 | Initial knowledge cost | 1 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.40 |
@@ -410,7 +410,7 @@ It only triggers on a sneak-placement whose block below is air. It applies timed
 |----------|---------|
 | Class | `ArchitectChalkLine` |
 | Icon | `STRING` |
-| Max level | 4 (locked in code, config overrides are reset on load) |
+| Max level | 4 |
 | Initial knowledge cost | 1 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.4 |
@@ -474,7 +474,7 @@ to the ground after your inventory fills. The effective window is floored at 100
 |----------|---------|
 | Class | `ArchitectStonecutterSavant` |
 | Icon | `STONECUTTER` |
-| Max level | 1 (locked in code, config overrides are reset on load) |
+| Max level | 1 |
 | Initial knowledge cost | 2 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |

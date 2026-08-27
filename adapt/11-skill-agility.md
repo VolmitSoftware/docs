@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Adapt documentation: Skill - Agility"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,7 +51,7 @@ A charged standing jump for crossing gaps and reaching ledges.
 1. Hold shift. The jump-strength bonus applies while you sneak. It is stripped the moment you release.
 2. Jump.
 
-Four levels scale the apex from 1.5 blocks up to 2.5 blocks.
+The configured levels scale the apex from 1.5 blocks up to 2.5 blocks.
 
 ### Armor-Up (`agility-armor-up`)
 
@@ -98,7 +98,7 @@ Stops the ground from punishing you for running across it. Farmland unlocks firs
 
 ### Vault (`agility-vault`)
 
-Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. One level. No scaling.
+Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. The default cap is one level; the vault effect itself does not scale if the cap is raised.
 
 ### Marathoner (`agility-marathoner`)
 
@@ -231,7 +231,7 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeCha
 |----------|---------|
 | Class | `AgilitySuperJump` |
 | Icon | `LEATHER_BOOTS` |
-| Max level | 4 (locked in code, config overrides are reset on reload) |
+| Max level | 4 |
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 2 |
 | Cost factor | 0.55 |
@@ -245,7 +245,7 @@ Listened events: `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerC
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `minimumJumpHeight` | `1.5` | Jump apex in blocks at level 1. Values below the vanilla jump height are clamped up. |
-| `maximumJumpHeight` | `2.5` | Jump apex in blocks at level 4. |
+| `maximumJumpHeight` | `2.5` | Jump apex in blocks at the configured maximum level. |
 
 ### Armor-Up
 
@@ -432,7 +432,7 @@ Listened events: `EntityDamageByEntityEvent`.
 |----------|---------|
 | Class | `AgilityFeatherfoot` |
 | Icon | `RABBIT_FOOT` |
-| Max level | 4 (recomputed on save as the highest enabled unlock level) |
+| Max level | 4 |
 | Initial knowledge cost | 1 |
 | Base knowledge cost | 1 |
 | Cost factor | 0.2 |
@@ -443,9 +443,7 @@ Listened events: `EntityDamageByEntityEvent`.
 
 Listened events: `PlayerMoveEvent`, `PlayerInteractEvent`, `EntityInsideBlockEvent`, `PlayerInputEvent`, `PlayerToggleSprintEvent`, `PlayerQuitEvent`.
 
-Disabling a surface group or moving its minimum level changes the adaptation's
-own max level. Max level is set to the highest enabled unlock level whenever the
-config is normalized.
+`maxLevel` is independent of the surface unlock levels. An enabled surface whose minimum level is above the configured cap remains unreachable until either value is adjusted.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -470,10 +468,10 @@ config is normalized.
 |----------|---------|
 | Class | `AgilityVault` |
 | Icon | `OAK_FENCE` |
-| Max level | 1 (locked in code, config overrides are reset on reload) |
+| Max level | 1 |
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 3 |
-| Cost factor | 0 (locked in code) |
+| Cost factor | 0 |
 | Tick interval (ms) | 1000 |
 | Menu lines | Fence jump apex (blocks) |
 | Milestones | `challenge_agility_vault_250` on `agility.vault.vaults` at 250, reward 300. `challenge_agility_vault_2500` at 2500, reward 1200 |

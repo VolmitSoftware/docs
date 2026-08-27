@@ -2,13 +2,13 @@
 title: "Integrations"
 description: "Wormholes documentation: Integrations"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes soft-depends on PlaceholderAPI, Iris, and Vault. It finds WorldGuard
+Wormholes soft-depends on PlaceholderAPI, Iris, Vault, and Citizens. It finds WorldGuard
 by plugin name for RTP destination admission. PacketEvents and bStats are
 internal runtime dependencies, not separate server plugins. React and other
 monitors read Wormholes through VolmLib `IntegrationServiceContract` with no
@@ -20,7 +20,7 @@ PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
 
 ## Soft dependencies
 
-`plugin.yml` declares `softdepend: [ PlaceholderAPI, Iris, Vault ]`.
+`plugin.yml` declares `softdepend: [ PlaceholderAPI, Iris, Vault, Citizens ]`.
 `paper-plugin.yml` lists them as optional server dependencies with
 `load: BEFORE`, `required: false`, and `join-classpath: true`.
 
@@ -29,6 +29,7 @@ PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
 | PlaceholderAPI | Registers `%wormholes_…%` expansion | No placeholders |
 | Vault (+ economy provider) | Portal menu travel cost type **Vault Economy** | Vault cost mode is unavailable. Free and item costs still work |
 | Iris | Pre-load RTP fluid and biome probes | RTP falls back to ordinary chunk-backed biome and landing-safety checks |
+| Citizens | Prevents standard tracked NPCs from relinking while a portal projection occludes their real local entity | Ordinary Bukkit entities still use the same local-occlusion path; no Citizens event hook is registered |
 
 None of these are required to enable Wormholes.
 
@@ -80,6 +81,17 @@ falls back to its ordinary chunk-backed biome and landing-safety checks. This
 fallback also applies to an Iris world whose engine is unavailable.
 
 No Iris world-gen or pack APIs are exposed to third parties through Wormholes.
+
+## Citizens
+
+Wormholes treats a standard Citizens NPC as its real Bukkit entity. Local-hide
+claims from every active portal are unioned per observer, so one overlapping
+portal cannot restore an NPC that another portal still occludes. When Citizens
+tries to relink that NPC through `NPCSeenByPlayerEvent`, Wormholes cancels the
+event while the entity remains claimed.
+
+Citizens packet-mode NPCs bypass normal Bukkit entity tracking and that event;
+Wormholes does not alter their implementation-specific packet tracker.
 
 ## PlaceholderAPI
 

@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -156,7 +156,9 @@ Travel is cancelled as soon as create or eye-place registers pending cells
 Managed portals use `DimensionalPortalKind` (`NETHER`, `END_SOURCE`,
 `END_ARRIVAL`) and lock manual destination, type, and travel edits. Nether
 pairs travel both ways. An End source is outbound-only. Its fixed arrival
-receiver is inbound-only with projection off.
+receiver is inbound-only with projection off. The visible End source always
+keeps projection on, and the hidden arrival receiver never copies its disabled
+projection or default appearance back onto that source.
 
 Set `replace-nether-and-end-portals = false` to leave vanilla portals alone.
 

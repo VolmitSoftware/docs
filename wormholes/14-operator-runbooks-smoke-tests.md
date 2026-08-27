@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -61,8 +61,8 @@ See [03 - Building Portals](/wormholes/03-building-portals) and
 | 1 | On a linked portal of any type, make sure **Projection** is **ON**. Every type can project. | Menu shows ON. |
 | 2 | Leave **Render mode** at the default Venticular. You can compare PanOptic later. | When you stand in the view volume, destination geometry appears through the aperture. |
 | 3 | Stand outside the activation/view range (global default range 48 when activation range is 0). Then walk into range facing the portal. | Projection starts when you are inside the view AABB. It stops after you leave and grace expires (`[projection] interest-grace-ticks`, default 5). |
-| 4 | If you test blackout, enable the blackout background. Then cycle the color. | A far-plane display seal uses the chosen concrete color. It does not replace the sampled view. |
-| 5 | If entity spoofing is on and quality is not `performance`, place a mob near the destination. | The spoofed entity is visible through the portal within spoof range. |
+| 4 | If you test blackout, enable the blackout background, place solid local blocks immediately beyond its far boundary, then cycle the color. | A far-plane display seal uses the chosen concrete color without local blocks silhouetting or depth-fighting through it. It does not replace the sampled view. |
+| 5 | If entity spoofing is on and quality is not `performance`, place a mob near the destination. With Citizens installed, also place a standard tracked NPC behind one or two overlapping local projections. | The spoofed destination entity is visible through the portal within spoof range. The local mob or standard Citizens NPC stays hidden until no active portal occludes it, then returns. |
 | 6 | Set quality to `performance`. Then reload. | Entity spoofing is off. Range, depth, and budgets are clamped per [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings). |
 
 ## RTP smoke

@@ -2,7 +2,7 @@
 title: "Maintainer Component & Build Reference"
 description: "Wormholes documentation: Maintainer Component & Build Reference"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -92,7 +92,7 @@ Run tasks from `WormholesPlugin/` with Java 25.
 | `./gradlew apiJar` | Compile-only public traversal API jar. Excludes `api.traversal.internal` |
 | `./gradlew build` | Full check plus runtime and API artifacts |
 | `./gradlew bandwidthHarness` | Entity, transport, and replication comparison harness. Scenario settings are supplied as JVM system properties |
-| `./gradlew buildPsychoLT` | Full check plus managed test-server drop-in deployment. Use this only for the workspace Multiplexor test environment |
+| `./gradlew buildPsychoLT` | Full check plus renamed managed test-server drop-in deployment and an unrenamed versioned runtime jar in `../PluginOuts/`. Use this only for the workspace Multiplexor test environment |
 
 `build/libs/Wormholes-<version>.jar` is the server artifact. Its first runtime
 start needs repository access unless the SlimJar cache is already populated.

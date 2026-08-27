@@ -2,7 +2,7 @@
 title: "BileTools — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -84,4 +84,6 @@ cd BileTools
 ```
 
 Gradle must run on Java 25 or newer. If the JVM is older, the build fails
-immediately.
+immediately. In the VolmitSoftware workspace, `./gradlew buildPsychoLT` keeps
+the renamed `BileTools.jar` deployment in the managed test-server drop-ins and
+also copies the versioned runtime jar to `../PluginOuts/`.

@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "Mining drop-control and anti-xray plugin"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,6 +51,13 @@ Fortune, tool-tier, and experience changes leave positions intact.
 - [API — Service *The service interface*](/hiddenore/api/service)
 - [API — Placeholders *PlaceholderAPI integration*](/hiddenore/api/placeholders)
 {.links-list}
+
+## Building from source
+
+Run `./gradlew build` from `HiddenOre/` with Java 25. In the VolmitSoftware
+workspace, `./gradlew buildPsychoLT` keeps the renamed `HiddenOre.jar`
+deployment in the managed test-server drop-ins and also copies the versioned
+runtime jar to `../PluginOuts/`.
 
 ## Support
 

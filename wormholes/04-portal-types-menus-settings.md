@@ -2,7 +2,7 @@
 title: "Portal Types Menus & Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -234,9 +234,11 @@ color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
 Blackout builds a concrete display seal from the farthest valid slice of the
-projected volume. That seal stops the client from seeing beyond the sampled
-view. If that display cannot be sent safely, projection continues without the
-seal. Opaque surface skins block projection entirely (`blocksProjection`).
+projected volume. The thin seal is inset inside that final sampled slab so
+local-world blocks beyond the projection cannot silhouette or depth-fight it.
+That seal stops the client from seeing beyond the sampled view. If that display
+cannot be sent safely, projection continues without the seal. Opaque surface
+skins block projection entirely (`blocksProjection`).
 
 ## Behavior notes
 

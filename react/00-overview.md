@@ -2,7 +2,7 @@
 title: "Overview"
 description: "React documentation: Overview"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -67,4 +67,4 @@ From `React/React/`, use Java 25:
 ./gradlew shadowJar
 ```
 
-The shaded plugin jar is written under `React/React/build/libs/`. The version suffix tracks the Minecraft API React was built against. An example is `2.0.0-26.2`.
+The shaded plugin jar is written under `React/React/build/libs/`. The version suffix tracks the Minecraft API React was built against. An example is `2.0.0-26.2`. The workspace-only `./gradlew buildPsychoLT` task keeps the renamed `React.jar` deployment in the managed test-server drop-ins and also copies the unrenamed versioned shaded jar to `../../PluginOuts/`.

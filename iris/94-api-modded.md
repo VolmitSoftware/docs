@@ -41,13 +41,13 @@ integration hooks.
 sources, not the modded adapters. Build from source:
 
 ```bash
-./gradlew buildFabric     # -> dist/Iris v<version> [Fabric] <mc>+<loader>.jar
-./gradlew buildForge      # -> dist/Iris v<version> [Forge] <mc>+<loader>.jar
-./gradlew buildNeoforge   # -> dist/Iris v<version> [NeoForge] <mc>+<loader>.jar
+./gradlew buildFabric     # -> ../PluginOuts/Iris v<version> [Fabric] <mc>+<loader>.jar
+./gradlew buildForge      # -> ../PluginOuts/Iris v<version> [Forge] <mc>+<loader>.jar
+./gradlew buildNeoforge   # -> ../PluginOuts/Iris v<version> [NeoForge] <mc>+<loader>.jar
 ```
 
 Each task shells out to the adapter's own wrapper and copies the jar into
-`dist/`. The loader segment is that adapter's loader version verbatim.
+the workspace-level `../PluginOuts/` directory. The loader segment is that adapter's loader version verbatim.
 For example `26.2+0.19.3` on Fabric and `26.2+26.2.0.59` on NeoForge.
 
 Each adapter is a standalone Gradle build

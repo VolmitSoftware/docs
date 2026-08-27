@@ -145,7 +145,7 @@ This section is for you if you build Iris or file a bug against a specific subsy
 | `adapters/fabric/`, `adapters/forge/`, `adapters/neoforge/` | The three loader builds. Each is a standalone Gradle build with its own `settings.gradle` |
 | `probe/` | Offline tooling and a stub platform for running the engine without a server |
 | `buildSrc/` | Gradle helpers: artifact verification, NMS bindings, API generation |
-| `dist/` | Where `buildAllToOut` drops the finished consumer jars |
+| `../PluginOuts/` | Workspace-level directory where `buildAllToOut` drops the finished consumer jars |
 | `docs/` | This documentation set, which is the authority over any hosted copy |
 
 `minecraft-common`, `modded-common`, and `client-common` are source trees only. They have no `build.gradle` and are not Gradle projects. The loader builds pull them in as extra source directories.
@@ -160,7 +160,7 @@ java -version
 ./gradlew buildAllToOut
 ```
 
-The check passes when `build` finishes with no failed tasks. `buildAllToOut` must leave one current jar per platform in `dist/`. `build` already runs the tests. Use `./gradlew test` only when you want to rerun tests without reassembling every artifact.
+The check passes when `build` finishes with no failed tasks. `buildAllToOut` must leave one current jar per platform in the workspace-level `../PluginOuts/` directory. `build` already runs the tests. Use `./gradlew test` only when you want to rerun tests without reassembling every artifact.
 
 At version `4.0.0-26.2` the four jars are named like this. The CraftBukkit one carries the supported Minecraft *range*. The loader jars carry `<mc>+<loader>`:
 

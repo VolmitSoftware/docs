@@ -2,7 +2,7 @@
 title: "Skills Catalog"
 description: "Adapt documentation: Skills Catalog"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,7 +158,7 @@ Adapt declares 312 adaptation types. 311 register on a plain server. The twelfth
 |-------|---------------|------|---------------|
 | Agility (`agility`) | `agility-wind-up` | Wind Up | Continuous sprinting builds movement speed up to the configured cap. Stopping or leaving a valid movement state clears the buildup. |
 | Agility (`agility`) | `agility-wall-jump` | Wall Jump | Hold shift while mid-air against a wall to latch. Then release shift to jump. |
-| Agility (`agility`) | `agility-super-jump` | Super Jump | Sneak and jump to launch a super jump. Four levels scale the apex from 1.5 to 2.5 blocks. |
+| Agility (`agility`) | `agility-super-jump` | Super Jump | Sneak and jump to launch a super jump. Configured levels scale the apex from 1.5 to 2.5 blocks. |
 | Agility (`agility`) | `agility-armor-up` | Armor-Up | Build temporary armor while sprinting. The bonus fades after you stop. |
 | Agility (`agility`) | `agility-ladder-slide` | Ladder Slide | Look up to climb quickly. Look down to descend quickly. A near-horizon look returns normal ladder control. Sneaking halts directional movement. The first and last two climbable blocks always use normal control. |
 | Agility (`agility`) | `agility-roll-landing` | Roll Landing | A timed crouch before landing converts part of fall damage into hunger cost. |

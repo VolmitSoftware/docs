@@ -257,7 +257,7 @@ If you are building rather than downloading, from the repo root with JDK 25:
 ./gradlew buildAllToOut
 ```
 
-Four jars land in `dist/`. The CraftBukkit jar's version token is the supported Minecraft *range*. The loader jars use `<mc>+<loader>`:
+Four jars land in the workspace-level `../PluginOuts/` directory. The CraftBukkit jar's version token is the supported Minecraft *range*. The loader jars use `<mc>+<loader>`:
 
 | Pattern | Platform |
 |---|---|

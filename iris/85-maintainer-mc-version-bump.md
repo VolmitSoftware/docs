@@ -2,7 +2,7 @@
 title: "Maintainer - MC Version Bump"
 description: "Iris documentation: Maintainer - MC Version Bump"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -256,7 +256,7 @@ tests, and documentation all agree on the same target.
    the jar agrees:
 
    ```
-   unzip -l "dist/Iris v<version> [Fabric] <mc>+<loader>.jar" | grep META-INF/jars
+   unzip -l "../PluginOuts/Iris v<version> [Fabric] <mc>+<loader>.jar" | grep META-INF/jars
    ```
 
    An entry in `jars` with no matching nested jar makes the loader refuse
@@ -267,7 +267,7 @@ tests, and documentation all agree on the same target.
    - `./gradlew :core:check` — includes `bukkitPurityRatchet` and the
      NMS selector tests. Green before touching the platform builds.
    - `./gradlew buildBukkit` — runs `verifyBukkitArtifact` first, then
-     drops the jar in `dist/`.
+     drops the jar in the workspace-level `../PluginOuts/` directory.
    - `./gradlew buildFabric`
    - `./gradlew buildForge`
    - `./gradlew buildNeoforge`
@@ -276,7 +276,7 @@ tests, and documentation all agree on the same target.
    missing resource, an unapplied mixin config, or a new Bukkit-coupled
    class fails the task rather than shipping. `./build-all.sh` runs all
    four serialized with local VolmLib substitution off. Use it for the
-   final pass. Good looks like: four jars in `dist/` carrying the new
+   final pass. Good looks like: four Iris jars in `../PluginOuts/` carrying the new
    version strings, and a `Verified …` line for every platform.
 
 9. After a successful bump, re-run the operator runbooks and GoldenHash

@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Adapt documentation: Skill - Axes"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -341,7 +341,7 @@ Listened events: `BlockBreakEvent`.
 
 Listened events: `BlockBreakEvent`.
 
-Durability preservation chance is hard-coded per level, not configurable: level 1 gives 0 percent, level 2 gives 25 percent, level 3 gives 75 percent. `maxLevel` is forced back to 3 on every config load.
+Durability preservation chance is fixed per effect tier: level 1 gives 0 percent, level 2 gives 25 percent, and level 3 or higher gives 75 percent. `maxLevel` remains operator-configurable.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

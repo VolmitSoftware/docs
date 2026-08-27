@@ -2,7 +2,7 @@
 title: "Projection Modes & Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -87,7 +87,10 @@ a one-slot budget gives discovery every fourth tick. An observer with an
 already-running owner task is skipped without consuming the frame cap, and a
 rejected or retired owner task clears its in-flight lease so a later tick can
 retry it. The same admitted owner task reconciles both projection and surface
-skin state when both are active.
+skin state when both are active. A non-fluid skin writes every ordered display
+spawn and metadata pair into one observer-local portal batch and flushes once.
+Partial batches are destroyed before retry so failed sends cannot leave client
+ghost panes.
 
 Budget fitting shortens lateral padding first. Depth is reduced only if the
 aperture-aligned scan still exceeds the cell ceiling. An aperture that cannot
@@ -102,8 +105,10 @@ fit even at zero depth stays empty rather than exceeding the ceiling.
 
 Each color maps to `minecraft:<name>_concrete` (for example `BLACK` → black
 concrete). The mesh is built from the farthest valid projected slice and fails
-open. If its display packets cannot be maintained, the normal projection stays
-visible without the seal.
+open. Its thin panels sit inside the final sampled cells, whose local solids are
+already masked, so blocks immediately beyond the view cannot occlude or
+depth-fight the seal. If its display packets cannot be maintained, the normal
+projection stays visible without the seal.
 
 ## Entity spoofing (`[render]`)
 
@@ -212,6 +217,8 @@ leash relationships, animations, hurt state, item-frame contents, and map data
 where the platform packet bridge supports them. Candidate range, refresh
 cadence, and the hard entity cap come from `[render]`. Local entities on the
 observer side may be hidden while their projected counterparts occupy the view.
+For overlapping portals, Wormholes unions those local-hide claims per observer;
+an entity is restored only after the last portal stops occluding it.
 
 ## Arrival warmer vs chunk pre-send
 

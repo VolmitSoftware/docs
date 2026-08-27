@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Adapt documentation: Overview"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,7 +36,7 @@ This file is the map. Each section below says what a piece is and which doc owns
 
 ## Building from source
 
-Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Run `./gradlew build` to compile, check, and produce `build/libs/Adapt-*-all.jar`. Run `./gradlew test` for the JVM suite alone or `./gradlew shadowJar` for only the shaded jar. Use the shaded jar at runtime and as the compile-only dependency for API consumers. Non-English locale TOMLs stay outside the jar; the build embeds a pinned Git revision and SHA-256 checksum for each source so a server can download only its configured locale. See [41 - API - Getting Started](/adapt/41-api-getting-started).
+Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Run `./gradlew build` to compile, check, and produce `build/libs/Adapt-*-all.jar`. Run `./gradlew test` for the JVM suite alone or `./gradlew shadowJar` for only the shaded jar. The workspace-only `./gradlew buildPsychoLT` task keeps the renamed `Adapt.jar` deployment in the managed test-server drop-ins and also copies the versioned runtime jar to `../PluginOuts/`. Use the shaded jar at runtime and as the compile-only dependency for API consumers. Non-English locale TOMLs stay outside the jar; the build embeds a pinned Git revision and SHA-256 checksum for each source so a server can download only its configured locale. See [41 - API - Getting Started](/adapt/41-api-getting-started).
 
 ## Reference
 

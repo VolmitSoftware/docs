@@ -76,8 +76,8 @@ announce from an unclean or differently tested tree.
       `gradle.properties` is used, and the all-platform build is
       serialized. Each platform task runs its artifact verifier first, so
       the run either fails or prints a `Verified …` line per jar plus the
-      `=== Iris buildAllToOut -> dist/ ===` summary.
-- [ ] `dist/` contains the four platform jars (exact names for this
+      `=== Iris buildAllToOut -> <workspace>/PluginOuts ===` summary.
+- [ ] The workspace-level `../PluginOuts/` directory contains the four platform jars (exact names for this
       release):
   - [ ] `Iris v4.0.0-26.2 [CraftBukkit] 26.1.2-26.2.jar`
         (Bukkit/Paper/Purpur/Spigot/Folia plugin)
@@ -91,12 +91,12 @@ announce from an unclean or differently tested tree.
 - [ ] The final CraftBukkit jar does not exceed the 7,000,000-byte verifier
       ceiling and remains below it for the distribution target.
       `verifyBukkitArtifact` enforces this ceiling in the finished archive;
-      report the exact byte count from `dist/`, not a rounded filesystem
+      report the exact byte count from `../PluginOuts/`, not a rounded filesystem
       display.
 - [ ] The SPI jar is built by the same run at
       `spi/build/libs/iris-spi-4.0.0-26.2.jar`. It is the
       adapter/platform contract, not the stable downstream plugin API. It
-      is not copied into `dist/` or uploaded to mod portals.
+      is not copied into `../PluginOuts/` or uploaded to mod portals.
 - [ ] Each mod jar bundles Iris core, SPI, and Iris-owned shaded
       libraries. LZ4, OSHI, JNA, and JNA Platform are supplied by the
       Minecraft 26.2 runtime and must not be bundled or relocated.
@@ -181,7 +181,7 @@ details: [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
 - [ ] Tag the release commit and push the tag. Existing tags in this
       repo carry no `v` prefix and encode the supported MC span
       (`3.9.2-1.20.1-1.21.11`). Pick the tag deliberately rather than
-      assuming a format. Archive the already verified `dist/` bundle with
+      assuming a format. Archive the four already verified Iris jars from `../PluginOuts/` with
       the release record. No tag-triggered bundle automation is
       configured.
 - [ ] Announce the release on the community channels once the portals

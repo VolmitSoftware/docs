@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Gloss documentation: Runtime Architecture"
 published: true
-date: 2026-08-26
+date: 2026-08-27
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -654,6 +654,9 @@ startup splash.
 
 Gloss ships one shaded jar. A small set of libraries is **not** in that jar. Slimjar downloads them
 on first start, from the constructor, before anything else runs:
+
+The workspace-only `./gradlew buildPsychoLT` task keeps the renamed `Gloss.jar` deployment in the
+managed test-server drop-ins and also copies the unrenamed versioned shaded jar to `../PluginOuts/`.
 
 | Library | Relocated to |
 |---|---|
