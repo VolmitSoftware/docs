@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -318,6 +318,8 @@ With `delete=true`, Iris records the exact quarantine name in a durable startup 
 
 ## Main world and level-root selection
 
+### Bukkit-family
+
 The server's main world is the `minecraft:overworld` dimension inside the save root selected by `server.properties` `level-name`. To make Iris generate that existing main slot, stage this replacement and restart:
 
 ```text
@@ -327,6 +329,20 @@ The server's main world is the `minecraft:overworld` dimension inside the save r
 The replacement keeps `level-name` unchanged, so the save-wide player data, datapacks, global data, Nether, End, and custom dimensions remain in the same level root. Only the existing Overworld dimension folder, staged seed, and generator registration participate in the journaled replacement. Omit `seed=` to preserve the current Overworld seed.
 
 Iris no longer promotes an `iris:*` world into another level root, copies save-wide data into a new root, or rewrites `server.properties`. The old `main` / `main-world` and `overwrite` / `force` parameters were removed from `/iris create`. `/iris overwrite` is now an alias of the separate replacement command. Selecting a fresh whole-save `level-name` is a server-provisioning operation and must be completed outside Iris before managing dimensions in that save.
+
+### Fabric / Forge / NeoForge
+
+Install and registry-load the pack before changing the vanilla main world. Then stage the pack's world preset and restart cleanly:
+
+```text
+/iris world mainworld overworld 1337
+```
+
+This is the command that changes the actual `minecraft:overworld` generator. It writes the Iris preset to `server.properties` `level-type`, stores the selection in `config/irisworldgen/modded.json`, and places a pending marker. During the next early boot Iris moves the prior vanilla Overworld, Nether, End, `level.dat`, and `level.dat_old` into `config/irisworldgen/mainworld-recovery-<id>/`, then Minecraft creates fresh vanilla slots from the selected Iris preset. Save-wide player data, advancements, statistics, datapacks, the Iris persistent-dimension registry, and non-vanilla dimension folders remain in the selected level root.
+
+`/iris world replace-overworld overworld 1337` is a different operation. It creates a persistent `irisworldgen:primary` dimension and routes players there; it does not replace the generator of `minecraft:overworld`. Use `/iris world mainworld off` to stop forcing the preset on later boots. That command does not restore the quarantined vanilla terrain or change the generator already recorded in the current save.
+
+After the replacement restart, require the selected preset in `server.properties`, a non-empty `<level-name>/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`, the expected custom entries in `<level-name>/iris/iris-dimensions.json`, and a second clean restart without another pending marker. Keep the recovery directory until the new main world and every retained dimension have been verified.
 
 ## Modded persistent-dimension registry
 

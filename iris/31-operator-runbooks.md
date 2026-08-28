@@ -217,15 +217,55 @@ blocking defect.
 
 1. Use the NeoForge-labeled Iris jar in `mods/` on the official Youer
    26.2 build. Leave the CraftBukkit-labeled Iris jar out of `plugins/`.
-2. Start a new save and wait for `Done preparing level "world"` and the
-   final server-ready line.
-3. Confirm
+2. Start a new save, install the shipping pack, then restart once so its
+   registry data is present before world creation:
+
+   ```text
+   /iris download pack=overworld
+   ```
+
+   Expect the next boot to report the Overworld pack, preset, and custom
+   biomes before the final server-ready line.
+3. Create and exercise a persistent Iris dimension with a fixed seed:
+
+   ```text
+   /iris world enable irisworldgen:lifecycle_world overworld 424242
+   /iris world status
+   /iris pregen start 32 irisworldgen:lifecycle_world at 512 512 sync
+   ```
+
+   Expect the registry at `world/iris/iris-dimensions.json` to contain the
+   exact id, pack, dimension, and seed. Pregeneration must finish with no
+   failed chunks. Stop cleanly and start again; Iris must initialize seed
+   `424242` and re-inject that dimension.
+4. Stage the actual vanilla Overworld replacement and restart cleanly:
+
+   ```text
+   /iris world mainworld overworld 1337
+   ```
+
+   Expect `server.properties` `level-type` to name the Iris Overworld
+   preset, the pending marker to clear, and one
+   `config/irisworldgen/mainworld-recovery-<id>/` directory to retain the
+   previous vanilla slots. The persistent `lifecycle_world` entry and its
+   seed must remain unchanged.
+5. Confirm
    `world/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`
-   exists and is non-empty.
-4. Stop cleanly, start the same save again, and require both ready lines
-   a second time. The console must not contain `Unable to read or access
-   the world gen settings file`, `Overworld settings missing`, or an Iris
-   startup exception.
+   exists and is non-empty. Generate a fresh bounded area in the canonical
+   world and require zero failed chunks:
+
+   ```text
+   /iris pregen start 32 minecraft:overworld at 4096 4096 sync
+   ```
+
+   Stop cleanly and start the same save a second time. Require the Iris
+   main Overworld and persistent dimension to load again without creating
+   another recovery directory or pending marker.
+
+The console across this sequence must not contain `Unable to read or
+access the world gen settings file`, `Overworld settings missing`,
+`PaperLevelOverrides not attached`, a Bukkit implementation linkage error,
+an immutable level-map failure, or an Iris startup exception.
 
 The missing-settings pair is a save-integrity failure raised before Iris
 starts. Back up the whole save, then restore the whole save or that exact
