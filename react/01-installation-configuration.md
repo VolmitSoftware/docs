@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,7 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 | `plugins/React/tweak/<id>.toml` | Per-tweak config |
 | `plugins/React/action/<id>.toml` | Per-action config |
 | `plugins/React/sampler/<id>.toml` | Per-sampler config when present |
+| `plugins/React/plugin-apis/*.toml` | Community Plugin API packs that create metrics for installed plugins |
 | `plugins/React/languages/overrides/<locale>.toml` | Optional message overrides |
 | `plugins/React/player-settings/<uuid>.json` | Persisted action-bar monitor preferences. Writes are coalesced off-thread and atomically replace the prior file. |
 | `plugins/React/data/value-cache.json` | Cached material-value analysis |

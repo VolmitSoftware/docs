@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -122,6 +122,15 @@ Only one benchmark run is accepted at a time. CPU and memory tests execute synth
 | `status` | `s`, `list` | List registered NMS bridges and resolution status |
 
 Example: `/react bridge status`.
+
+## `/react plugin-api` (`packs`)
+
+| Subcommand | Aliases | Description |
+|------------|---------|-------------|
+| `status` | `list` | List active community metric packs, target state, metric count, and file validation errors |
+| `reload` | `rl` | Queue a rescan of `plugins/React/plugin-apis/` |
+
+The pack folder is also scanned every three seconds. Invalid changed files retain the last valid runtime until corrected; deleted files retire their dynamic samplers. See [20 - API - Plugin API Packs](/react/20-api-plugin-api-packs).
 
 ## `/react test` (`selftest`)
 

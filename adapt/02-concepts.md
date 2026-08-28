@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Adapt documentation: Concepts"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,6 +17,8 @@ Adaptations only do anything when they are learned and enabled. They must also b
 ## Skills
 
 A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. Skills share a 50 ms dispatcher, but each callback runs only when its own interval is due and it reports runtime demand. That lets skills pay for ongoing states like sprinting without running every skill's work every server tick. A skill also tracks stats and advancements and owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/skills/<id>.toml`.
+
+Each enabled skill owns one advancement tab. Advancement branches use compact leaf rows with every parent centered over its children. Normal entries follow vanilla visibility and appear when they, their parent, or their grandparent are complete; intentionally hidden entries appear only after they are earned.
 
 Skill level comes from skill XP through the global `xpCurve`. The default curve, `ADAPT_BALANCED`, needs `100 * L^2 + 1200 * L` XP to reach level `L`. Early levels come quickly. Later ones stretch out. Level lookups are clamped at `experienceMaxLevel`.
 

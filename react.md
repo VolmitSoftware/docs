@@ -2,7 +2,7 @@
 title: "React"
 description: "React performance monitoring and optimization for Paper and Folia"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,6 +69,7 @@ React measures where server time goes. It then gives operators tools to act on t
 - [API - Entity Protection *Protection API*](/react/17-api-entity-protection)
 - [API - Metric Publishing *Metrics API*](/react/18-api-metric-publishing)
 - [API - PlaceholderAPI *`%react_…%` keys*](/react/19-api-placeholderapi)
+- [API - Plugin API Packs *Community metric definitions without Java*](/react/20-api-plugin-api-packs)
 {.links-list}
 
 
