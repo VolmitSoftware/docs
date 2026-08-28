@@ -1,8 +1,8 @@
 ---
 title: "Runtime Architecture"
-description: "Wormholes documentation: Runtime Architecture"
+description: "Startup, shutdown, storage, scheduling, hot reload, and runtime components"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,7 +31,7 @@ Config keys live in
 
 Order from `Wormholes.onEnable`, then network bootstrap:
 
-1. `resetForEnable` — clear stale listeners, integration, and placeholders.
+1. `resetForEnable` clears stale listeners, integration, and placeholders.
    Reset drain flags.
 2. When the server is not Paper, Wormholes prepares the Spigot pocket datapack
    (`doors.prepareSpigotPocketDatapack`).
@@ -139,13 +139,16 @@ refuses while players are inside or mid-transit in a pocket dimension.
   entity animation and hurt forwarding uses exact entity-to-projector
   membership, coalesces duplicate work into one owner task per observer, and
   drains at most 256 distinct entities from that observer queue per task.
-  Venticular visibility uses hierarchical accepted-block occupancy cubes to skip
+  Venticular visibility first removes solid samples buried by their neighbors,
+  then uses hierarchical accepted-block occupancy cubes to skip
   exact empty ray segments. Each constant-time jump is conservatively anchored
   before the next occupied cube boundary so floating-point rounding cannot step
   past a blocker. Exact target-to-blocker proofs are retained across passes,
   geometrically revalidated after observer movement, and discarded when their
-  blocker leaves the active projection geometry. Destination samples survive camera-only
-  view-cell rebuilds and are bounded by the fitted candidate volume. Dense
+  blocker leaves the active projection geometry. Budget-limited visibility
+  cells remain unresolved and are retried before new visibility work. Projection
+  reuse waits until that unresolved set is empty. Destination samples survive
+  camera-only view-cell rebuilds and are bounded by the fitted candidate volume. Dense
   multi-block sections are ordered by state and position for per-packet
   compression. Projection updates, fluid-skin claims, stale-portal releases, and
   client-chunk retries share the observer claim frame, so overlapping cell
@@ -232,7 +235,7 @@ so the candidate can retry.
 
 ## Soft depends and load order
 
-`plugin.yml` softdepend: **PlaceholderAPI**, **Iris**, **Vault**.
+`plugin.yml` softdepend: **PlaceholderAPI**, **Iris**, **Vault**, **Citizens**.
 
 Paper plugin dependencies (optional, `load: BEFORE`, join-classpath):
 
@@ -241,6 +244,7 @@ Paper plugin dependencies (optional, `load: BEFORE`, join-classpath):
 | PlaceholderAPI | `%wormholes_…%` expansion (`WormholesPlaceholders`). |
 | Iris | Terrain/probe integration for RTP and worldgen-aware features where present. |
 | Vault | Economy for travel costs via `VaultEconomy`. |
+| Citizens | Keeps projected local-entity occlusion authoritative when Citizens attempts to relink a standard tracked NPC. |
 
 WorldGuard is discovered reflectively rather than declared as a soft dependency.
 When available, its `ENTRY` flag participates in RTP destination admission.

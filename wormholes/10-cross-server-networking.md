@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ snapshot-and-ack path.
 | Setting | Default | Role |
 |---------|---------|------|
 | `[network] enabled` | `false` | Master switch for cross-server networking |
-| Import / export | — | Sets `enabled = true`, persists config, and starts `NetworkManager` if not running |
+| Import / export | Not applicable | Sets `enabled = true`, persists config, and starts `NetworkManager` if not running |
 
 Manual enable: set `enabled = true` in
 `plugins/Wormholes/wormholes.toml` and reload or restart. Codes also
@@ -301,7 +301,7 @@ handoffs and entity transfers.
 
 ## Related docs
 
-- [01 - Installation & Configuration](/wormholes/01-installation-configuration) — full `[network]` key tables
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — permission nodes for network/server
-- [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings) — gateway link UI
-- [13 - Runtime Architecture](/wormholes/13-runtime-architecture) — managers and storage
+- [01 - Installation & Configuration](/wormholes/01-installation-configuration), full `[network]` key tables
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions), permission nodes for network and server commands
+- [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings), gateway link UI
+- [13 - Runtime Architecture](/wormholes/13-runtime-architecture), managers and storage

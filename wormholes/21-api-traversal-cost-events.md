@@ -1,8 +1,8 @@
 ---
 title: "API - Traversal Cost & Events"
-description: "Wormholes documentation: API - Traversal Cost & Events"
+description: "Price or veto travel, settle receipts, and consume traversal events safely"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -274,7 +274,7 @@ public void onTraversed(WormholesPortalTraversedEvent event) {
 |--------------|----------|
 | `quote` throws or returns null | Fault is logged (stack if throw). `allow` continues without charging; `deny` rejects this attempt |
 | `reserve` throws or null | Reverse-order refund is requested from every prior reserve; a provider refund fault is logged and may leave that provider's charge unresolved |
-| Receipt `toString`/`equals`/`hashCode` throws | Irrelevant — never called |
+| Receipt `toString`/`equals`/`hashCode` throws | Irrelevant because Wormholes never calls them |
 | `reserve` returns `failed(reason)` | Not a fault. Rollback then deny with your reason |
 | `commit` throws | Logged. The trip is not undone |
 | `refund` throws | Logged. Rollback continues |

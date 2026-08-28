@@ -2,16 +2,15 @@
 title: "Projection Modes & Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Through-portal projection sends destination or mirror block data and optional
-entity packets to an observer near a portal. The other side appears without a
-crossing. If foveated unrendering is enabled, the observer must look toward
-the aperture. By default, the portal view AABB sets interest.
+Through-portal projection changes what one player's client sees inside a portal
+aperture. It can show destination blocks, supported entities, and optional
+lighting without moving the player. Traversal is a separate system.
 
 Per-portal mode and render mode combine with global `[projection]` and
 `[render]` keys in `plugins/Wormholes/wormholes.toml` (schema 3).
@@ -43,11 +42,21 @@ Default for new portals: **VENTICULAR**.
 
 | Mode | Display | Buried cell culling | Observer occlusion | Notes |
 |------|---------|---------------------|--------------------|-------|
-| `VENTICULAR` | Venticular | Yes | Yes | Default. Drops buried cells and applies observer occlusion during cell scan. |
+| `VENTICULAR` | Venticular | Yes | Yes | Default. Removes buried solids and destination cells hidden from the observer. |
 | `PANOPTIC` | PanOptic | No | No | Fuller capture of the destination volume. More cells and cost. |
 
 Stored as `renderMode` on the portal JSON. Toggled from the portal settings
 menu.
+
+Use **Venticular** for normal play. It removes solid cells that are enclosed by
+their neighbors, then checks remaining destination cells from the observer's
+view. Reusable blocker proofs and an occupancy index reduce repeated ray work.
+If the visibility budget ends during a pass, unresolved cells remain eligible
+and receive priority on the next pass. A projector does not reuse an incomplete
+frame as though its visibility work had finished.
+
+Use **PanOptic** when you need the full sampled volume even when some of it is
+buried or hidden. It is intentionally the more expensive mode.
 
 ## Interest and view AABB
 
@@ -114,7 +123,7 @@ projection stays visible without the seal.
 
 | Key | Default | Clamp | Role |
 |-----|---------|-------|------|
-| `entity-spoofing` | `true` | — | Show destination-side entities in projections. |
+| `entity-spoofing` | `true` | Boolean | Show destination-side entities in projections. |
 | `entity-spoof-range` | `48.0` | 1–256 | Range for spoofed entities. |
 | `entity-update-interval-ticks` | `1` | 1–20 | Entity refresh cadence. |
 | `entity-candidate-cache-ticks` | `3` | 1–40 | Candidate cache lifetime. |

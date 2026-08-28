@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,9 +45,9 @@ Choose `GATEWAY` or `RTP` later in the type menu.
 | `ProjectionMode` | `ON`, `OFF` | Whether this portal produces a through-view for interested observers. Default `ON`. |
 | `ProjectionRenderMode` | `PANOPTIC`, `VENTICULAR` | How the projector samples and culls cells. Default `VENTICULAR`. |
 
-- **PanOptic** — full aperture sample. No buried-cell culling or observer
+- **PanOptic:** full aperture sample. No buried-cell culling or observer
   occlusion path that Venticular uses.
-- **Venticular** — uses buried-cell culling and observer occlusion
+- **Venticular:** uses buried-cell culling and observer occlusion
   (`usesBuriedCellCulling` / `usesObserverOcclusion`).
 
 Projection detail, budgets, and global ranges:

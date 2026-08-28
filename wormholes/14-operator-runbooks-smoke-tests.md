@@ -1,8 +1,8 @@
 ---
 title: "Operator Runbooks & Smoke Tests"
-description: "Wormholes documentation: Operator Runbooks & Smoke Tests"
+description: "Repeatable checks for install, portals, projection, RTP, doors, networking, and recovery"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

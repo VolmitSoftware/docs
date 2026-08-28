@@ -2,7 +2,7 @@
 title: "Portal Types Menus & Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,7 +59,7 @@ as `CUSTOM` on load.
 
 ### Activation range
 
-- `0` — global projection range from config (`projection.range`, default 48
+- `0` means the global projection range from config (`projection.range`, default 48
   blocks).
 - Positive values are clamped to **8–256** blocks.
 
