@@ -2,7 +2,7 @@
 title: "Projection Modes & Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,6 +48,16 @@ Default for new portals: **VENTICULAR**.
 
 Stored as `renderMode` on the portal JSON. Toggled from the portal settings
 menu.
+
+Venticular removes a rear cell immediately when every block face oriented
+toward the destination-side observer is covered by an accepted adjacent opaque
+cell. This exact face-enclosure test uses no ray budget and continues removing
+hidden rear surfaces even if the bounded long-range ray pass is exhausted.
+Remaining ambiguous cells use the conservative ray proof and fail open when
+visibility cannot be proven, so gaps and transparent openings remain visible.
+Budget-unresolved cells stay visible for that pass but are carried ahead of
+ordinary targets on the next projection pass until their visibility resolves;
+the fail-open tail therefore does not become permanent client state.
 
 ## Interest and view AABB
 

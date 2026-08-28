@@ -2,7 +2,7 @@
 title: "Runtime Architecture"
 description: "Wormholes documentation: Runtime Architecture"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -142,7 +142,16 @@ refuses while players are inside or mid-transit in a pocket dimension.
   Venticular visibility uses hierarchical accepted-block occupancy cubes to skip
   exact empty ray segments. Each constant-time jump is conservatively anchored
   before the next occupied cube boundary so floating-point rounding cannot step
-  past a blocker. Exact target-to-blocker proofs are retained across passes,
+  past a blocker; sparse rays query that hierarchy before exact blocker-set
+  membership. The cell scan computes normal-plane depth once per slab, carries
+  transformed remote keys beside observer targets, and bypasses observer-ray
+  filtering when a pass produced no blocker geometry. Venticular removes rear
+  cells whose complete set of eye-facing faces is covered by accepted adjacent
+  opaque cells before consuming long-range ray budget. Cells left unresolved by
+  the bounded ray pass remain fail-open but persist as the priority worklist for
+  subsequent passes instead of bypassing future occlusion checks. Buried-cell sampling
+  visits the 6 unique distance-one and 18 unique distance-two shell cells once
+  instead of repeating memo lookups. Exact target-to-blocker proofs are retained across passes,
   geometrically revalidated after observer movement, and discarded when their
   blocker leaves the active projection geometry. Destination samples survive camera-only
   view-cell rebuilds and are bounded by the fitted candidate volume. Dense
