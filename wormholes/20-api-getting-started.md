@@ -1,8 +1,8 @@
 ---
 title: "API - Getting Started"
-description: "Wormholes documentation: API - Getting Started"
+description: "Depend on the API jar, acquire services, and follow the threading contract"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,7 @@ only.
 ### API-only artifact
 
 ```
-Wormholes-<version>.jar          plugin runtime — do not compile against this for API work
+Wormholes-<version>.jar          plugin runtime; do not compile against this for API work
 Wormholes-<version>-api.jar      art.arcane.wormholes.api.** minus internal packages
 ```
 

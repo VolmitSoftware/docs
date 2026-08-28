@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,28 +59,28 @@ Built by `RtpSettings.builder(world)` / `defaults(world)`:
 
 ## Enums
 
-### Center — `RtpCenterMode`
+### Center: `RtpCenterMode`
 
 | Value | Meaning |
 |-------|---------|
 | `PORTAL_RELATIVE` | Uses the source portal center's numeric X/Z as the annulus origin in the target world. Coordinates are copied unchanged; target spawn and dimensional scaling are not used. |
 | `CUSTOM` | Uses stored `customCenterX` / `customCenterZ` as the annulus origin in the target world (both required when CUSTOM). |
 
-### Vertical — `RtpVerticalMode`
+### Vertical: `RtpVerticalMode`
 
 | Value | Meaning |
 |-------|---------|
 | `SURFACE` | Land on validated terrain surface (see safety). |
 | `PREFERRED_AVERAGE` | Use preferred Y within lower/upper bounds during sampling. |
 
-### Allocation — `RtpAllocationMode`
+### Allocation: `RtpAllocationMode`
 
 | Value | Meaning |
 |-------|---------|
 | `SHARED` | One active destination shared by the portal's viewers/travelers. It becomes READY after the first safe retained destination while a distinct standby column prepares in the background. |
 | `PER_PLAYER` | Per-player destinations and private reservation pool behavior. The first safe candidate is assigned immediately while spare capacity prepares in the background. |
 
-### Shared rotation — `RtpRotationMode`
+### Shared rotation: `RtpRotationMode`
 
 These choices apply while allocation is `SHARED`. `PER_PLAYER` always rotates
 each private reservation on `cycleDurationMillis`. The editor labels that field

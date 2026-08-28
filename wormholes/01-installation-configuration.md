@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
 | Runtime | Paper, Paper-compatible derivatives such as Purpur, and Folia (`folia-supported: true`) |
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
-| Soft depends | PlaceholderAPI, Iris, Vault (optional). Load them BEFORE when they are present |
+| Soft depends | PlaceholderAPI, Iris, Vault, Citizens (optional). Paper loads them before Wormholes when present |
 | Artifact | Runtime `Wormholes-<version>.jar` from `./gradlew shadowJar`; the `-api.jar` is compile-only |
 | First start | Dependency-repository access for SlimJar, or a prewarmed SlimJar cache |
 
@@ -34,6 +34,9 @@ Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
 3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
    have no schema or a wrong schema. The file must use `schema = 3`.
 4. Apply config changes with `/wormholes reload` or the config file watcher.
+
+WorldGuard is optional but is not declared as a soft dependency. Wormholes
+detects it reflectively when checking RTP destinations.
 
 Upgrading is a hard break. Back up any values you need, then delete the obsolete
 `plugins/Wormholes/config/` directory; deleting it removes its local changes.
@@ -374,7 +377,7 @@ identity, portals, and doors. That command needs `wormholes.admin.reset`.
 
 ## Related docs
 
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — reload, debug, stats, network commands
-- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) — network keys in operation
-- [11 - Localization](/wormholes/11-localization) — `language` / overrides
-- [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) — traversal API contract
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions), reload, debug, stats, and network commands
+- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), network keys in operation
+- [11 - Localization](/wormholes/11-localization), language and override behavior
+- [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events), traversal API contract

@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -253,7 +253,7 @@ Rules the parser enforces: at most 3 rows of 3, all rows the same width (a short
 row is padded, so a lost trailing space is harmless), every slot symbol has an
 ingredient, and every ingredient is actually used by the shape. A recipe that
 breaks one of those, or that names a block this server does not have, is logged
-and falls back to its shipped recipe — a typo never leaves a product silently
+and falls back to its shipped recipe. A typo never leaves a product silently
 uncraftable.
 
 The reskin recipes have no configurable grid because their result is derived

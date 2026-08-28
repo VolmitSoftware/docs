@@ -1,47 +1,36 @@
 ---
 title: "Rift World Manager"
-description: "Legacy world creation, loading, import, unload, deletion, and teleportation"
+description: "Safe world creation, import, lifecycle, quarantine, restore, and teleport management"
 published: true
-date: 2026-08-27T00:00:00.000Z
-tags: "rift, legacy, world-management"
+date: 2026-08-28T00:00:00.000Z
+tags: "rift, world-management, bukkit, paper, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift 2.0.2 is a lightweight world manager for creating, importing, loading,
-unloading, listing, deleting, and entering Bukkit worlds.
+Rift manages Bukkit worlds through public APIs, validated TOML profiles, and recoverable lifecycle operations. The 3.0 rebuild uses Java 17 bytecode, contains no CraftBukkit or NMS binding, and replaces direct deletion with a confirmed quarantine-and-restore flow.
 
 | | |
 |---|---|
-| Status | Legacy; source repository archived |
-| Audited version | 2.0.2 |
-| Server target | Spigot 1.19 / CraftBukkit `v1_19_R1` |
-| Build/runtime Java | 17 |
-| Command | `/rift` (`/rft`, `/ri`, `/rt`) |
-| Permissions | `rift.admin`, plus `rift.teleport` for `/rift to` |
-| Folia | Unsupported |
-
-> **Do not deploy this build as a general-purpose world manager without reviewing
-> the audit.** `/rift delete` recursively deletes the path supplied to it without
-> validating that the path is a world, and deletion-queue persistence is broken.
-> Use a full server backup and prefer stopped-server, manual deletion.
-{.is-danger}
-
-These pages document the archived source as it exists. They are not a claim of
-compatibility with current Paper, Spigot, or Minecraft releases.
+| Version | 3.0.0 |
+| Compiled API range | Spigot 1.20.1 through 26.2 |
+| Plugin bytecode | Java 17 |
+| Server Java | The Java version required by the selected server, at least Java 17 |
+| Command | `/rift` (`/rft`) |
+| Storage | TOML configuration, profiles, and quarantine manifests |
+| Folia | Loads safely; dynamic world create/load/unload operations are gated |
 
 ### Start here
 
-- [Overview *Scope, concepts, and lifecycle*](/rift/00-overview)
-- [Installation & Compatibility *Exact 1.19 binding and source build*](/rift/01-installation-compatibility)
-- [Commands & Permissions *Syntax, generators, and safety notes*](/rift/02-commands-permissions)
-- [Storage & Operations *Files, backups, recovery, and safer procedures*](/rift/03-storage-operations)
-- [Code Audit *Findings, impact, and remediation priorities*](/rift/04-code-audit)
+- [Overview *World states, lifecycle, and safety model*](/rift/00-overview)
+- [Installation & Compatibility *Server range, Java, build, and Folia limits*](/rift/01-installation-compatibility)
+- [Commands & Permissions *Complete syntax and permission nodes*](/rift/02-commands-permissions)
+- [Storage & Operations *Profiles, quarantine, protection, and recovery*](/rift/03-storage-operations)
+- [Configuration & Localization *Hot reload, editor, and language overrides*](/rift/04-configuration-localization)
 {.links-list}
 
 ## Support and source
 
 - [Source *github.com/VolmitSoftware/Rift*](https://github.com/VolmitSoftware/Rift)
-- [Audited revision *26a5324, 8 June 2022*](https://github.com/VolmitSoftware/Rift/tree/26a532424716da8a708cd16e83917614065cd64d)
 - [Discord *Community and development chat*](https://volmitsoftware.com/discord)
 {.links-list}

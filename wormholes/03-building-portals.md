@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ attach after the portal exists.
 
 | Item | Material | Craft recipe registered? |
 |------|----------|--------------------------|
-| Portal Wand | Enchanted blaze rod | Yes — `portal_wand` |
+| Portal Wand | Enchanted blaze rod | Yes, `portal_wand` |
 | Portal Rune | Enchanted prismarine | No; recognized only for legacy placed items |
 | Wormhole Rune | Enchanted dark prismarine | No; supplied by an administrator |
 

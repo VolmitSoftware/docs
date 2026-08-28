@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -195,7 +195,7 @@ node. Review permission assignments after renames.
 
 ## Related docs
 
-- [01 - Installation & Configuration](/wormholes/01-installation-configuration) — reload targets
-- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) — network/server command workflows
-- [07 - Dimensional Doors](/wormholes/07-dimensional-doors) — door items and access bypass
-- [03 - Building Portals](/wormholes/03-building-portals) — wand / rune construction
+- [01 - Installation & Configuration](/wormholes/01-installation-configuration), reload targets
+- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), network and server command workflows
+- [07 - Dimensional Doors](/wormholes/07-dimensional-doors), door items and access bypass
+- [03 - Building Portals](/wormholes/03-building-portals), wand and rune construction

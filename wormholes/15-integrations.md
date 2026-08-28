@@ -1,8 +1,8 @@
 ---
 title: "Integrations"
-description: "Wormholes documentation: Integrations"
+description: "PlaceholderAPI, Vault, Iris, Citizens, WorldGuard, metrics, and internal libraries"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

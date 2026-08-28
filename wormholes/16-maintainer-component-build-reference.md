@@ -1,8 +1,8 @@
 ---
 title: "Maintainer Component & Build Reference"
-description: "Wormholes documentation: Maintainer Component & Build Reference"
+description: "Runtime entry points, package ownership, internal boundaries, and build tasks"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,7 +81,7 @@ Enable and teardown order are documented in
 
 ## Build and verification tasks
 
-Run tasks from `WormholesPlugin/` with Java 25.
+Run tasks from the `Wormholes` repository root with Java 25.
 
 | Task | Result |
 |------|--------|

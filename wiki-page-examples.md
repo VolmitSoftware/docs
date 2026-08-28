@@ -1,5 +1,5 @@
 ---
-title: "Wiki.js Page Kitchen Sink"
+title: "Wiki.js Page Examples"
 description: "Rendered examples and copyable patterns for building Volmit Wiki.js pages"
 published: true
 date: 2026-08-27T00:00:00.000Z
@@ -12,6 +12,10 @@ Use this page as the design and prompting reference for this documentation
 repository. It demonstrates standard Markdown, Wiki.js-specific features,
 renderer-dependent extensions, raw HTML, default-theme utility classes, and
 safe CSS patterns on one page.
+
+For complete rendered page compositions, responsive card systems, heroes,
+dashboards, timelines, and navigation patterns, use the companion
+[Wiki.js CSS & Layout Gallery](/wiki-css-layout-examples).
 
 > **Reusable prompt:** Using `/wiki-page-examples` as the Wiki.js design
 > reference, create or update `<route>`. Use standard Markdown and stable
@@ -799,44 +803,6 @@ Before asking for a page, decide:
 - [ ] Are destructive actions marked as danger and compatibility issues as warning?
 - [ ] Is every command, setting, and behavior verified against source?
 - [ ] Do all internal links use absolute wiki routes?
-
-## Prompt examples {#prompt-examples}
-
-### Conservative documentation page
-
-~~~text
-Using /wiki-page-examples as the reference, create a Wiki.js operator guide at
-/plugin/03-configuration. Use Tier A features only: frontmatter, clear headings,
-dense setting tables, code examples, and Wiki.js alerts. Do not use raw HTML or
-optional rendering modules. Verify every setting against source.
-~~~
-
-### Rich landing page
-
-~~~text
-Using /wiki-page-examples as the reference, redesign /plugin as a responsive
-Wiki.js landing page. You may use raw HTML and the existing Vuetify utility
-classes, but no custom JavaScript. Include a compact hero, six responsive cards,
-two links-list groups, and clear mobile stacking. Preserve dark-mode readability.
-~~~
-
-### Diagram-heavy architecture page
-
-~~~text
-Using /wiki-page-examples as the reference, create /plugin/architecture with
-Tier A content plus Mermaid and tabsets. Start with a text explanation, then add
-one flowchart and tabs for Paper, Folia, and Spigot. Ensure the page remains
-understandable if Mermaid is disabled.
-~~~
-
-### Custom CSS component
-
-~~~text
-Using /wiki-page-examples as the reference, create a raw-HTML feature comparison
-component and provide separately scoped Wiki.js Theme CSS. Prefix every selector
-with #root .contents #plugin-comparison, include dark-mode and mobile rules, and
-do not use JavaScript or iframes.
-~~~
 
 ## Research references {#research-references}
 

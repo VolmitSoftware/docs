@@ -1,66 +1,45 @@
 ---
 title: "Rift — Overview"
-description: "What Rift 2.0.2 manages and how its world lifecycle works"
+description: "World states, lifecycle behavior, and the Rift safety model"
 published: true
-date: 2026-08-27T00:00:00.000Z
-tags: "rift, legacy, world-management"
+date: 2026-08-28T00:00:00.000Z
+tags: "rift, world-management, lifecycle, safety"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift wraps Bukkit's `WorldCreator` and world unload APIs in a small Brigadier
-command tree. It also remembers imported worlds in JSON files and attempts to
-load them during the next server startup.
+Rift separates a Bukkit world's live state, filesystem state, and managed profile. This lets operators inspect missing or unloaded worlds without treating every directory as safe to mutate.
 
-## What Rift manages
+## World states
 
-Rift recognizes three useful categories when `/rift list` runs:
-
-| Label | Meaning |
+| State | Meaning |
 |---|---|
-| `Managed` | The world is loaded and has `plugins/Rift/worlds/<name>.json` |
-| `bukkit.yml` | The loaded world is listed under `worlds:` in `bukkit.yml` |
-| `Loaded` | Bukkit has the world loaded, but Rift has no record for it |
-| `Not Loaded` | A server-root directory contains `level.dat`, but Bukkit has not loaded it |
+| Loaded | Bukkit currently exposes the world |
+| Managed | `plugins/Rift/worlds/<name>.toml` contains a validated Rift profile |
+| On disk | A direct child of the server world container contains a regular `level.dat` |
+| Quarantined | The directory was moved to `<world-container>/.rift-trash/<id>` and has a matching manifest |
 
-`create` and `import` produce a managed record. `load` only loads a world; it
-does not make that world managed. `unload` preserves a managed record, while
-`delete` attempts to remove both the directory and its record.
+`/rift list` combines these sources. `/rift info <name>` shows loaded, managed, on-disk, generator, seed, auto-load, protection, and active-operation state for one world.
 
-## Generator strings
+## Managed profiles
 
-The generator argument is passed to Bukkit as a generator identifier. Rift also
-recognizes `flat`, `amplified`, and `largebiomes` when choosing a `WorldType`;
-everything else uses `NORMAL`. A plugin generator may use a value such as
-`Iris:overworld` if that generator plugin is already installed and compatible.
+Creating or importing a world writes a profile containing its canonical name, environment, generator, world type, recorded seed, startup auto-load flag, and protection flag. Rift validates all profiles before replacing the active in-memory profile set; an invalid manual reload leaves the previous valid set active.
 
-Rift can display potential generator names with `/rift generators`. Detection is
-best-effort: it asks each installed plugin for a default generator using the
-dummy world name `testworld`.
+`/rift load` can load a discovered on-disk world without making it managed. Use `/rift import` when the world should receive a profile and optional startup loading.
 
-## Startup lifecycle
+## Safety model
 
-On enable, Rift:
+- World arguments are names, never paths. Names are limited to a portable character set and must resolve to one direct child of the configured world container.
+- Rift rejects traversal, path separators, symbolic-link world directories, operating-system device names, and directories without a regular `level.dat`.
+- The primary world, its Nether and End companions, the configured evacuation world, and protected profiles cannot be unloaded or quarantined.
+- Only managed worlds can be quarantined. The same sender must issue the same delete command twice within the configured confirmation window.
+- Quarantine moves the directory rather than recursively deleting it. `/rift restore <id>` returns the directory and profile when the destination is clear.
+- A per-world operation lock prevents overlapping lifecycle or profile changes for the same world.
 
-1. Reads every `plugins/Rift/worlds/*.json` file.
-2. Tries to resume paths recorded in `plugins/Rift/config.json` for deletion.
-3. Calls `WorldCreator` for each managed record.
-4. Reads the `worlds:` section of `bukkit.yml` and loads entries not already loaded.
-5. Registers `/rift` directly with Minecraft's internal Brigadier dispatcher.
+## Schedulers and platform behavior
 
-The implementation has defects in steps 2, 3, and 5. Stored seed, environment,
-and type are not faithfully restored, the deletion queue can turn `config.json`
-into JSON `null`, and command registration is hard-bound to `v1_19_R1`. See the
-[code audit](/rift/04-code-audit) before relying on restart recovery.
+Disk parsing and profile writes run asynchronously. World creation, loading, unloading, and movement are sent through the server's global scheduler, while player messages, menus, and teleport completion return through entity schedulers.
 
-## Operational boundaries
-
-- Treat every world argument as a simple server-root world name, not a path.
-- Stop the server before copying, moving, or manually deleting world folders.
-- Keep a full backup outside the server directory.
-- Do not hot-reload Rift or the server.
-- Do not grant its permissions to routine moderators or players.
-- Do not assume a success message proves a world unloaded or a directory deleted;
-  several Bukkit and filesystem return values are ignored.
+Folia currently does not implement the dynamic Bukkit world create/load/unload APIs needed by a world manager. Rift declares Folia support so its read, diagnostics, editor, profile, and teleport features can load, but it rejects create, import, load, unload, quarantine, and restore before calling those unsupported APIs.
 
 Next: [Installation & Compatibility](/rift/01-installation-compatibility)

@@ -1,8 +1,8 @@
 ---
 title: "API - Metrics & Integration Contract"
-description: "Wormholes documentation: API - Metrics & Integration Contract"
+description: "Discover Wormholes metrics through the VolmLib integration service"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -100,7 +100,7 @@ no numeric value and carries the reason in `message()`.
 ## Unavailable vs zero
 
 When a backing subsystem is not started, Wormholes returns **unavailable** with
-a reason string — not a numeric zero.
+a reason string, not a numeric zero.
 
 | Reason (examples) | Subsystem |
 |-------------------|-----------|

@@ -51,8 +51,10 @@ changes and preserve `dateCreated`.
 
 ## Conventions
 
-- Use [Wiki.js Page Kitchen Sink](/wiki-page-examples) as the rendered design,
-  feature, CSS, and prompting reference.
+- Use [Wiki.js Page Examples](/wiki-page-examples) for syntax, renderer
+  features, and prompting patterns.
+- Use [Wiki.js CSS & Layout Gallery](/wiki-css-layout-examples) for heroes,
+  navigation cards, dashboards, timelines, and responsive page compositions.
 - Use absolute internal links such as `/iris/commands`. Do not use `iris/commands.md`.
 - Write command syntax as `<required>` and `[optional]`.
 - Mark a destructive operation with `{.is-warning}` or `{.is-danger}`.

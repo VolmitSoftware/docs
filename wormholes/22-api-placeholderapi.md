@@ -1,8 +1,8 @@
 ---
 title: "API - PlaceholderAPI"
-description: "Wormholes documentation: API - PlaceholderAPI"
+description: "Consume Wormholes placeholders safely from another plugin"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

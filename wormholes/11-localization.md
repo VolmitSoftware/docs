@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Locales, overrides, and fallbacks"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -136,5 +136,5 @@ catalog.
 
 ## Related docs
 
-- [01 - Installation & Configuration](/wormholes/01-installation-configuration) — `language` / `language-fallbacks` defaults
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — reload command
+- [01 - Installation & Configuration](/wormholes/01-installation-configuration), `language` and `language-fallbacks` defaults
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions), reload command
