@@ -23,6 +23,7 @@ setup information is visible without reading the whole page.
 <nav aria-label="Page sections" style="display:flex;gap:.55rem;flex-wrap:wrap;margin:1.25rem 0 1.5rem">
   <a href="#progression" style="padding:.48rem .78rem;border:1px solid rgba(127,127,127,.28);border-radius:999px;color:inherit;text-decoration:none">Progression</a>
   <a href="#play-styles" style="padding:.48rem .78rem;border:1px solid rgba(127,127,127,.28);border-radius:999px;color:inherit;text-decoration:none">Play styles</a>
+  <a href="#skill-tree" style="padding:.48rem .78rem;border:1px solid rgba(127,127,127,.28);border-radius:999px;color:inherit;text-decoration:none">TragOul tree</a>
   <a href="#start-here" style="padding:.48rem .78rem;border:1px solid rgba(127,127,127,.28);border-radius:999px;color:inherit;text-decoration:none">Start here</a>
   <a href="#operators" style="padding:.48rem .78rem;border:1px solid rgba(127,127,127,.28);border-radius:999px;color:inherit;text-decoration:none">Operators</a>
   <a href="#implementation" style="padding:.48rem .78rem;border:1px solid rgba(127,127,127,.28);border-radius:999px;color:inherit;text-decoration:none">CSS notes</a>
@@ -295,6 +296,476 @@ points, not classes; a player can progress in any combination.
     </div>
   </div>
 </section>
+
+## Complete skill tree: TragOul {#skill-tree}
+
+TragOul is Adapt's blood skill. Taking damage raises the line; surviving a hit
+at four hearts or less pays bonus XP. Its fourteen adaptations trade pain,
+bones, health, and risk for recovery, retaliation, curses, servants, and
+corpse effects.
+
+> Adaptations under a skill are independent purchases, not prerequisite
+> branches. The four branches below organize the complete TragOul set by
+> behavior; they do not add unlock order or requirements.
+{.is-info}
+
+<section aria-label="Complete TragOul skill tree" style="padding:clamp(1rem,3vw,1.6rem);border:1px solid rgba(127,127,127,.24);border-radius:22px;background:radial-gradient(circle at 50% 0,rgba(216,47,53,.12),transparent 30%),rgba(127,127,127,.025)">
+  <div style="max-width:590px;margin:0 auto;padding:1.4rem;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(135deg,#171416,#471518);color:#fff;text-align:center;box-shadow:0 16px 36px rgba(37,10,13,.2)">
+    <span style="display:inline-block;padding:.27rem .58rem;border-radius:999px;background:rgba(255,255,255,.08);font-size:.7rem;font-weight:900;letter-spacing:.1em;color:rgba(255,255,255,.76)">SKILL ROOT</span>
+    <h3 style="margin:.55rem 0 .35rem;font-size:clamp(1.7rem,5vw,2.6rem)">TragOul</h3>
+    <p style="margin:0;line-height:1.55;color:rgba(255,255,255,.78)">Earn XP by taking damage and surviving it. Low-health survival pays extra.</p>
+    <div style="display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;margin-top:.9rem;font-size:.78rem">
+      <span style="padding:.3rem .55rem;border-radius:999px;background:rgba(239,57,62,.17)">14 adaptations</span>
+      <span style="padding:.3rem .55rem;border-radius:999px;background:rgba(239,57,62,.17)">Icon: Crimson Roots</span>
+      <span style="padding:.3rem .55rem;border-radius:999px;background:rgba(239,57,62,.17)">High-risk sustain</span>
+    </div>
+  </div>
+  <div aria-hidden="true" style="width:2px;height:30px;margin:0 auto;background:linear-gradient(#d82f35,rgba(127,127,127,.38))"></div>
+  <div aria-hidden="true" style="width:min(84%,900px);height:2px;margin:0 auto 1rem;background:linear-gradient(90deg,transparent,rgba(216,47,53,.5) 10%,rgba(216,47,53,.5) 90%,transparent)"></div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:1rem">
+    <article style="padding:1rem;border-top:4px solid #d82f35;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
+        <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#d82f35;color:#fff">↩</span>
+        <div><strong style="display:block">Retaliation</strong><small style="opacity:.66">Make attackers regret the hit</small></div>
+      </div>
+      <div style="display:grid;gap:.6rem">
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Thorns</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Reflect flat damage to whoever hits you, including projectile shooters.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Globe of Pain</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Split a melee hit across the target and nearby valid mobs.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Curse of Frailty</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Attackers receive Weakness and, at higher progression, Slowness.</span>
+        </div>
+      </div>
+    </article>
+
+    <article style="padding:1rem;border-top:4px solid #2b9ea5;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
+        <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#237f85;color:#fff">+</span>
+        <div><strong style="display:block">Sustain</strong><small style="opacity:.66">Live through the next exchange</small></div>
+      </div>
+      <div style="display:grid;gap:.6rem">
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Will of Pain</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Drain a fixed amount from an attacker and heal the life it actually loses.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Soul Siphon</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Heal from credited damage, with a per-second recovery cap.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Blood Pact</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Large hits can grant a random bundle of temporary combat buffs.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Marrow Armor</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Consume one carried bone to absorb part of a sufficiently large hit.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Last Rites</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Refuse a lethal hit, remain at 1 HP, and briefly escape under spirit effects.</span>
+        </div>
+      </div>
+    </article>
+
+    <article style="padding:1rem;border-top:4px solid #8a858a;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
+        <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#4d494d;color:#fff">☠</span>
+        <div><strong style="display:block">Deathcraft</strong><small style="opacity:.66">Turn kills into a battlefield engine</small></div>
+      </div>
+      <div style="display:grid;gap:.6rem">
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Corpse Lances</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Launch a seeking lance from a kill; chains cost your own health on impact.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Bone Harvest</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Kills can drop collectible blood or bone globes with temporary benefits.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Corpse Explosion</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Detonate slain mobs into bounded novas that damage nearby hostiles.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Skeletal Servant</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Spend bones and maximum health to raise a temporary fighting pack.</span>
+        </div>
+      </div>
+    </article>
+
+    <article style="padding:1rem;border-top:4px solid #8d57a7;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
+        <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#714188;color:#fff">◉</span>
+        <div><strong style="display:block">Affliction</strong><small style="opacity:.66">Track weakness and spread decay</small></div>
+      </div>
+      <div style="display:grid;gap:.6rem">
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Death Sense</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">See wounded nearby creatures through walls with health-colored outlines.</span>
+        </div>
+        <div style="padding:.78rem;border:1px solid rgba(127,127,127,.22);border-radius:10px;background:rgba(127,127,127,.045)">
+          <strong>Plague Bearer</strong>
+          <span style="display:block;margin-top:.22rem;font-size:.88rem;line-height:1.45;opacity:.74">Spread your poison or wither to nearby mobs when the marked target dies.</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+### Example TragOul loadouts
+
+These combinations illustrate how the nodes can work together. They are not
+presets, and the number of levels a player can hold still depends on ability
+power, server configuration, permissions, and adaptation costs.
+
+<section aria-label="Example TragOul loadouts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:1rem">
+  <article style="display:flex;flex-direction:column;padding:1.15rem;border:1px solid rgba(43,158,165,.34);border-radius:15px;background:linear-gradient(145deg,rgba(43,158,165,.1),rgba(43,158,165,.025))">
+    <span style="font-size:.72rem;font-weight:900;letter-spacing:.09em;opacity:.68">RECOVERY-FIRST</span>
+    <h3 style="margin:.45rem 0 .55rem">The Survivor</h3>
+    <p style="margin:0 0 .8rem;line-height:1.55;opacity:.76">Will of Pain restores life when an attacker connects. Soul Siphon rewards your counterattack. Last Rites creates one final escape window.</p>
+    <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-top:auto">
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(43,158,165,.14);font-size:.78rem">Will of Pain</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(43,158,165,.14);font-size:.78rem">Soul Siphon</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(43,158,165,.14);font-size:.78rem">Last Rites</span>
+    </div>
+  </article>
+  <article style="display:flex;flex-direction:column;padding:1.15rem;border:1px solid rgba(138,133,138,.36);border-radius:15px;background:linear-gradient(145deg,rgba(138,133,138,.11),rgba(138,133,138,.025))">
+    <span style="font-size:.72rem;font-weight:900;letter-spacing:.09em;opacity:.68">SUMMON & CASCADE</span>
+    <h3 style="margin:.45rem 0 .55rem">The Bone Commander</h3>
+    <p style="margin:0 0 .8rem;line-height:1.55;opacity:.76">Servants fight under your mark. Their kills can feed Corpse Explosion, while Bone Harvest turns the battlefield into collectible recovery and buffs.</p>
+    <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-top:auto">
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(138,133,138,.14);font-size:.78rem">Skeletal Servant</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(138,133,138,.14);font-size:.78rem">Corpse Explosion</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(138,133,138,.14);font-size:.78rem">Bone Harvest</span>
+    </div>
+  </article>
+  <article style="display:flex;flex-direction:column;padding:1.15rem;border:1px solid rgba(216,47,53,.34);border-radius:15px;background:linear-gradient(145deg,rgba(216,47,53,.1),rgba(216,47,53,.025))">
+    <span style="font-size:.72rem;font-weight:900;letter-spacing:.09em;opacity:.68">ABSORB & ANSWER</span>
+    <h3 style="margin:.45rem 0 .55rem">The Retaliator</h3>
+    <p style="margin:0 0 .8rem;line-height:1.55;opacity:.76">Marrow Armor softens large blows, Thorns answers the attacker, Curse of Frailty weakens it, and Blood Pact can turn pain into momentum.</p>
+    <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-top:auto">
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(216,47,53,.12);font-size:.78rem">Marrow Armor</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(216,47,53,.12);font-size:.78rem">Thorns</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(216,47,53,.12);font-size:.78rem">Curse of Frailty</span>
+      <span style="padding:.3rem .5rem;border-radius:999px;background:rgba(216,47,53,.12);font-size:.78rem">Blood Pact</span>
+    </div>
+  </article>
+</section>
+
+### Detailed node example: Skeletal Servant
+
+<section aria-label="Skeletal Servant detail" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));border:1px solid rgba(127,127,127,.25);border-radius:17px;overflow:hidden">
+  <div style="padding:clamp(1.2rem,3vw,1.8rem);background:linear-gradient(145deg,#171416,#3a3135);color:#fff">
+    <span style="display:inline-block;padding:.28rem .58rem;border-radius:999px;background:rgba(255,255,255,.08);font-size:.7rem;font-weight:900;letter-spacing:.09em">ACTIVE ADAPTATION</span>
+    <h3 style="margin:.65rem 0 .45rem;font-size:1.55rem">Skeletal Servant</h3>
+    <p style="margin:0;line-height:1.6;color:rgba(255,255,255,.76)">A clear example of Adapt's risk-and-reward design: the player gains a temporary fighting pack but commits resources and maximum health while it remains alive.</p>
+  </div>
+  <div style="padding:clamp(1.2rem,3vw,1.8rem);background:rgba(127,127,127,.045)">
+    <dl style="display:grid;grid-template-columns:minmax(80px,.45fr) minmax(0,1.55fr);gap:.7rem 1rem;margin:0">
+      <dt style="font-weight:800">Trigger</dt><dd style="margin:0">Sneak and right-click while holding bones.</dd>
+      <dt style="font-weight:800">Resource</dt><dd style="margin:0">Consumes bones; the required amount falls with level.</dd>
+      <dt style="font-weight:800">Capacity</dt><dd style="margin:0">One living servant per learned level.</dd>
+      <dt style="font-weight:800">Tradeoff</dt><dd style="margin:0">Each living servant lowers maximum health to a configured floor.</dd>
+      <dt style="font-weight:800">Inheritance</dt><dd style="margin:0">Servant attacks can use applicable TragOul effects such as siphon, curses, and plague.</dd>
+      <dt style="font-weight:800">Lifecycle</dt><dd style="margin:0">Servants expire; summoning at the cap recycles the oldest by default.</dd>
+    </dl>
+  </div>
+</section>
+
+### How TragOul XP is earned
+
+TragOul listens for damage to the player. A valid hit records the incoming raw
+damage, then awards XP when the skill cooldown is ready.
+
+<section aria-label="TragOul XP formula" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.8rem">
+  <article style="padding:1.1rem;border:1px solid rgba(216,47,53,.3);border-radius:14px;background:linear-gradient(145deg,rgba(216,47,53,.11),rgba(216,47,53,.025))">
+    <span style="font-size:.72rem;font-weight:900;letter-spacing:.09em;opacity:.68">BASE AWARD</span>
+    <strong style="display:block;margin:.45rem 0;font-size:1.25rem">raw damage × 4.8 XP</strong>
+    <span style="display:block;line-height:1.5;opacity:.75">Paid at most once per 450 ms by default.</span>
+  </article>
+  <article style="padding:1.1rem;border:1px solid rgba(43,158,165,.32);border-radius:14px;background:linear-gradient(145deg,rgba(43,158,165,.1),rgba(43,158,165,.025))">
+    <span style="font-size:.72rem;font-weight:900;letter-spacing:.09em;opacity:.68">SURVIVAL BONUS</span>
+    <strong style="display:block;margin:.45rem 0;font-size:1.25rem">+28 XP</strong>
+    <span style="display:block;line-height:1.5;opacity:.75">Added when the hit leaves the player alive at 8 health—four hearts—or less.</span>
+  </article>
+  <article style="padding:1.1rem;border:1px solid rgba(127,127,127,.26);border-radius:14px;background:rgba(127,127,127,.05)">
+    <span style="font-size:.72rem;font-weight:900;letter-spacing:.09em;opacity:.68">NO AWARD</span>
+    <strong style="display:block;margin:.45rem 0;font-size:1.05rem">Blocked or invalid hits</strong>
+    <span style="display:block;line-height:1.5;opacity:.75">No credit while dead, invulnerable, or actively blocking the hit with a shield.</span>
+  </article>
+</section>
+
+#### XP examples
+
+| Situation | Calculation | Result |
+|---|---:|---:|
+| Valid hit for 2 raw damage | `2 × 4.8` | `9.6 XP` |
+| Valid hit for 6 raw damage | `6 × 4.8` | `28.8 XP` |
+| The same 6-damage hit leaves the player at four hearts | `(6 × 4.8) + 28` | `56.8 XP` |
+| Another hit arrives before the 450 ms award cooldown expires | Stats still record the hit; no new award | `0 XP` |
+| The player blocks the hit with a shield | Rejected before stats and XP | `0 XP` |
+{.dense}
+
+The base award uses raw event damage. The low-health check uses the health that
+would remain after final mitigated damage. This distinction matters when armor,
+Resistance, or another plugin changes the final hit.
+
+#### Dedicated adaptation XP
+
+Nine TragOul adaptations add their own event XP on top of the skill's
+damage-received path.
+
+| Adaptation | Config key | Default award |
+|---|---|---:|
+| Blood Pact | `xpPerProc` | `24` per proc |
+| Bone Harvest | `xpPerGlobeSpawned` | `8` per globe spawned |
+| Corpse Explosion | `xpPerMobHit` | `6` per mob damaged by the nova |
+| Soul Siphon | `xpPerHeal` | `3` per siphon heal |
+| Skeletal Servant | `xpPerSummon` | `30` per summon |
+| Marrow Armor | `xpPerAbsorb` | `8` per absorbed hit |
+| Curse of Frailty | `xpPerCurse` | `5` per curse applied |
+| Plague Bearer | `xpPerInfection` | `6` per infected mob |
+| Last Rites | `xpPerSave` | `120` per death defied |
+{.dense}
+
+### TragOul skill configuration
+
+Adapt writes this file on first load:
+
+```text
+plugins/Adapt/skills/tragoul.toml
+```
+
+| Key | Default | Meaning |
+|---|---:|---|
+| `enabled` | `true` | Registers and runs the TragOul skill |
+| `skillColor` | `"&b"` | Legacy color used in menus and messages |
+| `showParticles` | `true` | Shows TragOul's skill-level damage and death effects |
+| `cooldownDelay` | `450` | Milliseconds between damage-received XP awards |
+| `damageReceivedXpMultiplier` | `4.8` | XP paid per point of raw incoming damage |
+| `lowHealthSurvivalXP` | `28` | Bonus XP after surviving at four hearts or less |
+| `challengeTragReward` | `500` | Base knowledge reward for TragOul skill milestones |
+| `takeAwaySkillsOnDeath` | `false` | When enabled, death removes XP and lowers every learned TragOul adaptation by one level |
+| `deathXpLoss` | `250` | XP removed by that optional death penalty, never below zero |
+{.dense}
+
+Example with the code defaults:
+
+```toml
+enabled = true
+skillColor = "&b"
+showParticles = true
+
+cooldownDelay = 450
+damageReceivedXpMultiplier = 4.8
+lowHealthSurvivalXP = 28
+challengeTragReward = 500
+
+takeAwaySkillsOnDeath = false
+deathXpLoss = 250
+```
+
+Valid skill and adaptation TOML edits hot-reload. A malformed edit is rejected
+and the last valid in-memory configuration keeps running. Back up customized
+files before using an administrative default/reset command.
+
+#### Global settings that also affect TragOul
+
+| File | Setting | Effect |
+|---|---|---|
+| `plugins/Adapt/adapt.toml` | `xpCurve` | Converts TragOul XP into skill level |
+| `plugins/Adapt/adapt.toml` | `experienceMaxLevel` | Caps the skill line; the default is `1000` |
+| `plugins/Adapt/adapt.toml` | `powerPerLevel` | Builds the shared ability-power budget; default `0.65` |
+| `plugins/Adapt/adapt.toml` | `blacklistedWorlds` | Suppresses skill XP and adaptation effects in listed worlds |
+| `plugins/Adapt/adapt.toml` | `allowAdaptationsInCreative` | Allows adaptation effects in Creative when enabled |
+| `plugins/Adapt/adapt.toml` | `adaptationUsageConflicts` | Prevents configured adaptation pairs from running together |
+{.dense}
+
+The default `ADAPT_BALANCED` XP curve reaches skill level `L` at
+`100 × L² + 1200 × L` XP. See
+[Configuration Math](/adapt/05-configuration-math) before changing the curve
+or multiplier: they compound.
+
+### Death behavior
+
+<section aria-label="TragOul death behavior" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.8rem">
+  <article style="padding:1rem;border:1px solid rgba(43,158,165,.3);border-radius:13px;background:rgba(43,158,165,.06)">
+    <strong>Default</strong>
+    <span style="display:block;margin-top:.35rem;line-height:1.5;opacity:.76">Death does not remove TragOul XP or adaptation levels.</span>
+  </article>
+  <article style="padding:1rem;border:1px solid rgba(216,47,53,.3);border-radius:13px;background:rgba(216,47,53,.06)">
+    <strong>TragOul penalty enabled</strong>
+    <span style="display:block;margin-top:.35rem;line-height:1.5;opacity:.76"><code>takeAwaySkillsOnDeath = true</code> removes up to <code>deathXpLoss</code> XP and lowers each learned TragOul adaptation one level.</span>
+  </article>
+  <article style="padding:1rem;border:1px solid rgba(127,127,127,.27);border-radius:13px;background:rgba(127,127,127,.05)">
+    <strong>Global hardcore reset</strong>
+    <span style="display:block;margin-top:.35rem;line-height:1.5;opacity:.76">Adapt's global hardcore reset takes precedence and wipes the player's complete skill data instead.</span>
+  </article>
+</section>
+
+### Skill milestones
+
+TragOul tracks damage survived and the number of hits received. The
+`trag.hitsrecieved` spelling is intentional and matches the stored stat key.
+
+| Advancement | Stored stat | Threshold | Knowledge reward |
+|---|---|---:|---:|
+| `challenge_trag_1k` | `trag.damage` | `1,000` | `500` |
+| `challenge_trag_10k` | `trag.damage` | `10,000` | `1,000` |
+| `challenge_trag_100k` | `trag.damage` | `100,000` | `2,500` |
+| `challenge_trag_hits_500` | `trag.hitsrecieved` | `500` hits | `500` |
+| `challenge_trag_hits_5k` | `trag.hitsrecieved` | `5,000` hits | `1,000` |
+{.dense}
+
+### Adaptation reference
+
+Each adaptation has its own file under
+`plugins/Adapt/adaptations/<id>.toml`. Every TragOul adaptation has five
+levels. At default settings, one learned level also consumes one point from the
+player's shared ability-power budget.
+
+| Adaptation | ID | Main trigger | Initial / base / factor |
+|---|---|---|---:|
+| Thorns | `tragoul-thorns` | The player is struck | `4 / 4 / 0.72` |
+| Globe of Pain | `tragoul-globe` | The player lands a melee hit near other mobs | `4 / 4 / 0.72` |
+| Will of Pain | `tragoul-healing` | A living attacker damages the player | `4 / 4 / 0.72` |
+| Corpse Lances | `tragoul-lance` | A credited kill starts a seeking chain | `4 / 4 / 0.72` |
+| Blood Pact | `tragoul-blood-pact` | A sufficiently large incoming hit rolls a proc | `4 / 4 / 0.62` |
+| Bone Harvest | `tragoul-bone-harvest` | A credited kill can spawn a collectible globe | `4 / 4 / 0.72` |
+| Corpse Explosion | `tragoul-corpse-explosion` | A credited kill starts a bounded nova | `4 / 4 / 0.72` |
+| Soul Siphon | `tragoul-soul-siphon` | Credited final damage heals the player | `4 / 4 / 0.72` |
+| Skeletal Servant | `tragoul-skeletal-servant` | Sneak-right-click with bones | `5 / 5 / 0.75` |
+| Marrow Armor | `tragoul-marrow-armor` | A large hit while carrying bones | `4 / 4 / 0.72` |
+| Curse of Frailty | `tragoul-curse-of-frailty` | An attacker damages the player | `4 / 4 / 0.72` |
+| Death Sense | `tragoul-death-sense` | Passive scan of wounded nearby entities | `3 / 3 / 0.60` |
+| Plague Bearer | `tragoul-plague-bearer` | A marked poisoned or withered mob dies | `4 / 4 / 0.72` |
+| Last Rites | `tragoul-last-rites` | An incoming hit would be lethal | `6 / 6 / 0.85` |
+{.dense}
+
+The final column shows `initialCost / baseCost / costFactor`. Knowledge cost
+for level `L` is `max(1, baseCost + baseCost × L × costFactor)`, with the
+initial cost added when buying level 1. Buying several levels pays every step,
+not only the target level.
+
+#### Shared adaptation settings
+
+Every `tragoul-*.toml` adaptation file also carries these common keys:
+
+| Key | Purpose |
+|---|---|
+| `enabled` | Registers and allows this adaptation |
+| `permanent` | Prevents normal unlearning when enabled |
+| `showParticles` | Allows this adaptation's particle effects |
+| `showSounds` | Allows this adaptation's sounds |
+| `initialCost` | Extra knowledge charged for level 1 |
+| `baseCost` | Starting value in the per-level knowledge formula |
+| `costFactor` | Growth applied as levels rise |
+| `maxLevel` | Highest purchasable level |
+{.dense}
+
+### Adaptation milestones
+
+| Adaptation | Tracked achievement | Thresholds and rewards |
+|---|---|---|
+| Thorns | Damage reflected | `500 → 400`, `5,000 → 1,500`; one-off reflected kill |
+| Globe of Pain | Mobs sharing damage | `1,000 → 400`; one-off five-target share |
+| Will of Pain | Health stolen | `500 → 400`, `10,000 → 1,500` |
+| Corpse Lances | Lances connected / lance kills | `200 → 400`; `100 kills → 1,000` |
+| Blood Pact | Health sacrificed / empowered kills | `200 → 400`; `500 kills → 1,000`; one-off all-in kill |
+| Bone Harvest | Globes collected | `500 → 300`, `5,000 → 1,000` |
+| Corpse Explosion | Mobs detonated | `500 → 400`, `5,000 → 1,500` |
+| Soul Siphon | Health siphoned | `500 → 400`, `10,000 → 1,500` |
+| Skeletal Servant | Servants summoned | `50 → 400`, `500 → 1,500` |
+| Marrow Armor | Damage absorbed | `500 → 400`, `5,000 → 1,500` |
+| Curse of Frailty | Curses applied | `100 → 400`, `1,000 → 1,500` |
+| Death Sense | Wounded prey sensed | `1,000 → 600` |
+| Plague Bearer | Mobs infected | `100 → 400`, `1,000 → 1,500` |
+| Last Rites | Deaths defied | `5 → 500`, `50 → 2,000` |
+{.dense}
+
+### Full tuning example: Skeletal Servant
+
+Skeletal Servant shows the level of control available in a single adaptation
+file:
+
+```text
+plugins/Adapt/adaptations/tragoul-skeletal-servant.toml
+```
+
+| Key | Default | Behavior |
+|---|---:|---|
+| `boneCostBase` | `8` | Bones required at the start of the level scale |
+| `boneCostReduction` | `5` | Reduction at full level percent; final cost never below 1 |
+| `durationTicksBase` | `400` | Base servant lifetime |
+| `durationTicksFactor` | `800` | Lifetime added at full level percent |
+| `cooldownMillisBase` | `10000` | Base summon cooldown |
+| `cooldownMillisFactor` | `9000` | Cooldown removed at full level percent; final cooldown never below 1000 ms |
+| `servantCapPerLevel` | `1.0` | Living servants allowed per learned level, hard-capped at 16 |
+| `replaceOldestAtCap` | `true` | Recycles the oldest servant instead of rejecting a summon |
+| `playerThreatWindowMillis` | `5000` | Time the last attacker or attacked target remains the pack's mark |
+| `gearChancePerPiece` | `0.55` | Chance for each armor slot to receive gear |
+| `enchantChanceBase` | `0.0` | Starting enchant chance |
+| `enchantChanceFactor` | `0.45` | Enchant chance added at full level percent |
+| `bowChance` | `0.3` | Chance to spawn with a bow instead of a sword |
+| `healthBonusPerLevel` | `3.0` | Servant maximum-health points added per learned level |
+| `attackBonusPerLevel` | `1.0` | Servant attack-damage points added per learned level |
+| `retargetIntervalTicks` | `20` | Delay between retarget passes |
+| `targetSearchRadius` | `12` | Hostile-mob search radius, capped at 24 |
+| `xpPerSummon` | `30` | TragOul XP awarded per successful summon |
+| `healthCostEnabled` | `true` | Enables owner maximum-health upkeep |
+| `healthCostPerMinion` | `2.0` | Owner maximum-health points removed per living servant |
+| `minimumOwnerMaxHealth` | `4.0` | Lowest maximum health the upkeep may leave |
+{.dense}
+
+Servants do not burn in daylight, drop no loot, and expire. Their gear scales
+with level. They inherit applicable TragOul combat effects and route their kills
+through Corpse Explosion. Creative mode skips the bone cost.
+
+### Permissions and runtime gates
+
+| Gate | Default behavior |
+|---|---|
+| Skill permission | `adapt.use.tragoul`, default true |
+| Adaptation permission | `adapt.use.<id-without-hyphens>`, such as `adapt.use.tragoulthorns`, default true |
+| Unset use node | Treated as allowed; explicitly set a node to false to deny it |
+| Operator/debug bypass | Operators and players in Adapt debug mode bypass use checks |
+| World | No XP or effects in `blacklistedWorlds` |
+| Game mode | Effects refuse Spectator and, by default, Creative |
+| Protection | Every registered protector must allow the action and location |
+| API policy | Another plugin may deny use through Adapt's ability-use policy or cancellable event |
+| Conflicts | A learned adaptation named in `adaptationUsageConflicts` blocks the configured pair |
+| Profile readiness | An unsafe, unloaded, or retired player profile keeps Adapt inactive for that session |
+{.dense}
+
+Players normally open the skill from the bookshelf activator. `/adapt gui`
+opens the same interface but requires `adapt.gui`, which defaults to operators.
+
+### Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| Taking damage gives no TragOul XP | Confirm the skill is enabled, the world is not blacklisted, `adapt.use.tragoul` is not denied, the player is not invulnerable, and the hit was not blocked with a shield |
+| Some hits count but do not pay XP | The 450 ms default award cooldown suppresses rapid payouts; damage and hit stats continue to accumulate |
+| TragOul is absent from a new player's menu | With `guiShowAllSkills = false`, untouched skills stay hidden until the player earns XP, knowledge, or a level |
+| An adaptation is learned but silent | Check both enable flags, the dynamic use node, game mode, world blacklist, protector result, configured conflicts, API policy, and profile readiness |
+| Skeletal Servant will not summon | Sneak-right-click with bones, wait for cooldown, verify free capacity or `replaceOldestAtCap`, and confirm the player can pay the bone and health costs |
+| A TOML edit appears ignored | Check the console for a rejected parse; Adapt keeps the previous valid snapshot when the new file is malformed |
+| Integration-dependent behavior is missing | Restart after installing or enabling integrations; Adapt discovers optional plugins only while enabling |
+{.dense}
+
+> Numeric defaults above describe the audited Adapt build. Server owners can
+> change every listed TOML value, disable the skill or an adaptation, and alter
+> the global XP and power curves. Diagnose the server's live files rather than
+> assuming defaults.
+{.is-warning}
+
+<p style="text-align:center;margin-top:1rem"><a href="/adapt/32-skill-tragoul" style="display:inline-block;padding:.72rem 1rem;border-radius:9px;background:#d82f35;color:#fff;font-weight:800;text-decoration:none">Open the complete per-adaptation mechanics and configuration →</a></p>
 
 ## Implementation notes {#implementation}
 
