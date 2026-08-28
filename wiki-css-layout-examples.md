@@ -13,6 +13,9 @@ preview uses real Iris documentation content, responsive CSS, semantic HTML,
 and Git-friendly page source. The patterns are intentionally different: choose
 one or combine two instead of putting every pattern on one production page.
 
+For a finished plugin landing page that combines several of these ideas, see
+[Adapt — Complete CSS Page Example](/wiki-adapt-css-example).
+
 > These previews require Wiki.js Markdown **Allow HTML** and a sanitizer policy
 > that permits inline `style` attributes. That matches the current Volmit home
 > page. If inline styles are removed on your Wiki.js instance, use the
