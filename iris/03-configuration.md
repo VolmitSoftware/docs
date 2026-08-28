@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -99,7 +99,6 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | `studio` | `IrisSettingsStudio` | Studio world behavior |
 | `performance` | `IrisSettingsPerformance` | Mantle residency, loader caches, SIMD, engine service pool |
 | `pregen` | `IrisSettingsPregen` | Pregen scheduling, mantle backpressure, timeouts |
-| `sentry` | `IrisSettingsSentry` | Error reporter |
 | `treeFeller` | `IrisSettingsTreeFeller` | Survival tree feller |
 
 Static helper `IrisSettings.getThreadCount(int c)`: for `c` in `{-1, -2, -4}` it returns `max(availableProcessors / -c, 1)`. Otherwise `max(c, 2)`, floored at 1.
@@ -226,16 +225,6 @@ These keys bound how aggressively pregeneration pushes the server. They are read
 | `mantleBackpressureWaitMs` | `25` | Both | Clamped to `[5, 1000]`. Sleep granularity while pregen waits for resident plates to drop below the cap |
 | `mantleBackpressureTimeoutMs` | `60000` | Both | Clamped to `[5000, 600000]`. How long that wait may last before Iris logs a backpressure warning and lowers its adaptive in-flight limit. Seeing this warning repeatedly means `maxResidentTectonicPlates` is too high for your heap, not too low |
 | `moddedPregenInFlight` | `0` | Modded | Concurrent chunk budget for modded pregen. `>0` is capped at 512. `<=0` derives `max(16, min(48, cpu * 2))`. Lower it when modded pregen causes chunk-load timeouts or memory growth. Inert on Bukkit |
-
-## `sentry` — error reporting
-
-Read once during boot on both platforms, so every change here needs a restart.
-
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `includeServerId` | `true` | **Bukkit only.** Attaches the server id to reports so recurring reports from one server can be grouped. Not read on mod loaders |
-| `disableAutoReporting` | `false` | Skips Sentry initialization entirely. Set true if you do not want automatic error reports leaving the machine |
-| `debug` | `false` | Turns on Sentry's own debug logging. Useful only when reports are not arriving |
 
 ## `treeFeller` — survival tree felling
 

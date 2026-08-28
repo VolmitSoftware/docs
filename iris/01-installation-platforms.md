@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -119,6 +119,12 @@ Before you create a world you care about, run the Bukkit fresh-install runbook i
 2. Start the dedicated server, or a client if you want singleplayer.
 3. The jar is self-contained — engine, SPI, and the required Fabric API modules are bundled. Mod id is `irisworldgen` on all three loaders.
 4. First boot writes the forced worldgen datapack from packs already on disk. It performs no pack download. Install a pack with `/iris download`, then restart before loading it. `/iris datapack ingest` is Bukkit-only and is a stub on mod loaders, so install any imports declared by a custom pack directly in that save's `datapacks/` directory before the restart. The current built-in Overworld and Underworld declare none.
+
+### Youer 26.2
+
+Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The accepted 26.2 runtime is the official Youer build at commit `4eb14c90`, which bundles NeoForge 26.2.0.67. A clean save must complete two consecutive cold starts with the same Iris jar.
+
+Youer stores the primary world's current generation settings at `<level-name>/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`. If startup reports `Unable to read or access the world gen settings file` followed by `Overworld settings missing`, the save is already incomplete or that path is inaccessible before Iris receives a server-start callback. Stop the process and back up the complete save before changing anything. Restore the complete save from one known-good backup, or restore that exact file from the same save's known-good backup. Never copy it from another world because it contains the authoritative seed and dimension registry settings. If no valid backup exists, move the damaged save aside and let Youer create a fresh save under `level-name`; do not fabricate the NBT file. `--safeMode` disables datapacks but does not reconstruct missing Overworld settings.
 
 Verify server-side:
 

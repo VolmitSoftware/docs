@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -404,7 +404,6 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | Command | Aliases | Platforms | Params | Description |
 |---------|---------|-----------|--------|-------------|
 | `EngineStatus` | | **Bukkit** | — | Loaded tectonic plate count |
-| `Sentry` | `sentry` (modded) | Both | — | Send a test exception to the error reporter |
 | `genhash` | | **Bukkit** | `[radius=4] [centerX=0] [centerZ=0]`, contextual `world` | Hash generated blocks in a fixed area. The center parameters are `centerX`/`centerZ` here, not the hyphenated `goldenhash` names |
 | `update-world` | `^world` | **Bukkit** | `[confirm=false]`, contextual `world` and `pack` (`pack` alias `dimension`. `confirm` alias `c`) | Unsafe pack swap into a world using an already-installed source pack |
 | `mantle` | | **Bukkit** | `[plate=false] [name=21474836474]` | Dump a mantle section or plate under the dump folder |
@@ -416,7 +415,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | `regen` | `rg` | **Bukkit** (modded root) | `[radius=5]`, player origin | Delete and regenerate nearby chunks |
 | `goldenhash` | `gold` | **Bukkit** (modded root) | `[radius=8] [center-x=0] [center-z=0] [reset-mantle=true] [threads=8] [deep=false]`, contextual `world` | Buffer golden hash capture/verify |
 
-The modded developer group implements only `sentry` and `network`/`ip`. Its help section still advertises a region file scan that has no command node.
+The modded developer group implements only `network`/`ip`. Its help section still advertises a region file scan that has no command node.
 
 ---
 

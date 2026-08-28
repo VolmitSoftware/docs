@@ -2,7 +2,7 @@
 title: "Maintainer - Release Checklist"
 description: "Iris documentation: Maintainer - Release Checklist"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -163,13 +163,6 @@ details: [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
 - [ ] Existing plugin distribution channels: publish the plugin jar
       (`Iris v4.0.0-26.2 [CraftBukkit] 26.1.2-26.2.jar`) where the plugin
       already ships.
-- [ ] Sentry: register the release so incoming reports map to this
-      version (`irisVersion` is the Sentry release tag).
-      `./gradlew release` does this against `sentry.volmit.com`. It
-      downloads `sentry-cli`, runs `releases new` and
-      `releases set-commits --auto`, and needs `SENTRY_AUTH_TOKEN` (or
-      `-Psentry.auth.token=`). It does not finalize the release. Do that
-      by hand if needed.
 - [ ] Storepage staleness review: check the portal listing copy and the
       `storepage/` images for pre-4.0 content (Bukkit-only framing, old
       feature lists, stale screenshots). Flag anything stale for update

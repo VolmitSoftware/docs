@@ -163,6 +163,9 @@ refuses while players are inside or mid-transit in a pocket dimension.
   client-chunk retries share the observer claim frame, so overlapping cell
   ownership is resolved once from the final frame state and its section packets
   are flushed together rather than exposing transient intermediate winners.
+  Before portal work is scheduled, a conservative front-to-back aperture pass
+  retires any farther projector whose complete view is geometrically covered by
+  one nearer rectangular portal; partial and irregular overlaps remain active.
   Non-fluid display skins also flush once per portal on
   that observer task, with uncertain partial spawns retained for owner-thread
   cleanup before any retry. Local-entity occlusion likewise unions retained

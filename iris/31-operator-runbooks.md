@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -212,6 +212,26 @@ directory and prior configuration before datapack compilation or world
 loading. If Iris silently proceeds past a corrupted stage, capture the
 journal and stage directories before touching anything. That is a
 blocking defect.
+
+## A.2 Youer 26.2 cold start
+
+1. Use the NeoForge-labeled Iris jar in `mods/` on the official Youer
+   26.2 build. Leave the CraftBukkit-labeled Iris jar out of `plugins/`.
+2. Start a new save and wait for `Done preparing level "world"` and the
+   final server-ready line.
+3. Confirm
+   `world/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`
+   exists and is non-empty.
+4. Stop cleanly, start the same save again, and require both ready lines
+   a second time. The console must not contain `Unable to read or access
+   the world gen settings file`, `Overworld settings missing`, or an Iris
+   startup exception.
+
+The missing-settings pair is a save-integrity failure raised before Iris
+starts. Back up the whole save, then restore the whole save or that exact
+file from the same save's known-good backup. If no valid backup exists,
+move the damaged save aside and generate a fresh one. Do not copy the file
+from another world or expect `--safeMode` to recreate it.
 
 ## B. Fresh install and first world (Fabric / Forge / NeoForge)
 

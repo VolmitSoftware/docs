@@ -115,6 +115,12 @@ Budget fitting shortens lateral padding first. Depth is reduced only if the
 aperture-aligned scan still exceeds the cell ceiling. An aperture that cannot
 fit even at zero depth stays empty rather than exceeding the ceiling.
 
+Interested portals are resolved front to back for each observer. When one
+nearer rectangular aperture provably covers every corner of a farther portal,
+the farther projector and its block and entity claims are retired until any
+part of its aperture becomes visible again. Partial overlaps and irregular
+nearer apertures fail open so exposed edges and gaps retain their projections.
+
 ## Blackout background
 
 | Setting | Default | Notes |

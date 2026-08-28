@@ -2,7 +2,7 @@
 title: "API - Plugin API Packs"
 description: "Folder-backed community metric definitions for React"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-28T07:55:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -200,7 +200,81 @@ The PlaceholderAPI example demonstrates a trusted numeric expansion pack. It tar
 
 ### Oraxen Runtime
 
-The Oraxen example reports registered item, block, and furniture counts through the curated Oraxen query source. It also counts `OraxenFurniturePlaceEvent` events since the pack activated. The three query metrics remain gauges; the event metric is a process-lifetime counter.
+The Oraxen example reports registered item, block, and furniture counts through the curated Oraxen query source. It also counts `OraxenFurniturePlaceEvent` events since the pack activated. Save the following complete file as `plugins/React/plugin-apis/oraxen-runtime.toml`:
+
+```toml
+schema = "react.plugin-api/v1"
+id = "example.oraxen-runtime"
+version = "1.0.0"
+name = "Oraxen Runtime"
+authors = ["Volmit Software"]
+enabled = true
+trusted = false
+targetPlugin = "Oraxen"
+targetVersions = ["*"]
+
+[[metrics]]
+id = "items"
+displayName = "Oraxen Items"
+kind = "gauge"
+unit = " items"
+icon = "DIAMOND_SWORD"
+decimals = 0
+sampleEveryMs = 5000
+staleAfterMs = 30000
+
+[metrics.source]
+type = "oraxen"
+key = "items"
+foliaSafe = true
+
+[[metrics]]
+id = "blocks"
+displayName = "Oraxen Blocks"
+kind = "gauge"
+unit = " blocks"
+icon = "NOTE_BLOCK"
+decimals = 0
+sampleEveryMs = 5000
+staleAfterMs = 30000
+
+[metrics.source]
+type = "oraxen"
+key = "blocks"
+foliaSafe = true
+
+[[metrics]]
+id = "furniture"
+displayName = "Oraxen Furniture"
+kind = "gauge"
+unit = " entries"
+icon = "ITEM_FRAME"
+decimals = 0
+sampleEveryMs = 5000
+staleAfterMs = 30000
+
+[metrics.source]
+type = "oraxen"
+key = "furniture"
+foliaSafe = true
+
+[[metrics]]
+id = "furniture-placements"
+displayName = "Oraxen Furniture Placements"
+kind = "counter"
+unit = " placements"
+icon = "ARMOR_STAND"
+decimals = 0
+sampleEveryMs = 1000
+staleAfterMs = 15000
+
+[metrics.source]
+type = "event-counter"
+eventClass = "io.th0rgal.oraxen.api.events.furniture.OraxenFurniturePlaceEvent"
+foliaSafe = true
+```
+
+This creates `plugin-api-example-oraxen-runtime-items`, `plugin-api-example-oraxen-runtime-blocks`, `plugin-api-example-oraxen-runtime-furniture`, and `plugin-api-example-oraxen-runtime-furniture-placements`. The first three samplers are gauges. The placement counter starts at zero whenever React or the pack reloads and is not a durable lifetime total. React detects the new file within three seconds; `/react plugin-api reload` applies it immediately and `/react plugin-api status` reports its target and metric state.
 
 ## React Web and HTTP API
 

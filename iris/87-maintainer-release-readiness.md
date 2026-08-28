@@ -2,7 +2,7 @@
 title: "Maintainer - Release Readiness"
 description: "Iris documentation: Maintainer - Release Readiness"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -900,11 +900,6 @@ Release decision:
 - [x] NeoForge registers the shared payload once as bidirectional.
 - [x] Fabric distributable metadata declares the bundled transitive
       access-widener.
-- [x] Fabric, Forge, and NeoForge relocate Iris's embedded Sentry
-      runtime so another mod can bundle Sentry without a
-      duplicate-package module-resolution failure. The corrected Forge
-      and NeoForge artifacts boot alongside Neroland Core's jar-in-jar
-      Sentry dependency.
 - [x] Fabric, Forge, and NeoForge resolve Minecraft 26.2's supplied
       OSHI, JNA, JNA Platform, and LZ4 implementations without embedding
       or relocating them. The distribution gate scans outer classes and
