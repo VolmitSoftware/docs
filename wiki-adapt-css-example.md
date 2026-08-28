@@ -344,7 +344,6 @@ corpse effects.
         </div>
       </div>
     </article>
-
     <article style="padding:1rem;border-top:4px solid #2b9ea5;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
       <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
         <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#237f85;color:#fff">+</span>
@@ -373,7 +372,6 @@ corpse effects.
         </div>
       </div>
     </article>
-
     <article style="padding:1rem;border-top:4px solid #8a858a;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
       <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
         <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#4d494d;color:#fff">☠</span>
@@ -398,7 +396,6 @@ corpse effects.
         </div>
       </div>
     </article>
-
     <article style="padding:1rem;border-top:4px solid #8d57a7;border-radius:15px;background:var(--v-background-base,rgba(127,127,127,.06));box-shadow:0 7px 20px rgba(0,0,0,.06)">
       <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.8rem">
         <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;border-radius:9px;background:#714188;color:#fff">◉</span>
