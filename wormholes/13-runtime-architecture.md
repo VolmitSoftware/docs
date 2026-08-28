@@ -148,7 +148,9 @@ refuses while players are inside or mid-transit in a pocket dimension.
   transformed remote keys beside observer targets, and bypasses observer-ray
   filtering when a pass produced no blocker geometry. Venticular removes rear
   cells whose complete set of eye-facing faces is covered by accepted adjacent
-  opaque cells before consuming long-range ray budget. Cells left unresolved by
+  opaque cells before consuming long-range ray budget when the reveal guard is
+  zero. The default one-degree angular guard expands hidden proofs so camera
+  movement exposes buffered geometry before an occluder edge crosses it. Cells left unresolved by
   the bounded ray pass remain fail-open but persist as the priority worklist for
   subsequent passes instead of bypassing future occlusion checks. Buried-cell sampling
   visits the 6 unique distance-one and 18 unique distance-two shell cells once
@@ -168,8 +170,18 @@ refuses while players are inside or mid-transit in a pocket dimension.
   one nearer rectangular portal; partial and irregular overlaps remain active.
   Non-fluid display skins also flush once per portal on
   that observer task, with uncertain partial spawns retained for owner-thread
-  cleanup before any retry. Local-entity occlusion likewise unions retained
-  claims from every portal for that observer before applying visibility changes.
+  cleanup before any retry. Blackout remeshes close transparent far, ceiling,
+  floor, and side boundaries, retain pane entity IDs, and move and resize them
+  in place before retiring surplus panes. Local-entity
+  occlusion likewise unions retained
+  claims from every portal for that observer before applying visibility changes
+  and searches the complete fitted projection depth. It requires the complete
+  expanded physical, name, and display envelope to fit inside the portal
+  frustum, preserving partially exposed entities. Venticular projected entities
+  reuse a separate 16,384-step bounded pass over the accepted destination
+  blocker geometry; their complete conservative envelope must resolve hidden
+  before the synthetic entity is withheld, so partial or uncertain visibility
+  fails open.
   Entity teardown skips packet-channel lookup and flush work when no projected
   entity or client-side name-team state exists.
 - Placed-rune animation does not inspect players while no runes are tracked;

@@ -60,8 +60,9 @@ buried or hidden. It is intentionally the more expensive mode.
 
 Venticular removes a rear cell immediately when every block face oriented
 toward the destination-side observer is covered by an accepted adjacent opaque
-cell. This exact face-enclosure test uses no ray budget and continues removing
-hidden rear surfaces even if the bounded long-range ray pass is exhausted.
+cell and the configured reveal margin is zero. Otherwise the visibility proof
+expands the tested silhouette by `occlusion-reveal-margin-degrees` so movement
+reveals geometry before it can bleed around an occluder.
 Remaining ambiguous cells use the conservative ray proof and fail open when
 visibility cannot be proven, so gaps and transparent openings remain visible.
 Budget-unresolved cells stay visible for that pass but are carried ahead of
@@ -125,15 +126,18 @@ nearer apertures fail open so exposed edges and gaps retain their projections.
 
 | Setting | Default | Notes |
 |---------|---------|-------|
-| `blackoutBackground` | `false` | Per-portal. Builds a colored far-slice display seal behind the sampled view. |
+| `blackoutBackground` | `false` | Per-portal. Builds a colored display shell around the far, top, bottom, and side boundaries of the sampled view. |
 | `blackoutColor` | `BLACK` | One of 16 concrete colors: `WHITE`, `ORANGE`, `MAGENTA`, `LIGHT_BLUE`, `YELLOW`, `LIME`, `PINK`, `GRAY`, `LIGHT_GRAY`, `CYAN`, `PURPLE`, `BLUE`, `BROWN`, `GREEN`, `RED`, `BLACK`. |
 
 Each color maps to `minecraft:<name>_concrete` (for example `BLACK` → black
-concrete). The mesh is built from the farthest valid projected slice and fails
-open. Its thin panels sit inside the final sampled cells, whose local solids are
-already masked, so blocks immediately beyond the view cannot occlude or
-depth-fight the seal. If its display packets cannot be maintained, the normal
-projection stays visible without the seal.
+concrete). The mesh closes transparent cells on the far cap and four lateral
+boundaries while leaving the portal-facing side open. Opaque projected blocks
+remain authoritative, so the shell does not replace real destination surfaces.
+Its thin panels sit inside the sampled boundary cells to avoid depth fighting.
+When observer movement changes or remeshes the shell, existing client entity
+IDs are teleported and resized in place before obsolete panes are retired. If
+its display packets cannot be maintained, the normal projection stays visible
+without the shell.
 
 ## Entity spoofing (`[render]`)
 
@@ -145,6 +149,13 @@ projection stays visible without the seal.
 | `entity-candidate-cache-ticks` | `3` | 1–40 | Candidate cache lifetime. |
 | `max-spoofed-entities` | `24` | 0–256 | Hard cap of spoofed entities per context. |
 | `capture-zone-radius` | `8.0` | 1–64 | Capture zone radius used by render capture logic. Applies on reload. |
+
+Venticular applies its accepted opaque-block visibility proofs to projected
+entities as well as blocks. Wormholes withholds an item, minecart, name label,
+NPC, or Bukkit display entity only when every cell in a conservative visual
+envelope is proven hidden; an exposed cell, missing destination data, changed
+view revision, or exhausted visibility budget keeps the whole entity visible.
+PanOptic intentionally keeps its unoccluded full-volume behavior.
 
 ## Visual quality profiles
 
@@ -168,6 +179,7 @@ the raw config values.
 | `near-plane-padding` | `2.0` | Near-plane padding. |
 | `aperture-padding-blocks` | `0.75` | How far the projected image extends past aperture edges. |
 | `frustum-culling-ratio` | `0.2` | Frustum cull ratio. |
+| `occlusion-reveal-margin-degrees` | `1.0` | Hot-reloadable Venticular guard angle. Higher values reveal blocks and entities earlier around occluder edges to absorb observer movement and packet latency, at the cost of retaining more geometry. Clamped 0–15; `0` uses exact silhouettes. |
 | `depth-blocks` | `64` | Search distance used to find recursive portal candidates beyond the current view, not the primary portal's block depth. |
 | `recursive-portal-depth` | `3` | Recursive portal depth (minimum clamp 3). |
 | `stable-cell-resample-interval-ticks` | `4` | Stable-cell resample interval. |
@@ -243,7 +255,11 @@ where the platform packet bridge supports them. Candidate range, refresh
 cadence, and the hard entity cap come from `[render]`. Local entities on the
 observer side may be hidden while their projected counterparts occupy the view.
 For overlapping portals, Wormholes unions those local-hide claims per observer;
-an entity is restored only after the last portal stops occluding it.
+an entity is restored only after the last portal stops occluding it. Local-hide
+discovery covers the full fitted projection depth independently of the shorter
+destination entity-spoof range, and claims only entities whose complete
+name/display-aware envelope is contained by the portal frustum. Partially
+exposed entities remain visible.
 
 ## Arrival warmer vs chunk pre-send
 

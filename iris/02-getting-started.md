@@ -77,7 +77,7 @@ For a player, the immediate create path opens a labeled bottom action-bar meter 
 /iris create name=myworld type=overworld seed=1337
 ```
 
-Create does not report success as soon as the Bukkit world object exists. For a production world, Iris waits for the actual initial-spawn chunk and applies the spawn location on that chunk's owning region before it registers the world or releases lifecycle admission. A null chunk result, rejected region task, generation or placement failure, or timeout fails creation instead of publishing a false ready state.
+Create does not report success as soon as the Bukkit world object exists. For a production world, Iris waits up to 10 minutes for the actual initial-spawn chunk and applies the spawn location on that chunk's owning region before it registers the world or releases lifecycle admission. A null chunk result, rejected region task, generation or placement failure, or timeout fails creation instead of publishing a false ready state.
 
 Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. `myworld` must appear under Iris worlds immediately after creation completes, including on Folia.
 
