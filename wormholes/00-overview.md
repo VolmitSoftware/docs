@@ -13,9 +13,6 @@ Folia servers. A frame portal can show destination blocks and entities before a
 traveler crosses it. The same runtime also supports random teleport, survival
 Dimensional Doors, pocket dimensions, and signed cross-server gateways.
 
-This documentation was checked against Wormholes `2.0.1-26.2` source on
-2026-08-28. It describes implemented behavior, not planned features.
-
 ## What Wormholes includes
 
 | System | What it does | Continue with |
@@ -56,11 +53,10 @@ mirror without having a linked destination.
 Dimensional Doors are a separate survival system. They do not use frame portal
 types, names, or destinations.
 
-## Runtime snapshot
+## Runtime details
 
-| Item | Source-backed value |
+| Item | Value |
 |---|---|
-| Plugin version | `2.0.1-26.2` |
 | Java release and toolchain | 25 |
 | Paper descriptor API version | `26.1` |
 | Spigot compatibility API | `26.2-R0.1-SNAPSHOT` |

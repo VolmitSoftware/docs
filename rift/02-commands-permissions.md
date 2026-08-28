@@ -1,85 +1,65 @@
 ---
 title: "Rift — Commands & Permissions"
-description: "Complete Rift 2.0.2 command syntax, permission behavior, and safety notes"
+description: "Rift command syntax, help behavior, aliases, and granular permission nodes"
 published: true
-date: 2026-08-27T00:00:00.000Z
-tags: "rift, commands, permissions, legacy"
+date: 2026-08-28T00:00:00.000Z
+tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift registers its command directly with the Minecraft 1.19 Brigadier
-dispatcher. The root is `/rift`; `/rft`, `/ri`, and `/rt` redirect to it.
+Rift registers `/rift` through `plugin.yml` and routes the single `/rft` alias through the same executor and permission checks. The VolmLib Director command runtime supplies typed parsing, contextual help, and tab completion.
 
-## Permissions
+## Commands
 
-| Node | Required for |
-|---|---|
-| `rift.admin` | The root and every subcommand, including `/rift to` |
-| `rift.teleport` | An additional check for `/rift to <world>` |
+Arguments in brackets have defaults.
 
-The nodes are checked in code but are not declared in `plugin.yml`, so Rift does
-not publish descriptions or explicit defaults. Grant nodes explicitly through
-your permission manager. A user needs **both** nodes to use `/rift to` because
-the `rift.admin` requirement is attached to the root command.
-
-> `rift.admin` permits unchecked recursive filesystem deletion through
-> `/rift delete`. Grant it only to trusted server owners with filesystem-level
-> backup and recovery access.
-{.is-danger}
-
-## Command reference
-
-| Command | Effect | Important behavior |
+| Command | Permission | Effect |
 |---|---|---|
-| `/rift` | Shows usage, version, and managed-world count | Requires `rift.admin` |
-| `/rift create <name> <generator> [seed] [environment]` | Creates, loads, and records a world | Environment can only be supplied after a seed |
-| `/rift load <name> [generator]` | Loads a world | Does not create a managed JSON record |
-| `/rift import <name> <generator>` | Loads an existing directory and records it | Uses only the final directory name when calling Bukkit |
-| `/rift unload <name>` | Teleports players away, saves chunks, and unloads | Does not remove the managed record |
-| `/rift delete <name>` | Unloads, recursively deletes, and removes the record | Unsafe; see below |
-| `/rift to <world>` | Teleports the executing player to world spawn | Console cannot be teleported |
-| `/rift list` | Lists loaded, managed, configured, and discovered worlds | Discovery scans server-root directories for `level.dat` |
-| `/rift generators` | Lists Bukkit world types and detected generator plugins | Plugin detection may have side effects or throw errors |
+| `/rift help` | `rift.command` | Show the contextual help menu |
+| `/rift create <name> [environment] [generator] [seed] [type]` | `rift.create` | Create, load, and manage a new world |
+| `/rift import <name> [generator] [auto-load]` | `rift.import` | Validate an existing world directory, load it, and create a profile |
+| `/rift load <name>` | `rift.load` | Load a managed or discovered world |
+| `/rift unload <name> [save]` | `rift.unload` | Evacuate players, save if requested, and unload |
+| `/rift delete <name>` | `rift.delete` | Confirm twice, then move a managed world into quarantine |
+| `/rift restore <id>` | `rift.restore` | Restore a quarantined directory and managed profile |
+| `/rift to <world>` | `rift.teleport` | Teleport the executing player to world spawn |
+| `/rift send <player> <world>` | `rift.teleport.others` | Teleport another online player to world spawn |
+| `/rift list` | `rift.list` | List loaded, managed, discovered, and quarantined worlds |
+| `/rift info <name>` | `rift.info` | Show detailed state for one world |
+| `/rift generators` | `rift.generators` | Show Bukkit world types and configured generator identifiers |
+| `/rift reload` | `rift.reload` | Reload config, language, profiles, and trash manifests |
+| `/rift config` | `rift.config` | Open the in-game configuration editor |
+| `/rift doctor` | `rift.doctor` | Report platform, Java, paths, locale, and world counts |
+| `/rift autoload <name> <enabled>` | `rift.config` | Change a managed profile's startup auto-load flag |
+| `/rift protect <name> <enabled>` | `rift.config` | Change a managed profile's protection flag |
 
-## Create examples
+Aliases include `teleport` for `to`, `editor` for `config`, and `status` for `doctor`.
+
+## Create arguments
+
+| Argument | Default | Values |
+|---|---|---|
+| `environment` | `NORMAL` | Bukkit `World.Environment` value |
+| `generator` | `vanilla` | `vanilla` or `PluginName[:generator-id]` |
+| `seed` | `random` | `random` or a signed 64-bit integer |
+| `type` | `NORMAL` | Bukkit `WorldType` value |
+
+Examples:
 
 ```text
-/rift create resource normal
-/rift create flat_build flat 12345
-/rift create iris_world "Iris:overworld" 8675309 NORMAL
+/rift create resource
+/rift create flat_build NORMAL vanilla 12345 FLAT
+/rift create iris_world NORMAL Iris:overworld 8675309 NORMAL
+/rift import old_world vanilla true
 ```
 
-Environment matching is case-insensitive. Values come from Bukkit's
-`World.Environment` enum, normally `NORMAL`, `NETHER`, `THE_END`, and `CUSTOM`.
-An unknown value is silently ignored.
+A custom generator's owner plugin must already be enabled. Rift validates the owner portion before asking Bukkit to create or import the world.
 
-The values `flat`, `amplified`, and `largebiomes` choose matching Bukkit world
-types. Other values choose `NORMAL` and are still passed to Bukkit as a custom
-generator identifier.
+## Permission defaults
 
-## Load versus import
+`rift.command` defaults to everyone so explicitly granted subcommand nodes are usable. Every operational node and `rift.admin` defaults to operators. `rift.admin` grants all Rift capabilities.
 
-Use `load` to make a world available for the current server process. If the
-generator argument is omitted, Rift looks for a managed record with the same
-base name; otherwise it falls back to the string `normal`.
-
-Use `import` to load the world and write
-`plugins/Rift/worlds/<world>.json`. That record is what makes Rift attempt to
-load the world again after restart.
-
-Path-like arguments are inconsistent: Rift checks the supplied `File`, but
-`WorldCreator` receives only its base name. Use plain world-folder names located
-at the server root.
-
-## Delete warning
-
-`/rift delete <name>` resolves `<name>` as a filesystem path relative to the
-server process. It does not require `level.dat`, constrain the target to the
-server's world container, canonicalize the path, block `..`, or ask for
-confirmation. It then recursively deletes every child it can reach.
-
-Do not use this command on a production server. Follow the stopped-server
-procedure in [Storage & Operations](/rift/03-storage-operations) instead.
+The command service checks the requested path before Director executes it, and each handler repeats its capability check. Aliases do not register a second command path and cannot bypass the root executor.
 
 Next: [Storage & Operations](/rift/03-storage-operations)

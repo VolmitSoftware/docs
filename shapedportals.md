@@ -1,50 +1,46 @@
 ---
 title: "Shaped Portals"
-description: "Legacy plugin for enclosed, non-rectangular Nether portals"
+description: "Managed non-rectangular Nether portals with safe live configuration"
 published: true
-date: 2026-08-27T00:00:00.000Z
-tags: "shapedportals, portals, legacy"
+date: 2026-08-28T00:00:00.000Z
+tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Shaped Portals 1.0 fills a closed, vertical obsidian frame with Nether portal
-blocks even when the frame is not rectangular. Crying obsidian can optionally
-count as frame material.
+Shaped Portals creates vertical Nether portal surfaces inside closed frames of
+almost any connected shape. Version 2.0 is a full replacement of the 2021
+implementation, with bounded geometry, persistent portal ownership, repair-based
+integrity, live typed configuration, localized commands, and Folia-aware scheduling.
 
 | | |
 |---|---|
-| Status | Legacy; last source revision in 2021 |
-| Audited version | 1.0 |
-| Declared API | Bukkit/Spigot 1.17 |
-| Listed test range | Minecraft 1.17–1.19 |
-| Commands | None |
-| Permissions | None |
-| Configuration | `plugins/ShapedPortals/config.json` |
-| Folia | Unsupported |
+| Current version | 2.0.0 |
+| API floor | Bukkit/Spigot 1.20.1 |
+| Java artifact | Java 17 bytecode |
+| Commands | `/shapedportals`, `/shapedportal`, `/sp` |
+| Configuration | `plugins/ShapedPortals/config.toml` |
+| Language | `plugins/ShapedPortals/languages/<locale>.toml` |
+| Managed portal store | `plugins/ShapedPortals/portals.json` |
+| Folia metadata | Declared; region-owned implementation |
 
-> The source implements shaped **Nether portals only**. It does not build End
-> portals, horizontal portals, or three-dimensional portal surfaces.
+> Shaped Portals manages native `NETHER_PORTAL` blocks. It does not implement
+> End portals, horizontal portal planes, custom destinations, or linked portal
+> networks. Vanilla Minecraft still controls travel and destination creation.
 {.is-info}
-
-> This revision performs Bukkit world and block reads from an asynchronous task
-> and reacts to events at `MONITOR` priority without checking cancellation. Test
-> protection-plugin behavior on a disposable server before considering use.
-{.is-warning}
 
 ### Start here
 
-- [Overview *Feature scope and portal requirements*](/shapedportals/00-overview)
-- [Installation & Configuration *First start, every setting, and source build*](/shapedportals/01-installation-configuration)
-- [Portal Behavior & Events *Creation flow, compatibility, and troubleshooting*](/shapedportals/02-portal-behavior-events)
-- [Compatibility & Operations *Platform limits and production checklist*](/shapedportals/03-compatibility-operations)
-- [Code Audit *Threading, event, configuration, and boundary findings*](/shapedportals/04-code-audit)
+- [Overview *Shape rules, lifecycle, commands, and permissions*](/shapedportals/00-overview)
+- [Installation & Configuration *Install, live reload, GUI, and every setting*](/shapedportals/01-installation-configuration)
+- [Portal Behavior & Events *Creation, persistence, repairs, and integrations*](/shapedportals/02-portal-behavior-events)
+- [Compatibility & Operations *Version matrix, safety limits, and production checks*](/shapedportals/03-compatibility-operations)
+- [Architecture & Limits *Why persistence is required and where native portals stop*](/shapedportals/04-architecture-limits)
 {.links-list}
 
 ## Support and source
 
 - [Source *github.com/VolmitSoftware/ShapedPortals*](https://github.com/VolmitSoftware/ShapedPortals)
-- [Audited revision *30e3b4e, 23 August 2021*](https://github.com/VolmitSoftware/ShapedPortals/tree/30e3b4eea5852ffa879d8371d556cd4b9b9fdbe7)
 - [Spigot resource *Published plugin page*](https://www.spigotmc.org/resources/shaped-portals.95595/)
 - [Discord *Community and development chat*](https://volmitsoftware.com/discord)
 {.links-list}

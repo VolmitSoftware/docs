@@ -1,98 +1,52 @@
 ---
 title: "Rift — Storage & Operations"
-description: "Rift data files, backup strategy, recovery, and safer world-management procedures"
+description: "Managed profiles, quarantine manifests, protection, backups, and recovery"
 published: true
-date: 2026-08-27T00:00:00.000Z
-tags: "rift, storage, operations, recovery, legacy"
+date: 2026-08-28T00:00:00.000Z
+tags: "rift, storage, quarantine, restore, operations"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift stores plugin state under `plugins/Rift/`. World directories themselves
-remain in the server's world container, normally the server root.
+Rift keeps operational metadata under `plugins/Rift/` and world data in the server's configured world container. Configuration and profile writes use same-directory temporary files followed by atomic replacement when the filesystem supports it.
 
-## Files
+## Files and directories
 
 | Path | Purpose |
 |---|---|
-| `plugins/Rift/config.json` | `verbose` and paths awaiting another deletion attempt |
-| `plugins/Rift/worlds/<name>.json` | One managed-world record |
-| `<server>/<world>/` | Bukkit world data, including `level.dat` |
-| `bukkit.yml` | An additional source of worlds Rift tries to load |
+| `plugins/Rift/config.toml` | Runtime settings |
+| `plugins/Rift/language.yml` | Optional localized message overrides |
+| `plugins/Rift/worlds/<name>.toml` | One validated managed-world profile |
+| `plugins/Rift/trash/<id>.toml` | Quarantine manifest and restorable profile fields |
+| `<world-container>/<name>/` | Active Bukkit world directory |
+| `<world-container>/.rift-trash/<id>/` | Recoverable quarantined world directory |
 
-A managed-world record has this shape:
+Old Rift JSON files are not migrated or interpreted. The 3.0 format is a hard break: only the current TOML and YAML paths are active.
 
-```json
-{
-  "name": "resource",
-  "seed": 12345,
-  "environment": "NORMAL",
-  "generator": "normal",
-  "type": "NORMAL"
-}
-```
+## Unload
 
-The fields suggest full lifecycle persistence, but the audited startup path only
-uses `name` and `generator`. It derives type from the generator string and does
-not apply the stored seed or environment. `type` is not populated from the
-created world when a record is first written.
+Rift refuses to unload the primary world family, a protected managed world, or the configured evacuation world. It moves every player to the configured loaded evacuation world, or the primary loaded world when the setting is empty, then checks Bukkit's unload result.
 
-## Before any world operation
+Use `/rift protect <name> true` for worlds that other plugins assume remain loaded. Use `/rift autoload <name> false` when a managed world should remain on disk but not load during the next Rift startup.
 
-1. Stop the server and make a full, external backup.
-2. Verify that the backup contains the world directory and `plugins/Rift/`.
-3. Start the test copy and confirm every expected generator plugin enabled.
-4. Perform the operation on a disposable world first.
-5. Restart once and confirm the world seed, environment, generator, spawn, and
-   player data before touching production worlds.
+## Quarantine and restore
 
-## Safer unload procedure
+`/rift delete <name>` applies these gates before moving data:
 
-Rift evacuates players to the first world in Bukkit's loaded-world list, unloads
-each loaded chunk with saving enabled, and asks Bukkit to unload the world with
-saving enabled. It does not prevent unloading that first/default destination,
-and it ignores the unload result.
+1. The feature must be enabled in `config.toml`.
+2. The name must be portable and resolve directly under the world container.
+3. The target must be a managed, unprotected, non-primary world with a regular `level.dat`.
+4. The same sender must repeat the same command within the confirmation window.
+5. Rift evacuates and unloads the world, then moves the directory into `.rift-trash` and replaces its profile with a manifest.
 
-Prefer this procedure:
+Rift does not recursively delete the quarantined directory. `/rift restore <id>` moves it back only when no loaded world, profile, or directory occupies the destination name. Filesystem and metadata steps attempt rollback when a later step fails, and failures include full stack traces in the server console.
 
-1. Move players to a known-safe lobby or primary world yourself.
-2. Confirm the target is not the primary world or an active plugin dependency.
-3. Run `/rift unload <world>` from console.
-4. Check the server log and `/rift list`; do not rely only on Rift's success text.
-5. Stop the server before moving or copying the folder.
+Quarantine has no automatic expiry. Operators control retention by restoring an entry or, with the server stopped and a verified backup, manually removing both its manifest and matching quarantine directory.
 
-## Safer delete procedure
+## Backup and recovery
 
-Do not use `/rift delete` on production. Instead:
+Before lifecycle changes to valuable worlds, back up the world container and `plugins/Rift/` together. A profile or manifest alone does not contain chunks, entities, or player data.
 
-1. Make and verify a full backup.
-2. Unload the target, then stop the server.
-3. Confirm the exact absolute world path contains the expected `level.dat`.
-4. Move the world directory outside the server directory rather than deleting it.
-5. Remove only `plugins/Rift/worlds/<world>.json` if the world should no longer be managed.
-6. Start the server, review logs, and retain the moved copy until verification is complete.
+If a manual config, language, or profile edit is invalid, Rift logs the validation failure and keeps the last valid in-memory state. Correct the current file and save it again, or run `/rift reload`; Rift does not replace invalid current files with defaults.
 
-## Recover `config.json`
-
-The audited deletion path can serialize `config.json` as the JSON value `null`.
-On the next start, Rift can throw a null-pointer exception while reading the
-deletion queue.
-
-With the server stopped:
-
-1. Back up the broken file and all worlds.
-2. Replace its contents with:
-
-```json
-{
-  "verbose": false,
-  "deleting": []
-}
-```
-
-3. Start the server and verify Rift carefully.
-
-This only recovers startup. The underlying save defect remains, so another use
-of Rift's deletion path can write `null` again.
-
-Next: [Code Audit](/rift/04-code-audit)
+Next: [Configuration & Localization](/rift/04-configuration-localization)
