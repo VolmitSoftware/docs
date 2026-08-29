@@ -2,7 +2,7 @@
 title: "Shaped Portals — Architecture & Limits"
 description: "Geometry, persistence, physics, versioning, and native portal boundaries"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-29T18:12:56.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -44,7 +44,11 @@ and reconciles loaded records instead of attempting a blanket physics veto.
 - Immutable config and localization snapshots swap atomically.
 - Shape reads, portal commits, repairs, and deactivation run on the owning
   region through VolmLib's reflection-backed scheduler.
-- Player feedback and GUI work run on the player owner.
+- Player feedback and GUI work run on the player owner; GUI file writes run on a
+  dedicated single I/O worker before returning to that owner.
+- Portal navigation prepares the destination chunk asynchronously when the
+  platform exposes that API, inspects blocks on the destination region owner,
+  and completes the player move and feedback through the entity scheduler.
 - The service never force-loads chunks and refuses a creation spanning
   independently owned Folia regions.
 
@@ -64,8 +68,14 @@ packets, or version adapters are needed. Native blocks still impose boundaries:
 ## Shared systems
 
 VolmLib supplies the Java 17-compatible typed TOML codec, file-watch engine,
-localization catalog and validation, Director command/help framework, rich-text
-fallbacks, product theme, and Folia scheduler bridge. ShapedPortals owns portal
-geometry, registry policy, integrity decisions, commands, and its curated GUI.
+localization catalog, sectioned TOML parser/reference renderer, optional
+decorative-placeholder validation, Director command/help
+framework, rich-text fallbacks, product theme, cooperative action-bar and title
+arbitration, boss-bar lanes, splash metadata, Folia scheduler bridge, and the
+  remote-language client with pinned-checksum and latest-reference source modes,
+  bounded fetch, strict decoding, lifecycle fencing, semantic validation,
+  contextual source-URL failures, retry cooldowns, and required-atomic publication.
+ShapedPortals owns portal geometry, registry policy, integrity decisions,
+presentation policy, commands, and its complete categorized configuration GUI.
 
 Return to [Shaped Portals](/shapedportals).

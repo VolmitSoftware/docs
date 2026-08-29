@@ -14,6 +14,8 @@ Pick a language with one key in `adapt.toml`. Adapt fetches that locale from the
 
 Downloads run away from the server thread. English remains active while the first download is pending or when the network is unavailable. A successful download activates on the global server scheduler and refreshes advancement text and open Adapt menus. Reloads are all-or-nothing and validated before anything goes live. Message lookup uses the published in-memory snapshot and never touches disk.
 
+The bounded fetch, strict UTF-8 decoding, checksum verification, revision-scoped cache, in-flight deduplication, lifecycle fencing, and required-atomic publication are supplied by VolmLib's shared remote-language repository. Adapt supplies its catalog parser, repository identity, logging, and scheduler activation. A missing or malformed embedded source manifest is logged with its complete cause and cannot abort Adapt startup; English remains active.
+
 ```
 plugins/Adapt/
   adapt.toml                  language = "en_US"
