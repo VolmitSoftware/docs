@@ -1,78 +1,203 @@
 ---
-title: "Shaped Portals — Installation & Configuration"
-description: "Installation, typed TOML, hot reload, language files, and the in-game editor"
+title: "Shaped Portals: Installation & Configuration"
+description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-08-29T18:50:52.000Z
+date: 2026-08-30T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Version 2.0 uses one Java 17 artifact with a Bukkit 1.20 API floor. First start
-creates a documented TOML configuration and generated English language file,
-makes 17 verified repository translations available on demand, and creates the portal store
-as soon as the first managed portal is written.
+<style>
+.sp-reference { max-width: 1120px; margin: 0 auto; line-height: 1.7; }
+.sp-reference h2 { margin-top: 2.4rem; padding-bottom: .5rem; border-bottom: 1px solid rgba(127,127,127,.25); font-size: 1.5rem; scroll-margin-top: 5rem; }
+.sp-reference h3 { margin-top: 1.6rem; scroll-margin-top: 5rem; }
+.sp-reference .sp-nav { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(127,127,127,.25); }
+.sp-reference .sp-nav a { display: block; padding: .4rem .75rem; border: 1px solid transparent; border-radius: 6px; text-decoration: none; color: inherit; font-size: .9rem; }
+.sp-reference .sp-nav a:hover, .sp-reference .sp-nav a[aria-current="page"] { background: rgba(146,93,198,.12); border-color: rgba(146,93,198,.35); }
+.sp-reference a:focus-visible, .sp-reference summary:focus-visible { outline: 3px solid #a66bdd; outline-offset: 3px; }
+.sp-reference table { width: 100%; display: table; table-layout: fixed; border-collapse: collapse; font-size: .93rem; }
+.sp-reference th, .sp-reference td { padding: .8rem; vertical-align: top; text-align: left; overflow-wrap: anywhere; border: 1px solid rgba(127,127,127,.22); }
+.sp-reference th:first-child { width: 32%; }
+.sp-reference .sp-commands th:first-child { width: 35%; }
+.sp-reference .sp-commands th:last-child { width: 20%; }
+.sp-reference .sp-permissions th:first-child { width: 40%; }
+.sp-reference .sp-permissions th:nth-child(2) { width: 18%; }
+.sp-reference .sp-settings th:first-child { width: 35%; }
+.sp-reference .sp-settings th:nth-child(2) { width: 22%; }
+.sp-reference th { background: rgba(146,93,198,.09); }
+.sp-reference td code { white-space: normal; overflow-wrap: anywhere; }
+.sp-reference pre { max-width: 100%; overflow-x: auto; }
+.sp-reference .sp-media { min-height: 170px; margin: 1.3rem 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .4rem; border: 1px dashed rgba(127,127,127,.5); border-radius: 8px; background: rgba(146,93,198,.04); text-align: center; }
+.sp-reference .sp-media span { max-width: 42rem; font-size: .9rem; }
+.sp-reference blockquote, .sp-reference .sp-caution { margin: 1.3rem 0; padding: .9rem 1.1rem; border: 1px solid rgba(127,127,127,.35); border-radius: 6px; background: rgba(127,127,127,.05); color: inherit; }
+.sp-reference blockquote p, .sp-reference .sp-caution p { margin: 0; }
+.sp-reference details { margin: 1rem 0; padding: .85rem 1rem; border: 1px solid rgba(127,127,127,.3); border-radius: 6px; }
+.sp-reference summary { cursor: pointer; font-weight: 600; }
+.sp-reference details[open] summary { margin-bottom: .8rem; }
+.sp-reference .sp-related { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(127,127,127,.25); }
+@media (max-width: 600px) {
+  .sp-reference table, .sp-reference tbody { display: block; }
+  .sp-reference thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .sp-reference tr { display: block; margin: .7rem 0; padding: .3rem 0; border: 1px solid rgba(127,127,127,.25); border-radius: 6px; }
+  .sp-reference td { display: block; width: auto; padding: .4rem .8rem; border: 0; font-size: .92rem; }
+  .sp-reference td:first-child { font-weight: 600; }
+  .sp-reference td::before { font-weight: 600; }
+  .sp-reference .sp-commands td:nth-child(3)::before { content: "Run from: "; }
+  .sp-reference .sp-permissions td:nth-child(2)::before, .sp-reference .sp-settings td:nth-child(2)::before { content: "Default: "; }
+  .sp-reference .sp-nav { gap: .15rem; }
+  .sp-reference .sp-nav a { padding: .4rem .5rem; }
+}
+</style>
+
+<div class="sp-reference">
+<nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration" aria-current="page">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations">Server setup</a></nav>
+
+Install the plugin, open its in-game editor, or edit the TOML file directly. Every setting is available in-game, and file changes reload automatically by default.
+
+[Install](#install) · [In-game editor](#complete-in-game-editor) · [Settings](#settings) · [Languages](#language-files)
 
 ## Install
 
-1. Stop the server and back it up.
-2. Put `ShapedPortals-2.0.0.jar` in `plugins/`.
-3. Start the server and confirm the enable line reports the expected Bukkit or
-   Folia scheduler.
-4. Review `plugins/ShapedPortals/config.toml`.
-5. Test vanilla and shaped portals in an isolated area before production use.
+1. Stop the server and make a backup.
+2. Place the Shaped Portals jar in `plugins/`.
+3. Start the server and check that Shaped Portals enables without errors.
+4. Run `/sp status`, then `/sp config` in-game to review the settings.
+5. [Build a test portal](/shapedportals/00-overview#build-your-first-portal).
+
+The plugin targets Spigot 1.20.1 and newer compatible APIs, with Java 17 bytecode. Use the Java version your server requires. See [Compatibility & Operations](/shapedportals/03-compatibility-operations) for platform limits.
+
+### Where files live
+
+All paths below are inside `plugins/ShapedPortals/`.
+
+| Path | Purpose |
+|---|---|
+| `config.toml` | All plugin settings |
+| `languages/en_US.toml` | Editable English messages, created on first start |
+| `languages/<locale>.toml` | Installed translations and custom languages |
+| `portals.json` | Managed portal records, created after the first saved portal |
+| `debug/` | Locally saved diagnostic reports |
+
+Do not edit `portals.json` while the server is running. Keep it with your world backups.
+
+## Complete in-game editor
+
+Run `/sp config` with `shapedportals.config`. Choose General, Portal Rules, Effects, Hot Reload, Integrity, Presentation, Diagnostics, or Languages.
+
+| Control | Action |
+|---|---|
+| Boolean | Click to toggle |
+| Number | Left-click to increase; right-click to decrease |
+| Larger adjustment | Hold Shift for 10 times the normal step |
+| Exact number | Press the drop key, normally Q, then type the value in chat |
+| Text or list | Click, then enter the new value in chat |
+| List input | Separate entries with commas; use `none` to clear the list |
+| Cancel chat entry | Type `cancel`, or wait 60 seconds without saving |
+
+Changes are validated and saved to the same files used by the server. Invalid values leave the previous settings active.
+
+<div class="sp-media"><strong>Configuration-menu screenshot goes here</strong><span>Show the category menu and a Portal Rules setting with its click controls visible.</span></div>
 
 ## Live configuration behavior
 
-The runtime uses an immutable validated snapshot. File watching and parsing run
-off the gameplay thread. A stable edit installs only after both `config.toml`
-and the selected language file validate; otherwise the last known good pair
-remains active and the complete exception is logged.
+By default, the plugin watches `config.toml` and the selected language file. Save your edits and wait for the stable-file check; there is no manual reload command.
 
-`config.toml` and the currently active language file are watched automatically;
-inactive locale files do not trigger runtime reloads. There is no manual reload
-command. GUI edits are written on a dedicated I/O worker, validate the complete typed configuration, atomically
-replace `config.toml`, suppress their own duplicate watch event, and return the
-result on the player's owning scheduler in the same Director banner, arrow-row,
-and footer layout as command help. A repository language selection first
-downloads, parses, and validates the requested catalog. Configuration persistence
-and language activation are one serialized transaction, so a concurrent watcher
-reload cannot restore an older locale. The
-locale is persisted only after that succeeds, so transport or validation failure
-leaves both `config.toml` and the active language unchanged. The player-facing
-failure identifies the locale they attempted to select instead of the setting's
-generic display name. Invalid files are never replaced with defaults.
+- A valid configuration and language pair replaces the active settings together.
+- A failed edit keeps the last valid pair and logs the error. Invalid files are not overwritten with defaults.
+- GUI changes save and apply without a restart. Their own file events do not apply the same change twice.
+- Inactive language files are not watched. Editing one does not select it.
+- If watching is disabled, use the configuration editor's reload control or restart after file edits.
+
+### Small configuration example
+
+Edit the existing `[portal]` section to allow interiors of up to 512 blocks. Keep the rest of your file and do not add a duplicate section.
+
+```toml
+[portal]
+minimumInteriorBlocks = 2
+maximumInteriorBlocks = 512
+maximumWidth = 64
+maximumHeight = 64
+frameMaterials = ["OBSIDIAN", "CRYING_OBSIDIAN"]
+```
 
 ## Settings
 
-| Key | Default | Behavior |
-|---|---:|---|
+The keys below use `section.setting` notation: `portal.maximumWidth` is `maximumWidth` under `[portal]` in TOML.
+
+Changes apply when the configuration loads. Turning off creation does not remove existing portals. Frame-material changes affect new portals; existing ones keep their recorded boundary requirements.
+
+### General
+
+| Setting | Default | What it changes |
+|---|---|---|
 | `general.enabled` | `true` | Allows new shaped portal creation; existing records remain maintained |
 | `general.language` | `"en_US"` | Selects the directly editable `languages/<locale>.toml`; path characters are rejected |
 | `general.requireCreatePermission` | `true` | Requires `shapedportals.create` from player igniters |
 | `general.failureFeedback` | `true` | Explains rejected portal candidates to player igniters; unrelated terrain fires are ignored silently |
-| `metrics.enabled` | `true` | Enables anonymous bStats metrics for plugin ID `33267`; changes apply immediately and the global bStats opt-out remains authoritative |
-| `portal.minimumInteriorBlocks` | `2` | Smallest connected interior |
-| `portal.maximumInteriorBlocks` | `256` | Largest connected interior; hard maximum 4,096 |
-| `portal.maximumWidth` | `64` | Largest horizontal interior span; hard maximum 512 |
-| `portal.maximumHeight` | `64` | Largest vertical interior span; hard maximum 512 |
+
+{.sp-settings}
+
+### Portal rules
+
+| Setting | Default | What it changes |
+|---|---|---|
+| `portal.minimumInteriorBlocks` | `2` | Smallest connected interior; range 1 to 4,096 |
+| `portal.maximumInteriorBlocks` | `256` | Largest connected interior; at least the minimum and no more than 4,096 |
+| `portal.maximumWidth` | `64` | Largest horizontal interior span; range 1 to 512 blocks |
+| `portal.maximumHeight` | `64` | Largest vertical interior span; range 1 to 512 blocks |
 | `portal.frameMaterials` | `OBSIDIAN`, `CRYING_OBSIDIAN` | Complete boundary materials accepted for new portals |
 | `portal.interiorMaterials` | air variants, `FIRE`, `SOUL_FIRE` | Replaceable creation and repair cells |
 | `portal.ignitionCauses` | `FLINT_AND_STEEL`, `FIREBALL`, `PLACED_FIRE` | Accepted Bukkit ignition causes |
 | `portal.allowedWorlds` | empty | Optional case-insensitive allow-list |
 | `portal.deniedWorlds` | empty | Case-insensitive deny-list; takes priority |
-| `portal.deduplicationMillis` | `1500` | Coalesces duplicate events at one block |
+| `portal.deduplicationMillis` | `1500` | Coalesces duplicate events at one block; range 0 to 60,000 ms |
+
+{.sp-settings}
+
+Material lists must contain block materials, must not overlap, and cannot include `NETHER_PORTAL` as a replaceable interior. Both dimensions and total area must fit the configured limits. Denied worlds take priority over allowed worlds; an empty allow-list permits any world not denied.
+
+Removing a material from `portal.frameMaterials` does not disable existing portals. Their entries in `/sp portals` identify recorded materials no longer allowed for new frames.
+
+### Effects
+
+| Setting | Default | What it changes |
+|---|---|---|
 | `effects.creationSound` | `true` | Plays a sound only after successful commit |
 | `effects.creationSoundType` | `minecraft:block.end_portal.spawn` | Bukkit sound identifier or namespaced key |
 | `effects.creationSoundVolume` | `0.6` | Range 0.0–4.0 |
 | `effects.creationSoundPitch` | `0.67` | Range 0.5–2.0 |
+
+{.sp-settings}
+
+### Hot reload
+
+| Setting | Default | What it changes |
+|---|---|---|
 | `hotReload.enabled` | `true` | Watches the active config and language files |
 | `hotReload.pollIntervalMillis` | `1000` | Watch poll interval; range 250–60,000 ms |
 | `hotReload.cooldownMillis` | `1500` | Stable-edit debounce; range 250–60,000 ms |
 | `hotReload.notifyOperators` | `true` | Sends permission-filtered cooperative action-bar results after automatic reloads |
+
+{.sp-settings}
+
+### Integrity
+
+| Setting | Default | What it changes |
+|---|---|---|
 | `integrity.enabled` | `true` | Repairs or deactivates managed portal records |
 | `integrity.checkIntervalTicks` | `200` | Periodic sweep interval; range 20–72,000 ticks |
 | `integrity.maximumChecksPerCycle` | `32` | Bounded records queued per sweep; range 1–1,024 |
+
+{.sp-settings}
+
+Integrity checks skip unloaded portal chunks. See [Repair-based integrity](/shapedportals/02-portal-behavior-events#repair-based-integrity) before changing these options.
+
+### Presentation
+
+| Setting | Default | What it changes |
+|---|---|---|
 | `presentation.splashScreen` | `true` | Prints the console startup banner after services are ready |
 | `presentation.commandSounds` | `true` | Plays themed success or failure sounds for player commands |
 | `presentation.commandOverlays` | `ACTION_BAR` | Optional command overlays: `ACTION_BAR`, `TITLE`, `BOSS_BAR`; chat always remains enabled |
@@ -81,167 +206,81 @@ generic display name. Invalid files are never replaced with defaults.
 | `presentation.titleFadeInTicks` | `5` | Title fade in; range 0–200 ticks |
 | `presentation.titleStayTicks` | `30` | Title visible time; range 1–600 ticks |
 | `presentation.titleFadeOutTicks` | `10` | Title fade out; range 0–200 ticks |
+
+{.sp-settings}
+
+Command results stay in chat even when an extra overlay is enabled. Action bars and titles cooperate with other VolmLib plugins; boss bars are short-lived and cleaned up automatically.
+
+### Anonymous metrics
+
+| Setting | Default | What it changes |
+|---|---|---|
+| `metrics.enabled` | `true` | Enables anonymous bStats metrics for plugin ID `33267`; changes apply immediately and the global bStats opt-out remains authoritative |
+
+{.sp-settings}
+
+The global opt-out in `plugins/bStats/config.yml` takes priority. Shaped Portals submits standard bStats platform and plugin metrics, without custom charts. [React integration](/shapedportals/03-compatibility-operations#react-plugin-api-pack) is separate and stays on your server.
+
+### Diagnostic reports
+
+| Setting | Default | What it changes |
+|---|---|---|
 | `debug.uploadEnabled` | `true` | Upload locally saved `/sp debug` reports to the public mclo.gs service and return a clickable link |
 
-Material names must resolve to block materials. Frame and interior lists may not
-overlap, and `NETHER_PORTAL` is prohibited as a replaceable interior material.
-Every successful portal records the material at each frame coordinate. Removing
-a material from the active configuration therefore affects only new creation;
-existing portals retain their recorded frame requirements and are annotated in
-`/sp portals` when their material is no longer allowed for new portals.
+{.sp-settings}
+
+**Uploads are public.** Disable this setting before running `/sp debug` for local-only reports. See [Diagnostic command and privacy notes](/shapedportals/00-overview#create-a-diagnostic-report).
+
+<details>
+<summary>What a diagnostic report contains</summary>
+<p>Server and API versions, plugin metadata, effective settings, portal records and health, creation-rejection reasons, world availability, service and scheduler state, TPS and MSPT, language-source information, JVM and process details, memory and CPU statistics, filesystem capacity, and hashes and metadata for the configuration, language, portal store, and plugin jar.</p>
+<p>The local file is saved before any upload. Only one report can be generated at a time.</p>
+</details>
 
 ## Language files
 
-Each installed locale has one authoritative file at
-`languages/<locale>.toml`. English is generated only when its file is missing;
-afterward both manual changes and in-game edits remain in that same file. ShapedPortals
-offers `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`,
-`he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`,
-`ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`.
+Run `/sp language` to select a language, or use Languages inside `/sp config` to edit its messages.
 
-The jar contains the supported locale names and follows the repository's `main`
-language directory instead of embedding the 17 translation files. A non-English
-locale downloads the latest `src/main/resources/languages/<locale>.toml` only when
-it is selected or opened in the Languages editor and the corresponding local file
-does not exist. Downloads are bounded, strict UTF-8, validated for every message
-required by the running jar, and atomically installed at that direct path without
-replacing a file created or edited during the transfer. Extra keys added by newer
-plugin versions are ignored by older jars. Once installed, the local file works
-offline and is never automatically refreshed or overwritten. Missing, corrupt, unavailable, or
-rejected content leaves code-owned English or the last-good snapshot active and
-never prevents plugin enablement. The console identifies the locale and full source
-URL when a transfer starts, then reports only the locale and validated file's
-absolute destination when installation finishes. A failed fetch identifies both the locale and complete
-source URL, and immediate duplicate requests for that locale are suppressed for 30 seconds.
-Concurrent requests for the same locale share one transfer and every waiting
-selection receives the verified result.
+Available locales:
 
-Resolution order is the selected direct file, then code-owned English. Message
-IDs are laid out as native TOML tables such as `[runtime]`,
-`[command.feedback.reload]`, and `[portal.navigation.list]`, matching Adapt's
-sectioned catalogs. Files may be complete or sparse. Manual edits are left
-byte-for-byte unchanged during normal loading and hot reload; saving through the
-language GUI canonicalizes the TOML tables into leaf sections with column-zero
-assignments while preserving the leading comment block, values, and unknown
-entries. A typed custom locale is seeded from English and then behaves like any
-other direct language file.
+`en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, `zh_TW`.
 
-Shipped messages use classic `&0`–`&f` colors and `&k`–`&r` formatting, such
-as `&c` for red and `&l` for bold. Custom values also accept `&#RRGGBB`,
-compact `&xRRGGBB`, expanded `&x&R&R&G&G&B&B`, bracket RGB such as
-`[6f35c5]`, direct section codes, and optional MiniMessage tags including gradients.
-Prefix `&` or `[` with `\` when the marker should be displayed literally.
-Retired and otherwise unknown keys are ignored and left untouched.
-Wrong types for current keys, placeholder drift, placeholders inside MiniMessage
-tags, or invalid markup reject only that reload and leave the last valid language
-active. Publisher-owned downloads are stricter and must contain the exact current
-catalog. Untrusted user and world substitutions are escaped before
-rendering, including legacy color markers, so they cannot inject click, hover,
-or formatting actions.
+### Select a language
 
-`runtime.prefix` defines the global prefix text. Sender-facing message defaults
-place `{prefix}` directly where that prefix should appear. The token is optional:
-remove it from any individual message to suppress the prefix only for that
-message. HUD, GUI-label, help-row, portal-card, and hover entries omit it by
-default so cooperative overlays and menus remain uncluttered. All other
-message-specific placeholders remain required.
+The picker shows locale IDs and language names. Missing repository translations download only when selected or opened for editing. Selection completes only after validation succeeds; a failed download keeps the current language.
 
-The generated English file and each repository source have a leading
-comment block that documents every placeholder known to the current catalog,
-explains its value, and states that a placeholder is valid only in messages
-where it is already present.
+Installed files work offline and are not automatically refreshed or replaced. A safe custom locale name can be entered from the editor to create a language based on English.
 
-The General editor combines the repository manifest choices with safe custom
-`.toml` files discovered directly in `languages/`. Clicking Active language locale or
-running `/sp language` opens the same paginated Director-style chat menu, marks
-the current selection, and provides hoverable click-to-select entries showing
-both locale identifiers and full language names. The editor-origin picker keeps
-a 60-second typed-input prompt and returns to the editor only for typed completion,
-cancellation, or timeout. The command-origin picker has no prompt or timer, and
-clicking or entering `/sp language <locale>` never opens the configuration GUI.
-All selection paths wait for a required repository download before changing the
-configuration, then apply the selected locale automatically without requiring a
-second click. Selecting a locale does not proactively write the other catalogs.
+### Edit messages
 
-## Complete in-game editor
+1. Open `/sp config` and choose Languages.
+2. Select a locale and left-click a message.
+3. Type the replacement in chat, keeping its required placeholders. Use `\n` for a line break.
+4. Check the saved result, which shows the previous and new values.
 
-`/sp config` opens a 54-slot General, Portal Rules, Effects, Hot Reload, Integrity,
-Presentation, Diagnostics, and Languages menu. All 35 persisted configuration fields are present. Lists accept
-comma-separated values and the word `none` for an empty list. Text and exact
-numeric prompts may be cancelled with `cancel` and expire without changing the
-configuration after 60 seconds. The language field uses the clickable and typed
-locale picker described above. Whole-config validation prevents an individual
-edit from installing an invalid material, sound, channel, range, or list.
+Editing the active locale applies immediately. Editing a different locale updates its file without switching languages.
 
-The Languages section is a separate paginated editor for the complete registered
-message catalog, including plugin and shared command/help messages. Select a locale,
-then left-click a message ID and type its replacement in chat; `\n` inserts a line
-break. Each item uses a bounded, legacy-format-aware multiline preview so long
-templates do not create screen-wide tooltips. Clicking an item opens a Director-style
-chat prompt whose header rail is sized to the same visual width as its footer, with
-the message ID and its current value rendered with the selected
-locale's formatting, the exact sorted `{placeholder}` tokens available to that
-message, representative placeholder labels, and the cancellation instruction.
-After a successful edit, the Director result reports both the formatted previous
-value and the formatted installed value. The value is markup- and placeholder-validated before the selected
-`languages/<locale>.toml` is atomically updated. If the repository locale has not
-been installed, opening it first downloads and verifies that one file. Editing the
-active locale installs the validated result immediately; editing another locale
-changes its file without selecting it. GUI-owned writes are excluded from the
-hot-reload watcher so one edit produces one installation and one result message.
+<div class="sp-media"><strong>Language-editor GIF goes here</strong><span>Select a message, enter replacement text, and show the saved result in chat.</span></div>
 
-## Anonymous metrics
+### Colors and placeholders
 
-ShapedPortals uses bStats plugin ID `33267`. `metrics.enabled` is an additional
-plugin-local opt-out and is enabled by default; changing it through the General
-editor or file watching starts or stops the metrics runtime without
-a restart. The upstream global switch in `plugins/bStats/config.yml` is still
-checked by the official Metrics implementation and overrides the local setting.
-Only the standard bStats platform and plugin payload is submitted; ShapedPortals
-does not register custom charts. The bundled single-file Metrics source is kept
-identical to the official upstream file except for its package declaration.
+Messages accept classic colors such as `&c`, formatting such as `&l`, RGB colors, and MiniMessage. Each language file's header explains the available placeholders.
 
-## Diagnostic reports
+`runtime.prefix` sets the prefix. Remove the optional `{prefix}` token from an individual message to hide it there. Other placeholders required by that message must stay intact.
 
-`/sp debug` first captures an immutable Bukkit and ShapedPortals snapshot on the
-global scheduler, then renders, hashes, writes, and optionally uploads the
-report off the gameplay thread. Every run saves a timestamped text file under
-`plugins/ShapedPortals/debug/`; only one report may be generated at a time.
-
-The report includes server and API versions, operating rules, scheduler task
-counts, TPS and MSPT, plugin metadata, portal-registry aggregates and per-record
-health data, loaded and unavailable portal-world reference counts, bounded
-creation-rejection reasons, service state, effective settings, the language-source
-reference and selected source-file state, JVM/process/charset/time-zone
-state, heap and memory pools, garbage collectors, CPU load and time, physical and
-virtual memory, swap, file descriptors, filesystem capacity, selected
-language/config/store metadata and SHA-256 hashes, and the plugin artifact
-filename, size, timestamp, and SHA-256.
-
-`debug.uploadEnabled` is enabled by default for newly generated configurations.
-Existing configurations retain their saved value. Running `/sp debug` always
-saves the report locally first, then sends the same report over HTTPS to the
-public third-party mclo.gs service and returns a clickable link when upload is
-enabled. Disable the setting in the Diagnostics editor or `config.toml` for
-local-only reports. A failed upload never removes the local file. ShapedPortals
-does not retain the service deletion credential, so an uploaded report cannot
-be removed through the plugin.
+<details>
+<summary>Language file rules and download behavior</summary>
+<p>The selected <code>languages/&lt;locale&gt;.toml</code> file is authoritative. Missing entries fall back to built-in English. English is generated only when missing, and sparse custom catalogs are allowed. Unknown keys are left untouched.</p>
+<p>Manual loading preserves file contents. Saving through the language editor reorganizes TOML into sections while preserving the leading comment block, values, and unknown entries. Incorrect value types, missing required placeholders, placeholders inside MiniMessage tags, or invalid formatting reject the edit and keep the last valid language.</p>
+<p>RGB input accepts <code>&amp;#RRGGBB</code>, <code>&amp;xRRGGBB</code>, expanded <code>&amp;x&amp;R&amp;R&amp;G&amp;G&amp;B&amp;B</code>, and bracket form such as <code>[6f35c5]</code>. Section-sign codes also work. Put a backslash before an ampersand or opening bracket to display it literally. Player and world substitutions are escaped before rendering.</p>
+<p>Repository translations are fetched from the source repository's <code>main</code> language directory. Downloads validate the required catalog and install only the missing file. Concurrent requests share one transfer, failed requests have a 30-second retry cooldown, and a file created or edited during transfer is not replaced. The console identifies the locale, source URL, and installed path. A failed download does not prevent startup.</p>
+<p>The command picker has no chat-entry timeout and never opens an inventory. Opening language selection from the editor also offers a 60-second typed entry; typing a selection, cancelling, or timing out returns to the editor.</p>
+</details>
 
 ## Build from source
 
-The Gradle 9.5.1 wrapper runs with the workspace JDK 25 toolchain and emits Java
-17 bytecode:
+See [Developer reference](/shapedportals/04-architecture-limits#build-from-source) for the build toolchain, artifact, and language manifest.
 
-```text
-./gradlew build
-```
+<div class="sp-related"><a href="/shapedportals/00-overview">Commands &amp; permissions</a> · <a href="/shapedportals/02-portal-behavior-events">Portal behavior &amp; troubleshooting</a></div>
 
-The shaded plugin is `build/libs/ShapedPortals-2.0.0.jar`. `check` also compiles
-the source against current Paper 26.1.2 and Spigot 26.2 APIs, then verifies that
-every shaded class remains Java 17 bytecode, VolmLib was relocated, no locale
-TOML was packaged, and the generated remote-source manifest matches all 17
-repository TOML sources. The manifest pins the current Git commit while hashing
-the working locale sources, so a distributable build must use a commit where
-those exact files are already available from the public repository.
-
-Next: [Portal Behavior & Events](/shapedportals/02-portal-behavior-events)
+</div>

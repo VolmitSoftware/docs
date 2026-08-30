@@ -1,120 +1,161 @@
 ---
-title: "Shaped Portals — Overview"
-description: "Shape rules, managed portal lifecycle, commands, and permissions"
+title: "Shaped Portals: Getting Started"
+description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-08-29T03:51:03.000Z
+date: 2026-08-30T00:00:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Shaped Portals runs only when vanilla has not already created a normal portal.
-It tests both vertical axes, validates one closed connected interior, exposes a
-cancelable Bukkit creation event, and registers the completed surface for later
-integrity checks.
+<style>
+.sp-reference { max-width: 1120px; margin: 0 auto; line-height: 1.7; }
+.sp-reference h2 { margin-top: 2.4rem; padding-bottom: .5rem; border-bottom: 1px solid rgba(127,127,127,.25); font-size: 1.5rem; scroll-margin-top: 5rem; }
+.sp-reference h3 { margin-top: 1.6rem; scroll-margin-top: 5rem; }
+.sp-reference .sp-nav { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(127,127,127,.25); }
+.sp-reference .sp-nav a { display: block; padding: .4rem .75rem; border: 1px solid transparent; border-radius: 6px; text-decoration: none; color: inherit; font-size: .9rem; }
+.sp-reference .sp-nav a:hover, .sp-reference .sp-nav a[aria-current="page"] { background: rgba(146,93,198,.12); border-color: rgba(146,93,198,.35); }
+.sp-reference a:focus-visible, .sp-reference summary:focus-visible { outline: 3px solid #a66bdd; outline-offset: 3px; }
+.sp-reference table { width: 100%; display: table; table-layout: fixed; border-collapse: collapse; font-size: .93rem; }
+.sp-reference th, .sp-reference td { padding: .8rem; vertical-align: top; text-align: left; overflow-wrap: anywhere; border: 1px solid rgba(127,127,127,.22); }
+.sp-reference th:first-child { width: 32%; }
+.sp-reference .sp-commands th:first-child { width: 35%; }
+.sp-reference .sp-commands th:last-child { width: 20%; }
+.sp-reference .sp-permissions th:first-child { width: 40%; }
+.sp-reference .sp-permissions th:nth-child(2) { width: 18%; }
+.sp-reference .sp-settings th:first-child { width: 35%; }
+.sp-reference .sp-settings th:nth-child(2) { width: 22%; }
+.sp-reference th { background: rgba(146,93,198,.09); }
+.sp-reference td code { white-space: normal; overflow-wrap: anywhere; }
+.sp-reference pre { max-width: 100%; overflow-x: auto; }
+.sp-reference .sp-media { min-height: 170px; margin: 1.3rem 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .4rem; border: 1px dashed rgba(127,127,127,.5); border-radius: 8px; background: rgba(146,93,198,.04); text-align: center; }
+.sp-reference .sp-media span { max-width: 42rem; font-size: .9rem; }
+.sp-reference blockquote, .sp-reference .sp-caution { margin: 1.3rem 0; padding: .9rem 1.1rem; border: 1px solid rgba(127,127,127,.35); border-radius: 6px; background: rgba(127,127,127,.05); color: inherit; }
+.sp-reference blockquote p, .sp-reference .sp-caution p { margin: 0; }
+.sp-reference details { margin: 1rem 0; padding: .85rem 1rem; border: 1px solid rgba(127,127,127,.3); border-radius: 6px; }
+.sp-reference summary { cursor: pointer; font-weight: 600; }
+.sp-reference details[open] summary { margin-bottom: .8rem; }
+.sp-reference .sp-related { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(127,127,127,.25); }
+@media (max-width: 600px) {
+  .sp-reference table, .sp-reference tbody { display: block; }
+  .sp-reference thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .sp-reference tr { display: block; margin: .7rem 0; padding: .3rem 0; border: 1px solid rgba(127,127,127,.25); border-radius: 6px; }
+  .sp-reference td { display: block; width: auto; padding: .4rem .8rem; border: 0; font-size: .92rem; }
+  .sp-reference td:first-child { font-weight: 600; }
+  .sp-reference td::before { font-weight: 600; }
+  .sp-reference .sp-commands td:nth-child(3)::before { content: "Run from: "; }
+  .sp-reference .sp-permissions td:nth-child(2)::before, .sp-reference .sp-settings td:nth-child(2)::before { content: "Default: "; }
+  .sp-reference .sp-nav { gap: .15rem; }
+  .sp-reference .sp-nav a { padding: .4rem .5rem; }
+}
+</style>
+
+<div class="sp-reference">
+<nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview" aria-current="page">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations">Server setup</a></nav>
+
+Build a shaped portal, look up a command, or check who can use it. Shaped Portals uses normal Nether portal blocks, so Minecraft still handles travel and destination creation.
+
+[Build a portal](#build-your-first-portal) · [Shape rules](#valid-shapes) · [Commands](#commands) · [Permissions](#permissions)
+
+## Build your first portal
+
+1. [Install Shaped Portals](/shapedportals/01-installation-configuration#install).
+2. Build a closed, upright frame using obsidian, crying obsidian, or both.
+3. Leave the inside empty and light it with flint and steel.
+4. Wait for the portal to fill, then walk through.
+
+The default interior size is **2 to 256 blocks**. Players can create portals by default; a server's permissions and configuration may restrict this.
+
+<div class="sp-media"><strong>Portal-building GIF goes here</strong><span>Show a small stepped frame before ignition, the block being lit, and the filled portal.</span></div>
 
 ## Valid shapes
 
-A shaped portal must have:
+| Rule | What to build |
+|---|---|
+| Upright and flat | One vertical surface along the X or Z axis, not a floor or a 3D tunnel |
+| Closed boundary | Configured frame blocks around the entire interior |
+| Connected interior | Interior blocks touch by an edge; diagonal contact alone is not enough |
+| Empty inside | Only configured replaceable blocks; air, fire, and soul fire by default |
+| Within limits | Up to 64 blocks wide and 64 blocks high by default, still subject to the 256-block area limit |
+| One Folia region | The full shape must be owned by one active region during creation |
 
-- one vertical surface in the X or Z plane;
-- one orthogonally connected interior;
-- a complete boundary made from configured frame materials;
-- only configured replaceable materials in its interior;
-- an interior within the configured block, width, and height limits; and
-- all cells owned by one active Folia region during creation.
+Stepped edges, concave corners, and frame-material islands are allowed as long as the interior stays connected. Shapes that are valid in both vertical axes are rejected as ambiguous.
 
-The outline may curve, step, widen, narrow, contain concave corners, or surround
-frame-material islands. Diagonal contact does not connect interior cells. A
-shape valid in both axes is rejected as ambiguous.
-
-Default frames accept `OBSIDIAN` and `CRYING_OBSIDIAN`. Default interiors accept
-air variants, fire, and soul fire. The default interior range is 2–256 blocks,
-with independent 64-block width and height limits. Hard safety ceilings prevent
-configuration from raising the search above 4,096 cells or 512 blocks per
-dimension.
-
-## Creation lifecycle
-
-1. A permitted ignition cause produces fire inside a frame.
-2. A bounded vertical eligibility check requires the ignition column to reach a
-   configured lower frame boundary. Ordinary terrain fires stop here without
-   feedback, deduplication, or attempt and rejection statistics.
-3. The plugin waits one tick so vanilla portal creation takes priority.
-4. If the ignition block is already `NETHER_PORTAL`, no shaped attempt runs.
-5. Both vertical planes are scanned iteratively on the owning region thread.
-6. A `PortalCreateEvent` with reason `FIRE` is fired with the proposed blocks.
-7. The shape is scanned again after the event to reject concurrent frame edits.
-8. The portal is registered and the native portal blocks are placed without
-   initial neighbor physics.
-9. The registry is written asynchronously to `portals.json`.
-
-Once active, vanilla handles collision, dimension travel, coordinate scaling,
-destination search, and return-portal construction.
+Server owners can change these limits in [Portal settings](/shapedportals/01-installation-configuration#portal-rules). The hard ceilings are 4,096 interior blocks and 512 blocks per dimension.
 
 ## Commands
 
-| Command | Result |
-|---|---|
-| `/sp` | Open the localized, paginated help menu |
-| `/sp status` | Show creation state, registry counts, attempt totals, and scheduler mode in the shared help-menu layout |
-| `/sp config` | Open the in-game configuration editor |
-| `/sp language [locale]` | Select an available repository or custom locale, or omit it to open the interactive picker |
-| `/sp debug` | Save a comprehensive diagnostic report and optionally upload it to mclo.gs |
-| `/sp portals [page]` | List every managed portal with coordinates, clickable teleport shortcuts, and a note when its recorded frame uses materials no longer allowed for new portals |
-| `/sp teleport [UUID/prefix]` | Teleport to safe standing space beside a managed portal; authorized operators can repeat an unsafe result to confirm a forced landing |
+Use `/shapedportals`, `/shapedportal`, or the shorter `/sp`. In this reference, `<required>` arguments must be supplied and `[optional]` arguments may be omitted. Do not type the brackets.
 
-The full-height 54-slot category editor exposes every persisted setting and a
-paginated Languages workspace. Boolean values toggle on
-click, numeric values support increment, decrement, shift acceleration, and
-exact chat entry, while text and list settings use a 60-second cancellable chat
-prompt. Clicking the Language setting or running `/sp language` opens the same
-paginated Director-style menu. The editor-origin picker retains its cancellable
-typed prompt; the command-origin picker has no timer or chat capture. Every hoverable row
-shows the locale identifier and its full language name; clicking it selects the
-locale only after any required repository download verifies successfully, and
-command-driven selection never opens the configuration inventory. Managed portal
-listings and `/sp status` use the same unnumbered banner, arrow-marked entries,
-and footer pagination as Adapt and React command help, with Rift's readable purple
-palette. The Languages workspace lets operators select any available locale and
-edit every registered message. Tooltips render and wrap a bounded preview instead
-of exposing one long raw template, and chat editing uses the same Director banner,
-arrow rows, and footer with visually matched top and bottom rails plus a formatted
-current-value preview. It atomically edits
-the same `languages/<locale>.toml` file that the runtime loads and preserves its
-localized instruction and placeholder header. The prompt lists every placeholder
-valid for that message, and the save result shows the formatted previous and new
-values. `config.toml` remains available for file-based
-administration, but no setting requires leaving the in-game editor.
+| Command | What it does | Run from |
+|---|---|---|
+| `/sp` | Open command help | Player or console |
+| `/sp status` | Show portal counts, creation statistics, and scheduler state | Player or console |
+| `/sp config` | Open the in-game configuration and language editor | Player |
+| `/sp language [locale]` | Choose a language, or open the picker when omitted | Player |
+| `/sp portals [page]` | List managed portals; page defaults to 1 | Player or console |
+| `/sp teleport` | Open the portal list; `/sp teleport list` does the same | Player or console |
+| `/sp teleport <UUID/prefix>` | Move to a safe spot beside the chosen portal | Player |
+| `/sp debug` | Save a diagnostic report and upload it when enabled | Player or console |
 
-The General page includes the enabled-by-default anonymous bStats switch for
-plugin ID `33267`. Toggling it starts or stops ShapedPortals metrics immediately;
-the global bStats opt-out remains available in `plugins/bStats/config.yml`.
+{.sp-commands}
 
-ShapedPortals also exposes six read-only runtime metrics to React through the
-shared VolmLib integration bridge. This is separate from bStats and sends
-nothing outside the server. Install ShapedPortals' included **ShapedPortals Runtime**
-Plugin API Pack to add managed-portal, interior-cell, creation-rate,
-rejection-rate, and success-percentage samplers to React.
+`/sp tp` is an alias for `/sp teleport`. Console portal listings show all records rather than one player page. There is **no reload command**; configuration files reload automatically by default.
 
-Command results always remain in chat so they can be reviewed, and sender-facing
-message defaults include the optional `{prefix}` token. Removing that token from
-one locale entry suppresses the prefix only for that message. Players
-may also receive configurable short action-bar, title, boss-bar, and sound
-feedback. Action bars use VolmLib's cooperative segment compositor, titles are
-shown only after winning the shared title claim, and boss bars use a dedicated
-short-lived ShapedPortals lane with explicit cleanup.
+### Find and visit a portal
+
+Run `/sp portals`, then click a portal entry to visit it. You need the list permission to view entries and the teleport permission to travel.
+
+You can also supply its full UUID or a unique prefix of at least eight characters:
+
+```text
+/sp teleport <portal UUID>
+```
+
+Replace `<portal UUID>` with an ID from the list. Normal teleportation checks for clear feet and head space over a solid floor.
+
+<div class="sp-caution"><p><strong>Unsafe teleport confirmation:</strong> if no safe spot exists, players with the additional unsafe permission can repeat the same teleport within 10 seconds. This can place you inside blocks or over a drop. It does not clear space or create a platform, and it cannot bypass an unavailable world, inactive portal, or another plugin's teleport cancellation.</p></div>
+
+<div class="sp-media"><strong>Portal-list screenshot goes here</strong><span>Show one portal entry, its location, the teleport hover text, and page controls.</span></div>
+
+### Change the language
+
+```text
+/sp language de_DE
+```
+
+Selects German. A missing repository language file downloads before selection completes. Omit the locale to open the clickable picker. See [Language files](/shapedportals/01-installation-configuration#language-files) for available locales and message editing.
+
+### Create a diagnostic report
+
+<div class="sp-caution"><p><strong>Public upload is on by default.</strong> Before running <code>/sp debug</code>, set <code>debug.uploadEnabled = false</code> in the Diagnostics editor or configuration if the report should stay on your server. Reports include server, plugin, portal, configuration, and system details.</p></div>
+
+Every run saves a file under `plugins/ShapedPortals/debug/` first. An upload failure does not remove it. Only one report runs at a time, and uploaded reports cannot be deleted through the plugin.
 
 ## Permissions
 
-| Permission | Default | Purpose |
-|---|---:|---|
-| `shapedportals.create` | Everyone | Ignite shaped portals when permission enforcement is enabled |
-| `shapedportals.command` | Everyone | View help and status |
-| `shapedportals.config` | Operators | Use the in-game editor |
-| `shapedportals.debug` | Operators | Create local diagnostic reports and use the configured upload option |
-| `shapedportals.portals` | Operators | List managed portal identities, locations, and creation details |
-| `shapedportals.teleport` | Operators | Teleport to verified safe standing space beside a managed portal |
-| `shapedportals.teleport.unsafe` | Operators | Confirm a forced landing when no safe standing space exists; also requires `shapedportals.teleport` |
+**Everyone** means the default is `true`; **Operators** means `op`. Permission plugins can change these grants. There is no declared wildcard or parent permission that grants the other nodes.
 
-Next: [Installation & Configuration](/shapedportals/01-installation-configuration)
+| Permission | Default | Allows |
+|---|---|---|
+| `shapedportals.create` | Everyone | Ignite shaped portals when creation permission checks are enabled |
+| `shapedportals.command` | Everyone | Use help and status |
+| `shapedportals.config` | Operators | Use the configuration editor and language command |
+| `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
+| `shapedportals.portals` | Operators | List portals, including through bare `/sp teleport` |
+| `shapedportals.teleport` | Operators | Teleport to a selected portal |
+| `shapedportals.teleport.unsafe` | Operators | Confirm an unsafe landing; also needs `shapedportals.teleport` |
+
+{.sp-permissions}
+
+Administrative subcommands check their own permission and do not also require `shapedportals.command`. World restrictions, shape rules, and protection-plugin decisions still apply when a player has creation permission.
+
+## Creation lifecycle
+
+Vanilla gets the first chance to create a normal portal. If it has not done so after one tick, Shaped Portals checks the frame, fires a cancellable creation event, checks the frame again, and fills and saves the portal.
+
+Ordinary terrain fires are ignored before attempt statistics and feedback. See [Portal behavior](/shapedportals/02-portal-behavior-events) for protection plugins, repairs, and persistence.
+
+<div class="sp-related"><a href="/shapedportals">Shaped Portals home</a> · <a href="/shapedportals/01-installation-configuration">Installation &amp; configuration</a> · <a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a></div>
+
+</div>
