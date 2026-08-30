@@ -27,7 +27,7 @@ the server, and each plugin compiles and shades it into its jar.
 | `util.bukkit` | `Events`, `WorldIdentity`, `ChunkPositionSet`, `Placeholders` |
 | `util.bukkit.papi` | The shared PlaceholderAPI expansion base and its key registry. See [placeholders](/volmlib/api/placeholders) |
 | `util.director` | The Director command framework: annotations, parameter handlers, help display, tab completion |
-| `util.localization` | `LocalizationManager`, prepared snapshot installation, `MessageCatalog`, locale overlays, plural selection, catalog validation |
+| `util.localization` | `LocalizationManager`, prepared snapshot installation, `MessageCatalog`, locale overlays, plural selection, catalog validation, sectioned TOML language parsing/reference rendering, optional decorative placeholders, canonical Volmit locale identifiers and display names through `VolmitLocales`, and `RemoteLanguageCatalog` for pinned verified repository catalogs |
 | `util.format` | `Form` (durations, memory sizes, wrapping, capitalization, `prettyEnumName`), `ColorFormatter`, `MemoryMonitor` |
 | `util.plugin` | `ComponentText` (one immutable rich-text value with MiniMessage, legacy, and plain serializers), `ComponentMessenger` (chat, action-bar, and title delivery), `ComponentLog` (Paper component logging with severity-aware Java-logger fallback), `SplashScreenSupport` (shared console-splash metadata), `CancellableTask` |
 | `util.board` | Scoreboard sidebar management (`BoardManager`, `BoardProvider`, `BoardSettings`). `BoardSettings` has a configurable `updateIntervalTicks` (default 20). A board exposes its first complete frame with the provider's real title: at most 15 single-line rows, a 32-UTF-16-unit title, and 16-unit team prefix plus 16-unit suffix per row with active colours carried forward. Line breaks collapse to spaces and fitting never splits a surrogate, legacy colour pair, or complete legacy RGB run. `BoardProvider.hideScoreNumbers(Player)` defaults to `true`; VolmLib applies the native blank number format when the server supports it and otherwise keeps the numbered sidebar without failing. Providers may override the policy per player. Packet scoreboards use detached objective state, isolated objective ids, and cross-plugin ownership arbitration so region-threaded servers such as Canvas can render safely and shaded VolmLib consumers such as Iris and Gloss cannot overwrite one another. `BoardManager` updates through a Folia-safe scheduler on regionized runtimes |
@@ -59,7 +59,7 @@ reflection-probe diagnostics use `FINE`; actionable shared-service failures use
 
 ## Components and colors
 
-`ComponentText` is the common boundary between authored text and a destination. Use `markup(...)` only for trusted MiniMessage or mixed MiniMessage/legacy templates; it accepts standard `&` and `§` codes, `&#RRGGBB`, compact or expanded `&x` RGB, and `[RRGGBB]` bracket hex. Use `legacy(...)` for authored legacy text, `section(...)` for text whose `§` formatting has already been resolved, `literal(...)` for untrusted plain text, and `component(Object)` when a plugin already owns an Adventure component. `append(...)` keeps sibling styles and events isolated. The public API intentionally exposes `ComponentText`, not Kyori types, so shaded consumers do not couple their signatures to one Adventure classloader.
+`ComponentText` is the common boundary between authored text and a destination. Use `markup(...)` only for trusted MiniMessage or mixed MiniMessage/legacy templates; it accepts standard `&` and `§` codes, `&#RRGGBB`, compact or expanded `&x` RGB, and `[RRGGBB]` bracket hex. A backslash escapes an ampersand or bracket color marker. `normalizeMarkup(...)` exposes the same conversion when a localization service must normalize a trusted template before inserting untrusted arguments. Use `legacy(...)` for authored legacy text, `section(...)` for text whose `§` formatting has already been resolved, `literal(...)` for untrusted plain text, and `component(Object)` when a plugin already owns an Adventure component. `append(...)` keeps sibling styles and events isolated, `hover(...)` attaches another `ComponentText` as safe rich hover content, and `clickOpenUrl(...)` accepts only HTTP or HTTPS URIs with a host. The public API intentionally exposes `ComponentText`, not Kyori types, so shaded consumers do not couple their signatures to one Adventure classloader.
 
 `ComponentMessenger.send(...)` uses the server's rich-message path when available. Its plain Bukkit fallback serializes components to legacy text only for players; consoles, RCON, command blocks, and custom non-player senders receive plain text with no raw `§` markers. The action-bar and title methods retain player colors and RGB. `ComponentLog.discriminator(...)` builds the common dark-bracketed, reset-terminated prefix with a plugin-supplied legacy or RGB brand accent. `ComponentLog` prepends that styled discriminator exactly once and writes through Paper's root component logger so the shared implementation class is not exposed as a second label; otherwise it uses the supplied Java logger with formatting removed while retaining the requested severity and throwable.
 
@@ -72,6 +72,42 @@ reflection-probe diagnostics use `FINE`; actionable shared-service failures use
 section header; unannotated sections retain the generated `Settings for <section>` fallback.
 
 `LocalizationManager.install(preparedSnapshot)` atomically installs the exact immutable `LocalizationSnapshot` a caller already created and validated. Hotload hosts can therefore parse, validate, and compile a localization candidate on an I/O worker, then perform only the prepared reference swap on their authoritative server thread.
+
+`VolmitLocales.all()` provides the immutable suite locale order, while
+`VolmitLocales.displayName(locale)` returns the curated full English name for a
+bundled locale. Unknown or custom identifiers return an empty optional so each
+plugin can supply context-appropriate custom-locale wording.
+
+`RemoteLanguageCatalog` loads a locale manifest from the consumer jar. A manifest
+may use an immutable commit with per-locale SHA-256 values or a validated mutable
+reference such as `main` without checksums. It reads reference-scoped caches
+synchronously and downloads missing catalogs on one daemon worker. Fetches are
+bounded to 2 MiB with three-second connect and five-second read timeouts, require
+HTTP 200 and strict UTF-8, run a caller-supplied complete-catalog validator, and
+require atomic publication. Pinned entries receive checksum verification; mutable
+entries rely on transport security plus the caller's semantic validator.
+`requestInstallIfMissing(...)` uses the same verification pipeline to atomically
+install a repository locale at a caller-selected flat path without creating a
+revision cache and without replacing a file that already exists or appears while
+the transfer is active. This supports one locally editable language file; a
+configured checksum is enforced only on its incoming publisher bytes.
+Checksum, decoding, validation, transport, and publication failures leave the
+previous target untouched. Transport errors identify the locale and complete
+source URI. A failed locale enters a 30-second retry cooldown so repeated reload
+or editor events do not immediately repeat the same request or warning.
+Concurrent requests for one locale coalesce onto the active transfer and each
+registered completion receives the same result. The caller owns logging and schedules any Bukkit
+activation after a successful completion callback; closing the catalog fences
+late lifecycle completions.
+
+`LanguageReferenceRenderer.render(catalog, headerLines)` emits deterministic nested TOML for the complete typed catalog, including text, line-list, and plural values. `TomlLanguageEditor` canonicalizes message tables while preserving a language file's leading instruction and placeholder comment block.
+
+`TomlLanguageParser.parseText(raw)` flattens a sectioned text-only TOML catalog
+into message IDs. Its accepted-key overload projects a sparse local file onto
+the current catalog, ignores retired keys without rewriting the file, and still
+rejects a wrong type for a current key. `TextKey.ofOptional(...)` identifies
+decorative placeholders that an overlay may remove; undeclared, required, and
+unexpected placeholders retain strict validation.
 
 Everything else under `art.arcane.volmlib` is scaffolding for the Volmit plugins. Those types
 are public because Java has no better word for "visible to the plugins in this repository".
@@ -87,7 +123,7 @@ the caller has drained its producers.
 
 ## Director completion
 
-`DirectorMiniMenu.resolveHelp(engine, args)` owns the shared player layout. A panel has a fixed 19-line budget including its header and footer, so root pages hold at most 17 entries and subtrees hold at most 16 after reserving the Back row. Shorter trees render every entry without padding. Sender-aware delivery keeps console help flat and unpaginated. Custom command lists can derive their own row capacity from `DirectorMiniMenu.MENU_LINE_COUNT` instead of declaring another height.
+`DirectorMiniMenu.resolveHelp(engine, args)` owns the shared player layout and displays at most 19 command entries between its banner and navigation footer. `DirectorMiniMenu.ContentMenu` applies the same page clamping, banner, and previous/next footer to plugin-owned content rows while accepting an explicit page size for taller entries. `banner(title, theme)` renders an unnumbered header, while the retained `banner(title, contentPage, theme)` and `ContentPage.title(title)` contracts append the page fraction for consumers that expose it. Sender-aware delivery keeps both help and content menus flat and unpaginated for console senders.
 
 Director suggests canonical command names and keeps aliases executable without duplicating
 them in completion lists. Every exposed command value completes as a canonical `name=value`
@@ -222,6 +258,7 @@ else's. In this suite, both shapes are in production at once:
 | BileTools | `art.arcane.volmlib` |
 | Adapt | `art.arcane.adapt.util.arcane.volmlib` |
 | React | `art.arcane.react.util.arcane.volmlib` |
+| ShapedPortals | `com.volmit.shapedportals.libs.volmlib` |
 
 `art.arcane.volmlib.util.bukkit.papi.PlaceholderValues` and
 `art.arcane.adapt.util.arcane.volmlib.util.bukkit.papi.PlaceholderValues` are different
@@ -356,6 +393,12 @@ unwrap it with reflection. You trade compile-time checking for the ability to ta
 that renamed its classes. Call `providers()` on the main (global region) thread.
 `ServicesManager` is not documented as thread-safe. The providers you get may not be either.
 
+`IntegrationMetricSchema.shapedPortalsKeys()` defines the canonical six-key
+ShapedPortals metric set for this reflective path: managed portals, interior
+cells, creation attempts, created portals, rejected attempts, and creation
+success percentage. The descriptors retain their numeric type, unit, plugin,
+and domain after React unwraps the relocated provider records.
+
 ### Recognizing the failure
 
 | Symptom | Cause |
@@ -403,6 +446,14 @@ Everything else in VolmLib states its own threading contract, or has none. Treat
 no contract as single-threaded. The one surface in this directory that is safe from any
 thread is the placeholder snapshot machinery.
 [placeholders](/volmlib/api/placeholders) explains why.
+
+---
+
+## Diagnostic publishing
+
+`art.arcane.volmlib.util.web.MclogsClient` publishes bounded diagnostic text to the fixed `https://api.mclo.gs/1/log` endpoint. Call `publish(content, source, userAgent)` from an asynchronous task; it returns the canonical public `https://mclo.gs/<id>` URI or throws `IOException`/`InterruptedException`.
+
+The client uses JSON, disallows redirects, applies five-second connect and ten-second request timeouts, limits content to 512 KiB and 5,000 lines, and limits the response to 64 KiB. It validates the service's alphanumeric report id and canonical URL and never returns or logs the one-time deletion token. Callers remain responsible for sanitizing report contents and obtaining operator consent before sending data to this external public service. See the [official mclo.gs API documentation](https://api.mclo.gs/).
 
 ---
 

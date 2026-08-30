@@ -2,7 +2,7 @@
 title: "Shaped Portals"
 description: "Managed non-rectangular Nether portals with safe live configuration"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -20,7 +20,7 @@ integrity, live typed configuration, localized commands, and Folia-aware schedul
 | Java artifact | Java 17 bytecode |
 | Commands | `/shapedportals`, `/shapedportal`, `/sp` |
 | Configuration | `plugins/ShapedPortals/config.toml` |
-| Language | `plugins/ShapedPortals/languages/<locale>.toml` |
+| Installed language | `plugins/ShapedPortals/languages/<locale>.toml` |
 | Managed portal store | `plugins/ShapedPortals/portals.json` |
 | Folia metadata | Declared; region-owned implementation |
 
