@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -173,8 +173,12 @@ Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_r
 | `automaticGradients` | `false` | Applies the automatic rendered-text gradient |
 | `learnUnlearnButtonDelayTicks` | `14` | Debounce, in ticks, between learn and unlearn clicks |
 | `maxRecipeListPrecaution` | `25` | Depth bound on recursive recipe-value traversal |
-| `actionbarNotifyXp` | `true` | Shows the XP action-bar figure |
-| `actionbarNotifyLevel` | `true` | Shows level-up notifications |
+| `actionbarNotifyXp` | `true` | Shows aggregated skill XP gains on the action bar without changing the XP awards themselves |
+| `actionbarXpDurationMillis` | `1500` | Skill XP ticker lifetime in milliseconds, clamped to `100`-`60000` |
+| `actionbarNotifyLevel` | `true` | Shows skill-level notifications without controlling their sounds |
+| `actionbarNotifyMasterLevel` | `true` | Shows account-wide master-level and maximum-power notifications without changing progression or Mutation unlock checks |
+| `actionbarLevelDurationMillis` | `2500` | Shared skill-level and master-level notification lifetime in milliseconds, clamped to `100`-`60000` |
+| `progressionSoundsEnabled` | `true` | Plays skill-level and master-level progression sounds independently of the visual switches |
 | `unlearnAllButton` | `false` | Shows the bulk-unlearn control |
 | `guiShowAllSkills` | `false` | Lists every enabled skill even when the player has no progress in it. Display only. Use permissions still apply |
 
@@ -192,7 +196,7 @@ soundsEnabled = true
 "skill-name" = true
 ```
 
-`particlesEnabled` and `soundsEnabled` are the global switches. The two override maps are keyed by registry ID and act as extra gates. `false` turns that component's particles off. `true` leaves the global decision alone. The player's own `/adapt effects` preference is a further gate. The `adaptation-name` and `skill-name` rows are placeholders.
+`particlesEnabled` and `soundsEnabled` are the global switches. The two override maps are keyed by registry ID and act as extra gates. `false` turns that component's particles off. `true` leaves the global decision alone. The player's own `/adapt effects` preference is a further gate. Progression audio additionally requires `progressionSoundsEnabled`; disabling that root key leaves adaptation gameplay sounds available. The `adaptation-name` and `skill-name` rows are placeholders.
 
 ### `[abilityApi]`
 

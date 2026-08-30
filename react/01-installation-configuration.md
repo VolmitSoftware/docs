@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,12 +30,12 @@ Install the React shaded jar into `plugins/`. Start the server once so React cre
 | `plugins/React/web/tokens.toml` | Paired API token records and roles; keep private |
 | `plugins/React/web/audit.log` | Append-only audit records for remote mutations |
 | `plugins/React/history/` | Compressed metric segments and the crash-recovery journal |
-| `plugins/React/core/<controller-id>.toml` | Controller settings, including hotload, maps, and config-input sessions |
+| `plugins/React/core/<controller-id>.toml` | Settings for configurable controllers, including hotload, maps, and config-input sessions. Runtime-only controllers do not create files here. |
 | `plugins/React/feature/<id>.toml` | Per-feature config |
 | `plugins/React/tweak/<id>.toml` | Per-tweak config |
 | `plugins/React/action/<id>.toml` | Per-action config |
 | `plugins/React/sampler/<id>.toml` | Per-sampler config when present |
-| `plugins/React/plugin-apis/*.toml` | Community Plugin API packs that create metrics for installed plugins |
+| `plugins/React/plugin-apis/*.toml` | The authoritative community Plugin API pack definitions that create metrics for installed plugins |
 | `plugins/React/languages/overrides/<locale>.toml` | Optional message overrides |
 | `plugins/React/player-settings/<uuid>.json` | Persisted action-bar monitor preferences. Writes are coalesced off-thread and atomically replace the prior file. |
 | `plugins/React/data/value-cache.json` | Cached material-value analysis |
@@ -195,7 +195,7 @@ React Web loads the catalog once, keeps its 128-point live chart history in brow
 
 Feature, tweak, world, global-config, preset, action, player-teleport, and successfully dispatched console mutations are accepted only when their documented authoritative stage succeeds. Multi-value config and control updates restore earlier values if a later value is rejected instead of returning a false success. Every accepted mutation is appended to `plugins/React/web/audit.log`; online operators receive a localized chat notice containing the signed pairing-device label, role, token ID, target, and a value-free summary. Action and player-teleport notices mean queued, not completed, and console notices include only the command verb and length.
 
-One shared background host-telemetry snapshot refreshes once per second and feeds both the sampler registry and the Environment API. Physical memory, disk capacity and throughput, network throughput/errors/drops, JVM memory/direct buffers/classes/GC/uptime, and player activity therefore retain durable sampler history without multiplying OS queries by connected viewers. The Environment workspace also presents mounted-volume and device/interface details from that shared snapshot.
+One shared background host-telemetry snapshot refreshes once per second and feeds both the sampler registry and the Environment API. Physical memory, disk capacity and throughput, network throughput/errors/drops, JVM memory/direct buffers/classes/GC/uptime, and player activity therefore retain durable sampler history without multiplying OS queries by connected viewers. The Environment workspace also presents mounted-volume and device/interface details from that shared snapshot. On Windows, missing optional LibreHardwareMonitor support and unsupported ACPI thermal-zone enumeration are treated as unavailable without repeated warnings; other WMI failures remain visible in the server log.
 
 WebSocket bearer values never appear in `/ws/metrics` or `/ws/logs` URLs. An authenticated client sends one JSON text frame shaped exactly as `{"type":"auth","token":"<bearer>"}` before it can join a live session. Malformed, invalid, binary, unexpected, or repeated authentication frames close with policy code `1008`. Pending authentication is capped at 2,048 sockets and expires after five seconds. Metrics remains available without authentication only when `requireTokenForReads = false`; that mode still accepts one valid first-frame credential from clients that always authenticate. Logs always require `console:read`.
 

@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -52,7 +52,7 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first. On a fresh installation it downloads and relocates Gson, Caffeine, ConcurrentLinkedHashMap, and Paralithic under `plugins/Iris/cache/libraries/`. Paper-family servers add those cached jars to Iris's classpath before early datapack bootstrap; plain Spigot loads them during plugin initialization. A provisioning failure stops Iris instead of continuing with missing classes.
 3. First boot writes `plugins/Iris/iris.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download. Later unchanged boots reuse the runtime-library cache without downloading those libraries again.
 4. Run `/iris download pack=overworld` and/or `/iris download pack=underworld`. Wait for validation and atomic installation to finish. The command does not restart or stop the process itself.
-5. Restart before you use either pack so Minecraft loads the packs' dimension types and custom biomes. Overworld 4002 and Underworld 1005 declare no external `datapackImports`; they do not require Towns & Towers, Dungeons & Taverns, or another add-on. A custom pack that declares imports still needs the workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
+5. Restart before you use either pack so Minecraft loads the packs' dimension types and custom biomes. Overworld 4002 and Underworld 1005 declare no external `datapackImports`; they do not require Towns & Towers, Dungeons & Taverns, or another add-on. A custom pack that declares imports still needs the workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Bukkit accepts Modrinth, direct HTTP(S), and absolute local `file:` ZIP URLs; ZIPs placed in `plugins/Iris/datapacks/imports/` are discovered for every Iris dimension.
 
 Upgrading is a hard break. Back up any values you need, delete the obsolete
 `plugins/Iris/settings.json` file (or `<configDir>/iris/settings.json` on a mod
@@ -161,7 +161,7 @@ The HUD talks to both modded Iris servers and Bukkit/Paper Iris over channel `ir
 | `plugins/Iris/iris.json` | Engine settings. Written with defaults if absent, and rewritten on every read. New keys appear with defaults. Your edits survive |
 | `plugins/Iris/packs/<key>/` | Installed packs. This is the live tree the Studio reads and edits |
 | `plugins/Iris/bootstrap/` | First-boot provisioning marker (`provisioned.properties`) recording what was installed and against which compiler identity |
-| `plugins/Iris/datapacks/` | External datapack imports pulled from Modrinth by `/iris datapack`, plus a `staging/` subfolder used mid-download |
+| `plugins/Iris/datapacks/` | Managed external datapack cache, manifest, and staging. Put local auto-discovered ZIPs in `imports/`; Iris creates the folder and enables those sources for every Iris dimension |
 | `plugins/Iris/languages/overrides/<locale>.json` | Optional server message overrides. See [08 - Localization](/iris/08-localization) |
 | `<level-root>/datapacks/iris/` | The aggregate worldgen datapack Iris compiles from your installed packs. Iris owns this. Do not hand-edit it |
 | `<level-root>/dimensions/<namespace>/<name>/` | Storage for a managed Iris world on Paper-family servers. Namespace is `iris` for worlds Iris creates |

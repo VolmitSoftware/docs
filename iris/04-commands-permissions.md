@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -373,7 +373,7 @@ See [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Struc
 
 | Command | Aliases | Platforms | Params | Description |
 |---------|---------|-----------|--------|-------------|
-| `ingest` | `pull` | **Bukkit**. Stub on modded | `[restart=false]` | Download and install `datapackImports` into world datapacks. Modded operators install compatible archives in the save's `datapacks/` directory manually |
+| `ingest` | `pull` | **Bukkit**. Stub on modded | `[restart=false]` | Install or update dimension-owned HTTP(S)/`file:` sources and ZIPs discovered under `plugins/Iris/datapacks/imports/`. Modded operators install compatible archives in the save's `datapacks/` directory manually |
 | `list` | `ls` | Both | — | **Bukkit:** configured imports plus installed. **Modded:** configured/installed world datapacks |
 | `remove` | `rm` | **Bukkit**. Stub on modded | `<id>` | Remove an installed datapack by id |
 | `status` | | **Modded** | — | Check Iris dimension-type overrides against pack heights |
@@ -431,7 +431,7 @@ The modded developer group implements only `network`/`ip`. Its help section stil
 | Studio loot/profile/spawn/objects/scoreboard/importvanilla | yes | stubs or messages |
 | Jigsaw Studio create/edit/autosave/export commands and GUI | yes | no. Copy a Bukkit-authored Iris pack |
 | Structure import/capture | yes | messages (run on Bukkit, copy the pack) |
-| Datapack Modrinth ingest/remove | yes | messages |
+| Managed datapack HTTP(S), `file:`, and drop-folder ingest/remove | yes | messages |
 | Datapack status/install (dimension types) | — | yes |
 | `regen` / `goldenhash` | under `Developer` | root |
 | Pregen flags | `serial`, `gui`, center string | `sync`, `gui`, `nocache`, `at x z` |

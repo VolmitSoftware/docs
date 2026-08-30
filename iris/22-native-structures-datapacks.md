@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,23 +64,28 @@ Widen from an exact key to a prefix only after the exact-key test passes. A name
 
 Field details are in 1.5.
 
-## Task 2: Install a third-party datapack for one Iris dimension
+## Task 2: Install a third-party datapack
 
 This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The current built-in `overworld` and `underworld` packs declare no external datapack imports; this workflow is for custom packs that opt into them.
 
 Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
 
-1. Add a Modrinth or direct archive URL to `datapackImports` in the declaring dimension only. Pin a Modrinth version URL when the pack requires an exact release:
+1. Add a Modrinth, direct archive, or absolute local `file:` URL to `datapackImports` in the declaring dimension only. Pin a Modrinth version URL when the pack requires an exact release:
 
    ```json
    {
      "datapackImports": [
-       "https://modrinth.com/datapack/<project>/version/<version>"
+       "https://modrinth.com/datapack/<project>/version/<version>",
+       "file:///srv/minecraft/local-datapacks/custom-structures.zip"
      ]
    }
    ```
 
-2. Leave the URL out of the second test dimension, and keep the vanilla world as a control. Confirm the selected datapack release supports the server's Minecraft version.
+   A file URL must point to a regular ZIP file on the server host. Use `file:///C:/minecraft/local-datapacks/custom-structures.zip` on Windows. Relative paths, `file://host/...` authorities, directories, symbolic links, query strings, and fragments are rejected.
+
+   To enable a local datapack for every Iris dimension without editing JSON, place its ZIP directly under `plugins/Iris/datapacks/imports/`. Iris creates that folder automatically, scans only its top level, and ignores non-ZIP files, nested directories, hidden files, and symbolic links. Its managed structures remain excluded from vanilla-world generation and locate state.
+
+2. For a dimension-owned source, leave the URL out of the second test dimension and keep the vanilla world as a control. For a drop-folder source, both Iris dimensions should receive it while the vanilla world remains the control. Confirm the selected datapack supports the server's Minecraft version.
 3. Validate the pack, then run:
 
    ```text
@@ -93,14 +98,13 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
 5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before the generation test (see 1.2).
 6. Create fresh declaring and nondeclaring Iris worlds. In all three worlds, run `/locate structure <key>` and generate new chunks.
 
-**Success:** the declaring Iris world locates and naturally generates the structure.
-The nondeclaring Iris world and the vanilla world do neither. Restart without deleting the installed datapack and confirm the same result.
+**Success:** a dimension-owned source locates and naturally generates only in the declaring Iris world. A drop-folder source does so in both Iris dimensions. The vanilla world locates and generates structures from neither source. Restart without deleting the installed datapack and confirm the same result.
 
 If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart.
 It does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
 
-To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot.
-If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL. Restart before verifying the restored policy. Only newly generated chunks change.
+To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list or remove its ZIP from `plugins/Iris/datapacks/imports/`. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot.
+If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL or drop-folder ZIP. Restart before verifying the restored policy. Only newly generated chunks change.
 Existing starts remain.
 
 ## Task 3: Turn a structure off
@@ -449,13 +453,14 @@ Accepted URL forms:
 
 - **Modrinth project page** — latest datapack version for the server's Minecraft version.
 - **Pinned Modrinth version** — any `.../version/<token>` URL.
-- **Any other URL** — direct zip download, tracked by ETag and hash.
+- **Direct HTTP or HTTPS URL** — direct ZIP download, tracked by ETag and hash.
+- **Absolute local file URL** — a `file:///.../pack.zip` read from the server host and tracked by content hash.
 
-Downloads are checksum-verified when Modrinth publishes a hash, and size-capped.
+Modrinth downloads are checksum-verified when a hash is published. Remote and local archives are capped at 256 MiB before extraction.
 
 ### 2.2 Where files land, and when ingest runs
 
-Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>/`, each carrying `.iris-managed.json`. Unmanaged datapacks are never touched, and the id `iris` is reserved. Cache, staging, and manifest live under `plugins/Iris/datapacks/`.
+Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>/`, each carrying `.iris-managed.json`. Unmanaged datapacks are never touched, and the id `iris` is reserved. Cache, staging, manifest, and the operator drop folder live under `plugins/Iris/datapacks/`; local ZIPs go in `plugins/Iris/datapacks/imports/`.
 
 Ingest and recovery run synchronously inside Iris's startup admission gate when `general.autoIngestDatapacks` is enabled (default true). Players and every Iris world and Studio creation path stay locked until that phase is valid.
 
@@ -466,7 +471,7 @@ Minecraft builds worldgen registries at server start, so a **newly installed or 
 
 For a custom pack with imports on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack is installed. The first boot discovers and installs the declared sources, then leaves admission restart-required. The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
 
-Cache reuse is a local validation decision and does not poll remote sources.
+Cache reuse is a local validation decision and does not poll remote sources. Iris does hash every configured local file and drop-folder ZIP during startup, so replacing bytes at the same local path forces a fresh ingest check.
 Run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts. Unchanged bootstrap recovery leaves the manifest stable. The next startup can reuse the cached fingerprint. During a full ingest, Iris may keep an exact same-version, Iris-owned installed target in place. Content must match staging. The datapack must need no override stripping. That avoids a temporary copy and replacement.
 
 Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial. It does this when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
@@ -482,7 +487,7 @@ This is an upstream Folia 26.2 command compatibility limitation, reproduced on a
 
 ### 2.4 Modded installation
 
-Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory. Restart with those archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries. The current built-in Overworld and Underworld need no external datapacks.
+Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, and they do not scan the Bukkit `datapacks/imports/` drop folder. An operator must install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory. Restart with those archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries. The current built-in Overworld and Underworld need no external datapacks.
 
 ### 2.5 Manual commands
 

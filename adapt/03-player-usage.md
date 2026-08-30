@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Adapt documentation: Player Usage"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ A brand-new player opens the menu and sees nothing. That is normal. Skills appea
 ## Getting started
 
 1. Play. Mine, fight, sprint, craft, brew, fish, tame. Each activity feeds its own skill line.
-2. Watch your action bar. XP and level-up messages appear there while `actionbarNotifyXp` and `actionbarNotifyLevel` are on.
+2. Watch your action bar. XP, skill-level, and master-level messages appear there while `actionbarNotifyXp`, `actionbarNotifyLevel`, and `actionbarNotifyMasterLevel` are on.
 3. Once a skill has leveled at least once, find a bookshelf.
 4. Right-click it while standing, with an empty hand or a non-block item. The menu opens.
 5. Click the skill you want to spend in.
@@ -116,14 +116,19 @@ Logging in after time away grants a temporary XP boost sized from how long you w
 | `guiBackButton` | `true` | Shows a back arrow in the middle of the navigation row of child menus |
 | `escClosesAllGuis` | `false` | False reopens the parent menu when you press Escape. True closes the whole stack |
 | `learnUnlearnButtonDelayTicks` | `14` | Ticks between the menu closing and reopening after a learn or unlearn. 0 also suppresses the title toast |
-| `actionbarNotifyXp` / `actionbarNotifyLevel` | `true` | Show XP gains and level-ups on the action bar |
+| `actionbarNotifyXp` | `true` | Shows aggregated skill XP gains on the action bar |
+| `actionbarNotifyLevel` | `true` | Shows skill-level notifications on the action bar |
+| `actionbarNotifyMasterLevel` | `true` | Shows the master-level and maximum-power notifications on the action bar |
+| `actionbarXpDurationMillis` | `1500` | XP ticker lifetime, clamped to 100-60000 milliseconds |
+| `actionbarLevelDurationMillis` | `2500` | Skill-level and master-level notification lifetime, clamped to 100-60000 milliseconds |
+| `progressionSoundsEnabled` | `true` | Plays progression sounds independently of the three visual switches |
 | `loginBonus` / `welcomeMessage` | `true` | Grant the returning-player XP boost, and show the toast that reports it |
 | `hardcoreNoRefunds` | `false` | Unlearning returns no knowledge and no money |
 | `learningEconomy.enabled` | `false` | Also charges Vault currency when learning |
 | `learningEconomy.moneyPerKnowledge` | `1.0` | Currency charged per point of knowledge spent |
 | `learningEconomy.refundPercent` | `100.0` | Percentage of the paid money returned when unlearning |
 
-Hard-coded timings follow. The permanent-learn confirmation window is 6 seconds. Right-click of previous or next jumps 5 pages. The returning-player boost is offline time divided by 12, capped at 1 hour. It is worth 10 to 25 percent extra XP. It is skipped under 5 minutes. Mutation bookshelf access uses `bookshelfTokenMillis` (60000) and `bookshelfMaximumDistance` (8) from `mutations.toml`.
+Other timings follow. The permanent-learn confirmation window is 6 seconds. Right-click of previous or next jumps 5 pages. The returning-player boost is offline time divided by 12, capped at 1 hour. It is worth 10 to 25 percent extra XP. It is skipped under 5 minutes. Mutation bookshelf access uses `bookshelfTokenMillis` (60000) and `bookshelfMaximumDistance` (8) from `mutations.toml`.
 
 ### Gates checked every time an adaptation fires
 

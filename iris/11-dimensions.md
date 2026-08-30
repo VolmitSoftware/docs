@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -200,6 +200,78 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `focus` | string | `""` | Forces the whole world to one biome load key, in the **land** role. A sea biome under `focus` generates as land, so sea and shore structure eligibility never runs. Testing only. Remove before packaging |
 | `focusRegion` | string | `""` | Forces the whole world to one region load key. Testing only. Remove before packaging |
 
+## Terrain-first hydrology
+
+`hydrology` owns physical surface rivers, underground rivers, grottos, mouths, and independent deep fluids for the dimension. The planner freezes one deterministic drainage graph before terrain, carving, biome, decorator, object, renderer, and locator stages consume it. Existing chunks do not change when this configuration reloads.
+
+```json
+{
+  "hydrology": {
+    "rivers": {
+      "enabled": true,
+      "routing": {
+        "tileSize": 512,
+        "sampleSpacing": 64,
+        "refinementSpacing": 4,
+        "maximumRouteLength": 16384,
+        "maximumOutletsPerTile": 1,
+        "oceanOutlets": true
+      },
+      "surface": {
+        "enabled": true,
+        "sources": { "density": 3.0, "minimumElevation": 64, "minimumPerTile": 0 }
+      },
+      "underground": {
+        "enabled": true,
+        "sources": { "density": 1.5, "minimumPerTile": 0 }
+      },
+      "profiles": [
+        { "id": "water", "fluidPalette": { "palette": [{ "block": "minecraft:water" }] } }
+      ]
+    },
+    "deepFluids": []
+  }
+}
+```
+
+Source `density` is the expected natural headwater count per qualifying planning tile, not a per-chunk chance. Surface and underground sources have independent budgets. `minimumPerTile` backfills required headwaters only while legal candidates and outlets remain. `maximumOutletsPerTile` limits selected drainage roots after source admission: lower values make more headwaters converge into longer shared trunks, while higher values produce more independent trees.
+
+Accepted graph edges are refined into endpoint-pinned, two-scale Simplex paths with continuous downstream tangents, curvature smoothing, bounded terrain fallbacks, and contained hairpin removal. Tributaries publish their unique approach once and then share one canonical downstream trunk and outlet continuation. The route remains terrain bounded, but does not expose the cardinal or diagonal sampling lattice. Surface channels carve below the complete swept terrain corridor, publish rough asymmetric U-shaped beds, and grade the parent terrain beyond a separate shore band. Uncontained horizontal fluid cells are omitted, including low coastal cells, so accepted surface water remains below natural terrain until its ocean apron. Solved head loss becomes pools, riffles, cascades, or exponentially graded waterfalls with connected receiving reaches. Every adjacent wetted face respects `geometry.drops.maximumFaceDrop`; no vertical falling-fluid throat is generated. A compatible surface spill remains authoritative where it intersects cave headroom.
+
+Underground channels with `connectToExistingCaves: false` own and seal their complete generated passage. Planning validates that transactional volume without materializing surrounding cave terrain, while intentional grotto and sinkhole openings remain explicit. Enabling `connectToExistingCaves` instead samples the observed cave field and accepts a connection only when the completed wet component remains contained.
+
+| River key | Runtime behavior |
+|-----------|------------------|
+| `routing.tileSize` | Planning-tile width in blocks, 256–8192. Smaller tiles evaluate source budgets more often |
+| `routing.sampleSpacing` | Terrain-graph sampling interval. This bounds drainage search cost; it is not the visible route step |
+| `routing.refinementSpacing` | Interval used for the organic accepted centerline and final terrain checks |
+| `routing.maximumRouteLength` | Hard route-length bound in blocks |
+| `routing.maximumOutletsPerTile` | Maximum drainage roots selected per tile. Fewer roots favor long branching trunks |
+| `routing.oceanOutlets` / `routing.inlandOutlets` | Legal terminal families. A route is rejected when no configured contained outlet can be proven |
+| `geometry.meanders` | Primary and detail Simplex wavelengths and strengths, lateral-offset bound, smoothing passes, and maximum retained turn angle |
+| `geometry.surface`, `geometry.underground`, `geometry.grottos` | U-shaped bed roundness plus coherent bed and carved-wall roughness and wavelength for each channel family |
+| `geometry.drops` | Preferred horizontal run, descending-profile exponent, maximum adjacent wetted-face drop, and minimum connected-channel width ratio for cascades, cataracts, waterfalls, and sinkholes |
+| `surface.sources` | Independent surface density, minimum source elevation, and required minimum quota |
+| `surface.channel.width` | Styled wet-channel width |
+| `surface.channel.depth` | Styled water depth below the solved head |
+| `surface.channel.surfaceInset` | Styled vertical recess beneath the swept natural-terrain corridor |
+| `surface.channel.maximumIncision` | Maximum legal cut below natural terrain |
+| `surface.channel.shoreWidth` | Narrow biome band outside the wet channel; limited to one or two blocks |
+| `surface.channel.terrainBlendWidth` | Wider terrain-grading band outside the shore |
+| `surface.hydraulics` | Pool length and riffle, gradual-cascade, and waterfall thresholds |
+| `surface.ridgeTunnels` | Short contained bores used when an otherwise valid route crosses a bounded ridge |
+| `surface.mouths` | Ocean approach, sea-level mouth, and ocean-apron limits |
+| `underground.sources` | Independent underground density and required minimum quota |
+| `underground.fluidLevel` | Styled world-Y terraces; accepted courses may descend rather than remaining globally flat |
+| `underground.channelWidth`, `depth`, `headroom` | Continuous irregular passage dimensions. Floors are arched and longitudinally varied rather than tiled circles |
+| `underground.connectToExistingCaves` | False keeps the generated channel self-contained without sampling neighboring caves; true permits observed-cave connections only when the completed wet component remains contained |
+| `grottos` | Coastal and inland contained terminal shapes |
+| `profiles` | Reusable fluid palettes selected by the effective dimension, region, or biome `riverPolicy` |
+
+Each `deepFluids` entry has its own `id`, palette, density, spacing, world-Y `height`, horizontal and vertical radii, depth, headroom, and pool/channel switches. Deep-fluid sources do not consume either river source budget. Contained pools form one connected irregular basin; enable `shortChannels` only when short contained offshoots are wanted.
+
+Automatic biome and region objects reject support footprints that intersect accepted surface fluid. An explicit-Y placement or `/iris object paste` remains available for deliberate river construction.
+
 ## Rock, fluid, and overlay noise
 
 `rockPalette` is the material the terrain column is filled with below the biome own surface layers. `fluidPalette` is what fills ocean columns and any cave aquifer that allows fluid. Both are full weighted palettes. "Stone" can be a blend of stone, andesite and tuff. "Water" can be lava, or a custom mod fluid.
@@ -352,7 +424,7 @@ Dimension-level `structures` entries are Iris placements considered everywhere i
 | `structures` | `IrisStructurePlacement[]` | empty | Iris structure placements at dimension scope. Use this for content that must exist regardless of biome, such as a global stronghold analogue or a native structure you are re-anchoring |
 | `importedStructures` | `IrisImportedStructureControl` | default | Allow/deny and Y-adjustment rules for every registered native structure. Every registered structure generates by default. Deny families with `disabled`, one complete key with `disabledExact`. `adjustments` can shift, band, encase, or stilt a structure into Iris terrain. Recipes in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` keys, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
-| `datapackImports` | string[] | empty | External datapack URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
+| `datapackImports` | string[] | empty | External Modrinth, direct HTTP(S), or absolute local `file:` ZIP URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Bukkit also enables every ZIP under `plugins/Iris/datapacks/imports/` for every Iris dimension. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
 
 Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, `CAVE_ANY`. Details in [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), and [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 

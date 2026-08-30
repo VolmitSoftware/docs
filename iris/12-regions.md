@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -179,6 +179,24 @@ List root parents only. Child biomes are declared on their parent via `children`
 
 A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`) comes from which list selected it. The same biome file can appear in more than one list. It then takes a different role in each.
 
+### River policy
+
+`riverPolicy` overrides the dimension policy anywhere this region is selected; a biome policy overrides it again. Omitted policy members inherit. An explicit empty biome or profile list clears the inherited list.
+
+| Policy field | What it controls |
+|--------------|------------------|
+| `placement` | `DISABLED`, `TRANSIT_ONLY`, `NATURAL`, `PREFERRED_HEADWATER`, or `REQUIRED_HEADWATER` source and transit admission |
+| `routing` | `BLOCK`, `AVOID`, `ALLOW`, or `PREFER` terrain-routing treatment |
+| `outletAdmission` | Whether accepted river outlets may terminate in this region |
+| `profiles` | Preferred dimension-owned hydrology profile ids |
+| `surfaceBiomes`, `mouthBiomes`, `shoreBiomes` | Biomes selected for the wet channel, outlet, and narrow shore footprint |
+| `dryBiomes`, `floodedCaveBiomes` | Biomes selected for dry carved volume and flooded underground or grotto volume |
+| `widthMultiplier`, `depthMultiplier` | Accepted channel-size multipliers |
+| `incisionMultiplier` | Maximum terrain-incision multiplier; zero forbids incision |
+| `routingMultiplier` | Terrain-guided route-cost multiplier |
+
+The physical drainage graph, density, channel dimensions, and legal outlet families remain dimension-owned. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology).
+
 ### Zooms and the shore band
 
 | Field | Type | Default | What it does |
@@ -208,17 +226,9 @@ Everything here applies anywhere this region is selected, on top of what the bio
 | `depositVariants` | `IrisDepositVariant[]` | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
 | `ores` | `IrisOreGenerator[]` | empty | Vein-style ores. Each generator declares whether it is a surface or underground generator. Iris keeps two separate lists. |
 | `caveProfile` | `IrisCaveProfile` | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
+| `riverPolicy` | `IrisRiverPolicy` or null | inherit | Overrides the dimension hydrology policy for this region. See "River policy" above. |
 
 Deposit precedence across tiers: biome variants, then region variants, then dimension variants. First match wins within each tier.
-
-### Fields the generator does not read
-
-| Field | Status |
-|-------|--------|
-| `riverStyle` | Removed. It was never read at generation time. Rivers come from biomes (for example `temperate/sea/river`) with negative generator heights. Old packs that still carry the key load fine. It is ignored. |
-| `lakeStyle` | Removed, same reasoning. |
-
-They are still valid JSON and will not fail validation. Do not spend time tuning them.
 
 ## Overworld sample: `temperate`
 

@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Adapt documentation: API - Recipes, FX, Telemetry & Utilities"
 published: true
-date: 2026-08-21T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,7 +81,7 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 
 ## Notifications and HUD
 
-`Notification` is a queued player-facing message with a total duration and a group. Adapt ships action bar, title, sound, and advancement kinds. The title kind now delivers as an action-bar notice rather than a screen title. `Notifier` owns a player's queue and its XP aggregation and tick lifecycle. Adapt constructs it. You do not.
+`Notification` is a queued player-facing message with a total queue duration and a group. Adapt ships action bar, title, sound, and advancement kinds. Action-bar and title notifications also carry `displayDurationMillis`, which controls the compositor segment lifetime independently of queue spacing. The title kind delivers as an action-bar notice rather than a screen title. `Notifier` owns a player's queue and its XP aggregation and tick lifecycle. One queued batch may contain an ordered sound-and-popup sequence under one group; a later batch with that group replaces the older pending sequence. Adapt constructs the notifier. You do not.
 
 `AdaptHud` publishes messages as segments into the shared cooperative action-bar compositor. Adapt's XP ticker, ability status lines, and notices merge onto one line beside other plugins' content instead of fighting for the surface. Adapt never writes the title area or boss bars. Call it on the player's owning thread.
 

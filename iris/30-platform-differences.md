@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -176,7 +176,7 @@ Full command tables and stubs:
 | Schematic convert (`.schem` → `.iob`) | yes | message only | message only | message only |
 | Structure import / capture | yes (v26 NMS binding) | message only | message only | message only |
 | Structure list / info / place / verify | yes | yes | yes | yes |
-| Datapack Modrinth ingest / list / remove | yes | message only | message only | message only |
+| Datapack HTTP(S), `file:`, and local drop-folder ingest / list / remove | yes | message only | message only | message only |
 | Dimension-type datapack install / status | not applicable | yes | yes | yes |
 | PlaceholderAPI | soft depend | no | no | no |
 | Multiverse-Core | soft depend / loadbefore | no | no | no |

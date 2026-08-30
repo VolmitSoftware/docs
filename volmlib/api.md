@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-25
+date: 2026-08-30
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -61,7 +61,7 @@ reflection-probe diagnostics use `FINE`; actionable shared-service failures use
 
 `ComponentText` is the common boundary between authored text and a destination. Use `markup(...)` only for trusted MiniMessage or mixed MiniMessage/legacy templates; it accepts standard `&` and `§` codes, `&#RRGGBB`, compact or expanded `&x` RGB, and `[RRGGBB]` bracket hex. Use `legacy(...)` for authored legacy text, `section(...)` for text whose `§` formatting has already been resolved, `literal(...)` for untrusted plain text, and `component(Object)` when a plugin already owns an Adventure component. `append(...)` keeps sibling styles and events isolated. The public API intentionally exposes `ComponentText`, not Kyori types, so shaded consumers do not couple their signatures to one Adventure classloader.
 
-`ComponentMessenger.send(...)` uses the server's rich-message path when available. Its plain Bukkit fallback serializes components to legacy text only for players; consoles, RCON, command blocks, and custom non-player senders receive plain text with no raw `§` markers. The action-bar and title methods retain player colors and RGB. `ComponentLog.discriminator(...)` builds the common dark-bracketed, reset-terminated prefix with a plugin-supplied legacy or RGB brand accent. `ComponentLog` prepends that styled discriminator exactly once, sends the combined component through Paper's component logger when available, and otherwise uses the supplied Java logger with formatting removed while retaining the requested severity and throwable.
+`ComponentMessenger.send(...)` uses the server's rich-message path when available. Its plain Bukkit fallback serializes components to legacy text only for players; consoles, RCON, command blocks, and custom non-player senders receive plain text with no raw `§` markers. The action-bar and title methods retain player colors and RGB. `ComponentLog.discriminator(...)` builds the common dark-bracketed, reset-terminated prefix with a plugin-supplied legacy or RGB brand accent. `ComponentLog` prepends that styled discriminator exactly once and writes through Paper's root component logger so the shared implementation class is not exposed as a second label; otherwise it uses the supplied Java logger with formatting removed while retaining the requested severity and throwable.
 
 `ReactiveFolder` adds bounded rolling content reconciliation, temporary-artifact filtering, delete grace, and a completion-anchored 3-second latest-state queue to a recursive folder watch. It drains events on ordinary checks, runs a full membership reconciliation about every 5 seconds, and starts exact SHA-256 reconciliation about every 2.5 seconds. Each exact-content slice advances at most 8 MiB or 32 files and yields between files after roughly 10 milliseconds. `ConfigHotloadEngine.configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` provides the same completion-anchored queue with a host-supplied interval; Volmit hosts use 3 seconds. It also provides self-write suppression and periodic content reconciliation for silent or same-metadata saves. `ConfigHotloadEngine` likewise continues exact reconciliation across polls and yields between files after 8 MiB, 32 files, or roughly 10 milliseconds. Snapshot enumeration, full watcher scans, and one individual read sit outside those between-file limits. Exact-content capture is capped at 2 MiB per file; larger targets remain visible to metadata reconciliation but are not eligible for an automatic content apply. A failed host apply remains pending for retry; `clear()` closes all watcher resources and discards pending work.
 
@@ -430,9 +430,11 @@ every local segment. `text` is a legacy `§` string. `slots` is an ordered `HudS
 preference list (`LEFT`, `CENTER`, `RIGHT`).
 
 Every publish re-encodes the plugin's live segments under one metadata value. It then
-composes **all** plugins' live segments into one line and sends it. The fastest publisher
-keeps everyone's content fresh. A cleared or expired segment disappears on the next compose.
-Clearing the last visible segment wipes the bar.
+composes **all** plugins' live segments into one line and sends it. The publishing copy starts
+an owning-player scheduler lifecycle for that assertion: it refreshes the composed client line
+at most every two seconds and clears the purpose once its TTL expires. Republishing the same
+purpose supersedes the older lifecycle. A cleared or expired segment disappears on the next
+compose, and clearing the last visible segment wipes the bar.
 
 | Piece | Value |
 |---|---|
@@ -442,13 +444,13 @@ Clearing the last visible segment wipes the bar.
 | Slot assignment | first empty preferred slot. Otherwise the segment stacks into its last preference |
 | Lane render | `LEFT` then `CENTER` then `RIGHT`. Native claimants before spilled joiners |
 | Budget | segments past 150 visible characters are skipped for that frame, best-first |
-| Expiry | a segment is dead when `now - assertedMillis > ttlMillis` |
+| Expiry | A segment is dead when `now - assertedMillis > ttlMillis`; its owner refreshes and retires it on the player's scheduler |
 
 Priorities also set placement rank: `HudPriority` AMBIENT 10, NOTICE 30, STATUS 40, PROGRESS
 60, INTERACTIVE 80, MODAL 100, PINNED 1000. `PINNED` is reserved for the one always-centered
 ambient HUD (the React monitor). Persistent feature HUDs like Adapt's Sixth Sense line sit at
 `STATUS`. Transient notices flank them instead of displacing them. One-shot notices publish
-once. The TTL retires them.
+once. The owning lifecycle keeps long notices visible and retires them at the configured TTL.
 
 ### Title: `HudTitleService`
 

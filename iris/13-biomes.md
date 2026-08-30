@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -219,6 +219,7 @@ That is why a sea biome with `vanillaDerivative: "minecraft:plains"` gets no oce
 | `childStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Shape of the child patches. Cellular styles give distinct blobs. Simplex gives soft gradients. |
 | `carvingBiome` | string | `""` | Registers the referenced biome as reachable so its custom identity and spawn mappings exist. It does **not** select a cave biome at runtime. Cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | `caveMinDepthBelowSurface` | int 0-256 | `0` | When this biome is used as a cave biome, shallow columns fall back to the surface biome. The cutoff is this many blocks below the terrain surface. Raise it to keep a deep-cave palette out of shallow openings. |
+| `riverPolicy` | `IrisRiverPolicy` or null | inherit | Overrides the region and dimension hydrology policy wherever this biome is selected. Omitted members inherit; explicit empty biome/profile lists clear the inherited selection. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology). |
 
 ### Height (`generators`)
 

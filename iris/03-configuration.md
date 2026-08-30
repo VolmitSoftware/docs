@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -120,7 +120,7 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `useCustomColorsIngame` | `true` | Live | Same, for messages sent to players |
 | `progressBossBar` | `true` | Live | Enables boss-bar progress for supported jobs, Studio opens, chunk jobs, and pack downloads. Ordinary `/iris create` always uses its action-bar lifecycle meter instead; creation-time pregeneration retains its dedicated long-running boss bar |
 | `adjustVanillaHeight` | `false` | **Restart** | **Bukkit only.** Overwrites the vanilla `overworld`/`the_nether`/`the_end` dimension-type JSON with Iris height when compiling the datapack. It is part of the datapack fingerprint, so flipping it forces a datapack rebuild |
-| `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Downloads and installs configured `datapackImports` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating. Managed structures stay scoped to the declaring Iris dimensions |
+| `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Installs or updates configured HTTP(S)/`file:` sources and ZIPs discovered under `plugins/Iris/datapacks/imports/` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating; local archive bytes are still fingerprinted. Explicit sources stay scoped to declaring dimensions, while drop-folder sources apply to every Iris dimension |
 | `autoImportDatapackStructures` | `false` | Live (next ingest) | **Bukkit only.** Converts every registered datapack structure into editable Iris pools, pieces, and objects — thousands of files in your pack folder. Native generation never needs those copies, so leave it off and run `/iris structure import <dimension>` when you actually want them |
 | `strictContentKeys` | `false` | Live | Promotes unresolved pack content keys and bad block-state properties from warnings to blocking pack errors. Worth turning on while developing a pack. `-Diris.strictContent` overrides it in both directions, and the bare property with no value counts as true |
 | `spinh` | `-20` | Live | Hue factor of the animated "aura" gradient on Iris text |
