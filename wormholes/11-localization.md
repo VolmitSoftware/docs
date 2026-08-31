@@ -9,11 +9,11 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Canonical English is the typed Java catalog in `WormholesMessages` (and related
-Director keys). Wormholes does **not** ship an `en_US.toml` bundle. Non-English
+Director keys). Wormholes does **not** include an `en_US.toml` bundle. Non-English
 locales load from jar resources and optional data-folder overlays. Missing keys
 fall through to code-owned English.
 
-Resolved messages are delivered through VolmLib components for chat, action bars, titles, command feedback, and the startup splash. Paper-family players and component-aware consoles retain RGB, decorations, and authored click or hover events, and operator-visible component logs keep one `[Wormholes]` discriminator with dark-grey brackets and the Wormholes name in its gold brand accent. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so operator terminals never show raw `§` markers.
+Wormholes supports colors, click actions, and hover text in player messages. Consoles receive readable plain text when rich formatting is unavailable.
 
 ## Config
 
@@ -52,7 +52,7 @@ catalog.
 
 ## Bundled locales
 
-Seventeen non-English bundles ship under `src/main/resources/languages/` (jar
+Seventeen non-English bundles are stored under `src/main/resources/languages/` (jar
 `/languages/`). Each covers the typed catalog, including Director keys:
 
 | Locale id | File |

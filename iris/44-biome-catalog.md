@@ -74,13 +74,3 @@ On Bukkit-family servers:
 ```
 
 On Fabric, Forge, and NeoForge, `/iris goto biome <load-key>` is the equivalent locator alias. Generate fresh chunks before judging a pack edit; existing chunks keep their previous terrain and biome data.
-
-## Maintainer coverage check
-
-From the central docs repository, with the two `IrisDimensions` pack repositories in the shared `RemoteGit` checkout, run:
-
-```text
-ruby tools/validate_iris_biome_atlas.rb
-```
-
-The check derives the live graph from both dimension files, every region role list, children, floating biomes, and carving references. It fails when the two active key sets diverge, a direct root lacks its required page or approved family page, a child-only key is not embedded, the declared pack versions are stale, or the pack-update maintenance warning is missing. Alternate checkouts can be supplied with `--overworld`, `--underworld`, and `--docs`.

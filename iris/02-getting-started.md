@@ -7,7 +7,7 @@ tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page takes you from a working Iris install to a world you can stand in. You also get a small pregenerated area and an open Studio session for editing packs. It is written for whoever runs the server. It assumes nothing about pack authoring.
+Create an Iris world, pregenerate its spawn area, and open Studio for pack editing.
 
 Command syntax differs between the plugin and the mods. Each step gives both forms.
 
@@ -17,7 +17,7 @@ Full command trees and permissions: [04 - Commands & Permissions](/iris/04-comma
 
 One disposable Iris world built from the `overworld` pack, entered and generating chunks. It has roughly a 45×45-chunk pregenerated area. A separate Studio session points at the live pack. Use seed `1337` throughout. If you change seeds while you still diagnose something, every comparison becomes meaningless.
 
-Work through the sections in order. Confirm each one before you move on. Confirm the world loaded before you teleport. Confirm ordinary chunks generate around you before you start a pregen. Confirm the Studio world is genuinely separate from your production world before you edit files. Skipping a check does not save time here. Iris failures surface late and in the wrong place.
+Work through the sections in order. Confirm each one before you move on. Confirm the world loaded before you teleport. Confirm ordinary chunks generate around you before you start a pregen. Confirm the Studio world is separate from your production world before you edit files. Skipping a check does not save time here. Iris failures surface late and in the wrong place.
 
 ## Prerequisites
 
@@ -65,7 +65,7 @@ The command itself has alias `c`.
 
 Create has one purpose: make a new managed dimension. A normal bare name such as `myworld` becomes `iris:myworld`. Create never changes a vanilla dimension slot or `server.properties`.
 
-**Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the logical name has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected. Names that collide with the selected save's Bukkit aliases — `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` — are also rejected, as are `minecraft:*` and foreign namespaced keys.
+**Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the logical name has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected. Names that collide with the selected save's Bukkit aliases (`<level-name>`, `<level-name>_nether`, and `<level-name>_the_end`) are also rejected, as are `minecraft:*` and foreign namespaced keys.
 
 **Already exists.** Create aborts if the managed dimension folder is already there. On Paper-family servers that folder is `<level-root>/dimensions/iris/<name>`. Plain Spigot uses `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>` so CraftBukkit can bind the outer world and the canonical `iris:<name>` storage together. Use the separate replacement command when replacing an existing safe slot is intentional. Exact vanilla-slot replacement is unavailable on Spigot.
 
@@ -79,7 +79,7 @@ For a player, the immediate create path opens a labeled bottom action-bar meter 
 
 Create does not report success as soon as the Bukkit world object exists. For a production world, Iris waits up to 10 minutes for the actual initial-spawn chunk and applies the spawn location on that chunk's owning region before it registers the world or releases lifecycle admission. A null chunk result, rejected region task, generation or placement failure, or timeout fails creation instead of publishing a false ready state.
 
-Now run `/iris worlds` (alias `accesslist`). It prints two lists — Iris worlds and plain Bukkit worlds. `myworld` must appear under Iris worlds immediately after creation completes, including on Folia.
+Now run `/iris worlds` (alias `accesslist`). It prints two lists: Iris worlds and plain Bukkit worlds. `myworld` must appear under Iris worlds immediately after creation completes, including on Folia.
 
 #### Replace an existing Bukkit world
 
@@ -125,7 +125,7 @@ The existing Overworld and Nether target directories must already be initialized
 
 Alias `c`. You cannot pass `seed` without also passing `pack`.
 
-The `pack:dimension` form has to be **quoted** — for example, `"custom_pack:dimensions/sky"` — because Brigadier's unquoted string type does not accept a colon. Use a bare pack such as `overworld` when its dimension key matches its name.
+The `pack:dimension` form has to be **quoted** (for example, `"custom_pack:dimensions/sky"`) because Brigadier's unquoted string type does not accept a colon. Use a bare pack such as `overworld` when its dimension key matches its name.
 
 If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Modded `/iris datapack ingest` is only a stub, so place any external datapacks declared by a custom pack in this save's `datapacks/` directory yourself. Restart with the Iris pack and all of its declared imports present, then run create. The built-in Overworld and Underworld need no external archives.
 
@@ -157,7 +157,7 @@ Modded worlds created with `/iris create` or `/iris world enable` are already in
 /iris teleport <world> [player=…]
 ```
 
-Alias `tp`. The world is positional. The player is optional and therefore keyed — `/iris tp myworld player=Notch`. Left out, it targets whoever ran the command, so console needs to name a player explicitly or it reports that the player does not exist. The teleport itself is performed asynchronously where the platform allows it.
+Alias `tp`. The world is positional. The player is optional and therefore keyed: `/iris tp myworld player=Notch`. Left out, it targets whoever ran the command, so console needs to name a player explicitly or it reports that the player does not exist. The teleport itself is performed asynchronously where the platform allows it.
 
 ```text
 /iris tp myworld
@@ -314,7 +314,7 @@ The session is finished when you restart the server cleanly. The production worl
 | A custom modded pack reports missing external registry keys | Bukkit-only ingest cannot install the pack's declared dependencies on a mod loader | Put the exact datapacks declared by that pack in the save's `datapacks/`, then restart before loading the Iris world |
 | `/iris load` from console | Player-origin only. Console cannot run it | Rely on the `bukkit.yml` registration plus a restart, or run it as a player |
 | `/iris load` on modded | No such subcommand | Use create or `world enable`, then teleport |
-| Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote a genuinely distinct pair, for example `"custom_pack:dimensions/sky"` |
+| Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote a distinct pair, for example `"custom_pack:dimensions/sky"` |
 | Modded pregen flags before `at x z` | Syntax error | Put `at <x> <z>` before any flag |
 | Starting a pregen while one is running | Start fails | `/iris pregen stop` first |
 | `/iris pregen resume` expected to only resume | It is an alias of `pause`, which toggles | Check `/iris pregen status` instead of assuming |

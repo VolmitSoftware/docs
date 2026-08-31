@@ -430,7 +430,7 @@ Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE
 
 ## Upper dimension (inverted ceiling terrain)
 
-Set `upperDimension` to another dimension load key (or this dimension own key). Iris generates that dimension terrain upside-down against the world ceiling, nether-style. `"none"` or an empty string disables it. The shipping overworld ships with `""`.
+Set `upperDimension` to another dimension load key (or this dimension own key). Iris generates that dimension terrain upside-down against the world ceiling, nether-style. `"none"` or an empty string disables it. The bundled Overworld pack uses `""`.
 
 ```json
 {
@@ -513,7 +513,7 @@ The border does not crop, clamp, or repeat an image map. Configure the map's `ou
 
 ## Studio and debug fields
 
-These exist to help you look at the generator, not to ship. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
+These exist to help you inspect the generator, not for production. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
@@ -547,7 +547,7 @@ This is the studio starter with `mode`, `environment` and `fluidHeight` written 
 
 ## What the shipping overworld sets
 
-Path: `packs/overworld/dimensions/overworld.json` under the platform data directory. The same file ships in the Fabric, Forge and NeoForge run configs.
+Path: `packs/overworld/dimensions/overworld.json` under the platform data directory. The Fabric, Forge and NeoForge run configs use the same file.
 
 | Field | Overworld value | Why it is interesting |
 |-------|-----------------|-----------------------|

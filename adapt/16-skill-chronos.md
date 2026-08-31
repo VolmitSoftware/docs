@@ -38,7 +38,7 @@ listening plugin says no.
 3. Carry it. It charges on its own, once per second, up to the stored-time cap for your level.
 4. Right-click the furnace, brewing stand, campfire, growable block, or baby animal you want to speed up.
 
-On Folia you have to click the block directly. The air-click variant that ray-traces to a block is disabled there. Off Folia, an air click that finds a block still has to pass a normal right-click-block check first. Furnaces and brewing stands additionally need container access, and campfires and growables need block-place permission.
+On Folia you have to click the block directly. The air-click variant that ray-traces to a block is disabled there. Off Folia, an air click that finds a block still has to pass a normal right-click-block check first. Furnaces and brewing stands also need container access, and campfires and growables need block-place permission.
 
 ### Aberrant Touch (`chronos-aberrant-touch`)
 
@@ -117,7 +117,7 @@ Works on its own once learned.
 
 A quiet aura that pulses around you and nudges time forward on whatever it samples. Crops advance a growth stage, furnaces and smokers and blast furnaces and brewing stands jump forward a chunk of their remaining cook or brew time. You do not aim it. It just makes working near your farm and your furnace row faster.
 
-Each sampled block is only touched if you and the block are on the same region thread and the normal interaction checks pass. Crops additionally need block-place permission, and processing stations need container access.
+Each sampled block is only touched if you and the block are on the same region thread and the normal interaction checks pass. Crops also need block-place permission, and processing stations need container access.
 
 Works on its own once learned.
 
@@ -148,18 +148,6 @@ Works on its own once learned.
 ## Reference
 
 Every adaptation config file also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`.
-
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `chronos` |
-| Class | `SkillChronos` |
-| Icon | `CLOCK` |
-| Color | `AQUA` |
-| Interval (ms) | `5050` (from `setInterval`) |
-| Skill config | `plugins/Adapt/skills/chronos.toml` |
-| Adaptation count | 13 |
 
 ### XP sources
 
@@ -235,7 +223,6 @@ A `speedPotionBaseXP` of exactly `45` in an existing config is rewritten to `120
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosTimeInABottle` |
 | Icon | `CLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -247,8 +234,6 @@ A `speedPotionBaseXP` of exactly `45` in an existing config is rewritten to `120
 Recipe key `chronos-time-bottle`, shapeless: `CLOCK` + `POTION` + `GLASS_BOTTLE`, with a craft-time check that the potion is `SWIFTNESS`.
 
 Milestones: `challenge_chronos_bottle_seconds_1k` and `challenge_chronos_bottle_seconds_25k` on `chronos.time-bottle.seconds-spent` at 1000 and 25000, rewarding 500 and 2000.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`): clears charge state
 - `CraftItemEvent` (`on`): rejects the craft without a Swiftness Potion
@@ -331,7 +316,6 @@ The stored-second price of one growth step is `naturalSeconds / steps`, times th
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosAberrantTouch` |
 | Icon | `SPIDER_EYE` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -341,8 +325,6 @@ The stored-second price of one growth step is `naturalSeconds / steps`, times th
 | Config file | `plugins/Adapt/adaptations/chronos-aberrant-touch.toml` |
 
 Milestone: `challenge_chronos_aberrant_500` on `chronos.aberrant-touch.slowness-stacks-applied` at 500, rewarding 400. A second advancement, `challenge_chronos_aberrant_frozen`, has no milestone threshold and is granted directly in code.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`on`): melee or projectile hit
 
@@ -370,7 +352,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosInstantRecall` |
 | Config class | `ChronosInstantRecallConfig` |
 | Icon | `RECOVERY_COMPASS` |
 | Max level | 5 |
@@ -381,8 +362,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-instant-recall.toml` |
 
 Milestones: `challenge_chronos_recall_50` and `challenge_chronos_recall_1k` on `chronos.instant-recall.recalls` at 50 and 1000, rewarding 300 and 1500. `challenge_chronos_recall_cheat_death` has no milestone threshold and is granted directly in code.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `PlayerJoinEvent` (`on`)
@@ -447,7 +426,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosTimeBomb` |
 | Icon | `TNT` |
 | Max level | 5 |
 | Initial knowledge cost | 7 |
@@ -459,8 +437,6 @@ Listened events:
 Recipe key `chronos-time-bomb`, shapeless: `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND`, producing a lingering potion item.
 
 Milestone: `challenge_chronos_bomb_freeze_50` on `chronos.time-bomb.projectiles-frozen` at 50, rewarding 500. `challenge_chronos_bomb_crowd_8` has no milestone threshold. It is granted directly in code when one field slows 8 entities.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `PlayerJoinEvent` (`on`)
@@ -517,7 +493,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosTemporalEcho` |
 | Icon | `AMETHYST_CLUSTER` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -527,8 +502,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-temporal-echo.toml` |
 
 Milestone: `challenge_chronos_echo_200` on `chronos.temporal-echo.echo-hits` at 200, rewarding 400.
-
-Listened events:
 
 - `ProjectileLaunchEvent` (`on`): records the shot to replay
 - `ProjectileHitEvent` (`on`): scores the echo hit
@@ -548,7 +521,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosStasisField` |
 | Icon | `AMETHYST_SHARD` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -558,8 +530,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-stasis-field.toml` |
 
 Milestones: `challenge_chronos_stasis_50` and `challenge_chronos_stasis_500` on `chronos.stasis-field.casts` at 50 and 500, rewarding 400 and 1500.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `EntityRemoveEvent` (`on`): drops bookkeeping for removed frozen entities
@@ -589,7 +559,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosRewind` |
 | Icon | `ENDER_EYE` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -599,8 +568,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-rewind.toml` |
 
 Milestones: `challenge_chronos_rewind_50` and `challenge_chronos_rewind_500` on `chronos.rewind.rewinds` at 50 and 500, rewarding 350 and 1400.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `PlayerSwapHandItemsEvent` (`on`): mark and rewind gesture
@@ -620,7 +587,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosBorrowedTime` |
 | Icon | `SOUL_SAND` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -630,8 +596,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-borrowed-time.toml` |
 
 Milestone: `challenge_chronos_borrowed_2500` on `chronos.borrowed-time.damage-deferred` at 2500, rewarding 900.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `PlayerJoinEvent` (`on`)
@@ -650,7 +614,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosOvertime` |
 | Icon | `GLISTERING_MELON_SLICE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -660,8 +623,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-overtime.toml` |
 
 Milestone: `challenge_chronos_overtime_1k` on `chronos.overtime.seconds-extended` at 1000, rewarding 750.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `EntityPotionEffectEvent` (`onHarmfulEffect`): shortens harmful effects at max level
@@ -684,7 +645,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosAccelerate` |
 | Icon | `SUGAR` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -694,8 +654,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-accelerate.toml` |
 
 Milestone: `challenge_chronos_accelerate_1k` on `chronos.accelerate.blocks-accelerated` at 1000, rewarding 600.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 
@@ -719,7 +677,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosHourglassGuard` |
 | Icon | `TOTEM_OF_UNDYING` |
 | Max level | 3 |
 | Initial knowledge cost | 8 |
@@ -729,8 +686,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-hourglass-guard.toml` |
 
 Milestone: `challenge_chronos_hourglass_10` on `chronos.hourglass-guard.saves` at 10, rewarding 800.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `EntityDamageEvent` (`on`): intercepts the killing blow
@@ -753,7 +708,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosPocketWatch` |
 | Icon | `FEATHER` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -763,8 +717,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-pocket-watch.toml` |
 
 Milestone: `challenge_chronos_pocket_watch_500` on `chronos.pocket-watch.slow-fall-seconds` at 500, rewarding 650.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 
@@ -782,7 +734,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `ChronosDejaVu` |
 | Icon | `ITEM_FRAME` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -792,8 +743,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/chronos-deja-vu.toml` |
 
 Milestone: `challenge_chronos_deja_vu_500` on `chronos.deja-vu.damage-absorbed` at 500, rewarding 700.
-
-Listened events:
 
 - `EntityDamageEvent` (`on`): absorbs repeats of a familiar damage cause
 

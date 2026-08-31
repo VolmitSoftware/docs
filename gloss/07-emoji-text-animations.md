@@ -49,17 +49,17 @@ Gloss registers two families of functions. There is no public API for registerin
 
 #### `|metric.<key>|`
 
-The integration bridge discovers every plugin that publishes the shared Volmit integration contract on the Bukkit services manager — Adapt, Iris, React, Wormholes, HiddenOre, BileTools. It handshakes with it. It registers one text function per metric key it advertises. The key is the plugin own dotted key. A token looks like `|metric.adapt.player-sessions|` or `|metric.iris.generation-time|`.
+The integration bridge discovers every plugin that publishes the shared Volmit integration contract on the Bukkit services manager: Adapt, Iris, React, Wormholes, HiddenOre, and BileTools. It completes a handshake and registers one text function for each advertised metric key. The function uses the plugin's dotted key, such as `|metric.adapt.player-sessions|` or `|metric.iris.generation-time|`.
 
 Rendered values are formatted compactly: `42`, `3.14`, `128.5` below a thousand, then `1.2K`, `1.5M`, `2B`, `3.5T`.
 
-Three things render as **nothing at all** — an empty string, exactly like any other function that has no value:
+The following conditions render an empty string, like any other function without a value:
 
 - a metric the sampler has not reached yet. Nothing is sampled until something asks for it. The first render of a token after a restart is empty. The value appears one `[integration] sampleIntervalTicks` later. That warm-up is one interval, not one tick
 - a metric the publishing plugin currently reports as unavailable
 - a plugin that is not installed. Its keys are never registered. `|metric.foo.bar|` is an unknown function and stays in the line verbatim, pipes included. That is the same rule as any other unknown token.
 
-Discovery re-runs whenever a plugin enables or disables. If you install a plugin mid-session, its tokens start working without a restart. If you disable one, they stop. See [Runtime Architecture](/gloss/20-runtime-architecture) for the bridge own lifecycle. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for the matching preview variables.
+If you install a plugin mid-session, its tokens start working without a restart. If you disable one, they stop. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for the matching preview variables.
 
 ### Colors
 
@@ -72,7 +72,7 @@ Two syntaxes work anywhere colors apply:
 
 Bracket hex is case-insensitive and is converted before `&` codes. Both can appear in the same line.
 
-Gloss passes the rendered text through VolmLib's shared component delivery instead of sending serialized section text directly. Players and component-aware Paper consoles retain colors, RGB, decorations, and menu click or hover events; operator-visible component logs keep one `[Gloss]` discriminator with dark-grey brackets and the Gloss name in its purple brand accent. Unsupported console APIs, RCON, and plain Bukkit fallbacks receive clean plain text rather than visible `§` markers. The same destination rules cover command feedback and the startup splash. Default in-game command feedback and help use purple accents with dark-grey structure and grey descriptions, while success, warning, error, and required-argument colors retain their semantic green, yellow, red, and bright-red roles.
+Players receive colors, decorations, click actions, and hover text. Consoles receive readable plain text when rich formatting is unavailable.
 
 ### Chat
 
@@ -87,7 +87,7 @@ Chat bubbles consume that final message rather than reconstructing it. Translate
 
 ### Menu, panel and preview text
 
-Menu and panel text icons and `message` actions run the same five visible-text stages as scoreboards with the session player as viewer. Toggle conditions use the same renderer before their case-insensitive comparison. Text icons re-render complete placeholder, function and inline-expression sources at their configured `refreshTicks` cadence. Menu and panel particle layers additionally retain authored particle ranges on text icons; message actions do not create an in-world particle surface.
+Menu and panel text icons and `message` actions run the same five visible-text stages as scoreboards with the session player as viewer. Toggle conditions use the same renderer before their case-insensitive comparison. Text icons re-render complete placeholder, function and inline-expression sources at their configured `refreshTicks` cadence. Menu and panel particle layers also retain authored particle ranges on text icons; message actions do not create an in-world particle surface.
 
 Container preview fields use whole-field expressions rather than `{{ }}` delimiters:
 
@@ -134,7 +134,7 @@ Emoji replacement text is a literal fragment, not executable authored code. Func
 
 ### Shipped defaults
 
-67 emoji documents ship inside the jar. They are extracted into `emoji/`
+The jar includes 67 emoji documents. They are extracted into `emoji/`
 whenever a file of that name is missing. This runs on every enable and
 on every `/gloss reload`, not only on first run. If you delete a shipped
 emoji file, it comes back on the next reload or restart. To turn a
@@ -171,12 +171,12 @@ Disabled emoji are dropped before the replacer is built. They cost nothing. They
 
 By default a single node gates emoji in chat: `gloss.emoji.use`, granted to everyone. Emoji in holograms, boards, tablist text, drop labels and the MOTD are not permission-gated at all. They render whenever `[features] emoji` is on.
 
-If you set `[emoji] emojiSpecificPermissions = true`, Gloss adds a per-emoji check **on top of** `gloss.emoji.use`, and only for chat. The node is `gloss.emoji.<id>` — the prefix `gloss.emoji.` plus the document id. An emoji the sender lacks the node for is skipped entirely for that message. The token or trigger stays in the text as typed.
+If you set `[emoji] emojiSpecificPermissions = true`, Gloss adds a per-emoji check after `gloss.emoji.use`, only for chat. The node is the `gloss.emoji.` prefix plus the document id: `gloss.emoji.<id>`. If the sender lacks that node, Gloss skips the emoji and leaves the token or trigger unchanged.
 
 > `gloss.emoji.<id>` shares its namespace with the declared nodes `gloss.emoji.use` and `gloss.emoji.reset`. An emoji whose file is named `use.json` or `reset.json` would be gated by one of those. Avoid those two ids.
 {.is-warning}
 
-Per-emoji nodes are not declared in `plugin.yml`. An ungranted node behaves as op-only until a permission plugin grants it.
+Per-emoji permissions are operator-only until a permission plugin grants them.
 
 ### Tab completion
 
@@ -304,7 +304,7 @@ following text's color without inserting a word. Like emoji, it is re-extracted 
 is missing. Gloss never byte-matches or rewrites an existing copy; use `/gloss animations reset
 name=rainbow` when an older extracted copy should be replaced deliberately.
 
-Gloss also ships `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`,
+Gloss also includes `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`,
 `odometer` and `wave`. Each is a scoreboard-safe example built from a reusable inline-expression
 helper. Use `|animation.marquee|` to play the shipped example, or call `marquee(...)` directly to
 animate your own text.
@@ -373,8 +373,8 @@ nominal `frameIntervalMs` of 1000; their expression time, not that frame interva
 result.
 
 The web editor's **Randomize** action for an animation document chooses across the complete shipped
-set — rainbow, marquee, timeline, typewriter, flash/pulse, wipe, scanner, scramble/decode, odometer
-and wave/chase — plus the reusable `align` layout helper. Alignment also participates in every
+set: rainbow, marquee, timeline, typewriter, flash/pulse, wipe, scanner, scramble/decode, odometer,
+and wave/chase. It also provides the reusable `align` layout helper. Alignment participates in every
 applicable text-bearing document, menu-component and preview-element randomizer. The generated
 document contains ordinary editable frames and helper expressions; it does not depend on editor-only
 playback behavior.

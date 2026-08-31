@@ -19,17 +19,13 @@ Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data
 | Java | 25 |
 | Plugin version | `3.0.0-26.2`, api-version `26.1` |
 
-Nothing else is required. Gloss soft-depends on PlaceholderAPI, Vault, ProtocolLib, ProtocolSupport, ViaVersion, ViaBackwards, ViaRewind, Geyser-Spigot, CraftEngine, ItemsAdder, Oraxen, Nexo, MMOItems, ExecutableItems, EcoItems, Slimefun, MythicMobs, HeadDatabase and WorldGuard. Each of those loads before Gloss when it is installed. Gloss skips a missing one. Without PlaceholderAPI, `%...%` tokens stay raw. Without Vault, no player resolves a group.
-
-On Paper-family servers Gloss loads at `STARTUP` from `paper-plugin.yml`. That file also declares `folia-supported: true`; the three root commands are registered through Paper's `LifecycleEvents.COMMANDS` registrar. On Spigot it loads at `POSTWORLD` and binds the commands declared in `plugin.yml`: `/gloss` (aliases `gl`, `glo`, `gg`), `/hologram` (`holo`, `h`) and `/board` (`sb`, `bd`). Both descriptors declare the same permission tree.
+Gloss works without optional dependencies. PlaceholderAPI enables `%...%` tokens, Vault enables groups, and supported item plugins enable their item providers.
 
 ## Install
 
 1. Put the Gloss jar in `plugins/`.
-2. Start the server. Gloss creates `plugins/Gloss/`, writes `gloss.toml`, extracts the shipped default documents, and prints a splash banner with `Web Editor: https://gloss.volmitsoftware.com` and a startup status. `READY` means every service enabled. If any enable step throws, Gloss prints the failed startup status, tears down everything already started, and rethrows so the server disables the plugin instead of leaving a partial runtime loaded.
+2. Start the server. Gloss creates `plugins/Gloss/` and its default files.
 3. Edit `gloss.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
-
-If you set `splashScreen = false`, Gloss hides the banner for clean startups only. A failed enable always prints the banner and the startup error before the exception is propagated.
 
 ## What the first boot creates
 
@@ -55,7 +51,7 @@ plugins/Gloss/
 neither does `motd.json` when it appears.
 
 Every other path is created the first time something is actually written into it. An empty folder is
-never left lying around, and deleting one does not bring it back on the next hot-reload pass — it
+never left lying around. Deleting one does not bring it back on the next hot-reload pass. It
 returns when a document is saved:
 
 | Path | Written when |
@@ -75,7 +71,7 @@ returns when a document is saved:
 
 ## Shipped defaults
 
-Gloss extracts default documents only where the target file is missing. An edited file is never overwritten. A deleted file comes back on the next boot. What ships:
+Gloss extracts default documents only where the target file is missing. An edited file is never overwritten. A deleted file comes back on the next boot. The bundled defaults are:
 
 | Folder | Documents | Extracted while |
 |---|---|---|
@@ -90,13 +86,12 @@ Gloss extracts default documents only where the target file is missing. An edite
 | `tablist.json` | one singleton document | `[features] tablist` |
 | `motd.json` | one singleton document | `[features] motd` |
 
-A feature that is off ships nothing, which is why a stock first boot has no `motd.json` — `motd` is
-the one feature that defaults to `false`. Turning `motd`, `tablist`, `emoji`, `animations`, `boards`,
+Turning `motd`, `tablist`, `emoji`, `animations`, `boards`,
 `chatBubbles`, `damageIndicators`, `realDrops` or `menus` on extracts its defaults on the config reload, without a restart. `previews` is the
 exception: the preview registry is only built during enable, so turning that feature on takes a
 restart before `previews/` appears.
 
-Nothing ships for `holograms/`, `panels/` or `images/`; boot-seeding a hologram or panel would place content into a real world, while an image is an operator asset. The safe menu baseline ships as `menus/default.json` and is also the source for `/gloss menu new`. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
+Gloss includes no defaults for `holograms/`, `panels/` or `images/`; boot-seeding a hologram or panel would place content into a real world, while an image is an operator asset. The safe menu baseline is `menus/default.json`, which is also the source for `/gloss menu new`. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Feature toggles
 
@@ -122,7 +117,7 @@ restart to construct that subsystem.
 | `previews` | `true` | Look-at container previews |
 | `motd` | `false` | The custom server list MOTD |
 
-`motd` is the only feature that ships off. If you turn it on, the shipped `motd.json` takes over the server list ping at once. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
+`motd` is the only feature disabled by default. If you turn it on, the bundled `motd.json` takes over the server list ping at once. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
 
 ## Coming from HoloUi
 
@@ -154,6 +149,5 @@ Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage i
 - [Commands & Permissions *The whole command tree*](/gloss/17-commands-permissions)
 - [Web Editor & Sync *The hosted builder and the sync relay*](/gloss/18-web-editor)
 - [Localization *17 shipped locales and how to override them*](/gloss/19-localization)
-- [Runtime Architecture *How the pieces fit together*](/gloss/20-runtime-architecture)
 - [API: Getting Started *Driving Gloss from another plugin*](/gloss/21-api-getting-started)
 {.links-list}

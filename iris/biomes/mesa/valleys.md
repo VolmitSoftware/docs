@@ -7,18 +7,18 @@ tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mesa/valleys` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. The two packs preserve its terrain identity while applying different materials, Minecraft biome identities, decoration and ecology.
+`mesa/valleys` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
-This page records direct land selection. The percentage is the biome weighted share after its region and the land role have already been selected; region distribution and selection noise still determine its world-scale coverage.
+The percentage is this biome's weighted share after Iris selects its region and the land role. Region distribution and selection noise still control world-scale coverage.
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4002 | `hot` (Hot) | 2 | 1 | 2 | 11.65% |
 | Underworld 1005 | `hot` (Underworld Hot) | 2 | 1 | 2 | 11.65% |
 
-Repeated entries contribute repeated `1 / rarity` weights. They are retained above instead of being silently deduplicated.
+Each repeated entry contributes another `1 / rarity` weight.
 
 The `hot` region intentionally lists `mesa/valleys` twice. Those two direct occurrences produce the combined raw weight `2` and the `11.65%` conditional land-list share shown above. `mesa/valleys` is also a child option of [`mesa/mesa`](/iris/biomes/mesa/mesa), but child resolution happens after root selection and does not create a third region-list occurrence.
 
@@ -41,7 +41,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 - **Content:** 6 object placement rule(s) drawing from 33 object key(s), including `underworld/basalt/trees/acacia/vexed1`, `underworld/basalt/trees/acacia/vexed2`, `underworld/basalt/trees/acacia/vexed3`, `underworld/basalt/clutter/camp1`, `underworld/basalt/clutter/bincluster1`, `underworld/basalt/trees/acacia/savannaD1`, `underworld/basalt/trees/acacia/savannaD2`, and 26 more. 5 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:fire`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`.
 - **Entity spawners:** `nether/surface/basalt-deltas`, `nether/cave`.
 
-The Underworld treatment keeps the same terrain links but uses its Nether derivative, Nether material conversion, Nether objects and explicit Nether surface/cave spawners.
+Underworld keeps the terrain links but uses its Nether derivative, materials, objects, and surface/cave spawners.
 
 ## Children
 
@@ -50,7 +50,6 @@ No ordinary child biomes are declared.
 ## Floating variants
 
 No floating child biomes are declared.
-
 
 ## Inspect in game
 
@@ -62,4 +61,4 @@ Run these in an Iris world and inspect freshly generated terrain:
 /iris what region
 ```
 
-The first command locates the biome. The other two confirm the exact biome load key and owning region at the current position. Existing chunks do not change when pack files are edited.
+The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.

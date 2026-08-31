@@ -18,10 +18,7 @@ For integrator lifecycle, threading, and compile notes see
 
 ## Dependency
 
-Wormholes soft-depends on PlaceholderAPI (`plugin.yml` softdepend. Paper
-`dependencies.server.PlaceholderAPI` with `load: BEFORE`, `required: false`,
-`join-classpath: true`). Your scoreboard or plugin only needs PlaceholderAPI.
-You do not soft-depend on Wormholes for placeholders.
+Install PlaceholderAPI before Wormholes. Other plugins only need PlaceholderAPI to resolve these keys.
 
 When Wormholes is absent or disabled, keys do not resolve and PlaceholderAPI
 leaves the text unreplaced.
@@ -61,7 +58,7 @@ For each player Wormholes picks at most one portal:
 1. **Same world.** Other worlds are never candidates.
 2. **In range.** Distance from the player location to the portal center must be
    within `64 blocks + half the portal bounding-box diagonal`. Constants are
-   compiled in (`BASE_RANGE = 64`, not configurable).
+   fixed at 64 blocks.
 3. **Facing wins.** Among candidates, any portal the player is looking at beats
    any they are not, regardless of distance. Facing means cosine of angle from
    look direction to portal center ≥ `0.94` (~20° cone). Direction is from

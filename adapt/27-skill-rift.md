@@ -144,20 +144,6 @@ Binding range grows a long way with level, and at max level the two containers c
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `rift` |
-| Class | `SkillRift` |
-| Icon | `ENDER_EYE` |
-| Color | `DARK_PURPLE` |
-| Interval (ms) | `1154` |
-| Skill config | `plugins/Adapt/skills/rift.toml` |
-| Adaptation count | 13 |
-
-End-creature XP is `multiplier * min(damage, target base max health)`, so overkill damage does not pay extra. Teleport XP is granted silently (no floating text) and is rate limited by `teleportXPCooldown`. Teleports suppressed by Chronos Instant Recall are ignored entirely.
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/rift.toml` on first load.
@@ -202,7 +188,6 @@ Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftResist` |
 | Icon | `SCULK_VEIN` |
 | Max level | 1 |
 | Initial knowledge cost | 5 |
@@ -229,7 +214,6 @@ chest and Rift Resistance is learned.
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftAccess` |
 | Icon | `NETHER_STAR` |
 | Max level | 1 |
 | Initial knowledge cost | 15 |
@@ -251,7 +235,6 @@ deny a double chest. A remote double-chest session indexes both blocks and every
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftEnderchest` |
 | Icon | `ENDER_CHEST` |
 | Max level | 1 |
 | Initial knowledge cost | 10 |
@@ -270,7 +253,6 @@ Triggers on right-click air, left-click air, or left-click block with `ENDER_CHE
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftGate` |
 | Icon | `RESPAWN_ANCHOR` |
 | Max level | 1 |
 | Initial knowledge cost | 30 |
@@ -295,7 +277,6 @@ Channel length is 85 ticks. During the channel the player gets Blindness for 100
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftBlink` |
 | Icon | `FEATHER` |
 | Max level | 5 |
 | Initial knowledge cost | 1 |
@@ -327,7 +308,6 @@ Requires survival game mode. The gesture is a double jump detected from movement
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftDescent` |
 | Icon | `SHULKER_BOX` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -351,7 +331,6 @@ Removes the Levitation effect and applies a `FALL_DAMAGE_MULTIPLIER` modifier of
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftVisage` |
 | Icon | `POPPED_CHORUS_FRUIT` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -371,7 +350,6 @@ Cancels the target event whenever an enderman tries to target a player carrying 
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftEnderTaglock` |
 | Icon | `ENDER_PEARL` |
 | Max level | 3 |
 | Initial knowledge cost | 7 |
@@ -402,7 +380,6 @@ Tagging requires a sneaking melee hit with a plain `ENDER_PEARL` in the main han
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftInflatedPocketDimension` |
 | Icon | `ENDER_EYE` |
 | Max level | 1 |
 | Initial knowledge cost | 7 |
@@ -430,7 +407,6 @@ blocks. Build refill tops the held stack back up to `buildRefillAmount` or the m
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftVoidMagnet` |
 | Icon | `HOPPER_MINECART` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -462,7 +438,6 @@ cover session visits, scans, and item handoffs. Pulse delay has a floor of 2 tic
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftVoidSkin` |
 | Icon | `ECHO_SHARD` |
 | Max level | 4 |
 | Initial knowledge cost | 6 |
@@ -494,7 +469,6 @@ usable world spawn the escape is skipped and the damage lands.
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftPearlRebound` |
 | Icon | `SLIME_BALL` |
 | Max level | 4 |
 | Initial knowledge cost | 3 |
@@ -522,7 +496,6 @@ Only plain ender pearls rebound, and only once each: pearls already claimed by a
 
 | Property | Value |
 |----------|-------|
-| Class | `RiftConduit` |
 | Icon | `CONDUIT` |
 | Max level | 4 |
 | Initial knowledge cost | 8 |

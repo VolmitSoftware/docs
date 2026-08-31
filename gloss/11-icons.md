@@ -44,7 +44,7 @@ The union adapter raises `JsonParseException` before the rest of the document is
 
 Any of those aborts the whole menu file. The file is logged as `An error occurred while parsing menu config "<id>.json":`. The previously registered copy stays live. Record component names are the JSON keys verbatim. No field-naming policy is applied. Unknown members are ignored by Gson. Any list-typed key also accepts a single bare value in place of an array.
 
-Dispatch to the runtime class is a type test over the parsed record. Data that matches nothing — including an absent or `null` `icon` — produces the missing-icon fallback described below, silently and with no warning.
+Dispatch to the runtime class uses a type test over the parsed record. Data that matches nothing, including an absent or `null` `icon`, silently produces the missing-icon fallback described below.
 
 ## The display style block
 
@@ -181,7 +181,7 @@ A toggle builds its `trueIcon` and `falseIcon` once in its constructor and ticks
 
 ### Where images live
 
-Image assets live in `plugins/Gloss/images/`. Gloss does not create that folder at startup — make it yourself when you have something to put in it, or let a HoloUi import or an editor sync publication carrying images create it. `path` is always relative to that folder. There is no URL support anywhere in the icon path. Sources are local files only.
+Image assets live in `plugins/Gloss/images/`. Gloss does not create that folder at startup. Create it when needed, or let a HoloUi import or an editor sync publication containing images create it. `path` is always relative to that folder. Icon paths support local files, not URLs.
 
 Resolution canonicalizes both the images root and the requested file. It requires the result to still start with the root path **and** to be a regular file. Blank paths, absolute paths, missing files, directories, `..` escapes and symlink escapes all fail with `FileNotFoundException`. Traversal cannot read anything outside `plugins/Gloss/images/`. Format detection and decoding use Apache Commons Imaging. Any format it recognizes works.
 
@@ -211,7 +211,7 @@ font advance and line spacing, so this renderer is intended for small pixel art 
 continuous photographs. An oversized local image fails the icon and renders the missing-image
 checkerboard.
 
-A seamless raster cannot be substituted transparently with vanilla maps. Map pixels render only on
+A continuous raster cannot be substituted transparently with vanilla maps. Map pixels render only on
 item frames, which snap to the block grid and cannot honor menu scale, arbitrary rotation,
 billboarding or follow-player movement. Gloss therefore does not expose a map renderer on ordinary
 menu image icons.
@@ -347,15 +347,7 @@ If the registry lookup itself is unavailable the adapter falls back to an upper-
 
 `provider` is trimmed and lower-cased. `item` is neither trimmed nor case-folded. Provider-native syntaxes such as `myitems:ruby` (ItemsAdder) or `SWORD:CUTLASS` (MMOItems) survive exactly as authored.
 
-Resolution goes through the provider registry. Results are cached per
-provider and item id and handed out as clones. No caller ever holds a
-live registry instance. The registry returns nothing in several cases.
-That result becomes an icon failure and the missing-icon fallback. It
-happens when the item id is null or blank, or when
-`[items] customItems` is off in `gloss.toml`. It also happens when no
-provider matches the id or the named provider is not ready. A
-main-thread-only provider called off-thread returns nothing as well. A
-skipped off-thread provider is warned once per provider.
+Custom-item icons use the first enabled provider that recognizes the item ID. Missing or invalid items use the configured fallback icon.
 
 Provider ids, activation order, the `[items] customItemProviders` allowlist and the individual adapters are on [Custom Items & Item Providers](/gloss/14-custom-items).
 

@@ -166,7 +166,7 @@ appear close to the panel limit even while most of that heap is empty.
 2. **Lower `pregen.maxResidentTectonicPlates`** (default 96). This is a
    soft cap on how many mantle tectonic plates stay resident. The
    effective number is the smaller of that cap, a height-scaled version
-   of it, and the heap budget above — with a hard floor of 16. Taller
+   of it, and the heap budget above, with a hard floor of 16. Taller
    worlds get fewer plates automatically. Lowering it cuts retained heap
    at the cost of more mantle reload work.
 3. **Lower `performance.mantleKeepAlive`** (default 30). This is how many
@@ -263,8 +263,8 @@ and matter bodies do not use this history.
 | `performance.engineSVC.priority` | `5` (`Thread.NORM_PRIORITY`) | Priority of maintenance platform threads, clamped to the legal Java range. Ignored entirely when virtual threads are on |
 | `performance.engineSVC.parallelism` | `-1` | Size of the engine maintenance worker pool. A positive value is capped at `2 × CPU`. Zero or negative means `ceil(sqrt(CPU))` |
 
-`engineSVC` sizes the maintenance service — mantle trimming, plate
-unloading, periodic saves — not chunk generation. Raising `parallelism`
+`engineSVC` sizes the maintenance service (mantle trimming, plate
+unloading, and periodic saves), not chunk generation. Raising `parallelism`
 will not generate chunks faster. It makes mantle housekeeping finish
 sooner and take more CPU while it does. Generation parallelism is derived
 separately (see below).
@@ -283,7 +283,7 @@ separately (see below).
 | `pregen.mantleBackpressureTimeoutMs` | `60000` | How long a chunk waits on backpressure before failing. Clamped 5000–600000 |
 | `pregen.moddedPregenInFlight` | `0` | Concurrent pregen chunks on mod loaders. `0` resolves to `clamp(16, cpu*2, 48)`. Positive values cap at 512. The result is floored at 8 |
 
-Related: `world.globalPregenCache` (default `false`) — see
+Related: `world.globalPregenCache` (default `false`); see
 [03 - Configuration](/iris/03-configuration) and
 [07 - Pregeneration](/iris/07-pregeneration).
 
@@ -354,20 +354,7 @@ flags, JVM version and flags, heap size, and CPU. Also record the
 `performance` and `pregen` excerpts you changed. Record overall,
 10-second, 30-second, and 60-second chunk rates, duration, failed chunks,
 peak heap, and the GoldenHash combined value. Reject any optimization that changes the hash unless the
-behavior change was intended and is documented. Release-scale baselines
-(5k–10k chunks with JProfiler) are tracked in
-[87 - Maintainer - Release Readiness](/iris/87-maintainer-release-readiness).
+behavior change was intended and is documented.
 
 Never tune by editing pack content. Pack edits change terrain, which
 changes the hash, which means you are no longer comparing the same thing.
-
-## Offline tools
-
-| Tool | Command | Use |
-|------|---------|-----|
-| Generation probe | `./gradlew :probe:genProbe -PprobePack=…` | Headless engine generation. A correctness signal, not a throughput benchmark |
-| Classload probe | `./gradlew :probe:run` | Core-purity gate. Fails if `org.bukkit` leaks into engine classes |
-| SIMD microbench | `tools/simd-bench/run.sh` | Kernel-only scalar versus vector timing |
-
-Runbooks that combine pregeneration and GoldenHash:
-[31 - Operator Runbooks](/iris/31-operator-runbooks).

@@ -7,11 +7,11 @@ tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/combo-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. The two packs preserve its terrain identity while applying different materials, Minecraft biome identities, decoration and ecology.
+`temperate/combo-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
-This page records direct land selection. The percentage is the biome weighted share after its region and the land role have already been selected; region distribution and selection noise still determine its world-scale coverage.
+The percentage is this biome's weighted share after Iris selects its region and the land role. Region distribution and selection noise still control world-scale coverage.
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
@@ -20,7 +20,7 @@ This page records direct land selection. The percentage is the biome weighted sh
 | Underworld 1005 | `forests` (Underworld Forests) | 1 | 2 | 0.5 | 5.73% |
 | Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 2 | 0.5 | 3.07% |
 
-Repeated entries contribute repeated `1 / rarity` weights. They are retained above instead of being silently deduplicated.
+Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
@@ -41,7 +41,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 - **Content:** 8 object placement rule(s) drawing from 66 object key(s), including `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, `underworld/wastes/trees/oak/hoakgeneric5`, `underworld/wastes/trees/oak/hoakgeneric6`, `underworld/wastes/trees/oak/hoakgeneric7`, `underworld/wastes/trees/oak/hoakgeneric8`, `underworld/wastes/trees/oak/hoakgeneric9`, and 59 more. 11 decorator rule(s) (4 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:blackstone_slab`.
 - **Entity spawners:** `nether/surface/nether-wastes`, `nether/cave`.
 
-The Underworld treatment keeps the same terrain links but uses its Nether derivative, Nether material conversion, Nether objects and explicit Nether surface/cave spawners.
+Underworld keeps the terrain links but uses its Nether derivative, materials, objects, and surface/cave spawners.
 
 ## Children
 
@@ -69,7 +69,6 @@ In that immediate child choice it contributes `3` of `7` slots (42.86%); later c
 
 No floating child biomes are declared.
 
-
 ## Inspect in game
 
 Run these in an Iris world and inspect freshly generated terrain:
@@ -80,4 +79,4 @@ Run these in an Iris world and inspect freshly generated terrain:
 /iris what region
 ```
 
-The first command locates the biome. The other two confirm the exact biome load key and owning region at the current position. Existing chunks do not change when pack files are edited.
+The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.

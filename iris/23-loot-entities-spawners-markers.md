@@ -84,7 +84,7 @@ The goal is a chest inside one placed object that rolls your table and ignores t
 **3. Verify.** Open the pack in Studio, find a placement, and open the chest. Every chest in that object should hold 2-4 stacks drawn from the four entries. Diamonds show up in roughly one placement in six. Swords show up in roughly one in eight. To check without hunting for a placement, stand on a block and run `/iris studio loot`. It previews the tables that would fill a chest at your feet. It adds debug lore naming the source table and its combined chance. That command is Bukkit and Studio only.
 
 **4. If chests come up empty.** Check that the block is a storage chest. Iris only fills chest-family containers. It only ever requests the `STORAGE` slot type. `FUEL`/`FURNACE`/`BLAST_FURNACE`/`SMOKER` entries never land in a generated container. Check `world.postLoadBlockUpdates` is on in `iris.json`.
-The container fill runs as part of that post-load pass. Check that the loot table key resolves — a missing table logs a warning and contributes nothing. Double chests fill from one half only (the one with the lower X, then lower Z). That half fills the combined inventory. An empty-looking half is normal.
+The container fill runs as part of that post-load pass. Check that the loot table key resolves. A missing table logs a warning and contributes nothing. Double chests fill from one half only (the one with the lower X, then lower Z). That half fills the combined inventory. An empty-looking half is normal.
 
 ## Walkthrough: make a custom mob spawn in one biome
 
@@ -116,7 +116,7 @@ The goal is a geared zombie that appears at night in one biome and drops a custo
 }
 ```
 
-The entity's `loot` replaces the mob's vanilla drop table outright. Only `tables` is read here — `mode` and `multiplier` on an entity are ignored.
+The entity's `loot` replaces the mob's vanilla drop table outright. Only `tables` is read here; `mode` and `multiplier` on an entity are ignored.
 
 **3. Spawner.** `spawners/tutorial/night-zombies.json`:
 
@@ -144,7 +144,7 @@ The entity's `loot` replaces the mob's vanilla drop table outright. Only `tables
 }
 ```
 
-**5. Verify.** Validate the pack first — the validator resolves the spawner-to-entity edge and will name the broken link before you load a world. Then open Studio, focus `tutorial/meadow`, set night, and stand somewhere with block light under 8. Success is named zombies appearing within a few seconds and dropping iron nuggets when killed. On Bukkit you can prove the entity file loads on its own with `/iris studio spawn tutorial/zombie`.
+**5. Verify.** Validate the pack first. The validator resolves the spawner-to-entity edge and will name the broken link before you load a world. Then open Studio, focus `tutorial/meadow`, set night, and stand somewhere with block light under 8. Success is named zombies appearing within a few seconds and dropping iron nuggets when killed. On Bukkit you can prove the entity file loads on its own with `/iris studio spawn tutorial/zombie`.
 On Fabric/Forge/NeoForge that command is not registered and reports that it is Bukkit-only, so go straight to ambient spawning.
 
 **6. If nothing spawns.** Work down the gate list in order rather than raising `rarity` or the rate:
@@ -184,7 +184,7 @@ Keys are the pack-relative path without `.json`, so `loot/tutorial/dungeon-cache
 Ambient spawning needs `world.ambientEntitySpawningSystem` true.
 Marker spawning needs `world.markerEntitySpawningSystem` true. Both default to true. Iris spawners run alongside vanilla and mod spawning rather than replacing it. Nothing deduplicates between the two. A zombie spawner in your pack adds to whatever the server would have spawned anyway.
 
-The shipping Overworld pack wires its spawners at region scope (`regions/*.json` list `<climate>/cave`, `/hostile`, `/passive`, `/water`) and ships no `markers/` folder. Its dimension-level loot uses `FALLBACK`, so `global-clutter` only reaches chests that nothing else claimed.
+The bundled Overworld pack wires its spawners at region scope (`regions/*.json` list `<climate>/cave`, `/hostile`, `/passive`, `/water`) and has no `markers/` folder. Its dimension-level loot uses `FALLBACK`, so `global-clutter` only reaches chests that nothing else claimed.
 
 ## How a container actually gets filled
 
@@ -196,14 +196,14 @@ Worth reading before tuning rarities, because two of these steps surprise people
 Failing that, entries whose filter matches the block's material.
 Failing that, entries with no filter. Within the winning bucket the pick is weighted by `weight`. `loot` and `vanillaLoot` entries compete in the same buckets. If the placement sets `overrideGlobalLoot` and a table was picked, that is the entire list.
 
-3. **Environment sources.** Otherwise the dimension, region, and surface biome each inject their tables in that order. A cave biome injects too when the container is below terrain height and resolves to a different biome than the surface. `ADD` appends. `REPLACE` wipes the list first and then appends its own tables. `CLEAR` wipes the list and contributes nothing — any tables listed on a `CLEAR` reference are dead, and `/iris pack validate` warns about them. `FALLBACK` injects only when nothing already claimed the container, meaning neither the placement's `loot`/`vanillaLoot` nor a pre-existing vanilla loot table on the block.
+3. **Environment sources.** Otherwise the dimension, region, and surface biome each inject their tables in that order. A cave biome injects too when the container is below terrain height and resolves to a different biome than the surface. `ADD` appends. `REPLACE` wipes the list first and then appends its own tables. `CLEAR` wipes the list and contributes nothing. Any tables listed on a `CLEAR` reference are dead, and `/iris pack validate` warns about them. `FALLBACK` injects only when nothing already claimed the container, meaning neither the placement's `loot`/`vanillaLoot` nor a pre-existing vanilla loot table on the block.
 
 4. **Multiplier.** The multipliers from every contributing scope are multiplied together, and the resulting factor scales the *length of the table list*, not stack sizes. A factor of 0.5 randomly drops half the tables.
 A factor of 2 randomly duplicates entries until the list doubles. The list is capped at 256 sources and Iris throws rather than silently truncating past that.
 
 5. **Event hook.** On Bukkit, `art.arcane.iris.core.events.IrisLootEvent` fires with the engine, block, slot type, and the resolved table list. The list is mutable, so a plugin can add, remove, or clear tables before the roll. Iris also bridges the rolled items through Bukkit's `LootGenerateEvent`, so plugins that already listen for vanilla loot generation see Iris chests too. This is not part of the documented public API surface in the `90`-series pages.
 
-6. **Roll.** For each table: pick a random target count between `minPicked` and `maxPicked`, then loop up to `maxTries`. Each try picks a random entry index. The entry only counts if its `slotTypes` is `STORAGE` and it passes a 1-in-(table `rarity` x entry `rarity`) check. That check is derived from the loot seed, the table's key, the entry index, and the block coordinates — not from a running random sequence. **The same entry at the same block always gives the same answer**, so tries that re-roll a rare entry that already failed are wasted. This is why `maxTries` should sit well above `maxPicked` when a table has rare entries.
+6. **Roll.** For each table: pick a random target count between `minPicked` and `maxPicked`, then loop up to `maxTries`. Each try picks a random entry index. The entry only counts if its `slotTypes` is `STORAGE` and it passes a 1-in-(table `rarity` x entry `rarity`) check. That check is derived from the loot seed, the table's key, the entry index, and the block coordinates, not from a running random sequence. **The same entry at the same block always gives the same answer**, so tries that re-roll a rare entry that already failed are wasted. This is why `maxTries` should sit well above `maxPicked` when a table has rare entries.
 
 7. **Scatter.** Items are inserted. Then one multi-item stack is split into a free slot and all slots are shuffled. A chest reads like a hand-placed one instead of a left-packed block of stacks.
 
@@ -270,7 +270,7 @@ The shape used by dimension, region, biome, and entity `loot` fields:
 | `ADD` | Append these tables to whatever the outer scopes contributed. The default and the right choice most of the time |
 | `REPLACE` | Wipe the list, then append these. Use on a biome that should ignore the dimension's global tables |
 | `CLEAR` | Wipes every parent table and adds nothing, even if tables are listed here (the validator warns about dead entries). Use it to make an area drop no Iris loot |
-| `FALLBACK` | Only contribute when nothing already claimed the container — no object `loot`, no object `vanillaLoot`, no native loot table on the block. This is how a pack ships a broad filler table without stepping on structure chests |
+| `FALLBACK` | Only contribute when nothing already claimed the container — no object `loot`, no object `vanillaLoot`, no native loot table on the block. This lets a pack provide a broad filler table without stepping on structure chests |
 
 Entities read only `tables` from this object. Setting `mode` or `multiplier` on an entity's `loot` has no effect.
 
@@ -293,7 +293,7 @@ Both entry types share the same fields:
 | `filter` | `[]` | Blocks this entry applies to. Empty means every container the object placed |
 | `exact` | `false` | Compare the whole block state instead of just the material. An exact match outranks a material match, which outranks an unfiltered entry |
 
-One table is picked per container, not one per entry — the buckets decide which entries are eligible and `weight` decides between them.
+One table is picked per container, not one per entry. The buckets decide which entries are eligible and `weight` decides between them.
 
 Authored container contents and deferred custom-block identifiers stay in the mantle until the platform's post-load materialization pass runs for that chunk. Generic cleanup and pregeneration cleanup preserve those sparse payloads for chunks that have not reached the pass yet. On Bukkit a region-scheduled pass that fails stays retryable. Passes that already completed are not repeated.
 
@@ -458,7 +458,7 @@ Folder: `spawners/`.
 
 The biome check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass it. A `CAVE`-group spawner listed on a surface biome will still try to find cave floor markers there. It quietly does nothing if there are none.
 
-On Folia, `CAVE` group spawners never fire on Bukkit — the cave-floor marker lookup returns nothing off the region thread and the spawn is skipped.
+On Folia, `CAVE` group spawners never fire on Bukkit because the cave-floor marker lookup returns nothing off the region thread and the spawn is skipped.
 
 `IrisRate` (snippet type `rate`):
 
@@ -522,7 +522,7 @@ Attach it on a dimension, region, or biome:
 
 The loop runs once per Iris world every `world.asyncTickIntervalMS` milliseconds (700 by default, 3000 when both spawn systems are off). Each pass:
 
-1. Recount living entities in the world, throttled so it does not run every tick. If the count cannot be completed — the scheduler refuses the task, or it times out — Iris pauses spawning entirely rather than guessing. This is deliberate: an incomplete count must never authorize a spawn.
+1. Recount living entities in the world, throttled so it does not run every tick. If the count cannot be completed (the scheduler refuses the task or it times out), Iris pauses spawning entirely rather than guessing. This is deliberate: an incomplete count must never authorize a spawn.
 2. Compute saturation as living entities divided by the latest three-second loaded-chunk snapshot count plus one, scaled by 1.28. Above `world.targetSpawnEntitiesPerChunk` the pass sleeps 5 seconds and returns.
 3. Pick between 2 and 12 random entries from that snapshot, reject any chunk that has since unloaded, and run one spawn attempt in each remaining chunk on its owning region thread.
 4. Pregeneration and world maintenance suppress spawning for that world entirely while they run.
@@ -612,7 +612,7 @@ From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)
 1. Write `loot/<key>.json` tables. Give `maxTries` room above `maxPicked` if any entry is rare.
 2. Reference them from `loot.tables` on a dimension, region, or biome, or from `loot[].name` on an object placement.
 3. Write `entities/<key>.json` with at least `type`. Set `surface` to match where the mob belongs.
-4. Write `spawners/<key>.json`. Raise `maxEntitiesPerChunk` above the default of 1 unless you genuinely want one mob per chunk.
+4. Write `spawners/<key>.json`. Raise `maxEntitiesPerChunk` above the default of 1 unless you want one mob per chunk.
 5. Add spawner keys to `entitySpawners` on a dimension, region, or biome, or attach them through markers on an object placement.
-6. Validate the pack — the spawner-to-entity edge is a blocking check, so a typo is caught before you load a world.
+6. Validate the pack: the spawner-to-entity edge is a blocking check, so a typo is caught before you load a world.
 7. Open Studio and confirm in-world. Use `/iris studio loot` for chest previews on Bukkit.

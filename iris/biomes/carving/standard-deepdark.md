@@ -10,8 +10,6 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 `carving/standard-deepdark` is not selected from any region's `caveBiomes` list. Both pinned dimensions add it through the enabled dimension-level `global-deepdark-band`, which contributes an extra carving pass throughout an absolute world-Y band.
 
-> Atlas snapshot: Overworld 4002 and Underworld 1005. Re-audit this page whenever either pinned pack revision changes.
-
 ## Dimension-level role
 
 | Pack | Entry id | Absolute world Y | Selection weight |

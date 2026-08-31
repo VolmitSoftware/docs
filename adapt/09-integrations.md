@@ -79,7 +79,7 @@ Other Bukkit plugins can register `AbilityUsePolicy`, `AbilityCostProvider`, `Pr
 
 ### Bukkit soft dependencies
 
-Declared in `plugin.yml`, resolved during Adapt's enable.
+Detected when Adapt starts.
 
 | Plugin | Runtime behavior |
 |---|---|

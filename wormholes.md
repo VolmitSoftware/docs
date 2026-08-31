@@ -225,7 +225,7 @@ flows. Cross-server gateways also add server and portal code exchange.
 - [PlaceholderAPI](/wormholes/12-placeholderapi)
 - [Operator checks and recovery](/wormholes/14-operator-runbooks-smoke-tests)
 - [Integrations](/wormholes/15-integrations)
-- [Developer and maintainer documentation](/wormholes/20-api-getting-started)
+- [Developer API documentation](/wormholes/20-api-getting-started)
 {.grid-list}
 
 ## Support and source

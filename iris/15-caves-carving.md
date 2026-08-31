@@ -26,15 +26,15 @@ Related:
 
 Carving happens in two separate passes. Knowing which one you are looking at explains almost every "why did nothing change" question.
 
-**Pass 1 — mantle carve (`MantleCarvingComponent` + `IrisCaveCarver3D`).** For each chunk Iris resolves which cave profile applies to every column. It samples a 3D density field. For each cell that falls below the carve threshold it writes a *cavern mark* into the mantle. The mark carries an intent: plain air, dimension fluid, lava, or forced air. No blocks are touched yet. The mantle is a parallel voxel store that outlives the chunk. That is why caves line up across chunk borders. That is also why cave objects can be anchored before terrain exists.
+**Pass 1: mantle carve (`MantleCarvingComponent` + `IrisCaveCarver3D`).** For each chunk Iris resolves which cave profile applies to every column. It samples a 3D density field. For each cell that falls below the carve threshold it writes a *cavern mark* into the mantle. The mark carries an intent: plain air, dimension fluid, lava, or forced air. No blocks are touched yet. The mantle is a parallel voxel store that outlives the chunk. That is why caves line up across chunk borders. That is also why cave objects can be anchored before terrain exists.
 
-**Pass 2 — carve modifier (`IrisCarveModifier`).** After the terrain actuator has filled the column with stone and biome layers, this pass walks the chunk cavern marks and replaces the real blocks. Air marks become `cave_air`. Fluid marks become the dimension `fluidPalette` block. Lava marks become lava. Forced-air marks become air even below the lava line. It then groups each column carved cells into contiguous runs (a "zone"). The floor biome is resolved at the lowest carved Y and paints `layers` plus floor decorators. The ceiling biome is resolved independently at the highest carved Y and paints `caveCeilingLayers` plus `CEILING` decorators. Walls still resolve their cave biome at each Y.
+**Pass 2: carve modifier (`IrisCarveModifier`).** After the terrain actuator has filled the column with stone and biome layers, this pass walks the chunk cavern marks and replaces the real blocks. Air marks become `cave_air`. Fluid marks become the dimension `fluidPalette` block. Lava marks become lava. Forced-air marks become air even below the lava line. It then groups each column carved cells into contiguous runs (a "zone"). The floor biome is resolved at the lowest carved Y and paints `layers` plus floor decorators. The ceiling biome is resolved independently at the highest carved Y and paints `caveCeilingLayers` plus `CEILING` decorators. Walls still resolve their cave biome at each Y.
 
 Stage order in `OVERWORLD` mode, which is what everything below depends on:
 
 1. biome actuator, mantle generation (carving, then objects), terrain actuator
-2. **carve modifier** — caverns become blocks. Cave biome materials and decorators land here
-3. post modifier — surface slabs and cliff walls
+2. **carve modifier**: caverns become blocks. Cave biome materials and decorators land here
+3. post modifier: surface slabs and cliff walls
 4. floating child biome solids
 5. deposit modifier, mantle object insertion, surface decorator actuator
 6. floating decoration, perfection, custom
@@ -171,7 +171,7 @@ For a given `(x, y, z)`, in order:
 
 Results are blended. The resolver samples the center plus four points three blocks out. Where they disagree it picks the center half the time and one of the four neighbors otherwise, seeded per block position. That produces a speckled transition band rather than a hard edge between two cave biomes.
 
-The resolver per-worker scratch state is bound by weak identity to the exact engine, dimension, and pack data that produced it. When a generation worker switches worlds or an engine is replaced, Iris clears its cached lookup state. That includes Y-band entries, child-selection plans, biome resolutions, the entry index, and the child seed. One world cave choices therefore cannot bleed into another. A long-lived worker cannot keep a retired engine alive through this cache.
+Cave results are isolated by world, dimension, pack, and seed.
 
 `carvingBiome` on a surface biome is **not** part of this lookup. At runtime it only pulls the referenced biome into the pack reachable-biome closure so its custom biome identity and spawn mappings get registered. It never selects a cave biome during generation. Use region `caveBiomes` or a dimension `carving` band instead.
 

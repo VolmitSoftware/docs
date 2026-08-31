@@ -291,8 +291,8 @@ transfer-gate handshake rewrite when auto-accept runs.
 With verbose logging enabled, `[handoff]` and `[arrival]` lines describe actual
 portal transfers, including admission, placement, expected denial, replay, and
 dispatch details. Ordinary joins without a pending handoff are silent. Retry,
-exhaustion, stranded-arrival, and other operator-actionable failures remain
-normal branded warnings; repeated failure classes are throttled.
+exhaustion, stranded-arrival, and other failures that require operator action
+remain normal branded warnings; repeated failure classes are throttled.
 
 For an entity-transfer denial check, add a Bukkit entity type name to
 `entity-transfer-deny-types` and verify the source entity is restored. The
@@ -304,4 +304,3 @@ handoffs and entity transfers.
 - [01 - Installation & Configuration](/wormholes/01-installation-configuration), full `[network]` key tables
 - [09 - Commands & Permissions](/wormholes/09-commands-permissions), permission nodes for network and server commands
 - [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings), gateway link UI
-- [13 - Runtime Architecture](/wormholes/13-runtime-architecture), managers and storage

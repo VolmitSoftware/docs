@@ -124,12 +124,7 @@ Line numbers start at 1. `create`, `movehere`, `tp` and `rendertext` are player-
 
 Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the file name.
 
-Every command edit publishes a new document revision. One keyed slot per hologram retains the
-latest pending state for the single background IO thread, so rapid edits do not grow an unbounded
-write queue. A delete supersedes older queued writes and a stale deleted object cannot recreate its
-file. The folder watcher compares each changed file SHA-256 against the hash Gloss just wrote. A
-command edit never bounces back through the hot-reload path. Hot reload itself is covered in [Data
-Files & Hot Reload](/gloss/03-data-files).
+Command edits save automatically. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
@@ -189,7 +184,7 @@ or below stay on the tick path. Slow animations are never double-driven.
 The threshold is the clip `1000 / frameIntervalMs` rate.
 
 The split is two-phase. The regular tick refresh keeps doing the full
-render — functions, placeholders, emoji, colors. For fast-animated lines
+render functions, placeholders, emoji, and colors. For fast-animated lines
 it produces a *template*. That template is the fully rendered text with
 the animation call sites left as slots. It also holds a snapshot of the
 display entity id and current audience. That snapshot is captured on the
@@ -221,11 +216,6 @@ nothing.
 
 The result is an ordinary hologram document. You can edit its text, scale, position and
 orientation on disk, and move or delete it by command like any other hologram.
-
-## Orphan cleanup
-
-Every Gloss display carries the scoreboard tag `gloss_display` and the persistent data key `gloss:hologram`. At startup loaded chunks are queued and swept at no more than 32 chunks per tick. Afterwards each `EntitiesLoadEvent` sweeps the chunk it loaded. Any tagged `TextDisplay` that the running service does not currently own is removed. Leftovers from a crash or a hard kill are purged. Displays are also spawned non-persistent. An orderly shutdown never writes them into the region files.
-
 ## Temporary holograms
 
 Chat bubbles and damage indicators are built on temporary holograms. They are never written to

@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift registers `/rift` through `plugin.yml` and routes the single `/rft` alias through the same executor and permission checks. The VolmLib Director command runtime supplies typed parsing, contextual help, and tab completion.
+Use `/rift` or `/rft`. Run `/rift help` for syntax and completion.
 
 ## Commands
 
@@ -31,7 +31,7 @@ Arguments in brackets have defaults.
 | `/rift config` | `rift.config` | Open the in-game configuration editor |
 | `/rift language <locale>` | `rift.config` | Select and activate an installed `languages/<locale>.yml` file |
 | `/rift doctor` | `rift.doctor` | Report platform, Java, paths, locale, and world counts |
-| `/rift debug` | `rift.debug` | Save a comprehensive support report and, when enabled, publish a clickable mclo.gs link |
+| `/rift debug` | `rift.debug` | Save a detailed support report and, when enabled, publish a clickable mclo.gs link |
 | `/rift autoload <name> <enabled>` | `rift.config` | Change a managed profile's startup auto-load flag |
 | `/rift protect <name> <enabled>` | `rift.config` | Change a managed profile's protection flag |
 

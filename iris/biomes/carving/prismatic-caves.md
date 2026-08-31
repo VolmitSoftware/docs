@@ -10,8 +10,6 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 The Prismatic region selects 16 color-specific cave roots, one slot each, in both Overworld 4002 and Underworld 1005. They share one cave design and differ primarily in their color material set, so this family page documents all 16 without hiding any direct key.
 
-> Atlas snapshot: Overworld 4002 and Underworld 1005. Re-audit this page whenever either pinned pack revision changes.
-
 ## Selection role and weight
 
 Each key occupies `1/16` cave-selection slots in `prismatics`. The region declares rarity `20` (relative region weight `1/20`); every root declares the default biome rarity `1` (relative biome weight `1/1`). These are conditional slot shares, not whole-world probabilities.
@@ -45,7 +43,7 @@ No member declares a surface generator band. The selected root paints the cave v
 | `carving/prismatic-white` | `minecraft:calcite`, `minecraft:white_concrete_powder`, `minecraft:quartz_block`, `minecraft:snow_block`, `minecraft:white_concrete`, and 1 more | `minecraft:basalt`, `minecraft:quartz_block`, `minecraft:soul_soil`, `minecraft:smooth_quartz` | `carving/prismatic-white-child` |
 | `carving/prismatic-yellow` | `minecraft:yellow_terracotta`, `minecraft:sandstone`, `minecraft:smooth_sandstone`, `minecraft:yellow_concrete_powder`, `minecraft:yellow_concrete`, and 1 more | `minecraft:obsidian`, `minecraft:crying_obsidian`, `minecraft:glowstone` | `carving/prismatic-yellow-child` |
 
-The light-blue root additionally uses `snippet/procedural-objects/frozen/magical-ice-cave` in Overworld and `snippet/procedural-objects/frozen/magical-soul-cave` in Underworld.
+The light-blue root also uses `snippet/procedural-objects/frozen/magical-ice-cave` in Overworld and `snippet/procedural-objects/frozen/magical-soul-cave` in Underworld.
 
 ## Paired treatment
 

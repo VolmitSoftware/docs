@@ -48,7 +48,7 @@ How to use it:
 1. Learn Chains of Mephistopheles.
 2. Lay iron nuggets out in a crafting table in the usual helmet, chestplate, leggings or boots shape.
 
-This one ships with `permanent` set to `true`, so learning it is one-way.
+This one has `permanent` set to `true` by default, so learning it is one-way.
 
 ### Craftable Saddle (`blocking-saddlecrafter`)
 
@@ -195,18 +195,6 @@ The redirected damage does not hit your health. It costs your shield durability 
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `blocking` |
-| Class | `SkillBlocking` |
-| Icon | `SHIELD` |
-| Color | `DARK_GRAY` |
-| Interval (ms) | `5000` |
-| Skill config | `plugins/Adapt/skills/blocking.toml` |
-| Adaptation count | 14 |
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/blocking.toml` on first load.
@@ -286,7 +274,6 @@ The tick interval below is the adaptation's background tick rate. Only Bastion S
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingMultiArmor` |
 | Icon | `ELYTRA` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -294,8 +281,6 @@ The tick interval below is the adaptation's background tick rate. Only Bastion S
 | Cost factor | 1 |
 | Tick interval (ms) | 20202 |
 | Config file | `plugins/Adapt/adaptations/blocking-multiarmor.toml` |
-
-Listened events: `PlayerMoveEvent` (auto swap), `PlayerDropItemEvent` (sneak-drop to unbind), `InventoryClickEvent` (left-click merge).
 
 Swap cooldown is a hard-coded 3000 ms. The elytra form takes over once fall distance passes 4 blocks.
 
@@ -307,7 +292,6 @@ Swap cooldown is a hard-coded 3000 ms. The elytra form takes over once fall dist
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingChainArmorer` |
 | Icon | `CHAINMAIL_CHESTPLATE` |
 | Max level | 1 |
 | Initial knowledge cost | 1 |
@@ -316,15 +300,12 @@ Swap cooldown is a hard-coded 3000 ms. The elytra form takes over once fall dist
 | Tick interval (ms) | 17774 |
 | Config file | `plugins/Adapt/adaptations/blocking-chainarmorer.toml` |
 
-Listened events: `CraftItemEvent`.
-
 Recipes: `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `blocking-chainarmorer-leggings`, `blocking-chainarmorer-boots`, all from `IRON_NUGGET`. `permanent` defaults to `true`. No adaptation-specific config keys.
 
 ### Craftable Saddle
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingSaddlecrafter` |
 | Icon | `LEATHER_HORSE_ARMOR` |
 | Max level | 1 |
 | Initial knowledge cost | 1 |
@@ -333,15 +314,12 @@ Recipes: `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `bl
 | Tick interval (ms) | 17774 |
 | Config file | `plugins/Adapt/adaptations/blocking-saddlecrafter.toml` |
 
-Listened events: `CraftItemEvent`.
-
 Recipe `blocking-saddlecrafter`: five `LEATHER` shaped as `I I` over `III`. `permanent` defaults to `true`. No adaptation-specific config keys.
 
 ### Craftable Horse Armor
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingHorseArmorer` |
 | Icon | `GOLDEN_HORSE_ARMOR` |
 | Max level | 1 |
 | Initial knowledge cost | 1 |
@@ -350,15 +328,12 @@ Recipe `blocking-saddlecrafter`: five `LEATHER` shaped as `I I` over `III`. `per
 | Tick interval (ms) | 17774 |
 | Config file | `plugins/Adapt/adaptations/blocking-horsearmorer.toml` |
 
-Listened events: `CraftItemEvent`.
-
 Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-horsearmorergold` and `blocking-horsearmorerdiamond`: a `SADDLE` in the center ringed by eight of `LEATHER`, `IRON_INGOT`, `GOLD_INGOT` or `DIAMOND`. `permanent` defaults to `true`. No adaptation-specific config keys.
 
 ### Counter Guard
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingCounterGuard` |
 | Icon | `IRON_BARS` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -366,8 +341,6 @@ Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-h
 | Cost factor | 0.75 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-counter-guard.toml` |
-
-Listened events: `EntityDamageByEntityEvent`. Stack gains and confirmed spends queue a coalesced action-bar status showing the current and maximum stack counts.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -386,7 +359,6 @@ Listened events: `EntityDamageByEntityEvent`. Stack gains and confirmed spends q
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingBastionStance` |
 | Icon | `SHIELD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -394,8 +366,6 @@ Listened events: `EntityDamageByEntityEvent`. Stack gains and confirmed spends q
 | Cost factor | 0.68 |
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adaptations/blocking-bastion-stance.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (projectile softening), `PlayerVelocityEvent` (impact effect only), `PlayerToggleSneakEvent`, `PlayerMoveEvent` and `PlayerGameModeChangeEvent` (stance start and stop).
 
 Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBACK_RESISTANCE` attribute modifiers while the stance is held.
 
@@ -417,7 +387,6 @@ Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBA
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingMirrorBlock` |
 | Icon | `LIGHT_WEIGHTED_PRESSURE_PLATE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -425,8 +394,6 @@ Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBA
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1200 |
 | Config file | `plugins/Adapt/adaptations/blocking-mirror-block.toml` |
-
-Listened events: `EntityDamageByEntityEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -449,7 +416,6 @@ Listened events: `EntityDamageByEntityEvent`.
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingBulwarkBash` |
 | Icon | `BELL` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -457,8 +423,6 @@ Listened events: `EntityDamageByEntityEvent`.
 | Cost factor | 0.72 |
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adaptations/blocking-bulwark-bash.toml` |
-
-Listened events: `PlayerToggleSprintEvent` (records the sprint timestamp), `EntityDamageByEntityEvent` (fires the bash).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -488,7 +452,6 @@ Listened events: `PlayerToggleSprintEvent` (records the sprint timestamp), `Enti
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingShieldWall` |
 | Icon | `SHIELD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -496,8 +459,6 @@ Listened events: `PlayerToggleSprintEvent` (records the sprint timestamp), `Enti
 | Cost factor | 0.65 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-shield-wall.toml` |
-
-Listened events: `EntityDamageByEntityEvent`. Only fires when the entity taking the projectile is a player.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -515,7 +476,6 @@ Listened events: `EntityDamageByEntityEvent`. Only fires when the entity taking 
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingPerfectGuard` |
 | Icon | `SHIELD` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -523,8 +483,6 @@ Listened events: `EntityDamageByEntityEvent`. Only fires when the entity taking 
 | Cost factor | 0.78 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-perfect-guard.toml` |
-
-Listened events: `PlayerInteractEvent` (records the shield raise), `EntityDamageByEntityEvent` (negates and staggers).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -543,7 +501,6 @@ Listened events: `PlayerInteractEvent` (records the shield raise), `EntityDamage
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingTemperedGuard` |
 | Icon | `ANVIL` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -551,8 +508,6 @@ Listened events: `PlayerInteractEvent` (records the shield raise), `EntityDamage
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-tempered-guard.toml` |
-
-Listened events: `PlayerItemDamageEvent` (`MONITOR`, cancelled events ignored). Only positive durability damage to a shield qualifies, and the repair is scheduled one tick later so it follows vanilla wear.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -567,7 +522,6 @@ Listened events: `PlayerItemDamageEvent` (`MONITOR`, cancelled events ignored). 
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingShieldbearersResolve` |
 | Icon | `NETHERITE_AXE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -575,8 +529,6 @@ Listened events: `PlayerItemDamageEvent` (`MONITOR`, cancelled events ignored). 
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-shieldbearers-resolve.toml` |
-
-Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so the shield cooldown has actually been set.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -594,7 +546,6 @@ Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so t
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingPhalanxCrafter` |
 | Icon | `SHIELD` |
 | Max level | 2 |
 | Initial knowledge cost | 2 |
@@ -602,8 +553,6 @@ Listened events: `EntityDamageByEntityEvent`. The check runs one tick later so t
 | Cost factor | 0 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-phalanx-crafter.toml` |
-
-Listened events: `PrepareItemCraftEvent` and `CraftItemEvent`.
 
 Recipes follow. `blocking-phalanx-field-shield` uses `WHITE_WOOL` x3 on top,
 `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, and one `OAK_PLANKS`
@@ -615,7 +564,6 @@ repaired shield with max durability 1200 named "Netherite-Reinforced Shield". Th
 
 | Property | Value |
 |----------|-------|
-| Class | `BlockingInterpose` |
 | Icon | `SHIELD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -623,8 +571,6 @@ repaired shield with max durability 1200 named "Netherite-Reinforced Shield". Th
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/blocking-interpose.toml` |
-
-Listened events: `EntityDamageEvent`. Only fires when the entity taking damage is a player.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

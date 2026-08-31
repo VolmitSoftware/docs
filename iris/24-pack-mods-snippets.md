@@ -132,7 +132,7 @@ Biome decorator lists take snippet strings as array elements, mixed freely with 
 
 ## When to use a snippet
 
-Use one when the same value genuinely appears in more than one place and should change in lockstep. Examples: decorators shared across a climate biomes, a noise style reused by several generators, a palette that defines a pack stone. That is what the shipping Overworld pack uses them for.
+Use a snippet when the same value appears in several places and should change in lockstep. The shipping Overworld pack uses them for decorators shared by several climate biomes, noise styles reused by several generators, and the palette that defines pack stone.
 
 Skip it when a value appears once. A snippet reference costs a file open and adds a place to look when something goes wrong. It buys nothing if there is a single call site. It also makes the failure mode worse. A wrong-type or missing snippet resolves to null after logging. A field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
 
@@ -226,7 +226,7 @@ Each value is the folder name under `snippet/` and the required prefix for refer
 | `tree-sub-branches` | `IrisTreeSubBranches` |
 | `vacuum-settings` | `IrisVacuumSettings` |
 
-Whole-file registrants — dimensions, regions, biomes, generators, loot tables, entities, spawners, markers, mods, objects, structures — are not snippet types. They already have their own folders and are referenced by key. Only nested field types appear above.
+Whole-file registrants (dimensions, regions, biomes, generators, loot tables, entities, spawners, markers, mods, objects, and structures) are not snippet types. They already have their own folders and are referenced by key. Only nested field types appear above.
 
 ## Pack mods (`IrisMod`) — schema only, not applied
 
@@ -273,19 +273,7 @@ Shapes of the nested types, all of which are also registered snippet types:
 ```
 
 `IrisModObjectPlacementRegionInjector` uses the field name `biome` even though the value is a region load key. `IrisModNoiseStyleReplacer` takes `find` (a `NoiseStyle` enum value). It takes `replace` (a full `IrisGeneratorStyle`). It takes `replaceTypeOnly` (swap only the style type and keep the rest of the style fields).
-
-## Other registered schemas with no runtime consumer
-
-Schema registration alone does not prove there is a consumer. These are visible to loaders or schema generation but are not supported pack features:
-
-| Surface | Status |
-|---------|--------|
-| `mods/*.json` (`IrisMod`) | Parsed and registered, never applied. See above |
-| `potion-effect` / `IrisPotionEffect` | The snippet type exists, but no production field is typed as `IrisPotionEffect`. Use the `potionEffect`, `potionStrength`, and `potionTicks*` fields on `IrisEffect` instead |
-| `matter/` resources | A loader exists for Matter binaries, but no generation or runtime path reads pack `matter/` resources |
-| `IrisObjectPlacement.translateCenter` | Removed. No placement path ever read the value. Old packs that still carry the key load fine |
-
 ## Related commands
 
-- Pack validation: `/iris pack validate` — see [25 - Pack Management](/iris/25-pack-management) and [04 - Commands & Permissions](/iris/04-commands-permissions).
+- Pack validation: `/iris pack validate`: see [25 - Pack Management](/iris/25-pack-management) and [04 - Commands & Permissions](/iris/04-commands-permissions).
 - Studio open, hotload, and VSCode schema generation: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).

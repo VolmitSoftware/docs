@@ -7,18 +7,18 @@ tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`magnetics/dunes` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. The two packs preserve its terrain identity while applying different materials, Minecraft biome identities, decoration and ecology.
+`magnetics/dunes` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
-This page records direct land selection. The percentage is the biome weighted share after its region and the land role have already been selected; region distribution and selection noise still determine its world-scale coverage.
+The percentage is this biome's weighted share after Iris selects its region and the land role. Region distribution and selection noise still control world-scale coverage.
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4002 | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
 | Underworld 1005 | `magnetics` (Underworld The Magnetics) | 1 | 1 | 1 | 16.67% |
 
-Repeated entries contribute repeated `1 / rarity` weights. They are retained above instead of being silently deduplicated.
+Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
@@ -39,7 +39,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 - **Content:** 4 object placement rule(s) drawing from 25 object key(s), including `underworld/basalt/clutter/desertpost1`, `underworld/basalt/clutter/desertpost2`, `underworld/basalt/clutter/desertpost3`, `underworld/basalt/clutter/boulder1`, `underworld/basalt/clutter/boulder2`, `underworld/basalt/clutter/boulder3`, `underworld/basalt/clutter/boulder4`, and 18 more. 2 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`.
 - **Entity spawners:** `nether/surface/basalt-deltas`, `nether/cave`.
 
-The Underworld treatment keeps the same terrain links but uses its Nether derivative, Nether material conversion, Nether objects and explicit Nether surface/cave spawners.
+Underworld keeps the terrain links but uses its Nether derivative, materials, objects, and surface/cave spawners.
 
 ## Children
 
@@ -47,11 +47,10 @@ No ordinary child biomes are declared.
 
 ## Floating variants
 
-- **Overworld 4002 — [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
-- **Underworld 1005 — [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
+- **Overworld 4002: [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
+- **Underworld 1005: [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
 
 This is an intentional floating self-target: the island reuses `magnetics/dunes` terrain and biome treatment above columns already owned by that biome. Floating-island evaluation is separate from ordinary child recursion and region selection, so the self-target does not add a land-list occurrence or change the direct `16.67%` conditional share above.
-
 
 ## Inspect in game
 
@@ -63,4 +62,4 @@ Run these in an Iris world and inspect freshly generated terrain:
 /iris what region
 ```
 
-The first command locates the biome. The other two confirm the exact biome load key and owning region at the current position. Existing chunks do not change when pack files are edited.
+The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.

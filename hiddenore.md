@@ -14,7 +14,6 @@ deepslate instead. An xray client finds nothing in the world.
 | | |
 |---|---|
 | Command | `/hiddenore` |
-| Load | `STARTUP` |
 | Folia | Supported |
 | Permission | `hiddenore.admin` |
 | Integrations | PlaceholderAPI, Adapt |
@@ -51,14 +50,6 @@ Fortune, tool-tier, and experience changes leave positions intact.
 - [API — Service *The service interface*](/hiddenore/api/service)
 - [API — Placeholders *PlaceholderAPI integration*](/hiddenore/api/placeholders)
 {.links-list}
-
-## Building from source
-
-Run `./gradlew build` from `HiddenOre/` with Java 25. In the VolmitSoftware
-workspace, `./gradlew buildPsychoLT` keeps the renamed `HiddenOre.jar`
-deployment in the managed test-server drop-ins and also copies the versioned
-runtime jar to `../PluginOuts/`.
-
 ## Support
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)

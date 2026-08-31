@@ -46,26 +46,3 @@ React is a runtime performance and monitoring plugin for Paper, Purpur, and Foli
 | [20 - API - Plugin API Packs](/react/20-api-plugin-api-packs) | Community metric definitions, schema, sources, and web management |
 
 Docs `00`–`15` are for operators. Docs `16`–`20` serve plugin developers and pack authors; page 20 also contains the operator workflow.
-
-## Project Layout
-
-| Path | Contents |
-|------|----------|
-| `React/React/src/main/java/art/arcane/react/` | Plugin main, content, controllers, API |
-| `content/feature`, `tweak`, `action`, `sampler` | Registered content |
-| `content/directorcommand` | `/react` command tree |
-| `core/controller` | Lifecycle controllers |
-| `api/protect`, `api/metric` | Public third-party API |
-| `bridge-api/`, `nms/` | NMS bridge interfaces and version impls |
-
-## Building
-
-From `React/React/`, use Java 25:
-
-```
-./gradlew build
-./gradlew test
-./gradlew shadowJar
-```
-
-The shaded plugin jar is written under `React/React/build/libs/`. The version suffix tracks the Minecraft API React was built against. An example is `2.0.0-26.2`. The workspace-only `./gradlew buildPsychoLT` task keeps the renamed `React.jar` deployment in the managed test-server drop-ins and also copies the unrenamed versioned shaded jar to `../../PluginOuts/`.

@@ -7,7 +7,7 @@ tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page covers capability-gated surge guards and multi-plugin incident coordination. Iris and Adapt **map** overlays are in [05 - Features - Maps & Overlays](/react/05-features-maps-overlays).
+React coordinates capability-gated surge guards and multi-plugin incidents. Iris and Adapt **map** overlays are in [05 - Features - Maps & Overlays](/react/05-features-maps-overlays).
 
 Use `/react integration status` for live capability status. Global `integrationSecretsEnabled` (default `false`) gates **secret** feature bundles.
 
@@ -38,9 +38,6 @@ Use `/react integration status` for live capability status. Global `integrationS
 
 Requires `adapt`. Secret: yes. While surging, this feature rate-limits player interact, combat, and consume events. Bypass: `react.secret.adapt.bypass`.
 
-- **Class:** `FeatureAdaptRuntimeSurgeGuard`
-- **Listener:** yes
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -59,9 +56,6 @@ Requires `adapt`. Secret: yes. While surging, this feature rate-limits player in
 
 Requires `iris`. Secret: yes. When surging, this feature limits moves and teleports into ungenerated chunks. Bypass: `react.secret.iris.bypass`.
 
-- **Class:** `FeatureIrisTerrainSurgeGuard`
-- **Listener:** yes
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -78,8 +72,6 @@ Requires `iris`. Secret: yes. When surging, this feature limits moves and telepo
 ### `feature-trinity-incident-mode`
 
 Requires `iris` **and** `adapt`. Secret: yes. It enters when either Iris or Adapt reports pressure. It also needs tick time or incident score at the configured threshold. On entry it activates each enabled incident, quarantine, and surge-guard feature. It queues `action-incident-playbook` on a cooldown. Each activated feature still evaluates its own engagement gates.
-
-- **Class:** `FeatureTrinityIncidentMode`
 
 | Field | Type | Default | Description |
 |---|---|---|---|

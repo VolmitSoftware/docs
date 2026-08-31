@@ -218,7 +218,7 @@ The walkthrough passes when all of these hold. Autosave commits the edited objec
 
 Jigsaw Studio does not run the ordinary Studio entry teleport and does not open a VSCode workspace before you enter the workcell.
 
-It reuses the startup-loaded datapack runtime only while the pinned compiler-input fingerprint still matches. That fingerprint covers every dimension, biome, and snippet JSON plus the compiler build and height policy. Jigsaw's structure, pool, piece, object, and ownership writes never alter those generated registries. A relevant input edit, an unavailable registry, or a changed, failed, or removed external datapack ingest invalidates reuse. Iris then falls back to the normal recovery and installation check. A verified no-change check restores the prior pin.
+Jigsaw edits that change required datapack registry content need a restart before Studio can use them.
 
 The dedicated synthetic generator skips the procedural generation-cache warm, complete mantle-radius preparation, and native structure-start generation. Paper requests the one entry chunk urgently and asynchronously. The owner is teleported once through the Jigsaw destination path after that chunk is retained and ready. The transient world sets `spawn_mobs=false` and independently cancels natural creature-spawn events.
 Explicitly summoned test entities still work.
@@ -235,7 +235,7 @@ Choose the command from the kind of source you have:
 
 ## Re-edit an existing Studio jigsaw
 
-Do not run `create` again — creation is add-only. Reopen a Studio-owned graph by its original dimension and structure key:
+Do not run `create` again because creation is add-only. Reopen a Studio-owned graph by its original dimension and structure key:
 
 ```text
 /iris jigsaw open overworld village/demo
@@ -537,7 +537,7 @@ For a rotated planar variant, capture moves each block-entity payload back to th
 | `loot` | empty | Loot tables injected into containers the pieces place. Not portable |
 | `vanillaSource` | empty | Records which registered structure this graph was imported from. Not something you author |
 
-`rules limits` owns `maxDepth` and `maxSizeChunks`. `rules fallback` owns direct pool fallback. The GUI owns workcell capacity and labels, theme weights, `requireCaps`, per-piece size, labels, themes and rules, chance, rotation, and deletion. `connector channel` owns a saved connector's Iris-only channel. Rules with no in-game control — `branchFailurePolicy`, `placeMode`, structure `edit`, structure `loot`, pool `mandatoryFallback`, and empty entries — stay schema-backed JSON fields. Transaction-owned projects reject outside resource edits on the next mutation, so use the Studio controls or recreate/adopt the project through an ownership-aware workflow.
+`rules limits` owns `maxDepth` and `maxSizeChunks`. `rules fallback` owns direct pool fallback. The GUI owns workcell capacity and labels, theme weights, `requireCaps`, per-piece size, labels, themes and rules, chance, rotation, and deletion. `connector channel` owns a saved connector's Iris-only channel. Rules with no in-game control (`branchFailurePolicy`, `placeMode`, structure `edit`, structure `loot`, pool `mandatoryFallback`, and empty entries) stay schema-backed JSON fields. Transaction-owned projects reject outside resource edits on the next mutation, so use the Studio controls or recreate/adopt the project through an ownership-aware workflow.
 
 ### Pool: `jigsaw-pools/<key>.json`
 
@@ -805,9 +805,9 @@ Reject a stale plan without writes.
 And clone a managed datapack import without changing the managed source.
 14. **Registered conversion:** convert one registered jigsaw to an unused target, review fidelity warnings and provenance, and open the owned target. A non-jigsaw source and an occupied target must both fail without overwrite.
 15. **Folia multi-region boundary:** use a workcell crossing chunks and regions. A fully loaded capture commits once.
-An unloaded intersection aborts the entire write. The unit tests do not cover this — it has to be checked on a live Folia server.
+An unloaded intersection aborts the entire write. The unit tests do not cover this. It has to be checked on a live Folia server.
 16. **Natural Iris placement:** attach the graph with a unique `placementId`, generate and inspect one natural start, restart, then repeat in new chunks. For cave placement, verify each requested anchor and a no-anchor skip.
 17. **Vanilla export:** create a separate `VANILLA_PORTABLE` graph with no Iris-only themes, chance, rules, or caps. Export to zip. Restart a clean Minecraft 26.2 world with it. Locate the key. Inspect a natural instance. Do not substitute `/reload`.
 18. **Platform runtime:** copy the saved Iris pack to Fabric, Forge, and NeoForge, validate it, and prove natural shared-core assembly. Bukkit-only authoring controls are not expected on those loaders.
 
-Automated tests, plugin startup, Bukkit gameplay, cross-loader generation, and vanilla datapack loading each prove something different — keep track of which of them you actually ran.
+Automated tests, plugin startup, Bukkit gameplay, cross-loader generation, and vanilla datapack loading each prove something different. Keep track of which of them you actually ran.

@@ -28,7 +28,7 @@ On Bukkit-family servers, including Folia, create immediately opens the standard
 
 For a player-issued Bukkit create, Iris delegates the teleport immediately to the world's resolved entry anchor after creation. Paper's asynchronous teleport owns any destination-chunk readiness; Iris does not serially preload the chunk or scan thousands of blocks for a separate safe location first. The operation has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
 
-If the pack is missing, Iris identifies the exact supported download form — `pack=overworld`, `pack=underworld`, or `link=<zip-url>` — and does not create the world. After a successful runtime pack install, `/iris create` remains locked until the requested server restart loads that pack's registry entries; it reports the restart requirement without restarting or creating a world.
+If the pack is missing, Iris identifies the exact supported download form (`pack=overworld`, `pack=underworld`, or `link=<zip-url>`) and does not create the world. After a successful runtime pack install, `/iris create` remains locked until the requested server restart loads that pack's registry entries; it reports the restart requirement without restarting or creating a world.
 
 ### Pregenerate an area
 
@@ -100,8 +100,8 @@ If a command fails before doing work, check in this order. Check platform syntax
 
 | Permission | Declared in | Default | Gate |
 |------------|-------------|---------|------|
-| `iris.all` | `plugin.yml` and `paper-plugin.yml` | `op` | `CommandSVC.executeRoot` rejects every `/iris` execution without it |
-| `iris.treefeller` | `plugin.yml` and `paper-plugin.yml` | `op` | Survival tree feller only (`TreeFellerSVC`). Also requires `treeFeller.enabled` in settings |
+| `iris.all` | `op` | Required for every `/iris` command |
+| `iris.treefeller` | `op` | Use survival tree felling; also requires `treeFeller.enabled` |
 
 `iris.all` is code-gated as `ROOT_PERMISSION` in `CommandSVC`. There are no per-subcommand permission nodes: a sender either has the whole tree or none of it. Custom-biome restart warnings also notify online players who are op **or** hold `iris.all`.
 

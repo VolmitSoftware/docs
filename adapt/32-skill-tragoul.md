@@ -116,18 +116,6 @@ Every hostile mob within range that was targeting you forgets about you. The coo
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `tragoul` |
-| Class | `SkillTragOul` |
-| Icon | `CRIMSON_ROOTS` |
-| Color | `AQUA` |
-| Interval (ms) | `2755` |
-| Skill config | `plugins/Adapt/skills/tragoul.toml` |
-| Adaptation count | 14 |
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/tragoul.toml` on first load.
@@ -162,7 +150,6 @@ Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also carries `ena
 
 "Level percent" below is the learned level divided by the adaptation's max level (0 to 1). Where a value is described as scaling from level 1 to max level, the code lerps on `(level - 1) / (maxLevel - 1)` instead.
 
-Every adaptation carries a tick interval because every adaptation is registered
 with the scheduler. Only Bone Harvest, Curse of Frailty, Death Sense, and
 Skeletal Servant actually run work on that tick. The rest are event-driven and their interval is inert. Corpse Explosion drains its nova queue on its own one-tick schedule instead.
 
@@ -170,7 +157,6 @@ Skeletal Servant actually run work on that tick. The rest are event-driven and t
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulThorns` |
 | Icon | `CACTUS` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -178,8 +164,6 @@ Skeletal Servant actually run work on that tick. The rest are event-driven and t
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-thorns.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (you are the victim). Reflected damage runs inside the reactive-damage guard so it cannot re-trigger TragOul handlers.
 
 Menu lore: "Damage retaliated when struck".
 
@@ -195,7 +179,6 @@ Fixed in code: 1500 ms between reflections per player. Reflected damage is `dama
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulGlobe` |
 | Icon | `CRYING_OBSIDIAN` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -203,8 +186,6 @@ Fixed in code: 1500 ms between reflections per player. Reflected damage is `dama
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-globe.toml` |
-
-Listened events: `EntityDamageByEntityEvent` at HIGHEST (you are the damager).
 
 Menu lore: "The more enemies around you, the less damage you deal to each of them", plus range and added damage lines.
 
@@ -223,7 +204,6 @@ Per hit, damage per entity is `originalDamage / (sharedTargets + 1)` plus the le
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulHealing` |
 | Icon | `GLISTERING_MELON_SLICE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -231,8 +211,6 @@ Per hit, damage per entity is `originalDamage / (sharedTargets + 1)` plus the le
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-healing.toml` |
-
-Listened events: `EntityDamageEvent` (you are the victim. The attacker is resolved from the damage source or the projectile shooter).
 
 Menu lore: "health drained from each attacker", "Actual life drained is restored to you".
 
@@ -249,7 +227,6 @@ Your own skeletal servants cannot be drained. Healing is capped by your missing 
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulLance` |
 | Icon | `TRIDENT` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -257,8 +234,6 @@ Your own skeletal servants cannot be drained. Healing is capped by your missing 
 | Cost factor | 0.72 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tragoul-lance.toml` |
-
-Listened events: `EntityDeathEvent` at LOWEST (starts a chain from a kill you caused), `PlayerQuitEvent` and `PlayerDeathEvent` (cancel any chain in flight).
 
 Menu lore includes these lines. "Killing blows launch seeking corpse lances,
 including lance chain kills". "Flat life cost falls from 3 hearts to 1 heart and
@@ -284,7 +259,6 @@ are abandoned after 30 seconds. Lance damage is the killing blow's final damage 
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulBloodPact` |
 | Icon | `NETHER_WART` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -292,8 +266,6 @@ are abandoned after 30 seconds. Lance damage is the killing blow's final damage 
 | Cost factor | 0.62 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tragoul-blood-pact.toml` |
-
-Listened events: `EntityDamageEvent` (rolls the proc), `EntityDeathEvent` (counts kills made while an Absorption or Resistance effect is on you).
 
 Menu lore: "Proc Chance", "Buff Duration", "Proc Cooldown".
 
@@ -321,7 +293,6 @@ Effect pool: Speed, Regeneration, Resistance, Fire Resistance, Absorption, Jump 
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulBoneHarvest` |
 | Icon | `BONE_BLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -329,8 +300,6 @@ Effect pool: Speed, Regeneration, Resistance, Fire Resistance, Absorption, Jump 
 | Cost factor | 0.72 |
 | Tick interval (ms) | 10000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-bone-harvest.toml` |
-
-Listened events: `EntityDeathEvent` (rolls a globe on your kill), `EntityPickupItemEvent` (consumes a globe and applies its buff), `InventoryPickupItemEvent` (blocks hoppers from eating globes). The tick pass only prunes expired globe tracking.
 
 Menu lore: "Globe Spawn Chance", "Globe Lifetime".
 
@@ -359,7 +328,6 @@ They are owner-locked to you with a 10 tick pickup delay. They are tagged with
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulCorpseExplosion` |
 | Icon | `WITHER_ROSE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -367,8 +335,6 @@ They are owner-locked to you with a 10 tick pickup delay. They are tagged with
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-corpse-explosion.toml` |
-
-Listened events: `EntityDeathEvent` (any mob you killed). Skeletal Servant also calls into this adaptation for servant kills.
 
 Menu lore: "Kills always display a corpse nova and damage nearby hostile mobs", "Nova Radius", "of the victim's max health added as nova damage".
 
@@ -392,7 +358,6 @@ Only entities implementing Bukkit's `Enemy` interface are damaged. Each victim i
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulSoulSiphon` |
 | Icon | `SOUL_LANTERN` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -400,8 +365,6 @@ Only entities implementing Bukkit's `Enemy` interface are damaged. Each victim i
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-soul-siphon.toml` |
-
-Listened events: `EntityDamageEvent` (any damage credited to you). Credit resolves through the damage source, projectile shooters, primed TNT, area effect clouds, and evoker fangs.
 
 Menu lore: "of all attributed damage returned as health", "max health restored per second".
 
@@ -421,7 +384,6 @@ Healing is the smallest of the damage share, the remaining per-second cap, and y
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulSkeletalServant` |
 | Icon | `SKELETON_SKULL` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -429,8 +391,6 @@ Healing is the smallest of the damage share, the remaining per-second cap, and y
 | Cost factor | 0.75 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-skeletal-servant.toml` |
-
-Listened events:
 
 - `PlayerInteractEvent`: sneak plus right-click with a bone summons.
 - `EntityTargetLivingEntityEvent`: keeps servants on your mark.
@@ -478,7 +438,6 @@ Servants are `Skeleton` entities tagged with `adapt:tragoul_servant_owner`, excl
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulMarrowArmor` |
 | Icon | `BONE_MEAL` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -486,8 +445,6 @@ Servants are `Skeleton` entities tagged with `adapt:tragoul_servant_owner`, excl
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-marrow-armor.toml` |
-
-Listened events: `EntityDamageEvent` at HIGHEST (you are the victim).
 
 Menu lore: "Consumes 1 bone to absorb part of a hit", "of the hit absorbed per bone", "Internal Cooldown".
 
@@ -507,7 +464,6 @@ Stats and milestones: `tragoul.marrow-armor.damage-absorbed` at 500 (reward 400)
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulCurseOfFrailty` |
 | Icon | `FERMENTED_SPIDER_EYE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -515,8 +471,6 @@ Stats and milestones: `tragoul.marrow-armor.damage-absorbed` at 500 (reward 400)
 | Cost factor | 0.72 |
 | Tick interval (ms) | 5000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-curse-of-frailty.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (you are the victim. Projectile shooters are cursed rather than the projectile). The tick pass only expires attacker cooldowns.
 
 Menu lore: "Attackers are cursed with Weakness", "Curse Duration", "Attackers are also cursed with Slowness" (the third line only appears once slowness is unlocked).
 
@@ -537,7 +491,6 @@ Weakness amplifier steps to 1 at level percent 0.8. Your own pets, marker armor 
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulDeathSense` |
 | Icon | `SPIDER_EYE` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -545,8 +498,6 @@ Weakness amplifier steps to 1 at level percent 0.8. Your own pets, marker armor 
 | Cost factor | 0.6 |
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adaptations/tragoul-death-sense.toml` |
-
-Listened events: `EntityDamageEvent` (starts tracking a damaged entity), `EntityDeathEvent` and `EntitiesUnloadEvent` (stop tracking), `EntitiesLoadEvent` (picks up already-weakened entities), `PlayerQuitEvent` (drops the viewer's glows).
 
 Menu lore: "Wounded damageable entities near you glow only for you", "health or lower marks an entity as dying prey", "Sense Radius".
 
@@ -570,7 +521,6 @@ Glow color follows remaining health fraction. Dark red is 0.25 and below. Red is
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulPlagueBearer` |
 | Icon | `POISONOUS_POTATO` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -578,8 +528,6 @@ Glow color follows remaining health fraction. Dark red is 0.25 and below. Red is
 | Cost factor | 0.72 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-plague-bearer.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (marks a poisoned or withered mob you hit as yours), `EntityDeathEvent` (spreads the affliction if the mark is still fresh).
 
 Menu lore: "Your poison and wither spread with increased potency on death", "Spread Radius", "Spread Effect Duration".
 
@@ -603,7 +551,6 @@ Marks are stored on the mob as `adapt:tragoul_plague_owner`, `adapt:tragoul_plag
 
 | Property | Default |
 |----------|---------|
-| Class | `TragoulLastRites` |
 | Icon | `TOTEM_OF_UNDYING` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -611,8 +558,6 @@ Marks are stored on the mob as `adapt:tragoul_plague_owner`, `adapt:tragoul_plag
 | Cost factor | 0.85 |
 | Tick interval (ms) | 25000 |
 | Config file | `plugins/Adapt/adaptations/tragoul-last-rites.toml` |
-
-Listened events: `EntityDamageEvent` at HIGHEST (a hit whose final damage is at least your current health).
 
 Menu lore: "Death is denied - you linger as a spirit at 1 HP", "Spirit Duration", "Cooldown".
 

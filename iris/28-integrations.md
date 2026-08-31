@@ -57,35 +57,6 @@ success.
 When something fails, collect both plugin versions and the enable order from
 the log. Do this before you edit pack JSON. Most integration failures are
 version or ordering problems, not pack problems.
-
-## Load order declarations
-
-Iris ships a legacy `plugin.yml` and a Paper `paper-plugin.yml`. Paper
-servers use the latter. The two declare the same relationships in different
-syntax.
-
-| Plugin | Relation | Role in Iris |
-|---|---|---|
-| PlaceholderAPI | softdepend | The `%iris_...%` expansion |
-| CraftEngine | softdepend | External blocks and items |
-| Nexo | softdepend | External blocks and items |
-| ItemsAdder | softdepend | External blocks and items |
-| SCore | softdepend | Runtime dependency of the ExecutableItems ecosystem. Iris has no provider class for it |
-| ExecutableItems | softdepend | External items |
-| MythicLib | softdepend | Runtime dependency of the MMOItems ecosystem. Iris has no provider class for it |
-| MMOItems | softdepend | External blocks and items |
-| eco | softdepend | Runtime dependency of EcoItems. Iris has no provider class for it |
-| EcoItems | softdepend | External items |
-| MythicMobs | softdepend | External entities, plus the two skill conditions |
-| MythicCrucible | softdepend | External blocks and items |
-| KGenerators | softdepend | External blocks and items |
-| WorldEdit | softdepend | Selection reading for the object and wand workflows |
-| Multiverse-Core | `loadbefore` | Iris enables *before* Multiverse so Multiverse can see Iris as a registered generator plugin |
-
-In `paper-plugin.yml` the softdepends appear as `load: BEFORE, required: false`
-and Multiverse-Core as `load: AFTER`. Every entry joins the classpath except
-ExecutableItems, which does not.
-
 ## WorldEdit
 
 `WorldEditLink` reaches into WorldEdit only by reflection. Iris compiles and

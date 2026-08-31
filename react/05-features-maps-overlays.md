@@ -42,37 +42,25 @@ Donut pie plus legend. Cap slices by legend height (3–32). Overflow goes to �
 
 Weighted load and gen cost per loaded chunk: `loadMS*1.0 + genMS*1.35 + loadRate*0.4 + genRate*0.7` from samplers `chunk-load-ms`, `chunk-gen-ms`, `chunks-loaded`, `chunks-generated`.
 
-- **Class:** `FeatureChunkLoadGenCostMap` · Config: base heatmap keys only.
-
 ### `chunk-sampler-map`
 
 Observer aggregate cost: `SampledChunk.totalScore()` per chunk.
-
-- **Class:** `FeatureChunkSamplerMap` · Config: base only.
 
 ### `entity-pressure-heatmap`
 
 Score: per-chunk `entities` sampler.
 
-- **Class:** `FeatureEntityPressureHeatmap` · Config: base only.
-
 ### `redstone-activity-heatmap`
 
 Score: per-chunk `redstone` sampler.
-
-- **Class:** `FeatureRedstoneActivityHeatmap` · Config: base only.
 
 ### `hopper-container-throughput-map`
 
 Score: per-chunk `hopper` sampler.
 
-- **Class:** `FeatureHopperContainerThroughputMap` · Config: base only.
-
 ### `player-impact-overlay`
 
 Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay draws up to `maxPlayersDrawn` ranked players.
-
-- **Class:** `FeaturePlayerImpactOverlay`
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -83,8 +71,6 @@ Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay dr
 ### `tick-spike-origin-replay-map`
 
 This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. The worst sample supplies only immutable world UUID/key and chunk X/Z identity. Paper queries immutable Observer coordinates only inside the configured radius instead of sweeping every loaded chunk; the Folia path resolves the live world by UUID and dispatches the capture to that chunk's owning scheduler. Neither path carries Bukkit `Chunk` handles across region boundaries, and the map does not apply per-chunk total-score weighting.
-
-- **Class:** `FeatureTickSpikeOriginReplayMap`
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -105,8 +91,6 @@ This feature captures spike origins when `tick-time` is at or above the threshol
 
 Ranked plugin event cost from `PluginEventImpactSeries`. Ranking uses measured event-handler milliseconds only; call counts remain display metadata and cannot create an impact row by themselves.
 
-- **Class:** `FeaturePluginEventImpactListMap`
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -115,8 +99,6 @@ Ranked plugin event cost from `PluginEventImpactSeries`. Ranking uses measured e
 ### `adapt-ability-impact-list-map`
 
 Ranks Adapt ability detail metrics. An ability needs measured execution time to receive a row; operation count is display and tie-break metadata, not a substitute for performance cost. The feature object registers normally. `MapController` omits the renderer until the Adapt capability is present.
-
-- **Class:** `FeatureAdaptAbilityImpactListMap`
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -129,21 +111,15 @@ Ranks Adapt ability detail metrics. An ability needs measured execution time to 
 
 Pie of rolling measured plugin event-handler time. Call volume without measured time contributes no slice. Config: `enabled` only.
 
-- **Class:** `FeaturePluginEventImpactPieMap`
-
 ### `iris-biome-chunk-share-pie-map`
 
 Loaded chunks in the map world by biome label. The feature incrementally samples immutable Observer world/chunk coordinates at the owning region, using the world's clamped sea level as a deterministic Y coordinate. Each one-second pass schedules at most 32 chunk-owner samples, reserves up to 16 of those slots for chunk-load lifecycle work, caps queued lifecycle coordinates at 8,192 and outstanding owner tasks at 128, and removes counts immediately on chunk or world unload. Rendering copies only the per-biome counters; it does not enumerate the loaded-chunk index or retain Bukkit `Chunk` handles. The distribution converges as the bounded rotation covers the loaded coordinates and remains current through load/unload events.
 
 The feature and renderer require the live `iris` capability, so non-Iris servers schedule no biome sampling and do not show the map. With Iris available, the renderer is selectable. Config: `enabled` only.
 
-- **Class:** `FeatureIrisBiomeChunkSharePieMap`
-
 ### `iris-world-chunk-share-pie-map`
 
 Buckets Iris world groups by loaded chunks. `MapController` omits the renderer until the Iris capability is present. Config: `enabled` only.
-
-- **Class:** `FeatureIrisWorldChunkSharePieMap`
 
 ## Capability-gated overlays
 
@@ -151,14 +127,8 @@ Buckets Iris world groups by loaded chunks. `MapController` omits the renderer u
 
 Requires capability `adapt` (not a secret bundle). Score blends chunk total score with Adapt session load and measured guard-check timing-budget use. Raw ability-operation volume does not add pressure.
 
-- **Class:** `FeatureAdaptRuntimePressureOverlay`
-- **Notes:** Activated when Adapt capability is present. Config: base heatmap keys only.
-
 ### `iris-generation-pressure-overlay`
 
 Requires capability `iris` (not secret). Scores chunks only in worlds with an Iris remote metric group.
-
-- **Class:** `FeatureIrisGenerationPressureOverlay`
-- **Notes:** Config: base heatmap keys only.
 
 See [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations) for registration vs activation gating.

@@ -18,5 +18,4 @@ Foundation supplies modular server essentials for Minecraft 26.x servers. Its ru
 - [Modules and behavior](/foundation/03-modules-features)
 - [Operations, storage, and recovery](/foundation/04-operations-safety)
 - [Vault, PlaceholderAPI, and service API](/foundation/05-integrations-api)
-- [Development and command architecture](/foundation/06-development)
 {.grid-list}

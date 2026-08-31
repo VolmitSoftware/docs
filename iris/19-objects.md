@@ -21,7 +21,7 @@ Prerequisites: a writable pack, operator access on a Bukkit-family server, and s
 1. **Select.** Left-click one corner of the build. Right-click the opposite corner. The selection lives on the wand item. Particles outline the box out to 256 blocks from you.
 2. **Tighten.** Run `/iris object x+y`. It walks the selection upward until the slab is empty air. It then backs off one. It pulls the four side faces in until each touches a block. Use `/iris object x&y` instead if the selection also needs to find its own floor. The saved volume is exactly the selection box. Any air you leave in it moves the object origin.
 3. **Save into the pack.** `/iris object save tutorial/lookout`. Inside an Iris world the target pack resolves automatically. Anywhere else pass `dimension=<pack>`. Add `overwrite=true` to replace an existing file. There is no backup. If the build contains chests, signs, banners, or spawners you care about, add `legacy=false` (section 3). On Bukkit, selection scanning and file writing use a foreground display while each phase lasts: a large job title with percentage and a labeled 44-cell bottom action-bar meter. Object save does not use a boss bar.
-   Success looks like: a chat line naming the pack and the object, and a new file at `<data>/packs/<dimension load key>/objects/tutorial/lookout.iob`.
+   Expected result: a chat line naming the pack and the object, and a new file at `<data>/packs/<dimension load key>/objects/tutorial/lookout.iob`.
 4. **Verify it loads.** `/iris object analyze tutorial/lookout` reads the file back and reports width x height x depth, total block count, and the ten most common materials. If those numbers match what you selected, the file is good.
 5. **Verify it pastes.** `/iris object paste tutorial/lookout edit=true` stamps a copy where you are looking and hands you a wand already fitted to it. Walk the copy. Check the orientation. Check that chests still have contents and signs still have text. Fix anything wrong in place. Then re-save the same key with `overwrite=true`. `/iris object undo` removes the pasted copy.
 6. **Prove it survives a reload.** Close and reopen Studio, then paste again. Block states and block-entity data must come back identical. If a chest is empty now, the object was captured through a path that drops tile data (section 6).
@@ -37,7 +37,7 @@ An object stores a bounding box (`w x h x d`), a sparse map of block states, and
 Stored:
 
 - Every block in the selection except plain `minecraft:air`.
-- Block-entity data, at one of two fidelities. `/iris object save` defaults to `legacy=true`, which writes a reduced record for the block types it has a handler for. A sign keeps its front four lines and color and **loses its back side**. A spawner keeps only the entity type it spawns. A banner keeps its patterns and base color. A container with a vanilla loot table keeps the table key and loot seed. Anything without a matching handler — including a hand-filled chest, a furnace with contents, a decorated pot — falls through to the full block-entity NBT. Pass `legacy=false` to serialize everything in full. Object studio click-to-save always writes full NBT.
+- Block-entity data, at one of two fidelities. `/iris object save` defaults to `legacy=true`, which writes a reduced record for the block types it has a handler for. A sign keeps its front four lines and color and **loses its back side**. A spawner keeps only the entity type it spawns. A banner keeps its patterns and base color. A container with a vanilla loot table keeps the table key and loot seed. Anything without a matching handler (including a hand-filled chest, a furnace with contents, or a decorated pot) falls through to the full block-entity NBT. Pass `legacy=false` to serialize everything in full. Object studio click-to-save always writes full NBT.
 
 Not stored:
 
@@ -111,14 +111,14 @@ Rough-select the base of a build, then run `x+y` to wrap it tightly.
 - `name` is required and positional. It is the path under `objects/`, and `/` creates subfolders.
 - `dimension` resolves from the Iris world you are standing in. Pass `dimension=<pack>` anywhere else.
 - Without `overwrite=true` (alias `force=true`) an existing file aborts the save. There is no backup.
-- `legacy` defaults to **true**, which writes reduced tile records for signs, spawners, banners, and loot containers (section 1). Pass `legacy=false` when full block-entity fidelity matters — most obviously for double-sided signs.
-- The saved volume is the **full selection box**. Nothing is shrinkwrapped, so deliberate air padding is preserved — and moves the center.
+- `legacy` defaults to **true**, which writes reduced tile records for signs, spawners, banners, and loot containers (section 1). Pass `legacy=false` when full block-entity fidelity matters, especially for double-sided signs.
+- The saved volume is the **full selection box**. Nothing is shrinkwrapped, so deliberate air padding is preserved, which moves the center.
 
 The file lands at `<data>/packs/<dimension load key>/objects/<name>.iob`.
 
 During a real Bukkit save, the active phase is labeled `Scanning Selection` or `Saving Object` while the bottom action-bar meter advances. A completed, failed, or disconnected save retires its own display without clearing a newer Iris job. If a short foreground job temporarily takes over, the still-running earlier job resumes from its latest progress when that job ends.
 
-**Footgun:** the target folder is the **dimension load key**, not the folder the dimension came from. A pack in `packs/mypack/` whose dimension file is `dimensions/overworld.json` writes its objects into `packs/overworld/`. Keep the dimension JSON filename equal to the pack folder name and this never bites.
+The target folder uses the **dimension load key**, not the folder the dimension came from. A pack in `packs/mypack/` whose dimension file is `dimensions/overworld.json` writes its objects into `packs/overworld/`. Keep the dimension JSON filename equal to the pack folder name and this never bites.
 
 ```
 /iris object wand
@@ -141,15 +141,15 @@ The paste lands on the block you are looking at, with the object bottom resting 
 
 Alias `u`. It reverts pastes, not blocks you placed by hand.
 
-`paste ... edit=true` additionally hands you a wand fitted to the pasted bounds. The selection follows the pasted rotation and encloses its transformed footprint. That is the normal way to edit an existing object: paste it, change it, re-save the same key with `overwrite=true`.
+`paste ... edit=true` also gives you a wand fitted to the pasted bounds. The selection follows the pasted rotation and encloses its transformed footprint. To edit an existing object, paste it, change it, then save the same key with `overwrite=true`.
 
 Inspection and maintenance:
 
-- `/iris object analyze <object>` — dimensions, block count, and the top ten materials with their most common block-data variant. Read-only, and the fastest check that a file loads at all.
-- `/iris object shrink <object>` — shrinkwraps to the tightest box and **overwrites the file in place with no confirmation**. It re-centers, so any deliberate off-center padding is lost.
-- `/iris object plausibilize <target> [dryrun=false] [reach=12]` — tree-specific. It grows organic branch connections through the canopy so leaves survive vanilla decay. Leaf clusters farther than `reach` blocks from wood are pinned persistent instead. `reach=0` grows without a limit. `target` accepts an object key, a folder prefix ending in `/`, or a filesystem path. `dryrun=true` reports and writes nothing.
-- `/iris object dust` (alias `d`) — gives Glowstone Dust named "Dust of Revealing". Right-click a block in an Iris world and Iris names the placement that owns it.
-- `/iris find object <object> [teleport=true]` — `/iris goto object` is the same command under an alias. You have to be standing in an Iris world. In an object studio it teleports to that object grid cell. Otherwise it spirals outward looking for a generated instance, giving up after 120 seconds. `teleport=false` prints the coordinates instead of moving you.
+- `/iris object analyze <object>`: dimensions, block count, and the top ten materials with their most common block-data variant. Read-only, and the fastest check that a file loads at all.
+- `/iris object shrink <object>`: shrinkwraps to the tightest box and **overwrites the file in place with no confirmation**. It re-centers, so any deliberate off-center padding is lost.
+- `/iris object plausibilize <target> [dryrun=false] [reach=12]`: tree-specific. It grows organic branch connections through the canopy so leaves survive vanilla decay. Leaf clusters farther than `reach` blocks from wood are pinned persistent instead. `reach=0` grows without a limit. `target` accepts an object key, a folder prefix ending in `/`, or a filesystem path. `dryrun=true` reports and writes nothing.
+- `/iris object dust` (alias `d`): gives Glowstone Dust named "Dust of Revealing". Right-click a block in an Iris world and Iris names the placement that owns it.
+- `/iris find object <object> [teleport=true]`: `/iris goto object` is the same command under an alias. You have to be standing in an Iris world. In an object studio it teleports to that object grid cell. Otherwise it spirals outward looking for a generated instance, giving up after 120 seconds. `teleport=false` prints the coordinates instead of moving you.
 
 ## 5. Object studio: click-to-save
 
@@ -169,7 +169,7 @@ Inside `/iris object studio`, left- or right-clicking a block in a grid cell wri
 
 What survives and what does not:
 
-- **Sponge Schematic v2 and v3 only.** Anything else — MCEdit `.schematic`, `.litematic`, Sponge v1 — is rejected. No WorldEdit or FAWE needed. Iris parses the NBT itself.
+- **Sponge Schematic v2 and v3 only.** Anything else (MCEdit `.schematic`, `.litematic`, or Sponge v1) is rejected. No WorldEdit or FAWE needed. Iris parses the NBT itself.
 - **Blocks only.** The converter reads the palette and block indices and nothing else. **Block entities, entities, and biomes are all lost**: chests come out empty, signs blank, spawners default.
 - The source `.schem` is **deleted** after a successful conversion. Keep a copy elsewhere.
 - Files outside that folder, or not ending in `.schem`, produce no output at all.
@@ -189,7 +189,7 @@ The wand save reads live blocks, so it captures full block-entity NBT. This is t
 
 ### 6.3 Vanilla `.nbt` templates
 
-- `/iris structure import <dimension>` — imports registered structures and their templates into the pack as objects plus jigsaw graphs.
+- `/iris structure import <dimension>`: imports registered structures and their templates into the pack as objects plus jigsaw graphs.
 - `/iris studio importvanilla <dimension> [variants=3] [structures=true]` (aliases `importv`, `iv`) captures vanilla trees, mushrooms, and object features into `objects/vanilla/`. It takes `variants` samples of each. When `structures=true` it also imports vanilla and datapack structures and jigsaws.
 
 Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
@@ -206,19 +206,19 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 
 ## 8. Common failure modes
 
-1. **"You need to hold your wand!"** — no Iris wand selection and no WorldEdit selection.
-2. **"File already exists."** — pass `overwrite=true` (or `force=true`).
-3. **Save complains about a missing `dimension`** — you are not standing in a loaded Iris world. Pass `dimension=<pack>`.
-4. **Objects landed in the wrong pack folder** — the dimension load key is not the pack folder name (section 3).
-5. **`convert` did nothing** — the files are not in `<data>/convert/`, or do not end in `.schem`.
-6. **Converted objects have empty chests** — the converter never reads block entities. Use the paste-then-wand route (6.2).
-7. **The converter ate the schematic** — that is by design after a successful conversion.
-8. **The selection vanished** — corners live on the wand item. `paste edit=true` overwrites the held wand selection.
-9. **`position2` does nothing** — you have a WorldEdit-only selection. Run `/iris object we` first.
-10. **Entities are gone** — objects never store entities. Use placement markers.
-11. **Jigsaw or structure-void blocks are gone** — they are filtered out when the file is read. Connectors are JSON, not blocks.
-12. **A paste is offset from where you expected** — the origin is the bounding-box center, so air padding inside the selection moves it. Re-select tightly or run `shrink`.
-13. **A sign lost its back side, or a spawner lost its settings** — saved with the default `legacy=true`. Re-save with `legacy=false`.
+1. **"You need to hold your wand!"**: no Iris wand selection and no WorldEdit selection.
+2. **"File already exists."**: pass `overwrite=true` (or `force=true`).
+3. **Save complains about a missing `dimension`**: you are not standing in a loaded Iris world. Pass `dimension=<pack>`.
+4. **Objects landed in the wrong pack folder**: the dimension load key is not the pack folder name (section 3).
+5. **`convert` did nothing**: the files are not in `<data>/convert/`, or do not end in `.schem`.
+6. **Converted objects have empty chests**: the converter never reads block entities. Use the paste-then-wand route (6.2).
+7. **The converter ate the schematic**: that is by design after a successful conversion.
+8. **The selection vanished**: corners live on the wand item. `paste edit=true` overwrites the held wand selection.
+9. **`position2` does nothing**: you have a WorldEdit-only selection. Run `/iris object we` first.
+10. **Entities are gone**: objects never store entities. Use placement markers.
+11. **Jigsaw or structure-void blocks are gone**: they are filtered out when the file is read. Connectors are JSON, not blocks.
+12. **A paste is offset from where you expected**: the origin is the bounding-box center, so air padding inside the selection moves it. Re-select tightly or run `shrink`.
+13. **A sign lost its back side, or a spawner lost its settings**: saved with the default `legacy=true`. Re-save with `legacy=false`.
 14. **`shrink` rewrote a file in a pack you were not thinking about.** Outside an Iris world, a bare key resolves to the first visible pack that has it. That lookup is silent (section 1).
 
 ## Command reference

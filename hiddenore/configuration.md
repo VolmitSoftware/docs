@@ -8,15 +8,13 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`plugins/HiddenOre/hiddenore.yml`. Values shown are the shipped defaults.
+`plugins/HiddenOre/hiddenore.yml`. Values shown are the defaults.
 
-HiddenOre watches `hiddenore.yml` and `language.yml` with exact native file events plus a bounded SHA-256 reconciliation every 2.5 seconds. Idle event polls do not read or hash either file between reconciliation deadlines. A save must stay stable for 250 ms, and automatic reloads complete no more than once every 3 seconds; later saves replace the queued state and run as one trailing reload. The automatic apply parses the exact captured bytes rather than rereading a newer or half-written disk version. Watcher startup and manual-reload reset use the exact config-and-language pair that became live, so a newer save arriving in either window remains detectable and queues normally. Atomic editor moves and FTP delete-and-recreate gaps wait for both files to return, while common temporary upload names are ignored. Files larger than 8 MiB are not automatically loaded. `/hiddenore reload` remains immediate.
+Changes to `hiddenore.yml` and `language.yml` reload automatically. Invalid changes leave the current settings active. Use `/hiddenore reload` to apply them immediately.
 
 `language.yml` is not a locale selector. A retained `locale:` entry is an unknown
 override key and rejects the reload; select the locale with `language` in
 `hiddenore.yml`.
-
-HiddenOre renders localized text as components for command replies, mining feedback, hotload notices, and the startup splash. Paper-family players and component-aware consoles retain authored color, RGB, and interactive metadata, and operator-visible component logs keep one `[HiddenOre]` discriminator with dark-grey brackets and the HiddenOre name in gold. Plain Bukkit, unsupported console APIs, and RCON fallbacks receive destination-safe serialization, so supported formatting remains visible without printing raw `§` markers to an operator terminal.
 
 ## Top level
 

@@ -14,7 +14,7 @@ Advancement grants, tree refreshes, and unlock toasts use the platform scheduler
 
 Most of what you will change is hot-reloadable. Native filesystem events are reconciled with content checks, so atomic editor saves, FTP replacements, and same-size edits with an unchanged timestamp are still found. Adapt waits for a stable snapshot of at most 2 MiB and applies at most one automatic batch every 3 seconds; saves made during that interval replace the queued state and run in one trailing batch. Temporary upload artifacts and brief delete-and-recreate gaps are ignored. Automatic loads parse the captured TOML without rewriting, deleting, or recreating watched files. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected, and the settings already in memory keep running.
 
-These things are not hot-reloadable. Adapt wires them only while it enables: SQL, Redis, bStats metrics, the startup splash, the update check, and whichever optional plugins were present at boot.
+SQL, Redis, metrics, update checks, and optional-plugin detection require a restart.
 
 Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders. Without Vault, learning stays knowledge-only. Without a protection plugin, Adapt never asks one for permission. An absent integration does not stop startup, but Adapt can warn when a configured or installed integration cannot be used, such as Vault pricing without an economy provider or an installed-but-disabled HiddenOre.
 
@@ -41,7 +41,7 @@ By default a player's progression lives in `data/players/<uuid>.json`. SQL mode 
 
 Adapt puts the SQL credentials straight into the JDBC URL. It has no TLS switch of its own. Configure transport security on the database endpoint and in the driver environment. SQL startup fails closed unless both tables are InnoDB. After backing up the schema, convert legacy tables with `ALTER TABLE ADAPT_DATA ENGINE=InnoDB;` and `ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;`, then restart every backend.
 
-A fenced SQL write that exhausts its retries is retained beside the player file as `<uuid>.json.pending-sql`. The file starts with `ADAPT_SQL_RECOVERY_V1` and records the UUID, owner token, fence epoch, sequence, and JSON. Old raw-JSON `.pending-sql` files are deliberately rejected and preserved. Stop every backend, back up the database and file, reconcile which profile is authoritative, delete only the incompatible recovery file after that decision, then restart so Adapt can write a fenced envelope. `.pending-delete` is a local-JSON-mode delete or delete-then-save journal; SQL reset and purge instead rotate the ownership fence transactionally. See [38 - Runtime Architecture](/adapt/38-runtime-architecture) and [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
+A fenced SQL write that exhausts its retries is retained beside the player file as `<uuid>.json.pending-sql`. Stop every backend, back up the database and file, decide which profile is authoritative, delete only the incompatible recovery file, then restart. See [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
 
 ## Charging money for learning
 
@@ -72,10 +72,6 @@ Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, no
 `/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` delete that file, regenerate it from defaults, and reconcile mutations. `/adapt default all` archives `adapt.toml` and every skill and adaptation TOML into `config-archive/<timestamp>/` first, then deletes, regenerates, and reloads them. It leaves `mutations.toml`, `models.toml`, language overrides, SQL and Redis data, and player progression alone. All three need `adapt.configurator`.
 
 This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` directory before upgrading, which permanently removes any local settings stored there, then start the server to generate `adapt.toml`, `models.toml`, `mutations.toml`, `skills/`, and `adaptations/` directly under `plugins/Adapt/`. Adapt does not migrate the old directory, JSON configuration files, or the former misspelled value-multiplier key; restart after applying the desired settings.
-
-## Console logging
-
-Adapt sends operator output through a severity-aware logger. Paper, Purpur, and Folia consoles receive parsed rich components, so the startup splash and status messages render their legacy colors without exposing `§` codes. A platform without component-logger support receives plain text with formatting removed; warning and error severity and complete exception causes are retained on both paths.
 
 ## Reference
 
@@ -137,7 +133,7 @@ plugins/Adapt/
 | `debug` | `false` | Prints Adapt's developer debug lines to the console |
 | `verbose` | `false` | Prints gated profile, permission, XP, and per-action diagnostics. `/adapt debug verbose` flips the in-memory value without writing the file |
 | `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
-| `splashScreen` | `true` | Prints the startup splash |
+| `splashScreen` | `true` | Prints the startup banner |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
 | `language` | `en_US` | Active locale. Supported non-English values download automatically; the same name selects the optional override file |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
@@ -171,7 +167,7 @@ Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_r
 | `guiBackButton` | `true` | Shows Back buttons in menus that have a parent |
 | `customModels` | `true` | Applies the model mappings in `models.toml` |
 | `automaticGradients` | `false` | Applies the automatic rendered-text gradient |
-| `learnUnlearnButtonDelayTicks` | `14` | Debounce, in ticks, between learn and unlearn clicks |
+| `learnUnlearnButtonDelayTicks` | `14` | Delay, in ticks, between learn and unlearn clicks |
 | `maxRecipeListPrecaution` | `25` | Depth bound on recursive recipe-value traversal |
 | `actionbarNotifyXp` | `true` | Shows aggregated skill XP gains on the action bar without changing the XP awards themselves |
 | `actionbarXpDurationMillis` | `1500` | Skill XP ticker lifetime in milliseconds, clamped to `100`-`60000` |
@@ -196,7 +192,7 @@ soundsEnabled = true
 "skill-name" = true
 ```
 
-`particlesEnabled` and `soundsEnabled` are the global switches. The two override maps are keyed by registry ID and act as extra gates. `false` turns that component's particles off. `true` leaves the global decision alone. The player's own `/adapt effects` preference is a further gate. Progression audio additionally requires `progressionSoundsEnabled`; disabling that root key leaves adaptation gameplay sounds available. The `adaptation-name` and `skill-name` rows are placeholders.
+`particlesEnabled` and `soundsEnabled` are the global switches. The two override maps are keyed by registry ID and act as extra gates. `false` turns that component's particles off. `true` leaves the global decision alone. The player's own `/adapt effects` preference is a further gate. Progression audio also requires `progressionSoundsEnabled`; disabling that root key leaves adaptation gameplay sounds available. The `adaptation-name` and `skill-name` rows are placeholders.
 
 ### `[abilityApi]`
 
@@ -256,7 +252,7 @@ WorldGuard = true
 GriefPrevention = false
 ```
 
-Both blocks are examples. `adaptationUsageConflicts` ships empty. `protectionOverrides` ships with one placeholder row, `"adaptation-name"` mapped to `WorldGuard = true`.
+Both blocks are examples. `adaptationUsageConflicts` is empty by default. `protectionOverrides` contains one placeholder row, `"adaptation-name"` mapped to `WorldGuard = true`.
 
 Conflict pairs are symmetric at runtime. Listing `agility-air-dash` under `rift-blink` means holding either one blocks use of the other. The block is not only the direction the file reads. `protectionOverrides` starts from the currently enabled default protector set. Then it adds or removes protectors by exact `Protector.getName()` value. A `true` naming an unknown protector logs an error and is skipped. Full protector names and defaults: [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
 
@@ -335,7 +331,7 @@ The watcher drains native events every 500 ms and runs bounded exact-content fal
 | SQL or Redis endpoint, or their enabled state | no | yes |
 | Metrics enabled state | no | yes |
 | Installing or removing an optional plugin, and protector registration | no | yes |
-| Startup splash or update check | takes effect next enable | yes |
+| Startup banner or update check | takes effect next enable | yes |
 
 ## See also
 
@@ -343,5 +339,4 @@ The watcher drains native events every 500 ms and runs bounded exact-content fal
 - [05 - Configuration Math](/adapt/05-configuration-math)
 - [06 - GUI Customization](/adapt/06-gui-customization)
 - [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
-- [38 - Runtime Architecture](/adapt/38-runtime-architecture)
 - [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)

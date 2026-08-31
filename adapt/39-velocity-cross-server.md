@@ -23,7 +23,7 @@ SQL adoption also considers a matching in-process pending write and a valid `ADA
 
 ## Reset and purge
 
-SQL reset and purge rotate the owner token and advance the epoch transactionally. If the initiating backend currently hosts the online player, it adopts that new fence and replaces the Adapt profile live in place. Redis notices contain only the player, operation id, new epoch, and purge flag; ownership credentials are never shared between backends. Other receivers remember the epoch as a stale-claim watermark and retire any older Adapt runtime while leaving the Minecraft player connected. That remotely retired player must reconnect before Adapt can claim a new runtime. A rejected owner-scheduler dispatch invalidates the old fence immediately so that runtime cannot keep writing.
+A reset replaces the player's Adapt profile on the current backend. If the player is active on another backend, they must reconnect there before Adapt resumes.
 
 ## Setting it up
 
@@ -79,5 +79,4 @@ SQL and Redis settings are restart-bound. Hotloading the core config preserves t
 ## See also
 
 - [01 - Installation & Configuration](/adapt/01-installation-configuration)
-- [38 - Runtime Architecture](/adapt/38-runtime-architecture)
 - [40 - Operator Runbooks](/adapt/40-operator-runbooks)

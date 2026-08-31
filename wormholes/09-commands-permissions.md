@@ -8,194 +8,56 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes exposes a single root command through the Director framework
-(`CommandWormholes` and nested `CommandAdmin`, `CommandNetwork`,
-`CommandServer`, `CommandPocket`). `WormholesCommandService` opens the admin command path when
-the sender has **any** admin command leaf (or `wormholes.admin`). Each handler
-still checks its own permission. Public `help` / `info` remain available
-without admin rights.
+Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help` and `info` are public; other commands require the permission shown.
 
-## Root
+## Commands
 
-| Property | Value |
-|----------|--------|
-| Command | `/wormholes` |
-| Aliases | `/wh`, `/wormhole` |
-| Declared in | `plugin.yml` (`commands:`). Paper also registers via lifecycle (`paper-plugin.yml` has permissions only) |
-| Root gate | Any of: `wormholes.admin`, `wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`, `wormholes.admin.projection`, `wormholes.admin.reset`, `wormholes.admin.pocket` |
-| Without root gate | Only bare `help`/`?` (or empty) and `info` run. Other args get no-permission |
-| Public tab complete | `help`, `info` only when lacking all admin command leaves |
-| Admin help | Shared Director panel when the root gate passes: up to 19 entries per page at the root and in subtrees alike; shorter trees print every entry on one page |
+| Command | Permission | Purpose |
+|---|---|---|
+| `/wormholes info` | none | Show portal-building instructions |
+| `/wormholes wand [rune=true]` | `wormholes.admin.items` | Give a Portal Wand and, by default, a rune |
+| `/wormholes door [type=pair]` | `wormholes.admin.items` | Give a Dimensional Door |
+| `/wormholes reload` | `wormholes.admin.reload` | Reload config and language files |
+| `/wormholes debug` | `wormholes.admin` | Toggle verbose diagnostics until the next reload |
+| `/wormholes stats [now=false]` | `wormholes.admin` | Show the stats file; `now=true` writes it first |
+| `/wormholes pocket info` | `wormholes.admin.pocket` | Show the current pocket's size and materials |
+| `/wormholes pocket resize [size=0] [material=keep] [door=keep] [confirm=false]` | `wormholes.admin.pocket` | Resize the current pocket |
+| `/wormholes pocket resizeall ...` | `wormholes.admin.pocket` | Resize every pocket |
+| `/wormholes admin freeze [seconds=30]` | `wormholes.admin.projection` | Freeze projections; use `0` to resume |
+| `/wormholes admin flush` | `wormholes.admin.projection` | Clear and rebuild projections |
+| `/wormholes admin deleteallportals` | `wormholes.admin.reset` | Delete every local portal and link immediately |
+| `/wormholes admin deleteeverything` | `wormholes.admin.reset` | Reset Wormholes data immediately |
+| `/wormholes network status` | `wormholes.admin.network` | Show peer connection status |
+| `/wormholes network doctor` | `wormholes.admin.network` | Diagnose connection failures |
+| `/wormholes server export` | `wormholes.admin.network` | Create a server code |
+| `/wormholes server import <code>` | `wormholes.admin.network` | Import a server or portal code |
+| `/wormholes server list` | `wormholes.admin.network` | List linked servers |
+| `/wormholes server remove <name>` | `wormholes.admin.network` | Remove a linked server |
+| `/wormholes server connect <name>` | `wormholes.admin.network` | Move to a linked server |
 
-Handlers still require their own node (for example reload needs
-`wormholes.admin.reload`). Holding only a leaf is enough to enter Director
-routing. Lacking that leaf still fails inside the handler.
+Pocket sizes range from 8 to 128. `size=0`, `material=keep`, and `door=keep` preserve the current value. Shrinking a pocket with blocks or entities requires `confirm=true`; non-empty containers must be emptied first.
 
-## Command tree
+`deleteeverything` has no confirmation prompt and refuses to run while someone is inside or entering a pocket dimension.
 
-### Public (none of the seven admin-command leaves)
+## Permissions
 
-The public path runs when the sender has **none** of `wormholes.admin`,
-`wormholes.admin.reload`, `wormholes.admin.items`, `wormholes.admin.network`,
-`wormholes.admin.projection`, `wormholes.admin.reset`, or
-`wormholes.admin.pocket`. Lacking only `wormholes.admin` is not enough if a leaf
-is granted.
+| Permission | Purpose |
+|---|---|
+| `wormholes.*` | All Wormholes permissions |
+| `wormholes.admin` | All administration permissions |
+| `wormholes.admin.reload` | Reload files |
+| `wormholes.admin.items` | Give portal and door items |
+| `wormholes.admin.network` | Manage linked servers |
+| `wormholes.admin.projection` | Freeze or rebuild projections |
+| `wormholes.admin.reset` | Destructive reset commands |
+| `wormholes.admin.pocket` | Inspect and resize pockets |
+| `wormholes.doors.bypass` | Bypass door access lists |
+| `wormholes.doors.craft` | Craft and reskin dimensional doors |
+| `wormholes.doors.place` | Place dimensional doors |
+| `wormholes.gateway` | Create gateway portals |
+| `wormholes.portals.wormhole` | Create wormhole portals |
+| `wormholes.portals.portal` | Create portal and RTP portals |
 
-| Syntax | Permission | Effect |
-|--------|------------|--------|
-| `/wormholes` or `/wormholes help` or `/wormholes ?` | none (public path) | Public help: points to `/wormholes info` and wand usage |
-| `/wormholes info` | none (public path) | Multi-line portal building instructions |
+Portal traversal can also use `wormholes.portal.<name>`. Names are lowercase; unsupported character runs become `_`. Renaming a portal changes this permission.
 
-### Root handlers (`CommandWormholes`)
-
-| Syntax | Origin | Permission (after root gate) | Effect |
-|--------|--------|------------------------------|--------|
-| `/wormholes wand [rune=true]` | player | `wormholes.admin.items` | Give Portal Wand + 1 Wormhole Rune. `rune=false` gives only the wand |
-| `/wormholes door [type=pair]` | player | `wormholes.admin.items` | Give Dimensional Door item. Requires doors enabled |
-| `/wormholes reload` | both | `wormholes.admin.reload` | Reload config + language |
-| `/wormholes debug` | both | `wormholes.admin` | Toggle verbose logs + one-second console telemetry (silent in-game). Reload clears this override so it matches `[main] verbose-logging`. |
-| `/wormholes stats [now=false]` | both | `wormholes.admin` | Print stats snapshot path. `now=true` force-writes |
-| `/wormholes info` | both | public or admin | Building instructions |
-
-Door `type` completions: `pair`, `personal`, `public`, `pair_trapdoor`,
-`personal_trapdoor`, `public_trapdoor`.
-
-### `/wormholes pocket` (`CommandPocket`)
-
-| Syntax | Origin | Permission | Effect |
-|--------|--------|------------|--------|
-| `pocket info` | player | `wormholes.admin.pocket` | Show the size, materials, and bounds of the pocket you are standing in |
-| `pocket resize [size=0] [material=keep] [door=keep] [confirm=false]` | player | `wormholes.admin.pocket` | Rebuild the pocket you are standing in |
-| `pocket resizeall [size=0] [material=keep] [door=keep] [confirm=false]` | both | `wormholes.admin.pocket` | Rebuild every allocated pocket |
-
-`size` is the cube edge in blocks, 8 to 128; `0` keeps the pocket's current
-size. `material` is the wall, floor, and ceiling block and must be solid and
-non-falling. `door` is the exit door and must be a hand-operable door, so iron
-doors are rejected. Both material arguments accept `minecraft:`-prefixed or
-bare names and take `keep` to leave them alone.
-
-Every argument tab-completes. `size` offers a short ladder with no prefix typed
-and searches every supported size once there is one. `material` and `door` offer
-a small palette with no prefix typed and search the server's full block list
-once there is one, so only blocks that are actually valid for that slot are ever
-suggested. `confirm` completes `true`/`false`.
-
-A resize that would destroy placed blocks or displace entities is refused and
-reports the counts; `confirm=true` permits those changes. A non-empty container
-always refuses the operation even when confirmed and must be emptied first.
-Growing a pocket destroys nothing and never needs confirmation. `resizeall`
-validates its arguments once, then reports how many pockets were rebuilt,
-skipped, and failed; pockets blocked by non-empty containers count as skipped.
-See
-[08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) for what a resize does
-to the room's contents.
-
-### `/wormholes admin` (`CommandAdmin`)
-
-| Syntax | Permission | Effect |
-|--------|------------|--------|
-| `admin deleteallportals` | `wormholes.admin.reset` | Immediately delete every local portal and saved portal link. No confirmation prompt |
-| `admin deleteeverything` | `wormholes.admin.reset` | Immediately reset portals, door state, config, trust, identity, and network routes. No confirmation prompt |
-| `admin freeze [seconds=30]` | `wormholes.admin.projection` | Freeze all projections. `0` resumes. Non-zero clamped 5–300 |
-| `admin flush` | `wormholes.admin.projection` | Revert projected blocks for all observers and rebuild |
-
-### `/wormholes network` (`CommandNetwork`)
-
-| Syntax | Permission | Effect |
-|--------|------------|--------|
-| `network import <code>` | `wormholes.admin.network` | Alias of `server import`. Same autodetection of `WHS1.` / `WHP5.` |
-| `network status` | `wormholes.admin.network` | Local listen mode, public key fingerprint, peer CONNECTED/CONNECTING/WAITING/error. Auto-runs doctor when any listed peer is not `CONNECTED`. |
-| `network doctor` | `wormholes.admin.network` | Diagnostic lines for connection failures |
-
-### `/wormholes server` (`CommandServer`)
-
-| Syntax | Permission | Effect |
-|--------|------------|--------|
-| `server connect <name>` | `wormholes.admin.network` | Transfer self to linked server (player only) |
-| `server export` | `wormholes.admin.network` | Export this server as click-to-copy code (console: raw code) |
-| `server import <code>` | `wormholes.admin.network` | Import a server (`WHS1.`) or portal (`WHP5.`) code. Saves route/trust. Does not auto-link a portal from chat (link via gateway menu) |
-| `server list` | `wormholes.admin.network` | Linked servers with ready/offline + game address |
-| `server remove <name>` | `wormholes.admin.network` | Delete route + trusted key for peer |
-| `/wormholes server <name>` | `wormholes.admin.network` | Shorthand for `server connect` when second arg has no `=` |
-
-`server import` is the command for code exchange. `network import` is an alias
-of the same `ImportExportService.importCode` path and still accepts both code
-kinds.
-
-`deleteeverything` refuses while a player is inside or transiting a pocket
-dimension. On success it deletes `config/`, `identity/`, `routes/`, `trust/`,
-`portals/`, and `doors/`, preserves the retired pocket-slot counter, and
-regenerates default config and an empty door snapshot. Language overrides,
-dictionaries, UDS paths, and the stats snapshot are outside that deletion set.
-
-## Static permissions (`plugin.yml` / `paper-plugin.yml`)
-
-| Node | Default | Description / children |
-|------|---------|------------------------|
-| `wormholes.*` | op | All Wormholes nodes → `admin`, `portals`, `gateway`, `doors.craft`, `doors.place` |
-| `wormholes.admin` | op | All admin → `admin.reload`, `admin.items`, `admin.network`, `admin.projection`, `admin.reset`, `admin.pocket`, `doors.bypass` |
-| `wormholes.admin.reload` | op | Reload configuration |
-| `wormholes.admin.items` | op | Spawn the Portal Wand, Wormhole Rune, and Dimensional Door items |
-| `wormholes.admin.network` | op | Network/server import export list remove status doctor connect |
-| `wormholes.admin.projection` | op | Freeze / flush projections |
-| `wormholes.admin.reset` | op | deleteallportals / deleteeverything |
-| `wormholes.admin.pocket` | op | Inspect and resize pocket dimensions |
-| `wormholes.doors.bypass` | op | Bypass dimensional door access lists (also op / `wormholes.admin` pass access checks) |
-| `wormholes.doors.craft` | op | Craft and reskin Dimensional Door and trapdoor products |
-| `wormholes.doors.place` | op | Place Dimensional Door and trapdoor products as live portal endpoints |
-| `wormholes.gateway` | op | Create and type-switch to gateway portals |
-| `wormholes.portals` | op | Parent for non-gateway frame portal types → `portals.wormhole`, `portals.portal` |
-| `wormholes.portals.wormhole` | op | Create and type-switch to wormhole-type frame portals |
-| `wormholes.portals.portal` | op | Create and type-switch to portal-type and RTP frame portals |
-
-### Frame portal type nodes (enforced)
-
-`PortalTypeAccess` checks the resolved leaf on wand/rune construction and
-type-menu switches. Bukkit permission children make `wormholes.portals` grant
-both non-gateway leaves. Querying the leaf preserves an explicit child denial.
-
-| Type | Permission (any of) |
-|------|---------------------|
-| `PORTAL`, `RTP` | `wormholes.portals.portal` |
-| `WORMHOLE` | `wormholes.portals.wormhole` |
-| `GATEWAY` | `wormholes.gateway` |
-
-`wormholes.admin` and ops always pass. These nodes do not gate departure or
-arrival. Traversal uses the dynamic per-portal node below. All construction
-nodes default to `op`, so a non-operator needs an explicit matching leaf or
-parent grant. Managed Nether/End replacement also checks
-`wormholes.portals.portal` on the responsible player before conversion.
-
-### Dimensional Door crafting node
-
-`wormholes.doors.craft` gates all Dimensional Door and trapdoor product recipes
-and their identity-preserving reskin recipes. It defaults to `op`.
-Non-operators see no output for those recipes and craft clicks are rejected
-unless the node is explicitly granted. Automated Crafter blocks remain unable
-to mint or reskin Dimensional Door identities.
-
-`wormholes.doors.place` separately gates placing a Dimensional Door or trapdoor
-as a live endpoint. It also defaults to `op`. `wormholes.admin` passes both
-door gates. Granting craft alone lets a player make the item but not place it.
-
-### Dynamic per-portal node
-
-| Node | When | Semantics |
-|------|------|-----------|
-| `wormholes.portal.<sanitized-name>` | Portal access policy enabled for that portal | `PortalPermissionMode`: **WHITELIST** requires the node. **BLACKLIST** allows anyone without the node (op always allowed). Name is sanitized from the portal display name. |
-
-Remote portals use the same node form from the remote portal name.
-
-Sanitization lowercases the name. It keeps ASCII `a-z`, `0-9`, `.`, `-`, and
-`_`. Other character runs collapse to `_`. Leading and trailing underscores are
-trimmed. If nothing remains, the node is `unnamed`.
-
-Renaming changes the permission node. Distinct names can sanitize to the same
-node. Review permission assignments after renames.
-
-## Related docs
-
-- [01 - Installation & Configuration](/wormholes/01-installation-configuration), reload targets
-- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), network and server command workflows
-- [07 - Dimensional Doors](/wormholes/07-dimensional-doors), door items and access bypass
-- [03 - Building Portals](/wormholes/03-building-portals), wand and rune construction
+See [Building Portals](/wormholes/03-building-portals), [Pocket Dimensions](/wormholes/08-pocket-dimensions), and [Cross-Server Networking](/wormholes/10-cross-server-networking).

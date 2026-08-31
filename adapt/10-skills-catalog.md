@@ -7,13 +7,13 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt ships 23 skill lines. Each line watches an activity you already do in Minecraft. Each line pays experience for that activity. You spend that experience as knowledge on adaptations.
+Adapt has 23 skill lines. Each line watches an activity you already do in Minecraft and awards experience for it. You spend that experience as knowledge on adaptations.
 
 Adaptations are the perks. They change how the game treats you. Examples include silk-touch glass and a bow that curves arrows around corners.
 
 Nothing is unlocked by default. You choose which lines to raise. You choose which adaptations to buy. Two players on the same server can hold different toolkits. Levels come from play. They do not come from a menu grind. Lines that match how you spend time pay the most.
 
-This page is the index. Each line has its own numbered doc from `11` through `33`. Those docs cover every adaptation. Start here to find the line. Then read that line's doc.
+Each skill has a numbered page from `11` through `33` that covers all of its adaptations.
 
 ## How any skill works
 

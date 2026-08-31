@@ -8,9 +8,7 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-BileTools watches the plugins directory. When a jar on disk changes, BileTools
-reloads it. You do not need to restart the server. BileTools also runs
-plugman-style lifecycle commands and optional remote deployment.
+BileTools watches the plugins directory and reloads changed jars without a server restart. It also provides plugman-style lifecycle commands and optional remote deployment.
 
 | | |
 |---|---|

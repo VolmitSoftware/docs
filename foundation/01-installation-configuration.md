@@ -8,45 +8,34 @@ editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Foundation targets the Minecraft 26.x server APIs and Java 25. The build verifies the same sources against Paper 26.2 build 112 and Spigot 26.2; Paper, Spigot, and Folia command and scheduler paths are kept separate where the platforms require it.
+Foundation supports Minecraft 26.x on Paper, Spigot, and Folia. Java 25 is required.
 
 ## Requirements
 
 | Item | Value |
 |---|---|
 | Java | 25 |
-| Descriptor API | `26.1` |
-| Paper compile target | `26.2.build.112-stable` |
-| Spigot compatibility target | `26.2-R0.1-SNAPSHOT` |
-| Folia | Declared supported |
+| Servers | Paper, Spigot, and Folia on Minecraft 26.x |
+| Folia | Supported |
 | Required plugins | None |
-| Optional plugins | Vault and PlaceholderAPI; other Volmit plugins are declared for deterministic suite ordering |
+| Optional plugins | Vault and PlaceholderAPI |
 
-Install the unclassified Foundation jar and start the server. Foundation creates `plugins/Foundation/foundation.toml`, the independent `worth.toml` catalog, generated and editable language files, and its `data/` storage on first enable. Startup always prints the Volmit-style `FOUNDATION` console splash with version, release train, Java, supported Minecraft line, module totals, and `READY` or `DEGRADED` state.
-
-## Building and local publication
-
-Run `./gradlew build` from the Foundation repository. The complete build compiles the Java 25 Paper target, compiles the same shared source against Spigot, runs the test suite, inspects the shaded artifact, and stages the deployable jar as `C:/VolmitSoftware/BUILDS/Foundation.jar`. The versioned artifact remains available under `build/libs/` for diagnostics and publication.
-
-Run `./gradlew publishToMavenLocal` to publish the shaded runtime artifact as `art.arcane:foundation:1.0.0-26.2-SNAPSHOT`. Publication builds the same runtime jar used by the server; it does not publish an unshaded or server-API-bundled substitute.
-
+Put the Foundation jar in `plugins/` and start the server. Foundation creates `plugins/Foundation/foundation.toml`, `worth.toml`, language files, and its `data/` folder.
 ## Configuration lifecycle
 
-`foundation.toml` is a typed, documented VolmLib configuration. Foundation parses and validates a candidate before committing it, writes in-game changes through a same-directory temporary file, preserves a `.last-good` copy, and rejects unsafe symbolic links, non-regular files, oversized files, invalid registry names, non-finite numbers, and out-of-range settings.
+Changes to `foundation.toml` reload automatically when `runtime.hotReload` is enabled. Invalid changes leave the current settings active. Foundation keeps a `.last-good` copy for recovery.
 
 Sound settings use canonical namespaced registry keys such as `minecraft:block.amethyst_block.chime`; particle settings use keys such as `minecraft:end_rod`. Uppercase Bukkit constant names already written by Foundation, including `BLOCK_AMETHYST_BLOCK_CHIME` and `END_ROD`, remain accepted. Particles that require additional data are rejected because the configurable effects do not supply a particle-data payload.
 
-When `runtime.hotReload` is enabled, a stable-content watcher coalesces file changes. Parsing happens asynchronously and the validated state is committed through the global scheduler. Invalid or superseded candidates do not replace the active state.
-
 ## Languages
 
-`language = "en_US"` selects `languages/en_US.toml`. Every locale is one complete, editable `languages/<locale>.toml` file; Foundation creates English on first use, preserves existing values, and merges newly-added message defaults during upgrades. Locale files accept MiniMessage, legacy `&` codes, `&#RRGGBB`, and required placeholders. They are hot-reloaded independently of `foundation.toml`, retain the previous valid snapshot after a syntax or placeholder error, and have the same regular-file, symbolic-link, size, and scheduler safety checks as the primary config.
+`language = "en_US"` selects `languages/en_US.toml`. Locale files accept MiniMessage, legacy `&` codes, `&#RRGGBB`, and required placeholders. They reload automatically; invalid changes leave the previous messages active.
 
-Clicking `language` in the in-game configuration editor closes the inventory and prints every discovered locale as a hoverable chat option. A player can type a locale into the private editor prompt or click an option to run the validated selection immediately. `/foundation language <locale>` provides the same transactional path and tab-completes installed files. Existing installations using `languages/overrides/<locale>.toml` are copied safely into the flat layout when the old generated reference is detected; the legacy file is retained as recovery evidence.
+Use the in-game editor or `/foundation language <locale>` to select an installed locale.
 
 ## Worth catalog
 
-`worth.toml` is separate from the economy configuration. On first startup Foundation writes every item registered by the running 26.x server into one of eleven categories with a positive default unit price. A value of `0` keeps the item in the catalog while disabling sale of that item. New server items are added automatically on startup, edits are hot-reloaded, in-game writes use optimistic revisions and atomic replacement, and `worth.toml.last-good` retains the prior bytes.
+`worth.toml` stores item prices separately from the economy settings. A value of `0` disables sale of that item. Changes reload automatically, and `worth.toml.last-good` retains the previous file.
 
 ## In-game editor
 
@@ -58,10 +47,9 @@ Open `/foundation` and select **Configuration Editor**, or run `/foundation conf
 - string input with `reset` and `cancel` controls;
 - a discovered language picker with typed and click-to-select chat input;
 - paged text-list editing with addition and deletion;
-- optimistic revision checks so stale menus cannot overwrite a newer file or menu change;
-- permission rechecks before every write.
+- protection against stale menus overwriting newer changes.
 
-Chat input expires after 60 seconds. Every accepted edit follows the same validation, atomic-write, module-reconcile, and last-known-good path as a file edit.
+Chat input expires after 60 seconds.
 
 ## Configuration sections
 
@@ -91,4 +79,4 @@ Chat input expires after 60 seconds. Every accepted edit follows the same valida
 
 Language messages are intentionally absent from `foundation.toml`: they belong to the selected TOML locale file. Placeholders such as `{active}`, `{available}`, `{version}`, `{java}`, `{name}`, `{id}`, `{state}`, `{seconds}`, `{material}`, `{price}`, and `{reason}` must be retained by translations that use them.
 
-Continue with [commands and permissions](/foundation/02-commands-permissions) or [development and command architecture](/foundation/06-development).
+Continue with [commands and permissions](/foundation/02-commands-permissions).

@@ -15,9 +15,6 @@ Most governors engage only after sustained tick or incident thresholds. They rel
 
 This feature scales down per-world Spigot entity activation ranges under sustained pressure. It restores those ranges on release. The range change is instant and server-wide. That differs from continuous `dynamic-activation-range`.
 
-- **Class:** `FeatureActivationRangeGovernor` · **Listener:** no
-- **Notes:** Reflects `World.getHandle()` → `spigotConfig` activation fields. If the config object or fields cannot be resolved, the feature calls `setEnabled(false)` and stops engaging. A runtime reflection write failure does the same. Reload serializes a retired release before any new engagement, preserving the original full-range baseline.
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -40,8 +37,6 @@ This feature scales down per-world Spigot entity activation ranges under sustain
 
 This feature continuously tunes an activation radius from tick time. It pauses distant living entities via `ReactEntity`. It honors `SLEEP` protection. Its pause claim is independent from Adaptive Entity Sleep: disabling either owner releases only its own claim, and an entity wakes after the last React owner releases it. React does not claim or re-enable AI that was already disabled externally. Paper consumes at most `maxEntitiesSampledPerCycle` entries from the shared event-maintained weak entity rotation instead of copying each world's entity list. Folia reuses the controller's one-second player snapshot, rotates unique anchors, divides one aggregate entity budget across them, hands every observed entity to its owner before reading identity or state, de-duplicates there, and waits for all owner tasks before the next scan. Damage and targeting wakes use the same owner handoff and reject callbacks from an older activation.
 
-- **Class:** `FeatureDynamicActivationRange` · **Listener:** yes (wake on damage/target)
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -60,8 +55,6 @@ This feature continuously tunes an activation radius from tick time. It pauses d
 
 This feature maps rolling tick time and player count into per-world view and simulation distance. It captures each world's exact view and simulation distances before React's first mutation, rejects queued updates from older activations, and synchronously restores or awaits restoration of every captured world during disable. It requires Paper or Purpur world distance setters. On activate, it calls `setEnabled(false)` and warns if setters are missing or reflection fails.
 
-- **Class:** `FeatureDynamicViewDistance` · **Listener:** yes (no event handlers)
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -75,8 +68,6 @@ This feature maps rolling tick time and player count into per-world view and sim
 ### `afk-view-shedding`
 
 This feature lowers idle players' send view distance. An optional pressure notch caps all players' send view distance. It requires `Player.getSendViewDistance` / `setSendViewDistance` and disables itself when those methods are absent or fail at runtime. Evaluations reuse the controller player snapshot and apply changes on each player-owning scheduler. React keeps one combined ownership record when idle and pressure claims overlap, restores the exact pre-React distance only after both claims release, and rejects stale work after player activity, disable, or restart. Per-player reconciliation is exact single-flight and remains tracked after a claim clears; disable waits for any already-queued activity restore and authoritatively reconciles every remaining state before returning.
-
-- **Class:** `FeatureAfkViewShedding` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -96,8 +87,6 @@ This feature lowers idle players' send view distance. An optional pressure notch
 ### `tracker-range-governor`
 
 This feature scales Spigot entity tracking ranges under pressure. It reflects `spigotConfig` tracking fields. Missing fields or runtime reflection failures call `setEnabled(false)`. Reload serializes a retired release before any new engagement, preserving the original full-range baseline.
-
-- **Class:** `FeatureTrackerRangeGovernor` · **Listener:** no
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -119,8 +108,6 @@ This feature scales Spigot entity tracking ranges under pressure. It reflects `s
 
 This feature shrinks the A* visited-node budget for distant mobs via NMS navigation multipliers. On activate, if navigation bridges do not resolve, it calls `setEnabled(false)` and vanilla pathfinding stays unchanged. The scan is single-flight and bounded across all worlds. Paper consumes at most `maxEntitiesSampledPerCycle` entries from the shared event-maintained weak entity rotation; Folia consumes a capped weak mob index populated by owner-local EntityController sampling and submits no more than the configured cycle budget to mob owners, without materializing nearby-entity lists. When global and per-world pressure become calm, React drains every current-generation multiplier through its bounded owner-release queue, including mobs outside the next scan. Deactivation waits for accepted owner scans before taking its release snapshot, then restores every owned multiplier. Entity load and unload reconciliation prevents stale persistent markers from clearing a newer activation's claim.
 
-- **Class:** `FeaturePathfinderBudget` · **Listener:** yes (entity load/unload integrity)
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -133,8 +120,6 @@ This feature shrinks the A* visited-node budget for distant mobs via NMS navigat
 ### `random-tick-governor`
 
 This feature lowers `randomTickSpeed` under sustained pressure. It restores the speed on release.
-
-- **Class:** `FeatureRandomTickGovernor` · **Listener:** no
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -151,8 +136,6 @@ This feature lowers `randomTickSpeed` under sustained pressure. It restores the 
 
 This feature measures per-world tick share. It publishes NORMAL, PRESSURE, or PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume that per-world state when they apply pressure behavior.
 
-- **Class:** `FeaturePerWorldTickBudget` · **Listener:** no
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -167,8 +150,6 @@ This feature measures per-world tick share. It publishes NORMAL, PRESSURE, or PA
 ### `chunk-quarantine`
 
 This feature scores hot chunks from spawns, redstone, physics, and hoppers. It quarantines those chunks. Under pressure it cancels or freezes activity.
-
-- **Class:** `FeatureChunkQuarantine` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -199,9 +180,6 @@ This feature tracks components of adjacent blocks that produced redstone or pist
 
 Once per second React rolls the component event window. If the global `redstone-event-span` exceeds `maxCircuitMS`, React temporarily throttles the busiest unblocked component from that same current window. Redstone current changes are restored and piston events are cancelled until `throttleDurationMS` expires. Attempted events never extend that deadline. The world, representative coordinate, bounds, active-node count, event count, measured span, threshold, and throttle action are stored as a structured incident for React Web.
 
-- **Class:** `FeatureCircuitManager` · **Listener:** yes
-- **Notes:** Tick interval hard-coded `1000`. World indexes are synchronized independently so concurrent Folia region callbacks cannot corrupt component membership.
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -212,8 +190,6 @@ Once per second React rolls the component event window. If the global `redstone-
 ### `hopper-chain-coalescing`
 
 This feature detects linear hopper chains and projects savings. Default mode is measurement-only. `featureActMode` plus an NMS hopper hook skips intermediate ticks. Chunk load, unload, and hopper movement events maintain an incremental chain index. Maintenance admits at most `repairChunksPerTick` deduplicated coordinates from an 8,192-entry queue, reads each chunk only on its owner, and never performs a full-world rebuild. Act mode submits at most 128 synthesized transfer tasks per tick. When `featureBucketBypass` is `false`, a synthesized transfer consumes the active hopper token bucket's source-chunk budget; a rejected or incomplete transfer leaves that chain on vanilla ticking.
-
-- **Class:** `FeatureHopperChainCoalescing` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -233,9 +209,6 @@ This feature detects linear hopper chains and projects savings. Default mode is 
 
 This feature maintains spatial indices of dropped items and hoppers for `TweakHopperIndex`. Item and hopper relocation is serialized by UUID, and chunk/world removal clears both the primitive index and its reverse references.
 
-- **Class:** `FeatureHopperItemIndex` · **Listener:** yes
-- **Notes:** Paper performs no activation-time world scan. Each reconciliation interval imports and consumes at most 64 event-maintained loaded-chunk coordinates, inspects at most 256 entity snapshot entries, seeds at most 256 filtered hopper states, validates at most 256 indexed hopper positions, and reconciles at most 256 tracked items. Dense per-chunk entity and hopper snapshots are materialized once and retained only while their bounded seed cursor advances. Folia combines item spawn/load/unload/pickup events with the cached player snapshot and chunk-load events, rotating through at most 16 player anchors and 64 unique owner-region chunks per reconciliation interval with one in-flight task per chunk. An owner task materializes a chunk's entity snapshot and filtered hopper-state collection only for its first successful seed after activation or load; later passes validate at most 256 already-indexed hopper positions through direct block reads. Up to 256 unique tracked items are reconciled on their entity owners per interval, so moving items migrate between buckets without global UUID lookup or repeated full chunk arrays.
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -244,8 +217,6 @@ This feature maintains spatial indices of dropped items and hoppers for `TweakHo
 ### `hopper-token-bucket`
 
 This feature applies a per-chunk token bucket that limits hopper item moves. It cancels event-driven moves when the bucket is empty and supplies the same source-chunk budget to hopper-chain synthesized transfers.
-
-- **Class:** `FeatureHopperTokenBucket` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -261,8 +232,6 @@ This feature applies a per-chunk token bucket that limits hopper item moves. It 
 
 This feature throttles high-frequency redstone clocks via `BlockRedstoneEvent` (hold current). No NMS.
 
-- **Class:** `FeatureRedstoneClockGovernor` · **Listener:** yes
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -276,8 +245,6 @@ This feature throttles high-frequency redstone clocks via `BlockRedstoneEvent` (
 ### `crop-fast-forward`
 
 When a chunk wakes after long dormancy, this feature advances crop and sapling growth. It **silences under high load**. That polarity is the opposite of most governors. Each pass consumes at most 128 immutable coordinates from the Observer rotation, evaluates each loaded chunk only on its owning server or region thread, and retires queued work from an older activation. It does not enumerate every loaded chunk.
-
-- **Class:** `FeatureCropFastForward` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -297,8 +264,6 @@ When a chunk wakes after long dormancy, this feature advances crop and sapling g
 ### `farm-burst-smoother`
 
 When farm growth events burst, this feature cancels only growth changes that it successfully queues, then reapplies them on a delayed budgeted schedule. Lowering `maxPendingUpdates` stops new intake until the queue falls below the new cap; it does not prune already-cancelled growth. A stale entry becomes immediately eligible and bypasses the nearby-player delay instead of being discarded. A successful world unload retires that world's queued changes and any owner-task claims because their blocks are leaving runtime; a cancelled unload preserves them. Deactivation stops intake first and force-applies valid pending changes on the Paper server thread or Folia owning regions for up to `shutdownDrainTimeoutMS`; failed or temporarily unavailable changes are retried during that drain and retained if it cannot finish. A nonempty remainder throws a deactivation failure so shutdown cannot report success after losing cancelled growth.
-
-- **Class:** `FeatureFarmBurstSmoother` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -322,8 +287,6 @@ When farm growth events burst, this feature cancels only growth changes that it 
 
 This feature tracks furnaces and brewing stands. With NMS hooks, it skips intermediate ticks away from players under pressure. Without a bridge it stays measurement-only. Load and unload events maintain a world-qualified block-entity index; startup and repair consume at most `reseedChunksPerTick` Observer coordinates per tick, clamped to `1..256`. One measurement tick inspects at most 512 indexed entries through at most 32 owner-region tasks, so activation and dense worlds cannot create an unbounded chunk or task fan-out.
 
-- **Class:** `FeatureFurnaceBrewBatching` · **Listener:** yes
-
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
@@ -340,8 +303,6 @@ This feature tracks furnaces and brewing stands. With NMS hooks, it skips interm
 ### `fast-leaf-decay`
 
 This feature accelerates leaf decay around break and decay events. It drains a bounded number of roots per evaluation, groups each radius scan by owning chunk, and de-duplicates overlapping block coordinates inside each chunk batch. One shared `maxSyncSpikeMS` budget bounds the combined owned-thread work admitted by that evaluation, including across Folia regions. Every root and chunk task is tied to the activation that claimed it, so deactivation prevents queued scans from breaking more leaves. Cancelled break and decay events are ignored. Fast block removal is optional. Decay sounds use the world's native localized sound delivery rather than one send per online player.
-
-- **Class:** `FeatureFastLeafDecay` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -364,8 +325,6 @@ This feature accelerates leaf decay around break and decay events. It drains a b
 ### `incident-mode`
 
 This feature enters a sustained incident state from high incident score or tick time. It waits for startup grace first. Then it rate-limits spawner and natural spawns, portals, hopper moves, and redstone until calm. See also [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
-
-- **Class:** `FeatureIncidentMode` · **Listener:** yes
 
 | Field | Type | Default | Description |
 |---|---|---|---|

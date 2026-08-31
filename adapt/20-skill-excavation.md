@@ -138,18 +138,6 @@ Wet means standing in water, or standing under open sky during a storm. The bonu
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `excavation` |
-| Class | `SkillExcavation` |
-| Icon | `DIAMOND_SHOVEL` |
-| Color | `YELLOW` |
-| Interval (ms) | `5953` |
-| Skill config | `plugins/Adapt/skills/excavation.toml` |
-| Adaptation count | 12 |
-
 ### Skill XP and stats
 
 Two sources, both at MONITOR priority with cancelled events ignored, both spaced by `cooldownDelay`:
@@ -214,7 +202,6 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationHaste` |
 | Icon | `GOLDEN_PICKAXE` |
 | Max level | 3 |
 | Initial knowledge cost | 3 |
@@ -237,7 +224,6 @@ Applies `BLOCK_BREAK_SPEED` as an `ADD_SCALAR` modifier of `0.20 * level`, refre
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationSpelunker` |
 | Icon | `GOLDEN_HELMET` |
 | Max level | 5 |
 | Initial knowledge cost | 10 |
@@ -266,7 +252,6 @@ Scan radius is `rangeMultiplier * level`, clamped to 1 through 32 blocks. Marker
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationOmniTool` |
 | Icon | `DISC_FRAGMENT_5` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -290,7 +275,6 @@ Merged items are recognized by `Leatherman` appearing in their lore. Component c
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationDropToInventory` |
 | Icon | `CHEST` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -309,7 +293,6 @@ Awards a flat 2 skill XP per item caught. The display name comes from `excavatio
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationSeismicPing` |
 | Icon | `GOAT_HORN` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -342,7 +325,6 @@ Triggers on any block broken while holding an item whose name ends in `_SHOVEL` 
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationTunneler` |
 | Icon | `IRON_SHOVEL` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -369,7 +351,6 @@ red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationTreasureHunter` |
 | Icon | `EMERALD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -396,7 +377,6 @@ Eligible blocks are `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, and `CLAY`. Chance is `
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationSoftFall` |
 | Icon | `SAND` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -422,7 +402,6 @@ Only `FALL` damage on a player is considered. Reduction is `min(maxReduction, re
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationEarthMover` |
 | Icon | `DIRT` |
 | Max level | 5 |
 | Initial knowledge cost | 7 |
@@ -470,7 +449,6 @@ and 12 effect targets. The batch finishes after 20 ticks regardless.
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationBurrow` |
 | Icon | `COARSE_DIRT` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -503,7 +481,6 @@ and at any block a protection plugin refuses. Shovel-friendly blocks match Tunne
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationGraveDigger` |
 | Icon | `BONE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -535,7 +512,6 @@ Eligible blocks are `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL
 
 | Property | Value |
 |----------|-------|
-| Class | `ExcavationMudlark` |
 | Icon | `MUD` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |

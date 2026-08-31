@@ -98,13 +98,6 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Multiverse](/iris/34-multiverse)
 {.links-list}
 
-### Maintainer
-
-- [Maintainer - MC Version Bump](/iris/85-maintainer-mc-version-bump)
-- [Maintainer - Release Checklist](/iris/86-maintainer-release-checklist)
-- [Maintainer - Release Readiness](/iris/87-maintainer-release-readiness)
-{.links-list}
-
 ### Developer API
 
 - [API - Getting Started](/iris/90-api-getting-started)

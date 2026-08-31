@@ -292,9 +292,9 @@ Path: `<configDir>/irisworldgen/modded.json`, written with defaults on first loa
 
 ## What is not in these files
 
-- Pack JSON (dimensions, biomes, objects) lives under `packs/<key>/` — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
-- Per-world studio and workspace files are generated under pack roots — see [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
-- Locale files and overrides — see [08 - Localization](/iris/08-localization).
+- Pack JSON (dimensions, biomes, objects) lives under `packs/<key>/`. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
+- Per-world studio and workspace files are generated under pack roots. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+- Locale files and overrides: see [08 - Localization](/iris/08-localization).
 
 ## Related
 

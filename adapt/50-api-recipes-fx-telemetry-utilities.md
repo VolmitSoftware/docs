@@ -7,13 +7,11 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page covers what is left of `art.arcane.adapt.api` after skills, adaptations, abilities, events, protection, and player data have their own pages. Recipes and brewing, the FX engine, and a few telemetry reads are callable
-from outside Adapt. So are projectile ownership, material value, data items,
-and the HUD queue.
+The remaining `art.arcane.adapt.api` surface covers recipes, brewing, FX, telemetry, projectile ownership, material value, data items, and the HUD queue. Skills, adaptations, abilities, events, protection, and player data have separate API pages.
 
-The FX engine is the part most plugins actually want. It draws particle shapes and plays sounds with viewer snapshotting, per-emitter and per-viewer caps, and a global packet budget. That budget sheds low-priority effects when the server is under load. A plugin using it cannot flood a busy server the way a raw `World.spawnParticle` loop can.
+The FX engine draws particle shapes and plays sounds with viewer snapshotting, per-emitter and per-viewer caps, and a global packet budget. That budget sheds low-priority effects when the server is under load, preventing the traffic a raw `World.spawnParticle` loop can generate.
 
-Everything else on this page is smaller and more specific. There is a recipe builder set with an Adapt level gate. There is a recipe-book planner. There are projectile ownership claims so two plugins do not fight over the same arrow. There is a cached material value calculator.
+Other APIs include a recipe builder with an Adapt level gate, a recipe-book planner, projectile ownership claims, and a cached material value calculator.
 
 The last two sections list types that are Java-public because Adapt's own content needs them across packages. They are documented so nobody mistakes visibility for a compatibility promise. Several expose relocated or version-specific classes and will break on you.
 
@@ -81,7 +79,7 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 
 ## Notifications and HUD
 
-`Notification` is a queued player-facing message with a total queue duration and a group. Adapt ships action bar, title, sound, and advancement kinds. Action-bar and title notifications also carry `displayDurationMillis`, which controls the compositor segment lifetime independently of queue spacing. The title kind delivers as an action-bar notice rather than a screen title. `Notifier` owns a player's queue and its XP aggregation and tick lifecycle. One queued batch may contain an ordered sound-and-popup sequence under one group; a later batch with that group replaces the older pending sequence. Adapt constructs the notifier. You do not.
+`Notification` is a queued player-facing message with a total queue duration and a group. Adapt includes action bar, title, sound, and advancement kinds. Action-bar and title notifications also carry `displayDurationMillis`, which controls the compositor segment lifetime independently of queue spacing. The title kind delivers as an action-bar notice rather than a screen title. `Notifier` owns a player's queue and its XP aggregation and tick lifecycle. One queued batch may contain an ordered sound-and-popup sequence under one group; a later batch with that group replaces the older pending sequence. Adapt constructs the notifier. You do not.
 
 `AdaptHud` publishes messages as segments into the shared cooperative action-bar compositor. Adapt's XP ticker, ability status lines, and notices merge onto one line beside other plugins' content instead of fighting for the surface. Adapt never writes the title area or boss bars. Call it on the player's owning thread.
 
@@ -150,22 +148,6 @@ Every read takes `now` in epoch milliseconds.
 `Notification` declares `getTotalDuration()`, `play(AdaptPlayer)`, and `getGroup()`, which defaults to `"default"`. `ActionBarNotification`, `TitleNotification`, `SoundNotification`, and `AdvancementNotification` implement it. `SoundNotification.withXP(double)` attaches an XP payload. `Notifier` owns a player's queue, XP aggregation, and tick lifecycle and is constructed by Adapt.
 
 `AdaptHud` exposes `actionBar(Player, String)`, `xpTicker(Player, String)`, `ambientStatus(Player, purpose, String)` / `clearAmbientStatus(Player, purpose)`, `title(Player, title, subtitle)`, `guiTitle(Player, title, subtitle)`, and `clear(Player)`, all on the owning thread. Every one of them publishes an action-bar segment. `title`/`guiTitle` are notice deliveries, not screen titles. `start(Adapt)` and `stop()` are plugin lifecycle.
-
-### First-party internals
-
-Java-public because Adapt's built-in catalogue needs them across packages. None is a compatibility promise.
-
-| Package | Types | Runtime ownership |
-|---------|-------|-------------------|
-| `api.attribute` | `AdaptAttributeKey`, `AdaptAttributeResolver`, `AdaptAttributeScheduler`, `AdaptAttributeService`, `AdaptAttributeTracker` | Namespaced attribute application, timed removal, entity scheduling and tracking. Adapt owns startup, shutdown, listeners, reconciliation and tracker state |
-| `api.minion` | `MinionBurden` and its `MinionRegistry` | Global minion health-burden service. Only the pure `computeReduction(count, healthPerMinion, baselineMaxHealth, minimumMaxHealth)` is safe as a calculation |
-| `api.advancement` | `AdaptAdvancement`, `AdaptAdvancementFrame`, `AdvancementManager`, `AdvancementSpec`, `AdvancementVisibility` | Built-in advancement construction and UltimateAdvancementAPI bindings. Several signatures expose relocated library types |
-| `api.tick` | `Ticked`, `TickedObject`, `Ticker` | Adapt scheduler registration, burst and skip state, telemetry, tick execution and shutdown. Use your own Paper or Folia scheduler instead |
-| `api.runtime` | `AdaptationGate` | First-party fast world, game-mode and player checks. An implementation helper, not a complete ability authorization decision |
-| `api.version` | `Version`, `IBindings`, `IAttribute`, `RuntimeBindings`, `RuntimeAttribute` | Bukkit-version binding and emulated attribute layer. Signatures expose internal model and collection types. The singleton is Adapt-owned |
-| `api` root | `Component`, `ComponentEventRegistrar`, `EventHandlerInvoker` | The first-party skill and adaptation helper interface, the listener scanner that registers Adapt handlers, and the guarded executor builder that records handler telemetry. External plugins use Bukkit's `PluginManager.registerEvents` |
-| `api` root | `AdaptPermissionRegistrar` | `useNode(name)` is a pure mapping to `adapt.use.<name minus hyphens>`. `registerAll` and `registerXpMultiplierNodes` mutate Bukkit's global permission manager and are Adapt lifecycle |
-
 ## See also
 
 - [37 - Recipes, Brewing & Value](/adapt/37-recipes-brewing-value)

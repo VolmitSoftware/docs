@@ -97,7 +97,7 @@ The decoy cannot be killed. Damage to it is cancelled, but it does react: hits k
 ### Shadowmeld (`stealth-shadowmeld`)
 
 Hold a sneak while Stealth reports nobody can see you. After a short delay you
-turn genuinely invisible. Mobs stop being able to target you. The delay is three seconds at level 1 and drops to a quarter second at max level.
+turn invisible. Mobs stop being able to target you. The delay is three seconds at level 1 and drops to a quarter second at max level.
 
 The meld breaks the moment you do anything: attack, get hurt, interact with a block or entity, get spotted, or stand up.
 
@@ -172,18 +172,6 @@ Passive. Kill while sneaking.
 
 Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `stealth` |
-| Class | `SkillStealth` |
-| Icon | `WITHER_ROSE` |
-| Color | `DARK_GRAY` |
-| Interval (ms) | `1412` |
-| Skill config | `plugins/Adapt/skills/stealth.toml` |
-| Adaptation count | 14 |
-
 ### Skill XP sources
 
 | Trigger | Award | Notes |
@@ -235,7 +223,6 @@ Written to `plugins/Adapt/skills/stealth.toml` on first load.
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthCore` |
 | Icon | `WHITE_WOOL` |
 | Max level | 2 |
 | Initial knowledge cost | 1 |
@@ -245,8 +232,6 @@ Written to `plugins/Adapt/skills/stealth.toml` on first load.
 | Config file | `plugins/Adapt/adaptations/stealth-silent-step.toml` |
 
 Menu stat lines: Mob Detection Suppression Radius. Mob Backstab Damage Bonus. Player Backstab Damage Bonus.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`MONITOR`) - starts or stops the concealment session
 - `PlayerMoveEvent` (`MONITOR`, `@RunsWithoutLearnedAdaptation`) - restarts a session after a state change and clears leftover concealment
@@ -292,7 +277,6 @@ Milestones: `challenge_stealth_silent_200` on `stealth.silent-step.backstabs` at
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthSpeed` |
 | Icon | `MUSHROOM_STEW` |
 | Max level | 3 |
 | Initial knowledge cost | 5 |
@@ -302,8 +286,6 @@ Milestones: `challenge_stealth_silent_200` on `stealth.silent-step.backstabs` at
 | Config file | `plugins/Adapt/adaptations/stealth-speed.toml` |
 
 Menu stat line: Sneaking Speed.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` - starts a session on sneak, ends it on stand unless crawling
 - `PlayerMoveEvent` - starts a session for a sneaking or crawling player that has none
@@ -348,7 +330,6 @@ unless `requireGrounded` is false. Water disables it unless `allowWhileInWater` 
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthSnatch` |
 | Icon | `CHEST_MINECART` |
 | Max level | 3 |
 | Initial knowledge cost | 12 |
@@ -358,8 +339,6 @@ unless `requireGrounded` is false. Water disables it unless `allowWhileInWater` 
 | Config file | `plugins/Adapt/adaptations/stealth-snatch.toml` |
 
 Menu stat line: Snatch Radius.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`MONITOR`, ignore cancelled) - snatches immediately and opens a repeating session
 - `PlayerQuitEvent` (`MONITOR`) - closes the session
@@ -376,7 +355,6 @@ It searches a box of radius by radius over 1.5 by radius around the player. Ever
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthGhostArmor` |
 | Icon | `CHAINMAIL_HELMET` |
 | Max level | 7 |
 | Initial knowledge cost | 1 |
@@ -386,8 +364,6 @@ It searches a box of radius by radius over 1.5 by radius around the player. Ever
 | Config file | `plugins/Adapt/adaptations/stealth-ghost-armor.toml` |
 
 Menu stat lines: Max Ghost Armor. Speed.
-
-Listened events:
 
 - `EntityDamageEvent` (`HIGHEST`, ignore cancelled) - consumes the whole buffer on an armor-respecting hit
 - `PlayerJoinEvent` (`MONITOR`) - starts the charge session
@@ -410,7 +386,6 @@ max knob by level percent. Both are clamped to 0-20. XP on consumption is `min(1
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthSight` |
 | Icon | `POTION` |
 | Max level | 1 |
 | Initial knowledge cost | 5 |
@@ -420,8 +395,6 @@ max knob by level percent. Both are clamped to 0-20. XP on consumption is `min(1
 | Config file | `plugins/Adapt/adaptations/stealth-vision.toml` |
 
 Menu stat lines: Gain a burst of night vision while sneaking. Blindness immunity while sneaking. Invisible players glow while sneaking.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` - begins or ends the sight session
 - `EntityPotionEffectEvent` (`LOWEST`, ignore cancelled, `onBlindness`) - cancels Blindness being added or changed on a sneaking learner
@@ -436,7 +409,6 @@ No adaptation-specific config knobs.
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthEnderVeil` |
 | Icon | `CARVED_PUMPKIN` |
 | Max level | 2 |
 | Initial knowledge cost | 4 |
@@ -446,8 +418,6 @@ No adaptation-specific config knobs.
 | Config file | `plugins/Adapt/adaptations/stealth-enderveil.toml` |
 
 Menu stat line: Prevent enderman attacks while sneaking at level 1, Prevent all enderman attacks at level 2.
-
-Listened events:
 
 - `EntityTargetLivingEntityEvent` (`LOWEST`, ignore cancelled, `onTarget`) - cancels enderman targeting
 - `EndermanAttackPlayerEvent` (`LOWEST`, ignore cancelled, reflective handler, `onTarget`) - cancels direct enderman aggression
@@ -461,7 +431,6 @@ No adaptation-specific config knobs.
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthShadowDecoy` |
 | Icon | `PLAYER_HEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -471,8 +440,6 @@ No adaptation-specific config knobs.
 | Config file | `plugins/Adapt/adaptations/stealth-shadow-decoy.toml` |
 
 Menu stat lines: Decoy Duration. Decoy Attraction Radius. Decoy Cooldown.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`HIGHEST`, ignore cancelled) - spawns the decoy when sneaking ends
 - `EntityDamageEvent` (`HIGHEST`) - cancels all damage to the decoy anchor and plays hit feedback
@@ -516,7 +483,6 @@ The decoy is an invisible, non-persistent armor stand anchor plus a packet-only 
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthShadowmeld` |
 | Icon | `SCULK` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -526,8 +492,6 @@ The decoy is an invisible, non-persistent armor stand anchor plus a packet-only 
 | Config file | `plugins/Adapt/adaptations/stealth-shadowmeld.toml` |
 
 Menu stat line: Undetected Sneak Delay.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`MONITOR`) - opens the meld session on sneak, ends it on stand
 - `EntityTargetLivingEntityEvent` (`LOWEST`, ignore cancelled) - cancels targeting on a melded player
@@ -548,7 +512,6 @@ Eligibility is sneaking plus either a Smoke Pellet lease or Stealth reporting yo
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthSmokePellet` |
 | Icon | `GUNPOWDER` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -557,8 +520,6 @@ Eligibility is sneaking plus either a Smoke Pellet lease or Stealth reporting yo
 | Config file | `plugins/Adapt/adaptations/stealth-smoke-pellet.toml` |
 
 Menu stat lines: Cloud Radius. Cloud Duration.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`NORMAL`, ignore cancelled) - consumes gunpowder and casts the cloud
 - `EntityTargetLivingEntityEvent` (`HIGHEST`, ignore cancelled) - cancels targeting on a concealed player and clears the mob's target
@@ -581,7 +542,6 @@ The cloud pulses every `10` ticks. Each pulse blinds living entities inside for 
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthCutpurse` |
 | Icon | `SHEARS` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -590,8 +550,6 @@ The cloud pulses every `10` ticks. Each pulse blinds living entities inside for 
 | Config file | `plugins/Adapt/adaptations/stealth-cutpurse.toml` |
 
 Menu stat lines: Steal Chance. Loot Stacks.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - rolls the steal
 
@@ -614,7 +572,6 @@ report you undetected. Spawn reason is not checked. On a successful chance roll 
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthTrapSense` |
 | Icon | `TRIPWIRE_HOOK` |
 | Max level | 4 |
 | Initial knowledge cost | 3 |
@@ -624,8 +581,6 @@ report you undetected. Spawn reason is not checked. On a successful chance roll 
 | Config file | `plugins/Adapt/adaptations/stealth-trap-sense.toml` |
 
 Menu stat lines: Detection Range. Sculk Movement Suppression.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`MONITOR`) - opens or closes the scan session and caches the sculk suppression state
 - `BlockReceiveGameEvent` (`HIGHEST`, ignore cancelled) - suppresses movement vibrations reaching sculk blocks
@@ -644,7 +599,6 @@ Revealed blocks are `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthAssassinate` |
 | Icon | `NETHERITE_SWORD` |
 | Max level | 4 |
 | Initial knowledge cost | 6 |
@@ -653,8 +607,6 @@ Revealed blocks are `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`
 | Config file | `plugins/Adapt/adaptations/stealth-assassinate.toml` |
 
 Menu stat lines: Executable Health Cap. Cooldown.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - replaces the damage with an execution
 
@@ -672,7 +624,6 @@ Excludes players, anything implementing `Boss`, and `WARDEN`. Eligibility compar
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthDecoySwap` |
 | Icon | `ENDER_PEARL` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -681,8 +632,6 @@ Excludes players, anything implementing `Boss`, and `WARDEN`. Eligibility compar
 | Config file | `plugins/Adapt/adaptations/stealth-decoy-swap.toml` |
 
 Menu stat lines: Swap Range. Cooldown.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`MONITOR`) - detects the double tap and starts the swap
 - `PlayerQuitEvent` (`MONITOR`) - clears double-tap and cooldown state
@@ -702,7 +651,6 @@ Requires Shadow Decoy learned and an active decoy. Both teleports run asynchrono
 
 | Property | Value |
 |----------|-------|
-| Class | `StealthUmbralRecovery` |
 | Icon | `COOKED_BEEF` |
 | Max level | 4 |
 | Initial knowledge cost | 3 |
@@ -711,8 +659,6 @@ Requires Shadow Decoy learned and an active decoy. Both teleports run asynchrono
 | Config file | `plugins/Adapt/adaptations/stealth-umbral-recovery.toml` |
 
 Menu stat lines: Hunger Refund. Invisibility Extension.
-
-Listened events:
 
 - `EntityDeathEvent` (`MONITOR`) - runs the recovery when the killer was sneaking
 

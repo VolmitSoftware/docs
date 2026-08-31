@@ -44,19 +44,6 @@ objects, jigsaw runtime, caves, and structures behave the same on all four.
 If generated terrain differs between platforms, that is
 a determinism defect, not a platform difference. See
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
-
-## Artifacts and entry points
-
-| Surface | Artifact | Bootstrap |
-|---------|----------|-----------|
-| Bukkit / Paper / Folia | Slim CraftBukkit-shaded plugin jar | `plugin.yml` / `paper-plugin.yml`, `folia-supported: true`, load `STARTUP`. Four cached runtime libraries are provisioned separately; Paper adds them before early bootstrap and Spigot loads them during plugin initialization |
-| Fabric | Fabric mod jar | `IrisFabricBootstrap` registers commands and services |
-| Forge | Forge mod jar | `IrisForgeBootstrap` |
-| NeoForge | NeoForge mod jar | `IrisNeoForgeBootstrap` |
-
-Core engine: `core/`. Shared modded logic: `adapters/modded-common/`.
-SPI: `spi/`.
-
 ## Data directories
 
 | Item | Bukkit | Fabric / Forge / NeoForge |
@@ -142,10 +129,10 @@ Taverns functions do not. See
 |---------|--------|--------|
 | Parser | VolmLib Director. `key=value` optionals in any order | Brigadier. Positional arguments and bare flag literals |
 | Root aliases | `iris`, `ir`, `irs` | `iris`, with `ir` and `irs` registered as redirects |
-| Staff gate | `iris.all` (declared in `plugin.yml` and `paper-plugin.yml`, default `op`) — required for every `/iris` subcommand | `LEVEL_GAMEMASTERS` for anything that mutates, downloads, opens Studio, or starts a pregen |
+| Staff gate | `iris.all` (default `op`) — required for every `/iris` subcommand | `LEVEL_GAMEMASTERS` for anything that mutates, downloads, opens Studio, or starts a pregen |
 | Open to any player | Nothing | `LEVEL_ALL`: `help`, `version`, `info`, `worlds`, `height`, `metrics` (alias `measure`), and the whole `what` subtree |
 | Deliberately gated reads | — | `seed` and `accesslist` stay at gamemaster level even though `worlds` shows similar output without the seed field |
-| Tree feller | `iris.treefeller` (`plugin.yml` and `paper-plugin.yml`, default `op`) | Fabric `irisworldgen:treefeller`. Forge and NeoForge PermissionAPI node `irisworldgen.treefeller`, defaulting to gamemaster level |
+| Tree feller | `iris.treefeller` (default `op`) | Fabric `irisworldgen:treefeller`. Forge and NeoForge PermissionAPI node `irisworldgen.treefeller`, defaulting to gamemaster level |
 | Help | Director mini-menu | `ModdedCommandHelp` sections with clickable pages |
 
 Full command tables and stubs:
@@ -228,16 +215,6 @@ separate compatibility gate.
 
 See [28 - Integrations](/iris/28-integrations) and
 [09 - PlaceholderAPI](/iris/09-placeholderapi).
-
-## NMS and version binding
-
-- The Bukkit plugin binds to a specific Paper/CraftBukkit revision (the
-  in-tree v26 NMS module).
-- Structure import and capture, and the vanilla import studio path, require
-  that binding. This is why they cannot be ported to mod loaders as-is.
-- Mod adapters use Minecraft mappings for the same game version line,
-  without the Bukkit plugin APIs.
-
 ## Determinism and parity
 
 GoldenHash exists on both surfaces. Only the command placement differs

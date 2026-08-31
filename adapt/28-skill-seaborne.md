@@ -140,18 +140,6 @@ Passive.
 
 Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`. Every adaptation TOML also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`, which are not repeated per adaptation.
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `seaborne` |
-| Class | `SkillSeaborne` |
-| Icon | `TRIDENT` |
-| Color | `BLUE` |
-| Interval (ms) | `2120` |
-| Skill config | `plugins/Adapt/skills/seaborne.toml` |
-| Adaptation count | 14 |
-
 ### Skill XP sources
 
 | Trigger | Award | Notes |
@@ -208,7 +196,6 @@ Written to `plugins/Adapt/skills/seaborne.toml` on first load.
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneOxygen` |
 | Icon | `GLASS_PANE` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -231,15 +218,12 @@ Milestone: `challenge_seaborne_oxygen_12k` on `seaborne.oxygen.bonus-air-ticks` 
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneSpeed` |
 | Icon | `PRISMARINE_CRYSTALS` |
 | Max level | 7 |
 | Initial knowledge cost | 2 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.525 |
 | Config file | `plugins/Adapt/adaptations/seaborne-speed.toml` |
-
-Listened events:
 
 - `PlayerMoveEvent` (`MONITOR`, ignore cancelled) - starts, refreshes, and ends the swim session
 - `PlayerTeleportEvent` (`MONITOR`, ignore cancelled) - ends the swim session
@@ -255,7 +239,6 @@ No adaptation-specific config knobs.
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneFishersFantasy` |
 | Icon | `FISHING_ROD` |
 | Max level | 7 |
 | Initial knowledge cost | 2 |
@@ -265,8 +248,6 @@ No adaptation-specific config knobs.
 | Config file | `plugins/Adapt/adaptations/seaborne-fishers-fantasy.toml` |
 
 Menu stat line: Chance for one bonus fishing reward bundle.
-
-Listened events:
 
 - `PlayerFishEvent` (`MONITOR`, cancelled events ignored) - on `CAUGHT_FISH` only
 
@@ -288,7 +269,6 @@ Milestones: `challenge_seaborne_fish_500` on `seaborne.fishers-fantasy.fish-caug
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneTurtlesVision` |
 | Icon | `DIAMOND_HORSE_ARMOR` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -298,8 +278,6 @@ Milestones: `challenge_seaborne_fish_500` on `seaborne.fishers-fantasy.fish-caug
 | Config file | `plugins/Adapt/adaptations/seaborne-turtles-vision.toml` |
 
 Menu stat line: Gain continuously refreshed Night Vision while underwater.
-
-Listened events:
 
 - `EntityPotionEffectEvent` (`MONITOR`, ignore cancelled) - drops ownership when something else changes the player's Night Vision
 - `PlayerQuitEvent` (`MONITOR`) - clears managed Night Vision and state
@@ -318,7 +296,6 @@ Milestone: `challenge_seaborne_vision_72k` on `seaborne.turtles-vision.time-unde
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneTurtlesMiningSpeed` |
 | Icon | `PRISMARINE_SHARD` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -328,8 +305,6 @@ Milestone: `challenge_seaborne_vision_72k` on `seaborne.turtles-vision.time-unde
 | Config file | `plugins/Adapt/adaptations/seaborne-turtles-mining-speed.toml` |
 
 Menu stat line: Boosts submerged mining speed, stacks with Aqua Affinity, and compensates for the floating mining penalty.
-
-Listened events:
 
 - `BlockBreakEvent` (`MONITOR`, ignore cancelled) - counts blocks broken while in water and plays effects
 - `BlockDamageEvent` (`MONITOR`, ignore cancelled) - activates the mining modifiers immediately when mining starts
@@ -352,7 +327,6 @@ Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneTidecaller` |
 | Icon | `HEART_OF_THE_SEA` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -362,8 +336,6 @@ Milestones: `challenge_seaborne_mining_2500` on `seaborne.turtles-mining.blocks-
 | Config file | `plugins/Adapt/adaptations/seaborne-tidecaller.toml` |
 
 Menu stat lines: Surge Distance. Surge Cooldown. Plus a generated Trigger line per enabled trigger and an Environment line.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`HIGHEST`, ignore cancelled) - sneak trigger
 - `PlayerAnimationEvent` (`HIGHEST`, ignore cancelled) - arm swing trigger
@@ -406,7 +378,6 @@ Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` 
 
 | Property | Value |
 |----------|-------|
-| Class | `SeabornePressureDiver` |
 | Icon | `NAUTILUS_SHELL` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -416,8 +387,6 @@ Milestones: `challenge_seaborne_tidecaller_200` on `seaborne.tidecaller.dashes` 
 | Config file | `plugins/Adapt/adaptations/seaborne-pressure-diver.toml` |
 
 Menu stat lines: Minimum Depth Requirement. Depth Damage Reduction. Mining Fatigue Reduction Chance. Depth Absorption Hearts.
-
-Listened events:
 
 - `EntityDamageEvent` (`HIGHEST`, ignore cancelled) - scales incoming damage down while deep enough
 - `PlayerMoveEvent` (`MONITOR`, ignore cancelled, `@RunsWithoutLearnedAdaptation`) - arms and disarms depth tracking
@@ -453,7 +422,6 @@ Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blo
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneCoralGardener` |
 | Icon | `BRAIN_CORAL_BLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -462,8 +430,6 @@ Milestone: `challenge_seaborne_pressure_1k` on `seaborne.pressure-diver.deep-blo
 | Config file | `plugins/Adapt/adaptations/seaborne-coral-gardener.toml` |
 
 Menu stat lines: Coral Survival Time. Bonemeal Growth Chance.
-
-Listened events:
 
 - `BlockPlaceEvent` (`MONITOR`, ignore cancelled) - pays reef XP and starts the fade timer for coral
 - `BlockFadeEvent` (`MONITOR`, ignore cancelled) - cancels the fade while the timer is still running
@@ -486,7 +452,6 @@ Milestones: `challenge_seaborne_coral_500` on `seaborne.coral-gardener.coral-pla
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneDeepSalvager` |
 | Icon | `CHEST` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -496,8 +461,6 @@ Milestones: `challenge_seaborne_coral_500` on `seaborne.coral-gardener.coral-pla
 | Config file | `plugins/Adapt/adaptations/seaborne-deep-salvager.toml` |
 
 Menu stat lines: Detection Range (blocks). Bonus Treasure Rolls.
-
-Listened events:
 
 - `InventoryOpenEvent` (`MONITOR`) - bonus treasure roll
 - `PlayerQuitEvent` (`MONITOR`) - cancels scans and clears the viewer's block displays
@@ -527,7 +490,6 @@ Milestones: `challenge_seaborne_salvage_100` on `seaborne.deep-salvager.containe
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneInkVeil` |
 | Icon | `INK_SAC` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -536,8 +498,6 @@ Milestones: `challenge_seaborne_salvage_100` on `seaborne.deep-salvager.containe
 | Config file | `plugins/Adapt/adaptations/seaborne-ink-veil.toml` |
 
 Menu stat lines: Ink Cloud Size (blocks). Ink Burst Cooldown.
-
-Listened events:
 
 - `EntityDamageEvent` (`MONITOR`, ignore cancelled) - fires the burst when the damaged player is in water
 - `EntityTargetLivingEntityEvent` (`HIGHEST`, ignore cancelled) - blocks drowned and guardian retargeting during concealment
@@ -565,7 +525,6 @@ Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneTridentMastery` |
 | Icon | `TRIDENT` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -574,8 +533,6 @@ Milestones: `challenge_seaborne_ink_100` on `seaborne.ink-veil.clouds-burst` at 
 | Config file | `plugins/Adapt/adaptations/seaborne-trident-mastery.toml` |
 
 Menu stat lines: Bonus Trident Damage. Recall Speed.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - applies the damage bonus
 - `ProjectileLaunchEvent` (`MONITOR`, ignore cancelled) - stamps the trident and starts recall
@@ -601,7 +558,6 @@ Milestones: `challenge_seaborne_trident_250` on `seaborne.trident-mastery.triden
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneFishWhisperer` |
 | Icon | `TROPICAL_FISH` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -611,8 +567,6 @@ Milestones: `challenge_seaborne_trident_250` on `seaborne.trident-mastery.triden
 | Config file | `plugins/Adapt/adaptations/seaborne-fish-whisperer.toml` |
 
 Menu stat lines: Luck of the Sea Tier. Creature Affinity Range (blocks).
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`MONITOR`, ignore cancelled) - recruits dolphins and axolotls onto the victim
 
@@ -636,7 +590,6 @@ Milestones: `challenge_seaborne_charm_2k` on `seaborne.fish-whisperer.charmed` a
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneHydroJet` |
 | Icon | `PRISMARINE_CRYSTALS` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -645,8 +598,6 @@ Milestones: `challenge_seaborne_charm_2k` on `seaborne.fish-whisperer.charmed` a
 | Config file | `plugins/Adapt/adaptations/seaborne-hydro-jet.toml` |
 
 Menu stat lines: Burst Force. Jet Charges.
-
-Listened events:
 
 - `PlayerToggleSneakEvent` (`HIGHEST`, ignore cancelled) - fires the jet when the player starts sneaking while swimming
 - `PlayerQuitEvent` - clears stored charges
@@ -669,7 +620,6 @@ Milestones: `challenge_seaborne_hydro_200` on `seaborne.hydro-jet.jets` at 200 (
 
 | Property | Value |
 |----------|-------|
-| Class | `SeaborneBrineSkin` |
 | Icon | `KELP` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -679,8 +629,6 @@ Milestones: `challenge_seaborne_hydro_200` on `seaborne.hydro-jet.jets` at 200 (
 | Config file | `plugins/Adapt/adaptations/seaborne-brine-skin.toml` |
 
 Menu stat lines: Brine Regeneration Tier. Damage Reduction While Wet.
-
-Listened events:
 
 - `EntityDamageEvent` (`HIGHEST`, ignore cancelled) - applies the damage reduction
 

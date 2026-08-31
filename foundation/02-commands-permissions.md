@@ -153,7 +153,7 @@ Unsafe enchantment levels require both `items.unsafeEnchantments=true` and `foun
 | `/cosmetics` (`flair`) | `foundation.cosmetics.menu` | Opens the VolmLib arrival-flair picker and persists a personal teleport particle |
 | `/celebrate [player]` | `foundation.cosmetics.celebrate`; another player also requires `.celebrate.others` | Plays a bounded selected-particle burst subject to cooldown |
 
-Remote utility use additionally requires `foundation.utility.others`. Remote vanish requires `foundation.state.vanish.others`; `foundation.state.vanish.see` keeps Foundation-vanished players visible.
+Remote utility use also requires `foundation.utility.others`. Remote vanish requires `foundation.state.vanish.others`; `foundation.state.vanish.see` keeps Foundation-vanished players visible.
 
 ## Economy and information
 

@@ -19,7 +19,7 @@ Two adaptations point sideways. Hungry Shield pays your incoming damage out of y
 
 Everything below needs the same four things. The adaptation is learned at level 1 or higher in the Adapt menu. The Herbalism skill and that adaptation are both enabled in config. An `adapt.use.` permission has not been revoked for you. Any protection or region plugin allows the block or entity you are acting on. Those are not repeated per entry.
 
-Five of them ship with `permanent = true`. They are purchased normally, and the first purchase asks for confirmation. Once learned, normal players cannot unlearn them; an administrative bypass can lower them without a refund. Those five are Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
+Five of them have `permanent = true` by default. They are purchased normally, and the first purchase asks for confirmation. Once learned, normal players cannot unlearn them; an administrative bypass can lower them without a refund. Those five are Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
 
 ### Growth Aura (`herbalism-growth-aura`)
 
@@ -146,18 +146,6 @@ Mycelium seeds a mycelium bloom, podzol seeds a podzol bloom. Warm-colored flowe
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `herbalism` |
-| Class | `SkillHerbalism` |
-| Icon | `WHEAT` |
-| Color | `GREEN` |
-| Interval (ms) | `3990` |
-| Skill config | `plugins/Adapt/skills/herbalism.toml` |
-| Adaptation count | 15 |
-
 ### Skill XP and stats
 
 All handlers run at MONITOR priority.
@@ -239,7 +227,6 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismGrowthAura` |
 | Icon | `BONE_MEAL` |
 | Max level | 7 |
 | Initial knowledge cost | 12 |
@@ -266,7 +253,6 @@ Ticking is learner-bound. The 850 ms active and 250 ms idle values are earliest 
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismReplant` |
 | Icon | `PUMPKIN_SEEDS` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -293,7 +279,6 @@ Radius is `level - radiusSub`, so level 1 harvests only the clicked crop. Above 
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismHungryShield` |
 | Icon | `APPLE` |
 | Max level | 5 |
 | Initial knowledge cost | 10 |
@@ -323,7 +308,6 @@ Effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. Ab
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismHungryHippo` |
 | Icon | `POTATO` |
 | Max level | 7 |
 | Initial knowledge cost | 3 |
@@ -342,7 +326,6 @@ Bonus is `2 + level`, applied to food (capped at 20) and to saturation (capped a
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismDropToInventory` |
 | Icon | `HOPPER` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -361,7 +344,6 @@ Requires survival mode and a hoe from `ItemListings.toolHoes` in the main hand. 
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismLuck` |
 | Icon | `EMERALD` |
 | Max level | 7 |
 | Initial knowledge cost | 3 |
@@ -385,7 +367,6 @@ Chance is `min(highChance, level * level + lowChance)` rolled against a 0 to 100
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismMyconid` |
 | Icon | `MYCELIUM` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -405,7 +386,6 @@ Recipe `adapt:herbalism-dirt-myconid`, shapeless, `DIRT` + `RED_MUSHROOM` + `BRO
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismTerralid` |
 | Icon | `GRASS_BLOCK` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -425,7 +405,6 @@ Recipe `adapt:herbalism-dirt-terralid`, shaped `SSS` over `DDD` where `S` is `WH
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismCraftableMushroomBlocks` |
 | Icon | `BROWN_MUSHROOM_BLOCK` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -445,7 +424,6 @@ Recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismCraftableCobweb` |
 | Icon | `STRING` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -465,7 +443,6 @@ Recipe `adapt:herbalism-cobwebblock`, shaped 3x3 of `STRING` to one `COBWEB`. No
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismSeedSower` |
 | Icon | `WHEAT_SEEDS` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -497,7 +474,6 @@ torchflower crop. Nether wart maps to nether wart. Valid base is `FARMLAND`, or 
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismCompostCascade` |
 | Icon | `COMPOSTER` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -552,7 +528,6 @@ percent, emerald at 9 percent, and diamond at 3 percent. Dropped rewards are tag
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismRootedFooting` |
 | Icon | `FARMLAND` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -579,7 +554,6 @@ Trample protection cancels the physical interact on `FARMLAND`. Its effect is th
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismBeeShepherd` |
 | Icon | `BEE_NEST` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -617,7 +591,6 @@ Ticking is learner-bound and requires a flower in the main or off hand. Radius i
 
 | Property | Value |
 |----------|-------|
-| Class | `HerbalismSporeBloom` |
 | Icon | `RED_MUSHROOM_BLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |

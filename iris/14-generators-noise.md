@@ -36,7 +36,7 @@ Generators are never embedded in biome JSON. A biome links them:
 
 ## How a noise number becomes a block height
 
-This is the part that is worth understanding before you touch any field. The shape you get is not simply "the generator you named".
+Understand this mapping before changing any field. The named generator alone does not determine the final shape.
 
 ### Step 1 — a generator produces 0..1 for a column
 
@@ -54,7 +54,7 @@ Then two optional post-passes:
 
 ### Step 2 — generators are grouped by interpolator, and averaged within a group
 
-Iris collects every generator referenced by every biome the dimension can reach. It buckets them by `interpolator` — the pair of `function` and `horizontalScale`. **Two generators with the same function and the same `horizontalScale` land in the same bucket.**
+Iris collects every generator referenced by every biome the dimension can reach. It buckets them by `interpolator`: the pair of `function` and `horizontalScale`. **Two generators with the same function and the same `horizontalScale` land in the same bucket.**
 
 For each bucket, at each column:
 
@@ -75,7 +75,7 @@ If you want a new generator to be its own independent layer, give it an interpol
 
 The biome link clamps the generator output to 0..1 and lerps it into `min`..`max`, in blocks relative to the dimension `fluidHeight`. Negative bands put the surface under water. See [13 - Biomes](/iris/13-biomes).
 
-So: **generators own the shape and the smoothing radius. Biomes own the height range.** Share one generator across many biomes. Vary `min`/`max` per biome. That is the normal way to build height bands that still look like one continuous landscape.
+Generators control shape and smoothing radius; biomes control the height range. Share one generator across many biomes, then vary `min` and `max` per biome to create continuous terrain across height bands.
 
 ## Walkthrough: add a generator and prove it is wired
 
@@ -324,7 +324,7 @@ Trigonometric inputs and inverse-function outputs are radians unless `rad` or `d
 | `sigmoid(a,b)` | 2 | Exactly `1 / exp(-a*b)`, which equals `exp(a*b)`; despite the name, this is not a conventional logistic sigmoid |
 | `if(test,yes,no)` | 3 | Evaluate and return only `yes` when `test` is nonzero, otherwise only `no` |
 
-The legacy expression guide had several incorrect labels: it reversed `floor` and `ceil`, listed `atan` with two arguments, described `<` backwards, and described subtraction backwards. The table above follows the parser Iris actually ships.
+The legacy expression guide had several incorrect labels: it reversed `floor` and `ceil`, listed `atan` with two arguments, described `<` backwards, and described subtraction backwards. The table above follows the parser Iris uses.
 
 ### Variable (`IrisExpressionLoad`)
 
@@ -411,7 +411,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 
 ## Overworld examples
 
-`generators/plain.json` — smooth lowlands, one warped layer softened by a bezier curve:
+`generators/plain.json`: smooth lowlands, one warped layer softened by a bezier curve:
 
 ```json
 {
@@ -429,7 +429,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 }
 ```
 
-`generators/mountain.json` — a single large-scale fractal with a very wide blend radius, so mountains have long approaches:
+`generators/mountain.json`: a single large-scale fractal with a very wide blend radius, so mountains have long approaches:
 
 ```json
 {
@@ -442,7 +442,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 }
 ```
 
-`generators/cracked-cliffs.json` — inverted glob shape quantised into terraces between 35 and 80 units, with the step height chosen per cell:
+`generators/cracked-cliffs.json`: inverted glob shape quantised into terraces between 35 and 80 units, with the step height chosen per cell:
 
 ```json
 {
@@ -475,7 +475,7 @@ The shipping overworld uses neither `expression` nor `imageMap` in any generator
 - Share one generator across many biomes and vary `min`/`max` per biome. That is what makes a mountain range and its foothills look like the same landform.
 - Match `interpolator.horizontalScale` between neighboring biomes you want to blend smoothly. Deliberately mismatch it where you want a visible change in character.
 - Give a generator its own `horizontalScale` if you want its shape kept independent. Reuse an existing one only when you want the shapes averaged together.
-- Do not ship two generator files whose settings are byte-for-byte identical, including `seed`. Generators are deduplicated by content when they are bucketed. Only one key survives. Biomes that reference the other key silently get a zero height band. `/iris pack validate` warns when it finds content-identical generators that are both referenced.
+- Do not deploy two generator files whose settings are byte-for-byte identical, including `seed`. Generators are deduplicated by content when they are bucketed. Only one key survives. Biomes that reference the other key silently get a zero height band. `/iris pack validate` warns when it finds content-identical generators that are both referenced.
 - Nested `fracture` multiplies cost. Keep fracture chains short on generators that run for every column. Reach for `cacheSize` before you add a third level.
 - `STATIC` is white noise. Use it for palette scatter, never for terrain relief.
 - `multiplicitive` and the deposit field `varience` are intentional code spellings. The JSON must match them exactly.

@@ -11,7 +11,7 @@ Every string Gloss shows a player or an operator comes from one typed message ca
 is declared in code and overlaid by YAML. One locale is active for the whole server.
 
 The locale is chosen by the leading `language` key in `plugins/Gloss/gloss.toml`. Seventeen translations
-ship inside the jar. You override individual strings in `language.yml`. This page covers the
+are bundled inside the jar. You override individual strings in `language.yml`. This page covers the
 catalog, the fallback order, the override file, hot reload and what happens when a translation is
 wrong.
 
@@ -69,7 +69,7 @@ The omission is a warning, not an error. It does not block loading.
 
 ## Shipped locales
 
-Seventeen non-English files ship under `resources/languages/`:
+Seventeen non-English files are bundled under `resources/languages/`:
 
 ```
 de_DE.yml   es_ES.yml   fi_FI.yml   fr_FR.yml
@@ -130,15 +130,15 @@ tags written into a locale file are never interpreted. They show up literally.
 Keys consumed through the plain-text path are therefore written as plain text
 (`gloss.message.builder.header: "Web Editor"`). Keys consumed through the legacy path carry `&`
 codes (`gloss.message.panels.deleted: "&7[&bGloss&7]: &aDeleted panel &f{board}&a."`). Keep a key's
-existing style when you translate it. Director help output additionally has all color stripped.
+existing style when you translate it. Director help output also has all color stripped.
 
 Placeholders are named and brace-delimited: `{menu}`, `{count}`, `{url}`, `{percent}`. A name starts
 with a letter and continues with letters, digits, `_`, `.` or `-`. A translation must use exactly
 the same **set** of placeholders as the English source. Order and repetition are free. Adding an
 unknown name or dropping a declared one rejects the reload.
 
-Values are substituted in one of two ways. Untrusted values — anything player-supplied or dynamic,
-which is nearly everything — have all color stripped, including raw section characters. A menu name
+Values are substituted in one of two ways. Untrusted values, which include nearly anything player-supplied or dynamic,
+have all color stripped, including raw section characters. A menu name
 can never inject formatting. Trusted values keep their `&` codes. Substitution is sentinel-based.
 An inserted value that itself looks like a placeholder is never rescanned as one.
 
@@ -175,7 +175,7 @@ failure with an instruction to remove it and set `language` in `gloss.toml`.
 
 The shared `DataWatchdog` checks `language.yml` at `[hotload] watchIntervalTicks`. Ordinary idle
 passes only drain native events. An event, a pending stability verification, or the 9-second
-exact-content reconciliation captures an immutable SHA-256 snapshot; two consecutive identical
+Gloss waits for two identical
 captures must agree before the overlay can reload. Automatic batches complete no more than once
 every 3 seconds, with the
 latest edit retained as one trailing pass. `/gloss reload` does not reload `language.yml`; the file

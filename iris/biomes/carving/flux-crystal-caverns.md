@@ -10,8 +10,6 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 `carving/flux-crystal-caverns` is a direct cave root in the pinned Overworld 4002 and Underworld 1005 packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
-> Atlas snapshot: Overworld 4002 and Underworld 1005. Re-audit this page whenever either pinned pack revision changes.
-
 ## Selection role and weight
 
 Biome and region `rarity` values contribute relative weight as `1 / rarity`; slot fractions below show this key's entries in each region role list, not a whole-world probability.

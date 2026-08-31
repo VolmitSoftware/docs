@@ -20,9 +20,7 @@ PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
 
 ## Soft dependencies
 
-`plugin.yml` declares `softdepend: [ PlaceholderAPI, Iris, Vault, Citizens ]`.
-`paper-plugin.yml` lists them as optional server dependencies with
-`load: BEFORE`, `required: false`, and `join-classpath: true`.
+PlaceholderAPI, Iris, Vault, and Citizens are optional.
 
 | Plugin | Role when present | When absent |
 |--------|-------------------|-------------|
@@ -105,33 +103,11 @@ Wormholes registers VolmLib
 `art.arcane.volmlib.integration.IntegrationServiceContract` at
 `ServicePriority.Normal` with `pluginId()` `wormholes`. Typed consumers must
 share the registered VolmLib class identity. React can also adapt equivalent
-registrations reflectively across plugin classloaders. Full metric keys,
+registrations. Full metric keys,
 acquisition rules, unavailable reasons, and protocol details live in
 [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
 
 No direct React API dependency exists inside Wormholes.
-
-## PacketEvents (internal, SlimJar-managed)
-
-PacketEvents is a SlimJar dependency. At first start SlimJar downloads, verifies,
-and caches it when needed, then exposes it under Wormholes' relocated internal
-packages (`com.github.retrooper.packetevents` /
-`io.github.retrooper.packetevents` → plugin-internal packages). The runtime jar
-does not embed PacketEvents itself, and operators do not install a separate
-PacketEvents plugin. Repository access or a prewarmed SlimJar cache is required.
-
-Used for:
-
-- Projection rendering and client chunk tracking
-- Entity spoof / identity packets for through-portal views
-- **TransferGate**: On handshake receive, if the network is enabled and
-  `autoAcceptTransfers` is true, TransferGate rewrites the client `TRANSFER`
-  intention to `LOGIN`. Paper and Folia then accept cross-server transfer
-  handoffs.
-- Network status-bridge packet listeners when networking is active
-
-There is no public PacketEvents integration surface for third-party plugins.
-
 ## bStats
 
 Wormholes starts its relocated bStats client with plugin ID **33193**. The

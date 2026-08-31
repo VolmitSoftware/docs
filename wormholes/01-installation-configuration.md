@@ -197,9 +197,9 @@ the watched file.
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
 Normal console output is plugin-branded and limited to lifecycle changes,
-capability changes, and actionable failures. Per-recipe registration, routine
-vanilla-portal formation, successful handoff and arrival details, and expected
-admission denials require `verbose-logging`. Repeated portal update, save,
+capability changes, and failures that require operator action. Per-recipe
+registration, routine vanilla-portal formation, successful handoff and arrival
+details, and expected admission denials require `verbose-logging`. Repeated portal update, save,
 traversal infrastructure, and peer-frame encoding failures are throttled while
 retaining a full sampled stacktrace and failure counters.
 
@@ -347,33 +347,7 @@ Projection behavior detail:
 
 ## Hot reload
 
-| Path | Mechanism |
-|------|-----------|
-| `wormholes.toml` change | A cheap 200 ms loop drains native filesystem events without rereading idle content. It reads on an event, pending stability verification, or the 2.5-second exact-content reconciliation that catches missed events and content changes whose size and timestamp are unchanged |
-| `languages/*.toml` change | Not watched directly. Use `/wormholes reload` or touch the config file |
-| `/wormholes reload` | Immediate, unthrottled reload of configuration and language files (`wormholes.admin.reload`). It invalidates older queued automatic work before applying |
-| Failed language load on reload | Config may still apply. Last valid language is kept. Console reports the cause |
-| Network enable/peer changes | Import/export may start the network without a full restart |
-
-Automatic hotload waits for one byte-identical snapshot to remain stable for
-350 ms. Only one application can run at a time. After it completes, the next
-automatic application cannot begin for three seconds; edits received during
-that interval replace the queued candidate, so the final snapshot still runs.
-Only the exact bytes parsed and successfully applied are acknowledged. A save
-that lands during application remains queued. Startup, manual reload, and the
-full reset seed watcher state from the exact canonical settings snapshot that
-became live, so a newer disk save that lands before watching resumes remains a
-candidate instead of becoming an unobserved baseline.
-
-Temporary deletion or an empty intermediate file, as produced by some FTP
-clients and editor save strategies, is treated as an incomplete save. Wormholes
-waits for `wormholes.toml` to reappear as a stable regular file. Passive reads
-are limited to 8 MiB. Invalid snapshots keep the last-known-good settings;
-application failures retain the snapshot for bounded-backoff retry and report a
-full console stacktrace.
-
-Use `/wormholes admin deleteeverything` to wipe config, routes, trust,
-identity, portals, and doors. That command needs `wormholes.admin.reset`.
+`wormholes.toml` reloads automatically after a complete save. Invalid files leave the current settings active and report the problem. Use `/wormholes reload` when you want to apply changes immediately.
 
 ## Related docs
 

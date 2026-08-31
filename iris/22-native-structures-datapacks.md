@@ -7,7 +7,7 @@ tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page covers structures that come from outside Iris packs. That includes vanilla structures in Iris worlds and datapack structures. It also covers the Minecraft structure-block and `.nbt` system. It covers conversion of native structures into editable Iris resources. Objects and Iris jigsaws are covered in [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), and [21 - Jigsaw Structures](/iris/21-jigsaw-structures). Vanilla features, mobs, loot, saplings, and dimension-type gameplay are [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
+Use native structures for vanilla or datapack structures. Convert one only when you need to edit it as an Iris object or jigsaw. See [Objects](/iris/19-objects), [Object Placement](/iris/20-object-placement), [Jigsaw Structures](/iris/21-jigsaw-structures), and [Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 Terminology:
 
@@ -127,7 +127,7 @@ Existing starts remain.
 **Success:** the key reports `[disabled]`, and `/iris goto structure <key>` answers that it is disabled by this dimension's `importedStructures` settings. New chunks no longer contain it.
 Old chunks keep whatever already generated.
 
-Two things catch people out. A namespace disable needs the trailing colon — `"nova_structures:"` works, `"nova_structures"` does not (see the prefix rules in 1.3). And neither deny list blocks an explicit `nativeStructures` placement, which is exactly what Task 4 relies on.
+Two things catch people out. A namespace disable needs the trailing colon: `"nova_structures:"` works, `"nova_structures"` does not (see the prefix rules in 1.3). And neither deny list blocks an explicit `nativeStructures` placement, which is exactly what Task 4 relies on.
 
 ## Task 4: Place registered structures only where Iris says
 
@@ -280,7 +280,7 @@ Vanilla tests biomes against structure biome filters. Iris answers per Iris biom
 | `derivative` | `minecraft:the_void` | Vanilla biome this Iris biome reports generally. |
 | `vanillaDerivative` | unset | Optional override for structure selection, spawn tables, imported features, and biome tags. Wins when set. |
 
-Refinements: a sea-role biome whose derivative is not ocean- or river-like resolves to `minecraft:the_void`, and a shore-role biome falls back to `minecraft:beach`. **Non-`minecraft:` namespaces pass through** — point `vanillaDerivative` at a datapack or mod biome key that exists in the live registry.
+Refinements: a sea-role biome whose derivative is not ocean- or river-like resolves to `minecraft:the_void`, and a shore-role biome falls back to `minecraft:beach`. **Non-`minecraft:` namespaces pass through**. Point `vanillaDerivative` at a datapack or mod biome key that exists in the live registry.
 
 A datapack structure whose filter lists only its own biomes never generates until an Iris biome reports one of those keys through `vanillaDerivative`. `/iris structure verify` reports `[unreachable] <key> needs <biomes>`.
 
@@ -497,7 +497,7 @@ Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris 
 /iris datapack remove <id>               (alias: rm)
 ```
 
-On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks — also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
+On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks. Also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
 
 ### 2.6 Usage patterns
 
@@ -524,7 +524,7 @@ On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension
 }
 ```
 
-**(c) Manual placement only.** Disable the datapack namespace, then place specific keys with `nativeStructures` — see 3.2:
+**(c) Manual placement only.** Disable the datapack namespace, then place specific keys with `nativeStructures`; see 3.2:
 
 ```json
 {
@@ -554,8 +554,8 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 
 `structures[]` on a dimension, region, or biome hosts two backends, and each placement uses exactly one:
 
-- `structures: ["<iris key>"]` — Iris assemblies ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
-- `nativeStructures: [{ structure, weight, jigsaw }]` — registered structures run through Minecraft's own machinery at Iris-chosen points, with full native fidelity.
+- `structures: ["<iris key>"]`: Iris assemblies ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
+- `nativeStructures: [{ structure, weight, jigsaw }]`: registered structures run through Minecraft's own machinery at Iris-chosen points, with full native fidelity.
 
 ### 3.1 Entry fields
 
@@ -593,7 +593,7 @@ The placement injector generates planned starts without consulting either deny l
 - With `nativeStructures`: suppresses that key's natural generation so it exists only where the placement puts it.
 - With Iris `structures`: suppresses each referenced structure's `vanillaSource`. Pack validation demands the graph guarantee output, because there is no native fallback. An Iris-backend `REPLACE_SOURCE` that produces nothing throws at runtime. Native-backend unusable starts are recorded invalid and skipped silently, and the source stays suppressed.
 
-Example — ancient cities replaced by Iris-positioned native starts:
+Example: ancient cities replaced by Iris-positioned native starts:
 
 ```json
 {
@@ -646,9 +646,9 @@ Jigsaw blocks wire pools together. Iris Jigsaw Studio is the documented in-game 
 
 How an authored `.nbt` reaches an Iris world:
 
-**(a) Through a datapack (native generation).** Ship it under `data/<ns>/structure/`. Add `worldgen/template_pool`, `worldgen/structure`, and `worldgen/structure_set`. Zip it, host it or publish to Modrinth, and add the URL to `datapackImports`. Then run `/iris datapack ingest restart=true`. From there use natural generation, `adjustments`, or `nativeStructures`.
+**(a) Through a datapack (native generation).** Put it under `data/<ns>/structure/`. Add `worldgen/template_pool`, `worldgen/structure`, and `worldgen/structure_set`. Zip it, host it or publish to Modrinth, and add the URL to `datapackImports`. Then run `/iris datapack ingest restart=true`. From there use natural generation, `adjustments`, or `nativeStructures`.
 
-**(b) Import into Iris resources.** `/iris structure import <dimension>` (section 5). The template pass enumerates **registered** templates only — loose saves in `<world>/generated/` are not enumerated, so package them into a datapack first.
+**(b) Import into Iris resources.** `/iris structure import <dimension>` (section 5). The template pass enumerates **registered** templates only. Loose saves in `<world>/generated/` are not enumerated, so package them into a datapack first.
 
 Template-import fidelity is lossy by design: first palette only.
 Structure voids and structure blocks dropped.
@@ -658,17 +658,17 @@ Block entities captured.
 
 ## 5. Importing native structures into Iris resources
 
-You do not need import just to place something — `nativeStructures` places any registered key with full fidelity. Import only when you need Iris object, pool, or piece resources. Manual imports are editable transaction-owned copies.
+You do not need import just to place something. `nativeStructures` places any registered key with full fidelity. Import only when you need Iris object, pool, or piece resources. Manual imports are editable transaction-owned copies.
 Automatic datapack imports stay managed by ingest and must be cloned before Jigsaw Studio will edit them.
 
 ### 5.1 `/iris structure import <dimension>`
 
 Four passes, always overwriting its own previous output:
 
-1. **Jigsaw rebuild** — registered jigsaw structures become editable pools, pieces, and objects. Connector `final_state`, signed `selection_priority`, and signed `placement_priority` values are retained in the Iris piece metadata. The generated root writes `branchFailurePolicy: TERMINATE_BRANCH`. Unmatched optional branches keep native termination behavior.
-2. **Template import** — registered `.nbt` templates become `objects/<name>.iob` plus a single-piece `jigsaw-pieces/<name>.json`.
-3. **Template groups** — fixed multi-template structures (shipwrecks, ruined portals, ocean ruins, nether fossils) become one Iris structure each, with every variant in the pool.
-4. **Capture** — only non-jigsaw registry keys for which the first pass found no same-key template are captured through a scratch world. This pass never rewrites a successful or failed jigsaw conversion.
+1. **Jigsaw rebuild**: registered jigsaw structures become editable pools, pieces, and objects. Connector `final_state`, signed `selection_priority`, and signed `placement_priority` values are retained in the Iris piece metadata. The generated root writes `branchFailurePolicy: TERMINATE_BRANCH`. Unmatched optional branches keep native termination behavior.
+2. **Template import**: registered `.nbt` templates become `objects/<name>.iob` plus a single-piece `jigsaw-pieces/<name>.json`.
+3. **Template groups**: fixed multi-template structures (shipwrecks, ruined portals, ocean ruins, nether fossils) become one Iris structure each, with every variant in the pool.
+4. **Capture**: only non-jigsaw registry keys for which the first pass found no same-key template are captured through a scratch world. This pass never rewrites a successful or failed jigsaw conversion.
 The standalone `/iris structure capture <dimension>` command stays unfiltered. Structures spanning more than **48 blocks** on any axis are skipped, so strongholds, mansions, and monuments stay native-only.
 
 Naming: `minecraft:village_plains` becomes `minecraft_village_plains`. Generated structures carry `vanillaSource` for locate and `REPLACE_SOURCE`.

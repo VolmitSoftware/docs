@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Feature switches and general runtime settings live in `plugins/Gloss/gloss.toml`. Gloss generates the file with a comment above each knob, canonicalizes it during startup and explicit importer writes, and watches it while the server runs. Content and complete authored feature profiles — including tablist text, MOTD lines, bubble styling, damage-indicator presentation, and real-drop presentation — live in JSON documents. See [Data Files & Hot Reload](/gloss/03-data-files).
+Feature switches and general settings live in `plugins/Gloss/gloss.toml`. JSON documents hold content such as tablist text, MOTD lines, bubble styles, damage indicators, and real drops. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## The file model
 
@@ -28,20 +28,7 @@ metrics = true
 splashScreen = true
 ```
 
-Every table below is emitted the same way. Each key has its own comment line before it.
-
-**Canonicalization.** Startup and explicit importer writes parse, normalize, re-serialize, and write the file back when the canonical result differs. That is how out-of-range numbers are clamped into the file, missing keys reappear, and comments regenerate after an upgrade. Automatic hotload and `/gloss reload` normalize only the captured in-memory value; they never rewrite a file an editor or FTP client may still be replacing.
-
-**Hot reload.** The same watchdog that checks the data folders also checks `gloss.toml` at `[hotload] watchIntervalTicks`. Ordinary passes only drain native file events; an idle pass does not reread the file. A pending stability check or the 6-second exact-content reconciliation captures immutable bytes and compares their SHA-256, so atomic replacements, FTP saves, and same-size edits with preserved timestamps still apply. Only one automatic batch runs at a time; saves made during a batch collapse into one immediate latest-state trailing pass instead of waiting behind a completion cooldown. A hash guard suppresses startup or importer writes, so they do not loop into another reload. `/gloss reload` remains immediate.
-
-**Failure behavior differs between boot and reload.**
-
-- At startup, Gloss replaces an unreadable or invalid `gloss.toml` with a fresh default file. A warning names the reason. Enable continues.
-- On hot reload and on `/gloss reload`, Gloss refuses an invalid file. Gloss logs `gloss.toml is invalid; keeping the last good configuration.` Nothing changes. The previously loaded configuration stays live. No service is touched.
-
-A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
-
-**`/gloss reload`** (permission `gloss.admin`) reads the file immediately and cycles every configured service. Automatic hotload compares section snapshots and cycles only the services whose section changed. Both paths parse passively without rewriting the source file.
+Each key has a comment. Changes reload automatically, and invalid changes leave the current settings active. Use `/gloss reload` (`gloss.admin`) to reload immediately. Settings marked restart-only still require a restart.
 
 ## Root keys
 
@@ -51,8 +38,7 @@ A file larger than 2 MiB is treated as invalid. Gloss does not parse it.
 | `metrics` | `true` | Send anonymous bStats usage metrics |
 | `splashScreen` | `true` | Print the console splash banner during startup. `false` suppresses it for clean startups. A failed enable always prints it |
 
-> Metrics report under bStats plugin id `33525`. Changing the key hot-starts or shuts down the
-> reporter with the rest of the config reload; `false` stops all submission.
+> Set `metrics = false` to disable anonymous bStats reporting.
 {.is-info}
 
 ## `[features]`
@@ -76,9 +62,9 @@ Master switches. An effective off state stops that subsystem from rendering or l
 | `motd` | `false` | The custom server list MOTD |
 | `particles` | `true` | Viewer-targeted particle layers on supported in-world renders |
 
-`motd` is the only feature that ships off. Gloss reads `panels` and `previews` once during enable. The panel service and the preview registry start only when their feature is on at that moment.
+`motd` is the only feature disabled by default. Gloss reads `panels` and `previews` once during enable. The panel service and the preview registry start only when their feature is on at that moment.
 
-Shipped defaults follow the toggle. A feature that is off extracts nothing and leaves no folder behind, which is why a stock data folder has no `motd.json` and a server with previews off has no `previews/`. Menus now follow the same rule and ship one inert `menus/default.json`. Turning a feature on extracts its defaults on that reload, except for `previews`, which needs the restart described above. See [Getting Started](/gloss/01-getting-started).
+Bundled defaults follow the toggle. A feature that is off extracts nothing and leaves no folder behind, which is why a stock data folder has no `motd.json` and a server with previews off has no `previews/`. Menus follow the same rule and include one inert `menus/default.json`. Turning a feature on extracts its defaults on that reload, except for `previews`, which needs the restart described above. See [Getting Started](/gloss/01-getting-started).
 
 ## `[hotload]`
 
@@ -449,12 +435,7 @@ player head while the lookup runs; a later icon refresh applies the resolved tex
 misses use `unknownCacheMinutes`; transient failures and an overloaded resolution queue retry after
 one minute.
 
-An online player is resolved directly from the live Bukkit profile without an outbound update.
-Offline lookups have a 15-second timeout, at most 16 run concurrently, and at most 1024 wait in the
-queue. In-flight cache entries are shared by all viewers and are not evicted, so the map may briefly
-exceed `maxCachedProfiles`; completion immediately evicts settled entries back to the ceiling.
-Changing any value in this section replaces the profile service and clears its cache. See
-[Icons](/gloss/11-icons) for the authored icon contract.
+Online profiles update immediately. Offline profile lookups time out after 15 seconds; Gloss limits concurrent requests and reuses completed results.
 
 ## `[integration]`
 
@@ -462,7 +443,7 @@ Changing any value in this section replaces the profile service and clears its c
 |---|---|---|---|
 | `sampleIntervalTicks` | `20` | 1 – 200 | Ticks between samples of the metrics other Volmit plugins publish, for `\|metric.<key>\|` text tokens and preview metric variables |
 
-The integration bridge only samples metric keys something has asked for. This interval costs nothing on a server whose content never mentions a metric. If you change it, Gloss restarts the sampler on the next config reload. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for the tokens and variables it feeds. See [Runtime Architecture](/gloss/20-runtime-architecture) for how discovery works.
+The integration bridge only samples metric keys used by loaded content. Changes apply on the next config reload. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for its tokens and variables.
 
 ## What is no longer in configuration
 

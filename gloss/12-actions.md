@@ -227,7 +227,7 @@ Bad action data does not discard a valid menu. Action resolution removes only th
 
 An in-memory action type the runtime does not recognize is warned and skipped the same way.
 
-Resolution runs when a menu document is parsed, not only when a component is first built. These warnings appear at load time and again nowhere else. Each one is deduplicated for the life of the server process by menu id, component id and — for sounds and teleport worlds — the offending value. If you re-save the same broken menu, Gloss will not print the same warning twice.
+Resolution runs when a menu document is parsed, not only when a component is first built. These warnings appear only at load time. Gloss deduplicates each one for the life of the server process by menu id, component id, and the offending sound or teleport-world value. Re-saving the same broken menu does not print the warning again.
 
 By contrast, a malformed `type` discriminator is a parse failure. That happens earlier. It stops the entire menu file from registering.
 
@@ -267,4 +267,3 @@ The schema is advisory. It is not read at runtime. No JSON Schema validator runs
 - [Icons](/gloss/11-icons) — the visual half of a component
 - [Panels](/gloss/16-panels) — world-anchored menus and their own page stack
 - [Commands & Permissions](/gloss/17-commands-permissions) — `gloss.open.<menuId>` and the rest of the tree
-- [Runtime Architecture](/gloss/20-runtime-architecture) — scheduler and session ownership

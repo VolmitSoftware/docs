@@ -7,7 +7,7 @@ tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris ships as one Bukkit-family plugin jar and three self-contained mod jars (Fabric, Forge, NeoForge). This page puts the right artifact on your server and shows how to prove the install worked. Java 25 is required on every platform.
+Iris is distributed as one Bukkit-family plugin jar and three self-contained mod jars (Fabric, Forge, NeoForge). This page puts the right artifact on your server and shows how to prove the install worked. Java 25 is required on every platform.
 
 First boot never downloads a world pack. Install one with `/iris download`. A fresh Bukkit installation does provision its four runtime libraries before Iris starts; later unchanged boots use the local library cache. Satisfy the pack's declared external datapacks and complete the registry-loading restart sequence before you create an Iris world.
 
@@ -48,11 +48,9 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
-1. Drop the CraftBukkit-labeled plugin jar into `plugins/`.
-2. Start the server. Iris loads at `STARTUP`, before worlds are created, because it has to register generators first. On a fresh installation it downloads and relocates Gson, Caffeine, ConcurrentLinkedHashMap, and Paralithic under `plugins/Iris/cache/libraries/`. Paper-family servers add those cached jars to Iris's classpath before early datapack bootstrap; plain Spigot loads them during plugin initialization. A provisioning failure stops Iris instead of continuing with missing classes.
-3. First boot writes `plugins/Iris/iris.json` with defaults if it is absent and publishes a valid empty Iris datapack when no packs are installed. It performs no pack download. Later unchanged boots reuse the runtime-library cache without downloading those libraries again.
-4. Run `/iris download pack=overworld` and/or `/iris download pack=underworld`. Wait for validation and atomic installation to finish. The command does not restart or stop the process itself.
-5. Restart before you use either pack so Minecraft loads the packs' dimension types and custom biomes. Overworld 4002 and Underworld 1005 declare no external `datapackImports`; they do not require Towns & Towers, Dungeons & Taverns, or another add-on. A custom pack that declares imports still needs the workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Bukkit accepts Modrinth, direct HTTP(S), and absolute local `file:` ZIP URLs; ZIPs placed in `plugins/Iris/datapacks/imports/` are discovered for every Iris dimension.
+1. Put the Iris plugin jar in `plugins/`.
+2. Start the server once.
+3. Install or download a pack, then restart before creating a world.
 
 Upgrading is a hard break. Back up any values you need, delete the obsolete
 `plugins/Iris/settings.json` file (or `<configDir>/iris/settings.json` on a mod
@@ -68,7 +66,7 @@ Then verify from the server console:
 /iris pack validate pack=underworld
 ```
 
-`/iris version` prints exactly one line — `Iris v<version> by Volmit Software`. That is the whole output. It does not report platform or Minecraft version. Use it only as a "the command tree is alive" check. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
+`/iris version` prints exactly one line: `Iris v<version> by Volmit Software`. That is the whole output. It does not report platform or Minecraft version. Use it only as a "the command tree is alive" check. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
 
 `/iris pack validate` with no argument validates every installed pack. Name one with `pack=<key>` to check a single pack.
 
@@ -117,7 +115,7 @@ Before you create a world you care about, run the Bukkit fresh-install runbook i
 
 1. Drop the matching mod jar into `mods/`.
 2. Start the dedicated server, or a client if you want singleplayer.
-3. The jar is self-contained — engine, SPI, and the required Fabric API modules are bundled. Mod id is `irisworldgen` on all three loaders.
+3. The jar is self-contained: engine, SPI, and the required Fabric API modules are bundled. Mod id is `irisworldgen` on all three loaders.
 4. First boot writes the forced worldgen datapack from packs already on disk. It performs no pack download. Install a pack with `/iris download`, then restart before loading it. `/iris datapack ingest` is Bukkit-only and is a stub on mod loaders, so install any imports declared by a custom pack directly in that save's `datapacks/` directory before the restart. The current built-in Overworld and Underworld declare none.
 
 ### Youer 26.2
@@ -251,32 +249,6 @@ Iris replaces the chunk generator outright, so vanilla and mod worldgen only run
 | Mod biomes | Only as a `derivative`, `vanillaDerivative`, `biomeScatter`, or `biomeSkyScatter` target | Iris always picks the biome from the pack |
 | Mob spawning, including mod mobs | Yes | Biome spawn tables are merged with the vanilla derivative's |
 
-With `importedFeatures` off — the default — chunk output is pure Iris. Pack-author recipes for features, mobs, loot, saplings, and dimension-type gameplay are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The loader-level feature contract is restated on [94 - API - Modded](/iris/94-api-modded).
+With `importedFeatures` off (the default), chunk output is pure Iris. Pack-author recipes for features, mobs, loot, saplings, and dimension-type gameplay are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The loader-level feature contract is restated on [94 - API - Modded](/iris/94-api-modded).
 
 Separately from that flag, Iris custom biomes inherit the biome tags of their vanilla derivative on every platform. Tag-driven content such as `#minecraft:is_overworld` and mod spawn rules therefore applies to Iris custom biomes without any extra configuration.
-
-## Build artifacts
-
-If you are building rather than downloading, from the repo root with JDK 25:
-
-```text
-./gradlew buildAllToOut
-```
-
-Four jars land in the workspace-level `../PluginOuts/` directory. The CraftBukkit jar's version token is the supported Minecraft *range*. The loader jars use `<mc>+<loader>`:
-
-| Pattern | Platform |
-|---|---|
-| `Iris v<version> [CraftBukkit] 26.1.2-26.2.jar` | Plugin (whole Bukkit family, including Folia) |
-| `Iris v<version> [Fabric] 26.2+<loader>.jar` | Fabric |
-| `Iris v<version> [Forge] 26.2+<loader>.jar` | Forge |
-| `Iris v<version> [NeoForge] 26.2+<loader>.jar` | NeoForge |
-
-The CraftBukkit build verifier rejects an artifact above 7,000,000 bytes.
-The slim plugin jar relies on the separately cached runtime libraries
-described in the plugin-install workflow; the three mod jars remain
-self-contained.
-
-Per-platform build tasks and the developer build gate are in [00 - Overview](/iris/00-overview).
-
-Next: create a world and open the Studio in [02 - Getting Started](/iris/02-getting-started). Every settings key is in [03 - Configuration](/iris/03-configuration).

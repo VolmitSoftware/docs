@@ -53,7 +53,3 @@ Profile name lookups and economy leaderboards have explicit scan limits. Offline
 ## Shutdown and code reload
 
 Foundation implements VolmLib's `ReloadAware` contract for BileTools. Pre-unload and normal disable share one atomic drain: configuration, language, and worth watching stop; GUI, input, and cooperative HUD sessions close; PlaceholderAPI unregisters; the public service unregisters; modules drain in reverse order; JSON profile and location stores flush; listeners unregister; and remaining Folia tasks are cancelled.
-
-## Build verification
-
-`./gradlew build` compiles Java 25 sources, runs tests, compiles the shared source against Spigot 26.2, creates the shaded runtime jar, and inspects it. Artifact verification requires both descriptors, Foundation's main and API classes, the unrelocated VolmLib reload contract, and relocated dependency-loading runtime; it rejects unresolved descriptor tokens, bundled server API classes, invalid class files, and class versions newer than Java 25.

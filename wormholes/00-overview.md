@@ -31,8 +31,7 @@ Dimensional Doors, pocket dimensions, and signed cross-server gateways.
 1. A player forms a flat portal with the Portal Wand or matching rune blocks.
 2. The portal owner opens its menu and selects a type, destination, travel mode,
    access policy, projection mode, and optional cost.
-3. `ProjectionManager` creates an observer-specific view when a player enters
-   the portal's interest area. Projection changes only that player's client.
+3. Each nearby player receives their own destination view. Projection changes only that player's client.
 4. Crossing the aperture starts a separate traversal path. Wormholes checks
    direction, access, cooldown, cost, destination readiness, and API vetoes
    before it moves or transfers the traveler.
@@ -52,26 +51,6 @@ mirror without having a linked destination.
 
 Dimensional Doors are a separate survival system. They do not use frame portal
 types, names, or destinations.
-
-## Runtime details
-
-| Item | Value |
-|---|---|
-| Java release and toolchain | 25 |
-| Paper descriptor API version | `26.1` |
-| Spigot compatibility API | `26.2-R0.1-SNAPSHOT` |
-| Folia | Declared supported in `paper-plugin.yml` |
-| Config | `plugins/Wormholes/wormholes.toml`, schema `3` |
-| Paper load phase | `STARTUP` |
-| Legacy plugin load phase | `POSTWORLD` |
-| Optional declared plugins | PlaceholderAPI, Iris, Vault, Citizens |
-| Reflective optional plugin | WorldGuard for RTP destination entry checks |
-
-> Paper reads `paper-plugin.yml`, while a legacy plugin loader reads
-> `plugin.yml`. The descriptors intentionally use different load phases and
-> different command registration paths.
-{.is-info}
-
 ## Find the right page
 
 ### Players and server owners
@@ -96,28 +75,10 @@ types, names, or destinations.
 - [Integrations](/wormholes/15-integrations)
 {.grid-list}
 
-### Plugin developers and maintainers
+### Plugin developers
 
-- [Runtime architecture](/wormholes/13-runtime-architecture)
-- [Component and build reference](/wormholes/16-maintainer-component-build-reference)
 - [API getting started](/wormholes/20-api-getting-started)
 - [Traversal cost and events](/wormholes/21-api-traversal-cost-events)
 - [PlaceholderAPI integration notes](/wormholes/22-api-placeholderapi)
 - [Metrics integration contract](/wormholes/23-api-metrics-integration-contract)
 {.grid-list}
-
-## Build outputs
-
-Run builds from the `Wormholes` repository root.
-
-| Task | Output or check |
-|---|---|
-| `./gradlew build` | Runs the full verification gate and produces runtime and API artifacts |
-| `./gradlew test` | Runs the JUnit suite with native access enabled for zstd |
-| `./gradlew shadowJar` | Builds `Wormholes-<version>.jar`, the server plugin |
-| `./gradlew apiJar` | Builds the compile-only public API jar |
-| `./gradlew compileSpigotCompatibility` | Compiles the supported source set against Spigot 26.2 API |
-| `./gradlew bandwidthHarness` | Runs transport, entity, and replication comparison scenarios |
-
-Install the unclassified runtime jar on a server. The `-api.jar` is only for
-third-party compilation.

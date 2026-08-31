@@ -187,7 +187,7 @@ Required arguments are positional in the order shown. Optional arguments must be
 info` reports the selection priority, condition, variant count, title and lines. Variants remain a
 JSON/editor surface so their complete presentations can be edited atomically.
 
-Every command edit rewrites the document with `revision` bumped by one, through an atomic temp-file rename. The watcher compares each changed file SHA-256 against the hash Gloss just wrote. A command edit never bounces back through the hot-reload path. See [Data Files & Hot Reload](/gloss/03-data-files).
+Command edits save the document and increment its revision. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 

@@ -18,7 +18,7 @@ healing profile. `/gloss web workspace` includes all three.
 
 ### Style documents
 
-Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart.
+Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. The jar includes `default.json`. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart.
 
 `plugins/Gloss/bubbles/default.json` as shipped:
 
@@ -201,7 +201,7 @@ Position and presentation are re-evaluated on the temporary hologram driver, whi
 | `gloss.bubbles.style.<id>` | undeclared (op) | Actually using style `<id>` once chosen |
 | `gloss.bubbles.reset` | `op` | `/gloss bubbles reset` |
 
-`gloss.bubbles.style.<id>` is dynamic and not declared in `plugin.yml`. It behaves as op-only until a permission plugin grants it.
+`gloss.bubbles.style.<id>` is operator-only until a permission plugin grants it.
 
 ### Stored player choices
 
@@ -225,7 +225,7 @@ The file is written whenever a player sets or clears a style. It is read once wh
 ### Profile document
 
 The complete authored profile is the versioned singleton
-`plugins/Gloss/damage-indicators/default.json`. It ships while `[features] damageIndicators` is on,
+`plugins/Gloss/damage-indicators/default.json`. Gloss extracts it while `[features] damageIndicators` is on,
 hot-reloads through the shared data watchdog and exports from the web editor to that exact path.
 
 The shipped document is:

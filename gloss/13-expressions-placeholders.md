@@ -313,14 +313,14 @@ after. Anything a function returns is then subject to the later stages.
 
 Gloss registers two families. There is no public API for a third family.
 
-`|animation.<id>|` — one token per loaded animation document, registered by `AnimationService`. The
+`|animation.<id>|` represents one token per loaded animation document and is registered by `AnimationService`. The
 frame is picked from the server clock at render time. Every surface that shows the same animation
 shows the same frame.
 
 If you set `[features] animations = false`, Gloss unregisters the family. Those tokens then survive
 the stage and appear as written. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 
-`|metric.<key>|` — one token per metric that another installed Volmit plugin publishes. The
+`|metric.<key>|` represents one token per metric that another installed Volmit plugin publishes. The
 integration bridge registers them. The key is the publishing plugin's own dotted key. The token
 reads `|metric.adapt.player-sessions|`.
 
@@ -678,7 +678,7 @@ throws. Localization keys are covered in [Localization](/gloss/19-localization).
    else delegates to the parent.
 2. A name starting with `vars.` reads the document's injected constants: `match.vars` with the matching
    variant's `vars` merged over them.
-3. Everything else reads the sampled state snapshot — the built-in variables for the target's category plus
+3. Everything else reads the sampled state snapshot, which contains the built-in variables for the target's category plus
    every registered provider namespace, merged flat as `<namespace>.<key>`.
 4. A name absent from preview state delegates to the standard text expression scope for `time.*`,
    `server.*`, `player.*` and integration metrics.
@@ -699,7 +699,7 @@ from the block state, entity or inventory type: `furnace`, `brewing`, `beehive`,
 `jukebox`, `inventory` or `static`.
 
 The full target-state catalog with types and fallback values is in
-[Container Previews](/gloss/15-container-previews). Preview expressions additionally publish
+[Container Previews](/gloss/15-container-previews). Preview expressions also publish
 `time.ms`, `time.seconds`, `time.ticks`, `server.online`, `server.maxPlayers`, `server.tps`,
 `player.name`, `player.ping`, `player.health` and `player.level`. The `player.*` values are absent in
 viewerless static/console contexts rather than invented.

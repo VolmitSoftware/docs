@@ -9,7 +9,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 The root command is `/react` (alias `/re`). Use `/react help [page]` or `/react ? [page]` for generated command help. Player help uses the shared 19-line panel: up to 17 entries at the root or 16 in a subtree with a Back row, while shorter trees print every entry. Console help remains flat and unpaginated. The permission root is `react.use`. `react.*` grants the full tree including shorthands.
 
-## Permissions (`plugin.yml`)
+## Permissions
 
 | Permission | Default | Description |
 |------------|---------|-------------|
@@ -24,13 +24,13 @@ The root command is `/react` (alias `/re`). Use `/react help [page]` or `/react 
 | `react.shorthands.rl` | op | `/rl` → server reload |
 | `react.shorthands.custom` | op | Operator-configured custom shorthands |
 
-Not declared in `plugin.yml` but enforced in code:
+Additional permission:
 
 | Permission | Role |
 |------------|------|
 | `react.configurator` | Required (or op) for `/react config gui` |
 
-Director subcommands do not have individual `plugin.yml` nodes. The root gate is `react.use` (or `react.*` / op).
+The root gate is `react.use`, `react.*`, or operator status.
 
 Feature and tweak bypass nodes appear in config. Examples: `react.bypass.projectile-limit`, `react.secret.adapt.bypass`, `react.secret.iris.bypass`.
 
@@ -149,7 +149,7 @@ Both test commands mutate their test world. `run` queues cleanup actions around 
 | `list` | List active token IDs, labels, and issue times. |
 | `revoke <id>` | Revoke a token ID and persist the token store. |
 
-Omitting `role` creates a viewer token. Typing `role=` offers `viewer`, `operator`, and `admin` through tab completion. Token records without a role also resolve to viewer, so an old or incomplete record cannot inherit administrative authority. RCT2 carries `directUrl`, optional `relayUrl`, the server public key and full SHA-256 fingerprint, and the token ID/signature. It contains no confirmation word. When a wildcard listener has no `advertisedUrl`, React Web lets the operator replace the local fallback with the public port-forward or reverse-proxy URL before pairing. Direct-only pairing verifies the unauthenticated endpoint fingerprint before authenticated identity access or browser-local persistence.
+Omitting `role` creates a viewer token. Available roles are `viewer`, `operator`, and `admin`. Set `advertisedUrl` when React Web must connect through a public address or reverse proxy.
 
 | Role | Effective scopes |
 |------|------------------|

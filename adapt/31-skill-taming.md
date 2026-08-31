@@ -140,18 +140,6 @@ A killing blow on a pet is refused. The pet is set to 1 HP, made immune for a sh
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `taming` |
-| Class | `SkillTaming` |
-| Icon | `LEAD` |
-| Color | `GOLD` |
-| Interval (ms) | `3480` |
-| Skill config | `plugins/Adapt/skills/taming.toml` |
-| Adaptation count | 14 |
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/taming.toml` on first load.
@@ -190,7 +178,6 @@ Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also carries `ena
 
 Level scaling below uses "level percent", which is the learned level divided by the adaptation's max level (0 to 1).
 
-Every adaptation carries a tick interval because every adaptation is registered
 with the scheduler. Only Tame Health, Tame Damage, Tame Regeneration, Pack
 Leader Aura, Mounted Tactics, and Fetch actually run work on that tick. The rest are event-driven and their interval is inert.
 
@@ -198,7 +185,6 @@ Leader Aura, Mounted Tactics, and Fetch actually run work on that tick. The rest
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingHealthBoost` |
 | Icon | `COOKED_BEEF` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -206,8 +192,6 @@ Leader Aura, Mounted Tactics, and Fetch actually run work on that tick. The rest
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adaptations/tame-health.toml` |
-
-Listened events: `EntityDeathEvent`, `EntitiesUnloadEvent` (both only clear cached state for the dead or unloaded entity).
 
 Menu lore: "Increased Health".
 
@@ -223,7 +207,6 @@ Milestone: `challenge_taming_health_boost_72k` on `taming.health-boost.ticks-act
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingDamage` |
 | Icon | `FLINT` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -231,8 +214,6 @@ Milestone: `challenge_taming_health_boost_72k` on `taming.health-boost.ticks-act
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adaptations/tame-damage.toml` |
-
-Listened events: `EntityDeathEvent` (credits `taming.damage.pet-kills` when your pet dealt the killing blow, and clears cached state), `EntitiesUnloadEvent` (clears cached state).
 
 Menu lore: "Increased Damage".
 
@@ -248,7 +229,6 @@ Milestones: `challenge_taming_damage_500` and `challenge_taming_damage_5k` on `t
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingHealthRegeneration` |
 | Icon | `GOLDEN_APPLE` |
 | Max level | 3 |
 | Initial knowledge cost | 8 |
@@ -256,8 +236,6 @@ Milestones: `challenge_taming_damage_500` and `challenge_taming_damage_5k` on `t
 | Cost factor | 0.4 |
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adaptations/tame-health-regeneration.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (queues a heal for the damaged pet), `EntityDeathEvent` (drops the pet's heal cooldown).
 
 Menu lore: "HP/s".
 
@@ -274,7 +252,6 @@ Per-pet heal cooldown is fixed at 8000 ms in code. Heal amount is `regenBase` pl
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingPackLeaderAura` |
 | Icon | `BONE` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -282,8 +259,6 @@ Per-pet heal cooldown is fixed at 8000 ms in code. Heal amount is `regenBase` pl
 | Cost factor | 0.65 |
 | Tick interval (ms) | 50 |
 | Config file | `plugins/Adapt/adaptations/tame-pack-leader-aura.toml` |
-
-Listened events: `PlayerQuitEvent` (drops the owner's aura snapshot).
 
 Menu lore: "Aura Radius", "Aura Strength".
 
@@ -302,7 +277,6 @@ Milestone: `challenge_taming_pack_72k` on `taming.pack-leader.buffed-ticks` at 7
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingBeastRecall` |
 | Icon | `LEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -310,8 +284,6 @@ Milestone: `challenge_taming_pack_72k` on `taming.pack-leader.buffed-ticks` at 7
 | Cost factor | 0.72 |
 | Tick interval (ms) | 2200 |
 | Config file | `plugins/Adapt/adaptations/tame-beast-recall.toml` |
-
-Listened events: `PlayerInteractEvent` (sneak plus right-click with a lead in the main hand. The handler also receives cancelled events).
 
 Menu lore: "Recall Radius", "Recall Cooldown", and "Hunger cost per recall" when `hungerCost` is above 0.
 
@@ -333,7 +305,6 @@ Milestones: `challenge_taming_recall_100` and `challenge_taming_recall_1k` on `t
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingSharedPain` |
 | Icon | `POPPY` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -341,8 +312,6 @@ Milestones: `challenge_taming_recall_100` and `challenge_taming_recall_1k` on `t
 | Cost factor | 0.72 |
 | Tick interval (ms) | 1700 |
 | Config file | `plugins/Adapt/adaptations/tame-shared-pain.toml` |
-
-Listened events: `EntityDamageEvent` (any damage to the owner).
 
 Menu lore: "Shared Damage", "Companion Health Floor".
 
@@ -364,7 +333,6 @@ Milestones: `challenge_taming_shared_500` and `challenge_taming_shared_5k` on `t
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingMountedTactics` |
 | Icon | `SADDLE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -372,8 +340,6 @@ Milestones: `challenge_taming_shared_500` and `challenge_taming_shared_5k` on `t
 | Cost factor | 0.72 |
 | Tick interval (ms) | 10 |
 | Config file | `plugins/Adapt/adaptations/tame-mounted-tactics.toml` |
-
-Listened events:
 
 - `PlayerMoveEvent` and `PlayerToggleSprintEvent` refresh the mounted state.
 - `EntityMountEvent` and `EntityDismountEvent` (reflective handlers) start and clear it.
@@ -414,7 +380,6 @@ Milestones: `challenge_taming_mounted_200` on `taming.mounted-tactics.mounted-ki
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingFetch` |
 | Icon | `HOPPER` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -422,8 +387,6 @@ Milestones: `challenge_taming_mounted_200` on `taming.mounted-tactics.mounted-ki
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1500 |
 | Config file | `plugins/Adapt/adaptations/tame-fetch.toml` |
-
-Listened events: `PlayerQuitEvent` (aborts that owner's walking fetches).
 
 Menu lore: "Fetch Range", "Carry Chance".
 
@@ -453,7 +416,6 @@ Vanilla yanks pets back at that distance. An aborted job returns any already-car
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingAlphasCommand` |
 | Icon | `BONE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -461,8 +423,6 @@ Vanilla yanks pets back at that distance. An aborted job returns any already-car
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tame-alphas-command.toml` |
-
-Listened events: `PlayerInteractEvent`, `EntityDamageByEntityEvent`, and `PlayerQuitEvent`.
 
 `PlayerInteractEvent` handles sneak plus left-click with
 a bone and raycasts for the target. `EntityDamageByEntityEvent` handles sneak
@@ -490,7 +450,6 @@ Focus is re-asserted every 10 ticks and revalidated against PVP/PVE policy each 
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingGuardianInstinct` |
 | Icon | `SHIELD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -498,8 +457,6 @@ Focus is re-asserted every 10 ticks and revalidated against PVP/PVE policy each 
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tame-guardian-instinct.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (projectile damage to the owner only).
 
 Menu lore: "Intercept Chance", "Pet Damage Reduction".
 
@@ -523,7 +480,6 @@ Milestones: `challenge_taming_guardian_250` and `challenge_taming_guardian_2500`
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingStableHand` |
 | Icon | `SADDLE` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -531,8 +487,6 @@ Milestones: `challenge_taming_guardian_250` and `challenge_taming_guardian_2500`
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tame-stable-hand.toml` |
-
-Listened events: `EntityTameEvent` (applies the bias to the tamed animal), `EntityBreedEvent` (applies it to the offspring one tick later).
 
 Menu lore: "Attribute Bias", "Safe Fall Blocks".
 
@@ -552,7 +506,6 @@ health. It is also a flat block bonus to safe fall distance equal to bias x 10.
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingWildEmpathy` |
 | Icon | `DANDELION` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -560,8 +513,6 @@ health. It is also a flat block bonus to safe fall distance equal to bias x 10.
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tame-wild-empathy.toml` |
-
-Listened events: `PlayerInteractEntityEvent` (right-click an untamed tameable with its taming food), `EntityTargetLivingEntityEvent` (a neutral mob targeting you).
 
 Menu lore: "Extra Taming Odds", "Anger Resistance".
 
@@ -583,7 +534,6 @@ Taming foods in code: `BONE` for wolves. `COD` and `SALMON` for cats and ocelots
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingBattleBond` |
 | Icon | `DIAMOND_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -591,8 +541,6 @@ Taming foods in code: `BONE` for wolves. `COD` and `SALMON` for cats and ocelots
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tame-battle-bond.toml` |
-
-Listened events: `EntityDeathEvent` (the killing blow came from a tameable).
 
 Menu lore: "Buff Tier", "Buff Duration".
 
@@ -614,7 +562,6 @@ Buffs applied are Speed, Regeneration, and the strength effect where the server 
 
 | Property | Default |
 |----------|---------|
-| Class | `TamingLastBreath` |
 | Icon | `TOTEM_OF_UNDYING` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -622,8 +569,6 @@ Buffs applied are Speed, Regeneration, and the strength effect where the server 
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/tame-last-breath.toml` |
-
-Listened events: `EntityDamageEvent` twice. `onProtectedWindow` runs at LOWEST and cancels all damage to a pet inside its invulnerability window. `on` runs at HIGHEST and performs the save when the hit would be lethal.
 
 Menu lore: "Per-Pet Cooldown", "Invulnerability".
 

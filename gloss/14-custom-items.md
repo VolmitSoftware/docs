@@ -63,7 +63,7 @@ The type token is matched after lowercasing and stripping `-` and `_`. `customIt
 That order equals the declaration order only when every host plugin was already enabled when Gloss
 enabled.
 
-Hosts that enable later — typically ItemsAdder and HeadDatabase — are appended in the order their
+Hosts that enable later, typically ItemsAdder and HeadDatabase, are appended in the order their
 `PluginEnableEvent` fires. Name the provider explicitly when the order matters, or when more than
 one provider is installed.
 
@@ -86,68 +86,6 @@ menu still opens. Failed lookups are never cached. The icon is re-attempted ever
 It appears on its own as soon as its provider becomes ready.
 
 ## The provider registry
-
-### Detection
-
-Detection is plugin-presence first, class loading second. The registry holds a fixed list of
-`(pluginName, className)` pairs where the class name is a **string**. Each adapter imports its host
-plugin's API types directly. Loading one whose host is absent would raise `NoClassDefFoundError`.
-
-Activating one definition runs, in order:
-
-1. look the plugin up by name — a plugin that is absent or not enabled aborts silently.
-2. reject a duplicate for the same plugin name.
-3. `Class.forName` the adapter, cast it to the provider interface and construct it.
-4. apply the `[items] customItemProviders` allowlist.
-5. register, which clears the prototype cache and logs `[items] provider <id> active from <pluginName>`.
-
-Anything thrown from steps 3 to 5 is caught and logged as
-`[items] failed to activate the <pluginName> item provider:`. The rest of the registry is
-unaffected.
-
-One adapter probes further. The HeadDatabase adapter resolves `me.arcaniax.hdb.api.HeadDatabaseAPI`
-without initializing it inside its own constructor. Other plugins have shipped under the name
-`HeadDatabase`. The plugin name alone is not proof that the API exists. An unrelated plugin by that
-name produces a logged activation failure and an inactive status row. It does not produce a linkage
-crash.
-
-Every item plugin is listed under `softdepend` in `plugin.yml`. None of them is a hard dependency.
-
-### Activation timing
-
-- At enable the registry registers its listener once, even when `[items] customItems` is false. That
-  lets a later config change take effect. It then walks the definition list in declaration order.
-- `PluginEnableEvent` activates the matching definition when a host plugin enables after Gloss.
-- `PluginDisableEvent` drops the matching provider regardless of the `customItems` setting, clears the
-  prototype cache and logs `[items] provider for <pluginName> dropped, it was disabled`.
-
-Declaration order is CraftEngine, ItemsAdder, Oraxen, Nexo, MMOItems, ExecutableItems, EcoItems,
-Slimefun, MythicMobs, HeadDatabase.
-
-### Resolution and caching
-
-- A null or blank item id, or `[items] customItems = false`, resolves to nothing immediately.
-- The provider id is normalized: null, blank or whitespace becomes `auto`, otherwise it is trimmed and
-  lowercased. Matching is case-insensitive.
-- The prototype cache is keyed on the normalized provider plus the item id. Both the cached prototype
-  and every value handed back are clones. ItemsAdder and Slimefun return live registry instances.
-  Nothing a caller receives can mutate a host registry.
-- Negative results are **not** cached.
-- A provider that declares itself main-thread-only is skipped when the lookup happens off the main
-  thread, with one warning per provider id:
-  `[items] provider <id> is main thread only and was skipped off thread`. The off-thread caller never
-  blocks a tick, it just misses that lookup.
-- A provider whose registry is not ready yet is skipped entirely, so a late-loading registry cannot poison
-  the cache with a permanent miss.
-- Anything thrown by a provider is swallowed and reported once per provider id:
-  `[items] provider <id> faulted, lookups against it will keep failing:`.
-
-Both warning families are emitted once per provider id, not once per failed lookup.
-
-The cache is cleared whenever a provider is registered or dropped. It is also cleared whenever
-`[preview] scale` or `[menus] uiScale` changes. Changing `[items] customItems` or
-`[items] customItemProviders` rebuilds the whole provider list from scratch.
-
 ## The providers
 
 Every adapter clones each stack it successfully resolves.
@@ -173,7 +111,7 @@ Per-provider behavior worth knowing:
 | `itemsadder` | Items load asynchronously long after startup. Until they have loaded the provider is active but not ready and every lookup is skipped. Display names come from the host stack |
 | `nexo` | Nexo builds lazily, so a malformed yml entry only throws at build time, not at lookup. That failure is caught and treated as a miss |
 | `mmoitems` | Declared main-thread-only. Off-thread lookups are skipped, never blocked. Enumeration is every type crossed with its template names, joined as `TYPE:ID` |
-| `executableitems` | The API classes ship inside SCore, which ExecutableItems hard depends on, so the ExecutableItems presence check covers both |
+| `executableitems` | The API classes are part of SCore, which ExecutableItems hard depends on, so the ExecutableItems presence check covers both |
 | `ecoitems` | The eco lookup never returns null. It returns an empty testable item whose stack is `AIR`, which the adapter treats as a miss. Enumeration filters to the `ecoitems` namespace and re-emits ids as `ecoitems:key` |
 | `slimefun` | Enumeration covers **enabled** items only, so a disabled Slimefun item still resolves in a menu but never appears in the catalog. Display names come from the host item |
 | `mythicmobs` | The Mythic instance is null between class load and MythicMobs finishing its own enable, which is what the readiness gate covers |
@@ -298,7 +236,7 @@ broken menu. See [Web Editor & Sync](/gloss/18-web-editor).
 An export that resolves nothing still writes the file. Gloss reports it separately as an empty
 export. Only a failed write is reported as an error.
 
-> `custom-items.json` is a generated file. Deleting it costs nothing — run `/gloss item export` again. It
+> `custom-items.json` is generated. After deleting it, run `/gloss item export` again. It
 > is also the one file the HoloUi importer deliberately refuses to copy, for the same reason.
 {.is-info}
 

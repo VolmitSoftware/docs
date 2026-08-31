@@ -204,17 +204,17 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 `regions/temperate.json` is a representative region:
 
-- `landBiomes` — 29 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
-- `shoreBiomes` — `temperate/shore/beach`, `ocean/shore/beach`, `vanilla/stony_shore`, others
-- `seaBiomes` — `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river`, others
-- `caveBiomes` — `carving/rocky-cavebiome`, `carving/drip`, `carving/deep`, others
-- `loot` — mode `FALLBACK`, multiplier `0.5`, tables `temperate/clutter` and `temperate/food`
+- `landBiomes`: 29 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
+- `shoreBiomes`: `temperate/shore/beach`, `ocean/shore/beach`, `vanilla/stony_shore`, others
+- `seaBiomes`: `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river`, others
+- `caveBiomes`: `carving/rocky-cavebiome`, `carving/drip`, `carving/deep`, others
+- `loot`: mode `FALLBACK`, multiplier `0.5`, tables `temperate/clutter` and `temperate/food`
 - Per-category zooms (`landBiomeZoom` 3.5, `seaBiomeZoom` 6, `shoreBiomeZoom` 0.15, `caveBiomeZoom` 3.3) and its own enabled `caveProfile`
 
 `biomes/temperate/plains.json` is a representative biome:
 
 - `derivative` and `vanillaDerivative` are both `minecraft:plains`
-- `generators` is `[{ "generator": "plain", "min": 4, "max": 10 }]` — 4 to 10 blocks above sea level
+- `generators` is `[{ "generator": "plain", "min": 4, "max": 10 }]`: 4 to 10 blocks above sea level
 - `layers` is one block of grass over two blocks of dirt. The dimension rock palette fills below
 - `objects` places `clutter/...` keys in `PAINT` mode at fractions of a percent per column
 - `decorators` place flowers with a `TRIOCTAVE_SIMPLEX` variance and a fractured `STATIC` style
@@ -270,7 +270,7 @@ Reuse `snippet/decorator/*` and `snippet/style/*` by string reference as in [24 
 
 ### Entities and spawners
 
-The pack ships `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
+The pack includes `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
 
 ## Pushing changes into an existing world
 
@@ -291,7 +291,7 @@ World creation installs the pack copy once. Changing `packs/` does **not** updat
 | Goal | Approach |
 |------|----------|
 | Live design iteration | Studio open on `packs/` |
-| Ship pack changes into an existing survival world | Back up, then `update-world … confirm=true` |
+| Deploy pack changes into an existing survival world | Back up, then `update-world … confirm=true` |
 | Guaranteed consistent terrain | New world from the updated pack |
 | Experimental or partial changes | Fork the pack with `studio create` |
 

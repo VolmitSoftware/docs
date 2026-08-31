@@ -113,20 +113,6 @@ With Arrow Piercing learned, or with Ricochet Bolt bounce capacity left, the arr
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `ranged` |
-| Class | `SkillRanged` |
-| Icon | `CROSSBOW` |
-| Color | `DARK_GREEN` |
-| Interval (ms) | `3044` |
-| Skill config | `plugins/Adapt/skills/ranged.toml` |
-| Adaptation count | 12 |
-
-Hit XP formula, from `SkillRanged`: `hitDamageXPMultiplier * damage + distance * hitDistanceXPMultiplier`, where distance is measured from the shooter to the target at the moment of impact. Launch XP is the flat `shootXP`, awarded only for `AbstractArrow` projectiles (arrows, spectral arrows, tridents).
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/ranged.toml` on first load.
@@ -176,7 +162,6 @@ Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedForce` |
 | Icon | `TIPPED_ARROW` |
 | Max level | 7 |
 | Initial knowledge cost | 5 |
@@ -200,7 +185,6 @@ Launch velocity is multiplied by `1 + (levelPercent * speedFactor)` for any proj
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedPiercing` |
 | Icon | `FLETCHING_TABLE` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -219,7 +203,6 @@ The arrow's existing pierce level is increased by the adaptation level at launch
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedArrowRecovery` |
 | Icon | `ARROW` |
 | Max level | 8 |
 | Initial knowledge cost | 5 |
@@ -242,7 +225,6 @@ Only `Arrow` projectiles fired from a bow without Infinity are eligible, and the
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedLungeShot` |
 | Icon | `RABBIT_HIDE` |
 | Max level | 3 |
 | Initial knowledge cost | 8 |
@@ -265,7 +247,6 @@ Only fires for `AbstractArrow` launches while the player is off the ground. The 
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedWebBomb` |
 | Icon | `COBWEB` |
 | Max level | 5 |
 | Initial knowledge cost | 1 |
@@ -288,7 +269,6 @@ tick. Active webs cancel `BlockBreakEvent` and piston moves, and are stripped ou
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedTrajectorySight` |
 | Icon | `SPYGLASS` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -345,7 +325,6 @@ Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, 
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedFloaters` |
 | Icon | `SHULKER_SHELL` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -375,7 +354,6 @@ The effect follows that shot even if the shooter changes level or logs out. Prot
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedPinningShot` |
 | Icon | `TRIPWIRE_HOOK` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -411,7 +389,6 @@ The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion eff
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedRicochetBolt` |
 | Icon | `SPECTRAL_ARROW` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -457,7 +434,6 @@ Bounces are capped at 12 regardless of config. A bounce replaces the projectile 
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedFetchShot` |
 | Icon | `FISHING_ROD` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -485,7 +461,6 @@ Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the norm
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedHeavyDraw` |
 | Icon | `ANVIL` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -512,7 +487,6 @@ Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penal
 
 | Property | Value |
 |----------|-------|
-| Class | `RangedHeartseeker` |
 | Icon | `TARGET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |

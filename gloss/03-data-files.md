@@ -8,249 +8,55 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-All Gloss content is plain JSON on disk under `plugins/Gloss/`. Most kinds share one document envelope, one loader and one watchdog. The rules on this page apply the same way to a hologram, a scoreboard, an emoji, damage-indicator settings, real-drop settings and the tablist. Watched kinds hot-reload through a queued automatic batch; panel placement documents are the explicit manual-reload exception.
+Gloss stores editable JSON under `plugins/Gloss/`.
 
-## The document envelope
+## Files
 
-Every hologram, board, emoji, animation, bubble style, real-drop settings, tablist and MOTD document starts with the same two keys:
+| Content | Path | Reset |
+|---|---|---|
+| Holograms | `holograms/<id>.json` | — |
+| Scoreboards | `boards/<id>.json` | `/gloss board reset [name=*]` |
+| Tablist | `tablist.json` | `/gloss tablist reset` |
+| MOTD | `motd.json` | `/gloss motd reset` |
+| Emoji | `emoji/<id>.json` | `/gloss emoji reset [name=*]` |
+| Animations | `animations/<id>.json` | `/gloss animations reset [name=*]` |
+| Bubble styles | `bubbles/<id>.json` | `/gloss bubbles reset [name=*]` |
+| Damage indicators | `damage-indicators/default.json` | `/gloss indicators reset` |
+| Real Drops | `real-drops/default.json` | `/gloss drops reset [name=*]` |
+| Menus | `menus/**.json` | — |
+| Images | `images/<file>` | — |
+| Container previews | `previews/<id>.json` | `/gloss preview reset [name=*]` |
+| Panels | `panels/<id>.json` | — |
+
+For most documents, the file name is the ID. Renaming the file renames the document. Menu IDs include their path below `menus/`.
+
+## Schema and revision
+
+Versioned documents contain:
 
 ```json
 {
-  "schemaVersion": 1,
-  "revision": 7
+  "schemaVersion": 2,
+  "revision": 1
 }
 ```
 
-`schemaVersion` must match that document kind. Emoji, animations, and MOTD use `1`; holograms and boards use `2`; tablist uses `2`; damage-indicator settings and real-drop settings use `3`; bubble styles use `4`. A document with any other version, including a missing version parsed as `0`, is silently ignored. It produces no warning or stack trace and is never rewritten. On hot reload the last-good current-schema document stays live; on startup the mismatched document contributes no configuration. Holograms require the native `TextDisplay` scale field.
+Keep the schema used by that document type. Gloss updates `revision` when it writes the file; hand edits do not need to change it. An invalid file leaves the previous valid version active.
 
-`revision` must be between `1` and `9007199254740991`. That is the largest integer a browser can represent exactly. Anything outside that range is rejected with `<kind> revision must be between 1 and 9007199254740991`. The revision is server-owned. Gloss increments it by one on every write it makes. Revision-checked mutations refuse to run when the document on disk has moved on. They report `document <id> is at revision <actual>, expected <expected>`. A hand edit of a file does not need you to bump the revision. If you leave it alone, the web editor and the command layer both see the file as unchanged in revision terms. Bump it if you care about that.
+## Reloading
 
-Three kinds keep their own shapes instead. Menus have no envelope at all. They use a SHA-256 hash of the file text as their revision. Panels carry `schemaVersion`, `id`, `uuid` and a numeric `revision` of their own. Container preview documents carry no version keys.
+Gloss reloads config and content files automatically. Changes affect the matching live feature. Open menus and previews may close so they can be rebuilt.
 
-## Ids come from the file path
+Use `/gloss reload` for a complete config reload. Panel files are the exception: after editing them directly, run `/gloss panel reload`.
 
-There is no `id` key inside an enveloped document. The id is the file name with `.json` removed. If you rename a file, you rename the document. Ids may not contain `/`, `\` or `..` when Gloss writes them.
+## Imports
 
-Only files ending in `.json` are read. Only files sitting directly inside the folder are read. A subdirectory below `holograms/` or `emoji/` is ignored. Menus are the exception. A menu id is its whole path below `menus/`. `menus/shop/weapons.json` is the menu `shop/weapons`.
-
-Panels are the other exception. They keep an id and a UUID inside the document. The file path must match the canonical form of that id. If it does not, the file is refused.
-
-## Content hashing and self-writes
-
-Each loaded document is kept with the SHA-256 of its raw text beside the parsed value. Holograms and boards write through a store that records the hash of the bytes it just wrote. When the folder watcher later sees that file change, it compares the file current hash against the recorded one. It skips the file if they match. That is what stops a command edit from bouncing back through the hot-reload path. `gloss.toml` uses the same guard against its own canonicalization rewrites.
-
-Writes are atomic. The document is serialized to a temporary file in the same folder and moved into place. A reader never sees a half-written document.
-
-## Hot reload
-
-One repeating watchdog task requests a pass every `[hotload] watchIntervalTicks` (default `5`). Native watchers retain changes between passes, and an ordinary idle pass only drains those events. JSON registries perform a full directory-membership safety scan about every 18 seconds and start exact-content reconciliation about every 6 seconds; their windows restart when their preceding work completes. Exact reconciliation walks already-known documents in stable id order. Across every registry in one watchdog pass, it yields after 32 files, 8 MiB, or about 10 ms; a single file or full membership scan may exceed the time budget, and documents above 2 MiB are rejected before their content is hashed or parsed. An unfinished walk continues on a later pass, and its reconciliation batch is published only after the complete walk finishes. Only one automatic pass runs at a time, and requests made while it is waiting or running collapse into one immediate trailing latest-state pass. Deletions are held for 3 seconds so an FTP or atomic replacement gap cannot unload live content. A document snapshot becomes live only after its consumer finishes applying it; a refused server-thread handoff or apply failure keeps the last-good snapshot live and rereads that pending file against the exact latest state. Each registered watcher runs in turn. If one throws, it logs the full failure for `<name>` and the remaining watchers still run. A single broken kind cannot silence the rest. If you change `watchIntervalTicks`, Gloss reschedules the tick pump without releasing the active batch; the new interval begins after that batch.
-
-After a successful automatic batch, every online player with `gloss.admin` receives one coalesced action-bar notice naming the changed kinds and one Gloss success chime. Several files or kinds changed in the same pass still produce only one notice and one sound. `[commands] sounds` controls the chime; the visual notice remains enabled. Startup loads, `/gloss reload`, Gloss-owned writes, rejected documents and failed apply attempts do not produce this automatic success feedback.
-
-The polling itself runs on a dedicated `Gloss-Watchdog-IO` thread. Stat, read and parse never touch the server tick. Anything that has to touch the world hops back to the server thread, or on Folia and Canvas to the owning region thread, before it applies. The console shows both halves:
+Preview third-party hologram imports with:
 
 ```text
-[Gloss-Watchdog-IO/INFO]: [Gloss] gloss.toml changed on disk; reloading.
-[Server thread/INFO]: [Gloss] Reloaded in-place from disk.
+/gloss import preview <source>
 ```
 
-Only one pass is ever in flight. If another request arrives while a disk scan or its server apply phase is still running, Gloss remembers one trailing pass and reads the latest state immediately after the active pass completes. A burst cannot stack unbounded work or lose its final save. A successful image hotload likewise becomes eligible again after its normal 250-millisecond stability check; only a failed image load keeps the 3-second retry backoff.
+Apply them with `/gloss import apply <source>`. Supported sources are `gholo`, `decent-holograms`, `holographic-displays`, and `fancy-holograms`.
 
-| Watcher | What a change does |
-|---|---|
-| `config` | Re-reads `gloss.toml` and reloads the services whose own config section actually changed |
-| `holograms` | Applies each changed document to its live display and logs `Hotloaded hologram <id>.json`. A deleted file despawns the hologram and logs `Hologram <id> removed from disk.` |
-| `boards` | Rebuilds the metadata for changed ids, drops removed ones, then re-runs board selection for every player |
-| `emoji` | Rebuilds the entire replacement table from the folder snapshot, ordered by document id |
-| `animations` | Unregisters every `\|animation.<id>\|` text function and re-registers them from the snapshot |
-| `bubbles` | Republishes the style snapshot. Styles are read per bubble, so the change applies to the next bubble |
-| `damage-indicators` | Republishes the singleton profile and destroys every live indicator so no display retains the replaced presentation. New indicators use the new snapshot immediately |
-| `real-drops` | Rebuilds the cached presentation profile, recreates active drop displays, and rehydrates loaded items on their owning threads |
-| `tablist` | Clears the applied header/footer and list-name caches so the next driver tick re-pushes them, or resets them on players when the document turns those features off |
-| `motd` | Republishes the document snapshot. The next ping uses it |
-| `menus` | Re-scans `menus/` and every subdirectory below it. A changed menu whose content hash actually differs destroys every open session of that menu, notifies those players, and re-registers the definition |
-| `images` | A changed, added or removed image file refreshes every open menu session and every live panel |
-| `locale` | Refreshes the localization overlay from `language.yml` |
-| `previews` | Recompiles changed and added `previews/*.json`, drops deleted ones, republishes the resolution snapshot and closes every open preview so the raycast rebuilds it |
-
-Every watcher is one entry on that single watchdog task. No subsystem
-runs a hot-reload task of its own, and `menus/` is no longer the
-exception: it is a folder-tree document registry on the same spine as
-`holograms/` and `boards/`, so its discovery, self-write suppression and
-parse-failure handling are the ones described on this page. `images/`
-uses a reactive byte watcher rather than the document parser because an
-image file has no document id, envelope, or revision. Its rolling digest
-still detects a silent same-metadata replacement without decoding every
-image on every pass. A
-`FolderWatcher` consumes native recursive events and reconciles directory
-state after overflow, deletion, recreation, or watcher-key loss. It does
-not follow symlinks. Parsed documents use their SHA-256 content as the
-final identity, so a touch or a late duplicate event is a no-op while an
-atomic replacement or same-metadata edit still applies once. A target
-that returns during the 3-second deletion grace cancels the pending
-unload and is parsed from its final bytes.
-
-A config edit picked up by the watchdog only cycles the services whose
-section moved. Config sections compare as whole values, so editing
-`[commands] sounds` no longer despawns and respawns every hologram on the
-server the way it once did. Document watchers are unaffected either way:
-a hologram file edit still hot-reloads that hologram.
-
-`/gloss reload` is the deliberate config exception. It cycles every config-driven core service
-unconditionally instead of only the services whose section changed. Panel placement documents
-remain outside that path and use `/gloss panel reload`.
-
-Panels are not watched at all. If you edit a panel file by hand, apply it with `/gloss panel reload`.
-
-A current-schema document that fails to parse is skipped and the copy already in memory stays live. Automatic watching waits for the same invalid bytes to be observed on two separate passes before logging `<kind>/<id>.json <reason>`. This absorbs the zero-byte interval produced by editors that truncate and then rewrite a file. If valid or different bytes arrive on the next pass, no stale warning is emitted; unchanged invalid content logs once and remains rejected until fixed. Startup and `/gloss reload` remain immediate and report malformed current-schema files on their first read. Schema mismatches use the silent behavior above instead.
-
-## Document kinds
-
-| Kind | Path | Envelope | Shipped defaults | Reset command | Documented on |
-|---|---|---|---|---|---|
-| Holograms | `holograms/<id>.json` | yes | none | — | [Holograms](/gloss/04-holograms) |
-| Boards | `boards/<id>.json` | yes | `default`, `animation-showcase` | `/gloss board reset [name=*]` | [Scoreboards & Groups](/gloss/05-scoreboards-groups) |
-| Tablist | `tablist.json` | yes | one document | `/gloss tablist reset` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
-| MOTD | `motd.json` | yes | one document | `/gloss motd reset` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
-| Emoji | `emoji/<id>.json` | yes | 67 documents | `/gloss emoji reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
-| Animations | `animations/<id>.json` | yes | `rainbow`, `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, `wave` | `/gloss animations reset [name=*]` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
-| Bubble styles | `bubbles/<id>.json` | yes | `default` | `/gloss bubbles reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
-| Damage-indicator settings | `damage-indicators/default.json` | yes | `default` | `/gloss indicators reset` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
-| Real-drop settings | `real-drops/default.json` | yes | `default` | `/gloss drops reset [name=*]` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
-| Menus | `menus/**.json` | no, hash revision | `default` | — | [Hologram Menus](/gloss/09-menus) |
-| Images | `images/<file>` | not JSON | none | — | [Icons](/gloss/11-icons) |
-| Container previews | `previews/<id>.json` | no | 14 documents | `/gloss preview reset [name=*]` | [Container Previews](/gloss/15-container-previews) |
-| Panels | `panels/<id>.json` | own id/uuid/revision | none | — | [Panels](/gloss/16-panels) |
-
-Holograms, bubble styles, damage-indicator presentations and Real Drops use their new hard schema versions because they can own `particleLayers`. Menus and container previews also accept `particleLayers`, but those two document families remain unversioned. Panels inherit particle layers from their menu and remain schema `1`. The shared layer contract is documented on [Particle Layers](/gloss/25-particle-layers).
-
-`tablist.json` and `motd.json` live at the root of `plugins/Gloss/`. They do not live inside a folder of their own.
-
-A folder in that table exists only once there is something in it. Enabled menus have a shipped default, so `menus/` exists on a stock install; `holograms/`, `images/` and `panels/` still appear only when the first document, asset or placement is written. Gloss never leaves an empty folder behind. Deleting a folder does not make the watcher recreate it during a hotload; a shipped-default folder returns at the next extraction and other folders return on the next authored write. Every document below a removed folder enters the same 3-second deletion grace and unregisters only if still absent; restoration cancels the pending unload.
-
-## Shipped defaults and resets
-
-At enable, each kind that ships defaults extracts only the files that are missing from its folder. An edited file is never overwritten. A deleted file returns on the next boot. A file that is missing from the jar logs `<kind>/<name>.json: missing from the jar, not extracted.` and is skipped.
-
-Extraction is what creates those folders, and it follows the feature toggle. `previews/` is written only while `[features] previews` is on, `menus/` only while `menus` is on, `bubbles/` only while `chatBubbles` is on, `damage-indicators/` only while `damageIndicators` is on, `real-drops/` only while `realDrops` is on, `boards/` only while `boards` is on, `emoji/` and `animations/` only while their own feature is on, `tablist.json` only while `tablist` is on and `motd.json` only while `motd` is on — and `motd` ships off, so a stock data folder has no MOTD document at all.
-
-Turning one of those features on extracts its defaults on the config reload rather than at the next restart. `previews` is again the exception: the preview registry is only constructed during enable, so `previews/` does not appear until the server restarts.
-
-The reset commands re-extract on demand and **do** overwrite. Folder kinds with several possible shipped documents take an optional name whose default is `*`. `/gloss indicators reset`, `/gloss tablist reset` and `/gloss motd reset` take no argument because each owns exactly one document.
-
-| Command | Permission |
-|---|---|
-| `/gloss emoji reset [name=*]` | `gloss.emoji.reset` |
-| `/gloss animations reset [name=*]` | `gloss.animations.reset` |
-| `/gloss bubbles reset [name=*]` | `gloss.bubbles.reset` |
-| `/gloss indicators reset` | `gloss.indicators.reset` |
-| `/gloss drops reset [name=*]` | `gloss.drops.reset` |
-| `/gloss board reset [name=*]` | `gloss.boards.edit` |
-| `/gloss tablist reset` | `gloss.tablist.reset` |
-| `/gloss motd reset` | `gloss.motd.reset` |
-| `/gloss preview reset [name=*]` | `gloss.previews.reset` |
-
-> A reset overwrites the named file on disk with the copy from the jar. Local edits to that file are gone. There is no backup. If you name something that is not a shipped document, Gloss writes nothing.
-{.is-warning}
-
-A reset only restores shipped documents. It never deletes extra documents you added. A board or a preview you created yourself survives `reset *` untouched. That includes one whose id shadows a shipped name in a folder that resolves by priority.
-
-The seven reset permissions `gloss.emoji.reset`, `gloss.animations.reset`, `gloss.bubbles.reset`, `gloss.indicators.reset`, `gloss.drops.reset`, `gloss.tablist.reset` and `gloss.motd.reset` are children of `gloss.admin`. Board and preview resets sit under their own subsystem nodes instead.
-
-## Creation baselines
-
-The hologram baseline inside the jar is read on demand and is never written to the data folder:
-
-| Baseline | Used by |
-|---|---|
-| `baselines/hologram.json` | `/gloss hologram create`; schema `2` with an empty `particleLayers` array |
-The menu baseline is the shipped `defaults/menus/default.json`. It extracts as `menus/default.json` while menus are enabled, and `/gloss menu new` reads the same resource so the starter document and newly created menus cannot drift.
-
-## Importing HoloUi data
-
-`plugins/holoui` (or `plugins/HoloUi`) beside the Gloss data folder is imported automatically. The boot-time run happens only when both conditions hold: `plugins/Gloss/holoui-import.json` does not exist, and a source folder does. Writing that receipt is what makes the import one-shot.
-
-The importer copies. It never moves. It never deletes. It never modifies anything inside the source folder. The HoloUi folder is left exactly as it was. You can keep it until you are satisfied. Then delete it yourself.
-
-| Source | Destination | Notes |
-|---|---|---|
-| `menus/**` | `menus/**` | `.json` files only |
-| `images/**` | `images/**` | any file type |
-| `boards/**` | `panels/**` | HoloUi boards are Gloss panels. `.json` files only |
-| `previews/*.json` | `previews/` | `holoui.preview.*` localization keys are rewritten to `gloss.preview.*` |
-| `preview-scales.json` | `preview-scales.json` | verbatim |
-| `language.yml` | `language.yml` | message overrides copy verbatim; remove any copied top-level `locale` key because selection is authoritative in `gloss.toml` and the stale key is rejected |
-| `settings.json` | `gloss.toml` | keys overlaid, then the whole config re-serialized so comments regenerate |
-
-Files and folders whose path contains a dot-prefixed segment are skipped. Symbolic links are never followed. A rewritten preview whose bytes end up identical to a shipped Gloss default is not written. The shipped copy is already there.
-
-Three things are never copied under any circumstances. The receipt records why:
-
-| Path | Reason |
-|---|---|
-| `editor-sync-sessions.json` | Session secrets are never imported |
-| `editor-sync-transactions/`, `editor-sync-backups/` | Editor sync state is never imported |
-| `custom-items.json` | Regenerable with `/gloss item export` |
-
-A HoloUi `editorSyncEndpoint` is not imported. Gloss uses its current v3 editor-sync endpoint.
-
-### The receipt
-
-`plugins/Gloss/holoui-import.json` records `schemaVersion`, `importedAtMs`, the absolute `source` path, whether the run was forced, and an `entries` array with one line per touched path:
-
-```json
-{
-  "schemaVersion": 1,
-  "importedAtMs": 1755561600000,
-  "source": "/srv/mc/plugins/holoui",
-  "force": false,
-  "entries": [
-    { "path": "menus/shop.json", "disposition": "copied" },
-    { "path": "editor-sync-sessions.json", "disposition": "skipped-secret",
-      "detail": "session secrets are never imported" }
-  ]
-}
-```
-
-Dispositions are `copied`, `skipped-shipped-identical`, `skipped-existing`, `skipped-secret`, `skipped-retired-endpoint`, `overlaid-config-key` and `error`. A per-category summary is also logged to the console when the import runs.
-
-### Re-running it
-
-```
-/gloss import holoui
-```
-
-Permission `gloss.import`. This always runs with force semantics. Files that were skipped last time because the destination already existed are overwritten now. It still never touches the source folder. It still never copies the secrets above. The receipt is rewritten. Gloss reloads in place when the run finishes.
-
-> If you force the import, Gloss overwrites imported menus, panels, images and previews with the HoloUi copies. Edits you made in Gloss to those files are lost.
-{.is-danger}
-
-If no source folder is present, the command reports that and does nothing.
-
-## Migrating pre-merger Gloss data
-
-The legacy import is separate and runs only when explicitly requested. It works in place on supported files already inside `plugins/Gloss/`:
-
-```
-/gloss import legacy
-```
-
-Permission `gloss.import`. It reloads Gloss in place when it finishes.
-
-A file is legacy when it has no `schemaVersion` key. Its original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/<kind>/<file>` before the explicit command rewrites it. The rewritten document starts at `revision` 1. Files that already carry an envelope are skipped. Without this command, unversioned files are silently ignored like every other schema mismatch.
-
-| Kind | Conversion |
-|---|---|
-| `holograms/` | `{id, world, x, y, z, lines}` becomes `anchor.world` plus `anchor.position`. The embedded `id` is dropped so the file name is the only id |
-| `emoji/` | `{trigger, emoji, enabled}` gains the envelope. The legacy `<uses :id:>` trigger sentinel becomes an empty trigger |
-| `animations/` | `target-framerate` becomes `frameIntervalMs` rounded from `1000 / framerate`, and `animation-type` is lowercased into `mode` |
-
-A legacy `config.yml` is overlaid last. Supported mechanical keys land in `gloss.toml`. Supported `chat-bubbles` prefix, offset, wrap, lifetime, follow and hide values merge into the current schema-3 `bubbles/default.json`. Legacy fly-away on keeps the shipped late-fly motion; fly-away off writes identity translation, scale, rotation and opacity expressions. Line stagger is discarded because one message is one multiline display. Its `motd.texts` merge into `motd.json` (each text split on newlines and truncated to the 2-line MOTD limit). Bubble and MOTD content are applied only while the target document is byte-identical to the shipped default. A customized document is left alone and the report explains why. The file is then renamed to `config.yml.imported`.
-
-The importer does not convert legacy boards, group YAML or tablist formats. Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks: those files are silently ignored rather than translated, renamed or policed. Rewrite custom documents to their current schemas or reset shipped files.
-
-The automatic HoloUi importer reports failures and keeps startup moving. The explicit legacy import command reports its own per-file failures to the operator.
-
-## Importing holograms from other plugins
-
-`/gloss import preview <source>` and `/gloss import apply <source>` are unrelated to the two importers above. They read holograms from another plugin data folder — `gholo`, `decent-holograms`, `holographic-displays` or `fancy-holograms`. They are covered on [Commands & Permissions](/gloss/17-commands-permissions).
+Use `/gloss import holoui` for HoloUi data and `/gloss import legacy` for supported older Gloss data. Back up `plugins/Gloss/` first.

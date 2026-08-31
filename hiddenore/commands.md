@@ -18,7 +18,7 @@ Player help uses the shared 19-line command panel: up to 17 root entries or 16 e
 | `/hiddenore debug` | Toggle ore debug mode for yourself |
 
 Both subcommands check `hiddenore.admin` at runtime. They also match the
-`plugin.yml` declaration.
+
 
 ## Permissions
 

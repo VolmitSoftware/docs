@@ -65,22 +65,8 @@ remote-deploy:
 | `master-deploy-signatures` | `["MyPlugin", "AnotherPlugin"]` | Which plugins are eligible to push |
 
 Only plugins named in `master-deploy-signatures` are pushed. A rebuild of an
-unrelated jar is not distributed. Both shipped entries are placeholders.
+unrelated jar is not distributed. Both default entries are placeholders.
 Replace them, or the feature does nothing.
-
-## Transfer and watcher handoff
-
-The master sends the immutable snapshot accepted by its local watcher while
-preserving the authoritative source jar's filename. Internal staging filenames
-are not exposed to the slave.
-
-The slave writes the transfer to `<filename>.jar.part`, verifies the declared
-size and SHA-256 digest, then atomically replaces the final `.jar` when the
-filesystem supports it. BileTools ignores the partial file. The completed jar
-then follows the normal stability checks and the completion-anchored
-three-second automatic batch cadence. A replaced jar's brief
-delete-and-recreate window is covered by the three-second deletion grace period.
-
 ## Transfer limits
 
 | Key | Default | Minimum |
@@ -88,6 +74,6 @@ delete-and-recreate window is covered by the three-second deletion grace period.
 | `remote-deploy.socket-timeout-ms` | `15000` | `1000` |
 | `remote-deploy.max-transfer-bytes` | `268435456` (256 MiB) | 1 MiB |
 
-The size cap bounds a single transfer. Raise it only if you ship jars larger
+The size cap bounds a single transfer. Raise it only if you deploy jars larger
 than 256 MiB. The cap also bounds how much a hostile peer can make the server
 buffer.

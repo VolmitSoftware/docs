@@ -92,7 +92,7 @@ Prerequisites: a loadable pack under the packs root, `iris.all` (Bukkit) or game
 2. Open `dimensions/overworld.json`. Pick one key out of the `regions` array.
 3. Open `regions/<that key>.json`. Pick one key out of `landBiomes`.
 4. Open `biomes/<that key>.json`. Follow its first generator, object, decorator, or structure reference into the matching type folder.
-5. At each hop, confirm the key is the path under the type folder with the extension removed — nothing more.
+5. At each hop, confirm the key is the path under the type folder with the extension removed, with nothing else appended.
 6. Open the pack in Studio, focus that biome, save one valid edit, and wait for hotload. Re-validate.
 
 You are done when every reference resolved without guessing at a namespace or filename, hotload succeeded, and validation reports no blocking errors.
@@ -139,7 +139,7 @@ Studio worlds are the exception. A Studio world's engine points directly at the 
 
 Hotload opens a fresh `IrisData` on the same folder. It reloads the dimension by its key and builds a replacement engine runtime under the lifecycle lock. It publishes that runtime, retires the old `IrisData`, then refreshes the editor workspace and datapacks in the background. If any step fails it rolls back to the previous runtime and reports the error.
 
-The recursive watcher consumes native events and reconciles metadata plus SHA-256 content, so atomic moves, FTP uploads, and same-size edits with preserved timestamps are detected. It waits for a stable snapshot, ignores common temporary artifacts and everything under `.iris`, and applies no more than one completed hotload every 3 seconds; later saves collapse into one latest-state trailing pass and a failed pass remains queued. Bukkit checks the folder about once per second. Modded runs a 250 ms eligibility sweep, but each pack is checked about once per second and remains held off during pregeneration or within 2 seconds of recent generation. Bukkit backs off to 4-second checks during maintenance. It watches only `.json` and `.iob` and runs only while the world is a Studio world that is not closing and not in jigsaw-studio mode.
+Studio watches `.json` and `.iob` files and applies complete saved changes to new chunks. Temporary files and `.iris` output are ignored. Invalid edits leave the current pack active.
 
 To push pack edits into an existing production world, see `update-world` in [25 - Pack Management](/iris/25-pack-management), or just create a new world. That is the right answer for any change to height or dimension type.
 
@@ -181,7 +181,7 @@ Folders whose names start with `.` are skipped when Iris lists packs, which is w
 | `matter/` | `.mat` | Matter binaries. The loader exists and resolves keys, but no runtime system consumes them |
 | `mods/` | `.json` | Injector/replacer documents. Loaded so schemas and tooling see them. The engine has no path that applies them |
 
-Anything else in a pack directory is not a resource type. The shipping overworld ships empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
+Anything else in a pack directory is not a resource type. The bundled Overworld pack contains empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
 
 A reduced init path used by the datapack compiler registers `biomes`, `regions`, `dimensions`, `generators`, `expressions`, `images`, and `image-maps` so validation can inspect the complete reachable image-driven generation graph. That is internal and not something a pack author configures.
 
@@ -193,7 +193,7 @@ A reduced init path used by the datapack compiler registers `biomes`, `regions`,
 2. There is no `dimensions/` directory.
 3. There are no `*.json` files **directly inside** `dimensions/`. Nested dimension files do not count toward this check.
 
-Passing those three does not mean the pack is loadable. `PackValidator` then runs roughly ten content validators — dimension, cave profile, loot, object/surface, structure graph, native structure, spawn, and content-key checks. Any blocking error from those also makes the pack not loadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one. The rest are usually downstream.
+Passing those three does not mean the pack is loadable. `PackValidator` then runs roughly ten content validators: dimension, cave profile, loot, object/surface, structure graph, native structure, spawn, and content-key checks. Any blocking error from those also makes the pack not loadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one. The rest are usually downstream.
 
 Presence on disk is a weaker notion than loadability. A pack "exists" if its directory is safe and holds at least one non-symlink `dimensions/*.json`.
 

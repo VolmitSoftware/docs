@@ -183,4 +183,3 @@ player-facing door kind remains `PUBLIC`.
 
 - Door kinds, OpenState, access, recipes, config: [07 - Dimensional Doors](/wormholes/07-dimensional-doors)
 - Install and TOML: [01 - Installation & Configuration](/wormholes/01-installation-configuration)
-- Runtime boot and managers: [13 - Runtime Architecture](/wormholes/13-runtime-architecture)
