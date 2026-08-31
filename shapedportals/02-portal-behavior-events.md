@@ -69,45 +69,27 @@ Shaped Portals keeps track of the portals it creates so their unusual shapes can
 | A portal's chunks are unloaded | Waits for them to load; integrity checks do not load chunks |
 | Blocks change through an API or WorldEdit | A periodic check catches changes not covered by normal events |
 
-Integrity must be enabled for repair and cleanup. It checks the recorded frame and portal axis before refilling cells, and removes only portal blocks owned by the affected record.
-
-<div class="sp-media"><strong>Portal-repair GIF goes here</strong><span>Show a missing portal cell being repaired, followed by a broken frame deactivating the portal.</span></div>
-
-Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, and chunk loads trigger checks of nearby portals. A bounded periodic sweep catches other edits. See [Integrity settings](/shapedportals/01-installation-configuration#integrity) for timing and limits.
+Integrity must be enabled for repair and cleanup. See [Integrity settings](/shapedportals/01-installation-configuration#integrity).
 
 ## Persistent ownership
 
-Each managed portal has a UUID in `plugins/ShapedPortals/portals.json`. Its record stores the world, axis, anchor, interior coordinates, frame coordinates and materials, creation time, creator label, and data version.
+Managed portals are saved in `plugins/ShapedPortals/portals.json`.
 
 > Back up the portal store alongside your worlds. Do not edit it while the server is running. An invalid or unsupported store prevents the plugin from enabling safely and is preserved for recovery.
-
-Records are written asynchronously with atomic file replacement. They let the plugin distinguish its own portals from vanilla portals and other plugins' blocks after a restart.
 
 ## Portal listing and navigation
 
 Use [the portal commands](/shapedportals/00-overview#find-and-visit-a-portal) to find or visit a managed portal.
 
-The player list shows four portals per page, sorted by world, anchor, creation time, and UUID. Entries show the world, location, axis, size, creator, and creation time in the server's local time. Hovering shows the full UUID and teleport action. Console output includes all portals.
+The list shows each portal's location, size, creator, creation time, and UUID.
 
-Before teleporting, the plugin prepares the destination chunks, checks that the anchor is still a portal block with the correct axis, and looks on both sides for clear standing space over a solid floor. It does not move the player if the world is unavailable, the portal is inactive, chunk preparation fails, or another plugin cancels the teleport.
+Teleportation fails if the portal or world is unavailable, no safe landing exists, or another plugin cancels it.
 
 An unsafe landing requires a separate permission and confirmation. Read the [unsafe teleport warning](/shapedportals/00-overview#find-and-visit-a-portal) before using it.
 
 ## Ignition and protection plugins
 
-Vanilla gets the first chance to create a portal. Shaped Portals runs one tick later only if vanilla has not already filled the ignition block.
-
 Ignition denied by a protection plugin is ignored. Before placing shaped portal blocks, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE`. If it is cancelled, or the frame changes during the event, no portal is placed and no success sound plays.
-
-Player notices use the configured [presentation channels](/shapedportals/01-installation-configuration#presentation). Ordinary terrain fires are ignored before feedback and statistics.
-
-<details>
-<summary>Event and region details for integrations</summary>
-<p>Player-placed fire is handled through <code>BlockPlaceEvent</code>; other configured causes use <code>BlockIgniteEvent</code>. Both listeners use <code>MONITOR</code> and ignore cancelled events. Direct ignition, placed fire, and player-launched fireballs check the responsible player's creation permission when required.</p>
-<p>A bounded walk from the ignition cell through replaceable materials must reach a configured lower frame boundary. Ordinary terrain fires fail this check before deduplication, permissions, scheduling, or counters.</p>
-<p>Both vertical axes are scanned on the owning region, followed by <code>PortalCreateEvent(proposedStates, world, creator, FIRE)</code> and a second shape check. Successful portals are registered and filled without initial neighbor physics. Creation cannot span independently owned Folia regions.</p>
-<p>Physics events mark records for later checks; Shaped Portals does not globally cancel block physics. Recorded frame materials are refreshed and persisted after intact boundary changes.</p>
-</details>
 
 ## Troubleshooting
 
@@ -125,6 +107,6 @@ Player notices use the configured [presentation channels](/shapedportals/01-inst
 
 Shaped Portals does not pair portals or provide custom destinations. A dedicated routing plugin is needed for fixed links.
 
-<div class="sp-related"><a href="/shapedportals/01-installation-configuration">Configuration</a> · <a href="/shapedportals/03-compatibility-operations">Compatibility &amp; operations</a> · <a href="/shapedportals/04-architecture-limits">Developer reference</a></div>
+<div class="sp-related"><a href="/shapedportals/01-installation-configuration">Configuration</a> · <a href="/shapedportals/03-compatibility-operations">Compatibility</a></div>
 
 </div>

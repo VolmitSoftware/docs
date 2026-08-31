@@ -54,7 +54,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <p>Build vertical Nether portals with curves, steps, and uneven outlines. Keep normal Minecraft travel, and manage portal rules from an in-game menu.</p>
 <nav class="sp-actions" aria-label="Get started"><a class="sp-primary" href="/shapedportals/00-overview#build-your-first-portal">Build a portal</a><a href="/shapedportals/01-installation-configuration">Install &amp; configure</a></nav>
 </div>
-<div class="sp-media"><strong>Gameplay video goes here</strong><span>Build an irregular frame, light it, and walk through the finished portal.</span></div>
+<div class="sp-media"><strong>Build any closed vertical shape</strong><span>Use obsidian or crying obsidian, then light the empty interior with flint and steel.</span></div>
 </section>
 <section class="sp-section" aria-labelledby="sp-first-portal">
 <h2 id="sp-first-portal">Your first portal</h2>
@@ -72,8 +72,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <a href="/shapedportals/01-installation-configuration"><strong>Installation &amp; configuration</strong><span>Server setup, the in-game editor, and every setting.</span></a>
 <a href="/shapedportals/02-portal-behavior-events"><strong>Portal behavior</strong><span>Frame changes, repairs, protection plugins, and saved portals.</span></a>
 <a href="/shapedportals/02-portal-behavior-events#troubleshooting"><strong>Something not working?</strong><span>Check ignition, permissions, disappearing blocks, and travel.</span></a>
-<a href="/shapedportals/03-compatibility-operations"><strong>Compatibility &amp; operations</strong><span>Server requirements, Folia limits, and React integration.</span></a>
-<a href="/shapedportals/04-architecture-limits"><strong>Developer reference</strong><span>Geometry, persistence, events, and region ownership.</span></a>
+<a href="/shapedportals/03-compatibility-operations"><strong>Compatibility</strong><span>Supported servers, Java versions, Folia limits, and React integration.</span></a>
 </nav>
 </section>
 <footer class="sp-footer"><span>Root command: <code>/shapedportals</code> or <code>/sp</code></span><nav aria-label="Support and downloads"><a href="https://www.spigotmc.org/resources/shaped-portals.95595/">Download</a><a href="https://volmitsoftware.com/discord">Discord</a><a href="https://github.com/VolmitSoftware/ShapedPortals">Source</a></nav></footer>

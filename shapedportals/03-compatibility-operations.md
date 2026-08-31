@@ -53,36 +53,27 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <div class="sp-reference">
 <nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations" aria-current="page">Server setup</a></nav>
 
-Shaped Portals uses Bukkit APIs without NMS or client mods. Match the server's Java requirements, and test portal creation and travel on your server build before opening it to players.
+Shaped Portals supports Spigot 1.20.1 and newer compatible servers. It does not require a client mod or resource pack.
 
-[Requirements](#platform-matrix) · [Java](#java-runtime-floors) · [React](#react-plugin-api-pack) · [Server checks](#operational-checklist)
+[Requirements](#platform-matrix) · [Java](#java-runtime-floors) · [React](#react-plugin-api-pack)
 
 ## Platform matrix
 
 | Platform | Requirement or limit |
 |---|---|
-| Spigot and compatible servers | Source baseline is Spigot 1.20.1; plugin metadata declares Bukkit API 1.20 |
-| Paper | Uses the same plugin jar; server builds must provide the required Bukkit APIs |
-| Folia | Supported scheduling model is region-owned; a portal cannot be created across independently owned regions |
-| Client | No client mod or resource pack is required by the plugin |
-
-The build checks API compatibility against Spigot 1.20.1, Paper 26.1.2, and Spigot 26.2. These are compile checks, not a guarantee that every server build or plugin combination works at runtime.
+| Spigot, Paper, and compatible servers | Version 1.20.1 or newer |
+| Folia | Supported; a portal cannot cross independently owned regions |
+| Client | No mod or resource pack required |
 
 ## Java runtime floors
 
-The jar contains Java 17 bytecode. A newer server may need a newer runtime.
-
 | Minecraft server range | Java requirement |
 |---|---|
-| 1.20.1 to 1.20.4 | Java 17 minimum for this plugin; follow your server distribution's requirements |
-| 1.20.5 to 1.21.11 | Java 21 or the newer version required by your server |
+| 1.20.1 to 1.20.4 | Java 17 or the version required by your server |
+| 1.20.5 to 1.21.11 | Java 21 or newer as required by your server |
 | 26.1 to 26.2 | Java 25 |
 
 Check [Paper's system requirements](https://docs.papermc.io/paper/getting-started/) and the [Minecraft 1.20.5 release notes](https://www.minecraft.net/article/minecraft-java-edition-1-20-5) for server runtime requirements.
-
-### Why the floor is not 1.17
-
-Java 17 bytecode alone does not make the linked Bukkit and shared-library APIs compatible with older Minecraft versions. The complete plugin is built against the 1.20.1 baseline; 1.17 is not a supported target.
 
 ## Folia and chunk loading
 
@@ -105,54 +96,14 @@ React is optional. The **ShapedPortals Runtime** pack adds these samplers:
 
 ### Install the pack
 
-1. Extract `react-api-packs/shapedportals-runtime.toml` from the Shaped Portals jar. Source builds also provide it under `build/distributions/react-api-packs/`.
+1. Extract `react-api-packs/shapedportals-runtime.toml` from the Shaped Portals jar.
 2. Copy it into `plugins/React/plugin-apis/`, or install it through React Web.
 3. Run `/react plugin-api reload`.
 
 See [React Plugin API Packs](/react/20-api-plugin-api-packs) for pack setup and status.
 
-These measurements stay on your server and are separate from bStats. Attempt totals and success percentage reset when Shaped Portals restarts. Success percentage is unavailable until the first attempt; rate samplers need two samples. Ordinary terrain fires do not count as portal attempts.
+These measurements stay on your server and are separate from bStats. Rates need two samples, and session totals reset when Shaped Portals restarts.
 
-<details>
-<summary>Integration metric keys</summary>
-<table>
-<thead><tr><th>Metric key</th><th>Value</th></tr></thead>
-<tbody>
-<tr><td><code>shapedportals.managed-portals</code></td><td>Registered portal count</td></tr>
-<tr><td><code>shapedportals.interior-cells</code></td><td>Managed interior count</td></tr>
-<tr><td><code>shapedportals.creation-attempts-total</code></td><td>Session attempt total</td></tr>
-<tr><td><code>shapedportals.created-portals-total</code></td><td>Session success total</td></tr>
-<tr><td><code>shapedportals.rejected-attempts-total</code></td><td>Session rejection total</td></tr>
-<tr><td><code>shapedportals.creation-success-percent</code></td><td>Session success percentage</td></tr>
-</tbody>
-</table>
-<p>The provider reads registry counts and session counters without accessing worlds, chunks, entities, or inventories during sampling. React discovers it through the shared VolmLib integration bridge; Shaped Portals does not require React to run.</p>
-</details>
-
-## Operational checklist
-
-Before players use the plugin, check the following on your server build:
-
-| Area | Check |
-|---|---|
-| Startup and commands | Plugin enables cleanly; help, status, editor, language picker, and portal list work for the intended permission groups |
-| Shapes | Test stepped and concave frames, both axes, size limits, open frames, and blocked interiors |
-| Ignition and protection | Test flint and steel, placed fire, fire charges, and denied actions in protected areas |
-| Travel | Enter and return through a portal; try administrative teleportation to a loaded and unloaded destination |
-| Persistence | Restart and unload/reload chunks; check the frame still works |
-| Integrity | Break a frame, change a boundary, remove a portal cell, and try relevant WorldEdit changes |
-| Configuration | Save a valid edit, then an invalid one; check the previous working configuration stays active |
-| Languages and display | Select a locale, edit a message, cancel chat entry, and check overlays alongside other plugins |
-| Optional metrics | Check bStats opt-out and React sampler values if those features are used |
-
-Use a real Minecraft client to check rendering, sounds, and menu readability. Review the console for scheduler, region-ownership, or persistence errors.
-
-**Before requesting support:** reproduce the problem, note what you expected, and create a [diagnostic report](/shapedportals/00-overview#create-a-diagnostic-report). Disable public uploading first if your report must stay local.
-
-## Build and local publication
-
-Build instructions and artifact details are in the [Developer reference](/shapedportals/04-architecture-limits#build-from-source).
-
-<div class="sp-related"><a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a> · <a href="/shapedportals/04-architecture-limits">Developer reference</a> · <a href="https://volmitsoftware.com/discord">Discord</a></div>
+<div class="sp-related"><a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a> · <a href="https://volmitsoftware.com/discord">Discord</a></div>
 
 </div>

@@ -53,7 +53,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <div class="sp-reference">
 <nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview" aria-current="page">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations">Server setup</a></nav>
 
-Build a shaped portal, look up a command, or check who can use it. Shaped Portals uses normal Nether portal blocks, so Minecraft still handles travel and destination creation.
+Shaped Portals uses normal Nether portal blocks, so Minecraft still handles travel and destination creation.
 
 [Build a portal](#build-your-first-portal) · [Shape rules](#valid-shapes) · [Commands](#commands) · [Permissions](#permissions)
 
@@ -64,9 +64,7 @@ Build a shaped portal, look up a command, or check who can use it. Shaped Portal
 3. Leave the inside empty and light it with flint and steel.
 4. Wait for the portal to fill, then walk through.
 
-The default interior size is **2 to 256 blocks**. Players can create portals by default; a server's permissions and configuration may restrict this.
-
-<div class="sp-media"><strong>Portal-building GIF goes here</strong><span>Show a small stepped frame before ignition, the block being lit, and the filled portal.</span></div>
+The default interior size is **2 to 256 blocks**.
 
 ## Valid shapes
 
@@ -85,12 +83,12 @@ Server owners can change these limits in [Portal settings](/shapedportals/01-ins
 
 ## Commands
 
-Use `/shapedportals`, `/shapedportal`, or the shorter `/sp`. In this reference, `<required>` arguments must be supplied and `[optional]` arguments may be omitted. Do not type the brackets.
+Use `/shapedportals`, `/shapedportal`, or `/sp`.
 
 | Command | What it does | Run from |
 |---|---|---|
 | `/sp` | Open command help | Player or console |
-| `/sp status` | Show portal counts, creation statistics, and scheduler state | Player or console |
+| `/sp status` | Show portal counts and creation statistics | Player or console |
 | `/sp config` | Open the in-game configuration and language editor | Player |
 | `/sp language [locale]` | Choose a language, or open the picker when omitted | Player |
 | `/sp portals [page]` | List managed portals; page defaults to 1 | Player or console |
@@ -100,7 +98,7 @@ Use `/shapedportals`, `/shapedportal`, or the shorter `/sp`. In this reference, 
 
 {.sp-commands}
 
-`/sp tp` is an alias for `/sp teleport`. Console portal listings show all records rather than one player page. There is **no reload command**; configuration files reload automatically by default.
+`/sp tp` is an alias for `/sp teleport`. Configuration files reload automatically by default.
 
 ### Find and visit a portal
 
@@ -112,11 +110,9 @@ You can also supply its full UUID or a unique prefix of at least eight character
 /sp teleport <portal UUID>
 ```
 
-Replace `<portal UUID>` with an ID from the list. Normal teleportation checks for clear feet and head space over a solid floor.
+Use an ID from the list. Teleportation looks for clear standing space over a solid floor.
 
 <div class="sp-caution"><p><strong>Unsafe teleport confirmation:</strong> if no safe spot exists, players with the additional unsafe permission can repeat the same teleport within 10 seconds. This can place you inside blocks or over a drop. It does not clear space or create a platform, and it cannot bypass an unavailable world, inactive portal, or another plugin's teleport cancellation.</p></div>
-
-<div class="sp-media"><strong>Portal-list screenshot goes here</strong><span>Show one portal entry, its location, the teleport hover text, and page controls.</span></div>
 
 ### Change the language
 
@@ -124,13 +120,13 @@ Replace `<portal UUID>` with an ID from the list. Normal teleportation checks fo
 /sp language de_DE
 ```
 
-Selects German. A missing repository language file downloads before selection completes. Omit the locale to open the clickable picker. See [Language files](/shapedportals/01-installation-configuration#language-files) for available locales and message editing.
+This selects German. Omit the locale to open the language picker. See [Language files](/shapedportals/01-installation-configuration#language-files) for available locales and message editing.
 
 ### Create a diagnostic report
 
 <div class="sp-caution"><p><strong>Public upload is on by default.</strong> Before running <code>/sp debug</code>, set <code>debug.uploadEnabled = false</code> in the Diagnostics editor or configuration if the report should stay on your server. Reports include server, plugin, portal, configuration, and system details.</p></div>
 
-Every run saves a file under `plugins/ShapedPortals/debug/` first. An upload failure does not remove it. Only one report runs at a time, and uploaded reports cannot be deleted through the plugin.
+Reports are also saved under `plugins/ShapedPortals/debug/`.
 
 ## Permissions
 
@@ -148,13 +144,7 @@ Every run saves a file under `plugins/ShapedPortals/debug/` first. An upload fai
 
 {.sp-permissions}
 
-Administrative subcommands check their own permission and do not also require `shapedportals.command`. World restrictions, shape rules, and protection-plugin decisions still apply when a player has creation permission.
-
-## Creation lifecycle
-
-Vanilla gets the first chance to create a normal portal. If it has not done so after one tick, Shaped Portals checks the frame, fires a cancellable creation event, checks the frame again, and fills and saves the portal.
-
-Ordinary terrain fires are ignored before attempt statistics and feedback. See [Portal behavior](/shapedportals/02-portal-behavior-events) for protection plugins, repairs, and persistence.
+World restrictions, shape rules, and protection plugins still apply when a player has creation permission.
 
 <div class="sp-related"><a href="/shapedportals">Shaped Portals home</a> · <a href="/shapedportals/01-installation-configuration">Installation &amp; configuration</a> · <a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a></div>
 

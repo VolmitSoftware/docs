@@ -65,7 +65,7 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 4. Run `/sp status`, then `/sp config` in-game to review the settings.
 5. [Build a test portal](/shapedportals/00-overview#build-your-first-portal).
 
-The plugin targets Spigot 1.20.1 and newer compatible APIs, with Java 17 bytecode. Use the Java version your server requires. See [Compatibility & Operations](/shapedportals/03-compatibility-operations) for platform limits.
+The plugin supports Spigot 1.20.1 and newer compatible servers. See [Compatibility](/shapedportals/03-compatibility-operations) for Java and Folia requirements.
 
 ### Where files live
 
@@ -81,7 +81,7 @@ All paths below are inside `plugins/ShapedPortals/`.
 
 Do not edit `portals.json` while the server is running. Keep it with your world backups.
 
-## Complete in-game editor
+## In-game editor
 
 Run `/sp config` with `shapedportals.config`. Choose General, Portal Rules, Effects, Hot Reload, Integrity, Presentation, Diagnostics, or Languages.
 
@@ -97,30 +97,13 @@ Run `/sp config` with `shapedportals.config`. Choose General, Portal Rules, Effe
 
 Changes are validated and saved to the same files used by the server. Invalid values leave the previous settings active.
 
-<div class="sp-media"><strong>Configuration-menu screenshot goes here</strong><span>Show the category menu and a Portal Rules setting with its click controls visible.</span></div>
-
 ## Live configuration behavior
 
-By default, the plugin watches `config.toml` and the selected language file. Save your edits and wait for the stable-file check; there is no manual reload command.
+By default, changes to `config.toml` and the selected language file load automatically.
 
-- A valid configuration and language pair replaces the active settings together.
-- A failed edit keeps the last valid pair and logs the error. Invalid files are not overwritten with defaults.
-- GUI changes save and apply without a restart. Their own file events do not apply the same change twice.
-- Inactive language files are not watched. Editing one does not select it.
-- If watching is disabled, use the configuration editor's reload control or restart after file edits.
-
-### Small configuration example
-
-Edit the existing `[portal]` section to allow interiors of up to 512 blocks. Keep the rest of your file and do not add a duplicate section.
-
-```toml
-[portal]
-minimumInteriorBlocks = 2
-maximumInteriorBlocks = 512
-maximumWidth = 64
-maximumHeight = 64
-frameMaterials = ["OBSIDIAN", "CRYING_OBSIDIAN"]
-```
+- Invalid edits keep the last working settings and log the error.
+- Changes from `/sp config` apply immediately.
+- If hot reload is disabled, use the editor's reload control or restart the server.
 
 ## Settings
 
@@ -198,7 +181,7 @@ Integrity checks skip unloaded portal chunks. See [Repair-based integrity](/shap
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `presentation.splashScreen` | `true` | Prints the console startup banner after services are ready |
+| `presentation.splashScreen` | `true` | Shows the console banner during startup |
 | `presentation.commandSounds` | `true` | Plays themed success or failure sounds for player commands |
 | `presentation.commandOverlays` | `ACTION_BAR` | Optional command overlays: `ACTION_BAR`, `TITLE`, `BOSS_BAR`; chat always remains enabled |
 | `presentation.portalNotices` | `ACTION_BAR` | Portal notice channels: `CHAT`, `ACTION_BAR`, `TITLE`, `BOSS_BAR`; empty disables notices |
@@ -219,7 +202,7 @@ Command results stay in chat even when an extra overlay is enabled. Action bars 
 
 {.sp-settings}
 
-The global opt-out in `plugins/bStats/config.yml` takes priority. Shaped Portals submits standard bStats platform and plugin metrics, without custom charts. [React integration](/shapedportals/03-compatibility-operations#react-plugin-api-pack) is separate and stays on your server.
+The global opt-out in `plugins/bStats/config.yml` takes priority. [React integration](/shapedportals/03-compatibility-operations#react-plugin-api-pack) is separate.
 
 ### Diagnostic reports
 
@@ -231,11 +214,7 @@ The global opt-out in `plugins/bStats/config.yml` takes priority. Shaped Portals
 
 **Uploads are public.** Disable this setting before running `/sp debug` for local-only reports. See [Diagnostic command and privacy notes](/shapedportals/00-overview#create-a-diagnostic-report).
 
-<details>
-<summary>What a diagnostic report contains</summary>
-<p>Server and API versions, plugin metadata, effective settings, portal records and health, creation-rejection reasons, world availability, service and scheduler state, TPS and MSPT, language-source information, JVM and process details, memory and CPU statistics, filesystem capacity, and hashes and metadata for the configuration, language, portal store, and plugin jar.</p>
-<p>The local file is saved before any upload. Only one report can be generated at a time.</p>
-</details>
+Reports contain server, plugin, configuration, portal, performance, and system details. A local copy is saved before upload.
 
 ## Language files
 
@@ -249,7 +228,7 @@ Available locales:
 
 The picker shows locale IDs and language names. Missing repository translations download only when selected or opened for editing. Selection completes only after validation succeeds; a failed download keeps the current language.
 
-Installed files work offline and are not automatically refreshed or replaced. A safe custom locale name can be entered from the editor to create a language based on English.
+Installed files work offline and are not replaced automatically. You can also create a custom locale based on English.
 
 ### Edit messages
 
@@ -260,26 +239,13 @@ Installed files work offline and are not automatically refreshed or replaced. A 
 
 Editing the active locale applies immediately. Editing a different locale updates its file without switching languages.
 
-<div class="sp-media"><strong>Language-editor GIF goes here</strong><span>Select a message, enter replacement text, and show the saved result in chat.</span></div>
-
 ### Colors and placeholders
 
 Messages accept classic colors such as `&c`, formatting such as `&l`, RGB colors, and MiniMessage. Each language file's header explains the available placeholders.
 
 `runtime.prefix` sets the prefix. Remove the optional `{prefix}` token from an individual message to hide it there. Other placeholders required by that message must stay intact.
 
-<details>
-<summary>Language file rules and download behavior</summary>
-<p>The selected <code>languages/&lt;locale&gt;.toml</code> file is authoritative. Missing entries fall back to built-in English. English is generated only when missing, and sparse custom catalogs are allowed. Unknown keys are left untouched.</p>
-<p>Manual loading preserves file contents. Saving through the language editor reorganizes TOML into sections while preserving the leading comment block, values, and unknown entries. Incorrect value types, missing required placeholders, placeholders inside MiniMessage tags, or invalid formatting reject the edit and keep the last valid language.</p>
-<p>RGB input accepts <code>&amp;#RRGGBB</code>, <code>&amp;xRRGGBB</code>, expanded <code>&amp;x&amp;R&amp;R&amp;G&amp;G&amp;B&amp;B</code>, and bracket form such as <code>[6f35c5]</code>. Section-sign codes also work. Put a backslash before an ampersand or opening bracket to display it literally. Player and world substitutions are escaped before rendering.</p>
-<p>Repository translations are fetched from the source repository's <code>main</code> language directory. Downloads validate the required catalog and install only the missing file. Concurrent requests share one transfer, failed requests have a 30-second retry cooldown, and a file created or edited during transfer is not replaced. The console identifies the locale, source URL, and installed path. A failed download does not prevent startup.</p>
-<p>The command picker has no chat-entry timeout and never opens an inventory. Opening language selection from the editor also offers a 60-second typed entry; typing a selection, cancelling, or timing out returns to the editor.</p>
-</details>
-
-## Build from source
-
-See [Developer reference](/shapedportals/04-architecture-limits#build-from-source) for the build toolchain, artifact, and language manifest.
+Missing messages fall back to English. Invalid formatting or missing required placeholders rejects the edit and keeps the last working language file.
 
 <div class="sp-related"><a href="/shapedportals/00-overview">Commands &amp; permissions</a> · <a href="/shapedportals/02-portal-behavior-events">Portal behavior &amp; troubleshooting</a></div>
 
