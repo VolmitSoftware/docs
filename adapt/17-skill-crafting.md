@@ -111,7 +111,7 @@ Works on its own once learned.
 ### Masterwork (`crafting-masterwork`)
 
 Tools and armor you craft can come out better than they should. Every actual output rolls independently, including each item produced by one shift-click batch. A successful masterwork adds a randomized fraction of the item's base
-durability. With shipped settings the roll spans half to all of the durability
+durability. With default settings the roll spans half to all of the durability
 bonus available at your level. At full level that means +25-50 percent. `+264 Masterwork` is the upper
 durability roll for an item with 528 base durability rather than a fixed bonus.
 

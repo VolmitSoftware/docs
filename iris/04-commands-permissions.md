@@ -7,7 +7,7 @@ tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris exposes one root command, `/iris` (aliases `/ir`, `/irs`), on every platform. Bukkit uses VolmLib Director, where optional arguments are always `key=value`. Fabric, Forge, and NeoForge register a Brigadier tree with positional arguments and literal flags. This page is the complete command reference. Platform gaps are marked **Bukkit-only** or **modded-only**.
+Iris uses `/iris` (aliases `/ir`, `/irs`) on every platform. Bukkit optional arguments use `key=value`. Fabric, Forge, and NeoForge use positional arguments and literal flags. Platform gaps are marked **Bukkit-only** or **modded-only**.
 
 See [30 - Platform Differences](/iris/30-platform-differences) for the platform matrix. See [03 - Configuration](/iris/03-configuration) for what `/iris reload` re-reads.
 
@@ -67,7 +67,7 @@ A clean pack reports no blocking errors. The all-packs form finishes with a brok
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
 |---|---|---|---|
-| Replace the exact vanilla Overworld and Nether with the shipping pair | **Paper-family, not Spigot:** download `overworld`, then `underworld`. Restart once so their registry data loads, stage both replacements, and restart once more | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Replace the exact vanilla Overworld and Nether with the bundled pair | **Paper-family, not Spigot:** download `overworld`, then `underworld`. Restart once so their registry data loads, stage both replacements, and restart once more | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Create an in-game jigsaw project | `/iris jigsaw create overworld village/demo` | Not available. Author on Bukkit and copy the saved pack | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Inspect an Iris jigsaw graph | `/iris structure info overworld <structure>` | `/iris structure info <structure>` while in its Iris dimension | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Remove a disposable Iris world | Evacuate players, `/iris unloadWorld <world>`, then `/iris remove <world>` | `/iris world delete <dimension>` | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
@@ -76,22 +76,19 @@ If a command fails before doing work, check in this order. Check platform syntax
 
 ## Syntax
 
-### Bukkit (Director)
+### Bukkit
 
-- Root: `/iris` / `/ir` / `/irs`. Subcommand and group names come from the method or class name unless `@Director(name=…)` overrides it, so several commands read differently than you would guess. See the reference tables.
+- Root: `/iris`, `/ir`, or `/irs`. See the reference tables for exact subcommand names.
 - Tab completion and help render every configurable value as its canonical `key=value`, including required values and contextual overrides. Required values also accept their bare positional form. Optional and contextual values do not. `/iris pregen start 500 true` is a parse error. Write `/iris pregen start radius=500 gui=true`.
-- A parameter declared with a blank default counts as required even when the description says otherwise.
+- A blank default means the parameter is required.
 - Names and aliases match case-insensitively.
-- Help uses the shared 19-line Director mini-menu: up to 17 root entries or 16 subtree entries after reserving the Back row. Shorter trees print every entry, console help remains flat and unpaginated, required renders as `<name=…>`, and optional renders as `[name=…]`.
-- Player help rows are interactive. Clicking an invocable command suggests it in chat, while clicking a command group opens that group's help. Hover text shows aliases, description, usage or example text, and each parameter's type plus required or default state. Console help remains plain text.
 - **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) resolve from the sender's current world or look target. Iris marks its operator-overridable contexts for keyed help and completion. Internal context injection remains hidden.
-- Tab completion is not permission-gated. Only execution is.
 
-### Modded (Brigadier)
+### Modded
 
-- Same root and aliases. `ir` and `irs` are redirect nodes onto `iris`.
+- Same root and aliases.
 - Arguments are ordered literals and typed arguments, never free-form `key=value`.
-- `/iris` and `/iris help [section]` open the help browser. Players get a paginated clickable UI (17 entries per page, trailing page number accepted). Console gets a flat text list. Bare group nodes route into the same help.
+- `/iris` and `/iris help [section]` open command help.
 - Flags are literals where used (pregen `gui`, `sync`, `nocache`. Download `force`).
 
 ## Permissions
@@ -103,24 +100,24 @@ If a command fails before doing work, check in this order. Check platform syntax
 | `iris.all` | `op` | Required for every `/iris` command |
 | `iris.treefeller` | `op` | Use survival tree felling; also requires `treeFeller.enabled` |
 
-`iris.all` is code-gated as `ROOT_PERMISSION` in `CommandSVC`. There are no per-subcommand permission nodes: a sender either has the whole tree or none of it. Custom-biome restart warnings also notify online players who are op **or** hold `iris.all`.
+`iris.all` grants the full command tree. Custom-biome restart warnings notify operators and players with this permission.
 
 ### Modded
 
-| Gate | Brigadier level | Applies to |
+| Gate | Level | Applies to |
 |------|-----------------|------------|
 | Gamemaster | `Commands.LEVEL_GAMEMASTERS` (2) | Everything that mutates: create/world, studio, object tools, pregen, download, debug, reload, evacuate, teleport, seed, edit, find/goto, structure, datapack, pack, developer, regen, goldenhash, accesslist |
 | Read-only | `Commands.LEVEL_ALL` (0) | `help`, `version`, `info` (seed field omitted unless gamemaster), `worlds`, `height`, `metrics`, and the entire `what` subtree |
 
-The root `iris` literal itself carries no requirement, so any player can run it and reach the help browser. The help marks itself as restricted when the source fails the gamemaster check.
+Anyone can open `/iris` help. Commands that change state require gamemaster level 2.
 
-Tree feller on mod loaders uses the platform permission API with node `irisworldgen:treefeller` (Fabric `Identifier`. Forge and NeoForge `PermissionNode`), defaulting to gamemaster level on all three. It is not a Bukkit permission string.
+Tree feller uses `irisworldgen:treefeller` on mod loaders and defaults to gamemaster level.
 
 ---
 
 ## Root: `/iris`
 
-Bukkit names below are the names Director actually registers. Where that differs from what you would expect, the method name is what you type.
+Use the Bukkit command names shown below.
 
 | Command | Aliases | Platforms | Params (Bukkit-style) | Description |
 |---------|---------|-----------|------------------------|-------------|
@@ -160,7 +157,7 @@ Bukkit names below are the names Director actually registers. Where that differs
 
 Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through an arbitrated large title and a labeled bottom action-bar meter, without a boss bar. Bounded chat and console updates also appear. A direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue. A dedicated server paused because it is empty still prints completion. A finished on-disk install does not stay queued.
 
-The supported exact shipping-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The current built-in packs declare no external datapack imports. Restart once so Minecraft loads their dimension types and custom biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must complete the installation and registry-loading workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
+The supported exact bundled-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The current built-in packs declare no external datapack imports. Restart once so Minecraft loads their dimension types and custom biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must complete the installation and registry-loading workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
 ---
 

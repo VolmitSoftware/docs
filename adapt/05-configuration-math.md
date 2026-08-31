@@ -136,7 +136,7 @@ if perActivityTracking: floor = clamp(floor * activityFloorMultiplier, 0, 1)
 monotony = clamp(skillMultiplier * activityMultiplier, floor, 1)
 ```
 
-At the shipped defaults that floor is `0.08 * 0.12 = 0.0096`. A fully saturated farm still pays about one percent. Awards of zero or less, and a disabled `[farmPrevention]`, both return `1.0` unconditionally.
+With default settings, that floor is `0.08 * 0.12 = 0.0096`. A fully saturated farm still pays about one percent. Awards of zero or less, and a disabled `[farmPrevention]`, both return `1.0` unconditionally.
 
 ## XP integrity
 

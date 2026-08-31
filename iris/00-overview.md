@@ -89,7 +89,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Pack extensions | Reusable snippets and the inactive pack-mod schema | [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |
 | Minimal pack example | Walkthrough | [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
-| Overworld example | Editing the shipping overworld | [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |
+| Overworld example | Editing the bundled overworld | [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |
 | Integrations | WorldEdit, Multiverse, Mythic, item plugins, tree feller | [28 - Integrations](/iris/28-integrations) |
 | Client HUD | Client mod HUD and protocol channel | [29 - Client HUD & Protocol](/iris/29-client-hud-protocol) |
 | Platform matrix | Bukkit vs Fabric / Forge / NeoForge differences | [30 - Platform Differences](/iris/30-platform-differences) |

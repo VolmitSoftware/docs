@@ -302,7 +302,7 @@ Highlighting runs once per tick per open clickable component:
 3. Hover progress advances toward 1 while selected and retreats toward 0 after exit over `hoverDurationTicks`. Zero changes state instantly.
 4. The selected easing curve converts that progress into visual travel: `plane.normal * highlightModifier * effectiveScale * easing(progress)`.
 
-`highlightModifier` is authored in menu-local blocks at scale 1. Effective `uiScale`, including panel scale, is applied exactly once. The logical collision plane never follows the visual displacement, so hover cannot make its own target drift. Billboard icons recompute the travel direction from their current normal each tick. Item, block, text, image and living-entity icons all use the same visual motion. The four easing curves are linear, cubic ease-out, cubic ease-in/out and back-out overshoot. The shipped blank baseline demonstrates a seven-tick `back_out` nudge.
+`highlightModifier` is authored in menu-local blocks at scale 1. Effective `uiScale`, including panel scale, is applied exactly once. The logical collision plane never follows the visual displacement, so hover cannot make its own target drift. Billboard icons recompute the travel direction from their current normal each tick. Item, block, text, image and living-entity icons all use the same visual motion. The four easing curves are linear, cubic ease-out, cubic ease-in/out and back-out overshoot. The default blank file demonstrates a seven-tick `back_out` nudge.
 
 Selection is tick-driven presentation state only. It is not a prerequisite for a click. A click does not consult it.
 

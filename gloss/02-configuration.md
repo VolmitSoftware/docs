@@ -388,7 +388,7 @@ There is no partial repair.
 
 The stored value is that rebuilt form. The endpoint you read back may differ in case from what you typed.
 
-`createToken` is sanitized separately. Null or blank stays empty. Anything else must already be free of surrounding whitespace, be 22 to 128 characters long, and consist only of `A-Z`, `a-z`, `0-9`, `_` and `-`. A value that fails any of those is blanked. Gloss logs `editor.sync.createToken is invalid; live editor session creation will use no token.` A custom relay that admits anonymous creation receives the untokened request. The shipped official endpoint instead refuses session creation locally and tells the command sender to configure `[editor.sync] createToken`.
+`createToken` is sanitized separately. Null or blank stays empty. Anything else must already be free of surrounding whitespace, be 22 to 128 characters long, and consist only of `A-Z`, `a-z`, `0-9`, `_` and `-`. A value that fails any of those is blanked. Gloss logs `editor.sync.createToken is invalid; live editor session creation will use no token.` A custom relay that admits anonymous creation receives the untokened request. The official endpoint instead refuses session creation locally and tells the command sender to configure `[editor.sync] createToken`.
 
 See [Web Editor & Sync](/gloss/18-web-editor).
 
@@ -461,4 +461,4 @@ The `groups/` YAML directory is retired as well. Group membership is resolved li
 
 The former `line-stagger-ticks` and `fly-away` switches have no direct schema-3 keys. One wrapped message is one multiline entity, and translation, scale, rotation and opacity are authored as BubbleStyle motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
 
-Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss silently ignores those document versions and does not migrate them during startup. Rewrite custom content to the current schema or reset it to the shipped default.
+Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss silently ignores those document versions and does not migrate them during startup. Rewrite custom content to the current schema or reset it to the default.

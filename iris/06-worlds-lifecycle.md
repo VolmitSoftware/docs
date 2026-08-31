@@ -204,7 +204,7 @@ Foreign namespaces, other `minecraft:*` keys, path traversal, symlinks, and spec
 
 With the default `seed=preserve`, replacement preserves the authoritative seed stored in that target's Paper `world_gen_settings.dat`. An explicit `seed=<signed-64-bit-integer>` clones the target's complete current-format settings into the hidden stage and changes only `data.seed`. The retained live target and rollback backup are not modified. Iris never derives one dimension's seed from another dimension or rewrites the current value of `server.properties`.
 
-### Shipping Overworld and Nether pair
+### Bundled Overworld and Nether pair
 
 For the supported main-world route, initialize both vanilla target folders first and keep `allow-nether=true`, then run these commands on Paper, Purpur, Leaf, or Folia:
 

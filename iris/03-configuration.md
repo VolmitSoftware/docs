@@ -13,7 +13,7 @@ See [01 - Installation & Platforms](/iris/01-installation-platforms) for data pa
 
 ## What you actually need to change
 
-The shipped defaults are correct for almost every server. Most operators only ever touch a handful of keys:
+The defaults are correct for almost every server. Most operators only ever touch a handful of keys:
 
 | You want to | Change |
 |---|---|
@@ -207,7 +207,7 @@ The engine maintenance service is a small scheduled pool that trims and unloads 
 |-----|---------|--------------|--------------|
 | `useVirtualThreads` | `true` | **Restart** | Builds the maintenance thread factory from virtual threads instead of platform threads |
 | `forceMulticoreWrite` | `false` | Live | Makes every maintenance pass unload all eligible tectonic plates instead of only unloading under heap pressure. Trades steadier memory for more write work. Useful during long pregens on a small heap |
-| `priority` | `5` (`Thread.NORM_PRIORITY`) | **Restart** | Thread priority, clamped to `[MIN_PRIORITY, MAX_PRIORITY]`. It is applied only when `useVirtualThreads` is false, so with the shipped defaults this key does nothing |
+| `priority` | `5` (`Thread.NORM_PRIORITY`) | **Restart** | Thread priority, clamped to `[MIN_PRIORITY, MAX_PRIORITY]`. It is applied only when `useVirtualThreads` is false, so with the defaults this key does nothing |
 | `parallelism` | `-1` | **Restart** | Maintenance pool size. `>0` is capped at `processors * 2`. `<=0` uses `ceil(sqrt(processors))`, at least 1 |
 
 ## `pregen` — scheduling, timeouts, and mantle backpressure

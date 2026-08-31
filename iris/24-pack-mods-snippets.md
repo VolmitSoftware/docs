@@ -132,7 +132,7 @@ Biome decorator lists take snippet strings as array elements, mixed freely with 
 
 ## When to use a snippet
 
-Use a snippet when the same value appears in several places and should change in lockstep. The shipping Overworld pack uses them for decorators shared by several climate biomes, noise styles reused by several generators, and the palette that defines pack stone.
+Use a snippet when the same value appears in several places and should change in lockstep. The bundled Overworld pack uses them for decorators shared by several climate biomes, noise styles reused by several generators, and the palette that defines pack stone.
 
 Skip it when a value appears once. A snippet reference costs a file open and adds a place to look when something goes wrong. It buys nothing if there is a single call site. It also makes the failure mode worse. A wrong-type or missing snippet resolves to null after logging. A field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
 

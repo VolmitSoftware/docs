@@ -59,7 +59,7 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 > If you delete the file, Gloss despawns the hologram and unregisters it. There is no undo and no backup for a hand-deleted file.
 {.is-warning}
 
-### The shipped baseline
+### The default
 
 `/gloss hologram create` seeds its line from `baselines/hologram.json` inside the jar. That schema-2 baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled, scale `1.0` and an empty `particleLayers` array. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
 
@@ -129,7 +129,7 @@ Command edits save automatically. See [Data Files & Hot Reload](/gloss/03-data-f
 ## Rendering
 
 Each display is spawned non-persistent with the document's uniform native scale, billboard, yaw,
-pitch and `seeThrough` values, and with no shadow. The shipped baseline uses scale `1.0`, `CENTER`,
+pitch and `seeThrough` values, and with no shadow. The default uses scale `1.0`, `CENTER`,
 yaw `0`, pitch `0` and see-through enabled. Editing scale or any orientation key hot-reloads the
 existing display without respawning it. Its client view range is set to `[holograms] viewRange`
 divided by the 64-block Paper base. Ordinary text refreshes every `[holograms]

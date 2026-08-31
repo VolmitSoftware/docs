@@ -113,7 +113,7 @@ Suppose the tutorial region biomes are too small and choppy. The rest of the dim
 }
 ```
 
-Observable result: individual land biome patches in this region become roughly 3.5x wider. Nothing outside the region changes. The dimension `biomeZoom` still applies on top. The shipping `temperate` region uses `3.5` for land, `6` for sea and `0.15` for shore. Shores are deliberately zoomed *down* so beach variants change every few dozen blocks along a coastline instead of running for hundreds of blocks.
+Observable result: individual land biome patches in this region become roughly 3.5x wider. Nothing outside the region changes. The dimension `biomeZoom` still applies on top. The bundled `temperate` region uses `3.5` for land, `6` for sea and `0.15` for shore. Shores are deliberately zoomed *down* so beach variants change every few dozen blocks along a coastline instead of running for hundreds of blocks.
 
 Change one zoom at a time. Regenerate a fresh area between comparisons. Zooms do not affect already generated chunks.
 
@@ -232,7 +232,7 @@ Deposit precedence across tiers: biome variants, then region variants, then dime
 
 ## Overworld sample: `temperate`
 
-Path in the shipping pack: `packs/overworld/regions/temperate.json`.
+Path in the bundled pack: `packs/overworld/regions/temperate.json`.
 
 | Field | Value | Why |
 |-------|-------|-----|
@@ -249,7 +249,7 @@ Path in the shipping pack: `packs/overworld/regions/temperate.json`.
 
 The file sets no `objects`, `structures`, `ores`, `entitySpawners` or `effects`. All of that lives on the biomes.
 
-Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terralost`, `mushroom`, `forests`, `tundra`, `magnetics`, `temperate`, `estranged`, `tropical`, `swamp`, `prismatics`.
+Region keys listed by the bundled overworld dimension: `frozen`, `hot`, `terralost`, `mushroom`, `forests`, `tundra`, `magnetics`, `temperate`, `estranged`, `tropical`, `swamp`, `prismatics`.
 
 ## Resolution details worth knowing
 

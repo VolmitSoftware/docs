@@ -76,7 +76,7 @@ Then validate and open:
 
 **Why.** Forking copies the whole tree under a new pack key so upstream Overworld updates cannot clobber your work. A mistake is then one folder deletion away from being undone. Create your worlds from the fork, not from `overworld`.
 
-**What you should see.** A `my-overworld` folder next to `overworld` with the same structure, a loadable validation result, and a Studio world that looks exactly like the shipping overworld.
+**What you should see.** A `my-overworld` folder next to `overworld` with the same structure, a loadable validation result, and a Studio world that looks exactly like the bundled overworld.
 
 ## 2. Add the biome file
 
@@ -109,7 +109,7 @@ Then validate and open:
 
 **Why.** Every piece of this is chosen so the result is unmistakable in game:
 
-- `generators` reuses the fork existing `generators/plain.json`. That file is an `IRIS_DOUBLE` composite behind a `BILINEAR_STARCAST_9` interpolator. This biome uses `min` 18 / `max` 24 instead of the 4-to-10 band the shipping plains uses. Those numbers are offsets from `fluidHeight`, which the overworld sets to 50. This meadow sits roughly 68 to 74 blocks up while ordinary plains sit around 54 to 60. The height difference is what makes it visible from a distance.
+- `generators` reuses the fork existing `generators/plain.json`. That file is an `IRIS_DOUBLE` composite behind a `BILINEAR_STARCAST_9` interpolator. This biome uses `min` 18 / `max` 24 instead of the 4-to-10 band the bundled plains uses. Those numbers are offsets from `fluidHeight`, which the overworld sets to 50. This meadow sits roughly 68 to 74 blocks up while ordinary plains sit around 54 to 60. The height difference is what makes it visible from a distance.
 - `layers` are **thicknesses**, not Y coordinates: one block of grass over three blocks of dirt, with the dimension rock palette filling everything below.
 - `decorators` uses a snippet reference. Any field whose type is a snippet type accepts the string form `snippet/<type>/<name>`. Iris loads `snippet/decorator/wildflowers.json` in its place at parse time. The fork already contains that file.
 - `rarity` 1 makes it as common as the region other biomes so you do not have to search for it later.
@@ -139,7 +139,7 @@ These are field excerpts. Merge them into the existing files. Do not replace eit
 
 **What you do.** Generate untouched Studio chunks and run `/iris what region` and `/iris what biome`.
 
-**What you should see.** Region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding shipping plains, wildflower decoration, and no missing-key errors in console.
+**What you should see.** Region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding bundled plains, wildflower decoration, and no missing-key errors in console.
 
 If terrain is empty, confirm `generators/plain.json` still exists in the fork. If flowers are missing, confirm `snippet/decorator/wildflowers.json` exists and remove the decorator reference until the terrain baseline passes. One variable at a time.
 
@@ -171,11 +171,11 @@ If terrain is empty, confirm `generators/plain.json` still exists in the fork. I
 | Disposable world differs from Studio | Inspect `<world>/iris/pack/`. Recreate the world from the current validated fork |
 | A production update would change height, registries, or large terrain systems | Do not update in place. Create a new world and migrate deliberately |
 
-## What the shipping dimension actually sets
+## What the bundled dimension actually sets
 
 From `dimensions/overworld.json`:
 
-| Field | Shipping value | Why it matters when you edit |
+| Field | Default value | Why it matters when you edit |
 |-------|----------------|------------------------------|
 | `name` / `version` | `"Overworld"` / `4000` | Bump `version` on your fork so pack generations stay distinguishable |
 | `dimensionHeight` | `min` -256, `max` 512 | 768 blocks tall. Contract field. Do not change it on a fork that already has worlds |
@@ -242,7 +242,7 @@ Editing `<world>/iris/pack/` changes only that world and is overwritten by the n
 
 ### Change sea level
 
-Set `fluidHeight` in `dimensions/my-overworld.json`. Shipping value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Only newly generated chunks change, so expect a visible shoreline seam on an existing world.
+Set `fluidHeight` in `dimensions/my-overworld.json`. Default value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Only newly generated chunks change, so expect a visible shoreline seam on an existing world.
 
 ### Add a biome to a region
 
@@ -304,7 +304,7 @@ Never use `update-world` for a change to `dimensionHeight`, `logicalHeight`, `en
 | Validate | Bukkit `/iris pack validate pack=my-overworld`. Modded `/iris pack validate my-overworld` |
 | Preview unused-resource cleanup | Bukkit `/iris pack cleanup my-overworld mode=preview`, then `mode=apply`. Modded uses the same `preview`/`apply` literals |
 | Package for distribution | Bukkit `/iris pack package dimension=my-overworld`. Modded `/iris studio package my-overworld` |
-| Version stamp | The dimension `version` field. The shipping pack uses large integers such as `4000` |
+| Version stamp | The dimension `version` field. The bundled pack uses large integers such as `4000` |
 
 ## Checklist before a production update
 

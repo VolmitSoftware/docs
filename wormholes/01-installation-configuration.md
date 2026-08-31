@@ -228,7 +228,7 @@ no recipe.
 
 `enabled = false` removes that recipe from the server. A `shape` or
 `ingredients` value that does not parse, or that names a block this server does
-not have, is logged and falls back to the shipped recipe.
+not have, is logged and falls back to the default recipe.
 
 ## `[network]`
 

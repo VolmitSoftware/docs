@@ -8,8 +8,6 @@ editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Foundation registers 119 canonical commands through one catalog on Paper and Spigot. Runtime modules attach and remove handlers without changing that catalog, so a command owned by a disabled or failed module remains discoverable and reports that its module is unavailable.
-
 ## Control center
 
 | Command | Permission | Behavior |
@@ -24,8 +22,6 @@ Foundation registers 119 canonical commands through one catalog on Paper and Spi
 | `/foundation language <locale>` (`locale`, `lang`) | `foundation.admin.config` | Selects an installed `languages/<locale>.toml` file through transactional config mutation |
 | `/foundation debug` (`report`) | `foundation.admin.debug` | Saves a sanitized diagnostic report and uploads it to mclo.gs only when enabled |
 | `/foundation help [page]` (`?`) | None | Opens the clickable command atlas containing every canonical command and every Foundation administrative subcommand |
-
-The command atlas displays eight explained entries per page, includes aliases, suggests a selected command into player chat instead of executing it, and provides clickable previous and next controls. Console senders receive the same complete paged inventory; `/foundation` without arguments opens the control center for a player and page one of the atlas for the console.
 
 ## Arrival and saved locations
 

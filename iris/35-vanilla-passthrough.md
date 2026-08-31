@@ -51,7 +51,7 @@ Iris replaces the chunk generator outright. Vanilla and mod worldgen run only wh
 | Entity drops | Vanilla until an Iris entity `loot` is set | Entity loot **replaces** vanilla drops |
 | Block drops | Vanilla plus any `blockDrops` | `replaceVanillaDrops: true` suppresses vanilla |
 
-The shipping overworld leaves `importedFeatures` off, keeps native structures on with terrain `adjustments`, and replaces only ancient cities. It reimplements ores as Iris `deposits` and caves as `caveProfile`.
+The bundled overworld leaves `importedFeatures` off, keeps native structures on with terrain `adjustments`, and replaces only ancient cities. It reimplements ores as Iris `deposits` and caves as `caveProfile`.
 
 ## Task 1: Import selected vanilla features
 
@@ -90,7 +90,7 @@ The feature pass runs on the worldgen thread after Iris structures. Early-step f
 
 A cold `derivative` tints grass and can freeze water. It does **not** stamp snow layers. Snow layers need Iris decorators, object `snow`, or this task with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls from biome palettes.
 
-The shipping overworld does not enable this. It places ores with `deposits` using `shape: VANILLA_ELLIPSOID`. Deposit `minHeight` / `maxHeight` are engine-local Y (`worldY - dimensionHeight.min`). `depositVariants` bands are absolute world Y. `biomeScope` defaults to `CAVE`. Palette `weight` is ignored on deposits; duplicate the block entry instead.
+The bundled overworld does not enable this. It places ores with `deposits` using `shape: VANILLA_ELLIPSOID`. Deposit `minHeight` / `maxHeight` are engine-local Y (`worldY - dimensionHeight.min`). `depositVariants` bands are absolute world Y. `biomeScope` defaults to `CAVE`. Palette `weight` is ignored on deposits; duplicate the block entry instead.
 
 ## Task 2: Control mob spawning
 
@@ -157,7 +157,7 @@ Loot ownership depends on what created the container.
 ### Keep village loot, fill Iris clutter chests, replace one dungeon
 
 1. Leave native structures generating, or place them with `nativeStructures`. Do not put `overrideGlobalLoot` on those placements. Village chests keep `minecraft:chests/village_*`.
-2. Use dimension `loot.mode: FALLBACK` for pack clutter, which is what the shipping overworld does:
+2. Use dimension `loot.mode: FALLBACK` for pack clutter, which is what the bundled overworld does:
 
 ```json
 {
@@ -259,7 +259,7 @@ This is unrelated to the tree feller (`iris.json` `treeFeller.enabled`, permissi
 
 Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the template. Numeric `-1` means unset. `fullbright: true` copies `dimensionOptions` and forces `ambientLight` to `1.0`.
 
-`logicalHeight` is what nether-portal search and chorus fruit respect. The shipping overworld is 768 blocks tall (`-256` to `512`) with `logicalHeight: 512`.
+`logicalHeight` is what nether-portal search and chorus fruit respect. The bundled overworld is 768 blocks tall (`-256` to `512`) with `logicalHeight: 512`.
 
 `/iris replace` of `minecraft:overworld` keeps vanilla portal pairing with `minecraft:the_nether`. A separately created `iris:*` world is outside that pair. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
@@ -271,7 +271,7 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 | `carvingBiome` on a surface biome | Does not pick caves. It only registers the referenced biome as reachable. Runtime cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | Dimension `focus` | Forces the biome into the **land** role for the whole world. A sea biome under `focus` generates as land, so sea/shore structure eligibility never runs |
 | `carvingSupport: ANYWHERE` | The placement is in both the surface list and the cave list, so `chance` rolls twice per chunk |
-| Missing mineshafts or trial chambers | Iris buries underground-step structures below the lowest solid column unless `preserveSourceY` is true. The shipping overworld already pins mineshafts. Precedence: `preserveSourceY` > `yBand` > burial > `yShift`. Ocean monuments, desert pyramids, and jungle pyramids ignore `yBand`. Monuments sit 24 below Iris `fluidHeight` |
+| Missing mineshafts or trial chambers | Iris buries underground-step structures below the lowest solid column unless `preserveSourceY` is true. The bundled overworld already pins mineshafts. Precedence: `preserveSourceY` > `yBand` > burial > `yShift`. Ocean monuments, desert pyramids, and jungle pyramids ignore `yBand`. Monuments sit 24 below Iris `fluidHeight` |
 | Duplicate villages | An Iris `nativeStructures` placement with `nativeSuppression: NONE` (the default) generates **alongside** native starts. Deny the family or use dimension-level `REPLACE_SOURCE` |
 | `REPLACE_SOURCE` on a biome placement | Ignored. Replacement suppression is valid only at dimension scope. Pack validation rejects it anywhere else |
 | `datapackImports` without a deny list | Declaring a URL never disables vanilla. Towns & Towers plus vanilla villages both generate until you deny `minecraft:village` |
@@ -280,7 +280,7 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 | Sea biome with a land `vanillaDerivative` | Iris hands structure selection `minecraft:the_void`. Ocean monuments need an ocean-like key. See [13 - Biomes](/iris/13-biomes) |
 | `#minecraft:has_structure/*` tags | Not inherited onto custom biomes. Native placement already uses the structure derivative. Inheriting them would double-place |
 | `customDerivitives` | That spelling is the engine key. `customDerivatives` is silently ignored |
-| Two `preventLeafDecay` flags | `iris.json` `generator.preventLeafDecay` defaults **true** and bakes persistent into resolved leaf data. Dimension `preventLeafDecay` defaults **false**. The shipping overworld sets the dimension flag true. They are unrelated |
+| Two `preventLeafDecay` flags | `iris.json` `generator.preventLeafDecay` defaults **true** and bakes persistent into resolved leaf data. Dimension `preventLeafDecay` defaults **false**. The bundled overworld sets the dimension flag true. They are unrelated |
 | `hideOresForHiddenOre` | Replaces every ore the generator would write — terrain ores, deposits, and ores inside objects — with host stone |
 | `forcePlace: true` | Skips slope, carving, surface support, water, clamp, bedrock, and collision gates. It never skips the native-structure volume veto. Trees still vanish inside villages |
 | `isDolphinTarget` | Only works with `underwater`. Marks placed storage chests as buried-treasure points of interest |
@@ -290,7 +290,7 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 | Minecraft `generateStructures` | The world option still gates native structures even if the pack allows them |
 | `world.forcePersistEntities` | Default true. Iris-spawned mobs do not despawn like vanilla |
 | Pack file edits on a live world | The world reads `<world>/iris/pack`. Studio reads the live folder. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
-| Deposit biome filters | `includedBiomes` accepts Iris load keys **or** vanilla derivative ids. The shipping overworld mixes both: emerald extra veins use `minecraft:cherry_grove`-style ids, copper dripstone bonus uses Iris paths such as `carving/drip`. `biomeScope` defaults to `CAVE` |
+| Deposit biome filters | `includedBiomes` accepts Iris load keys **or** vanilla derivative ids. The bundled overworld mixes both: emerald extra veins use `minecraft:cherry_grove`-style ids, copper dripstone bonus uses Iris paths such as `carving/drip`. `biomeScope` defaults to `CAVE` |
 | Stronghold rings on 26.2 | Iris evaluates preferred biomes once per chunk center, not per quart. Eyes of Ender follow the new rings. Old chunks keep old strongholds |
 
 ## Field details already on other pages

@@ -240,7 +240,7 @@ Pass `target=<iris-path>` for a deliberate key.
 4. Load each variant from the Studio control chest or triple-sneak menu and inspect its real blocks and Mojang marker fields. Once a workcell finishes loading and hydrating, block and container changes autosave.
 **Save Now** only forces an immediate flush. Review the automatic seed-`1337` evaluation and the permanent read-only block preview before accepting the fidelity.
 5. For a non-jigsaw template or a bulk pass, use `/iris structure import <dimension>` instead (section 5). Review every per-structure result: successful bundles can sit alongside failures.
-6. To generate the edited copy naturally, add its Iris target to a dimension-level `structures` placement and set `nativeSuppression: "REPLACE_SOURCE"`. The converted graph records `vanillaSource`, which tells Iris which registered source to suppress. Validate the complete graph before shipping because replacement has no native fallback.
+6. To generate the edited copy naturally, add its Iris target to a dimension-level `structures` placement and set `nativeSuppression: "REPLACE_SOURCE"`. The converted graph records `vanillaSource`, which tells Iris which registered source to suppress. Validate the complete graph before release because replacement has no native fallback.
 
 **Success:** the owned copy reopens with `/iris jigsaw open <dimension> <target>` and its preview matches the native original closely enough for your purpose.
 
@@ -727,7 +727,7 @@ Unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
 - New datapack structures need a restart before the registry knows them.
 - Only new chunks change.
 - Namespace disables need the colon: `"nova_structures:"`.
-- `REPLACE_SOURCE` has no fallback, so validate the graph before shipping.
+- `REPLACE_SOURCE` has no fallback, so validate the graph before release.
 - `datapackOverrides: false` anywhere strips `minecraft:` overrides server-wide.
 
 ## Command reference

@@ -119,7 +119,7 @@ resolves to `<packRoot>/snippet/style/soft-hills.json`.
 | Inline parse failure | Different path: logs `Failed to read <type>... faking objects a little`, then substitutes a **default-constructed instance**, not `null` |
 | Schema | Studio writes `.iris/schema/snippet/<type>-schema.json` so the editor offers completions for `snippet/<type>/…` |
 
-The shipping overworld uses `snippet/decorator/*` and `snippet/style/*`.
+The bundled overworld uses `snippet/decorator/*` and `snippet/style/*`.
 
 ## Two copies of every pack
 
@@ -216,7 +216,7 @@ An archive installed through `link=` has no expected key. Iris uses its shortest
 | Console warns "Ambiguous \<type\> \<key\>" | Two files share a base name before the first dot | Keep one canonical filename. Iris took the alphabetically first |
 | Production world ignores your fix | It is reading `<world>/iris/pack`, not your live pack | Validate in Studio, then run the explicit world-update workflow or create a new world |
 
-## The shipping overworld pack
+## The bundled overworld pack
 
 For orientation when reading `packs/overworld/`:
 

@@ -7,23 +7,13 @@ tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Every string Gloss shows a player or an operator comes from one typed message catalog. The catalog
-is declared in code and overlaid by YAML. One locale is active for the whole server.
-
-The locale is chosen by the leading `language` key in `plugins/Gloss/gloss.toml`. Seventeen translations
-are bundled inside the jar. You override individual strings in `language.yml`. This page covers the
-catalog, the fallback order, the override file, hot reload and what happens when a translation is
-wrong.
+One locale is active for the whole server. Choose it with `language` in
+`plugins/Gloss/gloss.toml`, then override individual messages in `language.yml`.
 
 ## The catalog
 
-`GlossMessages` declares typed keys in code. Each key carries its own English source text. That is
-the whole surface: command help, parameter descriptions, validation errors, chat feedback and the
-container preview status lines.
-
-The catalog Gloss actually runs with also includes VolmLib's `director.*` keys for the shared
-command framework. Those keys are added first. Director's own labels and errors then translate
-through the same file.
+The catalog includes command help, validation errors, chat feedback, container preview text, and
+shared command labels.
 
 English is not a locale file. It lives in the key declarations. The catalog's base locale is
 `en_US`. There is deliberately no `en_US.yml` anywhere. When the active locale is `en_US`, only
@@ -67,7 +57,7 @@ language.yml  >  bundled /languages/<locale>.yml  >  English text in GlossMessag
 Fallback is per key, not per file. A locale file that omits a key falls through to the next level.
 The omission is a warning, not an error. It does not block loading.
 
-## Shipped locales
+## Available locales
 
 Seventeen non-English files are bundled under `resources/languages/`:
 
@@ -82,15 +72,9 @@ zh_TW.yml
 `ja-JP.yml` uses a hyphen where every other file uses an underscore. That is the literal
 identifier. `language = "ja-JP"` is the correct spelling in `gloss.toml`.
 
-The list is not Gloss's. It comes from `VolmitLocales.nonEnglish()` in VolmLib. It is shared across
-the Volmit plugin fleet. Adding a locale means adding it in VolmLib and mirroring the file into
-every plugin. Each bundled file must declare its own `locale` matching its filename. A mismatch
-fails the load.
-
 ## Key names
 
-Key ids are dot-delimited and map onto YAML nesting. Two top-level namespaces exist because the
-command framework has its own.
+Key ids are dot-delimited and map onto YAML nesting.
 
 | Prefix | Contents |
 |---|---|
@@ -101,8 +85,7 @@ command framework has its own.
 | `gloss.preview.*` | Container preview status lines, statistic lines and card titles |
 | `gloss.error.*` | Argument validation errors raised while parsing a command |
 
-The `command.help.*` family is what Director resolves. The command classes name those ids directly
-in their annotations. Change a command or parameter description through its `command.help.*` key.
+Use `command.help.*` to change command and parameter descriptions.
 
 > The `gloss.command.*` and `gloss.parameter.*` families were deleted from the catalog and from all
 > seventeen bundled locales. They were a duplicate set of command and parameter
@@ -110,9 +93,6 @@ in their annotations. Change a command or parameter description through its `com
 > that still sets one of those ids is now an unknown key and will be rejected on load — delete those
 > entries and use `command.help.*` instead.
 {.is-warning}
-
-Every key Gloss declares is plain text. The underlying framework also supports multi-line and plural
-keys. The loader handles plural sub-keys. Gloss declares none.
 
 ## Message formatting
 
@@ -130,7 +110,7 @@ tags written into a locale file are never interpreted. They show up literally.
 Keys consumed through the plain-text path are therefore written as plain text
 (`gloss.message.builder.header: "Web Editor"`). Keys consumed through the legacy path carry `&`
 codes (`gloss.message.panels.deleted: "&7[&bGloss&7]: &aDeleted panel &f{board}&a."`). Keep a key's
-existing style when you translate it. Director help output also has all color stripped.
+existing style when you translate it. Help text also has all color stripped.
 
 Placeholders are named and brace-delimited: `{menu}`, `{count}`, `{url}`, `{percent}`. A name starts
 with a letter and continues with letters, digits, `_`, `.` or `-`. A translation must use exactly
@@ -229,7 +209,7 @@ untrusted text. A container's custom name can never smuggle color codes into a p
 
 The `gloss.preview.*` keys split into `gloss.preview.state.*` for status lines,
 `gloss.preview.stat.*` for statistic lines, and `gloss.preview.theme.title.*` for card titles.
-Retranslating them changes every shipped preview card at once. No document edit is needed.
+Retranslating them changes every included preview card at once. No document edit is needed.
 
 A `lang()` key the catalog does not declare is a build error for that document. It is surfaced by
 `/gloss preview dump <name>` as `lang: Unknown message key: <id>`. See

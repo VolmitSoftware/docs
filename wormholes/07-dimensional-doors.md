@@ -150,7 +150,7 @@ cross-dimension travel is supported for eligible kinds.
 
 All product and reskin recipes require `wormholes.doors.craft`, which defaults
 to `op`. Without that permission, the crafting result is hidden and the craft
-click is rejected. The shipped product recipes also require the exact **Wormhole
+click is rejected. The default product recipes also require the exact **Wormhole
 Rune** item (`R`), which is not craftable and comes from an administrator, so
 door supply is gated on rune supply unless the recipes are reconfigured to drop
 that ingredient. Shift-crafting identity products is blocked so one craft cannot
@@ -173,7 +173,7 @@ _ D _                                     _ L _
 | `L` | Lodestone |
 
 Trapdoor products use the same shapes with trapdoor `D`. The table above is the
-shipped default; every product's grid, ingredients, and whether it exists at all
+default; every product's grid, ingredients, and whether it exists at all
 are configurable. See **Configuring recipes** below. Default products:
 
 | Product | Default material |
@@ -253,7 +253,7 @@ Rules the parser enforces: at most 3 rows of 3, all rows the same width (a short
 row is padded, so a lost trailing space is harmless), every slot symbol has an
 ingredient, and every ingredient is actually used by the shape. A recipe that
 breaks one of those, or that names a block this server does not have, is logged
-and falls back to its shipped recipe. A typo never leaves a product silently
+and falls back to its default recipe. A typo never leaves a product silently
 uncraftable.
 
 The reskin recipes have no configurable grid because their result is derived

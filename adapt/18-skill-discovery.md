@@ -322,7 +322,7 @@ Milestones: `challenge_discovery_villager_100` and `challenge_discovery_villager
 
 Milestones: `challenge_discovery_mending_10k` and `challenge_discovery_mending_100k` on `discovery.better-mending.durability-restored` at 10000 and 100000, rewarding 400 and 1500.
 
-Available XP is Paper's current total experience-point value, and the post-cost level/progress state is written atomically. The cost is XP points, not XP levels. With shipped settings, repair efficiency is `2 + levelPercent * 4` durability per point, the maximum spend is `14 + levelPercent * 130` points, and cooldown is `max(6, round(38 - levelPercent * 26))` ticks.
+Available XP is Paper's current total experience-point value, and the post-cost level/progress state is written atomically. The cost is XP points, not XP levels. With default settings, repair efficiency is `2 + levelPercent * 4` durability per point, the maximum spend is `14 + levelPercent * 130` points, and cooldown is `max(6, round(38 - levelPercent * 26))` ticks.
 
 - `PlayerInteractEvent` (`on`): sneak plus left-click, air or block, main hand only
 

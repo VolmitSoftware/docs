@@ -264,7 +264,7 @@ Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a
 
 Recipe: shaped 3x3, `XXX` / `XYX` / `XXX`, where X is any block in the vanilla `WOOL` tag and Y is `ENDER_PEARL`. Travel distance is `baseDistance` times level times `multiplier`, so 32 blocks at defaults. An elevator block is found up to 2 blocks below your feet. Teleports use Paper's async teleport when available.
 
-A `challenge_architect_elevator_penthouse` advancement is registered and granted on a single trip of 50 blocks or more. With the shipped defaults the maximum trip is 32 blocks, so it cannot be earned unless an operator raises `baseDistance` or `multiplier`.
+A `challenge_architect_elevator_penthouse` advancement is registered and granted on a single trip of 50 blocks or more. With the defaults the maximum trip is 32 blocks, so it cannot be earned unless an operator raises `baseDistance` or `multiplier`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

@@ -157,7 +157,7 @@ express.
 | `blocks` | string[] | none | Block materials this document draws |
 | `entities` | string[] | none | Entity types this document draws |
 | `special` | string | none | `enderChest`, `locked` or `anyInventoryHolder` |
-| `priority` | int | `0` | Higher wins. Every shipped document uses `10` |
+| `priority` | int | `0` | Higher wins. Every included document uses `10` |
 | `vars` | object | `{}` | Document constants, read as `vars.<name>` |
 
 Names are uppercased before matching. `*` is the only wildcard, so `*_SHULKER_BOX` and `*_SHELF`
@@ -212,7 +212,7 @@ Declaring a `card` object at all asks for the chrome. `framed` defaults to `true
 
 Every card field is evaluated **once**, when the preview is built.
 
-The shipped title idiom keeps a player-named container's name and falls back to a localized theme
+The default title format keeps a player-named container's name and falls back to a localized theme
 title:
 
 ```
@@ -350,7 +350,7 @@ Notes that matter when writing a document:
   locked card.
 - `customName` is the name a player gave the container, or `""`. A whitespace-only name collapses to `""`,
   so `customName != ''` is the idiom.
-- The shipped chest card falls back to `readable(blockType)` when both `customName` and the resolved
+- The default chest card falls back to `readable(blockType)` when both `customName` and the resolved
   localized title are empty, so an unnamed ordinary chest still says `Chest`.
 - `fuelSeconds` is whole seconds, truncated.
 - `bankedXp` is `-1` on a server whose API cannot report banked experience.
@@ -381,7 +381,7 @@ viewer's locale. A key the catalog does not declare is a hard failure on a runni
 reports `label text: lang: Unknown message key: <id>` and renders empty. The rest of the preview is
 unaffected. The previously compiled document stays live.
 
-Check the id against the catalog rather than expecting it to render as itself. The shipped documents
+Check the id against the catalog rather than expecting it to render as itself. The included documents
 use `gloss.preview.theme.title.*`, `gloss.preview.state.*` and `gloss.preview.stat.*` keys, all
 overridable. See [Localization](/gloss/19-localization).
 
@@ -513,7 +513,7 @@ The generator emits all four element types, selects the furnace simulation throu
 match, and procedurally varies the palette, segment geometry, pulse timing and card dimensions. The
 result is normal editable JSON and one undo step, not a preview-only effect.
 
-## The shipped documents
+## The included documents
 
 Fourteen documents are extracted into `previews/`, only where the file is missing and only while
 `[features] previews` is on. With the feature off nothing is extracted and the folder does not
@@ -656,7 +656,7 @@ are on [Data Files & Hot Reload](/gloss/03-data-files).
 }
 ```
 
-## Shadowing a shipped document
+## Shadowing an included document
 
 Documents are never merged. For any one target exactly one document wins, chosen in this order:
 
@@ -665,7 +665,7 @@ Documents are never merged. For any one target exactly one document wins, chosen
 3. an exact tie is broken by document name, alphabetically, and warned about once per pair:
    `previews: <a> and <b> match the same targets at priority 10, using <a>.`
 
-Every shipped document sits at priority `10`. The way to override one is a new file at a higher
+Every included document sits at priority `10`. The way to override one is a new file at a higher
 priority:
 
 ```json
@@ -675,11 +675,11 @@ priority:
 }
 ```
 
-Write it as a **new file**, not as an edit to a shipped one. `/gloss preview reset` overwrites
-shipped files and would discard your work. It never touches or removes a file you added. It says so
+Write it as a **new file**, not as an edit to an included one. `/gloss preview reset` overwrites
+included files and would discard your work. It never touches or removes a file you added. It says so
 when it runs.
 
-Editing a shipped document in place also works and hot-reloads. A reset undoes that edit.
+Editing an included document in place also works and hot-reloads. A reset undoes that edit.
 
 ## Hot reload
 
@@ -701,7 +701,7 @@ also move a target from one document to another. Menus are untouched.
 | Command | Permission | What it does |
 |---|---|---|
 | `/gloss preview list` | `gloss.previews` | Every loaded document with `blocks=<n> entities=<n> special=<s> priority=<n>` |
-| `/gloss preview reset [name=*]` | `gloss.previews.reset` | Re-extracts shipped documents from the jar |
+| `/gloss preview reset [name=*]` | `gloss.previews.reset` | Re-extracts included documents from the jar |
 | `/gloss preview dump <name>` | `gloss.previews.dump` | Builds one document once and reports its element counts and build errors |
 
 `previews` is an alias of `preview`. `gloss.previews` and its two children are separate from the
@@ -713,10 +713,10 @@ every variant's. `chest.json` reports far more than three blocks. `special` show
 document has none.
 
 `reset` runs off the main thread because it can perform fourteen file writes plus a full reparse. A
-name that is not a shipped document writes nothing and reports so. It never deletes documents you
+name that is not an included document writes nothing and reports so. It never deletes documents you
 added.
 
-> `/gloss preview reset` overwrites the named shipped file on disk. Local edits to that file are gone and
+> `/gloss preview reset` overwrites the named included file on disk. Local edits to that file are gone and
 > there is no backup.
 {.is-warning}
 

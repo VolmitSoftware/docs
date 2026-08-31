@@ -736,7 +736,7 @@ and the strongest workable `sandbox`:
 
 ## Renderer inventory {#renderer-inventory}
 
-This table covers the page-relevant modules shipped in Wiki.js 2.5.314. “On” is
+This table covers the page-relevant modules included in Wiki.js 2.5.314. “On” is
 the source default, not proof of the deployed wiki's configuration.
 
 | Module | Default | What it changes |
@@ -756,12 +756,12 @@ the source default, not proof of the deployed wiki's configuration.
 | Subscript/Superscript | on | Adds `~sub~` and `^sup^` |
 | Task Lists | on | Renders `- [ ]` and `- [x]` list markers |
 | HTML Core | — | Classifies links, builds anchors/TOC data, wraps wide tables |
-| Asciinema | off | Shipped placeholder in 2.5.314; no transform is implemented |
+| Asciinema | off | Included placeholder in 2.5.314; no transform is implemented |
 | Blockquotes | on | Applies info/success/warning/danger alert presentation |
 | Code Highlighting | on | Adds automatic or language-specific highlighting classes |
 | Diagram postprocessor | on | Supports diagrams inserted by the draw.io editor integration |
 | Image Prefetch | off | Server-fetches PlantUML/Kroki images and embeds them as data URLs |
-| Media Players | on | Shipped placeholder in 2.5.314; no transform is implemented |
+| Media Players | on | Included placeholder in 2.5.314; no transform is implemented |
 | Mermaid | on | Converts Mermaid code blocks into client-rendered diagrams |
 | Security | on | Sanitizes HTML; optionally permits draw.io elements and iframes |
 | Tabsets | on | Converts decorated heading groups into interactive tabs |

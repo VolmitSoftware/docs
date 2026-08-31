@@ -259,7 +259,7 @@ Every node below is reachable as `/gloss menu …` or `/gloss menus …`. The fu
 
 | Node | What it writes |
 |---|---|
-| `new <menu>` | Creates a new file from the shipped blank baseline. Fails if the id already exists |
+| `new <menu>` | Creates a new file from the default blank file. Fails if the id already exists |
 | `copy <menu> <newMenu>` | Copies an existing document to a new id |
 | `addrow <menu> <text>` | Appends a text decoration component, offset one row spacing below the last |
 | `insertrow <menu> <row> <text>` | Inserts a text decoration at a one-based row |
@@ -282,9 +282,9 @@ Writes are queued through a single-threaded mutation service. Two commands again
 > `/gloss menu create` and `/gloss menu new` are different commands. `create` makes a persistent world-anchored panel plus its root menu, is player only, and is gated by `gloss.panels`. `new` makes a blank menu document only and is gated by `gloss.menus.edit`.
 {.is-info}
 
-### The shipped default and creation baseline
+### The default and creation baseline
 
-Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/default.json` when menus are enabled and that file is missing. Existing bytes are never overwritten. `/gloss menu new` reads the same resource, keeping every new blank menu aligned with the shipped starter.
+Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/default.json` when menus are enabled and that file is missing. Existing bytes are never overwritten. `/gloss menu new` reads the same resource, keeping every new blank menu aligned with the default starter.
 
 ```json
 {

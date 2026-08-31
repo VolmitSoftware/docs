@@ -30,21 +30,21 @@ Gloss works without optional dependencies. PlaceholderAPI enables `%...%` tokens
 ## What the first boot creates
 
 Gloss never creates a folder it has nothing to put in. A first boot writes the config, the language
-file and the shipped defaults of the features that are enabled. Nothing else exists yet:
+file and the defaults of the features that are enabled. Nothing else exists yet:
 
 ```
 plugins/Gloss/
 ├── gloss.toml            every runtime knob, commented, clamped and hot-reloading
 ├── language.yml           sparse message overrides; locale selection stays in gloss.toml
 ├── tablist.json           conditional tablist header, footer and list-name presentations
-├── boards/                conditional scoreboard sidebars (default.json and animation-showcase.json shipped)
-├── emoji/                 one JSON per emoji (67 shipped)
-├── animations/            one JSON per text animation (10 effects shipped)
-├── bubbles/               conditional chat bubble styles (default.json shipped)
-├── damage-indicators/     conditional damage and healing presentations (default.json shipped)
-├── real-drops/            conditional display-backed drop presentation (default.json shipped)
-├── menus/                 inert starter menu (default.json shipped)
-└── previews/              container preview documents (14 shipped)
+├── boards/                conditional scoreboard sidebars (default.json and animation-showcase.json included)
+├── emoji/                 one JSON per emoji (67 included)
+├── animations/            one JSON per text animation (10 effects included)
+├── bubbles/               conditional chat bubble styles (default.json included)
+├── damage-indicators/     conditional damage and healing presentations (default.json included)
+├── real-drops/            conditional display-backed drop presentation (default.json included)
+├── menus/                 inert starter menu (default.json included)
+└── previews/              container preview documents (14 included)
 ```
 
 `tablist.json` sits at the root of the data folder. It does not sit inside a `tablist/` folder, and
@@ -69,7 +69,7 @@ returns when a document is saved:
 | `holoui-import.json` | The HoloUi importer runs. Its presence is what stops the boot-time import re-running |
 | `import-backups/<timestamp>/` | An explicit `/gloss import legacy` rewrites at least one file |
 
-## Shipped defaults
+## Defaults
 
 Gloss extracts default documents only where the target file is missing. An edited file is never overwritten. A deleted file comes back on the next boot. The bundled defaults are:
 
@@ -127,7 +127,7 @@ Commands, permissions and placeholders all moved. `/holoui ...` is gone. Use the
 
 ## Current conditional document versions
 
-Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage indicators use schema 2 and real drops use schema 2. These are hard breaks: Gloss silently ignores documents on any other schema and does not migrate them during startup. Rewrite custom files to the current format or use the relevant reset command for a shipped default. `/gloss import legacy` does not translate old boards, groups or tablist formats. The condition language is documented on [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
+Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage indicators use schema 2 and real drops use schema 2. These are hard breaks: Gloss silently ignores documents on any other schema and does not migrate them during startup. Rewrite custom files to the current format or use the relevant reset command for a default. `/gloss import legacy` does not translate old boards, groups or tablist formats. The condition language is documented on [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
 
 ## Where to go next
 
@@ -148,6 +148,6 @@ Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage i
 - [Panels *World-anchored menus*](/gloss/16-panels)
 - [Commands & Permissions *The whole command tree*](/gloss/17-commands-permissions)
 - [Web Editor & Sync *The hosted builder and the sync relay*](/gloss/18-web-editor)
-- [Localization *17 shipped locales and how to override them*](/gloss/19-localization)
+- [Localization *17 included locales and how to override them*](/gloss/19-localization)
 - [API: Getting Started *Driving Gloss from another plugin*](/gloss/21-api-getting-started)
 {.links-list}

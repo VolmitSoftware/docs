@@ -21,7 +21,7 @@ Two things pay out. Breaking a log, wood, mushroom block, mangrove roots or mudd
 
 Both share one cooldown. Rapid-fire breaks and hits do not each pay out. Blocks with zero hardness are worth nothing. Blocks that Adapt's XP provenance system has already paid for do not pay again.
 
-Breaking leaves with an axe only bumps the `axes.leaves` stat, which drives the leaf challenges. Leaves are not log-type blocks, so they never reach the XP branch. `leavesMultiplier` has no effect on what you actually earn with the shipped code.
+Breaking leaves with an axe only bumps the `axes.leaves` stat, which drives the leaf challenges. Leaves are not log-type blocks, so they never reach the XP branch. `leavesMultiplier` has no effect on what you actually earn with the current code.
 
 ## Adaptations
 

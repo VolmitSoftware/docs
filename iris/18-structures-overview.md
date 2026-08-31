@@ -140,7 +140,7 @@ Ingest, adjustment, disabling, and conversion back into editable Iris resources 
 | Edit an existing Iris graph you do not own | `/iris jigsaw adopt inspect`, then apply the reviewed plan | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Builds stored as vanilla `.nbt` | Include them in a datapack, or import them as objects | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 
-The systems compose. Shipping packs use all three systems. Objects handle decoration. Jigsaws handle authored multi-piece content. Native placements with suppression reposition the vanilla keys they need.
+Packs can use all three systems. Objects handle decoration. Jigsaws handle authored multi-piece content. Native placements with suppression reposition the vanilla keys they need.
 
 ## How the pieces connect
 
@@ -173,7 +173,7 @@ An Iris structure and a native structure both arrive through the same `structure
 
 **Command shape.** On Bukkit, Director optional parameters are always `key=value`. Use `/iris structure verify overworld radius=200`. Never use a bare trailing number. The modded loaders use brigadier literals instead.
 
-**Validate before shipping.** `/iris pack validate` covers every pack on both platforms. Check one with `pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a modded loader. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
+**Validate before release.** `/iris pack validate` covers every pack on both platforms. Check one with `pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a modded loader. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
 
 ## Proving a structure path works
 

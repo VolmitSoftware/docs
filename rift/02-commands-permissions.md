@@ -57,8 +57,6 @@ Examples:
 
 The built-in `void` generator creates empty `THE_VOID` biome chunks and a bedrock spawn platform. An external generator's owner plugin must already be enabled; Rift validates the owner portion before asking Bukkit to create or import the world.
 
-The help menu, `/rift list`, `/rift info`, and `/rift doctor` use rich hover explanations on servers that support Adventure-rich command messages. Older Spigot delivery remains readable without the hover interaction.
-
 ## Permission defaults
 
 `rift.command` defaults to everyone so explicitly granted subcommand nodes are usable. Every operational node and `rift.admin` defaults to operators. `rift.admin` grants all Rift capabilities.
@@ -66,7 +64,5 @@ The help menu, `/rift list`, `/rift info`, and `/rift doctor` use rich hover exp
 `/rift doctor` is a compact local chat summary. `/rift debug` performs one report at a time: it captures Bukkit state on the global scheduler, performs JVM inspection, hashing, disk writes, and HTTP off-thread, then writes `plugins/Rift/debug/rift-debug-<UTC timestamp>.txt`. The `debugUploadEnabled` setting is enabled by default; set it to `false` before running the command when the report must remain local.
 
 When upload is enabled, the same local report is sent to the fixed HTTPS mclo.gs API and Rift returns a clickable public URL. The report includes plugin metadata, Rift world names and storage state, active configuration values, runtime details, thread stacks, and managed-file hashes, so review the local file before sharing when server topology is confidential.
-
-The command service checks the requested path before Director executes it, and each handler repeats its capability check. Aliases do not register a second command path and cannot bypass the root executor.
 
 Next: [Storage & Operations](/rift/03-storage-operations)

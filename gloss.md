@@ -19,7 +19,7 @@ In-world renders support viewer-targeted particle lines, frames, boxes, text fil
 | Java | 25 |
 | Folia | Supported |
 | Configuration | `plugins/Gloss/gloss.toml`, commented and hot-reloading |
-| Content | Hot-reloading JSON documents under `plugins/Gloss/`, with conditional variants and shipped defaults |
+| Content | Hot-reloading JSON documents under `plugins/Gloss/`, with conditional variants and defaults |
 | Web editor | Twelve focused document kinds, including the interactive damage-indicator renderer, or the complete runtime workspace through `/gloss web` — [Web Editor & Sync](/gloss/18-web-editor) |
 | Integrations | PlaceholderAPI, Vault, WorldGuard, ten item plugins, and live metrics from the other Volmit plugins — all optional |
 

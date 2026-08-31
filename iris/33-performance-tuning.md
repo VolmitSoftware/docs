@@ -100,7 +100,7 @@ Minecraft 26.2 prepares its concentric stronghold rings before ordinary
 structure generation can settle. Iris answers that exact ring search at
 chunk-center granularity: 225 biome evaluations per task instead of 3,249
 quart-column evaluations. Other biome searches keep their normal
-resolution. In a live shipping-Overworld test, an 81-chunk cold frontier
+resolution. In a live bundled-Overworld test, an 81-chunk cold frontier
 fell from 27–33 seconds to 9–10 seconds with zero failed chunks.
 
 This is a current generation-contract change, not a migration. The same

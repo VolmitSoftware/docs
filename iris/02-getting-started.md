@@ -29,7 +29,7 @@ Work through the sections in order. Confirm each one before you move on. Confirm
 
 ## The one syntax rule that trips everyone up
 
-On the plugin, Iris uses the Director command framework. Tab completion and help render every configurable value as `key=value`, including required and contextual values. Required parameters also accept their bare positional form, but optional and contextual overrides must be keyed. A leftover positional token is not ignored. It is an error, and the command fails.
+On Bukkit, use `key=value` for optional and contextual parameters. Required parameters also accept their bare positional form. Extra positional values fail.
 
 ```text
 /iris create name=myworld type=overworld seed=1337     canonical
@@ -38,14 +38,14 @@ On the plugin, Iris uses the Director command framework. Tab completion and help
 
 Parameters marked contextual, like `world` on pregen, normally come from where you stand. They also never take a positional. Name them with `key=` when you need to override them.
 
-Modded is Brigadier and works the way you expect: everything is positional, in order, and pregen options are literal flag words.
+On Fabric, Forge, and NeoForge, arguments are positional and pregen options are literal flags.
 
 | Platform | Required args | Optional args | Example |
 |---|---|---|---|
 | Plugin (Bukkit) | `key=value` in completion and help. Bare positional also accepted | Must be `key=value` | `/iris create name=myworld type=overworld seed=1337` |
 | Mod (Fabric / Forge / NeoForge) | Positional | Further positional tokens or literal flags | `/iris create myworld overworld 1337` |
 
-Director also matches command and parameter names fuzzily, so shortenings and near-misses often resolve. That is convenient but do not rely on it in scripts. Write the real names.
+Use the full command and parameter names in scripts.
 
 ## 1. Create a world
 
@@ -91,7 +91,7 @@ Now run `/iris worlds` (alias `accesslist`). It prints two lists: Iris worlds an
 
 Every replacement is staged for cold publication. Stage as many distinct targets as needed, then restart once. To make Iris generate the currently selected server main world, replace `minecraft:overworld`. This keeps `server.properties` `level-name`, shared player data, datapacks, and the other dimensions in the same save root. The removed `main=true` and `overwrite=true` create options are not migration shortcuts. Selecting or constructing an entirely new `level-name` save is server provisioning outside Iris, not world promotion.
 
-#### Install the shipping Overworld and Nether pair
+#### Install the bundled Overworld and Nether pair
 
 On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The current built-in pair declares no external datapacks:
 

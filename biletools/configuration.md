@@ -1,6 +1,6 @@
 ---
 title: "BileTools — Configuration"
-description: "Every biletools.yml key with its shipped default"
+description: "Every biletools.yml key with its default"
 published: true
 date: 2026-08-25T00:00:00.000Z
 tags: "biletools, configuration"

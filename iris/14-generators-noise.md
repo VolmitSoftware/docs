@@ -66,7 +66,7 @@ Bucket results are then added together to give the column height. `fluidHeight` 
 
 Two practical consequences:
 
-- **Generators that share an interpolator blend into one averaged shape.** If `plain` and `rare-hills` both use `BILINEAR_STARCAST_9` with `horizontalScale: 12`, they share a bucket. A biome that references only `plain` still gets the average of both shapes inside its own band. The shipping overworld deliberately spreads generators across distinct `horizontalScale` values (`12`, `15`, `23`, `26`, `52`, ...) so that most of them stay independent.
+- **Generators that share an interpolator blend into one averaged shape.** If `plain` and `rare-hills` both use `BILINEAR_STARCAST_9` with `horizontalScale: 12`, they share a bucket. A biome that references only `plain` still gets the average of both shapes inside its own band. The bundled overworld deliberately spreads generators across distinct `horizontalScale` values (`12`, `15`, `23`, `26`, `52`, ...) so that most of them stay independent.
 - **Generators with distinct interpolators stack additively.** That is why a biome can use one link for rolling dunes and another for rare hills and get the sum of both bands.
 
 If you want a new generator to be its own independent layer, give it an interpolator nobody else uses. If you want it to blend with an existing one, match the existing one exactly.
@@ -166,7 +166,7 @@ Prefer the first when only one biome needs to be flat. Prefer the second when yo
 
 Available methods: `NONE`, `BILINEAR`, `STARCAST_3/6/9/12`, `BILINEAR_STARCAST_3/6/9/12`, `HERMITE_STARCAST_3/6/9/12`, `BILINEAR_BEZIER`, `BILINEAR_PARAMETRIC_1_5/2/4`, `BICUBIC`, `HERMITE`, `CATMULL_ROM_SPLINE`, `HERMITE_TENSE`, `HERMITE_LOOSE`, and the four `HERMITE_LOOSE_HALF/FULL_POSITIVE/NEGATIVE_BIAS` variants.
 
-The shipping overworld uses `BILINEAR_STARCAST_9` almost everywhere and varies `horizontalScale` from 6 to 200. Higher starcast numbers cost more per column. `NONE` with scale `1` is the cheapest and gives hard borders, which is what `generators/flat.json` wants.
+The bundled overworld uses `BILINEAR_STARCAST_9` almost everywhere and varies `horizontalScale` from 6 to 200. Higher starcast numbers cost more per column. `NONE` with scale `1` is the cheapest and gives hard borders, which is what `generators/flat.json` wants.
 
 ### Noise layer (`IrisNoiseGenerator`)
 
@@ -217,7 +217,7 @@ There are 171 constants. The Studio schema lists all of them. These are the ones
 | Purpose | Styles | Notes |
 |---------|--------|-------|
 | General terrain | `IRIS`, `IRIS_DOUBLE`, `IRIS_THICK`, `IRIS_HALF`, `SIMPLEX`, `PERLIN`, `PERLIN_IRIS` | `IRIS*` are pre-fractured signature noises and are the default choice for land. |
-| Large dramatic forms | `FRACTAL_SMOKE`, `FRACTAL_WATER`, `FRACTAL_FBM_SIMPLEX`, `FRACTAL_BILLOW_PERLIN` | `FRACTAL_SMOKE` at a large `horizontalScale` is what the shipping `mountain` generator uses. |
+| Large dramatic forms | `FRACTAL_SMOKE`, `FRACTAL_WATER`, `FRACTAL_FBM_SIMPLEX`, `FRACTAL_BILLOW_PERLIN` | `FRACTAL_SMOKE` at a large `horizontalScale` is what the bundled `mountain` generator uses. |
 | Coordinate warping (as a `fracture` child) | `NOWHERE`, `NOWHERE_CELLULAR`, `STATIC` | `NOWHERE` with a small zoom and a large `multiplier` is the standard swirl recipe. |
 | Plateaus and cliffs | `GLOB`, `CELLULAR_HEIGHT` | `CELLULAR_HEIGHT` gives one constant value per cell, which is what a cliff-height generator wants. |
 | Cells and veins | `CELLULAR`, `CELLULAR_IRIS_DOUBLE`, `CELLULAR_IRIS_THICK`, `VASCULAR`, `VASCULAR_THIN`, `SIMPLEX_VASCULAR`, `CLOVER`, the `HEX*` family | Used for region and biome placement more often than for height. |
@@ -468,7 +468,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 }
 ```
 
-The shipping overworld uses neither `expression` nor `imageMap` in any generator.
+The bundled overworld uses neither `expression` nor `imageMap` in any generator.
 
 ## Practical notes
 

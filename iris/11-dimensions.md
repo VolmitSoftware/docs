@@ -75,7 +75,7 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 | `ENCLOSURE` | Terrain and biome only | Nothing yet. The nether-style ceiling and floor treatment is not implemented |
 | `ISLANDS` | Terrain and biome only | Nothing yet. Floating-island terrain comes from biome `floatingChildBiomes` in `OVERWORLD` mode, not from this |
 
-`mode` is marked required in the schema. Gson supplies a default `IrisDimensionMode` when the field is absent. An omitted `mode` runs `OVERWORLD`. The shipping overworld pack omits it. If the mode factory throws, the engine logs the failure once. It warns that it is falling back. It then builds `OVERWORLD` instead.
+`mode` is marked required in the schema. Gson supplies a default `IrisDimensionMode` when the field is absent. An omitted `mode` runs `OVERWORLD`. The bundled overworld pack omits it. If the mode factory throws, the engine logs the failure once. It warns that it is falling back. It then builds `OVERWORLD` instead.
 
 `IrisDimensionMode` is a snippet type (`dimension-mode`). `"mode": "snippet/dimension-mode/overworld"` is also valid.
 
@@ -84,7 +84,7 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 Iris generates internally from `0` to `dimensionHeight.max - dimensionHeight.min`. It then shifts the finished chunk down by `dimensionHeight.min` on output. Almost every Y number the engine handles internally is in that shifted space. The numbers you write in the dimension JSON are not all in the same space. That is the most common source of confusion in this file.
 
 - `dimensionHeight.min` / `dimensionHeight.max` are **world Y**.
-- `fluidHeight` is **world Y**. `IrisDimension.getFluidHeight()` returns `fluidHeight - dimensionHeight.min`. That is what the engine uses internally. Sea level ends up back at the world Y you wrote. The shipping overworld sets `fluidHeight` 50 with `min` -256. Its ocean surface is at world Y 50.
+- `fluidHeight` is **world Y**. `IrisDimension.getFluidHeight()` returns `fluidHeight - dimensionHeight.min`. That is what the engine uses internally. Sea level ends up back at the world Y you wrote. The bundled overworld sets `fluidHeight` 50 with `min` -256. Its ocean surface is at world Y 50.
 - `caveLavaHeight` is **internal Y**. World Y = `caveLavaHeight + dimensionHeight.min`. The default 8 with a min of -64 puts the cave lava ceiling at world Y -56.
 - Bedrock is written at internal Y 0, which is world Y `dimensionHeight.min`.
 
@@ -186,7 +186,7 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 |-------|------|---------|------------------------------------|
 | `regions` | string[] | empty | The region load keys this dimension may place. Required. An empty list produces a world with no biomes to select. Add a region here after you create its file, or the file never generates |
 | `landChance` | double | `0.625` | Fraction of continental noise that becomes land. Push toward 1.0 for a continental world. Push toward 0.0 for an archipelago or ocean world |
-| `regionZoom` | double | `1` | Scales region cells. Small values give many small climate patches. The shipping overworld uses `16.15` for continent-sized climate bands |
+| `regionZoom` | double | `1` | Scales region cells. Small values give many small climate patches. The bundled overworld uses `16.15` for continent-sized climate bands |
 | `landZoom` | double | `1` | Scales the land-biome selection space independently of regions. Raise it to make each land biome patch bigger without changing where regions sit |
 | `seaZoom` | double | `1` | Same, for ocean biomes |
 | `continentZoom` | double | `1` | Scales the land/sea mask. Raise it for fewer, larger continents |
@@ -195,8 +195,8 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `continentalStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Noise style for the land/sea mask. This is what coastlines look like |
 | `landBiomeStyle` / `seaBiomeStyle` / `shoreBiomeStyle` / `caveBiomeStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Per-category biome border shapes. Cellular styles give patchwork borders. Simplex-family styles give organic blobs |
 | `coordFractureDistance` | double | `20` | How far, in blocks, coordinate warping can displace a sample. This produces Iris characteristic swirls. Set to 0 for straight, unwarped borders |
-| `coordFractureZoom` | double | `8` | Frequency of that warping. Lower values warp more rapidly and more violently. The shipping overworld uses `0.15` |
-| `dimensionAngleDeg` | double | `0` | Rotates every input coordinate by this angle. Breaks up axis-aligned artifacts. Pick something off 45 and 90. The shipping overworld uses 69 |
+| `coordFractureZoom` | double | `8` | Frequency of that warping. Lower values warp more rapidly and more violently. The bundled overworld uses `0.15` |
+| `dimensionAngleDeg` | double | `0` | Rotates every input coordinate by this angle. Breaks up axis-aligned artifacts. Pick something off 45 and 90. The bundled overworld uses 69 |
 | `focus` | string | `""` | Forces the whole world to one biome load key, in the **land** role. A sea biome under `focus` generates as land, so sea and shore structure eligibility never runs. Testing only. Remove before packaging |
 | `focusRegion` | string | `""` | Forces the whole world to one region load key. Testing only. Remove before packaging |
 
@@ -303,7 +303,7 @@ Iris has two independent ways to put ore in the ground. They behave differently.
 
 **Deposits** (`deposits`) are blob placements written through the mantle. They are closer to vanilla ore veins. They have per-chunk counts and sizes.
 
-**Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed inside a world-Y band. The shipping pack instead relies on automatic host-aware conversion. An ordinary ore becomes its deepslate form exactly when it replaces deepslate. Variants remain available for modded ores and deliberate substitutions.
+**Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed inside a world-Y band. The bundled pack instead relies on automatic host-aware conversion. An ordinary ore becomes its deepslate form exactly when it replaces deepslate. Variants remain available for modded ores and deliberate substitutions.
 
 ```json
 {
@@ -328,7 +328,7 @@ Iris has two independent ways to put ore in the ground. They behave differently.
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
 | `ores` | `IrisOreGenerator[]` | empty | Noise-driven ore placement across the whole dimension. Each entry has a palette, a `chanceStyle`, a `threshold`, a Y `range`, and `generateSurface`. Use dimension scope for ores that must exist everywhere regardless of biome |
-| `deposits` | `IrisDepositGenerator[]` | empty | Blob deposits with per-chunk min/max counts and blob sizes. The shipping pack uses these for granite, andesite, diorite, gravel and the classic ores |
+| `deposits` | `IrisDepositGenerator[]` | empty | Blob deposits with per-chunk min/max counts and blob sizes. The bundled pack uses these for granite, andesite, diorite, gravel and the classic ores |
 | `depositVariants` | `IrisDepositVariant[]` | empty | Source-to-replacement block remaps inside a world-Y band, applied after biome and region rules. The first matching dimension rule wins. Source matching ignores block properties |
 | `hideOresForHiddenOre` | boolean | `false` | Replaces every ore the generator would write with the surrounding base material. That includes terrain ores, deposits, and ores baked into objects. Turn it on only when a drop-control plugin such as HiddenOre supplies ores at break time instead |
 
@@ -338,7 +338,7 @@ Three fields at dimension scope decide whether caves exist and what they look li
 
 `caveProfile` is the 3D cave configuration. The same object exists on regions and biomes. The most specific enabled profile wins: dimension, then region, then surface biome, then cave biome. A dimension-level profile is the default cave system. A region can replace it wholesale for its own climate.
 
-`carving` maps absolute world-Y bands to cave biomes. That is how the shipping pack puts a deep-dark biome between Y -250 and -175 without touching surface biome selection. Entries can nest through `children` for patchy sub-regions, bounded by `childRecursionDepth`.
+`carving` maps absolute world-Y bands to cave biomes. That is how the bundled pack puts a deep-dark biome between Y -250 and -175 without touching surface biome selection. Entries can nest through `children` for patchy sub-regions, bounded by `childRecursionDepth`.
 
 `carvingEnabled: false` is implemented by adding the `CARVED` mantle flag to the disabled set. It is exactly equivalent to listing `CARVED` in `disabledComponents`.
 
@@ -545,7 +545,7 @@ These exist to help you inspect the generator, not for production. `studioMode` 
 
 This is the studio starter with `mode`, `environment` and `fluidHeight` written out. It needs `regions/starter.json`, a biome, and a generator to actually produce terrain. The four-file walkthrough is in [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension).
 
-## What the shipping overworld sets
+## What the bundled overworld sets
 
 Path: `packs/overworld/dimensions/overworld.json` under the platform data directory. The Fabric, Forge and NeoForge run configs use the same file.
 
@@ -598,5 +598,5 @@ The baseline passes when Studio opens clean. Validation must report no blocking 
 | Expecting `worldBoundary` to crop an image | Border and image coverage are separate. Set the image map `outOfBounds` policy |
 | Embedding image-map settings inside a generator style | `imageMap` is a first-class resource key under `image-maps/` |
 | Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |
-| Leaving `focus` or `focusRegion` set when packaging | The shipped pack generates exactly one biome or region |
+| Leaving `focus` or `focusRegion` set when packaging | The included pack generates exactly one biome or region |
 | Changing pack files and expecting an existing world to change | Production worlds run from `<world>/iris/pack/`. See [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |

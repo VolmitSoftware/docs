@@ -132,16 +132,16 @@ Every emoji is always usable as `:<id>:`, whether or not it has a trigger. A tri
 
 Emoji replacement text is a literal fragment, not executable authored code. Function, expression and placeholder-looking text introduced by an emoji value is not scanned again. This is required because player chat may invoke emoji triggers; chat can never use an emoji document to execute operator-side expressions or bypass permissions.
 
-### Shipped defaults
+### Defaults
 
 The jar includes 67 emoji documents. They are extracted into `emoji/`
 whenever a file of that name is missing. This runs on every enable and
-on every `/gloss reload`, not only on first run. If you delete a shipped
+on every `/gloss reload`, not only on first run. If you delete an included
 emoji file, it comes back on the next reload or restart. To turn a
-shipped emoji off, set `"enabled": false` in its file and leave the file
+included emoji off, set `"enabled": false` in its file and leave the file
 in place.
 
-The shipped set starts with `heart` (the only one with a trigger, `<3`).
+The included set starts with `heart` (the only one with a trigger, `<3`).
 It also includes `airplane`, `mail`, `cut`, `pencil`, `nib`, `check`,
 `thickcheck`, `cross`, `thickcross`, `star`, `darkstarstar`,
 `snowflake`, `sparkle` and `sun`. Arrow ids are `left`, `right`, `up`,
@@ -151,7 +151,7 @@ It also includes `airplane`, `mail`, `cut`, `pencil`, `nib`, `check`,
 `blackdiamond`, and `vbar1` to `vbar3`. Circled digits are `1` to `10`,
 `1t` to `10t` and `1h` to `10h`.
 
-Your own emoji files are never touched by the extraction. Ids that are not in the shipped list are never re-created.
+Your own emoji files are never touched by the extraction. Ids that are not in the included list are never re-created.
 
 ### Replacement order
 
@@ -198,9 +198,9 @@ The listener re-reads `[features] emoji` and `[emoji] tabComplete` on every even
 
 `list` prints a page of 51 enabled emoji, three to a line. A full page occupies 19 chat lines including the banner and integrated navigation bar. Each glyph is clickable to insert its `:id:` token into your chat input. It needs `gloss.emoji.use`. Multi-page banners include `{current/total}`; the bottom bar exposes clickable previous and next controls whenever those pages exist. Out-of-range page numbers are clamped to the first or last page.
 
-`reset` rewrites shipped emoji documents from the jar and needs `gloss.emoji.reset` (op). `name=*` (the default) restores all 67. A single name restores just that one. A trailing `.json` on the name is accepted.
+`reset` rewrites included emoji documents from the jar and needs `gloss.emoji.reset` (op). `name=*` (the default) restores all 67. A single name restores just that one. A trailing `.json` on the name is accepted.
 
-> `/gloss emoji reset` overwrites the target files on disk. Edits to a shipped emoji id are lost. Ids that are not in the shipped list are untouched.
+> `/gloss emoji reset` overwrites the target files on disk. Edits to an included emoji id are lost. Ids that are not in the included list are untouched.
 {.is-warning}
 
 ### Turning emoji off
@@ -215,7 +215,7 @@ An animation is a list of frame strings that advances on wall-clock time. It is 
 
 One JSON file per animation in `plugins/Gloss/animations/`. The id comes from the file name.
 
-`plugins/Gloss/animations/rainbow.json` (shipped):
+`plugins/Gloss/animations/rainbow.json` (included):
 
 ```json
 {
@@ -306,7 +306,7 @@ name=rainbow` when an older extracted copy should be replaced deliberately.
 
 Gloss also includes `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`,
 `odometer` and `wave`. Each is a scoreboard-safe example built from a reusable inline-expression
-helper. Use `|animation.marquee|` to play the shipped example, or call `marquee(...)` directly to
+helper. Use `|animation.marquee|` to play the included example, or call `marquee(...)` directly to
 animate your own text.
 
 Already extracted examples are not rewritten when their authored step rate changes. Delete those
@@ -366,13 +366,13 @@ next scoreboard row, hologram line or MOTD line. Keep formatting outside a chara
 helper, for example `&k{{ marquee('MAGIC', 5, floor(time.seconds * 4)) }}&r`; placing `&k` inside the
 helper's text argument is rejected because the helper accepts plain text.
 
-The shipped examples advance four steps per second. Animated boards, tablists, persistent holograms,
+The included examples advance four steps per second. Animated boards, tablists, persistent holograms,
 and menu text with no explicit `refreshTicks` sample clock-driven expressions and named animations
-every tick, while each expression still controls when its visible state changes. The one-frame shipped examples use a
+every tick, while each expression still controls when its visible state changes. The one-frame included examples use a
 nominal `frameIntervalMs` of 1000; their expression time, not that frame interval, determines the
 result.
 
-The web editor's **Randomize** action for an animation document chooses across the complete shipped
+The web editor's **Randomize** action for an animation document chooses across all included
 set: rainbow, marquee, timeline, typewriter, flash/pulse, wipe, scanner, scramble/decode, odometer,
 and wave/chase. It also provides the reusable `align` layout helper. Alignment participates in every
 applicable text-bearing document, menu-component and preview-element randomizer. The generated
@@ -420,9 +420,9 @@ directly without a named animation document; see [Expressions & Placeholders](/g
 /gloss animations reset [name=*]
 ```
 
-`animation` is an alias for `animations`. `list` prints the loaded animation ids seventeen per page using the shared command-page banner and navigation bar. It needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten shipped animation documents from the jar.
+`animation` is an alias for `animations`. `list` shows the loaded animation ids and needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten included animation documents.
 
-> `/gloss animations reset` overwrites the ten shipped animation ids. Only shipped ids are affected. Your own animation files are never touched.
+> `/gloss animations reset` overwrites the ten included animation ids. Your own animation files are never touched.
 {.is-warning}
 
 ### Turning animations off
