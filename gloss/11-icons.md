@@ -8,33 +8,27 @@ editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-An icon is the visual payload of a menu component. Every drawing
-component owns exactly one icon. That icon owns the client-side entities
-that are sent as packets to the viewer alone. Nothing an icon draws
-exists as a world entity. This page covers every icon type reachable
-from a menu document. It lists the keys each type accepts and the shared
-display style block. It also covers what happens when an icon cannot be
-built. Where components live and how they are clicked is on
+Each menu component has one icon visible only to its viewer. This page lists the icon types, their JSON keys, and the shared display style. Component placement and clicks are covered by
 [Components & Hitboxes](/gloss/10-components-hitboxes).
 
 ## Icon types
 
-`icon` is a discriminated union. The `type` member selects the record. The remaining members are deserialized into it.
+The `type` key selects the icon.
 
-| `type` | Runtime class | Client entities produced |
-|---|---|---|
-| `text` | `TextMenuIcon` | One text display per line |
-| `textImage` | `TextImageMenuIcon` | One text display per image row |
-| `animatedTextImage` | `AnimatedTextImageMenuIcon` | One text display per row of frame 0 |
-| `item` | `ItemMenuIcon` | One item display, plus one text display when the stack amount is above 1 |
-| `playerHead` | `PlayerHeadMenuIcon` | One item display using a resolved player-head stack or the configured fallback |
-| `block` | `BlockMenuIcon` | One block display using the material's default block state |
-| `customItem` | `ItemMenuIcon` | Same as `item` |
-| `entity` | `EntityMenuIcon` | One packet-only living entity |
+| `type` | Result |
+|---|---|
+| `text` | Text, one display per line |
+| `textImage` | Small pixel image |
+| `animatedTextImage` | Animated pixel image |
+| `item` | Vanilla item, with a count label above one |
+| `playerHead` | Player head or configured fallback |
+| `block` | Default state of a block |
+| `customItem` | Item supplied by another plugin |
+| `entity` | Living-entity model visible only to the viewer |
 
 One further enum constant, `itemStack`, exists but has no JSON form. See [The API-only type](#the-api-only-type).
 
-The union adapter raises `JsonParseException` before the rest of the document is read:
+These errors reject the menu file:
 
 | Condition | Message |
 |---|---|
@@ -42,9 +36,7 @@ The union adapter raises `JsonParseException` before the rest of the document is
 | `type` is not a JSON primitive | `Type must be a string` |
 | `type` is not a known discriminator | `Unknown type: <value>` |
 
-Any of those aborts the whole menu file. The file is logged as `An error occurred while parsing menu config "<id>.json":`. The previously registered copy stays live. Record component names are the JSON keys verbatim. No field-naming policy is applied. Unknown members are ignored by Gson. Any list-typed key also accepts a single bare value in place of an array.
-
-Dispatch to the runtime class uses a type test over the parsed record. Data that matches nothing, including an absent or `null` `icon`, silently produces the missing-icon fallback described below.
+The previous working copy stays active. Unknown keys are ignored. A list key also accepts one bare value. A missing or `null` icon uses the fallback described below.
 
 ## The display style block
 
@@ -96,9 +88,9 @@ Every JSON-authorable icon type except `entity` accepts the same optional `style
 
 The text-specific keys (`shadow`, `seeThrough`, `textAlignment`, `backgroundArgb`, `textOpacity`, `lineWidth`) apply to every display produced by `text`, `textImage` and `animatedTextImage`. `item`, `playerHead`, `block` and `customItem` apply the generic display keys to their own display entity. The text keys apply only to an item's optional count label; a player head always has amount one and creates no count label.
 
-An out-of-range number, a malformed ARGB string, an unpaired brightness value or an unknown enum constant throws during deserialization. The whole menu file fails to load rather than the one icon. ARGB strings must match `#` followed by exactly eight hex digits. Anything else fails with `ARGB colors must use #AARRGGBB`.
+An out-of-range value, malformed ARGB string, unpaired brightness value, or unknown enum rejects the menu file. ARGB colors require `#AARRGGBB`.
 
-`entity` icons have no `style` component at all. The schema forbids the key on them. `/gloss menu style` refuses with `entity icons do not support display style`. The runtime does not validate menu files against the schema. A hand-written entity `style` is simply ignored by Gson. The entity renders with the defaults.
+`entity` icons do not support `style`. `/gloss menu style` reports `entity icons do not support display style`, and a hand-written style is ignored.
 
 ## `text`
 
@@ -145,7 +137,7 @@ Function tokens and inline expressions use the same facilities as a scoreboard. 
 
 ### Dynamic text refresh
 
-Substitution reaches PlaceholderAPI reflectively. It is a no-op when the viewer is `null` or the string contains no `%`. Plugin presence is re-probed at most once per second. A lookup or invocation failure is logged once. The text is served unresolved.
+PlaceholderAPI tokens stay unchanged when PlaceholderAPI is unavailable or a lookup fails.
 
 Rendering happens when the icon is constructed and then every
 `refreshTicks` while that icon is visible when the source contains a complete
@@ -153,7 +145,7 @@ Rendering happens when the icon is constructed and then every
 regardless of `refreshTicks`. A text icon whose last dynamic token is
 edited away by the API stops refreshing from that point on.
 
-A refresh that throws is logged once per icon with the menu id and player name. The previous text stays on screen. The next successful refresh clears the one-shot log latch.
+A failed refresh leaves the previous text on screen.
 
 The other points at which a text icon re-renders:
 
@@ -165,9 +157,9 @@ The other points at which a text icon re-renders:
 | Toggle click | The toggle swaps to its other pre-built icon |
 | API | `HoloIcon.Text` applied to an open component calls `updateText` |
 
-`updateText` re-renders all lines and pushes only the lines that actually changed as metadata packets when the line count is stable. A changed line count removes and respawns that icon alone. Either path bumps the icon geometry revision. The owning clickable rebuilds its click plane on the next tick, before the next hover or click test. It returns `false` only when the icon display-entity state is missing or inconsistent.
+`updateText` replaces the rendered lines and updates the click area when the text size changes.
 
-A toggle builds its `trueIcon` and `falseIcon` once in its constructor and ticks only the visible one. A hidden text icon resumes its configured refresh after it becomes visible. The toggle `condition` placeholder is still evaluated exactly once, in the constructor. The state only flips on click.
+A toggle refreshes only its visible icon. Its initial condition is checked when the toggle opens; later changes happen on click.
 
 ## `textImage`
 
@@ -183,13 +175,7 @@ A toggle builds its `trueIcon` and `falseIcon` once in its constructor and ticks
 
 Image assets live in `plugins/Gloss/images/`. Gloss does not create that folder at startup. Create it when needed, or let a HoloUi import or an editor sync publication containing images create it. `path` is always relative to that folder. Icon paths support local files, not URLs.
 
-Resolution canonicalizes both the images root and the requested file. It requires the result to still start with the root path **and** to be a regular file. Blank paths, absolute paths, missing files, directories, `..` escapes and symlink escapes all fail with `FileNotFoundException`. Traversal cannot read anything outside `plugins/Gloss/images/`. Format detection and decoding use Apache Commons Imaging. Any format it recognizes works.
-
-Paths supplied through the API are checked twice. First the API own
-sanitizer rejects blank values, values over 256 characters, and control
-characters. It also rejects absolute paths, values containing `:`, and
-any `..` segment. During that pass it normalises `\` to `/`. Then the
-canonical containment check above runs again.
+Paths must name a file inside `plugins/Gloss/images/`. Blank, absolute, missing, directory, traversal, and symlink-escape paths are rejected. API paths are limited to 256 characters and cannot contain control characters or `:`.
 
 The images folder is its own entry on the shared hot-reload pass, at `[hotload] watchIntervalTicks` (default 5). One folder walk reports changed, added and removed files together, and any of the three refreshes the visuals of every open menu session and live panel view. Because icons are rebuilt on refresh, if you replace an image file, Gloss re-decodes it without a reload.
 
@@ -204,17 +190,7 @@ One text display is emitted per pixel row, walking `x` left to right:
 
 Transparency is binary. Any alpha below 255 is fully transparent. Anything else is fully opaque. The JPEG exemption exists because JPEG carries no alpha channel.
 
-Text images are limited to 16 by 16 pixels. The limit is deliberate: every source row is a text
-display and every source pixel is still a font glyph. Consecutive pixels with the same color are
-encoded as one text run to reduce component and packet work. The vanilla full-block glyph retains
-font advance and line spacing, so this renderer is intended for small pixel art rather than
-continuous photographs. An oversized local image fails the icon and renders the missing-image
-checkerboard.
-
-A continuous raster cannot be substituted transparently with vanilla maps. Map pixels render only on
-item frames, which snap to the block grid and cannot honor menu scale, arbitrary rotation,
-billboarding or follow-player movement. Gloss therefore does not expose a map renderer on ordinary
-menu image icons.
+Text images are limited to 16 by 16 pixels and work best for small pixel art. Larger images use the missing-image checkerboard.
 
 ## `animatedTextImage`
 
@@ -233,16 +209,7 @@ frame shorter than the tallest frame is padded at the bottom. The pad
 is blank rows built from that frame own width, using the same
 bold-space and space pair. All frames end up with the same line count.
 
-The frame counter increments every server tick and advances when it reaches `speed`. The two-tick
-minimum caps the renderer at ten frames per second. The tick source is the menu session one-tick
-task. It reaches only components that are currently open.
-
-A frame advance sends metadata only for rows whose rendered component changed, and submits those
-packets as one batch to the viewer. There is no respawn and no repositioning. The entity count is
-fixed at spawn from frame 0 line count. The bottom padding guarantees that count matches every
-other frame.
-
-Each frame file is decoded once while the icon is constructed. Icons are reconstructed on component open and on every visual refresh. An image hot reload re-reads every frame of each affected icon.
+The two-tick minimum limits animations to ten frames per second. Shorter frames are padded at the bottom so the icon keeps a stable size. Changed image files are reloaded automatically.
 
 ## `item`
 
@@ -256,17 +223,13 @@ Each frame file is decoded once while the icon is constructed. Icons are reconst
 | `count` | integer | no | `0` | `0` and negatives become `1` at icon construction |
 | `customModelValue` | integer | no | `0` | Applied unconditionally, including `0` |
 
-`item` is read by a registry-backed adapter. The string is parsed as a namespaced key and then looked up in the Bukkit registry. The adapter is lenient. An id it cannot resolve becomes `null` instead of an exception. That has three consequences:
-
-- Ids must be legal namespaced keys, which means lower case: `diamond_sword` or `minecraft:diamond_sword`. `DIAMOND_SWORD` is not a legal key string and resolves to nothing.
-- A well-formed but unknown key also resolves to nothing.
-- Either way the menu file still parses and every other component in it still builds. The icon itself fails at construction and falls back to the missing icon.
+Item IDs must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed IDs use the missing icon without breaking the rest of the menu.
 
 The stack is built at the resolved count (or `1`) and then has its custom model data set unconditionally. An item icon authored without `customModelValue` still carries an explicit custom model data of `0`. Setting model data is a no-op on materials that have no item meta.
 
 ### Item layout
 
-Both item flavours render through the same runtime class. They differ only in how the `ItemStack` is obtained.
+Both item types use the same layout.
 
 | Aspect | Behavior |
 |---|---|
@@ -331,7 +294,7 @@ one corner. Its automatic click plane matches: `0.75` multiplied by the
 session scale and the style X and Y scale. All generic display-style
 keys apply.
 
-If the registry lookup itself is unavailable the adapter falls back to an upper-cased enum lookup. An unnamespaced lowercase id still resolves on servers where the registry is not reachable. Unknown ids and non-block materials fail at construction and use the missing-icon fallback.
+Unknown IDs and non-block materials use the missing icon.
 
 ## `customItem`
 
@@ -365,7 +328,7 @@ Provider ids, activation order, the `[items] customItemProviders` allowlist and 
 
 A `width` or `height` outside that range throws `width must be finite, greater than 0, and at most 64` during deserialization and rejects the menu file.
 
-The component anchor is the entity **feet**, not its center. That is the one placement rule that differs from every other icon type. Gloss sends a private client team with collision set to `never`, a spawn packet, base entity metadata with gravity off, movement and orientation packets, and a destroy and team-removal packet, all to the one viewer. No Bukkit world entity is ever created, and the entity cannot physically push or collide with a player. Its ordinary client interaction outline is separate from physical collision; Gloss intercepts interaction packets for its own fake ids and routes them through the owning button or toggle logical-plane click path.
+The component anchor is the entity's **feet**, not its center. The entity is visible only to the viewer and cannot push or collide with players.
 
 Body yaw, pitch and head yaw follow the session transform. A fixed entity icon turns with a following menu as the player turns, and unchanged poses send no duplicate packets. Vanilla living entities have no arbitrary roll transform, so a rolled panel rotates the entity anchor and any authored click plane but keeps the living model upright around its own forward axis. The web editor's 3D preview follows that same distinction.
 
@@ -385,7 +348,7 @@ Because the icon is a raw entity rather than a display entity, none of the displ
 
 Personal menus opened by command or by the API use `uiScale` directly. Panels multiply their own scale into it. If you raise `uiScale`, every panel grows in proportion without touching the panel documents. See [Panels](/gloss/16-panels).
 
-If you change `[menus] uiScale` on disk, Gloss hot-reloads and triggers a visual refresh. Every open component closes. The session picks up the new scale. Every component reopens. The custom-item prototype cache is invalidated at the same time. Session scale feeds the rendered line height, the character width used for automatic hitbox width, and the display entity scale metadata. A scale change moves the click plane along with the visuals.
+Changing `[menus] uiScale` hot-reloads open menus and scales their visuals and click areas together.
 
 Command-set styles fold two convenience properties into the JSON keys. `/gloss menu style <menu> <row> scale <value>` writes `scaleX`, `scaleY` and `scaleZ` together. `brightness <0-15>` writes `blockLight` and `skyLight` together. `value=*` clears whichever keys that property owns. A `style` object left empty by a clear is removed from the icon entirely.
 
@@ -407,44 +370,26 @@ Type names are matched case-insensitively with `-` and `_` stripped. An existing
 
 ## When an icon fails
 
-Validation and loading failures inside an icon constructor are reported as `MenuIconException`. Any unchecked exception a constructor lets out is treated the same way:
+An invalid icon becomes the missing icon without breaking the rest of the menu. Check these values first:
 
-| Type | Message | Cause |
-|---|---|---|
-| `item` | `Item icon has an unknown or invalid item id` | `item` is absent, is not a legal namespaced key, or names nothing in the registry |
-| `item` | `Unable to build an item icon from "%s"` | The material resolved but no stack could be built from it |
-| `block` | `Block icon has an unknown or invalid block id` | `block` is absent, malformed, or names nothing |
-| `block` | `Block icon material "%s" is not a block` | The material resolves but cannot be represented as a block display |
-| `block` | `Unable to create the default block state for "%s"` | The server could not create the material's default block data |
-| `customItem` | `Unable to resolve custom item "%s" from provider "%s"` | The provider registry returned nothing. A blank provider is reported as `auto` |
-| `playerHead` | `Player head icon has no player name` | `player` is absent, blank or only whitespace |
-| `entity` | `Entity icon has an unknown or invalid entity id` | `entity` is absent, malformed, or absent from the entity registry |
-| `entity` | `Entity icon type "%s" is not a spawnable living entity` | The id resolves to a player, item, projectile, display, interaction or another unsafe type |
-| `entity` | `Unable to resolve packet entity type "%s"` | The packet layer threw while mapping the type |
-| `entity` | `Entity type "%s" is unavailable on this server version` | Bukkit accepts the type but the packet layer has no mapping for the running server version |
-| `textImage` | `Image icon has no path` | `path` is absent or blank |
-| `textImage` | `Failed to load relative image "%s"!` | The path is absolute, escapes the images root, is missing, is a directory, or could not be decoded |
-| `animatedTextImage` | `Animated icon has no source frames` | `source` is absent or empty |
-| `animatedTextImage` | `Animated icon has a frame without a path` | One `source` entry is null or blank |
-| `animatedTextImage` | `Failed to construct animated icon!` | A frame path is absolute, escapes the images root, is missing, or could not be decoded |
+- `item` and `block` IDs are valid lowercase material keys.
+- `entity` names a living entity available on the server version.
+- `customItem` names an item available from an enabled provider.
+- `playerHead` has a non-blank player name.
+- Image paths stay inside `plugins/Gloss/images/` and name readable files.
+- Animated images contain at least one valid frame.
 
 ### The missing icon
 
-Icon creation catches all of the above. It logs the stack with the owning component id (`An error occurred while creating a Menu Icon for the component "%s":`). It logs `Falling back to missing icon.` It returns the missing icon in its place. That fallback is an eight-row, eight-glyph checkerboard: rows 1 – 4 are four `#000000` glyphs then four `#f800f8` glyphs, and rows 5 – 8 are the reverse. Black and magenta, in the shape of the icon that should have been there.
-
-A broken icon never costs more than that icon. Unresolvable ids are tolerated by the parser. The menu file is still registered. Every other component in it still builds. No icon failure reaches spawn.
-
-If constructing the fallback itself throws, an `IllegalStateException` carrying both failures is raised instead. The session open path then removes any entities it had already spawned and refuses the open. A half-drawn menu is never left on a player screen.
+An invalid icon becomes a black-and-magenta checkerboard. Other components in the menu still open.
 
 An absent or `null` `icon` is not an error. It produces the missing icon with no log line at all. A menu that renders as checkerboards with a clean console usually means a component is missing its `icon` key entirely.
 
 ## The API-only type
 
-`itemStack` is a declared icon type with no data class. The union adapter filters it out of its map in both directions.
+`itemStack` is available only through the API.
 
-| Constant | State |
-|---|---|
-| `itemStack` | API only. It wraps a live `org.bukkit.inventory.ItemStack` and is reachable through `HoloIcon.item(ItemStack)`, which clones on the way in and again on read. The renderer clones once more before drawing |
+Use `HoloIcon.item(ItemStack)` to display an existing item stack.
 
 `{"type":"itemStack"}` fails with `Unknown type: itemStack`. Serializing one fails the same way. There is no NBT or serialized-stack JSON form of an icon. See [API: Menus](/gloss/22-api-menus).
 
@@ -458,4 +403,4 @@ with the style defaults. JSON `customItem` and `playerHead` icons have no public
 
 `schema/gloss.schema.json` defines `$defs.icon` as the union above. It requires `type`. It requires a namespaced block key and entity key. It requires integer item counts. It requires non-blank image, item and player-head names. It requires at least one non-blank animation source and an animation speed from 2 through 1200. It constrains text and player-head refresh intervals to 0 – 1200. It allows an integer `customModelValue` with no minimum. It constrains entity dimensions to greater than 0 and at most 64. The entity branch explicitly forbids `style`. `itemStack` is unlisted because it has no JSON form.
 
-The schema is advisory. It is not read at runtime. No JSON Schema validator runs in the loader. Gson is the behavioral authority. That is why unknown icon keys are silently ignored in a running server even though the style object marks them invalid. The schema is what the web editor validates against. See [Web Editor & Sync](/gloss/18-web-editor).
+The schema describes the JSON format and powers validation in the web editor. The server ignores unknown icon keys. See [Web Editor & Sync](/gloss/18-web-editor).

@@ -9,9 +9,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Heatmaps, pie maps, list maps, and pressure overlays render on Minecraft maps. Open with `/react map`. Config: `plugins/React/feature/<id>.toml`.
 
-Most chunk heatmaps share `FeatureChunkHeatmapBase`. That base implements `ReactRenderer` and `ChunkGridExporter` for grid export. Pie charts share `FeatureIrisChunkSharePieBase`. List maps implement `ReactRenderer` directly.
-
-## Shared heatmap base (`FeatureChunkHeatmapBase`)
+## Shared heatmap settings
 
 All heatmaps and overlays below inherit these fields unless noted.
 
@@ -24,17 +22,17 @@ All heatmaps and overlays below inherit these fields unless noted.
 | `drawLabel` | boolean | `true` | Title in header. |
 | `minSignificantScore` | double | `0.001` | Below peak score → quiet map (no noise-scale colors). |
 
-In-game heatmaps are fixed north-up coordinate grids. X increases east/right and Z increases south/down. Every visible chunk has a complete perimeter; unloaded chunks, loaded quiet chunks, measured chunks, the center chunk, and MCA 32×32 boundaries remain visually distinct. Scans use the event-maintained loaded-coordinate index over the exact rectangular grid bounds and are cached across the render cadence.
+In-game heatmaps face north. X increases east/right and Z increases south/down. Unloaded, quiet, measured, center, and MCA-boundary chunks use distinct markings.
 
-React Web renders one selected exported heatmap as a pan-and-zoom absolute coordinate plane. At close zoom each square is one chunk. Wider views automatically use aligned power-of-two buckets while keeping the response near 33 cells per axis; a 32-chunk cell is exactly one MCA region. Sparse cells carry peak, average, and loaded-sample count, so loaded zero activity remains distinct from a coordinate with no current sample. The server also returns immutable spawn and world-border metadata for recenter and fit-to-border controls. Web requests do not enumerate worlds or call Bukkit world or chunk APIs from the HTTP thread.
+React Web shows the selected heatmap on a pan-and-zoom coordinate plane. Close views show individual chunks; wider views group them into larger cells. Spawn and world-border controls can recenter the map.
 
-Selecting a square exposes its exact cell-center position as `world X Z`. For an aggregate square this is the center of the represented aligned area, not the coordinate of its peak sample. Copying is browser-local and available to every role. React Web never fabricates a Y coordinate or teleports on cell selection; an admin must choose an online player and approve a separate confirmation dialog. The server rechecks the canonical world and border, permits only one in-flight request per target player, resolves solid non-hazardous footing with two open blocks inside the selected chunk, and then uses the owning schedulers and asynchronous teleport path. Destination lookup may load or generate that chunk, and HTTP 202 reports queue acceptance rather than completion.
+Selecting a square shows its center as `world X Z`; grouped cells use the center of the represented area. Admins can choose an online player and confirm a safe teleport inside that chunk. The destination may load or generate the chunk.
 
 The coordinate-grid API is a clean break. Detail queries use `centerChunkX`, `centerChunkZ`, and `radius`; the former ambiguous `centerX` and `centerZ` parameters are not accepted. `radius` is bounded to 1–1,875,000 chunks, and invalid requests receive HTTP 400 instead of being silently clamped.
 
-## Shared pie base (`FeatureIrisChunkSharePieBase`)
+## Shared pie settings
 
-Donut pie plus legend. Cap slices by legend height (3–32). Overflow goes to “Other”. Bucket cache is 45 ms. Iris helpers can resolve Iris biome names via reflection. Otherwise they use vanilla biomes. Pie subclasses in this set typically add **no** keys beyond `enabled`.
+Pie maps use a donut chart and a 3–32-row legend. Extra slices are grouped as “Other”. Iris biome names are used when available; otherwise the map uses vanilla names.
 
 ## Heatmaps
 

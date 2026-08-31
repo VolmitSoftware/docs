@@ -195,8 +195,8 @@ Menu documents use the same full viewer-aware renderer in three places:
 
 | Field | Where | When it expands |
 |---|---|---|
-| text icon `text` | any text icon in a menu or panel | at icon construction, then every `refreshTicks` while the icon is on screen |
-| toggle `condition` | toggle component | once, in the toggle's constructor |
+| text icon `text` | any text icon in a menu or panel | when opened, then every `refreshTicks` while visible |
+| toggle `condition` | toggle component | once when opened |
 | `message` action `message` | menu action | every time the action fires |
 
 These fields honor `[text] functions` and `[text] placeholders` exactly like boards and tablists.
@@ -213,7 +213,7 @@ then controls later re-expansion:
 - omitted, the value is `10` ticks.
 - the accepted range is `0` to `1200`, and a value outside it rejects the document with
   `refreshTicks must be between 0 and 1200`.
-- `0` disables refreshing, so the icon keeps whatever it rendered at construction.
+- `0` disables refreshing, so the icon keeps its initial text.
 
 Refresh is skipped when the source text has no complete `%name%`, `|function|` or `{{ expression }}` token. Static text costs nothing at
 any `refreshTicks` value.
@@ -231,17 +231,12 @@ A toggle state is the full rendered `condition` compared to `expectedValue` with
 - The comparison is case-insensitive, unlike expression string equality.
 - A condition with no dynamic token is compared as a literal, so
   `"condition": "yes"` with `"expectedValue": "YES"` is a toggle that always starts on.
-- The condition is read once, in the constructor. Clicking a toggle flips the stored state and runs
+- The condition is read once when the toggle opens. Clicking it flips the stored state and runs
   `trueActions` or `falseActions`. It never re-reads the condition.
 
 ### Why the MOTD cannot resolve placeholders
 
-`MotdService` handles `ServerListPingEvent`. That event has no `Player`. A server list ping happens
-before anyone joins.
-
-The service therefore calls `renderStatic`, which is `render(null, text)`. The pipeline guards the
-placeholder stage on `viewer != null`. There is nobody to resolve `%player_name%` against. The stage
-is skipped. The token reaches the client as written.
+A server-list ping happens before a player joins, so player placeholders have no viewer to resolve against. They remain unchanged in the MOTD.
 
 Functions, viewer-free inline expressions, emoji and colors still apply to the MOTD. Native
 `time.*` and `server.*` variables, server aliases such as `papi('server_online')`, and explicit

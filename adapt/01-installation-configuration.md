@@ -10,9 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
 
-Advancement grants, tree refreshes, and unlock toasts use the platform scheduler on Paper, Purpur, and Folia. On Folia, these updates remain live instead of falling back to persistence-only grants.
-
-Most of what you will change is hot-reloadable. Native filesystem events are reconciled with content checks, so atomic editor saves, FTP replacements, and same-size edits with an unchanged timestamp are still found. Adapt waits for a stable snapshot of at most 2 MiB and applies at most one automatic batch every 3 seconds; saves made during that interval replace the queued state and run in one trailing batch. Temporary upload artifacts and brief delete-and-recreate gaps are ignored. Automatic loads parse the captured TOML without rewriting, deleting, or recreating watched files. Valid edits refresh any Adapt menus that are open. Broken TOML is rejected, and the settings already in memory keep running.
+Most settings hot-reload. Valid edits refresh open Adapt menus; invalid TOML is rejected while the current settings stay active.
 
 SQL, Redis, metrics, update checks, and optional-plugin detection require a restart.
 
@@ -22,8 +20,8 @@ Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutat
 
 ## Installing
 
-1. Run a Paper, Purpur, or Folia server on the Minecraft 26.1 API line, on Java 25. Adapt declares `folia-supported: true`, so Folia needs no separate build.
-2. Copy the shaded Adapt jar (`Adapt-<version>.jar`) into the backend's `plugins/` folder. On a proxy network it goes on every backend, never on the proxy.
+1. Run Paper, Purpur, or Folia for Minecraft 26.1 on Java 25.
+2. Copy `Adapt-<version>.jar` into each backend server's `plugins/` folder, not the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
 4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads only that locale, verifies it against the build manifest, caches it, and activates it without a restart.
 5. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.

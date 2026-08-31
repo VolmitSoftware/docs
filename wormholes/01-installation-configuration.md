@@ -8,11 +8,7 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Copy `Wormholes-<version>.jar` into `plugins/`. On first start SlimJar resolves,
-verifies, and caches the plugin's internal libraries, relocating the selected
-Java-only libraries while zstd-jni keeps its native-compatible package. Then
-Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
-3`) after startup. A missing optional plugin skips its bridge.
+Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `plugins/Wormholes/wormholes.toml`. A missing optional plugin disables only its integration.
 
 ## Requirements
 
@@ -22,21 +18,18 @@ Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
 | Soft depends | PlaceholderAPI, Iris, Vault, Citizens (optional). Paper loads them before Wormholes when present |
-| Artifact | Runtime `Wormholes-<version>.jar` from `./gradlew shadowJar`; the `-api.jar` is compile-only |
-| First start | Dependency-repository access for SlimJar, or a prewarmed SlimJar cache |
+| Plugin file | `Wormholes-<version>.jar`; do not install the `-api.jar` |
+| First start | Internet access for required libraries, or an existing SlimJar cache |
 
 ## Install
 
 1. Copy `Wormholes-<version>.jar` into `plugins/`.
-2. Start the server. SlimJar downloads and caches its declared libraries when
-   they are not already cached. Wormholes then creates the data folder and writes
-   `wormholes.toml` if the file is missing.
+2. Start the server so Wormholes creates its data folder and `wormholes.toml`.
 3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
    have no schema or a wrong schema. The file must use `schema = 3`.
 4. Apply config changes with `/wormholes reload` or the config file watcher.
 
-WorldGuard is optional but is not declared as a soft dependency. Wormholes
-detects it reflectively when checking RTP destinations.
+WorldGuard is optional and adds protection checks for RTP destinations.
 
 Upgrading is a hard break. Back up any values you need, then delete the obsolete
 `plugins/Wormholes/config/` directory; deleting it removes its local changes.

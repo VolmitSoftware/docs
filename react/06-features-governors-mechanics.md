@@ -35,7 +35,7 @@ This feature scales down per-world Spigot entity activation ranges under sustain
 
 ### `dynamic-activation-range`
 
-This feature continuously tunes an activation radius from tick time. It pauses distant living entities via `ReactEntity`. It honors `SLEEP` protection. Its pause claim is independent from Adaptive Entity Sleep: disabling either owner releases only its own claim, and an entity wakes after the last React owner releases it. React does not claim or re-enable AI that was already disabled externally. Paper consumes at most `maxEntitiesSampledPerCycle` entries from the shared event-maintained weak entity rotation instead of copying each world's entity list. Folia reuses the controller's one-second player snapshot, rotates unique anchors, divides one aggregate entity budget across them, hands every observed entity to its owner before reading identity or state, de-duplicates there, and waits for all owner tasks before the next scan. Damage and targeting wakes use the same owner handoff and reject callbacks from an older activation.
+This feature lowers the activation radius when tick time rises, pausing distant living entities. It honors `SLEEP` protection, wakes entities for damage and targeting, and does not re-enable AI disabled by another plugin.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -53,7 +53,7 @@ This feature continuously tunes an activation radius from tick time. It pauses d
 
 ### `dynamic-view-distance`
 
-This feature maps rolling tick time and player count into per-world view and simulation distance. It captures each world's exact view and simulation distances before React's first mutation, rejects queued updates from older activations, and synchronously restores or awaits restoration of every captured world during disable. It requires Paper or Purpur world distance setters. On activate, it calls `setEnabled(false)` and warns if setters are missing or reflection fails.
+This feature adjusts each world's view and simulation distance from tick time and player count. It restores the previous values when disabled and requires Paper or Purpur.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -67,7 +67,7 @@ This feature maps rolling tick time and player count into per-world view and sim
 
 ### `afk-view-shedding`
 
-This feature lowers idle players' send view distance. An optional pressure notch caps all players' send view distance. It requires `Player.getSendViewDistance` / `setSendViewDistance` and disables itself when those methods are absent or fail at runtime. Evaluations reuse the controller player snapshot and apply changes on each player-owning scheduler. React keeps one combined ownership record when idle and pressure claims overlap, restores the exact pre-React distance only after both claims release, and rejects stale work after player activity, disable, or restart. Per-player reconciliation is exact single-flight and remains tracked after a claim clears; disable waits for any already-queued activity restore and authoritatively reconciles every remaining state before returning.
+This feature lowers view distance for idle players. It can also cap every player's view distance during pressure, then restores previous values when the conditions clear. Unsupported servers disable it automatically.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -86,7 +86,7 @@ This feature lowers idle players' send view distance. An optional pressure notch
 
 ### `tracker-range-governor`
 
-This feature scales Spigot entity tracking ranges under pressure. It reflects `spigotConfig` tracking fields. Missing fields or runtime reflection failures call `setEnabled(false)`. Reload serializes a retired release before any new engagement, preserving the original full-range baseline.
+This feature reduces Spigot entity tracking ranges under pressure and restores them afterward. Unsupported servers disable it automatically.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -106,7 +106,7 @@ This feature scales Spigot entity tracking ranges under pressure. It reflects `s
 
 ### `pathfinder-budget`
 
-This feature shrinks the A* visited-node budget for distant mobs via NMS navigation multipliers. On activate, if navigation bridges do not resolve, it calls `setEnabled(false)` and vanilla pathfinding stays unchanged. The scan is single-flight and bounded across all worlds. Paper consumes at most `maxEntitiesSampledPerCycle` entries from the shared event-maintained weak entity rotation; Folia consumes a capped weak mob index populated by owner-local EntityController sampling and submits no more than the configured cycle budget to mob owners, without materializing nearby-entity lists. When global and per-world pressure become calm, React drains every current-generation multiplier through its bounded owner-release queue, including mobs outside the next scan. Deactivation waits for accepted owner scans before taking its release snapshot, then restores every owned multiplier. Entity load and unload reconciliation prevents stale persistent markers from clearing a newer activation's claim.
+This feature reduces the pathfinding budget for distant mobs while the server is under pressure. It restores normal pathfinding afterward and stays inactive when the server bridge is unavailable.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

@@ -184,33 +184,18 @@ A toggle accepts the same optional hitbox as a button. An explicit size gives bo
 
 ### State
 
-State is a single transient boolean on the component instance. It is per player and per session. Gloss builds the component with the session and discards it when the session closes. It does not persist the state to PDC, a file, or a database, and never writes it back to the placeholder named in `condition`. Reopening the menu evaluates the initial state again.
-
-The initial state is evaluated once, in the constructor:
-
-```java
-state = Placeholders.setPlaceholders(session.getPlayer(), condition).equalsIgnoreCase(expected);
-```
+Toggle state is per player and lasts only for the open session. Reopening the menu evaluates the initial state again.
 
 `condition` is expanded through PlaceholderAPI against the viewing player and compared case-insensitively to `expectedValue`. It is never re-evaluated on tick. An external change to the underlying placeholder does not update an open toggle.
 
-> If you omit `condition`, the constructor throws and aborts the whole open. There is nothing to compare. If you omit only `expectedValue`, the comparison returns false. The toggle starts in the false state.
+> Omitting `condition` prevents the menu from opening. Omitting only `expectedValue` starts the toggle in the false state.
 {.is-warning}
 
 ### Click behavior
 
-```java
-if (state) { falseActions...; swapIcon(falseIcon); state = false; }
-else       { trueActions...;  swapIcon(trueIcon);  state = true; }
-```
-
 `trueActions` and `trueIcon` belong to the state being **entered**, not the state being left. If you click a toggle that is currently false, Gloss runs `trueActions` and shows `trueIcon`.
 
-Both icons are constructed eagerly in the constructor. Both are
-teleported whenever the component moves. The inactive one stays
-positionally in sync without being spawned. The icon swap removes the
-current icon display entities and teleports the replacement. It then
-rebuilds the collision plane from the new icon bounding box or shared custom hitbox, applies the current hover progress to the replacement visual, and spawns it. A state change therefore does not snap an already-hovered toggle back to its base position.
+Both icons stay aligned with the component. Switching state replaces the visible icon and updates the click area without interrupting its current hover position.
 
 Like buttons, toggles have no cooldown. If a matching `navigate` action is reached, the method returns before the icon and state change. The toggle does not flip. Navigation bound to a different trigger is skipped and does not block the transition.
 
@@ -231,7 +216,7 @@ Every clickable component owns a `CollisionPlane`: a rectangle with a center, a 
 
 `width` and `height` are blocks at scale 1. They are multiplied by the live effective scale when the plane is built. `offset` is likewise a pre-scale value. It goes through the same local-vector transform as everything else.
 
-Validation runs in the record compact constructor and throws during deserialisation. That aborts the file:
+Invalid hitbox values reject the file:
 
 | Condition | Message |
 |---|---|

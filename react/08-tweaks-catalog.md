@@ -7,7 +7,7 @@ tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This catalog lists lightweight event and NMS accelerations. Config: `plugins/React/tweak/<id>.toml`. Base `enabled` defaults to `true` on `ReactTweak` except **`shorthands`**. That tweak forces `enabled = false` in its constructor until you enable it in TOML.
+This catalog lists lightweight event and NMS accelerations. Config: `plugins/React/tweak/<id>.toml`. Tweaks default to enabled except `shorthands`.
 
 Several tweaks fail closed or stay passive to vanilla when required NMS bridges are missing. Inspect with `/react bridge status`.
 
@@ -34,7 +34,7 @@ This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protect
 
 ### `entity-hardstop`
 
-This tweak hard-caps per-chunk entity population. It cancels spawns, breeds, and drops once the count is at or above the limit. Rejected chunks use a world-qualified cache capped at 65,536 entries, with at most eight expiry checks per spawn; creature spawns are counted once through their reason-aware handler. Spawn denial is the `SPAWN_CAP` protection operation path. See [17 - API - Entity Protection](/react/17-api-entity-protection).
+This tweak caps the entity population per chunk. It cancels spawns, breeding, and drops at the limit. Spawn denial uses the `SPAWN_CAP` protection operation. See [17 - API - Entity Protection](/react/17-api-entity-protection).
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -64,7 +64,7 @@ This tweak collapses bamboo, sugar cane, cactus, and kelp columns on break or ph
 
 ### `fast-drops`
 
-This tweak routes eligible item drops into player inventory. It also grants eligible XP directly to the player. `teleportBlockDrops`, `teleportBlockXP`, `teleportEntityDrops`, and `teleportEntityXP` control only their named paths. Disabling one no longer prevents or deletes another path's items or XP. This tweak clones entity and block stacks before inventory insertion so the API cannot mutate the live source stack.
+This tweak sends eligible item drops and XP directly to the player. Each setting controls only its named source.
 
 For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer. It does not cancel the whole event. It ignores an event another plugin already canceled. This lets another drop-routing plugin own the event first. Adapt Drop-To-Inventory adaptations are one such plugin. Duplicate transfers and deleted items do not occur.
 
@@ -188,7 +188,7 @@ Experimental empty-server hibernation. When its safety gate is enabled and the s
 
 ### `shorthands`
 
-This tweak registers operator shortcuts on the Bukkit command map. **Default disabled** (`enabled = false` in constructor). Built-in labels intentionally replace matching bare commands while active and restore the previous mappings when disabled. Custom entries skip occupied labels unless their `overrideExisting` field is enabled.
+This tweak adds optional operator shortcuts and is off by default. Built-in labels replace matching bare commands while active. Custom entries skip occupied labels unless `overrideExisting` is enabled.
 
 - **Permissions:** `react.shorthands.*` and children. See [02 - Commands & Permissions](/react/02-commands-permissions).
 

@@ -210,20 +210,14 @@ Attach the structure to a dimension, region, or biome with a `structures[]` plac
 ```
 
 Wait for autosave, variant load, evaluation, or graph-update messages before replacing or closing Studio. Pending autosave blocks conflicting variant and graph operations. `close` refuses tracked work unless it is clean.
-`discard=true` deliberately abandons pending edits. Non-owners can use only Iris's strict informational and communication command allowlist. An integration that bypasses Bukkit mutation events must call `JigsawStudioService.markDirty(...)` or `markAllDirty(...)`.
+`discard=true` abandons pending edits.
 
 The walkthrough passes when all of these hold. Autosave commits the edited object and marker data. Automatic evaluation reaches `VALID` or an understood `WARNING`. The permanent seed-`1337` preview renders the expected family. Pack validation succeeds. A natural instance appears in newly generated chunks.
 
 ### How the Studio world opens
 
-Jigsaw Studio does not run the ordinary Studio entry teleport and does not open a VSCode workspace before you enter the workcell.
-
 Jigsaw edits that change required datapack registry content need a restart before Studio can use them.
-
-The dedicated synthetic generator skips the procedural generation-cache warm, complete mantle-radius preparation, and native structure-start generation. Paper requests the one entry chunk urgently and asynchronously. The owner is teleported once through the Jigsaw destination path after that chunk is retained and ready. The transient world sets `spawn_mobs=false` and independently cancels natural creature-spawn events.
-Explicitly summoned test entities still work.
-
-The transient world still compiles the selected dimension, so Jigsaw Studio requires the whole pack to have a loadable validation result. Run `/iris pack validate pack=<dimension>`, fix the first blocking error, and retry. A validation denial reports every cached reason to the player and one warning to the console; it is an expected refusal, not an internal Studio exception. Startup registry and restart gates still apply.
+The pack must also pass `/iris pack validate pack=<dimension>`. Fix the first blocking error and retry.
 
 Choose the command from the kind of source you have:
 
@@ -453,24 +447,11 @@ The Toolbox issues schema-`2` named sticks bound to the exact request, workcell,
 
 ### Ownership model
 
-The ownership manifest stores the exact resource set, content hashes, source provenance, capabilities, and fidelity losses. Each mutation loads the complete owned graph. It verifies current files against ownership. It applies the change and compiles the result. It stages backups. It then commits the graph and updated manifest together.
-
-Persisted graph mutations wait for autosave to clear dirty work so a pool, rule, size, theme, or variant transaction cannot erase blocks. Duplicate-one and duplicate-family requests clicked during dirty or active autosave queue once. They expedite capture. They resume automatically only if the pinned request, session, and source variants still match.
-
-Project deletion resolves a symbolic pack root to its real directory before both the reverse-reference scan and the hash-pinned removal. The final ownership and reference scan holds the same in-process and cross-process authoring locks through removal. A coordinated write cannot add a dangling reference between validation and commit. A symbolic JSON resource or symbolic directory inside that pack fails the safety scan instead of hiding references.
-
-A hash mismatch or an outside edit produces an ownership conflict and leaves authored files unchanged. Do not hand-edit transaction-owned resources between Studio transactions. There is no world-edit undo command for Jigsaw Studio: recover a wrong result from version control or a pack backup.
+Studio tracks the files it owns. Do not edit them by hand while the project is open. Outside changes cause an ownership conflict and are left untouched. Keep a pack backup because Studio has no general world-edit undo.
 
 ### Dirty tracking and platform notes
 
-The session tracks dirty state per active owned workcell variant. Bukkit coverage includes block place, break, multi-place, buckets, and inventory click, drag, close, move, and pickup. It also includes furnace, brewing, dispenser, crafter, explosions, and entity
-block changes. It includes right-click and physical interactions, redstone,
-liquids, growth, pistons, and recognized mutating vanilla or WorldEdit-like
-commands. A persistent owning-region watch compares jigsaw tile NBT after Mojang UI opens. Transition commands and enabled lifecycle operations request one final snapshot. They wait behind that watch before graph mutation or clean close. Interaction coverage deliberately prefers a harmless dirty false positive over losing a door, marker, container, machine, or switch edit.
-
-Each workcell has a mutation generation: an autosave clears only the captured generation, so a later edit stays dirty for the next capture. Paper drains pending work synchronously during plugin disable. A forced Folia plugin disable is too late to schedule a new cross-region capture. Close Studio or wait for a clean `status` before reload or shutdown. External plugins that bypass these events must call `JigsawStudioService.markDirty(world, x, y, z)` or `markAllDirty(world)`.
-
-Jigsaw Studio is globally single-project on Bukkit and belongs to one owning player session. Only that owner can open controls, switch variants, mutate the graph, or flush autosave. Non-owner direct block edits and recognized mutating commands are cancelled across the whole active Studio world. The control chest and permanent preview are protected against players, explosions, pistons, entities, fluids, growth, fire, and redstone. Generic Studio lifecycle calls cannot bypass the Jigsaw owner transition. Autosave, load, graph-mutation, open, close, and deletion barriers reject conflicts, and capture is project-global so concurrent workcells cannot produce stale full-graph lost updates.
+Wait for a clean status before reloading, shutting down, switching variants, or closing Studio. One player owns the active Jigsaw Studio project. Other players cannot edit its workcells, controls, or preview.
 
 ### Capacity and per-variant object size
 
@@ -481,11 +462,6 @@ Spatial mode persists one shared `cellSize` plus `spatialWorkcellDisplayName`. P
 
 Spatial capacity changes only the shared workcell envelope and rejects dimensions that do not contain every variant object. **Resize to Capacity** and `/iris jigsaw piece expand` change one selected spatial or planar object exactly to that envelope. The exact-size editor also permits a safe lossless shrink. Non-connector air and `minecraft:structure_void` cells are omitted from block entries.
 Explicit authored air and connector final-state air stay distinct and are preserved.
-
-Capture may cross chunks. Iris schedules each chunk intersection on its owning region, rejects unloaded or incomplete snapshots, aggregates them deterministically, then validates and performs one atomic owned-graph write. A scheduling failure aborts the whole capture before authored files change. So does a Studio replacement or unload, a marker or tile read failure, a duplicate or missing snapshot, or a graph validation error. This path has automated chunk-intersection and coordinator coverage.
-Live multi-region Folia gameplay validation is still required.
-
-For a rotated planar variant, capture moves each block-entity payload back to the inverse-rotated object coordinate while inverse-rotating the block state. The payload itself is unchanged, matching Iris object placement: modern Bukkit capture omits source position metadata and applies the payload at the explicit destination block. Directional behavior stored in block data rotates normally, and semantic values inside a tile payload remain author data.
 
 ## Resource reference
 
@@ -776,38 +752,3 @@ Test the exported artifact on an unmodded Minecraft 26.2 server or client. Stop 
 | Transaction reports cleanup required | The authored graph committed but staging cleanup failed | Preserve console output and remove or recover only the named transaction with operator care. Do not re-author blindly |
 | Export is rejected | At least one strict portability blocker remains | Fix each reported diagnostic. Do not bypass by deleting diagnostics or assuming Iris runtime success proves vanilla fidelity |
 | Export output name is rejected | The value is not one direct safe artifact name | Remove whitespace, separators, traversal, and unsupported characters, and keep the name within 128 characters |
-
-## Verification checklist
-
-Run this in a purpose-named disposable pack and world, and record each gate separately.
-
-1. **Creation:** create a planar `IRIS_EXTENDED` project without optional mode, compatibility, dimensions, or seed. Confirm planar, Iris, 15x15x15, and seed 1337 defaults. Confirm one structure, three pools, six pieces, six objects, and one ownership manifest. Confirm tab completion of its key for `open`/`edit`/`reopen`. Confirm no partial files after a duplicate-create rejection.
-2. **Default catalog:** confirm all six workcells have one loaded owned variant, `variant-1` is the selected theme family, End is terminal, and mandatory caps start off.
-3. **Workcell layout:** verify Blank, End Cap, and Hallway, then L Junction, T Junction, and Cross Junction. Confirm one clear block between capacity rows and columns. Confirm light-gray floors, red canonical glyphs, and sea-lantern endpoints. Confirm no orientation or permutation gallery.
-4. **Controls and context:** confirm every untouched workcell starts **Autosaved**. Walk outside and into End Cap. Verify the Iris scoreboard context and `Triple-sneak for controls`. Open the menu through the control chest, `/iris jigsaw menu`, and triple-sneak. Confirm End Cap is selected each time without an inventory-view linkage error. Rename its workcell and active variant sticks in an anvil. Apply them. Verify the scoreboard shows the author names plus canonical role. Then reset both labels.
-5. **Autosave:** change a solid block, a marker field, and container contents. Immediately click **Duplicate This Cell's Variant** and confirm autosave is expedited and the duplicate runs once automatically with no wait or retry instruction. Repeat with edits in multiple enabled cells and **Duplicate All Enabled Cells as Family**. Wait for the final clean state, reopen Studio, and verify all authored changes plus both clone operations round-trip.
-6. **Capacity and independent sizes:** stage Hallway capacity `16x3x3` in the open Workcell Settings menu, apply it once, and make another workcell capacity `16x8x16`. Confirm no existing object byte changes and that the live relayout moves only the white-concrete cages without close/reopen. In the larger workcell, resize one variant to `16x3x16` and another to `3x3x3`.
-Confirm exact independent dimensions, live reload of the loaded variant, and unchanged siblings. Confirm cropped authored content, connector collision, and shared or read-only objects each reject the single-variant resize without writes.
-7. **Disable:** disable Tee, confirm its white-concrete cage remains while the GUI and scoreboard report Disabled, and confirm the seed-`1337` evaluation excludes Tee pieces. Re-enable it and confirm participation returns.
-Test export filtering separately on the portable fixture.
-8. **Dynamic preview:** confirm evaluation moves through pending and stale to valid or an understood warning. Confirm it reports theme and piece count. Confirm it renders the same protected block assembly on the negative-X side after reopen. Reach it through both **Go to Preview** and `/iris jigsaw preview goto`, and verify edits, fluids, pistons, explosions, growth, fire, entities, and redstone cannot alter it.
-9. **Variants and rules:** create a blank variant and duplicate one active variant.
-Adjust one exact weight and chance.
-Create `variant-2` through the all-enabled family action and confirm one exact-size clone per enabled workcell, duplicated memberships, and atomic active-family rebind. Change theme membership, depth and count rules, terminal status, and mandatory caps. Confirm only the selected resources change and invalid rules fail atomically.
-10. **Toolbox:** take schema-`2` named sticks. They cover selection, capacity, per-variant size, labels, duplicate-one and family, preview, Flush Autosave, themes and rules, membership changes, caps, and deletion. Confirm bindings target the named context. Active and valid icons are jigsaw and emerald. Lime dye only labels theme membership. Destructive tools require two uses. Schema-`1` or replaced-Studio tools are rejected.
-11. **Deletion:** delete one owned inactive planar variant only after another remains.
-A spatial variant removes its dedicated active cell as long as another spatial variant remains. Add an external placement reference and confirm project deletion is blocked.
-Remove it, confirm deletion, and verify the complete owned closure plus manifest are removed.
-12. **Ownership protection:** have a second player attempt a direct edit, chest use, `/setblock`, `/fill`, and a WorldEdit-style mutation. Confirm each is denied across the active Studio world and the owner remains able to edit.
-13. **Adoption:** apply an exclusive unowned graph in place without changing resource bytes.
-Require a clone for a shared graph.
-Reject a stale plan without writes.
-And clone a managed datapack import without changing the managed source.
-14. **Registered conversion:** convert one registered jigsaw to an unused target, review fidelity warnings and provenance, and open the owned target. A non-jigsaw source and an occupied target must both fail without overwrite.
-15. **Folia multi-region boundary:** use a workcell crossing chunks and regions. A fully loaded capture commits once.
-An unloaded intersection aborts the entire write. The unit tests do not cover this. It has to be checked on a live Folia server.
-16. **Natural Iris placement:** attach the graph with a unique `placementId`, generate and inspect one natural start, restart, then repeat in new chunks. For cave placement, verify each requested anchor and a no-anchor skip.
-17. **Vanilla export:** create a separate `VANILLA_PORTABLE` graph with no Iris-only themes, chance, rules, or caps. Export to zip. Restart a clean Minecraft 26.2 world with it. Locate the key. Inspect a natural instance. Do not substitute `/reload`.
-18. **Platform runtime:** copy the saved Iris pack to Fabric, Forge, and NeoForge, validate it, and prove natural shared-core assembly. Bukkit-only authoring controls are not expected on those loaders.
-
-Automated tests, plugin startup, Bukkit gameplay, cross-loader generation, and vanilla datapack loading each prove something different. Keep track of which of them you actually ran.

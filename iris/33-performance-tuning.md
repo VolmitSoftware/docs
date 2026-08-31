@@ -334,18 +334,13 @@ The JVM flag is required for any vector path:
 --add-modules jdk.incubator.vector
 ```
 
-The Iris Gradle build passes it for core compilation and tests and for
-every `probe` task, and `tools/simd-bench/` passes it in its own scripts.
-Nothing adds it to a production server's start script. A server operator
-must add it there.
+Add the flag to the production server's start script.
 
 To A/B on a real server: set `performance.simdKernels` false, restart,
 and measure pregeneration chunks/second. Then set it true, restart, and
 measure again. Confirm GoldenHash is unchanged
 ([32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)).
-`tools/simd-bench/` (`./run.sh` or `run.bat`) measures kernels in
-isolation and deliberately ignores the profitability gate, so its
-speedups do not predict end-to-end pregeneration gains.
+The standalone SIMD benchmark does not predict end-to-end pregeneration gains.
 
 ## Measurement checklist
 

@@ -161,7 +161,7 @@ Only admin tokens can read the full server-console tail/stream, execute a consol
 
 ## Shorthand commands (tweak `shorthands`)
 
-When the `shorthands` tweak is enabled, optional bare commands register. Set `enabled = true` in TOML; the constructor default is **off**. Built-in labels intentionally replace any matching bare command while the tweak is active, including labels supplied by EssentialsX, CMI, or vanilla. React restores the previous mappings when the tweak is disabled. Custom entries skip occupied labels unless `overrideExisting = true`.
+The `shorthands` tweak is off by default. When enabled, its built-in labels replace matching bare commands until the tweak is disabled. Custom entries skip occupied labels unless `overrideExisting = true`.
 
 | Command | Permission | Behavior |
 |---------|------------|----------|

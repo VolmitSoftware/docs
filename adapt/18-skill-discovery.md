@@ -348,16 +348,9 @@ Available XP is Paper's current total experience-point value, and the post-cost 
 | Tick interval (ms) | 10 |
 | Config file | `plugins/Adapt/adaptations/discovery-archaeologist.toml` |
 
-Brush completions arrive through a `BrushEventBridge` built by reflection at construction against `BlockBrushEvent`. When the server does not expose that event the bridge is null. The right-click
-handler's queued pending brush plus its fallback window is what resolves the
-reward.
-
 Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is considered only after brushing completes. Common rewards are brick, clay balls, bones, flint, string, and coal. Rare rewards are diamonds, emeralds, gold ingots, and amethyst shards.
 
 Milestones: `challenge_discovery_archaeologist_50` and `challenge_discovery_archaeologist_500` on `discovery.archaeologist.bonus-finds` at 50 and 500, rewarding 300 and 1000.
-
-- `PlayerInteractEvent` (`on`): the brush interaction
-- `PlayerQuitEvent` (`on`)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

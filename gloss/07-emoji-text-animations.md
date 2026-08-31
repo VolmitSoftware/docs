@@ -180,12 +180,7 @@ Per-emoji permissions are operator-only until a permission plugin grants them.
 
 ### Tab completion
 
-With `[emoji] tabComplete = true` (the default) on a Paper-family
-server, chat words that start with `:` offer matching tokens. The match
-uses enabled emoji tokens and is case-insensitive. Command arguments
-are not affected. The whole feature is absent on Spigot because it is
-built on Paper `AsyncTabCompleteEvent`. Gloss looks the class up
-reflectively and skips registration when it is not there.
+With `[emoji] tabComplete = true` (the default), Paper-family servers suggest enabled emoji tokens for chat words beginning with `:`. Matching is case-insensitive and does not affect command arguments. Spigot does not support this feature.
 
 The listener re-reads `[features] emoji` and `[emoji] tabComplete` on every event. If you turn either off, the change takes effect as soon as the config change lands. If you turn `tabComplete` back **on**, you need a full restart. The listener is registered once when the chat service enables. `/gloss reload` does not re-run that registration.
 
@@ -196,7 +191,7 @@ The listener re-reads `[features] emoji` and `[emoji] tabComplete` on every even
 /gloss emoji reset [name=*]
 ```
 
-`list` prints a page of 51 enabled emoji, three to a line. A full page occupies 19 chat lines including the banner and integrated navigation bar. Each glyph is clickable to insert its `:id:` token into your chat input. It needs `gloss.emoji.use`. Multi-page banners include `{current/total}`; the bottom bar exposes clickable previous and next controls whenever those pages exist. Out-of-range page numbers are clamped to the first or last page.
+`list` shows enabled emoji. Click a glyph to insert its `:id:` token. It needs `gloss.emoji.use`.
 
 `reset` rewrites included emoji documents from the jar and needs `gloss.emoji.reset` (op). `name=*` (the default) restores all 67. A single name restores just that one. A trailing `.json` on the name is accepted.
 

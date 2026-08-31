@@ -42,19 +42,17 @@ Rift writes `config.toml` on first start and reloads valid external edits automa
 
 Saving config, the active locale file, a managed-world profile, or a quarantine manifest always triggers automatic reload. The language directory is also scanned for newly added locale files. The poll and cooldown values tune detection; automatic reload cannot be disabled and there is no manual reload command. If a stable file is invalid, Rift logs the failure and retains the previous valid runtime state.
 
-Action-bar feedback uses VolmLib's shared HUD segment arbitration. Title feedback acquires a shared title claim before display. These systems prevent Rift from replacing output from HUD producers such as Adapt and React. Sounds run on the affected player's owning scheduler.
+Rift does not overwrite HUD or title feedback from Adapt, React, or other supported Volmit plugins.
 
 ## In-game editor
 
 `/rift config` opens a 27-slot dashboard containing all 25 persisted settings. Its pages are General & Safety, Automatic Reload, Feedback & Sounds, and Presentation. Click a boolean to toggle it. Left- or right-click a number to adjust it, shift-click for a larger change, or press Q to enter an exact value in chat. Evacuation world and sound keys use a private chat prompt with cancel and timeout handling.
 
-Changing `bstatsEnabled` is hot-applied through the same committed configuration path used by file reload and the editor. Setting it to `false` shuts down the Rift-owned bStats runtime; setting it to `true` starts the official runtime and still honors `plugins/bStats/config.yml`. Rift does not alter the official Metrics source beyond its permitted package declaration and does not register custom charts.
+Changing `bstatsEnabled` takes effect immediately and still honors `plugins/bStats/config.yml`. Rift does not register custom charts.
 
 Clicking Language closes the inventory and lists each bundled or operator-provided locale using Rift's command-help layout. Each entry marks the current selection. Clicking another locale runs `/rift language <locale>`, creates its file when needed, validates it, and activates it. The command also accepts typed input and tab-completes the same locale list.
 
-Editor writes run on a dedicated configuration thread, atomically replace the TOML file, and return to the player's owning scheduler before reopening the category. Enter `primary` or `none` for the evacuation world to clear the explicit destination. Locale changes immediately rebuild the active language overlay instead of waiting for another file event.
-
-A coverage test compares the editor registry with every non-static `RiftConfig` field. Adding a future persisted option without an in-game editor control fails the test suite.
+Enter `primary` or `none` for the evacuation world to clear the explicit destination. Locale changes apply immediately.
 
 ## Language overrides
 

@@ -266,8 +266,6 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
 
-Iris keeps native-start ownership in the world's Mantle so locate, reference repair, and restart recovery agree on the same structure. A periodic world save immediately persists idle ownership plates. Any plate still used by generation stays dirty for the next save. Iris does not wait on the server thread. A clean engine shutdown drains generation first and requires the remaining ownership records to persist before the Mantle is released.
-
 Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column. Each ring task drops from 3,249 biome evaluations to 225. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks.
 `/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
 
@@ -462,21 +460,11 @@ Modrinth downloads are checksum-verified when a hash is published. Remote and lo
 
 Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>/`, each carrying `.iris-managed.json`. Unmanaged datapacks are never touched, and the id `iris` is reserved. Cache, staging, manifest, and the operator drop folder live under `plugins/Iris/datapacks/`; local ZIPs go in `plugins/Iris/datapacks/imports/`.
 
-Ingest and recovery run synchronously inside Iris's startup admission gate when `general.autoIngestDatapacks` is enabled (default true). Players and every Iris world and Studio creation path stay locked until that phase is valid.
-
-On startup, Iris checks the cheap persisted cache context before reading managed datapack trees. When that context matches, Iris confirms the exact local content fingerprint and skips remote resolution, semantic revalidation, copying, installation, and pack compilation. Iris refreshes the post-start fingerprint only when its authorized import maintenance mutates managed external-datapack state.
-A no-op maintenance pass retains the existing receipt. A change to the URL, the Minecraft or Iris version, the override policy, or external manifest edits invalidates reuse. So does a change to staging, the transaction, installed content, or cache corruption. Iris then runs the full fail-closed path.
-
 Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
 
 For a custom pack with imports on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack is installed. The first boot discovers and installs the declared sources, then leaves admission restart-required. The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
 
-Cache reuse is a local validation decision and does not poll remote sources. Iris does hash every configured local file and drop-folder ZIP during startup, so replacing bytes at the same local path forces a fresh ingest check.
-Run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts. Unchanged bootstrap recovery leaves the manifest stable. The next startup can reuse the cached fingerprint. During a full ingest, Iris may keep an exact same-version, Iris-owned installed target in place. Content must match staging. The datapack must need no override stripping. That avoids a temporary copy and replacement.
-
-Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial. It does this when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
-
-Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks. It restates each entry and rechecks its `FileStore` immediately before access. It retains the existing cross-volume boundary behavior, including same-device bind mounts.
+Run `/iris datapack ingest` to check for updates. Local ZIP changes are detected automatically during startup.
 
 ### 2.3 Optional Dungeons & Taverns caveat on Folia 26.2
 
@@ -663,12 +651,12 @@ Automatic datapack imports stay managed by ingest and must be cloned before Jigs
 
 ### 5.1 `/iris structure import <dimension>`
 
-Four passes, always overwriting its own previous output:
+The command writes these editable resources:
 
-1. **Jigsaw rebuild**: registered jigsaw structures become editable pools, pieces, and objects. Connector `final_state`, signed `selection_priority`, and signed `placement_priority` values are retained in the Iris piece metadata. The generated root writes `branchFailurePolicy: TERMINATE_BRANCH`. Unmatched optional branches keep native termination behavior.
+1. **Jigsaw structures** become editable pools, pieces, and objects. Connector states and priorities are retained.
 2. **Template import**: registered `.nbt` templates become `objects/<name>.iob` plus a single-piece `jigsaw-pieces/<name>.json`.
 3. **Template groups**: fixed multi-template structures (shipwrecks, ruined portals, ocean ruins, nether fossils) become one Iris structure each, with every variant in the pool.
-4. **Capture**: only non-jigsaw registry keys for which the first pass found no same-key template are captured through a scratch world. This pass never rewrites a successful or failed jigsaw conversion.
+4. **Other structures** are captured only when no matching template or jigsaw conversion exists.
 The standalone `/iris structure capture <dimension>` command stays unfiltered. Structures spanning more than **48 blocks** on any axis are skipped, so strongholds, mansions, and monuments stay native-only.
 
 Naming: `minecraft:village_plains` becomes `minecraft_village_plains`. Generated structures carry `vanillaSource` for locate and `REPLACE_SOURCE`.
@@ -697,13 +685,11 @@ No import command is needed for that case.
 /iris jigsaw adopt apply <plan-uuid>
 ```
 
-Inspect verifies the existing manifest is exactly a managed vanilla or datapack Iris assembly. It pins the complete source and target read set. It reports `CLONE_REQUIRED` or a blocking diagnostic. Apply re-hashes under the pack mutation lock. It atomically writes a deep clone with deterministic internal reference rewrites plus its ownership receipt. It leaves the managed source unchanged. It opens the editable clone. An expired, consumed, or stale plan writes nothing. There is no adoption rollback command, so keep the pack backup you made before converting.
+`inspect` reports whether the clone is safe. `apply` creates and opens the editable copy without changing the managed source. Keep a pack backup because adoption has no rollback command.
 
-Automatic import is off by default because native generation and `nativeStructures` never need the copies, and conversion can write thousands of files. Deterministic source-content and graph-validation failures retain the bundles that did write. They record the attempted source, importer format, and target-pack revision. The same failures do not repeat every boot.
-A source update, importer-format change, or different target retries them. Unexpected reflection, I/O, transaction, and runtime failures stay pending and retry. Removing a URL from `datapackImports` cleans only bundles still owned by that managed source, and an adopted editable clone is independent.
+Automatic import is off by default because native generation and `nativeStructures` do not need editable copies. Removing a URL from `datapackImports` can remove its managed imports, but an adopted clone remains independent.
 
-Third-party jigsaw templates using the legacy slab property `half=top|bottom`, or the exact known misspelling `minecraft:chisled_polished_blackstone`, are normalized to current Minecraft block data during editable conversion. Other invalid final-state values are recorded as fidelity loss and omitted without internal-error telemetry. Invalid structure graphs stay per-structure failures, and expected graph-contract rejections are reported as concise import results instead of internal Iris stack traces.
-Unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
+Third-party templates using the legacy slab property `half=top|bottom`, or the misspelling `minecraft:chisled_polished_blackstone`, are corrected during conversion. Other invalid final states are omitted and reported as fidelity losses.
 
 ## 6. Verification and debugging
 
