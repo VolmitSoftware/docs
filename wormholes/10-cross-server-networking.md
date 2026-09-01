@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -144,8 +144,9 @@ rate-limited admission lease for that transfer.
 
 Destination checks include:
 
-- Live destination portal can receive (open, not mirror-only, incoming
-  traversals enabled)
+- Live destination portal can receive (open and not mirror-only; incoming
+  traversals must be enabled for non-op players, while ops bypass that direction
+  flag)
 - Selected transfer method is supported
 - Profile passes ban and whitelist gates (ops exempt from whitelist)
 - Online players + pending arrivals stay under the player limit
