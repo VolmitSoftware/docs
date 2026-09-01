@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -125,7 +125,7 @@ commands, and developer APIs.
           <img src="/home-assets/shapedportals.jpg" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">Shaped Portals</strong>
-            <span class="d-block text--secondary">Non-rectangular Nether portals for legacy servers</span>
+            <span class="d-block text--secondary">Custom-shaped Nether and End portals with native travel</span>
           </span>
         </a>
       </li>
