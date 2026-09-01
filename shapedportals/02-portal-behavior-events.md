@@ -1,5 +1,5 @@
 ---
-title: "Shaped Portals: Portal Behavior & Troubleshooting"
+title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
 date: 2026-09-01T00:00:00.000Z
@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-<nav aria-label="Shaped Portals guides" style="display:flex;gap:.45rem;flex-wrap:wrap;margin:0 0 1.5rem;padding:0 0 1rem;border-bottom:1px solid rgba(127,127,127,.25)"><a href="/shapedportals" style="display:block;padding:.48rem .76rem;border:1px solid rgba(127,127,127,.3);border-radius:999px;background:rgba(127,127,127,.055);color:inherit;text-decoration:none;font-size:.88rem">Home</a><a href="/shapedportals/00-overview" style="display:block;padding:.48rem .76rem;border:1px solid rgba(127,127,127,.3);border-radius:999px;background:rgba(127,127,127,.055);color:inherit;text-decoration:none;font-size:.88rem">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration" style="display:block;padding:.48rem .76rem;border:1px solid rgba(127,127,127,.3);border-radius:999px;background:rgba(127,127,127,.055);color:inherit;text-decoration:none;font-size:.88rem">Configuration</a><a href="/shapedportals/02-portal-behavior-events" aria-current="page" style="display:block;padding:.48rem .76rem;border:1px solid #8b5cf6;border-radius:999px;background:#7e22ce;color:#fff;text-decoration:none;font-size:.88rem;font-weight:700">Portal behavior</a><a href="/shapedportals/03-compatibility-operations" style="display:block;padding:.48rem .76rem;border:1px solid rgba(127,127,127,.3);border-radius:999px;background:rgba(127,127,127,.055);color:inherit;text-decoration:none;font-size:.88rem">Server setup</a><a href="/shapedportals/04-architecture-limits" style="display:block;padding:.48rem .76rem;border:1px solid rgba(127,127,127,.3);border-radius:999px;background:rgba(127,127,127,.055);color:inherit;text-decoration:none;font-size:.88rem">Developer reference</a></nav>
+<nav aria-label="Breadcrumb" style="display:flex;align-items:center;gap:.45rem;margin:0 0 1.5rem;padding:0 0 .85rem;border-bottom:1px solid rgba(127,127,127,.25);font-size:.9rem"><a href="/shapedportals" style="font-weight:700;text-underline-offset:.18em">Shaped Portals</a><span aria-hidden="true" style="opacity:.45">/</span><span aria-current="page" style="opacity:.72">Portal behavior and troubleshooting</span></nav>
 
 Shaped Portals keeps track of the portals it creates so their unusual shapes can survive block updates and restarts. Minecraft still handles travel and destination portals.
 
