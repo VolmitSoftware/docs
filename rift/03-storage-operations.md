@@ -2,7 +2,7 @@
 title: "Rift — Storage & Operations"
 description: "Managed profiles, quarantine manifests, protection, backups, and recovery"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "rift, storage, quarantine, restore, operations"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -15,7 +15,7 @@ Rift keeps operational metadata under `plugins/Rift/` and world data in the serv
 | Path | Purpose |
 |---|---|
 | `plugins/Rift/config.toml` | Runtime settings |
-| `plugins/Rift/languages/<locale>.yml` | The selected editable catalog, created on demand from English or one of 17 bundled translations |
+| `plugins/Rift/languages/<locale>.toml` | An installed editable catalog; English is generated locally and a missing selected repository translation is downloaded on demand |
 | `plugins/Rift/worlds/<name>.toml` | One validated managed-world profile |
 | `plugins/Rift/trash/<id>.toml` | Quarantine manifest and restorable profile fields |
 | `plugins/Rift/debug/rift-debug-<UTC timestamp>.txt` | Detailed report created by `/rift debug` |
@@ -23,7 +23,7 @@ Rift keeps operational metadata under `plugins/Rift/` and world data in the serv
 | `<primary-world>/dimensions/<namespace>/<key>/` | Standard Paper 26.1+ world directory |
 | `<world-container>/.rift-trash/<id>/` | Recoverable quarantined world directory |
 
-Old Rift JSON files are not migrated or interpreted. The 3.0 format is a hard break: only the current TOML and YAML paths are active. Managed profiles record their validated storage location relative to the world container; profiles created before this field was introduced are resolved from either supported layout and canonicalized after a successful load. Bukkit or Paper selects the world directory when `WorldCreator` runs. [Paper 26.1+ intentionally stores API-created worlds below the primary world's `dimensions` tree](https://papermc.io/news/26-1/) and maps a simple `WorldCreator("name")` call to `minecraft:name`, which produces `dimensions/minecraft/<name>`. A custom `rift:name` key changes the Bukkit-visible identity to `rift_name` and is unavailable on the supported Spigot floor, so Rift keeps the simple world name other plugins expect and records the server's authoritative location instead of relocating it. Unmanaged primary dimension keys and other plugins' custom namespaces are excluded from Rift's simple-name discovery.
+Old Rift JSON files are not migrated or interpreted. The 3.0 format is a hard break: only the current TOML paths are active. Managed profiles record their validated storage location relative to the world container; profiles created before this field was introduced are resolved from either supported layout and canonicalized after a successful load. Bukkit or Paper selects the world directory when `WorldCreator` runs. [Paper 26.1+ intentionally stores API-created worlds below the primary world's `dimensions` tree](https://papermc.io/news/26-1/) and maps a simple `WorldCreator("name")` call to `minecraft:name`, which produces `dimensions/minecraft/<name>`. A custom `rift:name` key changes the Bukkit-visible identity to `rift_name` and is unavailable on the supported Spigot floor, so Rift keeps the simple world name other plugins expect and records the server's authoritative location instead of relocating it. Unmanaged primary dimension keys and other plugins' custom namespaces are excluded from Rift's simple-name discovery.
 
 ## Unload
 

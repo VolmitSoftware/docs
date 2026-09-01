@@ -2,7 +2,7 @@
 title: "Rift — Overview"
 description: "World states, lifecycle behavior, and the Rift safety model"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "rift, world-management, lifecycle, safety"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,10 @@ Use `/rift list` for every known world and `/rift info <name>` for one world's s
 `/rift create` makes a managed world. `/rift import` adds a profile to an existing world. `/rift load` can open a world without making it managed.
 
 The built-in `void` generator creates an empty world with a small bedrock spawn platform.
+
+## Diagnostics
+
+`/rift debug` creates a timestamped support report under `plugins/Rift/debug/`. It expands the local doctor view with service health, scheduler and hot-reload state, active locale file and remote-language catalog state, detailed per-world storage checks, plugin metadata, the active configuration, managed-file hashes, JVM and JIT data, CPU, memory pools, threads and locks, garbage collectors, filesystems, and Rift artifact identity. Public mclo.gs publishing is enabled by default; set `debugUploadEnabled` to `false` for local-only reports.
 
 ## Safe removal
 

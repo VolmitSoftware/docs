@@ -1,8 +1,8 @@
 ---
 title: "Shaped Portals"
-description: "Build custom-shaped Nether portals and manage them in-game"
+description: "Build custom-shaped Nether and End portals and manage them in-game"
 published: true
-date: 2026-08-30T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -50,20 +50,20 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <section class="sp-hero" aria-label="About Shaped Portals">
 <div>
 <div class="sp-identity"><img src="/home-assets/shapedportals.jpg" alt="Shaped Portals logo" width="56" height="56"><span>Shaped Portals</span></div>
-<h2>Custom-shaped<br>Nether portals</h2>
-<p>Build vertical Nether portals with curves, steps, and uneven outlines. Keep normal Minecraft travel, and manage portal rules from an in-game menu.</p>
+<h2>Custom-shaped<br>Nether &amp; End portals</h2>
+<p>Build vertical Nether portals or horizontal End portals with non-vanilla sizes and outlines. Keep normal Minecraft travel, and manage every portal rule from an in-game menu.</p>
 <nav class="sp-actions" aria-label="Get started"><a class="sp-primary" href="/shapedportals/00-overview#build-your-first-portal">Build a portal</a><a href="/shapedportals/01-installation-configuration">Install &amp; configure</a></nav>
 </div>
-<div class="sp-media"><strong>Build any closed vertical shape</strong><span>Use obsidian or crying obsidian, then light the empty interior with flint and steel.</span></div>
+<div class="sp-media"><strong>Choose Nether or End</strong><span>Light a closed vertical Nether frame, or finish a fully eyed horizontal End Portal Frame boundary.</span></div>
 </section>
 <section class="sp-section" aria-labelledby="sp-first-portal">
 <h2 id="sp-first-portal">Your first portal</h2>
 <ol class="sp-steps">
-<li><strong><span class="sp-number">1</span> Build a frame</strong><p>Use obsidian or crying obsidian. Keep the frame upright, closed, and in one flat plane.</p></li>
-<li><strong><span class="sp-number">2</span> Light the inside</strong><p>Use flint and steel inside the frame. By default, the connected interior can contain 2 to 256 blocks.</p></li>
-<li><strong><span class="sp-number">3</span> Step through</strong><p>Travel works like a normal Nether portal. The destination portal may still be a rectangle.</p></li>
+<li><strong><span class="sp-number">1</span> Build for the Nether</strong><p>Close an upright frame around 2 to 256 connected interior blocks, then light the inside.</p></li>
+<li><strong><span class="sp-number">2</span> Build for the End</strong><p>Close a horizontal End Portal Frame boundary around 1 to 256 connected cells, then insert every eye.</p></li>
+<li><strong><span class="sp-number">3</span> Use native travel</strong><p>The placed portal blocks keep normal Minecraft travel. Shaped Portals does not choose or pair destinations.</p></li>
 </ol>
-<p class="sp-note"><strong>Shape, not routing.</strong> Shaped Portals changes the frame you can build. It does not add horizontal portals, End portals, custom destinations, or linked networks.</p>
+<p class="sp-note">Shaped Portals changes the Nether and End frames you can build. It does not add custom destinations or linked networks.</p>
 </section>
 <section class="sp-section" aria-labelledby="sp-guides">
 <h2 id="sp-guides">Find what you need</h2>
@@ -73,7 +73,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <a href="/shapedportals/02-portal-behavior-events"><strong>Portal behavior</strong><span>Frame changes, repairs, protection plugins, and saved portals.</span></a>
 <a href="/shapedportals/02-portal-behavior-events#troubleshooting"><strong>Something not working?</strong><span>Check ignition, permissions, disappearing blocks, and travel.</span></a>
 <a href="/shapedportals/03-compatibility-operations"><strong>Compatibility</strong><span>Supported servers, Java versions, Folia limits, and React integration.</span></a>
+<a href="/shapedportals/04-architecture-limits"><strong>Developer reference</strong><span>Geometry, persistence, region ownership, native mechanics, and build details.</span></a>
 </nav>
 </section>
-<footer class="sp-footer"><span>Root command: <code>/shapedportals</code> or <code>/sp</code></span><nav aria-label="Support and downloads"><a href="https://www.spigotmc.org/resources/shaped-portals.95595/">Download</a><a href="https://volmitsoftware.com/discord">Discord</a><a href="https://github.com/VolmitSoftware/ShapedPortals">Source</a></nav></footer>
+<footer class="sp-footer"><span>Root commands: <code>/shapedportals</code>, <code>/shapedportal</code>, and <code>/sp</code></span><nav aria-label="Support and downloads"><a href="https://www.spigotmc.org/resources/shaped-portals.95595/">Download</a><a href="https://volmitsoftware.com/discord">Discord</a><a href="https://github.com/VolmitSoftware/ShapedPortals">Source</a></nav></footer>
 </div>

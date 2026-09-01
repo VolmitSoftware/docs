@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility & Operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-08-30T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -51,11 +51,11 @@ dateCreated: 2026-08-27T00:00:00.000Z
 </style>
 
 <div class="sp-reference">
-<nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations" aria-current="page">Server setup</a></nav>
+<nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations" aria-current="page">Server setup</a><a href="/shapedportals/04-architecture-limits">Developer reference</a></nav>
 
 Shaped Portals supports Spigot 1.20.1 and newer compatible servers. It does not require a client mod or resource pack.
 
-[Requirements](#platform-matrix) · [Java](#java-runtime-floors) · [React](#react-plugin-api-pack)
+[Requirements](#platform-matrix) · [Java](#java-runtime-floors) · [Native portals](#native-portal-compatibility) · [Diagnostics](#diagnostic-reports) · [React](#react-plugin-api-pack)
 
 ## Platform matrix
 
@@ -81,7 +81,19 @@ Creation needs the whole shape to belong to one active region. This is not the s
 
 Integrity checks skip unloaded chunks. Administrative teleport commands can prepare destination and nearby landing chunks, then check them on their owning regions.
 
-## React Plugin API Pack
+## Native portal compatibility
+
+Shaped Portals writes ordinary `NETHER_PORTAL` and `END_PORTAL` blocks. Minecraft controls travel, Nether coordinate scaling, destination search, and generated destination frames. The plugin does not use NMS, packets, or a client mod.
+
+Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shaped End creation respects the Eye of Ender interaction and asks `BlockCanBuildEvent` about every proposed cell because Bukkit has no End-activation `PortalCreateEvent` reason. See [Ignition and protection plugins](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) for the event sequence.
+
+## Diagnostic reports
+
+`/sp debug` saves a timestamped report under `plugins/ShapedPortals/debug/`. The report includes ShapedPortals service state, effective settings, registry records by portal type and axis, creation and rejection counts, installed plugins, server and world details, scheduler state, TPS and MSPT, Java and operating-system data, memory pools, CPU load, garbage collectors, buffer pools, storage, known-file hashes, and plugin artifact identity.
+
+The local report is written first. When `debug.uploadEnabled` is `true`, Shaped Portals also uploads it to the public mclo.gs service and returns a clickable link. Disable the setting before running the command when the report must remain local.
+
+## React Plugin API pack
 
 React is optional. The **ShapedPortals Runtime** pack adds these samplers:
 
@@ -104,6 +116,6 @@ See [React Plugin API Packs](/react/20-api-plugin-api-packs) for pack setup and 
 
 These measurements stay on your server and are separate from bStats. Rates need two samples, and session totals reset when Shaped Portals restarts.
 
-<div class="sp-related"><a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a> · <a href="https://volmitsoftware.com/discord">Discord</a></div>
+<div class="sp-related"><a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a> · <a href="/shapedportals/04-architecture-limits">Developer reference</a> · <a href="https://volmitsoftware.com/discord">Discord</a></div>
 
 </div>

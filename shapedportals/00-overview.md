@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting Started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-08-30T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -51,33 +51,44 @@ dateCreated: 2026-08-27T00:00:00.000Z
 </style>
 
 <div class="sp-reference">
-<nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview" aria-current="page">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations">Server setup</a></nav>
+<nav class="sp-nav" aria-label="Shaped Portals guides"><a href="/shapedportals">Home</a><a href="/shapedportals/00-overview" aria-current="page">Build &amp; commands</a><a href="/shapedportals/01-installation-configuration">Configuration</a><a href="/shapedportals/02-portal-behavior-events">Portal behavior</a><a href="/shapedportals/03-compatibility-operations">Server setup</a><a href="/shapedportals/04-architecture-limits">Developer reference</a></nav>
 
-Shaped Portals uses normal Nether portal blocks, so Minecraft still handles travel and destination creation.
+Shaped Portals places native Nether and End portal blocks, so Minecraft still handles travel and destination creation.
 
 [Build a portal](#build-your-first-portal) · [Shape rules](#valid-shapes) · [Commands](#commands) · [Permissions](#permissions)
 
 ## Build your first portal
 
-1. [Install Shaped Portals](/shapedportals/01-installation-configuration#install).
-2. Build a closed, upright frame using obsidian, crying obsidian, or both.
-3. Leave the inside empty and light it with flint and steel.
-4. Wait for the portal to fill, then walk through.
+Install Shaped Portals first, then choose the portal type.
 
-The default interior size is **2 to 256 blocks**.
+### Nether portal
+
+1. Build a closed, upright frame using a configured frame material. Obsidian and crying obsidian are allowed by default.
+2. Leave a connected interior of 2 to 256 blocks by default.
+3. Light an interior block with an allowed ignition source. Flint and steel, fireballs, and directly placed fire are enabled by default.
+4. Wait for the native Nether portal blocks to appear, then walk through.
+
+### End portal
+
+1. Build a closed horizontal boundary from End Portal Frames. Frame facing is not part of the shaped-portal check.
+2. Leave a connected interior of 1 to 256 blocks by default.
+3. Insert an Eye of Ender into every frame block. The accepted final eye activates the custom surface.
+4. Step into the native End portal blocks.
+
+A normal vanilla 3×3 End portal remains owned by the server and is not added to the managed registry. Custom End surfaces can be larger, smaller, concave, or irregular within the configured limits.
 
 ## Valid shapes
 
 | Rule | What to build |
 |---|---|
-| Upright and flat | One vertical surface along the X or Z axis, not a floor or a 3D tunnel |
-| Closed boundary | Configured frame blocks around the entire interior |
+| Flat plane | Nether portals use a vertical X or Z plane; End portals use a horizontal X/Z plane |
+| Closed boundary | Configured frame blocks for Nether portals; fully eyed End Portal Frames for End portals |
 | Connected interior | Interior blocks touch by an edge; diagonal contact alone is not enough |
-| Empty inside | Only configured replaceable blocks; air, fire, and soul fire by default |
-| Within limits | Up to 64 blocks wide and 64 blocks high by default, still subject to the 256-block area limit |
+| Replaceable inside | Nether and End portals use separate configured interior-material lists |
+| Within limits | Nether defaults to 64×64 and 2–256 cells; End defaults to 64×64 and 1–256 cells |
 | One Folia region | The full shape must be owned by one active region during creation |
 
-Stepped edges, concave corners, and frame-material islands are allowed as long as the interior stays connected. Shapes that are valid in both vertical axes are rejected as ambiguous.
+Stepped edges and concave corners are allowed as long as the interior stays connected. A Nether shape that is valid in both vertical axes is rejected as ambiguous.
 
 Server owners can change these limits in [Portal settings](/shapedportals/01-installation-configuration#portal-rules). The hard ceilings are 4,096 interior blocks and 512 blocks per dimension.
 
@@ -134,7 +145,7 @@ Reports are also saved under `plugins/ShapedPortals/debug/`.
 
 | Permission | Default | Allows |
 |---|---|---|
-| `shapedportals.create` | Everyone | Ignite shaped portals when creation permission checks are enabled |
+| `shapedportals.create` | Everyone | Ignite shaped Nether portals or complete shaped End portals when creation permission checks are enabled |
 | `shapedportals.command` | Everyone | Use help and status |
 | `shapedportals.config` | Operators | Use the configuration editor and language command |
 | `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
@@ -144,8 +155,14 @@ Reports are also saved under `plugins/ShapedPortals/debug/`.
 
 {.sp-permissions}
 
-World restrictions, shape rules, and protection plugins still apply when a player has creation permission.
+Administrative subcommands check their own permission and do not also require `shapedportals.command`. World restrictions, shape rules, and protection-plugin decisions still apply when a player has creation permission.
 
-<div class="sp-related"><a href="/shapedportals">Shaped Portals home</a> · <a href="/shapedportals/01-installation-configuration">Installation &amp; configuration</a> · <a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a></div>
+## Creation lifecycle
+
+Vanilla gets the first chance to create a normal portal. Nether creation then uses a cancellable `PortalCreateEvent`. End creation waits for an accepted final eye, leaves a native 3×3 portal alone, checks every proposed interior block through `BlockCanBuildEvent`, rechecks the frame, and fills and saves the custom surface.
+
+Ordinary terrain fires are ignored before attempt statistics and feedback. See [Portal behavior](/shapedportals/02-portal-behavior-events) for protection plugins, repairs, and persistence.
+
+<div class="sp-related"><a href="/shapedportals">Shaped Portals home</a> · <a href="/shapedportals/01-installation-configuration">Installation &amp; configuration</a> · <a href="/shapedportals/02-portal-behavior-events#troubleshooting">Troubleshooting</a> · <a href="/shapedportals/04-architecture-limits">Developer reference</a></div>
 
 </div>

@@ -2,7 +2,7 @@
 title: "Rift — Commands & Permissions"
 description: "Rift command syntax, help behavior, aliases, and granular permission nodes"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -29,7 +29,7 @@ Arguments in brackets have defaults.
 | `/rift info <name>` | `rift.info` | Show detailed state for one world |
 | `/rift generators` | `rift.generators` | Show Bukkit world types and configured generator identifiers |
 | `/rift config` | `rift.config` | Open the in-game configuration editor |
-| `/rift language <locale>` | `rift.config` | Select and activate an installed `languages/<locale>.yml` file |
+| `/rift language <locale>` | `rift.config` | Select an available locale; a missing repository translation is downloaded and validated before activation |
 | `/rift doctor` | `rift.doctor` | Report platform, Java, paths, locale, and world counts |
 | `/rift debug` | `rift.debug` | Save a detailed support report and, when enabled, publish a clickable mclo.gs link |
 | `/rift autoload <name> <enabled>` | `rift.config` | Change a managed profile's startup auto-load flag |
