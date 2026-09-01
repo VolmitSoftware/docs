@@ -2,7 +2,7 @@
 title: "Operator Runbooks & Smoke Tests"
 description: "Repeatable checks for install, portals, projection, RTP, doors, networking, and recovery"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,16 @@ Use these checks after installing or updating Wormholes.
 
 See [Building Portals](/wormholes/03-building-portals) and [Commands & Permissions](/wormholes/09-commands-permissions).
 
+## Operator access bypass
+
+1. Set a linked portal to `LOCKED` and use a blacklist or whitelist state that
+   rejects an ordinary player.
+2. Confirm the ordinary player is rejected.
+3. Op that player and confirm local travel succeeds in both directions.
+4. For gateways, repeat against an incoming-disabled remote destination and
+   confirm the op is admitted.
+5. Enable mirror mode and confirm travel remains locked for the op.
+
 ## Projection
 
 Stand where the source view should be visible and confirm the selected projection mode updates. If it does not, check the portal's mode, quality preset, distance limits, and required packet integration.
@@ -31,3 +41,7 @@ See [Cross-Server Networking](/wormholes/10-cross-server-networking).
 ## Recovery
 
 Back up Wormholes data before resets or manual restoration. If a reload leaves portals, projections, or tasks in an inconsistent state, restart the server instead of repeating the reload.
+
+For shutdown persistence, stop a server that has at least one saved portal.
+Confirm shutdown emits no `PortalManager pre-cost-gateway shutdown` warning,
+then restart and confirm the portal reloads from its existing JSON file.

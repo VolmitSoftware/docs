@@ -685,6 +685,15 @@ body,
   --volmit-card-accent: #111111;
 }
 
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img) {
+  display: flex;
+  min-height: 120px;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img) > a {
+  width: 100%;
+}
+
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:hover,
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:focus-within {
   border-color: var(--volmit-card-accent, var(--volmit-accent)) !important;

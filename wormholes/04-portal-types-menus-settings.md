@@ -2,7 +2,7 @@
 title: "Portal Types Menus & Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -86,8 +86,12 @@ Sanitization works as follows:
 | `BLACKLIST` | Holding the node **blocks** use |
 | `WHITELIST` | Holding the node **allows** use |
 
-Ops always pass. Cycle mode in Settings. The whitelist/blacklist node is
-**players only**. Non-player entities always pass the portal permission check.
+Ops always pass the permission check and the outgoing/incoming travel-direction
+flags, including mirrored remote gateway admission. Mirror mode remains travel
+locked. Portal topology, cooldowns, RTP safety, configured travel costs, and
+external integration decisions are not bypassed. Cycle permission mode in
+Settings. The whitelist/blacklist node is **players only**. Non-player entities
+always pass the portal permission check.
 
 ## Home menu
 
