@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -346,6 +346,8 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 | `blockDrops` | `IrisBlockDrops[]` | Custom drops for blocks broken here. |
 | `caveProfile` | `IrisCaveProfile` | Overrides the region cave profile for this biome. |
 | `riverPolicy` | `IrisRiverPolicy` or `null` | Final policy layer for source placement, transit/outlet admission, dimension-owned profiles, hydrology content pools, and local multipliers. Non-null fields override the selected region and dimension; see [36 - Rivers](/iris/36-rivers). |
+
+The managed Overworld and Underworld mountain roots use `PREFERRED_HEADWATER`, so source spacing and branch-length controls remain authoritative instead of forcing a source into every eligible tile.
 
 Placements are gathered per chunk from the biome at the chunk center, the cave biome at the same point, the region and the dimension. A surface biome contributes all of its `structures[]`. The cave biome contributes only placements whose resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER` or `CAVE_ANY`. Surface and height-band placements written into cave-biome files are ignored. A placement own `caveBiomes` list is an additional allowlist rechecked at each candidate anchor. See [15 - Caves & Carving](/iris/15-caves-carving) and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 

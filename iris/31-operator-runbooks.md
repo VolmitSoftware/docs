@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-08-30T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -48,9 +48,9 @@ GoldenHash file layout and interpretation:
 
 ## Hydrology acceptance pass
 
-Use a new disposable world, a fixed seed, and a pack whose surface and underground budgets are both visibly nonzero. Run `/iris pack validate`, inspect the **River network** accepted footprint, and use `/iris find river` or `/iris goto river` to record coordinates for surface pools, riffles/cascades, waterfalls, ridge bores, underground pools/drops, both grotto types, mouths, and each deep-fluid ID. Generate those untouched areas with one and several generation threads. Confirm every course is connected and non-rising downstream; every positive head loss has falling fluid and a receiving pool; a ridge bore reopens as the same course; underground features retain dry headroom; shore content stays within 1–2 blocks while the 4–10-block outer grade keeps its parent biome; and frozen water changes only through the standard freeze pass.
+Use a newly generated disposable world, a fixed seed, and a pack whose surface and underground budgets are both visibly nonzero. Run `/iris pack validate`, inspect the **River network** accepted footprint, and use `/iris find river` or `/iris goto river` to record coordinates for surface pools, riffles/cascades, waterfalls, ridge bores, underground pools/drops, both grotto types, mouths, and each deep-fluid ID. Generate those untouched areas with one and several generation threads. Confirm every course is connected and non-rising downstream; exposed riffles and cascades use narrow graded flow with no adjacent routed step exceeding one vertical block, qualifying waterfalls form a connected falling throat and widened receiving basin, and branch/course lengths respect their configured floors. From above, each surface course must read as one creeping meander: no repeated axis-aligned chords, 45/90-degree elbows, shoreline hairpins, short split fans, detached dots, or abrupt wide-to-narrow shelves. Follow each surface descent downstream: nearby head losses must resolve as one transition with one terminal basin, and another independent drop must not begin until a complete target-length pool has recovered, including across a confluence. Confirm that every wet surface column sits inside a carved terrain cradle rather than on a floating ledge, a ridge bore reopens as the same course, underground features retain dry headroom, shore content stays within 1–2 blocks while the wider outer grade keeps its parent biome, and frozen water changes only through the standard freeze pass.
 
-At the coast, confirm the head reaches sea level before the natural ocean boundary, the mouth or coastal grotto opens directly to the reservoir, and ocean columns contain no river-owned terrain, elevated fluid, shore, or grading writes. For cave and deep hydrology, confirm accepted containment cells and seal guards remain intact while rejected candidates publish no generation or mantle footprint and remain confined to projected diagnostics. Finish with the Java 25 `:probe:genProbe` gate, a GoldenHash capture/verify pair, a restart, and real-client visual checks for falling water or lava.
+At the coast, confirm an exposed head remains terrain-supported until the natural ocean boundary, a coastal grotto descends to its sea-level pool only across a proven adjacent cliff, the mouth or grotto opens directly to the reservoir, and ocean columns contain no river-owned terrain, elevated fluid, shore, or grading writes. For cave and deep hydrology, confirm accepted containment cells and seal guards remain intact while rejected candidates publish no generation or mantle footprint and remain confined to projected diagnostics. Finish with the Java 25 `:probe:genProbe` gate, a GoldenHash capture/verify pair, a restart, and real-client visual checks for falling water or lava.
 
 ## A. Fresh install and first world (Bukkit-family)
 

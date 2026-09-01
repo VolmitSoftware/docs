@@ -131,11 +131,13 @@ The default (`0` to `10`) is treated as "no condition" and skips the check entir
 
 **Neighbors.** `forbiddenCollisions` lists object keys this object refuses to intersect. If any block of an already-placed object with that key falls inside this object transformed bounding box, the attempt is dropped. Rotation, rotated translation, warp reach, ceiling inversion, and random Y translation are included. `allowedCollisions` names exceptions that win over the forbidden list. Both are empty by default. The check only runs when at least one of them is non-empty.
 
-**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
+**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the automatic surface-river veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
 
 ## 4. Surface support: the silent rejection
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
+
+Natural biome and region scatter also rejects an automatic surface placement when any transformed support column intersects accepted surface-river water or lava. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` do not bypass this river exclusion. It applies only while world generation is choosing the surface Y. An explicit-Y call such as `/iris object paste` remains allowed inside a river so authors can intentionally build there.
 
 ```json
 { "requireSurfaceSupport": true, "surfaceSupportBuffer": 2, "surfaceSupportDepth": 2 }
