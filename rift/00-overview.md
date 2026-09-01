@@ -23,7 +23,11 @@ Use `/rift list` for every known world and `/rift info <name>` for one world's s
 
 ## Managed worlds
 
+<<<<<<< Updated upstream
 `/rift create` makes a managed world. `/rift import` adds a profile to an existing world. `/rift load` can open a world without making it managed.
+=======
+`/rift debug` creates a timestamped support report under `plugins/Rift/debug/`. It expands the local doctor view with service health, scheduler and hot-reload state, active locale file and remote-language catalog state, detailed per-world storage checks, plugin metadata, the active configuration, managed-file hashes, JVM and JIT data, CPU, memory pools, threads and locks, garbage collectors, filesystems, and Rift artifact identity. Public mclo.gs publishing is enabled by default; set `debugUploadEnabled` to `false` for local-only reports.
+>>>>>>> Stashed changes
 
 The built-in `void` generator creates an empty world with a small bedrock spawn platform.
 

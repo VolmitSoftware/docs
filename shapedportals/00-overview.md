@@ -12,11 +12,17 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 Shaped Portals places native Nether and End portal blocks, so Minecraft still handles travel and destination creation.
 
+<<<<<<< Updated upstream
 - [Build a portal](#build-your-first-portal)
 - [Shape rules](#valid-shapes)
 - [Commands](#commands)
 - [Permissions](#permissions)
 {.grid-list}
+=======
+Build a shaped portal, look up a command, or check who can use it. Shaped Portals uses native Nether and End portal blocks, so Minecraft still handles travel and destination creation.
+
+[Build a portal](#build-your-first-portal) · [Shape rules](#valid-shapes) · [Commands](#commands) · [Permissions](#permissions)
+>>>>>>> Stashed changes
 
 ## Build your first portal
 
@@ -24,6 +30,7 @@ Install Shaped Portals first, then choose the portal type.
 
 ### Nether portal
 
+<<<<<<< Updated upstream
 1. Build a closed, upright frame using a configured frame material. Obsidian and crying obsidian are allowed by default.
 2. Leave a connected interior of 2 to 256 blocks by default.
 3. Light an interior block with an allowed ignition source. Flint and steel, fireballs, and directly placed fire are enabled by default.
@@ -37,13 +44,22 @@ Install Shaped Portals first, then choose the portal type.
 4. Step into the native End portal blocks.
 
 A normal vanilla 3×3 End portal remains owned by the server and is not added to the managed registry. Custom End surfaces can be larger, smaller, concave, or irregular within the configured limits.
+=======
+For a shaped End portal, build a closed horizontal boundary from End Portal Frames and insert an Eye of Ender into every frame. The final accepted eye fills any connected 1-to-256-cell interior by default. A normal vanilla 3×3 End portal remains vanilla-owned and is not added to the managed registry.
+
+<div class="sp-media"><strong>Portal-building GIF goes here</strong><span>Show a small stepped frame before ignition, the block being lit, and the filled portal.</span></div>
+>>>>>>> Stashed changes
 
 ## Valid shapes
 
 | Rule | What to build |
 |---|---|
 | Flat plane | Nether portals use a vertical X or Z plane; End portals use a horizontal X/Z plane |
+<<<<<<< Updated upstream
 | Closed boundary | Configured frame blocks for Nether portals; fully eyed End Portal Frames for End portals |
+=======
+| Closed boundary | Configured frame blocks around the entire interior |
+>>>>>>> Stashed changes
 | Connected interior | Interior blocks touch by an edge; diagonal contact alone is not enough |
 | Replaceable inside | Nether and End portals use separate configured interior-material lists |
 | Within limits | Nether defaults to 64×64 and 2–256 cells; End defaults to 64×64 and 1–256 cells |

@@ -107,8 +107,11 @@ Changes apply when the configuration loads. Turning off creation does not remove
 {.dense}
 
 Material lists must contain block materials. Nether frame and interior lists must not overlap, and `NETHER_PORTAL` is not replaceable. End interiors cannot include `END_PORTAL`, `END_PORTAL_FRAME`, or `NETHER_PORTAL`. Both dimensions and total area must fit the configured limits. Denied worlds take priority over allowed worlds; an empty allow-list permits any world not denied.
+<<<<<<< Updated upstream
 
 End frame material is fixed to `END_PORTAL_FRAME`, and every recorded frame must keep its eye. The End settings control the horizontal interior and its limits; they do not change vanilla 3×3 activation.
+=======
+>>>>>>> Stashed changes
 
 Removing a material from `portal.frameMaterials` does not disable existing portals. Their entries in `/sp portals` identify recorded materials no longer allowed for new frames.
 

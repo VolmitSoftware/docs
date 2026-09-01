@@ -24,6 +24,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
   </div>
 </section>
 
+<<<<<<< Updated upstream
 ## Start here
 
 <section aria-label="Getting started" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;align-items:start">
@@ -69,6 +70,36 @@ Both types place native portal blocks. Shaped Nether portals use Minecraft's nor
     <p style="margin:0 0 .9rem"><a href="/shapedportals/04-architecture-limits" style="font-weight:800">Developer reference</a><br><span style="opacity:.74">Review geometry, persistence, event contracts, region ownership, and builds.</span></p>
     <p style="margin:0"><a href="https://github.com/VolmitSoftware/ShapedPortals" style="font-weight:800">Source and issues</a><br><span style="opacity:.74">Browse the implementation or report a reproducible problem.</span></p>
   </section>
+=======
+<div class="sp-home">
+<section class="sp-hero" aria-label="About Shaped Portals">
+<div>
+<div class="sp-identity"><img src="/home-assets/shapedportals.jpg" alt="Shaped Portals logo" width="56" height="56"><span>Shaped Portals</span></div>
+<h2>Custom-shaped<br>Nether &amp; End portals</h2>
+<p>Build vertical Nether portals or horizontal End portals with non-vanilla sizes and outlines. Keep normal Minecraft travel, and manage every portal rule from an in-game menu.</p>
+<nav class="sp-actions" aria-label="Get started"><a class="sp-primary" href="/shapedportals/00-overview#build-your-first-portal">Build a portal</a><a href="/shapedportals/01-installation-configuration">Install &amp; configure</a></nav>
+</div>
+<div class="sp-media"><strong>Gameplay video goes here</strong><span>Build an irregular frame, light it, and walk through the finished portal.</span></div>
+</section>
+<section class="sp-section" aria-labelledby="sp-first-portal">
+<h2 id="sp-first-portal">Your first portal</h2>
+<ol class="sp-steps">
+<li><strong><span class="sp-number">1</span> Build a frame</strong><p>Use obsidian or crying obsidian. Keep the frame upright, closed, and in one flat plane.</p></li>
+<li><strong><span class="sp-number">2</span> Light the inside</strong><p>Use flint and steel inside the frame. By default, the connected interior can contain 2 to 256 blocks.</p></li>
+<li><strong><span class="sp-number">3</span> Step through</strong><p>Travel works like a normal Nether portal. The destination portal may still be a rectangle.</p></li>
+</ol>
+<p class="sp-note"><strong>Shape, not routing.</strong> Shaped Portals changes the Nether and End frames you can build. It does not add custom destinations or linked networks.</p>
+</section>
+<section class="sp-section" aria-labelledby="sp-guides">
+<h2 id="sp-guides">Find what you need</h2>
+<nav class="sp-guides" aria-label="Shaped Portals documentation">
+<a href="/shapedportals/00-overview#commands"><strong>Commands &amp; permissions</strong><span>Quick command reference, defaults, and teleport access.</span></a>
+<a href="/shapedportals/01-installation-configuration"><strong>Installation &amp; configuration</strong><span>Server setup, the in-game editor, and every setting.</span></a>
+<a href="/shapedportals/02-portal-behavior-events"><strong>Portal behavior</strong><span>Frame changes, repairs, protection plugins, and saved portals.</span></a>
+<a href="/shapedportals/02-portal-behavior-events#troubleshooting"><strong>Something not working?</strong><span>Check ignition, permissions, disappearing blocks, and travel.</span></a>
+<a href="/shapedportals/03-compatibility-operations"><strong>Compatibility &amp; operations</strong><span>Server requirements, Folia limits, and React integration.</span></a>
+<a href="/shapedportals/04-architecture-limits"><strong>Developer reference</strong><span>Geometry, persistence, events, and region ownership.</span></a>
+>>>>>>> Stashed changes
 </nav>
 
 <section aria-label="Commands and support" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.75rem;padding:1rem 0;border-top:1px solid rgba(127,127,127,.25);border-bottom:1px solid rgba(127,127,127,.25)">
