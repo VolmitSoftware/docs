@@ -766,3 +766,4 @@ Hydrology output is a deterministic function of pack bytes, world seed, and coor
 | Missing biome in find/goto | Reference it from a reachable policy and ensure every child/carving key exists |
 | No deep lava | Check the `deepFluids` entry density, height envelope, spacing/footprint relationship, and both `containedPools` / `shortChannels` switches |
 | Hard boundary between generated areas | Use a new or fully regenerated world for the changed hydrology contract |
+| `Hydrology tile x,z failed to plan` in the log | Terrain there generated without rivers. The error report names the column and lists the region, biome, fluid height, overlay, and every interpolator's bounds and generator heights, so check the generator or biome it names; the world stays usable |
