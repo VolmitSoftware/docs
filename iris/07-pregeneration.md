@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -216,6 +216,8 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 Starting pregeneration temporarily applies Iris's pregen performance settings. Normal settings return when the job ends.
 
 ## Operator notes
+
+Before a large pregeneration on Paper, Purpur, or Leaf, check the startup line `Paper is using N worker threads`. Paper's automatic pool is often 4 threads regardless of the machine; set `chunk-system.worker-threads` in `config/paper-global.yml` to about the physical core count and restart, or the workers cap throughput while the CPU sits idle. See [33 - Performance Tuning](/iris/33-performance-tuning).
 
 - Radius is in **blocks**. Every mistake in this area is someone typing a chunk count.
 - Re-running over the same area is fast only when the cache wrapper was active and the files under `iris/pregen` still exist.

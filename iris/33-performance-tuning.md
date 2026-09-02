@@ -47,13 +47,23 @@ pregeneration status line on its own does not tell you why.
 Work through these in order. The first two are free. The rest trade
 something.
 
-1. **Check whether the platform is the limit, not Iris**. On Fabric,
+1. **Give Paper enough chunk workers.** Paper sizes its chunk-system
+   worker pool automatically and often lands on 4 threads even on a
+   16-core machine; the startup log prints `Paper is using N worker
+   threads`. Every chunk generation runs on one of those workers, so a
+   small pool caps pregeneration long before the CPU is busy. Set
+   `chunk-system.worker-threads` in `config/paper-global.yml` to about
+   the number of physical cores for a pregeneration box and restart.
+   Iris spreads each chunk's stages and mantle work across its own burst
+   pool during pregeneration, so the workers mostly coordinate; they
+   still need to exist.
+2. **Check whether the platform is the limit, not Iris**. On Fabric,
    Forge, and NeoForge without a parallel chunk system, pregeneration
    uses the vanilla main-thread chunk pipeline. Throughput is capped
    there regardless of settings. Iris logs this at pregeneration
    start and names the fix: install C2ME on Fabric, or run Paper if you
    want Bukkit-level throughput. No Iris setting recovers that gap.
-2. **Confirm SIMD is on.** On Bukkit, the startup log prints one of
+3. **Confirm SIMD is on.** On Bukkit, the startup log prints one of
    `SIMD: vector kernels enabled (…)`,
    `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector …`,
    or `SIMD: vector kernels disabled (performance.simdKernels=false)`.
@@ -61,28 +71,28 @@ something.
    SIMD section for what it actually accelerates and how small that
    surface is. Mod loaders never print this line, so check the JVM flag
    directly there.
-3. **Leave concurrency alone unless it is warning at you.** Bukkit
+4. **Leave concurrency alone unless it is warning at you.** Bukkit
    pregeneration concurrency is derived, not configured. Paper-like
    admission uses the larger of the detected chunk-system pool and the
    world-gen pool Iris provisions during initialization. Folia also
    includes its broader runtime capacity. The effective worker count is
-   multiplied by 8 and clamped to 16–128 on Paper-like servers or 64–192
+   multiplied by 8 and clamped to 16–256 on Paper-like servers or 64–192
    on Folia. Raising it is not an option, and the adaptive limiter lowers
    it when requests stay pending or mantle backpressure engages. The only
    concurrency lever on Bukkit is `serial=true`, which drops to one chunk
    in flight. Use it for profiling and determinism isolation, never for
    throughput.
-4. **On mod loaders, size `pregen.moddedPregenInFlight` to the chunk
+5. **On mod loaders, size `pregen.moddedPregenInFlight` to the chunk
    system.** Default `0` resolves to `clamp(16, cpu*2, 48)`, and whatever
    value comes out is floored at 8. Raise it only if the loader has a
    parallel chunk system and the CPU is not saturated. Lower it if you
    see chunk-load timeouts. Positive values are capped at 512.
-5. **Raise the object cache if the same objects keep reloading.**
+6. **Raise the object cache if the same objects keep reloading.**
    `performance.objectLoaderCacheSize` (default 4096) bounds the loader
    caches for `.iob` objects, matter objects, and images. Object-heavy
    packs on large pregenerations hit this. The tradeoff is retained heap,
    so only do this if heap has room. See the memory section.
-6. **Give the process more heap before touching mantle caps.** Resident
+7. **Give the process more heap before touching mantle caps.** Resident
    mantle plates are budgeted against process memory. A bigger heap
    raises the effective plate count without any settings change.
 
@@ -95,6 +105,8 @@ the first pregeneration. Pass `-Diris.cache.fast=true` on the JVM
 command line there if you want it covering ordinary generation too.
 
 ### Hydrology-heavy packs
+
+A pregeneration plans every hydrology tile of its area up front, nearest the centre first, on a planning pool of about a third of the cores, and keeps the ring of tiles around the generation front planned as it moves, so chunk generation rarely waits on a cold plan. Height bounds at grid corners are shared between threads and from planning into generation, which is what makes the up-front planning cheap enough to run alongside generation.
 
 Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Tune one field at a time over the same seed and cold frontier, then compare the Java 25 generation probe and a warm repeat. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
 
