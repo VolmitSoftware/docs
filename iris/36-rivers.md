@@ -48,7 +48,8 @@ This is the managed Overworld shape with every physical section written explicit
         "valleyPreference": 1.5,
         "uphillPenalty": 24,
         "slopePenalty": 2,
-        "confluenceAttraction": 0.2
+        "confluenceAttraction": 0.2,
+        "lengthPreference": 1
       },
       "geometry": {
         "meanders": {
@@ -250,6 +251,7 @@ Every object with `min` and `max` is an `IrisStyledRange`. `style` is optional; 
 | `uphillPenalty` | `24` | Cost added per block of climb between lattice samples, `0..128` |
 | `slopePenalty` | `2` | Cost multiplied by the local terrain slope, `0..16`; higher values keep routes off hillsides |
 | `confluenceAttraction` | `0.2` | Discount for joining ground another route already drains, `0..1` |
+| `lengthPreference` | `1` | How strongly longer source-to-outlet routes win when sources are chosen, `0..8`; `0` ranks sources by elevation alone |
 
 At least one outlet family must be enabled. `tileSize`, `sampleSpacing`, route length, and both source budgets form a bounded planning envelope; see [Validation](#validation).
 
@@ -402,6 +404,38 @@ Deep fluids are independent of both river source budgets and do not join the sur
 
 Spacing must contain the complete horizontal footprint, depth plus headroom must fit inside the vertical diameter, and the height envelope must fit inside the dimension. A short channel has no separate authored length: its maximum length is `spacing / 3`, capped to half `routing.tileSize`, and its derived containment-volume bound may shorten it further. Contained pools use one connected deterministic multi-lobed basin with an ellipsoid bowl. The managed Overworld uses a denser `deep_lava` entry independently of its water river profile.
 
+### `hydrology.surfacePools`
+
+Standing pools are bowls cut into open ground and filled with their own fluid: lava pools in a badland, a tar pit, a hot spring. They are independent of the river budgets and never touch a river. Each entry has:
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `id` | `lava_pool` | Unique pool id; policies opt in with it and `/iris find river type=<id>` locates it |
+| `fluidPalette` | lava | Fluid filling the pool |
+| `density` | `0.75` | Expected pools per tile where the policy allows them, `0..64` |
+| `spacing` | `384` | Candidate site spacing in blocks, `32..8192`; sites are jittered inside their cell |
+| `minimumRadius` / `maximumRadius` | `4` / `7` | Pool radius range in blocks, `2..16` |
+| `depth` | `2` | Fluid depth at the centre, `1..8` |
+| `biome` | empty | Biome applied to the bowl and its rim; empty keeps the surrounding biome |
+
+A pool is shaped like a river reach with no course: the fluid sits `channel.inset` below the lowest ground around the bowl, the rim carries `banks.freeboard`, the bowl is a broad basin with the configured outline roughness, and the cut blends back out to natural ground the same way a river bank does. A site is skipped where the ground falls away more than `channel.maximumIncision` allows, on or below sea level, where the policy does not list the pool, or within one river width plus the bank blend of an accepted course. The bed padding rule applies to pools as well.
+
+```json
+{
+  "surfacePools": [
+    {
+      "id": "lava_pool",
+      "fluidPalette": {"palette": [{"block": "minecraft:lava"}]},
+      "density": 0.75,
+      "spacing": 384,
+      "minimumRadius": 4,
+      "maximumRadius": 7,
+      "depth": 2
+    }
+  ]
+}
+```
+
 ## `riverPolicy`
 
 The effective policy is resolved in this order:
@@ -424,6 +458,7 @@ A non-null field at the later scope replaces the inherited value. Omitted or `nu
     "shoreBiomes": ["tundra/shore/snow"],
     "bankBiomes": ["tundra/frosted-peaks"],
     "floodedCaveBiomes": ["carving/ice-cave"],
+    "surfacePools": [],
     "widthMultiplier": 0.8,
     "depthMultiplier": 1.1,
     "routingMultiplier": 0.7,
@@ -462,6 +497,7 @@ A viable `REQUIRED_HEADWATER` policy site intrinsically requests at least one so
 | `shoreBiomes` | Content of the shore band beside the water |
 | `bankBiomes` | Content of the eroded bank and valley blend outside the shore; leave it empty to keep the parent biome |
 | `floodedCaveBiomes` | Underground, grotto, and deep-fluid content |
+| `surfacePools` | Standing pool ids from `hydrology.surfacePools` allowed in this area; an empty list disables them |
 | `widthMultiplier` | Channel-width scale, greater than zero through `16` |
 | `depthMultiplier` | Channel-depth scale, greater than zero through `16` |
 | `incisionMultiplier` | Local scale on `channel.maximumIncision`, `0..16`; it may tighten the permitted cut but cannot exceed the configured maximum |
@@ -478,7 +514,7 @@ For each bounded hydrology tile Iris:
 2. proves coastal mouths or grottos first, then permitted inland grottos when needed;
 3. builds one acyclic drainage potential toward accepted outlets;
 4. admits surface and underground sources from separate budgets;
-5. routes toward valleys using `valleyPreference`, `uphillPenalty`, `slopePenalty`, policy cost, and `confluenceAttraction`;
+5. routes toward valleys using `valleyPreference`, `uphillPenalty`, `slopePenalty`, policy cost, and `confluenceAttraction`; a surface route never climbs more than the cut the channel may make (`channel.maximumIncision` less the inset and depth) between two lattice samples, so ground behind a ridge drains to an inland grotto instead of an impossible sea mouth;
 6. refines each accepted coarse route into a terrain-following centerline with the configured meanders;
 7. shapes every surface course as a valley (below) and every underground course as a contained passage;
 8. compiles exact terrain, fluid, shore, bank, biome, cave, render, and locator footprints;
@@ -522,6 +558,7 @@ The runtime exposes accepted-plan queries through `IrisHydrologyRuntime.sample(x
 | `MOUTH` | Surface or underground connection into the ocean reservoir |
 | `DEEP_POOL` | Independent contained deep-fluid pool |
 | `DEEP_CHANNEL` | Independent short deep-fluid channel |
+| `STANDING_POOL` | Independent standing surface pool |
 
 Feature references also carry stable feature, course, and segment IDs, coordinates, flow direction, and a source marker. Vision and locator commands consume these accepted references.
 
@@ -586,7 +623,7 @@ Locate accepted features from an Iris world:
 /iris goto river deep_lava
 ```
 
-Bukkit optional arguments use Director `key=value`, so the explicit non-teleporting form is `teleport=false`. Supported type selectors are `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, and `deep`. Any other value is treated as a deep-fluid ID and matches only `DEEP_POOL` or `DEEP_CHANNEL` features with that profile. Bukkit and modded completion append the active dimension's configured deep-fluid IDs to those built-ins; `deep_lava` appears only when the pack declares it. Built-in selector names are reserved and cannot be deep-fluid IDs.
+Bukkit optional arguments use Director `key=value`, so the explicit non-teleporting form is `teleport=false`. Supported type selectors are `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `deep`, and `pool`. Any other value is treated as a deep-fluid or surface-pool ID and matches only the deep or standing pool features with that profile. Bukkit and modded completion append the active dimension's configured deep-fluid IDs to those built-ins; `deep_lava` appears only when the pack declares it. Built-in selector names are reserved and cannot be deep-fluid IDs.
 
 The search is bounded to the smaller of 8,192 blocks and fifteen routing tiles. It searches accepted immutable plans, not candidate cells. `/iris find biome` and `/iris goto biome` remain available for reachable surface river-content biomes.
 
