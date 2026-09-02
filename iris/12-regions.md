@@ -221,7 +221,7 @@ Path in the shipping pack: `packs/overworld/regions/temperate.json`.
 | `name` / `color` | `Temperate` / `#9BEE61` | |
 | `rarity` | `1` | Most common region. The world default character. |
 | `landBiomes` | 28 keys, e.g. `temperate/plains`, `temperate/cherry-blossom-forest`, `vanilla/cherry_grove` | A large list keeps a single region visually varied without needing many regions. |
-| `seaBiomes` | 6 keys, e.g. `ocean/deep`, `temperate/sea/ocean` | Natural below-sea-level biome selection. Hydrology surface, mouth, shore, dry, and flooded-cave content comes from the effective `riverPolicy`. |
+| `seaBiomes` | 6 keys, e.g. `ocean/deep`, `temperate/sea/ocean` | Natural below-sea-level biome selection. Hydrology surface, mouth, shore, bank, and flooded-cave content comes from the effective `riverPolicy`. |
 | `shoreBiomes` | 5 keys, e.g. `temperate/shore/beach`, `vanilla/stony_shore` | |
 | `caveBiomes` | 5 keys, e.g. `carving/drip`, `carving/moss-pillars` | |
 | `landBiomeZoom` / `seaBiomeZoom` | `3.5` / `6` | Oceans stay recognisable across long swims. |
@@ -249,6 +249,6 @@ Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terral
 | Empty `landBiomes` | Invalid region. Land columns have no candidates |
 | Wrong biome key path | `temperate/plains` must be `biomes/temperate/plains.json`, case and folder included |
 | Tuning region `rarity` when the region never appears | Selection also depends on the dimension `regionStyle` and `regionZoom`. Measure first with `/iris studio regions` |
-| Putting physical hydrology settings on a region | Regions expose only `riverPolicy`. Put routing, sources, hydraulics, grottos, profiles, and deep fluids on the dimension `hydrology` object |
+| Putting physical hydrology settings on a region | Regions expose only `riverPolicy`. Put routing, sources, channel and bank shape, grottos, profiles, and deep fluids on the dimension `hydrology` object |
 | Empty `seaBiomes` in a dimension whose terrain dips below `fluidHeight` | Sea columns have no candidate biome |
 | Comparing changes in already generated chunks | Region and zoom changes only affect newly generated chunks. Always fly to fresh terrain |
