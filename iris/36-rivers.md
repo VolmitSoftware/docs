@@ -49,7 +49,8 @@ This is the managed Overworld shape with every physical section written explicit
         "uphillPenalty": 24,
         "slopePenalty": 2,
         "confluenceAttraction": 0.2,
-        "lengthPreference": 1
+        "lengthPreference": 1,
+        "tributaries": 1
       },
       "geometry": {
         "meanders": {
@@ -252,6 +253,7 @@ Every object with `min` and `max` is an `IrisStyledRange`. `style` is optional; 
 | `slopePenalty` | `2` | Cost multiplied by the local terrain slope, `0..16`; higher values keep routes off hillsides |
 | `confluenceAttraction` | `0.2` | Discount for joining ground another route already drains, `0..1` |
 | `lengthPreference` | `1` | How strongly longer source-to-outlet routes win when sources are chosen, `0..8`; `0` ranks sources by elevation alone |
+| `tributaries` | `1` | Extra surface courses an outlet may accept as tributaries of its main river, `0..4`; a tributary is cut where its drainage joins the stem and must meet it at or above the stem's water |
 
 At least one outlet family must be enabled. `tileSize`, `sampleSpacing`, route length, and both source budgets form a bounded planning envelope; see [Validation](#validation).
 
@@ -521,7 +523,7 @@ For each bounded hydrology tile Iris:
 9. validates every course with a subterranean footprint as one containment transaction against authoritative carved mantle matter;
 10. prunes any rejected course and publishes the remaining immutable `HydrologyTile`.
 
-The tile contains sorted drainage nodes, edges, outlets, courses, features, accepted cave actions and baseline preconditions, and a `RiverFootprint`. Surface courses are grouped by outlet before publication, and the longest viable route becomes the outlet's only complete main stem. Every drainage edge lowers potential, so accepted graphs are acyclic.
+The tile contains sorted drainage nodes, edges, outlets, courses, features, accepted cave actions and baseline preconditions, and a `RiverFootprint`. Surface courses are grouped by outlet before publication; the longest viable route becomes the outlet's main stem, and up to `routing.tributaries` further routes to the same outlet are kept as tributaries, each cut at the confluence where its drainage joins the stem. A tributary needs at least half the minimum course length above the confluence and must arrive at or above the stem's water there, so it steps down into the river rather than pooling below it. Every drainage edge lowers potential, so accepted graphs are acyclic.
 
 Before any surface course is published, cross-tile arbitration compares its complete mouth and centerline claim with the bounded owner set. Only the deterministic winning owner may publish an overlapping claim. This prevents tile request order from creating duplicate mouths, stacked main stems, or detached edge fragments.
 
