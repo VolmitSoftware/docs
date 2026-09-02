@@ -68,19 +68,6 @@ string, and per-type qualification data. `MutationSnapshot.empty()` builds the
 | `MutationQualification` | Immutable record: `qualified`, `firstDomainQualified`, `secondDomainQualified`, `qualifyingAdaptations`, `reason`. `rejected(reason)` builds a negative result |
 | `MutationSelectionResult` | Immutable record: `success`, `message`, `cooldownRemainingMillis`. Factories `success(message)`, `rejected(message)`, `cooldown(message, remainingMillis)` |
 | `MutationClaim` | `DAMAGE`, `COOLDOWN_RESET`, `DEATH_PREVENTION`, `ITEM_PRESERVATION`, `UTILITY_ECHO`, `REWARD`, `MOVEMENT`, `POSTURE`, `WORLD_STATE`, `COOPERATIVE_LINK`, `RECOVERY` |
-
-### Runtime types that are not contracts
-
-| Type | Runtime role and restriction |
-|------|------------------------------|
-| `MutationConfig` | Owns `plugins/Adapt/mutations.toml`, the per-mutation profile subclasses, consent mode, reload and world checks, and live static config state. Read [34 - Mutations Overview](/adapt/34-mutations-overview) instead of calling its lifecycle methods |
-| `MutationManager` | Owns qualification, reconciliation, selection, bookshelf authorization, overrides, cooldowns, cleanup, reload and shutdown. `new MutationManager(config)` creates disconnected state |
-| `PlayerMutationData` | Mutable serialized fields inside `PlayerData`. Direct writes bypass reconciliation and publication |
-| `MutationCombatLock` | Mutable dealer and receiver combat-tag clock owned by the live manager |
-| `MutationEventClaims` | Mutable per-event claim set that stops two built-in mutation handlers applying the same effect twice |
-
-No class under `content.mutation` or `content.mutation.runtime` is a supported API even when reflection can reach it.
-
 ## See also
 
 - [04 - Commands & Permissions](/adapt/04-commands-permissions)

@@ -1,6 +1,6 @@
 ---
 title: "BileTools — Configuration"
-description: "Every biletools.yml key with its shipped default"
+description: "Every biletools.yml key with its default"
 published: true
 date: 2026-08-25T00:00:00.000Z
 tags: "biletools, configuration"
@@ -8,9 +8,7 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`plugins/BileTools/biletools.yml`. Values below are the defaults written on first
-run. BileTools rewrites supported values after loading and restores missing
-keys.
+Configuration lives in `plugins/BileTools/biletools.yml`. The table below lists the defaults written on first run. BileTools rewrites supported values after loading and restores missing keys.
 
 ## Runtime
 
@@ -50,27 +48,7 @@ These plugins are excluded by default. Hot-reload is often dangerous or
 pointless for them. They hold static state. They register protocol hooks. Other
 plugins depend on them.
 
-The debounce exists because builds and FTP clients can write a jar
-incrementally. After the source stamp settles, BileTools creates and validates
-an immutable off-thread snapshot. If the source changes during the copy, the
-snapshot is rejected and the newest generation is retried. Temporary files
-such as `.jar.part` are ignored until they are renamed to `.jar`.
-
-Native jar events are reconciled against the plugins directory metadata every
-2.5 seconds. An exact SHA-256 safety sweep also covers same-metadata changes,
-but advances by at most one jar, 1 MiB, and roughly 2 milliseconds on each
-coordinator pass. The next exact sweep starts 2.5 seconds after the preceding
-sweep completes. If native watching is unavailable, metadata fallback scans
-retain their fixed cadence rather than following the faster active or idle
-coordinator interval.
-
-After an automatic reload batch finishes, the next automatic batch cannot start
-for three seconds. Only one batch runs at a time; changes that arrive during it
-are coalesced by plugin into one latest-wins trailing batch. Jar deletion also
-uses a fixed three-second grace period that recreation cancels. These two
-intervals are not configurable.
-The former `watcher.coalesce-window-ticks` key is removed when the configuration
-is next loaded.
+Automatic reload waits for a jar to finish changing. Temporary upload files are ignored. Changes made during a reload apply in the next batch.
 
 Manual `/bile load`, `/bile unload`, and `/bile reload` operations bypass the
 automatic filter and cadence.
@@ -86,9 +64,7 @@ automatic filter and cadence.
 Leave `health-check` on. If you turn it off, a plugin that throws during
 `onEnable` reports a successful reload. The plugin stays inert.
 
-BileTools logs one normal-level summary for lifecycle operations and retains warnings or stack traces for failures that need operator action. Jar tracking, queue bookkeeping, reflective load steps, command-node cleanup, and other routine watcher diagnostics use the logger's `FINE` level and are hidden by the normal server logging configuration. The startup splash remains a deliberately branded console block. `observability.log-timings` controls the normal-level timing summaries independently.
-
-Localized `&` colors are rendered once into components for player chat, command replies, and the splash. Paper-family consoles receive the rich component with one `[BileTools]` discriminator whose dark-grey brackets frame the green plugin name; unsupported console APIs, RCON, and Java-logger fallbacks receive plain text with formatting removed. BileTools therefore never exposes raw `§` sequences in an operator terminal, while supported player and console colors remain intact.
+`observability.log-timings` controls reload timing summaries.
 
 ## Remote deploy
 

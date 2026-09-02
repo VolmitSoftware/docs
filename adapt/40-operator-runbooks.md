@@ -25,7 +25,7 @@ Check with a non-op account whose permissions are written out explicitly. Operat
 5. Join in Survival and right-click the side of a bookshelf with neither hand holding a placeable block. The skills menu should open. Sneaking, clicking the top or bottom face, or holding a placeable block in either hand should do nothing.
 6. Stop cleanly. Confirm no persistence flush, Redis close, SQL close, or scheduler error on the way down.
 
-Normal console output is limited to startup and shutdown state, administrative changes, hotload results, and actionable warnings or failures. Routine profile activation and per-action gameplay diagnostics appear only while `verbose` is enabled; ordinary joins and successful ability use are quiet by default.
+Normal console output is limited to startup and shutdown state, administrative changes, hotload results, and warnings or failures that require operator attention. Routine profile activation and per-action gameplay diagnostics appear only while `verbose` is enabled; ordinary joins and successful ability use are quiet by default.
 
 ## Progression and permissions
 

@@ -2,7 +2,7 @@
 title: "Portal Types Menus & Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,7 +59,7 @@ as `CUSTOM` on load.
 
 ### Activation range
 
-- `0` — global projection range from config (`projection.range`, default 48
+- `0` means the global projection range from config (`projection.range`, default 48
   blocks).
 - Positive values are clamped to **8–256** blocks.
 
@@ -86,8 +86,12 @@ Sanitization works as follows:
 | `BLACKLIST` | Holding the node **blocks** use |
 | `WHITELIST` | Holding the node **allows** use |
 
-Ops always pass. Cycle mode in Settings. The whitelist/blacklist node is
-**players only**. Non-player entities always pass the portal permission check.
+Ops always pass the permission check and the outgoing/incoming travel-direction
+flags, including mirrored remote gateway admission. Mirror mode remains travel
+locked. Portal topology, cooldowns, RTP safety, configured travel costs, and
+external integration decisions are not bypassed. Cycle permission mode in
+Settings. The whitelist/blacklist node is **players only**. Non-player entities
+always pass the portal permission check.
 
 ## Home menu
 
@@ -234,9 +238,11 @@ color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
 Blackout builds a concrete display seal from the farthest valid slice of the
-projected volume. That seal stops the client from seeing beyond the sampled
-view. If that display cannot be sent safely, projection continues without the
-seal. Opaque surface skins block projection entirely (`blocksProjection`).
+projected volume. The thin seal is inset inside that final sampled slab so
+local-world blocks beyond the projection cannot silhouette or depth-fight it.
+That seal stops the client from seeing beyond the sampled view. If that display
+cannot be sent safely, projection continues without the seal. Opaque surface
+skins block projection entirely (`blocksProjection`).
 
 ## Behavior notes
 

@@ -115,20 +115,6 @@ Mining stone builds stacks that turn into Resistance. Every few stone blocks add
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `pickaxe` |
-| Class | `SkillPickaxes` |
-| Icon | `NETHERITE_PICKAXE` |
-| Color | `GOLD` |
-| Interval (ms) | `2750` |
-| Skill config | `plugins/Adapt/skills/pickaxe.toml` |
-| Adaptation count | 13 |
-
-Block break XP formula, from `SkillPickaxes.getValue`: `(materialValue * blockValueMultiplier + min(maxHardnessBonus, hardness) + min(maxBlastResistanceBonus, blastResistance) + oreBonus) * 0.48`, then multiplied by the world anti-farm multiplier. Deepslate ore variants use their base ore bonus times `deepslateMultiplier`.
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/pickaxe.toml` on first load.
@@ -180,7 +166,6 @@ Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeChisel` |
 | Icon | `IRON_NUGGET` |
 | Max level | 7 |
 | Initial knowledge cost | 5 |
@@ -213,7 +198,6 @@ The ore must pass a cancellable block-break probe before Chisel applies its cool
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeVeinminer` |
 | Icon | `IRON_PICKAXE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -237,7 +221,6 @@ Vein search radius is `level + baseRange`. Eligible blocks are any material endi
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeAutosmelt` |
 | Icon | `RAW_GOLD` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -256,7 +239,6 @@ Converted ores: iron ore to iron ingot, gold ore to gold ingot, copper ore to co
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeDropToInventory` |
 | Icon | `MINECART` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -275,7 +257,6 @@ Each drop must pass a simulated pickup event before it is pulled out of the bloc
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeSilkSpawner` |
 | Icon | `SPAWNER` |
 | Max level | 2 |
 | Initial knowledge cost | 4 |
@@ -294,7 +275,6 @@ Gate in code: a Silk Touch pickaxe works at any level. Without Silk Touch the le
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeQuarrySense` |
 | Icon | `MAP` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -334,7 +314,6 @@ at least 1 point. Only iron, diamond, and netherite pickaxes qualify. Quitting c
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeTunnelBore` |
 | Icon | `COBBLESTONE` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -357,7 +336,6 @@ Bore face: 1x2 at level 1, 3x2 at level 2, 3x3 at level 3. Eligible block types:
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeDeepCore` |
 | Icon | `DEEPSLATE` |
 | Max level | 3 |
 | Initial knowledge cost | 3 |
@@ -382,7 +360,6 @@ The bonus is a timed `BLOCK_BREAK_SPEED` attribute modifier, not a Haste potion 
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeObsidianRush` |
 | Icon | `CRYING_OBSIDIAN` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -407,7 +384,6 @@ Also a timed `BLOCK_BREAK_SPEED` modifier. Amplifier is `min(maxAmplifier, ampli
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeUnbreakablePact` |
 | Icon | `ANVIL` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -432,7 +408,6 @@ is cancelled. The item's damage is clamped to one point below its maximum.
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeRepairRhythm` |
 | Icon | `EXPERIENCE_BOTTLE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -459,7 +434,6 @@ Repair chance is `min(maxChance, chanceBase + level * chancePerLevel)`. It fires
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeGemPolish` |
 | Icon | `DRAGON_HEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -487,7 +461,6 @@ Eligible heads are skeleton, wither skeleton, zombie, player, creeper, dragon, a
 
 | Property | Value |
 |----------|-------|
-| Class | `PickaxeStoneSkin` |
 | Icon | `STONE` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |

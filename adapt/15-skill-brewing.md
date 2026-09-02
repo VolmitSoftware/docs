@@ -105,20 +105,6 @@ Adds Potions of Saturation, which refill hunger instantly instead of over time. 
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `brewing` |
-| Class | `SkillBrewing` |
-| Icon | `LINGERING_POTION` |
-| Color | `LIGHT_PURPLE` |
-| Interval (ms) | `5851` |
-| Skill config | `plugins/Adapt/skills/brewing.toml` |
-| Adaptation count | 13 |
-
-`SkillBrewing` also registers the `BrewingStandOwnerMatter` spatial slice type, which is what stores brewing-stand ownership per world.
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/brewing.toml` on first load.
@@ -190,7 +176,6 @@ Initial knowledge cost is 2. Base knowledge cost is 3. Cost factor is 1.
 
 | Property | Value |
 |----------|-------|
-| Class | `BrewingLingering` |
 | Icon | `DRAGON_BREATH` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -198,8 +183,6 @@ Initial knowledge cost is 2. Base knowledge cost is 3. Cost factor is 1.
 | Cost factor | 0.75 |
 | Tick interval (ms) | 4788 |
 | Config file | `plugins/Adapt/adaptations/brewing-lingering.toml` |
-
-Listened events: `BrewEvent`.
 
 New duration for each non-instant effect is the flat tick bonus plus the original duration times the multiplier. The multiplier curve squares level progress, so most of the gain arrives at high levels.
 
@@ -215,7 +198,6 @@ New duration for each non-instant effect is the flat tick bonus plus the origina
 
 | Property | Value |
 |----------|-------|
-| Class | `BrewingSuperHeated` |
 | Icon | `LAVA_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -223,8 +205,6 @@ New duration for each non-instant effect is the flat tick bonus plus the origina
 | Cost factor | 0.75 |
 | Tick interval (ms) | 253 |
 | Config file | `plugins/Adapt/adaptations/brewing-super-heated.toml` |
-
-Listened events: `InventoryMoveItemEvent`, `BrewEvent` and `InventoryClickEvent`, all of which mark the stand as recently active so it gets ticked.
 
 Heat sources are counted on five faces: the block below the stand and the four sides. Each tick removes `ceil(interval_in_ticks * total_percent)` from the brew timer.
 Total percent is the fire boost times the fire block count plus the lava boost

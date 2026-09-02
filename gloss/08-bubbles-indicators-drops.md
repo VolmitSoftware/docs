@@ -18,9 +18,9 @@ healing profile. `/gloss web workspace` includes all three.
 
 ### Style documents
 
-Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. `default.json` ships in the jar. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart.
+Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per style. The id is the file name with `.json` removed. The jar includes `default.json`. It is extracted whenever it is missing and `[features] chatBubbles` is on, so a server that leaves bubbles off never grows a `bubbles/` folder. If you delete it, it comes back on the next reload or restart.
 
-`plugins/Gloss/bubbles/default.json` as shipped:
+`plugins/Gloss/bubbles/default.json` by default:
 
 ```json
 {
@@ -65,8 +65,8 @@ Bubble styles live in `plugins/Gloss/bubbles/`, one enveloped JSON file per styl
 | `maxAliveMs` | `0` clamped to `500` | Milliseconds a bubble lives. Clamped to `500`..`60000` |
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
 | `hideOwn` | `false` | When true the speaker cannot see their own bubbles |
-| `motion` | shipped late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
-| `shimmer` | shipped shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
+| `motion` | default late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
+| `shimmer` | default shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
 | `particleLayers` | `[]` | Up to 64 layers attached to the one multiline temporary hologram |
 
@@ -97,7 +97,7 @@ For each chat message Gloss resolves one style, in this order:
 1. **The player's explicit choice.** Used only when the player has chosen a style, that style id still exists on disk, **and** the player holds `gloss.bubbles.style.<id>`. Any of the three failing drops straight to step 2 with no message.
 2. **The best matching `select`.** Every style whose `select.when` evaluates true is a candidate. The highest `priority` wins. Ties are broken by the lexicographically smallest style id.
 3. **`default`.** Used when nothing matched and a style with the id `default` exists.
-4. **Built-in fallback.** With no `default` on disk, Gloss uses the shipped schema-4 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, the late upward motion expression and no particle layers. Bubbles never stop working because a file is missing.
+4. **Built-in fallback.** With no `default` on disk, Gloss uses the included schema-4 values shown above: prefix `&7`, offset `[0, 0.3, 0]`, wrap 32, 5000 ms, follow and hide-own on, the late upward motion expression and no particle layers. Bubbles never stop working because a file is missing.
 
 Two consequences worth stating plainly:
 
@@ -120,11 +120,11 @@ Gloss retains at most four live messages per speaker. After a new bubble secures
 
 ### Shimmer
 
-`shimmer` is the original Gloss shine presented as two explicit high-frequency passes. It changes live text color, not particles. The shipped wave is a solid white three-glyph band. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph.
+`shimmer` is the original Gloss shine presented as two explicit high-frequency passes. It changes live text color, not particles. The default wave is a solid white three-glyph band. The active legacy or RGB color and text decorations are restored immediately after every highlighted glyph.
 
 The wrapped message is one continuous visible-glyph stream. A band crossing a line boundary lights the end of one row and the start of the next, so a five-line bubble still has exactly one shimmer rather than five independently phased waves. The server moves the band from the first to the last visible glyph over `durationMs`; longer messages therefore update more frequently instead of moving at a fixed slow glyph rate.
 
-The shipped first pass waits 400 ms after chat, then crosses the full block over 700 ms. The second begins 700 ms before expiry and crosses it again while the default late-fly motion is active. Between those windows the text is unchanged.
+The default first pass waits 400 ms after chat, then crosses the full block over 700 ms. The second begins 700 ms before expiry and crosses it again while the default late-fly motion is active. Between those windows the text is unchanged.
 
 | Key | Default | Clamp / notes |
 |---|---|---|
@@ -136,13 +136,13 @@ The shipped first pass waits 400 ms after chat, then crosses the full block over
 | `spawnDelayMs` | `400` | Delay before the spawn pass starts, clamped to `0`..`60000` |
 | `flyAwayLeadMs` | `700` | Departure starts this many milliseconds before expiry, clamped to `0`..`60000` |
 
-A missing `shimmer` block uses all defaults above, so the shipped and built-in fallback styles visibly shine twice. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn pass starts at `spawnDelayMs`; the fly-away pass starts at `max(0, maxAliveMs - flyAwayLeadMs)` and wins if the windows overlap. Each pass stops after `durationMs`. Shimmer timing and the `motion` expressions are independent, so the band can travel while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
+A missing `shimmer` block uses all defaults above, so the default and built-in fallback styles visibly shine twice. With `spawn` and `flyAway` both `false` nothing shines at all. The spawn pass starts at `spawnDelayMs`; the fly-away pass starts at `max(0, maxAliveMs - flyAwayLeadMs)` and wins if the windows overlap. Each pass stops after `durationMs`. Shimmer timing and the `motion` expressions are independent, so the band can travel while the text flies, fades, shrinks, rotates or follows any other authored motion curve.
 
-Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (shipped `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to the configured temporary-hologram interval, shipped as two ticks, and is visibly coarser.
+Frames come from the same high-frequency async packet animator that drives sub-tick text animations, up to `[holograms] maxAnimationFps` (default `120`), not from the temporary-hologram driver. With `[holograms] highFrequencyAnimations = false` the band falls back to the configured temporary-hologram interval, set to two ticks by default, and is visibly coarser.
 
 ### Motion
 
-Every live message has a base position at the speaker's eye plus `offset`, then adds only the space required by newer wrapped messages and the evaluated motion translation. The newest message has no hidden stack lift, so the shipped `[0, 0.3, 0]` begins exactly 0.3 blocks above the eye anchor. New messages push older messages up by `[holograms] stackDistance` (default `0.26`) per wrapped row. With `followPlayer` on, the speaker eye and the complete configured offset are resampled together; with it off, that base is captured when the message spawns.
+Every live message has a base position at the speaker's eye plus `offset`, then adds only the space required by newer wrapped messages and the evaluated motion translation. The newest message has no hidden stack lift, so the default `[0, 0.3, 0]` begins exactly 0.3 blocks above the eye anchor. New messages push older messages up by `[holograms] stackDistance` (default `0.26`) per wrapped row. With `followPlayer` on, the speaker eye and the complete configured offset are resampled together; with it off, that base is captured when the message spawns.
 
 `motion` contains four expression surfaces:
 
@@ -170,7 +170,7 @@ Every live message has a base position at the speaker's eye plus `offset`, then 
 | `seed` | Stable per-bubble numeric seed for deterministic variation |
 | `pi` | Mathematical π |
 
-The normal Gloss arithmetic, comparison, ternary and math functions are available, including `sin`, `cos`, `clamp`, `lerp`, `pow` and `smoothstep`. A fly-up is `translation.y = "4 * t"`; a fade is `opacity = "1 - t"`; a shrink uses `1 - t` on the scale axes; and an arc that rises before ending below its start can use `translation.y = "16 * t * (1 - t) - 4 * t"`. The shipped default reproduces the former late fly-away curve as an ordinary `translation.y` expression, so it can now be edited or replaced.
+The normal Gloss arithmetic, comparison, ternary and math functions are available, including `sin`, `cos`, `clamp`, `lerp`, `pow` and `smoothstep`. A fly-up is `translation.y = "4 * t"`; a fade is `opacity = "1 - t"`; a shrink uses `1 - t` on the scale axes; and an arc that rises before ending below its start can use `translation.y = "16 * t * (1 - t) - 4 * t"`. The default reproduces the former late fly-away curve as an ordinary `translation.y` expression, so it can now be edited or replaced.
 
 Position and presentation are re-evaluated on the temporary hologram driver, which ticks every `[holograms] temporaryUpdateIntervalTicks` (default `2`). Teleport and transformation interpolation smooth supported changes between those evaluations.
 
@@ -189,7 +189,7 @@ Position and presentation are re-evaluated on the temporary hologram driver, whi
 > `/gloss bubbles style <id>` checks only `gloss.bubbles.style`. It does **not** check `gloss.bubbles.style.<id>`. That node is tested at resolution time. A player can store a choice they are not permitted to use. Their bubbles will silently fall back to automatic selection with no further message.
 {.is-info}
 
-`reset` needs `gloss.bubbles.reset` (op) and rewrites shipped bubble style documents from the jar.
+`reset` needs `gloss.bubbles.reset` (op) and restores the included bubble styles.
 
 > `/gloss bubbles reset` overwrites `bubbles/default.json`. Edits to that file are lost. Style ids you created yourself are never touched.
 {.is-warning}
@@ -201,7 +201,7 @@ Position and presentation are re-evaluated on the temporary hologram driver, whi
 | `gloss.bubbles.style.<id>` | undeclared (op) | Actually using style `<id>` once chosen |
 | `gloss.bubbles.reset` | `op` | `/gloss bubbles reset` |
 
-`gloss.bubbles.style.<id>` is dynamic and not declared in `plugin.yml`. It behaves as op-only until a permission plugin grants it.
+`gloss.bubbles.style.<id>` is operator-only until a permission plugin grants it.
 
 ### Stored player choices
 
@@ -225,10 +225,10 @@ The file is written whenever a player sets or clears a style. It is read once wh
 ### Profile document
 
 The complete authored profile is the versioned singleton
-`plugins/Gloss/damage-indicators/default.json`. It ships while `[features] damageIndicators` is on,
+`plugins/Gloss/damage-indicators/default.json`. Gloss extracts it while `[features] damageIndicators` is on,
 hot-reloads through the shared data watchdog and exports from the web editor to that exact path.
 
-The shipped document is:
+The included document is:
 
 ```json
 {
@@ -337,7 +337,7 @@ Filtering before an indicator spawns:
 - A per-entity 3-tick debounce coalesces bursts. One entity produces at most one indicator per 3 ticks.
 - A delta at or below `limits.minimumDelta` is discarded.
 - A server-wide sliding window drops anything over `limits.maxPerSecond`.
-- Live admission is the smaller of `ceil(maxPerSecond * lifetimeMs / 1000)` and `2048`. The shipped settings therefore allow at most 120 simultaneous indicators. A new indicator is dropped while that capacity is full.
+- Live admission is the smaller of `ceil(maxPerSecond * lifetimeMs / 1000)` and `2048`. The default settings therefore allow at most 120 simultaneous indicators. A new indicator is dropped while that capacity is full.
 
 The value is formatted by `limits.decimals`. `0` prints a rounded whole number; `1` through `4`
 print that many decimal places. Hot-loading a different profile destroys every live indicator, then
@@ -362,7 +362,7 @@ uses `event.criticalKnown && event.critical`.
 
 At spawn, Gloss spatially bounds evaluation to nearby viewers and evaluates `audience.when`
 separately on each viewer's entity-owning thread. A matching viewer receives the shared indicator
-and a non-matching viewer does not. The shipped condition is
+and a non-matching viewer does not. The default condition is
 `hasPermission('viewer', 'gloss.indicators.show')`. Gloss then reevaluates an individual viewer when
 they join, change world, respawn, or cross a chunk boundary, so a live indicator does not retain an
 obsolete permission or location snapshot.
@@ -391,7 +391,7 @@ perspective, tracking range and real entity motion still require in-game validat
 | Permission | Default | Grants |
 |---|---|---|
 | `gloss.indicators.show` | `true` | This player sees damage and heal indicators |
-| `gloss.indicators.reset` | `op` | `/gloss indicators reset`, which restores the shipped singleton |
+| `gloss.indicators.reset` | `op` | `/gloss indicators reset`, which restores the default file |
 
 `/gloss web edit damage-indicators default` opens the focused live document, and `/gloss web
 workspace` includes it. If you set `[features] damageIndicators = false`, Gloss unregisters the
@@ -407,7 +407,7 @@ With `[features] drops = true` (the default) every item entity that spawns gets 
 | `{count}` | The stack size |
 | `{type}` | The material name lowercased with underscores turned into spaces, so `DIAMOND_SWORD` becomes `diamond sword`. When `[drops] useItemDisplayNames` is explicitly enabled and item meta has a display name, that renamed value is used instead |
 
-The shipped default is `"&7{count}x {type}"`, giving `64x cobblestone` and `1x diamond sword` even when that sword was renamed in an anvil. Set `[drops] useItemDisplayNames = true` to show `1x Excalibur` instead. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
+The default is `"&7{count}x {type}"`, giving `64x cobblestone` and `1x diamond sword` even when that sword was renamed in an anvil. Set `[drops] useItemDisplayNames = true` to show `1x Excalibur` instead. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
 
 ### Bundles
 
@@ -543,7 +543,7 @@ If `[features] drops = false`, Gloss removes its owned custom names as loaded it
 
 ## Reference
 
-Bubble schema 4, damage-indicator schema 3 and real-drop schema 3 are hard breaks. Older documents are silently ignored rather than migrated; rewrite custom files to the current shapes or reset them to the shipped defaults.
+Bubble schema 4, damage-indicator schema 3 and real-drop schema 3 are hard breaks. Older documents are silently ignored rather than migrated; rewrite custom files to the current shapes or reset them to the defaults.
 
 | Command | Arguments | Permission |
 |---|---|---|
@@ -552,7 +552,7 @@ Bubble schema 4, damage-indicator schema 3 and real-drop schema 3 are hard break
 | `/gloss drops reset` | `[name=*]` | `gloss.drops.reset` |
 
 Optional arguments must be written as `key=value`. A stray positional value is rejected. The drop
-reset overwrites matching shipped `real-drops/` documents without deleting extra documents;
+reset overwrites matching included `real-drops/` documents without deleting extra documents;
 indicators have no command subtree.
 
 `bubbles/` is watched by the shared `DataWatchdog` at `[hotload] watchIntervalTicks` (default 5 ticks). If you add, edit, rename or delete a style file, the change applies live. A style document that fails to parse is logged and skipped. The copy already in memory keeps working. See [Data Files & Hot Reload](/gloss/03-data-files). For the temporary holograms all of this is built on, see [Holograms](/gloss/04-holograms).

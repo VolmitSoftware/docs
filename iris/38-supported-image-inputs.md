@@ -36,7 +36,7 @@ JPEG, WebP, TIFF, BMP, and other formats are not image-map inputs. Convert them 
 
 Both the per-axis and total-pixel limits apply. A `4096 × 4096` or `16384 × 1024` image has exactly 16,777,216 pixels and is valid; `4097 × 4096` exceeds the total even though each axis is individually legal.
 
-These limits are validation boundaries, not a promise that every valid image has the same memory cost. Iris rejects oversized sources from metadata before pixel decoding, freezes compiled values into bounded primitive tiles, releases the decoded source after compilation, and retains only lightweight coverage metadata during pack validation. The total-pixel cap bounds the approximate worst-case decoded RGBA plus compiled scalar or target payload to about 128 MiB per map during compilation. Keep the source only as large as the world-space detail requires, and increase `blocksPerPixel` when each source pixel should cover more than one block.
+Keep the image only as detailed as the world requires. Increase `blocksPerPixel` when one source pixel should cover several blocks.
 
 ## Channel and bit-depth matrix
 

@@ -114,7 +114,7 @@ no target. Gloss logs a one-time warning naming the menu and component.
 The rest of the list still runs. A null or absent `actions` list yields
 an empty list. The button does nothing when clicked.
 
-`icon` is resolved through the icon factory. A failure logs the exception and falls back to the built-in "missing" icon — an eight-row black and magenta checkerboard — rather than dropping the component.
+`icon` is resolved through the icon factory. A failure logs the exception and uses the built-in "missing" icon, an eight-row black and magenta checkerboard, instead of dropping the component.
 
 ### Click behavior
 
@@ -184,33 +184,18 @@ A toggle accepts the same optional hitbox as a button. An explicit size gives bo
 
 ### State
 
-State is a single transient boolean on the component instance. It is per player and per session. The component is built when the session is built and discarded when the session closes. It is not persisted anywhere — no PDC, no file, no database. It is never written back to the placeholder named in `condition`. If you reopen the menu, Gloss re-evaluates the initial state from scratch.
-
-The initial state is evaluated once, in the constructor:
-
-```java
-state = Placeholders.setPlaceholders(session.getPlayer(), condition).equalsIgnoreCase(expected);
-```
+Toggle state is per player and lasts only for the open session. Reopening the menu evaluates the initial state again.
 
 `condition` is expanded through PlaceholderAPI against the viewing player and compared case-insensitively to `expectedValue`. It is never re-evaluated on tick. An external change to the underlying placeholder does not update an open toggle.
 
-> If you omit `condition`, the constructor throws and aborts the whole open. There is nothing to compare. If you omit only `expectedValue`, the comparison returns false. The toggle starts in the false state.
+> Omitting `condition` prevents the menu from opening. Omitting only `expectedValue` starts the toggle in the false state.
 {.is-warning}
 
 ### Click behavior
 
-```java
-if (state) { falseActions...; swapIcon(falseIcon); state = false; }
-else       { trueActions...;  swapIcon(trueIcon);  state = true; }
-```
-
 `trueActions` and `trueIcon` belong to the state being **entered**, not the state being left. If you click a toggle that is currently false, Gloss runs `trueActions` and shows `trueIcon`.
 
-Both icons are constructed eagerly in the constructor. Both are
-teleported whenever the component moves. The inactive one stays
-positionally in sync without being spawned. The icon swap removes the
-current icon display entities and teleports the replacement. It then
-rebuilds the collision plane from the new icon bounding box or shared custom hitbox, applies the current hover progress to the replacement visual, and spawns it. A state change therefore does not snap an already-hovered toggle back to its base position.
+Both icons stay aligned with the component. Switching state replaces the visible icon and updates the click area without interrupting its current hover position.
 
 Like buttons, toggles have no cooldown. If a matching `navigate` action is reached, the method returns before the icon and state change. The toggle does not flip. Navigation bound to a different trigger is skipped and does not block the transition.
 
@@ -231,7 +216,7 @@ Every clickable component owns a `CollisionPlane`: a rectangle with a center, a 
 
 `width` and `height` are blocks at scale 1. They are multiplied by the live effective scale when the plane is built. `offset` is likewise a pre-scale value. It goes through the same local-vector transform as everything else.
 
-Validation runs in the record compact constructor and throws during deserialisation. That aborts the file:
+Invalid hitbox values reject the file:
 
 | Condition | Message |
 |---|---|
@@ -290,64 +275,9 @@ When `hitbox` is absent, or present without `width`, the plane dimensions and ce
 
 The `0.325` in the text center is `(2 * NAMETAG_SIZE) - (4.5 / 40)`. That correction puts the plane over the rendered text rather than over its anchor.
 
-For image icons the line length is the rendered row width in characters. The plane width tracks image width. A one-row image is one line tall, not zero. Entity icons have no display style. Their planes use the declared `width` and `height` — both defaulting to `1`, both bounded to `(0, 64]` — and are not multiplied by any style scale.
+For image icons the line length is the rendered row width in characters. The plane width tracks image width. A one-row image is one line tall, not zero. Entity icons have no display style. Their planes use the declared `width` and `height`, which default to `1`, are bounded to `(0, 64]`, and are not multiplied by a style scale.
 
 Automatic dimensions multiply by the icon `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox does not.** `width` and `height` are authored plane dimensions. Only the effective scale applies to them.
-
-### When the plane is rebuilt
-
-The plane is rebuilt on open and on every icon change, including toggle
-swaps and API icon updates. It is also rebuilt when the session
-transform changes through follow, manual movement or a scale refresh. A
-dynamic icon that reports a geometry change also rebuilds it. One
-example is a text icon whose refreshed placeholder produced different
-text. Each rebuild reads the current icon and records the fresh
-bounding-box center as the component origin. It applies the configured size
-when one is present. It repositions the plane if a `hitbox` object
-exists. It then re-orients the plane for the viewer. If the component is
-currently between hover poses, it reapplies the eased visual displacement without moving the plane.
-
-Repositioning is a no-op when `hitbox` is null. An unconfigured button or toggle therefore keeps a plane centered exactly on its active icon bounding box.
-
-### Billboard-aware orientation
-
-Before every hover test, and again at the event-time click test, the plane is re-oriented to match how the icon actually faces the viewer. The behavior follows the icon `style.billboard`, which defaults to `fixed`:
-
-| Billboard | Plane behavior |
-|---|---|
-| `fixed` | Keeps the transform basis. Roll, pitch and facing yaw apply. The plane does not track the viewer |
-| `vertical` | Turns around world Y to face the viewer, keeping world up |
-| `horizontal` | Keeps the current right axis and pitches toward the viewer |
-| `center` | Faces the viewer on both axes |
-
-Degenerate cases are ignored rather than producing a broken basis. A
-viewer standing exactly at the plane center leaves the previous basis in
-place. So does a `vertical` plane whose horizontal offset is zero. A
-`center` plane looked at from directly above or below does the same.
-
-Because the plane is re-oriented against the event-time eye, a moving viewer never clicks against a stale billboard plane.
-
-### The ray test
-
-```java
-Vector offset = center - origin;
-double proj = normal.dot(direction);
-if (abs(proj) < 1.0E-9) return empty;
-double distance = normal.dot(offset) / proj;
-if (distance < 0.0) return empty;
-Vector intersect = origin + direction * distance - center;
-return abs(right.dot(intersect)) < width / 2 && abs(up.dot(intersect)) < height / 2
-    ? distance : empty;
-```
-
-Behavior that follows from this:
-
-- Callers pass the player eye position and a unit direction vector, so `distance` is in blocks.
-- The parallel-ray epsilon is `1.0E-9`. The rectangle bound check has no tolerance and uses a strict `<` against the exact half-extents. The outermost edge is not clickable.
-- The test is not distance limited. Any non-negative distance qualifies. A component stays hover- and click-selectable at arbitrary range. The menu `maxDistance` is a separate movement rule. The event-time obstruction check is what actually bounds a click.
-- The test is two-sided. Nothing rejects a hit on the back face. Only a strictly negative distance, meaning the plane is behind the eye, is rejected.
-- The plane test itself does not inspect occlusion. Occlusion is handled once, at dispatch.
-
 ## Hover highlighting
 
 Highlighting runs once per tick per open clickable component:
@@ -357,7 +287,7 @@ Highlighting runs once per tick per open clickable component:
 3. Hover progress advances toward 1 while selected and retreats toward 0 after exit over `hoverDurationTicks`. Zero changes state instantly.
 4. The selected easing curve converts that progress into visual travel: `plane.normal * highlightModifier * effectiveScale * easing(progress)`.
 
-`highlightModifier` is authored in menu-local blocks at scale 1. Effective `uiScale`, including panel scale, is applied exactly once. The logical collision plane never follows the visual displacement, so hover cannot make its own target drift. Billboard icons recompute the travel direction from their current normal each tick. Item, block, text, image and living-entity icons all use the same visual motion. The four easing curves are linear, cubic ease-out, cubic ease-in/out and back-out overshoot. The shipped blank baseline demonstrates a seven-tick `back_out` nudge.
+`highlightModifier` is authored in menu-local blocks at scale 1. Effective `uiScale`, including panel scale, is applied exactly once. The logical collision plane never follows the visual displacement, so hover cannot make its own target drift. Billboard icons recompute the travel direction from their current normal each tick. Item, block, text, image and living-entity icons all use the same visual motion. The four easing curves are linear, cubic ease-out, cubic ease-in/out and back-out overshoot. The default blank file demonstrates a seven-tick `back_out` nudge.
 
 Selection is tick-driven presentation state only. It is not a prerequisite for a click. A click does not consult it.
 
@@ -375,16 +305,6 @@ The dispatcher listens on `PlayerInteractEvent` at `EventPriority.HIGHEST`. It i
 | Right click, sneaking | `RIGHT_CLICK_AIR`, `RIGHT_CLICK_BLOCK` | `shift_right_click` |
 
 Off-hand events and `PHYSICAL` are ignored. `any` is an action binding, not a physical interaction. It is never delivered as the trigger of a click. A packet-only living icon has a normal client interaction outline, so the client sends `INTERACT_ENTITY` instead of a Bukkit air click when it is targeted. Gloss recognizes only its own raw entity ids, cancels that packet and schedules the same event-time logical-plane dispatch on the player owning thread. Entity icons therefore activate buttons and toggles without bypassing hitboxes, obstruction or nearest-target arbitration.
-
-### Nearest-hit arbitration
-
-The handler recomputes every open personal-menu plane against the event-time eye position and direction. It keeps the smallest positive intersection distance. Independently it asks the panel runtime for the nearest clickable panel component the player can reach. If neither surface produced a hit, the event passes through untouched.
-
-- Click targeting is independent of the previous hover tick.
-- Only the smallest distance fires. Within one menu an exact tie keeps the first declared component, because the comparison is a strict `<`.
-- Panel candidates are limited by each panel interaction range and visibility. The nearest panel candidate is compared against the personal candidate. An exact tie goes to the personal menu.
-- Decorations and closed clickables produce no intersection at all.
-
 ### Obstruction
 
 Before anything is dispatched, a block ray trace runs from the eye out to the winning distance. If it finds a block closer than that, the click is abandoned and the event is left alone. The player normal block interaction happens instead. Passable blocks and fluids do not obstruct. Entities never obstruct.
@@ -392,19 +312,6 @@ Before anything is dispatched, a block ray trace runs from the eye out to the wi
 On Folia the ray trace is replaced by an exact voxel walk over blocks owned by the current region. A foreign-region voxel is treated as passable, so a menu crossing a region seam remains clickable; obstruction inside that foreign region is best-effort.
 
 An unobstructed hit cancels the event before the API event and any actions run. The same input does not also perform its vanilla block interaction.
-
-### Winning-component dispatch
-
-The one winning component receives the exact trigger:
-
-1. A cancellable click event is fired for the plugin API. If you cancel it, Gloss skips both the component JSON actions and any API handler.
-2. The component own click handling runs the matching JSON actions inside a try/catch. A thrown exception is logged with the component, menu and player.
-3. For a menu opened through the plugin API, the registered handler may still run. If the handle is still live and has a click handler for that component id, the handler runs behind the API click guard.
-
-The guard applies only to third-party API handlers, never to JSON actions. It skips owners that are quarantined or inactive. It quarantines an owner after 5 thrown handler calls — their menus stay open but stop receiving clicks. It logs at most one slow-handler warning per owner per minute when a handler exceeds 5 ms.
-
-No stage of this path imposes a click cooldown or rate limit on JSON-defined components.
-
 ## Debug overlays
 
 Menu particle layers are independent of these operator debug overlays. Their definitions live at
@@ -428,12 +335,3 @@ Both overlays cover **personal menu sessions only**. Panel views are not drawn.
 The particles are spawned into the world, not sent to one player. Everyone nearby sees them. Leave both switches off on a production server.
 
 There is no hover outline in normal operation. Without `[debug] hitbox` the only feedback that a component is selected is its `highlightModifier` displacement.
-
-## Runtime notes
-
-- Duplicate component ids do not reject the file. The first wins. Later ones are dropped with a warning.
-- A toggle state is never written back to the placeholder in `condition`. The condition is never re-evaluated while the menu is open.
-- Menu-level `offset` is not scaled. Component offsets, icon geometry and hitbox geometry are.
-- Automatic hitboxes multiply by the icon `style.scaleX` and `style.scaleY`. An explicitly sized hitbox does not.
-- Hitbox planes are two-sided. The hover ray is unoccluded and unbounded in range. Only the event-time click checks for a closer block.
-- `anchor: "menu"` fully decouples the click plane from the drawn icon. That produces a clickable region with nothing visible under it. That is occasionally useful and very easy to do by accident.

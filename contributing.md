@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,10 +46,15 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 ```
 
-Edit only `title`, `description`, and `tags`. Do not change the dates.
+Update `title`, `description`, and `tags` as needed. Bump `date` when a page
+changes and preserve `dateCreated`.
 
 ## Conventions
 
+- Use [Wiki.js Page Examples](/wiki-page-examples) for syntax, renderer
+  features, and prompting patterns.
+- Use [Wiki.js CSS & Layout Gallery](/wiki-css-layout-examples) for heroes,
+  navigation cards, dashboards, timelines, and responsive page compositions.
 - Use absolute internal links such as `/iris/commands`. Do not use `iris/commands.md`.
 - Write command syntax as `<required>` and `[optional]`.
 - Mark a destructive operation with `{.is-warning}` or `{.is-danger}`.

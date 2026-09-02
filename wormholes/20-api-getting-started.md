@@ -1,159 +1,40 @@
 ---
 title: "API - Getting Started"
-description: "Wormholes documentation: API - Getting Started"
+description: "Depend on the API jar, acquire services, and follow the threading contract"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes exposes three supported third-party surfaces: traversal pricing/veto
-(`TraversalCostProvider` and traversal events), PlaceholderAPI keys, and runtime
-metrics via VolmLib `IntegrationServiceContract`. Projection, portal CRUD, the
-cross-server wire protocol, RTP destination selection, and dimensional-door
-pocket worlds have no public API.
+Wormholes exposes APIs for traversal costs and events, PlaceholderAPI values, and metrics.
 
-| Goal | Surface | Doc |
-|------|---------|-----|
-| Charge, refund, or refuse a traversal | `TraversalCostProvider` via Bukkit `ServicesManager` | [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
-| Watch or cancel traversals without money | `WormholesPortalTraverseEvent` / `WormholesPortalTraversedEvent` | [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
-| Nearby portal name/state/distance on a board | `%wormholes_…%` | [12 - PlaceholderAPI](/wormholes/12-placeholderapi), [22 - API - PlaceholderAPI](/wormholes/22-api-placeholderapi) |
-| Portal counts, peer health, transfer volume as numbers | `IntegrationServiceContract` | [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract) |
+| Goal | Guide |
+|---|---|
+| Charge or deny portal travel | [Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) |
+| Read nearby portal values | [PlaceholderAPI](/wormholes/22-api-placeholderapi) |
+| Read runtime metrics | [Metrics](/wormholes/23-api-metrics-integration-contract) |
 
-Plugin name: `Wormholes`. Command: `/wormholes` (aliases `/wh`, `/wormhole`).
-Permissions under `wormholes.*`. Nothing in this API set requires a permission.
+## Add Wormholes to your project
 
-## Depending on Wormholes
-
-### Plugin descriptor
-
-Bukkit (`plugin.yml`):
-
-```yaml
-softdepend: [Wormholes]
-```
-
-Paper (`paper-plugin.yml`):
-
-```yaml
-dependencies:
-  server:
-    Wormholes:
-      load: BEFORE
-      required: false
-      join-classpath: true
-```
-
-`join-classpath: true` is required on Paper. Without it,
-`art.arcane.wormholes.api.*` throws `NoClassDefFoundError` at runtime even
-though classes ship unrelocated in the plugin jar.
-
-Placeholders need no Wormholes descriptor entry. They go through PlaceholderAPI
-only.
-
-### API-only artifact
-
-```
-Wormholes-<version>.jar          plugin runtime — do not compile against this for API work
-Wormholes-<version>-api.jar      art.arcane.wormholes.api.** minus internal packages
-```
-
-Build with `./gradlew apiJar` → `build/libs`. No shaded libraries in the API
-jar. Use `compileOnly` only. Shading API classes duplicates types and breaks
-`ServicesManager` matching.
-
-Example Gradle dependency when the API jar is kept in the consumer's `libs/`
-directory:
+Compile against `Wormholes-<version>-api.jar` without bundling it:
 
 ```groovy
 dependencies {
-    compileOnly(fileTree(dir: 'libs', include: 'Wormholes-*-api.jar'))
+    compileOnly files('libs/Wormholes-<version>-api.jar')
 }
 ```
 
-`apiJar` includes `art/arcane/wormholes/api/**` and excludes `**/internal/**`.
+Declare Wormholes as optional. Paper plugins that import its API need `join-classpath: true`.
 
-### Version discipline
-
-Contract package: `art.arcane.wormholes.api.traversal` (public types only).
-Anything under `…traversal.internal` or outside `api` is unsupported and changes
-without notice. Enums may gain constants. Third-party `switch` expressions need
-a `default` arm.
-
-## Public package inventory
-
-Package-private helper `TraversalText` is not part of the integrator surface.
-
-| Type | Role |
-|------|------|
-| `TraversalCostProvider` | Functional service interface: quote / reserve / commit / refund |
-| `TraversalContext` | Immutable attempt description |
-| `TraversalDestination` | Optional far-side identity/location |
-| `TraversalQuote` / `TraversalQuoteStatus` | Provider quote |
-| `TraversalReservation` / `TraversalReservationStatus` | Reserve result |
-| `TraversalReceipt` | Opaque token you create. Wormholes never invokes it |
-| `TraversalRefundReason` | Why a refund is called |
-| `TraversalKind` | `LOCAL`, `CROSS_SERVER`, `RANDOM_TELEPORT`, `DIMENSIONAL_DOOR` |
-| `TraversalOutcome` / `TraversalDecision` | Final verdict (decision is not passed to providers) |
-| `WormholesPortalTraverseEvent` | Pre-quote cancel (free) |
-| `WormholesPortalTraversedEvent` | Post-commit observe (allowed outcomes only) |
-
-## Acquiring the traversal service
-
-You register. Wormholes looks you up:
+Check that Wormholes is enabled before loading your integration class:
 
 ```java
-plugin.getServer().getServicesManager().register(
-    TraversalCostProvider.class,
-    context -> context.traveler().hasPermission("example.travel")
-        ? TraversalQuote.pass()
-        : TraversalQuote.denied("You may not use portals here"),
-    plugin, ServicePriority.Normal);
-```
-
-Keep API types out of classes that load when Wormholes is absent. Put the
-imports and registration in a separate hook class. Load that class only after
-the plugin check:
-
-```java
-Plugin wormholes = getServer().getPluginManager().getPlugin("Wormholes");
-if (wormholes != null && wormholes.isEnabled()) {
-    WormholesTraversalHook.register(this);
+Plugin plugin = getServer().getPluginManager().getPlugin("Wormholes");
+if (plugin != null && plugin.isEnabled()) {
+    WormholesBridge.register(this);
 }
 ```
 
-`WormholesTraversalHook` may then import and register `TraversalCostProvider`.
-The main plugin class should not declare API-typed fields or method signatures.
-Bukkit unregisters services on your disable. Wormholes listens for
-`ServiceRegisterEvent` and `ServiceUnregisterEvent`. A late registration is
-applied on the next traversal.
-
-## Threading (all surfaces)
-
-Folia has region and entity ownership. There is no global main thread.
-
-| Surface | Thread |
-|---------|--------|
-| Provider `quote` / `reserve` | Source traveler-owned traversal task |
-| Provider `commit` | Destination traveler-owned task after local/RTP/door movement; source traveler-owned task after a cross-server transfer send succeeds |
-| Provider `refund` | Current traveler-owned task for every reason, including `EXPIRED`, `TRAVELER_LEFT`, and `SERVER_SHUTDOWN`. If ownership remains unavailable at shutdown, Wormholes logs the unresolved receipt instead of calling off-owner |
-| `WormholesPortalTraverseEvent` | Source traveler-owned traversal task, inline |
-| `WormholesPortalTraversedEvent` | Traveler entity scheduler after commit |
-| Placeholder resolve | Caller thread. Wormholes resolvers are non-blocking snapshot reads |
-| `IntegrationServiceContract` sample | Caller thread. Volatile counters / concurrent structures only |
-
-Do not block, sleep, do I/O, join futures, or take contended locks on any of
-these paths. Rate-derived metrics recompute at most once per second.
-
-## What has no API
-
-- Projection content, sampling, and draw path
-- Programmatic portal create/edit/delete or registry events
-- Cross-server wire protocol and sideband
-- RTP destination supply/veto/read (state via placeholders. Price via
-  `TraversalKind.RANDOM_TELEPORT`)
-- Dimensional door pocket-world control
-
-All four trip kinds are distinguishable via `TraversalKind` on the traversal
-API.
+Traversal callbacks run on the traveler's owning thread. Placeholder and metric reads use snapshots and may run from any thread.

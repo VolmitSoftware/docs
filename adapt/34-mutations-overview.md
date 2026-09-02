@@ -143,32 +143,6 @@ At most 64 candidate adaptations per domain are scanned per player.
 | Gale Lung + Bastion Spine | movement, posture | The most recent deliberate movement or posture action owns the result |
 | Deepblood + Gravebloom | recovery | Recovery evaluates once in deterministic slot order |
 | Paradox Scar + Umbral Echo | movement, utility echo | Movement resolves before control echoes |
-
-### Runtime support classes
-
-Internal implementation, not public API.
-
-| Class | Role |
-|-------|------|
-| `MutationRuntimeRouter` | Registers Mutation event handlers and routes them to the specialized runtimes |
-| `MutationRuntimeAccess` | Provides config, player data, consent, PvP, FX, and eligibility access |
-| `MutationRuntimeStore` | Holds bounded transient Mutation state |
-| `MutationCombatRuntime` | Combat Mutations and combat-linked state |
-| `MutationMovementRuntime` | Movement, posture, and return-point behavior |
-| `MutationEquipmentRuntime` | Linked armor and bound-tool behavior |
-| `MutationEffectRuntime` | Cleanse, copied-effect, and cooperative-effect behavior |
-| `MutationFormulaRuntime` | Resonant Formula preparation and echoes |
-| `MutationWorldRuntime` | World-state Mutations, natural-block checks, and lifecycle cleanup |
-| `MutationBlockProvenance` | Distinguishes natural blocks from player-placed blocks |
-| `MutationEntityResolver` | Resolves players, owners, pets, projectiles, and credited attackers |
-| `MutationProtectionAccess` | Applies Adapt's protection policy to Mutation world changes |
-| `MutationItemIdentity` | Marks and resolves Mutation-owned or bound items |
-| `MutationRuntimePolicy` | Centralizes bounded values and shared runtime policy decisions |
-| `MutationUtilityTag` | Identifies utility-effect categories used by pairing policy |
-| `MutationWeaponFamily` | Classifies held weapons and tools for combo behavior |
-
-Manager and public types are documented in [48 - API - Mutations](/adapt/48-api-mutations).
-
 ## See also
 
 - [35 - Mutations Catalog](/adapt/35-mutations-catalog)

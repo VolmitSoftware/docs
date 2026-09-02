@@ -59,7 +59,7 @@ A document that fails to parse is logged as `holograms/<id>.json <reason>` and s
 > If you delete the file, Gloss despawns the hologram and unregisters it. There is no undo and no backup for a hand-deleted file.
 {.is-warning}
 
-### The shipped baseline
+### The default
 
 `/gloss hologram create` seeds its line from `baselines/hologram.json` inside the jar. That schema-2 baseline is read on demand. It is **never** extracted to the data folder. There is no baseline file to edit. Its line list is a single `&dNew hologram`, with `seeThrough` enabled, scale `1.0` and an empty `particleLayers` array. It omits the orientation keys, so new holograms use `CENTER`, yaw `0` and pitch `0`.
 
@@ -124,17 +124,12 @@ Line numbers start at 1. `create`, `movehere`, `tp` and `rendertext` are player-
 
 Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the file name.
 
-Every command edit publishes a new document revision. One keyed slot per hologram retains the
-latest pending state for the single background IO thread, so rapid edits do not grow an unbounded
-write queue. A delete supersedes older queued writes and a stale deleted object cannot recreate its
-file. The folder watcher compares each changed file SHA-256 against the hash Gloss just wrote. A
-command edit never bounces back through the hot-reload path. Hot reload itself is covered in [Data
-Files & Hot Reload](/gloss/03-data-files).
+Command edits save automatically. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
 Each display is spawned non-persistent with the document's uniform native scale, billboard, yaw,
-pitch and `seeThrough` values, and with no shadow. The shipped baseline uses scale `1.0`, `CENTER`,
+pitch and `seeThrough` values, and with no shadow. The default uses scale `1.0`, `CENTER`,
 yaw `0`, pitch `0` and see-through enabled. Editing scale or any orientation key hot-reloads the
 existing display without respawning it. Its client view range is set to `[holograms] viewRange`
 divided by the 64-block Paper base. Ordinary text refreshes every `[holograms]
@@ -189,7 +184,7 @@ or below stay on the tick path. Slow animations are never double-driven.
 The threshold is the clip `1000 / frameIntervalMs` rate.
 
 The split is two-phase. The regular tick refresh keeps doing the full
-render — functions, placeholders, emoji, colors. For fast-animated lines
+render functions, placeholders, emoji, and colors. For fast-animated lines
 it produces a *template*. That template is the fully rendered text with
 the animation call sites left as slots. It also holds a snapshot of the
 display entity id and current audience. That snapshot is captured on the
@@ -221,11 +216,6 @@ nothing.
 
 The result is an ordinary hologram document. You can edit its text, scale, position and
 orientation on disk, and move or delete it by command like any other hologram.
-
-## Orphan cleanup
-
-Every Gloss display carries the scoreboard tag `gloss_display` and the persistent data key `gloss:hologram`. At startup loaded chunks are queued and swept at no more than 32 chunks per tick. Afterwards each `EntitiesLoadEvent` sweeps the chunk it loaded. Any tagged `TextDisplay` that the running service does not currently own is removed. Leftovers from a crash or a hard kill are purged. Displays are also spawned non-persistent. An orderly shutdown never writes them into the region files.
-
 ## Temporary holograms
 
 Chat bubbles and damage indicators are built on temporary holograms. They are never written to

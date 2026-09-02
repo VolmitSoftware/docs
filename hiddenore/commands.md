@@ -10,15 +10,13 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Commands
 
-Player help uses the shared 19-line command panel: up to 17 root entries or 16 entries in a subtree with a Back row. HiddenOre currently has fewer entries, so it prints the complete tree on one panel. Console help remains flat and unpaginated.
-
 | Command | Description |
 |---|---|
 | `/hiddenore reload` | Reload HiddenOre configuration and language files |
 | `/hiddenore debug` | Toggle ore debug mode for yourself |
 
-Both subcommands check `hiddenore.admin` at runtime. They also match the
-`plugin.yml` declaration.
+Both subcommands require `hiddenore.admin`.
+
 
 ## Permissions
 

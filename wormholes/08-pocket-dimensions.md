@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -171,7 +171,7 @@ return tickets.
 |-----------|---------|-----|---------|
 | `PERSONAL` | `PocketBindingKind.PERSONAL` | Traveler UUID | Every personal door sends that player to the same pocket |
 | `PUBLIC` | Internal `PocketBindingKind.IRON` | Door `itemId` | Every traveler using that item shares one pocket |
-| `PAIR` | None | — | No pocket. Destination is the mate endpoint |
+| `PAIR` | None | Not applicable | No pocket. Destination is the mate endpoint |
 | `RETURN` | Pocket of `spaceId` on identity | Traveler UUID on ticket | Exit only |
 
 Pocket `spaceId` is derived as
@@ -183,4 +183,3 @@ player-facing door kind remains `PUBLIC`.
 
 - Door kinds, OpenState, access, recipes, config: [07 - Dimensional Doors](/wormholes/07-dimensional-doors)
 - Install and TOML: [01 - Installation & Configuration](/wormholes/01-installation-configuration)
-- Runtime boot and managers: [13 - Runtime Architecture](/wormholes/13-runtime-architecture)

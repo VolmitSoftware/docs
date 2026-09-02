@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -44,19 +44,6 @@ objects, jigsaw runtime, caves, and structures behave the same on all four.
 If generated terrain differs between platforms, that is
 a determinism defect, not a platform difference. See
 [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
-
-## Artifacts and entry points
-
-| Surface | Artifact | Bootstrap |
-|---------|----------|-----------|
-| Bukkit / Paper / Folia | Slim CraftBukkit-shaded plugin jar | `plugin.yml` / `paper-plugin.yml`, `folia-supported: true`, load `STARTUP`. Four cached runtime libraries are provisioned separately; Paper adds them before early bootstrap and Spigot loads them during plugin initialization |
-| Fabric | Fabric mod jar | `IrisFabricBootstrap` registers commands and services |
-| Forge | Forge mod jar | `IrisForgeBootstrap` |
-| NeoForge | NeoForge mod jar | `IrisNeoForgeBootstrap` |
-
-Core engine: `core/`. Shared modded logic: `adapters/modded-common/`.
-SPI: `spi/`.
-
 ## Data directories
 
 | Item | Bukkit | Fabric / Forge / NeoForge |
@@ -126,11 +113,12 @@ that reject `bukkit_world_manager_loop` or say a newly loaded engine is
 closing are defects or evidence of an outdated build. They are not
 expected Folia noise.
 
-There is one current third-party datapack exception. Folia 26.2's command
-dispatcher omits or restricts commands used by Dungeons & Taverns 5.3.0.
-This causes 35 `nova_structures:*` function-load failures for the shipping
-Overworld dependency. The same bytes load on Paper, Leaf, and Canvas. The
-absent commands reproduce on Folia without Iris installed. Iris world
+There is one verified third-party datapack exception. The built-in Iris packs
+do not include Dungeons & Taverns, but a custom pack may import it. Folia
+26.2's command dispatcher omits or restricts commands used by Dungeons &
+Taverns 5.3.0. This causes 35 `nova_structures:*` function-load failures.
+The same bytes load on Paper, Leaf, and Canvas. The absent commands
+reproduce on Folia without Iris installed. Iris world
 loading and pregeneration still complete, but the affected Dungeons &
 Taverns functions do not. See
 [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
@@ -141,10 +129,10 @@ Taverns functions do not. See
 |---------|--------|--------|
 | Parser | VolmLib Director. `key=value` optionals in any order | Brigadier. Positional arguments and bare flag literals |
 | Root aliases | `iris`, `ir`, `irs` | `iris`, with `ir` and `irs` registered as redirects |
-| Staff gate | `iris.all` (declared in `plugin.yml` and `paper-plugin.yml`, default `op`) — required for every `/iris` subcommand | `LEVEL_GAMEMASTERS` for anything that mutates, downloads, opens Studio, or starts a pregen |
+| Staff gate | `iris.all` (default `op`) — required for every `/iris` subcommand | `LEVEL_GAMEMASTERS` for anything that mutates, downloads, opens Studio, or starts a pregen |
 | Open to any player | Nothing | `LEVEL_ALL`: `help`, `version`, `info`, `worlds`, `height`, `metrics` (alias `measure`), and the whole `what` subtree |
 | Deliberately gated reads | — | `seed` and `accesslist` stay at gamemaster level even though `worlds` shows similar output without the seed field |
-| Tree feller | `iris.treefeller` (`plugin.yml` and `paper-plugin.yml`, default `op`) | Fabric `irisworldgen:treefeller`. Forge and NeoForge PermissionAPI node `irisworldgen.treefeller`, defaulting to gamemaster level |
+| Tree feller | `iris.treefeller` (default `op`) | Fabric `irisworldgen:treefeller`. Forge and NeoForge PermissionAPI node `irisworldgen.treefeller`, defaulting to gamemaster level |
 | Help | Director mini-menu | `ModdedCommandHelp` sections with clickable pages |
 
 Full command tables and stubs:
@@ -175,7 +163,7 @@ Full command tables and stubs:
 | Schematic convert (`.schem` → `.iob`) | yes | message only | message only | message only |
 | Structure import / capture | yes (v26 NMS binding) | message only | message only | message only |
 | Structure list / info / place / verify | yes | yes | yes | yes |
-| Datapack Modrinth ingest / list / remove | yes | message only | message only | message only |
+| Datapack HTTP(S), `file:`, and local drop-folder ingest / list / remove | yes | message only | message only | message only |
 | Dimension-type datapack install / status | not applicable | yes | yes | yes |
 | PlaceholderAPI | soft depend | no | no | no |
 | Multiverse-Core | soft depend / loadbefore | no | no | no |
@@ -227,16 +215,6 @@ separate compatibility gate.
 
 See [28 - Integrations](/iris/28-integrations) and
 [09 - PlaceholderAPI](/iris/09-placeholderapi).
-
-## NMS and version binding
-
-- The Bukkit plugin binds to a specific Paper/CraftBukkit revision (the
-  in-tree v26 NMS module).
-- Structure import and capture, and the vanilla import studio path, require
-  that binding. This is why they cannot be ported to mod loaders as-is.
-- Mod adapters use Minecraft mappings for the same game version line,
-  without the Bukkit plugin APIs.
-
 ## Determinism and parity
 
 GoldenHash exists on both surfaces. Only the command placement differs

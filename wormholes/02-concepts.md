@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,9 +45,9 @@ Choose `GATEWAY` or `RTP` later in the type menu.
 | `ProjectionMode` | `ON`, `OFF` | Whether this portal produces a through-view for interested observers. Default `ON`. |
 | `ProjectionRenderMode` | `PANOPTIC`, `VENTICULAR` | How the projector samples and culls cells. Default `VENTICULAR`. |
 
-- **PanOptic** — full aperture sample. No buried-cell culling or observer
+- **PanOptic:** full aperture sample. No buried-cell culling or observer
   occlusion path that Venticular uses.
-- **Venticular** — uses buried-cell culling and observer occlusion
+- **Venticular:** uses buried-cell culling and observer occlusion
   (`usesBuriedCellCulling` / `usesObserverOcclusion`).
 
 Projection detail, budgets, and global ranges:
@@ -103,7 +103,9 @@ Travel is stored as two booleans (`outgoingTraversalsEnabled`,
 
 A new portal defaults to both directions enabled (`BOTH`). Mirror mode and
 managed dimensional kinds override or freeze this control in the menu.
-Vanilla-managed nether/end portals keep fixed travel rules. See
+Operators bypass the outgoing and incoming direction flags during player
+travel, but mirror mode remains a hard travel lock. Vanilla-managed nether/end
+portals keep fixed travel rules. See
 [03 - Building Portals](/wormholes/03-building-portals) and vanilla replace.
 
 ## Local vs remote portals
@@ -161,6 +163,8 @@ Per-portal permission node: `wormholes.portal.<sanitizedName>`. See
 | `BLACKLIST` (default) | Players **with** the node are blocked |
 | `WHITELIST` | Players need the node to use the portal |
 
-Operators (`isOp`) always pass the portal permission check. Menu management
+Operators (`isOp`) always pass the portal permission and travel-direction
+checks. Mirror state, portal topology, cooldowns, safety validation, configured
+travel costs, and external integration decisions still apply. Menu management
 (open settings, destroy, skin) needs a portal owner UUID match, op, or
 `wormholes.admin`.

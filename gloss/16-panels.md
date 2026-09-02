@@ -105,7 +105,7 @@ A hand-edited file must therefore raise `revision` itself. On reload, a document
 changed but whose revision did not is rejected with `board content changed without a revision
 increment`. A revision that moved backwards is rejected too.
 
-A rejected file does not delete a working panel. `/gloss panel reload` reports four numbers —
+A rejected file does not delete a working panel. `/gloss panel reload` reports four numbers:
 loaded, retained, removed, failed. Each failure is logged with the file name and reason. Where the
 panel was already published, the last good definition is retained. It stays live until the file
 parses again. On a cold start there is no last good value. A broken file simply does not load.
@@ -163,7 +163,7 @@ visible to everybody and clickable only by the holders.
 
 Both must be finite and greater than zero. `interactionRange` may not exceed `viewRange`.
 
-Panel visibility is the admission rule for the root menu. A viewer does not additionally need
+Panel visibility is the admission rule for the root menu. A viewer does not also need
 `gloss.open.<rootMenuId>`. Navigating from the panel into any other menu does require
 `gloss.open.<menuId>` for that target. A menu action that closes the view dismisses the panel for
 that viewer only. It reappears the next time they leave and re-enter view range.

@@ -67,7 +67,7 @@ The prune only fires when the bonus actually went down and the player no longer 
 
 Give it a set of adaptation registry ids, or the single entry `*` for every registered adaptation. Values are trimmed and lowercased. The union of every applicable region's set is used.
 
-On the one-second tick, Adapt walks each named adaptation the player currently has at level 0. It checks that the adaptation and its skill are both enabled. It checks that the skill line exists. Then it grants the adaptation at level 1 through the normal `setAdaptation` path. Attributes apply. The learned index updates. The adaptation is genuinely active. The learning transaction is bypassed entirely: no knowledge cost, no Vault charge, no refund receipts. The `PlayerAdaptation` is stamped `regionGranted`.
+On the one-second tick, Adapt walks each named adaptation the player currently has at level 0. It checks that the adaptation and its skill are both enabled and that the skill line exists. Then it grants the adaptation at level 1 through the normal `setAdaptation` path. Attributes apply, the learned index updates, and the adaptation becomes active. This bypasses the learning transaction: there is no knowledge cost, Vault charge, or refund receipt. The `PlayerAdaptation` is stamped `regionGranted`.
 
 Grants are free in every sense. Used power skips region-granted adaptations and so does the power-budget pruner. A wildcard region cannot bankrupt a player's power budget.
 

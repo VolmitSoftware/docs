@@ -1,14 +1,14 @@
 ---
 title: "Integrations"
-description: "Wormholes documentation: Integrations"
+description: "PlaceholderAPI, Vault, Iris, Citizens, WorldGuard, metrics, and internal libraries"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes soft-depends on PlaceholderAPI, Iris, and Vault. It finds WorldGuard
+Wormholes soft-depends on PlaceholderAPI, Iris, Vault, and Citizens. It finds WorldGuard
 by plugin name for RTP destination admission. PacketEvents and bStats are
 internal runtime dependencies, not separate server plugins. React and other
 monitors read Wormholes through VolmLib `IntegrationServiceContract` with no
@@ -20,15 +20,14 @@ PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
 
 ## Soft dependencies
 
-`plugin.yml` declares `softdepend: [ PlaceholderAPI, Iris, Vault ]`.
-`paper-plugin.yml` lists them as optional server dependencies with
-`load: BEFORE`, `required: false`, and `join-classpath: true`.
+PlaceholderAPI, Iris, Vault, and Citizens are optional.
 
 | Plugin | Role when present | When absent |
 |--------|-------------------|-------------|
 | PlaceholderAPI | Registers `%wormholes_…%` expansion | No placeholders |
 | Vault (+ economy provider) | Portal menu travel cost type **Vault Economy** | Vault cost mode is unavailable. Free and item costs still work |
 | Iris | Pre-load RTP fluid and biome probes | RTP falls back to ordinary chunk-backed biome and landing-safety checks |
+| Citizens | Prevents standard tracked NPCs from relinking while a portal projection occludes their real local entity | Ordinary Bukkit entities still use the same local-occlusion path; no Citizens event hook is registered |
 
 None of these are required to enable Wormholes.
 
@@ -81,6 +80,17 @@ fallback also applies to an Iris world whose engine is unavailable.
 
 No Iris world-gen or pack APIs are exposed to third parties through Wormholes.
 
+## Citizens
+
+Wormholes treats a standard Citizens NPC as its real Bukkit entity. Local-hide
+claims from every active portal are unioned per observer, so one overlapping
+portal cannot restore an NPC that another portal still occludes. When Citizens
+tries to relink that NPC through `NPCSeenByPlayerEvent`, Wormholes cancels the
+event while the entity remains claimed.
+
+Citizens packet-mode NPCs bypass normal Bukkit entity tracking and that event;
+Wormholes does not alter their implementation-specific packet tracker.
+
 ## PlaceholderAPI
 
 See [12 - PlaceholderAPI](/wormholes/12-placeholderapi) for keys, selection, and
@@ -93,33 +103,11 @@ Wormholes registers VolmLib
 `art.arcane.volmlib.integration.IntegrationServiceContract` at
 `ServicePriority.Normal` with `pluginId()` `wormholes`. Typed consumers must
 share the registered VolmLib class identity. React can also adapt equivalent
-registrations reflectively across plugin classloaders. Full metric keys,
+registrations. Full metric keys,
 acquisition rules, unavailable reasons, and protocol details live in
 [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
 
 No direct React API dependency exists inside Wormholes.
-
-## PacketEvents (internal, SlimJar-managed)
-
-PacketEvents is a SlimJar dependency. At first start SlimJar downloads, verifies,
-and caches it when needed, then exposes it under Wormholes' relocated internal
-packages (`com.github.retrooper.packetevents` /
-`io.github.retrooper.packetevents` → plugin-internal packages). The runtime jar
-does not embed PacketEvents itself, and operators do not install a separate
-PacketEvents plugin. Repository access or a prewarmed SlimJar cache is required.
-
-Used for:
-
-- Projection rendering and client chunk tracking
-- Entity spoof / identity packets for through-portal views
-- **TransferGate**: On handshake receive, if the network is enabled and
-  `autoAcceptTransfers` is true, TransferGate rewrites the client `TRANSFER`
-  intention to `LOGIN`. Paper and Folia then accept cross-server transfer
-  handoffs.
-- Network status-bridge packet listeners when networking is active
-
-There is no public PacketEvents integration surface for third-party plugins.
-
 ## bStats
 
 Wormholes starts its relocated bStats client with plugin ID **33193**. The

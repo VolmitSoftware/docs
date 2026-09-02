@@ -195,8 +195,8 @@ Menu documents use the same full viewer-aware renderer in three places:
 
 | Field | Where | When it expands |
 |---|---|---|
-| text icon `text` | any text icon in a menu or panel | at icon construction, then every `refreshTicks` while the icon is on screen |
-| toggle `condition` | toggle component | once, in the toggle's constructor |
+| text icon `text` | any text icon in a menu or panel | when opened, then every `refreshTicks` while visible |
+| toggle `condition` | toggle component | once when opened |
 | `message` action `message` | menu action | every time the action fires |
 
 These fields honor `[text] functions` and `[text] placeholders` exactly like boards and tablists.
@@ -213,7 +213,7 @@ then controls later re-expansion:
 - omitted, the value is `10` ticks.
 - the accepted range is `0` to `1200`, and a value outside it rejects the document with
   `refreshTicks must be between 0 and 1200`.
-- `0` disables refreshing, so the icon keeps whatever it rendered at construction.
+- `0` disables refreshing, so the icon keeps its initial text.
 
 Refresh is skipped when the source text has no complete `%name%`, `|function|` or `{{ expression }}` token. Static text costs nothing at
 any `refreshTicks` value.
@@ -231,17 +231,12 @@ A toggle state is the full rendered `condition` compared to `expectedValue` with
 - The comparison is case-insensitive, unlike expression string equality.
 - A condition with no dynamic token is compared as a literal, so
   `"condition": "yes"` with `"expectedValue": "YES"` is a toggle that always starts on.
-- The condition is read once, in the constructor. Clicking a toggle flips the stored state and runs
+- The condition is read once when the toggle opens. Clicking it flips the stored state and runs
   `trueActions` or `falseActions`. It never re-reads the condition.
 
 ### Why the MOTD cannot resolve placeholders
 
-`MotdService` handles `ServerListPingEvent`. That event has no `Player`. A server list ping happens
-before anyone joins.
-
-The service therefore calls `renderStatic`, which is `render(null, text)`. The pipeline guards the
-placeholder stage on `viewer != null`. There is nobody to resolve `%player_name%` against. The stage
-is skipped. The token reaches the client as written.
+A server-list ping happens before a player joins, so player placeholders have no viewer to resolve against. They remain unchanged in the MOTD.
 
 Functions, viewer-free inline expressions, emoji and colors still apply to the MOTD. Native
 `time.*` and `server.*` variables, server aliases such as `papi('server_online')`, and explicit
@@ -313,14 +308,14 @@ after. Anything a function returns is then subject to the later stages.
 
 Gloss registers two families. There is no public API for a third family.
 
-`|animation.<id>|` — one token per loaded animation document, registered by `AnimationService`. The
+`|animation.<id>|` represents one token per loaded animation document and is registered by `AnimationService`. The
 frame is picked from the server clock at render time. Every surface that shows the same animation
 shows the same frame.
 
 If you set `[features] animations = false`, Gloss unregisters the family. Those tokens then survive
 the stage and appear as written. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 
-`|metric.<key>|` — one token per metric that another installed Volmit plugin publishes. The
+`|metric.<key>|` represents one token per metric that another installed Volmit plugin publishes. The
 integration bridge registers them. The key is the publishing plugin's own dotted key. The token
 reads `|metric.adapt.player-sessions|`.
 
@@ -678,7 +673,7 @@ throws. Localization keys are covered in [Localization](/gloss/19-localization).
    else delegates to the parent.
 2. A name starting with `vars.` reads the document's injected constants: `match.vars` with the matching
    variant's `vars` merged over them.
-3. Everything else reads the sampled state snapshot — the built-in variables for the target's category plus
+3. Everything else reads the sampled state snapshot, which contains the built-in variables for the target's category plus
    every registered provider namespace, merged flat as `<namespace>.<key>`.
 4. A name absent from preview state delegates to the standard text expression scope for `time.*`,
    `server.*`, `player.*` and integration metrics.
@@ -699,7 +694,7 @@ from the block state, entity or inventory type: `furnace`, `brewing`, `beehive`,
 `jukebox`, `inventory` or `static`.
 
 The full target-state catalog with types and fallback values is in
-[Container Previews](/gloss/15-container-previews). Preview expressions additionally publish
+[Container Previews](/gloss/15-container-previews). Preview expressions also publish
 `time.ms`, `time.seconds`, `time.ticks`, `server.online`, `server.maxPlayers`, `server.tps`,
 `player.name`, `player.ping`, `player.health` and `player.level`. The `player.*` values are absent in
 viewerless static/console contexts rather than invented.

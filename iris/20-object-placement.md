@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,8 +45,8 @@ If validation cannot resolve the object, the `place` key does not match the path
 
 `objects[]` exists on exactly two resource types:
 
-- **Biome** (`biomes/**.json`) — wherever that biome generates.
-- **Region** (`regions/**.json`) — every biome in the region.
+- **Biome** (`biomes/**.json`): wherever that biome generates.
+- **Region** (`regions/**.json`): every biome in the region.
 
 **A dimension has no `objects[]`.** Adding one to a dimension file does nothing. Dimensions do carry two knobs that tighten every placement underneath them (`requireObjectSurfaceSupport`, `objectSurfaceSupportBuffer`, section 4) and two that gate the inverted upper dimension (`upperDimensionObjects`, `upperObjectsForcePlace`). They have no placements of their own.
 
@@ -85,7 +85,7 @@ Roughly `chance x density` objects per chunk, before rejections. `chance: 0.002`
 
 Each of the `density` attempts independently picks a random object out of `place` and a random column inside the chunk. It then runs every gate in sections 3 to 5. Density is a budget of tries, not a guarantee of placements.
 
-`place` is unweighted — a uniform pick. To bias one object, list its key more than once or split the entry in two. A key that does not resolve costs the attempt and logs `Couldn't find Object: <key>` once per lookup.
+`place` is an unweighted, uniform pick. To bias one object, list its key more than once or split the entry in two. A key that does not resolve costs the attempt and logs `Couldn't find Object: <key>` once per lookup.
 
 Surface entries add uniform `+/- 0.005` jitter to `chance` before rolling. Cave entries roll the raw value. Two consequences, each worth about one chunk in eight hundred: `chance: 1` occasionally fails, and `chance: 0` occasionally succeeds. Omit an entry to disable it. Do not set it to zero.
 
@@ -189,7 +189,7 @@ Only occluding blocks stilt. Stairs, slabs, and dirt paths are excluded. Grass, 
 
 They anchor like `CENTER_HEIGHT`. They then raise or carve every column out to a radius so the surface meets the object lowest placed block. They ease off by `falloff` (1 is a cone, 2 a parabolic bowl, higher stays flat near the object then drops). Raised columns are filled with the biome rock. Lowered columns are cleared to air. Inside the footprint the carve never eats into the object. `VACUUM` uses radius 12, `VACUUM_HIGH` 20, `VACUUM_FAST` 8 with every other column sampled. `VACUUM_ORGANIC` jitters the radius per column for a ragged edge. `VACUUM_WAVY` adds a smooth simplex wave that fades to zero under the object and at the rim.
 
-**Two cases where Iris overrides your `mode`.** An object whose key contains `imports/` — anything brought in by `/iris structure import` or `/iris studio importvanilla` — is forced to `FAST_MIN_STILT` unless you asked for `FLOATING` or `STRUCTURE_PIECE`. And a cave placement left at the default `CENTER_HEIGHT` takes the active cave profile `defaultObjectPlaceMode` instead, if the profile sets one. Write any other mode and it is honored as-is.
+**Two cases where Iris overrides your `mode`.** An object whose key contains `imports/` (anything brought in by `/iris structure import` or `/iris studio importvanilla`) is forced to `FAST_MIN_STILT` unless you asked for `FLOATING` or `STRUCTURE_PIECE`. And a cave placement left at the default `CENTER_HEIGHT` takes the active cave profile `defaultObjectPlaceMode` instead, if the profile sets one. Write any other mode and it is honored as-is.
 
 **Special.** `FLOATING` ignores terrain entirely. Y comes from the rotated object center plus `translate.y` and `translate.yRandom`. The terrain, water, cave-anchor, and surface-support checks are all skipped. Use it for sky islands and anything that must not fall to the ground. `STRUCTURE_PIECE` is a raw stamp at caller-supplied coordinates used internally for native structure pieces. Do not write it into `objects[]`.
 
@@ -201,7 +201,7 @@ They anchor like `CENTER_HEIGHT`. They then raise or carve every column out to a
 
 `translate.y: -1` seats clutter one block into the ground and is the standard fix for objects riding on top of grass. `yRandom` adds a random `0..yRandom` per placement. A negative value randomizes downward instead.
 
-`rotation` is on by default. Its default is exactly what most packs want: free Y spin in 90 degree steps.
+`rotation` is on by default, with free Y rotation in 90-degree steps.
 
 ```json
 { "rotation": { "enabled": true, "yAxis": { "enabled": true, "min": 0, "max": 270, "interval": 90 } } }

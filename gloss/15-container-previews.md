@@ -16,7 +16,7 @@ Nothing is clicked. No inventory is opened.
 Joining, moving and teleporting queue a look-at scan. Gloss admits at most ten queued players per
 tick in first-in, first-out order and spreads stationary fallback discovery across 100 ticks. Once a
 card is open, its target still follows the viewer on the entity tick. The card is built from a JSON
-document in `plugins/Gloss/previews/`. Fourteen documents ship. They hot-reload. A document you write can
+document in `plugins/Gloss/previews/`. Fourteen documents are bundled. They hot-reload. A document you write can
 shadow any of them.
 
 ## What triggers a preview
@@ -68,8 +68,7 @@ A viewer who fails any of these gets the **locked card**. That card is the padlo
 check. A player without `gloss.preview` sees a padlock on every container rather than nothing at
 all. Remove `previews/locked.json` and nothing is drawn in that case.
 
-Access is re-checked every 10 ticks while a preview is open. If the answer flips — a chest gets
-locked, a region is redefined — the open preview is dropped. The next tick rebuilds the correct one.
+Access is rechecked every 10 ticks while a preview is open. If a chest gets locked or a region is redefined, Gloss drops the open preview. The next tick rebuilds the correct one.
 
 ### Container protection
 
@@ -158,7 +157,7 @@ express.
 | `blocks` | string[] | none | Block materials this document draws |
 | `entities` | string[] | none | Entity types this document draws |
 | `special` | string | none | `enderChest`, `locked` or `anyInventoryHolder` |
-| `priority` | int | `0` | Higher wins. Every shipped document uses `10` |
+| `priority` | int | `0` | Higher wins. Every included document uses `10` |
 | `vars` | object | `{}` | Document constants, read as `vars.<name>` |
 
 Names are uppercased before matching. `*` is the only wildcard, so `*_SHULKER_BOX` and `*_SHELF`
@@ -194,7 +193,7 @@ shulker box colors. One slot grid. Twenty variants supply a title key and an acc
 `vars` values are JSON primitives. They are **never** parsed as expressions. `"vars.accent"` in an
 expression resolves to exactly the literal written in the document.
 
-The one exception is a string leading with `#`. It is read as a color literal — `#RGB`, `#RRGGBB`
+The exception is a string beginning with `#`, which is read as a color literal: `#RGB`, `#RRGGBB`
 or `#AARRGGBB`. JSON cannot express an ARGB value with the alpha byte set as a plain number without
 it becoming negative. A leading `#` that is not a valid color literal is a compile error, not a
 string. A MiniMessage tag like `"<#F2A535>"` is ordinary text, because it does not lead with the
@@ -213,7 +212,7 @@ Declaring a `card` object at all asks for the chrome. `framed` defaults to `true
 
 Every card field is evaluated **once**, when the preview is built.
 
-The shipped title idiom keeps a player-named container's name and falls back to a localized theme
+The default title format keeps a player-named container's name and falls back to a localized theme
 title:
 
 ```
@@ -294,8 +293,8 @@ Only two fields are re-evaluated while the preview is on screen:
 - `cell.color`
 - `label.text`
 
-Both are polled every **four ticks**. Everything else — positions, sizes, `z`, panel and well
-colors, `visible`, repeat counts, the card's `framed`, `title` and `accent` — is evaluated exactly
+Both are polled every four ticks. Positions, sizes, `z`, panel and well
+colors, `visible`, repeat counts, and the card's `framed`, `title`, and `accent` are evaluated exactly
 **once**, when the preview is built. An element hidden at build time stays hidden for the life of
 that preview. Move the condition into `color` or `text` if it has to change while the player
 watches.
@@ -314,8 +313,8 @@ rest of the document still renders. A live cell color that fails renders transpa
 text that fails renders empty. Each document logs at most one such failure per minute. The
 alternative is a log line every four ticks for as long as somebody is looking at the block.
 
-A document that fails to compile logs `previews/<name>.json: <message>` — with the exact field path,
-for example `elements[3].color` — and is skipped. On a hot reload the previously compiled version
+A document that fails to compile logs `previews/<name>.json: <message>` with the exact field path,
+such as `elements[3].color`, and is skipped. On a hot reload the previously compiled version
 stays live. A half-saved edit never blanks a preview.
 
 ## State variables
@@ -347,15 +346,15 @@ Notes that matter when writing a document:
 
 - `time` is the world game tick, or a wall-clock tick counter for a target with no world.
 - `blockType` is the material name (`"CHEST"`). For an entity it is the material the entity maps to, which
-  is how a minecart names itself. It is `""` when there is neither — a bare ender-chest inventory, or the
+  is how a minecart names itself. It is `""` when neither exists, as with a bare ender-chest inventory or the
   locked card.
 - `customName` is the name a player gave the container, or `""`. A whitespace-only name collapses to `""`,
   so `customName != ''` is the idiom.
-- The shipped chest card falls back to `readable(blockType)` when both `customName` and the resolved
+- The default chest card falls back to `readable(blockType)` when both `customName` and the resolved
   localized title are empty, so an unnamed ordinary chest still says `Chest`.
 - `fuelSeconds` is whole seconds, truncated.
 - `bankedXp` is `-1` on a server whose API cannot report banked experience.
-- `brewTotal` is fixed at `400` ticks and `maxFuel` at `20` blaze powder — neither is exposed by Bukkit.
+- `brewTotal` is fixed at `400` ticks and `maxFuel` at `20` blaze powder because Bukkit exposes neither value.
 - `surge.active` and `surge.gain` come from a flow tracker that watches the timer between samples, so a
   document can highlight a furnace that just got faster. Brewing counts its timer down, a furnace counts
   up. The tracker knows which.
@@ -382,9 +381,9 @@ viewer's locale. A key the catalog does not declare is a hard failure on a runni
 reports `label text: lang: Unknown message key: <id>` and renders empty. The rest of the preview is
 unaffected. The previously compiled document stays live.
 
-Check the id against the catalog rather than expecting it to render as itself. The shipped documents
+Check the id against the catalog rather than expecting it to render as itself. The included documents
 use `gloss.preview.theme.title.*`, `gloss.preview.state.*` and `gloss.preview.stat.*` keys, all
-overridable — see [Localization](/gloss/19-localization).
+overridable. See [Localization](/gloss/19-localization).
 
 The full grammar, operator set and general function list are on
 [Expressions & Placeholders](/gloss/13-expressions-placeholders).
@@ -514,7 +513,7 @@ The generator emits all four element types, selects the furnace simulation throu
 match, and procedurally varies the palette, segment geometry, pulse timing and card dimensions. The
 result is normal editable JSON and one undo step, not a preview-only effect.
 
-## The shipped documents
+## The included documents
 
 Fourteen documents are extracted into `previews/`, only where the file is missing and only while
 `[features] previews` is on. With the feature off nothing is extracted and the folder does not
@@ -543,7 +542,7 @@ are on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ### Three of them in full
 
-`previews/hopper.json` — the smallest complete document, one repeated slot:
+`previews/hopper.json` is the smallest complete document, with one repeated slot:
 
 ```json
 {
@@ -573,7 +572,7 @@ are on [Data Files & Hot Reload](/gloss/03-data-files).
 }
 ```
 
-`previews/cauldron.json` — variants, a gauge built from cells, and a live label:
+`previews/cauldron.json` has variants, a gauge built from cells, and a live label:
 
 ```json
 {
@@ -637,7 +636,7 @@ are on [Data Files & Hot Reload](/gloss/03-data-files).
 }
 ```
 
-`previews/locked.json` — a role document with no target and no chrome:
+`previews/locked.json` is a role document with no target or chrome:
 
 ```json
 {
@@ -657,16 +656,16 @@ are on [Data Files & Hot Reload](/gloss/03-data-files).
 }
 ```
 
-## Shadowing a shipped document
+## Shadowing an included document
 
 Documents are never merged. For any one target exactly one document wins, chosen in this order:
 
 1. **highest `match.priority`**.
 2. within one priority, an **exact name** beats a **glob**, which beats the `anyInventoryHolder` fallback.
-3. a genuine tie is broken by document name, alphabetically, and warned about once per pair:
+3. an exact tie is broken by document name, alphabetically, and warned about once per pair:
    `previews: <a> and <b> match the same targets at priority 10, using <a>.`
 
-Every shipped document sits at priority `10`. The way to override one is a new file at a higher
+Every included document sits at priority `10`. The way to override one is a new file at a higher
 priority:
 
 ```json
@@ -676,11 +675,11 @@ priority:
 }
 ```
 
-Write it as a **new file**, not as an edit to a shipped one. `/gloss preview reset` overwrites
-shipped files and would discard your work. It never touches or removes a file you added. It says so
+Write it as a **new file**, not as an edit to an included one. `/gloss preview reset` overwrites
+included files and would discard your work. It never touches or removes a file you added. It says so
 when it runs.
 
-Editing a shipped document in place also works and hot-reloads. A reset undoes that edit.
+Editing an included document in place also works and hot-reloads. A reset undoes that edit.
 
 ## Hot reload
 
@@ -702,7 +701,7 @@ also move a target from one document to another. Menus are untouched.
 | Command | Permission | What it does |
 |---|---|---|
 | `/gloss preview list` | `gloss.previews` | Every loaded document with `blocks=<n> entities=<n> special=<s> priority=<n>` |
-| `/gloss preview reset [name=*]` | `gloss.previews.reset` | Re-extracts shipped documents from the jar |
+| `/gloss preview reset [name=*]` | `gloss.previews.reset` | Re-extracts included documents from the jar |
 | `/gloss preview dump <name>` | `gloss.previews.dump` | Builds one document once and reports its element counts and build errors |
 
 `previews` is an alias of `preview`. `gloss.previews` and its two children are separate from the
@@ -714,10 +713,10 @@ every variant's. `chest.json` reports far more than three blocks. `special` show
 document has none.
 
 `reset` runs off the main thread because it can perform fourteen file writes plus a full reparse. A
-name that is not a shipped document writes nothing and reports so. It never deletes documents you
+name that is not an included document writes nothing and reports so. It never deletes documents you
 added.
 
-> `/gloss preview reset` overwrites the named shipped file on disk. Local edits to that file are gone and
+> `/gloss preview reset` overwrites the named included file on disk. Local edits to that file are gone and
 > there is no backup.
 {.is-warning}
 
@@ -743,6 +742,3 @@ Preview scale is **not** a command. It is the sneak gesture described above.
   viewer's thread. The block itself only decides that the ender-chest document won.
 - Removing `special` from `ender_chest.json` makes ender chests take the ordinary block path rather than
   breaking them.
-- The arithmetic that lays the card out — panel padding, title bar height, tray insets, the integer
-  divisions — is frozen and pinned by non-regenerable golden files. See
-  [Runtime Architecture](/gloss/20-runtime-architecture).

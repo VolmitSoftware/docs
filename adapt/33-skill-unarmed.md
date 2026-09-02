@@ -9,7 +9,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Unarmed is the bare-hands skill. You level it by fighting without a weapon. The twelve adaptations turn punching from a joke into a real build. You get flat damage on every hit. Sprint charges launch mobs. Combos snowball. Disarms leave a skeleton holding nothing. A clap shoves a whole cone of enemies away.
 
-The skill counts a hit as unarmed when your main hand is not a melee tool. Axes, pickaxes, hoes, shovels, swords, tridents, spears, and maces all disable it. A torch, a block, or an empty fist all count. Individual adaptations are stricter. Most also check your off hand. Sucker Punch and Meditation want your hands genuinely empty.
+The skill counts a hit as unarmed when your main hand is not a melee tool. Axes, pickaxes, hoes, shovels, swords, tridents, spears, and maces all disable it. A torch, a block, or an empty fist all count. Individual adaptations are stricter. Most also check your off hand. Sucker Punch and Meditation require both hands to be empty.
 
 Two of the adaptations reward going without armor as well. Glass Cannon multiplies your punches when you are wearing nothing at all. Meditation slowly builds absorption hearts while you sit still. That is the closest thing this skill has to armor.
 
@@ -131,18 +131,6 @@ Moving, unsneaking, picking anything up, or taking or dealing a hit ends the ses
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `unarmed` |
-| Class | `SkillUnarmed` |
-| Icon | `FIRE_CHARGE` |
-| Color | `YELLOW` |
-| Interval (ms) | `2579` |
-| Skill config | `plugins/Adapt/skills/unarmed.toml` |
-| Adaptation count | 12 |
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/unarmed.toml` on first load.
@@ -183,7 +171,6 @@ Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also carries `ena
 
 "Level percent" below is the learned level divided by the adaptation's max level (0 to 1).
 
-Every adaptation carries a tick interval because every adaptation is registered
 with the scheduler. Only Unarmed Power, Disarm, and Meditation actually run work
 on that tick. The rest are event-driven and their interval is inert.
 
@@ -191,7 +178,6 @@ on that tick. The rest are event-driven and their interval is inert.
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedSuckerPunch` |
 | Icon | `OBSIDIAN` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -199,8 +185,6 @@ on that tick. The rest are event-driven and their interval is inert.
 | Cost factor | 0.225 |
 | Tick interval (ms) | 4944 |
 | Config file | `plugins/Adapt/adaptations/unarmed-sucker-punch.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (applies the multiplier), `EntityDeathEvent` (counts one-punch kills).
 
 Menu lore: "Damage", "Requires an empty main hand while sprinting".
 
@@ -217,7 +201,6 @@ XP is hardcoded: 6.221 times the resulting damage per punch, plus 0.42 times the
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedPower` |
 | Icon | `IRON_INGOT` |
 | Max level | 7 |
 | Initial knowledge cost | 6 |
@@ -225,8 +208,6 @@ XP is hardcoded: 6.221 times the resulting damage per punch, plus 0.42 times the
 | Cost factor | 0.425 |
 | Tick interval (ms) | 4444 |
 | Config file | `plugins/Adapt/adaptations/unarmed-power.toml` |
-
-Listened events: `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `InventoryCloseEvent`, `PlayerDropItemEvent`, `EntityPickupItemEvent`, `PlayerItemBreakEvent`, `PlayerRespawnEvent`, and `PlayerChangedWorldEvent` all reapply or strip the modifier. `EntityDamageByEntityEvent` pays XP and reapplies. `EntityDeathEvent` counts bare-hand kills. The tick pass also reconciles learners.
 
 Menu lore: "Damage".
 
@@ -242,7 +223,6 @@ The bonus is an attack-damage modifier of level percent times `damageFactor`, ap
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedGlassCannon` |
 | Icon | `POINTED_DRIPSTONE` |
 | Max level | 7 |
 | Initial knowledge cost | 6 |
@@ -250,8 +230,6 @@ The bonus is an attack-damage modifier of level percent times `damageFactor`, ap
 | Cost factor | 0.425 |
 | Tick interval (ms) | 4544 |
 | Config file | `plugins/Adapt/adaptations/unarmed-glass-cannon.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (adjusts the damage), `EntityDeathEvent` (counts kills made with zero armor).
 
 Menu lore: "x Damage at 0 armor", "PerLevel Bonus Damage".
 
@@ -270,7 +248,6 @@ leather helmet is 0.04. An iron helmet is 0.08. A diamond helmet is 0.12. With z
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedBatteringCharge` |
 | Icon | `BLAZE_ROD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -278,8 +255,6 @@ leather helmet is 0.04. An iron helmet is 0.08. A diamond helmet is 0.12. With z
 | Cost factor | 0.7 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/unarmed-battering-charge.toml` |
-
-Listened events: `EntityDamageByEntityEvent`, `EntityDeathEvent`, `PlayerMoveEvent`, and `PlayerToggleSprintEvent`.
 
 `EntityDamageByEntityEvent` applies the impact.
 `EntityDeathEvent` counts kills within 2 seconds of a charge hit.
@@ -308,7 +283,6 @@ The movement sample must be under 750 ms old to count. Riding a vehicle blocks t
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedComboChain` |
 | Icon | `CHAINMAIL_BOOTS` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -316,8 +290,6 @@ The movement sample must be under 750 ms old to count. Riding a vehicle blocks t
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1800 |
 | Config file | `plugins/Adapt/adaptations/unarmed-combo-chain.toml` |
-
-Listened events: `EntityDamageByEntityEvent` and `PlayerInteractEvent`.
 
 `EntityDamageByEntityEvent` builds the combo, or drops
 it if the main hand holds a melee tool. `PlayerInteractEvent` drops the combo
@@ -344,7 +316,6 @@ Only the main hand is checked here. Dropping a combo below 3 stacks plays no eff
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedDisarm` |
 | Icon | `STICK` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -352,8 +323,6 @@ Only the main hand is checked here. Dropping a combo below 3 stacks plays no eff
 | Cost factor | 0.55 |
 | Tick interval (ms) | 5125 |
 | Config file | `plugins/Adapt/adaptations/unarmed-disarm.toml` |
-
-Listened events: `EntityDamageByEntityEvent`. The tick pass only expires per-target cooldowns.
 
 Menu lore: "Disarm Chance", "Per-Target Cooldown", "chance a disarmed mob also drops a worn armor piece".
 
@@ -375,7 +344,6 @@ The main-hand item is taken first. An off-hand shield is only taken when the mai
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedPressurePoint` |
 | Icon | `TRIPWIRE_HOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -383,8 +351,6 @@ The main-hand item is taken first. An off-hand shield is only taken when the mai
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4733 |
 | Config file | `plugins/Adapt/adaptations/unarmed-pressure-point.toml` |
-
-Listened events: `EntityDamageByEntityEvent`.
 
 Menu lore: "Max Slowness Stacks", "Max Weakness Stacks", and "Weakness unlocks at higher levels" while it is still locked.
 
@@ -406,7 +372,6 @@ Each hit raises the existing amplifier by one, up to the cap, and refreshes the 
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedShockwaveClap` |
 | Icon | `NOTE_BLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -414,8 +379,6 @@ Each hit raises the existing amplifier by one, up to the cap, and refreshes the 
 | Cost factor | 0.7 |
 | Tick interval (ms) | 5230 |
 | Config file | `plugins/Adapt/adaptations/unarmed-shockwave-clap.toml` |
-
-Listened events: `PlayerInteractEvent` (sneak plus left-click air or block).
 
 Menu lore: "Shockwave Range", "Knockback Force", "Clap Cooldown", "Hunger Cost".
 
@@ -444,7 +407,6 @@ Hunger is spent on activation, before targets are resolved. Cooldown is floored 
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedIronFists` |
 | Icon | `ANVIL` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -452,8 +414,6 @@ Hunger is spent on activation, before targets are resolved. Cooldown is floored 
 | Cost factor | 0.45 |
 | Tick interval (ms) | 4622 |
 | Config file | `plugins/Adapt/adaptations/unarmed-iron-fists.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (flat damage bonus), `BlockDamageEvent` (soft-block mining buff, which requires an empty main hand rather than just no tool).
 
 Menu lore: "Flat Punch Damage", "Soft Block Punch Haste".
 
@@ -474,7 +434,6 @@ The mining buff is a block-break-speed modifier of 0.2 x (amplifier + 1), not a 
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedGrapple` |
 | Icon | `LEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -482,8 +441,6 @@ The mining buff is a block-break-speed modifier of 0.2 x (amplifier + 1), not a 
 | Cost factor | 0.65 |
 | Tick interval (ms) | 1000 (default. No tick work) |
 | Config file | `plugins/Adapt/adaptations/unarmed-grapple.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (grabs while sneaking, or hurls if a grab is already held), `PlayerToggleSneakEvent` (releasing sneak hurls).
 
 Menu lore: "Hurl Force", "Grapple Cooldown", "Hit again or release sneak to hurl", "Exhaustion per Throw".
 
@@ -508,7 +465,6 @@ Bosses cannot be grabbed. The cooldown is marked on the hurl, not the grab, and 
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedSecondWind` |
 | Icon | `COOKED_BEEF` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -516,8 +472,6 @@ Bosses cannot be grabbed. The cooldown is marked on the hurl, not the grab, and 
 | Cost factor | 0.5 |
 | Tick interval (ms) | 4960 |
 | Config file | `plugins/Adapt/adaptations/unarmed-second-wind.toml` |
-
-Listened events: `EntityDeathEvent` (a non-player mob whose direct and causing damage-source entity are both the bare-handed player). Projectiles, indirect damage, weapons, and friendly targets do not qualify.
 
 Menu lore: "Hunger Restored", "Regeneration Duration".
 
@@ -540,7 +494,6 @@ Friendly targets, including your own pets, are skipped. Food is clamped to 20 an
 
 | Property | Default |
 |----------|---------|
-| Class | `UnarmedMeditation` |
 | Icon | `AMETHYST_CLUSTER` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -548,8 +501,6 @@ Friendly targets, including your own pets, are skipped. Food is clamped to 20 an
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/unarmed-meditation.toml` |
-
-Listened events: `EntityDamageByEntityEvent`, `PlayerToggleSneakEvent`, and `PlayerQuitEvent`.
 
 `EntityDamageByEntityEvent` starts the lockout and ends
 the session for any combat as attacker or victim. `PlayerToggleSneakEvent`

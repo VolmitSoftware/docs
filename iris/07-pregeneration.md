@@ -121,7 +121,7 @@ The command root is `/iris pregen` with alias `/iris pregenerate`.
 
 `PregenTask` validates every block edge at `center ± radius` against Minecraft's safe ±29,999,984 limit before any runtime mutation. It converts the accepted bounds to chunk and region ranges. It then iterates regions in a spiral from the center, ordering chunks within each region toward the center too. That ordering is why the area around your center becomes playable first.
 
-Bounds are inclusive on both edges. The minimum block floors to a chunk, the maximum ceils. For radius 352 at `0,0` that gives chunks `-22..22` on each axis — 45 per axis, 2,025 total.
+Bounds are inclusive on both edges. The minimum block floors to a chunk, the maximum ceils. For radius 352 at `0,0` that gives chunks `-22..22` on each axis: 45 per axis, 2,025 total.
 
 | Limit | Value |
 |---|---|
@@ -154,7 +154,7 @@ The cache records which chunks are already generated so a restarted or repeated 
 | Folia | Resolved runtime scheduler is Folia | The cached wrapper is disabled entirely for pregen |
 | No engine | Non-Iris world | The wrapper is skipped, since the cache is keyed to the engine's world identity |
 
-Cache contents are written on world unload, on service disable, when the setting is toggled off, and when the cached method closes or saves. If the Iris service itself is disabled, `createDefault` hands back an empty cache rather than touching disk.
+The pregen cache is saved with the world and reused when caching is enabled.
 
 Modded pregen keeps its cache in the equivalent `<worldFolder>/iris/pregen`.
 
@@ -213,7 +213,7 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 
 ## Performance profile
 
-Starting a pregen applies `PregenPerformanceProfile` before the job is constructed. It raises the noise cache to at least 4096 entries and enables the fast cache path, then rebuilds the biome complex if anything actually changed. On a live Bukkit world, that rebuild first drains the generator's active Paper stages. It holds queued stages until the replacement runtime is ready. Then it admits them into the new generation session. Pack benchmarks apply the profile before creating their disposable world. The benchmark engine starts with the final cache profile instead of hotloading beneath its initial spawn work. The studio `profile` command applies the same profile while measuring pack cost, so pregen and profiling numbers are comparable.
+Starting pregeneration temporarily applies Iris's pregen performance settings. Normal settings return when the job ends.
 
 ## Operator notes
 

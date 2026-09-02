@@ -17,10 +17,10 @@ Work outward. Prove the placeholder resolves in PlaceholderAPI itself before you
 
 Prerequisites: Bukkit-family Iris, PlaceholderAPI installed *before* Iris starts, a full server restart, and a player standing in a loaded Iris world.
 
-1. `/papi info iris` — the expansion must be listed with author `Volmit Software` and version `2.0.0`, along with all sixteen paths. If it is not listed at all, skip to the recovery table. Nothing else will work.
-2. `/papi parse me %iris_available%` — expect `true`. This only means Iris registered its terrain service, not that you are in an Iris world.
-3. `/papi parse me %iris_world.available%` — expect `true`. This is the guard you will use in the board template.
-4. `/papi parse me %iris_world.biome-key%` — expect a load key such as `desert/hot-dunes`. A `---` here means Iris has no reading for you yet. See the recovery table.
+1. `/papi info iris`: the expansion must be listed with author `Volmit Software` and version `2.0.0`, along with all sixteen paths. If it is not listed at all, skip to the recovery table. Nothing else will work.
+2. `/papi parse me %iris_available%`: expect `true`. This only means Iris registered its terrain service, not that you are in an Iris world.
+3. `/papi parse me %iris_world.available%`: expect `true`. This is the guard you will use in the board template.
+4. `/papi parse me %iris_world.biome-key%`: expect a load key such as `desert/hot-dunes`. A `---` here means Iris has no reading for you yet. See the recovery table.
 5. Start a job to test the pregen family: `/iris pregen start radius=352 center=0,0 gui=false`, then `/papi parse me %iris_pregen.percent%`. Expect a bare number between `0.00` and `100.00` with no percent sign.
 6. `/iris pregen stop`, then `/papi parse me %iris_pregen.available%`. Expect `false`, and every other `pregen.*` key to read `---`.
 7. Now paste the exact string you verified into the consumer plugin, wrap it in whatever guard that plugin offers, and reload it.
@@ -46,7 +46,6 @@ Success is the board showing the same text `/papi parse` showed. If step 7 disag
 | Version | `2.0.0` |
 | Author | `Volmit Software` |
 | Required plugin | `Iris` |
-| Declared in `plugin.yml` | `softdepend: PlaceholderAPI` |
 | `persist()` | `true` — the expansion survives `/papi reload` without restarting Iris |
 
 Iris checks `isPluginEnabled("PlaceholderAPI")` inside a task scheduled just after its own enable, and gives up silently if the answer is no. Registration also installs a listener. If that listener fails to attach, Iris unregisters the expansion again and logs a warning. You never end up with an expansion publishing stale positions.
@@ -147,7 +146,7 @@ Because teleports publish immediately, a player who arrives somewhere and stands
 
 ### View rebuild cost
 
-A player's world view is rebuilt at most once per second (`VIEW_TTL_MS = 1000`), and only when something actually reads a `world.*` key. Three consequences worth knowing before you design a board:
+A player's world view is rebuilt at most once per second (`VIEW_TTL_MS = 1000`), and only when something actually reads a `world.*` key. This has three effects on a board:
 
 - A board with six `world.*` keys costs one rebuild per player per second, not six.
 - Values can trail a sprinting player by up to a second.

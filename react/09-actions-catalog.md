@@ -17,7 +17,6 @@ The HTTP action API marks `purge-entities`, `purge-chunks`, `collect-garbage`, `
 
 This action requests JVM garbage collection. It reports reclaimed heap.
 
-- **Class:** `ActionCollectGarbage`
 - **Config:** `plugins/React/action/collect-garbage.toml`
 - **CLI:** `/react action collect-garbage` (alias `gc`)
 - **TOML fields:** `enabled`
@@ -30,7 +29,6 @@ This action requests JVM garbage collection. It reports reclaimed heap.
 
 This action attempts a saved unload of selected chunks in a world or area. It does not delete the entities stored in those chunks. All-world selection waits for Observer's startup coordinate seed, then streams loaded coordinates in waves of at most 256, retains no `Chunk` handles, and rechecks loaded state on each owning region without loading missing chunks. If a pending React kill countdown retires during unload, reload reconciliation removes only React's marker or temporary countdown name and preserves an existing player-assigned name.
 
-- **Class:** `ActionPurgeChunks`
 - **Config:** `plugins/React/action/purge-chunks.toml`
 - **CLI:** `/react action purge-chunks [world=ALL]` (alias `pc`)
 - **TOML fields:** `enabled`
@@ -43,10 +41,8 @@ This action attempts a saved unload of selected chunks in a world or area. It do
 
 This action purges matching entities in an area. Type, named-entity, and protection guards apply. All-world traversal waits for Observer's startup coordinate seed, streams loaded coordinates in waves of at most 256, and resolves each chunk only on its owner without retaining chunk handles or loading missing chunks.
 
-- **Class:** `ActionPurgeEntities`
 - **Config:** `plugins/React/action/purge-entities.toml`
 - **CLI:** `/react action purge-entities [radius=0] [world=ALL]` (alias `pe`). A positive player radius is clamped to 10 chunks. Zero does not add a radius restriction.
-- **Notes:** honors entity protection. A real custom name is never replaced by React's kill countdown.
 
 TOML fields:
 
@@ -70,7 +66,6 @@ Execution parameters:
 
 This action isolates the hottest sampled chunks. Unload and cull options are available.
 
-- **Class:** `ActionQuarantineHotChunks`
 - **Config:** `plugins/React/action/action-quarantine-hot-chunks.toml`
 - **CLI:** `/react action quarantine-hot-chunks [max-chunks=24] [min-score=90] [world=ALL]` (alias `aqhc`). The command clamps chunk count to 1–256 and score to at least zero.
 - **TOML fields:** `enabled`
@@ -93,10 +88,8 @@ This action isolates the hottest sampled chunks. Unload and cull options are ava
 
 This action trims old low-priority entities. Protection guards apply.
 
-- **Class:** `ActionTrimEntitiesByAgePriority`
 - **Config:** `plugins/React/action/action-trim-entities-by-age-priority.toml`
 - **CLI:** `/react action trim-entities-by-age-priority [max-entities=600] [min-age-seconds=300] [world=ALL]` (alias `ateap`). The command clamps the maximum to 1–10,000 and age to at least one second.
-- **Notes:** honors entity protection
 - **TOML fields:** `enabled`
 
 | Execution parameter | Type | Default | Description |
@@ -119,7 +112,6 @@ This action trims old low-priority entities. Protection guards apply.
 
 This action normalizes hopper hotspots. It merges nearby transfer items. It can unload idle hot chunks.
 
-- **Class:** `ActionHopperNetworkNormalize`
 - **Config:** `plugins/React/action/action-hopper-network-normalize.toml`
 - **CLI:** `/react action hopper-network-normalize [max-chunks=20] [min-hopper-updates=25] [world=ALL]` (alias `ahnn`). The command clamps the chunk count to 1–256 and update threshold to at least one.
 - **TOML fields:** `enabled`
@@ -138,7 +130,6 @@ This action normalizes hopper hotspots. It merges nearby transfer items. It can 
 
 This action preloads critical sampled chunks and neighbors.
 
-- **Class:** `ActionPrewarmCriticalChunks`
 - **Config:** `plugins/React/action/action-prewarm-critical-chunks.toml`
 - **CLI:** `/react action prewarm-critical-chunks [max-chunks=40] [neighbor-radius=1] [world=ALL]` (alias `apcc`). The command clamps chunk count to 1–512 and radius to 0–4 chunks.
 - **TOML fields:** `enabled`
@@ -157,7 +148,6 @@ This action preloads critical sampled chunks and neighbors.
 
 This action queues quarantine, trim, hopper normalization, prewarm, and optional garbage-collection tickets. Tickets are scaled by tier. The child tickets are queued independently and may overlap. The playbook ticket does not wait for them to finish.
 
-- **Class:** `ActionIncidentPlaybook`
 - **Config:** `plugins/React/action/action-incident-playbook.toml`
 - **CLI:** `/react action incident-playbook [include-gc=true] [tier=-1] [world=ALL]` (alias `aip`). Tier is clamped to `-1`–`2`.
 - **TOML fields:** `enabled`

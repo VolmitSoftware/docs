@@ -121,7 +121,6 @@ Full command syntax is in [Commands & Permissions](/adapt/04-commands-permission
 
 ### Architecture and operations
 
-- [Runtime Architecture](/adapt/38-runtime-architecture)
 - [Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)
 - [Operator Runbooks](/adapt/40-operator-runbooks)
 {.links-list}

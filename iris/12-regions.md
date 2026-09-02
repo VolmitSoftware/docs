@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -113,7 +113,7 @@ Suppose the tutorial region biomes are too small and choppy. The rest of the dim
 }
 ```
 
-Observable result: individual land biome patches in this region become roughly 3.5x wider. Nothing outside the region changes. The dimension `biomeZoom` still applies on top. The shipping `temperate` region uses `3.5` for land, `6` for sea and `0.15` for shore. Shores are deliberately zoomed *down* so beach variants change every few dozen blocks along a coastline instead of running for hundreds of blocks.
+Observable result: individual land biome patches in this region become roughly 3.5x wider. Nothing outside the region changes. The dimension `biomeZoom` still applies on top. The bundled `temperate` region uses `3.5` for land, `6` for sea and `0.15` for shore. Shores are deliberately zoomed *down* so beach variants change every few dozen blocks along a coastline instead of running for hundreds of blocks.
 
 Change one zoom at a time. Regenerate a fresh area between comparisons. Zooms do not affect already generated chunks.
 
@@ -179,6 +179,24 @@ List root parents only. Child biomes are declared on their parent via `children`
 
 A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`) comes from which list selected it. The same biome file can appear in more than one list. It then takes a different role in each.
 
+### River policy
+
+`riverPolicy` overrides the dimension policy anywhere this region is selected; a biome policy overrides it again. Omitted policy members inherit. An explicit empty biome or profile list clears the inherited list.
+
+| Policy field | What it controls |
+|--------------|------------------|
+| `placement` | `DISABLED`, `TRANSIT_ONLY`, `NATURAL`, `PREFERRED_HEADWATER`, or `REQUIRED_HEADWATER` source and transit admission |
+| `routing` | `BLOCK`, `AVOID`, `ALLOW`, or `PREFER` terrain-routing treatment |
+| `outletAdmission` | Whether accepted river outlets may terminate in this region |
+| `profiles` | Preferred dimension-owned hydrology profile ids |
+| `surfaceBiomes`, `mouthBiomes`, `shoreBiomes` | Biomes selected for the wet channel, outlet, and narrow shore footprint |
+| `dryBiomes`, `floodedCaveBiomes` | Biomes selected for dry carved volume and flooded underground or grotto volume |
+| `widthMultiplier`, `depthMultiplier` | Accepted channel-size multipliers |
+| `incisionMultiplier` | Maximum terrain-incision multiplier; zero forbids incision |
+| `routingMultiplier` | Terrain-guided route-cost multiplier |
+
+The physical drainage graph, density, channel dimensions, and legal outlet families remain dimension-owned. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology).
+
 ### Zooms and the shore band
 
 | Field | Type | Default | What it does |
@@ -208,13 +226,13 @@ Everything here applies anywhere this region is selected, on top of what the bio
 | `depositVariants` | `IrisDepositVariant[]` | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
 | `ores` | `IrisOreGenerator[]` | empty | Vein-style ores. Each generator declares whether it is a surface or underground generator. Iris keeps two separate lists. |
 | `caveProfile` | `IrisCaveProfile` | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
-| `riverPolicy` | `IrisRiverPolicy` or `null` | `null` | Region-level source placement, transit/outlet admission, profile/content pools, and geometry/routing multipliers. Biome values override these; omitted fields inherit the dimension. See [36 - Rivers](/iris/36-rivers). |
+| `riverPolicy` | `IrisRiverPolicy` or null | inherit | Overrides the dimension hydrology policy for this region. See "River policy" above. |
 
 Deposit precedence across tiers: biome variants, then region variants, then dimension variants. First match wins within each tier.
 
 ## Overworld sample: `temperate`
 
-Path in the shipping pack: `packs/overworld/regions/temperate.json`.
+Path in the bundled pack: `packs/overworld/regions/temperate.json`.
 
 | Field | Value | Why |
 |-------|-------|-----|
@@ -231,7 +249,7 @@ Path in the shipping pack: `packs/overworld/regions/temperate.json`.
 
 The file sets no `objects`, `structures`, `ores`, `entitySpawners` or `effects`. All of that lives on the biomes.
 
-Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terralost`, `mushroom`, `forests`, `tundra`, `magnetics`, `temperate`, `estranged`, `tropical`, `swamp`, `prismatics`.
+Region keys listed by the bundled overworld dimension: `frozen`, `hot`, `terralost`, `mushroom`, `forests`, `tundra`, `magnetics`, `temperate`, `estranged`, `tropical`, `swamp`, `prismatics`.
 
 ## Resolution details worth knowing
 
@@ -250,5 +268,6 @@ Region keys listed by the shipping overworld dimension: `frozen`, `hot`, `terral
 | Wrong biome key path | `temperate/plains` must be `biomes/temperate/plains.json`, case and folder included |
 | Tuning region `rarity` when the region never appears | Selection also depends on the dimension `regionStyle` and `regionZoom`. Measure first with `/iris studio regions` |
 | Putting physical hydrology settings on a region | Regions expose only `riverPolicy`. Put routing, sources, channel and bank shape, grottos, profiles, and deep fluids on the dimension `hydrology` object |
+| Expecting `riverStyle` / `lakeStyle` to do something | The fields were removed (they were read by nothing). Rivers come from the dimension `hydrology` object; make lakes as sea biomes with negative generator heights |
 | Empty `seaBiomes` in a dimension whose terrain dips below `fluidHeight` | Sea columns have no candidate biome |
 | Comparing changes in already generated chunks | Region and zoom changes only affect newly generated chunks. Always fly to fresh terrain |

@@ -13,8 +13,6 @@ dateCreated: 2026-08-09T00:00:00.000Z
 The root command is `/biletools`. The aliases are `bile`, `bi`, `b`, `volmit`,
 `vomit`, and `vom`. Notation: `<required>`, `[optional]`.
 
-Player help uses the shared 19-line command panel: up to 17 root entries or 16 entries in a subtree with a Back row. A shorter tree prints every entry, and console help remains flat and unpaginated.
-
 | Command | Description |
 |---|---|
 | `/bile load <plugin>` | Load a plugin jar from the plugins directory |

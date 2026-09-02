@@ -2,16 +2,15 @@
 title: "Projection Modes & Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Through-portal projection sends destination or mirror block data and optional
-entity packets to an observer near a portal. The other side appears without a
-crossing. If foveated unrendering is enabled, the observer must look toward
-the aperture. By default, the portal view AABB sets interest.
+Through-portal projection changes what one player's client sees inside a portal
+aperture. It can show destination blocks, supported entities, and optional
+lighting without moving the player. Traversal is a separate system.
 
 Per-portal mode and render mode combine with global `[projection]` and
 `[render]` keys in `plugins/Wormholes/wormholes.toml` (schema 3).
@@ -43,11 +42,32 @@ Default for new portals: **VENTICULAR**.
 
 | Mode | Display | Buried cell culling | Observer occlusion | Notes |
 |------|---------|---------------------|--------------------|-------|
-| `VENTICULAR` | Venticular | Yes | Yes | Default. Drops buried cells and applies observer occlusion during cell scan. |
+| `VENTICULAR` | Venticular | Yes | Yes | Default. Removes buried solids and destination cells hidden from the observer. |
 | `PANOPTIC` | PanOptic | No | No | Fuller capture of the destination volume. More cells and cost. |
 
 Stored as `renderMode` on the portal JSON. Toggled from the portal settings
 menu.
+
+Use **Venticular** for normal play. It removes solid cells that are enclosed by
+their neighbors, then checks remaining destination cells from the observer's
+view. Reusable blocker proofs and an occupancy index reduce repeated ray work.
+If the visibility budget ends during a pass, unresolved cells remain eligible
+and receive priority on the next pass. A projector does not reuse an incomplete
+frame as though its visibility work had finished.
+
+Use **PanOptic** when you need the full sampled volume even when some of it is
+buried or hidden. It is intentionally the more expensive mode.
+
+Venticular removes a rear cell immediately when every block face oriented
+toward the destination-side observer is covered by an accepted adjacent opaque
+cell and the configured reveal margin is zero. Otherwise the visibility proof
+expands the tested silhouette by `occlusion-reveal-margin-degrees` so movement
+reveals geometry before it can bleed around an occluder.
+Remaining ambiguous cells use the conservative ray proof and fail open when
+visibility cannot be proven, so gaps and transparent openings remain visible.
+Budget-unresolved cells stay visible for that pass but are carried ahead of
+ordinary targets on the next projection pass until their visibility resolves;
+the fail-open tail therefore does not become permanent client state.
 
 ## Interest and view AABB
 
@@ -87,34 +107,55 @@ a one-slot budget gives discovery every fourth tick. An observer with an
 already-running owner task is skipped without consuming the frame cap, and a
 rejected or retired owner task clears its in-flight lease so a later tick can
 retry it. The same admitted owner task reconciles both projection and surface
-skin state when both are active.
+skin state when both are active. A non-fluid skin writes every ordered display
+spawn and metadata pair into one observer-local portal batch and flushes once.
+Partial batches are destroyed before retry so failed sends cannot leave client
+ghost panes.
 
 Budget fitting shortens lateral padding first. Depth is reduced only if the
 aperture-aligned scan still exceeds the cell ceiling. An aperture that cannot
 fit even at zero depth stays empty rather than exceeding the ceiling.
 
+Interested portals are resolved front to back for each observer. When one
+nearer rectangular aperture provably covers every corner of a farther portal,
+the farther projector and its block and entity claims are retired until any
+part of its aperture becomes visible again. Partial overlaps and irregular
+nearer apertures fail open so exposed edges and gaps retain their projections.
+
 ## Blackout background
 
 | Setting | Default | Notes |
 |---------|---------|-------|
-| `blackoutBackground` | `false` | Per-portal. Builds a colored far-slice display seal behind the sampled view. |
+| `blackoutBackground` | `false` | Per-portal. Builds a colored display shell around the far, top, bottom, and side boundaries of the sampled view. |
 | `blackoutColor` | `BLACK` | One of 16 concrete colors: `WHITE`, `ORANGE`, `MAGENTA`, `LIGHT_BLUE`, `YELLOW`, `LIME`, `PINK`, `GRAY`, `LIGHT_GRAY`, `CYAN`, `PURPLE`, `BLUE`, `BROWN`, `GREEN`, `RED`, `BLACK`. |
 
 Each color maps to `minecraft:<name>_concrete` (for example `BLACK` → black
-concrete). The mesh is built from the farthest valid projected slice and fails
-open. If its display packets cannot be maintained, the normal projection stays
-visible without the seal.
+concrete). The mesh closes transparent cells on the far cap and four lateral
+boundaries while leaving the portal-facing side open. Opaque projected blocks
+remain authoritative, so the shell does not replace real destination surfaces.
+Its thin panels sit inside the sampled boundary cells to avoid depth fighting.
+When observer movement changes or remeshes the shell, existing client entity
+IDs are teleported and resized in place before obsolete panes are retired. If
+its display packets cannot be maintained, the normal projection stays visible
+without the shell.
 
 ## Entity spoofing (`[render]`)
 
 | Key | Default | Clamp | Role |
 |-----|---------|-------|------|
-| `entity-spoofing` | `true` | — | Show destination-side entities in projections. |
+| `entity-spoofing` | `true` | Boolean | Show destination-side entities in projections. |
 | `entity-spoof-range` | `48.0` | 1–256 | Range for spoofed entities. |
 | `entity-update-interval-ticks` | `1` | 1–20 | Entity refresh cadence. |
 | `entity-candidate-cache-ticks` | `3` | 1–40 | Candidate cache lifetime. |
 | `max-spoofed-entities` | `24` | 0–256 | Hard cap of spoofed entities per context. |
 | `capture-zone-radius` | `8.0` | 1–64 | Capture zone radius used by render capture logic. Applies on reload. |
+
+Venticular applies its accepted opaque-block visibility proofs to projected
+entities as well as blocks. Wormholes withholds an item, minecart, name label,
+NPC, or Bukkit display entity only when every cell in a conservative visual
+envelope is proven hidden; an exposed cell, missing destination data, changed
+view revision, or exhausted visibility budget keeps the whole entity visible.
+PanOptic intentionally keeps its unoccluded full-volume behavior.
 
 ## Visual quality profiles
 
@@ -138,6 +179,7 @@ the raw config values.
 | `near-plane-padding` | `2.0` | Near-plane padding. |
 | `aperture-padding-blocks` | `0.75` | How far the projected image extends past aperture edges. |
 | `frustum-culling-ratio` | `0.2` | Frustum cull ratio. |
+| `occlusion-reveal-margin-degrees` | `1.0` | Hot-reloadable Venticular guard angle. Higher values reveal blocks and entities earlier around occluder edges to absorb observer movement and packet latency, at the cost of retaining more geometry. Clamped 0–15; `0` uses exact silhouettes. |
 | `depth-blocks` | `64` | Search distance used to find recursive portal candidates beyond the current view, not the primary portal's block depth. |
 | `recursive-portal-depth` | `3` | Recursive portal depth (minimum clamp 3). |
 | `stable-cell-resample-interval-ticks` | `4` | Stable-cell resample interval. |
@@ -212,6 +254,12 @@ leash relationships, animations, hurt state, item-frame contents, and map data
 where the platform packet bridge supports them. Candidate range, refresh
 cadence, and the hard entity cap come from `[render]`. Local entities on the
 observer side may be hidden while their projected counterparts occupy the view.
+For overlapping portals, Wormholes unions those local-hide claims per observer;
+an entity is restored only after the last portal stops occluding it. Local-hide
+discovery covers the full fitted projection depth independently of the shorter
+destination entity-spoof range, and claims only entities whose complete
+name/display-aware envelope is contained by the portal frustum. Partially
+exposed entities remain visible.
 
 ## Arrival warmer vs chunk pre-send
 

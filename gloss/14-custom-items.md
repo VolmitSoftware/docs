@@ -18,7 +18,7 @@ feeds the web editor.
 ## The `customItem` icon
 
 `customItem` is one of the icon types described on [Icons](/gloss/11-icons). Record component names
-are the JSON keys verbatim. No naming policy is applied.
+are the JSON keys.
 
 ```json
 {
@@ -59,94 +59,11 @@ The type token is matched after lowercasing and stripping `-` and `_`. `customIt
 
 ### `auto` resolution
 
-`auto` walks the active provider list in **activation order**. It takes the first non-null result.
-That order equals the declaration order only when every host plugin was already enabled when Gloss
-enabled.
-
-Hosts that enable later — typically ItemsAdder and HeadDatabase — are appended in the order their
-`PluginEnableEvent` fires. Name the provider explicitly when the order matters, or when more than
-one provider is installed.
-
-Each `auto` hit is cached under its own key. That cache is separate from the same item resolved
-under an explicit provider id.
+`auto` uses the first active provider that recognizes the item. Name the provider when more than one installed plugin may use the same id.
 
 ### When an item cannot be resolved
 
-Resolution returns nothing for a disabled integration layer, an unknown provider id, an inactive or
-not-ready provider, and an unknown item id. Icon creation then:
-
-1. logs the failure under `An error occurred while creating a Menu Icon for the component "<componentId>":`,
-   whose message is `Unable to resolve custom item "<item>" from provider "<provider>"` with `auto`
-   substituted when `provider` was null or blank.
-2. logs `Falling back to missing icon.` at `WARNING`.
-3. draws the missing-icon checker in that slot.
-
-Two lines are therefore logged per failure. The first names the component id, not the provider. The
-menu still opens. Failed lookups are never cached. The icon is re-attempted every time it is built.
-It appears on its own as soon as its provider becomes ready.
-
-## The provider registry
-
-### Detection
-
-Detection is plugin-presence first, class loading second. The registry holds a fixed list of
-`(pluginName, className)` pairs where the class name is a **string**. Each adapter imports its host
-plugin's API types directly. Loading one whose host is absent would raise `NoClassDefFoundError`.
-
-Activating one definition runs, in order:
-
-1. look the plugin up by name — a plugin that is absent or not enabled aborts silently.
-2. reject a duplicate for the same plugin name.
-3. `Class.forName` the adapter, cast it to the provider interface and construct it.
-4. apply the `[items] customItemProviders` allowlist.
-5. register, which clears the prototype cache and logs `[items] provider <id> active from <pluginName>`.
-
-Anything thrown from steps 3 to 5 is caught and logged as
-`[items] failed to activate the <pluginName> item provider:`. The rest of the registry is
-unaffected.
-
-One adapter probes further. The HeadDatabase adapter resolves `me.arcaniax.hdb.api.HeadDatabaseAPI`
-without initializing it inside its own constructor. Other plugins have shipped under the name
-`HeadDatabase`. The plugin name alone is not proof that the API exists. An unrelated plugin by that
-name produces a logged activation failure and an inactive status row. It does not produce a linkage
-crash.
-
-Every item plugin is listed under `softdepend` in `plugin.yml`. None of them is a hard dependency.
-
-### Activation timing
-
-- At enable the registry registers its listener once, even when `[items] customItems` is false. That
-  lets a later config change take effect. It then walks the definition list in declaration order.
-- `PluginEnableEvent` activates the matching definition when a host plugin enables after Gloss.
-- `PluginDisableEvent` drops the matching provider regardless of the `customItems` setting, clears the
-  prototype cache and logs `[items] provider for <pluginName> dropped, it was disabled`.
-
-Declaration order is CraftEngine, ItemsAdder, Oraxen, Nexo, MMOItems, ExecutableItems, EcoItems,
-Slimefun, MythicMobs, HeadDatabase.
-
-### Resolution and caching
-
-- A null or blank item id, or `[items] customItems = false`, resolves to nothing immediately.
-- The provider id is normalized: null, blank or whitespace becomes `auto`, otherwise it is trimmed and
-  lowercased. Matching is case-insensitive.
-- The prototype cache is keyed on the normalized provider plus the item id. Both the cached prototype
-  and every value handed back are clones. ItemsAdder and Slimefun return live registry instances.
-  Nothing a caller receives can mutate a host registry.
-- Negative results are **not** cached.
-- A provider that declares itself main-thread-only is skipped when the lookup happens off the main
-  thread, with one warning per provider id:
-  `[items] provider <id> is main thread only and was skipped off thread`. The off-thread caller never
-  blocks a tick, it just misses that lookup.
-- A provider whose registry is not ready yet is skipped entirely, so a late-loading registry cannot poison
-  the cache with a permanent miss.
-- Anything thrown by a provider is swallowed and reported once per provider id:
-  `[items] provider <id> faulted, lookups against it will keep failing:`.
-
-Both warning families are emitted once per provider id, not once per failed lookup.
-
-The cache is cleared whenever a provider is registered or dropped. It is also cleared whenever
-`[preview] scale` or `[menus] uiScale` changes. Changing `[items] customItems` or
-`[items] customItemProviders` rebuilds the whole provider list from scratch.
+Unknown, disabled, or not-yet-loaded items use the missing-icon checker and log a warning. The menu still opens.
 
 ## The providers
 
@@ -173,7 +90,7 @@ Per-provider behavior worth knowing:
 | `itemsadder` | Items load asynchronously long after startup. Until they have loaded the provider is active but not ready and every lookup is skipped. Display names come from the host stack |
 | `nexo` | Nexo builds lazily, so a malformed yml entry only throws at build time, not at lookup. That failure is caught and treated as a miss |
 | `mmoitems` | Declared main-thread-only. Off-thread lookups are skipped, never blocked. Enumeration is every type crossed with its template names, joined as `TYPE:ID` |
-| `executableitems` | The API classes ship inside SCore, which ExecutableItems hard depends on, so the ExecutableItems presence check covers both |
+| `executableitems` | The API classes are part of SCore, which ExecutableItems hard depends on, so the ExecutableItems presence check covers both |
 | `ecoitems` | The eco lookup never returns null. It returns an empty testable item whose stack is `AIR`, which the adapter treats as a miss. Enumeration filters to the `ecoitems` namespace and re-emits ids as `ecoitems:key` |
 | `slimefun` | Enumeration covers **enabled** items only, so a disabled Slimefun item still resolves in a menu but never appears in the catalog. Display names come from the host item |
 | `mythicmobs` | The Mythic instance is null between class load and MythicMobs finishing its own enable, which is what the readiness gate covers |
@@ -184,14 +101,11 @@ reports the id itself.
 
 ### When a provider's plugin is absent
 
-Nothing is class-loaded. No adapter exists. Lookups against that provider id resolve to nothing. The
-status row reports it as not installed. There is no startup error. You do not need to remove anything
-from the config.
+The status row reports it as not installed. You do not need to remove it from the configuration.
 
 ### Extending the provider set
 
-The definition list is fixed at compile time. There is no registration method. Another plugin cannot
-add an item provider at runtime.
+Other plugins cannot add providers at runtime.
 
 ## Configuration
 
@@ -230,13 +144,7 @@ false.
 | `present, still loading` | An adapter is registered but the host registry is not ready yet |
 | `ready, <n> ids` | Active and ready.`<n>` is what the provider enumerates right now |
 
-Counting ids is the one place enumeration cost is paid. It is only paid for this command. It is
-never paid while a menu is open. HeadDatabase can enumerate tens of thousands of ids. When the
-sender also holds `gloss.items.export`, the output appends a clickable `/gloss item export` line.
-
-`export` runs off the main thread. It reports back long after Director has already returned. It
-plays its own completion tone and re-dispatches its result message onto the sender's scheduler. That
-tone is one of the two that `[commands] sounds = false` does not silence.
+When the sender also has `gloss.items.export`, the status output includes `/gloss item export`.
 
 ## The custom item catalog
 
@@ -273,32 +181,9 @@ broken menu. See [Web Editor & Sync](/gloss/18-web-editor).
 | `items[].name` | The provider's display name with legacy section color codes stripped and trimmed, falling back to the id when it is null, blank or throws |
 | `items[].material` | The resolved stack's vanilla key path only — lowercase, `minecraft:` stripped — so the editor can draw an approximate sprite |
 
-### Harvest rules
+The catalog includes up to 10,000 ready items per provider. Unresolved items are omitted, but they can still work in menus when entered manually. Only one export runs at a time. An export with no items still writes an empty catalog.
 
-- Providers are visited in activation order. Ids within one provider are sorted before probing, so repeat
-  exports of an unchanged server produce the same file and truncation is deterministic.
-- Every id is probed by resolving it directly against the provider. The probe bypasses the icon
-  prototype cache so an export does not fill it with ids nobody opened. A null stack, an `AIR` stack
-  or a thrown exception drops the id and increments the discarded count. The catalog therefore never
-  advertises an id that would render as the missing-icon checker.
-- The per-provider cap is **10000 accepted entries**. Discarded ids do not consume the budget, so a
-  provider can be probed well past 10000 ids before the cap is reached. On hitting it the export logs
-  `[items] provider <id> exposes <n> ids, the catalog keeps the first 10000` and moves on. Truncated ids
-  still resolve in a menu. They are only missing from editor autocomplete. HeadDatabase is the provider
-  that hits this in practice.
-- Providers that are not ready contribute nothing.
-- One export runs at a time for the whole server. A second request is refused with
-  `A catalog export is already running.`
-- Providers that declare themselves main-thread-only are hopped onto the global scheduler for the duration
-  of their enumeration only, with a 30 second join. A scheduling failure or a timeout drops that provider
-  from the catalog and logs why. Everything else stays off the main thread.
-- On success the console logs
-  `[items] catalog written to <path> providers=<n> items=<n> discarded=<n>`.
-
-An export that resolves nothing still writes the file. Gloss reports it separately as an empty
-export. Only a failed write is reported as an error.
-
-> `custom-items.json` is a generated file. Deleting it costs nothing — run `/gloss item export` again. It
+> `custom-items.json` is generated. After deleting it, run `/gloss item export` again. It
 > is also the one file the HoloUi importer deliberately refuses to copy, for the same reason.
 {.is-info}
 

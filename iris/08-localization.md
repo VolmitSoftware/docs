@@ -7,7 +7,7 @@ tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris ships its command, Studio, runtime, HUD, and UI text as typed Java message catalogs. Translated overlays cover seventeen languages. An operator-editable override file exists per locale. You pick the server language with `general.language` in `iris.json`. You change individual strings by dropping a partial JSON file into `languages/overrides/`.
+Iris stores its command, Studio, runtime, HUD, and UI text in typed Java message catalogs. Translated overlays cover seventeen languages. An operator-editable override file exists per locale. You pick the server language with `general.language` in `iris.json`. You change individual strings by dropping a partial JSON file into `languages/overrides/`.
 
 Client keybind labels are a separate surface. They live in the mod jar's Minecraft lang assets. See also [03 - Configuration](/iris/03-configuration), [04 - Commands & Permissions](/iris/04-commands-permissions), and [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
 
@@ -32,7 +32,7 @@ Prerequisites: write access to the Iris data folder, a backup of `iris.json`, an
 3. Run `/iris reload`. A green `Hotloaded settings and locale de_DE.` means the settings and the locale both applied. A yellow `Settings were reloaded, but locale ... was rejected` means the overlay failed validation and the previous locale is still active. Read the errors in the console before going further.
 4. Run `/iris` with a subcommand that does not exist, for example `/iris zzz`.
 
-Success looks like your override text appearing verbatim. Everything else in the same session — help output, pregen status, Studio messages — should be in German from the bundled `de_DE` overlay. Any key that neither file defines falls back to the built-in English rather than printing a raw key id.
+Your override text should appear unchanged. Everything else in the same session (help output, pregen status, and Studio messages) should be in German from the bundled `de_DE` overlay. Any key that neither file defines falls back to the built-in English rather than printing a raw key id.
 
 Edit the file again and save it. The shared settings and locale coordinator drains native filesystem events about every 500 ms and uses bounded exact-content reconciliation to catch silent, atomic, FTP, and same-metadata replacements. The stable latest save is queued and automatic locale loads occur no more than once every 3 seconds. Repeated unreadable UTF-8 and oversized capture failures are reported once until a readable or missing snapshot resets the diagnostic, while the last-good catalog stays active. A manual `/iris reload` acknowledges the exact override it applied so the queued automatic path does not replay it. No command or restart is required for ordinary valid saves. Delete the test override when you are done.
 
@@ -82,7 +82,7 @@ On a successful load Iris logs `Loaded locale <id> with N fallback entries.` Tha
 
 ## Bundled server locales
 
-Complete translations ship inside the jar as `/languages/<locale>.json`.
+Complete translations are bundled inside the jar as `/languages/<locale>.json`.
 
 | Locale id | Language |
 |---|---|
@@ -153,7 +153,7 @@ The Minecraft client reads its own lang files from `assets/irisworldgen/lang/<mc
 | `key.irisworldgen.open_vision_map` | Open Iris Vision Map |
 | `key.irisworldgen.toggle_what_overlay` | Toggle Iris What Overlay |
 
-`en_us.json` is required. A translated file ships for every bundled locale. The Minecraft code is the server locale id with `-` replaced by `_` and lowercased, so `ja-JP` becomes `ja_jp`.
+`en_us.json` is required. Every bundled locale has a translated file. The Minecraft code is the server locale id with `-` replaced by `_` and lowercased, so `ja-JP` becomes `ja_jp`.
 
 Everything else the client draws resolves through `IrisLanguage` and `ClientUiMessages` on whichever process renders it. That includes HUD stats, Vision map labels, What overlay rows, and toasts. It does not use these four keys. That is why a translated boss bar and an English keybind label can coexist.
 

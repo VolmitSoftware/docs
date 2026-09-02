@@ -102,18 +102,6 @@ Learning this unlocks a crafting recipe for the Hunter's Snare, a tripwire hook 
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `hunter` |
-| Class | `SkillHunter` |
-| Icon | `BONE` |
-| Color | `RED` |
-| Interval (ms) | `4150` |
-| Skill config | `plugins/Adapt/skills/hunter.toml` |
-| Adaptation count | 14 |
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/hunter.toml` on first load.
@@ -171,7 +159,6 @@ The seven struck buffs also share this knob set:
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterAdrenaline` |
 | Icon | `LEATHER_HELMET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -179,8 +166,6 @@ The seven struck buffs also share this knob set:
 | Cost factor | 0.4 |
 | Tick interval (ms) | 1911 |
 | Config file | `plugins/Adapt/adaptations/hunter-adrenaline.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (player is the direct damager).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -193,7 +178,6 @@ Milestones: `challenge_hunter_adrenaline_100` and `challenge_hunter_adrenaline_2
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterRegen` |
 | Icon | `AXOLOTL_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -201,8 +185,6 @@ Milestones: `challenge_hunter_adrenaline_100` and `challenge_hunter_adrenaline_2
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9744 |
 | Config file | `plugins/Adapt/adaptations/hunter-regen.toml` |
-
-Listened events: `EntityDamageEvent`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -223,7 +205,6 @@ Milestone: `challenge_hunter_regen_500` on `hunter.regen.health-regened`, 500 ac
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterInvis` |
 | Icon | `TROPICAL_FISH_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -232,8 +213,6 @@ Milestone: `challenge_hunter_regen_500` on `hunter.regen.health-regened`, 500 ac
 | Tick interval (ms) | 9444 |
 | Localization key | `hunter.invisibility` |
 | Config file | `plugins/Adapt/adaptations/hunter-invis.toml` |
-
-Listened events: `EntityDamageEvent`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -254,7 +233,6 @@ Milestone: `challenge_hunter_invis_200` on `hunter.invis.activations`, 200 activ
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterJumpBoost` |
 | Icon | `PUFFERFISH_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -263,8 +241,6 @@ Milestone: `challenge_hunter_invis_200` on `hunter.invis.activations`, 200 activ
 | Tick interval (ms) | 9544 |
 | Localization key | `hunter.jump_boost` |
 | Config file | `plugins/Adapt/adaptations/hunter-jumpboost.toml` |
-
-Listened events: `EntityDamageEvent`.
 
 Applies two timed attribute modifiers rather than a potion: jump strength `+0.1 * (level + 1)` and safe fall distance `+(level + 1)` blocks. Blocked while a Jump Boost potion effect is present, or if either attribute is missing on the running server version.
 
@@ -287,7 +263,6 @@ Milestone: `challenge_hunter_jump_200` on `hunter.jump-boost.activations`, 200 a
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterLuck` |
 | Icon | `TADPOLE_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -295,8 +270,6 @@ Milestone: `challenge_hunter_jump_200` on `hunter.jump-boost.activations`, 200 a
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9644 |
 | Config file | `plugins/Adapt/adaptations/hunter-luck.toml` |
-
-Listened events: `EntityDamageEvent`, `PlayerDeathEvent` (clears the buff and penalty timers).
 
 Applies a timed Luck attribute modifier of `+(level + 1)`. The starve path adds a negative Luck modifier of `-(basePoisonFromLevel - level + 1)` for `baseHungerDuration` ticks.
 
@@ -319,7 +292,6 @@ Milestone: `challenge_hunter_luck_200` on `hunter.luck.activations`, 200 activat
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterSpeed` |
 | Icon | `SUGAR` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -357,7 +329,6 @@ Milestone: `challenge_hunter_speed_200` on `hunter.speed.activations`, 200 activ
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterStrength` |
 | Icon | `COD_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -365,8 +336,6 @@ Milestone: `challenge_hunter_speed_200` on `hunter.speed.activations`, 200 activ
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9044 |
 | Config file | `plugins/Adapt/adaptations/hunter-strength.toml` |
-
-Listened events: `EntityDamageEvent`, `PlayerDeathEvent` (clears the buff timer).
 
 Applies a timed attack damage modifier of `+3.0 * (level + 1)`. Blocked while a Strength potion effect is present.
 
@@ -389,7 +358,6 @@ Milestone: `challenge_hunter_strength_200` on `hunter.strength.activations`, 200
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterResistance` |
 | Icon | `POWDER_SNOW_BUCKET` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -397,8 +365,6 @@ Milestone: `challenge_hunter_strength_200` on `hunter.strength.activations`, 200
 | Cost factor | 0.4 |
 | Tick interval (ms) | 9844 |
 | Config file | `plugins/Adapt/adaptations/hunter-resistance.toml` |
-
-Listened events: `EntityDamageEvent`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -419,7 +385,6 @@ Milestone: `challenge_hunter_resistance_500` on `hunter.resistance.activations`,
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterDropToInventory` |
 | Icon | `TRAPPED_CHEST` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -427,8 +392,6 @@ Milestone: `challenge_hunter_resistance_500` on `hunter.resistance.activations`,
 | Cost factor | 1 |
 | Tick interval (ms) | 18440 |
 | Config file | `plugins/Adapt/adaptations/hunter-drop-to-inventory.toml` |
-
-Listened events: `BlockDropItemEvent` and `EntityDeathEvent`.
 
 `BlockDropItemEvent` requires a sword from
 `ItemListings.toolSwords` in the main hand, an allowed interact context, and a
@@ -445,7 +408,6 @@ Milestone: `challenge_hunter_dti_10k` on `hunter.drop-to-inv.items-caught`, 1000
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterTrophySkinner` |
 | Icon | `ZOMBIE_HEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -453,8 +415,6 @@ Milestone: `challenge_hunter_dti_10k` on `hunter.drop-to-inv.items-caught`, 1000
 | Cost factor | 0.8 |
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adaptations/hunter-trophy-skinner.toml` |
-
-Listened events: `EntityDeathEvent`.
 
 A kill counts as precise when it was a projectile kill at or beyond the minimum range, or when the killer was sneaking. Trophy material is chosen by entity type (`GUNPOWDER`, `BONE`, `ROTTEN_FLESH`, `STRING`, `BLAZE_POWDER`, `ENDER_PEARL`, `REDSTONE`, `PORKCHOP`, with `LEATHER` as the fallback). Head drops exist only for creepers, skeletons, strays, bogged, wither skeletons, zombies, husks, drowned, zombified piglins, piglins, and piglin brutes.
 
@@ -478,7 +438,6 @@ Milestones: `challenge_hunter_trophy_50` on `hunter.trophy-skinner.trophies-coll
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterPredatorFocus` |
 | Icon | `TARGET` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -504,7 +463,6 @@ Milestones: `challenge_hunter_predator_focus_500` and `challenge_hunter_predator
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterBigGameHunter` |
 | Icon | `NETHERITE_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 7 |
@@ -532,7 +490,6 @@ Milestones: `challenge_hunter_big_game_100` and `challenge_hunter_big_game_1k` o
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterBloodTrail` |
 | Icon | `REDSTONE` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -540,8 +497,6 @@ Milestones: `challenge_hunter_big_game_100` and `challenge_hunter_big_game_1k` o
 | Cost factor | 0.4 |
 | Tick interval (ms) | 250 |
 | Config file | `plugins/Adapt/adaptations/hunter-blood-trail.toml` |
-
-Listened events: `EntityDamageByEntityEvent` (player is the direct damager) and `PlayerQuitEvent` (drops that player's wounds and clears their display channel). The tick only runs while at least one wound is tracked.
 
 Trail duration is `100 + round(levelPercent * 200)` ticks, so 7 seconds at level 1 and 15 at level 5. Tracking range is `16 + levelPercent * 32` blocks, so 22.4 at level 1 and 48 at level 5. Segments are drawn per viewer through `ViewerDisplayDirector` and never render for other players.
 
@@ -563,7 +518,6 @@ Milestones: `challenge_hunter_blood_trail_250` and `challenge_hunter_blood_trail
 
 | Property | Default |
 |----------|---------|
-| Class | `HunterSnareLine` |
 | Icon | `TRIPWIRE_HOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -571,8 +525,6 @@ Milestones: `challenge_hunter_blood_trail_250` and `challenge_hunter_blood_trail
 | Cost factor | 0.5 |
 | Tick interval (ms) | 250 |
 | Config file | `plugins/Adapt/adaptations/hunter-snare-line.toml` |
-
-Listened events: `PlayerInteractEvent` (right-click on a block, receives cancelled events) and `PlayerQuitEvent` (removes that player's snares). The tick only runs while at least one snare is placed.
 
 Recipe `hunter-snare` is shaped `S S` / `SIS` / `S S` with `S` = `STRING` and
 `I` = `IRON_INGOT`. It produces 2 tripwire hooks named "Hunter's Snare". They

@@ -68,7 +68,7 @@ There is no `id` key. The document id is the file name with `.json` removed. If 
 
 A document that fails to parse is logged as `boards/<id>.json: <reason>` and skipped. The copy Gloss already holds stays live. A deleted file removes the board. Any player currently on it loses their sticky selection and is re-evaluated.
 
-### Shipped defaults
+### Defaults
 
 `boards/default.json` and `boards/animation-showcase.json` are extracted when missing, and only
 while `[features] boards` is on. With the feature off there is no `boards/` folder at all; turning
@@ -91,7 +91,7 @@ it on extracts both defaults on that reload. The ordinary default is:
 Note `"when": "false"`. Out of the box nothing selects this board. Give it a real condition, or
 use `"true"`, before it can appear automatically.
 
-`animation-showcase.json` is a complete paste-ready board with one row for every shipped animation
+`animation-showcase.json` is a complete paste-ready board with one row for every included animation
 effect, one obfuscated-text row, and one row for each alignment:
 
 ```json
@@ -125,13 +125,13 @@ effect, one obfuscated-text row, and one row for each alignment:
 
 The board is deliberately not selected. Use `/gloss board show animation-showcase` to inspect it
 without changing automatic selection, or edit its `select` block normally. `middle` is an alias for
-`center`, so the shipped board demonstrates the three distinct layouts without spending a duplicate
+`center`, so the included board demonstrates the three distinct layouts without spending a duplicate
 row.
 
-`/gloss board reset [name=*]` rewrites shipped defaults over whatever is on disk. Use `default` or
+`/gloss board reset [name=*]` rewrites defaults over whatever is on disk. Use `default` or
 `animation-showcase` for one file; `*` restores both. It requires `gloss.boards.edit`.
 
-> `/gloss board reset` overwrites the selected shipped board files without a backup. Boards you created yourself are not shipped defaults. The command never touches them.
+> `/gloss board reset` overwrites the selected included board files without a backup. Boards you created yourself are not defaults. The command never touches them.
 {.is-warning}
 
 ## Selection order
@@ -187,7 +187,7 @@ Required arguments are positional in the order shown. Optional arguments must be
 info` reports the selection priority, condition, variant count, title and lines. Variants remain a
 JSON/editor surface so their complete presentations can be edited atomically.
 
-Every command edit rewrites the document with `revision` bumped by one, through an atomic temp-file rename. The watcher compares each changed file SHA-256 against the hash Gloss just wrote. A command edit never bounces back through the hot-reload path. See [Data Files & Hot Reload](/gloss/03-data-files).
+Command edits save the document and increment its revision. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
@@ -234,6 +234,6 @@ If Vault is present but the hook fails to construct, Gloss logs `Vault permissio
 ## Coming from the pre-merge layout
 
 Board schema 2 is a hard format break. Gloss silently ignores schema-1 board documents and does not migrate them.
-Rewrite custom files to the shape above or use `/gloss board reset` for a shipped default. The legacy
+Rewrite custom files to the shape above or use `/gloss board reset` for a default. The legacy
 import command is not a board-schema upgrader. Full document behavior is in
 [Data Files & Hot Reload](/gloss/03-data-files).

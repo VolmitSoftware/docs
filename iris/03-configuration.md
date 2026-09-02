@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ See [01 - Installation & Platforms](/iris/01-installation-platforms) for data pa
 
 ## What you actually need to change
 
-The shipped defaults are correct for almost every server. Most operators only ever touch a handful of keys:
+The defaults are correct for almost every server. Most operators only ever touch a handful of keys:
 
 | You want to | Change |
 |---|---|
@@ -99,7 +99,6 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | `studio` | `IrisSettingsStudio` | Studio world behavior |
 | `performance` | `IrisSettingsPerformance` | Mantle residency, loader caches, SIMD, engine service pool |
 | `pregen` | `IrisSettingsPregen` | Pregen scheduling, mantle backpressure, timeouts |
-| `sentry` | `IrisSettingsSentry` | Error reporter |
 | `treeFeller` | `IrisSettingsTreeFeller` | Survival tree feller |
 
 Static helper `IrisSettings.getThreadCount(int c)`: for `c` in `{-1, -2, -4}` it returns `max(availableProcessors / -c, 1)`. Otherwise `max(c, 2)`, floored at 1.
@@ -121,7 +120,7 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `useCustomColorsIngame` | `true` | Live | Same, for messages sent to players |
 | `progressBossBar` | `true` | Live | Enables boss-bar progress for supported jobs, Studio opens, chunk jobs, and pack downloads. Ordinary `/iris create` always uses its action-bar lifecycle meter instead; creation-time pregeneration retains its dedicated long-running boss bar |
 | `adjustVanillaHeight` | `false` | **Restart** | **Bukkit only.** Overwrites the vanilla `overworld`/`the_nether`/`the_end` dimension-type JSON with Iris height when compiling the datapack. It is part of the datapack fingerprint, so flipping it forces a datapack rebuild |
-| `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Downloads and installs configured `datapackImports` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating. Managed structures stay scoped to the declaring Iris dimensions |
+| `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Installs or updates configured HTTP(S)/`file:` sources and ZIPs discovered under `plugins/Iris/datapacks/imports/` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating; local archive bytes are still fingerprinted. Explicit sources stay scoped to declaring dimensions, while drop-folder sources apply to every Iris dimension |
 | `autoImportDatapackStructures` | `false` | Live (next ingest) | **Bukkit only.** Converts every registered datapack structure into editable Iris pools, pieces, and objects — thousands of files in your pack folder. Native generation never needs those copies, so leave it off and run `/iris structure import <dimension>` when you actually want them |
 | `strictContentKeys` | `false` | Live | Promotes unresolved pack content keys and bad block-state properties from warnings to blocking pack errors. Worth turning on while developing a pack. `-Diris.strictContent` overrides it in both directions, and the bare property with no value counts as true |
 | `spinh` | `-20` | Live | Hue factor of the animated "aura" gradient on Iris text |
@@ -208,7 +207,7 @@ The engine maintenance service is a small scheduled pool that trims and unloads 
 |-----|---------|--------------|--------------|
 | `useVirtualThreads` | `true` | **Restart** | Builds the maintenance thread factory from virtual threads instead of platform threads |
 | `forceMulticoreWrite` | `false` | Live | Makes every maintenance pass unload all eligible tectonic plates instead of only unloading under heap pressure. Trades steadier memory for more write work. Useful during long pregens on a small heap |
-| `priority` | `5` (`Thread.NORM_PRIORITY`) | **Restart** | Thread priority, clamped to `[MIN_PRIORITY, MAX_PRIORITY]`. It is applied only when `useVirtualThreads` is false, so with the shipped defaults this key does nothing |
+| `priority` | `5` (`Thread.NORM_PRIORITY`) | **Restart** | Thread priority, clamped to `[MIN_PRIORITY, MAX_PRIORITY]`. It is applied only when `useVirtualThreads` is false, so with the defaults this key does nothing |
 | `parallelism` | `-1` | **Restart** | Maintenance pool size. `>0` is capped at `processors * 2`. `<=0` uses `ceil(sqrt(processors))`, at least 1 |
 
 ## `pregen` — scheduling, timeouts, and mantle backpressure
@@ -226,16 +225,6 @@ These keys bound how aggressively pregeneration pushes the server. They are read
 | `mantleBackpressureWaitMs` | `25` | Both | Clamped to `[5, 1000]`. Sleep granularity while pregen waits for resident plates to drop below the cap |
 | `mantleBackpressureTimeoutMs` | `60000` | Both | Clamped to `[5000, 600000]`. How long that wait may last before Iris logs a backpressure warning and lowers its adaptive in-flight limit. Seeing this warning repeatedly means `maxResidentTectonicPlates` is too high for your heap, not too low |
 | `moddedPregenInFlight` | `0` | Modded | Concurrent chunk budget for modded pregen. `>0` is capped at 512. `<=0` derives `max(16, min(48, cpu * 2))`. Lower it when modded pregen causes chunk-load timeouts or memory growth. Inert on Bukkit |
-
-## `sentry` — error reporting
-
-Read once during boot on both platforms, so every change here needs a restart.
-
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `includeServerId` | `true` | **Bukkit only.** Attaches the server id to reports so recurring reports from one server can be grouped. Not read on mod loaders |
-| `disableAutoReporting` | `false` | Skips Sentry initialization entirely. Set true if you do not want automatic error reports leaving the machine |
-| `debug` | `false` | Turns on Sentry's own debug logging. Useful only when reports are not arriving |
 
 ## `treeFeller` — survival tree felling
 
@@ -303,9 +292,9 @@ Path: `<configDir>/irisworldgen/modded.json`, written with defaults on first loa
 
 ## What is not in these files
 
-- Pack JSON (dimensions, biomes, objects) lives under `packs/<key>/` — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
-- Per-world studio and workspace files are generated under pack roots — see [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
-- Locale files and overrides — see [08 - Localization](/iris/08-localization).
+- Pack JSON (dimensions, biomes, objects) lives under `packs/<key>/`. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
+- Per-world studio and workspace files are generated under pack roots. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+- Locale files and overrides: see [08 - Localization](/iris/08-localization).
 
 ## Related
 

@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Adapt documentation: Skill - Axes"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ Two things pay out. Breaking a log, wood, mushroom block, mangrove roots or mudd
 
 Both share one cooldown. Rapid-fire breaks and hits do not each pay out. Blocks with zero hardness are worth nothing. Blocks that Adapt's XP provenance system has already paid for do not pay again.
 
-Breaking leaves with an axe only bumps the `axes.leaves` stat, which drives the leaf challenges. Leaves are not log-type blocks, so they never reach the XP branch. `leavesMultiplier` has no effect on what you actually earn with the shipped code.
+Breaking leaves with an axe only bumps the `axes.leaves` stat, which drives the leaf challenges. Leaves are not log-type blocks, so they never reach the XP branch. `leavesMultiplier` has no effect on what you actually earn with the current code.
 
 ## Adaptations
 
@@ -110,7 +110,7 @@ How to use it:
 3. Place eight logs of one type plus one sapling of the type you want.
 4. Take the result.
 
-Cherry and pale oak recipes register only when the server's Minecraft version has those materials. This adaptation ships with `permanent` set to `true`. Once you learn it you cannot unlearn it and get the knowledge back.
+Cherry and pale oak recipes register only when the server's Minecraft version has those materials. This adaptation has `permanent` set to `true` by default. Once you learn it you cannot unlearn it and get the knowledge back.
 
 ### Throwing Axe (`axe-throwing-axe`)
 
@@ -147,27 +147,7 @@ Works on its own once learned. Dying clears the ceiling. Your next chop refills 
 Hitting someone who is actively blocking deals bonus damage. It also puts their shield on a much longer cooldown than a vanilla axe would. It also works against mobs that raise a shield.
 
 Works on its own once learned.
-
-## Support classes
-
-These are internal helpers, not player-facing adaptations.
-
-- `AxeBlockBreakSwingGuard` suppresses the one synthetic air swing Minecraft emits immediately after an axe block break, so mining never triggers Throwing Axe.
-- `AxeRecoveryJournal` persists thrown-axe recovery entries and validates them before restoring an item, so a shutdown mid-flight does not eat your axe.
-
 ## Reference
-
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `axes` |
-| Class | `SkillAxes` |
-| Icon | `GOLDEN_AXE` |
-| Color | `YELLOW` |
-| Interval (ms) | `5251` |
-| Skill config | `plugins/Adapt/skills/axes.toml` |
-| Adaptation count | 11 normally, 12 with Iris installed |
 
 ### Skill configuration defaults
 
@@ -245,7 +225,6 @@ The tick interval below is the adaptation's background tick rate. Only Cleave ac
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeGroundSmash` |
 | Icon | `NETHERITE_AXE` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -253,8 +232,6 @@ The tick interval below is the adaptation's background tick rate. Only Cleave ac
 | Cost factor | 0.75 |
 | Tick interval (ms) | 4333 |
 | Config file | `plugins/Adapt/adaptations/axe-ground-smash.toml` |
-
-Listened events: `PlayerToggleSneakEvent` (arms the smash), `PlayerMoveEvent` (fires it on landing).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -270,7 +247,6 @@ Listened events: `PlayerToggleSneakEvent` (arms the smash), `PlayerMoveEvent` (f
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeChop` |
 | Icon | `IRON_AXE` |
 | Max level | 5 |
 | Initial knowledge cost | 2 |
@@ -278,8 +254,6 @@ Listened events: `PlayerToggleSneakEvent` (arms the smash), `PlayerMoveEvent` (f
 | Cost factor | 0.35 |
 | Tick interval (ms) | 6911 |
 | Config file | `plugins/Adapt/adaptations/axe-chop.toml` |
-
-Listened events: `PlayerInteractEvent` (right-click block, or right-click air off Folia).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -293,7 +267,6 @@ Listened events: `PlayerInteractEvent` (right-click block, or right-click air of
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeDropToInventory` |
 | Icon | `BARREL` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -302,15 +275,12 @@ Listened events: `PlayerInteractEvent` (right-click block, or right-click air of
 | Tick interval (ms) | 8800 |
 | Config file | `plugins/Adapt/adaptations/axe-drop-to-inventory.toml` |
 
-Listened events: `BlockDropItemEvent`.
-
 No adaptation-specific config keys.
 
 ### Leaf-miner
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeLeafVeinminer` |
 | Icon | `BIRCH_LEAVES` |
 | Max level | 5 |
 | Initial knowledge cost | 1 |
@@ -318,8 +288,6 @@ No adaptation-specific config keys.
 | Cost factor | 0.325 |
 | Tick interval (ms) | 5849 |
 | Config file | `plugins/Adapt/adaptations/axe-leaf-veinminer.toml` |
-
-Listened events: `BlockBreakEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -330,7 +298,6 @@ Listened events: `BlockBreakEvent`.
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeIrisFeller` |
 | Icon | `NETHERITE_AXE` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -339,9 +306,7 @@ Listened events: `BlockBreakEvent`.
 | Tick interval (ms) | 6127 |
 | Config file | `plugins/Adapt/adaptations/axe-iris-feller.toml` |
 
-Listened events: `BlockBreakEvent`.
-
-Durability preservation chance is hard-coded per level, not configurable: level 1 gives 0 percent, level 2 gives 25 percent, level 3 gives 75 percent. `maxLevel` is forced back to 3 on every config load.
+Durability preservation chance is fixed per effect tier: level 1 gives 0 percent, level 2 gives 25 percent, and level 3 or higher gives 75 percent. `maxLevel` remains operator-configurable.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -352,7 +317,6 @@ Durability preservation chance is hard-coded per level, not configurable: level 
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeWoodVeinminer` |
 | Icon | `DIAMOND_AXE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -360,8 +324,6 @@ Durability preservation chance is hard-coded per level, not configurable: level 
 | Cost factor | 0.95 |
 | Tick interval (ms) | 5849 |
 | Config file | `plugins/Adapt/adaptations/axe-wood-veinminer.toml` |
-
-Listened events: `BlockBreakEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -372,7 +334,6 @@ Listened events: `BlockBreakEvent`.
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeCraftLogSwap` |
 | Icon | `MUDDY_MANGROVE_ROOTS` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -380,8 +341,6 @@ Listened events: `BlockBreakEvent`.
 | Cost factor | 1 |
 | Tick interval (ms) | 17773 |
 | Config file | `plugins/Adapt/adaptations/axe-logswap.toml` |
-
-Listened events: `CraftItemEvent`.
 
 Registers up to 70 shapeless recipes under the `adapt` namespace with keys of the form `axe-swap<from><to>`. Cherry and pale oak entries are skipped when the running Minecraft version lacks those materials. `permanent` defaults to `true` here, unlike every other Axes adaptation.
 
@@ -391,7 +350,6 @@ No adaptation-specific config keys.
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeThrowingAxe` |
 | Icon | `IRON_AXE` |
 | Max level | 4 |
 | Initial knowledge cost | 5 |
@@ -399,8 +357,6 @@ No adaptation-specific config keys.
 | Cost factor | 0.55 |
 | Tick interval (ms) | 1000 (framework default) |
 | Config file | `plugins/Adapt/adaptations/axe-throwing-axe.toml` |
-
-Listened events: `PlayerInteractEvent` (throw on left-click air), `BlockBreakEvent` (marks the swing guard), `ProjectileHitEvent`, `EntityRemoveEvent`, `EntityDamageByEntityEvent`, `EntityDeathEvent` (kill credit), `PlayerJoinEvent` and `PlayerQuitEvent` (recovery bookkeeping).
 
 At most 512 thrown axes are tracked in flight server-wide.
 
@@ -421,7 +377,6 @@ At most 512 thrown axes are tracked in flight server-wide.
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeSunder` |
 | Icon | `NETHERITE_AXE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -429,8 +384,6 @@ At most 512 thrown axes are tracked in flight server-wide.
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
 | Config file | `plugins/Adapt/adaptations/axe-sunder.toml` |
-
-Listened events: `EntityDamageByEntityEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -446,7 +399,6 @@ Listened events: `EntityDamageByEntityEvent`.
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeCleave` |
 | Icon | `DIAMOND_AXE` |
 | Max level | 3 |
 | Initial knowledge cost | 6 |
@@ -454,8 +406,6 @@ Listened events: `EntityDamageByEntityEvent`.
 | Cost factor | 0.6 |
 | Tick interval (ms) | 9973 |
 | Config file | `plugins/Adapt/adaptations/axe-cleave.toml` |
-
-Listened events: `EntityDamageByEntityEvent`. This is the one Axes adaptation that uses its background tick, to drop expired cleave marks.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -474,7 +424,6 @@ Listened events: `EntityDamageByEntityEvent`. This is the one Axes adaptation th
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeBarkHide` |
 | Icon | `OAK_WOOD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -482,8 +431,6 @@ Listened events: `EntityDamageByEntityEvent`. This is the one Axes adaptation th
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
 | Config file | `plugins/Adapt/adaptations/axe-bark-hide.toml` |
-
-Listened events: `BlockBreakEvent`, `PlayerDeathEvent`.
 
 Each stack is 4 absorption points, which is 2 hearts.
 
@@ -499,7 +446,6 @@ Each stack is 4 absorption points, which is 2 hearts.
 
 | Property | Value |
 |----------|-------|
-| Class | `AxeShieldSplitter` |
 | Icon | `SHIELD` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -507,8 +453,6 @@ Each stack is 4 absorption points, which is 2 hearts.
 | Cost factor | 0.5 |
 | Tick interval (ms) | 1000 (framework default) |
 | Config file | `plugins/Adapt/adaptations/axe-shield-splitter.toml` |
-
-Listened events: `EntityDamageByEntityEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

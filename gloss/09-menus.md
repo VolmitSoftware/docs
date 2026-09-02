@@ -62,10 +62,7 @@ A file whose derived id breaks any of those rules fails to parse and is skipped 
 
 Menus and container previews are the two document kinds that did **not** get the `{"schemaVersion": 1, "revision": N}` envelope described in [Data Files & Hot Reload](/gloss/03-data-files). A menu document is exactly the shape below and nothing else.
 
-Gloss still tracks a revision for menus. It is the SHA-256 hash of the file raw text. Nothing writes it into the file. It is used two ways:
-
-- the hot-reload watcher only republishes a changed file when its hash differs from the registered one, so touching a file without editing it does nothing
-- every content command sends the hash it read as an expected value. The write is refused if the file changed underneath it. Gloss then reports `menu content revision conflict` with both hashes abbreviated to their first 12 characters
+Menu edits save automatically. If another editor changed the same menu first, Gloss refuses the stale write so no work is overwritten.
 
 ## The menu document
 
@@ -164,7 +161,7 @@ If you set `[features] menus = false` in `gloss.toml`, every open path refuses. 
 
 Menu and panel text uses the same viewer-aware text pipeline as scoreboards before the menu subsystem converts it to a MiniMessage component.
 
-For a text icon, each line of the `text` value — split on `\n` — is rendered in this order:
+For a text icon, each line of the `text` value is split on `\n` and rendered in this order:
 
 1. **Functions**, including `|animation.<id>|` and `|metric.<key>|`, when `[text] functions` is on.
 2. **Inline expressions**, including direct `player.*`/`server.*` getters and `papi`, `papiNumber` and `metric` calls.
@@ -209,8 +206,8 @@ Validation at load time is limited to what the record constructors
 check. Those checks cover the id contract, the `type` discriminators,
 and hitbox width and height pairing and sign. They also cover
 `refreshTicks` bounds, entity icon dimension bounds and the
-display-style ranges. Everything else — a missing `offset`, a missing
-`components`, a component with no `data` — surfaces when a player opens
+display-style ranges. Other errors, including a missing `offset`, a missing
+`components`, or a component with no `data`, surface when a player opens
 the menu.
 
 ### Parse failures
@@ -262,7 +259,7 @@ Every node below is reachable as `/gloss menu …` or `/gloss menus …`. The fu
 
 | Node | What it writes |
 |---|---|
-| `new <menu>` | Creates a new file from the shipped blank baseline. Fails if the id already exists |
+| `new <menu>` | Creates a new file from the default blank file. Fails if the id already exists |
 | `copy <menu> <newMenu>` | Copies an existing document to a new id |
 | `addrow <menu> <text>` | Appends a text decoration component, offset one row spacing below the last |
 | `insertrow <menu> <row> <text>` | Inserts a text decoration at a one-based row |
@@ -285,9 +282,9 @@ Writes are queued through a single-threaded mutation service. Two commands again
 > `/gloss menu create` and `/gloss menu new` are different commands. `create` makes a persistent world-anchored panel plus its root menu, is player only, and is gated by `gloss.panels`. `new` makes a blank menu document only and is gated by `gloss.menus.edit`.
 {.is-info}
 
-### The shipped default and creation baseline
+### The default and creation baseline
 
-Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/default.json` when menus are enabled and that file is missing. Existing bytes are never overwritten. `/gloss menu new` reads the same resource, keeping every new blank menu aligned with the shipped starter.
+Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/default.json` when menus are enabled and that file is missing. Existing bytes are never overwritten. `/gloss menu new` reads the same resource, keeping every new blank menu aligned with the default starter.
 
 ```json
 {
@@ -330,7 +327,7 @@ Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/d
 }
 ```
 
-`/gloss menu create` does not use this baseline. It writes a much smaller document — one decoration with a vertical billboard, at `offset` `[0, 1.7, 0]` — because a panel supplies its own placement. If you pass no `text=`, the label is `&f` followed by the panel id.
+`/gloss menu create` does not use this baseline. It writes a smaller document with one vertical-billboard decoration at `offset` `[0, 1.7, 0]` because a panel supplies its own placement. If you pass no `text=`, the label is `&f` followed by the panel id.
 
 ## Permissions
 
@@ -345,7 +342,7 @@ Gloss extracts the jar's `defaults/menus/default.json` as `plugins/Gloss/menus/d
 
 ### `gloss.open.<menuId>`
 
-Every open path tests `gloss.open.<menuId>` in addition to whatever gate got the player there. The node is built at runtime from the id. It is not declared in `plugin.yml`. Bukkit treats it as op-only until a permission plugin grants it. A menu id containing `/` produces a node containing `/`, for example `gloss.open.shops/weapons/main`.
+Opening a menu also requires `gloss.open.<menuId>`. It is operator-only until a permission plugin grants it. A menu id containing `/` produces a node containing `/`, for example `gloss.open.shops/weapons/main`.
 
 It is checked on:
 
@@ -364,7 +361,7 @@ Grant `gloss.open.*` to a group to let it open everything. Grant individual node
 
 Its top-level `required` is `["offset", "components"]` and its properties are `offset`, `lockPosition`, `followPlayer`, `maxDistance`, `closeOnDeath`, `closeOnTeleport` and `components`.
 
-Because the schema is advisory rather than enforced, the two can disagree in both directions. Files the schema rejects can still load, because runtime coercion is broader — single-object collections and lenient JSON are the common cases. Files the schema accepts can still fail, because the schema does not model the open-time nullability rules or the API-only `itemStack` icon type.
+The advisory schema and runtime can disagree. Runtime coercion accepts some files the schema rejects, including single-object collections and lenient JSON. The schema can also accept files that fail at runtime because it does not model open-time nullability rules or the API-only `itemStack` icon type.
 
 `schema/gloss-preview.schema.json` sits beside it and is unrelated. It describes container preview documents, covered in [Container Previews](/gloss/15-container-previews).
 

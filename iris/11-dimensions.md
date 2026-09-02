@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -76,7 +76,7 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 | `ENCLOSURE` | Terrain and biome only | Nothing yet. The nether-style ceiling and floor treatment is not implemented |
 | `ISLANDS` | Terrain and biome only | Nothing yet. Floating-island terrain comes from biome `floatingChildBiomes` in `OVERWORLD` mode, not from this |
 
-`mode` is marked required in the schema. Gson supplies a default `IrisDimensionMode` when the field is absent. An omitted `mode` runs `OVERWORLD`. The shipping overworld pack omits it. If the mode factory throws, the engine logs the failure once. It warns that it is falling back. It then builds `OVERWORLD` instead.
+`mode` is marked required in the schema. Gson supplies a default `IrisDimensionMode` when the field is absent. An omitted `mode` runs `OVERWORLD`. The bundled overworld pack omits it. If the mode factory throws, the engine logs the failure once. It warns that it is falling back. It then builds `OVERWORLD` instead.
 
 `IrisDimensionMode` is a snippet type (`dimension-mode`). `"mode": "snippet/dimension-mode/overworld"` is also valid.
 
@@ -85,7 +85,7 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 Iris generates internally from `0` to `dimensionHeight.max - dimensionHeight.min`. It then shifts the finished chunk down by `dimensionHeight.min` on output. Almost every Y number the engine handles internally is in that shifted space. The numbers you write in the dimension JSON are not all in the same space. That is the most common source of confusion in this file.
 
 - `dimensionHeight.min` / `dimensionHeight.max` are **world Y**.
-- `fluidHeight` is **world Y**. `IrisDimension.getFluidHeight()` returns `fluidHeight - dimensionHeight.min`. That is what the engine uses internally. Sea level ends up back at the world Y you wrote. The shipping overworld sets `fluidHeight` 50 with `min` -256. Its ocean surface is at world Y 50.
+- `fluidHeight` is **world Y**. `IrisDimension.getFluidHeight()` returns `fluidHeight - dimensionHeight.min`. That is what the engine uses internally. Sea level ends up back at the world Y you wrote. The bundled overworld sets `fluidHeight` 50 with `min` -256. Its ocean surface is at world Y 50.
 - `caveLavaHeight` is **internal Y**. World Y = `caveLavaHeight + dimensionHeight.min`. The default 8 with a min of -64 puts the cave lava ceiling at world Y -56.
 - Bedrock is written at internal Y 0, which is world Y `dimensionHeight.min`.
 
@@ -187,7 +187,7 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 |-------|------|---------|------------------------------------|
 | `regions` | string[] | empty | The region load keys this dimension may place. Required. An empty list produces a world with no biomes to select. Add a region here after you create its file, or the file never generates |
 | `landChance` | double | `0.625` | Fraction of continental noise that becomes land. Push toward 1.0 for a continental world. Push toward 0.0 for an archipelago or ocean world |
-| `regionZoom` | double | `1` | Scales region cells. Small values give many small climate patches. The shipping overworld uses `16.15` for continent-sized climate bands |
+| `regionZoom` | double | `1` | Scales region cells. Small values give many small climate patches. The bundled overworld uses `16.15` for continent-sized climate bands |
 | `landZoom` | double | `1` | Scales the land-biome selection space independently of regions. Raise it to make each land biome patch bigger without changing where regions sit |
 | `seaZoom` | double | `1` | Same, for ocean biomes |
 | `continentZoom` | double | `1` | Scales the land/sea mask. Raise it for fewer, larger continents |
@@ -196,10 +196,82 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `continentalStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Noise style for the land/sea mask. This is what coastlines look like |
 | `landBiomeStyle` / `seaBiomeStyle` / `shoreBiomeStyle` / `caveBiomeStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Per-category biome border shapes. Cellular styles give patchwork borders. Simplex-family styles give organic blobs |
 | `coordFractureDistance` | double | `20` | How far, in blocks, coordinate warping can displace a sample. This produces Iris characteristic swirls. Set to 0 for straight, unwarped borders |
-| `coordFractureZoom` | double | `8` | Frequency of that warping. Lower values warp more rapidly and more violently. The shipping overworld uses `0.15` |
-| `dimensionAngleDeg` | double | `0` | Rotates every input coordinate by this angle. Breaks up axis-aligned artifacts. Pick something off 45 and 90. The shipping overworld uses 69 |
+| `coordFractureZoom` | double | `8` | Frequency of that warping. Lower values warp more rapidly and more violently. The bundled overworld uses `0.15` |
+| `dimensionAngleDeg` | double | `0` | Rotates every input coordinate by this angle. Breaks up axis-aligned artifacts. Pick something off 45 and 90. The bundled overworld uses 69 |
 | `focus` | string | `""` | Forces the whole world to one biome load key, in the **land** role. A sea biome under `focus` generates as land, so sea and shore structure eligibility never runs. Testing only. Remove before packaging |
 | `focusRegion` | string | `""` | Forces the whole world to one region load key. Testing only. Remove before packaging |
+
+## Terrain-first hydrology
+
+`hydrology` owns physical surface rivers, underground rivers, grottos, mouths, and independent deep fluids for the dimension. The planner freezes one deterministic drainage graph before terrain, carving, biome, decorator, object, renderer, and locator stages consume it. Existing chunks do not change when this configuration reloads.
+
+```json
+{
+  "hydrology": {
+    "rivers": {
+      "enabled": true,
+      "routing": {
+        "tileSize": 512,
+        "sampleSpacing": 64,
+        "refinementSpacing": 4,
+        "maximumRouteLength": 16384,
+        "maximumOutletsPerTile": 1,
+        "oceanOutlets": true
+      },
+      "surface": {
+        "enabled": true,
+        "sources": { "density": 3.0, "minimumElevation": 64, "minimumPerTile": 0 }
+      },
+      "underground": {
+        "enabled": true,
+        "sources": { "density": 1.5, "minimumPerTile": 0 }
+      },
+      "profiles": [
+        { "id": "water", "fluidPalette": { "palette": [{ "block": "minecraft:water" }] } }
+      ]
+    },
+    "deepFluids": []
+  }
+}
+```
+
+Source `density` is the expected natural headwater count per qualifying planning tile, not a per-chunk chance. Surface and underground sources have independent budgets. `minimumPerTile` backfills required headwaters only while legal candidates and outlets remain. `maximumOutletsPerTile` limits selected drainage roots after source admission: lower values make more headwaters converge into longer shared trunks, while higher values produce more independent trees.
+
+Accepted graph edges are refined into endpoint-pinned, two-scale Simplex paths with continuous downstream tangents, curvature smoothing, bounded terrain fallbacks, and contained hairpin removal. Tributaries publish their unique approach once and then share one canonical downstream trunk and outlet continuation. The route remains terrain bounded, but does not expose the cardinal or diagonal sampling lattice. Surface channels carve below the complete swept terrain corridor, publish rough asymmetric U-shaped beds, and grade the parent terrain beyond a separate shore band. Uncontained horizontal fluid cells are omitted, including low coastal cells, so accepted surface water remains below natural terrain until its ocean apron. Solved head loss becomes pools, riffles, cascades, or exponentially graded waterfalls with connected receiving reaches. Every adjacent wetted face respects `geometry.drops.maximumFaceDrop`; no vertical falling-fluid throat is generated. A compatible surface spill remains authoritative where it intersects cave headroom.
+
+Underground channels with `connectToExistingCaves: false` own and seal their complete generated passage. Planning validates that transactional volume without materializing surrounding cave terrain, while intentional grotto and sinkhole openings remain explicit. Enabling `connectToExistingCaves` instead samples the observed cave field and accepts a connection only when the completed wet component remains contained.
+
+| River key | Runtime behavior |
+|-----------|------------------|
+| `routing.tileSize` | Planning-tile width in blocks, 256–8192. Smaller tiles evaluate source budgets more often |
+| `routing.sampleSpacing` | Terrain-graph sampling interval. This bounds drainage search cost; it is not the visible route step |
+| `routing.refinementSpacing` | Interval used for the organic accepted centerline and final terrain checks |
+| `routing.maximumRouteLength` | Hard route-length bound in blocks |
+| `routing.maximumOutletsPerTile` | Maximum drainage roots selected per tile. Fewer roots favor long branching trunks |
+| `routing.oceanOutlets` / `routing.inlandOutlets` | Legal terminal families. A route is rejected when no configured contained outlet can be proven |
+| `geometry.meanders` | Primary and detail Simplex wavelengths and strengths, lateral-offset bound, smoothing passes, and maximum retained turn angle |
+| `geometry.surface`, `geometry.underground`, `geometry.grottos` | U-shaped bed roundness plus coherent bed and carved-wall roughness and wavelength for each channel family |
+| `geometry.drops` | Preferred horizontal run, descending-profile exponent, maximum adjacent wetted-face drop, and minimum connected-channel width ratio for cascades, cataracts, waterfalls, and sinkholes |
+| `surface.sources` | Independent surface density, minimum source elevation, and required minimum quota |
+| `surface.channel.width` | Styled wet-channel width |
+| `surface.channel.depth` | Styled water depth below the solved head |
+| `surface.channel.surfaceInset` | Styled vertical recess beneath the swept natural-terrain corridor |
+| `surface.channel.maximumIncision` | Maximum legal cut below natural terrain |
+| `surface.channel.shoreWidth` | Narrow biome band outside the wet channel; limited to one or two blocks |
+| `surface.channel.terrainBlendWidth` | Wider terrain-grading band outside the shore |
+| `surface.hydraulics` | Pool length and riffle, gradual-cascade, and waterfall thresholds |
+| `surface.ridgeTunnels` | Short contained bores used when an otherwise valid route crosses a bounded ridge |
+| `surface.mouths` | Ocean approach, sea-level mouth, and ocean-apron limits |
+| `underground.sources` | Independent underground density and required minimum quota |
+| `underground.fluidLevel` | Styled world-Y terraces; accepted courses may descend rather than remaining globally flat |
+| `underground.channelWidth`, `depth`, `headroom` | Continuous irregular passage dimensions. Floors are arched and longitudinally varied rather than tiled circles |
+| `underground.connectToExistingCaves` | False keeps the generated channel self-contained without sampling neighboring caves; true permits observed-cave connections only when the completed wet component remains contained |
+| `grottos` | Coastal and inland contained terminal shapes |
+| `profiles` | Reusable fluid palettes selected by the effective dimension, region, or biome `riverPolicy` |
+
+Each `deepFluids` entry has its own `id`, palette, density, spacing, world-Y `height`, horizontal and vertical radii, depth, headroom, and pool/channel switches. Deep-fluid sources do not consume either river source budget. Contained pools form one connected irregular basin; enable `shortChannels` only when short contained offshoots are wanted.
+
+Automatic biome and region objects reject support footprints that intersect accepted surface fluid. An explicit-Y placement or `/iris object paste` remains available for deliberate river construction.
 
 ## Rock, fluid, and overlay noise
 
@@ -234,7 +306,7 @@ Iris has two independent ways to put ore in the ground. They behave differently.
 
 **Deposits** (`deposits`) are blob placements written through the mantle. They are closer to vanilla ore veins. They have per-chunk counts and sizes.
 
-**Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed inside a world-Y band. The shipping pack instead relies on automatic host-aware conversion. An ordinary ore becomes its deepslate form exactly when it replaces deepslate. Variants remain available for modded ores and deliberate substitutions.
+**Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed inside a world-Y band. The bundled pack instead relies on automatic host-aware conversion. An ordinary ore becomes its deepslate form exactly when it replaces deepslate. Variants remain available for modded ores and deliberate substitutions.
 
 ```json
 {
@@ -259,7 +331,7 @@ Iris has two independent ways to put ore in the ground. They behave differently.
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
 | `ores` | `IrisOreGenerator[]` | empty | Noise-driven ore placement across the whole dimension. Each entry has a palette, a `chanceStyle`, a `threshold`, a Y `range`, and `generateSurface`. Use dimension scope for ores that must exist everywhere regardless of biome |
-| `deposits` | `IrisDepositGenerator[]` | empty | Blob deposits with per-chunk min/max counts and blob sizes. The shipping pack uses these for granite, andesite, diorite, gravel and the classic ores |
+| `deposits` | `IrisDepositGenerator[]` | empty | Blob deposits with per-chunk min/max counts and blob sizes. The bundled pack uses these for granite, andesite, diorite, gravel and the classic ores |
 | `depositVariants` | `IrisDepositVariant[]` | empty | Source-to-replacement block remaps inside a world-Y band, applied after biome and region rules. The first matching dimension rule wins. Source matching ignores block properties |
 | `hideOresForHiddenOre` | boolean | `false` | Replaces every ore the generator would write with the surrounding base material. That includes terrain ores, deposits, and ores baked into objects. Turn it on only when a drop-control plugin such as HiddenOre supplies ores at break time instead |
 
@@ -269,7 +341,7 @@ Three fields at dimension scope decide whether caves exist and what they look li
 
 `caveProfile` is the 3D cave configuration. The same object exists on regions and biomes. The most specific enabled profile wins: dimension, then region, then surface biome, then cave biome. A dimension-level profile is the default cave system. A region can replace it wholesale for its own climate.
 
-`carving` maps absolute world-Y bands to cave biomes. That is how the shipping pack puts a deep-dark biome between Y -250 and -175 without touching surface biome selection. Entries can nest through `children` for patchy sub-regions, bounded by `childRecursionDepth`.
+`carving` maps absolute world-Y bands to cave biomes. That is how the bundled pack puts a deep-dark biome between Y -250 and -175 without touching surface biome selection. Entries can nest through `children` for patchy sub-regions, bounded by `childRecursionDepth`.
 
 `carvingEnabled: false` is implemented by adding the `CARVED` mantle flag to the disabled set. It is exactly equivalent to listing `CARVED` in `disabledComponents`.
 
@@ -355,13 +427,13 @@ Dimension-level `structures` entries are Iris placements considered everywhere i
 | `structures` | `IrisStructurePlacement[]` | empty | Iris structure placements at dimension scope. Use this for content that must exist regardless of biome, such as a global stronghold analogue or a native structure you are re-anchoring |
 | `importedStructures` | `IrisImportedStructureControl` | default | Allow/deny and Y-adjustment rules for every registered native structure. Every registered structure generates by default. Deny families with `disabled`, one complete key with `disabledExact`. `adjustments` can shift, band, encase, or stilt a structure into Iris terrain. Recipes in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` keys, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
-| `datapackImports` | string[] | empty | External datapack URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
+| `datapackImports` | string[] | empty | External Modrinth, direct HTTP(S), or absolute local `file:` ZIP URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Bukkit also enables every ZIP under `plugins/Iris/datapacks/imports/` for every Iris dimension. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
 
 Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, `CAVE_ANY`. Details in [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), and [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
 ## Upper dimension (inverted ceiling terrain)
 
-Set `upperDimension` to another dimension load key (or this dimension own key). Iris generates that dimension terrain upside-down against the world ceiling, nether-style. `"none"` or an empty string disables it. The shipping overworld ships with `""`.
+Set `upperDimension` to another dimension load key (or this dimension own key). Iris generates that dimension terrain upside-down against the world ceiling, nether-style. `"none"` or an empty string disables it. The bundled Overworld pack uses `""`.
 
 ```json
 {
@@ -444,7 +516,7 @@ The border does not crop, clamp, or repeat an image map. Configure the map's `ou
 
 ## Studio and debug fields
 
-These exist to help you look at the generator, not to ship. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
+These exist to help you inspect the generator, not for production. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
@@ -476,9 +548,9 @@ These exist to help you look at the generator, not to ship. `studioMode` is appl
 
 This is the studio starter with `mode`, `environment` and `fluidHeight` written out. It needs `regions/starter.json`, a biome, and a generator to actually produce terrain. The four-file walkthrough is in [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension).
 
-## What the shipping overworld sets
+## What the bundled overworld sets
 
-Path: `packs/overworld/dimensions/overworld.json` under the platform data directory. The same file ships in the Fabric, Forge and NeoForge run configs.
+Path: `packs/overworld/dimensions/overworld.json` under the platform data directory. The Fabric, Forge and NeoForge run configs use the same file.
 
 | Field | Overworld value | Why it is interesting |
 |-------|-----------------|-----------------------|
@@ -529,5 +601,5 @@ The baseline passes when Studio opens clean. Validation must report no blocking 
 | Expecting `worldBoundary` to crop an image | Border and image coverage are separate. Set the image map `outOfBounds` policy |
 | Embedding image-map settings inside a generator style | `imageMap` is a first-class resource key under `image-maps/` |
 | Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |
-| Leaving `focus` or `focusRegion` set when packaging | The shipped pack generates exactly one biome or region |
+| Leaving `focus` or `focusRegion` set when packaging | The included pack generates exactly one biome or region |
 | Changing pack files and expecting an existing world to change | Production worlds run from `<world>/iris/pack/`. See [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |

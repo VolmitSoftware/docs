@@ -114,18 +114,6 @@ Every wither skeleton you kill drops extra bones and coal, and gets a better cha
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `nether` |
-| Class | `SkillNether` |
-| Icon | `NETHER_STAR` |
-| Color | `DARK_GRAY` |
-| Interval (ms) | `7425` |
-| Skill config | `plugins/Adapt/skills/nether.toml` |
-| Adaptation count | 14 |
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/nether.toml` on first load.
@@ -176,7 +164,6 @@ Every adaptation TOML carries `enabled`, `permanent`, `showParticles`, `showSoun
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherWitherResist` |
 | Icon | `NETHERITE_CHESTPLATE` |
 | Max level | 3 |
 | Initial knowledge cost | 5 |
@@ -184,8 +171,6 @@ Every adaptation TOML carries `enabled`, `permanent`, `showParticles`, `showSoun
 | Cost factor | 1 |
 | Tick interval (ms) | 9283 |
 | Config file | `plugins/Adapt/adaptations/nether-wither-resist.toml` |
-
-Listened events: `EntityDamageEvent` (`onEntityDamage`), `WITHER` cause only.
 
 Chance per netherite piece is `basePieceChance + chanceAddition * level`, summed over helmet, chestplate, leggings, and boots, then clamped to 100 percent. Full netherite at level 3 reaches 100 percent and plays an extra mastery effect.
 
@@ -200,7 +185,6 @@ Milestones: `challenge_nether_wither_100` and `challenge_nether_wither_1k` on `n
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherSkullYeet` |
 | Icon | `WITHER_SKELETON_SKULL` |
 | Max level | 3 |
 | Initial knowledge cost | 5 |
@@ -208,8 +192,6 @@ Milestones: `challenge_nether_wither_100` and `challenge_nether_wither_1k` on `n
 | Cost factor | 0.92 |
 | Tick interval (ms) | 2314 |
 | Config file | `plugins/Adapt/adaptations/nether-skull-toss.toml` |
-
-Listened events: `PlayerInteractEvent` (`onRightClick`, receives cancelled events. Main hand only, right-click air or block, item must be `WITHER_SKELETON_SKULL`), `EntityDeathEvent` (`onEntityDeath`, credits kills made by a thrown skull).
 
 Cooldown is `max(1, baseCooldown - levelCooldown * level)` seconds, so 10 seconds at level 1 and 1 second at level 3. It is an item cooldown keyed to the skull material, shared by the gate and the sweep. The projectile is an uncharged, non-bouncing `WitherSkull` with the player as shooter, and throwing it pays 100 Nether XP directly. The interact event is always cancelled so the skull is never placed as a block.
 
@@ -224,7 +206,6 @@ Milestones: `challenge_nether_skull_100` on `nether.skull-yeet.skulls-thrown` (1
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherFireResist` |
 | Icon | `FIRE_CHARGE` |
 | Max level | 3 |
 | Initial knowledge cost | 6 |
@@ -232,8 +213,6 @@ Milestones: `challenge_nether_skull_100` on `nether.skull-yeet.skulls-thrown` (1
 | Cost factor | 0.75 |
 | Tick interval (ms) | 4333 |
 | Config file | `plugins/Adapt/adaptations/nether-fire-resist.toml` |
-
-Listened events: `EntityDamageEvent`, `FIRE` and `FIRE_TICK` causes only.
 
 Negation chance is `fireResistBase + fireResistFactor * level` using the raw
 level, not a level percentage. It is 35 percent at level 1 and 85 percent at
@@ -250,7 +229,6 @@ Milestones: `challenge_nether_fire_200` and `challenge_nether_fire_5k` on `nethe
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherLavaWalker` |
 | Icon | `MAGMA_BLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -258,8 +236,6 @@ Milestones: `challenge_nether_fire_200` and `challenge_nether_fire_5k` on `nethe
 | Cost factor | 0.75 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/nether-lava-walker.toml` |
-
-Listened events: `PlayerMoveEvent`. Requires a Nether-environment world, lava at your feet or directly below, food above 0, and not flying, gliding, or riding. Each stride sets velocity along your look direction, clears fall distance, clears fire ticks, and applies Fire Resistance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -278,7 +254,6 @@ Milestones: `challenge_nether_lava_1k` and `challenge_nether_lava_25k` on `nethe
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherGhastWard` |
 | Icon | `GHAST_TEAR` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -286,8 +261,6 @@ Milestones: `challenge_nether_lava_1k` and `challenge_nether_lava_25k` on `nethe
 | Cost factor | 0.73 |
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adaptations/nether-ghast-ward.toml` |
-
-Listened events: `EntityDamageByEntityEvent` and `EntityDamageEvent`.
 
 `EntityDamageByEntityEvent` at `HIGHEST` covers ghast
 fireballs and wither skeleton arrows. `EntityDamageEvent` at `HIGH` covers
@@ -315,7 +288,6 @@ Milestone: `challenge_nether_ghast_500` on `nether.ghast-ward.damage-reduced`, 5
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherBlazeLeech` |
 | Icon | `BLAZE_POWDER` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -323,8 +295,6 @@ Milestone: `challenge_nether_ghast_500` on `nether.ghast-ward.damage-reduced`, 5
 | Cost factor | 0.62 |
 | Tick interval (ms) | 900 |
 | Config file | `plugins/Adapt/adaptations/nether-blaze-leech.toml` |
-
-Listened events: `EntityDamageEvent` (defensive trigger on `FIRE`, `FIRE_TICK`, `LAVA`, `HOT_FLOOR`), `EntityDamageByEntityEvent` (offensive trigger when you hit a target that is already burning). Both share one cooldown stored on the player.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -349,7 +319,6 @@ Milestones: `challenge_nether_blaze_200` and `challenge_nether_blaze_2500` on `n
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherPiglinBroker` |
 | Icon | `GOLD_INGOT` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -357,8 +326,6 @@ Milestones: `challenge_nether_blaze_200` and `challenge_nether_blaze_2500` on `n
 | Cost factor | 0.7 |
 | Tick interval (ms) | 2300 |
 | Config file | `plugins/Adapt/adaptations/nether-piglin-broker.toml` |
-
-Listened events: `PiglinBarterEvent`. The nearest player within `brokerRange` who has the adaptation active is credited. The rare bonus pool is one ender pearl, two obsidian, four string, six iron nuggets, or two spectral arrows.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -379,7 +346,6 @@ Milestones: `challenge_nether_piglin_100` and `challenge_nether_piglin_2500` on 
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherSoulStrider` |
 | Icon | `SOUL_SAND` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -387,10 +353,6 @@ Milestones: `challenge_nether_piglin_100` and `challenge_nether_piglin_2500` on 
 | Cost factor | 0.6 |
 | Tick interval (ms) | 1000 |
 | Config file | `plugins/Adapt/adaptations/nether-soul-strider.toml` |
-
-Listened events: `PlayerMoveEvent`. Requires soul sand or soul soil at your feet or below, and not flying, gliding, or riding. It applies a movement efficiency modifier of `1.0`, which removes the soul sand
-slowdown. It also applies a movement speed multiplier. Both refresh in 40-tick
-holds while you stay on soul ground. Both are removed the moment you step off. The burst only fires at max level.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -409,7 +371,6 @@ Milestones: `challenge_nether_soul_1k` and `challenge_nether_soul_25k` on `nethe
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherMagmaSkin` |
 | Icon | `MAGMA_CREAM` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -417,8 +378,6 @@ Milestones: `challenge_nether_soul_1k` and `challenge_nether_soul_25k` on `nethe
 | Cost factor | 0.7 |
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adaptations/nether-magma-skin.toml` |
-
-Listened events: `EntityDamageByEntityEvent` twice, `onDefend` (you are the victim) and `onAttack` (you are the damager). Both require you to be on fire and the cause to be `ENTITY_ATTACK` or `ENTITY_SWEEP_ATTACK`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -437,7 +396,6 @@ Milestones: `challenge_nether_magma_100` and `challenge_nether_magma_2500` on `n
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherNetherrackMason` |
 | Icon | `BLACKSTONE` |
 | Max level | 4 |
 | Initial knowledge cost | 3 |
@@ -445,8 +403,6 @@ Milestones: `challenge_nether_magma_100` and `challenge_nether_magma_2500` on `n
 | Cost factor | 0.65 |
 | Tick interval (ms) | 1500 |
 | Config file | `plugins/Adapt/adaptations/nether-netherrack-mason.toml` |
-
-Listened events: `BlockDamageEvent` (grants the mining speed modifier when you start hitting an eligible block) and `BlockBreakEvent` (XP, stats, bonus drop). Both require a Nether-environment world.
 
 Eligible blocks: `NETHERRACK`, `BASALT`, `POLISHED_BASALT`, `SMOOTH_BASALT`, `BLACKSTONE`, `POLISHED_BLACKSTONE`, `GILDED_BLACKSTONE`, `CHISELED_POLISHED_BLACKSTONE`, `POLISHED_BLACKSTONE_BRICKS`, `CRACKED_POLISHED_BLACKSTONE_BRICKS`. The boost is a block-break-speed attribute modifier of `0.20 * tier`, not the Haste potion effect.
 
@@ -469,7 +425,6 @@ Milestones: `challenge_nether_mason_1k` and `challenge_nether_mason_25k` on `net
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherStriderBond` |
 | Icon | `WARPED_FUNGUS_ON_A_STICK` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -477,8 +432,6 @@ Milestones: `challenge_nether_mason_1k` and `challenge_nether_mason_25k` on `net
 | Cost factor | 0.6 |
 | Tick interval (ms) | 2000 |
 | Config file | `plugins/Adapt/adaptations/nether-strider-bond.toml` |
-
-Listened events: `PlayerMoveEvent` (only while your vehicle is a strider. Clears shivering and refreshes the mount speed modifier) and Adapt's reflective `EntityDismountEvent` (the lava rescue). Rescue teleports go through the async teleport path and only settle when the teleport actually succeeds.
 
 The strider speed modifier is `0.2 * (amplifier + 1)` applied to the strider, not to you.
 
@@ -501,7 +454,6 @@ Milestones: `challenge_nether_strider_500` and `challenge_nether_strider_5k` on 
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherCrimsonFeast` |
 | Icon | `CRIMSON_FUNGUS` |
 | Max level | 4 |
 | Initial knowledge cost | 3 |
@@ -509,8 +461,6 @@ Milestones: `challenge_nether_strider_500` and `challenge_nether_strider_5k` on 
 | Cost factor | 0.55 |
 | Tick interval (ms) | 3000 |
 | Config file | `plugins/Adapt/adaptations/nether-crimson-feast.toml` |
-
-Listened events: `PlayerInteractEvent` at HIGHEST (receives vanilla's cancelled right-click-air event. Main hand right-click with eligible flora) and `PlayerItemConsumeEvent` (any food, Nether only). A protection plugin denying the clicked block still prevents the custom bite. Eating flora is blocked at a full food bar unless you are sneaking, and the flora item is consumed except in creative. The fire resistance grant only happens in a Nether-environment world, so eating flora elsewhere still feeds you but gives no buff.
 
 Eligible flora: `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, `TWISTING_VINES`.
 
@@ -532,7 +482,6 @@ Milestones: `challenge_nether_feast_100` and `challenge_nether_feast_2500` on `n
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherAshwalker` |
 | Icon | `CAMPFIRE` |
 | Max level | 3 |
 | Initial knowledge cost | 4 |
@@ -540,11 +489,6 @@ Milestones: `challenge_nether_feast_100` and `challenge_nether_feast_2500` on `n
 | Cost factor | 0.7 |
 | Tick interval (ms) | 4000 |
 | Config file | `plugins/Adapt/adaptations/nether-ashwalker.toml` |
-
-Listened events: `EntityDamageEvent` at HIGHEST priority, with already-cancelled hits ignored. `HOT_FLOOR` (magma blocks) is set to zero and cancelled outright at any level. `CAMPFIRE` damage is set to zero and cancelled from `campfireUnlockLevel` up.
-`FIRE` and `FIRE_TICK` damage is traced first to the event's damaging block. It
-is then traced to a lit campfire under or at the player's feet. That damage is
-also set to zero and cancelled from that level up. Full immunity clears current fire ticks. Soul fire is reduced at max level and the configured fraction is clamped to 0-1.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -560,7 +504,6 @@ Milestones: `challenge_nether_ash_200` and `challenge_nether_ash_5k` on `nether.
 
 | Property | Default |
 |----------|---------|
-| Class | `NetherWitherHarvest` |
 | Icon | `BONE` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -568,8 +511,6 @@ Milestones: `challenge_nether_ash_200` and `challenge_nether_ash_5k` on `nether.
 | Cost factor | 0.7 |
 | Tick interval (ms) | 5000 |
 | Config file | `plugins/Adapt/adaptations/nether-wither-harvest.toml` |
-
-Listened events: `EntityDeathEvent`, wither skeletons killed by a player only.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

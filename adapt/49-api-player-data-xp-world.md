@@ -53,7 +53,7 @@ Every player reward entry point is a no-op unless the exact current player sessi
 
 ## World-scoped data
 
-`WorldData.of(world)` returns Adapt's live per-world store. It attaches typed values to individual blocks and drives the anti-farm earnings bookkeeping on top of that. `Earnings` and `PlacementStamp` are the stored unit types behind it and behind `XpProvenance`. Their nested matter serializers are implementation detail. Use the higher-level provenance methods instead of instantiating serializers.
+`WorldData.of(world)` provides Adapt's block-scoped data. Use its provenance methods instead of constructing storage serializers.
 
 ## Reference
 
@@ -100,26 +100,9 @@ Every path applies the player's XP multiplier (permission multipliers plus globa
 ### WorldData
 
 `WorldData.of(world)` gives the live store. `get(Block, Class<T>)`, `set(Block, T)`, and `remove(Block, Class<T>)` are the typed block-attached accessors. `getEarningsMultiplier(Block)` reads the current anti-farm multiplier. `reportEarnings(Block)` records an earning and returns the resulting multiplier. All of them are region-thread-bound. `stop()`, `unregister()`, `onTick()`, and the world save and unload handlers are Adapt-owned lifecycle.
-
-### Types that are not contracts
-
-| Type | Runtime role and restriction |
-|------|------------------------------|
-| `PlayerData` | Live mutable progression record. Reads such as `getLevel()`, `getMaxPower()`, `getUsedPower()`, `getAvailablePower()`, `hasPowerAvailable(...)`, `getStat(...)`, `getSkillLine(...)` and `getMutationData()` are fine. All writes bypass transaction, integrity, publication and persistence ownership |
-| `PlayerSkillLine` | Live mutable skill line. Level, XP, knowledge, multiplier, progress, learned adaptation level and recent-earn reads are fine. Writes are not |
-| `PlayerAdaptation` | Mutable serialized adaptation record. `REGION_GRANTED_KEY`, `isRegionGranted()` and `setRegionGranted(...)` belong to region-grant reconciliation |
-| `FencedPlayerSnapshot` | Exact player, owner, epoch, sequence and JSON transfer/persistence value. It is not an external save API |
-| `AdaptServerData`, `AdaptStatTracker`, `AdvancementHandler`, `Discovery<T>` | First-party server and player state plus advancement helpers, not lifecycle contracts |
-| `AdaptPlayerTracker` | An empty public class with no members and no behavior |
-| `PlayerDataPersistenceQueue` | Owns local save/delete journals plus fenced SQL save, reset, purge, recovery, retries, batching, and shutdown flush. A second queue can race or resurrect data |
-| `PlayerDataPurgeGuard` | Global tombstone set that stops queued writes landing after a deletion. Adapt owns mark, clear and reset |
-| `AdaptComponent` | Large first-party convenience interface for item classification, server and player access, value, FX and event helpers. Some signatures use relocated or version-specific types |
-| `AdaptDebugMode` | Global operator debug-bypass state. Use `/adapt debug mode`. Setting it externally bypasses normal authorization |
-
 ## See also
 
 - [02 - Concepts](/adapt/02-concepts)
 - [05 - Configuration Math](/adapt/05-configuration-math)
-- [38 - Runtime Architecture](/adapt/38-runtime-architecture)
 - [42 - API - Skills & Adaptations](/adapt/42-api-skills-adaptations)
 - [48 - API - Mutations](/adapt/48-api-mutations)

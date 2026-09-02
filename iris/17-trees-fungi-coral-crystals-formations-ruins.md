@@ -151,7 +151,7 @@ Snippet key: `procedural-tree`. Built by the trunk builder (which returns one or
 
 `IrisTreeProfile`: `OAK`, `BIRCH`, `SPRUCE`, `JUNGLE`, `ACACIA`, `DARK_OAK`, `DARK_OAK_FLAT`, `DARK_OAK_FLAT_WIDE`, `CHERRY`, `PALM`, `WILLOW`, `COLUMNAR`, `BUSH`, `MEGA_SPRUCE`.
 
-**What `plausible` actually does.** With `true`, Iris runs a breadth-first search from the trunk through the leaf volume. Leaves within 6 steps of wood get `persistent=false` and their real `distance`, so vanilla decay works exactly as it would on a grown tree. Leaves 7 or more steps away, or unreachable entirely, get `persistent=true` and `distance=7` so they never vanish. It also runs a support pass that prunes orphaned leaf clumps. With `false`, every leaf is forced `persistent=true, distance=1` — a raw dump that never decays and reads as built rather than grown.
+**What `plausible` actually does.** With `true`, Iris runs a breadth-first search from the trunk through the leaf volume. Leaves within 6 steps of wood get `persistent=false` and their real `distance`, so vanilla decay works exactly as it would on a grown tree. Leaves 7 or more steps away, or unreachable entirely, get `persistent=true` and `distance=7` so they never vanish. It also runs a support pass that prunes orphaned leaf clumps. With `false`, every leaf is forced `persistent=true, distance=1`. This raw dump never decays and reads as built rather than grown.
 
 ### Trunk shaping
 

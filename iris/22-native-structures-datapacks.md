@@ -2,12 +2,12 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page covers structures that come from outside Iris packs. That includes vanilla structures in Iris worlds and datapack structures. It also covers the Minecraft structure-block and `.nbt` system. It covers conversion of native structures into editable Iris resources. Objects and Iris jigsaws are covered in [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), and [21 - Jigsaw Structures](/iris/21-jigsaw-structures). Vanilla features, mobs, loot, saplings, and dimension-type gameplay are [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
+Use native structures for vanilla or datapack structures. Convert one only when you need to edit it as an Iris object or jigsaw. See [Objects](/iris/19-objects), [Object Placement](/iris/20-object-placement), [Jigsaw Structures](/iris/21-jigsaw-structures), and [Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 Terminology:
 
@@ -23,7 +23,7 @@ These tasks are separate workflows. None of them requires the others.
 | Goal | Go to |
 |---|---|
 | A vanilla structure generates but sits badly in Iris terrain | Task 1 |
-| Add a third-party datapack (Terralith-style) to one Iris dimension | Task 2 |
+| Add a third-party structure datapack to one Iris dimension | Task 2 |
 | Stop a structure or a whole namespace from generating | Task 3 |
 | Allow selected vanilla or datapack structures and choose where they go yourself | Task 4 |
 | Edit a registered structure's blocks or graph inside Iris | Task 5 |
@@ -64,44 +64,47 @@ Widen from an exact key to a prefix only after the exact-key test passes. A name
 
 Field details are in 1.5.
 
-## Task 2: Install a third-party datapack for one Iris dimension
+## Task 2: Install a third-party datapack
 
-This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The shipping `overworld` pack already declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0.
-These are required inputs for that pack, not optional customization examples.
+This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The current built-in `overworld` and `underworld` packs declare no external datapack imports; this workflow is for custom packs that opt into them.
 
 Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
 
-1. For a custom dimension, add the Modrinth or direct archive URL to `datapackImports` in that declaring dimension only. For the shipping Overworld, leave its existing declarations intact and skip this edit:
+1. Add a Modrinth, direct archive, or absolute local `file:` URL to `datapackImports` in the declaring dimension only. Pin a Modrinth version URL when the pack requires an exact release:
 
    ```json
    {
      "datapackImports": [
-       "https://modrinth.com/datapack/towns-and-towers"
+       "https://modrinth.com/datapack/<project>/version/<version>",
+       "file:///srv/minecraft/local-datapacks/custom-structures.zip"
      ]
    }
    ```
 
-2. Leave the URL out of the second test dimension, and keep the vanilla world as a control. When testing the shipping Overworld, use its exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 releases rather than substituting a different latest version.
-3. Validate the pack. For a custom source or an installation with automatic ingest disabled, run:
+   A file URL must point to a regular ZIP file on the server host. Use `file:///C:/minecraft/local-datapacks/custom-structures.zip` on Windows. Relative paths, `file://host/...` authorities, directories, symbolic links, query strings, and fragments are rejected.
+
+   To enable a local datapack for every Iris dimension without editing JSON, place its ZIP directly under `plugins/Iris/datapacks/imports/`. Iris creates that folder automatically, scans only its top level, and ignores non-ZIP files, nested directories, hidden files, and symbolic links. Its managed structures remain excluded from vanilla-world generation and locate state.
+
+2. For a dimension-owned source, leave the URL out of the second test dimension and keep the vanilla world as a control. For a drop-folder source, both Iris dimensions should receive it while the vanilla world remains the control. Confirm the selected datapack supports the server's Minecraft version.
+3. Validate the pack, then run:
 
    ```text
    /iris datapack ingest restart=true
    ```
 
-   For the unmodified shipping Overworld with `general.autoIngestDatapacks=true`, do not run that command. Restart once to let startup install both declared dependencies. Then complete the ensuing registry-loading restart.
+   With `general.autoIngestDatapacks=true`, startup performs the equivalent installation automatically. A newly installed or repaired source still requires the ensuing clean restart before its registry keys are live.
 
 4. After the full restart, run `/iris datapack list`, then `/iris structure list <declaring-dimension>` and pick one registered structure key from that source.
 5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before the generation test (see 1.2).
 6. Create fresh declaring and nondeclaring Iris worlds. In all three worlds, run `/locate structure <key>` and generate new chunks.
 
-**Success:** the declaring Iris world locates and naturally generates the structure.
-The nondeclaring Iris world and the vanilla world do neither. Restart without deleting the installed datapack and confirm the same result.
+**Success:** a dimension-owned source locates and naturally generates only in the declaring Iris world. A drop-folder source does so in both Iris dimensions. The vanilla world locates and generates structures from neither source. Restart without deleting the installed datapack and confirm the same result.
 
 If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart.
 It does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
 
-To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot.
-If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL. Restart before verifying the restored policy. Only newly generated chunks change.
+To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list or remove its ZIP from `plugins/Iris/datapacks/imports/`. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot.
+If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL or drop-folder ZIP. Restart before verifying the restored policy. Only newly generated chunks change.
 Existing starts remain.
 
 ## Task 3: Turn a structure off
@@ -124,7 +127,7 @@ Existing starts remain.
 **Success:** the key reports `[disabled]`, and `/iris goto structure <key>` answers that it is disabled by this dimension's `importedStructures` settings. New chunks no longer contain it.
 Old chunks keep whatever already generated.
 
-Two things catch people out. A namespace disable needs the trailing colon — `"nova_structures:"` works, `"nova_structures"` does not (see the prefix rules in 1.3). And neither deny list blocks an explicit `nativeStructures` placement, which is exactly what Task 4 relies on.
+Two things catch people out. A namespace disable needs the trailing colon: `"nova_structures:"` works, `"nova_structures"` does not (see the prefix rules in 1.3). And neither deny list blocks an explicit `nativeStructures` placement, which is exactly what Task 4 relies on.
 
 ## Task 4: Place registered structures only where Iris says
 
@@ -237,7 +240,7 @@ Pass `target=<iris-path>` for a deliberate key.
 4. Load each variant from the Studio control chest or triple-sneak menu and inspect its real blocks and Mojang marker fields. Once a workcell finishes loading and hydrating, block and container changes autosave.
 **Save Now** only forces an immediate flush. Review the automatic seed-`1337` evaluation and the permanent read-only block preview before accepting the fidelity.
 5. For a non-jigsaw template or a bulk pass, use `/iris structure import <dimension>` instead (section 5). Review every per-structure result: successful bundles can sit alongside failures.
-6. To generate the edited copy naturally, add its Iris target to a dimension-level `structures` placement and set `nativeSuppression: "REPLACE_SOURCE"`. The converted graph records `vanillaSource`, which tells Iris which registered source to suppress. Validate the complete graph before shipping because replacement has no native fallback.
+6. To generate the edited copy naturally, add its Iris target to a dimension-level `structures` placement and set `nativeSuppression: "REPLACE_SOURCE"`. The converted graph records `vanillaSource`, which tells Iris which registered source to suppress. Validate the complete graph before release because replacement has no native fallback.
 
 **Success:** the owned copy reopens with `/iris jigsaw open <dimension> <target>` and its preview matches the native original closely enough for your purpose.
 
@@ -263,8 +266,6 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
 
-Iris keeps native-start ownership in the world's Mantle so locate, reference repair, and restart recovery agree on the same structure. A periodic world save immediately persists idle ownership plates. Any plate still used by generation stays dirty for the next save. Iris does not wait on the server thread. A clean engine shutdown drains generation first and requires the remaining ownership records to persist before the Mantle is released.
-
 Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, uses the underlying natural biome rather than accepted surface-hydrology content, and shares one generation context plus a dedicated natural-biome cache across each search. Each ring task drops from 3,249 biome evaluations to 225 unique candidate columns. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks.
 `/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
 
@@ -277,7 +278,7 @@ Vanilla tests biomes against structure biome filters. Iris answers per Iris biom
 | `derivative` | `minecraft:the_void` | Vanilla biome this Iris biome reports generally. |
 | `vanillaDerivative` | unset | Optional override for structure selection, spawn tables, imported features, and biome tags. Wins when set. |
 
-Refinements: a sea-role biome whose derivative is not ocean- or river-like resolves to `minecraft:the_void`, and a shore-role biome falls back to `minecraft:beach`. **Non-`minecraft:` namespaces pass through** — point `vanillaDerivative` at a datapack or mod biome key that exists in the live registry.
+Refinements: a sea-role biome whose derivative is not ocean- or river-like resolves to `minecraft:the_void`, and a shore-role biome falls back to `minecraft:beach`. **Non-`minecraft:` namespaces pass through**. Point `vanillaDerivative` at a datapack or mod biome key that exists in the live registry.
 
 A datapack structure whose filter lists only its own biomes never generates until an Iris biome reports one of those keys through `vanillaDerivative`. `/iris structure verify` reports `[unreachable] <key> needs <biomes>`.
 
@@ -450,41 +451,31 @@ Accepted URL forms:
 
 - **Modrinth project page** — latest datapack version for the server's Minecraft version.
 - **Pinned Modrinth version** — any `.../version/<token>` URL.
-- **Any other URL** — direct zip download, tracked by ETag and hash.
+- **Direct HTTP or HTTPS URL** — direct ZIP download, tracked by ETag and hash.
+- **Absolute local file URL** — a `file:///.../pack.zip` read from the server host and tracked by content hash.
 
-Downloads are checksum-verified when Modrinth publishes a hash, and size-capped.
+Modrinth downloads are checksum-verified when a hash is published. Remote and local archives are capped at 256 MiB before extraction.
 
 ### 2.2 Where files land, and when ingest runs
 
-Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>/`, each carrying `.iris-managed.json`. Unmanaged datapacks are never touched, and the id `iris` is reserved. Cache, staging, and manifest live under `plugins/Iris/datapacks/`.
-
-Ingest and recovery run synchronously inside Iris's startup admission gate when `general.autoIngestDatapacks` is enabled (default true). Players and every Iris world and Studio creation path stay locked until that phase is valid.
-
-On startup, Iris checks the cheap persisted cache context before reading managed datapack trees. When that context matches, Iris confirms the exact local content fingerprint and skips remote resolution, semantic revalidation, copying, installation, and pack compilation. Iris refreshes the post-start fingerprint only when its authorized import maintenance mutates managed external-datapack state.
-A no-op maintenance pass retains the existing receipt. A change to the URL, the Minecraft or Iris version, the override policy, or external manifest edits invalidates reuse. So does a change to staging, the transaction, installed content, or cache corruption. Iris then runs the full fail-closed path.
+Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>/`, each carrying `.iris-managed.json`. Unmanaged datapacks are never touched, and the id `iris` is reserved. Cache, staging, manifest, and the operator drop folder live under `plugins/Iris/datapacks/`; local ZIPs go in `plugins/Iris/datapacks/imports/`.
 
 Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
 
-For the shipping Overworld on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack download. The first boot discovers and installs Towns & Towers 26.1 and Dungeons & Taverns 5.3.0, then leaves admission restart-required.
-The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
+For a custom pack with imports on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack is installed. The first boot discovers and installs the declared sources, then leaves admission restart-required. The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
 
-Cache reuse is a local validation decision and does not poll remote sources.
-Run `/iris datapack ingest` when you want an update check. Every successful ingest persists fresh staging and installed-target receipts. Unchanged bootstrap recovery leaves the manifest stable. The next startup can reuse the cached fingerprint. During a full ingest, Iris may keep an exact same-version, Iris-owned installed target in place. Content must match staging. The datapack must need no override stripping. That avoids a temporary copy and replacement.
+Run `/iris datapack ingest` to check for updates. Local ZIP changes are detected automatically during startup.
 
-Scratch validation rejects links, junction-like special files, and real cross-volume entries. On Windows with Java 25, Iris also verifies the drive root and volume serial. It does this when the JDK reports unequal `FileStore` identities only because a path crossed the legacy 247-character prefix boundary. Unresolved cleanup, identity, transaction, or validation failures stay blocking and create no world artifacts.
+### 2.3 Optional Dungeons & Taverns caveat on Folia 26.2
 
-Managed external-datapack fingerprints remain full-content hashes: the cache-hit check and changed-content validation still read every authored byte. Iris reads content in larger blocks. It restates each entry and rechecks its `FileStore` immediately before access. It retains the existing cross-volume boundary behavior, including same-device bind mounts.
-
-### 2.3 Folia 26.2 and Dungeons & Taverns 5.3.0
-
-Folia 26.2 currently cannot execute the shipping Dungeons & Taverns function set completely. Its own command dispatcher omits `tag` and `data`. It does not expose a usable `item` command in this context. It accepts `ride` while rejecting nested forms used by the pack. The unchanged Dungeons & Taverns bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia.
+The built-in Iris packs do not include Dungeons & Taverns. If a custom pack imports Dungeons & Taverns 5.3.0, Folia 26.2 cannot execute its function set completely. Folia's command dispatcher omits `tag` and `data`. It does not expose a usable `item` command in this context. It accepts `ride` while rejecting nested forms used by the pack. The unchanged datapack bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia.
 Function-backed Dungeons & Taverns behavior is incomplete even though Iris world loading and chunk generation continue.
 
 This is an upstream Folia 26.2 command compatibility limitation, reproduced on a clean Folia server with no Iris plugin installed. Paper, Leaf, and Canvas load the same datapack bytes without those function errors. Iris does not rewrite or silently remove third-party functions. Use a server implementation that supports the pack commands when complete Dungeons & Taverns behavior is required.
 
 ### 2.4 Modded installation
 
-Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, so an operator must install every declared external datapack directly in the target save's `datapacks/` directory. For the shipping Overworld, install the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives before that Iris Overworld loads. Then restart with both archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries.
+Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, and they do not scan the Bukkit `datapacks/imports/` drop folder. An operator must install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory. Restart with those archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries. The current built-in Overworld and Underworld need no external datapacks.
 
 ### 2.5 Manual commands
 
@@ -494,7 +485,7 @@ Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris 
 /iris datapack remove <id>               (alias: rm)
 ```
 
-On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks — also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
+On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks. Also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
 
 ### 2.6 Usage patterns
 
@@ -521,7 +512,7 @@ On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension
 }
 ```
 
-**(c) Manual placement only.** Disable the datapack namespace, then place specific keys with `nativeStructures` — see 3.2:
+**(c) Manual placement only.** Disable the datapack namespace, then place specific keys with `nativeStructures`; see 3.2:
 
 ```json
 {
@@ -551,8 +542,8 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 
 `structures[]` on a dimension, region, or biome hosts two backends, and each placement uses exactly one:
 
-- `structures: ["<iris key>"]` — Iris assemblies ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
-- `nativeStructures: [{ structure, weight, jigsaw }]` — registered structures run through Minecraft's own machinery at Iris-chosen points, with full native fidelity.
+- `structures: ["<iris key>"]`: Iris assemblies ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
+- `nativeStructures: [{ structure, weight, jigsaw }]`: registered structures run through Minecraft's own machinery at Iris-chosen points, with full native fidelity.
 
 ### 3.1 Entry fields
 
@@ -590,7 +581,7 @@ The placement injector generates planned starts without consulting either deny l
 - With `nativeStructures`: suppresses that key's natural generation so it exists only where the placement puts it.
 - With Iris `structures`: suppresses each referenced structure's `vanillaSource`. Pack validation demands the graph guarantee output, because there is no native fallback. An Iris-backend `REPLACE_SOURCE` that produces nothing throws at runtime. Native-backend unusable starts are recorded invalid and skipped silently, and the source stays suppressed.
 
-Example — ancient cities replaced by Iris-positioned native starts:
+Example: ancient cities replaced by Iris-positioned native starts:
 
 ```json
 {
@@ -643,9 +634,9 @@ Jigsaw blocks wire pools together. Iris Jigsaw Studio is the documented in-game 
 
 How an authored `.nbt` reaches an Iris world:
 
-**(a) Through a datapack (native generation).** Ship it under `data/<ns>/structure/`. Add `worldgen/template_pool`, `worldgen/structure`, and `worldgen/structure_set`. Zip it, host it or publish to Modrinth, and add the URL to `datapackImports`. Then run `/iris datapack ingest restart=true`. From there use natural generation, `adjustments`, or `nativeStructures`.
+**(a) Through a datapack (native generation).** Put it under `data/<ns>/structure/`. Add `worldgen/template_pool`, `worldgen/structure`, and `worldgen/structure_set`. Zip it, host it or publish to Modrinth, and add the URL to `datapackImports`. Then run `/iris datapack ingest restart=true`. From there use natural generation, `adjustments`, or `nativeStructures`.
 
-**(b) Import into Iris resources.** `/iris structure import <dimension>` (section 5). The template pass enumerates **registered** templates only — loose saves in `<world>/generated/` are not enumerated, so package them into a datapack first.
+**(b) Import into Iris resources.** `/iris structure import <dimension>` (section 5). The template pass enumerates **registered** templates only. Loose saves in `<world>/generated/` are not enumerated, so package them into a datapack first.
 
 Template-import fidelity is lossy by design: first palette only.
 Structure voids and structure blocks dropped.
@@ -655,17 +646,17 @@ Block entities captured.
 
 ## 5. Importing native structures into Iris resources
 
-You do not need import just to place something — `nativeStructures` places any registered key with full fidelity. Import only when you need Iris object, pool, or piece resources. Manual imports are editable transaction-owned copies.
+You do not need import just to place something. `nativeStructures` places any registered key with full fidelity. Import only when you need Iris object, pool, or piece resources. Manual imports are editable transaction-owned copies.
 Automatic datapack imports stay managed by ingest and must be cloned before Jigsaw Studio will edit them.
 
 ### 5.1 `/iris structure import <dimension>`
 
-Four passes, always overwriting its own previous output:
+The command writes these editable resources:
 
-1. **Jigsaw rebuild** — registered jigsaw structures become editable pools, pieces, and objects. Connector `final_state`, signed `selection_priority`, and signed `placement_priority` values are retained in the Iris piece metadata. The generated root writes `branchFailurePolicy: TERMINATE_BRANCH`. Unmatched optional branches keep native termination behavior.
-2. **Template import** — registered `.nbt` templates become `objects/<name>.iob` plus a single-piece `jigsaw-pieces/<name>.json`.
-3. **Template groups** — fixed multi-template structures (shipwrecks, ruined portals, ocean ruins, nether fossils) become one Iris structure each, with every variant in the pool.
-4. **Capture** — only non-jigsaw registry keys for which the first pass found no same-key template are captured through a scratch world. This pass never rewrites a successful or failed jigsaw conversion.
+1. **Jigsaw structures** become editable pools, pieces, and objects. Connector states and priorities are retained.
+2. **Template import**: registered `.nbt` templates become `objects/<name>.iob` plus a single-piece `jigsaw-pieces/<name>.json`.
+3. **Template groups**: fixed multi-template structures (shipwrecks, ruined portals, ocean ruins, nether fossils) become one Iris structure each, with every variant in the pool.
+4. **Other structures** are captured only when no matching template or jigsaw conversion exists.
 The standalone `/iris structure capture <dimension>` command stays unfiltered. Structures spanning more than **48 blocks** on any axis are skipped, so strongholds, mansions, and monuments stay native-only.
 
 Naming: `minecraft:village_plains` becomes `minecraft_village_plains`. Generated structures carry `vanillaSource` for locate and `REPLACE_SOURCE`.
@@ -694,13 +685,11 @@ No import command is needed for that case.
 /iris jigsaw adopt apply <plan-uuid>
 ```
 
-Inspect verifies the existing manifest is exactly a managed vanilla or datapack Iris assembly. It pins the complete source and target read set. It reports `CLONE_REQUIRED` or a blocking diagnostic. Apply re-hashes under the pack mutation lock. It atomically writes a deep clone with deterministic internal reference rewrites plus its ownership receipt. It leaves the managed source unchanged. It opens the editable clone. An expired, consumed, or stale plan writes nothing. There is no adoption rollback command, so keep the pack backup you made before converting.
+`inspect` reports whether the clone is safe. `apply` creates and opens the editable copy without changing the managed source. Keep a pack backup because adoption has no rollback command.
 
-Automatic import is off by default because native generation and `nativeStructures` never need the copies, and conversion can write thousands of files. Deterministic source-content and graph-validation failures retain the bundles that did write. They record the attempted source, importer format, and target-pack revision. The same failures do not repeat every boot.
-A source update, importer-format change, or different target retries them. Unexpected reflection, I/O, transaction, and runtime failures stay pending and retry. Removing a URL from `datapackImports` cleans only bundles still owned by that managed source, and an adopted editable clone is independent.
+Automatic import is off by default because native generation and `nativeStructures` do not need editable copies. Removing a URL from `datapackImports` can remove its managed imports, but an adopted clone remains independent.
 
-Third-party jigsaw templates using the legacy slab property `half=top|bottom`, or the exact known misspelling `minecraft:chisled_polished_blackstone`, are normalized to current Minecraft block data during editable conversion. Other invalid final-state values are recorded as fidelity loss and omitted without internal-error telemetry. Invalid structure graphs stay per-structure failures, and expected graph-contract rejections are reported as concise import results instead of internal Iris stack traces.
-Unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
+Third-party templates using the legacy slab property `half=top|bottom`, or the misspelling `minecraft:chisled_polished_blackstone`, are corrected during conversion. Other invalid final states are omitted and reported as fidelity losses.
 
 ## 6. Verification and debugging
 
@@ -724,7 +713,7 @@ Unexpected reflection, I/O, and runtime failures keep full diagnostic traces.
 - New datapack structures need a restart before the registry knows them.
 - Only new chunks change.
 - Namespace disables need the colon: `"nova_structures:"`.
-- `REPLACE_SOURCE` has no fallback, so validate the graph before shipping.
+- `REPLACE_SOURCE` has no fallback, so validate the graph before release.
 - `datapackOverrides: false` anywhere strips `minecraft:` overrides server-wide.
 
 ## Command reference

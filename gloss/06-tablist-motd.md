@@ -68,12 +68,12 @@ The conditional tablist header, footer and list-name format live in the single d
 | `listNames.presentation.format` | required | Base list-name template |
 | `listNames.variants` | `[]` | Complete conditional formats with `id`, `priority` and `when` |
 
-This is a single file at the root of the data folder. It is not a folder of documents. It is extracted when missing, while `[features] tablist` is on. `/gloss tablist reset` rewrites it from the shipped copy (permission `gloss.tablist.reset`).
+This is a single file at the root of the data folder. It is not a folder of documents. It is extracted when missing, while `[features] tablist` is on. `/gloss tablist reset` rewrites it from the default copy (permission `gloss.tablist.reset`).
 
 If the file is missing or fails to parse at startup, Gloss falls back to
 built-in defaults. Those defaults enable `headerFooter` with header
 `&d&lGloss` and footer `&7VolmitSoftware.com`, and enable `listNames` with
-base format `$player`. The shipped operator appearance is an ordinary
+base format `$player`. The default operator appearance is an ordinary
 variant with priority `100` and condition `subject.op`. If a runtime edit fails to parse, the last good
 document stays live. Either way the failure is logged as
 `tablist/tablist.json: <reason>`. That prefix is the document kind and
@@ -123,7 +123,7 @@ If you edit `tablist.json` on disk, the change applies without a reload. `[featu
 
 The web editor can author, export and live-sync the tablist document. Open it alone with
 `/gloss web edit tablist tablist`, or include it in `/gloss web workspace`. `/gloss tablist reset`
-restores the shipped copy.
+restores the default copy.
 
 ## Server list MOTD
 
@@ -151,11 +151,11 @@ The two-line limit is the client's, not a style choice. The vanilla server list 
 
 A document that violates either rule is refused as a whole. At startup that leaves the built-in default (a single entry reading `&dA glossy server`) live. At runtime it leaves the last good document live. The failure is logged as `motd/motd.json: motd entry requires 1 to 2 lines`. The prefix is the document kind and file name rather than the path on disk. The path on disk is `plugins/Gloss/motd.json`.
 
-`/gloss motd reset` restores the shipped document (permission `gloss.motd.reset`).
+`/gloss motd reset` restores the included document (permission `gloss.motd.reset`).
 
 ### How a ping is answered
 
-`[features] motd` defaults to **`false`**. The shipped `motd.json` is only written to disk once the feature is on, so a stock data folder has no MOTD document at all and the built-in default stands. Gloss watches and hot-reloads the file either way, and only registers the ping listener when the feature is on. Turning the feature on extracts the document on that reload.
+`[features] motd` defaults to **`false`**. The included `motd.json` is only written to disk once the feature is on, so a stock data folder has no MOTD document at all and the built-in default stands. Gloss watches and hot-reloads the file either way, and only registers the ping listener when the feature is on. Turning the feature on extracts the document on that reload.
 
 With the feature on, Gloss listens on `ServerListPingEvent` at `EventPriority.LOWEST`. It picks one entry uniformly at random on every ping. A multi-entry document rotates naturally with no timer. Because it runs at the lowest priority, any other MOTD plugin that also handles the event runs later and wins.
 
@@ -194,4 +194,4 @@ The web editor can live-sync this singleton with `/gloss web edit motd motd`, or
 
 ## Coming from the pre-merge layout
 
-Tablist schema 2 is a hard break. Schema 1 files are silently ignored and Gloss does not translate old group YAML or legacy tablist formats. Rewrite custom tablist content into complete base presentations and conditional variants, or reset it to the shipped schema 2 document. `/gloss import legacy` does not convert boards, groups or tablists. MOTD remains schema 1; its explicit legacy import behavior is documented in [Data Files & Hot Reload](/gloss/03-data-files).
+Tablist schema 2 is a hard break. Schema 1 files are silently ignored and Gloss does not translate old group YAML or legacy tablist formats. Rewrite custom tablist content into complete base presentations and conditional variants, or reset it to the included schema 2 document. `/gloss import legacy` does not convert boards, groups or tablists. MOTD remains schema 1; its explicit legacy import behavior is documented in [Data Files & Hot Reload](/gloss/03-data-files).

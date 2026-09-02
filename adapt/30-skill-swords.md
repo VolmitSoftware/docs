@@ -112,7 +112,7 @@ Passive, but it rewards not getting hit. Reach the stack cap once for an advance
 
 ### Duelist's Focus (`sword-duelists-focus`)
 
-Works only when the fight is genuinely one-on-one. If exactly one hostile mob or player is inside the engage radius, your sword damage goes up and incoming damage goes down. The thing hitting you briefly glows so you can see who your duel partner is. Bring a second attacker into that radius and the whole effect stops.
+Works only in a one-on-one fight. If exactly one hostile mob or player is inside the engage radius, your sword damage goes up and incoming damage goes down. The attacker briefly glows so you can identify your duel partner. A second attacker inside that radius stops the effect.
 
 Passive. The defence half also needs a sword in your main hand.
 
@@ -163,18 +163,6 @@ Everything below is exact code truth. TOML overrides live at `plugins/Adapt/adap
 
 Adapt treats `WOODEN_SWORD`, `STONE_SWORD`, `COPPER_SWORD`, `IRON_SWORD`, `GOLDEN_SWORD`, `DIAMOND_SWORD`, and `NETHERITE_SWORD` as swords.
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `swords` |
-| Class | `SkillSwords` |
-| Icon | `DIAMOND_SWORD` |
-| Color | `YELLOW` |
-| Interval (ms) | `2150` |
-| Skill config | `plugins/Adapt/skills/swords.toml` |
-| Adaptation count | 14 |
-
 ### Skill XP sources
 
 | Trigger | Award | Notes |
@@ -220,7 +208,6 @@ Written to `plugins/Adapt/skills/swords.toml` on first load.
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsMachete` |
 | Icon | `IRON_SWORD` |
 | Max level | 3 |
 | Initial knowledge cost | 7 |
@@ -230,8 +217,6 @@ Written to `plugins/Adapt/skills/swords.toml` on first load.
 | Config file | `plugins/Adapt/adaptations/sword-machete.toml` |
 
 Menu stat lines: Slash Radius. Chop Cooldown. Tool Wear.
-
-Listened events:
 
 - `PlayerInteractEvent` - fires on `LEFT_CLICK_AIR` or `LEFT_CLICK_BLOCK` with the main hand
 
@@ -257,7 +242,6 @@ Milestones: `challenge_swords_machete_2500` on `swords.machete.foliage-cut` at 2
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsPoisonedBlade` |
 | Icon | `GREEN_DYE` |
 | Max level | 7 |
 | Initial knowledge cost | 7 |
@@ -267,8 +251,6 @@ Milestones: `challenge_swords_machete_2500` on `swords.machete.foliage-cut` at 2
 | Config file | `plugins/Adapt/adaptations/sword-poison-blade.toml` |
 
 Menu stat lines: Striking a Living entity with your Sword causes Poison. Poison Duration. Poison Cooldown.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - applies poison
 - `EntityDeathEvent` (`MONITOR`, ignore cancelled) - credits a poison kill
@@ -290,7 +272,6 @@ Milestones: `challenge_swords_poison_500` on `swords.poisoned-blade.poison-appli
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsBloodyBlade` |
 | Icon | `RED_DYE` |
 | Max level | 7 |
 | Initial knowledge cost | 7 |
@@ -300,8 +281,6 @@ Milestones: `challenge_swords_poison_500` on `swords.poisoned-blade.poison-appli
 | Config file | `plugins/Adapt/adaptations/sword-bloody-blade.toml` |
 
 Menu stat lines: Striking a Living entity with your Sword causes Bleeding. Bleed Duration. Bleed Cooldown.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - starts the bleed
 - `EntityDeathEvent` (`MONITOR`, ignore cancelled) - credits a bleed kill
@@ -323,7 +302,6 @@ Milestones: `challenge_swords_bloody_500` on `swords.bloody-blade.bleed-damage` 
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsDualWield` |
 | Icon | `GOLDEN_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -333,8 +311,6 @@ Milestones: `challenge_swords_bloody_500` on `swords.bloody-blade.bleed-damage` 
 | Config file | `plugins/Adapt/adaptations/sword-dual-wield.toml` |
 
 Menu stat lines: Matching Sword Bonus. Mixed Sword Bonus.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - applies the multiplier
 
@@ -354,7 +330,6 @@ Milestones: `challenge_swords_dual_1k` on `swords.dual-wield.bonus-damage` at 10
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsExecutionersEdge` |
 | Icon | `STONE_SWORD` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -364,8 +339,6 @@ Milestones: `challenge_swords_dual_1k` on `swords.dual-wield.bonus-damage` at 10
 | Config file | `plugins/Adapt/adaptations/sword-executioners-edge.toml` |
 
 Menu stat lines: Bonus Damage. Health Threshold.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - applies the bonus
 
@@ -386,7 +359,6 @@ Milestones: `challenge_swords_execute_200` on `swords.executioners-edge.executio
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsRiposteWindow` |
 | Icon | `GOLDEN_CHESTPLATE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -396,8 +368,6 @@ Milestones: `challenge_swords_execute_200` on `swords.executioners-edge.executio
 | Config file | `plugins/Adapt/adaptations/sword-riposte-window.toml` |
 
 Menu stat lines: Riposte Window. Riposte Damage Bonus.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` at `HIGHEST` ignores cancelled events. It arms the window when the damaged entity is a learner blocking with a shield. It spends the window when the damager is a learner with an armed window.
 
@@ -417,7 +387,6 @@ Milestones: `challenge_swords_riposte_200` on `swords.riposte.ripostes-landed` a
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsCrimsonCyclone` |
 | Icon | `NETHERITE_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -427,8 +396,6 @@ Milestones: `challenge_swords_riposte_200` on `swords.riposte.ripostes-landed` a
 | Config file | `plugins/Adapt/adaptations/sword-crimson-cyclone.toml` |
 
 Menu stat lines: Cyclone Radius. Cyclone Damage. Cyclone Cooldown.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - fires the cyclone on a critical sword hit
 
@@ -464,7 +431,6 @@ Milestones: `challenge_swords_cyclone_500` on `swords.crimson-cyclone.mobs-hit` 
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsLungeStrike` |
 | Icon | `IRON_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -473,8 +439,6 @@ Milestones: `challenge_swords_cyclone_500` on `swords.crimson-cyclone.mobs-hit` 
 | Config file | `plugins/Adapt/adaptations/sword-lunge-strike.toml` |
 
 Menu stat lines: Lunge Force. Bonus Reach.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - fires the lunge on a sprinting sword hit
 
@@ -499,7 +463,6 @@ Milestones: `challenge_swords_lunge_250` on `swords.lunge-strike.lunges` at 250 
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsBladeFlow` |
 | Icon | `GOLDEN_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -508,8 +471,6 @@ Milestones: `challenge_swords_lunge_250` on `swords.lunge-strike.lunges` at 250 
 | Config file | `plugins/Adapt/adaptations/sword-blade-flow.toml` |
 
 Menu stat lines: Max Flow Stacks. Attack Speed / Stack.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - adds a stack
 - `EntityDamageEvent` (`MONITOR`, ignore cancelled) - clears all stacks when the learner takes damage with final damage above 0
@@ -531,7 +492,6 @@ Milestones: `challenge_swords_flow_1k` on `swords.blade-flow.stacks-built` at 10
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsDuelistsFocus` |
 | Icon | `SHIELD` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -541,11 +501,9 @@ Milestones: `challenge_swords_flow_1k` on `swords.blade-flow.stacks-built` at 10
 
 Menu stat lines: Bonus Damage. Damage Reduction.
 
-Listened events:
-
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - handles both the offensive bonus and the defensive reduction
 
-The engaged count includes `Monster` instances and players inside `engageRadius`, excluding the learner, and both halves require the count to be exactly 1. The defensive half additionally requires a sword in the learner's main hand. The glow is a `GLOWING` potion effect on the attacker, or on a projectile's
+The engaged count includes `Monster` instances and players inside `engageRadius`, excluding the learner, and both halves require the count to be exactly 1. The defensive half also requires a sword in the learner's main hand. The glow is a `GLOWING` potion effect on the attacker, or on a projectile's
 shooter. It is clamped to a maximum of 100 ticks. It is only applied when the
 target does not already have a longer glow.
 
@@ -566,7 +524,6 @@ Milestones: `challenge_swords_duelist_200` on `swords.duelists-focus.focused-hit
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsWhetstoneRitual` |
 | Icon | `GRINDSTONE` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -575,8 +532,6 @@ Milestones: `challenge_swords_duelist_200` on `swords.duelists-focus.focused-hit
 | Config file | `plugins/Adapt/adaptations/sword-whetstone-ritual.toml` |
 
 Menu stat lines: Sharpness Level. Buff Duration.
-
-Listened events:
 
 - `PlayerInteractEvent` (`HIGHEST`, ignore cancelled, also receives cancelled events) - runs the ritual on a sneaking main-hand right-click on a `GRINDSTONE`
 
@@ -600,7 +555,6 @@ Milestones: `challenge_swords_whetstone_100` on `swords.whetstone-ritual.rituals
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsCrescentGuard` |
 | Icon | `GOLDEN_APPLE` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -609,8 +563,6 @@ Milestones: `challenge_swords_whetstone_100` on `swords.whetstone-ritual.rituals
 | Config file | `plugins/Adapt/adaptations/sword-crescent-guard.toml` |
 
 Menu stat lines: Absorption Hearts. Guard Duration.
-
-Listened events:
 
 - `EntityDeathEvent` (`MONITOR`) - grants the guard when the killer holds a sword
 
@@ -630,7 +582,6 @@ Milestones: `challenge_swords_crescent_200` on `swords.crescent-guard.guarded-ki
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsHamstring` |
 | Icon | `LEAD` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -639,8 +590,6 @@ Milestones: `challenge_swords_crescent_200` on `swords.crescent-guard.guarded-ki
 | Config file | `plugins/Adapt/adaptations/sword-hamstring.toml` |
 
 Menu stat lines: Slowness Tier. Slow Duration.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`HIGHEST`, ignore cancelled) - applies the slow
 
@@ -663,7 +612,6 @@ Milestones: `challenge_swords_hamstring_200` on `swords.hamstring.hamstrings` at
 
 | Property | Value |
 |----------|-------|
-| Class | `SwordsHeirloomEdge` |
 | Icon | `NETHERITE_SWORD` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -672,8 +620,6 @@ Milestones: `challenge_swords_hamstring_200` on `swords.hamstring.hamstrings` at
 | Config file | `plugins/Adapt/adaptations/sword-heirloom-edge.toml` |
 
 Menu stat lines: Damage Per Bank. Kills Per Bank. Banked Damage Cap.
-
-Listened events:
 
 - `PrepareAnvilEvent` (`HIGH`) - stamps the renamed sword as an heirloom
 - `EntityDeathEvent` (`MONITOR`) - banks kill progress onto the held heirloom

@@ -50,13 +50,6 @@ AdaptationLearningTransaction.Result result =
 ```
 
 Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation refusal and pays nothing back. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
-
-## Runtime markers
-
-Two annotations exist for Adapt's own adaptation classes. Both target handler **methods**, not types. `@RunsWithoutLearnedAdaptation` opts a handler out of the non-learner gate on `PlayerMoveEvent` and `PlayerJumpEvent`. That is how teardown and cleanup handlers still run for a player who has unlearned the adaptation. `@ReceiveCancelledEvents` opts a handler out of Adapt's default `ignoreCancelled` behavior so it still receives an already-cancelled Bukkit event.
-
-Neither is useful in an integration. Adapt only inspects methods on listeners it registers itself. The movement gate also requires the listener to be an `Adaptation<?>`. Putting either annotation on your own listener does nothing.
-
 ## Reference
 
 ### Supported `SkillRegistry` members
@@ -130,26 +123,6 @@ The base TOML shape for a first-party adaptation. External code may read these b
 | `ECONOMY_UNAVAILABLE` | Vault or its economy provider is missing |
 | `ECONOMY_FAILED` | Vault accepted the call and reported a failure |
 | `PERMANENT` | `unlearn` refused because the adaptation is permanent |
-
-### Public types that are not contracts
-
-Java-public so Adapt's catalogue can be assembled across packages. Not third-party extension points.
-
-| Type | Runtime role and restriction |
-|---|---|
-| `SimpleSkill` | Base for Adapt's built-in skills. Its constructor requires `SkillPresentation`, whose `TextKey` members are relocated in the shaded jar |
-| `SimpleAdaptation` | Base for built-in adaptations. Owns config files, recipes, advancements, FX, storage, and registration lifecycle |
-| `AbilityApiBridge` | Installs and uninstalls the internal ability funnel. Integrations register `AbilityUsePolicy` or `AbilityCostProvider` through Bukkit instead |
-| `Cooldowns` | UUID cooldown map created by `PlayerStateRegistry`. Uses relocated time utilities and is Adapt-owned state |
-| `ItemCooldowns` | Shared item and material cooldown coordinator used by built-in abilities. Its group registry and player cooldown mutation are global |
-| `PlayerStateRegistry` | Tracks first-party per-player maps and owns the quit listener. `reset()` clears every registered map |
-| `VelocityBurstRuntime` | Global movement-burst scheduler and its `Client`, `Profile`, `BurstRequest`, `Feedback` and `StartResult` nested types. Adapt owns startup, ticking and shutdown |
-| `ChunkLoading` | Folia and Paper chunk-loading helper used by built-in adaptations. Not an external scheduling contract |
-| `AdaptationOwnerPulse` | Internal bounded adaptation-maintenance pulse. Adapt owns registration and lifecycle |
-| `SkillOwnerPulse` | Internal learner-index refresh pulse |
-
-`AdaptationRuntimeGuards` and `SkillRuntimeGuards` are package-private implementation classes, not API types and not annotations. The only public markers are `RunsWithoutLearnedAdaptation` and `ReceiveCancelledEvents`, both `@Target(ElementType.METHOD)` with runtime retention.
-
 ## See also
 
 - [41 - API - Getting Started](/adapt/41-api-getting-started)

@@ -2,7 +2,7 @@
 title: "Skill - Architect"
 description: "Adapt documentation: Skill - Architect"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -127,20 +127,6 @@ The stonecutter menu opens where you stand. Operators can require the stonecutte
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `architect` |
-| Class | `SkillArchitect` |
-| Icon | `SMITHING_TABLE` |
-| Color | `AQUA` |
-| Interval (ms) | `3100` |
-| Skill config | `plugins/Adapt/skills/architect.toml` |
-| Adaptation count | 12 |
-
-`SkillArchitect` calls `setIcon` twice, first with `IRON_BARS` and again with `SMITHING_TABLE` after the milestone registrations. The second call wins, so `SMITHING_TABLE` is the icon actually used.
-
 ### Skill configuration defaults
 
 Written to `plugins/Adapt/skills/architect.toml` on first load.
@@ -183,7 +169,6 @@ listed per adaptation below. `permanent` means the adaptation cannot be unlearne
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectGlass` |
 | Icon | `GLASS` |
 | Max level | 1 |
 | Initial knowledge cost | 0 |
@@ -195,15 +180,12 @@ listed per adaptation below. `permanent` means the adaptation cannot be unlearne
 | Milestones | `challenge_architect_glass_200` on `architect.glass.blocks-recovered` at 200, reward 300. `challenge_architect_glass_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-glass.toml` |
 
-Listened events: `BlockBreakEvent`.
-
 Fires only when the main hand is empty or holding a non-tool. Matches any material whose name contains `GLASS` except `TINTED_GLASS`. No adaptation-specific config knobs.
 
 ### Magic Foundation
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectFoundation` |
 | Icon | `TINTED_GLASS` |
 | Max level | 5 |
 | Initial knowledge cost | 1 |
@@ -213,8 +195,6 @@ Fires only when the main hand is empty or holding a non-tool. Matches any materi
 | Menu lines | Magically create N blocks beneath you. |
 | Milestones | `challenge_architect_foundation_1k` on `architect.foundation.blocks-placed` at 1000, reward 300. `challenge_architect_foundation_10k` at 10000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-foundation.toml` |
-
-Listened events: `PlayerToggleSneakEvent`, `PlayerMoveEvent`, `BlockBreakEvent`, `BlockPistonExtendEvent`, `BlockPistonRetractEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`, `ChunkLoadEvent`, `PlayerQuitEvent`.
 
 Placed blocks are `TINTED_GLASS`. Creative and Spectator cannot activate it. Every block passes a normal place authorization check before it is journaled or placed, and a denial leaves the block budget untouched. Expiry cleanup runs regardless of that authorization.
 
@@ -229,7 +209,6 @@ Placed blocks are `TINTED_GLASS`. Creative and Spectator cannot activate it. Eve
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectPlacement` |
 | Icon | `SCAFFOLDING` |
 | Max level | 1 |
 | Initial knowledge cost | 4 |
@@ -239,8 +218,6 @@ Placed blocks are `TINTED_GLASS`. Creative and Spectator cannot activate it. Eve
 | Menu lines | You need N blocks in your hand to place this. A Material Builders Wand |
 | Milestones | `challenge_architect_placement_1k` on `architect.placement.blocks-placed` at 1000, reward 300. `challenge_architect_placement_25k` at 25000, reward 1500 |
 | Config file | `plugins/Adapt/adaptations/architect-placement.toml` |
-
-Listened events: `BlockPlaceEvent`, `PlayerToggleSneakEvent`, `PlayerMoveEvent`, `PlayerQuitEvent`.
 
 Target block range is 5. Containers are excluded. Every replicated block passes a normal place authorization check before Adapt consumes the matching item or changes the world. On Folia the whole source and destination footprint must share your current owning region, or the original placement is left alone. Preview display entities are budgeted globally at 256 spawn or refresh operations per tick and 2048 live displays.
 
@@ -254,7 +231,6 @@ Target block range is 5. Containers are excluded. Every replicated block passes 
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectWirelessRedstone` |
 | Icon | `REDSTONE_TORCH` |
 | Max level | 1 |
 | Initial knowledge cost | 0 |
@@ -266,8 +242,6 @@ Target block range is 5. Containers are excluded. Every replicated block passes 
 | Milestones | `challenge_architect_wireless_100` on `architect.wireless-redstone.pulses` at 100, reward 300. `challenge_architect_wireless_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-wireless-redstone.toml` |
 
-Listened events: `BlockPlaceEvent` (`onPlaceBlock`), `PlayerInteractEvent` (`onPlayerInteract`), `ChunkUnloadEvent` (`onChunkUnload`).
-
 Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a `BoundRedstoneTorch`. Binding requires sneak plus a main-hand left-click and re-validates the target, your held slot, and the item snapshot before it links. Every powered block, neighbouring component, and door half passes an interaction check before the pulse begins. On Folia the whole pulse footprint and the player must share the target region. Denied, stale, or unschedulable pulses do not start the cooldown.
 
 | Key | Code default | What it does |
@@ -278,9 +252,8 @@ Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectElevator` |
 | Icon | `HEAVY_WEIGHTED_PRESSURE_PLATE` |
-| Max level | 1 (locked in code, config overrides are reset on load) |
+| Max level | 1 |
 | Initial knowledge cost | 1 |
 | Base knowledge cost | 5 |
 | Cost factor | 0.40 |
@@ -289,11 +262,9 @@ Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a
 | Milestone | `challenge_architect_elevator_100` on `architect.elevator.trips` at 100, reward 300 |
 | Config file | `plugins/Adapt/adaptations/architect-elevator.toml` |
 
-Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `BlockPlaceEvent`, `PlayerJoinEvent`, `CustomBlockDataMoveEvent`, `CustomBlockDataRemoveEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`.
-
 Recipe: shaped 3x3, `XXX` / `XYX` / `XXX`, where X is any block in the vanilla `WOOL` tag and Y is `ENDER_PEARL`. Travel distance is `baseDistance` times level times `multiplier`, so 32 blocks at defaults. An elevator block is found up to 2 blocks below your feet. Teleports use Paper's async teleport when available.
 
-A `challenge_architect_elevator_penthouse` advancement is registered and granted on a single trip of 50 blocks or more. With the shipped defaults the maximum trip is 32 blocks, so it cannot be earned unless an operator raises `baseDistance` or `multiplier`.
+A `challenge_architect_elevator_penthouse` advancement is registered and granted on a single trip of 50 blocks or more. With the defaults the maximum trip is 32 blocks, so it cannot be earned unless an operator raises `baseDistance` or `multiplier`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -304,7 +275,6 @@ A `challenge_architect_elevator_penthouse` advancement is registered and granted
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectSmartShape` |
 | Icon | `BRICKS` |
 | Max level | 1 |
 | Initial knowledge cost | 3 |
@@ -314,8 +284,6 @@ A `challenge_architect_elevator_penthouse` advancement is registered and granted
 | Menu lines | Rotates directional and axis block states. Requires empty main hand |
 | Milestones | `challenge_architect_smart_shape_200` on `architect.smart-shape.rotations` at 200, reward 300. `challenge_architect_smart_shape_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-smart-shape.toml` |
-
-Listened events: `PlayerInteractEvent`, main hand left-click only.
 
 Rotation walks a fixed 16-step compass order for directional blocks and an X, Y, Z order for axis blocks.
 
@@ -328,7 +296,6 @@ Rotation walks a fixed 16-step compass order for directional blocks and an X, Y,
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectScaffolder` |
 | Icon | `SCAFFOLDING` |
 | Max level | 5 |
 | Initial knowledge cost | 2 |
@@ -338,8 +305,6 @@ Rotation walks a fixed 16-step compass order for directional blocks and an X, Y,
 | Menu lines | Sneak-placed blocks dissolve automatically. Seconds before a scaffold dissolves and refunds |
 | Milestones | `challenge_architect_scaffolder_500` on `architect.scaffolder.blocks-scaffolded` at 500, reward 300. `challenge_architect_scaffolder_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-scaffolder.toml` |
-
-Listened events: `BlockPlaceEvent`, `BlockBreakEvent`.
 
 A scaffold with more than 30 ticks of life left plays a warning puff 20 ticks before it dissolves. A scaffold whose material changed before expiry is left in place.
 
@@ -356,7 +321,6 @@ A scaffold with more than 30 ticks of life left plays a warning puff 20 ticks be
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectSupplyLine` |
 | Icon | `SHULKER_BOX` |
 | Max level | 5 |
 | Initial knowledge cost | 2 |
@@ -366,8 +330,6 @@ A scaffold with more than 30 ticks of life left plays a warning puff 20 ticks be
 | Menu lines | Hand auto-refills from shulkers and bundles. Refills per minute |
 | Milestones | `challenge_architect_supply_line_100` on `architect.supply-line.refills` at 100, reward 300. `challenge_architect_supply_line_1k` at 1000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-supply-line.toml` |
-
-Listened events: `BlockPlaceEvent`.
 
 The refill only triggers when the placed stack was down to its last item. Search order is loose inventory stacks, then bundles, then Adapt backpacks, then shulker boxes. It works for both the main hand and the offhand.
 
@@ -381,7 +343,6 @@ The refill only triggers when the placed stack was down to its last item. Search
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectSteadyHands` |
 | Icon | `LIGHTNING_ROD` |
 | Max level | 5 |
 | Initial knowledge cost | 2 |
@@ -391,8 +352,6 @@ The refill only triggers when the placed stack was down to its last item. Search
 | Menu lines | No knockback while bridging. Blocks of fall damage shielded |
 | Milestones | `challenge_architect_steady_hands_500` on `architect.steady-hands.bridge-blocks` at 500, reward 300. `challenge_architect_steady_hands_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-steady-hands.toml` |
-
-Listened events: `BlockPlaceEvent`, `PlayerToggleSneakEvent`.
 
 It only triggers on a sneak-placement whose block below is air. It applies timed modifiers for knockback resistance, explosion knockback resistance, safe fall distance, and block break speed.
 
@@ -408,9 +367,8 @@ It only triggers on a sneak-placement whose block below is air. It applies timed
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectChalkLine` |
 | Icon | `STRING` |
-| Max level | 4 (locked in code, config overrides are reset on load) |
+| Max level | 4 |
 | Initial knowledge cost | 1 |
 | Base knowledge cost | 3 |
 | Cost factor | 0.4 |
@@ -418,8 +376,6 @@ It only triggers on a sneak-placement whose block below is air. It applies timed
 | Menu lines | New wand recipes appear in your vanilla recipe book |
 | Milestones | `challenge_architect_chalk_line_50` on `architect.chalk-line.guides-drafted` at 50, reward 300. `challenge_architect_chalk_line_500` at 500, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-chalk-line.toml` |
-
-Listened events: `PlayerInteractEvent`, `BlockPlaceEvent`, `CraftItemEvent`, `CrafterCraftEvent`, `PlayerInventorySlotChangeEvent`, `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `PlayerGameModeChangeEvent`, `PlayerChangedWorldEvent`, `PlayerRespawnEvent`, `PlayerJoinEvent`, `PlayerQuitEvent`.
 
 All four recipes are shaped, using `S` for `STRING` and `T` for `STICK`:
 
@@ -444,7 +400,6 @@ All four recipes are shaped, using `S` for `STRING` and `T` for `STICK`:
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectDemolition` |
 | Icon | `TNT` |
 | Max level | 5 |
 | Initial knowledge cost | 2 |
@@ -454,8 +409,6 @@ All four recipes are shaped, using `S` for `STRING` and `T` for `STICK`:
 | Menu lines | Your fresh placements break near-instantly. Seconds a placement counts as fresh |
 | Milestones | `challenge_architect_demolition_500` on `architect.demolition.blocks-demolished` at 500, reward 300. `challenge_architect_demolition_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-demolition.toml` |
-
-Listened events: `BlockPlaceEvent`, `BlockDamageEvent`, `BlockBreakEvent`, `PlayerQuitEvent`.
 
 Only the placing player can insta-break their own mark. The break suppresses normal drops and dropped XP. It then hands back the
 snapshotted placed item plus any inventory the block was holding. Overflow goes
@@ -472,9 +425,8 @@ to the ground after your inventory fills. The effective window is floored at 100
 
 | Property | Default |
 |----------|---------|
-| Class | `ArchitectStonecutterSavant` |
 | Icon | `STONECUTTER` |
-| Max level | 1 (locked in code, config overrides are reset on load) |
+| Max level | 1 |
 | Initial knowledge cost | 2 |
 | Base knowledge cost | 4 |
 | Cost factor | 0.5 |
@@ -483,20 +435,10 @@ to the ground after your inventory fills. The effective window is floored at 100
 | Milestones | `challenge_architect_stonecutter_savant_50` on `architect.stonecutter-savant.uses` at 50, reward 300. `challenge_architect_stonecutter_savant_500` at 500, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/architect-stonecutter-savant.toml` |
 
-Listened events: `PlayerInteractEvent` (main hand left-click only), `PlayerJoinEvent`.
-
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `requireOffhand` | `false` | When true, the stonecutter must be held in the offhand rather than anywhere in the inventory. |
 | `xpPerUse` | `2` | Skill XP paid per stonecutter opened. |
-
-### Support classes
-
-Neither of these is a player adaptation.
-
-- `ArchitectChalkGeometry` generates the discrete line, polyline, circle, and arc points a chalk guide is drawn from.
-- `ArchitectRedstonePulse` owns live remote redstone activations and restores the previous block state when a pulse completes or is cancelled.
-
 ## See also
 
 - [02 - Concepts](/adapt/02-concepts)

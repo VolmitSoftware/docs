@@ -2,18 +2,18 @@
 title: "Skills Catalog"
 description: "Adapt documentation: Skills Catalog"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt ships 23 skill lines. Each line watches an activity you already do in Minecraft. Each line pays experience for that activity. You spend that experience as knowledge on adaptations.
+Adapt has 23 skill lines. Each line watches an activity you already do in Minecraft and awards experience for it. You spend that experience as knowledge on adaptations.
 
 Adaptations are the perks. They change how the game treats you. Examples include silk-touch glass and a bow that curves arrows around corners.
 
 Nothing is unlocked by default. You choose which lines to raise. You choose which adaptations to buy. Two players on the same server can hold different toolkits. Levels come from play. They do not come from a menu grind. Lines that match how you spend time pay the most.
 
-This page is the index. Each line has its own numbered doc from `11` through `33`. Those docs cover every adaptation. Start here to find the line. Then read that line's doc.
+Each skill has a numbered page from `11` through `33` that covers all of its adaptations.
 
 ## How any skill works
 
@@ -158,7 +158,7 @@ Adapt declares 312 adaptation types. 311 register on a plain server. The twelfth
 |-------|---------------|------|---------------|
 | Agility (`agility`) | `agility-wind-up` | Wind Up | Continuous sprinting builds movement speed up to the configured cap. Stopping or leaving a valid movement state clears the buildup. |
 | Agility (`agility`) | `agility-wall-jump` | Wall Jump | Hold shift while mid-air against a wall to latch. Then release shift to jump. |
-| Agility (`agility`) | `agility-super-jump` | Super Jump | Sneak and jump to launch a super jump. Four levels scale the apex from 1.5 to 2.5 blocks. |
+| Agility (`agility`) | `agility-super-jump` | Super Jump | Sneak and jump to launch a super jump. Configured levels scale the apex from 1.5 to 2.5 blocks. |
 | Agility (`agility`) | `agility-armor-up` | Armor-Up | Build temporary armor while sprinting. The bonus fades after you stop. |
 | Agility (`agility`) | `agility-ladder-slide` | Ladder Slide | Look up to climb quickly. Look down to descend quickly. A near-horizon look returns normal ladder control. Sneaking halts directional movement. The first and last two climbable blocks always use normal control. |
 | Agility (`agility`) | `agility-roll-landing` | Roll Landing | A timed crouch before landing converts part of fall damage into hunger cost. |

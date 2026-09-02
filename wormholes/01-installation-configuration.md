@@ -2,17 +2,13 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Copy `Wormholes-<version>.jar` into `plugins/`. On first start SlimJar resolves,
-verifies, and caches the plugin's internal libraries, relocating the selected
-Java-only libraries while zstd-jni keeps its native-compatible package. Then
-Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
-3`) after startup. A missing optional plugin skips its bridge.
+Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `plugins/Wormholes/wormholes.toml`. A missing optional plugin disables only its integration.
 
 ## Requirements
 
@@ -21,19 +17,19 @@ Wormholes creates `plugins/Wormholes/`. Edit `wormholes.toml` (`schema =
 | Runtime | Paper, Paper-compatible derivatives such as Purpur, and Folia (`folia-supported: true`) |
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
-| Soft depends | PlaceholderAPI, Iris, Vault (optional). Load them BEFORE when they are present |
-| Artifact | Runtime `Wormholes-<version>.jar` from `./gradlew shadowJar`; the `-api.jar` is compile-only |
-| First start | Dependency-repository access for SlimJar, or a prewarmed SlimJar cache |
+| Soft depends | PlaceholderAPI, Iris, Vault, Citizens (optional). Paper loads them before Wormholes when present |
+| Plugin file | `Wormholes-<version>.jar`; do not install the `-api.jar` |
+| First start | Internet access for required libraries, or an existing SlimJar cache |
 
 ## Install
 
 1. Copy `Wormholes-<version>.jar` into `plugins/`.
-2. Start the server. SlimJar downloads and caches its declared libraries when
-   they are not already cached. Wormholes then creates the data folder and writes
-   `wormholes.toml` if the file is missing.
+2. Start the server so Wormholes creates its data folder and `wormholes.toml`.
 3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
    have no schema or a wrong schema. The file must use `schema = 3`.
 4. Apply config changes with `/wormholes reload` or the config file watcher.
+
+WorldGuard is optional and adds protection checks for RTP destinations.
 
 Upgrading is a hard break. Back up any values you need, then delete the obsolete
 `plugins/Wormholes/config/` directory; deleting it removes its local changes.
@@ -194,9 +190,9 @@ the watched file.
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
 Normal console output is plugin-branded and limited to lifecycle changes,
-capability changes, and actionable failures. Per-recipe registration, routine
-vanilla-portal formation, successful handoff and arrival details, and expected
-admission denials require `verbose-logging`. Repeated portal update, save,
+capability changes, and failures that require operator action. Per-recipe
+registration, routine vanilla-portal formation, successful handoff and arrival
+details, and expected admission denials require `verbose-logging`. Repeated portal update, save,
 traversal infrastructure, and peer-frame encoding failures are throttled while
 retaining a full sampled stacktrace and failure counters.
 
@@ -225,7 +221,7 @@ no recipe.
 
 `enabled = false` removes that recipe from the server. A `shape` or
 `ingredients` value that does not parse, or that names a block this server does
-not have, is logged and falls back to the shipped recipe.
+not have, is logged and falls back to the default recipe.
 
 ## `[network]`
 
@@ -344,37 +340,11 @@ Projection behavior detail:
 
 ## Hot reload
 
-| Path | Mechanism |
-|------|-----------|
-| `wormholes.toml` change | A cheap 200 ms loop drains native filesystem events without rereading idle content. It reads on an event, pending stability verification, or the 2.5-second exact-content reconciliation that catches missed events and content changes whose size and timestamp are unchanged |
-| `languages/*.toml` change | Not watched directly. Use `/wormholes reload` or touch the config file |
-| `/wormholes reload` | Immediate, unthrottled reload of configuration and language files (`wormholes.admin.reload`). It invalidates older queued automatic work before applying |
-| Failed language load on reload | Config may still apply. Last valid language is kept. Console reports the cause |
-| Network enable/peer changes | Import/export may start the network without a full restart |
-
-Automatic hotload waits for one byte-identical snapshot to remain stable for
-350 ms. Only one application can run at a time. After it completes, the next
-automatic application cannot begin for three seconds; edits received during
-that interval replace the queued candidate, so the final snapshot still runs.
-Only the exact bytes parsed and successfully applied are acknowledged. A save
-that lands during application remains queued. Startup, manual reload, and the
-full reset seed watcher state from the exact canonical settings snapshot that
-became live, so a newer disk save that lands before watching resumes remains a
-candidate instead of becoming an unobserved baseline.
-
-Temporary deletion or an empty intermediate file, as produced by some FTP
-clients and editor save strategies, is treated as an incomplete save. Wormholes
-waits for `wormholes.toml` to reappear as a stable regular file. Passive reads
-are limited to 8 MiB. Invalid snapshots keep the last-known-good settings;
-application failures retain the snapshot for bounded-backoff retry and report a
-full console stacktrace.
-
-Use `/wormholes admin deleteeverything` to wipe config, routes, trust,
-identity, portals, and doors. That command needs `wormholes.admin.reset`.
+`wormholes.toml` reloads automatically after a complete save. Invalid files leave the current settings active and report the problem. Use `/wormholes reload` when you want to apply changes immediately.
 
 ## Related docs
 
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions) — reload, debug, stats, network commands
-- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) — network keys in operation
-- [11 - Localization](/wormholes/11-localization) — `language` / overrides
-- [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) — traversal API contract
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions), reload, debug, stats, and network commands
+- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), network keys in operation
+- [11 - Localization](/wormholes/11-localization), language and override behavior
+- [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events), traversal API contract

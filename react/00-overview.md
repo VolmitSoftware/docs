@@ -2,7 +2,7 @@
 title: "Overview"
 description: "React documentation: Overview"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ React is a runtime performance and monitoring plugin for Paper, Purpur, and Foli
 - **Actions** — operator one-shots such as purge, quarantine, and the incident playbook. See [09 - Actions Catalog](/react/09-actions-catalog).
 - **Monitors and maps** — action bar, map GUI, and heatmaps. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
 - **Incident mode** — score-driven posture and playbooks. See [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
-- **Public plugin API** — entity protection, metric publishing, and PlaceholderAPI. See [16 - API - Getting Started](/react/16-api-getting-started), [17 - API - Entity Protection](/react/17-api-entity-protection), [18 - API - Metric Publishing](/react/18-api-metric-publishing), and [19 - API - PlaceholderAPI](/react/19-api-placeholderapi).
+- **Public plugin API** — entity protection, metric publishing, PlaceholderAPI, and folder-backed community metric packs. See [16 - API - Getting Started](/react/16-api-getting-started), [17 - API - Entity Protection](/react/17-api-entity-protection), [18 - API - Metric Publishing](/react/18-api-metric-publishing), [19 - API - PlaceholderAPI](/react/19-api-placeholderapi), and [20 - API - Plugin API Packs](/react/20-api-plugin-api-packs).
 
 ## Documentation Index
 
@@ -43,28 +43,6 @@ React is a runtime performance and monitoring plugin for Paper, Purpur, and Foli
 | [17 - API - Entity Protection](/react/17-api-entity-protection) | Protection API |
 | [18 - API - Metric Publishing](/react/18-api-metric-publishing) | Metrics API |
 | [19 - API - PlaceholderAPI](/react/19-api-placeholderapi) | `%react_…%` keys |
+| [20 - API - Plugin API Packs](/react/20-api-plugin-api-packs) | Community metric definitions, schema, sources, and web management |
 
-Docs `00`–`15` are for operators. Docs `16`–`19` are for plugin developers.
-
-## Project Layout
-
-| Path | Contents |
-|------|----------|
-| `React/React/src/main/java/art/arcane/react/` | Plugin main, content, controllers, API |
-| `content/feature`, `tweak`, `action`, `sampler` | Registered content |
-| `content/directorcommand` | `/react` command tree |
-| `core/controller` | Lifecycle controllers |
-| `api/protect`, `api/metric` | Public third-party API |
-| `bridge-api/`, `nms/` | NMS bridge interfaces and version impls |
-
-## Building
-
-From `React/React/`, use Java 25:
-
-```
-./gradlew build
-./gradlew test
-./gradlew shadowJar
-```
-
-The shaded plugin jar is written under `React/React/build/libs/`. The version suffix tracks the Minecraft API React was built against. An example is `2.0.0-26.2`.
+Docs `00`–`15` are for operators. Docs `16`–`20` serve plugin developers and pack authors; page 20 also contains the operator workflow.

@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -95,7 +95,7 @@ Start from the flat generator in [26 - Example - Minimal Dimension](/iris/26-exa
 1. Validate the pack and open Studio on seed `1337`.
 2. Generate fresh chunks and cut a cross-section. Success is exactly one grass block over three dirt blocks over stone. Dandelions scatter on the grass. Coal clumps appear only in the lower part of the column.
 3. If the column is wrong, delete `decorators` and `deposits` and get `layers` right first. Layer thickness is noise-fit between `minHeight` and `maxHeight` per column. Equal min and max is the way to get a guaranteed thickness while debugging.
-4. If flowers never appear, raise `chance` to `0.5` temporarily. Confirm the dimension has `decorate: true` (the default). `chance` is a noise-field cutoff, not a dice roll. A low value can genuinely produce nothing within one chunk.
+4. If flowers never appear, raise `chance` to `0.5` temporarily. Confirm the dimension has `decorate: true` (the default). `chance` is a noise-field cutoff, not a dice roll. A low value can produce nothing within one chunk.
 5. If deposits never appear, check the Y band. Deposit `minHeight` and `maxHeight` are **engine-local Y** (0 = bottom of the world). They do not automatically rescale when dimension height changes. `CLIPPED_UNIFORM` clips the origin band to the configured terrain clearance. `UNIFORM` and `TRIANGLE` sample the authored band first and discard cells outside the world or terrain.
 6. Remove `focus` once the biome behaves. Then tune each system on its own.
 
@@ -429,4 +429,4 @@ Do these one at a time, on a focused biome that already produces correct height.
 - One decorator per `partOf` bucket places per column. More decorators in a bucket means each appears less often, not more total coverage.
 - Deposit `varience` is not `variance`. Generator styles use `multiplicitive`, not `multiplicative`. Both spellings are the actual field names.
 - Deposit palettes ignore `weight`. Every other palette in the pack honors it.
-- The dimension `explodeBiomePalettes` flag inserts barrier blocks between layer groups so you can count layer boundaries in a cross-section. It is a debug aid and should never ship enabled.
+- The dimension `explodeBiomePalettes` flag inserts barrier blocks between layer groups so you can count layer boundaries in a cross-section. It is a debug aid and should never be enabled in production.

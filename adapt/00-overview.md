@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Adapt documentation: Overview"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,13 +10,11 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Adapt is a skills plugin for Paper, Purpur, and Folia servers. Players earn experience in twenty-three skill lines by play and spend the knowledge on adaptations. Ability power limits how many adaptation levels a player can hold at once. Players unlock adaptations by activity, not from an operator.
 
-In play it works like this. You mine for a while. Pickaxes levels up and pays you knowledge. You right-click the side of a bookshelf. The Adapt menu opens. You spend that knowledge on something like faster ore breaking.
+Mine for a while and Pickaxes levels up, awarding knowledge. Right-click the side of a bookshelf to open the Adapt menu, then spend that knowledge on an adaptation such as faster ore breaking.
 
 Some adaptations are passive. They work from the moment you buy them. Others give you a gesture. Examples include sneak-right-click with a certain item, left-click the air mid-jump, or raise a shield just before a hit lands. The menu is the normal player-facing place to spend knowledge, commit ability power, and pay any configured Vault price for adaptation levels. Nobody needs to learn a command.
 
-Optional systems sit around that core. Experimental Mutations add a second, late-game progression track. Protectors make adaptations respect WorldGuard regions and claim plugins. PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics hook in when those plugins are present. SQL-backed servers can use backend-to-backend Redis handoff across a proxy network without a proxy plugin. A Java API lets other plugins price, deny, or watch ability use.
-
-This file is the map. Each section below says what a piece is and which doc owns the detail.
+Experimental Mutations add a second, late-game progression track. Protectors make adaptations respect WorldGuard regions and claim plugins. PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics hook in when present. SQL-backed servers can use backend-to-backend Redis handoff across a proxy network without a proxy plugin. A Java API lets other plugins price, deny, or watch ability use.
 
 ## What is in the plugin
 
@@ -33,11 +31,6 @@ This file is the map. Each section below says what a piece is and which doc owns
 **Protection** runs before any adaptation changes the world. Claims and regions stay in force. WorldGuard gets custom Adapt flags. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [09 - Integrations](/adapt/09-integrations).
 
 **The public API** lets other plugins deny an ability, charge for it, register a protector, or listen for activation events. None of them can grant an unlearned adaptation. Docs `41` through `50` cover it.
-
-## Building from source
-
-Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Run `./gradlew build` to compile, check, and produce `build/libs/Adapt-*-all.jar`. Run `./gradlew test` for the JVM suite alone or `./gradlew shadowJar` for only the shaded jar. Use the shaded jar at runtime and as the compile-only dependency for API consumers. Non-English locale TOMLs stay outside the jar; the build embeds a pinned Git revision and SHA-256 checksum for each source so a server can download only its configured locale. See [41 - API - Getting Started](/adapt/41-api-getting-started).
-
 ## Reference
 
 ### Identity
@@ -45,13 +38,10 @@ Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Ru
 | Property | Value |
 |---|---|
 | Plugin version | `2.0.0-26.2` |
-| Declared `api-version` | `26.1` |
-| Main class | `art.arcane.adapt.Adapt` |
 | Command root | `/adapt` |
-| Folia | `folia-supported: true` |
-| Java toolchain / release | 25 |
+| Folia | Supported |
 | Skill lines | 23 |
-| Adaptation types | 312 declared, 311 active without Iris |
+| Adaptations | More than 300 |
 
 ### Documentation index
 
@@ -73,35 +63,11 @@ Adapt builds from the `Adapt/` directory. The build needs a JDK 25 toolchain. Ru
 | [35 - Mutations Catalog](/adapt/35-mutations-catalog) | All mutation types |
 | [36 - Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects) | Orbs and skill items |
 | [37 - Recipes, Brewing & Value](/adapt/37-recipes-brewing-value) | Recipes and brewing |
-| [38 - Runtime Architecture](/adapt/38-runtime-architecture) | Boot, tick, data, Folia |
 | [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server) | Backend handoff and ownership fencing |
 | [40 - Operator Runbooks](/adapt/40-operator-runbooks) | Pre-launch and upgrade procedures |
 | `41`-`50` | Public API |
 
 Docs `00` through `40` are written for operators and players in reading order. Docs `41` through `50` are for plugin developers.
-
-### Project layout
-
-| Path | Role |
-|------|------|
-| `src/main/java/art/arcane/adapt/Adapt.java` | Plugin entry |
-| `src/main/java/art/arcane/adapt/AdaptConfig.java` | `adapt.toml` model and defaults |
-| `src/main/java/art/arcane/adapt/api/` | Registries, XP, ability pipeline, mutations, world/player types |
-| `src/main/java/art/arcane/adapt/content/skill/` | Skill implementations |
-| `src/main/java/art/arcane/adapt/content/adaptation/` | Adaptation implementations |
-| `src/main/java/art/arcane/adapt/content/gui/` | Inventory menus |
-| `src/main/java/art/arcane/adapt/content/item/` | Orbs and adaptation-created items |
-| `src/main/java/art/arcane/adapt/content/protector/` | Claim and region protectors |
-| `src/main/java/art/arcane/adapt/content/integration/` | HiddenOre and Iris bridges |
-| `src/main/java/art/arcane/adapt/command/` | Director command tree |
-| `src/main/java/art/arcane/adapt/localization/` | English catalogs and language writer |
-| `src/main/java/art/arcane/adapt/papi/` | PlaceholderAPI expansion |
-| `src/main/java/art/arcane/adapt/service/` | Hotload, mutation, command services |
-| `src/main/resources/` | `plugin.yml` and the source TOMLs used by verified on-demand locale downloads |
-| `src/main/java/art/arcane/adapt/util/project/redis/` | SQL-fenced backend Redis handoff and wire codec |
-
-Soft depends declared in `plugin.yml`: PlaceholderAPI, WorldGuard, Factions, ChestProtect, Residence, GriefDefender, GriefPrevention, LockettePro, HiddenOre, Iris, Vault, AdvancedChests, MagicCosmetics.
-
 ## See also
 
 - [01 - Installation & Configuration](/adapt/01-installation-configuration)

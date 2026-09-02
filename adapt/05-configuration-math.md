@@ -8,9 +8,9 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-This page explains how Adapt turns an action into XP and XP into levels. Levels set the power budget. The budget caps how many adaptations a player can hold at once. Every config path below lives in `plugins/Adapt/adapt.toml`.
+Adapt turns actions into XP, then converts XP into levels. Levels set the power budget, which caps how many adaptations a player can hold at once. Every config path below lives in `plugins/Adapt/adapt.toml`.
 
-The short version of an XP award: a skill hands Adapt a number. Then a chain of multipliers works on it before it reaches the skill line. Two of them exist to make automation unprofitable. One comes from region policy. Two are boost brackets. Order matters. A region that denies XP kills the award outright. Two of the stages clamp.
+A skill submits an XP amount, then Adapt applies an ordered chain of multipliers before adding it to the skill line. Two discourage automation, one comes from region policy, and two are boost brackets. A region that denies XP cancels the award. Two stages clamp their results.
 
 Levels come from one curve. The same curve is used for every skill line and for master level. A change to `xpCurve` moves progression and ability power together. Master XP is never awarded directly. It is granted only when a skill line crosses a level.
 
@@ -136,7 +136,7 @@ if perActivityTracking: floor = clamp(floor * activityFloorMultiplier, 0, 1)
 monotony = clamp(skillMultiplier * activityMultiplier, floor, 1)
 ```
 
-At the shipped defaults that floor is `0.08 * 0.12 = 0.0096`. A fully saturated farm still pays about one percent. Awards of zero or less, and a disabled `[farmPrevention]`, both return `1.0` unconditionally.
+With default settings, that floor is `0.08 * 0.12 = 0.0096`. A fully saturated farm still pays about one percent. Awards of zero or less, and a disabled `[farmPrevention]`, both return `1.0` unconditionally.
 
 ## XP integrity
 

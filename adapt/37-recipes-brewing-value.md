@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt adds three things on the crafting side of the game. Extra crafting recipes ship with certain adaptations. A custom brewing track runs on an ordinary brewing stand. A material value estimate lets several skills size XP rewards. Recipes and brews belong to the adaptation that registered them. Only players who learned that adaptation get them. Material value is server-wide. It ignores who learned what.
+Adapt adds three things on the crafting side of the game. Certain adaptations include extra crafting recipes. A custom brewing track runs on an ordinary brewing stand. A material value estimate lets several skills size XP rewards. Recipes and brews belong to the adaptation that registered them. Only players who learned that adaptation get them. Material value is server-wide. It ignores who learned what.
 
 Adapt recipes are real server recipes. Adapt registers them at startup. They stay hidden in the recipe book until a player learns the owning adaptation at the level the recipe asks for. Learn it and the recipe shows up. Unlearn it and it goes away again. The crafting is plain vanilla crafting. A crafting table, a recipe book, or an autocrafter all treat them like any other recipe. Custom brewing works the same way. A longer ingredient list is layered on an ordinary stand.
 
@@ -47,7 +47,7 @@ Every material resolves to a number. Adapt starts at `value.baseValue`. It asks 
 
 Two clamps sit on the result. If the running total passes `maxRecipeListPrecaution`, it collapses to `total / 10 + 1`. That keeps deep recipe chains from exploding. Any block whose hardness is zero reads back as `0` regardless of what was computed. The last step is `value.valueMultipliers`. Adapt looks it up case insensitively on the Bukkit material name. Anything absent uses `1`.
 
-Resolved values are cached in memory. They are written to `plugins/Adapt/data/value-cache.json` at shutdown. The cache signature carries a random per-process id. The file is never reused across restarts. Every boot recomputes from the recipe registry that actually exists. A core config reload throws the in-memory cache away too. Edits to `baseValue` or the multiplier map take effect without a restart.
+Adapt recalculates material values after a restart or relevant config reload.
 
 Material value feeds Architect XP and Placement, Axes XP and its value
 statistics, and Crafting XP and Deconstruction. It also feeds Discovery XP and

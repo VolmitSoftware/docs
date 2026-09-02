@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Adapt documentation: Skill - Crafting"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ The 14 adaptations cover three jobs. Some unlock recipes that do not exist in va
 from rotten flesh on a campfire, mob heads, ores rebuilt from their drops, and a
 backpack. Some give you tools that save trips. You get portable crafting stations you open from your hand. You also get a
 compactor bound to a crafting table. Shears tear dropped items back into
-components. The rest quietly improve the crafts you were making anyway, with refunds, bigger batches, better gear, and bonus food. Five of them ship marked permanent in config. Once learned they stay learned.
+components. The rest quietly improve the crafts you were making anyway, with refunds, bigger batches, better gear, and bonus food. Five of them are marked permanent in the default config. Once learned they stay learned.
 
 ## Adaptations
 
@@ -111,7 +111,7 @@ Works on its own once learned.
 ### Masterwork (`crafting-masterwork`)
 
 Tools and armor you craft can come out better than they should. Every actual output rolls independently, including each item produced by one shift-click batch. A successful masterwork adds a randomized fraction of the item's base
-durability. With shipped settings the roll spans half to all of the durability
+durability. With default settings the roll spans half to all of the durability
 bonus available at your level. At full level that means +25-50 percent. `+264 Masterwork` is the upper
 durability roll for an item with 528 base durability rather than a fixed bonus.
 
@@ -158,18 +158,6 @@ The effect is skipped if you already have Hero of the Village from any source.
 ## Reference
 
 Every adaptation config file also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`.
-
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `crafting` |
-| Class | `SkillCrafting` |
-| Icon | `CRAFTING_TABLE` |
-| Color | `YELLOW` |
-| Interval (ms) | `3789` |
-| Skill config | `plugins/Adapt/skills/crafting.toml` |
-| Adaptation count | 14 |
 
 ### XP sources
 
@@ -220,7 +208,6 @@ Written to `plugins/Adapt/skills/crafting.toml` on first load.
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingDeconstruction` |
 | Icon | `SHEARS` |
 | Max level | 1 |
 | Initial knowledge cost | 8 |
@@ -236,15 +223,12 @@ the material occupying the most slots. It adjusts for the recipe's output count
 and returns 50 percent. Armor is eligible only at zero damage. Adapt uses a plain copy of fully repaired armor for recipe lookup. Enchantments,
 Masterwork metadata, and other item metadata do not hide its vanilla recipe. When an item has multiple eligible recipes, the recipe with the greatest total occupied-slot count wins. Recipes whose salvage is not worth less than the source are rejected. Outputs above the material's maximum stack size are emitted as multiple item entities.
 
-Listened events:
-
 - `PlayerInteractEvent` (`MONITOR`, ignore cancelled): sneak plus right-click with shears, ray-traced up to six blocks
 
 ### Crafting XP
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingXP` |
 | Icon | `ENCHANTED_BOOK` |
 | Max level | 7 |
 | Initial knowledge cost | 3 |
@@ -254,8 +238,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/crafting-xp.toml` |
 
 Milestones: `challenge_crafting_xp_1k` and `challenge_crafting_xp_25k` on `crafting.xp.items-crafted` at 1000 and 25000, rewarding 300 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (`MONITOR`, cancelled events ignored): taking a committed craft result
 
@@ -272,7 +254,6 @@ The vanilla XP reward is `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingLeather` |
 | Icon | `LEATHER` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -286,15 +267,12 @@ Recipe key `crafting-leather`, campfire: `ROTTEN_FLESH` to `LEATHER`, cook time 
 
 Milestone: `challenge_crafting_leather_100` on `crafting.leather.leather-crafted` at 100, rewarding 300.
 
-Listened events:
-
 - `PlayerInteractEvent` (`on`): rotten flesh onto a `CAMPFIRE`
 
 ### Craftable Skulls
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingSkulls` |
 | Icon | `SKELETON_SKULL` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -313,15 +291,12 @@ maps `DRAGON_BREATH` to `DRAGON_HEAD`.
 
 Milestones: `challenge_crafting_skulls_10` and `challenge_crafting_skulls_100` on `crafting.skulls.skulls-crafted` at 10 and 100, rewarding 300 and 1000.
 
-Listened events:
-
 - `CraftItemEvent` (`on`): taking a skull recipe result
 
 ### Backpacks
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingBackpacks` |
 | Icon | `BUNDLE` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -334,8 +309,6 @@ Listened events:
 Two registered recipes: a shaped craft from `LEATHER` and `CHEST`, and a shapeless single-`BUNDLE` recipe used for the mode cycle. The cycle recipe is a real registered recipe on purpose, so the swap consumes exactly one backpack and returns exactly one instead of duplicating it.
 
 Milestone: `challenge_crafting_backpack_25` on `crafting.backpacks.bundles-crafted` at 25, rewarding 300.
-
-Listened events:
 
 - `PlayerInteractEvent` (`on`): opens the backpack
 - `InventoryClickEvent` (`on`)
@@ -361,7 +334,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingStations` |
 | Icon | `CRAFTING_TABLE` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -378,8 +350,6 @@ opens `WORKBENCH`. `GRINDSTONE` opens `GRINDSTONE`. `ANVIL` opens `ANVIL`.
 
 Milestones: `challenge_crafting_stations_200` and `challenge_crafting_stations_5k` on `crafting.stations.portable-opens` at 200 and 5000, rewarding 300 and 1000.
 
-Listened events:
-
 - `PlayerInteractEvent` (`on`): right-click air, left-click air, or left-click block
 
 | Key | Code default | Behavior / units |
@@ -391,7 +361,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingReconstruction` |
 | Icon | `COAL_ORE` |
 | Max level | 1 |
 | Initial knowledge cost | 2 |
@@ -405,15 +374,12 @@ Nineteen shapeless recipes, each one host block plus eight drops. `STONE` hosts 
 
 Milestone: `challenge_crafting_recon_100` on `crafting.reconstruction.ores-reconstructed` at 100, rewarding 300.
 
-Listened events:
-
 - `CraftItemEvent` (`on`): taking a craft result
 
 ### Bulk Artisan
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingBulkArtisan` |
 | Icon | `CRAFTING_TABLE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -422,8 +388,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/crafting-bulk-artisan.toml` |
 
 Milestones: `challenge_crafting_bulk_1k` and `challenge_crafting_bulk_10k` on `crafting.bulk-artisan.batch-crafted` at 1000 and 10000, rewarding 400 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (`on`): shift-click on a craft result
 
@@ -438,7 +402,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingThriftyHands` |
 | Icon | `STRING` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -447,8 +410,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/crafting-thrifty-hands.toml` |
 
 Milestones: `challenge_crafting_thrifty_500` and `challenge_crafting_thrifty_5k` on `crafting.thrifty-hands.ingredients-refunded` at 500 and 5000, rewarding 400 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (`on`): taking a craft result
 
@@ -462,7 +423,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingMasterwork` |
 | Icon | `NETHERITE_INGOT` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -471,8 +431,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/crafting-masterwork.toml` |
 
 Milestones: `challenge_crafting_masterwork_50` and `challenge_crafting_masterwork_500` on `crafting.masterwork.pieces-forged` at 50 and 500, rewarding 400 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (HIGHEST, cancelled events ignored): starts the roll and a shift-click batch.
 - `ItemCraftedEvent` (MONITOR): counts each actual output and arms the next independent batch roll.
@@ -495,7 +453,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingCompactor` |
 | Icon | `IRON_BLOCK` |
 | Max level | 1 |
 | Initial knowledge cost | 4 |
@@ -514,8 +471,6 @@ Glowstone dust converts into glowstone at 4:1. A material needs at least 64 plai
 
 Milestones: `challenge_crafting_compactor_1k` and `challenge_crafting_compactor_10k` on `crafting.compactor.blocks-compacted` at 1000 and 10000, rewarding 400 and 1500.
 
-Listened events:
-
 - `PlayerSwapHandItemsEvent` (`on`): the compact gesture
 - `PlayerJoinEvent` (`on`): level normalization
 
@@ -523,7 +478,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingTinkerer` |
 | Icon | `ANVIL` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |
@@ -532,8 +486,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/crafting-tinkerer.toml` |
 
 Milestones: `challenge_crafting_tinkerer_50` and `challenge_crafting_tinkerer_500` on `crafting.tinkerer.tools-tinkered` at 50 and 500, rewarding 400 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (`on`): grid repair of two matching tools
 
@@ -550,7 +502,6 @@ by the inventory's stale preview.
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingProvisioner` |
 | Icon | `COOKED_BEEF` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -559,8 +510,6 @@ by the inventory's stale preview.
 | Config file | `plugins/Adapt/adaptations/crafting-provisioner.toml` |
 
 Milestones: `challenge_crafting_provisioner_500` and `challenge_crafting_provisioner_5k` on `crafting.provisioner.bonus-portions` at 500 and 5000, rewarding 400 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (`on`): crafted food
 - `FurnaceSmeltEvent` (`on`): cooked food
@@ -578,7 +527,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `CraftingSignature` |
 | Icon | `WRITABLE_BOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -589,8 +537,6 @@ Listened events:
 The signature is a persistent-data string holding the crafter's UUID, plus a lore line. The trade bonus is a `HERO_OF_THE_VILLAGE` potion effect applied on villager interaction, skipped if the player already has that effect.
 
 Milestones: `challenge_crafting_signature_100` and `challenge_crafting_signature_1k` on `crafting.signature.signed-trades` at 100 and 1000, rewarding 400 and 1500.
-
-Listened events:
 
 - `CraftItemEvent` (`on`): stamps the result
 - `PlayerInteractEntityEvent` (`on`): right-click on a villager

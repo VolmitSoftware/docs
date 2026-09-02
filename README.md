@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,8 +26,9 @@ pages, the BileTools set, HiddenOre operator pages, and `home.md`.
 Each plugin repository has an `AGENTS.md` file. If a change alters a
 feature, command, permission, setting, config shape, schema, or API
 surface, update the matching page here. Make that update in the same
-workstream. These pages document the Minecraft 26.2 branches of each
-plugin.
+workstream. Active-plugin pages document their Minecraft 26.2 branches.
+Legacy pages identify the exact release and source revision they audit instead
+of implying current-version support.
 
 ## Page format
 
@@ -41,6 +42,10 @@ The title comes from the frontmatter. Cross-references are absolute wiki
 paths such as
 `[04 - Commands & Permissions](/adapt/04-commands-permissions)`. Bump
 `date` when you edit a page.
+
+Use [Wiki.js Page Examples](/wiki-page-examples) for syntax and renderer
+features, and the [Wiki.js CSS & Layout Gallery](/wiki-css-layout-examples)
+for responsive visual patterns and page compositions.
 
 ## Contributing
 

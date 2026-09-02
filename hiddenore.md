@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "Mining drop-control and anti-xray plugin"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,6 @@ deepslate instead. An xray client finds nothing in the world.
 | | |
 |---|---|
 | Command | `/hiddenore` |
-| Load | `STARTUP` |
 | Folia | Supported |
 | Permission | `hiddenore.admin` |
 | Integrations | PlaceholderAPI, Adapt |
@@ -51,7 +50,6 @@ Fortune, tool-tier, and experience changes leave positions intact.
 - [API — Service *The service interface*](/hiddenore/api/service)
 - [API — Placeholders *PlaceholderAPI integration*](/hiddenore/api/placeholders)
 {.links-list}
-
 ## Support
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)

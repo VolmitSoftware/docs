@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,9 @@ jigsaw structures as JSON data packs. Iris assembles them when it generates a ch
 | Load | `STARTUP` — before any world loads |
 | Folia | Supported |
 | Permissions | `iris.all`, `iris.treefeller` |
-| Integrations | WorldEdit, ItemsAdder, Nexo, CraftEngine, MMOItems, MythicMobs, MythicCrucible, EcoItems, ExecutableItems, SCore, MythicLib, eco, KGenerators, PlaceholderAPI |
+| Direct Bukkit integrations | WorldEdit, Multiverse-Core, PlaceholderAPI, CraftEngine, Nexo, ItemsAdder, ExecutableItems, MMOItems, EcoItems, MythicMobs, MythicCrucible, KGenerators |
+| Ecosystem prerequisites | SCore loads for ExecutableItems, MythicLib for MMOItems, and eco for EcoItems; none is a direct Iris provider |
+| Iris-aware Volmit plugins | React consumes Iris metrics; Wormholes uses Iris biome, terrain, and fluid probes for random teleport destinations |
 
 > Iris declares `loadbefore: Multiverse-Core`. If you run Multiverse, Iris must start first.
 > If Multiverse starts first, it claims Iris worlds with the vanilla generator.
@@ -60,7 +62,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Dimensions](/iris/11-dimensions)
 - [Regions](/iris/12-regions)
 - [Biomes](/iris/13-biomes)
-- [Generators & Noise](/iris/14-generators-noise)
+- [Generators, Noise & Expressions](/iris/14-generators-noise)
 - [Caves & Carving](/iris/15-caves-carving)
 - [Rivers & Hydrology](/iris/36-rivers)
 - [Image Map Concepts](/iris/37-image-map-concepts)
@@ -70,6 +72,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Color Maps & Masks](/iris/41-color-maps-masks)
 - [Image Map Studio Workflow](/iris/42-image-map-studio-workflow)
 - [Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
+- [Biome Catalog](/iris/44-biome-catalog)
 - [Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
 - [Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
 - [Structures Overview](/iris/18-structures-overview)
@@ -94,13 +97,6 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [Performance Tuning](/iris/33-performance-tuning)
 - [Multiverse](/iris/34-multiverse)
-{.links-list}
-
-### Maintainer
-
-- [Maintainer - MC Version Bump](/iris/85-maintainer-mc-version-bump)
-- [Maintainer - Release Checklist](/iris/86-maintainer-release-checklist)
-- [Maintainer - Release Readiness](/iris/87-maintainer-release-readiness)
 {.links-list}
 
 ### Developer API

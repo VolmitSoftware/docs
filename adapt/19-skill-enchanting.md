@@ -160,18 +160,6 @@ The book stops charging once every enchantment on it is at its vanilla cap. High
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `enchanting` |
-| Class | `SkillEnchanting` |
-| Icon | `KNOWLEDGE_BOOK` |
-| Color | `LIGHT_PURPLE` |
-| Interval (ms) | `3909` |
-| Skill config | `plugins/Adapt/skills/enchanting.toml` |
-| Adaptation count | 14 |
-
 ### Skill XP and stats
 
 XP comes from `EnchantItemEvent` at MONITOR priority. Award is `enchantPowerXPMultiplier * power`, where `power` is the sum of the enchantment levels applied. Awards are spaced by `cooldownDelay`. Stats are recorded on every enchant regardless of the cooldown.
@@ -226,7 +214,6 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingQuickEnchant` |
 | Icon | `WRITABLE_BOOK` |
 | Max level | 7 |
 | Initial knowledge cost | 8 |
@@ -250,7 +237,6 @@ Power cap is `level + (level / maxPowerBonus1PerLevels)` once `level` exceeds `m
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingLapisReturn` |
 | Icon | `LAPIS_LAZULI` |
 | Max level | 3 |
 | Initial knowledge cost | 2 |
@@ -275,7 +261,6 @@ Refund chance is `min(maxRefundChance, refundChanceBase + levelPercent * refundC
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingXPReturn` |
 | Icon | `EXPERIENCE_BOTTLE` |
 | Max level | 7 |
 | Initial knowledge cost | 2 |
@@ -302,7 +287,6 @@ Orb value is `min(maximumXpPerEnchant, vanillaXpAtLevelOne + (level - 1) * vanil
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingAnvilSavant` |
 | Icon | `ANVIL` |
 | Max level | 4 |
 | Initial knowledge cost | 5 |
@@ -328,7 +312,6 @@ Reduction is `min(maximumReduction, reductionBase + levelPercent * reductionFact
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingOfferReroll` |
 | Icon | `ENCHANTING_TABLE` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -356,7 +339,6 @@ Lapis cost is `max(1, round(lapisCostBase - levelPercent * lapisCostFactor))`. C
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingBookshelfAttunement` |
 | Icon | `BOOKSHELF` |
 | Max level | 4 |
 | Initial knowledge cost | 3 |
@@ -380,7 +362,6 @@ Virtual power is `max(1, round(powerBase + levelPercent * powerFactor))`. Each o
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingGrindstoneRecovery` |
 | Icon | `GRINDSTONE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -412,7 +393,6 @@ Recovery chance is `min(maxRecoverChance, recoverChanceBase + levelPercent * rec
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingCurseCleansing` |
 | Icon | `GRINDSTONE` |
 | Max level | 4 |
 | Initial knowledge cost | 5 |
@@ -435,7 +415,6 @@ Curses recognized are `BINDING_CURSE` and `VANISHING_CURSE`, on both direct ench
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingTomeRebinding` |
 | Icon | `WRITABLE_BOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -448,7 +427,7 @@ Curses recognized are `BINDING_CURSE` and `VANISHING_CURSE`, on both direct ench
 | Stat key | `enchanting.tome-rebinding.books-split` |
 | Milestones | `challenge_enchanting_rebind_50` (50, reward 400), `challenge_enchanting_rebind_500` (500, reward 1200) |
 
-Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which reaches 0 at max level with the shipped defaults. A loss only happens when more than one enchantment remains. Activation is a `PlayerDropItemEvent` for exactly one multi-enchant book while the player ray-targets any anvil state within 5 blocks. Larger dropped stacks remain unchanged. The original dropped entity becomes the first result and the other split books spawn beside it with matching motion and pickup delay. Stored enchantment levels are preserved, including levels above the normal vanilla maximum. XP level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`. Skill XP is `skillXpOnSplit` per book produced.
+Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which reaches 0 at max level with the defaults. A loss only happens when more than one enchantment remains. Activation is a `PlayerDropItemEvent` for exactly one multi-enchant book while the player ray-targets any anvil state within 5 blocks. Larger dropped stacks remain unchanged. The original dropped entity becomes the first result and the other split books spawn beside it with matching motion and pickup delay. Stored enchantment levels are preserved, including levels above the normal vanilla maximum. XP level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`. Skill XP is `skillXpOnSplit` per book produced.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -463,7 +442,6 @@ Loss chance is `max(0, lossChanceBase - levelPercent * lossChanceFactor)`, which
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingSoulLink` |
 | Icon | `TOTEM_OF_UNDYING` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -492,7 +470,6 @@ The mark is a random token written to the item's persistent data under `adapt:so
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingArcaneSiphon` |
 | Icon | `SOUL_LANTERN` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -505,7 +482,7 @@ The mark is a random token written to the item's persistent data under `adapt:so
 | Stat key | `enchanting.arcane-siphon.books-siphoned` |
 | Milestones | `challenge_enchanting_siphon_25` (25, reward 400), `challenge_enchanting_siphon_250` (250, reward 1200) |
 
-Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand. Duplicate enchantments keep the highest level. Spawn method is irrelevant, but the killer must be the player. Player victims qualify only at the configured maximum Arcane Siphon level. Skill XP is `bonusXpPerEnchant * distinctEnchantCount` and is paid whether or not a book drops. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)`. With shipped settings it ranges from 20% at adaptation level 1 to 50% at level 5. Book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum. The HIGH priority adds the siphoned book before HIGHEST death-drop inventory routers process the drops.
+Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand. Duplicate enchantments keep the highest level. Spawn method is irrelevant, but the killer must be the player. Player victims qualify only at the configured maximum Arcane Siphon level. Skill XP is `bonusXpPerEnchant * distinctEnchantCount` and is paid whether or not a book drops. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)`. With default settings it ranges from 20% at adaptation level 1 to 50% at level 5. Book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum. The HIGH priority adds the siphoned book before HIGHEST death-drop inventory routers process the drops.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -519,7 +496,6 @@ Gear scanned is helmet, chestplate, leggings, boots, main hand, and off hand. Du
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingRuneSight` |
 | Icon | `SPYGLASS` |
 | Max level | 3 |
 | Initial knowledge cost | 3 |
@@ -543,7 +519,6 @@ Reveal depth is `max(1, min(maxRevealDepth, 1 + floor(levelPercent * (maxRevealD
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingInfusionTransfer` |
 | Icon | `ANVIL` |
 | Max level | 5 |
 | Initial knowledge cost | 6 |
@@ -572,7 +547,6 @@ The transferred enchantment is the highest-level one on the donor that the base 
 
 | Property | Value |
 |----------|-------|
-| Class | `EnchantingEchoOfKnowledge` |
 | Icon | `KNOWLEDGE_BOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 5 |

@@ -89,7 +89,7 @@ An 8-bit map spanning 384 blocks has steps of about 1.506 blocks before interpol
 
 ## Avoid common artifacts
 
-- Export genuine grayscale, not an RGB picture that merely looks gray.
+- Export a grayscale image, not an RGB image that only looks gray.
 - Use 16-bit source data when 8-bit steps are visible across a tall height range.
 - Do not blur in an editor unless the changed pixels are intentional data. Prefer `smoothingRadius` so the transformation stays in configuration.
 - Use `NEAREST` for authored terraces and cell boundaries, `BILINEAR` for ordinary slopes, and `BICUBIC` only when its wider smooth reconstruction is intended.

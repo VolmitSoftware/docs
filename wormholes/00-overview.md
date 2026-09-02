@@ -1,107 +1,84 @@
 ---
 title: "Overview"
-description: "What Wormholes is, feature map, runtime, and build"
+description: "Wormholes features, portal lifecycle, compatibility, and documentation map"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes is a through-portal projection and traversal plugin for Paper and
-Folia. Frame portals show a live destination view and move travelers. Related
-systems cover random teleport, Dimensional Doors with pocket dimensions,
-cross-server gateways, PlaceholderAPI keys, and a public traversal pricing API.
+Wormholes is a portal, projection, and traversal plugin for modern Paper and
+Folia servers. A frame portal can show destination blocks and entities before a
+traveler crosses it. The same runtime also supports random teleport, survival
+Dimensional Doors, pocket dimensions, and signed cross-server gateways.
 
-## Feature map
+## What Wormholes includes
 
-| Area | Summary | Doc |
-|------|---------|-----|
-| Frame portals | Wand/rune construction, types, menus, skins | [03 - Building Portals](/wormholes/03-building-portals), [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings) |
-| Projection | ON/OFF, PanOptic vs Venticular, budgets | [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings) |
-| Concepts | Types, tunnels, travel, local vs remote | [02 - Concepts](/wormholes/02-concepts) |
-| Random teleport | RTP portal type and editor | [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals) |
-| Dimensional doors | Pair / Personal / Public doors and trapdoors | [07 - Dimensional Doors](/wormholes/07-dimensional-doors) |
-| Pocket dimensions | Shared void pocket world and return doors | [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) |
-| Commands & permissions | `/wormholes` tree and nodes | [09 - Commands & Permissions](/wormholes/09-commands-permissions) |
-| Cross-server | Gateway codes, trust, handoff | [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) |
-| Localization | Bundled locales and overrides | [11 - Localization](/wormholes/11-localization) |
-| PlaceholderAPI | Operator `%wormholes_…%` keys | [12 - PlaceholderAPI](/wormholes/12-placeholderapi) |
-| Runtime architecture | Managers, Folia, storage | [13 - Runtime Architecture](/wormholes/13-runtime-architecture) |
-| Operator runbooks | Manual smoke checks | [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests) |
-| Integrations | PlaceholderAPI, Vault, Iris, WorldGuard | [15 - Integrations](/wormholes/15-integrations) |
-| Maintainer reference | Production packages, boundaries, build tasks | [16 - Maintainer Component & Build Reference](/wormholes/16-maintainer-component-build-reference) |
-| Public API | apiJar, traversal cost, metrics | `20`–`23` API docs |
+| System | What it does | Continue with |
+|---|---|---|
+| Frame portals | Creates a flat aperture from a wand selection or connected runes | [Building Portals](/wormholes/03-building-portals) |
+| Live projection | Sends destination blocks, lighting, and supported entities to each interested viewer | [Projection Modes and Settings](/wormholes/05-projection-modes-settings) |
+| Local traversal | Links portals in the same server and preserves travel direction, access, cost, and cooldown rules | [Portal Types, Menus, and Settings](/wormholes/04-portal-types-menus-settings) |
+| Random teleport | Searches for a safe destination using world, radius, height, biome, allocation, and rotation rules | [Random Teleport Portals](/wormholes/06-random-teleport-portals) |
+| Dimensional Doors | Adds paired, personal, and public doors or trapdoors with configurable recipes | [Dimensional Doors](/wormholes/07-dimensional-doors) |
+| Pocket dimensions | Allocates private rooms in a managed void world and provides a return route | [Pocket Dimensions](/wormholes/08-pocket-dimensions) |
+| Cross-server gateways | Exchanges signed codes, trusts peers, streams remote views, and transfers travelers | [Cross-Server Networking](/wormholes/10-cross-server-networking) |
+| Public integrations | Exposes placeholders, travel pricing hooks, traversal events, and runtime metrics | [Integrations](/wormholes/15-integrations) |
 
-Install and `wormholes.toml` are in
-[01 - Installation & Configuration](/wormholes/01-installation-configuration).
+## How a frame portal works
 
-## Documentation index
+1. A player forms a flat portal with the Portal Wand or matching rune blocks.
+2. The portal owner opens its menu and selects a type, destination, travel mode,
+   access policy, projection mode, and optional cost.
+3. Each nearby player receives their own destination view. Projection changes only that player's client.
+4. Crossing the aperture starts a separate traversal path. Wormholes checks
+   direction, access, cooldown, cost, destination readiness, and API vetoes
+   before it moves or transfers the traveler.
 
-| File | Covers |
-|------|--------|
-| [00 - Overview](/wormholes/00-overview) | What Wormholes is, feature map, runtime, build |
-| [01 - Installation & Configuration](/wormholes/01-installation-configuration) | Install, data folder, `wormholes.toml`, quality profiles |
-| [02 - Concepts](/wormholes/02-concepts) | Portals, projection, tunnels, RTP, doors, pockets, cross-server |
-| [03 - Building Portals](/wormholes/03-building-portals) | Wand, runes, construction, skins, vanilla portal replace |
-| [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings) | Types, menus, travel, access, costs, cosmetics |
-| [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings) | Projection ON/OFF, PanOptic vs Venticular, budgets, render |
-| [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals) | RTP type, editor options, safety, rotation |
-| [07 - Dimensional Doors](/wormholes/07-dimensional-doors) | Pair/Personal/Public, OpenState, access, recipes, transit |
-| [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) | Pocket world, layout, return door, rescue |
-| [09 - Commands & Permissions](/wormholes/09-commands-permissions) | Every `/wormholes` command and permission node |
-| [10 - Cross-Server Networking](/wormholes/10-cross-server-networking) | Codes, trust, handoff, transfer modes, doctor |
-| [11 - Localization](/wormholes/11-localization) | Locales, overrides, fallbacks |
-| [12 - PlaceholderAPI](/wormholes/12-placeholderapi) | `%wormholes_…%` keys for operators |
-| [13 - Runtime Architecture](/wormholes/13-runtime-architecture) | Boot, managers, Folia, storage layout |
-| [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests) | Manual verification checklists |
-| [15 - Integrations](/wormholes/15-integrations) | Vault, Iris, React metrics, soft depends |
-| [16 - Maintainer Component & Build Reference](/wormholes/16-maintainer-component-build-reference) | Production package map, internal boundaries, build tasks |
-| [20 - API - Getting Started](/wormholes/20-api-getting-started) | apiJar, service registration, public surface map |
-| [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events) | TraversalCostProvider and traversal events |
-| [22 - API - PlaceholderAPI](/wormholes/22-api-placeholderapi) | Integrator notes for placeholders |
-| [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract) | IntegrationServiceContract metrics |
+Projection and traversal are intentionally separate. A portal can show a view
+while travel is locked, allow travel with projection disabled, or render a
+mirror without having a linked destination.
 
-Docs `00`–`15` are for operators and players. Doc `16` is for maintainers.
-Docs `20`–`23` are for plugin developers. Numbers `17`–`19` are reserved.
+## Portal families
 
-## Runtime requirements
+| Type | Primary use | Construction permission |
+|---|---|---|
+| `PORTAL` | Standard linked portal. Wand selections always start with this type | `wormholes.portals.portal` |
+| `WORMHOLE` | Alternate linked frame type created from Wormhole Runes or selected in the menu | `wormholes.portals.wormhole` |
+| `GATEWAY` | Cross-server portal backed by imported server and portal codes | `wormholes.gateway` |
+| `RTP` | Random teleport portal with its own destination editor | `wormholes.portals.portal` |
 
-| Item | Value |
-|------|--------|
-| Java | 25 (compiled with `-parameters`, release 25) |
-| Servers | Paper, Purpur, and Folia **26.1.2–26.2** (`folia-supported: true` in paper-plugin metadata) |
-| Spigot | 26.2 compile (`compileSpigotCompatibility`) and runtime fallbacks. Paper and Folia keep native paths |
-| Soft depends | PlaceholderAPI, Iris, Vault (optional). Load them before Wormholes when they are present |
-| Runtime libraries | PacketEvents, bStats, TOML4J, Kyori, and zstd-jni are resolved and cached by SlimJar. The Java-only libraries are relocated for Wormholes; zstd-jni keeps its native-compatible package |
+Dimensional Doors are a separate survival system. They do not use frame portal
+types, names, or destinations.
+## Find the right page
 
-Include `--enable-native-access=ALL-UNNAMED` on the server JVM and the test JVM.
-Then zstd-jni can load its native library without restricted-access warnings.
+### Players and server owners
 
-## Build
+- [Installation and configuration](/wormholes/01-installation-configuration)
+- [Core concepts](/wormholes/02-concepts)
+- [Building portals](/wormholes/03-building-portals)
+- [Portal menus and settings](/wormholes/04-portal-types-menus-settings)
+- [Projection modes and performance](/wormholes/05-projection-modes-settings)
+- [Random teleport portals](/wormholes/06-random-teleport-portals)
+- [Dimensional Doors](/wormholes/07-dimensional-doors)
+- [Pocket dimensions](/wormholes/08-pocket-dimensions)
+{.grid-list}
 
-From `WormholesPlugin/`:
+### Operators
 
-| Task | Purpose |
-|------|---------|
-| `./gradlew build` | Full gate. Also builds shadow jar and api jar |
-| `./gradlew test` | Unit tests (uses `--enable-native-access=ALL-UNNAMED`) |
-| `./gradlew shadowJar` | Runtime plugin jar with relocated loader classes and SlimJar dependency metadata |
-| `./gradlew apiJar` | Compile-only public API (`art.arcane.wormholes.api/**`, excluding `internal`) |
-| `./gradlew compileSpigotCompatibility` | Compile supported source against Spigot API |
-| `./gradlew bandwidthHarness` | Run the transport/entity/replication comparison harness |
+- [Commands and permissions](/wormholes/09-commands-permissions)
+- [Cross-server networking](/wormholes/10-cross-server-networking)
+- [Localization](/wormholes/11-localization)
+- [PlaceholderAPI](/wormholes/12-placeholderapi)
+- [Operator checks and recovery](/wormholes/14-operator-runbooks-smoke-tests)
+- [Integrations](/wormholes/15-integrations)
+{.grid-list}
 
-Use `Wormholes-<version>.jar` on servers. Its first start needs access to the
-configured dependency repositories unless the SlimJar cache is already warm.
-Use `*-api.jar` only for third-party compile-only consumers.
+### Plugin developers
 
-## Commands
-
-Base command aliases. The full tree is in
-[09 - Commands & Permissions](/wormholes/09-commands-permissions):
-
-| Alias | Notes |
-|-------|--------|
-| `/wormholes` | Primary |
-| `/wh` | Short alias |
-| `/wormhole` | Singular alias |
+- [API getting started](/wormholes/20-api-getting-started)
+- [Traversal cost and events](/wormholes/21-api-traversal-cost-events)
+- [PlaceholderAPI integration notes](/wormholes/22-api-placeholderapi)
+- [Metrics integration contract](/wormholes/23-api-metrics-integration-contract)
+{.grid-list}

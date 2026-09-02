@@ -2,7 +2,7 @@
 title: "BileTools — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | Leaf | Primary | Paper-family fork. Treated like Paper |
 | Folia | Supported | GlobalRegionScheduler only. Hot-reload is best-effort |
 | Canvas | Supported | Folia fork. Same regionized scheduling rules |
-| Spigot | Best-effort | `paper-plugin.yml`-only jars are rejected. Dual-descriptor jars load via `plugin.yml` |
+| Spigot | Best-effort | The target plugin must support Spigot |
 
 ## Install
 
@@ -62,26 +62,6 @@ Canonical English lives in the Java catalog at
 English bundle file. `language.yml` is an overrides-only file. Omitted
 entries resolve from the selected bundle, then from code-owned English.
 
-Automatic `language.yml` changes drain native events without reading the file
-on each coordinator pass. A daemon IO worker captures immutable bytes after an
-event and runs an exact-content fallback every 2.5 seconds, including for a
-same-metadata save missed by native watching. Successful automatic reloads use
-the same three-second minimum cadence and queue the newest snapshot while a
-reload is pending. Invalid intermediate files are retried, and a temporary
-missing file is left untouched rather than being replaced during an atomic or
-FTP save. Startup or an explicit reload still creates the default when the file
-is genuinely absent. The watcher and its IO worker close when BileTools is
-disabled or reloaded.
+`language.yml` reloads automatically after a complete valid save. Invalid edits leave the current messages active.
 
 The former top-level `locale` key is rejected. Move that selection to `language` in `biletools.yml`; to reset the override file, delete `plugins/BileTools/language.yml`, which permanently removes its local message overrides, and restart BileTools to regenerate it. No locale key is migrated.
-
-## Building from source
-
-```
-git clone https://github.com/VolmitSoftware/BileTools.git
-cd BileTools
-./gradlew build
-```
-
-Gradle must run on Java 25 or newer. If the JVM is older, the build fails
-immediately.

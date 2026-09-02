@@ -8,68 +8,25 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-## Requirements
-
-| | |
-|---|---|
-| Runtime JVM | Java 25 |
-| Paper API | 26.1.2 – 26.2 |
-| Server software | Paper, Purpur, Folia, or Spigot-compatible |
-| Optional | PlaceholderAPI |
+HiddenOre supports Paper, Purpur, and Folia on Java 25.
 
 ## Install
 
-1. Copy `HiddenOre-x.x.x.jar` into `plugins/`.
-2. Restart the server. HiddenOre writes `hiddenore.yml` and `language.yml` on first
-   run.
-3. Read [Configuration](/hiddenore/configuration) **before** you let players
-   mine.
+1. Put the HiddenOre jar in `plugins/`.
+2. Start the server once.
+3. Edit `plugins/HiddenOre/config.toml`.
+4. Use `/hiddenore reload` after manual edits.
 
-Upgrading is a hard break. Back up any values you need, delete the obsolete
-`plugins/HiddenOre/config.yml` file, and restart the server to generate
-`plugins/HiddenOre/hiddenore.yml`; deleting the old file removes its local
-changes. Reapply required values manually. HiddenOre does not read or migrate
-`config.yml`.
+PlaceholderAPI is optional.
 
-The old `locale:` entry in `plugins/HiddenOre/language.yml` is also invalid.
-Remove that line, or back up any overrides, delete `language.yml`, and restart to
-regenerate it; deleting the file removes its message and sound customizations.
-HiddenOre does not migrate the old locale entry.
+## Choose the drop mode
 
-## Two decisions to make first
-
-**Generation mode.** You can switch between `seeded` and `pure_random` later.
-Seeded vein positions stay stable when you reorder `drops:`. Adding or removing
-an unrelated rule leaves retained layouts unchanged except where the rules
-overlap. Changing an item rule's material or spatial generation fields changes
-its undiscovered layout. Changing only Fortune behavior, tool tiers, or
-experience does not.
-
-**Ore removal.** `ore-removal.enabled` is `false` by default. Vanilla ore still
-generates. If you set it to `true`, only newly generated chunks change. Existing
-terrain keeps its ore.
+HiddenOre can replace ore drops, add bonus drops, or leave vanilla drops unchanged. Configure each ore in `config.toml`, then test with a normal player before enabling it for everyone.
 
 ## Language
 
-Set `language` at the start of `hiddenore.yml`. Bundled locales: German, Spanish, Finnish,
-French, Hebrew, Italian, Japanese, Korean, Lithuanian, Dutch, Polish,
-Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
-Chinese.
+Set the locale in `config.toml`. Edit the active language file to override individual messages.
 
-Canonical English lives in
-`art/arcane/hiddenore/util/common/Messages.java`. There is no English bundle
-file. Entries in `language.yml` are sparse overrides and do not select the
-locale. Sound settings live in the
-same file.
+## Troubleshooting
 
-## Operator logging
-
-HiddenOre runtime diagnostics use the plugin logger and retain the server's `[HiddenOre]` source
-label. Normal `INFO` output is limited to dependency bootstrap, an enabled ore-replacement warning
-and the BileTools pre-unload drain. Integration registration is a `FINE` diagnostic, while ordinary
-mining, reward success and a player's offline reward retirement are silent.
-
-Repeated scheduler and hot-reload handoff failures are grouped by category and emitted at most once
-per minute. Integration-event faults and slow listeners retain their existing one-minute throttle.
-Caught operational failures keep their stack traces. The only direct console send is the colored,
-branded startup splash.
+Use `/hiddenore status` to confirm the plugin and current configuration. Invalid reloads keep the previous settings active and report the problem in the console.

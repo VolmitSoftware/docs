@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Adapt documentation: Skill - Agility"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-08-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,7 +51,7 @@ A charged standing jump for crossing gaps and reaching ledges.
 1. Hold shift. The jump-strength bonus applies while you sneak. It is stripped the moment you release.
 2. Jump.
 
-Four levels scale the apex from 1.5 blocks up to 2.5 blocks.
+The configured levels scale the apex from 1.5 blocks up to 2.5 blocks.
 
 ### Armor-Up (`agility-armor-up`)
 
@@ -98,7 +98,7 @@ Stops the ground from punishing you for running across it. Farmland unlocks firs
 
 ### Vault (`agility-vault`)
 
-Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. One level. No scaling.
+Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. The default cap is one level; the vault effect itself does not scale if the cap is raised.
 
 ### Marathoner (`agility-marathoner`)
 
@@ -113,23 +113,7 @@ Turns getting knocked around into momentum you keep.
 
 You are re-launched in the direction you were steering. If you were not moving, you launch where you were looking. You also get a short speed burst. There is a flat cooldown between recoveries.
 
-### Paper-only jump detection
-
-Super Jump and Vault both read Paper's `PlayerJumpEvent` through a companion listener. Adapt only registers that listener when that class exists. On a server without it, the rest of each adaptation still runs. The jump-moment work in that listener does not.
-
 ## Reference
-
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `agility` |
-| Class | `SkillAgility` |
-| Icon | `FEATHER` |
-| Color | `GREEN` |
-| Interval (ms) | `975` |
-| Skill config | `plugins/Adapt/skills/agility.toml` |
-| Adaptation count | 13 |
 
 ### Skill configuration defaults
 
@@ -174,7 +158,6 @@ listed per adaptation below.
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityWindUp` |
 | Icon | `POWERED_RAIL` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -184,8 +167,6 @@ listed per adaptation below.
 | Menu lines | Max Speed. Windup Time |
 | Milestone | `challenge_agility_wind_up_10min` on `agility.wind-up.max-speed-ticks` at 12000, reward 400 |
 | Config file | `plugins/Adapt/adaptations/agility-wind-up.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, `PlayerToggleFlightEvent`, `EntityToggleGlideEvent`, `EntityMountEvent`, `EntityDismountEvent`, `PlayerGameModeChangeEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -202,7 +183,6 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityWallJump` |
 | Icon | `VINE` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -212,8 +192,6 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 | Menu lines | Max Jumps. Jump Height |
 | Milestone | `challenge_agility_wall_jump_500` on `agility.wall-jump.air-jumps` at 500, reward 500. A hidden `challenge_agility_parkour_master` advancement is also registered. |
 | Config file | `plugins/Adapt/adaptations/agility-wall-jump.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerDeathEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -229,9 +207,8 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeCha
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilitySuperJump` |
 | Icon | `LEATHER_BOOTS` |
-| Max level | 4 (locked in code, config overrides are reset on reload) |
+| Max level | 4 |
 | Initial knowledge cost | 5 |
 | Base knowledge cost | 2 |
 | Cost factor | 0.55 |
@@ -240,18 +217,15 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeCha
 | Milestones | `challenge_agility_super_jump_100` on `agility.super-jump.jumps` at 100, reward 300. `challenge_agility_super_jump_5k` at 5000, reward 1500 |
 | Config file | `plugins/Adapt/adaptations/agility-super-jump.toml` |
 
-Listened events: `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerChangedWorldEvent`, and `PlayerJumpEvent` through a Paper-only companion listener.
-
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `minimumJumpHeight` | `1.5` | Jump apex in blocks at level 1. Values below the vanilla jump height are clamped up. |
-| `maximumJumpHeight` | `2.5` | Jump apex in blocks at level 4. |
+| `maximumJumpHeight` | `2.5` | Jump apex in blocks at the configured maximum level. |
 
 ### Armor-Up
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityArmorUp` |
 | Icon | `IRON_CHESTPLATE` |
 | Max level | 5 |
 | Initial knowledge cost | 8 |
@@ -261,8 +235,6 @@ Listened events: `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerC
 | Menu lines | Max Armor. Armor-Up Time. Armor Decay Time |
 | Milestone | `challenge_agility_armor_up_30min` on `agility.armor-up.ticks-armored` at 36000, reward 500 |
 | Config file | `plugins/Adapt/adaptations/agility-armor-up.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSneakEvent`, `PlayerJoinEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -277,7 +249,6 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityLadderSlide` |
 | Icon | `LADDER` |
 | Max level | 1 |
 | Initial knowledge cost | 1 |
@@ -287,8 +258,6 @@ Listened events: `PlayerMoveEvent`, `PlayerToggleSprintEvent`, `PlayerToggleSnea
 | Menu lines | Ladder descent speed (blocks/sec). Ladder climb speed (blocks/sec). Look activation / release angles |
 | Milestones | `challenge_agility_ladder_500` on `agility.ladder-slide.blocks-climbed` at 500, reward 300. `challenge_agility_ladder_10k` at 10000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/agility-ladder-slide.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerGameModeChangeEvent`, `PlayerChangedWorldEvent`, `PlayerTeleportEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`, `EntityDamageEvent`, `ServerResourcesReloadedEvent`.
 
 Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAFFOLDING`. The two blocks at each end of a climbable column always use normal control.
 
@@ -306,7 +275,6 @@ Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAF
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityRollLanding` |
 | Icon | `HAY_BLOCK` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -316,8 +284,6 @@ Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAF
 | Menu lines | Fall Damage Conversion. Input Timing Window. Roll Cooldown |
 | Milestones | `challenge_agility_roll_100` on `agility.roll-landing.damage-prevented` at 100, reward 300. `challenge_agility_roll_1000` at 1000, reward 1000. A hidden `challenge_agility_fearless` advancement is granted for rolling a fall of 30 blocks or more. |
 | Config file | `plugins/Adapt/adaptations/agility-roll-landing.toml` |
-
-Listened events: `PlayerToggleSneakEvent`, `PlayerMoveEvent`, `EntityDamageEvent`.
 
 The roll cooldown is stamped on the player's `HAY_BLOCK` item cooldown slot.
 
@@ -341,7 +307,6 @@ The roll cooldown is stamped on the player's `HAY_BLOCK` item cooldown slot.
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilitySlipstreamSlide` |
 | Icon | `ICE` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -351,8 +316,6 @@ The roll cooldown is stamped on the player's `HAY_BLOCK` item cooldown slot.
 | Menu lines | Slide speed (blocks/sec). Slide cooldown. Max level: mobs you slide through are slowed |
 | Milestones | `challenge_agility_slipstream_500` on `agility.slipstream-slide.slides` at 500, reward 400. `challenge_agility_slipstream_5k` at 5000, reward 1500 |
 | Config file | `plugins/Adapt/adaptations/agility-slipstream-slide.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerToggleSneakEvent`, `PlayerTeleportEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`.
 
 A sprint that ended within the last 350 ms still counts as sprinting for the purpose of starting a slide.
 
@@ -375,7 +338,6 @@ A sprint that ended within the last 350 ms still counts as sprinting for the pur
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityAirDash` |
 | Icon | `PHANTOM_MEMBRANE` |
 | Max level | 4 |
 | Initial knowledge cost | 5 |
@@ -385,8 +347,6 @@ A sprint that ended within the last 350 ms still counts as sprinting for the pur
 | Menu lines | Dash speed (blocks/sec). Mid-air dash charges |
 | Milestones | `challenge_agility_air_dash_500` on `agility.air-dash.dashes` at 500, reward 400. `challenge_agility_air_dash_5k` at 5000, reward 1500 |
 | Config file | `plugins/Adapt/adaptations/agility-air-dash.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerInteractEvent` (left-click air only), `PlayerQuitEvent`.
 
 A dash is refused when you are on the ground, flying, gliding, swimming, or
 climbing. It is also refused when you ride a vehicle, have zero food, or leave
@@ -406,7 +366,6 @@ Survival and Adventure mode.
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityCatReflexes` |
 | Icon | `RABBIT_HIDE` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -416,8 +375,6 @@ Survival and Adventure mode.
 | Menu lines | Projectile dodge chance |
 | Milestones | `challenge_agility_cat_reflexes_100` on `agility.cat-reflexes.dodges` at 100, reward 300. `challenge_agility_cat_reflexes_1k` at 1000, reward 1200 |
 | Config file | `plugins/Adapt/adaptations/agility-cat-reflexes.toml` |
-
-Listened events: `EntityDamageByEntityEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -430,9 +387,8 @@ Listened events: `EntityDamageByEntityEvent`.
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityFeatherfoot` |
 | Icon | `RABBIT_FOOT` |
-| Max level | 4 (recomputed on save as the highest enabled unlock level) |
+| Max level | 4 |
 | Initial knowledge cost | 1 |
 | Base knowledge cost | 1 |
 | Cost factor | 0.2 |
@@ -441,11 +397,7 @@ Listened events: `EntityDamageByEntityEvent`.
 | Milestones | `challenge_agility_featherfoot_500` on `agility.featherfoot.surfaces-ignored` at 500, reward 300. `challenge_agility_featherfoot_5k` at 5000, reward 1000 |
 | Config file | `plugins/Adapt/adaptations/agility-featherfoot.toml` |
 
-Listened events: `PlayerMoveEvent`, `PlayerInteractEvent`, `EntityInsideBlockEvent`, `PlayerInputEvent`, `PlayerToggleSprintEvent`, `PlayerQuitEvent`.
-
-Disabling a surface group or moving its minimum level changes the adaptation's
-own max level. Max level is set to the highest enabled unlock level whenever the
-config is normalized.
+`maxLevel` is independent of the surface unlock levels. An enabled surface whose minimum level is above the configured cap remains unreachable until either value is adjusted.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -468,18 +420,15 @@ config is normalized.
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityVault` |
 | Icon | `OAK_FENCE` |
-| Max level | 1 (locked in code, config overrides are reset on reload) |
+| Max level | 1 |
 | Initial knowledge cost | 4 |
 | Base knowledge cost | 3 |
-| Cost factor | 0 (locked in code) |
+| Cost factor | 0 |
 | Tick interval (ms) | 1000 |
 | Menu lines | Fence jump apex (blocks) |
 | Milestones | `challenge_agility_vault_250` on `agility.vault.vaults` at 250, reward 300. `challenge_agility_vault_2500` at 2500, reward 1200 |
 | Config file | `plugins/Adapt/adaptations/agility-vault.toml` |
-
-Listened events: `PlayerMoveEvent`, `PlayerTeleportEvent`, `PlayerGameModeChangeEvent`, `PlayerDeathEvent`, `PlayerQuitEvent`, and `PlayerJumpEvent` through a Paper-only companion listener.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -490,7 +439,6 @@ Listened events: `PlayerMoveEvent`, `PlayerTeleportEvent`, `PlayerGameModeChange
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityMarathoner` |
 | Icon | `LEATHER_BOOTS` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -500,8 +448,6 @@ Listened events: `PlayerMoveEvent`, `PlayerTeleportEvent`, `PlayerGameModeChange
 | Menu lines | Sprint saturation drain reduction |
 | Milestones | `challenge_agility_marathoner_5k` on `agility.marathoner.saturation-saved` at 5000, reward 400. `challenge_agility_marathoner_50k` at 50000, reward 1500 |
 | Config file | `plugins/Adapt/adaptations/agility-marathoner.toml` |
-
-Listened events: `EntityExhaustionEvent`, filtered to the `SPRINT` and `JUMP_SPRINT` reasons.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -514,7 +460,6 @@ Listened events: `EntityExhaustionEvent`, filtered to the `SPRINT` and `JUMP_SPR
 
 | Property | Default |
 |----------|---------|
-| Class | `AgilityKipUp` |
 | Icon | `SHIELD` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -524,8 +469,6 @@ Listened events: `EntityExhaustionEvent`, filtered to the `SPRINT` and `JUMP_SPR
 | Menu lines | Recovery window. Recovery speed boost tier |
 | Milestones | `challenge_agility_kip_up_100` on `agility.kip-up.recoveries` at 100, reward 300. `challenge_agility_kip_up_1k` at 1000, reward 1200 |
 | Config file | `plugins/Adapt/adaptations/agility-kip-up.toml` |
-
-Listened events: `EntityDamageByEntityEvent`, `PlayerMoveEvent`, `PlayerQuitEvent`.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -538,12 +481,6 @@ Listened events: `EntityDamageByEntityEvent`, `PlayerMoveEvent`, `PlayerQuitEven
 | `jumpVelocityThreshold` | `0.2` | Minimum upward velocity treated as a jump when checking for a recovery. |
 | `cooldownMillis` | `3000` | Milliseconds between recoveries. |
 | `xpPerRecovery` | `5` | Skill XP paid per successful recovery. |
-
-### Support classes
-
-`AgilityJumpPhysics` is not a player adaptation. It converts between jump strength, jump height, and the extra velocity needed to
-reach a target height. Super Jump, Wall Jump, and Vault use it.
-
 ## See also
 
 - [02 - Concepts](/adapt/02-concepts)

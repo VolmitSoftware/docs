@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,7 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [44 - Biome Catalog](/iris/44-biome-catalog)
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
 - [25 - Pack Management](/iris/25-pack-management)
 - [04 - Commands & Permissions](/iris/04-commands-permissions)
@@ -41,7 +42,7 @@ Prerequisites:
 
 A world created from a pack stores its own **copy** at `<world>/iris/pack/`. `StudioSVC.installIntoWorld` and `replaceIntoWorld` write that copy. Normal world generation reads it and never looks at the global `packs/` tree again. Studio worlds are the exception. They run directly off `packs/<key>/`, which is why Studio is where authoring happens.
 
-Iris does not download packs at startup. `/iris download pack=overworld` installs the hardcoded Overworld beta-release ZIP into `packs/`. Restart afterward before you open Studio or create a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
+Iris does not download packs at startup. `/iris download pack=overworld` installs the version-pinned Overworld 4002 stable-release ZIP into `packs/`. Restart afterward before you open Studio or create a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
 
 The pack shape:
 
@@ -75,7 +76,7 @@ Then validate and open:
 
 **Why.** Forking copies the whole tree under a new pack key so upstream Overworld updates cannot clobber your work. A mistake is then one folder deletion away from being undone. Create your worlds from the fork, not from `overworld`.
 
-**What you should see.** A `my-overworld` folder next to `overworld` with the same structure, a loadable validation result, and a Studio world that looks exactly like the shipping overworld.
+**What you should see.** A `my-overworld` folder next to `overworld` with the same structure, a loadable validation result, and a Studio world that looks exactly like the bundled overworld.
 
 ## 2. Add the biome file
 
@@ -108,7 +109,7 @@ Then validate and open:
 
 **Why.** Every piece of this is chosen so the result is unmistakable in game:
 
-- `generators` reuses the fork existing `generators/plain.json`. That file is an `IRIS_DOUBLE` composite behind a `BILINEAR_STARCAST_9` interpolator. This biome uses `min` 18 / `max` 24 instead of the 4-to-10 band the shipping plains uses. Those numbers are offsets from `fluidHeight`, which the overworld sets to 50. This meadow sits roughly 68 to 74 blocks up while ordinary plains sit around 54 to 60. The height difference is what makes it visible from a distance.
+- `generators` reuses the fork existing `generators/plain.json`. That file is an `IRIS_DOUBLE` composite behind a `BILINEAR_STARCAST_9` interpolator. This biome uses `min` 18 / `max` 24 instead of the 4-to-10 band the bundled plains uses. Those numbers are offsets from `fluidHeight`, which the overworld sets to 50. This meadow sits roughly 68 to 74 blocks up while ordinary plains sit around 54 to 60. The height difference is what makes it visible from a distance.
 - `layers` are **thicknesses**, not Y coordinates: one block of grass over three blocks of dirt, with the dimension rock palette filling everything below.
 - `decorators` uses a snippet reference. Any field whose type is a snippet type accepts the string form `snippet/<type>/<name>`. Iris loads `snippet/decorator/wildflowers.json` in its place at parse time. The fork already contains that file.
 - `rarity` 1 makes it as common as the region other biomes so you do not have to search for it later.
@@ -138,7 +139,7 @@ These are field excerpts. Merge them into the existing files. Do not replace eit
 
 **What you do.** Generate untouched Studio chunks and run `/iris what region` and `/iris what biome`.
 
-**What you should see.** Region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding shipping plains, wildflower decoration, and no missing-key errors in console.
+**What you should see.** Region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding bundled plains, wildflower decoration, and no missing-key errors in console.
 
 If terrain is empty, confirm `generators/plain.json` still exists in the fork. If flowers are missing, confirm `snippet/decorator/wildflowers.json` exists and remove the decorator reference until the terrain baseline passes. One variable at a time.
 
@@ -170,11 +171,11 @@ If terrain is empty, confirm `generators/plain.json` still exists in the fork. I
 | Disposable world differs from Studio | Inspect `<world>/iris/pack/`. Recreate the world from the current validated fork |
 | A production update would change height, registries, or large terrain systems | Do not update in place. Create a new world and migrate deliberately |
 
-## What the shipping dimension actually sets
+## What the bundled dimension actually sets
 
 From `dimensions/overworld.json`:
 
-| Field | Shipping value | Why it matters when you edit |
+| Field | Default value | Why it matters when you edit |
 |-------|----------------|------------------------------|
 | `name` / `version` | `"Overworld"` / `4000` | Bump `version` on your fork so pack generations stay distinguishable |
 | `dimensionHeight` | `min` -256, `max` 512 | 768 blocks tall. Contract field. Do not change it on a fork that already has worlds |
@@ -203,17 +204,17 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 `regions/temperate.json` is a representative region:
 
-- `landBiomes` — 29 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
-- `shoreBiomes` — `temperate/shore/beach`, `ocean/shore/beach`, `vanilla/stony_shore`, others
-- `seaBiomes` — `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river`, others
-- `caveBiomes` — `carving/rocky-cavebiome`, `carving/drip`, `carving/deep`, others
-- `loot` — mode `FALLBACK`, multiplier `0.5`, tables `temperate/clutter` and `temperate/food`
+- `landBiomes`: 29 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
+- `shoreBiomes`: `temperate/shore/beach`, `ocean/shore/beach`, `vanilla/stony_shore`, others
+- `seaBiomes`: `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river`, others
+- `caveBiomes`: `carving/rocky-cavebiome`, `carving/drip`, `carving/deep`, others
+- `loot`: mode `FALLBACK`, multiplier `0.5`, tables `temperate/clutter` and `temperate/food`
 - Per-category zooms (`landBiomeZoom` 3.5, `seaBiomeZoom` 6, `shoreBiomeZoom` 0.15, `caveBiomeZoom` 3.3) and its own enabled `caveProfile`
 
 `biomes/temperate/plains.json` is a representative biome:
 
 - `derivative` and `vanillaDerivative` are both `minecraft:plains`
-- `generators` is `[{ "generator": "plain", "min": 4, "max": 10 }]` — 4 to 10 blocks above sea level
+- `generators` is `[{ "generator": "plain", "min": 4, "max": 10 }]`: 4 to 10 blocks above sea level
 - `layers` is one block of grass over two blocks of dirt. The dimension rock palette fills below
 - `objects` places `clutter/...` keys in `PAINT` mode at fractions of a percent per column
 - `decorators` place flowers with a `TRIOCTAVE_SIMPLEX` variance and a fractured `STATIC` style
@@ -241,7 +242,7 @@ Editing `<world>/iris/pack/` changes only that world and is overwritten by the n
 
 ### Change sea level
 
-Set `fluidHeight` in `dimensions/my-overworld.json`. Shipping value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Only newly generated chunks change, so expect a visible shoreline seam on an existing world.
+Set `fluidHeight` in `dimensions/my-overworld.json`. Default value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Only newly generated chunks change, so expect a visible shoreline seam on an existing world.
 
 ### Add a biome to a region
 
@@ -269,7 +270,7 @@ Reuse `snippet/decorator/*` and `snippet/style/*` by string reference as in [24 
 
 ### Entities and spawners
 
-The pack ships `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
+The pack includes `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
 
 ## Pushing changes into an existing world
 
@@ -290,7 +291,7 @@ World creation installs the pack copy once. Changing `packs/` does **not** updat
 | Goal | Approach |
 |------|----------|
 | Live design iteration | Studio open on `packs/` |
-| Ship pack changes into an existing survival world | Back up, then `update-world … confirm=true` |
+| Deploy pack changes into an existing survival world | Back up, then `update-world … confirm=true` |
 | Guaranteed consistent terrain | New world from the updated pack |
 | Experimental or partial changes | Fork the pack with `studio create` |
 
@@ -303,7 +304,7 @@ Never use `update-world` for a change to `dimensionHeight`, `logicalHeight`, `en
 | Validate | Bukkit `/iris pack validate pack=my-overworld`. Modded `/iris pack validate my-overworld` |
 | Preview unused-resource cleanup | Bukkit `/iris pack cleanup my-overworld mode=preview`, then `mode=apply`. Modded uses the same `preview`/`apply` literals |
 | Package for distribution | Bukkit `/iris pack package dimension=my-overworld`. Modded `/iris studio package my-overworld` |
-| Version stamp | The dimension `version` field. The shipping pack uses large integers such as `4000` |
+| Version stamp | The dimension `version` field. The bundled pack uses large integers such as `4000` |
 
 ## Checklist before a production update
 

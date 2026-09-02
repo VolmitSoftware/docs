@@ -140,18 +140,6 @@ Works on its own once learned.
 
 Every adaptation config file also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`.
 
-### Identity
-
-| Property | Value |
-|----------|-------|
-| Skill id | `discovery` |
-| Class | `SkillDiscovery` |
-| Icon | `FILLED_MAP` |
-| Color | `AQUA` |
-| Interval (ms) | `50` |
-| Skill config | `plugins/Adapt/skills/discovery.toml` |
-| Adaptation count | 14 |
-
 ### XP sources
 
 Each discovery pays once. The record is kept per player per key.
@@ -222,7 +210,6 @@ Written to `plugins/Adapt/skills/discovery.toml` on first load.
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryUnity` |
 | Icon | `END_CRYSTAL` |
 | Max level | 7 |
 | Initial knowledge cost | 3 |
@@ -237,8 +224,6 @@ line and gives it `amount * xpGainedMultiplier * levelPercent` fresh XP.
 
 Milestones: `challenge_discovery_unity_5k` and `challenge_discovery_unity_50k` on `discovery.unity.orbs-distributed` at 5000 and 50000, rewarding 400 and 1500.
 
-Listened events:
-
 - `PlayerExpChangeEvent` (`on`): vanilla experience gained
 
 | Key | Code default | Behavior / units |
@@ -249,7 +234,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryArmor` |
 | Localization key | `discovery.armor` |
 | Icon | `TURTLE_HELMET` |
 | Max level | 3 |
@@ -261,8 +245,6 @@ Listened events:
 
 Milestone: `challenge_discovery_armor_1hr` on `discovery.armor.ticks-with-bonus` at 72000, rewarding 400.
 
-Listened events:
-
 - `PlayerJoinEvent` (`on`)
 
 | Key | Code default | Behavior / units |
@@ -273,7 +255,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryXpResist` |
 | Localization key | `discovery.resist` |
 | Icon | `TOTEM_OF_UNDYING` |
 | Max level | 5 |
@@ -286,8 +267,6 @@ Listened events:
 The trigger predicts post-hit health from `EntityDamageEvent.getFinalDamage()`, so armor and the damage modifiers already committed to the event are part of the threshold decision. Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, so it gets cheaper as the adaptation levels. The cost is routed as `VANILLA_EXPERIENCE` under `experience-levels`. The built-in charge uses Bukkit's authoritative level-accounting path, preserves bar progress, immediately pushes the new XP display, and shows a `-N XP Levels` notice. A registered ability cost provider may waive or replace that built-in charge, in which case no vanilla levels or vanilla-cost notice are applied. Already-cancelled damage events do not charge. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
 
 Milestones: `challenge_discovery_xp_resist_25` and `challenge_discovery_xp_resist_250` on `discovery.xp-resist.saves` at 25 and 250, rewarding 500 and 2000. `challenge_discovery_xp_resist_clutch` is granted the first time a qualifying save processes an original hit of at least 30 health points.
-
-Listened events:
 
 - `EntityDamageEvent` (`on`): only when the hit would cross the health threshold
 
@@ -304,7 +283,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryVillagerAtt` |
 | Localization key | `discovery.villager` |
 | Icon | `GLASS_BOTTLE` |
 | Max level | 5 |
@@ -316,8 +294,6 @@ Listened events:
 Proc chance is `min(clamp(maxEffectiveness, 0, 1), levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, ceil(levelCostAdd * amplifier - level * levelDrain))`.
 
 Milestones: `challenge_discovery_villager_100` and `challenge_discovery_villager_2500` on `discovery.villager-att.improved-trades` at 100 and 2500, rewarding 300 and 1000.
-
-Listened events:
 
 - `PlayerInteractEntityEvent` (`on`): rolls the proc on a main-hand villager interaction. Offhand duplicates are ignored
 - `InventoryOpenEvent` (`on`): activates the trade session and schedules validation one tick later, after the merchant view opens
@@ -336,7 +312,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryBetterMending` |
 | Icon | `PHANTOM_MEMBRANE` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -347,9 +322,7 @@ Listened events:
 
 Milestones: `challenge_discovery_mending_10k` and `challenge_discovery_mending_100k` on `discovery.better-mending.durability-restored` at 10000 and 100000, rewarding 400 and 1500.
 
-Available XP is Paper's current total experience-point value, and the post-cost level/progress state is written atomically. The cost is XP points, not XP levels. With shipped settings, repair efficiency is `2 + levelPercent * 4` durability per point, the maximum spend is `14 + levelPercent * 130` points, and cooldown is `max(6, round(38 - levelPercent * 26))` ticks.
-
-Listened events:
+Available XP is Paper's current total experience-point value, and the post-cost level/progress state is written atomically. The cost is XP points, not XP levels. With default settings, repair efficiency is `2 + levelPercent * 4` durability per point, the maximum spend is `14 + levelPercent * 130` points, and cooldown is `max(6, round(38 - levelPercent * 26))` ticks.
 
 - `PlayerInteractEvent` (`on`): sneak plus left-click, air or block, main hand only
 
@@ -367,7 +340,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryArchaeologist` |
 | Icon | `BRUSH` |
 | Max level | 6 |
 | Initial knowledge cost | 4 |
@@ -376,18 +348,9 @@ Listened events:
 | Tick interval (ms) | 10 |
 | Config file | `plugins/Adapt/adaptations/discovery-archaeologist.toml` |
 
-Brush completions arrive through a `BrushEventBridge` built by reflection at construction against `BlockBrushEvent`. When the server does not expose that event the bridge is null. The right-click
-handler's queued pending brush plus its fallback window is what resolves the
-reward.
-
 Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is considered only after brushing completes. Common rewards are brick, clay balls, bones, flint, string, and coal. Rare rewards are diamonds, emeralds, gold ingots, and amethyst shards.
 
 Milestones: `challenge_discovery_archaeologist_50` and `challenge_discovery_archaeologist_500` on `discovery.archaeologist.bonus-finds` at 50 and 500, rewarding 300 and 1000.
-
-Listened events:
-
-- `PlayerInteractEvent` (`on`): the brush interaction
-- `PlayerQuitEvent` (`on`)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -406,7 +369,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryCartographerPulse` |
 | Icon | `COMPASS` |
 | Max level | 4 |
 | Initial knowledge cost | 4 |
@@ -416,8 +378,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/discovery-cartographer-pulse.toml` |
 
 Milestones: `challenge_discovery_cartographer_100` and `challenge_discovery_cartographer_1k` on `discovery.cartographer-pulse.pulses` at 100 and 1000, rewarding 300 and 1000.
-
-Listened events:
 
 - `PlayerInteractEvent` (`on`): sneak plus right-click with a `COMPASS` in the main hand
 - `PlayerQuitEvent` (`on`)
@@ -435,7 +395,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryInsight` |
 | Icon | `SPYGLASS` |
 | Max level | 5 |
 | Initial knowledge cost | 2 |
@@ -445,8 +404,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/discovery-insight.toml` |
 
 Milestones: `challenge_discovery_insight_100` and `challenge_discovery_insight_1000` on `discovery.insight.entities-inspected` at 100 and 1000, rewarding 300 and 1200.
-
-Listened events:
 
 - `EntityDamageByEntityEvent` (`on`): spawns damage numbers
 - `PlayerMoveEvent` (`on`): refreshes the inspected target display
@@ -472,7 +429,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryTrailblazer` |
 | Icon | `LEATHER_BOOTS` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -498,7 +454,6 @@ No event handlers. It runs entirely on its tick. A first-visit award immediately
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryFieldNotes` |
 | Icon | `WRITABLE_BOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -508,8 +463,6 @@ No event handlers. It runs entirely on its tick. A first-visit award immediately
 | Config file | `plugins/Adapt/adaptations/discovery-field-notes.toml` |
 
 Milestones: `challenge_discovery_fieldnotes_25` and `challenge_discovery_fieldnotes_100` on `discovery.field-notes.species` at 25 and 100, rewarding 500 and 2000.
-
-Listened events:
 
 - `EntityDeathEvent` (`on`): records the species and pays the first-kill bounty
 - `EntityDamageByEntityEvent` (`on`): applies the banked species damage bonus
@@ -526,7 +479,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryPolymath` |
 | Icon | `KNOWLEDGE_BOOK` |
 | Max level | 5 |
 | Initial knowledge cost | 4 |
@@ -550,7 +502,6 @@ No event handlers. It refreshes on its tick.
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryRelicAppraiser` |
 | Icon | `SPYGLASS` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -564,8 +515,6 @@ An appraised item gets a persistent-data byte and a lore tag, and is refused on 
 Appraised heads and skulls serialize one exact item into the placed tile state. When the block produces its matching normal drop, that drop is restored from the snapshot before Adapt's drop-routing adaptations run. This does not force a drop when vanilla or another plugin produced none.
 
 Milestones: `challenge_discovery_appraiser_50` and `challenge_discovery_appraiser_500` on `discovery.relic-appraiser.appraised` at 50 and 500, rewarding 300 and 1200.
-
-Listened events:
 
 - `PlayerInteractEvent` (`on`): sneak plus right-click, air or block, main hand only
 - `BlockPlaceEvent` (`on`, `MONITOR`, ignores cancelled): stores an appraised head or skull snapshot after placement commits
@@ -586,7 +535,6 @@ Listened events:
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoverySixthSense` |
 | Icon | `ECHO_SHARD` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -596,8 +544,6 @@ Listened events:
 | Config file | `plugins/Adapt/adaptations/discovery-sixth-sense.toml` |
 
 Milestones: `challenge_discovery_sixthsense_100` and `challenge_discovery_sixthsense_1k` on `discovery.sixth-sense.senses` at 100 and 1000, rewarding 300 and 1000.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 - `PlayerMoveEvent` (`onMove`): clears cached HUD state after the adaptation is unlearned or disabled.
@@ -620,7 +566,6 @@ clears. No stored experience value is read or changed.
 
 | Property | Default |
 |----------|---------|
-| Class | `DiscoveryKeenEye` |
 | Icon | `ENDER_EYE` |
 | Max level | 5 |
 | Initial knowledge cost | 3 |
@@ -630,8 +575,6 @@ clears. No stored experience value is read or changed.
 | Config file | `plugins/Adapt/adaptations/discovery-keen-eye.toml` |
 
 Milestones: `challenge_discovery_keeneye_250` and `challenge_discovery_keeneye_2500` on `discovery.keen-eye.glimmers` at 250 and 2500, rewarding 300 and 1200.
-
-Listened events:
 
 - `PlayerQuitEvent` (`on`)
 

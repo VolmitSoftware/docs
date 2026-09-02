@@ -1,0 +1,863 @@
+@font-face {
+  font-family: "Volmit Akz";
+  src: url("/home-assets/fonts/akz-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit ITC";
+  src: url("/home-assets/fonts/itc-book.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit ITC";
+  src: url("/home-assets/fonts/itc-book-oblique.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit ITC";
+  src: url("/home-assets/fonts/itc-demi.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit ITC";
+  src: url("/home-assets/fonts/itc-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit Hack";
+  src: url("/home-assets/fonts/hack-regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit Hack";
+  src: url("/home-assets/fonts/hack-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit Hack";
+  src: url("/home-assets/fonts/hack-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit Hack";
+  src: url("/home-assets/fonts/hack-bold-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Volmit Lucide";
+  src: url("/home-assets/fonts/lucide.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+.v-icon.mdi-magnify::before,
+.v-icon.mdi-account-circle::before,
+.v-icon.mdi-home::before,
+.v-icon.mdi-comment-text-outline::before,
+.v-icon.mdi-github::before,
+.v-icon.mdi-pencil::before,
+.v-icon.mdi-cached::before {
+  font-family: "Volmit Lucide" !important;
+  font-style: normal;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.v-icon.mdi-magnify::before {
+  content: "\e151";
+}
+
+.v-icon.mdi-account-circle::before {
+  content: "\e462";
+}
+
+.v-icon.mdi-home::before {
+  content: "\e0f5";
+}
+
+.v-icon.mdi-comment-text-outline::before {
+  content: "\e575";
+}
+
+.v-icon.mdi-github::before {
+  content: "\e0e6";
+}
+
+.v-icon.mdi-pencil::before {
+  content: "\e1f9";
+}
+
+.v-icon.mdi-cached::before {
+  content: "\e145";
+}
+
+.v-application {
+  --volmit-accent: #e33b3f;
+  --volmit-ink: #111111;
+  --volmit-paper: #f5f3ee;
+  --volmit-surface: #ebe8e0;
+  --volmit-line: #c9c6bd;
+  --volmit-muted: #686868;
+  --volmit-accent-soft: color-mix(in srgb, var(--volmit-accent) 9%, transparent);
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+  line-height: 1.65;
+}
+
+.theme--dark.v-application {
+  --volmit-ink: #f1f1ed;
+  --volmit-paper: #0e0e0f;
+  --volmit-surface: #171719;
+  --volmit-line: #363638;
+  --volmit-muted: #a7a7a4;
+  background: var(--volmit-paper) !important;
+  color: var(--volmit-ink) !important;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/adapt"]) {
+  --volmit-accent: #ef3e46;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/iris"]) {
+  --volmit-accent: #22b8e6;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/react"]) {
+  --volmit-accent: #4169e1;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/wormholes"]) {
+  --volmit-accent: #e8ad18;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/gloss"]) {
+  --volmit-accent: #9564f5;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/hiddenore"]) {
+  --volmit-accent: #a5abb2;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/shapedportals"]) {
+  --volmit-accent: #c14df0;
+}
+
+.theme--dark.v-application:has(.breadcrumbs-nav a[href="/shapedportals"]) {
+  --volmit-paper: #070609;
+  --volmit-surface: #120e15;
+  --volmit-line: #33273a;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/rift"]) {
+  --volmit-accent: #a855f7;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/biletools"]) {
+  --volmit-accent: #25bd68;
+}
+
+.v-application:has(.breadcrumbs-nav a[href="/volmlib"]) {
+  --volmit-accent: #d8d8d2;
+}
+
+.theme--dark.v-application:has(.breadcrumbs-nav a[href="/volmlib"]) {
+  --volmit-paper: #050505;
+  --volmit-surface: #101010;
+  --volmit-line: #303030;
+  --volmit-muted: #999995;
+}
+
+.v-application:has(.contents img[src="/home-assets/volmit.png"]) {
+  --volmit-accent: #d8d8d2;
+}
+
+body,
+#root {
+  background: #0e0e0f;
+}
+
+.v-application button,
+.v-application input,
+.v-application textarea,
+.v-application select {
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+}
+
+.nav-header .v-toolbar__title,
+.nav-header .v-toolbar__title a,
+.nav-header .v-toolbar__content > .subheading,
+.page-header-headings .headline,
+.v-main .contents h1,
+.v-main .contents h2,
+.v-main .contents h3,
+.v-main .contents h4,
+.v-main .contents h5,
+.v-main .contents h6,
+.v-main .contents ul.links-list li .title,
+.v-main .contents ol.links-list li .title {
+  font-family: "Volmit Akz", "Arial Narrow", Arial, sans-serif;
+  font-weight: 700 !important;
+}
+
+.v-application code,
+.v-application pre,
+.v-application kbd,
+.v-application samp,
+.v-application .prismjs,
+.v-application .prismjs * {
+  font-family: "Volmit Hack", Hack, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+}
+
+.v-footer {
+  display: none !important;
+}
+
+::selection {
+  background: var(--volmit-accent);
+  color: #ffffff;
+}
+
+.nav-header,
+.nav-header .v-toolbar__content,
+.nav-header .v-toolbar__extension {
+  background: var(--volmit-paper) !important;
+  box-shadow: none !important;
+}
+
+.nav-header {
+  border-bottom: 1px solid var(--volmit-line) !important;
+}
+
+.nav-header .v-toolbar__title,
+.nav-header .v-toolbar__title a,
+.nav-header .v-toolbar__content > .subheading {
+  color: var(--volmit-ink) !important;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.nav-header .v-divider {
+  border-color: var(--volmit-line) !important;
+}
+
+.nav-header .v-btn:hover,
+.nav-header .v-btn:focus-visible {
+  background: var(--volmit-accent) !important;
+  color: #ffffff !important;
+}
+
+.nav-header .v-btn:hover .v-icon,
+.nav-header .v-btn:focus-visible .v-icon {
+  color: #ffffff !important;
+}
+
+.nav-header .v-btn,
+.nav-header .v-input__slot,
+.v-main .v-btn,
+.v-main .v-chip,
+.v-main .v-alert,
+.v-main .v-card {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.nav-header .v-input__slot {
+  border: 1px solid var(--volmit-line);
+}
+
+.v-main > .v-toolbar {
+  background: var(--volmit-paper) !important;
+  border-bottom: 1px solid var(--volmit-line);
+}
+
+.breadcrumbs-nav .v-btn {
+  color: var(--volmit-muted) !important;
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+  letter-spacing: 0;
+}
+
+.page-header-section {
+  height: 72px !important;
+  background: var(--volmit-paper);
+  border-bottom: 1px solid var(--volmit-line);
+}
+
+.page-header-headings .headline {
+  color: var(--volmit-ink) !important;
+  font-size: clamp(1.35rem, 2vw, 1.75rem) !important;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+.page-header-headings {
+  max-width: 820px;
+  min-height: 46px !important;
+  margin: 0 auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  text-align: center;
+}
+
+.page-header-headings .caption {
+  color: var(--volmit-muted) !important;
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+  letter-spacing: 0;
+}
+
+.page-edit-shortcuts {
+  display: none !important;
+}
+
+.v-main > .v-container.grey {
+  background: var(--volmit-paper) !important;
+}
+
+.page-col-sd {
+  margin-top: -72px;
+  top: 64px;
+  padding-right: 28px !important;
+}
+
+.page-col-sd .page-tags-card,
+.page-col-sd .page-comments-card,
+.page-col-sd .page-author-card,
+.page-col-sd .page-shortcuts-card {
+  display: none;
+}
+
+.page-toc-card {
+  background: transparent !important;
+  border: 0 !important;
+  border-right: 1px solid var(--volmit-line) !important;
+}
+
+.page-toc-card .overline {
+  display: none !important;
+}
+
+.page-toc-card .v-list {
+  padding: 6px 0 10px !important;
+  background: transparent !important;
+  counter-reset: volmit-toc;
+}
+
+.page-toc-card .v-list-item {
+  min-height: 32px;
+  padding: 0 14px 0 10px;
+  color: var(--volmit-ink) !important;
+}
+
+.page-toc-card .v-list-item::before {
+  display: none;
+}
+
+.page-toc-card .v-list-item:hover,
+.page-toc-card .v-list-item:focus-visible {
+  color: var(--volmit-accent) !important;
+  background: var(--volmit-accent-soft) !important;
+}
+
+.page-toc-card .v-list-item .v-icon {
+  width: 26px;
+  min-width: 26px;
+  padding: 0 !important;
+  color: var(--volmit-accent) !important;
+  font-size: 0 !important;
+}
+
+.page-toc-card .v-list-item .v-icon::before {
+  content: "■";
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.page-toc-card .v-list-item:has(> .v-icon:not(.px-3)) {
+  counter-increment: volmit-toc;
+}
+
+.page-toc-card .v-list-item:has(> .v-icon:not(.px-3)) > .v-icon::before {
+  content: counter(volmit-toc, decimal-leading-zero);
+  color: var(--volmit-accent);
+  font-size: 11px;
+  letter-spacing: -0.08em;
+}
+
+.page-toc-card .v-list-item .v-icon.px-3 {
+  margin-left: 4px;
+}
+
+.page-toc-card .v-list-item .v-icon.px-3::before {
+  content: "\e06f";
+  color: var(--volmit-muted);
+  font-family: "Volmit Lucide";
+  font-size: 11px;
+}
+
+.page-toc-card .v-list-item__title {
+  padding: 0 0 0 9px !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.page-toc-card .v-icon.px-3 + .v-list-item__title {
+  color: var(--volmit-muted);
+  font-size: 0.76rem;
+  font-weight: 500;
+}
+
+.page-col-content > .contents {
+  max-width: 820px;
+  margin: 0 auto;
+  color: var(--volmit-ink);
+}
+
+.page-col-content > .contents > :first-child {
+  margin-top: 0;
+}
+
+.page-col-content > .contents > p:first-of-type:not(.text-center) {
+  color: var(--volmit-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .page-col-sd {
+  display: none !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .page-col-content {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .page-col-content > .contents {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .page-header-section {
+  display: none !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p:has(> img[src="/home-assets/volmit.png"][alt="Volmit Software"]) {
+  display: none;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h2,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h3,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h4 {
+  text-align: center;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center br {
+  display: none;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center:has(a[href="#choose-a-plugin"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem 0.65rem;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center a {
+  display: inline-block;
+}
+
+.v-main .contents h2,
+.v-main .contents h3,
+.v-main .contents h4 {
+  color: var(--volmit-ink);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.v-main .contents h2 {
+  margin-top: 2.8rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--volmit-line);
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+}
+
+.v-main .contents h2 .toc-anchor,
+.v-main .contents h3 .toc-anchor,
+.v-main .contents h4 .toc-anchor {
+  color: var(--volmit-accent) !important;
+  font-family: "Volmit Lucide";
+  font-size: 0 !important;
+  text-decoration: none !important;
+}
+
+.v-main .contents h2 .toc-anchor::before,
+.v-main .contents h3 .toc-anchor::before,
+.v-main .contents h4 .toc-anchor::before {
+  content: "\e103";
+  font-size: 0.58rem;
+}
+
+.v-main .contents h3 {
+  margin-top: 2.1rem;
+  font-size: 1.15rem;
+}
+
+.v-main .contents h2::after,
+.v-main .contents h3::after,
+.v-main .contents h4::after {
+  display: none;
+}
+
+.v-main .contents p,
+.v-main .contents li {
+  max-width: 78ch;
+}
+
+.v-main .contents a {
+  color: var(--volmit-ink) !important;
+  font-style: normal !important;
+  font-weight: 700;
+  text-decoration: underline !important;
+  text-decoration-color: var(--volmit-accent) !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 0.18em;
+}
+
+.v-main .contents a:hover {
+  color: var(--volmit-accent) !important;
+}
+
+.v-main .contents a:focus-visible,
+.v-main button:focus-visible,
+.nav-header a:focus-visible,
+.nav-header button:focus-visible {
+  outline: 2px solid var(--volmit-accent) !important;
+  outline-offset: 3px;
+}
+
+.v-main .contents code:not([class*="language-"]) {
+  padding: 0.12em 0.34em;
+  border: 1px solid var(--volmit-line);
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--volmit-ink) !important;
+  font-size: 0.88em;
+}
+
+.v-main .contents pre,
+.v-main .contents .prismjs,
+.v-main .contents div.code-toolbar {
+  border-radius: 0 !important;
+}
+
+.v-main .contents pre {
+  border: 1px solid var(--volmit-line);
+}
+
+.v-main .contents table {
+  width: 100%;
+  border: 1px solid var(--volmit-line);
+  border-collapse: collapse;
+}
+
+.v-main .contents th,
+.v-main .contents td {
+  border: 1px solid var(--volmit-line);
+  padding: 0.65rem 0.75rem;
+}
+
+.v-main .contents th {
+  background: rgba(127, 127, 127, 0.1);
+  color: var(--volmit-ink);
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.v-main .contents tbody tr:nth-child(even) {
+  background: rgba(127, 127, 127, 0.045);
+}
+
+.v-main .contents tbody tr:hover {
+  background: var(--volmit-accent-soft);
+}
+
+.v-main .contents blockquote {
+  border: 1px solid var(--volmit-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--volmit-ink) !important;
+}
+
+.v-main .contents blockquote::before {
+  display: none !important;
+}
+
+.v-main .contents ul.links-list li,
+.v-main .contents ol.links-list li {
+  border: 1px solid var(--volmit-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  background: var(--volmit-surface) !important;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.v-main .contents ul.links-list li:hover,
+.v-main .contents ol.links-list li:hover {
+  border-color: var(--volmit-accent) !important;
+  background: var(--volmit-accent-soft) !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/adapt"]) {
+  --volmit-card-accent: #ef3e46;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/iris"]) {
+  --volmit-card-accent: #22b8e6;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/react"]) {
+  --volmit-card-accent: #4169e1;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/wormholes"]) {
+  --volmit-card-accent: #e8ad18;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/gloss"]) {
+  --volmit-card-accent: #9564f5;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/hiddenore"]) {
+  --volmit-card-accent: #737b84;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/shapedportals"]) {
+  --volmit-card-accent: #c14df0;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/rift"]) {
+  --volmit-card-accent: #a855f7;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/biletools"]) {
+  --volmit-card-accent: #25a95f;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/volmlib"]) {
+  --volmit-card-accent: #111111;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img) {
+  display: flex;
+  min-height: 120px;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img) > a {
+  width: 100%;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:hover,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:focus-within {
+  border-color: var(--volmit-card-accent, var(--volmit-accent)) !important;
+  background: color-mix(in srgb, var(--volmit-card-accent, var(--volmit-accent)) 12%, var(--volmit-surface)) !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:hover img,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:focus-within img {
+  border-color: var(--volmit-card-accent, var(--volmit-accent)) !important;
+}
+
+.v-main .contents ul.links-list li a,
+.v-main .contents ol.links-list li a {
+  text-decoration: none !important;
+}
+
+.v-main .contents ul.links-list li .title,
+.v-main .contents ol.links-list li .title {
+  color: var(--volmit-ink);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.v-main .contents ul.links-list li img,
+.v-main .contents ol.links-list li img {
+  border: 1px solid var(--volmit-line);
+  border-radius: 0 !important;
+  background: var(--volmit-paper);
+  transition: border-color 120ms ease;
+}
+
+.v-main .contents .tabset-tabs {
+  gap: 0;
+  border-bottom: 2px solid var(--volmit-ink);
+}
+
+.v-main .contents .tabset-tabs li {
+  margin: 0 !important;
+  border: 1px solid var(--volmit-line) !important;
+  border-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+
+.v-main .contents .tabset-tabs li.active,
+.v-main .contents .tabset-tabs li.is-active {
+  border-color: var(--volmit-ink) !important;
+  background: var(--volmit-accent) !important;
+  color: #ffffff !important;
+}
+
+.v-main .contents .tabset-content {
+  border: 1px solid var(--volmit-line);
+  border-top: 0;
+  border-radius: 0 !important;
+}
+
+.v-main .contents hr {
+  height: 1px;
+  margin: 3rem 0;
+  border: 0;
+  background: var(--volmit-line);
+}
+
+.comments-container {
+  margin-top: 4rem !important;
+  border: 1px solid var(--volmit-line) !important;
+  border-radius: 0 !important;
+  background: var(--volmit-paper) !important;
+  box-shadow: none !important;
+}
+
+.comments-container .comments-header {
+  min-height: 42px;
+  border-bottom: 1px solid var(--volmit-line);
+  background: var(--volmit-surface) !important;
+  color: var(--volmit-muted) !important;
+  font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.comments-container .comments-main {
+  background: var(--volmit-paper) !important;
+}
+
+.comments-container .blue-grey--text {
+  color: var(--volmit-accent) !important;
+  caret-color: var(--volmit-accent) !important;
+}
+
+@media (max-width: 1263px) {
+  .page-col-content > .contents {
+    max-width: 820px;
+  }
+}
+
+@media (max-width: 959px) {
+  .page-header-section {
+    height: 68px !important;
+  }
+
+  .page-col-content > .contents {
+    max-width: none;
+  }
+
+  .page-header-headings {
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-header-section {
+    height: 62px !important;
+  }
+
+  .page-header-headings {
+    min-height: 38px !important;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .page-header-headings .headline {
+    font-size: 1.25rem !important;
+  }
+
+  .page-header-headings .caption {
+    display: none;
+  }
+
+  .v-main .container.grid-list-xl {
+    padding: 16px !important;
+  }
+
+  .v-main .contents h2 {
+    margin-top: 2.2rem;
+  }
+
+  .page-col-content > .contents > p:first-of-type:not(.text-center) {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .v-main .contents table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .v-main .contents th,
+  .v-main .contents td {
+    padding: 0.5rem;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-application *,
+  .v-application *::before,
+  .v-application *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

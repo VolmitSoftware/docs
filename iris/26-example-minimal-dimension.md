@@ -92,7 +92,7 @@ The Bukkit starter writes the same four resource types described below. Modded s
 
 `dimensionHeight`, `logicalHeight`, `environment`, `dimensionOptions`, `fullbright`, and the file name feed the world contract. Once a world exists on this pack, an edit that changes the file-derived type key, exact environment, or effective generated dimension type means recreating the world. Studio hotload refuses that change. Everything else in this guide is safe to iterate on.
 
-Useful while testing, and removed before shipping: `"focus": "starter"` forces a single biome and `"focusRegion": "starter"` forces a single region.
+Useful while testing, and removed before release: `"focus": "starter"` forces a single biome and `"focusRegion": "starter"` forces a single region.
 
 ## 3. Write the region
 
@@ -154,7 +154,7 @@ List only root parents here. Child biomes are declared on their parent biome `ch
 | `layers` | Required. The surface stack from the top down. Each layer `minHeight`/`maxHeight` are **thickness in blocks**, not Y coordinates, and default to 1. Everything below the declared layers is filled with the dimension rock palette |
 | `generators` | Links to `generators/<key>.json` with a height band. `min` and `max` are offsets **from `fluidHeight`**, not absolute Y |
 
-With `fluidHeight` 63 and `min` = `max` = 96, every column resolves to exactly 96 above sea level. The surface lands at world Y 159: a high flat plateau with the ocean far below it. That is deliberate. It makes the terrain obviously generated rather than accidentally matching vanilla. For plains near sea level use small values instead. The shipping overworld plains biome uses `min` 4 / `max` 10 on generator `plain`.
+With `fluidHeight` 63 and `min` = `max` = 96, every column resolves to exactly 96 above sea level. The surface lands at world Y 159: a high flat plateau with the ocean far below it. That is deliberate. It makes the terrain obviously generated rather than accidentally matching vanilla. For plains near sea level use small values instead. The bundled overworld plains biome uses `min` 4 / `max` 10 on generator `plain`.
 
 ## 5. Write the generator
 
@@ -173,7 +173,7 @@ With `fluidHeight` 63 and `min` = `max` = 96, every column resolves to exactly 9
 }
 ```
 
-**Why.** A generator turns coordinates into a 0-to-1 noise value, which the biome `min`/`max` band then maps into a height. `FLAT` returns a constant. Because `min` equals `max` the mapping is constant anyway. The result is a perfectly level surface. The interpolator controls how neighboring biomes blend their heights together. `NONE` gives hard edges, which is what you want while proving the plumbing. This file matches the shipping overworld `generators/flat.json` and the studio starter byte for byte.
+**Why.** A generator turns coordinates into a 0-to-1 noise value, which the biome `min`/`max` band then maps into a height. `FLAT` returns a constant. Because `min` equals `max` the mapping is constant anyway. The result is a perfectly level surface. The interpolator controls how neighboring biomes blend their heights together. `NONE` gives hard edges, which is what you want while proving the plumbing. This file matches the bundled overworld `generators/flat.json` and the studio starter byte for byte.
 
 | Field | Why |
 |-------|-----|
@@ -258,4 +258,4 @@ Add one thing at a time and re-validate after each. A broken key is then always 
 - Region zooms, deposits, caves: [12 - Regions](/iris/12-regions)
 - Layers, decorators, children: [13 - Biomes](/iris/13-biomes)
 - Noise composites and interpolators: [14 - Generators & Noise](/iris/14-generators-noise)
-- Editing the full shipping overworld: [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)
+- Editing the full bundled overworld: [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)

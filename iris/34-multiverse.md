@@ -137,7 +137,7 @@ first, loads its worlds during level preparation, and Multiverse enables
 afterwards and adopts them.
 
 Do not reorder this, and do not use a plugin manager to reload Iris. Iris
-does not support hot reloading — a reloaded Iris no longer recognizes the
+does not support hot reloading. A reloaded Iris no longer recognizes the
 worlds the previous instance loaded, and logs
 `World "iris:<key>" is loaded, but it is not an Iris world.` Restart the
 server fully after any Iris update.

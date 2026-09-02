@@ -2,12 +2,12 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-This page covers the lifecycle of a pack outside the editor. Pull one down from GitHub. Validate it. Clear out resources nothing references. Package it for distribution. Carefully swap the pack snapshot inside a world that already exists. Authoring packs live under the platform packs root. Production worlds hold their own copy at `<world>/iris/pack`.
+Download, validate, clean, package, or update an Iris pack. Authoring packs live under the platform pack root; production worlds use `<world>/iris/pack`.
 
 See also:
 
@@ -51,7 +51,7 @@ Run this after the pack works in Studio and before you create or update a produc
 
 `validate` re-runs every check and republishes the result. `status` prints the currently published result, which may be a reused startup result. Run `validate` first if you have edited files. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them. Unresolved content keys become blocking the moment strict content mode is on.
 
-For a hydrology-capable release, also run the Bukkit-free generation probe from the Iris repository with Java 25:
+To generate chunks without a server, run the generation probe from the Iris repository with Java 25:
 
 ```bash
 ./gradlew --no-daemon :probe:genProbe \
@@ -59,7 +59,7 @@ For a hydrology-capable release, also run the Bukkit-free generation probe from 
   -PprobeDimension=<dimension-key>
 ```
 
-The probe constructs the real engine and generates chunks into buffers. Publication automation should run it against the exact candidate tree and again only after the packaged archive has been extracted and validated as the canonical closure.
+The probe builds the real engine and generates chunks into memory. Run it against the pack tree you intend to package, then again on the extracted archive.
 
 **3. Preview cleanup without writing anything.**
 
@@ -123,49 +123,36 @@ The loop passes when the source closure validates. Both package commands automat
 | `pack` | mutually exclusive with `link` | Accepts exactly `overworld` or `underworld`. Values are case-insensitive |
 | `link` | mutually exclusive with `pack` | Direct HTTP(S) URL whose path ends in `.zip` |
 
-`overworld` and `underworld` are built-in packs whose beta-release URLs are embedded in Iris for now.
+`overworld` and `underworld` are built-in packs whose immutable stable-release URLs are embedded in Iris. Updating a release on GitHub does not change an existing Iris jar; the jar must be rebuilt with the new versioned URL.
 
 | Pack | Source |
 |------|--------|
-| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/beta/overworld.zip` |
-| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/beta/underworld.zip` |
+| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/4002/overworld.zip` |
+| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/1005/underworld.zip` |
 
 There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
 
-A successful download performs registry-independent pack validation and atomically publishes the pack on disk. It then asks the operator to restart and retains that requirement for world creation and Studio admission. Until the restart, `/iris create` and ordinary `/iris studio open` refuse before world mutation without stopping or restarting the server. Bukkit ordinary Studio accepts `force=true` as an explicit attempt against the currently loaded registry state; it skips datapack installation and registry-readiness enforcement but still requires a loadable validated pack. The command reports connecting, transfer, unpacking, validation, and publication as styled phases. Bukkit players receive an arbitrated large title and a rate-limited labeled bottom action-bar meter with percentage, transferred size, total size, and transfer rate when the server supplies a content length; pack downloads do not use a boss bar. Unknown-length transfers and non-transfer phases use an indeterminate percentage animation. Console progress is limited to 10-percent boundaries or five-second intervals. Success, failure, cancellation, already-installed, and restart-required outcomes remain in chat or console history. On Fabric, Forge, and NeoForge, phase and terminal feedback runs through Minecraft server task queue rather than Iris tick queue. Completion is still delivered after an empty dedicated server enters its vanilla paused state. Direct-link output identifies a Remote ZIP without echoing the URL or any signed query parameters. The command does not compile into the running registry, deny later logins, stop the server, or restart it automatically. Bootstrap validation proves the pack tree is structurally sound. It does not prove that external keys referenced through `datapackImports` exist in the current live registry.
+After downloading a pack, restart before creating a world or opening ordinary Studio. Use `/iris pack validate <pack>` to check it first.
 
 Each network attempt has a 10-second connection timeout and a 10-second no-data timeout. Iris retries transient connection, timeout, truncated-response, HTTP 408/425/429, and server-error failures up to three total attempts with one- and two-second backoffs. Permanent client errors such as HTTP 404 and archive size violations fail immediately. A terminal failure reports the actual network or HTTP cause, removes its incomplete transfer stage, preserves any prior complete cache entry, and releases the download slot so the command can be retried after connectivity is stable.
 
-The shipping Overworld declares Towns & Towers 26.1 and Dungeons & Taverns 5.3.0. Use this deterministic Paper-family sequence (plain Spigot supports managed `/iris create`, but not exact-slot `/iris replace`):
+The current built-in Overworld and Underworld declare no external datapack imports. Use this deterministic Paper-family sequence (plain Spigot supports managed `/iris create`, but not exact-slot `/iris replace`):
 
 ```text
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
-Wait for each download to complete before issuing the next command. The download slot never queues a second request. With the default `general.autoIngestDatapacks=true`, restart after both finish. On that boot Iris installs the Overworld two external dependencies and leaves startup admission restart-required. Complete the ensuing clean restart so Minecraft loads those dependencies, the downloaded packs dimension types, and their custom biomes into the live registries. After that server return:
+Wait for each download to complete before issuing the next command. The download slot never queues a second request. Restart after both finish so Minecraft loads the downloaded packs' dimension types and custom biomes into the live registries. After that server return:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once after both replacements report staged. The default automatic-ingest route therefore uses three restart boundaries. First is discovery and installation of the declared external datapacks. Second is registry loading. Third is cold publication of both exact replacements with the two independently selected seeds. Omit a `seed=` argument to preserve that slot existing saved seed. With automatic ingest disabled, complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Full replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
+Restart once after both replacements report staged. The built-in route therefore uses two restart boundaries: registry loading, then cold publication of both exact replacements with the two independently selected seeds. Omit a `seed=` argument to preserve that slot's existing saved seed. Custom packs that declare `datapackImports` must first complete the explicit workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Full replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
 
-On Fabric, Forge, and NeoForge, `/iris datapack ingest` cannot install these dependencies. Put the exact compatible Towns & Towers 26.1 and Dungeons & Taverns 5.3.0 archives in the target save `datapacks/` directory before the shipping Iris Overworld loads. Then restart with the Iris pack and both external datapacks already present.
-
-### Install pipeline (`PackDownloader`)
-
-1. Acquire the one server-wide download slot. If any explicit pack download is already active, Iris rejects the new request immediately before network or staging work. Repeated requests for the same pack, requests for another pack, and direct-link requests are never queued.
-2. If a built-in pack is already present, return without touching the network. Direct links are fetched before their dimension key is known, but publication still refuses an existing target.
-3. Download the zip into a sibling temporary file under bounded connection, no-data, retry, and size limits. The archive is at most 512 MiB. It has at most 100,000 entries. Total uncompressed size is at most 2 GiB. Each file is at most 256 MiB. Exceeding any size limit aborts without retrying or replacing a prior complete cache entry.
-4. Unpack into a temporary staging directory and identify one pack home containing `dimensions/`. Repository metadata beside that directory is ignored.
-5. Open the staging tree with the datapack-compiler loader and pick the dimension. A `link=` download uses the shortest key, then alphabetical order, when the archive has multiple dimensions. A built-in download names its expected key, requires exactly one dimension matching it, and keeps any additional dimension resources in the pack.
-6. Run `PackValidator.validateForDatapackBootstrap` against the staging tree. Structural blocking errors abort the install and print the errors. Live-registry checks wait until the restart, after external datapacks are registered.
-7. Publish atomically into `packs/<key>/`, refusing symlinked targets and refusing a key that conflicts with a different folder dimension key. The validation result is published to the registry as part of the same step.
-
-Only one explicit pack download runs at a time on Bukkit and modded. The slot remains owned while transient attempts retry and is released after success, cancellation, or terminal failure. Existing complete packs and symbolic-link sources are retained. This command surface has no overwrite mode.
-
+On Fabric, Forge, and NeoForge, the built-in packs need no external datapacks. For a custom pack that declares `datapackImports`, `/iris datapack ingest` cannot install those dependencies; put compatible archives in the target save's `datapacks/` directory before the Iris pack loads, then restart with every input already present.
 ## Validate
 
 | Command | Syntax |
@@ -186,7 +173,7 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Legacy cave-profile field names, in dimensions/regions/biomes and in `snippet/cave-profile/` | Blocking, with the replacement name named |
 | Loot graph — every referenced loot table resolves | Blocking |
 | Removed worldgen fields (currently `fluidBodies`) | Blocking |
-| Terrain-first hydrology and `riverPolicy` | Routing lattice/divisibility and refined-route work budgets, independent source budgets, hydraulic relationships, shore-versus-grade widths, fluid palettes, unique profile IDs, deep-fluid and grotto envelopes, profile/biome references, reachable policy closure, dimension-height fit, and required mantle capabilities are blocking contracts |
+| Rivers (`hydrology` and `riverPolicy`) | Routing, channel, bank, bed, flow, mouth, pool, grotto, and deep-fluid bounds, unique profile and pool IDs, biome and profile references, and dimension-height fit are blocking. See [36 - Rivers](/iris/36-rivers) |
 | Object surface support | Blocking |
 | `rotation` / `translate` / `scale` on surfaces that do not support them | Blocking |
 | Structure graph and compiled structure graph | Errors blocking, warnings advisory |
@@ -196,22 +183,6 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Content keys and block properties | Blocking when `general.strictContentKeys` is on or `-Diris.strictContent` is set, otherwise warnings. Palette-sourced findings stay advisory either way |
 
 A pack is loadable when it has zero blocking errors. `status` prints the blocking count and up to ten warnings plus a "more" count.
-
-### The validation cache
-
-Bukkit persists both successful and failed startup validation results and reuses them only when everything below still matches:
-
-- the exact set of visible pack names,
-- a content fingerprint over the pack bytes,
-- the validator own schema version,
-- strict-content mode,
-- the platform name, Minecraft version, and Iris version,
-- the sorted key sets of the live block, biome, item, and entity registries,
-- the sorted key sets of the live structure, jigsaw-structure, template-pool, structure-set, and object-feature hooks.
-
-Any mismatch discards the cache. That includes changed bytes. It also includes a mod added or removed, a version bump, or a missing or extra
-pack. It includes a malformed or oversized cache file, or a manual `validate`. Cached *failures* stay blocking. A pack that failed validation at startup will not authorize world or Studio creation until it validates clean.
-
 ## Cleanup (unused resources)
 
 | Command | Mode | Behavior |
@@ -251,7 +222,7 @@ Restore operates on the **latest** dump only. It refuses the whole operation whe
 | `obfuscate` | `false` | Rename every object to a random UUID in the export and rewrite placement references to match. Bukkit only |
 | `minify` | `true` | Write JSON with no indentation. Bukkit only. The modded packager always minifies |
 
-Output is `exports/<dimensionKey>.iris` — under the plugin data folder on Bukkit, under `config/irisworldgen/exports/` on modded. Before touching an existing staging tree, both adapters run the shared read-only pack validator, including image-map source decoding and compilation. A blocking error leaves staging and the prior archive untouched. Successful staging is deleted after zipping (compression level 9). Neither the source pack nor any world snapshot is modified.
+Output is `exports/<dimensionKey>.iris`: under the plugin data folder on Bukkit and under `config/irisworldgen/exports/` on modded. Before touching an existing staging tree, both adapters run the shared read-only pack validator, including image-map source decoding and compilation. A blocking error leaves staging and the prior archive untouched. Successful staging is deleted after zipping (compression level 9). Neither the source pack nor any world snapshot is modified.
 
 ### What the package actually contains
 
@@ -265,7 +236,7 @@ The ambient-spawning graph is exported in full. `spawners/` and `markers/` are w
 
 **Not written by either compiler:**
 
-- `mods/` — never collected or written. Harmless, since nothing applies them (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)).
+- `mods/`: never collected or written. Harmless, since nothing applies them (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)).
 - `expressions/`, `caves/`, and other folders outside the collected set.
 
 One platform difference beyond that: Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle. Validate the unpacked tree before you publish an `.iris` artifact.
@@ -292,7 +263,7 @@ What it does:
 4. Invalidate the previous validation result for that exact root and validate the newly published snapshot. **If validation fails, the publication rolls back** and the world keeps its old pack.
 5. If an engine is still holding the old pack data, restart the server with the reason `"An active Iris world pack was replaced."`
 
-This is unsafe for production without a backup for reasons the command cannot fix. Chunks that already exist keep their old terrain. Only future generation and pack-driven systems — loot, spawners, effects, block drops — see the new content. A pack change that alters terrain shape leaves a visible seam at the edge of the generated region. Prefer staging a new world whenever the pack terrain contract changes.
+This is unsafe for production without a backup for reasons the command cannot fix. Chunks that already exist keep their old terrain. Only future generation and pack-driven systems (loot, spawners, effects, and block drops) see the new content. A pack change that alters terrain shape leaves a visible seam at the edge of the generated region. Prefer staging a new world whenever the pack terrain contract changes.
 
 ## Related operations
 
@@ -309,8 +280,8 @@ This is unsafe for production without a backup for reasons the command cannot fi
 
 1. Place or download the pack under `packs/<key>/` with at least one `dimensions/*.json`.
 2. Validate until loadable: `/iris pack validate pack=<key>` on Bukkit, `/iris pack validate <key>` on modded.
-3. Run the Java 25 `:probe:genProbe` gate for the selected dimension.
+3. Run the generation probe for the selected dimension.
 4. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
 5. Create a new world with `/iris create …`, which copies the pack into the world, or open Studio for live editing.
 6. Package with `/iris pack package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then extract and validate the exact archive.
-7. Replace an existing world snapshot only after a backup, with `/iris dev update-world world=<world> pack=<dimension> confirm=true`. Do not use snapshot replacement to apply a changed hydrology contract to generated chunks.
+7. Replace an existing world snapshot only after a backup, with `/iris dev update-world world=<world> pack=<dimension> confirm=true`. A changed river configuration needs a new world; replacing a snapshot does not regenerate chunks.
