@@ -312,10 +312,14 @@ There is no `concurrency` section in `iris.json`. The values are
 computed from CPU count at runtime and cannot be overridden from the
 file:
 
-- Generation burst pool: `max(2, availableProcessors)`
+- Generation burst pool: `max(2, availableProcessors)`, raised to
+  `availableProcessors × 2` for the rest of the process once a
+  pregeneration starts
+- Hydrology planning pool: `max(2, availableProcessors / 3)`, so long
+  tile plans never occupy generation workers
 - IO burst pool: `max(2, availableProcessors / 2)`
 - Bukkit pregen in-flight cap: effective worker threads × 8, clamped
-  16–128 on Paper-like servers and 64–192 on Folia. Paper-like effective
+  16–256 on Paper-like servers and 64–192 on Folia. Paper-like effective
   workers are the larger of the detected chunk-system pool and the
   world-gen pool provisioned during initialization. CPU is the fallback
   when detection is unavailable. The cap is then lowered adaptively for
