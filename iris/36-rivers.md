@@ -104,7 +104,9 @@ This is the managed Overworld shape with every physical section written explicit
           "inset": 1,
           "maximumIncision": 10,
           "roughness": 0.25,
-          "roughnessWavelength": 16
+          "roughnessWavelength": 16,
+          "springWidthRatio": 2.5,
+          "springLength": 24
         },
         "banks": {
           "freeboard": 1,
@@ -113,6 +115,13 @@ This is the managed Overworld shape with every physical section written explicit
           "minimumBlendWidth": 4,
           "maximumBlendWidth": 32,
           "exposeCutStrata": true
+        },
+        "bed": {
+          "allowGravityBlocks": false,
+          "padding": 2,
+          "paddingPalette": {
+            "palette": [{"block": "minecraft:clay"}, {"block": "minecraft:dirt"}]
+          }
         },
         "flow": {
           "cascadeRun": 2,
@@ -269,6 +278,8 @@ The channel is the wet part of the river. Its cross-section is a broad bowl: nea
 | `maximumIncision` | `10` | Deepest cut the channel may make into a hillside before the course is rejected, `1..32` |
 | `roughness` | `0.25` | Strength of the coherent wobble applied to the channel outline, `0..1`; `0` gives a perfectly smooth outline |
 | `roughnessWavelength` | `16` | Wavelength of that wobble in blocks, `4..64` |
+| `springWidthRatio` | `2.5` | Width of the spring pool at the headwater relative to the channel width, `1..4`; `1` starts the river at its normal width |
+| `springLength` | `24` | Blocks over which the pool narrows back to the channel, `4..96` |
 
 #### `surface.banks`
 
@@ -284,6 +295,18 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 | `exposeCutStrata` | `true` | Show the biome's deeper layers on eroded banks instead of repeating the surface layer, so a cut through grassland shows dirt and stone |
 
 `bankMultiplier` in a region or biome policy scales `blendSlope` locally: values below `1` make steeper, narrower valleys and values above `1` make wider, gentler ones.
+
+#### `surface.bed`
+
+The bed is what sits under and beside the water. Falling blocks under a river collapse when a cave, a player or a fluid update touches them, so by default they are replaced.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `allowGravityBlocks` | `false` | Keep sand, gravel and concrete powder from the biome layers in the bed, shore and eroded banks; set it when you want a gravel river on purpose |
+| `padding` | `2` | Blocks below the bed surface that are also kept free of falling blocks, `0..8` |
+| `paddingPalette` | clay and dirt | Blocks used in place of falling blocks; any solid palette |
+
+The river channel keeps the layers of the channel biome (`surfaceBiomes`) and the shore keeps `shoreBiomes`, so a biome override is the way to change what a river bottom or beach is made of; the bed rule only swaps the blocks that would fall.
 
 #### `surface.flow`
 
@@ -470,7 +493,7 @@ Before any surface course is published, cross-tile arbitration compares its comp
 
 A surface course is shaped in four steps, all of them working on the refined centerline one block at a time.
 
-1. **Channel profile.** Width and depth are resolved at every station from `channel.width` and `channel.depth`, the effective policy multipliers, and the coherent outline wobble from `channel.roughness`. Near a coast the width grows toward `mouths.flareRatio` times the upstream width.
+1. **Channel profile.** Width and depth are resolved at every station from `channel.width` and `channel.depth`, the effective policy multipliers, and the coherent outline wobble from `channel.roughness`. The headwater opens as a spring pool `springWidthRatio` times the channel width and one block deeper, narrowing to the cruise width over `springLength` blocks. Near a coast the width grows toward `mouths.flareRatio` times the upstream width.
 2. **Water head.** For each station the planner reads the natural ground on a ring just outside the channel outline on both banks, takes the lowest bank sample, and subtracts `channel.inset`. Heads are then made non-rising downstream: a value that would rise is held at the previous head, and a value that would fall is limited to one block per `flow.cascadeRun` blocks of run unless the pair straddles a natural cliff of at least `flow.waterfallMinimumDrop`, where the head drops by the cliff in one step. A station whose head would need a cut deeper than `channel.maximumIncision` rejects the course; there are no bores under ridges for surface rivers, so a route that cannot stay open on the surface is not published.
 3. **Erosion field.** Every column near the centerline receives a target height. Inside the channel the target is the bowl-shaped bed below the head. The bank top on both sides sits at `head + banks.freeboard`. From the shore outward the target rises along a smooth curve back to the natural height across a blend band whose width is `cut x banks.blendSlope`, clamped to `minimumBlendWidth..maximumBlendWidth`, where `cut` is how far the bank top sits below natural ground at that station. The published terrain is `min(natural, target)`: the field only ever lowers ground. Water is published only where the bed sits below the head and the surrounding bank tops contain it.
 4. **Labels.** Each reach is labelled from its head gradient: a level reach is a `SURFACE_POOL`, a single one-block step is a `RIFFLE`, consecutive one-block steps are a `CASCADE`, and a cliff-sized step is a `WATERFALL`. Labels do not change the geometry; they drive Vision, locators, and rendering.
