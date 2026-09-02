@@ -55,8 +55,9 @@ something.
    `chunk-system.worker-threads` in `config/paper-global.yml` to about
    the number of physical cores for a pregeneration box and restart.
    Iris spreads each chunk's stages and mantle work across its own burst
-   pool during pregeneration, so the workers mostly coordinate; they
-   still need to exist.
+   pool during pregeneration (and doubles that pool to two workers per
+   core for the run), so the chunk workers mostly coordinate; they still
+   need to exist.
 2. **Check whether the platform is the limit, not Iris**. On Fabric,
    Forge, and NeoForge without a parallel chunk system, pregeneration
    uses the vanilla main-thread chunk pipeline. Throughput is capped
