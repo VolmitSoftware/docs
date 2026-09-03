@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -172,9 +172,11 @@ Dimension-level palettes:
 | `block` | `air` | A block id, or the load key of a file under `blocks/`. Required by the schema |
 | `weight` | `1` (1–1000) | How many times this entry appears in the containing palette pick list. Weight 3 against weight 1 is a 3:1 split |
 | `data` | `{}` | Block-state properties such as `axis`, `waterlogged`, `facing`, `half` |
-| `backup` | `null` | Tried when the requested state does not resolve on this version. Without one, an unresolvable entry becomes air |
+| `backup` | `null` | The entry used when `block` does not exist on the running Minecraft version. Works on every platform and counts as a declared fallback, so the content still generates and the substitution is reported. Without one — and with no dimension `blockFallbacks` entry — the biome, decorator, deposit, or placement that owns the palette is excluded on that version |
 | `debug` | `false` | Prints the resolved state to console when general debug logging is on. Use it when a palette silently produces air |
 | `tileData` | `{}` | Block-entity payload, applied only when the resolved state actually has a tile entity |
+
+A `backup` is resolved through the same chain as `block`: live registry, legacy rename table, dimension `blockFallbacks`, then this `backup`. A backup that is itself missing on the running server counts as missing. A missing palette block no longer becomes air with its weight retained; the unit that composes it is left out of generation instead, and the decision is listed at startup and by `/iris pack compat`. See [25 - Pack Management](/iris/25-pack-management) and [11 - Dimensions](/iris/11-dimensions).
 
 Files under `blocks/<key>.json` use the same shape and act as reusable aliases. Reference one with `"block": "<key>"`. Properties on the referencing entry override properties from the alias. Aliases may chain but must not form cycles.
 
@@ -227,7 +229,9 @@ The block is written one above the surface block (`height + 1`), and only into a
 
 By default the surface block must have a sturdy full up-face and satisfy the placed block platform support rule. For example, cactus accepts sand, red sand, or another cactus, but not stone. `forcePlace: true` skips that test entirely. `forceBlock` replaces the surface block with the given block first and implies `forcePlace`. When not force-placing, `whitelist` and `blacklist` are matched against the surface block. An explicitly empty `whitelist` matches nothing and blocks all placement. Omit the field rather than setting it to `[]`.
 
-Vines get their attachment faces recomputed against surrounding blocks. Stacked weeping and twisting vines use the corresponding `_plant` state for their body and retain one vine tip at the free end. `minecraft:pointed_dripstone` gets `thickness` and `vertical_direction` assigned automatically along a stack (tip at the far end, then frustum, then base).
+Vines get their attachment faces recomputed against surrounding blocks. Stacked weeping and twisting vines use the corresponding `_plant` state for their body and retain one vine tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` receive native direction and taper states for both single decorations and stacks. One-block spikes are tips; two-block spikes are frustum plus tip; longer columns add base and middle segments. Placement stops at occupied blocks and world bounds, then rebuilds the taper using the actual length. Adjacent opposing tips of the same material become `tip_merge`; sulfur and dripstone do not merge with each other.
+
+Spikes require a full sturdy support face in their growth direction or another matching spike behind them, including when force-placed. Ceiling spikes check the underside of the ceiling. Stacked floor and ceiling decorators honor surface whitelists and blacklists. Authored waterlogging is preserved, and spikes replacing water in an underwater decoration are waterlogged automatically; spikes never replace lava. Cave decoration still skips fluid targets. After objects and pools are inserted, the final cleanup removes unsupported spike chains, restores water from waterlogged segments, and normalizes surviving tapers and merged tips. Exposed tips receive native post-load updates on Bukkit and modded platforms. Sulfur spikes require Minecraft 26.2.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|

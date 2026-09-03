@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Gloss documentation: Getting Started"
 published: true
-date: 2026-08-25
+date: 2026-09-02T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -35,7 +35,9 @@ file and the defaults of the features that are enabled. Nothing else exists yet:
 ```
 plugins/Gloss/
 ├── gloss.toml            every runtime knob, commented, clamped and hot-reloading
-├── language.yml           sparse message overrides; locale selection stays in gloss.toml
+├── language.yml           sparse message overrides
+├── languages/             translations installed when selected
+├── language-preferences.properties  persistent player language choices
 ├── tablist.json           conditional tablist header, footer and list-name presentations
 ├── boards/                conditional scoreboard sidebars (default.json and animation-showcase.json included)
 ├── emoji/                 one JSON per emoji (67 included)
@@ -148,6 +150,6 @@ Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage i
 - [Panels *World-anchored menus*](/gloss/16-panels)
 - [Commands & Permissions *The whole command tree*](/gloss/17-commands-permissions)
 - [Web Editor & Sync *The hosted builder and the sync relay*](/gloss/18-web-editor)
-- [Localization *17 included locales and how to override them*](/gloss/19-localization)
+- [Localization *17 downloadable locales and player choices*](/gloss/19-localization)
 - [API: Getting Started *Driving Gloss from another plugin*](/gloss/21-api-getting-started)
 {.links-list}

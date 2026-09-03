@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,6 +81,12 @@ the wand, or change hotbar away from the wand, Wormholes clears the selection.
 
 If a wand interaction aims at an existing portal, Wormholes opens that portal’s
 menu instead of editing the selection. See Menu access.
+
+Looking at a portal while holding a portal tool shows a short route subtitle
+with the portal name and linked destination, or active progress text. Each
+portal's Settings menu can enable **Public Look Label** so nearby players without
+a portal tool see the portal name when they look at it. Public labels are off by
+default and do not expose the linked destination.
 
 ## Rune construction
 

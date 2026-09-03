@@ -2,7 +2,7 @@
 title: "BileTools — Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-03T07:34:52.375Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Configuration lives in `plugins/BileTools/biletools.yml`. The table below lists 
 
 | Key | Default | Effect |
 |---|---|---|
-| `language` | `en_US` | Selects the bundled locale used for player and operator text. `language.yml` contains sparse overrides only |
+| `language` | `en_US` | Selects the default locale used for player and operator text. `language.yml` contains sparse overrides only |
 | `metrics` | `true` | Starts anonymous bStats reporting during enable. Requires a restart to change |
 
 ## Watcher
@@ -82,3 +82,21 @@ Leave `health-check` on. If you turn it off, a plugin that throws during
 
 The master and the slave both default to off. Read
 [Remote Deploy](/biletools/remote-deploy) before you enable either half.
+
+## Language files
+
+VolmLib downloads a selected non-English catalog on demand, validates its templates and placeholders, and installs it atomically. Locale files are excluded from the plugin jar. Installed catalogs are reused offline, and English defaults remain in Java.
+
+If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection.
+
+Player preferences are stored by UUID in `language-preferences.properties` in the plugin data folder. `self reset` removes a personal override. The server default applies to console output and players without an override. Sparse local message overrides remain active above the downloaded catalog.
+
+BileTools installs catalogs to `plugins/BileTools/languages/<locale>.yml`. Add message replacements under `messages` in `plugins/BileTools/language.yml`; its existing watcher reloads those overrides. `/bile language` opens the clickable picker, and `/bile language server` opens the server default picker.
+
+### In-game language editor
+
+`/bile language server edit [locale]` opens the inventory editor for a language. Omit the locale to choose one; browsing and editing leave the server default and every personal selection unchanged. Access requires `bile.use` or `volmit.language.admin`.
+
+The editor shows message keys and current values, with search and pages of up to 45 entries. Select a message, then enter its replacement in private chat; `cancel` or 60 seconds without input cancels the prompt. Placeholders and message shapes are validated before saving, and a message changed since the editor opened must be reopened before editing.
+
+Edits are saved atomically to `plugins/BileTools/languages/overrides/<locale>.yml`. These per-language values override `language.yml`, which continues to override the installed `languages/<locale>.yml` catalog. English overrides use `en_US.yml` and work without downloading a catalog. A successful save immediately updates users of the edited locale; other locales and all selected preferences remain unchanged. Installed incomplete catalogs can be edited without selecting them; opening a missing official catalog may download it, and failed loads leave the editor closed and selections unchanged.

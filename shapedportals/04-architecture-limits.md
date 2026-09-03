@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry, persistence, region ownership, and build instructions"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T04:58:11.006Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -56,6 +56,8 @@ See [Persistent ownership](/shapedportals/02-portal-behavior-events#persistent-o
 | Teleport chunk preparation | Asynchronous where available, otherwise on the owning region |
 | Landing checks | Destination region |
 | Player teleport completion | Entity scheduler |
+| Diagnostic state capture | Global scheduler, using immutable or concurrent plugin state |
+| Diagnostic formatting, file hashing, writing, and upload | Asynchronous worker |
 
 Integrity checks skip unloaded chunks. Administrative teleportation can prepare the portal and nearby landing chunks. Creation refuses shapes that span independently owned regions.
 
@@ -69,7 +71,7 @@ No event set covers every possible external block mutation, which is why the per
 
 ## Shared systems
 
-VolmLib supplies TOML handling, file watching, localization, validated translation downloads, command/help presentation, HUD coordination, and scheduling.
+VolmLib supplies TOML handling, file watching, localization, validated translation downloads, command/help presentation, HUD coordination, scheduling, and [diagnostic report collection and upload](/volmlib/api/diagnostics). ShapedPortals contributes an immutable capture of its service, settings, registry, and statistics state and retains its `debug.uploadEnabled` control.
 
 Shaped Portals owns geometry, registry policy, integrity decisions, commands, presentation settings, and its categorized configuration editor. Optional React integration reads concurrent counts without accessing live world state during sampling.
 
@@ -83,9 +85,13 @@ The Gradle wrapper uses Java 25 and produces Java 17 bytecode.
 
 The shaded artifact is `build/libs/ShapedPortals-2.0.0.jar`. The build also exports the React pack to `build/distributions/react-api-packs/`.
 
-Build checks cover tests, Spigot 1.20.1 and current Paper/Spigot API compilation, Java 17 class compatibility, VolmLib relocation, and the remote-language manifest. The manifest lists the 17 repository translations and follows `main`; locale TOML files are downloaded when needed rather than bundled in the jar.
+Build checks cover tests, Spigot 1.20.1 and current Paper/Spigot API compilation, Java 17 class compatibility, VolmLib relocation, and the remote-language manifest. The manifest lists the 17 repository translations and pins a published repository revision; locale TOML files are downloaded when needed rather than bundled in the jar.
 
 `./gradlew publishToMavenLocal` runs the checks and publishes the shaded plugin and sources as `com.volmit:shapedportals:2.0.0`. The repository's build and local-publication tasks also refresh its configured staging jar.
+
+`./gradlew buildPsychoLT` runs the checks, exports the React pack, and copies the shaded jar to the sibling `[Minecraft Server]/consumers/plugin-consumers/dropins/plugins/ShapedPortals.jar`. It also stages the versioned `ShapedPortals-2.0.0.jar` in the workspace `PluginOuts/` directory. The workspace `build-psycho-lt.sh` includes ShapedPortals with the other plugins and forwards its command-line arguments to Gradle.
+
+The workspace script builds plugins concurrently by default and supports `--tests-only`, project and test worker limits, and per-project logs. See [Workspace builds](/volmlib/api/building).
 
 ## Related pages
 

@@ -2,13 +2,27 @@
 title: "Commands & Permissions"
 description: "Gloss documentation: Commands & Permissions"
 published: true
-date: 2026-08-24
+date: 2026-09-03T07:34:52.375Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 Gloss uses `/gloss`, with `/hologram` and `/board` as shortcuts. Optional arguments use `name=value`. Put multi-word values in brackets: `text=[Hello world]`.
+
+## Language selection
+
+`/gloss language` opens the shared picker. `/gloss language self <locale>` sets your language, and `self reset` returns to the server default. Personal language selection requires both `gloss.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. `/gloss language server <locale>` changes the default with `gloss.admin` or `volmit.language.admin`.
+
+`/gloss language server edit [locale]` opens the inventory message editor with `gloss.admin` or `volmit.language.admin`. Omit the locale to choose one. Edits update that locale without changing any server default or player preference; see [Localization](/gloss/19-localization) for storage and validation.
+
+`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. See [Localization](/gloss/19-localization) for persistence and downloaded files.
+
+## Diagnostic reports
+
+`/gloss debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/gloss debugdump upload=false` to save it locally without uploading. The command requires `gloss.debugdump` (default `op`), independently of the root administration permission.
+
+Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
 
 ## Holograms
 
@@ -58,6 +72,7 @@ Gloss uses `/gloss`, with `/hologram` and `/board` as shortcuts. Optional argume
 
 | Command | Permission | Purpose |
 |---|---|---|
+| `/gloss debugdump [upload=true]` | `gloss.debugdump` | Save a diagnostic report, uploading by default |
 | `/gloss status` | `gloss.admin` | Show feature counts |
 | `/gloss reload` | `gloss.admin` | Reload Gloss |
 | `/gloss emoji list` | `gloss.emoji.use` | List emoji |
@@ -72,11 +87,13 @@ Gloss uses `/gloss`, with `/hologram` and `/board` as shortcuts. Optional argume
 
 ## Permissions
 
-`gloss.*` grants every permission. Most permissions default to operators. These are available to players by default:
+`gloss.*` grants Gloss permissions; personal language selection also requires the shared `volmit.language.self` permission. `gloss.debugdump` defaults to operators and authorizes diagnostic reports independently of `gloss.admin`. Most permissions default to operators. These are available to players by default:
 
 - `gloss.emoji.use`
 - `gloss.bubbles.send`
 - `gloss.indicators.show`
+- `gloss.language.self` (also requires `volmit.language.self`)
+- `volmit.language.self` (shared personal language requirement)
 
 Dynamic permissions are `gloss.open.<menuId>`, `gloss.bubbles.style.<styleId>`, and, when enabled, `gloss.emoji.<emojiId>`.
 

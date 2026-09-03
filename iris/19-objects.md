@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -202,6 +202,8 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 
 **Two separate loot mechanisms.** A chest saved into the `.iob` with a vanilla loot table on it keeps that table. Pack loot tables are attached by the placement instead (`loot`, `vanillaLoot`, `overrideGlobalLoot`). See [20 - Object Placement](/iris/20-object-placement).
 
+**Blocks the running Minecraft does not have.** An object saved on a newer version can hold blocks an older server lacks. Iris reads the object's palette header when a placement builds its pool and drops the object from that pool if any block in the final placed result is missing. It stays in the pool when the placement's `edit` rules type-replace the block (a rule with `chance: 1` whose `find` matches it), or when a dimension `blockFallbacks` entry or a per-entry `backup` covers it. The `.iob` file is never rewritten and the object remains usable on a server that has the block. An emptied pool means the placement is skipped. See [20 - Object Placement](/iris/20-object-placement) and [25 - Pack Management](/iris/25-pack-management).
+
 **Caches and hotload.** Objects are cached per pack. Studio worlds watch the pack folder for `.iob` and `.json` changes. They hotload at most once a second. They back off to about four seconds while the world is busy generating or running maintenance. A hotload swaps the engine whole pack runtime. Already generated chunks are untouched. Only later ones see the edit. Ordinary worlds never hotload. They serve the cached copy until the pack reloads.
 
 ## 8. Common failure modes
@@ -220,6 +222,7 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 12. **A paste is offset from where you expected**: the origin is the bounding-box center, so air padding inside the selection moves it. Re-select tightly or run `shrink`.
 13. **A sign lost its back side, or a spawner lost its settings**: saved with the default `legacy=true`. Re-save with `legacy=false`.
 14. **`shrink` rewrote a file in a pack you were not thinking about.** Outside an Iris world, a bare key resolves to the first visible pack that has it. That lookup is silent (section 1).
+15. **An object places on one server and not another.** Its palette needs a block the older server does not have. `/iris pack compat` names the object and the placement it was dropped from.
 
 ## Command reference
 

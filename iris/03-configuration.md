@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-08-29T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Iris keeps its shared runtime settings in `iris.json` under the platform data folder. On first boot Iris writes a full defaults file if one is missing. Startup and manual loads rewrite a valid file so new keys appear with defaults; passive automatic hotload parses an immutable snapshot and never writes it back. Bukkit adds `compat.json`. Mod loaders add `modded.json`.
 
 See [01 - Installation & Platforms](/iris/01-installation-platforms) for data paths. See [33 - Performance Tuning](/iris/33-performance-tuning) for how to measure a tuning change.
+
+The shared in-game language picker writes `general.language` for the server default. Personal language choices are stored separately in `languages/players.properties`; see [08 - Localization](/iris/08-localization). Non-English server catalogs download when selected and remain outside the jar.
 
 ## What you actually need to change
 
@@ -122,12 +124,24 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `adjustVanillaHeight` | `false` | **Restart** | **Bukkit only.** Overwrites the vanilla `overworld`/`the_nether`/`the_end` dimension-type JSON with Iris height when compiling the datapack. It is part of the datapack fingerprint, so flipping it forces a datapack rebuild |
 | `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Installs or updates configured HTTP(S)/`file:` sources and ZIPs discovered under `plugins/Iris/datapacks/imports/` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating; local archive bytes are still fingerprinted. Explicit sources stay scoped to declaring dimensions, while drop-folder sources apply to every Iris dimension |
 | `autoImportDatapackStructures` | `false` | Live (next ingest) | **Bukkit only.** Converts every registered datapack structure into editable Iris pools, pieces, and objects — thousands of files in your pack folder. Native generation never needs those copies, so leave it off and run `/iris structure import <dimension>` when you actually want them |
-| `strictContentKeys` | `false` | Live | Promotes unresolved pack content keys and bad block-state properties from warnings to blocking pack errors. Worth turning on while developing a pack. `-Diris.strictContent` overrides it in both directions, and the bare property with no value counts as true |
+| `strictContentKeys` | `false` | Live | Promotes unresolved pack content keys and bad block-state properties from warnings to blocking pack errors. Worth turning on while developing a pack. `-Diris.strictContent` overrides it in both directions, and the bare property with no value counts as true. Keys already handled by the version content gate are excluded from this check, so it never turns a gated key into a second error |
 | `spinh` | `-20` | Live | Hue factor of the animated "aura" gradient on Iris text |
 | `spins` | `7` | Live | Saturation factor of the same gradient |
 | `spinb` | `8` | Live | Brightness factor of the same gradient |
 
 The early library-loader trace is separate from `general.debug` and is silent by default. `-Diris.debug-slimjar=true` enables it through the Iris plugin logger only for loader investigation; it never writes those debug lines through the process streams or triggers Paper's direct-stream warning.
+
+### `strictContentKeys` and the version content gate
+
+These are two different checks with one overlap. The version content gate asks the live registry whether a key exists and decides what to leave out of generation. `strictContentKeys` decides how loudly the separate unresolved-key check complains about keys the validator could not resolve at all.
+
+| Situation | `strictContentKeys` off | `strictContentKeys` on |
+|-----------|------------------------|------------------------|
+| A key exists on a newer Minecraft but not this one | Reported once by the version content gate, as excluded, dropped, or substituted. Not reported as an unresolved key | Identical. The gate's findings are suppressed in the unresolved-key check, so the key does not also become a blocking error |
+| A typo or a key from a mod that is not installed and never was | Warning from the unresolved-key check | Blocking pack error |
+| The version content gate's cascade reaches the dimension | Blocking pack error. World creation refused | Identical. This does not depend on the setting |
+
+Turn `strictContentKeys` on while authoring so typos fail fast. It is not a way to make missing-on-this-version content fail loudly; that is what the startup listing and `/iris pack compat` are for. See [25 - Pack Management](/iris/25-pack-management).
 
 ## `world` — entity systems and the async world tick
 

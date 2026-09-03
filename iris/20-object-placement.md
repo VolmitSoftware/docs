@@ -2,12 +2,61 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-An object placement is one entry in a biome or region `objects[]` array. It names the objects to stamp, how often to try, where they are allowed to land, and how they should meet the terrain. Building the objects themselves is [19 - Objects](/iris/19-objects). Multi-piece assemblies are [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+A biome or region `objects[]` entry distributes objects over terrain. A dimension `staticObjects[]` entry places one saved object at an exact world position with fixed rotation, scale, and block edits. Building the objects themselves is [19 - Objects](/iris/19-objects). Multi-piece assemblies are [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+
+## Static objects at fixed coordinates
+
+Use dimension `staticObjects` for a landmark, spawn building, or other object that must generate at a particular position. Prerequisites: the saved `.iob` file and a Studio or disposable world whose target chunks have not generated.
+
+1. Save the object as, for example, `objects/landmarks/tower.iob`.
+2. Add this entry to `dimensions/<dimension>.json`:
+
+```json
+{
+  "staticObjects": [
+    {
+      "object": "landmarks/tower",
+      "position": { "x": 100, "y": 100, "z": -100 },
+      "rotation": { "y": 90 },
+      "scale": 1,
+      "edit": [
+        {
+          "find": [{ "block": "minecraft:oak_planks" }],
+          "replace": { "palette": [{ "block": "minecraft:stone_bricks" }] }
+        }
+      ]
+    }
+  ]
+}
+```
+
+3. Validate with `/iris pack validate pack=<pack>` on Bukkit or `/iris pack validate <pack>` on modded, then open Studio or create a test world.
+4. Visit world coordinates `100 100 -100`. That coordinate is the object's saved origin, usually its center, rather than its bottom or a terrain sample. Check the footprint on both sides of any chunk boundary.
+
+Static objects generate after Iris terrain and decoration, regardless of biome, slope, water, caves, density, or chance. Later native structures and imported features cannot overwrite blocks written by static objects. Each destination chunk receives its own portion; visiting the far side first does not omit the rest. Entries apply in array order, and the later entry wins wherever their written blocks overlap. Saved air writes air; unsaved space stays unchanged unless `bore` or `smartBore` fills it. This can replace terrain, including the bedrock layer.
+
+Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles are supported; angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. Directional block states use the existing object rotation rules. Saved block-entity data, such as container or sign data, accompanies its transformed blocks. Edits apply before block-state rotation and leave the source `.iob` unchanged. Changing a block's material discards incompatible saved block-entity data.
+
+| Field | Default | Meaning |
+|-------|---------|---------|
+| `object` | required | One load key under `objects/`, without `.iob` |
+| `position` | required | Absolute integer world coordinates; Y is not measured from the dimension floor |
+| `rotation` | `{ "x": 0, "y": 0, "z": 0 }` | Fixed degrees per axis, from -360 to 360 |
+| `scale` | `1` | Fixed size multiplier, 0.01 to 50 |
+| `scaleInterpolation` | `NONE` | Enlargement interpolation: `NONE`, `TRILINEAR`, `TRICUBIC`, or `TRIHERMITE` |
+| `edit` | `[]` | The same material/state replacement rules described in section 6 below |
+| `bore` | `false` | Clear the complete transformed bounding box before writing the object |
+| `smartBore` | `false` | Fill enclosed rooms and pockets with air on a copy of the object |
+| `seed` | `0` | Fixed seed for probabilistic edits and replacement palettes, independent of chunk order and world seed |
+
+Missing objects and invalid settings are errors. The origin and the full transformed object must fit inside the dimension's build height; the runtime rejects an overflowing object instead of placing only a clipped fragment. Validate catches origin errors; full transformed bounds are checked while the world runtime loads the object.
+
+These settings affect newly generated chunks. They do not repair objects players break, paste into existing chunks, or rewrite existing buildings after a reload. Test changes in fresh chunks or a newly created disposable world. Production worlds use their own pack snapshot; see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout). A partially generated object can contain both old and new versions if its configuration changes between visits to its chunks.
 
 ## Tutorial: get one object into the world
 
@@ -48,7 +97,7 @@ If validation cannot resolve the object, the `place` key does not match the path
 - **Biome** (`biomes/**.json`): wherever that biome generates.
 - **Region** (`regions/**.json`): every biome in the region.
 
-**A dimension has no `objects[]`.** Adding one to a dimension file does nothing. Dimensions do carry two knobs that tighten every placement underneath them (`requireObjectSurfaceSupport`, `objectSurfaceSupportBuffer`, section 4) and two that gate the inverted upper dimension (`upperDimensionObjects`, `upperObjectsForcePlace`). They have no placements of their own.
+Dimensions use `staticObjects[]` for fixed-coordinate placements, as described above. Random `objects[]` entries belong only to biomes and regions. Dimensions also carry two knobs that tighten every random placement underneath them (`requireObjectSurfaceSupport`, `objectSurfaceSupportBuffer`, section 4) and two that gate the inverted upper dimension (`upperDimensionObjects`, `upperObjectsForcePlace`).
 
 Per chunk, Iris samples the biome and region once at the chunk center (block 8,8). It then walks four lists in this fixed order: biome surface, biome cave, region surface, region cave. Every entry rolls independently. A biome entry and a region entry can both fire in the same chunk. A biome that only clips the corner of a chunk contributes nothing there. The center biome objects can spill a few blocks into its neighbors.
 
@@ -257,7 +306,9 @@ The value scales to vanilla eight layers. Each column gets a random count from 0
 }
 ```
 
-`exact: false` matches on material alone. `exact: true` requires a full block-data match. When the replacement resolves to the *same* material as the matched block, Iris merges the two block states. It does not overwrite. Facing and other properties survive. A different material replaces outright. `chance` is rolled once per rule per block.
+A `chance: 1` rule whose `find` matches a block that does not exist on this Minecraft version also rescues the object from the version content gate, because the block is rewritten before it is ever written to the world. See [11. Content unavailable on this Minecraft version](#11-content-unavailable-on-this-minecraft-version).
+
+`exact: false` matches on material alone. `exact: true` requires a full block-data match. When the replacement resolves to the *same* material as the matched block, Iris merges the two block states. It does not overwrite. Facing and other properties survive. A different material replaces outright and clears saved block-entity data unless the replacement supplies its own. `chance` is rolled once per rule per block.
 
 `warp` displaces each block X and Z through a noise field, so a rigid object ripples like a flag. The displacement range is `+/- multiplier / 2` and is truncated to whole blocks. The default `multiplier: 1` gives at most a one-block jitter. Raise `multiplier` for a warp you can actually see.
 
@@ -504,3 +555,18 @@ Ground-hugging mushroom carpet:
 - Studio worlds hotload both JSON and `.iob` edits within about a second, into newly generated chunks only. Non-studio worlds do not hotload at all.
 - Separate the object from the placement. `/iris object paste` proves geometry. Natural generation proves the placement.
 - Deep forensics: write `chunkX,chunkZ[,radius]` into `plugins/Iris/goldendebug.txt` (or set `-Diris.goldendebug=`), enable `/iris debug`, then restart. The target is read once at startup. Every attempt, height query, pick, and rejection in those chunks is logged at debug level. Extremely verbose. Use radius 0.
+
+## 11. Content unavailable on this Minecraft version
+
+A `.iob` saved on a newer Minecraft can contain blocks an older server does not have. Iris reads only the object palette header when it builds a placement's pool, checks every key against the live registry, and decides per object per placement. There are no version fields; see [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
+
+| Situation | Result |
+|-----------|--------|
+| An object palette needs a block the server does not have | That object is dropped from **this placement's** `place` pool. The same object stays in another placement whose rules do cover the block |
+| An `edit` rule type-replaces the missing block with `chance: 1` and a matching `find` | The block never reaches the world, so the object stays in the pool |
+| A dimension `blockFallbacks` entry or a per-entry `backup` covers the block | The object stays in the pool and generates with the substitute |
+| An `edit` `replace` palette entry needs a missing block | The whole placement is excluded, every object in it included. The owning biome, region, or dimension keeps generating |
+| A block only appears on the `find` side of an `edit` rule, or in a `markers[].mark` list | Nothing happens. Both lists only select blocks that already exist in the object; a block that cannot exist matches nothing |
+| Dropping objects empties the `place` pool | The placement is excluded and skipped entirely |
+
+The decision is made once when the pool is first built, and again on Studio hotload. An `edit` rule with `chance` below 1 does not save an object, because the missing block would still be written on the rolls that fail. `exact: true` only saves it when the rule actually matches the saved block state.

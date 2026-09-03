@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ Run this after the pack works in Studio and before you create or update a produc
 /iris pack status <key>
 ```
 
-`validate` re-runs every check and republishes the result. `status` prints the currently published result, which may be a reused startup result. Run `validate` first if you have edited files. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them. Unresolved content keys become blocking the moment strict content mode is on.
+`validate` re-runs every check and republishes the result. `status` prints the currently published result, which may be a reused startup result. Run `validate` first if you have edited files. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them. Unresolved content keys become blocking the moment strict content mode is on. If the console names content unavailable on this Minecraft version, run `/iris pack compat` and decide whether to accept the loss or declare a fallback before you release.
 
 To generate chunks without a server, run the generation probe from the Iris repository with Java 25:
 
@@ -181,8 +181,78 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Spawner entries pointing at entities that exist, across both `spawns` and `initialSpawns` | Blocking |
 | Custom biome spawn category resolution | Blocking |
 | Content keys and block properties | Blocking when `general.strictContentKeys` is on or `-Diris.strictContent` is set, otherwise warnings. Palette-sourced findings stay advisory either way |
+| Version content compatibility | Advisory, except when the cascade reaches the dimension (no regions left, or the dimension itself composes missing content), which is blocking. See [Version content compatibility](#version-content-compatibility) |
 
 A pack is loadable when it has zero blocking errors. `status` prints the blocking count and up to ten warnings plus a "more" count.
+
+## Version content compatibility
+
+Iris ships one Bukkit jar for several Minecraft versions, and pack authors build against whatever version they run. A pack that references a block, item, entity, biome, structure, enchantment, or potion effect the running server does not have is gated: the content that composes the missing key is left out of generation, everything else in the pack keeps generating, and the full set of decisions is printed once at startup.
+
+Detection is automatic and there are no version fields anywhere. Iris asks the live platform registry whether each key exists. No resource carries a `since` or `minVersion`, and nothing compares version numbers, so mods that add or remove registry content are covered the same way. Because the answer comes from the registry rather than a version string, the same pack gates identically on Bukkit and on Fabric, Forge, and NeoForge for the same Minecraft version.
+
+### The three actions
+
+| Action | Meaning |
+|--------|---------|
+| `excluded` | The unit composes the missing content and is removed from every pool that could pick it. An excluded biome never generates, an excluded object is never placed, an excluded entity never spawns |
+| `dropped` | One entry or reference is removed and its container keeps generating. A dropped biome scatter entry falls back to the derivative, a dropped loot entry leaves the rest of the table intact |
+| `substituted` | A declared fallback replaced the missing key and the content still generates |
+
+Exclusion cascades. A container that referenced an excluded unit drops the reference, and if that empties a required pool the container is excluded in turn: an object placement with no placeable object left, a jigsaw pool with no pieces left, a structure whose start pool is excluded, a spawner with no spawns left, a loot table with no entries left, a region with no land biomes left. If the cascade reaches the dimension — no regions remain, or the dimension itself composes missing content — the pack is unusable on that version: a blocking validation error, and world and studio creation are refused.
+
+Legacy block renames (`minecraft:grass` to `minecraft:short_grass`, `grass_path` to `dirt_path`, and the rest of the rename table) are applied before anything is called missing, and are not reported. The rename table now applies on the mod loaders as well as on Bukkit, and a block entry's `backup` works on every platform. The full resolution order for a block key is the live registry, the rename table, the dimension `blockFallbacks`, then the entry's `backup`. Sounds and particles are not checked; an unknown effect already plays nothing.
+
+Lists that only select blocks which already exist are never gated: `edit[].find` and `markers[].mark` on an object placement, loot `filter` lists, `blockDrops[].blocks`, and decorator whitelists and blacklists. A missing key in one of those matches nothing and is not reported.
+
+### The startup listing
+
+After the pack validation lines, each pack with findings prints one block. Findings are grouped by key and capped at three subjects per key, with a `+N more` tail:
+
+```text
+Pack 'overworld': content unavailable on Minecraft 26.1.2
+  minecraft:sulfur (block): excluded biome cave/sulfur-grotto; excluded biome desert/sulfur-flats; dropped object cave/sulfur-vent at cave/sulfur-grotto objects[0]; +2 more
+  minecraft:camel (entity): excluded entity camel; dropped spawn from spawner desert
+  Update the server to a newer Minecraft to restore this content, or declare fallbacks (dimension blockFallbacks, block backup). /iris pack compat overworld lists everything.
+```
+
+Nothing is printed when a pack has no findings. Each engine also logs the summary once when its world pack finishes loading.
+
+When the platform registry cannot be consulted while the pack loads — an early-boot condition on the mod loaders — the report carries an `(incomplete: …)` line and nothing is excluded. An unreadable registry never counts as missing content.
+
+### `/iris pack compat`
+
+| Command | Syntax |
+|---------|--------|
+| Bukkit | `/iris pack compat [pack=<key>]` |
+| Modded | `/iris pack compat [<pack>]` |
+
+Prints every finding for the pack, grouped by key, with no per-key cap. It reads the published validation report and does not reload the pack, so it is safe on a live server. Omitting the pack covers every visible pack. Full syntax in [04 - Commands & Permissions](/iris/04-commands-permissions).
+
+### How this relates to validate and status
+
+`/iris pack validate` performs the gate. It force-loads every registrant of every loader type and every object placement pool so the report is complete, then stores the findings alongside the validation result. `/iris pack status` reprints the published result including the compat summary, without re-running anything:
+
+```text
+Pack 'overworld' validated (2 warnings). 3 content keys unavailable on Minecraft 26.1.2: 2 excluded, 5 dropped, 1 substituted.
+```
+
+`/iris pack compat` prints the detail behind that summary line. The validation cache fingerprint already covers the Minecraft version and the relevant registry key sets, so a pack carried to a different version revalidates instead of reusing a report from the other version.
+
+Compat findings are never duplicated as unresolved-content-key warnings. A key that produced a compat finding is suppressed in the content-key check, so `general.strictContentKeys` cannot turn a gated key into a second, blocking error. See [03 - Configuration](/iris/03-configuration).
+
+### Remedies
+
+| Remedy | Effect |
+|--------|--------|
+| Update the server to a Minecraft version that has the content | Everything generates and the report goes empty |
+| `blockFallbacks` on the dimension | Pack-wide map from a base block key to the full block state to generate instead. Substitutes rather than excludes. See [11 - Dimensions](/iris/11-dimensions) |
+| `backup` on a block entry | Per-entry replacement for one block definition, resolved through the same chain, so a backup can itself be covered by a dimension fallback. See [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
+| A type-replace in an object placement | An `edit` rule with `chance: 1` that matches the missing block rewrites it before placement, keeping the object in the pool. See [20 - Object Placement](/iris/20-object-placement) |
+| Accept the loss | The gate is not an error state. A pack that loses a cave biome on an older version still generates everything else |
+
+A fallback that is itself missing on the running server counts as missing and is reported.
+
 ## Cleanup (unused resources)
 
 | Command | Mode | Behavior |
@@ -274,6 +344,7 @@ This is unsafe for production without a backup for reasons the command cannot fi
 | Import vanilla objects and structures into a pack | `/iris studio importvanilla` — [19 - Objects](/iris/19-objects) |
 | Structure import and conversion | `/iris structure …` — [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Strict content key enforcement | `settings.general.strictContentKeys` — [03 - Configuration](/iris/03-configuration) |
+| List content unavailable on this Minecraft version | `/iris pack compat` — [Version content compatibility](#version-content-compatibility) |
 | Datapack bootstrap and install | `/iris datapack` — [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 
 ## Checklist

@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T04:58:11.006Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -51,9 +51,11 @@ Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shap
 
 ## Diagnostic reports
 
-`/sp debug` saves a timestamped report under `plugins/ShapedPortals/debug/`. The report includes ShapedPortals service state, effective settings, registry records by portal type and axis, creation and rejection counts, installed plugins, server and world details, scheduler state, TPS and MSPT, Java and operating-system data, memory pools, CPU load, garbage collectors, buffer pools, storage, known-file hashes, and plugin artifact identity.
+`/sp debugdump [upload=true]` requires `shapedportals.debugdump` (default `op`) independently of other command permissions and saves a timestamped report atomically under `plugins/ShapedPortals/debug/`. The shared report includes installed plugins, server and world counts, scheduler state, TPS and MSPT when available, Java and operating-system data, memory pools, CPU load, garbage collectors, buffer pools, storage, bounded known-file hashes, and plugin artifact identity. ShapedPortals adds its service state, effective settings, registry records by portal type and axis, and creation and rejection counts. Known-file inspection records metadata and hashes rather than copying file contents.
 
-The local report is written first. When `debug.uploadEnabled` is `true`, Shaped Portals also uploads it to the public mclo.gs service and returns a clickable link. Disable the setting before running the command when the report must remain local.
+The local report is written before upload. Uploads to public mclo.gs are enabled by default; `/sp debugdump upload=false` saves a local-only report. `debug.uploadEnabled = false` suppresses uploads even when the command requests one. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text.
+
+See [Shared diagnostic reports](/volmlib/api/diagnostics) for the common report and service contract.
 
 ## React Plugin API pack
 

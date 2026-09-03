@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Gloss documentation: Configuration"
 published: true
-date: 2026-08-26
+date: 2026-09-02T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -34,7 +34,7 @@ Each key has a comment. Changes reload automatically, and invalid changes leave 
 
 | Key | Default | Notes |
 |---|---|---|
-| `language` | `"en_US"` | Server-wide locale. The 18 fleet locale ids use bundled catalogs; a custom nonblank id uses English plus matching `language.yml` overrides. Blank values normalize to `en_US`; `language.yml` cannot change the selection |
+| `language` | `"en_US"` | Server default for players without a personal override. Official translations download when selected; custom IDs use their local file and `language.yml` over English. Blank values become `en_US`. Select defaults or player overrides with `/gloss language` |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
 | `splashScreen` | `true` | Print the console splash banner during startup. `false` suppresses it for clean startups. A failed enable always prints it |
 

@@ -208,6 +208,45 @@ plate unloading use the parallel path all the time instead of only under
 heap pressure. It returns memory faster during sustained generation and
 costs CPU that would otherwise go to generating.
 
+## Symptom: Entering a fresh world or a new Studio takes tens of seconds
+
+The first chunks of a hydrology world cannot generate until their hydrology
+tiles are planned, and a cold tile is expensive: the planner samples the
+natural terrain of the tile and its neighbours, routes every candidate
+river, and then resolves the lower-ranked neighbouring tiles its rivers and
+caves reach into before it can publish. A spawn on a tile corner needs four
+tiles at once. Generation itself is fast once the tiles exist; the wait is
+the planning.
+
+Iris starts planning every tile within half a tile of the initial spawn as
+soon as the generator is injected into a new world, so the tiles a cold
+entry touches plan together and the wait overlaps world setup, and a
+pregeneration plans its whole area ahead of the spiral. The chunk system
+generates a few hundred blocks around the player and each chunk's mantle
+window reaches further, so a spawn touches its neighbouring tiles no matter
+where on a tile it sits; the cold entry is bounded by the deepest chain of
+neighbour drafts among them. With `debug` on
+in `iris.json` every tile and every owner draft logs its timing:
+
+```text
+Hydrology tile -1,-1 planned in 20155ms: owners=8 resolve=20151ms materialize=3ms courses=2 on Iris Hydrology 2
+Hydrology owner -1,-2 rank=1 drafted in 9420ms: context=3635ms select=155ms settle=1077ms publish=4551ms deps=2 wait=2739ms admissions=2 on Iris 8
+```
+
+`context` is terrain sampling and routing, `select` and `settle` are source
+selection, `publish` is the publication passes including `wait`, the time
+spent waiting for lower-ranked neighbour drafts (`deps`). A tile with a
+large `wait` is bounded by its neighbours; a tile with a large `context` is
+bounded by terrain sampling, which scales with the burst pool.
+
+A plugin that asks Iris for heights or biomes on the server thread (map
+overlays, statistics, teleport helpers) never waits for planning: for a
+column whose tiles are not planned yet it gets the natural terrain answer
+and the tiles are planned in the background, so a later query returns the
+river-shaped answer. With `debug` on, the first such query per tile logs
+`Hydrology tile x,z queried before it was planned`. Chunk generation always
+waits for the real plan, so this never changes the world itself.
+
 ## Symptom: Studio memory keeps growing during editing
 
 Studio worlds skip routine mantle maintenance by default, so a long

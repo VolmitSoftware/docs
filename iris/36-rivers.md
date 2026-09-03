@@ -9,7 +9,7 @@ dateCreated: 2026-08-22T00:00:00.000Z
 ---
 Iris hydrology plans surface rivers that sit in eroded valleys, independently sourced underground rivers, coastal and inland grottos, and independent deep-fluid bodies. The planner resolves each course once: its route, water head, channel and bank shape, segment labels, outlet, fluid profile, and biome ownership. Terrain generation, mantle carving, biome selection, decorators, Vision, and feature locators all read that immutable accepted plan. `hydrology.rivers.enabled` defaults to `false`.
 
-A surface river never raises terrain and never touches the ocean. It cuts a channel into the natural surface, holds its water one block or more below a lip on both banks, and blends the cut back out to natural terrain across a valley whose width grows with the depth of the cut. Water flows downhill in one-block steps; where the land falls faster than the channel can follow, the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
+A surface river never raises terrain and never writes the ocean. It cuts a channel into the natural surface, holds its water flush with the ground beside it unless `channel.sink` lowers it, and blends the cut back out to natural terrain across a valley whose width grows with the depth of the cut. Water flows downhill in one-block steps; where the land falls faster than the channel can follow, the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. A river reaches the sea through an inlet: its last `mouths.inletLength` blocks are held at sea level, widened toward `mouths.flareRatio` and cut into the coast up to `mouths.maximumIncision`, so the sea visibly reaches inland through a drowned, widening valley instead of the river stopping at the shoreline. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
 
 Hydrology is a persistent terrain contract. Its canonical persistent matter store is `mantle-hydrology/`. Create a new world or fully regenerate the affected world whenever its hydrology or river policies change; generated chunks are not retrofitted with a different accepted plan.
 
@@ -43,6 +43,7 @@ This is the managed Overworld shape with every physical section written explicit
         "minimumSurfaceCourseLength": 384,
         "minimumUndergroundCourseLength": 384,
         "maximumOutletsPerTile": 1,
+        "maximumCoastalOutletsPerTile": 2,
         "oceanOutlets": true,
         "inlandOutlets": ["SINKHOLE_GROTTO"],
         "valleyPreference": 1.5,
@@ -103,20 +104,30 @@ This is the managed Overworld shape with every physical section written explicit
             "max": 4,
             "style": {"style": "IRIS", "zoom": 320, "exponent": 2}
           },
-          "inset": 1,
-          "maximumIncision": 10,
+          "sink": 0,
+          "maximumIncision": 16,
           "roughness": 0.25,
           "roughnessWavelength": 16,
           "springWidthRatio": 2.5,
           "springLength": 24
         },
         "banks": {
-          "freeboard": 1,
           "shoreWidth": 1.5,
           "blendSlope": 3,
           "minimumBlendWidth": 4,
           "maximumBlendWidth": 32,
           "exposeCutStrata": true
+        },
+        "erosion": {
+          "enabled": true,
+          "smoothingRadius": 12,
+          "thalwegFraction": 0.45,
+          "blendCurve": 1.0,
+          "bedNoise": 0.5
+        },
+        "ponds": {
+          "source": {"enabled": true, "minimumRadius": 6, "maximumRadius": 12, "depth": 3},
+          "terminal": {"enabled": true, "minimumRadius": 4, "maximumRadius": 7, "depth": 3}
         },
         "bed": {
           "allowGravityBlocks": false,
@@ -130,8 +141,11 @@ This is the managed Overworld shape with every physical section written explicit
           "waterfallMinimumDrop": 6
         },
         "mouths": {
-          "flareRatio": 1.6,
-          "maximumOceanApron": 8
+          "flareRatio": 2.5,
+          "maximumOceanApron": 8,
+          "inletLength": 64,
+          "inletDepth": 3,
+          "maximumIncision": 32
         }
       },
       "underground": {
@@ -162,7 +176,8 @@ This is the managed Overworld shape with every physical section written explicit
           "style": {"style": "IRIS", "zoom": 384}
         },
         "connectToExistingCaves": true,
-        "mouthLevelingDistance": 128
+        "mouthLevelingDistance": 128,
+        "tributaries": 1
       },
       "grottos": {
         "coastal": {
@@ -171,7 +186,14 @@ This is the managed Overworld shape with every physical section written explicit
           "horizontalRadius": 12,
           "verticalRadius": 7,
           "headroom": 10,
-          "maximumVolume": 16384
+          "maximumVolume": 16384,
+          "seaCaves": {
+            "enabled": true,
+            "maximumPerTile": 3,
+            "minimumSpacing": 160,
+            "minimumCoastHeight": 8,
+            "depth": 12
+          }
         },
         "inland": {
           "enabled": true,
@@ -245,15 +267,16 @@ Every object with `min` and `max` is an `IrisStyledRange`. `style` is optional; 
 | `maximumRouteLength` | `16384` | Maximum source-to-outlet route length, `256..32768` blocks |
 | `minimumSurfaceCourseLength` | `384` | Minimum exposed length of a complete surface course, `0..32768` and no greater than `maximumRouteLength` |
 | `minimumUndergroundCourseLength` | `192` | Minimum complete underground route, `0..32768` and no greater than `maximumRouteLength` |
-| `maximumOutletsPerTile` | `4` | Maximum drainage roots selected in one plan tile, `1..256` |
-| `oceanOutlets` | `true` | Allows direct sea mouths; qualifying coastal cliffs can instead select an enabled coastal grotto |
+| `maximumOutletsPerTile` | `4` | Maximum inland drainage roots (sinkhole grottos) selected in one plan tile, `1..256`; unused when no inland outlet kind is enabled |
+| `maximumCoastalOutletsPerTile` | `2` | Maximum sea outlets (mouths and coastal grottos) selected in one plan tile, `0..64`, budgeted separately from the inland roots; taken by type in turn (the best mouth, the best coastal grotto, the next mouth, ...), each at least two sample spacings from the others, with the tile's own coast ranked ahead of a neighbour's |
+| `oceanOutlets` | `true` | Allows direct sea mouths; qualifying coastal cliffs select an enabled coastal grotto instead, and the coastal budget alternates between the two kinds so a coast with both cliffs and beaches gets both |
 | `inlandOutlets` | empty | Allowed inland terminal types; the current value is `SINKHOLE_GROTTO` |
 | `valleyPreference` | `1.5` | Weight on natural height when routing, `0..8`; higher values pull routes into the lowest ground |
 | `uphillPenalty` | `24` | Cost added per block of climb between lattice samples, `0..128` |
 | `slopePenalty` | `2` | Cost multiplied by the local terrain slope, `0..16`; higher values keep routes off hillsides |
 | `confluenceAttraction` | `0.2` | Discount for joining ground another route already drains, `0..1` |
 | `lengthPreference` | `1` | How strongly longer source-to-outlet routes win when sources are chosen, `0..8`; `0` ranks sources by elevation alone |
-| `tributaries` | `1` | Extra surface courses an outlet may accept as tributaries of its main river, `0..4`; a tributary is cut where its drainage joins the stem and must meet it at or above the stem's water |
+| `tributaries` | `1` | Extra surface courses an outlet may accept as tributaries of its main river, `0..4`, budgeted on top of `sources.density`; a tributary is cut where it first comes within a stem width of the stem (or enters drainage the stem owns), joins the lowest stem water it can reach there, and is graded down to the river's level where the two channels touch so its mouth never stands above the stem's shore; a tail up to three blocks below the stem backs up to the stem's level, a deeper shortfall slides the junction downstream, and a tributary reach may bend once where it leaves its own valley for the stem's |
 
 At least one outlet family must be enabled. `tileSize`, `sampleSpacing`, route length, and both source budgets form a bounded planning envelope; see [Validation](#validation).
 
@@ -278,7 +301,7 @@ The channel is the wet part of the river. Its cross-section is a broad bowl: nea
 |-------|---------|---------|
 | `width` | `4..8` | Wet channel width in blocks, endpoints in `1..64`; resolved along the course, so a river widens and narrows as it goes |
 | `depth` | `2..4` | Water depth at the channel center, endpoints in `1..32` |
-| `inset` | `1` | How far the water surface sits below the lowest natural ground beside the channel, `0..3`; the eroded lip comes from `banks.freeboard`, not from a deeper inset |
+| `sink` | `0` | How far the water surface sinks below the lowest natural ground beside the channel, `0..3`; `0` keeps the water flush with the ground, and the bank beside the water always meets it at its own height |
 | `maximumIncision` | `10` | Deepest cut the channel may make into a hillside before the course is rejected, `1..32` |
 | `roughness` | `0.25` | Strength of the coherent wobble applied to the channel outline, `0..1`; `0` gives a perfectly smooth outline |
 | `roughnessWavelength` | `16` | Wavelength of that wobble in blocks, `4..64` |
@@ -291,7 +314,6 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `freeboard` | `1` | Height of the lip above the water surface on both banks, `0..4`; `1` keeps water one block below the bank top |
 | `shoreWidth` | `1.5` | Width of the shore band beside the water that may use `shoreBiomes`, `0.5..6` blocks |
 | `blendSlope` | `3` | Horizontal run per block of rise from the bank top back to natural terrain, `0.5..12`; the blend width is `cut x blendSlope` |
 | `minimumBlendWidth` | `4` | Narrowest blend band even for a shallow cut, `1..maximumBlendWidth` |
@@ -299,6 +321,33 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 | `exposeCutStrata` | `true` | Show the biome's deeper layers on eroded banks instead of repeating the surface layer, so a cut through grassland shows dirt and stone |
 
 `bankMultiplier` in a region or biome policy scales `blendSlope` locally: values below `1` make steeper, narrower valleys and values above `1` make wider, gentler ones.
+
+#### `surface.erosion`
+
+Erosion shapes the valley the banks describe. The reach of the valley comes from `banks.blendSlope` and the blend widths; these fields shape what happens inside that reach. The defaults reproduce the valley Iris has always cut, so a pack that omits the section changes nothing.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `true` | Erode the ground beyond the shore band into a valley; `false` keeps only the wet channel, the shore band and the bank that holds the water |
+| `smoothingRadius` | `12` | Stations along the course the blend width is averaged over, `0..64`, so the valley widens and narrows gradually; `0` follows the local cut exactly |
+| `thalwegFraction` | `0.45` | Share of the channel half-width that stays at full bed depth before the bed rises to the edge, `0..0.95`; higher is a flatter, broader bed |
+| `blendCurve` | `1` | Exponent on the blend from the bank top out to natural terrain, `0.25..4`; below `1` hollows the valley sides, above `1` keeps them steep near the shore and eases them out further away |
+| `bedNoise` | `0.5` | Share of `channel.roughness` applied to the bed as depth variation, `0..2`; `0` leaves a smooth bed |
+
+#### `surface.ponds`
+
+Every surface river rises from a round pond and, when it ends inland, drains into one. A pond is a bowl holding the river's water level at that end, with the same shore band and eroded rim as the channel. Its radius is chosen per river within the configured range and shrinks where the ground around the rim falls below the water, so a pond never sits above the bank that has to hold it; where even the smallest radius does not fit, the river simply starts or ends as a channel. A river that reaches the ocean gets no terminal pond.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `source.enabled` | `true` | Dig the spring pond at the headwater |
+| `source.minimumRadius` | `6` | Smallest spring pond radius in blocks, `1..32` |
+| `source.maximumRadius` | `12` | Largest spring pond radius in blocks, `1..32` |
+| `source.depth` | `3` | Depth of the spring pond below its water surface at the centre, `1..8` |
+| `terminal.enabled` | `true` | Dig the pond a river that ends inland drains into |
+| `terminal.minimumRadius` | `4` | Smallest terminal pond radius in blocks, `1..32` |
+| `terminal.maximumRadius` | `7` | Largest terminal pond radius in blocks, `1..32` |
+| `terminal.depth` | `3` | Depth of the terminal pond below its water surface at the centre, `1..8` |
 
 #### `surface.bed`
 
@@ -325,10 +374,13 @@ Water heads only ever descend. Each step downstream is at most one block unless 
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `flareRatio` | `1.6` | Channel width at the coast relative to the width upstream, `1..4` |
+| `flareRatio` | `1.6` | Channel width at the coast relative to the width upstream, reached over the inlet, `1..4` |
 | `maximumOceanApron` | `8` | Maximum non-owning accepted connection apron in ocean columns, `0..32` |
+| `inletLength` | `64` | Blocks of river before the coast held at sea level and widened toward `flareRatio`; `0` ends the river at the shoreline with no inlet, `0..256`, never more than `routing.minimumSurfaceCourseLength` |
+| `inletDepth` | `3` | Extra bed depth reached at the shoreline over the inlet, so the estuary is deeper than the river above it, `0..16` |
+| `maximumIncision` | `32` | Deepest cut allowed in the inlet and its approach ramp, replacing `channel.maximumIncision` there, so the coast may be cut down to sea level through a rise of this height; a taller rise ends the inlet where it starts, `0..128` |
 
-An ocean apron owns no terrain, fluid, shore, or bank writes. It records the accepted connection for rendering and inspection while the ocean reservoir remains authoritative.
+An ocean apron owns no terrain, fluid, shore, or bank writes. It records the accepted connection for rendering and inspection while the ocean reservoir remains authoritative. The inlet is the drowned end of the river: over `inletLength` blocks its water is sea level, its channel grows to `flareRatio` times the river width and its bed sinks `inletDepth` below the river bed, and the banks beside it are cut to sea level and eroded back up to the natural valley. The inlet reaches inland from the shoreline only as far as the ground can be cut to sea level within `maximumIncision`: on a low coast it runs the full `inletLength`, against a bluff it stops at the foot of the bluff, and on a cliff coast there is no inlet and the river falls into the sea as before. It never takes more than half of a river's exposed course, so the headwater always keeps its natural head. Above the inlet the water grades down one block per station over half the inlet length wherever that cut fits, so a river on a coastal plateau reaches the estuary through rapids rather than a wall. Lower `mouths.maximumIncision` where that approach cuts a deeper gorge than the coast should show.
 
 ### `hydrology.rivers.underground`
 
@@ -344,6 +396,7 @@ Underground courses use their own `enabled`, `sources.density`, and `sources.min
 | `headroom` | `6..14` | Dry space above the local head; endpoints in `1..128` |
 | `connectToExistingCaves` | `true` | Lets accepted dry headroom open into suitable existing cave matter where the two touch; the course does not require a pre-existing cave |
 | `mouthLevelingDistance` | `64` | Landward distance over which an underground mouth levels into the sea, `16..512` and no greater than the route length |
+| `tributaries` | `1` | Extra underground courses an outlet may accept as tributaries joining its main passage, `0..4`, budgeted on top of `sources.density`; a tributary passage is cut where its route first shares the stem's drainage and solved with the stem's fluid level there as its outlet level |
 
 Fluid level, depth, basin depth, and headroom must fit strictly inside `dimensionHeight`. Underground heads remain non-rising downstream, but each routed point resolves its preferred fluid level before the non-rising constraint is applied, so a course can occupy multiple level terraces rather than one globally flattened height. Drops become narrow graded `UNDERGROUND_DROP` features with receiving basins; level runs become `UNDERGROUND_POOL`.
 
@@ -363,11 +416,25 @@ Ordinary underground runs are compiled as continuous course-aligned passages. Th
 | `headroom` | `10` | `10` | `1..63` and less than the full chamber height |
 | `maximumVolume` | `8192` | `8192` | `1..1048576` distinct accepted mutation positions owned by that grotto segment |
 
-A coastal grotto is admitted only at a proven coastal land/ocean boundary. Its pool is at sea level and opens directly into the ocean reservoir. An inland grotto is available only when `routing.inlandOutlets` includes `SINKHOLE_GROTTO`. Within each transit-connected routing component, proven ocean mouths and coastal grottos have priority only when their sea-level connection fits the requesting course's legal head range. An underground course whose maximum head is below sea level receives an inland grotto plan instead of being routed to an impossible coastal outlet.
+A coastal grotto is admitted only at a proven coastal land/ocean boundary, either as the outlet of a river or as a standalone sea cave. Its pool is at sea level, and its ocean face is the only opening: the chamber is roofed and walled by the coast everywhere else, and its ocean apron reaches at least `horizontalRadius` from the chamber and covers every sea column beside a chamber column, so the whole sea face is an accepted opening rather than a breach of containment. An inland grotto is available only when `routing.inlandOutlets` includes `SINKHOLE_GROTTO`. Within each transit-connected routing component, proven ocean mouths and coastal grottos have priority only when their sea-level connection fits the requesting course's legal head range. An underground course whose maximum head is below sea level receives an inland grotto plan instead of being routed to an impossible coastal outlet.
 
 When `grottos.inland.connectSurfaceRivers` is `true`, an eligible surface source keeps one course through a `SINKHOLE` falling throat and into its terminal `INLAND_GROTTO` receiving pool. The sinkhole starts at the final surface centerline cell, narrows by at most one configured block at the contained throat, and keeps fluid and carving continuous into the receiving chamber. The accepted link includes dry headroom and is validated and published as one containment transaction. When the field is `false`, surface sources cannot route to inland grotto outlets, while independently sourced underground courses remain eligible for them.
 
 Both forms are bounded, contained features. `maximumVolume` bounds the grotto segment itself; an attached underground course or surface sinkhole remains part of the same all-or-nothing containment transaction without counting its non-grotto positions against that cap.
+
+#### Sea caves
+
+`grottos.coastal.seaCaves` plans coastal grottos that need no river: the sea itself opens into the coast. Every owned shoreline point on a tile is a site. Sites are ranked by how high the coast stands over the sea, so cliffs are taken before low shores, and each accepted site becomes its own `COASTAL_GROTTO` course: the chamber ellipsoid is swept `depth` blocks inland from the shoreline with the water at sea level, `verticalRadius` of flooded floor below it, `headroom` of air above it, and the open sea as its mouth. Sea caves keep clear of every river mouth and grotto already planned on the tile, and the chamber size, headroom and `maximumVolume` are the coastal grotto's own. A sea cave needs `grottos.coastal.enabled` as well as `seaCaves.enabled`.
+
+| Field | Default | Contract |
+|-------|---------|----------|
+| `enabled` | `true` | Plan sea caves along the coast |
+| `maximumPerTile` | `3` | `0..64` sea caves accepted per planning tile; the steepest owned coast is taken first |
+| `minimumSpacing` | `160` | `16..8192` blocks between two sea caves, and at least twice `horizontalRadius` |
+| `minimumCoastHeight` | `8` | `1..128`; the coast must stand this many blocks above the sea at the shoreline, at the back of the chamber and along its flanks |
+| `depth` | `12` | `0..128` blocks the chamber is swept inland from the shoreline; `0` leaves a single chamber at the shore |
+
+A site that fails a rule is reported as an `OUTLET` candidate of type `COASTAL_GROTTO` in the tile diagnostics: `SURFACE_HEAD_RANGE` for a coast that is too low, `SOURCE_SPACING` for a site too close to another sea cave or to a river outlet, `VOLUME_LIMIT` when the swept chamber cannot fit `maximumVolume`, `SOURCE_QUOTA` once the tile has its `maximumPerTile`, and `CAVE_CONTAINMENT` when the chamber would break out of the coast anywhere but its ocean face.
 
 ### River profiles
 
@@ -420,7 +487,7 @@ Standing pools are bowls cut into open ground and filled with their own fluid: l
 | `depth` | `2` | Fluid depth at the centre, `1..8` |
 | `biome` | empty | Biome applied to the bowl and its rim; empty keeps the surrounding biome |
 
-A pool is shaped like a river reach with no course: the fluid sits `channel.inset` below the lowest ground around the bowl, the rim carries `banks.freeboard`, the bowl is a broad basin with the configured outline roughness, and the cut blends back out to natural ground the same way a river bank does. A site is skipped where the ground falls away more than `channel.maximumIncision` allows, on or below sea level, where the policy does not list the pool, or within one river width plus the bank blend of an accepted course. The bed padding rule applies to pools as well.
+A pool is shaped like a river reach with no course: the fluid sits `channel.sink` below the lowest ground around the bowl, the rim holds it level with the ground beside it, the bowl is a broad basin with the configured outline roughness, and the cut blends back out to natural ground the same way a river bank does. A site is skipped where the ground falls away more than `channel.maximumIncision` allows, on or below sea level, where the policy does not list the pool, or within one river width plus the bank blend of an accepted course. The bed padding rule applies to pools as well.
 
 ```json
 {
@@ -464,7 +531,9 @@ A non-null field at the later scope replaces the inherited value. Omitted or `nu
     "widthMultiplier": 0.8,
     "depthMultiplier": 1.1,
     "routingMultiplier": 0.7,
-    "bankMultiplier": 1.5
+    "bankMultiplier": 1.5,
+    "shoreBiomeWidth": 6,
+    "confined": false
   }
 }
 ```
@@ -505,6 +574,12 @@ A viable `REQUIRED_HEADWATER` policy site intrinsically requests at least one so
 | `incisionMultiplier` | Local scale on `channel.maximumIncision`, `0..16`; it may tighten the permitted cut but cannot exceed the configured maximum |
 | `routingMultiplier` | Local route-cost scale, `0..64` |
 | `bankMultiplier` | Local scale on `banks.blendSlope`, `0..4` |
+| `shoreBiomeWidth` | Width in blocks of the shore biome band beside the water, `0..32`; unset areas use `banks.shoreWidth` |
+| `confined` | `true` keeps rivers inside this region (or biome): see below |
+
+`shoreBiomeWidth` sizes the band of `shoreBiomes` content beside the water for one area without touching the geometry: the flattened shore and the eroded valley keep following `banks.shoreWidth` and the bank settings, while the shore biome reaches as far as the policy says, over untouched ground when the band is wider than the valley, and not at all when it is `0`, which leaves the geometric shore with the bank biome. A region with wide beaches and a biome inside it with none is two policies. The widest band any policy of the dimension configures is part of the publication envelope, so a very wide band costs planning reach.
+
+`confined` turns an area into a closed drainage basin. A course whose source lies in a confined region keeps its whole route inside that region, up to and including its outlet: a sea it reaches must lie in the same region, an inland outlet must sit inside it, and a source with no outlet reachable inside the area is rejected with the `CONFINED_NO_OUTLET` diagnostic instead of borrowing an outlet elsewhere. Set on a biome, the confines are that biome. The rule is enforced on the routing lattice and on the refined route between lattice nodes, so a course follows the area boundary to the resolution of `routing.sampleSpacing` and its refinement, and it applies to underground courses as well. Water that enters a confined area from outside stays there too: an unconfined river may flow into a confined region, but from that point it must end at one of the region's own outlets, so an area with no outlet also blocks rivers from passing through it.
 
 The planner selects and stores the exact profile and biome keys in each accepted column layer. Later generation stages do not reselect them. Referenced biomes, their children, and carving references join the active dimension reachable closure, so retained river-only surface content is available to biome find/goto commands.
 
@@ -513,7 +588,7 @@ The planner selects and stores the exact profile and biome keys in each accepted
 For each bounded hydrology tile Iris:
 
 1. samples natural height, slope, ocean classification, cave suitability, and effective policy on the coarse lattice;
-2. proves coastal mouths or grottos first, then permitted inland grottos when needed;
+2. selects up to `maximumCoastalOutletsPerTile` sea outlets from the coast, the tile's own shoreline before a neighbour's and mouths and coastal grottos in turn, then up to `maximumOutletsPerTile` permitted inland grottos for the ground no coast can drain; the two budgets are independent, and a sea outlet an underground river cannot reach because the sea sits above `underground.fluidLevel` is reported as `OUTLET_LEVEL`;
 3. builds one acyclic drainage potential toward accepted outlets;
 4. admits surface and underground sources from separate budgets;
 5. routes toward valleys using `valleyPreference`, `uphillPenalty`, `slopePenalty`, policy cost, and `confluenceAttraction`; a surface route never climbs more than the cut the channel may make (`channel.maximumIncision` less the inset and depth) between two lattice samples, so ground behind a ridge drains to an inland grotto instead of an impossible sea mouth;
@@ -523,7 +598,7 @@ For each bounded hydrology tile Iris:
 9. validates every course with a subterranean footprint as one containment transaction against authoritative carved mantle matter;
 10. prunes any rejected course and publishes the remaining immutable `HydrologyTile`.
 
-The tile contains sorted drainage nodes, edges, outlets, courses, features, accepted cave actions and baseline preconditions, and a `RiverFootprint`. Surface courses are grouped by outlet before publication; the longest viable route becomes the outlet's main stem, and up to `routing.tributaries` further routes to the same outlet are kept as tributaries, each cut at the confluence where its drainage joins the stem. A tributary needs at least half the minimum course length above the confluence and must arrive at or above the stem's water there, so it steps down into the river rather than pooling below it. Every drainage edge lowers potential, so accepted graphs are acyclic.
+The tile contains sorted drainage nodes, edges, outlets, courses, features, accepted cave actions and baseline preconditions, and a `RiverFootprint`. Surface and underground courses are grouped by outlet before publication; the longest viable route becomes the outlet's main stem and, up to `routing.tributaries` (surface) or `underground.tributaries` (underground), the next longest routes to the same outlet become its tributaries. A surface tributary is cut where its centerline first comes within a stem width of the stem or first enters drainage the stem already owns, joins the lowest stem water it can reach there, and is graded down to the river's level where the two channels touch, so its mouth sits at the river's level and never above the stem's shore; a tail that arrives up to three blocks below the stem backs up to the stem's level as a still reach, a deeper shortfall slides the junction downstream to the first stem station whose water is low enough and the course is shaped again, and the last hop onto the stem is graded like any in-course drop; an underground tributary is cut at the first node its route shares with the stem's and solved to the stem's fluid level there. A tributary owns only the drainage upstream of its junction, so the stem's discharge and width below the junction include it. A later draft that cannot be joined (no junction within reach, too short a reach, or arriving below the stem) is reported as a `TRIBUTARY` candidate rejection. Every drainage edge lowers potential, so accepted graphs are acyclic.
 
 Before any surface course is published, cross-tile arbitration compares its complete mouth and centerline claim with the bounded owner set. Only the deterministic winning owner may publish an overlapping claim. This prevents tile request order from creating duplicate mouths, stacked main stems, or detached edge fragments.
 
@@ -531,12 +606,12 @@ Before any surface course is published, cross-tile arbitration compares its comp
 
 A surface course is shaped in four steps, all of them working on the refined centerline one block at a time.
 
-1. **Channel profile.** Width and depth are resolved at every station from `channel.width` and `channel.depth`, the effective policy multipliers, and the coherent outline wobble from `channel.roughness`. The headwater opens as a spring pool `springWidthRatio` times the channel width and one block deeper, narrowing to the cruise width over `springLength` blocks. Near a coast the width grows toward `mouths.flareRatio` times the upstream width.
-2. **Water head.** For each station the planner reads the natural ground on a ring just outside the channel outline on both banks, takes the lowest bank sample, and subtracts `channel.inset`. Heads are then made non-rising downstream: a value that would rise is held at the previous head, and a value that would fall is limited to one block per `flow.cascadeRun` blocks of run unless the pair straddles a natural cliff of at least `flow.waterfallMinimumDrop`, where the head drops by the cliff in one step. A station whose head would need a cut deeper than `channel.maximumIncision` rejects the course; there are no bores under ridges for surface rivers, so a route that cannot stay open on the surface is not published.
-3. **Erosion field.** Every column near the centerline receives a target height. Inside the channel the target is the bowl-shaped bed below the head. The bank top on both sides sits at `head + banks.freeboard`. From the shore outward the target rises along a smooth curve back to the natural height across a blend band whose width is `cut x banks.blendSlope`, clamped to `minimumBlendWidth..maximumBlendWidth`, where `cut` is how far the bank top sits below natural ground at that station. The published terrain is `min(natural, target)`: the field only ever lowers ground. Water is published only where the bed sits below the head and the surrounding bank tops contain it.
+1. **Channel profile.** Width and depth are resolved at every station from `channel.width` and `channel.depth`, the effective policy multipliers, and the coherent outline wobble from `channel.roughness`. The headwater opens as a spring pool `springWidthRatio` times the channel width and one block deeper, narrowing to the cruise width over `springLength` blocks. Over the last `mouths.inletLength` blocks before a coast the width grows toward `mouths.flareRatio` times the upstream width and the depth grows by `mouths.inletDepth`.
+2. **Water head.** For each station the planner reads the natural ground on a ring just outside the channel outline on both banks, takes the lowest bank sample across that station and the two after it, and subtracts `channel.sink`. Heads are then made non-rising downstream: a value that would rise is held at the previous head, and a value that would fall is limited to one block per `flow.cascadeRun` blocks of run unless the pair straddles a natural cliff of at least `flow.waterfallMinimumDrop`, where the head drops by the cliff in one step. Heads inside the inlet are sea level as far inland as the ground can be cut to sea level within `mouths.maximumIncision`, and the reach above it, half the inlet length long, grades down one block per station into the inlet wherever that cut fits. A station whose head would need a cut deeper than `channel.maximumIncision` rejects the course, except in the inlet and its approach, where `mouths.maximumIncision` is the limit; there are no bores under ridges for surface rivers, so a route that cannot stay open on the surface is not published.
+3. **Erosion field.** Every column near the centerline receives a target height. Inside the channel the target is the bowl-shaped bed below the head. The bank top on both sides sits at `head + channel.sink`, so with the default sink the ground beside the water is level with its surface. The curve of the bowl and of the valley sides comes from `surface.erosion`. From the shore outward the target rises along a smooth curve back to the natural height across a blend band whose width is `cut x banks.blendSlope`, clamped to `minimumBlendWidth..maximumBlendWidth`, where `cut` is how far the bank top sits below natural ground at that station. The published terrain is `min(natural, target)`: the field only ever lowers ground. Water is published only where the bed sits below the head and the surrounding bank tops contain it.
 4. **Labels.** Each reach is labelled from its head gradient: a level reach is a `SURFACE_POOL`, a single one-block step is a `RIFFLE`, consecutive one-block steps are a `CASCADE`, and a cliff-sized step is a `WATERFALL`. Labels do not change the geometry; they drive Vision, locators, and rendering.
 
-The head is derived from the banks rather than the centerline so a river running along a hillside is cut into the slope with a lip on the uphill side, instead of sitting on a shelf above the downhill side. Because every step is one block, a river descending a hill leaves no chips, ledges, or floating water. Because the blend width follows the depth of the cut, a shallow crossing of flat ground erodes only a few blocks either side, while a deep cut through a ridge opens into a wide valley.
+The head is derived from the banks rather than the centerline so a river running along a hillside is cut into the slope with the bank on the uphill side, instead of sitting on a shelf above the downhill side. Because every step is one block, a river descending a hill leaves no chips, ledges, or floating water. Because the blend width follows the depth of the cut, a shallow crossing of flat ground erodes only a few blocks either side, while a deep cut through a ridge opens into a wide valley.
 
 When `banks.exposeCutStrata` is `true`, eroded bank columns use the biome layer that would naturally sit at that depth, so a cut through grassland shows dirt and then stone rather than repeating the surface layer down the whole bank.
 
@@ -555,7 +630,7 @@ The runtime exposes accepted-plan queries through `IrisHydrologyRuntime.sample(x
 | `SINKHOLE` | Falling surface-to-underground throat into a contained inland grotto pool |
 | `UNDERGROUND_POOL` | Level independently sourced cave river |
 | `UNDERGROUND_DROP` | Required descending underground transition |
-| `COASTAL_GROTTO` | Sea-level contained coastal outlet chamber |
+| `COASTAL_GROTTO` | Sea-level contained coastal chamber, at a river outlet or as a standalone sea cave opening from the ocean |
 | `INLAND_GROTTO` | Permitted sinkhole outlet chamber |
 | `MOUTH` | Surface or underground connection into the ocean reservoir |
 | `DEEP_POOL` | Independent contained deep-fluid pool |
@@ -568,7 +643,7 @@ Feature references also carry stable feature, course, and segment IDs, coordinat
 
 ### Surface shaping and banks
 
-Every surface write is carve-only: no column is ever raised above its natural height, whether by the channel, the shore, or the bank blend. Water is held below the lip by `banks.freeboard` on both sides. Where the natural ground beside the channel is already lower than the intended bank top, the planner lowers the head instead of building a bank, so the river always follows the land down.
+Every surface write is carve-only: no column is ever raised above its natural height, whether by the channel, the shore, or the bank blend. Every dry column touching water is kept at or above the water surface plus `channel.sink`, never above its natural height, so water only ever meets solid ground at its own level and never spreads. Where the natural ground beside the channel is already lower than the intended bank top, the planner lowers the head instead of building a bank, so the river always follows the land down.
 
 The post-generation passes that place slabs, fill potholes, remove floating nibs, and dress walls skip every column inside a river footprint and its immediate neighbours, so the channel, shore and bank blend are published exactly as planned. Automatic surface object placement is rejected when any transformed support column intersects an accepted river channel or shore band, even with `forcePlace`, `underwater`, or `onwater`; this stops biome and region scatter from bridging a channel or standing in the shore. Explicit-Y object placement, including `/iris object paste`, remains available for intentional authoring inside a river.
 
@@ -576,7 +651,7 @@ Only the inner `shoreWidth` can use `shoreBiomes`. The bank blend uses `bankBiom
 
 ### Ocean boundary
 
-The accepted plan resolves the first true natural land/ocean crossing. An exposed river keeps its terrain-supported head and continuous wet channel until that exact crossing. Its channel broadens through the configured flare, its head drops to sea level across the last station, and the ocean reservoir takes over. River-owned terrain and fluid stop on the landward side, with at most `maximumOceanApron` blocks of non-owning accepted connection footprint in the ocean. Underground mouths may use `underground.mouthLevelingDistance` to reach sea level.
+The accepted plan resolves the first true natural land/ocean crossing. An exposed river keeps its terrain-supported head and continuous wet channel until the inlet begins, up to `mouths.inletLength` blocks before that crossing, wherever the coast can be cut to sea level within `mouths.maximumIncision`. From there the water is already sea level: the channel broadens through the configured flare, its bed sinks by `mouths.inletDepth`, the shore beside it is cut to sea level and the valley sides are eroded back up to the natural ground, so the sea reads as reaching inland through a drowned valley. At the crossing the ocean reservoir takes over. River-owned terrain and fluid stop on the landward side, with at most `maximumOceanApron` blocks of non-owning accepted connection footprint in the ocean; there are no writes at or below natural sea level and no ocean channel. With `inletLength` at `0` the head instead drops to sea level across the last station. Underground mouths may use `underground.mouthLevelingDistance` to reach sea level.
 
 Ocean classification is conservative: either the route classifier or the sampled natural terrain may veto ownership. Independently of biome classification, any surface column whose natural height is at or below sea level rejects river-owned terrain, fluid, shore content, and bank writes. Only the bounded non-owning mouth apron may remain. These guards apply to exposed hydrology only, so independently contained underground and deep-fluid features remain legal below sea level. A mouth or coastal grotto cannot turn along the coastline, raise the sea, place a wall across it, or excavate an ocean channel.
 
@@ -627,7 +702,7 @@ Locate accepted features from an Iris world:
 
 Bukkit optional arguments use Director `key=value`, so the explicit non-teleporting form is `teleport=false`. Supported type selectors are `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `deep`, and `pool`. Any other value is treated as a deep-fluid or surface-pool ID and matches only the deep or standing pool features with that profile. Bukkit and modded completion append the active dimension's configured deep-fluid IDs to those built-ins; `deep_lava` appears only when the pack declares it. Built-in selector names are reserved and cannot be deep-fluid IDs.
 
-The search is bounded to the smaller of 8,192 blocks and fifteen routing tiles. It searches accepted immutable plans, not candidate cells. `/iris find biome` and `/iris goto biome` remain available for reachable surface river-content biomes.
+The search is bounded to the smaller of 8,192 blocks and fifteen routing tiles. It searches accepted immutable plans, not candidate cells, and it has to plan every tile it visits: each ring of tiles is planned together on the hydrology planning pool and the command reports the tile count after every ring, but a feature type the pack rarely produces can still take minutes per ring once the search leaves already-planned terrain. Search for a type the pack actually configures (`/iris pack validate` lists the hydrology coverage a pack reaches) before searching far. `/iris find biome` and `/iris goto biome` remain available for reachable surface river-content biomes.
 
 ## Validation
 
@@ -702,9 +777,9 @@ The generation probe constructs the real engine and generates chunks into buffer
 
 ## Managed pack profiles
 
-The managed Overworld and Underworld use 1,024-block watersheds and 64-block coarse samples. Both managed packs require 384 exposed blocks per surface course and 384 blocks per underground course. Surface density is `1.75`, underground density is `1.5`, neither has an ordinary per-tile quota, and source spacing is 384/640 blocks. Each tile selects at most one outlet network, and each surface outlet publishes exactly one complete main stem with no tributary courses.
+The managed Overworld and Underworld use 1,024-block watersheds and 64-block coarse samples. Both managed packs require 384 exposed blocks per surface course and 384 blocks per underground course. Surface density is `1.75`, underground density is `1.5`, neither has an ordinary per-tile quota, and source spacing is 384/640 blocks. Each tile selects at most one outlet network, and each surface outlet publishes one complete main stem plus up to `routing.tributaries` tributaries joining it.
 
-The refined route uses 192/48-block meander wavelengths, strengths `0.55`/`0.18`, a `0.45` offset ratio, and a 20-degree authored turn limit. Managed surface channels are 4 to 8 blocks wide and 2 to 4 blocks deep, sit one block below the lowest bank, and may cut up to 10 blocks into a hillside. Banks carry a one-block lip, a 1.5-block shore, and a blend that runs three blocks for every block of cut between 4 and 32 blocks wide, showing the biome's deeper layers where it cuts. Rapids start where the land drops faster than one block in two, and a cliff of six blocks or more between adjacent stations makes a waterfall. Managed mouths flare to 1.6 times the upstream width with an eight-block non-owning ocean apron, and underground mouths level into the sea across 128 blocks. Underground passages connect to suitable existing caves and both grotto forms retain 10 blocks of dry headroom. Deep lava uses density `0.5`, 1,024-block spacing, and isolated contained pools without channel offshoots. Overworld enables direct mouths and coastal grottos; Underworld disables both and uses contained inland lava grottos and surface sinkholes.
+The refined route uses 192/48-block meander wavelengths, strengths `0.55`/`0.18`, a `0.45` offset ratio, and a 20-degree authored turn limit. Managed surface channels are 4 to 8 blocks wide and 2 to 4 blocks deep, sit flush with the lowest bank (`channel.sink` is 0), and may cut up to 16 blocks (Overworld) or 10 blocks (Underworld) into a hillside; an Overworld river meets the sea through a 64-block inlet flared to 2.5 times its width and cut up to 32 blocks into the coast. Banks carry a 1.5-block shore, and a blend that runs three blocks for every block of cut between 4 and 32 blocks wide, showing the biome's deeper layers where it cuts. Rapids start where the land drops faster than one block in two, and a cliff of six blocks or more between adjacent stations makes a waterfall. Overworld mouths keep an eight-block non-owning ocean apron, and underground mouths level into the sea across 128 blocks. Underground passages connect to suitable existing caves and both grotto forms retain 10 blocks of dry headroom. Deep lava uses density `0.5`, 1,024-block spacing, and isolated contained pools without channel offshoots. Overworld enables direct mouths and coastal grottos; Underworld disables both and uses contained inland lava grottos and surface sinkholes.
 
 Their fluid profiles differ:
 
@@ -758,12 +833,13 @@ Hydrology output is a deterministic function of pack bytes, world seed, and coor
 | No underground features | `underground.enabled`, its independent source budget, fluid-level fit, effective policy, and a legal coastal or inland outlet within that head range |
 | A route through hills is absent | The course needed a cut deeper than `channel.maximumIncision`; raise it, raise `routing.slopePenalty` so routes stay in valleys, or accept that the source has no open-air path |
 | Valleys look too wide or too narrow | `banks.blendSlope` and the per-area `bankMultiplier`; the blend width is the cut depth times the slope |
-| Water sits flush with the bank | `banks.freeboard` is `0`; set it to `1` or more |
+| Water sits below the bank instead of flush with it | `channel.sink` is above `0`; set it to `0` |
 | Banks repeat the surface layer down the cut | `banks.exposeCutStrata` is `false` |
 | No inland grotto | Include `SINKHOLE_GROTTO` in `routing.inlandOutlets` and keep `grottos.inland.enabled` true |
-| No coastal grotto | It needs an accepted coastal cliff/solid-terrain candidate, outlet admission, and `grottos.coastal.enabled` |
+| No coastal grotto | It needs a coastal cliff candidate (`grottos.coastal.enabled` and ground at least the grotto's vertical radius above the sea), outlet admission, and `routing.maximumCoastalOutletsPerTile` of at least `2` when the same coast also has beaches, since the first sea slot goes to a mouth |
 | Unexpected content | Check effective dimension → region → biome policy inheritance and whether an empty array cleared a pool |
 | Missing biome in find/goto | Reference it from a reachable policy and ensure every child/carving key exists |
 | No deep lava | Check the `deepFluids` entry density, height envelope, spacing/footprint relationship, and both `containedPools` / `shortChannels` switches |
+| No sea caves | `grottos.coastal.enabled` and `grottos.coastal.seaCaves.enabled` must both be true; the coast must stand `seaCaves.minimumCoastHeight` above the sea across the whole chamber (lower it on gentle coasts, or shrink `horizontalRadius`); `seaCaves.minimumSpacing` and the clearance from river mouths must leave room on the tile's coast; the swept chamber must fit `maximumVolume`; `CAVE_CONTAINMENT` rejections mean the chamber breaks out of the coast somewhere other than its ocean face, so lower `depth` or `headroom` |
 | Hard boundary between generated areas | Use a new or fully regenerated world for the changed hydrology contract |
 | `Hydrology tile x,z failed to plan` in the log | Terrain there generated without rivers. The error report names the column and lists the region, biome, fluid height, overlay, and every interpolator's bounds and generator heights, so check the generator or biome it names; the world stays usable |

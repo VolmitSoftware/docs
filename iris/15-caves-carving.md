@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,6 +21,8 @@ Related:
 - [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+
+The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur), a 26.2 cave family derived from the dripstone profiles with sulfur spikes, banded mineral formations and contained pools. The paired Underworld uses the same shapes with lava and Nether ecology.
 
 ## The mental model
 

@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T07:37:26.826Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -186,17 +186,17 @@ The global opt-out in `plugins/bStats/config.yml` takes priority. [React integra
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `debug.uploadEnabled` | `true` | Upload locally saved `/sp debug` reports to the public mclo.gs service and return a clickable link |
+| `debug.uploadEnabled` | `true` | Allow `/sp debugdump` to upload its locally saved report to public mclo.gs; `upload=false` suppresses upload for one invocation |
 
 {.dense}
 
-**Uploads are public.** Disable this setting before running `/sp debug` for local-only reports. See [Diagnostic command and privacy notes](/shapedportals/00-overview#create-a-diagnostic-report).
+Uploads are public and enabled by default. Run `/sp debugdump upload=false` for a local-only report, or disable this setting to suppress all report uploads. Explicit `upload=true` still respects a disabled setting. See [Diagnostic command](/shapedportals/00-overview#create-a-diagnostic-report).
 
-Reports contain server, plugin, configuration, portal, performance, and system details. A local copy is saved before upload.
+Reports contain server, plugin, configuration, portal, performance, and system details. A local copy is saved atomically before upload and retained if upload fails.
 
 ## Language files
 
-Run `/sp language` to select a language, or use Languages inside `/sp config` to edit its messages.
+Run `/sp language` to open the shared language switcher. Use `/sp language server edit [locale]` or Languages inside `/sp config` to open the shared per-language message editor. The General → Active language locale control opens the switcher for the server default.
 
 Available locales:
 
@@ -204,18 +204,30 @@ Available locales:
 
 ### Select a language
 
-The picker shows locale IDs and language names. Missing repository translations download only when selected or opened for editing. The console logs the source URL before transfer and the installed path afterward. Selection completes only after validation succeeds; a failed download keeps the current language.
+The shared switcher keeps its navigation and confirmation text in English while showing locale IDs and language names. Plugin messages use the selected translation.
 
-Installed files work offline and are not replaced automatically. You can also create a custom locale based on English.
+The picker supports a server default and persistent per-player overrides. `/sp language self de_DE` selects German for you; `/sp language self reset` returns to the server default. Personal language selection requires both `shapedportals.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Choices are saved by UUID in `language-preferences.properties`.
+
+`/sp language server de_DE` changes `general.language` for players without an override. This requires `shapedportals.config` or `volmit.language.admin`.
+
+`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+
+The picker shows locale IDs and language names. Missing repository translations download only when selected or opened for editing. Selection completes only after a valid catalog is prepared. If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection.
+
+Installed files work offline and are not replaced automatically. The source revision is pinned in each jar’s language manifest. You can also create a custom locale based on English.
 
 ### Edit messages
 
-1. Open `/sp config` and choose Languages.
-2. Select a locale and left-click a message.
-3. Type the replacement in chat, keeping its required placeholders. Use `\n` for a line break.
-4. Check the saved result, which shows the previous and new values.
+The editor requires `shapedportals.config` or `volmit.language.admin`. Opening it does not select a language or change the server default or any personal override.
 
-Editing the active locale applies immediately. Editing a different locale updates its file without switching languages. Changes are written directly to `languages/<locale>.toml`; there is no separate overrides file or folder.
+1. Run `/sp language server edit`, or open `/sp config` and choose Languages. Add a locale, such as `/sp language server edit en_US`, to open its messages directly.
+2. Select a locale, then click a message. Each page holds 45 entries; Search filters message IDs and text, Clear search removes the filter, and Refresh reloads the selected file.
+3. Type the replacement in private chat, keeping its required placeholders. Use `\n` for a line break or `\\` for a backslash. Inputs are limited to 512 characters; type `cancel` or wait 60 seconds to return without saving.
+4. The editor confirms the save and returns to the message page with its updated contents.
+
+Editing the active locale applies immediately. Editing a different locale updates its file and cached player translations without switching the server default. Changes are written directly to `languages/<locale>.toml`; there is no separate overrides file or folder. If the message changed after it was opened, the stale edit is rejected so the newer contents remain intact.
+
+Installed incomplete languages can be opened for repair, with English shown for missing messages. A missing remote language downloads before editing; a failed download leaves language selections and existing files unchanged.
 
 ### Colors and placeholders
 

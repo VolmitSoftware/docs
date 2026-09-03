@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,8 @@ Related:
 - [03 - Configuration](/iris/03-configuration)
 - [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+
+The current Overworld pack includes `standard/passive/sulfur-cube`, a native 26.2 sulfur cube entity template. [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) inherit the vanilla sulfur-cave spawn table for natural cube populations, without an additional Iris ambient spawner.
 
 ## The mental model
 
@@ -592,6 +594,21 @@ Unless a matching biome provider sets `skipParents`, matching region and then di
 ```
 
 This runs on Bukkit and on Fabric, Forge, and NeoForge. Each loader hooks its own block-break path and routes the result through the same rule evaluation.
+
+## Content unavailable on this Minecraft version
+
+Entity types, items, enchantments, and potion effects added in a newer Minecraft do not exist on an older server. Iris checks each key against the live registry when the pack loads and removes only what cannot work. There are no version fields; see [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
+
+| What is missing | Effect |
+|-----------------|--------|
+| `type` on an `IrisEntity` | The entity is excluded and never spawns. Every `IrisEntitySpawn` naming it is dropped, and a spawner left with no `spawns` and no `initialSpawns` is excluded in turn. `entitySpawners` lists and object markers that name the excluded spawner skip it at runtime; those references are not listed separately |
+| An entity in a biome `customDerivitives` spawn | The spawn entry is dropped **before** the custom-biome datapack JSON is written, so the generated datapack stays loadable and the custom biome keeps generating. Previously the unknown id was written verbatim and Minecraft rejected the whole datapack |
+| An item on an `IrisLoot` entry | That loot entry is dropped. The rest of the table still rolls. A loot table with no entries left is excluded, and `loot.tables` references to it are dropped |
+| An enchantment on a loot entry | The enchantment is dropped on its own. The item still generates, unenchanted by that entry |
+| A potion effect in an `IrisEffect` | That effect is dropped. The rest of the biome or region ambience keeps running |
+| A block in a placement's `markers[].mark` list | Nothing. The list only selects which object blocks become markers, so a block that cannot exist matches nothing and the placement keeps generating |
+
+Dropping is silent at runtime — nothing is logged per spawn attempt or per chest fill. The complete list is printed once at startup and available from `/iris pack compat`. Spawner validation still treats a spawner pointing at an entity file that does not exist in the pack as a blocking error; that is a pack authoring mistake, not a version gap.
 
 ## Runtime settings that gate these systems
 

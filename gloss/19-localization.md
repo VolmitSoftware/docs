@@ -2,13 +2,12 @@
 title: "Localization"
 description: "Gloss documentation: Localization"
 published: true
-date: 2026-08-24
+date: 2026-09-03T07:34:52.375Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-One locale is active for the whole server. Choose it with `language` in
-`plugins/Gloss/gloss.toml`, then override individual messages in `language.yml`.
+Gloss has a server default language and persistent per-player language choices. `/gloss language` opens the shared clickable switcher. Translations download on demand into `plugins/Gloss/languages/`; English remains in the Java catalog.
 
 ## The catalog
 
@@ -21,17 +20,19 @@ your own overrides sit on top of the code defaults.
 
 ## Locale selection
 
-Selection is server-wide. Gloss does not read a player's client locale. No message is ever resolved
-for a specific player. The active locale is the first key in `plugins/Gloss/gloss.toml`:
+The shared switcher keeps its navigation and confirmation text in English while showing locale IDs and language names. Plugin messages use the selected translation.
+
+`/gloss language self de_DE` sets your language for Gloss. `/gloss language self reset` returns to the server default. Player choices are stored by UUID in `language-preferences.properties`; the client language setting is not read.
+
+`/gloss language server de_DE` changes the default for players without an override and updates the leading `language` key in `plugins/Gloss/gloss.toml`. Server selection requires `gloss.admin` or `volmit.language.admin`. Personal language selection requires both `gloss.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`.
+
+`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
 
 ```toml
 language = "de_DE"
 ```
 
-An absent or blank value is normalized to `en_US` when the main configuration loads. A custom
-nonblank locale id is preserved; it has no bundled overlay and resolves through `language.yml` over English.
-Changing the value through hotload or `/gloss reload` rebuilds localization immediately from the
-new bundled catalog and the current override file.
+An absent or blank configuration value becomes `en_US`. Selecting `en_US` restores the built-in English catalog with `language.yml` overrides and requires no download. Missing official translations download from the Gloss repository when selected. If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection. Installed files work offline and are never automatically replaced. The source revision is pinned in each jar’s language manifest. Custom locale IDs can use their own YAML file or the shared `language.yml` overrides over English.
 
 The companion web editor has an independent browser-local choice. Its top-right language button
 does not read or write either server configuration file, and changing the server locale does not change
@@ -40,18 +41,12 @@ storage and falls back from a supported browser language to `en_US`. `he_IL` ren
 right-to-left. Its JSON catalogs and validation rules are documented under
 [Web Editor & Sync](/gloss/18-web-editor).
 
-If `language` names a locale in the shared fleet manifest but the matching file is missing from the
-jar, loading fails and the reload is rejected. A nonblank value outside the manifest is retained as
-a custom locale with no bundled overlay; every string then comes from `language.yml` or English.
-
 ## The fallback chain
 
-Loading assembles up to two overlays on top of the code defaults: the `messages` section of
-`language.yml`, and the bundled classpath resource `/languages/<locale>.yml`. The bundled resource
-is only read when the locale is not `en_US`. Precedence per key is:
+Loading combines per-language editor overrides, the `messages` section of `language.yml`, and the installed `plugins/Gloss/languages/<locale>.yml` over the code defaults. The installed catalog is read only for non-English locales; per-language English overrides are loaded offline. Precedence per key is:
 
 ```
-language.yml  >  bundled /languages/<locale>.yml  >  English text in GlossMessages
+languages/overrides/<locale>.yml  >  language.yml  >  languages/<locale>.yml  >  English text in GlossMessages
 ```
 
 Fallback is per key, not per file. A locale file that omits a key falls through to the next level.
@@ -59,7 +54,7 @@ The omission is a warning, not an error. It does not block loading.
 
 ## Available locales
 
-Seventeen non-English files are bundled under `resources/languages/`:
+Seventeen non-English source files are maintained in the repository and excluded from the plugin jar:
 
 ```
 de_DE.yml   es_ES.yml   fi_FI.yml   fr_FR.yml
@@ -86,13 +81,6 @@ Key ids are dot-delimited and map onto YAML nesting.
 | `gloss.error.*` | Argument validation errors raised while parsing a command |
 
 Use `command.help.*` to change command and parameter descriptions.
-
-> The `gloss.command.*` and `gloss.parameter.*` families were deleted from the catalog and from all
-> seventeen bundled locales. They were a duplicate set of command and parameter
-> descriptions that Director never resolved, so editing them changed nothing. A locale override file
-> that still sets one of those ids is now an unknown key and will be rejected on load — delete those
-> entries and use `command.help.*` instead.
-{.is-warning}
 
 ## Message formatting
 
@@ -124,7 +112,7 @@ An inserted value that itself looks like a placeholder is never rescanned as one
 
 ## The override file
 
-`plugins/Gloss/language.yml` is the sparse, highest-priority override file. If it is missing at
+`plugins/Gloss/language.yml` is the sparse override file shared across locales. Per-language editor values have higher priority. If it is missing at
 startup or during an explicit locale change, Gloss writes a documented empty override:
 
 ```yaml
@@ -144,22 +132,21 @@ messages:
         deleted: "&7[&bGloss&7]: &aPanneau &f{board}&a supprimé."
 ```
 
-With `language = "fr_FR"` in `gloss.toml`, those two keys beat the bundled `fr_FR.yml`. Every other key still comes from the bundled file.
-Anything the bundled file omits still comes from the English defaults.
+With `language = "fr_FR"` in `gloss.toml`, those two keys beat the installed `fr_FR.yml`. Other keys use their per-language override when present, then the installed file.
+Anything the installed file omits still comes from the English defaults.
 
 The file must be a regular file of at most 2 MiB. Every value under `messages` must be text. A list
-or a number where a string is expected fails the load. A stale top-level `locale` key is also a hard
-failure with an instruction to remove it and set `language` in `gloss.toml`.
+or a number where a string is expected fails the load.
+
+## In-game language editor
+
+`/gloss language server edit [locale]` opens an inventory editor, requiring `gloss.admin` or `volmit.language.admin`. Omit the locale to choose one. The editor lists up to 45 message keys per page, supports search, and lets you replace a value through private chat. Plural forms are edited individually. Enter `cancel` or wait 60 seconds to abandon the prompt.
+
+Edits are validated for message shape and placeholders before an atomic save to `plugins/Gloss/languages/overrides/<locale>.yml`. Concurrent edits to the same message require reopening it. The saved locale updates immediately for its users while server and personal selections remain unchanged. The English `en_US.yml` override works offline. Installed incomplete catalogs remain editable; missing official catalogs may download when opened, and a failed editor load changes no selection.
 
 ## Hot reload
 
-The shared `DataWatchdog` checks `language.yml` at `[hotload] watchIntervalTicks`. Ordinary idle
-passes only drain native events. An event, a pending stability verification, or the 9-second
-Gloss waits for two identical
-captures must agree before the overlay can reload. Automatic batches complete no more than once
-every 3 seconds, with the
-latest edit retained as one trailing pass. `/gloss reload` does not reload `language.yml`; the file
-watch remains the automatic path.
+The shared `DataWatchdog` watches `language.yml`. Two identical captures are required before a changed overlay is applied. `/gloss reload` reloads the configured locale and overrides through the language worker. Direct edits to `languages/<locale>.yml` or `languages/overrides/<locale>.yml` are loaded on the next explicit language selection or reload. Reloading clears cached player translations so their next message loads the updated file.
 
 A successful automatic batch publishes one localized cooperative action-bar notice to each online
 `gloss.admin` player. It uses `gloss.message.hotload.singular` or
@@ -184,8 +171,7 @@ to twelve individual issues as `<source> [<key>]: <detail>`. Then a count of any
 | Non-string value under `messages` | Rejected, fails during load |
 | File is not a regular file, or exceeds 2 MiB | Rejected, fails during load |
 | YAML does not parse | Rejected, fails during load |
-| Top-level `locale` remains in `language.yml` | Rejected; remove the key, set `language` in `plugins/Gloss/gloss.toml`, then run `/gloss reload`. To reset the override file instead, delete `language.yml` (which loses its overrides) and restart Gloss to regenerate it. The obsolete key is not migrated |
-| Bundled file whose internal `locale` does not match its name | Rejected, fails during load |
+| Locale file whose internal `locale` does not match its name | Rejected, fails during load |
 | Key declared in the catalog but absent from an overlay | Accepted. Warning only, falls through |
 
 A typo in a key name is therefore not a silent no-op. It takes the whole file out until you fix it.
@@ -237,5 +223,5 @@ A `lang()` key the catalog does not declare is a build error for that document. 
    and the exact mismatch. The previous text keeps serving until you fix it.
 
 Overriding on top of a translated locale works the same way. Set `language` in `gloss.toml` to the
-translation you want. Add only the handful of strings you disagree with. Your entries win over the bundled file
+translation you want. Add only the handful of strings you disagree with. Your entries win over the installed file
 key by key. You never have to copy a whole translation to change one line.

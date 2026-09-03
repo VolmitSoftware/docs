@@ -2,17 +2,18 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 An RTP portal is a frame portal whose type is `RTP`. It samples a safe landing
-in a configured world and radius band, then projects and teleports travelers
-under rotation, lease, and allocation rules. Configuration lives on the portal
-JSON under `rtp` (`RtpSettings`). In game, set Type to RTP, then open
-**Random Destination** on the portal home menu.
+by default, or an intentionally unsafe surface/exact-height destination when
+configured, then projects and teleports travelers under rotation, lease, and
+allocation rules. Configuration lives on the portal JSON under `rtp`
+(`RtpSettings`). In game, set Type to RTP, then open **Random Destination** on
+the portal home menu.
 
 ## Switch type and open the editor
 
@@ -45,6 +46,7 @@ Built by `RtpSettings.builder(world)` / `defaults(world)`:
 | Minimum radius | **512** |
 | Maximum radius | **4096** (must be greater than minimum) |
 | Vertical mode | `SURFACE` |
+| Safety mode | `SAFE` |
 | Lower Y | `world.minHeight + 1` |
 | Upper Y | `world.maxHeight - 2` |
 | Preferred Y | `clamp(seaLevel + 1, lowerY, upperY)` |
@@ -73,6 +75,13 @@ Built by `RtpSettings.builder(world)` / `defaults(world)`:
 | `SURFACE` | Land on validated terrain surface (see safety). |
 | `PREFERRED_AVERAGE` | Use preferred Y within lower/upper bounds during sampling. |
 
+### Landing safety: `RtpSafetyMode`
+
+| Value | Meaning |
+|-------|---------|
+| `SAFE` | Reject liquids, hazards, tree surfaces, body collisions, and unsupported landings. Preferred-height sampling probes outward from the preferred Y until safe ground is found. |
+| `UNSAFE` | Accept the selected terrain surface or exact preferred Y without terrain, liquid, hazard, collision, or support checks. World identity, entity size, world height, world border, Nether roof, and snapshot integrity still apply. |
+
 ### Allocation: `RtpAllocationMode`
 
 | Value | Meaning |
@@ -98,7 +107,7 @@ each private reservation on `cycleDurationMillis`. The editor labels that field
 |------|----------|
 | Destination | Paged target world list. Center mode PORTAL_RELATIVE or CUSTOM, with custom X/Z when custom. Min and max radius. Reset center and target to the portal-relative source world. Target Biome opens the biome picker |
 | Biome | Paged biome picker for the target world (Iris pack biomes on Iris worlds, vanilla registry biomes otherwise), Any Biome to clear the preference |
-| Landing | SURFACE / PREFERRED_AVERAGE, surface policy info, lower/upper/preferred Y |
+| Landing | SURFACE / PREFERRED_AVERAGE, clickable SAFE / UNSAFE policy, lower/upper/preferred Y |
 | Routing | SHARED / PER_PLAYER. Shared STATIC / TIMED / ON_TRAVERSAL choices. Shared timed or private rotation interval. Lease idle. Private release. Manual reroll/pool rebuild |
 | Effects | Rim on/off, portal-specific sound on/off |
 
@@ -109,9 +118,9 @@ outside that range normalize to portal-relative; invalid stored radii, including
 oversized or fractional values, normalize to the 512/4096 defaults. Y and timing
 bounds remain as listed above.
 
-## Surface safety rules
+## Landing safety rules
 
-`RtpSafetyValidator` rejects candidates that fail any of the following:
+Both safety modes reject candidates that fail runtime invariants:
 
 - Destination world key mismatch with the snapshot world.
 - Zero-size entity envelopes, attached entities, vehicles or passengers, and
@@ -122,6 +131,9 @@ bounds remain as listed above.
   ceiling.
 - Missing, invalid, or too many region/chunk snapshots (max **4** chunks,
   **4** regions for the envelope).
+
+`SAFE` additionally rejects:
+
 - Support block missing, liquid (water/lava/bubble column), a built-in hazard,
   or tree-part support/body when `surfaceMode` is true.
 - Body collision with solid collision boxes in the feet-to-top envelope or its
@@ -139,7 +151,10 @@ can reject enforced biome mismatches before a candidate chunk is generated.
 Travel uses the entity envelope that passed validation. Its fixed one-block
 horizontal body clearance rejects destinations directly beside mountainsides,
 walls, trees, liquids, or hazards without requiring flat support outside the
-traveler's actual footprint.
+traveler's actual footprint. `UNSAFE` skips these environmental checks at both
+destination preparation and final traversal revalidation. It can therefore put
+a traveler in water, inside solid terrain, on a hazard, in the End void, or
+without supporting ground. This behavior is deliberate and portal-specific.
 
 ## Target biome
 
@@ -158,7 +173,9 @@ forever.
 A match compares the stored key against the vanilla biome key at the candidate
 column, namespace optional (`swamp` matches `minecraft:swamp`). On Iris worlds
 the Iris biome load key and the biome's vanilla derivative both match. The
-check runs through the Iris engine before any chunk is loaded. Non-Iris worlds
+check runs through the Iris engine before any chunk is loaded. In `SAFE` mode,
+Iris fluid columns are rejected before chunk loading; `UNSAFE` permits them.
+Non-Iris worlds
 check the biome after the candidate chunk loads. Surface mode resolves the
 surface and samples its biome in one owning-region pass. `PREFERRED_AVERAGE`
 samples only at the preferred Y, so it avoids an unused surface lookup and 3D
@@ -171,9 +188,12 @@ Horizontal coordinates are sampled uniformly by area within the configured
 annulus, not uniformly by radius. The sampled integer block column is produced
 by flooring X/Z, so its block center can differ from a configured radius
 boundary by less than one block. Pocket worlds are excluded from the target-world
-list. `PREFERRED_AVERAGE` probes the preferred Y first, then alternates upward
-and downward inside the bounds. Surface mode uses a separate Nether scan that
-avoids the roof band.
+list. In `SAFE` mode, `PREFERRED_AVERAGE` probes the preferred Y first, then
+alternates upward and downward inside the bounds. In `UNSAFE` mode, it uses only
+the literal preferred Y. `SURFACE` in `SAFE` mode ignores leaves while resolving
+terrain; in `UNSAFE` mode it includes tree canopies and fluid surfaces, so an
+ocean column resolves on top of the water. Surface mode uses a separate Nether
+scan that avoids the roof band.
 
 Candidate attempts run serially. A search campaign starts at most 32 candidates
 and runs for at most 30 seconds. This lets a cold Iris chunk finish generation

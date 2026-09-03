@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-08-29T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -113,6 +113,7 @@ plugins/Adapt/
   languages/en_US.toml
   languages/downloaded/<source-revision>/<locale>.toml
   languages/overrides/<locale>.toml
+  languages/players.properties
   data/players/<uuid>.json
   data/players/<uuid>.json.pending-sql   # SQL mode only
   data/players/<uuid>.json.pending-delete # local JSON mode only
@@ -133,7 +134,7 @@ plugins/Adapt/
 | `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
 | `splashScreen` | `true` | Prints the startup banner |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
-| `language` | `en_US` | Active locale. Supported non-English values download automatically; the same name selects the optional override file |
+| `language` | `en_US` | Server default locale. Players may override it with the shared in-game picker. Supported non-English values download automatically; the same name selects the optional override file |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
 | `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the level-search cursor clamps to |
 | `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP granted per skill level crossed |

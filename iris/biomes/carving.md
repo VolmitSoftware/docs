@@ -2,14 +2,14 @@
 title: "Carving Biomes"
 description: "Navigation for the built-in carving biomes across Overworld and Underworld"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, carving"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Underground cave roots and the dimension-level Deep Dark carving band shared by both built-in packs.
 
-This family has **48 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+This family has **49 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
 ## Direct roots
 
@@ -60,6 +60,7 @@ This family has **48 child-only reachable variants**. Those variants are documen
 | [Sand Hollows](/iris/biomes/carving/sand-hollows) | `carving/sand-hollows` | Cave | Hot, Tropical |
 | [Sandstone](/iris/biomes/carving/sandstone) | `carving/sandstone` | Cave | Hot |
 | [Standard Deepdark](/iris/biomes/carving/standard-deepdark) | `carving/standard-deepdark` | Carving | Dimension |
+| [Sulfur Galleries](/iris/biomes/carving/sulfur) | `carving/sulfur` | Cave | Estranged, Hot, Temperate, Tropical |
 | [Swamp](/iris/biomes/carving/swamp) | `carving/swamp` | Cave | Swamp |
 | [Volcanic](/iris/biomes/carving/volcanic) | `carving/volcanic` | Cave | Hot |
 

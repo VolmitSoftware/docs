@@ -2,13 +2,15 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-08-30
+date: 2026-09-03T07:42:04.995Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
 ---
 
 VolmLib is a Java library used by Volmit plugins. Add only the modules your plugin uses and bundle VolmLib with your plugin.
+
+For the shared build script, concurrency controls, and tests-only runs, see [Workspace builds](/volmlib/api/building).
 
 ## Common packages
 
@@ -17,7 +19,8 @@ VolmLib is a Java library used by Volmit plugins. Add only the modules your plug
 | `util.scheduling` | Paper/Folia-safe global, region, and entity tasks |
 | `util.bukkit.papi` | PlaceholderAPI expansions and snapshot stores |
 | `util.director` | Commands, help, and completion |
-| `util.localization` | Localized message catalogs |
+| `util.localization` | Message catalogs, on-demand translations, and player language preferences |
+| `util.diagnostics` | Shared Bukkit diagnostic reports, plugin snapshots, and uploads |
 | `util.plugin` | Rich text, messages, titles, and logging |
 | `util.board` | Scoreboard sidebars |
 | `util.inventorygui` | Inventory menus |
@@ -53,8 +56,16 @@ Director accepts keyed values such as `player=Alex`. Use brackets for spaces:
 
 Aliases remain executable, while help and completion show canonical command names.
 
+## Block support
+
+`BSupport.isUpdatable(...)` recognizes exposed pointed-dripstone and sulfur-spike tips through the server’s speleothem API; body and merged-tip segments are excluded. On the supported Bukkit 26.1.2 boundary, pointed-dripstone detection uses that version’s API.
+
 ## Threading
 
 Use `FoliaScheduler` for Bukkit work. Entity and player state belongs on the entity scheduler; world and block state belongs on the owning region; global tasks use the global scheduler. Keep file and network I/O off those threads.
 
 For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
+
+For downloads, jar packaging, server defaults, player preferences, and the per-language inventory editor, see [Shared localization](/volmlib/api/localization).
+
+For the `debugdump` command, report contents, permissions, and plugin contributors, see [Shared diagnostic reports](/volmlib/api/diagnostics).

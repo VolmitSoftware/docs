@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -721,6 +721,20 @@ The exporter does not export tile or block-entity NBT. A chest, spawner, sign, o
 Biome, height projection, generation step, terrain adaptation, and structure-set placement stay at the fixed defaults above. Edit the emitted datapack afterward if those defaults are not the vanilla placement you want.
 
 Test the exported artifact on an unmodded Minecraft 26.2 server or client. Stop the disposable world. Install the pack in that world `datapacks/`. Restart so the worldgen registries load it. Confirm it is enabled without data errors. Locate `<namespace>:<resourcePath>`. Generate fresh chunks around the located start. `/reload` can list a newly copied pack as enabled without registering its worldgen structure in the running world. It is not a substitute for the restart. Iris validation and NBT round-trip tests do not substitute for the vanilla load and generation check.
+
+## Content unavailable on this Minecraft version
+
+A jigsaw graph authored on a newer Minecraft may use objects containing blocks an older server does not have. Iris checks the object palettes against the live registry when the pack loads and removes the affected graph nodes in a cascade. There are no version fields; see [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
+
+| Level | Rule |
+|-------|------|
+| Piece | A piece whose `object` needs a block the server does not have is excluded, unless a dimension `blockFallbacks` entry or a per-entry `backup` covers the block |
+| Pool | Every pool entry naming an excluded piece is dropped. Weighting and `chance` are evaluated over what is left. A pool whose entries are all dropped is excluded |
+| Structure | A structure whose start pool is excluded is excluded, and every structure placement referencing it drops the reference |
+
+A dropped pool entry changes the weight distribution of that pool, so a graph that loses pieces assembles differently on the older version rather than failing. `empty: true` entries and `fallback` pools are unaffected unless their own pieces are excluded. An excluded structure simply never places; the biomes and regions that listed it keep generating.
+
+The same cascade runs against the compiled structure graph during pack validation, so a graph that ends up with no usable start pool is reported at startup rather than at first generation.
 
 ## Failure recovery
 

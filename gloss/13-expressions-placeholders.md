@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Gloss documentation: Expressions & Placeholders"
 published: true
-date: 2026-08-26T00:00:00.000Z
+date: 2026-09-02T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -649,7 +649,7 @@ today. All four are available in every preview document.
 
 | Function | Arity | Arguments | Returns | Behavior |
 |---|---|---|---|---|
-| `lang(key, ...)` | 1 or more | string key, then any values | string | Resolves `key` through the global localization table. Positional arguments bind onto the resolved English template's `{placeholder}` names in first-appearance order. Extras are named `arg<n>` and go unused. Values are stringified with `str` and inserted as untrusted text, so a container name cannot smuggle in color codes. An id the catalog does not declare fails the label with `lang: Unknown message key: <id>` |
+| `lang(key, ...)` | 1 or more | string key, then any values | string | Resolves `key` through the current viewer’s language when a viewer is available, otherwise the server default. Positional arguments bind onto the resolved English template's `{placeholder}` names in first-appearance order. Extras are named `arg<n>` and go unused. Values are stringified with `str` and inserted as untrusted text, so a container name cannot smuggle in color codes. An id the catalog does not declare fails the label with `lang: Unknown message key: <id>` |
 | `count(slot)` | 1 | number | number | Stack size in that slot of the previewed inventory.`0` for an empty slot, an out-of-range index, or no inventory |
 | `occupied(slot)` | 1 | number | boolean | Whether that slot holds a non-empty stack |
 | `item(slot)` | 1 | number | string | Material id in that slot, such as `IRON_ORE`, or `""` when the slot is empty, out of range, or there is no inventory. Pair with `readable(item(0))` for display text |

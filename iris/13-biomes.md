@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -193,6 +193,8 @@ Raise the child `rarity` to shrink its share. Raise `childShrinkFactor` to break
 | `biomeSkyScatter` | string[] | empty | Alternative derivatives for the surface and above. When this list is non-empty it takes over the visible biome for the column. When it is empty the column falls back to `biomeScatter`, then to `derivative`. |
 | `biomeStyle` | `IrisGeneratorStyle` | `SIMPLEX` | The noise that disperses the scatter lists and picks between multiple `customDerivitives`. Change its `zoom` to make the color patches larger or smaller. |
 
+A `derivative`, `vanillaDerivative`, or scatter entry naming a biome the running Minecraft does not have is handled by the version content gate: a missing `derivative` excludes the biome, while a missing `vanillaDerivative` or scatter entry is dropped and the biome keeps generating. See [When a biome uses content this version does not have](#when-a-biome-uses-content-this-version-does-not-have).
+
 Where the split between "underground" and "surface" applies depends on the generation path. On platforms where Iris supplies a 3D biome source to native worldgen, positions below the terrain surface resolve through the cave biome and `biomeScatter`. Positions above resolve through `biomeSkyScatter`. On the path where Iris writes biomes into the chunk itself, one biome is written for the whole column using the sky resolution. Either way, setting only `biomeSkyScatter` changes what players see. Setting only `biomeScatter` may not.
 
 ### Structure eligibility
@@ -352,6 +354,25 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 The managed Overworld and Underworld mountain roots use `PREFERRED_HEADWATER`, so source spacing and branch-length controls remain authoritative instead of forcing a source into every eligible tile.
 
 Placements are gathered per chunk from the biome at the chunk center, the cave biome at the same point, the region and the dimension. A surface biome contributes all of its `structures[]`. The cave biome contributes only placements whose resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER` or `CAVE_ANY`. Surface and height-band placements written into cave-biome files are ignored. A placement own `caveBiomes` list is an additional allowlist rechecked at each candidate anchor. See [15 - Caves & Carving](/iris/15-caves-carving) and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+
+## When a biome uses content this version does not have
+
+A pack authored on a newer Minecraft can name blocks, entities, and vanilla biomes an older server does not have. Iris checks every key against the live registry when the pack loads and gates the biome accordingly. There are no version fields; see [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
+
+| What is missing | Effect on the biome |
+|-----------------|---------------------|
+| A block in `layers`, `slab`/`wall` palettes, a decorator palette, a deposit, or any other block field on the biome | The biome is excluded. It does not generate on that version and is removed from every region land, sea, shore, and cave pool that listed it, and from `children`, `floatingChildBiomes`, carving entries, `riverPolicy` biome references, and structure-placement biome lists |
+| `derivative` | The biome is excluded, exactly as for a block. `derivative` has no fallback of its own |
+| `vanillaDerivative` | The entry is dropped. Structure eligibility falls back to `derivative` and the biome keeps generating |
+| A `biomeScatter` or `biomeSkyScatter` entry | That entry is dropped from the list. Remaining entries still disperse; an emptied list falls through to `biomeScatter`, then to `derivative` |
+| An entity in a `customDerivitives` spawn | The spawn is dropped before the custom-biome datapack JSON is written, so the datapack stays loadable and the custom biome keeps generating |
+| A potion effect in `effects` | The effect is dropped individually. The biome keeps generating |
+| An entity in a referenced `IrisEntity`, or a spawner with nothing left | The entity is excluded, spawns naming it are dropped, and a spawner left with no spawns is excluded and its references dropped. See [23 - Loot, Entities, Spawners & Markers](/iris/23-loot-entities-spawners-markers) |
+| A block only used by an object palette | The object is dropped from that placement's pool, not the biome. See [20 - Object Placement](/iris/20-object-placement) |
+
+The exclusion cascades upward. A region left with no land biomes is excluded in turn, and a dimension left with no regions makes the pack unusable on that version.
+
+Declaring a `blockFallbacks` entry on the dimension turns a missing block into a substitution and keeps the biome generating. See [11 - Dimensions](/iris/11-dimensions).
 
 ## Floating child biomes (`IrisFloatingChildBiomes`)
 

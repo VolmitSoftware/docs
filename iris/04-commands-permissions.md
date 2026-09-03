@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T07:33:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,22 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Iris uses `/iris` (aliases `/ir`, `/irs`) on every platform. Bukkit optional arguments use `key=value`. Fabric, Forge, and NeoForge use positional arguments and literal flags. Platform gaps are marked **Bukkit-only** or **modded-only**.
 
 See [30 - Platform Differences](/iris/30-platform-differences) for the platform matrix. See [03 - Configuration](/iris/03-configuration) for what `/iris reload` re-reads.
+
+## Language selection
+
+`/iris language` opens the clickable picker. Bukkit-family servers expose `/iris language self <locale|reset>` and `/iris language server <locale>`. Personal language selection requires both `iris.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Server selection needs `iris.all` or `volmit.language.admin`.
+
+On Bukkit-family servers, `/iris language server edit [locale]` opens the player inventory editor for individual messages. Omit the locale to choose one. It requires `iris.all` or `volmit.language.admin`, saves only the chosen locale, and preserves all language selections.
+
+On Bukkit-family servers, `/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+
+Mod loaders use `/iris language self <locale|reset>` and `/iris language server <locale>` with gamemaster permission for the server default. See [08 - Localization](/iris/08-localization).
+
+## Diagnostic reports
+
+On Bukkit-family servers, `/iris debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/iris debugdump upload=false` to save it locally without uploading. The command requires `iris.debugdump` (default `op`), independently of the root administration permission.
+
+Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
 
 ## Everyday commands
 
@@ -63,6 +79,15 @@ A clean pack reports no blocking errors. The all-packs form finishes with a brok
 
 `/iris pack validate` and `/iris pack status` treat an omitted pack (or `*`) as "all packs" on both platforms. One Bukkit note: because optional Director parameters never bind positionally, a single pack must be named with `pack=<key>`. A bare positional name is rejected.
 
+`/iris pack compat` follows the same argument rules and prints the content in that pack that does not exist on the running Minecraft version, grouped by registry key, with the units that were excluded, the entries that were dropped, and the fallbacks that were substituted:
+
+```
+/iris pack compat pack=overworld       # Bukkit
+/iris pack compat overworld            # modded
+```
+
+An empty result means the whole pack generates on this version. Detail: [25 - Pack Management](/iris/25-pack-management).
+
 ### Other common goals
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
@@ -95,12 +120,15 @@ If a command fails before doing work, check in this order. Check platform syntax
 
 ### Bukkit
 
-| Permission | Declared in | Default | Gate |
-|------------|-------------|---------|------|
-| `iris.all` | `op` | Required for every `/iris` command |
+| Permission | Default | Gate |
+|------------|---------|------|
+| `iris.all` | `op` | Use Iris administration commands and change the server language |
+| `iris.debugdump` | `op` | Save and optionally upload diagnostic reports |
+| `iris.language.self` | `true` | Choose or reset your Iris language; also requires `volmit.language.self` |
+| `volmit.language.self` | `true` | Shared requirement for personal language selection |
 | `iris.treefeller` | `op` | Use survival tree felling; also requires `treeFeller.enabled` |
 
-`iris.all` grants the full command tree. Custom-biome restart warnings notify operators and players with this permission.
+`iris.all` grants the administration command tree except `debugdump`, which checks `iris.debugdump` independently. Personal language selection checks both language permissions independently. Custom-biome restart warnings notify operators and players with this permission.
 
 ### Modded
 
@@ -134,6 +162,7 @@ Use the Bukkit command names shown below.
 | `loadWorld` | `import` | **Bukkit** | `<world>`, player origin | Load a managed Iris world |
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
+| `debugdump` | | **Bukkit-only** | `[upload=true]` | Save a diagnostic report, uploading by default |
 | `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a version-pinned built-in stable-release pack or direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics. Player origin on Bukkit |
 | `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |
@@ -149,7 +178,7 @@ Use the Bukkit command names shown below.
 | `object` | `o` | Both | see Object | Object tools |
 | `studio` | `std`, `s` | Both | see Studio | Studio / pack authoring |
 | `jigsaw` | `jig`, `jgs` | **Bukkit** | see Jigsaw | Transaction-owned planar/spatial Jigsaw Studio |
-| `pack` | `pk` | Both | see Pack | Validate/cleanup/restore/status |
+| `pack` | `pk` | Both | see Pack | Validate/cleanup/restore/status/compat |
 | `structure` | `struct`, `str` | Both | see Structure | Structure index/import/place |
 | `datapack` | `datapacks`, `dp` | Both | see Datapack | Datapack helpers |
 | `Developer` | `dev` | Both | see Developer | Diagnostics. The group name is registered with a capital `D`, but matching is case-insensitive |
@@ -347,6 +376,9 @@ Bukkit has one global Studio project/world and the Jigsaw session belongs to one
 | `cleanup` | `c` | **Bukkit:** `<pack> [mode=preview]`. **Modded:** `<pack> [apply]` | Preview or quarantine unused resources |
 | `restore` | `r` | same pattern as `cleanup` | Preview or restore the latest quarantine |
 | `status` | `s` | `[pack]` on both platforms. Empty (or `*` on Bukkit) reports every pack | Startup-published validation status, including persisted unchanged results |
+| `compat` | | `[pack]` on both platforms. Empty (or `*` on Bukkit) reports every pack | List pack content that does not exist on the running Minecraft version, and what the gate did about it. Reads the published validation report and does not reload the pack |
+
+Every `/iris pack` subcommand shares one permission gate: `iris.all` on Bukkit, gamemaster level 2 on the mod loaders. `compat` is no exception.
 
 See [25 - Pack Management](/iris/25-pack-management).
 

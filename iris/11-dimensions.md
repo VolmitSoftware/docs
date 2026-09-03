@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -395,6 +395,27 @@ These fields gate the passes that run after terrain and carving. All of them hot
 | `preventLeafDecay` | boolean | `false` | Marks generated leaves persistent so they never decay when the supporting log is removed. Turn it on for packs whose custom trees have unusual leaf-to-log distances |
 | `treeSettings` | `IrisTreeSettings` | disabled default | Overrides vanilla sapling growth with pack objects. Off until `enabled` is true. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). Fields in [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 
+## Static objects
+
+`staticObjects` places saved `.iob` objects at exact world coordinates. Each entry names one object and its origin; rotation defaults to zero and scale defaults to one.
+
+```json
+{
+  "staticObjects": [
+    {
+      "object": "landmarks/tower",
+      "position": { "x": 100, "y": 100, "z": -100 },
+      "rotation": { "y": 90 },
+      "scale": 1
+    }
+  ]
+}
+```
+
+The position is the saved object's origin, usually its center, in absolute world X/Y/Z. Placements bypass random-object restrictions and span chunk boundaries. Later entries overwrite earlier entries at overlapping blocks. `edit` changes materials and states for this copy; `bore` clears its bounding box, `smartBore` clears enclosed interiors, and `seed` fixes randomized edits. All generation modes support static objects. The full transformed object must fit within the dimension's build height.
+
+Changes apply to newly generated chunks and do not rewrite existing chunks on reload. The complete workflow, supported fields, and a replacement example are in [20 - Object Placement](/iris/20-object-placement).
+
 ## Structures and datapacks
 
 Dimension-level `structures` entries are Iris placements considered everywhere in the dimension. They are independent of any biome or region placement. `importedStructures` and `importedFeatures` control what vanilla, mod, and ingested-datapack content is allowed to generate on top of Iris terrain.
@@ -514,6 +535,41 @@ Generator styles reference the first-class `image-maps` resource key directly th
 
 The border does not crop, clamp, or repeat an image map. Configure the map's `outOfBounds` rule separately. Image Map Studio and Vision display the border over source coverage. Complete limits and extent calculations are in [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
 
+## Version content fallbacks (`blockFallbacks`)
+
+`blockFallbacks` names what to generate when a block key does not exist on the running Minecraft version. It is a map on the dimension and it applies to the whole pack: every palette, decorator, deposit, replace rule, and object loaded through this dimension.
+
+```json
+{
+  "blockFallbacks": {
+    "minecraft:sulfur": "minecraft:yellow_terracotta",
+    "minecraft:pale_oak_log": "minecraft:birch_log[axis=y]"
+  }
+}
+```
+
+| Side | Form |
+|------|------|
+| Key | A base block key, no properties. `minecraft:` is assumed when the namespace is omitted |
+| Value | A full block state, properties included |
+
+| Field | Type | Default | What it does and when to change it |
+|-------|------|---------|------------------------------------|
+| `blockFallbacks` | `Map<String, String>` | empty | Substitute for a block key the running server does not have. Add an entry for every newer-version block the pack relies on that has a sensible older stand-in |
+
+Resolution order for any block key in the pack is: the live registry, then the legacy rename table (`minecraft:grass` to `minecraft:short_grass` and friends, applied silently), then `blockFallbacks`, then the per-entry `backup` on the block definition itself. A fallback is reported as a substitution in the startup listing so you can see it is being used. A fallback whose own value is missing on this server counts as missing.
+
+Without a fallback, the biome, decorator, deposit, object, or placement that composes the missing block does not generate on that version. See [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
+
+### When the dimension itself is the problem
+
+The gate normally removes content and leaves the rest of the pack generating. It stops being survivable in two cases:
+
+- The dimension composes a missing block directly — `rockPalette`, `fluidPalette`, or another block palette on the dimension file — and no fallback covers it. `blockDrops[].blocks` is a match list and is never gated; a `blockDrops[].drops` item that does not exist is dropped on its own.
+- Every region reachable from the dimension has been excluded, so no region is left to place.
+
+Either case makes the pack unusable on that version. It is a blocking validation error, and world creation and Studio open are refused through the same path as any other broken pack. Declare a `blockFallbacks` entry, or run the pack on a Minecraft version that has the content.
+
 ## Studio and debug fields
 
 These exist to help you inspect the generator, not for production. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
@@ -529,7 +585,7 @@ These exist to help you inspect the generator, not for production. `studioMode` 
 
 ## Annotations are editor hints, not runtime validation
 
-`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
+`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `staticObjects`, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
 
 ## A complete minimal dimension
 

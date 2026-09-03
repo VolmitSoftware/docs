@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,6 +73,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Image Map Studio Workflow](/iris/42-image-map-studio-workflow)
 - [Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [Biome Catalog](/iris/44-biome-catalog)
+- [Sulfur Galleries & Hollows](/iris/biomes/carving/sulfur)
 - [Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
 - [Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
 - [Structures Overview](/iris/18-structures-overview)

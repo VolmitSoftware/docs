@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -143,6 +143,7 @@ Full command tables and stubs:
 | Feature | Bukkit | Fabric | Forge | NeoForge |
 |---------|--------|--------|-------|----------|
 | Core terrain / accepted hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
+| Version content gating and `/iris pack compat` | yes | yes | yes | yes |
 | Typed image-map runtime / validation / packaging | yes | yes | yes | yes |
 | Image-map desktop authoring and Vision layers | graphical host | graphical host | graphical host | graphical host |
 | Dimension `worldBoundary` | native border | native border | native border | native border |
@@ -227,6 +228,36 @@ string differently. Full procedure:
 
 Image maps use the same compiler, raw PNG channel rules, floor-based coordinates, and compiled sampling data on all platforms. A difference in decoded height, legend target, mask weight, image coverage, or applied boundary for identical pack bytes is a parity defect.
 
+## Version content gating
+
+The version content gate behaves identically on Bukkit and on Fabric,
+Forge, and NeoForge for the same Minecraft version. It asks the live
+platform registry whether a key exists rather than comparing version
+numbers, and the same shared code composes the console listing, so the
+same pack on the same Minecraft version excludes, drops, and substitutes
+exactly the same content on every loader. Mod-added registry content is
+covered for free: a block a mod supplies on one loader and not another
+gates the same way as a version gap.
+
+A pack authored on a newer Minecraft generates on every older supported
+version, with the content that needs the newer registry entries left
+out. That is not a load failure. The exception is a cascade that reaches
+the dimension, which makes the pack unusable on that version and is
+reported as a blocking validation error.
+
+Two platform notes:
+
+- The version string in the report header comes from the platform's own
+  Minecraft version, which Bukkit and the mod loaders format
+  differently. GoldenHash comparisons already warn about that; the
+  gating decisions themselves do not depend on the string.
+- Findings do not change generated output on a version that has the
+  content, so a pack with an empty report hashes the same as before the
+  gate existed. Full procedure:
+  [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
+
+Detail and the commands: [25 - Pack Management](/iris/25-pack-management).
+
 ## Moving a pack between platform families
 
 1. Freeze the pack bytes and seed. Validate and package on the source
@@ -246,6 +277,8 @@ Image maps use the same compiler, raw PNG channel rules, floor-based coordinates
    replacement.
 7. Re-run `/iris pack validate`. Then run `/iris datapack status` on
    modded or the ingest flow on Bukkit.
+   Compare `/iris pack compat` on both platforms: on the same Minecraft
+   version the two reports must match.
 8. Create a disposable world with the same seed. Run the same small
    GoldenHash inputs plus the platform's fresh-install runbook.
 

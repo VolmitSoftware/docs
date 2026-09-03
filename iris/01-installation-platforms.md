@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-08-29T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -223,6 +223,14 @@ Manual install is `/iris download pack=overworld`, `/iris download pack=underwor
 
 Successful downloads update only the pack directory and validation result. Iris does not rebuild the live registry datapack, stop the server, or schedule a restart. Restart once so Minecraft loads the downloaded pack's registry data. If a custom pack declares external datapacks, Bukkit can ingest them at startup; modded operators install them in the save manually because ingest is unavailable there. See [25 - Pack Management](/iris/25-pack-management).
 
+## Running a pack authored on a newer Minecraft
+
+One plugin jar covers 26.1.2 and 26.2, and the built-in packs are authored against the newest game, so a pack can reference registry content the running server does not have. Iris checks every block, item, entity, biome, structure, enchantment, and potion effect key against the live registry when the pack loads. Content that composes a missing key is left out of generation, the rest of the pack generates normally, and the complete list is printed to the console once at startup.
+
+There is nothing to configure. No pack declares a supported version, nothing compares version numbers, and the check is identical on the plugin and on Fabric, Forge, and NeoForge for the same Minecraft version. Installing a pack on an older supported version is expected to work; the startup listing tells you what it costs. `/iris pack compat` reprints it in full. See [25 - Pack Management](/iris/25-pack-management).
+
+The one failure case is a pack whose dimension itself needs missing content, or whose regions are all excluded. That is a blocking validation error and world creation is refused, the same as any other broken pack.
+
 ## When the install goes wrong
 
 | Symptom | Likely cause | Fix |
@@ -234,6 +242,7 @@ Successful downloads update only the pack directory and validation result. Iris 
 | Pack validates, but modded heights and biomes are wrong | The forced datapack was generated after registries had already loaded | Restart once with the pack already on disk, then create a fresh disposable world to confirm |
 | A non-op cannot run any Iris command | `iris.all` is not granted | Grant `iris.all`. `iris.treefeller` only covers survival tree felling and grants no commands |
 | Client HUD missing but server commands work | Client mod absent, keybind unbound, or capability not negotiated | Install the matching client mod, reconnect, check the Iris keybind category. Server-side generation never depends on the client HUD |
+| A biome, object, or mob from the pack never appears | It needs registry content this Minecraft version does not have | Read the `content unavailable on Minecraft <version>` block in the startup log, or run `/iris pack compat`. Declare a dimension `blockFallbacks` entry or update the server — [25 - Pack Management](/iris/25-pack-management) |
 | An existing world ignores a newly installed pack | The world is reading its frozen snapshot | Use the explicit snapshot update or create a new world — [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [25 - Pack Management](/iris/25-pack-management) |
 
 ## Native worldgen over Iris terrain

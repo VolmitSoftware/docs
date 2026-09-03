@@ -34,6 +34,7 @@ newly constructed portal (`LocalPortalSettings` constructor). Concepts:
 | `ambientStyle` | `SPARKS` | `SPARKS` / `OUTLINE` / `CORNERS` / `OFF` |
 | `ambientColor` | `0xB969FF` | RGB 0–0xFFFFFF |
 | `surfaceSkin` | empty | No skin |
+| `publicLookLabel` | `false` | Off keeps look subtitles portal-tool only |
 | `travelCost` | free (`null`) | Free / vanilla item / Vault |
 | `settingsSyncEnabled` | `true` | Broadcast settings to linked/remote when applicable |
 
@@ -69,6 +70,8 @@ If settings sync is enabled, Wormholes broadcasts setting changes through the
 portal sync service. Linked locals and gateway peers receive those changes when
 they apply. If settings sync is disabled, local edits stay local. Gateway
 portals also emit a settings-toggle broadcast on enable and disable.
+`publicLookLabel` remains local to its portal and is not copied by Settings
+Sync.
 
 ## Per-portal permission node
 
@@ -184,11 +187,16 @@ is still ON/OFF for all types
 | Surface skin | Menu control for skin display/clear (in-world apply in `03`) |
 | Activation range | ±8 / ±32 steps. Below 8 snaps to global (`0`) |
 | Render mode | Cycle PanOptic / Venticular |
+| Public look label | Toggle whether nearby players without a portal tool see this portal's name while looking at it. Off by default |
 | Travel cost | Opens cost menu |
 | Fallback block | Chat block-state string (custom quality layout / advanced) |
 
 Custom quality expands the window to show depth, full-refresh ticks, entity
 interval, and view grace editors.
+
+Portal-tool holders always retain the route subtitle, including the linked
+destination or active progress text. A player without a portal tool sees only
+the portal name, and only when Public Look Label is On.
 
 ## Travel cost menu
 

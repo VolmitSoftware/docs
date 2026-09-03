@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-03T07:33:50.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,10 @@ The root command is `/react` (alias `/re`). Use `/react help [page]` or `/react 
 
 | Permission | Default | Description |
 |------------|---------|-------------|
-| `react.use` | op | Use `/react` |
+| `react.use` | op | Use React administration commands |
+| `react.debugdump` | op | Save and optionally upload diagnostic reports |
+| `react.language.self` | true | Choose or reset your React language; also requires `volmit.language.self` |
+| `volmit.language.self` | true | Shared requirement for personal language selection |
 | `react.*` | op | All React commands. Includes `react.use` and `react.shorthands.*` |
 | `react.shorthands.*` | op | All shorthand commands when tweak enabled |
 | `react.shorthands.gms` | op | `/gms` |
@@ -30,7 +33,7 @@ Additional permission:
 |------------|------|
 | `react.configurator` | Required (or op) for `/react config gui` |
 
-The root gate is `react.use`, `react.*`, or operator status.
+The root gate for other commands, except `debugdump`, is `react.use`, `react.*`, or operator status. Personal language selection requires both `react.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Server language selection accepts `react.use` or `volmit.language.admin` (operator by default).
 
 Feature and tweak bypass nodes appear in config. Examples: `react.bypass.projectile-limit`, `react.secret.adapt.bypass`, `react.secret.iris.bypass`.
 
@@ -38,6 +41,11 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 
 | Subcommand | Aliases | Origin | Description |
 |------------|---------|--------|-------------|
+| `language` | | both | Open the clickable language picker |
+| `language self <locale\|reset>` | | player | Select or reset your personal React language |
+| `language server <locale>` | | both | Change the React server default |
+| `language server edit [locale]` | | player | Edit one locale's messages without changing language selections; requires `react.use` or `volmit.language.admin` |
+| `debugdump [upload=true]` | | both | Save a diagnostic report, uploading by default |
 | `monitor` | `m`, `mon` | player | Toggle action-bar monitor |
 | `monitoring-only` | `monitor-only`, `monitoring-mode`, `mo` | both | Toggle runtime-only suppression of gameplay features and every tweak while leaving monitoring, statistics, maps, actions, and commands available |
 | `set-player-view-distance <distance>` | `vd`, `view-distance` | player | Set current world view and simulation distance. Values above 32 are clamped. The command does not reject negative values. Paper setters are required |
@@ -46,6 +54,14 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 | `version` | `v` | both | Show React version |
 
 `/react monitoring-only` does not rewrite any feature or tweak TOML. The state survives `/react reload` in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
+
+`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. Catalog downloads complete before a choice is applied. See [Localization](/react/13-localization).
+
+## Diagnostic reports
+
+`/react debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/react debugdump upload=false` to save it locally without uploading. The command requires `react.debugdump` (default `op`), independently of the root administration permission.
+
+Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
 
 ## `/react config` (`cfg`)
 

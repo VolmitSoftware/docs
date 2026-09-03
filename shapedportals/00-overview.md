@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T07:37:26.826Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -78,11 +78,15 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 | `/sp` | Open command help | Player or console |
 | `/sp status` | Show portal counts and creation statistics | Player or console |
 | `/sp config` | Open the in-game configuration and language editor | Player |
-| `/sp language [locale]` | Choose a language, or open the picker when omitted | Player |
+| `/sp language` | Open the language picker | Player or console |
+| `/sp language self <locale\|reset>` | Select or reset your personal ShapedPortals language | Player |
+| `/sp language server <locale>` | Change the ShapedPortals server default | Player or console |
+| `/sp language server edit [locale]` | Open the per-language message editor | Player |
+| `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default | Player or console |
 | `/sp portals [page]` | List managed portals; page defaults to 1 | Player or console |
 | `/sp teleport` | Open the portal list; `/sp teleport list` does the same | Player or console |
 | `/sp teleport <UUID/prefix>` | Move to a safe spot beside the chosen portal | Player |
-| `/sp debug` | Save a diagnostic report and upload it when enabled | Player or console |
+| `/sp debugdump [upload=true]` | Save a diagnostic report and upload it when enabled | Player or console |
 
 {.dense}
 
@@ -106,17 +110,16 @@ Use an ID from the list. Teleportation looks for clear standing space over a sol
 ### Change the language
 
 ```text
-/sp language de_DE
+/sp language self de_DE
 ```
 
-This selects German. Omit the locale to open the language picker. See [Language files](/shapedportals/01-installation-configuration#language-files) for available locales and message editing.
+This selects German for you. Use `/sp language self reset` to follow the server default, `/sp language server de_DE` to change the server default, or `/sp language` to open the language picker. See [Language files](/shapedportals/01-installation-configuration#language-files) for available locales and message editing.
 
 ### Create a diagnostic report
 
-> **Public upload is on by default.** Before running `/sp debug`, set `debug.uploadEnabled = false` in the Diagnostics editor or configuration if the report should stay on the server. Reports include server, plugin, portal, configuration, and system details.
-{.is-warning}
+`/sp debugdump` requires `shapedportals.debugdump` (default `op`) and saves a report atomically under `plugins/ShapedPortals/debug/` before uploading it to the public mclo.gs service. Use `/sp debugdump upload=false` for a local-only report, or disable `debug.uploadEnabled` in the Diagnostics editor or configuration to suppress uploads for every invocation.
 
-Reports are also saved under `plugins/ShapedPortals/debug/`.
+Reports include server, plugin, portal, configuration, and system details. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Diagnostic reports](/shapedportals/03-compatibility-operations#diagnostic-reports) for the report contents.
 
 ## Permissions
 
@@ -126,13 +129,20 @@ Reports are also saved under `plugins/ShapedPortals/debug/`.
 |---|---|---|
 | `shapedportals.create` | Everyone | Ignite shaped Nether portals or complete shaped End portals when creation permission checks are enabled |
 | `shapedportals.command` | Everyone | Use help and status |
-| `shapedportals.config` | Operators | Use the configuration editor and language command |
-| `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
+| `shapedportals.config` | Operators | Use the configuration and language-message editors and change the server language |
+| `shapedportals.language.self` | Everyone | Choose or reset your ShapedPortals language; also requires `volmit.language.self` |
+| `volmit.language.self` | Everyone | Shared requirement for personal language selection |
+| `volmit.language.admin` | Operators | Change language defaults across enabled plugins |
+| `shapedportals.debugdump` | Operators | Generate diagnostic reports, including uploads when enabled |
 | `shapedportals.portals` | Operators | List portals, including through bare `/sp teleport` |
 | `shapedportals.teleport` | Operators | Teleport to a selected portal |
 | `shapedportals.teleport.unsafe` | Operators | Confirm an unsafe landing; also needs `shapedportals.teleport` |
 
 {.dense}
+
+Denying `shapedportals.language.self` or `volmit.language.self` blocks the personal picker, direct locale selection, and `self reset`.
+
+`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
 
 Administrative subcommands check their own permission and do not also require `shapedportals.command`. World restrictions, shape rules, and protection-plugin decisions still apply when a player has creation permission.
 

@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Locales, overrides, and fallbacks"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-03T07:34:52.375Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,10 +10,24 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Canonical English is the typed Java catalog in `WormholesMessages` (and related
 Director keys). Wormholes does **not** include an `en_US.toml` bundle. Non-English
-locales load from jar resources and optional data-folder overlays. Missing keys
+locales download on demand into the plugin data folder and are excluded from the jar. Missing keys
 fall through to code-owned English.
 
 Wormholes supports colors, click actions, and hover text in player messages. Consoles receive readable plain text when rich formatting is unavailable.
+
+## Language switcher
+
+The shared switcher keeps its navigation and confirmation text in English while showing locale IDs and language names. Plugin messages use the selected translation.
+
+The Bukkit picker uses Wormholes's Director menu theme, header, clickable controls, and pagination. Tab completion includes the `self` and `server` scopes, available locales, and personal reset according to the sender's permissions.
+
+`/wormholes language` opens a clickable picker. `/wormholes language self de_DE` selects German for you; `/wormholes language self reset` returns to the server default. Personal language selection requires both `wormholes.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Choices persist by UUID in `language-preferences.properties`.
+
+`/wormholes language server de_DE` updates the server default and `language` in `wormholes.toml`. This requires `wormholes.admin` or `volmit.language.admin`. Players with an explicit override keep it when the default changes.
+
+`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+
+Missing official translations download from the WormholesPlugin repository when selected, including a configured default or fallback. Downloads and language files are validated before activation. If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection. Installed files work offline and are never automatically replaced. The source revision is pinned in each jar’s language manifest. Explicit shared-language selections require every message to come from the requested locale; configured secondary fallbacks do not make an incomplete requested pack selectable.
 
 ## Config
 
@@ -30,30 +44,31 @@ language-fallbacks = ""
 | `language-fallbacks` | `""` | Comma-separated locales tried after the primary, in order |
 
 English is always the final fallback when a key is absent from overlays.
-Setting `language = "en_US"` uses the catalog only. `en_US` data-folder and
-bundled overlays are skipped.
+Setting `language = "en_US"` uses the catalog with any `languages/overrides/en_US.toml` editor overrides, without downloading an English file.
 
-Invalid locale strings throw on load. A missing bundled locale with no
-data-folder file fails the language load for that name.
+Invalid locale strings throw on load. A missing custom locale file fails the language load for that name.
+
+## In-game language editor
+
+`/wormholes language server edit [locale]` opens an inventory message editor with `wormholes.admin` or `volmit.language.admin`. Omit the locale to choose one. Browse up to 45 entries per page or search by key/value, then select a message and enter its replacement through private chat. List messages expose individual lines, preserving the other lines and catalog line count; plural messages expose each defined form separately. Text templates accept `\n` for a newline. Enter `cancel` or wait 60 seconds to cancel the prompt.
+
+The editor validates message shapes and placeholders, rejects stale edits, and saves atomically to `plugins/Wormholes/languages/overrides/<locale>.toml`, using the same schema, text, lines, and plural sections as locale catalogs. A save refreshes users of that locale without changing server defaults or personal preferences. English edits work offline. Installed incomplete catalogs are editable without selecting them; missing official catalogs may download on opening, and an unsuccessful load changes no selection.
 
 ## Resolution order
 
 For each requested locale (primary, then each fallback), overlays are applied
 in this order before the catalog:
 
-1. `plugins/Wormholes/languages/<locale>.toml` if the file exists (operator
-   override. May be partial)
-2. Bundled `/languages/<locale>.toml` from the jar if present
-3. Next fallback locale (same two steps)
+1. `plugins/Wormholes/languages/overrides/<locale>.toml` (per-language editor values)
+2. `plugins/Wormholes/languages/<locale>.toml` (downloaded if absent for an official non-English locale)
+3. The next configured fallback locale, with its editor overrides before its installed catalog
 4. Code-owned English catalog (`WormholesMessages`)
 
-`en_US` in the request list is skipped for overlay loading and uses the
-catalog.
+`en_US` loads its per-language editor overrides and uses the Java catalog for all remaining keys.
 
-## Bundled locales
+## Available locales
 
-Seventeen non-English bundles are stored under `src/main/resources/languages/` (jar
-`/languages/`). Each covers the typed catalog, including Director keys:
+Seventeen non-English sources are stored under `src/main/resources/languages/` in the repository. They are excluded from the jar. Each covers the typed catalog, including Director keys:
 
 | Locale id | File |
 |-----------|------|
@@ -75,20 +90,20 @@ Seventeen non-English bundles are stored under `src/main/resources/languages/` (
 | `zh_CN` | `zh_CN.toml` |
 | `zh_TW` | `zh_TW.toml` |
 
-There is no `en_US.toml` in the jar. The bundled set matches
+English is code-owned. The repository set matches
 `VolmitLocales.nonEnglish()`.
 
 ### Japanese filename quirk
 
 `ja-JP` uses a **hyphen**, not `ja_JP`. Config `language` and the override
-filename must match exactly (`ja-JP.toml`). All other bundled ids use an
+filename must match exactly (`ja-JP.toml`). All other official ids use an
 underscore between language and region.
 
 ## Operator overrides
 
 Path: `plugins/Wormholes/languages/<locale>.toml`
 
-- Sparse: include only keys you change.
+- Edit the installed file directly. Partial files are accepted; missing keys fall through to configured fallbacks and English.
 - Filename must equal the configured locale string + `.toml`.
 - Must stay inside the languages directory (path traversal rejected).
 
@@ -129,9 +144,9 @@ catalog.
 
 | Trigger | Behavior |
 |---------|----------|
-| `/wormholes reload` | Reloads config and language (`wormholes.admin.reload` + root gate. See [09 - Commands & Permissions](/wormholes/09-commands-permissions)) |
+| `/wormholes reload` | Reloads config and language, and clears cached player translations (`wormholes.admin.reload` + root gate. See [09 - Commands & Permissions](/wormholes/09-commands-permissions)) |
 | `wormholes.toml` hotload | Reloads the selected language after the config load succeeds |
-| Direct `languages/*.toml` edit | Not watched. Use `/wormholes reload` or touch the config file |
+| Direct `languages/*.toml` or `languages/overrides/*.toml` edit | Not watched. Use `/wormholes reload` or touch the config file |
 | Language rejected | Last valid language remains. Config may still apply. Console reports the cause |
 
 ## Related docs

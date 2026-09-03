@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-08-30T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,7 +31,9 @@ PlaceholderAPI and the other Volmit plugins are optional.
 | `action/*.toml` | Action settings |
 | `sampler/*.toml` | Metric settings |
 | `plugin-apis/*.toml` | Third-party metric packs |
+| `languages/<locale>.toml` | Downloaded locale catalog, installed when selected |
 | `languages/overrides/<locale>.toml` | Message overrides |
+| `language-preferences.properties` | Per-player locale choices |
 | `history/` | Saved metric history |
 
 ## Global settings
@@ -93,4 +95,4 @@ Roles are `viewer`, `operator`, and `admin`. Treat admin tokens like console acc
 
 ## Language
 
-Set `language` in `react.toml`. Put selected message overrides in `languages/overrides/<locale>.toml`. See [Localization](/react/13-localization).
+Use `/react language` for a personal choice or `/react language server` for the default in `react.toml`. Put selected message overrides in `languages/overrides/<locale>.toml`. See [Localization](/react/13-localization).
