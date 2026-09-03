@@ -245,29 +245,30 @@ Underground channels with `connectToExistingCaves: false` own and seal their com
 |-----------|------------------|
 | `routing.tileSize` | Planning-tile width in blocks, 256–8192. Smaller tiles evaluate source budgets more often |
 | `routing.sampleSpacing` | Terrain-graph sampling interval. This bounds drainage search cost; it is not the visible route step |
-| `routing.refinementSpacing` | Interval used for the organic accepted centerline and final terrain checks |
 | `routing.maximumRouteLength` | Hard route-length bound in blocks |
-| `routing.maximumOutletsPerTile` | Maximum drainage roots selected per tile. Fewer roots favor long branching trunks |
+| `routing.maximumOutletsPerTile` / `routing.maximumCoastalOutletsPerTile` | Maximum inland drainage roots and maximum sea outlets selected per tile, budgeted separately. Fewer roots favor long branching trunks |
 | `routing.oceanOutlets` / `routing.inlandOutlets` | Legal terminal families. A route is rejected when no configured contained outlet can be proven |
+| `routing.tributaries` | Extra surface courses an outlet may accept as tributaries of its main river |
 | `geometry.meanders` | Primary and detail Simplex wavelengths and strengths, lateral-offset bound, smoothing passes, and maximum retained turn angle |
-| `geometry.surface`, `geometry.underground`, `geometry.grottos` | U-shaped bed roundness plus coherent bed and carved-wall roughness and wavelength for each channel family |
-| `geometry.drops` | Preferred horizontal run, descending-profile exponent, maximum adjacent wetted-face drop, and minimum connected-channel width ratio for cascades, cataracts, waterfalls, and sinkholes |
+| `geometry.surface`, `geometry.underground`, `geometry.grottos` | Bed roundness, bed and wall roughness and wavelength, organic outline radial bounds and lobe strengths, ceiling roughness, and chamber plan aspect for each channel family |
+| `geometry.drops` | Cascade run and profile exponent, maximum underground face drop, descending flow width and depth, and receiving-basin width and depth |
 | `surface.sources` | Independent surface density, minimum source elevation, and required minimum quota |
-| `surface.channel.width` | Styled wet-channel width |
-| `surface.channel.depth` | Styled water depth below the solved head |
-| `surface.channel.surfaceInset` | Styled vertical recess beneath the swept natural-terrain corridor |
-| `surface.channel.maximumIncision` | Maximum legal cut below natural terrain |
-| `surface.channel.shoreWidth` | Narrow biome band outside the wet channel; limited to one or two blocks |
-| `surface.channel.terrainBlendWidth` | Wider terrain-grading band outside the shore |
-| `surface.hydraulics` | Pool length and riffle, gradual-cascade, and waterfall thresholds |
-| `surface.ridgeTunnels` | Short contained bores used when an otherwise valid route crosses a bounded ridge |
-| `surface.mouths` | Ocean approach, sea-level mouth, and ocean-apron limits |
+| `surface.channel` | Styled wet-channel width and depth, water sink below the bank, maximum legal cut below natural terrain, outline roughness and its bounds, station smoothing, and the headwater spring pool |
+| `surface.banks` | Shore bench width and rise, valley blend slope, base width and limits, exposed cut strata, and the optional shore and bank material palettes |
+| `surface.erosion` | Whether a valley is cut beyond the bench, how its width is smoothed, and the shape of the valley side and of the wet bed |
+| `surface.ponds` | The spring pond at a headwater and the pond a river that ends inland drains into |
+| `surface.bed` | Falling-block handling under and beside the water, and the optional channel bed material palette |
+| `surface.flow` | Cascade and waterfall thresholds, the carved throat bed, and the plunge basin scoured below a drop |
+| `surface.mouths` | Estuary flare, drowned inlet length, depth and share of the course, the approach ramp, and the ocean-apron limit |
 | `underground.sources` | Independent underground density and required minimum quota |
 | `underground.fluidLevel` | Styled world-Y terraces; accepted courses may descend rather than remaining globally flat |
 | `underground.channelWidth`, `depth`, `headroom` | Continuous irregular passage dimensions. Floors are arched and longitudinally varied rather than tiled circles |
 | `underground.connectToExistingCaves` | False keeps the generated channel self-contained without sampling neighboring caves; true permits observed-cave connections only when the completed wet component remains contained |
-| `grottos` | Coastal and inland contained terminal shapes |
+| `underground.minimumRockCover`, `minimumFloorCover`, `wideningSources`, `bedMaterial` | Rock kept above and below a passage, the joined-source count at which it reaches full width, and the optional floor material palette |
+| `grottos` | Coastal and inland contained terminal shapes, the coastal cliff test that chooses a grotto over an open mouth, and standalone sea caves |
 | `profiles` | Reusable fluid palettes selected by the effective dimension, region, or biome `riverPolicy` |
+
+Every field in these sections, with its range and default, is documented in [36 - Rivers](/iris/36-rivers).
 
 Each `deepFluids` entry has its own `id`, palette, density, spacing, world-Y `height`, horizontal and vertical radii, depth, headroom, and pool/channel switches. Deep-fluid sources do not consume either river source budget. Contained pools form one connected irregular basin; enable `shortChannels` only when short contained offshoots are wanted.
 

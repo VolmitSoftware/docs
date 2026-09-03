@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -63,17 +63,37 @@ This is the managed Overworld shape with every physical section written explicit
           "smoothingPasses": 2,
           "maximumTurnDegrees": 20
         },
+        "surface": {
+          "bedRoundness": 2.0,
+          "bedRoughness": 0.25,
+          "wallRoughness": 0.25,
+          "roughnessWavelength": 16
+        },
         "underground": {
           "bedRoundness": 3.0,
           "bedRoughness": 0.36,
           "wallRoughness": 0.32,
-          "roughnessWavelength": 9
+          "roughnessWavelength": 9,
+          "radialBase": 0.86,
+          "radialMinimum": 0.58,
+          "radialMaximum": 1.18,
+          "primaryLobeStrength": 0.08,
+          "detailLobeStrength": 0.06,
+          "ceilingRoughness": 0.0
         },
         "grottos": {
           "bedRoundness": 3.2,
           "bedRoughness": 0.38,
           "wallRoughness": 0.34,
-          "roughnessWavelength": 11
+          "roughnessWavelength": 11,
+          "radialBase": 0.86,
+          "radialMinimum": 0.58,
+          "radialMaximum": 1.18,
+          "primaryLobeStrength": 0.08,
+          "detailLobeStrength": 0.06,
+          "ceilingRoughness": 0.0,
+          "aspectMinimum": 0.62,
+          "aspectRange": 0.2
         },
         "drops": {
           "cascadeRunPerBlock": 2,
@@ -82,7 +102,8 @@ This is the managed Overworld shape with every physical section written explicit
           "flowWidthRatio": 0.45,
           "maximumFlowDepth": 2,
           "basinWidthRatio": 1.8,
-          "maximumBasinDepth": 8
+          "maximumBasinDepth": 8,
+          "undergroundCascadeRunPerBlock": 0
         }
       },
       "surface": {
@@ -109,21 +130,33 @@ This is the managed Overworld shape with every physical section written explicit
           "roughness": 0.25,
           "roughnessWavelength": 16,
           "springWidthRatio": 2.5,
-          "springLength": 24
+          "springLength": 24,
+          "smoothingRadius": 16,
+          "outlineMinimumRatio": 0.6,
+          "outlineMaximumRatio": 1.4,
+          "springExtraDepth": 1.0
         },
         "banks": {
           "shoreWidth": 1.5,
+          "shoreRise": 0.0,
           "blendSlope": 3,
+          "blendBaseWidth": 0.0,
           "minimumBlendWidth": 4,
           "maximumBlendWidth": 32,
-          "exposeCutStrata": true
+          "exposeCutStrata": true,
+          "shoreMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1},
+          "bankMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
         },
         "erosion": {
           "enabled": true,
           "smoothingRadius": 12,
           "thalwegFraction": 0.45,
           "blendCurve": 1.0,
-          "bedNoise": 0.5
+          "bedNoise": 0.5,
+          "style": "SMOOTH",
+          "terraceSteps": 4,
+          "cliffFraction": 0.5,
+          "bedProfile": "BOWL"
         },
         "ponds": {
           "source": {"enabled": true, "minimumRadius": 6, "maximumRadius": 12, "depth": 3},
@@ -134,18 +167,25 @@ This is the managed Overworld shape with every physical section written explicit
           "padding": 2,
           "paddingPalette": {
             "palette": [{"block": "minecraft:clay"}, {"block": "minecraft:dirt"}]
-          }
+          },
+          "material": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
         },
         "flow": {
           "cascadeRun": 2,
-          "waterfallMinimumDrop": 6
+          "waterfallMinimumDrop": 6,
+          "waterfallThalwegFraction": 0.65,
+          "plungeBasinMinimumDrop": 2,
+          "plungeBasinLengthRatio": 2.0,
+          "plungeBasinDepth": 1
         },
         "mouths": {
           "flareRatio": 2.5,
           "maximumOceanApron": 8,
           "inletLength": 64,
           "inletDepth": 3,
-          "maximumIncision": 32
+          "maximumIncision": 32,
+          "inletCourseFraction": 0.5,
+          "inletRampSlope": 1.0
         }
       },
       "underground": {
@@ -177,7 +217,11 @@ This is the managed Overworld shape with every physical section written explicit
         },
         "connectToExistingCaves": true,
         "mouthLevelingDistance": 128,
-        "tributaries": 1
+        "tributaries": 1,
+        "minimumRockCover": 1,
+        "minimumFloorCover": 1,
+        "wideningSources": 8,
+        "bedMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
       },
       "grottos": {
         "coastal": {
@@ -187,12 +231,15 @@ This is the managed Overworld shape with every physical section written explicit
           "verticalRadius": 7,
           "headroom": 10,
           "maximumVolume": 16384,
+          "cliffMinimumHeight": 7,
+          "cliffSlopeFactor": 0.5,
           "seaCaves": {
             "enabled": true,
             "maximumPerTile": 3,
             "minimumSpacing": 160,
             "minimumCoastHeight": 8,
-            "depth": 12
+            "depth": 12,
+            "sweepJitterDegrees": 25.0
           }
         },
         "inland": {
@@ -280,6 +327,56 @@ Every object with `min` and `max` is an `IrisStyledRange`. `style` is optional; 
 
 At least one outlet family must be enabled. `tileSize`, `sampleSpacing`, route length, and both source budgets form a bounded planning envelope; see [Validation](#validation).
 
+### `hydrology.rivers.geometry`
+
+Geometry shapes what routing and the surface and underground sections have already sized. `meanders` decides how far a centerline wanders from its solved route. `surface`, `underground` and `grottos` carry the same cross-section fields with their own values, for a carved waterfall throat, a contained passage and a chamber respectively. `drops` shapes descending flow and the basin that receives it.
+
+#### `geometry.meanders`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `primaryWavelength` | `64` | Broad meander wavelength in blocks, `8..512` |
+| `detailWavelength` | `12` | Fine worm wavelength in blocks, `4..128`; smaller values change direction more often |
+| `primaryStrength` | `0.34` | Strength of the broad meanders, `0..2` |
+| `detailStrength` | `0.42` | Strength of the fine worm movement, `0..2` |
+| `maximumOffsetRatio` | `0.48` | Largest lateral displacement from the solved route as a fraction of one drainage edge, `0..1` |
+| `smoothingPasses` | `1` | Terrain-safe centerline smoothing passes after route solving, `0..4` |
+| `maximumTurnDegrees` | `82` | Largest retained centerline turn angle in degrees, `10..150` |
+
+#### `geometry.surface`, `geometry.underground` and `geometry.grottos`
+
+The three sections share one set of fields. `geometry.surface` shapes the carved throat of a surface waterfall or cascade and the walls the erosion compiler reads, `geometry.underground` shapes contained passages, and `geometry.grottos` shapes chambers. The three roughness fields of `geometry.surface` are nullable and fall back to `surface.channel`; the underground and grotto sections always carry a value.
+
+| Field | Surface default | Underground and grotto default | Purpose |
+|-------|-----------------|--------------------------------|---------|
+| `bedRoundness` | `2` | `2.4` | Cross-section exponent of the bed, `1..6`; larger values broaden the rounded U-shaped bed |
+| `bedRoughness` | `surface.channel.roughness` | `0.28` | Coherent vertical variation of the bed as a fraction of the depth, `0..1`; null on the surface section uses `surface.channel.roughness` |
+| `wallRoughness` | `surface.channel.roughness` | `0.24` | Coherent radial variation of the carved walls, `0..1`; null on the surface section uses `surface.channel.roughness` |
+| `roughnessWavelength` | `surface.channel.roughnessWavelength` | `11` | Wavelength in blocks of the bed and wall variation, `3..128`; null on the surface section uses `surface.channel.roughnessWavelength` |
+| `radialBase` | `0.86` | `0.86` | Base radial scale of the organic outline before the lobes are added, `0.4..1.2`; `1` keeps the nominal radius and lower values carve a narrower passage |
+| `radialMinimum` | `0.58` | `0.58` | Narrowest the outline may pinch after the lobes, as a fraction of the nominal radius, `0.2..1` |
+| `radialMaximum` | `1.18` | `1.18` | Widest the outline may bulge after the lobes, as a fraction of the nominal radius, `1..2` |
+| `primaryLobeStrength` | `0.08` | `0.08` | Strength of the broad lobes that bulge and pinch the outline along its length, `0..0.5`; `0` leaves the outline circular |
+| `detailLobeStrength` | `0.06` | `0.06` | Strength of the fine lobes layered over the broad ones for small-scale wall detail, `0..0.5` |
+| `ceilingRoughness` | `0` | `0` | Coherent variation of the carved ceiling height as a fraction of the headroom, `0..1`; `0` keeps the ceiling smooth and evaluates no extra noise |
+| `aspectMinimum` | `0.62` | `0.62` | Narrowest plan aspect of a chamber, the short axis as a fraction of the long axis, `0.2..1`; `1` makes every chamber circular in plan |
+| `aspectRange` | `0.2` | `0.2` | How far the plan aspect may vary above `aspectMinimum` from one chamber to the next, `0..0.8`; `0` gives every chamber the same aspect |
+
+`aspectMinimum` and `aspectRange` are read for grotto chambers only, and `ceilingRoughness` for carved passages and chambers. The surface section carries all three so that the three sections share one shape, but an exposed river has no carved roof and no chamber plan for them to act on.
+
+#### `geometry.drops`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `cascadeRunPerBlock` | `2` | Preferred horizontal cascade run per block of head loss, `1..16` |
+| `cascadeExponent` | `1.4` | Exponent of the graded cascade profile, `0.25..6`; above `1` it accelerates toward the receiver |
+| `maximumCascadeStep` | `2` | Largest head loss between adjacent underground drop faces, `1..4`; exposed cascades always use one-block steps |
+| `flowWidthRatio` | `0.45` | Drop-flow width as a fraction of the connected channel width, `0.25..1` |
+| `maximumFlowDepth` | `2` | Largest wetted depth along a descending flow path, `1..16` |
+| `basinWidthRatio` | `1.8` | Receiving-basin width as a fraction of the descending flow width, `1..4` |
+| `maximumBasinDepth` | `8` | Largest receiving-basin depth after drop-scaled erosion, `1..32` |
+| `undergroundCascadeRunPerBlock` | `0` | Horizontal run in blocks an underground drop spreads over per block of head loss, `0..16`, so a tall drop becomes a long cascade instead of a single face; `0` keeps every underground drop at its shortest run |
+
 ### `hydrology.rivers.surface`
 
 `surface.enabled` controls only exposed, terrain-following courses. It does not control the independent underground or deep-fluid budgets.
@@ -307,6 +404,10 @@ The channel is the wet part of the river. Its cross-section is a broad bowl: nea
 | `roughnessWavelength` | `16` | Wavelength of that wobble in blocks, `4..64` |
 | `springWidthRatio` | `2.5` | Width of the spring pool at the headwater relative to the channel width, `1..4`; `1` starts the river at its normal width |
 | `springLength` | `24` | Blocks over which the pool narrows back to the channel, `4..96` |
+| `smoothingRadius` | `16` | Stations along the course the sampled width and depth are averaged over, `0..64`, so the channel changes size gradually; `0` follows the sampled values exactly at every station |
+| `outlineMinimumRatio` | `0.6` | Narrowest the roughened waterline may pinch, as a fraction of the channel half-width, `0.2..1`; `1` stops the outline from ever narrowing below the nominal width |
+| `outlineMaximumRatio` | `1.4` | Widest the roughened waterline may bulge, as a fraction of the channel half-width, `1..3`; `1` stops the outline from ever widening beyond the nominal width |
+| `springExtraDepth` | `1` | Extra bed depth in blocks at the headwater spring, fading to nothing over `springLength`, `0..8`; `0` keeps the spring pool as deep as the channel |
 
 #### `surface.banks`
 
@@ -314,13 +415,19 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `shoreWidth` | `1.5` | Width of the shore band beside the water that may use `shoreBiomes`, `0.5..6` blocks |
+| `shoreWidth` | `1.5` | Width of the flattened shore bench beside the water, cut level with the bank top, `0..16` blocks; it is also the default width of the shore biome band, and `0` removes the bench so the eroded valley side begins at the waterline |
+| `shoreRise` | `0` | Blocks the bench rises from the waterline to its landward edge, `0..4`, so the beach climbs instead of lying level; `0` keeps a flat bench, and the valley side starts from the raised edge |
 | `blendSlope` | `3` | Horizontal run per block of rise from the bank top back to natural terrain, `0.5..12`; the blend width is `cut x blendSlope` |
+| `blendBaseWidth` | `0` | Blocks added to every valley width before the blend limits apply, `0..32`, so even a shallow cut erodes this far beyond the shore; `0` leaves the width proportional to the cut alone |
 | `minimumBlendWidth` | `4` | Narrowest blend band even for a shallow cut, `1..maximumBlendWidth` |
 | `maximumBlendWidth` | `32` | Widest blend band even for a deep cut, up to `64`; this also bounds how far a river can affect terrain from its centerline |
 | `exposeCutStrata` | `true` | Show the biome's deeper layers on eroded banks instead of repeating the surface layer, so a cut through grassland shows dirt and stone |
+| `shoreMaterial` | disabled | Palette painted over the shore bench columns instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
+| `bankMaterial` | disabled | Palette painted over the eroded bank columns outside the bench instead of the biome's own layers; same three fields |
 
-`bankMultiplier` in a region or biome policy scales `blendSlope` locally: values below `1` make steeper, narrower valleys and values above `1` make wider, gentler ones.
+`bankMultiplier` in a region or biome policy scales `blendSlope` locally: values below `1` make steeper, narrower valleys and values above `1` make wider, gentler ones. `riverPolicy.shoreWidth` replaces `shoreWidth` per area, so one region can carry a wide bench and a biome inside it none.
+
+`shoreMaterial` and `bankMaterial` paint over the layers the shore and bank biomes would otherwise supply, down `depth` blocks from the surface, and change nothing while `enabled` is `false`. The bed padding rule still runs after the paint, so a falling block from one of these palettes is replaced by `bed.paddingPalette` unless `bed.allowGravityBlocks` is set. Content that should vary with the surrounding terrain belongs in `shoreBiomes` or `bankBiomes` instead; these palettes are for one fixed material along every river in the dimension.
 
 #### `surface.erosion`
 
@@ -333,6 +440,12 @@ Erosion shapes the valley the banks describe. The reach of the valley comes from
 | `thalwegFraction` | `0.45` | Share of the channel half-width that stays at full bed depth before the bed rises to the edge, `0..0.95`; higher is a flatter, broader bed |
 | `blendCurve` | `1` | Exponent on the blend from the bank top out to natural terrain, `0.25..4`; below `1` hollows the valley sides, above `1` keeps them steep near the shore and eases them out further away |
 | `bedNoise` | `0.5` | Share of `channel.roughness` applied to the bed as depth variation, `0..2`; `0` leaves a smooth bed |
+| `style` | `SMOOTH` | Shape of the valley side between the shore bench and natural terrain; `SMOOTH`, `LINEAR`, `CONCAVE`, `TERRACED` or `CLIFF`, described below |
+| `terraceSteps` | `4` | Number of level steps the valley side is cut into when `style` is `TERRACED`, `2..16`; ignored by every other style |
+| `cliffFraction` | `0.5` | Share of the eroded band kept level at the bank top before the vertical wall when `style` is `CLIFF`, `0..1`; ignored by every other style |
+| `bedProfile` | `BOWL` | Cross-section of the wet channel bed from the centerline out to the waterline; `BOWL`, `FLAT`, `V` or `U`, described below |
+
+`riverPolicy.erosion` turns the valley off for one area without touching the rest of the dimension: a river crossing it keeps its channel and its shore bench and leaves the ground beyond them alone.
 
 #### `surface.ponds`
 
@@ -358,8 +471,9 @@ The bed is what sits under and beside the water. Falling blocks under a river co
 | `allowGravityBlocks` | `false` | Keep sand, gravel and concrete powder from the biome layers in the bed, shore and eroded banks; set it when you want a gravel river on purpose |
 | `padding` | `2` | Blocks below the bed surface that are also kept free of falling blocks, `0..8` |
 | `paddingPalette` | clay and dirt | Blocks used in place of falling blocks; any solid palette |
+| `material` | disabled | Palette painted over the wet channel bed under the water instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
 
-The river channel keeps the layers of the channel biome (`surfaceBiomes`) and the shore keeps `shoreBiomes`, so a biome override is the way to change what a river bottom or beach is made of; the bed rule only swaps the blocks that would fall.
+Without `material`, `banks.shoreMaterial` and `banks.bankMaterial`, the river channel keeps the layers of the channel biome (`surfaceBiomes`), the shore keeps `shoreBiomes` and the eroded bank keeps `bankBiomes`, and the bed rule only swaps the blocks that would fall. A biome override remains the way to make a river bottom or beach follow the terrain it crosses; the three material palettes are the way to give every river in the dimension the same bed, shore or bank blocks regardless of biome. Both routes may be used together: the palette wins for its top `depth` layers and the biome supplies everything below.
 
 #### `surface.flow`
 
@@ -369,6 +483,10 @@ Water heads only ever descend. Each step downstream is at most one block unless 
 |-------|---------|---------|
 | `cascadeRun` | `2` | Horizontal blocks per one-block head drop before a reach is labelled rapids rather than a pool, `1..8` |
 | `waterfallMinimumDrop` | `6` | Smallest natural cliff, in blocks between adjacent stations, that produces a single-step waterfall drop, `2..32` |
+| `waterfallThalwegFraction` | `0.65` | Share of the half-width that stays at full bed depth in the carved throat of a waterfall or cascade before the bed rises to the edge, `0..0.95`; higher is a flatter, broader throat |
+| `plungeBasinMinimumDrop` | `2` | Smallest drop in blocks that scours a plunge basin into the bed below it, `1..8`; shorter drops leave the bed untouched |
+| `plungeBasinLengthRatio` | `2` | Length of the basin downstream of a drop as a multiple of the channel half-width, `0..8`, never shorter than two stations |
+| `plungeBasinDepth` | `1` | Extra bed depth in blocks scoured inside a plunge basin, `0..8`; `0` marks the basin without deepening it |
 
 #### `surface.mouths`
 
@@ -379,8 +497,10 @@ Water heads only ever descend. Each step downstream is at most one block unless 
 | `inletLength` | `64` | Blocks of river before the coast held at sea level and widened toward `flareRatio`; `0` ends the river at the shoreline with no inlet, `0..256`, never more than `routing.minimumSurfaceCourseLength` |
 | `inletDepth` | `3` | Extra bed depth reached at the shoreline over the inlet, so the estuary is deeper than the river above it, `0..16` |
 | `maximumIncision` | `32` | Deepest cut allowed in the inlet and its approach ramp, replacing `channel.maximumIncision` there, so the coast may be cut down to sea level through a rise of this height; a taller rise ends the inlet where it starts, `0..128` |
+| `inletCourseFraction` | `0.5` | Largest share of the river's exposed course the drowned inlet may occupy, `0.05..1`, so a short river keeps most of its length above sea level; the inlet is the shorter of `inletLength` and this share |
+| `inletRampSlope` | `1` | Blocks of head gained per station on the approach ramp climbing from the inlet back to the river's natural profile, `0.1..4`; `1` climbs one block per station and higher values grade the approach faster |
 
-An ocean apron owns no terrain, fluid, shore, or bank writes. It records the accepted connection for rendering and inspection while the ocean reservoir remains authoritative. The inlet is the drowned end of the river: over `inletLength` blocks its water is sea level, its channel grows to `flareRatio` times the river width and its bed sinks `inletDepth` below the river bed, and the banks beside it are cut to sea level and eroded back up to the natural valley. The inlet reaches inland from the shoreline only as far as the ground can be cut to sea level within `maximumIncision`: on a low coast it runs the full `inletLength`, against a bluff it stops at the foot of the bluff, and on a cliff coast there is no inlet and the river falls into the sea as before. It never takes more than half of a river's exposed course, so the headwater always keeps its natural head. Above the inlet the water grades down one block per station over half the inlet length wherever that cut fits, so a river on a coastal plateau reaches the estuary through rapids rather than a wall. Lower `mouths.maximumIncision` where that approach cuts a deeper gorge than the coast should show.
+An ocean apron owns no terrain, fluid, shore, or bank writes. It records the accepted connection for rendering and inspection while the ocean reservoir remains authoritative. The inlet is the drowned end of the river: over `inletLength` blocks its water is sea level, its channel grows to `flareRatio` times the river width and its bed sinks `inletDepth` below the river bed, and the banks beside it are cut to sea level and eroded back up to the natural valley. The inlet reaches inland from the shoreline only as far as the ground can be cut to sea level within `maximumIncision`: on a low coast it runs the full `inletLength`, against a bluff it stops at the foot of the bluff, and on a cliff coast there is no inlet and the river falls into the sea as before. It never takes more than `inletCourseFraction` of a river's exposed course, so the headwater always keeps its natural head. Above the inlet the water grades down `inletRampSlope` blocks per station over half the inlet length wherever that cut fits, so a river on a coastal plateau reaches the estuary through rapids rather than a wall. Lower `mouths.maximumIncision` where that approach cuts a deeper gorge than the coast should show.
 
 ### `hydrology.rivers.underground`
 
@@ -397,10 +517,14 @@ Underground courses use their own `enabled`, `sources.density`, and `sources.min
 | `connectToExistingCaves` | `true` | Lets accepted dry headroom open into suitable existing cave matter where the two touch; the course does not require a pre-existing cave |
 | `mouthLevelingDistance` | `64` | Landward distance over which an underground mouth levels into the sea, `16..512` and no greater than the route length |
 | `tributaries` | `1` | Extra underground courses an outlet may accept as tributaries joining its main passage, `0..4`, budgeted on top of `sources.density`; a tributary passage is cut where its route first shares the stem's drainage and solved with the stem's fluid level there as its outlet level |
+| `minimumRockCover` | `1` | Blocks of solid rock kept between the top of a passage's headroom and the surface above it, `1..64`; a passage that cannot keep this much cover is lowered, and rejected if it cannot be lowered far enough |
+| `minimumFloorCover` | `1` | Blocks of solid rock kept between the bottom of a passage's bed and the world floor below it, `1..32` |
+| `wideningSources` | `8` | Number of joined tributary sources at which a passage reaches its full sampled width, `1..64`; fewer contributing sources carve a proportionally narrower passage, and `1` gives every passage its full width |
+| `bedMaterial` | disabled | Palette painted over the floor layers under an underground river instead of the cave biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
 
 Fluid level, depth, basin depth, and headroom must fit strictly inside `dimensionHeight`. Underground heads remain non-rising downstream, but each routed point resolves its preferred fluid level before the non-rising constraint is applied, so a course can occupy multiple level terraces rather than one globally flattened height. Drops become narrow graded `UNDERGROUND_DROP` features with receiving basins; level runs become `UNDERGROUND_POOL`.
 
-Ordinary underground runs are compiled as continuous course-aligned passages. Their deterministic irregular outline is evaluated against the nearest centerline position, and the cross-section uses an arched ceiling and bowl-shaped bed with coherent longitudinal variation bounded by the configured depth and headroom. `geometry.underground` and `geometry.grottos` set the bed roundness and roughness of those passages, and `geometry.drops` shapes underground drops, sinkholes and receiving basins.
+Ordinary underground runs are compiled as continuous course-aligned passages. Their deterministic irregular outline is evaluated against the nearest centerline position, and the cross-section uses an arched ceiling and bowl-shaped bed with coherent longitudinal variation bounded by the configured depth and headroom. `geometry.underground` and `geometry.grottos` set the bed, wall and outline shape of those passages and chambers, and `geometry.drops` shapes underground drops, sinkholes and receiving basins.
 
 ### Grottos
 
@@ -415,6 +539,8 @@ Ordinary underground runs are compiled as continuous course-aligned passages. Th
 | `verticalRadius` | `7` | `6` | `1..64` |
 | `headroom` | `10` | `10` | `1..63` and less than the full chamber height |
 | `maximumVolume` | `8192` | `8192` | `1..1048576` distinct accepted mutation positions owned by that grotto segment |
+| `cliffMinimumHeight` | unset | not present | Blocks the coast must stand above the sea at the outlet for a river to end in a coastal grotto instead of an open mouth, `0..128`; unset uses the larger of `4` and `verticalRadius` |
+| `cliffSlopeFactor` | `0.5` | not present | Share of `cliffMinimumHeight` the coast's slope must reach at the outlet before a grotto is chosen over an open mouth, `0..4`; `0` ignores the slope and decides on height alone |
 
 A coastal grotto is admitted only at a proven coastal land/ocean boundary, either as the outlet of a river or as a standalone sea cave. Its pool is at sea level, and its ocean face is the only opening: the chamber is roofed and walled by the coast everywhere else, and its ocean apron reaches at least `horizontalRadius` from the chamber and covers every sea column beside a chamber column, so the whole sea face is an accepted opening rather than a breach of containment. An inland grotto is available only when `routing.inlandOutlets` includes `SINKHOLE_GROTTO`. Within each transit-connected routing component, proven ocean mouths and coastal grottos have priority only when their sea-level connection fits the requesting course's legal head range. An underground course whose maximum head is below sea level receives an inland grotto plan instead of being routed to an impossible coastal outlet.
 
@@ -433,6 +559,7 @@ Both forms are bounded, contained features. `maximumVolume` bounds the grotto se
 | `minimumSpacing` | `160` | `16..8192` blocks between two sea caves, and at least twice `horizontalRadius` |
 | `minimumCoastHeight` | `8` | `1..128`; the coast must stand this many blocks above the sea at the shoreline, at the back of the chamber and along its flanks |
 | `depth` | `12` | `0..128` blocks the chamber is swept inland from the shoreline; `0` leaves a single chamber at the shore |
+| `sweepJitterDegrees` | `25` | `0..90`, the largest angle the inland sweep may turn away from straight inland, chosen per cave; `0` sweeps every sea cave straight in from the shore |
 
 A site that fails a rule is reported as an `OUTLET` candidate of type `COASTAL_GROTTO` in the tile diagnostics: `SURFACE_HEAD_RANGE` for a coast that is too low, `SOURCE_SPACING` for a site too close to another sea cave or to a river outlet, `VOLUME_LIMIT` when the swept chamber cannot fit `maximumVolume`, `SOURCE_QUOTA` once the tile has its `maximumPerTile`, and `CAVE_CONTAINMENT` when the chamber would break out of the coast anywhere but its ocean face.
 
@@ -533,6 +660,8 @@ A non-null field at the later scope replaces the inherited value. Omitted or `nu
     "routingMultiplier": 0.7,
     "bankMultiplier": 1.5,
     "shoreBiomeWidth": 6,
+    "shoreWidth": 4,
+    "erosion": true,
     "confined": false
   }
 }
@@ -575,9 +704,15 @@ A viable `REQUIRED_HEADWATER` policy site intrinsically requests at least one so
 | `routingMultiplier` | Local route-cost scale, `0..64` |
 | `bankMultiplier` | Local scale on `banks.blendSlope`, `0..4` |
 | `shoreBiomeWidth` | Width in blocks of the shore biome band beside the water, `0..32`; unset areas use `banks.shoreWidth` |
+| `shoreWidth` | Width in blocks of the flattened shore bench beside the water, `0..16`; unset areas use `banks.shoreWidth`, and `0` starts the eroded valley side at the waterline |
+| `erosion` | `false` stops rivers eroding a valley in this area, leaving only the channel and the bench; unset areas follow `surface.erosion.enabled` |
 | `confined` | `true` keeps rivers inside this region (or biome): see below |
 
 `shoreBiomeWidth` sizes the band of `shoreBiomes` content beside the water for one area without touching the geometry: the flattened shore and the eroded valley keep following `banks.shoreWidth` and the bank settings, while the shore biome reaches as far as the policy says, over untouched ground when the band is wider than the valley, and not at all when it is `0`, which leaves the geometric shore with the bank biome. A region with wide beaches and a biome inside it with none is two policies. The widest band any policy of the dimension configures is part of the publication envelope, so a very wide band costs planning reach.
+
+`shoreWidth` is the geometry the band sits on: the flattened bench cut level with the bank top. It is the same measurement as `banks.shoreWidth` and replaces it for one area, so a desert region can be given a four-block beach while a jungle biome inside it is given none and its valley side starts at the waterline. The two fields are independent: a wide `shoreWidth` with `shoreBiomeWidth` at `0` gives a broad bench made of the bank biome, and a narrow `shoreWidth` with a wide `shoreBiomeWidth` gives a thin bench with shore content running out over untouched ground. Like the biome band, the widest bench any policy of the dimension configures widens the publication envelope, so a wide bench costs planning reach.
+
+`erosion` is the per-area form of `surface.erosion.enabled`. Where it resolves to `false`, a station's valley band is dropped entirely: the river crosses the area in a bare cut with its channel and its bench and nothing beyond them, and the terrain outside the bench keeps its natural height. Everything else about the course is unchanged, so a river may erode a valley across one region and cross the next in a slot.
 
 `confined` turns an area into a closed drainage basin. A course whose source lies in a confined region keeps its whole route inside that region, up to and including its outlet: a sea it reaches must lie in the same region, an inland outlet must sit inside it, and a source with no outlet reachable inside the area is rejected with the `CONFINED_NO_OUTLET` diagnostic instead of borrowing an outlet elsewhere. Set on a biome, the confines are that biome. The rule is enforced on the routing lattice and on the refined route between lattice nodes, so a course follows the area boundary to the resolution of `routing.sampleSpacing` and its refinement, and it applies to underground courses as well. Water that enters a confined area from outside stays there too: an unconfined river may flow into a confined region, but from that point it must end at one of the region's own outlets, so an area with no outlet also blocks rivers from passing through it.
 
@@ -608,10 +743,14 @@ A surface course is shaped in four steps, all of them working on the refined cen
 
 1. **Channel profile.** Width and depth are resolved at every station from `channel.width` and `channel.depth`, the effective policy multipliers, and the coherent outline wobble from `channel.roughness`. The headwater opens as a spring pool `springWidthRatio` times the channel width and one block deeper, narrowing to the cruise width over `springLength` blocks. Over the last `mouths.inletLength` blocks before a coast the width grows toward `mouths.flareRatio` times the upstream width and the depth grows by `mouths.inletDepth`.
 2. **Water head.** For each station the planner reads the natural ground on a ring just outside the channel outline on both banks, takes the lowest bank sample across that station and the two after it, and subtracts `channel.sink`. Heads are then made non-rising downstream: a value that would rise is held at the previous head, and a value that would fall is limited to one block per `flow.cascadeRun` blocks of run unless the pair straddles a natural cliff of at least `flow.waterfallMinimumDrop`, where the head drops by the cliff in one step. Heads inside the inlet are sea level as far inland as the ground can be cut to sea level within `mouths.maximumIncision`, and the reach above it, half the inlet length long, grades down one block per station into the inlet wherever that cut fits. A station whose head would need a cut deeper than `channel.maximumIncision` rejects the course, except in the inlet and its approach, where `mouths.maximumIncision` is the limit; there are no bores under ridges for surface rivers, so a route that cannot stay open on the surface is not published.
-3. **Erosion field.** Every column near the centerline receives a target height. Inside the channel the target is the bowl-shaped bed below the head. The bank top on both sides sits at `head + channel.sink`, so with the default sink the ground beside the water is level with its surface. The curve of the bowl and of the valley sides comes from `surface.erosion`. From the shore outward the target rises along a smooth curve back to the natural height across a blend band whose width is `cut x banks.blendSlope`, clamped to `minimumBlendWidth..maximumBlendWidth`, where `cut` is how far the bank top sits below natural ground at that station. The published terrain is `min(natural, target)`: the field only ever lowers ground. Water is published only where the bed sits below the head and the surrounding bank tops contain it.
+3. **Erosion field.** Every column near the centerline receives a target height. Inside the channel the target is the bed below the head, shaped by `erosion.bedProfile`. The bank top on both sides sits at `head + channel.sink`, so with the default sink the ground beside the water is level with its surface. The shore bench runs from the waterline out to `banks.shoreWidth`, or to `riverPolicy.shoreWidth` where the area sets one, climbing `banks.shoreRise` blocks over that distance. From the landward edge of the bench the target rises back to the natural height across a blend band whose width is `cut x banks.blendSlope + banks.blendBaseWidth`, clamped to `minimumBlendWidth..maximumBlendWidth`, where `cut` is how far the bench edge sits below natural ground at that station, and the shape of that rise is `erosion.style`. The published terrain is `min(natural, target)`: the field only ever lowers ground. Water is published only where the bed sits below the head and the surrounding bank tops contain it.
 4. **Labels.** Each reach is labelled from its head gradient: a level reach is a `SURFACE_POOL`, a single one-block step is a `RIFFLE`, consecutive one-block steps are a `CASCADE`, and a cliff-sized step is a `WATERFALL`. Labels do not change the geometry; they drive Vision, locators, and rendering.
 
 The head is derived from the banks rather than the centerline so a river running along a hillside is cut into the slope with the bank on the uphill side, instead of sitting on a shelf above the downhill side. Because every step is one block, a river descending a hill leaves no chips, ledges, or floating water. Because the blend width follows the depth of the cut, a shallow crossing of flat ground erodes only a few blocks either side, while a deep cut through a ridge opens into a wide valley.
+
+`erosion.style` decides the shape of the valley side across the blend band. `SMOOTH` is an eased S-curve, flat at the shore and at the top and steepest across the middle, and it is the shape Iris cut before the field existed. `LINEAR` is a straight slope with a sharp shoulder at the shore and a sharp lip at the top. `CONCAVE` climbs fast beside the shore and flattens toward natural terrain, hollowing the valley. `TERRACED` cuts the eased curve into `terraceSteps` level steps. `CLIFF` holds the band level at the bank top for `cliffFraction` of its width and then rises in one vertical wall. `blendCurve` skews all of them except `CLIFF`.
+
+`erosion.bedProfile` decides the cross-section of the wet bed. `BOWL` holds full depth over `thalwegFraction` of the half-width and eases up to a one-block edge, and it is the profile Iris cut before the field existed. `FLAT` holds full depth to the waterline, so the channel edge drops straight to the bed. `V` slopes straight from full depth at the centerline to one block at the edge and ignores `thalwegFraction`. `U` holds the thalweg deep almost to the edge and then rises steeply, giving a trough with steep sides.
 
 When `banks.exposeCutStrata` is `true`, eroded bank columns use the biome layer that would naturally sit at that depth, so a cut through grassland shows dirt and then stone rather than repeating the surface layer down the whole bank.
 
@@ -647,7 +786,7 @@ Every surface write is carve-only: no column is ever raised above its natural he
 
 The post-generation passes that place slabs, fill potholes, remove floating nibs, and dress walls skip every column inside a river footprint and its immediate neighbours, so the channel, shore and bank blend are published exactly as planned. Automatic surface object placement is rejected when any transformed support column intersects an accepted river channel or shore band, even with `forcePlace`, `underwater`, or `onwater`; this stops biome and region scatter from bridging a channel or standing in the shore. Explicit-Y object placement, including `/iris object paste`, remains available for intentional authoring inside a river.
 
-Only the inner `shoreWidth` can use `shoreBiomes`. The bank blend uses `bankBiomes` when the policy sets it and otherwise keeps the natural parent biome, so decorators and surfaces there stay consistent with the surrounding land. The final channel width and depth include the effective region and biome multipliers and vary continuously along the course.
+The shore bench beside the water is `banks.shoreWidth` wide, or `riverPolicy.shoreWidth` where the area sets one, and it rises by `banks.shoreRise` from the waterline to its landward edge. Its content comes from `shoreBiomes` out to `riverPolicy.shoreBiomeWidth`, which is a separate band and may be wider or narrower than the bench. The bank blend uses `bankBiomes` when the policy sets it and otherwise keeps the natural parent biome, so decorators and surfaces there stay consistent with the surrounding land. `banks.shoreMaterial`, `banks.bankMaterial` and `bed.material` paint over the top layers of the bench, the bank and the channel bed when they are enabled, ahead of whichever biome supplied them. The final channel width and depth include the effective region and biome multipliers and vary continuously along the course.
 
 ### Ocean boundary
 

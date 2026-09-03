@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -186,16 +186,22 @@ A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`)
 | Policy field | What it controls |
 |--------------|------------------|
 | `placement` | `DISABLED`, `TRANSIT_ONLY`, `NATURAL`, `PREFERRED_HEADWATER`, or `REQUIRED_HEADWATER` source and transit admission |
-| `routing` | `BLOCK`, `AVOID`, `ALLOW`, or `PREFER` terrain-routing treatment |
+| `routing` | `BLOCK`, `AVOID`, or `ALLOW` terrain-routing treatment |
 | `outletAdmission` | Whether accepted river outlets may terminate in this region |
 | `profiles` | Preferred dimension-owned hydrology profile ids |
-| `surfaceBiomes`, `mouthBiomes`, `shoreBiomes` | Biomes selected for the wet channel, outlet, and narrow shore footprint |
-| `dryBiomes`, `floodedCaveBiomes` | Biomes selected for dry carved volume and flooded underground or grotto volume |
+| `surfaceBiomes`, `mouthBiomes`, `shoreBiomes` | Biomes selected for the wet channel, outlet, and shore bench |
+| `bankBiomes`, `floodedCaveBiomes` | Biomes selected for the eroded bank outside the bench and for flooded underground or grotto volume |
+| `surfacePools` | Standing pool ids from `hydrology.surfacePools` allowed in this region; an empty list disables them |
 | `widthMultiplier`, `depthMultiplier` | Accepted channel-size multipliers |
 | `incisionMultiplier` | Maximum terrain-incision multiplier; zero forbids incision |
 | `routingMultiplier` | Terrain-guided route-cost multiplier |
+| `bankMultiplier` | Multiplier on the eroded bank width outside the shore bench |
+| `shoreBiomeWidth` | Width in blocks of the `shoreBiomes` band beside the water; unset regions use `banks.shoreWidth` |
+| `shoreWidth` | Width in blocks of the flattened shore bench beside the water; unset regions use `banks.shoreWidth`, and `0` starts the eroded valley side at the waterline |
+| `erosion` | `false` stops rivers eroding a valley in this region, leaving only the channel and the bench; unset regions follow `surface.erosion.enabled` |
+| `confined` | `true` makes this region a closed drainage basin: a river born here keeps its whole route and its outlet inside it, and a river that flows in never leaves |
 
-The physical drainage graph, density, channel dimensions, and legal outlet families remain dimension-owned. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology).
+The physical drainage graph, density, channel dimensions, and legal outlet families remain dimension-owned. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology) and [36 - Rivers](/iris/36-rivers).
 
 ### Zooms and the shore band
 
