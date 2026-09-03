@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-03T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -734,7 +734,7 @@ A jigsaw graph authored on a newer Minecraft may use objects containing blocks a
 
 A dropped pool entry changes the weight distribution of that pool, so a graph that loses pieces assembles differently on the older version rather than failing. `empty: true` entries and `fallback` pools are unaffected unless their own pieces are excluded. An excluded structure simply never places; the biomes and regions that listed it keep generating.
 
-The same cascade runs against the compiled structure graph during pack validation, so a graph that ends up with no usable start pool is reported at startup rather than at first generation.
+Pack validation loads every piece, pool and structure through the gate, so a structure left without a usable start pool is reported at startup (`excluded structure <key> at start pool <pool> is unavailable`) rather than at first generation. During assembly an excluded piece is never drawn, and a pool whose pieces are all excluded ends its branch instead of failing the assembly.
 
 ## Failure recovery
 

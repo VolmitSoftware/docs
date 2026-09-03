@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-03T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -569,4 +569,4 @@ A `.iob` saved on a newer Minecraft can contain blocks an older server does not 
 | A block only appears on the `find` side of an `edit` rule, or in a `markers[].mark` list | Nothing happens. Both lists only select blocks that already exist in the object; a block that cannot exist matches nothing |
 | Dropping objects empties the `place` pool | The placement is excluded and skipped entirely |
 
-The decision is made once when the pool is first built, and again on Studio hotload. An `edit` rule with `chance` below 1 does not save an object, because the missing block would still be written on the rolls that fail. `exact: true` only saves it when the rule actually matches the saved block state.
+The decision is made once when the pool is first built, and again on Studio hotload. An `edit` rule with `chance` below 1 does not save an object, because the missing block would still be written on the rolls that fail. `exact: true` only saves it when the rule actually matches the saved block state. A dropped object is reported once per missing palette key (`dropped object <key> at <placement> place[<index>]`), so every fallback it would need is visible at once; a kept object produces no finding, and two placements that list the same single object share one report line. The placement itself keeps its position in the owning `objects` list, so the other placements in that biome or region roll their chances exactly as before.

@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-03T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -207,16 +207,23 @@ Lists that only select blocks which already exist are never gated: `edit[].find`
 
 ### The startup listing
 
-After the pack validation lines, each pack with findings prints one block. Findings are grouped by key and capped at three subjects per key, with a `+N more` tail:
+The pack validation line carries the summary, and each pack with findings then prints one block. Findings are grouped by key, ordered inside a key as exclusions, then drops, then substitutions, and capped at three subjects per key with a `+N more` tail. This is the shipped Overworld pack on Minecraft 26.1.2:
 
 ```text
+Pack 'overworld' validated. 6 content keys unavailable on Minecraft 26.1.2: 11 excluded, 14 dropped.
 Pack 'overworld': content unavailable on Minecraft 26.1.2
-  minecraft:sulfur (block): excluded biome cave/sulfur-grotto; excluded biome desert/sulfur-flats; dropped object cave/sulfur-vent at cave/sulfur-grotto objects[0]; +2 more
-  minecraft:camel (entity): excluded entity camel; dropped spawn from spawner desert
+  minecraft:sulfur_cube (entity): excluded entity standard/passive/sulfur-cube at type
+  minecraft:sulfur_caves (biome): excluded biome carving/sulfur-hollows at derivative; excluded biome carving/sulfur at derivative; dropped biome carving/sulfur-hollows at vanillaDerivative; +1 more
+  minecraft:sulfur (block): excluded biome carving/sulfur-hollows at wall.palette[0]; excluded biome carving/sulfur at wall.palette[0]; dropped object carving/sulfur/pool-3 at carving/sulfur/pool-3 place[0]; +2 more
+  minecraft:cinnabar (block): excluded biome carving/sulfur-hollows at wall.palette[1]; excluded biome carving/sulfur at wall.palette[1]; excluded placement carving/sulfur/pool-3 at no objects remain; +4 more
+  minecraft:sulfur_spike (block): excluded biome carving/sulfur-hollows at decorators[0].palette[0]; excluded biome carving/sulfur at decorators[0].palette[0]; dropped object carving/sulfur/pool-3 at carving/sulfur/pool-3 place[0]; +2 more
+  minecraft:potent_sulfur (block): dropped object carving/sulfur/pool-3 at carving/sulfur/pool-3 place[0]; dropped object carving/sulfur/pool-1 at carving/sulfur/pool-1, carving/sulfur/pool-2 place[0]; dropped object carving/sulfur/pool-2 at carving/sulfur/pool-1, carving/sulfur/pool-2 place[1]
   Update the server to a newer Minecraft to restore this content, or declare fallbacks (dimension blockFallbacks, block backup). /iris pack compat overworld lists everything.
 ```
 
-Nothing is printed when a pack has no findings. Each engine also logs the summary once when its world pack finishes loading.
+Each subject reads `<action> <unit> <key> at <detail>`. The unit is the registrant type (`biome`, `region`, `dimension`, `entity`, `spawner`, `loot`, `jigsaw piece`, `jigsaw pool`, `structure`, `mod`), `placement` for an object placement (named by its `place` list), or `object` for one object dropped from a placement. The detail is the JSON field path that composes the key (`layers[0].palette[1]`, `edit[0].replace.palette[0]`, `type`), the cascade reason (`no land biomes remain`, `no objects remain`, `no entity spawns remain`), or the reference that was dropped (`regions[2] cave-region`). A substitution names what was generated instead: `(backup minecraft:sand)` or `(fallback minecraft:stone)`. A dropped object lists every missing key in its palette, each on that key's line. A registrant that is dropped from several pools is listed once per pool owner, not once per pool.
+
+Nothing is printed when a pack has no findings. Each engine also logs one line when its world runtime is built, `World '<world>' pack '<dimension>' 6 content keys unavailable on Minecraft 26.1.2: 16 excluded, 16 dropped, 6 substituted.`, taking the counts from the published validation result when the pack has one and otherwise from what that engine gated while loading its dimension, regions and biomes.
 
 When the platform registry cannot be consulted while the pack loads — an early-boot condition on the mod loaders — the report carries an `(incomplete: …)` line and nothing is excluded. An unreadable registry never counts as missing content.
 
@@ -227,7 +234,7 @@ When the platform registry cannot be consulted while the pack loads — an early
 | Bukkit | `/iris pack compat [pack=<key>]` |
 | Modded | `/iris pack compat [<pack>]` |
 
-Prints every finding for the pack, grouped by key, with no per-key cap. It reads the published validation report and does not reload the pack, so it is safe on a live server. Omitting the pack covers every visible pack. Full syntax in [04 - Commands & Permissions](/iris/04-commands-permissions).
+Prints every finding for the pack, grouped by key and ordered the same way as the startup block, with no per-key cap; on Bukkit each key line is prefixed with `!`. It reads the published validation report and does not reload the pack, so it is safe on a live server, and it works from the console. Omitting the pack (or passing `*` on Bukkit) covers every pack that has a published validation result; a pack without one prints a hint to run `/iris pack validate` first. Full syntax in [04 - Commands & Permissions](/iris/04-commands-permissions).
 
 ### How this relates to validate and status
 
