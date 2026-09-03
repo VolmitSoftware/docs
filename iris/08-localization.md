@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-09-03T07:33:50.000Z
+date: 2026-09-03T19:15:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,7 +96,7 @@ On a successful load Iris logs `Loaded locale <id> with N fallback entries.` Tha
 
 On Bukkit-family servers, run `/iris language server edit` to choose a locale, or `/iris language server edit de_DE` to edit German directly. The server language picker also offers an Edit link for each locale. The inventory editor requires `iris.all` or `volmit.language.admin` and is available only to players.
 
-Saving writes that locale's message to `plugins/Iris/languages/overrides/<locale>.json`, including `en_US`, after validating the message shape, placeholders, and complete candidate catalog. Invalid edits or messages changed since opening are rejected without replacing the file. The edited locale refreshes for players already using it and for the server when it is the active default; editing never changes server or personal language choices. Existing incomplete catalogs can be opened for repair without selecting them. Fabric, Forge, and NeoForge use the same override format through file editing and do not expose this inventory editor.
+Saving writes that locale's message to `plugins/Iris/languages/overrides/<locale>.json`, including `en_US`, after validating the message shape, placeholders, and complete candidate catalog. Invalid edits or messages changed since opening are rejected without replacing the file. The edited locale refreshes for players already using it and for the server when it is the active default; editing never changes server or personal language choices. Existing incomplete catalogs can be opened for repair without selecting them. On Bukkit-family servers, normal, creative-mode, and drag inventory events use the platform's runtime inventory-view ABI. Fabric, Forge, and NeoForge use the same override format through file editing and do not expose this inventory editor.
 
 ## Downloaded server locales
 

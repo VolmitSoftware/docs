@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-03T07:33:50.000Z
+date: 2026-09-03T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -66,7 +66,7 @@ Confirm with `/iris pregen status`. A running job prints the target world, gener
 /iris studio open overworld 1337             # modded
 ```
 
-A transient studio world opens and you are teleported into it in spectator mode. Player arrival for `open` and `tpstudio` has one absolute 10-second deadline measured from command admission, including time queued behind an existing Studio transition; an expired request cannot teleport late. During Bukkit standard entry, Iris temporarily caps only the entering player's view distance at 2 and restores the prior value when the transition succeeds or fails. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio remain creative editing workspaces. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+A transient studio world opens and you are teleported into it in spectator mode. Player arrival for `open` and `tpstudio` has one absolute 10-second deadline measured from command admission, including time queued behind an existing Studio transition; an expired request cannot teleport late. Iris never changes the entering player's view distance. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio remain creative editing workspaces. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ### Check a pack before you rely on it
 

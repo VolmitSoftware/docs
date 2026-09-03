@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-09-03T07:33:50.000Z
+date: 2026-09-03T19:34:26.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,10 +48,20 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 | `debugdump [upload=true]` | | both | Save a diagnostic report, uploading by default |
 | `monitor` | `m`, `mon` | player | Toggle action-bar monitor |
 | `monitoring-only` | `monitor-only`, `monitoring-mode`, `mo` | both | Toggle runtime-only suppression of gameplay features and every tweak while leaving monitoring, statistics, maps, actions, and commands available |
-| `set-player-view-distance <distance>` | `vd`, `view-distance` | player | Set current world view and simulation distance. Values above 32 are clamped. The command does not reject negative values. Paper setters are required |
+| `distance server view <distance>` | setting: `vd`, `view-distance` | both | Set the view distance across every loaded world |
+| `distance server simulation <distance>` | setting: `sd`, `simulation-distance` | both | Set the simulation distance across every loaded world |
+| `distance server send <distance>` | setting: `svd`, `send-view-distance` | both | Set the chunk send distance across every loaded world; `-1` inherits the server default |
+| `distance world view <distance> [world=<world>]` | setting: `vd`, `view-distance` | both | Set only the selected world's view distance |
+| `distance world simulation <distance> [world=<world>]` | setting: `sd`, `simulation-distance` | both | Set only the selected world's simulation distance |
+| `distance world send <distance> [world=<world>]` | setting: `svd`, `send-view-distance` | both | Set only the selected world's chunk send distance; `-1` inherits the server default |
+| `distance player view <distance> [player=<player>]` | setting: `vd`, `view-distance` | both | Set only the selected player's view distance; `-1` inherits the world value |
+| `distance player simulation <distance> [player=<player>]` | setting: `sd`, `simulation-distance` | both | Set only the selected player's simulation distance; `-1` inherits the world value |
+| `distance player send <distance> [player=<player>]` | setting: `svd`, `send-view-distance` | both | Set only the selected player's chunk send distance; `-1` inherits the world value |
 | `map [renderer=unknown]` | | player | Open the map selector, or give the selected React renderer map |
 | `reload` | `rl` | both | Reload React |
 | `version` | `v` | both | Show React version |
+
+Distance values must be from `2` through `32`. Player settings and server/world/player send distance also accept `-1` to inherit their parent setting. The server scope changes every currently loaded world; server configuration remains authoritative for worlds loaded later. Players may omit a world or player target to use themselves or their current world; console must name targets for those two scopes. Client-selected view distance is read-only, and the retired no-tick name is the same setting as view distance. An enabled `dynamic-view-distance` feature can later govern world view and simulation values, while `afk-view-shedding` can govern player send distance.
 
 `/react monitoring-only` does not rewrite any feature or tweak TOML. The state survives `/react reload` in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
 

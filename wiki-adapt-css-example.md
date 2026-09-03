@@ -2,7 +2,7 @@
 title: "Adapt — Complete CSS Page Example"
 description: "A responsive Wiki.js landing page built from verified Adapt documentation and source"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "meta, wikijs, css, layouts, adapt, examples"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -66,7 +66,7 @@ setup information is visible without reading the whole page.
     <span style="display:block;margin-top:.4rem;font-size:.78rem;font-weight:800;letter-spacing:.08em;opacity:.68">DECLARED ADAPTATIONS</span>
   </div>
   <div style="padding:1.15rem;background:var(--v-background-base,rgba(127,127,127,.07));color:inherit">
-    <strong style="display:block;font-size:clamp(1.25rem,3vw,1.7rem);line-height:1.15;color:#d82f35">2.0.0-26.2</strong>
+    <strong style="display:block;font-size:clamp(1.25rem,3vw,1.7rem);line-height:1.15;color:#d82f35">2.0.3-26.2</strong>
     <span style="display:block;margin-top:.4rem;font-size:.78rem;font-weight:800;letter-spacing:.08em;opacity:.68">PLUGIN BUILD</span>
   </div>
   <div style="padding:1.15rem;background:var(--v-background-base,rgba(127,127,127,.07));color:inherit">

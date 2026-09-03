@@ -83,13 +83,13 @@ The Gradle wrapper uses Java 25 and produces Java 17 bytecode.
 ./gradlew build
 ```
 
-The shaded artifact is `build/libs/ShapedPortals-2.0.0.jar`. The build also exports the React pack to `build/distributions/react-api-packs/`.
+The shaded artifact is `build/libs/ShapedPortals-2.0.1.jar`. The build also exports the React pack to `build/distributions/react-api-packs/`.
 
 Build checks cover tests, Spigot 1.20.1 and current Paper/Spigot API compilation, Java 17 class compatibility, VolmLib relocation, and the remote-language manifest. The manifest lists the 17 repository translations and pins a published repository revision; locale TOML files are downloaded when needed rather than bundled in the jar.
 
-`./gradlew publishToMavenLocal` runs the checks and publishes the shaded plugin and sources as `com.volmit:shapedportals:2.0.0`. The repository's build and local-publication tasks also refresh its configured staging jar.
+`./gradlew publishToMavenLocal` runs the checks and publishes the shaded plugin and sources as `com.volmit:shapedportals:2.0.1`. The repository's build and local-publication tasks also refresh its configured staging jar.
 
-`./gradlew buildPsychoLT` runs the checks, exports the React pack, and copies the shaded jar to the sibling `[Minecraft Server]/consumers/plugin-consumers/dropins/plugins/ShapedPortals.jar`. It also stages the versioned `ShapedPortals-2.0.0.jar` in the workspace `PluginOuts/` directory. The workspace `build-psycho-lt.sh` includes ShapedPortals with the other plugins and forwards its command-line arguments to Gradle.
+`./gradlew buildPsychoLT` runs the checks, exports the React pack, and copies the shaded jar to the sibling `[Minecraft Server]/consumers/plugin-consumers/dropins/plugins/ShapedPortals.jar`. It also stages the versioned `ShapedPortals-2.0.1.jar` in the workspace `PluginOuts/` directory. The workspace `build-psycho-lt.sh` includes ShapedPortals with the other plugins and forwards its command-line arguments to Gradle.
 
 The workspace script builds plugins concurrently by default and supports `--tests-only`, project and test worker limits, and per-project logs. See [Workspace builds](/volmlib/api/building).
 

@@ -9,6 +9,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 ---
 This atlas documents the current sources of the built-in Overworld and Underworld packs. Each entry treats the shared terrain identity once, then records how the two packs render and populate it differently. Only reachable content is included. An installed world keeps its pack snapshot until the operator updates it; source changes are not automatically present in previously downloaded releases.
 
+Overworld 4004 reduces every subterranean ore pass by 30% and permits ore on exterior terrain surfaces only in exact `minecraft:stone`. Cave-air walls retain normal deposit host rules, and individual surface biomes can replace the exterior host list. Underworld retains its independent ore table and exposure behavior.
+
 > **Pack maintenance requirement:** any update to either built-in pack that changes biome files, region selectors, dimension carving, children, floating biomes, terrain, materials, decoration, ecology, or reachability must update this atlas in the same workstream. A pack update with stale atlas pages is incomplete.
 {.is-warning}
 

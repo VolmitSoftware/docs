@@ -2,13 +2,13 @@
 title: "Installation & Configuration"
 description: "Adapt documentation: Installation & Configuration"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt 2.0.0-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
+Adapt 2.0.3-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
 
 Most settings hot-reload. Valid edits refresh open Adapt menus; invalid TOML is rejected while the current settings stay active.
 
@@ -77,7 +77,7 @@ This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` director
 
 | Property | Value |
 |---|---|
-| Version | `2.0.0-26.2` |
+| Version | `2.0.3-26.2` |
 | Main class | `art.arcane.adapt.Adapt` |
 | `api-version` | `26.1` |
 | Java toolchain | 25 |

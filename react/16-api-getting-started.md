@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "React documentation: API - Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ Compile against the React jar without bundling it:
 
 ```gradle
 dependencies {
-    compileOnly files('libs/React-2.0.0-26.2.jar')
+    compileOnly files('libs/React-2.0.3-26.2.jar')
 }
 ```
 

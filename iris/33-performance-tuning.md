@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -276,10 +276,9 @@ warming. Generation, Matter generation, Studio hotload, and entry teleport
 wait for completion, and `generation_cache_warm` must report
 `skipped=false`. Treat the overlapping warm and ring durations as one
 wall-clock interval rather than adding them.
-For the native teleport only, Iris caps the entering player's view distance
-at 2 and restores the saved value after success or failure. This removes
-full-radius chunk competition; it does not change how any requested chunk
-is generated.
+Iris never changes a player's view distance, and never changes a world's view
+or simulation distance. Those settings belong to the server and to the player's
+own client; entry works within whatever they are.
 Capture JProfiler around any slow pack
 preparation, runtime construction, structure activation, destination-chunk
 generation, or scheduler queue. Do not accelerate entry by changing its

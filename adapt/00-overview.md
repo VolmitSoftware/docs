@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Adapt documentation: Overview"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,7 +37,7 @@ Experimental Mutations add a second, late-game progression track. Protectors mak
 
 | Property | Value |
 |---|---|
-| Plugin version | `2.0.0-26.2` |
+| Plugin version | `2.0.3-26.2` |
 | Command root | `/adapt` |
 | Folia | Supported |
 | Skill lines | 23 |

@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Gloss documentation: API: Getting Started"
 published: true
-date: 2026-08-26
+date: 2026-09-03
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,7 +15,7 @@ Compile against the API jar that matches the installed Gloss version. Do not inc
 
 ```gradle
 dependencies {
-    compileOnly(files("libs/Gloss-3.0.0-26.2-api.jar"))
+    compileOnly(files("libs/Gloss-3.0.1-26.2-api.jar"))
 }
 ```
 

@@ -625,7 +625,7 @@ Path: `packs/overworld/dimensions/overworld.json` under the platform data direct
 | `preventLeafDecay` | `true` | Custom trees keep their canopies |
 | `caveProfile` | `enabled: true` | 3D caves on by default, overridden per region |
 | `carving` | one deep-dark band, world Y -250 to -175 | Depth-banded cave biome |
-| `ores` / `deposits` / `depositVariants` | 11 / 23 / 0 | Bedrock and stone bands plus Minecraft 26.2 ore shapes. Height providers and biome exceptions are normalized from the vanilla 384-block span into this dimension 768-block span. Attempt counts are twice vanilla. Host-aware automatic deepslate conversion applies |
+| `ores` / `deposits` / `depositVariants` | 11 / 23 / 0 | Bedrock and stone bands plus Minecraft 26.2 ore shapes. Height providers and biome exceptions are normalized from the vanilla 384-block span into this dimension 768-block span. The 19 subterranean ore passes retain 70% of their configured attempts, while exterior terrain-surface ore may replace exact stone only. Cave walls retain their normal host rules. Host-aware automatic deepslate conversion still applies |
 | `importedStructures` | adjustments for stronghold, trial chambers, mineshaft, village | Native structures re-fitted to Iris terrain |
 | `structures` | ancient city with `nativeSuppression: REPLACE_SOURCE` | Vanilla placement replaced by an Iris-anchored one |
 

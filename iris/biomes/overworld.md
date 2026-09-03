@@ -1,17 +1,17 @@
 ---
-title: "Overworld 4002"
+title: "Overworld 4004"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Overworld 4002 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
+Overworld 4004 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Overworld 4002 |
+| Built-in pack | Overworld 4004 |
 | Environment | `NORMAL` |
 | Build range | Y `-256..512` |
 | Logical height | `512` |
@@ -23,6 +23,8 @@ Overworld 4002 is the normal-environment half of the paired biome atlas. It supp
 | Dimension ores / deposits | 11 ore definitions and 23 deposit passes |
 | Dimension structures | One Ancient City placement with source replacement |
 | External datapacks | None |
+
+All 19 subterranean ore passes retain 70% of their configured clump attempts. Across dimension, region, and Rough Plains biome deposits, ore on exterior terrain surfaces may replace only exact `minecraft:stone`; buried and cave-wall ore retains each pass's broader host rules. Individual surface biomes can override the exterior host list. Underworld ore configuration remains independent.
 
 ## How selection works
 

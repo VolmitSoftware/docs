@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Gloss documentation: Getting Started"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -17,7 +17,7 @@ Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data
 | Server | Paper, Purpur, Leaf, Folia, Canvas or Spigot |
 | Minecraft | `26.1.2 - 26.2` |
 | Java | 25 |
-| Plugin version | `3.0.0-26.2`, api-version `26.1` |
+| Plugin version | `3.0.1-26.2`, api-version `26.1` |
 
 Gloss works without optional dependencies. PlaceholderAPI enables `%...%` tokens, Vault enables groups, and supported item plugins enable their item providers.
 

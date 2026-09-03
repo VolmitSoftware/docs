@@ -340,6 +340,7 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 | `floatingChildBiomes` | `IrisFloatingChildBiomes[]` | Floating islands above this biome columns, drawn using another biome materials. See below. |
 | `mergeFloatingChildBiomes` | boolean | When true every floating entry samples independently and islands can overlap. When false (default) one entry is chosen per column. |
 | `deposits` | `IrisDepositGenerator[]` | Blob deposits added on top of regional and dimension deposits. |
+| `surfaceOreReplaceableBlocks` | block-id array or omitted | Overrides every ore deposit's `surfaceReplaceableBlocks` on exterior terrain surfaces in this biome. Omit it to inherit the deposit list, use `[]` to forbid all surface ore, or list the exact permitted hosts. For example, `["minecraft:stone", "minecraft:sand"]` permits desert sand as well as stone. Cave walls are unaffected. |
 | `depositVariants` | `IrisDepositVariant[]` | Y-banded ore remaps. This is the first tier evaluated, ahead of region and dimension. First match in the tier wins. |
 | `oreDepositFrequencyMultiplier` | double 0-1 | Scales how many ore veins have their center in this biome. `0.4` keeps 40% of them. Non-ore deposits are untouched. Use it to make a biome ore-poor without editing the global generators. |
 | `oreDepositSizeMultiplier` | double 0.01-16 | Scales the block count of those veins. Use it for a biome with rare-but-huge veins (`frequency` down, `size` up). |

@@ -333,7 +333,7 @@ For each generator, once per chunk:
 4. Pick a random position in the chunk and sample the center Y using `heightDistribution`.
 5. Apply the placement scope, biome filter, host-block filter and air-exposure rule while stamping the clump.
 
-A block is written only when the target is solid host rock. It must not be air, fluid, or a cavern mark. It must be allowed by `replaceableBlocks` and inside the selected placement scope. Unless `replaceBedrock` is set, it must not be bedrock. Deposits therefore never overwrite cave air or water. `ABOVE_TERRAIN` still requires an existing solid host. It can mineralize a floating island without creating a floating ore block.
+A block is written only when the target is solid host rock. It must not be air, fluid, or a cavern mark, and it must be inside the selected placement scope. Buried and cave-wall candidates use `replaceableBlocks`. When an ore candidate occupies the terrain top or touches exterior ordinary air, `surfaceReplaceableBlocks` replaces that buried-host rule. `minecraft:cave_air` does not identify a terrain surface, so cave walls retain the normal host rules. The surface biome at each candidate may replace the deposit's surface list through `surfaceOreReplaceableBlocks`. Unless `replaceBedrock` is set, the target must not be bedrock. Deposits therefore never overwrite cave air or water. `ABOVE_TERRAIN` still requires an existing solid host. It can mineralize a floating island without creating a floating ore block.
 
 **Legacy depth limits remain the default.** `placementScope: TERRAIN`, `heightDistribution: CLIPPED_UNIFORM` and `surfaceClearance: 7` preserve the old behavior. The center band is clipped to terrain and individual cells stay below their column surface limit. Vanilla-like definitions normally use `UNIFORM` or `TRIANGLE` with clearance `0`. Those sample the authored band before rejecting out-of-world cells. A distribution can taper naturally into the build floor.
 
@@ -355,19 +355,21 @@ Every height is engine-local. Convert an absolute world Y with `localY = worldY 
 | `discardChanceOnAirExposure` | double 0..1 | `0` | Discards this fraction of candidates touching orthogonal air. Chunk-edge neighbors outside the current generation buffer are treated as covered |
 | `palette` | `IrisBlockData[]` | required | Clump materials, picked uniformly per block. **`weight` is ignored here**, unlike every other palette. List a block twice to double it |
 | `replaceableBlocks` | block-id array | `[]` | Exact solid host materials this deposit may replace. Empty preserves the legacy any-solid rule |
+| `surfaceReplaceableBlocks` | block-id array | `[]` | Host allowlist for ore candidates at the terrain top or touching exterior ordinary air. Empty adds no surface restriction. Cave-air walls and non-ore deposits are unaffected |
 | `biomeScope` | `SURFACE`, `CAVE` | `CAVE` | Which biome lookup the include/exclude lists inspect |
 | `includedBiomes` / `excludedBiomes` | biome-key array | `[]` | Iris biome load keys or vanilla derivative ids. Inclusion is checked before exclusion |
 | `varience` | int 1..64 | `3` | Number of cached `IRIS` silhouettes. It does not affect either vanilla shape. The field name is spelled this way in code |
 | `replaceBedrock` | boolean | `false` | Allows overwriting bedrock |
 
-### Biome ore multipliers
+### Biome ore controls
 
 | Field | Range | Default | What it does |
 |-------|-------|---------|--------------|
+| `surfaceOreReplaceableBlocks` | block-id array, omitted, or `[]` | omitted | Replaces the deposit surface host list in this surface biome. Omitted inherits, `[]` forbids all terrain-surface ore, and a nonempty list permits exactly those hosts |
 | `oreDepositFrequencyMultiplier` | 0..1 | `1` | Drops that fraction of ore clumps whose center lands in this biome. `0.4` keeps 40%. It cannot increase frequency. The range stops at 1 |
 | `oreDepositSizeMultiplier` | 0.01..16 | `1` | Rescales ore clump block counts in this biome. This one can go up, to 16x |
 
-Both apply only to deposits whose palette resolves to at least one ore block. Both are read from the **cave**-biome lookup at the clump position, which falls back to the surface biome above `caveMinDepthBelowSurface`. A deep cave biome can therefore enrich or starve ore at depth independently of the biome on the surface.
+All three controls apply only to deposits whose palette resolves to at least one ore block. The two multipliers are read from the **cave**-biome lookup at the clump position, which falls back to the surface biome above `caveMinDepthBelowSurface`. A deep cave biome can therefore enrich or starve ore at depth independently of the biome on the surface. The surface host override instead uses the surface biome at each candidate block, so one clump crossing a biome boundary follows each side's surface policy.
 
 ### Deposit variants (`IrisDepositVariant`)
 
@@ -425,7 +427,7 @@ Do these one at a time, on a focused biome that already produces correct height.
 
 **Decorators.** Start with a single decorator, `STATIC` style, low `chance`. Confirm it appears, then switch to a wispy or cellular style to get patches. Add `partOf` variants for shore, sea, and ceiling content. Set `stackMin`/`stackMax` and `topPalette` for cane, cactus, and bamboo. The configured bounds are the actual inclusive block-count bounds. Extract repeated definitions into `snippet/decorator/*.json` (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)). Always check somewhere the filter should *reject* the decorator, not just somewhere it should accept it.
 
-**Deposits.** Put broad stone blobs and common ores on the dimension, regional minerals on regions, signature ores on biomes. Translate vanilla absolute, bottom-relative and top-relative anchors into engine-local Y before you tune counts. When a dimension stretches the vanilla vertical span, normalize each vanilla anchor. Use the same fraction of the custom span. Do not copy the raw world Y. Use `replaceableBlocks` so a vein cannot eat soil, glass, or decorative strata. Raise `varience` only for `IRIS` shapes. Add `depositVariants` last, and only for ids automatic host-aware deepslate conversion does not handle.
+**Deposits.** Put broad stone blobs and common ores on the dimension, regional minerals on regions, signature ores on biomes. Translate vanilla absolute, bottom-relative and top-relative anchors into engine-local Y before you tune counts. When a dimension stretches the vanilla vertical span, normalize each vanilla anchor. Use the same fraction of the custom span. Do not copy the raw world Y. Use `replaceableBlocks` for the complete buried and cave-wall host set, `surfaceReplaceableBlocks` when exterior terrain needs a narrower set, and biome `surfaceOreReplaceableBlocks` for local overrides such as sand-bearing deserts. Raise `varience` only for `IRIS` shapes. Add `depositVariants` last, and only for ids automatic host-aware deepslate conversion does not handle.
 
 ## Practical notes
 
