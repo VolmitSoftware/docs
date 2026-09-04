@@ -2,7 +2,7 @@
 title: "Adapt"
 description: "Skills, progression, and abilities for Paper, Purpur, and Folia servers"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04T16:14:14.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,13 +36,13 @@ Some adaptations are passive. Others use an action such as sneaking, jumping, at
 
 ## Server setup
 
-- [Configuration math](/adapt/05-configuration-math) covers XP curves, ability power, and farm prevention.
-- [GUI customization](/adapt/06-gui-customization) covers menu size, icons, and ordering.
-- [Protection and regions](/adapt/08-protection-region-policy) covers WorldGuard and claim plugins.
-- [Integrations](/adapt/09-integrations) covers PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics.
-- [Mutations](/adapt/34-mutations-overview) are an optional second progression system.
-- [Items and recipes](/adapt/36-items-orbs-bound-objects) covers orbs, backpacks, and bound items.
-- [Cross-server storage](/adapt/39-velocity-cross-server) covers SQL and Redis handoff.
+- [Configuration math *XP curves, ability power, and farm prevention*](/adapt/05-configuration-math)
+- [GUI customization *Menu size, icons, and ordering*](/adapt/06-gui-customization)
+- [Protection and regions *WorldGuard and claim plugins*](/adapt/08-protection-region-policy)
+- [Integrations *PlaceholderAPI, Vault, HiddenOre, Iris, AdvancedChests, and MagicCosmetics*](/adapt/09-integrations)
+- [Mutations *An optional second progression system*](/adapt/34-mutations-overview)
+- [Items and recipes *Orbs, backpacks, and bound items*](/adapt/36-items-orbs-bound-objects)
+- [Cross-server storage *SQL and Redis handoff*](/adapt/39-velocity-cross-server)
 {.links-list}
 
 Plugin developers can start with the [Adapt API guide](/adapt/41-api-getting-started).

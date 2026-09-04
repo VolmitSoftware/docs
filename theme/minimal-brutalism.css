@@ -1280,6 +1280,39 @@ body,
   text-decoration: none !important;
 }
 
+.v-main .contents :is(ul, ol).links-list > li > a:has(> em) {
+  display: block;
+  min-width: 0;
+  min-height: 44px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.v-main .contents :is(ul:not(.tabset-tabs), ol).links-list > li > a > em {
+  display: block;
+  margin: 6px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: var(--volmit-muted) !important;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.v-main .contents :is(ul, ol).links-list > li > a[href^="http"]:has(> em) {
+  position: relative;
+  padding-right: 44px !important;
+}
+
+.v-main .contents :is(ul, ol).links-list > li > a[href^="http"]:has(> em)::after {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  margin: 0;
+}
+
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) .links-list li a {
   padding-right: 42px !important;
 }
