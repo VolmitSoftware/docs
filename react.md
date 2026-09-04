@@ -2,7 +2,7 @@
 title: React
 description: React performance monitoring and optimization for Paper and Folia
 published: true
-date: 2026-09-04T09:19:42.856Z
+date: 2026-09-04T09:19:46.771Z
 tags: react
 editor: markdown
 dateCreated: 2026-08-21T00:31:42.920Z
