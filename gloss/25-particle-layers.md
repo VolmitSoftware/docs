@@ -2,7 +2,7 @@
 title: "Particle Layers"
 description: "Gloss documentation: particle geometry behind in-world displays"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z
@@ -38,7 +38,7 @@ Add them through a document's top-level `particleLayers` array:
 
 ## Geometry
 
-Common geometry types are `line`, `frame`, `box`, `plane`, `glyphFill`, and authored points. Use `placement.depth` to move particles in front of or behind the display.
+Common geometry types are `line`, `frame`, `box`, `plane`, `glyphFill`, and custom points. Use `placement.depth` to move particles in front of or behind the display.
 
 Documents allow up to 64 uniquely named layers. Keep emission counts and intervals low; Gloss applies the configured per-viewer and global particle budgets.
 

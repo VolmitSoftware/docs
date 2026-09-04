@@ -1,8 +1,8 @@
 ---
 title: "API: Menus"
-description: "Gloss documentation: API: Menus"
+description: "Build and open holographic menus through the Gloss API"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -41,8 +41,8 @@ IDs may contain letters, numbers, `_`, `-`, and `.`. Component IDs must be uniqu
 | `maxDistance(double)` | `8` | Close beyond this distance |
 | `closeOnDeath(boolean)` | `true` | Close on death |
 | `closeOnTeleport(boolean)` | `true` | Close on teleport |
-| `component(HoloComponent)` | — | Add text, an image, an item, or a button |
-| `particleLayer(ParticleLayer)` | — | Add a particle layer |
+| `component(HoloComponent)` | Not applicable | Add text, an image, an item, or a button |
+| `particleLayer(ParticleLayer)` | Not applicable | Add a particle layer |
 
 ## Update or close it
 

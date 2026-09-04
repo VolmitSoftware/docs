@@ -1,17 +1,19 @@
 ---
 title: "Actions Catalog"
-description: "React documentation: Actions Catalog"
+description: "Operator actions, parameters, and safety rules"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Operator-invoked actions queue one-shot cleanup or lag-response jobs. Every action TOML contains inherited `enabled = true`. Command and API invocation parameters are separate objects created for each ticket. React does not persist them to TOML.
+Operator actions queue one-time cleanup or lag-response jobs. Every action TOML inherits `enabled = true`; command and API parameters belong to one ticket and are not persisted.
+
+## Actions
 
 List actions with `/react action audit` (aliases `list`, `ls`). Disabling an action prevents new tickets from running.
 
-The HTTP action API marks `purge-entities`, `purge-chunks`, `collect-garbage`, `action-quarantine-hot-chunks`, `action-trim-entities-by-age-priority`, and `action-incident-playbook` as destructive. Executing any of those exact IDs requires an admin token and `confirm:true`; operator tokens can execute only non-destructive actions. The canonical runtime IDs are also the authorization-gate IDs, so the three `action-`-prefixed actions cannot bypass confirmation.
+The HTTP API treats `purge-entities`, `purge-chunks`, `collect-garbage`, `action-quarantine-hot-chunks`, `action-trim-entities-by-age-priority`, and `action-incident-playbook` as destructive. Those IDs require an admin token and `confirm:true`; operator tokens can run only non-destructive actions. Authorization uses the canonical runtime ID, so the `action-` prefix cannot bypass confirmation.
 
 ### `collect-garbage`
 

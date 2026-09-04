@@ -1,19 +1,15 @@
 ---
 title: "Skill - Unarmed"
-description: "Adapt documentation: Skill - Unarmed"
+description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Unarmed is the bare-hands skill. You level it by fighting without a weapon. The twelve adaptations turn punching from a joke into a real build. You get flat damage on every hit. Sprint charges launch mobs. Combos snowball. Disarms leave a skeleton holding nothing. A clap shoves a whole cone of enemies away.
+Unarmed gains XP from attacks made without a melee tool in the main hand. Axes, pickaxes, hoes, shovels, swords, tridents, spears, and maces disable the skill; other items still count. Some adaptations also require an empty off hand.
 
-The skill counts a hit as unarmed when your main hand is not a melee tool. Axes, pickaxes, hoes, shovels, swords, tridents, spears, and maces all disable it. A torch, a block, or an empty fist all count. Individual adaptations are stricter. Most also check your off hand. Sucker Punch and Meditation require both hands to be empty.
-
-Two of the adaptations reward going without armor as well. Glass Cannon multiplies your punches when you are wearing nothing at all. Meditation slowly builds absorption hearts while you sit still. That is the closest thing this skill has to armor.
-
-If you are starting out, Iron Fists and Unarmed Power are the plain damage picks. Combo Chain and Battering Charge are where it gets fun.
+Its 12 adaptations add punch damage, sprint charges, combos, disarms, slowing, shockwaves, block breaking, grappling, recovery, and meditation. Glass Cannon and Meditation also reward fighting without armor.
 
 ## How you earn Unarmed XP
 
@@ -34,7 +30,7 @@ Where an adaptation is described as needing "bare hands", the code checks that n
 
 ### Sucker Punch (`unarmed-sucker-punch`)
 
-A sprinting punch with a truly empty main hand multiplies your damage. Killing a full-health target in one such punch counts toward a knockout milestone, complete with a flash and a shockwave ring.
+A sprinting punch with an empty main hand multiplies your damage. Killing a full-health target in one such punch counts toward a knockout milestone, complete with a flash and a shockwave ring.
 
 How to use it:
 

@@ -1,21 +1,15 @@
 ---
 title: "Skill - Nether"
-description: "Adapt documentation: Skill - Nether"
+description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Nether is the survival skill for the fire dimension. The skill itself pays out for wither business: taking wither damage, punching a Wither boss, killing wither skeletons, killing the Wither, and breaking wither roses. Everything else you earn in the Nether comes from the adaptations themselves. Most of them hand out their own XP for the thing they do.
+Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, and breaking wither roses. Many adaptations also award XP for their own actions.
 
-The tree is mostly about not dying to the terrain. Fire Resistance, Ashwalker, Ghast Ward, Wither Resistance, and Magma Skin each shave off a different way the Nether kills you. Lava Walker, Soul Strider, and Strider Bond fix the movement problems. Those
-problems are crossing a lava lake, slogging through soul sand, and riding a
-strider without it freezing up.
-
-The rest is about taking things out of the Nether. Netherrack Mason speeds up bulk mining and adds bonus drops. Piglin Broker fattens up barters. Crimson Feast turns fungi and roots into real food. Wither Harvest makes wither skeletons pay properly. Blaze Leech turns fire itself into food and regeneration.
-
-Skull Throw is the one loud button in the tree. Right-click with a wither skeleton skull and you throw it as a live wither skull projectile.
+Its 14 adaptations add fire, ghast, wither, and magma protection; lava and soul-sand movement; strider control; netherrack mining; piglin barter bonuses; Nether foods; wither loot; fire-based recovery; and thrown wither skulls.
 
 ## Adaptations
 

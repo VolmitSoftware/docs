@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-03T22:35:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z

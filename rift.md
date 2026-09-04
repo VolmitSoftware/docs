@@ -1,8 +1,8 @@
 ---
 title: "Rift World Manager"
-description: "Safe world creation, import, lifecycle, quarantine, restore, and teleport management"
+description: "World creation, loading, quarantine, restoration, and teleport management"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "rift, world-management, bukkit, paper, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -19,13 +19,13 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 | Storage | TOML configuration, profiles, and quarantine manifests |
 | Folia | Loads safely; dynamic world create/load/unload operations are gated |
 
-### Start here
+## Start here
 
-- [Overview *World states, lifecycle, and safety model*](/rift/00-overview)
-- [Installation & Compatibility *Server range, Java, and Folia limits*](/rift/01-installation-compatibility)
-- [Commands & Permissions *Complete syntax and permission nodes*](/rift/02-commands-permissions)
-- [Storage & Operations *Profiles, quarantine, protection, and recovery*](/rift/03-storage-operations)
-- [Configuration & Localization *Hot reload, editor, and language overrides*](/rift/04-configuration-localization)
+- [Overview *World states and lifecycle*](/rift/00-overview)
+- [Installation and compatibility *Requirements and Folia limits*](/rift/01-installation-compatibility)
+- [Commands and permissions *Syntax and access*](/rift/02-commands-permissions)
+- [Storage and operations *Profiles, quarantine, and recovery*](/rift/03-storage-operations)
+- [Configuration and localization *Settings and language files*](/rift/04-configuration-localization)
 {.links-list}
 
 ## Support and source

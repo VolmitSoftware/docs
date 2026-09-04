@@ -2,24 +2,14 @@
 title: "Overview"
 description: "React documentation: Overview"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-React is a runtime performance and monitoring plugin for Paper, Purpur, and Folia. It samples the server. Optional features and tweaks bound lag sources. Operator actions, monitors, and maps support incident response.
+React monitors server performance. Optional features and tweaks control specific sources of load, while actions and maps help operators investigate problems.
 
-## Feature Map
-
-- **Samplers** — metrics for tick time, entities, hoppers, redstone, memory, and cross-plugin integrations. See [10 - Samplers & Metrics](/react/10-samplers-metrics).
-- **Features** — optional systems for entities, maps, governors, world mechanics, and integrations. See [04 - Features - Entity Systems](/react/04-features-entity-systems). See also [05 - Features - Maps & Overlays](/react/05-features-maps-overlays), [06 - Features - Governors & Mechanics](/react/06-features-governors-mechanics), and [07 - Features - Iris Adapt & Integrations](/react/07-features-iris-adapt-integrations).
-- **Tweaks** — lighter event and NMS accelerations. Examples are fluids, fire, shorthands, and hardstops. See [08 - Tweaks Catalog](/react/08-tweaks-catalog).
-- **Actions** — operator one-shots such as purge, quarantine, and the incident playbook. See [09 - Actions Catalog](/react/09-actions-catalog).
-- **Monitors and maps** — action bar, map GUI, and heatmaps. See [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui).
-- **Incident mode** — score-driven posture and playbooks. See [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks).
-- **Public plugin API** — entity protection, metric publishing, PlaceholderAPI, and folder-backed community metric packs. See [16 - API - Getting Started](/react/16-api-getting-started), [17 - API - Entity Protection](/react/17-api-entity-protection), [18 - API - Metric Publishing](/react/18-api-metric-publishing), [19 - API - PlaceholderAPI](/react/19-api-placeholderapi), and [20 - API - Plugin API Packs](/react/20-api-plugin-api-packs).
-
-## Documentation Index
+## Documentation
 
 | File | Covers |
 |------|--------|

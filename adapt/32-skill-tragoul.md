@@ -1,19 +1,15 @@
 ---
 title: "Skill - TragOul"
-description: "Adapt documentation: Skill - TragOul"
+description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-TragOul is the blood skill. You level it by getting hurt and living through it. The adaptations pay that back. Damage is reflected at whoever hit you. Life is stolen out of your enemies. Corpses explode or launch seeking lances. A pack of skeletons is raised out of a stack of bones. There are fourteen adaptations. Most of them get better the more dangerous your fights are.
+TragOul gains XP from taking damage and awards extra XP for surviving at low health.
 
-It plays as a high-risk kit. Several adaptations charge you for their power. Corpse Lances take a bite out of your own health each time a lance connects. Skeletal Servant permanently lowers your max health while its pack is alive. Marrow Armor eats a bone off your belt every time it soaks a hit. In exchange you get lifesteal, an emergency save that refuses a killing blow, and crowd damage that clears rooms.
-
-It also has a death penalty, off by default. Turn `takeAwaySkillsOnDeath` on and dying costs you TragOul XP. Every TragOul adaptation is knocked down one level.
-
-If you are new to it, Will of Pain and Soul Siphon are the safest starting picks. They only ever give you health back. Corpse Lances and Skeletal Servant are where the skill gets loud.
+Its 14 adaptations add reflected damage, healing, corpse attacks, skeleton servants, armor fueled by bones, debuffs, and lethal-hit protection. Some abilities cost health, maximum health, or items. The optional `takeAwaySkillsOnDeath` setting removes TragOul XP and one level from each TragOul adaptation on death.
 
 ## How you earn TragOul XP
 

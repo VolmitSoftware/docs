@@ -1,13 +1,15 @@
 ---
 title: "Tweaks Catalog"
-description: "React documentation: Tweaks Catalog"
+description: "Event and NMS tweaks with configuration defaults"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 This catalog lists lightweight event and NMS accelerations. Config: `plugins/React/tweak/<id>.toml`. Tweaks default to enabled except `shorthands`.
+
+## Tweaks
 
 Several tweaks fail closed or stay passive to vanilla when required NMS bridges are missing. Inspect with `/react bridge status`.
 

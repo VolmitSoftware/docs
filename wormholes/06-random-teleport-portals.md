@@ -2,18 +2,13 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-An RTP portal is a frame portal whose type is `RTP`. It samples a safe landing
-by default, or an intentionally unsafe surface/exact-height destination when
-configured, then projects and teleports travelers under rotation, lease, and
-allocation rules. Configuration lives on the portal JSON under `rtp`
-(`RtpSettings`). In game, set Type to RTP, then open **Random Destination** on
-the portal home menu.
+An RTP portal chooses a destination using its world, radius, height, biome, safety, and rotation settings. Set a portal's type to `RTP`, then open Random Destination from its home menu.
 
 ## Switch type and open the editor
 
@@ -22,17 +17,11 @@ the portal home menu.
    `wormholes.portals.portal`).
 3. Open **Random Destination** to run `RtpPortalEditor`.
 
-Editor pages: Overview, Destination, Landing, Routing, Effects, numeric entry,
-and manual-action confirmation. Overview links to Destination / Landing /
-Routing / Effects, **Reset defaults**, and back to the portal menu.
+The editor groups settings into Destination, Landing, Routing, and Effects. Reset defaults requires confirmation.
 
 ## Settings apply immediately
 
-Editor changes apply immediately on the portal source region. There is no
-staged draft or Apply Changes batch. A successful mutation refreshes the menu
-with an applied notification. A revision mismatch reloads the live settings.
-Manual rerolls, private-pool rebuilds, and Reset defaults need their
-confirmation actions.
+Editor changes apply immediately. Manual rerolls, private-pool rebuilds, and Reset defaults require confirmation.
 
 ## Default RtpSettings
 
@@ -132,7 +121,7 @@ Both safety modes reject candidates that fail runtime invariants:
 - Missing, invalid, or too many region/chunk snapshots (max **4** chunks,
   **4** regions for the envelope).
 
-`SAFE` additionally rejects:
+`SAFE` also rejects:
 
 - Support block missing, liquid (water/lava/bubble column), a built-in hazard,
   or tree-part support/body when `surfaceMode` is true.
@@ -195,23 +184,9 @@ terrain; in `UNSAFE` mode it includes tree canopies and fluid surfaces, so an
 ocean column resolves on top of the water. Surface mode uses a separate Nether
 scan that avoids the roof band.
 
-Candidate attempts run serially. A search campaign starts at most 32 candidates
-and runs for at most 30 seconds. This lets a cold Iris chunk finish generation
-instead of discarding it after five seconds and sampling another new chunk. A
-timed-out preparation is cancelled and its Wormholes chunk leases are released.
-A cold portal publishes its first validated, retained destination immediately;
-it does not wait through another serial campaign for a shared standby or two
-private spares. Those redundancy searches continue through the same single-
-campaign pipeline after the portal is usable.
-A campaign that cannot publish a safe destination enters exponential retry
-backoff, from one second up to 30 seconds. The existing READY view stays
-published during refill or authorization work until a replacement can be shown
-safely.
+Wormholes tries up to 32 candidates over 30 seconds. It publishes the first valid destination, then prepares spare destinations in the background. Failed searches retry after a delay that grows from one to 30 seconds.
 
-During refills, rerolls, and authorization checks, the last READY projection
-can stay online until a replacement is published. Idle lease grace
-(`leaseIdleMillis`, default 30 s) reduces cold churn when observers briefly
-leave the view AABB.
+The previous ready projection can remain visible while a replacement is prepared. `leaseIdleMillis`, default 30 seconds, prevents brief departures from immediately releasing it.
 
 ## Runtime behavior notes
 

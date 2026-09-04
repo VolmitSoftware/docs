@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,10 +31,7 @@ Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `
 
 WorldGuard is optional and adds protection checks for RTP destinations.
 
-Upgrading is a hard break. Back up any values you need, then delete the obsolete
-`plugins/Wormholes/config/` directory; deleting it removes its local changes.
-Restart the server to generate `plugins/Wormholes/wormholes.toml`, then reapply
-the values manually. Wormholes does not read or migrate the old directory.
+Legacy configuration is not migrated. Back up any values you need, remove the old `plugins/Wormholes/config/` directory, restart the server, and reapply them to `wormholes.toml`.
 
 Direct edits to `languages/*.toml` need `/wormholes reload` or a config change.
 Dimensional Doors pack and registry changes need a full server restart. See
@@ -70,11 +67,7 @@ and trust under `routes/` and `trust/`. See
 | Sections | `[main]`, `[recipes]` (+ product tables), `[network]` (+ nested), `[projection]`, `[render]` |
 | Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
 
-Startup and explicit `/wormholes reload` loads rewrite the file in canonical
-form with every known key. Canonical rewriting removes custom comments and
-unknown or misspelled keys. Passive file hotload parses an immutable byte
-snapshot and never rewrites the watched file. Files with no schema, a wrong
-schema, or a parse failure keep the previous live settings.
+Startup and `/wormholes reload` rewrite the file with every known key. This removes custom comments and unknown or misspelled keys. Automatic hot reload does not rewrite the file. Invalid files leave the previous settings active.
 
 ## Visual quality (`quality`)
 
@@ -189,12 +182,7 @@ the watched file.
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
-Normal console output is plugin-branded and limited to lifecycle changes,
-capability changes, and failures that require operator action. Per-recipe
-registration, routine vanilla-portal formation, successful handoff and arrival
-details, and expected admission denials require `verbose-logging`. Repeated portal update, save,
-traversal infrastructure, and peer-frame encoding failures are throttled while
-retaining a full sampled stacktrace and failure counters.
+Normal console output covers lifecycle changes and failures that need attention. Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled.
 
 Traversal API behavior and provider contracts are in
 [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).

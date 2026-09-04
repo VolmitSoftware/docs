@@ -1,8 +1,8 @@
 ---
 title: "Localization"
-description: "Gloss documentation: Localization"
+description: "Set server and player languages, translations, and message overrides"
 published: true
-date: 2026-09-03T07:34:52.375Z
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -11,12 +11,8 @@ Gloss has a server default language and persistent per-player language choices. 
 
 ## The catalog
 
-The catalog includes command help, validation errors, chat feedback, container preview text, and
-shared command labels.
-
-English is not a locale file. It lives in the key declarations. The catalog's base locale is
-`en_US`. There is deliberately no `en_US.yml` anywhere. When the active locale is `en_US`, only
-your own overrides sit on top of the code defaults.
+The catalog covers command help, errors, chat feedback, container previews, and shared labels.
+English (`en_US`) is built in, so there is no bundled `en_US.yml` file.
 
 ## Locale selection
 
@@ -32,25 +28,26 @@ The shared switcher keeps its navigation and confirmation text in English while 
 language = "de_DE"
 ```
 
-An absent or blank configuration value becomes `en_US`. Selecting `en_US` restores the built-in English catalog with `language.yml` overrides and requires no download. Missing official translations download from the Gloss repository when selected. If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection. Installed files work offline and are never automatically replaced. The source revision is pinned in each jar’s language manifest. Custom locale IDs can use their own YAML file or the shared `language.yml` overrides over English.
+An absent or blank setting becomes `en_US`. Official translations download when first selected, then
+work offline without automatic replacement. If a translation cannot be downloaded or validated,
+Gloss keeps English active and saves `en_US` for that selection. Invalid and unlisted locale ids do
+not change the current language. Each jar selects a compatible translation snapshot. Custom locale
+ids can use their own YAML file or `language.yml` overrides over English.
 
-The companion web editor has an independent browser-local choice. Its top-right language button
-does not read or write either server configuration file, and changing the server locale does not change
-an open editor. The editor supports the same 18 locale ids, remembers its choice in browser local
-storage and falls back from a supported browser language to `en_US`. `he_IL` renders the editor
-right-to-left. Its JSON catalogs and validation rules are documented under
+The web editor keeps a separate browser-local language. It does not read or change server or player
+settings. It supports the same 18 locale ids; `he_IL` uses a right-to-left layout. See
 [Web Editor & Sync](/gloss/18-web-editor).
 
 ## The fallback chain
 
-Loading combines per-language editor overrides, the `messages` section of `language.yml`, and the installed `plugins/Gloss/languages/<locale>.yml` over the code defaults. The installed catalog is read only for non-English locales; per-language English overrides are loaded offline. Precedence per key is:
+Gloss resolves each key in this order:
 
 ```
 languages/overrides/<locale>.yml  >  language.yml  >  languages/<locale>.yml  >  English text in GlossMessages
 ```
 
-Fallback is per key, not per file. A locale file that omits a key falls through to the next level.
-The omission is a warning, not an error. It does not block loading.
+Fallback is per key. Missing keys use the next source and produce a warning without blocking the
+locale.
 
 ## Available locales
 
@@ -92,8 +89,7 @@ it needs one. Two render paths exist:
 | `legacy` | Substitutes placeholders, then translates `&` codes | Strings sent straight to a player or the console |
 | `text` | Substitutes placeholders with no color translation | Strings handed to the mini-menu renderer |
 
-The mini-menu renderer escapes what it is given before embedding it in its own markup. MiniMessage
-tags written into a locale file are never interpreted. They show up literally.
+MiniMessage tags in locale files are escaped and displayed literally.
 
 Keys consumed through the plain-text path are therefore written as plain text
 (`gloss.message.builder.header: "Web Editor"`). Keys consumed through the legacy path carry `&`
@@ -105,10 +101,8 @@ with a letter and continues with letters, digits, `_`, `.` or `-`. A translation
 the same **set** of placeholders as the English source. Order and repetition are free. Adding an
 unknown name or dropping a declared one rejects the reload.
 
-Values are substituted in one of two ways. Untrusted values, which include nearly anything player-supplied or dynamic,
-have all color stripped, including raw section characters. A menu name
-can never inject formatting. Trusted values keep their `&` codes. Substitution is sentinel-based.
-An inserted value that itself looks like a placeholder is never rescanned as one.
+Player-supplied and dynamic values have color codes removed. Trusted values keep their `&` codes.
+Inserted values are not scanned again for placeholders.
 
 ## The override file
 
@@ -142,23 +136,23 @@ or a number where a string is expected fails the load.
 
 `/gloss language server edit [locale]` opens an inventory editor, requiring `gloss.admin` or `volmit.language.admin`. Omit the locale to choose one. The editor lists up to 45 message keys per page, supports search, and lets you replace a value through private chat. Plural forms are edited individually. Enter `cancel` or wait 60 seconds to abandon the prompt.
 
-Edits are validated for message shape and placeholders before an atomic save to `plugins/Gloss/languages/overrides/<locale>.yml`. Concurrent edits to the same message require reopening it. The saved locale updates immediately for its users while server and personal selections remain unchanged. The English `en_US.yml` override works offline. Installed incomplete catalogs remain editable; missing official catalogs may download when opened, and a failed editor load changes no selection.
+Gloss validates placeholders before saving to `plugins/Gloss/languages/overrides/<locale>.yml`.
+Concurrent changes to the same message require reopening it. Saved text updates immediately without
+changing anyone's selected language.
 
 ## Hot reload
 
-The shared `DataWatchdog` watches `language.yml`. Two identical captures are required before a changed overlay is applied. `/gloss reload` reloads the configured locale and overrides through the language worker. Direct edits to `languages/<locale>.yml` or `languages/overrides/<locale>.yml` are loaded on the next explicit language selection or reload. Reloading clears cached player translations so their next message loads the updated file.
+`language.yml` reloads automatically after two identical file reads. Direct edits to locale or
+per-language override files apply after `/gloss reload` or the next language selection.
 
-A successful automatic batch publishes one localized cooperative action-bar notice to each online
-`gloss.admin` player. It uses `gloss.message.hotload.singular` or
-`gloss.message.hotload.plural`, including the changed kind names and total change count. Startup,
-manual reloads, rejected files and failed apply attempts do not publish that notice.
+A successful automatic reload sends a localized action-bar notice to online players with
+`gloss.admin`.
 
 An invalid, unreadable or missing automatic snapshot keeps the last-good locale. Deleting
 `language.yml` does not recreate or rewrite it; startup restores the default file if it is still
 missing after a restart.
 
-Reloads are atomic. The new snapshot is built and validated in full. It is swapped in only if it
-passes. If it does not, the previously loaded snapshot stays live. Nothing changes.
+Invalid reloads keep the last working messages active.
 
 A rejected reload logs `Rejected language reload; continuing with <locale>.` at `SEVERE`. Then up
 to twelve individual issues as `<source> [<key>]: <detail>`. Then a count of any omitted remainder.
@@ -174,24 +168,19 @@ to twelve individual issues as `<source> [<key>]: <detail>`. Then a count of any
 | Locale file whose internal `locale` does not match its name | Rejected, fails during load |
 | Key declared in the catalog but absent from an overlay | Accepted. Warning only, falls through |
 
-A typo in a key name is therefore not a silent no-op. It takes the whole file out until you fix it.
-That is the intended behavior. A half-applied language file is worse than none.
+A typo rejects the file until it is fixed.
 
 ## Preview documents reference the catalog
 
-Container preview documents pull their text out of this same catalog through the expression
-function `lang(key, ...)`:
+Container previews use the same catalog through `lang(key, ...)`:
 
 ```json
 { "text": "lang('gloss.preview.state.smelting_item', item, percent)" }
 ```
 
-The key is looked up in the Gloss catalog. The call's positional arguments are bound onto that
-key's own placeholder names in the order the English template declares them. With the template
-`Smelting {item} {percent}%`, the call above renders `Smelting Iron Ore 42%`. Arguments past the
-last placeholder are discarded before strict message validation, so a shared title expression may
-pass a fallback value to a title key that declares no placeholders. Values are inserted as
-untrusted text. A container's custom name can never smuggle color codes into a preview card.
+Arguments fill the English template's placeholders in declaration order. With
+`Smelting {item} {percent}%`, the example renders `Smelting Iron Ore 42%`. Extra arguments are
+ignored, and inserted values cannot add color codes.
 
 The `gloss.preview.*` keys split into `gloss.preview.state.*` for status lines,
 `gloss.preview.stat.*` for statistic lines, and `gloss.preview.theme.title.*` for card titles.

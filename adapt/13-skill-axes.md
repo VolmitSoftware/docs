@@ -1,19 +1,15 @@
 ---
 title: "Skill - Axes"
-description: "Adapt documentation: Skill - Axes"
+description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Axes is the woodcutting and axe-combat skill. You level it by breaking logs, wood, mushroom blocks and mangrove roots with an axe in your main hand. You also level it by hitting things with an axe. It is the skill you live in if you spend your time clearing forests. It also works as a melee tree for players who fight with an axe instead of a sword.
+Axes gains XP by breaking logs, wood, mushroom blocks, or mangrove roots with an axe and by dealing axe damage.
 
-The woodcutting half is about doing more per swing. Axe Chop takes a stack of logs off a tree with a single right click. Wood-miner and Leaf-miner pull whole clusters of matching blocks in one break while you sneak. Drop-To-Inventory keeps the results out of the dirt. Lucy's Log-Swapper lets you trade one wood type for another at a crafting table. You do not have to hunt a biome for the color you want.
-
-The combat half is a different feel. Throwing Axe turns your axe into a projectile that comes back to you once you max the adaptation. Cleave splashes damage into a cone. Sunder peels armor off whatever you keep hitting. Shield Splitter punishes anyone hiding behind a shield. Bark Hide gives you absorption hearts just for working.
-
-Eleven adaptations always register. A twelfth, Iris Feller, registers only when Iris is installed. It hands the whole tree over to the Iris tree-feller instead of breaking blocks itself.
+Eleven adaptations are always available. They cover tree cutting, wood and leaf vein mining, direct inventory drops, log conversion, thrown axes, area damage, armor damage, shield pressure, and absorption. Iris Feller registers only when the Iris tree-feller service is available.
 
 ## Earning XP
 

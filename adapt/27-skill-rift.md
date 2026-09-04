@@ -1,19 +1,15 @@
 ---
 title: "Skill - Rift"
-description: "Adapt documentation: Skill - Rift"
+description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Rift is the ender skill. Its id is `rift`. It uses an ender eye icon. It carries 13 adaptations. You level it by teleporting, throwing ender pearls and eyes, and fighting End creatures. It grows naturally from the way most players already use pearls.
+Rift gains XP from teleporting, throwing ender pearls or eyes, and fighting End creatures. Its id is `rift`, and it has 13 adaptations.
 
-What you get back is mobility and storage. Rift Blink turns a double jump into a short teleport with no pearl cost. Rift Gate is a crafted recall stone. Bind a spot, then channel back to it later. Pearl Rebound makes a thrown pearl bounce once so you can bank it around a corner. Void Skin catches a killing blow and drops you somewhere safe at the price of one pearl.
-
-The storage side is quietly the strongest part of the skill. Easy Enderchest opens your ender chest from your hand. Inflated Pocket Dimension treats that chest as a bottomless building supply. Void Magnet sucks item drops into it while you sneak. Remote Access binds a portkey to any container so you can open it from across the world. Rift Conduit links two containers so items flow from one to the other.
-
-The rest is control and safety. Ender Taglock lets you pearl someone else instead of yourself. Rift Visage stops endermen from aggroing while you carry pearls. Anti-Levitation cancels a shulker hit and saves you the fall. Rift Resistance hands you Resistance every time you use an ender item.
+Adaptations add short teleports, recall points, bouncing pearls, lethal-hit escape, remote storage, linked containers, item collection, targeted pearls, enderman protection, anti-levitation, and resistance after using ender items.
 
 ## Earning XP
 

@@ -1,43 +1,33 @@
 ---
 title: "Localization"
-description: "React documentation: Localization"
+description: "Server and React Web language settings"
 published: true
-date: 2026-09-03T07:33:50.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-React and React Web use separate locale selections over the same 18-language set. The server uses a
-typed code-owned English catalog, downloaded overlays and an optional server-local override. The
-browser uses JSON catalogs and remembers its own choice locally.
+React and React Web use separate choices from the same 18 languages. The server uses TOML catalogs; the browser uses JSON and stores its choice locally.
 
 ## Server locale selection
 
-- Global config key: `language` (default `en_US`) on `ReactConfiguration`.
-- Missing keys fall back from the selected downloaded catalog to code-owned English.
-- Optional overrides live in `plugins/React/languages/overrides/<locale>.toml`. Only listed keys are replaced. The filename must match the configured locale id exactly.
-The Bukkit picker uses React's Director menu theme, header, clickable controls, and pagination. Tab completion includes the `self` and `server` scopes, available locales, and personal reset according to the sender's permissions.
+The `language` setting in `react.toml` selects the server default. `/react language` opens the personal picker, `/react language server` changes the default, and `/react language self reset` clears a personal choice. Player-facing output uses the recipient's choice; console and shared output use the server default.
 
-- `/react language` opens the clickable personal picker. `/react language server` changes the default in `react.toml`; `/react language self reset` restores the default for that player. The config editor's language field opens the server picker.
-- Player command feedback, inventory GUI labels and action-bar output use the recipient's choice. Shared server outputs use the server default.
-
-VolmLib downloads a selected non-English catalog on demand, validates its templates and placeholders, and installs it atomically. Locale files are excluded from the plugin jar. Installed catalogs are reused offline, and English defaults remain in Java.
-
-If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection.
+Selected catalogs download when needed and work offline afterward. React validates templates and placeholders before use. A failed catalog falls back to English.
 
 Player preferences are stored by UUID in `language-preferences.properties` in the plugin data folder. `self reset` removes a personal override. The server default applies to console output and players without an override. Sparse local message overrides remain active above the downloaded catalog.
 
-React installs catalogs to `plugins/React/languages/<locale>.toml`. Selecting a language prepares the catalog on a worker before it becomes active. Locale-specific files in `languages/overrides` take precedence and hotloading an override refreshes the player catalog cache.
+React stores catalogs at `plugins/React/languages/<locale>.toml`. Files in `languages/overrides` take precedence.
 
 Personal language selection requires both `react.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. React server selection requires `react.use` or `volmit.language.admin` (default `op`).
 
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+`/volmit plugins languages [locale]` manages the server default for all enabled Volmit language providers. It keeps personal choices and offers only locales shared by every provider.
 
 ## In-game message editor
 
 Run `/react language server edit` to choose a locale, or `/react language server edit de_DE` to edit German directly. The server language picker also offers an Edit link for each locale. The inventory editor requires `react.use` or `volmit.language.admin` and is available only to players.
 
-Saving writes that locale's message to `plugins/React/languages/overrides/<locale>.toml`, including `en_US`, after validating the message shape, placeholders, and complete candidate catalog. Invalid edits or messages changed since opening are rejected without replacing the file. The edited locale refreshes for players already using it and for the server when it is the active default; editing never changes server or personal language choices. Existing incomplete catalogs can be opened for repair without selecting them.
+Saving writes to `plugins/React/languages/overrides/<locale>.toml` after validation. React rejects invalid or stale edits. Saving refreshes the edited locale without changing anyone's language choice.
 
 ## Supported locales
 
@@ -48,33 +38,17 @@ The server and browser support `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_
 
 ## React Web locale selection
 
-The language button in the top-right command bar switches the complete browser interface without
-reloading the page. React Web stores the selected id under `reactor.locale` in browser local
-storage. On a first visit it tries a supported browser language, including a base-language match,
-then the build-time `REACTOR_LANGUAGE` value, then `en_US`. Browser languages are considered in
-preference order. A valid stored choice wins on later visits. The browser choice does not change
-the React server's `language` setting.
+The language button switches React Web without reloading the page. The browser stores the choice under `reactor.locale`. On the first visit, it tries a supported browser language, then `REACTOR_LANGUAGE`, then `en_US`. This choice does not change the server setting.
 
-The page writes the matching BCP 47 language to the HTML document. `he_IL` uses right-to-left
-document direction; every other supported locale uses left-to-right direction. Commands, pairing
-codes and other technical values remain left-to-right. The document title, description, social
-metadata and install manifest switch with the interface language.
+`he_IL` uses right-to-left page direction. Commands, pairing codes, and technical values remain left-to-right.
 
-English defaults remain typed in Dart. Editable complete catalogs live at
-`react-web/web/languages/<locale>.json`, including `en_US.json`. The optional deployment-wide
-`react-web/web/reactor-language.json` overlay is applied only when the selected locale matches the
-build-time `REACTOR_LANGUAGE` locale, so it cannot leak one language into another picker choice.
-Each switch loads and validates the complete candidate before publishing it. A fetch, JSON,
-unknown-key or placeholder failure keeps the previous active language and does not persist the
-rejected choice. At initial startup, English remains active when the preferred catalog cannot load.
-Localized files under `react-web/web/manifests/` are generated from each catalog's app title and
-description; translators edit only the JSON catalog.
+Complete browser catalogs live at `react-web/web/languages/<locale>.json`. The optional `reactor-language.json` overlay applies only to `REACTOR_LANGUAGE`. React Web validates a catalog before switching and keeps the previous language if loading fails.
 
 ## Server catalogs
 
-Server messages are typed Java catalogs under `art.arcane.react.localization.catalog`. Examples are command, runtime, action, and config messages. Feature and tweak display strings and `@ConfigDoc` English are separate from player-facing command chat. Catalogs apply to that command chat.
+Server messages are Java catalogs under `art.arcane.react.localization.catalog`. Feature and tweak labels and `@ConfigDoc` text are separate from player command messages.
 
-React sends catalog components through VolmLib for command chat, action bars, clickable output, and plugin logging. Paper-family players and component-aware consoles retain RGB, decorations, and click or hover events; operator-visible component logs keep one `[React]` discriminator with dark-grey brackets and the React name in aqua. Plain Bukkit, unsupported console APIs, RCON, and Java-logger fallbacks receive destination-safe text, so supported formatting remains visible without exposing raw `§` markers in operator consoles.
+VolmLib renders command chat, action bars, clickable output, and logs. Paper clients retain supported formatting and interactions; plain consoles and RCON receive readable text.
 
 ## Validation
 
@@ -82,4 +56,4 @@ An overlay may contain nested TOML string values or arrays of strings. The file 
 
 Hotload validates the complete candidate before it swaps the locale in. On rejection React keeps the current active locale. It reports up to 12 validation errors. An underlying failure is logged as a contextual React error with its complete exception diagnostics. Missing translated keys are warnings. They resolve through the downloaded catalog and then code-owned English.
 
-Localization tests and completeness gates live in the React test suites. Add new server-visible strings to the typed English catalog. Locale overlays may omit them and use fallback.
+Add new server-visible strings to the English catalog. Locale overlays may omit them and use fallback.

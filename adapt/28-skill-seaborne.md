@@ -1,17 +1,15 @@
 ---
 title: "Skill - Seaborne"
-description: "Adapt documentation: Skill - Seaborne"
+description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Seaborne is the water skill. You level it by living in the ocean. Swimming with your air bar draining, mining underwater, fishing, throwing tridents, and killing drowned and guardians all pay. It has 14 adaptations. It shows up in the menu as a blue `TRIDENT`.
+Seaborne gains XP from swimming while air drains, underwater mining, fishing, tridents, and combat with drowned or guardians. It has 14 adaptations and uses a blue `TRIDENT` icon.
 
-The early adaptations are about staying down there. Organic Oxygen Tank stretches your air. Turtle's Vision lights up the water. Turtle Miner speeds up underwater mining. Dolphin's Grace makes you actually fast. Once you can survive a dive, Pressure Diver and Brine Skin keep you alive under damage. Ink Veil gives you an escape when a guardian locks on.
-
-The rest is about doing something useful down there. Deep Salvager marks sunken chests and pays out treasure the first time you crack one open. Coral Gardener lets you keep coral alive out of water and farm it with bone meal. Fish Whisperer herds fish toward you and turns dolphins and axolotls into bodyguards. Trident Mastery makes tridents hit harder and fly home on their own. Two more are pure movement. Tidecaller surges you forward through water or rain. Hydro Jet burns hunger for a hard burst while you are sprint-swimming.
+Adaptations add air, swim speed, underwater vision and mining, damage protection, escape tools, wreck salvage, coral growth, aquatic allies, trident upgrades, and burst movement.
 
 ## Adaptations
 

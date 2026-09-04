@@ -2,16 +2,13 @@
 title: "PlaceholderAPI"
 description: "%wormholes_…% keys for operators"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes registers a PlaceholderAPI expansion under the identifier
-`wormholes`. Server keys describe plugin-wide state. Player keys describe the
-one portal selected for that player from a published snapshot. Values are
-plain strings, and there is no Wormholes compile dependency for consumers.
+Wormholes registers the `wormholes` PlaceholderAPI expansion. Server keys describe the plugin; player keys describe the portal selected for that player. Values are plain strings.
 
 For integrator lifecycle, threading, and compile notes see
 [22 - API - PlaceholderAPI](/wormholes/22-api-placeholderapi).
@@ -25,31 +22,11 @@ leaves the text unreplaced.
 
 ## Lifecycle
 
-1. On Wormholes enable, if PlaceholderAPI is already enabled, the expansion
-   registers.
-2. Wormholes also listens for PlaceholderAPI `PluginEnableEvent` and registers
-   when PlaceholderAPI enables later.
-3. Until the first attendance publish, server keys answer `---` (except
-   `available`, which is `false`). Player keys answer `---` for every player.
-4. On plugin disable/unload, the expansion unregisters, player snapshots drop,
-   and the server snapshot clears. `/wormholes reload` only reloads
-   config/language and leaves the expansion registered.
-
-The expansion sets `persist()`, so `/papi reload` does not remove it and
-Wormholes does not re-register for that case alone.
+The expansion registers when both plugins are enabled, including when PlaceholderAPI starts later. `/wormholes reload` leaves it registered, and `/papi reload` does not remove it. Before Wormholes publishes its first snapshot, most keys return `---` and availability keys return `false`.
 
 ## Where values come from
 
-Resolvers do not query the portal registry live. The portal attendance pass
-records player positions (join, move, world change. Forgotten on quit).
-Attendance runs every fifth portal-update-driver pass. Placeholders publish
-every fourth attendance pass (~1 Hz under normal load). Values can lag by
-about one second, longer when the server is behind.
-
-Resolving a key is a map/field read of an immutable snapshot: non-blocking, no
-chunk/entity access. There is no force-publish key and no age key. A standing
-player with no recorded position after a plugin reload has no snapshot until
-they move.
+Values come from a snapshot updated about once per second under normal load, so they may briefly lag behind portal changes. Resolving a key does not load chunks or query live entities. After a plugin reload, a player may need to move before player keys become available.
 
 ## Selection rule (player keys)
 
@@ -97,8 +74,7 @@ Ignore the player. Same answer for everyone and for a no-player parse.
 | `%wormholes_failures%` | integer | Cumulative internal failures since startup |
 | `%wormholes_failures.per-minute%` | decimal | Failures per minute extrapolated from the latest elapsed sample interval (at least one second) |
 
-`failures` is a health signal (refused scheduler tasks, dropped events,
-provider faults, sideband drops), not an error log.
+`failures` is a health count, not an error log.
 
 ### Player keys
 

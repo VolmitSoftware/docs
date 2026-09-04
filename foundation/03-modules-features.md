@@ -2,33 +2,31 @@
 title: "Modules and Behavior"
 description: "Foundation module lifecycle and implemented player-facing behavior"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "foundation, modules, features"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Foundation modules own their listeners, command routes, tasks, integrations, and closeable resources. Disabling a module removes its routes and listeners, restores temporary player state where applicable, and closes resources in reverse activation order.
+Each Foundation module can be enabled or disabled separately. Disabling one removes its commands and listeners and restores temporary player state where needed.
 
 ## Teleport behavior
 
-All Foundation arrival commands use one teleport service. It rejects missing worlds, non-finite coordinates, world-border exits, and unsafe landings unless the caller has the documented bypass. Warmups can cancel on block movement or damage, cooldowns use monotonic time, and every request has an identity token so an older completion cannot replace newer state.
-
-Landing validation runs on the destination region. Paper's asynchronous teleport is used when available; the shared source also compiles against Spigot and has a synchronous owning-thread path there. Successful external and Foundation teleports feed bounded per-player back history.
+Foundation rejects missing worlds, invalid coordinates, world-border exits, and unsafe landings unless the caller has a bypass permission. Warmups can cancel on movement or damage. Successful teleports are added to the player's bounded `/back` history.
 
 ## Profiles and social state
 
-Homes, back history, ignores, reply partner, social-spy choice, acceptance preferences, economy balance, AFK, vanish, mail, warning state, mutes, freezes, jail state, kit cooldowns, logout location, and seen timestamps use per-UUID profiles. Private messages enforce length bounds, visibility, acceptance, and optional ignore policy. Social spy is both permission-gated and opt-in.
+Foundation stores homes, social choices, balances, moderation state, mail, kit cooldowns, and other player data by UUID. Private messages respect visibility, recipient choices, ignores, and configured length limits. Social spy is permission-gated and opt-in.
 
 AFK activity tracking clears state on configured player actions. Vanish only manages Foundation's own visibility layer and does not claim ownership of another plugin's hidden-player state.
 
 ## Economy and worth
 
-Economy is disabled by default. Balances use a fixed four-decimal internal scale, checked integer arithmetic, configured display precision, maximum-balance enforcement, optional negative balances, and write eligibility checks before mutation. A transfer validates both accounts before changing either balance.
+Economy is disabled by default. It enforces configured balance limits and validates both accounts before a transfer.
 
-`/balancetop` performs its bounded profile scan asynchronously and sorts a snapshot; the configured scan cap prevents an operator request from traversing an unbounded data set.
+`/balancetop` scans profiles asynchronously and obeys the configured scan limit.
 
-Material worth is an immutable runtime snapshot loaded from the independent `worth.toml`. Foundation generates a default for every registered item, classifies the catalog into building, natural, mineral, food, drop, tool, armor, transport, magic, decoration, and miscellaneous views, and fills newly registered items without discarding operator prices. `/worth` opens the category browser; administrators can right-click any item, enter an exact price in chat, and commit only if the file revision still matches. Held-item sales are immediate; whole-storage sales require a same-player timed confirmation, credit the validated bounded total, and only then remove the exact inspected slots.
+Item prices live in `worth.toml`. `/worth` opens the category browser, where administrators can right-click an item and enter its price. Held-item sales are immediate; whole-inventory sales require confirmation before items are removed.
 
 ## Moderation, mail, and kits
 
@@ -44,13 +42,11 @@ Vanilla item grants validate registry entries, item eligibility, amount caps, an
 
 ## Interfaces and cosmetics
 
-The VolmLib inventory framework supplies the control center and typed configuration editor. Module tiles show active, disabled, blocked, and failed states. Primary and secondary colors, menu availability, sounds, pitches, particles, and teleport burst size are hot-reloadable through `branding` settings. Menu feedback is isolated from the action that produced it: an unavailable sound or particle falls back to a safe default and cannot abort a menu open, configuration mutation, or command.
+The control center shows whether modules are active, disabled, blocked, or failed. Menu colors, sounds, particles, and teleport effects can be changed through `branding` settings.
 
 The same framework supplies the arrival-flair picker. A player can choose from the hot-reloadable particle allowlist, preview the choice, restore the server default, and reuse it for successful teleports and `/celebrate`; count, spread, and monotonic cooldown are operator-controlled.
 
-Teleport feedback can independently enable titles, action bars, and boss bars. Titles and action bars use VolmLib's cooperative metadata claims, the same contract used by Adapt and React, so a higher-priority or older suite owner wins predictably instead of plugins clearing one another's display. Boss bars occupy a Foundation-specific lane and are removed on completion, cancellation, replacement, or shutdown. Every label and notice in these interfaces is read from the active locale catalog.
-
-The UI uses entity schedulers for each viewer. Inventory inspection captures a clone on the target's entity scheduler and opens an immutable snapshot on the viewer's scheduler.
+Teleport feedback can use titles, action bars, and boss bars independently. Foundation shares titles and action bars with other Volmit plugins without clearing their displays. Inventory inspection opens a read-only snapshot.
 
 ## Destructive actions
 

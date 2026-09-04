@@ -562,6 +562,21 @@ body,
   color: var(--volmit-accent) !important;
 }
 
+.v-main .contents .doc-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 1.5rem;
+  padding: 0 0 0.85rem;
+  border-bottom: 1px solid var(--volmit-line);
+  color: var(--volmit-muted);
+  font-size: 0.9rem;
+}
+
+.v-main .contents .doc-breadcrumb a {
+  color: var(--volmit-ink) !important;
+}
+
 .v-main .contents a:focus-visible,
 .v-main button:focus-visible,
 .nav-header a:focus-visible,
@@ -665,6 +680,10 @@ body,
   --volmit-card-accent: #9564f5;
 }
 
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/foundation"]) {
+  --volmit-card-accent: #e33b3f;
+}
+
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/hiddenore"]) {
   --volmit-card-accent: #737b84;
 }
@@ -690,8 +709,31 @@ body,
   min-height: 120px;
 }
 
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(.project-mark) {
+  display: flex;
+  min-height: 120px;
+}
+
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img) > a {
   width: 100%;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(.project-mark) > a {
+  width: 100%;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .project-mark {
+  display: grid;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1px solid var(--volmit-line);
+  background: var(--volmit-paper);
+  color: var(--volmit-ink);
+  font-family: "Volmit Akz", "Volmit ITC", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
 }
 
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:hover,
@@ -723,6 +765,165 @@ body,
   border-radius: 0 !important;
   background: var(--volmit-paper);
   transition: border-color 120ms ease;
+}
+
+.v-main .contents .sp-home {
+  --sp-accent: #7b2b99;
+  display: grid;
+  gap: 3rem;
+}
+
+.v-main .contents .sp-home h2,
+.v-main .contents .sp-home h3,
+.v-main .contents .sp-home p {
+  max-width: none;
+}
+
+.v-main .contents .sp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border: 1px solid var(--volmit-line);
+  background: color-mix(in srgb, var(--sp-accent) 8%, var(--volmit-surface));
+}
+
+.v-main .contents .sp-hero h2 {
+  max-width: 13ch;
+  margin: 0.35rem 0 0.8rem;
+  font-size: clamp(2.1rem, 6vw, 4.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.v-main .contents .sp-hero > div > p:not(.sp-kicker) {
+  max-width: 58ch;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.v-main .contents .sp-kicker {
+  margin: 0;
+  color: var(--sp-accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.theme--dark .v-main .contents .sp-kicker {
+  color: #d894f1;
+}
+
+.v-main .contents .sp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.35rem;
+}
+
+.v-main .contents .sp-actions a {
+  display: inline-block;
+  padding: 0.68rem 0.9rem;
+  border: 1px solid var(--volmit-ink);
+  text-decoration: none !important;
+}
+
+.v-main .contents .sp-actions .sp-primary {
+  border-color: var(--sp-accent);
+  background: var(--sp-accent);
+  color: #ffffff !important;
+}
+
+.v-main .contents .sp-media {
+  display: grid;
+  min-height: 180px;
+  place-content: center;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  border: 1px dashed var(--volmit-muted);
+  background: var(--volmit-paper);
+  text-align: center;
+}
+
+.v-main .contents .sp-media span {
+  max-width: 36ch;
+  color: var(--volmit-muted);
+  font-size: 0.9rem;
+}
+
+.v-main .contents .sp-section > h2 {
+  margin-top: 0;
+}
+
+.v-main .contents .sp-types,
+.v-main .contents .sp-guides,
+.v-main .contents .sp-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1rem;
+}
+
+.v-main .contents .sp-types article {
+  padding: 1.15rem;
+  border: 1px solid var(--volmit-line);
+  background: var(--volmit-surface);
+}
+
+.v-main .contents .sp-types h3 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.v-main .contents .sp-types article p:last-child {
+  margin-bottom: 0;
+}
+
+.v-main .contents .sp-note {
+  margin: 1rem 0 0;
+  padding: 1rem;
+  border-left: 4px solid var(--sp-accent);
+  background: color-mix(in srgb, var(--sp-accent) 7%, transparent);
+}
+
+.v-main .contents .sp-guides a {
+  display: grid;
+  gap: 0.35rem;
+  min-height: 126px;
+  padding: 1rem;
+  border: 1px solid var(--volmit-line);
+  background: var(--volmit-surface);
+  text-decoration: none !important;
+}
+
+.v-main .contents .sp-guides a:hover {
+  border-color: var(--sp-accent);
+}
+
+.v-main .contents .sp-guides span {
+  color: var(--volmit-muted);
+  font-size: 0.92rem;
+  font-weight: 400;
+}
+
+.v-main .contents .sp-media-grid .sp-media {
+  min-height: 155px;
+}
+
+.v-main .contents .sp-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-top: 1px solid var(--volmit-line);
+}
+
+.v-main .contents .sp-footer > div,
+.v-main .contents .sp-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .v-main .contents .tabset-tabs {
@@ -804,6 +1005,10 @@ body,
   .page-header-headings {
     max-width: none;
   }
+
+  .v-main .contents .sp-hero {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 600px) {
@@ -848,6 +1053,19 @@ body,
   .v-main .contents th,
   .v-main .contents td {
     padding: 0.5rem;
+  }
+
+  .v-main .contents .sp-home {
+    gap: 2.25rem;
+  }
+
+  .v-main .contents .sp-hero {
+    padding: 1.25rem;
+  }
+
+  .v-main .contents .sp-footer {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
 }

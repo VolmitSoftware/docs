@@ -1,8 +1,8 @@
 ---
 title: "Configuration"
-description: "Gloss documentation: Configuration"
+description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -12,7 +12,7 @@ Feature switches and general settings live in `plugins/Gloss/gloss.toml`. JSON d
 
 ## The file model
 
-`gloss.toml` opens with a generated header and then lists each knob under its comment:
+`gloss.toml` documents each setting above its value:
 
 ```toml
 # Configuration - gloss
@@ -43,7 +43,9 @@ Each key has a comment. Changes reload automatically, and invalid changes leave 
 
 ## `[features]`
 
-Master switches. An effective off state stops that subsystem from rendering or listening. For most kinds the documents still load, still hot-reload and are still editable by command. `emoji` and `animations` shut down completely while off and can start on a later reload. `panels` and `previews` instead decide service construction once during enable; when either is off at startup, none of its documents are loaded.
+These keys enable or disable each feature. Most document-backed features still load and can be edited
+while disabled. `emoji` and `animations` can restart on reload. Enabling `panels` or `previews` after
+startup requires a server restart.
 
 | Key | Default | Gates |
 |---|---|---|
@@ -62,9 +64,10 @@ Master switches. An effective off state stops that subsystem from rendering or l
 | `motd` | `false` | The custom server list MOTD |
 | `particles` | `true` | Viewer-targeted particle layers on supported in-world renders |
 
-`motd` is the only feature disabled by default. Gloss reads `panels` and `previews` once during enable. The panel service and the preview registry start only when their feature is on at that moment.
+`motd` is the only feature disabled by default.
 
-Bundled defaults follow the toggle. A feature that is off extracts nothing and leaves no folder behind, which is why a stock data folder has no `motd.json` and a server with previews off has no `previews/`. Menus follow the same rule and include one inert `menus/default.json`. Turning a feature on extracts its defaults on that reload, except for `previews`, which needs the restart described above. See [Getting Started](/gloss/01-getting-started).
+Gloss extracts bundled documents only for enabled features. Enabling most features later extracts their
+defaults on reload; previews require the restart noted above. See [Getting Started](/gloss/01-getting-started).
 
 ## `[hotload]`
 
@@ -79,10 +82,10 @@ Bundled defaults follow the toggle. A feature that is off extracts nothing and l
 | `stackDistance` | `0.26` | 0.05 – 2.0 | Vertical distance in blocks between stacked temporary holograms, and the value exposed to the API as the stack spread |
 | `updateIntervalTicks` | `10` | 1 – 200 | Ticks between ordinary persistent hologram refreshes; clock-driven expressions and named animations automatically sample every tick |
 | `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which personalized metadata is sent |
-| `perViewerPlaceholders` | `true` | — | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
+| `perViewerPlaceholders` | `true` | Not applicable | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
 | `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, API temporaries) |
-| `interpolatedMotion` | `true` | — | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
-| `highFrequencyAnimations` | `true` | — | Drive animation clips faster than 20 fps from the dedicated `Gloss Animator` thread with sub-tick packet updates. Off restores the tick-bounded behavior exactly |
+| `interpolatedMotion` | `true` | Not applicable | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
+| `highFrequencyAnimations` | `true` | Not applicable | Drive animation clips faster than 20 fps from the dedicated `Gloss Animator` thread with sub-tick packet updates. Off restores the tick-bounded behavior exactly |
 | `maxAnimationFps` | `120` | 1 – 240 | Frame-rate ceiling of the high-frequency animator loop. Sets its adaptive floor to `1000 / fps` ms (at least 4 ms) |
 | `animationPacketBudget` | `20000` | 100 – 1000000 | Hologram text-metadata recipients per second, shared by animated targets, personalized updates and personalized clears. Large aggregate audiences degrade animation frame rate proportionally |
 
@@ -90,7 +93,7 @@ A non-finite `stackDistance` or `viewRange` falls back to its default. A finite 
 
 ## `[particles]`
 
-These ceilings are shared by particle layers on holograms, temporary holograms, bubbles, indicators, menus, panels, previews and dropped-item presentations. See [Particle Layers](/gloss/25-particle-layers) for the authoring contract.
+These ceilings are shared by particle layers on holograms, temporary holograms, bubbles, indicators, menus, panels, previews and dropped-item presentations. See [Particle Layers](/gloss/25-particle-layers) for the document format.
 
 | Key | Default | Range | Meaning |
 |---|---:|---:|---|
@@ -155,11 +158,9 @@ Bubble wrapping, appearance, lifetime, conditional selection, expression-driven 
 
 ## `damage-indicators/default.json`
 
-`[features] damageIndicators` is the only damage-indicator setting in `gloss.toml`. The complete
-versioned presentation profile lives in `plugins/Gloss/damage-indicators/default.json`, hot-reloads
-without a full config reload, and is editable under **Damage indicators** in the web editor. Its
-schema-3 envelope is followed by `limits`, conditional `damage` and `healing` blocks, and an
-`audience` condition.
+Damage-indicator settings live in `plugins/Gloss/damage-indicators/default.json`. The schema-3 file
+contains `limits`, `damage`, `healing`, and `audience`, reloads automatically, and is available in the
+web editor.
 
 ### `limits`
 
@@ -186,7 +187,7 @@ affected entity.
 | Key | Damage default | Healing default | Meaning |
 |---|---|---|---|
 | `when` | `"true"` | `"true"` | Condition that gates this event type |
-| `presentation.format` | `"&c&l{amount}"` | `"&a&l{amount}"` | Authored indicator text; the required `{amount}` token is the formatted health delta |
+| `presentation.format` | `"&c&l{amount}"` | `"&a&l{amount}"` | Configured indicator text; the required `{amount}` token is the formatted health delta |
 | `presentation.offset` | `[0, 0.7, 0]` | `[0, -0.1, 0]` | Spawn offset from the entity; each finite component is clamped to -32 – 32 |
 | `variants` | `[]` | `[]` | Complete presentations selected by `priority` and `when` |
 
@@ -199,8 +200,7 @@ Each presentation also carries `motion`:
 | `verticalAcceleration` | `-0.93` | `0.05` | -32 – 32 blocks/second² | Constant vertical acceleration |
 | `spinDegreesPerSecond` | `0` | `0` | -1440 – 1440 | Constant display spin |
 
-The runtime evaluates position and spin from the immutable spawn state and elapsed seconds. The
-result does not depend on the temporary-hologram drive interval.
+Position and spin use elapsed time, independent of the temporary-hologram refresh interval.
 
 Each presentation also carries `transform`:
 
@@ -222,19 +222,21 @@ Damage conditions can use applied-delta event values plus immutable affected-ent
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `nameFormat` | `"&7{count}x {type}"` | — | Name format for dropped stacks. `{count}` and `{type}` are replaced. A null value restores the default |
-| `bundleFormat` | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | — | Name format for a dropped bundle carrying stacks. `{total}` and `{contents}` are replaced. A null value restores the default. An empty bundle falls back to `nameFormat` |
+| `nameFormat` | `"&7{count}x {type}"` | Not applicable | Name format for dropped stacks. `{count}` and `{type}` are replaced. A null value restores the default |
+| `bundleFormat` | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | Not applicable | Name format for a dropped bundle carrying stacks. `{total}` and `{contents}` are replaced. A null value restores the default. An empty bundle falls back to `nameFormat` |
 | `bundleEntryLimit` | `3` | 1 – 10 | Bundle content entries listed before the rest collapse into a `+N more` suffix |
-| `bundleVerticalLabels` | `true` | — | Use one multiline TextDisplay for bundle labels while real drops are active |
-| `bundleHeaderFormat` | `"&eBundle &8(&e{total} items&8)"` | — | First vertical bundle line; `{total}` is replaced |
-| `bundleEntryFormat` | `"&7- &f{count}x {type}"` | — | One vertical line per material; `{count}` and `{type}` are replaced |
-| `bundleMoreFormat` | `"&8+{remaining} more"` | — | Final line for hidden material types; `{remaining}` is replaced |
-| `preserveCustomNames` | `true` | — | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
-| `useItemDisplayNames` | `false` | — | Opt in to using an item's display name from its item meta as `{type}` instead of the pretty material name |
+| `bundleVerticalLabels` | `true` | Not applicable | Use one multiline TextDisplay for bundle labels while real drops are active |
+| `bundleHeaderFormat` | `"&eBundle &8(&e{total} items&8)"` | Not applicable | First vertical bundle line; `{total}` is replaced |
+| `bundleEntryFormat` | `"&7- &f{count}x {type}"` | Not applicable | One vertical line per material; `{count}` and `{type}` are replaced |
+| `bundleMoreFormat` | `"&8+{remaining} more"` | Not applicable | Final line for hidden material types; `{remaining}` is replaced |
+| `preserveCustomNames` | `true` | Not applicable | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
+| `useItemDisplayNames` | `false` | Not applicable | Opt in to using an item's display name from its item meta as `{type}` instead of the pretty material name |
 
 ## `real-drops/default.json`
 
-`[features] realDrops` is the only real-drop setting in `gloss.toml`. The schema-2 document at `plugins/Gloss/real-drops/default.json` contains one complete fallback `presentation`, zero or more complete conditional `variants`, and a per-viewer `audience.when`. It is extracted when the feature is enabled and hot-reloads without a full config reload. The web editor's **Real drops** document exposes every field and exports directly to that path. The headings below are relative to `presentation`; every variant repeats the complete presentation shape.
+Real Drops settings live in `plugins/Gloss/real-drops/default.json`. The schema-3 file contains a base
+`presentation`, conditional `variants`, and `audience.when`. It reloads automatically and is available
+in the web editor. The headings below describe fields inside `presentation`.
 
 ### `limits`
 
@@ -263,13 +265,13 @@ real-drop update loop.
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
-| `tumble` | `true` | — | Rotate airborne models |
-| `speedMultiplier` | `1.35` | 0.1 – 4 | Multiplier applied to all three authored tumble speeds; `1` uses the axis values unchanged |
+| `tumble` | `true` | Not applicable | Rotate airborne models |
+| `speedMultiplier` | `1.35` | 0.1 – 4 | Multiplier applied to all three configured tumble speeds; `1` uses the axis values unchanged |
 | `degreesPerSecondX` | `160.0` | -1440 – 1440 | Base X-axis tumble speed |
 | `degreesPerSecondY` | `120.0` | -1440 – 1440 | Base Y-axis tumble speed |
 | `degreesPerSecondZ` | `100.0` | -1440 – 1440 | Base Z-axis tumble speed |
 | `variance` | `0.2` | 0 – 1 | Stable per-item variation applied to each configured speed |
-| `changeOnBounce` | `true` | — | Select another deterministic spin after an upward bounce |
+| `changeOnBounce` | `true` | Not applicable | Select another deterministic spin after an upward bounce |
 | `velocityInfluence` | `0.35` | 0 – 4 | Increase angular speed from the authoritative item's real throw velocity |
 | `submergedSpinMultiplier` | `0.35` | 0 – 1 | Angular-speed multiplier while submerged |
 | `groundRollMultiplier` | `1.0` | 0 – 4 | Rotation generated from actual supported travel; `0` slides and `1` rolls at the model radius |
@@ -280,7 +282,7 @@ real-drop update loop.
 |---|---:|---|---|
 | `mode` | `"NATURAL"` | `NATURAL`, `FLAT`, `UPRIGHT` | Grounded pose policy; NATURAL block models may settle on any of six faces |
 | `tiltDegrees` | `10.0` | 0 – 45 | Maximum in-face variation for stationary/rebuilt NATURAL block models; momentum landings preserve their physical heading |
-| `randomYaw` | `true` | — | Give direct landing modes and stationary/rebuilt models a stable UUID-derived yaw |
+| `randomYaw` | `true` | Not applicable | Give direct landing modes and stationary/rebuilt models a stable UUID-derived yaw |
 | `transitionTicks` | `4` | 0 – 20 | Client interpolation duration between continuous animation samples |
 | `faceAttraction` | `0.55` | 0 – 1 | Portion of the remaining face-alignment angle removed per nearly-still sample |
 | `movingFaceAttraction` | `0.15` | 0 – 1 | Face attraction retained while rolling; lower values preserve momentum longer |
@@ -291,14 +293,14 @@ real-drop update loop.
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
-| `enabled` | `true` | — | Mirror the effective item name through one TextDisplay |
+| `enabled` | `true` | Not applicable | Mirror the effective item name through one TextDisplay |
 | `yOffset` | `0.55` | 0 – 4 | Label height above the model in blocks |
 | `scale` | `0.85` | 0.1 – 4 | TextDisplay scale |
 | `viewRange` | `32.0` | 4 – 128 | Label tracking range in blocks |
 | `billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, `VERTICAL` | Billboard constraint |
-| `seeThrough` | `true` | — | Draw the label through blocks |
-| `shadow` | `true` | — | Draw the text shadow |
-| `background` | `true` | — | Draw the configured full background |
+| `seeThrough` | `true` | Not applicable | Draw the label through blocks |
+| `shadow` | `true` | Not applicable | Draw the text shadow |
+| `background` | `true` | Not applicable | Draw the configured full background |
 | `backgroundRed` | `0` | 0 – 255 | Background red channel |
 | `backgroundGreen` | `0` | 0 – 255 | Background green channel |
 | `backgroundBlue` | `0` | 0 – 255 | Background blue channel |
@@ -316,7 +318,7 @@ real-drop update loop.
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
-| `enabled` | `false` | — | Permit Gloss to modify the authoritative item entity |
+| `enabled` | `false` | Not applicable | Permit Gloss to modify the authoritative item entity |
 | `gravityMultiplier` | `1.0` | 0 – 4 | Gravity scale; `0` clears vertical velocity and gravity while active |
 | `bounce` | `0.0` | 0 – 0.9 | Restitution applied from the measured downward impact speed |
 | `waterBuoyancy` | `0.0` | 0 – 1 | Additional upward velocity while submerged |
@@ -358,27 +360,21 @@ All three apply the moment the config reloads. See [Components & Hitboxes](/glos
 |---|---|---|
 | `builderUrl` | `"https://gloss.volmitsoftware.com"` | Base URL of the hosted web editor |
 
-`builderUrl` is sanitized on every load. Gloss trims the value. It then
-rejects the value unless it starts with `http://` or `https://`. The
-value must also contain no character at or below a space, and none of
-`'`, `"`, `<`, `>` or `\`. A rejected value is replaced with the default.
-There is no partial repair.
-
-> Both editor hostnames moved off the retired HoloUI names. The builder default is `gloss.volmitsoftware.com`. The sync endpoint default is `sync.gloss.volmitsoftware.com/v3`. If a host is not reachable yet, point `builderUrl` at your own build of the editor.
-{.is-info}
+`builderUrl` must begin with `http://` or `https://` and cannot contain spaces or unsafe URL
+characters. Invalid values reset to the default.
 
 ## `[editor.sync]`
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `enabled` | `true` | — | Enable live editor sync sessions through the relay |
-| `endpoint` | `"https://sync.gloss.volmitsoftware.com/v3"` | — | Relay endpoint URL |
-| `createToken` | `""` | — | Relay session creation token |
+| `enabled` | `true` | Not applicable | Enable live editor sync sessions through the relay |
+| `endpoint` | `"https://sync.gloss.volmitsoftware.com/v3"` | Not applicable | Relay endpoint URL |
+| `createToken` | `""` | Not applicable | Relay session creation token |
 | `sessionMinutes` | `60` | 5 – 1440 | Minutes an editor sync session stays alive |
 | `pollSeconds` | `3` | 1 – 60 | Seconds between relay polls during an active session |
 | `maxProjectMiB` | `8` | 1 – 32 | Maximum editor sync project size in mebibytes |
 
-`endpoint` is sanitized strictly. A value that is not already stripped of surrounding whitespace is rejected outright. Trailing slashes are removed. The URI is normalized. It must then satisfy all of the following, or the default is restored:
+`endpoint` must satisfy all of these rules. Invalid values reset to the default:
 
 - it parses as an absolute URI with a scheme and a host
 - no user info, no query string and no fragment
@@ -386,7 +382,7 @@ There is no partial repair.
 - a path ending in `/v3`, containing none of `//`, `/../` or `/./`
 - a rebuilt, lowercase-scheme, lowercase-host form no longer than 1024 characters
 
-The stored value is that rebuilt form. The endpoint you read back may differ in case from what you typed.
+Gloss normalizes the scheme, host, and trailing slash before storing the endpoint.
 
 `createToken` is sanitized separately. Null or blank stays empty. Anything else must already be free of surrounding whitespace, be 22 to 128 characters long, and consist only of `A-Z`, `a-z`, `0-9`, `_` and `-`. A value that fails any of those is blanked. Gloss logs `editor.sync.createToken is invalid; live editor session creation will use no token.` A custom relay that admits anonymous creation receives the untokened request. The official endpoint instead refuses session creation locally and tells the command sender to configure `[editor.sync] createToken`.
 
@@ -414,16 +410,16 @@ If you change `scale` or `uiScale`, Gloss invalidates the item provider cache. I
 | `customItems` | `true` | Enable custom item icons resolved through installed item plugins |
 | `customItemProviders` | `[]` | Provider allowlist by provider or plugin name. An empty list allows every provider |
 
-Allowlist entries are trimmed, lowercased and de-duplicated on load. The file shows the normalized form. If you change either key, Gloss reloads the provider registry on the next config reload. See [Custom Items & Item Providers](/gloss/14-custom-items).
+Gloss trims, lowercases, and removes duplicate allowlist entries. Changes apply on the next config
+reload. See [Custom Items & Item Providers](/gloss/14-custom-items).
 
 ## `[playerHeads]`
 
-Settings for JSON `playerHead` menu icons. Profile resolution is asynchronous; it never blocks a
-menu tick or performs network work on the calling thread.
+Settings for JSON `playerHead` menu icons. Profile lookups run asynchronously.
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `enabled` | `true` | — | Resolve real player profiles. Off renders every player-head icon as the configured fallback and makes no outbound profile request |
+| `enabled` | `true` | Not applicable | Resolve real player profiles. Off renders every player-head icon as the configured fallback and makes no outbound profile request |
 | `cacheMinutes` | `360` | 1 – 10080 | Minutes a resolved profile remains cached |
 | `unknownCacheMinutes` | `10` | 1 – 1440 | Minutes a confirmed nonexistent name remains cached |
 | `maxCachedProfiles` | `2048` | 16 – 65536 | Settled cache ceiling; expired and nearest-expiry entries are removed first. Size this at least to the number of distinct player heads expected in the active menu and panel working set |
@@ -435,7 +431,7 @@ player head while the lookup runs; a later icon refresh applies the resolved tex
 misses use `unknownCacheMinutes`; transient failures and an overloaded resolution queue retry after
 one minute.
 
-Online profiles update immediately. Offline profile lookups time out after 15 seconds; Gloss limits concurrent requests and reuses completed results.
+Online profiles update immediately. Offline lookups time out after 15 seconds.
 
 ## `[integration]`
 
@@ -447,7 +443,8 @@ The integration bridge only samples metric keys used by loaded content. Changes 
 
 ## What is no longer in configuration
 
-`config.yml` does not exist. Pre-merger Gloss used it. `/gloss import legacy` can overlay supported mechanical keys onto `gloss.toml`, apply supported bubble content to the current default bubble document, and import supported MOTD content. The old HoloUi `settings.json` can also contribute supported settings. Gloss does not read either legacy file as a live configuration source.
+Gloss no longer reads `config.yml` or HoloUi `settings.json` as live configuration. Use
+`/gloss import legacy` to copy supported settings, bubble content, and MOTD content into current files.
 
 Three groups of settings moved out of configuration. They are now content documents:
 
@@ -459,6 +456,6 @@ Three groups of settings moved out of configuration. They are now content docume
 
 The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Board schema 2 and tablist schema 2 express group-dependent behavior as ordinary conditions; `/gloss import legacy` does not convert old boards, groups or tablist formats.
 
-The former `line-stagger-ticks` and `fly-away` switches have no direct schema-3 keys. One wrapped message is one multiline entity, and translation, scale, rotation and opacity are authored as BubbleStyle motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
+The former `line-stagger-ticks` and `fly-away` switches have no direct schema-3 keys. One wrapped message is one multiline entity, and translation, scale, rotation and opacity use BubbleStyle motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
 
 Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss silently ignores those document versions and does not migrate them during startup. Rewrite custom content to the current schema or reset it to the default.

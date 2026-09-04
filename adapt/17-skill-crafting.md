@@ -1,21 +1,15 @@
 ---
 title: "Skill - Crafting"
-description: "Adapt documentation: Skill - Crafting"
+description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Crafting is the workbench skill. You level it by pulling results out of a crafting grid and by running furnaces. Craft XP scales with the value of what you made. A stack of sticks is worth much less than a diamond pickaxe. A flat bonus is added on top of every craft. Furnace XP is granted at the furnace itself and reaches any Adapt player standing within range. A smelting room pays the whole base.
+Crafting gains XP from crafted output and nearby furnaces. Craft rewards scale with material value, while both reward paths use cooldowns.
 
-Both XP paths are throttled. One player can only be paid for a craft once every few seconds. Each individual furnace has its own cooldown. An AFK auto-smelter does not print XP.
-
-The 14 adaptations cover three jobs. Some unlock recipes that do not exist in vanilla. Those recipes include leather
-from rotten flesh on a campfire, mob heads, ores rebuilt from their drops, and a
-backpack. Some give you tools that save trips. You get portable crafting stations you open from your hand. You also get a
-compactor bound to a crafting table. Shears tear dropped items back into
-components. The rest quietly improve the crafts you were making anyway, with refunds, bigger batches, better gear, and bonus food. Five of them are marked permanent in the default config. Once learned they stay learned.
+Its 14 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses. Five adaptations are permanent by default.
 
 ## Adaptations
 

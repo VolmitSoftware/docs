@@ -1,8 +1,8 @@
 ---
 title: "Placeholders"
-description: "VolmLib documentation: PlaceholderAPI plumbing"
+description: "Snapshot-backed PlaceholderAPI helpers and expansion lifecycle"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -16,7 +16,7 @@ PlaceholderAPI is compile-only:
 
 ```groovy
 repositories {
-    maven { url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/') }
+    maven { url = uri('https://repo.helpch.at/releases') }
 }
 
 dependencies {

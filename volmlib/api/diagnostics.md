@@ -2,7 +2,7 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-09-04T04:53:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
@@ -28,13 +28,13 @@ Run a plugin's report command to save and upload its report, or append `upload=f
 
 These commands use the Bukkit service; Iris's mod-loader command trees do not expose this service. Existing gameplay debug toggles and debug subcommands remain separate from report generation.
 
-`/volmit plugins debug` opens a Director-styled list of every enabled shared debug provider the sender may use. Click or run `/volmit plugins debug <plugin> [upload=true|false]` to request that plugin's report. `/volmit plugins debug all [upload=true|false]` takes one provider snapshot and prepares every permitted report in tandem; providers the sender cannot use are not included. The command waits for those providers and displays one Director result page with every local path first, followed by every upload link and then any notices or failures. The bottom of that page provides newline-separated Copy All actions for uploaded mclo.gs URLs when present and for every saved local path. Copied upload lines use `<plugin> - <url>` so each report remains identifiable outside Minecraft. One provider failing does not stop the others. The list, hover text, pagination, Back navigation, and tab completion are built from the currently registered providers rather than a fixed plugin list. `/volmit plugins` links this selector beside the shared language selector and provides Back navigation through the shared tool pages.
+`/volmit plugins debug` lists the available report providers. Use `/volmit plugins debug <plugin> [upload=true|false]` for one plugin or `/volmit plugins debug all [upload=true|false]` for every provider you may access. One failed provider does not stop the others. Results include local paths and any upload links.
 
 ## Saving and uploading
 
-The service writes the report atomically under the plugin data folder's `debug/` directory before attempting upload. Filenames use `<plugin>-v<version>-debugdump-yyyy-MM-dd-HH-mm-ss.txt` in UTC; they contain neither milliseconds nor a UUID suffix. Players receive the full absolute path and a control that copies it. A successful upload returns one Open control with the public URL visible in its label; its hover shows the URL directly without labeling it as a command. Console receives the path and link as plain text. Public uploads carry `VolmitSoftware - <Plugin> - v<version>` as both their mclo.gs source label and visible report metadata. The create-log API has no title field, so mclo.gs may still derive `Unknown Log` as its page heading when the diagnostic format does not match a known log type. An upload failure leaves the saved report available locally and reports the failure in the console.
+The service saves the report under the plugin's `debug/` directory before upload. Filenames use `<plugin>-v<version>-debugdump-yyyy-MM-dd-HH-mm-ss.txt` in UTC. Players receive copy and open controls; console receives plain text. Upload failure does not remove the local report.
 
-Plugins may supply a `BukkitDebugDump.Presentation` to wrap preparation, save, failure, and upload feedback in their own Director theme. Rift and ShapedPortals use this option for their nested debug-command results; providers that omit it retain compact component output.
+Plugins may supply a `BukkitDebugDump.Presentation` for themed feedback. Providers that omit it use compact component output.
 
 Uploads require both the command's `upload` flag and the service's `uploadEnabled` supplier to return `true`. The default service allows uploads. Rift and ShapedPortals connect that supplier to their own debug-upload setting, so a command cannot override a disabled setting. Passing `upload=false` suppresses upload for one report.
 
@@ -67,7 +67,7 @@ The entry point is `art.arcane.volmlib.util.diagnostics.BukkitDebugDump`.
 | `permission()` | Return an existing `<plugin>.debug` permission, or derive `<plugin>.debugdump` when none is declared |
 | `close()` | Unregister the provider and close the service during plugin shutdown |
 
-Creation registers the permission with default `OP` if the plugin descriptor does not already declare it, then publishes a cross-classloader-safe provider through Bukkit's services registry. The provider exposes the normal request callback and a silent asynchronous result callback made only from JDK and Bukkit types. The latter lets `/volmit plugins debug all` collect reports from separately shaded VolmLib copies and render one result page. The plugin may also keep its own debug command; it should default its boolean `upload` argument to `true`, and the service enforces the dedicated permission itself.
+Creation registers an `OP` permission when the plugin descriptor does not declare one, then publishes the provider through Bukkit's services registry. The service enforces the dedicated permission. Plugins may keep their own report command.
 
 ## Clipboard controls
 

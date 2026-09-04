@@ -2,17 +2,13 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Dimensional Doors are survival vanilla doors and trapdoors that carry a durable
-identity in item PDC. Placed endpoints present a portal surface when their
-saved OpenState matches the physical block state. Travelers that meet that
-surface transit on the same server, while PAIR links two endpoints without a
-pocket. See
+Dimensional Doors are doors and trapdoors with a saved identity. Their portal surface becomes active when the physical block matches its OpenState. Pair doors link two locations; Personal and Public doors use pocket dimensions. See
 [08 - Pocket Dimensions](/wormholes/08-pocket-dimensions) for PERSONAL/PUBLIC
 destinations.
 
@@ -69,13 +65,9 @@ Access is **per door** (one `DoorAccessRecord` per door `itemId`), with
 **per-player** entries inside that record. It is not a global per-player grant
 across doors.
 
-**Open the menu:** sneak, empty main hand, right-click a placed Pair, Personal,
-or Public door block. Owner, ops, and `wormholes.admin` can manage. Return
-doors have no access menu and are never gated.
+To open the menu, sneak and right-click a placed Pair, Personal, or Public door with an empty main hand. The owner, operators, and players with `wormholes.admin` may manage it. Return doors have no access menu.
 
-**Window contents:** header placard, centered OpenState control, add-player
-control. Then one stained-glass pane per listed player. Height grows one row
-per nine listed players (viewport capped at six rows).
+The menu contains the OpenState control, an add-player control, and one entry per listed player.
 
 | Control | Action |
 |---------|--------|
@@ -86,7 +78,7 @@ per nine listed players (viewport capped at six rows).
 | Listed pane middle-click or shift-left-click | Remove from list |
 | Black pane (`NEUTRAL`) | No transit effect. Entry is still listed |
 
-**Authorization (`DoorAccessPolicy`):**
+Access rules:
 
 | Actor | Result |
 |-------|--------|
@@ -108,15 +100,7 @@ outside portal transit.
 
 ## Portal surface and block protection
 
-When a placed endpoint's OpenState matches the physical door or trapdoor
-state, Wormholes shows an animated client-visible surface. The surface uses
-crying obsidian and Nether-portal block displays. Nearby viewers receive the
-animated overlay. Particles follow the global particle setting.
-Dimensional-door sounds follow the global portal sound volume. The display is
-removed when the endpoint is no longer live or the feature drains. All door
-surfaces share one two-tick animation loop. Viewer checks within 128 blocks are
-staggered across 20 passes, and each pass admits at most 64 overlay entity-owner
-animation tasks with at most 64 in flight.
+When OpenState matches the physical block, Wormholes shows an animated portal surface to nearby players. Particles and sounds follow the global Wormholes settings. The surface disappears when the endpoint is no longer active.
 
 Registered dimensional doors, their hinged-door support blocks, and pocket core
 blocks are protected from fire, piston movement, entity block changes, and
@@ -125,15 +109,7 @@ rules below. Return doors remain unbreakable.
 
 ## Transit eligibility
 
-Travelers are classified as `LIVING` (players, mobs, vehicles) or `OBJECT`
-(projectiles, dropped items, experience orbs). Objects are swept each tick
-around live doors when they do not fire move events. Live doors that reach the
-same chunk share one owner task and one chunk-entity read for that tick, and
-each eligible object is fed once when it is near any active door plane. Rejected
-chunk tasks retry without losing the door membership; unloaded edge chunks
-pause until their chunk-load event resumes them. Aperture fit for
-non-players is at most width 1.0 and height 2.0. Travelers inside a vehicle,
-with passengers, or leashed cannot enter.
+Travelers are either `LIVING` (players, mobs, and vehicles) or `OBJECT` (projectiles, dropped items, and experience orbs). Non-player travelers must fit within a one-block-wide, two-block-high opening. Travelers inside a vehicle, carrying passengers, or attached to a leash cannot enter.
 
 | Kind | Players | Mobs / empty vehicles (fit aperture) | Objects |
 |------|---------|--------------------------------------|---------|
@@ -183,24 +159,11 @@ are configurable. See **Configuring recipes** below. Default products:
 | Public door / trapdoor | Pale oak door / pale oak trapdoor |
 | Return (structure) | Per pocket. Crimson door by default |
 
-**Ingredient vs product:** hinged-door recipes accept any vanilla door,
-including iron and copper. Trapdoor recipes accept only hand-openable wooden
-trapdoors. The minted product always uses the default wooden material above,
-not the ingredient material. Return doors have no recipe. Crafters cannot mint
-identities or apply skins (`CrafterCraftEvent` is cancelled for those recipes).
-Identity is minted only on a player craft click.
+Hinged-door recipes accept any vanilla door, including iron and copper. Trapdoor recipes accept hand-openable wooden trapdoors only. The result uses the default material shown above, not the ingredient material. Return doors have no recipe, and automated crafters cannot create dimensional door identities or skins.
 
-**Recipe book:** every enabled recipe is unlocked in the vanilla recipe book for
-players holding `wormholes.doors.craft`, on join and again whenever the recipe
-set changes. Players without that permission have them removed from the book.
-The Portal Wand recipe carries no permission and is unlocked for everyone; runes
-have no recipe at all. A Bukkit recipe arrives at the client locked, so without this it would
-never appear in the recipe browser and, with the `doLimitedCrafting` gamerule
-on, could not be crafted at all.
+Enabled door recipes appear in the recipe book for players with `wormholes.doors.craft`. The Portal Wand recipe is available to everyone. Runes are not craftable.
 
-**Pair kit:** craft yields a bundle. Right-click air or block unpacks linked
-A/B items and registers the pair. Creative and survival consume the kit on
-unpack.
+A Pair kit is a bundle. Right-click to unpack its linked A and B items; unpacking consumes the kit in every game mode.
 
 Placing any crafted or granted Pair, Personal, or Public door/trapdoor requires
 `wormholes.doors.place`, which defaults to `op`. `wormholes.admin` and ops also

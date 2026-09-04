@@ -2,13 +2,13 @@
 title: "Foundation"
 description: "Foundation server essentials documentation"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "foundation, essentials, administration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Foundation supplies modular server essentials for Minecraft 26.x servers. Its runtime covers arrival points, saved destinations, consent and administrative travel, private messaging, mail, moderation, kits, item utilities, optional economy, cosmetics, player state, information commands, and bounded gameplay controls.
+Foundation provides modular server essentials for Minecraft 26.x, including teleportation, homes, moderation, mail, kits, utilities, and an optional economy.
 
 ## Documentation
 

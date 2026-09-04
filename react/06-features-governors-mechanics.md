@@ -1,13 +1,15 @@
 ---
 title: "Features - Governors & Mechanics"
-description: "React documentation: Features - Governors & Mechanics"
+description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Pressure-aware governors and world mechanics cover activation ranges, view ranges, hoppers, redstone, farms, furnaces, pathfinding, random ticks, quarantine, and incident mode. Config: `plugins/React/feature/<id>.toml`. Base `enabled` defaults to `true`.
+
+## Governors and mechanics
 
 Most governors engage only after sustained tick or incident thresholds. They release through configured hysteresis.
 

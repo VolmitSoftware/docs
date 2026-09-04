@@ -1,18 +1,14 @@
 ---
 title: "Panels"
-description: "Gloss documentation: Panels"
+description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-A panel is a hologram menu anchored in the world instead of in front of one player. It lives as a
-JSON document in `plugins/Gloss/panels/`. It points at a menu document as its root.
-
-Every player who comes within its view range gets a private copy of that menu. The copy is rendered
-at the panel's world transform. Panels are what HoloUi called boards. In Gloss the name `board`
-belongs to scoreboards.
+A panel places a persistent hologram menu at a world location. Panel documents live in
+`plugins/Gloss/panels/` and point to a menu document for their content.
 
 ## Panels, holograms, menus and boards
 
@@ -23,9 +19,8 @@ belongs to scoreboards.
 | Panel | A menu anchored in the world, persistent and interactive | `panels/` | `/gloss panel` |
 | Scoreboard | A sidebar objective | `boards/` | `/gloss board` |
 
-A panel holds no content of its own. It holds a placement, a visibility policy and a `rootMenuId`.
-The content comes from the menu document that id names. Two panels can share one menu. Editing that
-menu changes both. See [Hologram Menus](/gloss/09-menus) for the menu document itself.
+A panel stores placement, visibility, and a `rootMenuId`. Multiple panels can share a menu; editing
+that menu updates all of them. See [Hologram Menus](/gloss/09-menus).
 
 Panels are also not personal menu sessions. `/gloss menu open` opens a menu in front of the player
 who ran it. That menu closes when they walk away or log out. A panel is placed once and stays until
@@ -33,10 +28,8 @@ it is deleted.
 
 ## The panel document
 
-One file is one panel. `plugins/Gloss/panels/spawn/shops.json` is the panel `spawn/shops`. Nested
-folders are allowed. Each `/` in the id is one directory level. Only `.json` files are read.
-Symbolic links are refused for reads, writes and deletes. A file whose path is not the canonical
-form of its id is rejected.
+Each `.json` file defines one panel. For example, `panels/spawn/shops.json` has the id `spawn/shops`.
+Nested folders are allowed. Symbolic links and noncanonical paths are rejected.
 
 ```json
 {
@@ -90,28 +83,21 @@ components. See [Particle Layers](/gloss/25-particle-layers).
 Panels are the one Gloss document kind that carries its own `id` inside the JSON. The file path and
 the `id` key must agree. A mismatch rejects the file rather than picking a winner.
 
-Panel ids are canonicalized to lowercase. The whole id is at most 255 characters. Each `/`-separated
-segment is at most 64 characters and must match `[a-z0-9][a-z0-9._-]*`. Empty, `.`, `..` and
-backslash-separated segments are rejected. `rootMenuId` follows the same length and traversal rules
-but keeps its case. A menu named `shops/Main` is referenced exactly as written.
+Panel ids are lowercase, at most 255 characters, and split into segments of at most 64 characters.
+Each segment must match `[a-z0-9][a-z0-9._-]*`. `rootMenuId` follows the same path limits but keeps
+its case.
 
 ### Revisions and reload failures
 
-`revision` is server-owned. Every command edit and every editor-sync publication reads the revision
-it expects. It writes `revision + 1`. It fails with a conflict message if the panel moved on in
-between.
+Gloss increments `revision` on each command or editor write. A stale write fails with a conflict.
 
 A hand-edited file must therefore raise `revision` itself. On reload, a document whose content
 changed but whose revision did not is rejected with `board content changed without a revision
 increment`. A revision that moved backwards is rejected too.
 
-A rejected file does not delete a working panel. `/gloss panel reload` reports four numbers:
-loaded, retained, removed, failed. Each failure is logged with the file name and reason. Where the
-panel was already published, the last good definition is retained. It stays live until the file
-parses again. On a cold start there is no last good value. A broken file simply does not load.
-
-Writes go to a temporary file in the same directory, are flushed, replace the target with an atomic
-move, and flush the parent directory. A failed write never reaches the in-memory registry.
+A rejected reload keeps the last working definition. `/gloss panel reload` reports loaded, retained,
+removed, and failed counts, with each failure logged by filename. A broken file on first startup does
+not load.
 
 > Deleting the file removes the panel on the next reload. Deleting a panel never touches its menu
 > document, and deleting a menu leaves panels pointing at a menu that no longer resolves.
@@ -119,9 +105,8 @@ move, and flush the parent directory. A failed write never reaches the in-memory
 
 ## Placement, rotation and scale
 
-`transform` stores both `worldKey` (an explicit lowercase `namespace:key`) and `worldUuid`. Both
-must match a loaded world for the panel to render. The repository treats them as opaque values. It
-never asks the server to resolve a world. A panel for an unloaded world stays loadable and editable.
+`transform` stores `worldKey` and `worldUuid`. Both must match a loaded world before the panel can
+render. Panels in unloaded worlds remain editable.
 
 `yaw`, `pitch` and `roll` are degrees. They are normalized into `[-180, 180)` on load and on every
 write. `scale` is validated to `[0.05, 16.0]`. The rendered scale is `scale` multiplied by
@@ -175,11 +160,7 @@ personal menu.
 
 ## Following a player
 
-A panel can be pinned to an online player. The stored transform then holds a target-relative offset
-rather than an absolute position. The runtime resamples the target on their own scheduler. It
-publishes a resolved absolute pose. One target movement resolves only panels following that player
-and updates only their old and new spatial buckets; unrelated panel definitions and distant viewer
-candidate caches stay untouched.
+A panel can follow an online player. Its stored transform becomes an offset from that player.
 
 | Rotation | Offset behavior | Facing |
 |---|---|---|
@@ -210,10 +191,8 @@ Every node below requires `gloss.panels`, except `web`. Bare `/gloss panel` runs
 `/gloss panels` is an accepted alias for the whole subtree. Required arguments are positional in
 the order shown. Optional arguments are written `key=value`.
 
-The panel subtree keeps a few legacy positional forms. A bare page on `list`, a bare radius on
-`near` and a bare menu id on `create` are rewritten to their keyed forms. The trailing text, icon
-value, style value or image path on the row commands is joined into one argument. You do not have
-to quote it.
+`list`, `near`, and `create` also accept their older positional forms. Trailing text, icon, style, and
+image values are joined automatically and do not need quotes.
 
 ### Managing panels
 
@@ -252,9 +231,9 @@ until one of them is pointed at another menu.
 | Node | Arguments | Notes |
 |---|---|---|
 | `ranges` | `<panel> <viewRange> <interactionRange>` | Both positive. Interaction may not exceed view |
-| `visibility` | `<panel> <mode> <viewPermission> <interactPermission>` | `public`, `permission` or `hidden`.`-` clears a permission |
+| `visibility` | `<panel> <mode> <viewPermission> <interactPermission>` | `public`, `permission` or `hidden`. `-` clears a permission |
 | `permissions` | `<panel> <viewPermission> <interactPermission>` | Changes the nodes and derives the mode |
-| `follow` | `<panel> <player> <rotation>` | Online player name or uuid.`fixed`, `yaw` or `full` |
+| `follow` | `<panel> <player> <rotation>` | Online player name or uuid. `fixed`, `yaw` or `full` |
 | `unfollow` | `<panel>` | Materializes the effective pose and clears follow |
 
 `permissions` picks the mode for you. Giving a view permission switches the panel to `permission`.
@@ -263,9 +242,7 @@ when you want to state the mode explicitly.
 
 ### Editing the root menu in game
 
-These nodes edit the panel's root **menu** document, not the panel. They are the same mutations as
-`/gloss menu addrow` and friends. They are addressed by panel id instead of menu id. They check
-`gloss.panels`.
+These nodes edit the panel's root **menu** document and require `gloss.panels`.
 
 | Node | Arguments |
 |---|---|
@@ -292,9 +269,7 @@ menu document immediately. Icons, styles and actions are documented in [Icons](/
 
 ## Staged edit sessions
 
-`/gloss panel edit <panel>` snapshots the published definition, its revision and its effective
-transform. It gives you a private preview of the panel. From then on your panel-document changes go
-into that snapshot instead of to disk.
+`/gloss panel edit <panel>` opens a private preview. Panel changes remain staged until you save.
 
 ```
 /gloss panel edit shop
@@ -331,14 +306,11 @@ stays open. You can re-run it or cancel.
 /gloss web edit panel <panel>
 ```
 
-This node requires `gloss.web.edit`. Gloss opens a live session containing the panel document,
-every menu reachable from its root menu, and the images those menus use. Browser autosave remains
-local; **Publish to Server** sends the project back for revision checks and transactional apply.
-The command fails clearly when sync is disabled or unavailable. It never substitutes a one-way
-copy for a command that promises a live session.
+This command requires `gloss.web.edit` and opens the panel, its reachable menus, and their images.
+Browser autosave stays local. **Publish to Server** applies the project after revision checks.
 
 See [Web Editor & Sync](/gloss/18-web-editor) for the sync session lifecycle, size limits and the
-`/gloss web sessions` management commands. `/gloss web workspace` opens every editor-authored
+`/gloss web sessions` management commands. `/gloss web workspace` opens every editable
 Gloss document and image instead of one panel graph.
 
 ## Configuration
@@ -348,24 +320,19 @@ Gloss document and image instead of one panel graph.
 | `[features] panels` | `true` | Loads and renders panels |
 | `[menus] uiScale` | `1.0` | Multiplies every panel's `scale`, clamped `0.25` to `4.0` |
 
-With `[features] panels = false` the panel service never starts. No documents are loaded. Nothing
-renders. The panel commands find no panels to act on. That includes `/gloss panel reload`, which
-cannot start a service that was never enabled. Turning the feature back on requires a restart.
+With `[features] panels = false`, panels do not load or render. Turning the feature back on requires
+a restart.
 
 Panel views are built directly from menu documents rather than through the personal-session manager.
 `[features] menus` governs `/gloss menu open` and API menus, not panel rendering.
 
 ## Reload behavior
 
-`panels/` is not watched. Editing a panel file on disk does nothing until `/gloss panel reload`
-runs. `/gloss reload` reloads `gloss.toml` and the config-driven services without re-reading
-`panels/`. This is deliberate. Panel writes are revision-checked. A watcher that republished
-half-written or revision-stale files would fight the editor sync and staged-edit paths.
+`panels/` is not watched. Run `/gloss panel reload` after editing a panel file. `/gloss reload` does
+not reread this folder.
 
-Menu documents are the opposite. `menus/` is watched as one entry on the shared data watchdog, at
-`[hotload] watchIntervalTicks`. A menu edit rebuilds every open panel view that currently shows
-that menu. Each rebuild runs on that viewer's own scheduler. Content edits appear without a reload.
-Placement edits need one.
+Menu documents are watched at `[hotload] watchIntervalTicks`. Menu content changes appear without a
+panel reload; panel placement changes do not.
 
 ## Permissions
 
@@ -380,11 +347,5 @@ Placement edits need one.
 document together in one transaction. A new hologram menu is placed in the world in a single step.
 See [Hologram Menus](/gloss/09-menus) for that command and for `/gloss menu new`, which creates a
 menu document alone.
-
-Panel writes share one write permit with editor sync and the in-game writers, so they queue behind
-each other rather than interleaving. A panel publication that cannot get the permit within 30
-seconds fails instead of blocking, and a transaction abandoned by its owner is force-aborted after
-two minutes with a `SEVERE` line naming the abandoned lease. Either way the store is never left
-locked. See [Web Editor](/gloss/18-web-editor).
 
 The full tree is on [Commands & Permissions](/gloss/17-commands-permissions).

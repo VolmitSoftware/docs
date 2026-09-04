@@ -1,20 +1,16 @@
 ---
 title: "Configuration Math"
-description: "Adapt documentation: Configuration Math"
+description: "XP multipliers, progression curves, knowledge, and ability power"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt turns actions into XP, then converts XP into levels. Levels set the power budget, which caps how many adaptations a player can hold at once. Every config path below lives in `plugins/Adapt/adapt.toml`.
+Adapt applies location, repetition, permission, and boost multipliers before adding XP to a skill. A denied region cancels the award. Every setting on this page is in `plugins/Adapt/adapt.toml`.
 
-A skill submits an XP amount, then Adapt applies an ordered chain of multipliers before adding it to the skill line. Two discourage automation, one comes from region policy, and two are boost brackets. A region that denies XP cancels the award. Two stages clamp their results.
-
-Levels come from one curve. The same curve is used for every skill line and for master level. A change to `xpCurve` moves progression and ability power together. Master XP is never awarded directly. It is granted only when a skill line crosses a level.
-
-The defaults are tuned so a player doing normal varied work barely notices the anti-farm layers. Someone standing in one spot repeating one action bottoms out near one percent payout. If those defaults are too harsh for your server, raise the floors rather than switching the systems off.
+The selected `xpCurve` converts both skill XP and master XP into levels. Master XP is granted when a skill gains a level. With the default anti-farm floors, heavily repeated work can fall to about one percent of its normal XP.
 
 ## How an XP award is calculated
 
@@ -79,7 +75,7 @@ With `stack = false` the single highest matched value wins. Holding a 1.5 node a
 
 The result feeds the player bracket, so the `[0.01, 1000]` clamp still applies. Values below `1.0` work as rank penalties.
 
-### The whole product
+### Final multiplier
 
 ```
 final = novelty

@@ -1,8 +1,8 @@
 ---
 title: "API - Recipes, FX, Telemetry & Utilities"
-description: "Adapt documentation: API - Recipes, FX, Telemetry & Utilities"
+description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-08-29T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

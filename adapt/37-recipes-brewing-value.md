@@ -1,8 +1,8 @@
 ---
 title: "Recipes, Brewing & Value"
-description: "Adapt documentation: Recipes, Brewing & Value"
+description: "Crafting recipes, custom brewing, and material value settings"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

@@ -1,8 +1,8 @@
 ---
 title: "API: Previews"
-description: "Gloss documentation: API: Previews"
+description: "Add custom variables and access checks to container previews"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z

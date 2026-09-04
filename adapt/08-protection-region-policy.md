@@ -1,8 +1,8 @@
 ---
 title: "Protection & Region Policy"
-description: "Adapt documentation: Protection & Region Policy"
+description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

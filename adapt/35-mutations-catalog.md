@@ -1,17 +1,15 @@
 ---
 title: "Mutations Catalog"
-description: "Adapt documentation: Mutations Catalog"
+description: "Benefits, burdens, controls, and settings for every Mutation"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-There are fifteen Mutations. Each type has a benefit, a burden, and two skill domains. You qualify only if you have learned adaptations on both sides. This page describes what each type does and how you trigger it.
+Adapt has fifteen Mutations. Each entry lists its benefit, burden, qualifying skill domains, controls, and configuration. See [Mutations Overview](/adapt/34-mutations-overview) for setup and slot rules.
 
-The system, the enable switch, and the slots are in [34 - Mutations Overview](/adapt/34-mutations-overview). Every type follows the same shape. There is a benefit. There is a burden that stays while the trait is expressed. There is an effect cue so other players can see what you run. There is one gesture or habit that triggers it.
-
-At master level 200 the player reaches perfect adaptation. The burden then stops. Each entry below says what changes. Some types are combat traits. Some are movement traits. Some are long-term traits that you set once at a bookshelf and then keep. Temperbound and Masterwork Bond bind to items that you crafted. If you lose that item, you pay that cost.
+Perfect adaptation removes burdens at master level 200 by default. Temperbound and Masterwork Bond bind to player-crafted items, so losing the item also loses access to that binding.
 
 ## The fifteen Mutations
 

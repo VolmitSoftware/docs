@@ -1,17 +1,15 @@
 ---
 title: "Mutations Overview"
-description: "Adapt documentation: Mutations Overview"
+description: "Enable Mutations and manage slots, qualifications, and effects"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Mutations are an experimental trait system next to skill adaptations. A player wears up to two traits. Each trait has a benefit and a burden. The feature is off until you set `enabled = true` in `plugins/Adapt/mutations.toml`.
+Mutations are an optional two-slot trait system. Each of the fifteen types has a benefit, a burden, and a trigger. The feature is disabled until `enabled = true` in `plugins/Adapt/mutations.toml`.
 
-A player learns adaptations and spends knowledge on them. A Mutation is a commitment the player wears. Gale Lung makes you fast and dangerous while you move. Hits you take also shove you farther. Bastion Spine turns a still stance into a weapon. You cannot sprint while you brace. All fifteen types work this way. Each type has a benefit, a burden, and one trigger action. At master level 200 the burdens stop.
-
-Time enforces the commitment. Slots unlock at master level 25 and 50. A change needs a visit to an Adapt bookshelf. Each change puts a ten-minute cooldown on that slot. Mutations touch combat, movement, blocks, and other players. You can tune most of this per type and per world. You can set conflict lists, a PvP switch, particle and sound switches, and world blacklists.
+Slots unlock at master levels 25 and 50. Players must visit the Adapt activator block to change a slot, and each change has a ten-minute cooldown. At master level 200, perfect adaptation removes Mutation burdens by default.
 
 ## Enable the feature
 
@@ -20,7 +18,7 @@ Time enforces the commitment. Slots unlock at master level 25 and 50. A change n
 3. Grant `adapt.mutations` to players. Also grant `adapt.use.mutation.<id>` for each type you want available.
 4. Give `adapt.mutations.admin` to staff.
 
-Adapt logs the switch state at boot. If you are not sure, check the console.
+Adapt logs the enabled state at startup.
 
 ## How a player gets a Mutation
 

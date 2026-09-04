@@ -1,17 +1,14 @@
 ---
 title: "Scoreboards & Groups"
-description: "Gloss documentation: Scoreboards & Groups"
+description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Scoreboards are schema-2 JSON documents in `plugins/Gloss/boards/`. One file is one board and the
-file name is its id. Each document contains its own automatic-selection condition, one fallback
-presentation and complete conditional variants. Groups are not files; a condition can read the
-player's live Vault primary group like any other player property.
+Each schema-2 JSON file in `plugins/Gloss/boards/` defines one scoreboard. Conditions select a board and its presentation for each player. Vault group names are available to those conditions when Vault is installed.
 
 `/gloss web edit scoreboard <id>` opens one board in a restricted live editor session;
 `/gloss web workspace` includes every board.
@@ -66,13 +63,11 @@ line or number policy from the base.
 
 There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the board. Only files directly inside `boards/` are read. Subfolders are ignored.
 
-A document that fails to parse is logged as `boards/<id>.json: <reason>` and skipped. The copy Gloss already holds stays live. A deleted file removes the board. Any player currently on it loses their sticky selection and is re-evaluated.
+If an edit is invalid, Gloss logs the reason and keeps the last valid version active. Deleting a file removes that board.
 
 ### Defaults
 
-`boards/default.json` and `boards/animation-showcase.json` are extracted when missing, and only
-while `[features] boards` is on. With the feature off there is no `boards/` folder at all; turning
-it on extracts both defaults on that reload. The ordinary default is:
+When boards are enabled, Gloss extracts `boards/default.json` and `boards/animation-showcase.json` if they are missing. The default board is:
 
 ```json
 {
@@ -88,11 +83,9 @@ it on extracts both defaults on that reload. The ordinary default is:
 }
 ```
 
-Note `"when": "false"`. Out of the box nothing selects this board. Give it a real condition, or
-use `"true"`, before it can appear automatically.
+The default has `"when": "false"`, so it does not appear automatically. Replace that condition or use `"true"`.
 
-`animation-showcase.json` is a complete paste-ready board with one row for every included animation
-effect, one obfuscated-text row, and one row for each alignment:
+`animation-showcase.json` demonstrates the included text animations and alignment helpers:
 
 ```json
 {
@@ -123,10 +116,7 @@ effect, one obfuscated-text row, and one row for each alignment:
 }
 ```
 
-The board is deliberately not selected. Use `/gloss board show animation-showcase` to inspect it
-without changing automatic selection, or edit its `select` block normally. `middle` is an alias for
-`center`, so the included board demonstrates the three distinct layouts without spending a duplicate
-row.
+Use `/gloss board show animation-showcase` to inspect it, or edit its `select` condition to show it automatically. `middle` is an alias for `center`.
 
 `/gloss board reset [name=*]` rewrites defaults over whatever is on disk. Use `default` or
 `animation-showcase` for one file; `*` restores both. It requires `gloss.boards.edit`.
@@ -136,16 +126,9 @@ row.
 
 ## Selection order
 
-Every loaded board whose `select.when` is true is a candidate. Greatest `select.priority` wins;
-equal priorities use the lexicographically smallest board id. No candidate means no sidebar. Once a
-board is chosen, its matching variant with the greatest priority and then smallest variant id wins;
-no variant match uses the base presentation.
+Every board with a true `select.when` condition is a candidate. The highest priority wins; ties use the lexicographically smallest ID. The same rule selects a presentation variant. If no board matches, the player sees no Gloss sidebar.
 
-Selection and the active variant are evaluated on the player's entity-owning thread every
-`[boards] updateIntervalTicks` (default 20), as well as after join, world change, reload and document
-changes. Health, world, permission, group, time and demanded metric conditions therefore update
-without a relog. See [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents)
-for the full language and variable catalog.
+Gloss reevaluates selection every `[boards] updateIntervalTicks` (default 20) and after relevant player or document changes. See [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents) for condition syntax.
 
 ### Manual selection
 
@@ -191,13 +174,11 @@ Command edits save the document and increment its revision. See [Data Files & Ho
 
 ## Rendering
 
-Ordinary sidebars use `[boards] updateIntervalTicks` (default 20, clamped 1..200). An actively selected board containing a clock-driven expression (`time.ms`, `time.seconds` or `time.ticks`) or a complete `|animation.<id>|` token moves to a separate every-tick driver, so it can display authored animation at up to 20 FPS. Static boards and boards containing only player, server, metric or PlaceholderAPI values stay on the ordinary driver even while another player watches an animated board. Rendered rows are change-deduplicated before they reach the client.
+Ordinary sidebars update at `[boards] updateIntervalTicks` (default 20). A selected board with a clock expression or named animation can update every tick. Gloss sends rows only when their rendered value changes.
 
-Packet objective state is detached from the server scoreboard. Canvas and Folia therefore render and update a selected board entirely from the player's owning region thread without invoking global-scoreboard mutations.
+Titles and lines support functions, PlaceholderAPI, emoji, colors, and viewer expressions. Minecraft displays at most 15 sidebar rows. Newlines inside one JSON row become spaces.
 
-Title and lines both go through the full text pipeline with the viewing player as the resolution context. Functions, PlaceholderAPI placeholders, emoji and colors all work per player. VolmLib sends each rendered title and row as one complete modern component without a character limit or truncation. CRLF, CR, LF and Unicode line separators become one space, so one JSON entry cannot wrap into multiple client rows. Minecraft still exposes at most 15 sidebar rows; the rest are dropped.
-
-Use `align(text, width, mode)` to pad visible text to an explicit number of character cells. `mode` is `left`, `center`, `middle` or `right`; `middle` and `center` are equivalent. Formatting codes do not consume cells, and content longer than `width` is returned whole rather than terminated. This is character-cell alignment, not pixel-perfect alignment for proportional or custom fonts. Resolve PlaceholderAPI content with `papi(...)` inside the call when its rendered width must participate in alignment.
+Use `align(text, width, mode)` for character-cell alignment. Modes are `left`, `center`, `middle`, and `right`; `middle` is an alias for `center`. Formatting codes do not count toward width.
 
 `"hideNumbers": true` applies Minecraft's blank score number format per board on native 1.20.3+
 servers and clients. It removes the red score column without changing the internal 15-to-1 values
@@ -205,20 +186,17 @@ that keep the rows ordered. On a server older than 1.20.3, ViaVersion's global
 `hide-scoreboard-numbers: true` option provides the equivalent translation for 1.20.3+ clients;
 that ViaVersion setting affects every scoreboard on the server rather than one Gloss document.
 
-With `[features] boards = false` the driver is never created. No player sees a sidebar. Documents still load, hot-reload and stay editable by command. If the driver itself fails to construct, Gloss logs `Sidebar driver unavailable: <reason>` and runs without sidebars.
+With `[features] boards = false`, no Gloss sidebar renders. Board documents remain editable.
 
-Boards are editable in the Gloss web editor. Its inspector exposes the selection condition, base
-presentation and complete variants, and its simulator resolves the same priority/id rules as the
-plugin. Server sync carries the board JSON as a first-class document kind.
+The web editor can edit board selection, the base presentation, and complete variants.
 
 ## Groups
 
-Gloss has no group files. The `groups/` YAML directory is retired. There is no `/gloss group` command. Nothing about a group is configured inside Gloss. `GroupService` is a thin live resolver:
+Gloss has no group files or `/gloss group` command. It reads the player's current primary group from Vault:
 
-- With `[groups] useVault = true` (the default) and Vault installed, Gloss asks the registered Vault `Permission` provider for the player primary group. It trims it and lowercases it.
-- The answer is cached per player for **5 seconds**, then re-asked. The cache entry is dropped when the player quits. The whole cache is cleared on `/gloss reload`.
-- Vault provider reads run on the player's entity-owning thread. A direct board, tablist or bubble selection fills a cold cache there; cache-only refreshes are dispatched to the same owner rather than an asynchronous worker.
-- Any failure inside the Vault provider is swallowed and treated as "no group".
+- `[groups] useVault` defaults to `true`.
+- Group names are trimmed, lowercased, and cached for 5 seconds.
+- A failed lookup behaves as though the player has no group.
 
 The resolved name is exposed as `viewer.group`, `subject.group`, `source.group` where that role is a
 player, and through `inGroup(role, name)`.
@@ -229,11 +207,8 @@ If Vault is not installed, or `[groups] useVault = false`, or Vault has no permi
 registered, the group value is empty and `inGroup` is false. Other conditions such as `viewer.op`,
 permissions, world and health are unaffected.
 
-If Vault is present but the hook fails to construct, Gloss logs `Vault permission hook failed to initialize: <reason>` and behaves as though Vault were absent. If you enable `[groups] useVault` on a reload, Gloss re-attempts the hook. If you disable it, Gloss stops resolving groups at once. The already-hooked provider stays in place until the next restart.
+If the Vault hook fails, Gloss logs the reason and treats group values as empty. Changing `[groups] useVault` applies on reload.
 
 ## Coming from the pre-merge layout
 
-Board schema 2 is a hard format break. Gloss silently ignores schema-1 board documents and does not migrate them.
-Rewrite custom files to the shape above or use `/gloss board reset` for a default. The legacy
-import command is not a board-schema upgrader. Full document behavior is in
-[Data Files & Hot Reload](/gloss/03-data-files).
+Gloss ignores schema-1 board documents. Rewrite custom files to schema 2 or use `/gloss board reset` for a bundled default. See [Data Files & Hot Reload](/gloss/03-data-files).

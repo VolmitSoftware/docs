@@ -2,7 +2,7 @@
 title: "Installation and Configuration"
 description: "Foundation requirements, typed TOML settings, hot reload, and in-game editor"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "foundation, installation, configuration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -21,6 +21,7 @@ Foundation supports Minecraft 26.x on Paper, Spigot, and Folia. Java 25 is requi
 | Optional plugins | Vault and PlaceholderAPI |
 
 Put the Foundation jar in `plugins/` and start the server. Foundation creates `plugins/Foundation/foundation.toml`, `worth.toml`, language files, and its `data/` folder.
+
 ## Configuration lifecycle
 
 Changes to `foundation.toml` reload automatically when `runtime.hotReload` is enabled. Invalid changes leave the current settings active. Foundation keeps a `.last-good` copy for recovery.

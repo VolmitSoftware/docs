@@ -1,14 +1,14 @@
 ---
-title: "Rift — Installation & Compatibility"
-description: "Server range, Java requirements, source build, and Folia capability limits"
+title: "Rift: Installation and Compatibility"
+description: "Server range, Java requirements, installation, and Folia limits"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "rift, installation, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift `2.0.0-1.20.1-26.2` is compiled as Java 17 bytecode against the public Spigot API. Its build verifies the 1.20.1 API floor, current Paper 26.x, and current Spigot 26.2, and rejects accidental CraftBukkit or NMS references in Rift classes.
+Rift `2.0.0-1.20.1-26.2` uses Java 17 bytecode and supports Spigot-compatible servers from 1.20.1 through 26.2.
 
 ## Requirements
 
@@ -43,9 +43,7 @@ cd Rift
 ./gradlew clean build
 ```
 
-On Windows, run `gradlew.bat clean build`. The build includes unit tests, a shaded-jar bytecode and NMS scan, compilation against the floor plus current Paper and Spigot APIs, and verification of the remote-language manifest. The artifact is under `build/libs/`. Run `gradlew.bat buildSwiftSwamp` to perform the same gates and publish the shaded artifact to `C:\VolmitSoftware\BUILDS\Rift.jar`, matching the other VolmitSoftware projects. Translation TOML files are source-repository assets and are not bundled into the plugin jar.
-
-Run `gradlew.bat buildSwiftSwamp` to execute the verification gates and copy the shaded artifact to `C:\VolmitSoftware\BUILDS\Rift.jar`. The task always refreshes that workspace output and follows the same naming convention as the other VolmitSoftware plugin builds.
+On Windows, run `gradlew.bat clean build`. The artifact is written under `build/libs/`. Translation TOML files remain in the source repository and are not bundled into the plugin jar.
 
 When Rift is next to the VolmitSoftware `VolmLib` repository, Gradle uses that local composite build. Pass `-PuseLocalVolmLib=false` only when remote resolution is intentional.
 
@@ -55,4 +53,4 @@ Folia supports Rift's listing, information, teleport, configuration, diagnostics
 
 Folia does not currently support the dynamic world APIs required for create, import, load, unload, quarantine, or restore. Rift disables those commands there.
 
-Next: [Commands & Permissions](/rift/02-commands-permissions)
+Next: [Commands and permissions](/rift/02-commands-permissions)

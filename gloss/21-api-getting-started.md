@@ -1,8 +1,8 @@
 ---
 title: "API: Getting Started"
-description: "Gloss documentation: API: Getting Started"
+description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-03
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z

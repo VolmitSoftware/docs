@@ -1,19 +1,15 @@
 ---
 title: "Skill - Blocking"
-description: "Adapt documentation: Skill - Blocking"
+description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Blocking is the shield skill. You level it by taking hits with your shield up. It pays out whether the hit was an arrow, a sword, or a creeper. If you play the tank in a group, or you just get shot at a lot, this is your tree.
+Blocking gains XP when the player takes damage while raising a shield.
 
-The defensive adaptations turn a raised shield from a flat damage sponge into something with timing and positioning. Perfect Guard rewards raising the shield at the last instant with a full negate and a stagger. Bastion Stance rewards planting your feet. Mirror Block throws arrows back where they came from. Counter Guard builds up charges while you eat hits and spends them to hurt whoever is hitting you. Tempered Guard quietly patches your gear while you soak.
-
-There is a support side too. Shield Wall shelters allies standing behind you from projectiles. Interpose lets you eat part of a hurt ally's damage on your own shield. Shieldbearer's Resolve gets your shield back fast when an axe knocks it out of your hands.
-
-The rest are crafting utilities. You get chainmail armor, saddles, horse armor, and an alternate shield recipe with a netherite upgrade. Multi-Armor merges an elytra into your chestplate so it swaps itself when you jump off a cliff.
+Its 14 adaptations add timed guards, counters, projectile reflection, stationary defense, armor repair, ally protection, shield recovery, Multi-Armor, and crafting recipes for chainmail, saddles, horse armor, and an upgraded shield.
 
 ## Earning XP
 

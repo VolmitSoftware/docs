@@ -1,14 +1,14 @@
 ---
 title: "Actions"
-description: "Gloss documentation: Actions"
+description: "Run commands, sounds, messages, teleports, proxy transfers, and menu navigation"
 published: true
-date: 2026-08-24
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Clickable menu components run an ordered list of typed actions. Gloss supports player and console commands, sounds, sanitized MiniMessage messages, Folia-safe teleports, proxy connect requests and native page-stack navigation. The same six-type contract drives menus opened by command, menus rendered on a panel, and menus opened through the API.
+Buttons and toggles run actions in the order written. Menus and panels support commands, sounds, messages, teleports, proxy transfers, and page navigation.
 
 ## The action model
 
@@ -23,9 +23,9 @@ Every action is a JSON object with a required `type` discriminator and an option
 | `connect` | `ConnectActionData` | Requests a BungeeCord-compatible proxy transfer |
 | `navigate` | `NavigationActionData` | Changes that viewer's menu page stack |
 
-The shared union adapter removes `type` and binds the remaining keys to the matching record. A missing `type`, a non-string `type` and an unknown `type` all abort parsing of the whole menu file with `Missing type`, `Type must be a string` or `Unknown type: <value>`. A non-string or unknown non-null `trigger` rejects the file too. It does not silently change what a button does. Unknown extra keys inside a recognized action are ignored by the runtime.
+Every action needs a recognized string `type`. A missing or unknown type rejects the menu file. Unknown extra keys inside a valid action are ignored.
 
-An omitted or `null` action list becomes an empty list. The JSON codec also accepts one action object where a list is expected and wraps it as a one-element list. `"actions": {"type":"sound", ...}` is legal.
+A missing action list is empty. One action object can also be used where a list is expected.
 
 ## The click trigger
 
@@ -41,7 +41,7 @@ An omitted or `null` action list becomes an empty list. The JSON codec also acce
 
 Values are exact and case-sensitive. The four physical values are mutually exclusive. A shift-left-click does **not** match a `left_click` binding. Only `any` matches everything.
 
-Gloss accepts left and right clicks from the main hand only. It samples sneak state at the moment of the event. Off-hand interactions and every other action type are ignored before any action work begins.
+Gloss accepts main-hand left and right clicks, with sneaking checked when the player clicks. Off-hand interactions are ignored.
 
 ## `command`
 
@@ -54,7 +54,7 @@ Gloss accepts left and right clicks from the main hand only. It samples sneak st
 | `command` | yes | none | The command line. One leading slash is optional; `%player%` and `%player_name%` become the clicking player's name |
 | `source` | no | `player` | `player` or `server` |
 
-The command is trimmed and exactly one leading slash is removed. A missing, blank or slash-only command is warned once and dropped when the actions are resolved.
+Gloss trims the command and removes one leading slash. A blank command is logged and dropped.
 
 - `player` calls `Player#performCommand` inline on the player owning thread. The player own permissions apply, exactly as if they had typed it.
 - `server` defers a console dispatch onto the global scheduler. This grants the command full console authority. It does **not** check the player permissions.
@@ -62,7 +62,7 @@ The command is trimmed and exactly one leading slash is removed. A missing, blan
 > A `server` command is console authority handed to whoever can click the button. Gate the button with a `gloss.open.<menuId>` permission, or put the privileged step behind a command that does its own checks.
 {.is-warning}
 
-Before either dispatch path, Gloss replaces every literal `%player%` and `%player_name%` token with the clicking player's Minecraft name. This makes a privileged action such as `{ "type": "command", "source": "server", "command": "give %player% minecraft:obsidian 1" }` target the clicker without requiring that player to have command permission. Other PlaceholderAPI tokens are not expanded and reach the target command literally. A deferred `server` command may run after later inline actions in the same list, because the scheduler hop returns immediately.
+Gloss replaces `%player%` and `%player_name%` with the clicker's name. Other PlaceholderAPI tokens are not expanded. Server commands may finish after later actions because they run on the global scheduler.
 
 ## `sound`
 
@@ -83,7 +83,7 @@ Before either dispatch path, Gloss replaces every literal `%player%` and `%playe
 | `volume` | no | `1` | Volume and audible-distance multiplier |
 | `pitch` | no | `1` | Playback pitch |
 
-The sound key is resolved once and cached process-wide when the action is built. An unknown or malformed key is warned once per menu, component and key. The action is dropped without discarding the menu.
+An unknown sound key is logged and the action is dropped without discarding the menu.
 
 Playback is positioned at the clicking player and sent only to that player. An explicit volume of `0` is silent. Values above `1` extend the audible distance. Neither volume nor pitch is range-checked.
 
@@ -103,9 +103,7 @@ tokens. Legacy ampersand and section-sign codes are rewritten into
 MiniMessage tags. The result is parsed as MiniMessage. The component is
 sent to that player alone.
 
-Gloss then recursively strips click events and insertion events from the parsed component before delivery. Formatting, gradients, decorations and ordinary hover presentation all remain available. A message can never become an `open_url`, `run_command`, `suggest_command`, clipboard or insertion action. There is no general URL or arbitrary network action anywhere in the menu contract.
-
-Delivery prefers the Adventure audience path. It falls back to a legacy serialized string on servers where the player is not an audience.
+Gloss strips click and insertion events from the parsed message. Formatting, gradients, decorations, and hover text remain available.
 
 ## `teleport`
 
@@ -129,11 +127,11 @@ Delivery prefers the Adventure audience path. It falls back to a legacy serializ
 
 All six destination fields are required. If any of them is missing, non-finite or malformed, the action is warned once per menu and component and dropped when actions are resolved. The rest of the list is kept.
 
-At click time the world must already be loaded. It must match a loaded world namespaced key. Gloss does not create a world, load a chunk, or fall back to the player current world. An unloaded but well-formed world is warned once per menu, component and world key at click time rather than at load time. If you load that world later, the same action works without touching the menu file.
+The world must already be loaded. Gloss does not create a world, load a chunk, or fall back to the player's current world.
 
-The teleport is marshalled onto the clicking player entity scheduler and then issued through Paper asynchronous teleport method. That is what makes it safe across Folia regions. If the running server does not expose that method, Gloss falls back to an ordinary synchronous teleport on the scheduled task. Spigot behaves correctly but without the async path.
+Gloss schedules the teleport on the player owner and uses Paper's asynchronous teleport path when available.
 
-The completion is not awaited. Later non-terminal actions in the same list can run while the teleport is still in flight. A refused or failed teleport is logged with menu, component, player and world context. The menu own `closeOnTeleport`, world and range rules still apply once the player arrives.
+Later actions can run before the teleport finishes. Menu teleport and distance rules still apply at the destination.
 
 ## `connect`
 
@@ -143,9 +141,9 @@ The completion is not awaited. Later non-terminal actions in the same list can r
 
 `server` is the exact logical server name configured on a BungeeCord-compatible proxy. It must be 1 to 64 characters, start with a letter or digit, and otherwise contain only letters, digits, `.`, `_` and `-`. Anything else is warned once and dropped when actions are resolved.
 
-Gloss registers the outgoing `BungeeCord` plugin channel while it is enabled and unregisters it on shutdown. On click it sends exactly two UTF fields through the clicking player: the fixed subchannel `Connect`, then the validated server name. Authors cannot select another subchannel, host, port, URL or payload.
+Gloss sends a `Connect` request on the BungeeCord plugin channel. Authors cannot provide a host, port, URL, or custom payload.
 
-Delivery is a request, not a confirmation. Without a compatible proxy configuration the plugin message goes nowhere. The player stays where they are. No error is shown to them.
+Without a compatible proxy, the request does nothing and the player stays on the current server.
 
 ## `navigate`
 
@@ -167,7 +165,7 @@ Targets are exact, case-sensitive menu ids, including forward-slash folder paths
 
 ### The page stack
 
-History is per viewer, not per menu. It is a stack of menu ids plus one remembered root.
+History is stored per viewer as a stack of menu IDs and one root.
 
 - `push` records the page you are leaving, so `back` returns to it.
 - `replace` swaps the page without recording anything, which is what you want for a refresh or a same-level tab switch.
@@ -202,19 +200,19 @@ Within one component Gloss walks the action list in declaration order. It skips 
 | Server command | Deferred to the global scheduler |
 | Navigation | Inline, through the current personal or panel viewer context |
 
-Component dispatch catches exceptions, logs the full stack with menu, component and player context, and then continues normal click handling outside that component. A thrown inline action aborts the remaining actions in its own list. A deferred console command that fails does so later inside its scheduler task. It is not caught by the click-time guard.
+An action failure is logged with the menu, component, and player. It stops the remaining actions in that component.
 
 A toggle whose matching action chain reaches a `navigate` returns **before** swapping its icon and flipping its state. A navigating toggle never changes appearance.
 
 ## Which surface handled the click
 
-A single interact event can be a candidate for both an open personal menu and a nearby panel. Gloss ray-tests the open personal-menu clickables and the panel clickables in range. It takes the nearest hit across both. It checks that no solid block sits between the eye and that hit. If the click is unobstructed the interact event is cancelled and exactly one component is dispatched.
+When a personal menu and panel overlap, Gloss uses the nearest unobstructed component.
 
-Personal-menu clicks fire the cancellable API click event before the JSON actions. When the menu came from the API and its handle is still live, they invoke the registered API handler after them. Panel clicks fire the same cancellable event with no owner name and no API handler. Either way, a cancelled event means no JSON action runs at all.
+Gloss fires the cancellable API click event before JSON actions. API menu handlers run after those actions. A cancelled event runs neither.
 
 ## Invalid entries
 
-Bad action data does not discard a valid menu. Action resolution removes only the invalid entry and keeps the surviving declaration order intact. The neighbours on either side still run. They still run in the order they were written.
+Invalid action data drops only that action and keeps the remaining order.
 
 | Action | Dropped when |
 |---|---|
@@ -227,9 +225,7 @@ Bad action data does not discard a valid menu. Action resolution removes only th
 
 An in-memory action type the runtime does not recognize is warned and skipped the same way.
 
-Resolution runs when a menu document is parsed, not only when a component is first built. These warnings appear only at load time. Gloss deduplicates each one for the life of the server process by menu id, component id, and the offending sound or teleport-world value. Re-saving the same broken menu does not print the warning again.
-
-By contrast, a malformed `type` discriminator is a parse failure. That happens earlier. It stops the entire menu file from registering.
+Gloss reports these warnings when the menu loads. A malformed `type` rejects the entire file instead.
 
 ## Absent-key reference
 
@@ -250,20 +246,14 @@ By contrast, a malformed `type` discriminator is a parse failure. That happens e
 
 ## Schema
 
-`schema/gloss.schema.json` defines `$defs.action` as the union above
-and requires `type`. Each branch has its own constraints. A command must
-be non-blank with no leading slash. Sound sources are the ten listed
-values. A message must be non-blank. Teleport requires all six fields
-and the lowercase world-key pattern. Connect uses the proxy server name
-pattern. Navigate allows the five modes, and `target` is required unless
-the mode is `back`, `home` or `close`.
+`schema/gloss.schema.json` describes these action fields for the web editor.
 
-The schema is advisory. It is not read at runtime. No JSON Schema validator runs in the loader. It describes what the web editor enforces rather than what the server enforces. See [Web Editor & Sync](/gloss/18-web-editor).
+The schema is advisory; the server remains the authority. See [Web Editor & Sync](/gloss/18-web-editor).
 
 ## Related
 
-- [Hologram Menus](/gloss/09-menus) — where actions live in a menu document, and menu ids
-- [Components & Hitboxes](/gloss/10-components-hitboxes) — which components are clickable, and how a click is aimed
-- [Icons](/gloss/11-icons) — the visual half of a component
-- [Panels](/gloss/16-panels) — world-anchored menus and their own page stack
-- [Commands & Permissions](/gloss/17-commands-permissions) — `gloss.open.<menuId>` and the rest of the tree
+- [Hologram Menus](/gloss/09-menus): menu documents and IDs
+- [Components & Hitboxes](/gloss/10-components-hitboxes): clickable components and targeting
+- [Icons](/gloss/11-icons): component visuals
+- [Panels](/gloss/16-panels): world-anchored menus
+- [Commands & Permissions](/gloss/17-commands-permissions): access nodes

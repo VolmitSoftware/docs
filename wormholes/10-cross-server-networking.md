@@ -2,17 +2,13 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes links servers by exchanging pasteable codes, then stores routes
-under `routes/` and public keys under `trust/`. It then runs a version-matched
-sideband peer protocol. Player handoff is admission-gated and rate-limited
-before the client is transferred. Eligible non-player entities use a separate
-snapshot-and-ack path.
+Wormholes links servers through pasteable codes. It stores routes under `routes/` and trusted public keys under `trust/`. Linked servers must run compatible Minecraft and Wormholes versions.
 
 ## Enable and auto-enable
 
@@ -22,8 +18,7 @@ snapshot-and-ack path.
 | Import / export | Not applicable | Sets `enabled = true`, persists config, and starts `NetworkManager` if not running |
 
 Manual enable: set `enabled = true` in
-`plugins/Wormholes/wormholes.toml` and reload or restart. Codes also
-enable networking without a separate edit (see `ImportExportService`).
+`plugins/Wormholes/wormholes.toml` and reload or restart. Importing or exporting a code also enables networking.
 
 Other network keys:
 [01 - Installation & Configuration](/wormholes/01-installation-configuration)
@@ -99,16 +94,11 @@ encrypt the sideband connection.
 
 ## Raw peer admission
 
-TCP and Unix-domain listeners share a hard ceiling of 128 inbound connections
-that have not completed their peer handshake. A connection releases its slot
-when it becomes ready, fails, or closes; ready peers and outbound dial/reconnect
-attempts do not consume the ceiling. Excess connections and connections that
-arrive while the network is stopping are closed immediately. Each admitted raw
-connection uses named Java 25 virtual reader and writer threads.
+TCP and Unix-domain listeners allow up to 128 inbound connections that have not completed a handshake. Excess connections close immediately. Ready peers and outbound reconnects do not use this limit.
 
 ## Transfer mode
 
-`[network] transfer-mode` (`PlayerTransfer.resolveMethod`):
+`[network] transfer-mode` selects how players move between servers:
 
 | Mode | Selection |
 |------|-----------|
@@ -121,7 +111,7 @@ from the code (default public game port 25565 if game port missing).
 
 ## Endpoint selection (direct handoff)
 
-`PeerEndpointResolver` + handoff path:
+Direct handoff chooses a host as follows:
 
 | Player context | Host choice |
 |----------------|-------------|
@@ -201,30 +191,12 @@ succeeds (`[network.transport]`).
 
 ## Remote portal views
 
-An interested observer subscribes the linked peer to the gateway portal's
-block and entity stream. The source retains the session's chunks, sends an
-initial bulk snapshot, then publishes diffs, entity state, and world time until
-the last observer stops touching the view. Initial bulk delivery across every
-session shares one fair global pump capped at eight chunk-column starts every
-two ticks; failed partial delivery resets and retries instead of publishing an
-incomplete ready state. Ongoing entity snapshots use a separate fair global
-queue capped at eight new captures and eight captures in flight every two
-ticks. Animation and hurt events use the captured entity-to-session membership
-instead of checking every remote-view session.
-
-Dirty replicated chunks rotate through a global limit of 64 drains per tick.
-On Folia, each chunk has at most one owning-region drain in flight; rejected or
-retired work remains eligible for a later pass, and a rejected global drain
-cycle retries after one second.
+When a player views a gateway, the linked server sends an initial block and entity snapshot, followed by changes and world time. Failed partial snapshots retry instead of becoming ready with missing data.
 
 The per-portal network-view preset controls block depth, resample heartbeat,
 entity interval, and unsubscribe grace; exact values and custom clamps are in
 [04 - Portal Types, Menus & Settings](/wormholes/04-portal-types-menus-settings).
-After the grace expires, Wormholes sends `ViewUnsubscribe`, releases replication
-state, and removes the remote cache. A view with no data resends its subscription
-at most once every five seconds. Raw peers negotiate optional Zstandard
-compression and dictionaries; status-sideband frames use bounded whole-envelope
-compression and are intended for lower-volume fallback transport.
+After the grace period, Wormholes releases the remote view. Raw peers can use Zstandard compression; status-sideband transport is the lower-volume fallback.
 
 ## Non-player entity transfer
 
@@ -234,13 +206,7 @@ snapshot is capped at **256 KiB**. The destination recreates the entity at the
 exit, then applies the portal's relative position, look, and velocity
 transform.
 
-Destination admission requires a live open exit with inbound traversal enabled
-and a type not listed in `[network] entity-transfer-deny-types`
-(comma-separated Bukkit entity type names, case-insensitive). A transfer-ID
-ledger suppresses duplicate creation. Accepted ACKs are retried. The source
-entity is removed only after an accepted ACK. Send failure, denial, timeout, or
-scheduler rejection restores the source entity's captured transit state. Late
-accepted ACKs use tombstones to remove a restored duplicate.
+The destination must have an open receiving portal, allow inbound travel, and accept the entity type. Add blocked Bukkit entity types to `[network] entity-transfer-deny-types`. Wormholes removes the source only after the destination accepts it; failure restores the source entity.
 
 Players never use this snapshot path. Their profile, capacity, transfer-method,
 and client-handoff rules remain the player path described above.
@@ -285,15 +251,7 @@ points at `/wh network status`.
 | `/wormholes debug` | Toggle one-second projection/network/queue/peer/handoff telemetry to **console** on both servers while reproducing a failed handoff. Toggle again to stop |
 | `/wormholes stats` | Path to live snapshot file (network/view state) |
 
-Direct transfer debug lines include client address, LAN classification,
-selected `host:port`, and configured endpoints. The destination logs
-transfer-gate handshake rewrite when auto-accept runs.
-
-With verbose logging enabled, `[handoff]` and `[arrival]` lines describe actual
-portal transfers, including admission, placement, expected denial, replay, and
-dispatch details. Ordinary joins without a pending handoff are silent. Retry,
-exhaustion, stranded-arrival, and other failures that require operator action
-remain normal branded warnings; repeated failure classes are throttled.
+Verbose logging adds endpoint, handoff, admission, and arrival details while reproducing a problem. Ordinary joins remain quiet.
 
 For an entity-transfer denial check, add a Bukkit entity type name to
 `entity-transfer-deny-types` and verify the source entity is restored. The

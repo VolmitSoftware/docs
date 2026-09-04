@@ -1,8 +1,8 @@
 ---
-title: "placeholders"
+title: "Placeholders"
 description: "PlaceholderAPI keys HiddenOre publishes"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

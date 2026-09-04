@@ -1,17 +1,15 @@
 ---
 title: "Items, Orbs & Bound Objects"
-description: "Adapt documentation: Items, Orbs & Bound Objects"
+description: "Experience orbs, backpacks, bound items, and stored item data"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt custom items are ordinary Minecraft items with hidden data written onto them. A bound ender pearl is still an ender pearl. A backpack is still a bundle. A chalk wand is still a stick. The persistent data Adapt reads back is what makes them special: a target block, a stored player, a plan, or a serialized set of contents.
+Adapt stores custom data on ordinary Minecraft items. That data may contain a target, owner, plan, or serialized inventory.
 
-Almost every item here belongs to one adaptation. It does its special thing only for a player who can use that adaptation. Hand a bound eye of ender to someone who has not learned Rift Gate. They have an eye of ender. Level, permission, world, and region checks work the same way. The item carries the target. The adaptation carries the rules.
-
-The exceptions are experience and knowledge orbs. Those are admin tools. They hand their payload to whoever throws them. No adaptation is required.
+Most items require their owning adaptation and still check level, permission, world, and protection rules. Experience and knowledge orbs are the exception: they apply their stored reward to the player who throws them.
 
 ## Experience and knowledge orbs
 
@@ -27,7 +25,7 @@ How to use them:
 
 ## Items that belong to an adaptation
 
-These items keep their data in the item's persistent data container. The data survives drops, chests, and restarts. Most are stamped with a hidden Curse of Binding purely for the enchant glow. Two of them declare their own vanilla cooldown group: the bound redstone torch and the bound eye of ender. If you put one on cooldown, plain redstone torches or eyes of ender in the same inventory do not gray out.
+These items keep their data in the persistent data container, so it survives drops, chests, and restarts. Most use a hidden Curse of Binding for the enchantment glint. The bound redstone torch and bound eye of ender use separate cooldown groups, leaving ordinary versions unaffected.
 
 Binding, crafting, cooldowns, range, and protection rules live with the owning
 adaptation. See [12 - Skill - Architect](/adapt/12-skill-architect),

@@ -1,19 +1,15 @@
 ---
 title: "Skill - Herbalism"
-description: "Adapt documentation: Skill - Herbalism"
+description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Herbalism is the farming skill. You level it by harvesting and planting crops, shearing, feeding a composter, and eating. Fifteen adaptations sit on top of that. Together they cover the whole loop: planting a field, growing it, harvesting it, replanting it, and turning the leftovers back into fertilizer.
+Herbalism gains XP from harvesting and planting crops, shearing, composting, and eating.
 
-The early adaptations are small conveniences. Crops you harvest go straight into your bag. Grass and flowers start dropping useful things. Eating fills you up more than it should. Then it gets ambitious. Harvest and Replant turns one right-click into a harvested and re-seeded patch. Seed Sower plants a whole plot from one sneak-click. Growth Aura and Bee Shepherd push crops forward just by standing near them. They pay in hunger instead of bone meal.
-
-Compost Cascade is the big one. Sneak-click a composter and it sweeps everything nearby: loose drops on the ground, mature crops in the field, the compostable junk in your inventory. It fills the composter. It spits out bone meal. It spends the compost pushing your immature crops one stage forward. Occasionally it coughs up something valuable.
-
-Two adaptations point sideways. Hungry Shield pays your incoming damage out of your food bar instead of your health. Rooted Footing stops you trampling farmland and turns part of a fall into hunger. Four more just unlock recipes: mycelium, grass blocks, mushroom blocks, and cobwebs.
+Its 15 adaptations cover crop growth, replanting, area sowing, direct inventory drops, composting, food bonuses, farming drops, hunger-based defense, farmland protection, and recipes for mycelium, grass blocks, mushroom blocks, and cobwebs.
 
 ## Adaptations
 

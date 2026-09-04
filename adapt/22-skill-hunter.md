@@ -1,19 +1,15 @@
 ---
 title: "Skill - Hunter"
-description: "Adapt documentation: Skill - Hunter"
+description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Hunter is the mob-killing skill. You earn `hunter` XP whenever you land the killing blow on a mob. The reward scales with that mob's max health. A ravager pays far more than a chicken. Creepers pay double. Mobs that came out of a spawner pay a fraction. There is a short cooldown so a single crowd wipe cannot dump a hundred payouts at once.
+Hunter gains XP from killing mobs. Rewards scale with maximum health, with separate adjustments for creepers and spawner mobs.
 
-Most of the Hunter tree is built around getting hit rather than hitting. Seven adaptations watch for damage landing on you and hand back a short buff: regeneration, invisibility, jump height, luck, speed, attack damage, or damage resistance. Each one charges you hunger for the privilege. Fight with an empty food bar and the same trigger gives you Poison instead of the buff. That trade is the feel of the skill. You stay in the fight longer by burning through food.
-
-The rest of the tree is about the kill itself. Adrenaline pays you for fighting at low health. Predator Focus rewards staying on one target instead of flailing at the whole room. Big Game Hunter turns ravagers and bosses into loot. Trophy Skinner gives extra materials and the occasional mob head for clean kills. Blood Trail paints a glowing line behind wounded mobs that only you can see. Snare Line lets you craft traps that pin hostiles in place. Drop-To-Inventory sends loot into your bag instead of onto the floor.
-
-Killing an ender dragon, wither, elder guardian, or warden also fires a celebration effect. It counts toward its own challenge line. That line pays a much larger lump of XP than a normal kill.
+Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-target damage, boss loot, extra drops, blood trails, snares, and direct inventory collection. Killing an ender dragon, wither, elder guardian, or warden advances a separate challenge.
 
 ## Adaptations
 

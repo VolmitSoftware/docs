@@ -1,19 +1,15 @@
 ---
 title: "Skill - Enchanting"
-description: "Adapt documentation: Skill - Enchanting"
+description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Enchanting is the skill you level by using an enchanting table. Every enchant you apply awards skill XP scaled by the total power of the enchantments that landed. The fourteen adaptations turn the table, the anvil, and the grindstone into a workshop that gives back more than vanilla does.
+Enchanting gains XP when the player enchants an item, scaled by the total enchantment power applied.
 
-The early adaptations are refunds. Lapis comes back. Spent experience comes back as an orb. The anvil stops charging you full price for repairs and renames. None of that needs a gesture. You enchant like normal and keep more of what you paid.
-
-The later ones change how you enchant at all. Rune Sight prints the hidden offers on your actionbar before you commit. Offer Reroll lets you burn lapis to reshuffle a bad table. Bookshelf Attunement fakes extra bookshelf power so the table offers better tiers than the room deserves. Quick-Click Enchant skips the anvil entirely for books that fit. Tome Rebinding and Infusion Transfer move enchantments between items. Soul Link keeps one favorite item out of your death pile.
-
-Big enchants get noticed. Anything costing 30 levels or more counts toward the high-level challenges. It sets off a beacon chime and a dome of particles over the table.
+Its 14 adaptations refund lapis or experience, lower anvil costs, preview and reroll offers, add bookshelf power, apply books directly, transfer enchantments, and protect a linked item on death. Enchantments costing 30 levels or more also advance high-level challenges and play a special effect.
 
 ## Adaptations
 

@@ -1,8 +1,8 @@
 ---
 title: "Web Editor & Sync"
-description: "Gloss documentation: Web Editor & Sync"
+description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z

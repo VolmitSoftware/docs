@@ -1,21 +1,15 @@
 ---
 title: "Skill - Discovery"
-description: "Adapt documentation: Skill - Discovery"
+description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Discovery is the skill for seeing things for the first time. Every new block state, item, food, recipe, enchantment, mob, player, potion
-effect, biome, dimension, and world pays Discovery XP. That payout happens once
-and once only. It is the one skill that rewards wandering off and poking at things instead of grinding one action.
+Discovery awards XP once for each new block state, item, food, recipe, enchantment, entity, player, effect, biome, dimension, and world. It also scans the targeted block and mirrors collected vanilla experience into Discovery XP.
 
-The plugin also watches whatever block you are looking at. Every half second it ray-traces up to five blocks ahead and records the block and its biome. You pick up discoveries just by walking through new terrain with your eyes open. On top of that, any vanilla experience you collect is mirrored straight into Discovery XP.
-
-The payouts are lopsided on purpose. A new block is worth a few points. A new mob or player is worth a lot more. Stepping into a dimension or world you have never visited is worth hundreds. Rare finds get their own particle flourish so you notice them.
-
-The 14 adaptations mostly turn curiosity into utility. You get a HUD that reads out what you are looking at. You get direction guidance toward nearby generated structures. A compass points at the nearest structure. Chests glow through walls. Archaeology brushing pays more. A few convert experience into something else: armor, damage resistance, cheaper villager trades, or faster mending.
+Its 14 adaptations add block and entity details, structure guidance, chest detection, archaeology rewards, armor, damage resistance, villager discounts, and faster mending.
 
 ## Adaptations
 

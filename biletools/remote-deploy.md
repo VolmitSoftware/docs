@@ -1,8 +1,8 @@
 ---
-title: "BileTools — Remote Deploy"
+title: "BileTools: Remote Deploy"
 description: "Push plugin jars to other servers, and the security model"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,6 +69,7 @@ remote-deploy:
 Only plugins named in `master-deploy-signatures` are pushed. A rebuild of an
 unrelated jar is not distributed. Both default entries are placeholders.
 Replace them, or the feature does nothing.
+
 ## Transfer limits
 
 | Key | Default | Minimum |

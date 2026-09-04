@@ -2,52 +2,43 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-This repository is the source for the Volmit Software documentation wiki.
-The repository syncs with Wiki.js in both directions.
+This repository contains the Volmit Software documentation wiki. It syncs with
+Wiki.js in both directions.
 
 ## Layout
 
-File paths map to wiki page paths. `iris.md` is `/iris`.
-`iris/commands.md` is `/iris/commands`.
+File paths map to wiki page paths. For example, `shapedportals.md` is
+`/shapedportals` and `shapedportals/00-overview.md` is
+`/shapedportals/00-overview`.
 
 ## Where content comes from
 
-**This repository is the single source of truth for all plugin
-documentation.** The plugin repositories have no `docs/` trees. This
-repository holds every page. That includes numbered plugin docs, landing
-pages, the BileTools set, HiddenOre operator pages, and `home.md`.
+This repository is the source of truth for plugin documentation. Plugin
+repositories do not contain separate documentation trees.
 
-Each plugin repository has an `AGENTS.md` file. If a change alters a
-feature, command, permission, setting, config shape, schema, or API
-surface, update the matching page here. Make that update in the same
-workstream. Active-plugin pages document their Minecraft 26.2 branches.
-Legacy pages identify the exact release and source revision they audit instead
-of implying current-version support.
+When a plugin change affects behavior, commands, permissions, configuration,
+schemas, or APIs, update the matching page here at the same time. Legacy pages
+must state the version they cover.
 
 ## Page format
 
-Numbered plugin pages live at `<plugin>/NN-slug.md`. Newcomers read the
-pages in number order. API pages keep the highest numbers. HiddenOre and
-VolmLib put API pages under `<plugin>/api/`.
+Numbered plugin pages live at `<plugin>/NN-slug.md` in reading order. HiddenOre
+and VolmLib keep API pages under `<plugin>/api/`.
 
-Every page has Wiki.js YAML frontmatter. The fields are title, description,
-published, date, tags, editor, and dateCreated. Pages have no leading H1.
-The title comes from the frontmatter. Cross-references are absolute wiki
-paths such as
-`[04 - Commands & Permissions](/adapt/04-commands-permissions)`. Bump
-`date` when you edit a page.
+Every page needs Wiki.js YAML frontmatter with `title`, `description`,
+`published`, `date`, `tags`, `editor`, and `dateCreated`. Do not add a leading
+H1 because Wiki.js renders the title from frontmatter. Use absolute wiki paths
+for internal links and update `date` whenever a page changes.
 
-Use [Wiki.js Page Examples](/wiki-page-examples) for syntax and renderer
-features, and the [Wiki.js CSS & Layout Gallery](/wiki-css-layout-examples)
-for responsive visual patterns and page compositions.
+See [Wiki.js page examples](/wiki-page-examples) for supported Markdown and
+[Wiki.js CSS layouts](/wiki-css-layout-examples) for responsive page patterns.
 
 ## Contributing
 
-Fork the repository. Edit the markdown. Open a pull request. See
-`contributing.md`.
+See [Contributing](/contributing).

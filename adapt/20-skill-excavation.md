@@ -1,19 +1,15 @@
 ---
 title: "Skill - Excavation"
-description: "Adapt documentation: Skill - Excavation"
+description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Excavation is the shovel skill. Break blocks with a shovel in your main hand and you earn XP scaled by the block's value, hardness, and blast resistance. Hit mobs with a shovel and you earn XP from the damage you deal. Twelve adaptations sit on top of that. Most of them are about moving dirt faster and getting more out of it.
+Excavation gains XP from breaking blocks or dealing damage with a shovel. Block rewards scale with material value, hardness, and blast resistance.
 
-In play it starts quiet. You dig faster. Drops go into your bag instead of on the floor. Muddy blocks pay double. Falling onto soft ground stops hurting. Then it stops being quiet. Sneak-dig and you carve out a whole three-by-three face at once. Sneak-right-click and you drop a shaft straight down. Sneak-right-click with nothing in front of you and the ground throws every hostile mob nearby into the air.
-
-A few adaptations are about finding things rather than removing them. Seismic Ping lights up a nearby ore while you work. Spelunker turns a handful of glow berries into an x-ray sweep for one ore type. Treasure Hunter pulls pottery sherds out of sand and gravel. Grave Digger pulls bones out of dirt, along with the occasional angry skeleton.
-
-OMNI - T.O.O.L. is the odd one out. It merges several tools into one item that switches to the right head for whatever you are pointed at.
+Its 12 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, and the multi-tool item OMNI - T.O.O.L.
 
 ## Adaptations
 

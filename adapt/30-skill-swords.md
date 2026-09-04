@@ -1,19 +1,15 @@
 ---
 title: "Skill - Swords"
-description: "Adapt documentation: Skill - Swords"
+description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Swords is the melee skill for anyone who fights with a blade in the main hand. You level it by hitting things with a sword and by killing with one. The XP scales with the damage you actually deal. It has 14 adaptations. It shows up in the menu as a yellow `DIAMOND_SWORD`.
+Swords gains XP from sword damage and kills. It has 14 adaptations and uses a yellow `DIAMOND_SWORD` icon.
 
-Most of the tree is damage. Dual Wield Stance pays you for holding a sword in both hands. Executioner's Edge hits harder as targets drop low. Riposte Window turns a shield block into a counterattack. Blade Flow builds attack speed for chaining hits. Lunge Strike closes the gap on a sprint attack. Crimson Cyclone turns a crit into a bleeding area slash.
-
-The rest is texture. Poisoned Blade and Bloody Blade put damage-over-time on whatever you cut. Hamstring stops runners. Crescent Guard hands you absorption hearts on every kill. Duelist's Focus rewards clean one-on-one fights with both damage and defence. Machete is the odd one out. It is a utility pick that clears foliage with a left click.
-
-Two adaptations are gear-shaped rather than fight-shaped. Whetstone Ritual grinds a temporary attack damage buff off a grindstone for durability and XP levels. Heirloom Edge lets you name a sword at an anvil and grow a small permanent damage bonus into that specific blade over hundreds of kills.
+Adaptations add dual-wield bonuses, low-health damage, counters, attack-speed chains, lunges, area attacks, poison, bleeding, slowing, absorption, duel bonuses, foliage clearing, temporary sharpening, and a named sword that gains damage from kills.
 
 ## Adaptations
 

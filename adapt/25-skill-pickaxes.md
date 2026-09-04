@@ -1,19 +1,15 @@
 ---
 title: "Skill - Pickaxes"
-description: "Adapt documentation: Skill - Pickaxes"
+description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Pickaxes is the mining skill. You level it by breaking stone and ore with a pickaxe in your main hand. It pays back with adaptations that dig faster, drop more, and keep the tool alive. The skill id is `pickaxe`. It shows up in the menu with a netherite pickaxe icon. It carries 13 adaptations.
+Pickaxes gains XP from mining stone or ore and from dealing damage with a pickaxe. The skill id is `pickaxe`, and it has 13 adaptations.
 
-Most of what Pickaxes gives you is quiet. Autosmelt turns raw ore into ingots as it drops. Drop-To-Inventory keeps the floor clean. Repair Rhythm and Unbreakable Pact mean a good pickaxe lasts far longer than it should. Deep Core and Obsidian Rush make the two worst blocks in the game feel like stone.
-
-The loud ones need you to do something. Sneak while you mine and Veinminer chases the whole ore vein. Tunnel Bore cuts a full tunnel face in one swing. Sneak-right-click with an iron or better pickaxe and Quarry Sense paints nearby ore as glowing outlines only you can see. Right-click an exposed ore and Ore Chisel knocks extra material out of it, at a real cost in durability.
-
-Pickaxes also feeds the combat side a little. Hitting mobs with a pickaxe counts. There are challenge milestones for blocks broken, ores mined, block value, and damage dealt.
+Adaptations add autosmelting, direct inventory drops, repairs, break protection, deepslate and obsidian speed, vein mining, tunnel excavation, ore detection, and extra drops at a durability cost. Challenges track blocks, ores, material value, and pickaxe damage.
 
 ## Earning XP
 

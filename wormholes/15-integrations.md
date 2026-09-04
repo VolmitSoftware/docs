@@ -1,18 +1,14 @@
 ---
 title: "Integrations"
-description: "PlaceholderAPI, Vault, Iris, Citizens, WorldGuard, metrics, and internal libraries"
+description: "Optional plugin support and metrics"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes soft-depends on PlaceholderAPI, Iris, Vault, and Citizens. It finds WorldGuard
-by plugin name for RTP destination admission. PacketEvents and bStats are
-internal runtime dependencies, not separate server plugins. React and other
-monitors read Wormholes through VolmLib `IntegrationServiceContract` with no
-hard dependency either way.
+Wormholes works without any of the plugins on this page. Install them only for the integration you need.
 
 Public third-party surfaces are summarized in
 [20 - API - Getting Started](/wormholes/20-api-getting-started). Operator
@@ -29,35 +25,20 @@ PlaceholderAPI, Iris, Vault, and Citizens are optional.
 | Iris | Pre-load RTP fluid and biome probes | RTP falls back to ordinary chunk-backed biome and landing-safety checks |
 | Citizens | Prevents standard tracked NPCs from relinking while a portal projection occludes their real local entity | Ordinary Bukkit entities still use the same local-occlusion path; no Citizens event hook is registered |
 
-None of these are required to enable Wormholes.
-
 ## WorldGuard
 
-WorldGuard is not declared as a soft dependency. The RTP environment finds it by
-plugin name and calls its API reflectively. For each player's prepared RTP
-destination, WorldGuard bypass allows access and `Flags.ENTRY` decides normal
-access. Missing WorldGuard allows the destination. An installed-but-disabled
-WorldGuard, or an incompatible reflective path, surfaces as an RTP integration
-failure. See
-[06 - Random Teleport Portals](/wormholes/06-random-teleport-portals).
+WorldGuard checks apply to prepared RTP destinations. Bypass access is accepted; otherwise the `ENTRY` flag decides whether the player may arrive. If WorldGuard is not installed, the destination is allowed. See [06 - Random Teleport Portals](/wormholes/06-random-teleport-portals).
 
 ## Vault travel costs
 
-Portals can require a travel cost of type **vanilla item** or **Vault economy**.
-That choice is in the per-portal menu. Free is the default when no cost is set.
-Vault costs use VolmLib `VaultEconomy` built at Wormholes enable
-(`Wormholes.vaultEconomy`).
+Portals can charge a vanilla item or a Vault economy amount. Configure the cost in the portal menu. Travel is free when no cost is set.
 
 - Amount is a positive `BigDecimal`, max `1000000000000`, scale capped at 8.
 - Status is `AVAILABLE` if the economy is up and the player can afford the cost.
   Status is `INSUFFICIENT` if the player cannot afford the cost. Status is
   `UNAVAILABLE` if Vault or the economy is missing. Status is `FAILED` on
   transaction failure.
-- Reserve withdraws with reason `Wormholes portal travel for <uuid>`. Commit
-  finalizes the charge. Refund reacquires the traveler entity owner before
-  reversing it; rejected, retired, or stalled owner dispatch retries with a
-  bounded exponential backoff. Exhaustion or shutdown is logged at severe
-  rather than calling the economy provider off-owner.
+- The charge is reserved before travel, committed after success, and refunded when travel fails.
 - Messages cover insufficient funds, Vault unavailable, and failed transactions.
   Selecting Vault mode in the menu without Vault and an economy is rejected with
   a notice.
@@ -69,27 +50,11 @@ That path is independent of the portal menu cost types.
 
 ## Iris
 
-Soft-depend only. When Iris is enabled and its world engine is open, Wormholes
-probes the terrain model for fluid columns and the biome model for pack load
-keys and vanilla derivative keys before loading a candidate chunk. Fluid
-columns and enforced biome mismatches are rejected before generation.
-
-If Iris is missing, disabled, unloading, or a probe is unavailable, Wormholes
-falls back to its ordinary chunk-backed biome and landing-safety checks. This
-fallback also applies to an Iris world whose engine is unavailable.
-
-No Iris world-gen or pack APIs are exposed to third parties through Wormholes.
+When Iris is active, Wormholes can reject fluid columns and biome mismatches before loading an RTP candidate chunk. Without Iris, it uses normal chunk-backed biome and landing-safety checks.
 
 ## Citizens
 
-Wormholes treats a standard Citizens NPC as its real Bukkit entity. Local-hide
-claims from every active portal are unioned per observer, so one overlapping
-portal cannot restore an NPC that another portal still occludes. When Citizens
-tries to relink that NPC through `NPCSeenByPlayerEvent`, Wormholes cancels the
-event while the entity remains claimed.
-
-Citizens packet-mode NPCs bypass normal Bukkit entity tracking and that event;
-Wormholes does not alter their implementation-specific packet tracker.
+Wormholes keeps standard Citizens NPCs hidden when a portal projection occludes their local entity. Packet-mode NPCs that bypass Bukkit entity tracking are not changed.
 
 ## PlaceholderAPI
 
@@ -99,23 +64,11 @@ integrator notes. Expansion identifier: `wormholes`.
 
 ## React / IntegrationServiceContract
 
-Wormholes registers VolmLib
-`art.arcane.volmlib.integration.IntegrationServiceContract` at
-`ServicePriority.Normal` with `pluginId()` `wormholes`. Typed consumers must
-share the registered VolmLib class identity. React can also adapt equivalent
-registrations. Full metric keys,
-acquisition rules, unavailable reasons, and protocol details live in
-[23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
+React and other monitors can read Wormholes metrics through VolmLib without a direct dependency. Metric keys and integration details are in [23 - API - Metrics & Integration Contract](/wormholes/23-api-metrics-integration-contract).
 
-No direct React API dependency exists inside Wormholes.
 ## bStats
 
-Wormholes starts its relocated bStats client with plugin ID **33193**. The
-charts are `total_portals`, `portals_by_type`, `cross_server`,
-`wire_compression`, and `connected_peers`. Callbacks read volatile values or
-immutable snapshots. They skip a chart cycle when its manager is unavailable.
-Standard bStats collection can be disabled through the server-wide bStats
-configuration.
+Wormholes uses bStats plugin ID **33193**. It reports `total_portals`, `portals_by_type`, `cross_server`, `wire_compression`, and `connected_peers`. Disable collection through the server-wide bStats configuration.
 
 ## What has no soft-depend integration
 

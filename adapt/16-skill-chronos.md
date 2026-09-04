@@ -1,21 +1,15 @@
 ---
 title: "Skill - Chronos"
-description: "Adapt documentation: Skill - Chronos"
+description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Chronos is the time skill. You level it by being alive and busy. Walking around, sleeping in beds, throwing ender pearls, drinking or splashing Speed potions, and staying alive without dying all pay. Carrying a clock multiplies everything Chronos pays out. The multiplier is biggest when the clock sits in your off hand.
+Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time. A carried clock increases payouts, with the largest bonus in the off hand. Low movement reduces XP, while varied recent actions add a bonus.
 
-Because the XP comes from playing rather than from one specific action, Chronos has anti-AFK logic built in. If you stand still and stop doing varied things, your position variance drops. The plugin cuts your Chronos XP to a fraction until you move again. Doing several different kinds of things inside a short window pays a bonus instead. Night time pays a little more than day.
-
-The 13 adaptations split into two groups. Some are consumable or gesture based. Those include a bottle that stores time
-and dumps it into furnaces and crops, a thrown chrono bomb, a stasis bubble, and
-two different rewinds. The rest are quiet passives that make you harder to kill, stretch your potion buffs, or fast-forward the blocks around you while you work.
-
-Chronos also has its own advancement chain for hours online, distance travelled, beds used, and ender pearl teleports.
+Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks. Chronos advancements track online time, distance, beds, and pearl teleports.
 
 ## Adaptations
 

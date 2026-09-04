@@ -1,29 +1,25 @@
 ---
 title: "Container Previews"
-description: "Gloss documentation: Container Previews"
+description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Look at a chest and a holographic card appears in front of you. The card shows what is inside.
-Nothing is clicked. No inventory is opened.
+Container previews show a private holographic card when a player looks at a supported block or entity.
+They do not open the inventory or fire `InventoryOpenEvent`.
 
 `/gloss web edit container-preview <id>` opens one preview in a restricted live editor session;
 `/gloss web workspace` includes every preview document.
 
-Joining, moving and teleporting queue a look-at scan. Gloss admits at most ten queued players per
-tick in first-in, first-out order and spreads stationary fallback discovery across 100 ticks. Once a
-card is open, its target still follows the viewer on the entity tick. The card is built from a JSON
-document in `plugins/Gloss/previews/`. Fourteen documents are bundled. They hot-reload. A document you write can
-shadow any of them.
+Preview layouts are JSON documents in `plugins/Gloss/previews/`. Gloss includes 14 layouts, supports
+custom layouts, and reloads the folder while the server is running.
 
 ## What triggers a preview
 
-When a queued player reaches the capped discovery drain, Gloss casts a ray from the eye along the
-look direction. The ray goes out to `[preview] lookDistance` blocks (default `10.0`, clamped
-`1.0`–`24.0`). Fluids are ignored. Passable blocks are skipped. Two rays are cast:
+Gloss checks the player's view up to `[preview] lookDistance` blocks away. The default is `10.0`,
+clamped to `1.0` through `24.0`. Fluids and passable blocks are skipped. It checks:
 
 - one against blocks, keeping the hit only when some loaded document names that material.
 - one against entities within a 0.35-block ray radius. An exact or glob `match.entities` claim makes
@@ -34,12 +30,9 @@ If only one hits, that is the target. If both hit, the entity wins unless the bl
 more than 0.01 blocks. When the target changes, the open preview is closed and a new one is built.
 When the ray hits nothing, the preview closes.
 
-This is not an inventory event. Nothing about the container is opened. No `InventoryOpenEvent`
-fires. Other players see nothing.
+The preview is visible only to that player.
 
-`[features] previews = false` turns the whole subsystem off. The raycast returns nothing immediately.
-No preview is ever built. The document registry is not constructed at all, so nothing is extracted,
-nothing loads and nothing hot-reloads until the feature is on and the server has restarted.
+`[features] previews = false` disables previews. Turning the feature back on requires a restart.
 
 A block's material is eligible only because a document names it, exactly or through a glob. To make
 a new block type previewable, add its material to a document's `match.blocks`. The
@@ -51,7 +44,7 @@ a new block type previewable, add its material to a document's `match.blocks`. T
 preview is built. It defaults to **op**. On a default install, ordinary players do not see container
 contents until you grant it.
 
-Before the contents card is built the viewer must pass every one of these:
+The viewer must pass all of these checks:
 
 1. `gloss.preview`.
 2. the container is physically openable. A chest or ender chest with a solid block above it is
@@ -72,55 +65,49 @@ Access is rechecked every 10 ticks while a preview is open. If a chest gets lock
 
 ### Container protection
 
-WorldGuard is used automatically when it is installed and enabled. It is picked up live if it
-enables after Gloss.
+Gloss uses WorldGuard automatically when it is available, including when WorldGuard enables later.
 
-Block access goes through WorldGuard's own block-interact protection query, plus the double-chest
-partner. Entity access is a region test of the `CHEST_ACCESS` flag at the entity's location. Region
-checks are skipped in worlds where WorldGuard has regions disabled. A player with WorldGuard bypass
-is always allowed. WorldGuard disabling drops Gloss back to allow-all.
+Block previews follow WorldGuard's block-interact decision, including both halves of a double chest.
+Entity previews use the `CHEST_ACCESS` flag. WorldGuard bypass still applies, and worlds without
+regions skip the check.
 
 If the WorldGuard bridge cannot be built or throws, previews **fail closed**. Everything shows the
 locked card. One line is logged:
 `Container access protection failed. Previews will remain locked until the protection provider recovers.`
 
-After the protection provider allows access, Gloss fires a cancellable
-`GlossContainerPreviewAccessEvent`. The event carries the viewer and either the block or the
-entity. Cancelling it denies the preview. That is how a claims or locks plugin plugs in without
-Gloss knowing about it. The event contract is on [API: Previews](/gloss/24-api-previews).
+After protection passes, Gloss fires `GlossContainerPreviewAccessEvent`. Other plugins can cancel it
+to deny access. See [API: Previews](/gloss/24-api-previews).
 
 ## Scale
 
-Two multipliers decide how big the card is drawn. They sit on top of a distance factor that shrinks
-the card as you back away from the container.
+The server setting and the player's saved setting both affect card size. Cards also shrink with
+distance.
 
 | Source | Range | Scope |
 |---|---|---|
 | `[preview] scale` in `gloss.toml` | `0.25`–`4.0`, default `0.65` | server-wide |
 | The per-player factor | `0.25`–`2.5`, default `1.0` | one player |
 
-The per-player factor is not a command. While a preview is on screen, **double-tap sneak** to enter
-adjust mode. Then **hold sneak and scroll the hotbar** to resize. The hotbar slot does not change
-while you do.
+To resize a visible preview:
 
-Each step multiplies the factor by 1.1 or divides it by 1.1. The action bar shows the current
-percentage. Double-tap sneak again to save.
+1. Double-tap sneak to enter adjust mode.
+2. Hold sneak and scroll the hotbar.
+3. Double-tap sneak again to save.
+
+Each scroll step changes the factor by 10 percent. The action bar shows the current size.
 
 Below 0.30 the preview is treated as hidden. Nothing is drawn at all. The action bar says so. That
 is the opt-out for players who do not want previews. Scrolling back up restores them.
 
-Adjust mode also ends when the preview goes away. It also ends on the first scroll after 20 seconds
-of inactivity. The value is saved either way. Values are stored per player UUID in
-`plugins/Gloss/preview-scales.json`, rounded to two decimals. A player left at exactly `1.0` is not
-written to the file at all.
+Adjust mode also saves when the preview closes or after 20 seconds of inactivity. Settings are stored
+by UUID in `plugins/Gloss/preview-scales.json`.
 
 Changing `[preview] scale` in `gloss.toml` re-renders open previews immediately.
 
 ## The preview document
 
-One `.json` file in `plugins/Gloss/previews/` is one document. The file name without `.json` is its
-id. Preview documents carry **no** `schemaVersion` and **no** `revision`. The envelope described on
-[Data Files & Hot Reload](/gloss/03-data-files) does not apply here. Subfolders are ignored.
+Each `.json` file in `plugins/Gloss/previews/` defines one preview. Its id is the filename without
+`.json`. Preview documents have no `schemaVersion` or `revision`, and subfolders are ignored.
 
 A document has five top-level keys. All are optional:
 
@@ -134,21 +121,19 @@ A document has five top-level keys. All are optional:
 }
 ```
 
-`match` says what the document draws and how strongly it claims it. `variants` restyle and extend
-that. `card` is the chrome. `elements` is the content, in paint order. `particleLayers` adds
-viewer-targeted effects to the compiled projection. A document that emits no elements draws no
-preview.
+`match` selects targets. `variants` change variables for specific targets. `card` controls the frame,
+`elements` provide the content in paint order, and `particleLayers` add viewer-only effects. A
+document with no emitted elements draws nothing.
 
 Particle targets include the whole `projection`, generated component ids such as zero-based
-`element-0`, `label`, `text`, one-based text `line`, authored text `span`, and `local` geometry.
-Label text expressions inside an authored `<particles:name>...</particles>` range inherit that
+`element-0`, `label`, `text`, one-based text `line`, configured text `span`, and `local` geometry.
+Label text expressions inside a configured `<particles:name>...</particles>` range inherit that
 range, but expression or PlaceholderAPI output cannot create a range. Layer placement follows the
 preview's viewer-facing frame. See [Particle Layers](/gloss/25-particle-layers) for the complete
 contract and limitations.
 
-The JSON Schema at `Gloss/schema/gloss-preview.schema.json` describes the same format for editors
-that consume it. It is documentation-grade. The Java parser enforces rules the schema cannot
-express.
+The JSON Schema is at `Gloss/schema/gloss-preview.schema.json`. Runtime validation also enforces
+rules that JSON Schema cannot express.
 
 ### `match`
 
@@ -178,30 +163,24 @@ The three `special` markers are roles, not targets:
 
 ### `variants`
 
-A variant is the match shape again. Only `blocks`, `entities` and `vars` are read from it. A variant
-both restyles **and** extends matching. A material named only in a variant makes the whole document
-resolvable for it.
+A variant accepts `blocks`, `entities`, and `vars`. It can add targets as well as change their style.
 
 Variants are tried in declaration order. The first whose names match the target wins. Its `vars` are
 merged over the document's own. A target no variant claims gets the document defaults unchanged.
 
-That is how one `chest.json` covers chests, trapped chests, barrels, copper chests and all seventeen
-shulker box colors. One slot grid. Twenty variants supply a title key and an accent color each.
+For example, `chest.json` uses one slot grid for chests, barrels, copper chests, and shulker boxes;
+variants supply their titles and colors.
 
 ### `vars`
 
-`vars` values are JSON primitives. They are **never** parsed as expressions. `"vars.accent"` in an
-expression resolves to exactly the literal written in the document.
+`vars` values are JSON primitives, not expressions. Read them with `vars.<name>`.
 
-The exception is a string beginning with `#`, which is read as a color literal: `#RGB`, `#RRGGBB`
-or `#AARRGGBB`. JSON cannot express an ARGB value with the alpha byte set as a plain number without
-it becoming negative. A leading `#` that is not a valid color literal is a compile error, not a
-string. A MiniMessage tag like `"<#F2A535>"` is ordinary text, because it does not lead with the
-hash.
+A string beginning with `#` is parsed as `#RGB`, `#RRGGBB`, or `#AARRGGBB`. An invalid color is a
+compile error. A value such as `"<#F2A535>"` remains text.
 
 ### `card`
 
-Declaring a `card` object at all asks for the chrome. `framed` defaults to `true` there.
+Add `card` to draw the preview frame. Its `framed` field defaults to `true`.
 
 | Key | Type | Default | Meaning |
 |---|---|---|---|
@@ -230,7 +209,7 @@ order where higher draws in front. The card sizes itself around whatever the ele
 | `type` | Required | What it draws |
 |---|---|---|
 | `panel` | `width`, `height`, `color` | A flat rectangle |
-| `cell` | `size`, `color` | A square swatch — the unit every gauge, bar and flame is built from |
+| `cell` | `size`, `color` | A square swatch used to build gauges, bars, and flames |
 | `slot` | `size`, `index` | An inventory well that renders the item in that slot, with its stack count |
 | `label` | `text` | Parsed text |
 
@@ -238,12 +217,12 @@ order where higher draws in front. The card sizes itself around whatever the ele
 |---|---|---|---|
 | `x`, `y` | all | `0` | Pixels from card center |
 | `z` | all | `1` panel, `4` cell and slot, `6` label | Higher draws in front |
-| `width`, `height` | panel | — | Pixels |
-| `size` | cell, slot | — | Square edge in pixels |
-| `color` | panel, cell | — | Fill color |
+| `width`, `height` | panel | Not applicable | Pixels |
+| `size` | cell, slot | Not applicable | Square edge in pixels |
+| `color` | panel, cell | Not applicable | Fill color |
 | `wellColor` | slot | `#FF15151B` | Color behind the item |
-| `index` | slot | — | Inventory slot index. Nothing clamps it — guard it against `inventory.size` yourself |
-| `text` | label | — | Emoji triggers substituted, then parsed for legacy `&` codes and MiniMessage tags |
+| `index` | slot | Not applicable | Inventory slot index. Gloss does not clamp it, so guard it against `inventory.size` |
+| `text` | label | Not applicable | Emoji triggers substituted, then parsed for legacy `&` codes and MiniMessage tags |
 | `background` | label | transparent | Text background color |
 | `visible` | all | `true` | `false` skips the element |
 | `repeat` | all | none | Emit the element once per index |
@@ -258,9 +237,8 @@ carries its own alpha. `rgb()` packs an opaque alpha. `argb()` and `alpha()` set
 "repeat": { "count": "min(vars.slots, inventory.size)", "var": "i" }
 ```
 
-`count` is how many copies to emit. `var` names the 0-based loop index, defaulting to `i`. Every
-field of the element can read it. That is what makes a whole grid a single element. This is the
-entire body of `chest.json`, a 9-wide grid capped at 6 rows and centered on the card:
+`count` controls the number of copies. `var` names the zero-based loop index and defaults to `i`.
+Every field in the element can use it. This example creates a centered, nine-column slot grid:
 
 ```json
 {
@@ -283,8 +261,8 @@ Counts are evaluated once at build. A grid sizes itself from `inventory.size` wh
 opens. A **constant** count above 1024 is a compile error and rejects the document. A **dynamic**
 count above 1024 is truncated at build with a reported error.
 
-Across the whole document the expansion is bounded at 4096 elements. A repeat that would cross it is
-truncated. Every element after it is skipped. The preview renders what it managed to expand.
+A document can expand up to 4096 elements. Gloss truncates a repeat that crosses the limit and skips
+later elements.
 
 ### What is live and what is not
 
@@ -293,25 +271,19 @@ Only two fields are re-evaluated while the preview is on screen:
 - `cell.color`
 - `label.text`
 
-Both are polled every four ticks. Positions, sizes, `z`, panel and well
-colors, `visible`, repeat counts, and the card's `framed`, `title`, and `accent` are evaluated exactly
-**once**, when the preview is built. An element hidden at build time stays hidden for the life of
-that preview. Move the condition into `color` or `text` if it has to change while the player
-watches.
+Both update every four ticks. Positions, sizes, `z`, panel and well colors, `visible`, repeat counts,
+and card fields are evaluated once when the preview opens. Put changing conditions in `color` or
+`text`.
 
 The item shown in a `slot` is not an expression at all. The renderer re-reads that inventory slot on
 the same four-tick beat. It swaps the displayed item and its count when it changes.
 
-A live expression that captured a loop variable keeps the value it was expanded with. Repeat
-instance 3 still reads `i == 3` on every poll, rather than whatever the loop ended on. A live
-expression that folds to a constant is resolved at build time and returned unchanged by every poll.
+Each repeated live expression keeps its own loop index. Constant expressions are resolved once.
 
 ### Failure policy
 
-A preview never takes a frame down. An element whose build-time expressions fail is skipped. The
-rest of the document still renders. A live cell color that fails renders transparent. A live label
-text that fails renders empty. Each document logs at most one such failure per minute. The
-alternative is a log line every four ticks for as long as somebody is looking at the block.
+If an element fails while opening, Gloss skips that element. A failed live cell becomes transparent;
+a failed live label becomes empty. Each document logs at most one such failure per minute.
 
 A document that fails to compile logs `previews/<name>.json: <message>` with the exact field path,
 such as `elements[3].color`, and is skipped. On a hot reload the previously compiled version
@@ -319,17 +291,15 @@ stays live. A half-saved edit never blanks a preview.
 
 ## State variables
 
-Expressions read live container state through flat variable names. Every reading is sampled once per
-refresh. It is handed to the document as a plain number, string or boolean. An expression never
-touches a Bukkit object.
+Expressions read container state through the variables below. Values are numbers, strings, or
+booleans sampled once per refresh.
 
 A document gets the `universal` group always. It gets the `inventory` group whenever the target has
 an inventory (furnaces, brewing stands and jukeboxes included). It also gets the group for its own
 category.
 
-The category is chosen once from the target. Block categories use ender chest, brewing stand,
-furnace, container, jukebox, other inventory holder, beehive or bee nest, cauldron, then static.
-Entities select the powered-minecart category before the ordinary inventory or static category.
+Gloss assigns one category from the target and adds its variables to the universal and inventory
+groups.
 
 | Group | Variables |
 |---|---|
@@ -395,9 +365,7 @@ taking the preview down.
 
 ## Furnace expression walkthrough
 
-The furnace family is the most complete small example because it combines inventory slots, live
-timers, a repeated progress gauge, animated colors, localized labels and material-specific variants.
-One document can claim all three targets:
+This example uses one layout for a furnace, blast furnace, and smoker:
 
 ```json
 {
@@ -442,9 +410,8 @@ One document can claim all three targets:
 }
 ```
 
-The top-level values are defaults. The first matching variant overlays only its listed values. Every
-element continues to read the same `vars.style`, `vars.fill`, `vars.titleKey` and `vars.accent`
-names, so the layout is shared while the blast furnace and smoker acquire their own appearance.
+The first matching variant replaces only its listed variables, so all three targets share the same
+layout with different colors and titles.
 
 ### A repeated, animated cook gauge
 
@@ -459,7 +426,7 @@ names, so the layout is shared while the blast furnace and smoker acquire their 
 }
 ```
 
-This one template demonstrates several independent parts of the language:
+The gauge works as follows:
 
 - `vars.segments` controls how many cells exist. Changing it changes the gauge without copying JSON.
 - `i` is the repeat index. The position formula centers any segment count automatically.
@@ -469,15 +436,12 @@ This one template demonstrates several independent parts of the language:
 - `sin(time / vars.pulseRate + i)` supplies a different phase for each cell.
 - `mix(vars.fill, vars.pulse, ...)` converts that phase into a smooth color pulse.
 
-`cell.color` is one of the two fields Gloss refreshes every four ticks, so both timer progress and
-the pulse remain live. A `visible` condition or `x` expression is build-once. If a flame needs to
-turn on after the card has already opened, keep the cell present and make its live `color` expression
-return the idle color instead of toggling `visible`.
+`cell.color` refreshes every four ticks. Fields such as `visible` and `x` do not, so use the color
+expression when an existing cell needs to change while the preview is open.
 
 ### Inventory, formatting and state labels
 
-The three furnace slots use indexes `0`, `1` and `2`. Expressions can inspect them without touching
-Bukkit objects:
+The furnace input, fuel, and output slots use indexes `0`, `1`, and `2`:
 
 ```json
 {
@@ -497,28 +461,20 @@ Bukkit objects:
 }
 ```
 
-`occupied`, `item` and `count` query an inventory slot. `readable` changes `IRON_ORE` to `Iron Ore`.
-`str` makes a number safe for string concatenation, `fixed` controls decimal places, `bar` draws a
-clamped text gauge, and `lang` keeps server-owned status copy localized. The furnace snapshot also
-provides `burnTime`, `fuelSeconds`, `bankedXp`, `lit`, `surge.active` and `surge.gain`. A color
-expression can use `palette([...], floor(time / 4))` for a stepped flame or test `surge.active` to
-flash a boosted state.
+`occupied`, `item`, and `count` inspect an inventory slot. `readable` formats a material id, `fixed`
+controls decimal places, `bar` draws a text gauge, and `lang` supplies localized text.
 
 The preview expression lexer treats `%` as modulo, so raw `%player_name%` is not placeholder syntax.
 Use `player.name`, `papi('player_name')` or `papiNumber('player_ping', 0)` instead. Use a registered
 `PreviewStateProvider` for typed domain state not exposed by PAPI.
 
-In the web editor, right-click a container-preview document and choose `Create random preview`.
-The generator emits all four element types, selects the furnace simulation through its
-match, and procedurally varies the palette, segment geometry, pulse timing and card dimensions. The
-result is normal editable JSON and one undo step, not a preview-only effect.
+In the web editor, right-click a container-preview document and choose **Create random preview** to
+insert an editable example using all four element types.
 
 ## The included documents
 
-Fourteen documents are extracted into `previews/`, only where the file is missing and only while
-`[features] previews` is on. With the feature off nothing is extracted and the folder does not
-exist; the registry is built during enable, so turning previews on takes a restart before the folder
-appears. All fourteen use `priority: 10`.
+Gloss extracts 14 documents into `previews/` when the feature is enabled. Existing files are left
+unchanged. All included documents use `priority: 10`.
 
 | Document | Matches | Notes |
 |---|---|---|
@@ -683,18 +639,14 @@ Editing an included document in place also works and hot-reloads. A reset undoes
 
 ## Hot reload
 
-`previews/` is an entry on the shared `DataWatchdog`. It is checked at
-`[hotload] watchIntervalTicks`, handles edits, creations and deletions together, and shares the
-completion-anchored 3-second latest-state batch gate with the other automatic hotloads.
+Gloss checks `previews/` at `[hotload] watchIntervalTicks` and reloads edits, additions, and deletions.
 
 A recompiled document logs `Preview document "<name>" changed and was recompiled.`, a new one
 `Preview document "<name>" was detected and compiled.`, and a deleted one
 `Preview document "<name>" was removed.`
 
-Any change closes **every** open preview on the server and immediately returns those viewers to the
-bounded discovery queue. They rebuild from the new snapshot as their queue turns arrive. A preview
-holds the element list it was built from and cannot be re-pointed in place. A priority change can
-also move a target from one document to another. Menus are untouched.
+Any preview-document change closes open previews so they can rebuild from the new files. Menus are
+unaffected.
 
 ## Commands
 
@@ -712,33 +664,17 @@ documents, and vice versa.
 every variant's. `chest.json` reports far more than three blocks. `special` shows `-` when the
 document has none.
 
-`reset` runs off the main thread because it can perform fourteen file writes plus a full reparse. A
-name that is not an included document writes nothing and reports so. It never deletes documents you
-added.
+`reset` accepts only included document names and never deletes custom files.
 
 > `/gloss preview reset` overwrites the named included file on disk. Local edits to that file are gone and
 > there is no backup.
 {.is-warning}
 
-`dump` is the tool for debugging a document. For a player it builds against the block being looked
-at when that block is one the named document matches. Otherwise it builds target-less but retains
-that player for standard player/PAPI expressions. From the console it is viewerless and target-less,
-so player and target-state expressions are unavailable.
+`dump` tests the named document against the player's current target when it matches. Otherwise it
+uses a targetless context. Console dumps have no viewer or target.
 
 Output is the element total broken down into panels, cells, slots and labels. Then up to three build
 errors with a `+N more (see console log)` tail. A trailing `.json` in the name is accepted. `No
 build errors.` means the document expanded cleanly under that context.
 
-Preview scale is **not** a command. It is the sneak gesture described above.
-
-## Notes
-
-- Previews are drawn with per-viewer display entities. Nobody else sees your card.
-- The card is rebuilt whenever the target changes. New-target scans share a deduplicated, fair queue
-  capped at ten players per tick; repeated movement cannot move a player ahead of anyone already
-  waiting. Open cards keep their separate entity-tick target checks. The content cost is one sample
-  every four ticks per open preview.
-- A preview whose target is an ender chest reads the viewer's own ender chest, dispatched onto the
-  viewer's thread. The block itself only decides that the ender-chest document won.
-- Removing `special` from `ender_chest.json` makes ender chests take the ordinary block path rather than
-  breaking them.
+Preview scale uses the sneak gesture described above, not a command.

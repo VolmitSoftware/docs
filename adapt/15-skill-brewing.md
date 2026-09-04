@@ -1,19 +1,15 @@
 ---
 title: "Skill - Brewing"
-description: "Adapt documentation: Skill - Brewing"
+description: "Brewing XP sources, custom potions, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Brewing is the potion skill. You level it by using potions, not by staring at a brewing stand. Drinking one pays out. Landing a splash potion pays out. The stronger the effect and the longer it lasts, the more it is worth.
+Brewing gains XP from drinking potions and hitting targets with splash potions. Longer and stronger effects are worth more.
 
-Two of the adaptations change how brewing works. Lingering Brew stretches the duration of everything that comes out of your stand. Super Heated Brew makes a stand surrounded by fire or lava run faster. A lava-lined brewing room becomes a real build instead of decoration.
-
-The other eleven unlock potions vanilla does not let you make. Absorption, Health Boost, Resistance, Haste and Saturation sit on the useful side. Blindness, Darkness, Decay, Fatigue, Hunger and Nausea sit on the throwing side. Each one adds two recipes (Darkness adds one): a normal strength and a stronger short version. Each is capped at level 1.
-
-Every custom recipe is permanent once learned, so pick the ones you want. The brewing stand also remembers who owns it. That is how Lingering Brew and Super Heated Brew know whose adaptation level to use.
+Lingering Brew extends potion duration, while Super Heated Brew speeds stands near fire or lava. The other eleven adaptations unlock custom effects. Those recipe adaptations are permanent and capped at level 1. Brewing stands store their owner for level checks.
 
 ## Earning XP
 

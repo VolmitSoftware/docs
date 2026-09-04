@@ -1,8 +1,8 @@
 ---
-title: "BileTools — Installation"
+title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-04T04:02:05.398Z
+date: 2026-09-04T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,20 +35,13 @@ dateCreated: 2026-08-09T00:00:00.000Z
 3. Build a plugin into `plugins/`.
 4. Watch the console for the reload.
 
-The configuration rename is a hard break. Delete the obsolete `plugins/BileTools/config.yml` before upgrading, which permanently removes its local settings, then restart the server to generate `plugins/BileTools/biletools.yml`. BileTools does not migrate the old file.
+Older `plugins/BileTools/config.yml` files are not migrated. Copy any settings you still need, remove the old file, and restart to generate `biletools.yml`.
 
 ## Verifying it works
 
-Build any plugin directly into the server's `plugins/` folder. BileTools waits
-for the jar to become stable and stages an immutable copy. After an automatic
-reload batch finishes, the next automatic batch waits at least three seconds. A
-burst of changes is queued into a latest-wins trailing batch. If nothing happens, check
-[Configuration](/biletools/configuration). The plugin may be in
-`watcher.ignore`. `watcher.only` may be an allowlist that excludes the plugin.
+Build a plugin into the server's `plugins/` folder and watch the console. BileTools waits for the jar to stop changing before it reloads. If nothing happens, check `watcher.ignore` and `watcher.only` in [Configuration](/biletools/configuration).
 
-Build and FTP workflows may write to a temporary name and atomically rename it
-to `.jar`. BileTools ignores `.jar.part` files. A brief delete-and-recreate of a
-known jar is protected by a three-second deletion grace period.
+Temporary `.jar.part` files are ignored. A brief delete and recreate has a three-second grace period.
 
 ## Language
 
@@ -57,13 +50,6 @@ French, Hebrew, Italian, Japanese, Korean, Lithuanian, Dutch, Polish,
 Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
 Chinese.
 
-Canonical English lives in the Java catalog at
-`src/main/java/com/volmit/bile/localization/BileMessages.java`. BileTools generates
-`languages/en_US.toml` from it on first run. Omitted entries in any locale file
-resolve from code-owned English.
+English is generated as `languages/en_US.toml`. Missing entries use the built-in English text. Valid edits to the active locale reload automatically; invalid edits leave the current messages active.
 
-Every repository language file and the generated English file document each case-sensitive placeholder by purpose. BileTools-owned keys use the direct TOML sections `command`, `parameter`, `error`, `message`, and `gui`; shared keys use `director` and `language`, and there is no outer `bile` table.
-
-The active `languages/<locale>.toml` reloads automatically after a complete valid save. Invalid edits leave the current messages active.
-
-Language files now use direct TOML catalogs. Retired `language.yml`, YAML locale catalogs, and `languages/overrides/` files are ignored. Move wanted values into the matching `languages/<locale>.toml` file before upgrading.
+Current language files use TOML. Older `language.yml`, YAML catalogs, and `languages/overrides/` files are ignored.

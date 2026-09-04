@@ -2,17 +2,13 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Frame portals are coplanar apertures. Build them with the Portal Wand (box
-select) or by placing and activating matching runes. Construction always makes
-a flat structure. Wormholes rejects a non-flat rune set before it consumes the
-blocks. Surface skins, menu access, and optional vanilla nether/end replacement
-attach after the portal exists.
+Build a flat frame portal with a Portal Wand selection or a connected set of matching runes. Non-flat rune sets are rejected before the blocks are consumed.
 
 ## Tools and recipes
 
@@ -70,10 +66,7 @@ Aliases: `/wh`, `/wormhole`. Full command list:
 4. If the selection is valid and complete, **left-click** the selection to
    open the portal. Click a block inside the box, or aim at the selection pane
    within 64 blocks.
-5. The aperture is the live world blocks currently in that box
-   (`world.getBlockAt` for every cell). Construction always creates
-   `PortalType.PORTAL` owned by the player UUID. Change type later in the type
-   menu ([04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)).
+5. Construction creates a `PORTAL` owned by the player. Change its type later in the [portal menu](/wormholes/04-portal-types-menus-settings).
 
 The selection UI is a light-blue pane while valid. The pane is red when the
 selection is not flat or is too large. If you change world, drop or swap off
@@ -108,11 +101,7 @@ default and do not expose the linked destination.
 There is no Gateway or RTP rune product. Switch a finished portal to `GATEWAY`
 or `RTP` from the type menu.
 
-Wormholes rejects non-coplanar connected sets before consumption. The placed,
-tracked runes stay in the world. If construction fails after a valid set has
-been reserved and consumed, rollback restores or refunds the matching runes
-and releases their reservations. Breaking a placed rune in survival follows the
-drop policy above. Breaking with the wand is cancelled.
+Wormholes rejects non-coplanar sets without consuming them. If a later construction step fails, it restores or refunds the runes. Breaking a placed rune in survival follows the drop policy above; breaking one with the wand is cancelled.
 
 ## Surface skin
 
@@ -152,19 +141,7 @@ click).
 Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 (default `true`). Hot-reloads with other main gameplay settings.
 
-If this is enabled, lighting a vanilla nether portal converts the nether
-portal cells into managed Wormholes portals with dimensional pairing. Related
-create reasons the replacer handles follow the same conversion. End portal
-windows are intercepted the same way. Vanilla portal events are cancelled when
-the Wormholes index covers them.
-Travel is cancelled as soon as create or eye-place registers pending cells
-(`VanillaPortalIndex` pending coverage), before the pairing pass finishes.
-Managed portals use `DimensionalPortalKind` (`NETHER`, `END_SOURCE`,
-`END_ARRIVAL`) and lock manual destination, type, and travel edits. Nether
-pairs travel both ways. An End source is outbound-only. Its fixed arrival
-receiver is inbound-only with projection off. The visible End source always
-keeps projection on, and the hidden arrival receiver never copies its disabled
-projection or default appearance back onto that source.
+When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination, type, and travel settings. Nether pairs work both ways. End sources are outbound-only, with a hidden inbound receiver at the destination.
 
 Set `replace-nether-and-end-portals = false` to leave vanilla portals alone.
 

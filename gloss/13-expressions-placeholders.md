@@ -1,40 +1,37 @@
 ---
 title: "Expressions & Placeholders"
-description: "Gloss documentation: Expressions & Placeholders"
+description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Gloss has six authored substitution and expression systems. PlaceholderAPI fills
-`%expansion_key%` tokens from another plugin. The text pipeline fills `|name|` tokens from a Gloss
-registry. Inline text expressions evaluate `{{ code }}` inside every Gloss text-pipeline surface.
-Conditional documents, bubble motion and container previews use the same expression grammar as
-whole-field DSLs with their own live state.
+Gloss supports PlaceholderAPI tokens, named text functions, inline expressions, conditions, bubble
+motion expressions, and container-preview expressions. Each syntax works only on the surfaces listed
+below.
 
 ## Which system applies where
 
 | System | Syntax | Applies to |
 |---|---|---|
 | PlaceholderAPI | `%expansion_key%` | Per-viewer hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text icons, menu and panel toggle conditions, menu `message` actions |
-| Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, chat-bubble authored prefixes and damage indicators |
-| Inline text expressions | `{{ expression }}` | Every authored text-pipeline surface above; player/PAPI values require a player-backed surface |
-| Particle text ranges | `<particles:name>...</particles>` | Authored text on particle-capable in-world holograms, menus, panels, previews, indicators and drop labels |
+| Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, configured chat-bubble prefixes, and damage indicators |
+| Inline text expressions | `{{ expression }}` | Every configured text-pipeline surface above; player/PAPI values require a player-backed surface |
+| Particle text ranges | `<particles:name>...</particles>` | Configured text on particle-capable in-world holograms, menus, panels, previews, indicators, and drop labels |
 | Conditions | bare boolean expression, no delimiter | Scoreboard selection and variants, tablist variants, bubble-style selection, damage/healing styles and audiences, Real Drops variants and audiences |
 | Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-4 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
 | Preview expression DSL | bare expression source, no delimiter | Container preview documents in `plugins/Gloss/previews/` only |
 
-Nothing else in Gloss is substituted. Action commands, item icons, image icons and component ids stay
-as written. Panel transforms, emoji `trigger` values and preview `match`/`variants` selectors also stay
-as written.
+Action commands, icon values, component ids, panel transforms, emoji triggers, and preview selectors
+stay as written.
 
-The chat message inside a bubble is deliberately not another authored text-pipeline surface. It arrives after the chat emoji and permitted color stages, keeps the resulting formatting, and is never reinterpreted as a function or expression token. Only the BubbleStyle `prefix` and `motion` fields are authored code.
+Bubble chat text keeps the emoji and color formatting already applied to the message. Gloss does not
+reinterpret it as a function or expression. Only the bubble style's `prefix` and `motion` fields use
+configured expressions.
 
-Particle tags are parsed from authored source before functions, inline expressions and
-PlaceholderAPI run. A placeholder or expression inside a marked range inherits the range, but text
-returned by any renderer cannot introduce a new tag. Tags cannot nest. This prevents player or
-integration data from authoring particle effects. The range and layer contract is documented in
+Particle tags are read before functions, inline expressions, and PlaceholderAPI. Dynamic text inside
+a tagged range inherits that range, but rendered values cannot add tags. Tags cannot nest. See
 [Particle Layers](/gloss/25-particle-layers).
 
 ### Bubble motion context
@@ -66,13 +63,10 @@ base presentation is used. Scoreboard documents add one outer contest: only boar
 
 ### Roles and shared variables
 
-`viewer`, `subject` and `source` describe why a value exists. A scoreboard and tablist header/footer
-use the player as both live `viewer` and `subject`; tablist list-name variants and bubble selection
-use the player as live `subject`. A damage style uses the affected entity as live `subject` and
-captures direct-damager values only when that entity is owned by the current region; audience checks
-add the live `viewer`. A Real Drops variant uses the item as live `subject` and captures only the
-thrower identity fields; its audience check adds the live `viewer` separately. `player.*` is an alias
-for `viewer.*`.
+`viewer`, `subject`, and `source` identify the entity a value describes. Scoreboards and tablist
+headers use the player as both `viewer` and `subject`. List-name variants and bubble selection use the
+player as `subject`. Damage and Real Drops conditions use the affected entity or item as `subject`;
+audience checks also receive a live `viewer`. `player.*` is an alias for `viewer.*`.
 
 The live entity fields below exist under each available role:
 
@@ -120,11 +114,9 @@ complete condition must still return a boolean. A role function needs a live rol
 `source.*` fields captured for damage and drop events do not turn that source into a live player for
 `hasPermission`, `inGroup` or PAPI.
 
-Every public global React sampler is advertised as `react.sampler.<sampler-id>`. For example,
-`metric('react.sampler.ticks-per-second', 20) < 18` responds to React's global TPS sampler. Gloss
-requests only keys a document evaluates and stops requesting them after the ordinary demand window;
-React likewise reads only the sampler keys Gloss requested. Chunk- and player-context sampler paths
-are not exported through this bridge.
+Public global React samplers use `react.sampler.<sampler-id>`. For example,
+`metric('react.sampler.ticks-per-second', 20) < 18` reads React's global TPS sampler. Chunk and player
+samplers are not available through this bridge.
 
 ### Surface-specific values and cadence
 
@@ -156,8 +148,8 @@ plus `event.type` and `event.playerDrop`.
 
 ### In rendered text
 
-The text pipeline (`text/TextPipeline.java`) runs functions first, inline expressions second and
-PlaceholderAPI third. Emoji and colors run after.
+The text pipeline runs functions first, inline expressions second, and PlaceholderAPI third. Emoji
+and colors run last.
 
 The placeholder stage runs only when all three conditions hold:
 
@@ -165,8 +157,7 @@ The placeholder stage runs only when all three conditions hold:
 - the render has a viewer, and
 - the string contains at least one `%`.
 
-A render with no viewer is a static render. Static renders skip the placeholder stage. That rule
-separates the surfaces:
+A render without a viewer skips PlaceholderAPI substitution:
 
 | Surface | Viewer | Placeholders resolve |
 |---|---|---|
@@ -181,10 +172,8 @@ separates the surfaces:
 | MOTD lines | none | no |
 | Damage indicators | none | no |
 
-A hologram uses personalized rendering when a line contains a complete `%name%`, `|function|` or
-viewer-backed `{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`. That key
-defaults to `true`. One real display retains blank base text while each in-range player receives
-their resolved text as metadata for that shared entity id.
+A hologram renders per viewer when a line contains a complete `%name%`, `|function|`, or viewer-backed
+`{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`.
 
 If you set that key to `false`, every hologram renders once for all viewers. Lines with `%` then keep
 the tokens. See [Holograms](/gloss/04-holograms).
@@ -249,18 +238,13 @@ latency estimate would be different data, not the ping being answered.
 
 ### Substitution behavior
 
-Gloss resolves placeholders through VolmLib's `Placeholders` helper. The helper returns the input
-unchanged when the player is `null`. It also returns the input unchanged when the text has no `%`,
-or when PlaceholderAPI is not an enabled plugin.
-
-The `PlaceholderAPI#setPlaceholders` method handle is re-probed at most once a second. Definition
-side expansion starts shortly after a late PlaceholderAPI enable. You do not need a reload. A lookup
-failure and an invocation failure each log one warning. Gloss then serves the text unresolved.
+Gloss leaves the input unchanged when there is no player, no `%` token, or no enabled PlaceholderAPI
+plugin. A late PlaceholderAPI enable becomes available shortly without a Gloss reload. Failed lookups
+leave the token unresolved and log one warning.
 
 ## The `gloss` expansion
 
-Gloss also publishes its own PlaceholderAPI expansion. Other plugins can read Gloss state. The
-identifier is `gloss`. Every key is written `%gloss_<key>%`.
+Gloss publishes a PlaceholderAPI expansion named `gloss`. Keys use `%gloss_<key>%`.
 
 The key part is lowercased before lookup. `%gloss_MENU.ID%` resolves the same as `%gloss_menu.id%`.
 
@@ -270,30 +254,26 @@ The key part is lowercased before lookup. `%gloss_MENU.ID%` resolves the same as
 | `%gloss_menu.open%` | `true` when the player currently has a menu session open, otherwise `false` |
 | `%gloss_menu.id%` | The id of the open menu, or `---` when no menu is open |
 
-Those three keys are the whole expansion. There are no hologram, board, tablist, emoji or preview
-placeholders.
+These are the only Gloss placeholders.
 
 An unknown key resolves to `null`. PlaceholderAPI then leaves the token in the text as written.
 `%gloss_nonsense%` comes out as `%gloss_nonsense%`, not as an empty string.
 
-If a key resolver throws, Gloss returns `---` and logs one warning that names that key. The log
-covers up to 64 distinct keys.
+If a resolver fails, Gloss returns `---` and logs the key once, up to 64 distinct keys.
 
 The expansion is registered during enable. Registration runs only when PlaceholderAPI is already an
 enabled plugin at that moment. Unlike the consumer side, registration is not retried. If
 PlaceholderAPI enables after Gloss, the expansion stays unregistered until the next server start.
 
-A menu id is captured into the session store before the menu components are constructed.
-`%gloss_menu.id%` and `%gloss_menu.open%` are already correct in that menu's toggle conditions and
+`%gloss_menu.id%` and `%gloss_menu.open%` are available to the opened menu's toggle conditions and
 text icons.
 
 The API side of this is covered in [API: Placeholders](/gloss/23-api-placeholders).
 
 ## Text pipeline functions
 
-A function token is a name between two pipe characters. An example is `|animation.rainbow|`. The
-function stage runs first in the pipeline. Inline expressions, PlaceholderAPI, emoji and colors run
-after. Anything a function returns is then subject to the later stages.
+A function token is a name between two pipe characters, such as `|animation.rainbow|`. Later pipeline
+stages also process the function's result.
 
 - The whole stage is skipped when `[text] functions` is `false`, when the string contains no `|`, or when
   no functions are registered at all.
@@ -306,11 +286,11 @@ after. Anything a function returns is then subject to the later stages.
 
 ### The function catalog
 
-Gloss registers two families. There is no public API for a third family.
+Gloss registers animation and integration-metric functions. Other plugins cannot register another
+family.
 
-`|animation.<id>|` represents one token per loaded animation document and is registered by `AnimationService`. The
-frame is picked from the server clock at render time. Every surface that shows the same animation
-shows the same frame.
+`|animation.<id>|` reads a loaded animation document. Frames use the server clock, so every surface
+shows the same frame at the same time.
 
 If you set `[features] animations = false`, Gloss unregisters the family. Those tokens then survive
 the stage and appear as written. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
@@ -323,27 +303,18 @@ Values render in compact form (`42`, `3.14`, `1.2K`, `1.5M`, `2B`, `3.5T`). A me
 unavailable, or that has not been sampled yet, renders as an empty string. A key that belongs to a
 plugin that is not installed is never registered. That token stays in the line as written.
 
-Gloss also publishes its own 19 `gloss.*` metrics through the same services manager. React samples
-those metrics. Those keys are not readable from a `|metric.|` token. The bridge skips its own
-registration. A plugin that reads its own metrics through the bridge would be a loop.
+Gloss's own `gloss.*` metrics are available to React, not through `|metric.|` tokens.
 
 ### Demand-driven sampling
 
-The bridge samples nothing on its own schedule. A metric is sampled only while something has recently
-asked for it. That request is a rendered `|metric.<key>|` token, or a preview whose provider
-namespace was read.
-
-A key stays in that recently requested set for 60 seconds after its last request. Then it drops out
-and stops being sampled. The set is capped at 256 keys. When it overflows, the least recently
-requested keys drop first.
-
-Two results follow. Both are normal:
+Gloss samples an integration metric only while a token or preview is using it. Demand expires 60
+seconds after the last request, and the least recently used keys are removed when more than 256 are
+requested.
 
 - **One interval of warm-up.** The first render of a token asks for the key and gets an empty
   string. The value appears on the next sampler pass, `[integration] sampleIntervalTicks` later
   (default 20 ticks). The same holds after a `/gloss reload` and after a plugin enables or disables.
-- **Nothing is sampled on an idle server.** A server whose content names no metric never calls
-  another plugin's sampler.
+- **No idle sampling.** Gloss does not call another plugin's sampler when no content uses its metrics.
 
 ### Menus and panels
 
@@ -367,12 +338,10 @@ visible as written and logs once, so a typo does not silently erase the surround
 &7Tick &f{{ fixed(metric('react.tick-ms', 1000 / server.tps), 1) }}ms
 ```
 
-Available live variables are `time.ms`, `time.seconds`, `time.ticks`, `server.online`,
-`server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health` and `player.level`.
-These are direct Gloss getters. They do not require PlaceholderAPI, React or another integration.
-`server.tps` is sampled internally from the server tick cadence and is available on viewer-free
-surfaces. `player.*` requires a viewer. Use it on boards, tablists, menus, previews, bubble prefixes
-and per-viewer holograms, not MOTDs or other static renders.
+Built-in live variables are `time.ms`, `time.seconds`, `time.ticks`, `server.online`,
+`server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health`, and `player.level`.
+They do not require another plugin. `player.*` requires a viewer, so it does not work in MOTDs or
+other static renders.
 
 `papi(...)` and `papiNumber(...)` use PlaceholderAPI first when a viewer and the expansion are
 available. If the token remains unresolved, Gloss supplies native fallbacks for `player_name`,
@@ -382,11 +351,9 @@ the server aliases work on viewer-free surfaces. Other PAPI keys need a viewer o
 fallback. The former `react.tps` metric key resolves to Gloss's native `server.tps`; new content
 should use `server.tps` directly.
 
-Use a native variable whenever Gloss already owns the value. Use PAPI only for expansion-specific
-data such as Vault economy or prefix values, and `metric` only for a metric published by another
-integration. Optional sources accept a fallback as their second argument. An absent expansion,
-unresolved placeholder or non-numeric PAPI answer uses that fallback; a missing integration metric
-does the same. Omitting the fallback preserves the strict behavior.
+Use built-in variables for Gloss values, PAPI for expansion-specific values, and `metric` for values
+published by integrations. Optional sources accept a fallback as the second argument. Without a
+fallback, missing or invalid values remain errors.
 
 | Function | Result |
 |---|---|
@@ -408,18 +375,13 @@ does the same. Omitting the fallback preserves the strict behavior.
 | `odometer(from, to, progress, digits)` | Interpolates and zero-pads a whole number |
 | `wave(text, styles, step)` | Chases formatting styles across text |
 
-The existing math, ternary, string, color and list functions described below also apply. Inline
-expressions are re-evaluated at the consuming surface's update cadence. `time` expressions animate
-without a separate animation document; `|animation.<id>|` remains useful for reusable frame sets.
-`select` and `palette` floor into a signed 64-bit index before wrapping, so epoch-scale
-`time.seconds` values retain their phase instead of saturating at a 32-bit limit. The web editor uses
-the same wrapping rule.
+The math, ternary, string, color, and list functions below also apply. Inline expressions update at
+the consuming surface's refresh rate. Time expressions can animate without an animation document;
+`|animation.<id>|` remains useful for reusable frame sets.
 
-A surface cannot display intermediate frames that it does not sample. With the defaults, a board
-samples every 20 ticks and a tablist every 40 ticks. Use `floor(time.seconds)` to advance a list once
-per second on a board, or `floor(time.seconds / 2)` to advance it once every two seconds on a tablist.
-Advancing by an exact multiple of the list length between refreshes repeatedly selects the same
-entry.
+A surface cannot show frames between its refreshes. By default, boards refresh every 20 ticks and
+tablists every 40 ticks. Use `floor(time.seconds)` for one-second board steps or
+`floor(time.seconds / 2)` for two-second tablist steps.
 
 The animation helpers are bounded, stateless string transforms. Pass `floor(time.seconds / 2)` as
 the step for content intended to remain visible on the default tablist cadence. Character-transform
@@ -435,11 +397,9 @@ pixel measurement. Raw PlaceholderAPI substitution happens after inline expressi
 
 ## The preview expression DSL
 
-Container preview documents use the same grammar as inline expressions, but each expression occupies
-an entire field and reads preview target state such as furnace cook time. In addition to that state,
-they expose the standard `time.*`, `server.*` and `player.*` variables and `papi`, `papiNumber` and
-`metric` functions. Block, entity, ender-chest and locked previews have their viewing player. Static
-validation and console dumps do not; player values there need an explicit fallback.
+Container preview expressions occupy an entire field and can read target state such as furnace cook
+time. They also support `time.*`, `server.*`, `player.*`, `papi`, `papiNumber`, and `metric`. Static
+validation and console dumps have no player, so player values need a fallback there.
 
 The lexer has no `%…%` form. A bare `%` is the modulo operator. A `%` inside a string literal is an
 ordinary character.
@@ -450,9 +410,7 @@ document format is documented in [Container Previews](/gloss/15-container-previe
 
 ### Furnace expressions at a glance
 
-A furnace preview can turn one element definition into a whole live gauge. `repeat.count` reads a
-document constant, the loop variable positions each cell, and the color expression combines sampled
-furnace state with math and time:
+This element repeats cells across a furnace progress gauge. Its color follows the furnace state:
 
 ```json
 {
@@ -464,10 +422,8 @@ furnace state with math and time:
 }
 ```
 
-The guard before division matters when an idle furnace reports a zero total. `mix` and `sin` make
-completed cells pulse without a separate animation file. `vars.*` values are editable theme constants;
-`cookTime`, `cookTimeTotal` and `time` are sampled runtime variables; and `i` exists only inside that
-repeat.
+The division guard handles an idle furnace with a zero total. `vars.*` values are document constants;
+`cookTime`, `cookTimeTotal`, and `time` are live values; `i` exists only inside the repeat.
 
 Labels can combine the same values with inventory functions and localization:
 
@@ -478,11 +434,8 @@ Labels can combine the same values with inventory functions and localization:
 }
 ```
 
-The full furnace walkthrough, including variants, surge state and live-field cadence, is in
-[Container Previews](/gloss/15-container-previews#furnace-expression-walkthrough). The web editor's
-fixed furnace template remains a complete working expression sample. Its random container-preview
-action instead chooses among storage, furnace, brewing, beehive, cauldron, jukebox, ender-storage,
-mobile-cargo and server-vitals archetypes with target-specific expressions and geometry.
+See the [furnace expression walkthrough](/gloss/15-container-previews#furnace-expression-walkthrough)
+for a complete example.
 
 ### Expression-capable fields
 
@@ -498,12 +451,9 @@ Fields that are never expressions: `match.*` and `variants[].*` selectors, `elem
 `elements[].repeat.var` and `card.minHalfWidth`. A required numeric field rejects both an absent key and an
 explicit `null`. An optional one falls back to its default.
 
-`match.vars` and `variants[].vars` values are JSON primitives converted to `Double`, `Boolean` or `String`
-and are never parsed as expressions. The one exception is a string whose first character is `#`. It is read
-with the expression color-literal grammar and stored as the resulting unsigned ARGB number. A variant
-can then carry `"accent": "#FFB02E26"` without losing the alpha byte to a signed int. A leading `#` that is not a
-valid color literal is a compile error, not a string. A tag like `"<#F2A535>"` is plain text, because it
-does not lead with the hash.
+`match.vars` and `variants[].vars` accept JSON numbers, booleans, and strings. They are not expressions.
+A string beginning with `#` is parsed as an ARGB color; an invalid color is a compile error. Other
+color-like strings, such as `"<#F2A535>"`, remain text.
 
 ### There is no delimiter
 
@@ -517,12 +467,8 @@ starts evaluation. None of those wrappers suppress it.
 
 ### Evaluation cadence
 
-Constant expressions have no variable reference and no function call in the tree. Those expressions
-are evaluated at document load. The result is stored.
-
-Everything else is evaluated when the preview is built. That build happens once when the preview
-opens. Only two fields stay live. The renderer polls them every four ticks while the preview is on
-screen.
+Expressions without variables or function calls are evaluated when the document loads. Other fields
+are evaluated when the preview opens. Only the fields below continue updating every four ticks.
 
 | Field | Evaluated |
 |---|---|
@@ -535,19 +481,18 @@ rejects the whole document.
 
 ### Runtime values
 
-`Double`, `String`, `Boolean` and `List<Object>`. There is no null, no integer type and no truthiness
-coercion. Every operator that needs a number, a boolean or a string rejects the other types with an
-error such as `expected number, got string`.
+Values can be numbers, strings, booleans, or lists. There is no null, integer type, or truthiness
+conversion. Operators reject incompatible types.
 
 ### Literals
 
 | Literal | Syntax | Value |
 |---|---|---|
-| Number | `123`, `3.5` | `Double`. No exponent notation, no leading `.`, no sign — a leading `-` is the unary operator |
-| Color | `#RGB`, `#RRGGBB`, `#AARRGGBB` | `Double` holding the unsigned 32-bit ARGB. `#RGB` doubles each nibble and prepends alpha `FF`.`#RRGGBB` prepends alpha `FF`.`#AARRGGBB` is taken as written. Any other hex-digit count is `bad hex length` |
+| Number | `123`, `3.5` | `Double`. No exponent notation, no leading `.`, and no sign. A leading `-` is the unary operator |
+| Color | `#RGB`, `#RRGGBB`, `#AARRGGBB` | `Double` holding the unsigned 32-bit ARGB. `#RGB` doubles each nibble and prepends alpha `FF`. `#RRGGBB` prepends alpha `FF`. `#AARRGGBB` is taken as written. Any other hex-digit count is `bad hex length` |
 | String | `'text'` or `"text"` | `String`. Escapes are `\\`, `\'`, `\"` and `\n`. Anything else after a backslash is `unrecognized escape sequence`. A missing closing quote is `unterminated string` |
 | Boolean | `true`, `false` | `Boolean` |
-| Array | `[a, b, c]`, `[]` | `List<Object>`. Useful only as a `palette` argument — there is no indexing syntax, no list operators, and stringifying a list is an error |
+| Array | `[a, b, c]`, `[]` | `List<Object>`. Useful only as a `palette` argument. There is no indexing syntax or list operator, and stringifying a list is an error |
 
 Identifiers match `[A-Za-z_][A-Za-z0-9_]*` and may be dotted, as in `inventory.size`. A `.` continues
 an identifier only when the next character is a letter or `_`. Call names may not be dotted, which is
@@ -600,11 +545,7 @@ deliberately rather than producing `NaN`. The two remainder operations then agre
 
 ### Colors
 
-A color is the unsigned 32-bit ARGB value carried as a `Double`. Channel order is alpha, red, green,
-blue from the most to the least significant byte.
-
-Color fields are read back as `(int) (long) value`. That cast reinterprets the unsigned double as a
-signed int. `#FFFFFFFF` becomes `-1` rather than saturating.
+A color is an unsigned 32-bit ARGB number. Channel order is alpha, red, green, then blue.
 
 `#RGB` and `#RRGGBB` are opaque because the parser prefixes `FF`. Only `#AARRGGBB` carries its own
 alpha. `rgb()` likewise packs an opaque alpha. `argb()` and `alpha()` set it explicitly. A plain JSON
@@ -618,21 +559,21 @@ throws `<name> argument <1-based index> must be a number`, `... a string` or `..
 | Function | Arity | Arguments | Returns | Behavior |
 |---|---|---|---|---|
 | `clamp(x, lo, hi)` | 3 | number ×3 | number | `min(max(x, lo), hi)` |
-| `lerp(a, b, t)` | 3 | number ×3 | number | `a + (b - a) * t`.`t` is not clamped |
+| `lerp(a, b, t)` | 3 | number ×3 | number | `a + (b - a) * t`. `t` is not clamped |
 | `min(a, b)` | 2 | number ×2 | number | Smaller of the two |
 | `max(a, b)` | 2 | number ×2 | number | Larger of the two |
 | `floor(x)` | 1 | number | number | Largest integer not greater than `x` |
 | `ceil(x)` | 1 | number | number | Smallest integer not less than `x` |
 | `round(x)` | 1 | number | number | `floor(x + 0.5)`, so `round(-2.5)` is `-2` |
 | `abs(x)` | 1 | number | number | Absolute value |
-| `mod(a, b)` | 2 | number ×2 | number | Floor-mod.`b == 0` throws `division by zero` |
+| `mod(a, b)` | 2 | number ×2 | number | Floor-mod. `b == 0` throws `division by zero` |
 | `sin(x)` | 1 | number, radians | number | Sine |
 | `cos(x)` | 1 | number, radians | number | Cosine |
 | `pow(base, exponent)` | 2 | number ×2 | number | `base` raised to `exponent` |
 | `smoothstep(edge0, edge1, x)` | 3 | number ×3 | number | Clamps `(x - edge0) / (edge1 - edge0)` to `0`..`1`, then applies `t²(3 - 2t)` |
 | `rgb(r, g, b)` | 3 | number ×3 | color | Opaque color. Channels rounded and clamped to `[0, 255]`, alpha forced to `FF` |
 | `argb(a, r, g, b)` | 4 | number ×4 | color | As `rgb`, with an explicit alpha channel |
-| `alpha(color, a)` | 2 | color, number | color | Replaces only the alpha byte.`a` rounded and clamped to `[0, 255]` |
+| `alpha(color, a)` | 2 | color, number | color | Replaces only the alpha byte. `a` is rounded and clamped to `[0, 255]` |
 | `mix(c1, c2, t)` | 3 | color, color, number | color | Per-channel blend including alpha, `round(a + (b - a) * t)`, with `t` clamped to `[0, 1]` |
 | `palette(list, index)` | 2 | list of numbers, number | number | Floors the index to a signed 64-bit value, then returns `list[floorMod(index, size)]`. An empty list throws `palette list must not be empty`. A non-number entry throws `palette list entries must be numbers` |
 | `select(list, index)` | 2 | list, number | any list entry | Floors the index to a signed 64-bit value, then returns `list[floorMod(index, size)]`. An empty list throws `select list must not be empty` |
@@ -644,13 +585,12 @@ throws `<name> argument <1-based index> must be a number`, `... a string` or `..
 
 ### Preview context functions
 
-These four resolve before the library. A same-named library function would be shadowed. None collide
-today. All four are available in every preview document.
+These preview functions resolve before the shared library and are available in every preview document.
 
 | Function | Arity | Arguments | Returns | Behavior |
 |---|---|---|---|---|
 | `lang(key, ...)` | 1 or more | string key, then any values | string | Resolves `key` through the current viewer’s language when a viewer is available, otherwise the server default. Positional arguments bind onto the resolved English template's `{placeholder}` names in first-appearance order. Extras are named `arg<n>` and go unused. Values are stringified with `str` and inserted as untrusted text, so a container name cannot smuggle in color codes. An id the catalog does not declare fails the label with `lang: Unknown message key: <id>` |
-| `count(slot)` | 1 | number | number | Stack size in that slot of the previewed inventory.`0` for an empty slot, an out-of-range index, or no inventory |
+| `count(slot)` | 1 | number | number | Stack size in that slot of the previewed inventory. `0` for an empty slot, an out-of-range index, or no inventory |
 | `occupied(slot)` | 1 | number | boolean | Whether that slot holds a non-empty stack |
 | `item(slot)` | 1 | number | string | Material id in that slot, such as `IRON_ORE`, or `""` when the slot is empty, out of range, or there is no inventory. Pair with `readable(item(0))` for display text |
 | `papi(key, fallback?)` | 1 or 2 | string key, optional string fallback | string | Same PlaceholderAPI-first and native-fallback behavior as inline text expressions |
@@ -660,7 +600,7 @@ today. All four are available in every preview document.
 Slot indexes are floored. Calling `lang` with no argument, or with a non-string first argument,
 throws. Localization keys are covered in [Localization](/gloss/19-localization).
 
-> Function **names** are not checked at compile time — only their arguments are. An unknown name throws
+> Function **names** are not checked at compile time; only their arguments are. An unknown name throws
 > `unknown function: <name>` when the expression runs. Since any call makes an expression non-constant, a
 > misspelled function never fails at load. It fails at build or at refresh.
 {.is-warning}
@@ -678,10 +618,8 @@ throws. Localization keys are covered in [Localization](/gloss/19-localization).
 4. A name absent from preview state delegates to the standard text expression scope for `time.*`,
    `server.*`, `player.*` and integration metrics.
 
-The snapshot is sampled lazily on the first lookup. It is re-sampled when the world's game time
-changes. One refresh reads each server getter once, no matter how many expressions reference it. A
-context with no world, such as a bare ender-chest inventory or a static preview, uses a wall-clock
-tick counter instead.
+Gloss samples preview state when first needed and refreshes it once per game tick. Viewerless or
+worldless previews use a wall-clock tick counter.
 
 ### Built-in variables
 
@@ -711,24 +649,22 @@ catalogued name. That collision would make the loop variable unreachable.
 
 ### Provider namespaces
 
-Values from a registered `PreviewStateProvider` are merged as `<namespace>.<key>`. They are narrowed
-to number, string or boolean. Any other numeric type widens to a number. Anything else is dropped.
+Registered `PreviewStateProvider` values use `<namespace>.<key>` and must be numbers, strings, or
+booleans. Unsupported values are ignored.
 
 A provider whose namespace collides with a built-in group is dropped whole. Gloss warns about it
 once. A provider that throws is skipped. Gloss warns about it once per namespace.
 
 ### Metrics from other plugins
 
-The integration bridge registers one provider per plugin whose metrics it discovered. Every metric
-key is also a preview variable under its own native dotted name. `|metric.adapt.player-sessions|` in
-a hologram line is `adapt.player-sessions` in a preview expression.
+Integration metrics are preview variables under their native dotted names.
+`|metric.adapt.player-sessions|` in text becomes `adapt.player-sessions` in a preview expression.
 
 The namespace is the first segment of the metric key. A plugin that publishes `iris.generation-time`
 occupies the `iris` namespace. The built-in collision rule applies to it like any other provider.
 
-Reading a namespace marks its keys as requested. A preview document is a first-class consumer. A
-document that references `adapt.player-sessions` keeps that metric sampled while the preview is
-drawn. Sampling stops 60 seconds after the last preview closes.
+Reading a metric keeps it sampled while the preview is open. Sampling stops 60 seconds after the last
+use.
 
 The one-interval warm-up applies here too. It is sharper than in text. A preview expression that
 references a variable that is not yet present fails to evaluate.
@@ -746,7 +682,7 @@ unavailable behaves the same way. The variable is absent. It is not invented as 
 | `vars.<undeclared>` | compile error `unknown variable: vars.<name>` |
 | A bare name in the enclosing repeat scope | accepted |
 | Any other bare name | compile error `unknown variable: <name>` |
-| A dotted name whose prefix is a reserved built-in namespace | compile error — a provider can never fill it, so it is a typo |
+| A dotted name whose prefix is a reserved built-in namespace | Compile error because a provider can never fill it |
 | A dotted name whose prefix is not reserved | warning `references provider namespace '<name>', not verifiable at parse time`. Resolved, or failed, at runtime |
 
 ## Limits and errors
@@ -757,10 +693,6 @@ unavailable behaves the same way. The variable is absent. It is not invented as 
 | Constant `repeat.count` | 1024 | Load error naming the cap |
 | Live `repeat.count` | 1024 | Truncated at render, with a message |
 | Total compiled templates | 4096 | Load error naming the cap |
-
-The depth cap exists because pathological input like 5000 nested parentheses would recurse the JVM
-stack into a `StackOverflowError`. That is an `Error` rather than an `ExprException`. It would
-escape the document loader's guard.
 
 Parse errors carry the 0-based source character index. They are reported with the field path. An
 example is `elements[3].color: unexpected token at 7`. Evaluation errors carry no position. They are

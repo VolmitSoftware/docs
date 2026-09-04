@@ -1,14 +1,14 @@
 ---
 title: "Components & Hitboxes"
-description: "Gloss documentation: Components & Hitboxes"
+description: "Build menu buttons, decorations, toggles, and their click areas"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-A menu `components` array holds the individual elements a player sees and clicks. This page covers the three component types, their JSON keys, runtime behavior, hitboxes, click routing, and the two debug overlays. See [Hologram Menus](/gloss/09-menus) for the parent document. See [Icons](/gloss/11-icons) and [Actions](/gloss/12-actions) for the payloads.
+The `components` array holds a menu's buttons, decorations, and toggles. See [Hologram Menus](/gloss/09-menus), [Icons](/gloss/11-icons), and [Actions](/gloss/12-actions).
 
 ## The component entry
 
@@ -22,12 +22,9 @@ Every entry of `components` is an object with three keys.
 
 `vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted.
 
-All three keys are required at open time, not at load time. A component missing `offset` or `data` registers with the file and throws when a player opens the menu.
+All three keys are required. A missing `offset` or `data` value is reported when the menu opens.
 
-Each component keeps its raw offset and resolves it through the session
-transform. The transform mirrors X and multiplies all three axes by the
-effective scale. It then applies roll around Z, pitch around X, and the
-negated menu facing yaw around Y:
+Gloss transforms each local component offset into the menu's position, scale, and rotation:
 
 ```java
 Vector worldOffset = new Vector(-offset.getX() * scale, offset.getY() * scale, offset.getZ() * scale)
@@ -37,23 +34,23 @@ Vector worldOffset = new Vector(-offset.getX() * scale, offset.getY() * scale, o
 Location componentPosition = menuOrigin.clone().add(worldOffset);
 ```
 
-The effective scale is `[menus] uiScale` for a personal session, and the panel own scale multiplied by `uiScale` for a panel view. A positive `offset[0]` therefore puts the component to the viewing side right. Personal sessions have zero pitch and roll. Panels can use all three rotations. The resulting location carries the display yaw (`facingYaw + 180`) and the transform pitch. The click plane also carries the roll.
+Personal menus use `[menus] uiScale`. Panels multiply their own scale by `uiScale`. Positive X moves toward the viewer's right.
 
 The menu-level `offset` is mirrored on X the same way but is **not** scaled. Only component offsets, icon geometry and hitbox geometry scale.
 
 ### Duplicate ids
 
-Duplicate `id` values do not reject the file. When the session is constructed the components go into an insertion-ordered map with a first-wins insert. The first component with a given id is kept. Every later one is dropped with
+Duplicate IDs do not reject the file. Gloss keeps the first component and logs each later duplicate with
 
 ```
 Menu "<menuId>" declares duplicate component id "<componentId>"; keeping the first component.
 ```
 
-A dropped duplicate does not render. It does not tick. It cannot be clicked.
+A duplicate that is dropped does not render or receive clicks.
 
 ### The `data` discriminator
 
-`data` is decoded on its `type` string. The adapter removes `type` from the object before it hands the remainder to the concrete body. `type` never collides with a payload key. The adapter re-inserts it on serialisation. Matching is exact and case sensitive.
+The `data.type` value is exact and case-sensitive.
 
 | Failure | Message |
 |---|---|
@@ -61,7 +58,7 @@ A dropped duplicate does not render. It does not tick. It cannot be clicked.
 | `type` is not a string | `Type must be a string` |
 | Unrecognised `type` | `Unknown type: <value>` |
 
-Any of the three aborts the whole file. The file is then skipped with a logged stack trace.
+Any of these errors rejects the menu file and logs the reason.
 
 | `type` | Java record | Clickable |
 |---|---|---|
@@ -71,10 +68,7 @@ Any of the three aborts the whole file. The file is then skipped with a logged s
 
 The JSON spelling is `decoration`. The enum constant is `DECO`.
 
-The same mechanism runs at two further levels nested inside `data`.
-Icon `type` sits on `data.icon` for buttons and decorations, and on
-`data.trueIcon` and `data.falseIcon` for toggles. Action `type` sits on
-each entry of `data.actions`, `data.trueActions` and `data.falseActions`.
+Icons and actions use their own `type` fields inside `data`.
 
 ## Button
 
@@ -106,23 +100,13 @@ each entry of `data.actions`, `data.trueActions` and `data.falseActions`.
 
 The `Required` column reflects `schema/gloss.schema.json`, which is advisory. A button decoded with no `hitbox` simply has a null hitbox. Parsed `highlightModifier` must be finite and `hoverDurationTicks`, when present, must be between 0 and 40 or the document is rejected.
 
-`actions` are resolved when the document is parsed and again when the
-component is built. An action whose payload is unusable is dropped.
-Examples include an empty command, an unresolvable sound, a teleport
-with no destination, a connect with no server name, or a navigate with
-no target. Gloss logs a one-time warning naming the menu and component.
-The rest of the list still runs. A null or absent `actions` list yields
-an empty list. The button does nothing when clicked.
+Gloss drops an invalid action, logs the menu and component, and keeps the rest of the action list. A missing action list creates a button that does nothing.
 
 `icon` is resolved through the icon factory. A failure logs the exception and uses the built-in "missing" icon, an eight-row black and magenta checkerboard, instead of dropping the component.
 
 ### Click behavior
 
-A click scans the resolved actions in list order. It executes only
-those whose `trigger` is `any`, which is the default. It also executes
-those whose `trigger` is exactly the interaction that occurred. There is
-no per-component cooldown, debounce or re-entrancy guard. A `navigate`
-action stops the remainder of the chain.
+A click runs matching actions in list order. `any` matches every supported click. A `navigate` action stops the rest of that action chain.
 
 ## Decoration
 
@@ -141,9 +125,7 @@ action stops the remainder of the chain.
 |---|---|---|---|
 | `icon` | icon object | yes in the schema | `null` |
 
-A decoration is not clickable. It has no collision plane. It is never ray-tested. It never enters the selected state. It has no highlight. It is skipped when the click candidate list is built. It accepts neither `highlightModifier` nor `hitbox`. Its open, tick and close hooks are no-ops.
-
-It still ticks its icon. Animated images advance. Text placeholders refresh. It still accepts API icon replacement.
+A decoration is not clickable and has no hitbox or hover effect. Animated images and dynamic text still update.
 
 ## Toggle
 
@@ -195,17 +177,17 @@ Toggle state is per player and lasts only for the open session. Reopening the me
 
 `trueActions` and `trueIcon` belong to the state being **entered**, not the state being left. If you click a toggle that is currently false, Gloss runs `trueActions` and shows `trueIcon`.
 
-Both icons stay aligned with the component. Switching state replaces the visible icon and updates the click area without interrupting its current hover position.
+Switching state replaces the icon and updates the click area.
 
-Like buttons, toggles have no cooldown. If a matching `navigate` action is reached, the method returns before the icon and state change. The toggle does not flip. Navigation bound to a different trigger is skipped and does not block the transition.
+If a matching `navigate` action runs, the toggle does not change state.
 
 ## The hitbox system
 
-Every clickable component owns a `CollisionPlane`: a rectangle with a center, a width, a height and a basis of up, right and normal vectors. Hover selection and click targeting are both ray tests against that rectangle. The plane is derived from the icon bounding box unless a `hitbox` object overrides it.
+Buttons and toggles use a rectangular hitbox. Gloss sizes it from the icon unless the component supplies a `hitbox` object.
 
 ### `hitbox` keys
 
-`hitbox` is accepted on buttons and toggles. The schema constrains it with `minProperties: 1`, `additionalProperties: false`, and a mutual `dependentRequired` binding between `width` and `height`.
+Buttons and toggles accept these hitbox fields:
 
 | Key | Type | Required | Default when absent |
 |---|---|---|---|
@@ -225,7 +207,7 @@ Invalid hitbox values reject the file:
 | `height` non-finite or `<= 0` | `Button hitbox height must be finite and greater than zero.` |
 | Any component of `offset` non-finite | `Button hitbox offset must contain only finite values.` |
 
-A hitbox object that carries only `offset` and/or `anchor` keeps the automatic icon-derived dimensions while it relocates the plane. Round-tripping is symmetric. `offset` serialises back to a three-element array. `anchor` serialises back to its lowercase form.
+A hitbox with only `offset` or `anchor` keeps automatic dimensions and moves the click area.
 
 ```json
 {
@@ -245,7 +227,7 @@ A hitbox object that carries only `offset` and/or `anchor` keeps the automatic i
 | `button` | The center of the collision plane the icon produced at this component's location. Moves with the component |
 | `menu` | The menu origin resolved through the session's current anchor, facing and offset. Independent of where the icon is drawn |
 
-A button-anchored plane translates when the button origin moves. A menu-anchored plane center does not. With `anchor: "menu"` and no `offset` the plane sits exactly on the menu center no matter where the icon is. That fully decouples the clickable region from the visible element.
+`button` anchors the hitbox to the component. `menu` anchors it to the menu origin, independently of the icon.
 
 ### Offset axis convention
 
@@ -256,9 +238,7 @@ new Vector(-offset.x * scale, offset.y * scale, offset.z * scale)
     .rotateAroundY(Math.toRadians(-facingYaw))
 ```
 
-The axes are menu-relative. `+x` moves the plane to the viewing side right. `+y` moves it up. `+z` moves it away from that side. The plane basis receives the same roll, pitch and negated facing yaw. A fixed icon and its plane stay aligned. A following personal menu updates its yaw on turns. A followed panel resolves its configured rotation mode.
-
-Worked example: offset `[0.5, -0.25, 0.75]` at scale 2, with the basis `right = (1,0,0)`, `up = (0,1,0)`, `normal = (0,0,-1)`, yields the translation `(-1, -0.5, 1.5)`. When the basis rotates, the translation rotates with it.
+Hitbox offsets use menu-relative axes: positive X moves right, positive Y moves up, and positive Z moves away from the viewer.
 
 ### Automatic sizing
 
@@ -273,11 +253,9 @@ When `hitbox` is absent, or present without `width`, the plane dimensions and ce
 | `block` | `0.75 * S * X` | `0.75 * S * Y` | `location - (0, 0.05 * S, 0)` |
 | `entity` | `width * S` | `height * S` | `location + (0, (height / 2) * S, 0)` |
 
-The `0.325` in the text center is `(2 * NAMETAG_SIZE) - (4.5 / 40)`. That correction puts the plane over the rendered text rather than over its anchor.
-
 For image icons the line length is the rendered row width in characters. The plane width tracks image width. A one-row image is one line tall, not zero. Entity icons have no display style. Their planes use the declared `width` and `height`, which default to `1`, are bounded to `(0, 64]`, and are not multiplied by a style scale.
 
-Automatic dimensions multiply by the icon `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox does not.** `width` and `height` are authored plane dimensions. Only the effective scale applies to them.
+Automatic dimensions multiply by the icon `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox does not.** `width` and `height` are configured plane dimensions. Only the effective scale applies to them.
 ## Hover highlighting
 
 Highlighting runs once per tick per open clickable component:
@@ -287,15 +265,15 @@ Highlighting runs once per tick per open clickable component:
 3. Hover progress advances toward 1 while selected and retreats toward 0 after exit over `hoverDurationTicks`. Zero changes state instantly.
 4. The selected easing curve converts that progress into visual travel: `plane.normal * highlightModifier * effectiveScale * easing(progress)`.
 
-`highlightModifier` is authored in menu-local blocks at scale 1. Effective `uiScale`, including panel scale, is applied exactly once. The logical collision plane never follows the visual displacement, so hover cannot make its own target drift. Billboard icons recompute the travel direction from their current normal each tick. Item, block, text, image and living-entity icons all use the same visual motion. The four easing curves are linear, cubic ease-out, cubic ease-in/out and back-out overshoot. The default blank file demonstrates a seven-tick `back_out` nudge.
+`highlightModifier` controls how far the icon moves on hover. The hitbox stays in place. Easing options are `linear`, `ease_out`, `ease_in_out`, and `back_out`.
 
-Selection is tick-driven presentation state only. It is not a prerequisite for a click. A click does not consult it.
+Hover selection is visual only and is not required for a click.
 
 ## Click routing
 
 ### Which inputs reach components
 
-The dispatcher listens on `PlayerInteractEvent` at `EventPriority.HIGHEST`. It ignores an event an earlier listener already cancelled.
+Gloss accepts uncancelled main-hand clicks:
 
 | Main-hand input | Bukkit `Action` | Trigger |
 |---|---|---|
@@ -304,34 +282,23 @@ The dispatcher listens on `PlayerInteractEvent` at `EventPriority.HIGHEST`. It i
 | Left click, sneaking | `LEFT_CLICK_AIR`, `LEFT_CLICK_BLOCK` | `shift_left_click` |
 | Right click, sneaking | `RIGHT_CLICK_AIR`, `RIGHT_CLICK_BLOCK` | `shift_right_click` |
 
-Off-hand events and `PHYSICAL` are ignored. `any` is an action binding, not a physical interaction. It is never delivered as the trigger of a click. A packet-only living icon has a normal client interaction outline, so the client sends `INTERACT_ENTITY` instead of a Bukkit air click when it is targeted. Gloss recognizes only its own raw entity ids, cancels that packet and schedules the same event-time logical-plane dispatch on the player owning thread. Entity icons therefore activate buttons and toggles without bypassing hitboxes, obstruction or nearest-target arbitration.
+Off-hand and physical interactions are ignored. Entity icons use the same hitbox and obstruction checks as other icons.
+
 ### Obstruction
 
-Before anything is dispatched, a block ray trace runs from the eye out to the winning distance. If it finds a block closer than that, the click is abandoned and the event is left alone. The player normal block interaction happens instead. Passable blocks and fluids do not obstruct. Entities never obstruct.
+Solid blocks between the player and component block the click. Passable blocks, fluids, and entities do not. An accepted menu click does not also perform the vanilla interaction.
 
-On Folia the ray trace is replaced by an exact voxel walk over blocks owned by the current region. A foreign-region voxel is treated as passable, so a menu crossing a region seam remains clickable; obstruction inside that foreign region is best-effort.
-
-An unobstructed hit cancels the event before the API event and any actions run. The same input does not also perform its vanilla block interaction.
 ## Debug overlays
 
-Menu particle layers are independent of these operator debug overlays. Their definitions live at
-the menu top level, can target a component by its sanitized id, and are sent only to that menu or
-panel viewer. Component geometry uses the current component plane and bounds after the menu or panel
-transform. Text-only `line` and `span` targets require a text icon; a non-text component can still
-use component bounds, lines, outlines, planes or cuboids. See
-[Particle Layers](/gloss/25-particle-layers).
+Menu particle layers are separate from debug overlays. See [Particle Layers](/gloss/25-particle-layers).
 
-Two `gloss.toml` switches draw particle overlays. Both default to `false`. Both are applied live when `gloss.toml` is edited or `/gloss reload` runs. Both drive their own repeating task at 2 ticks.
+Two `gloss.toml` settings draw debug particles. Both default to `false` and apply on reload.
 
 | Key | What it draws |
 |---|---|
 | `[debug] hitbox` | For every clickable component of every open session: the four edges and four corners of its collision plane in blue, plus a red segment from the plane center out along the normal for two blocks |
 | `[debug] position` | For every open session: the menu center in yellow, and each component's resolved location in orange |
 
-Edges are drawn as interpolated points at ten steps along each side. Every point is five redstone dust particles at size 1.
-
-Both overlays cover **personal menu sessions only**. Panel views are not drawn.
-
-The particles are spawned into the world, not sent to one player. Everyone nearby sees them. Leave both switches off on a production server.
+Debug overlays cover personal menus only. Everyone nearby can see their particles, so leave them off during normal use.
 
 There is no hover outline in normal operation. Without `[debug] hitbox` the only feedback that a component is selected is its `highlightModifier` displacement.

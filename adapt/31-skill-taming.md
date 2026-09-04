@@ -1,19 +1,15 @@
 ---
 title: "Skill - Taming"
-description: "Adapt documentation: Skill - Taming"
+description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Taming is the pet skill. You level it by taming animals, breeding them, and letting your pets fight for you. The adaptations turn a wolf pack or a horse from a novelty into real support. Fourteen adaptations cover the whole arc. Pets get tougher and stronger. A recall stops you losing them. You get damage sharing, item retrieval, focus-fire commands, and a last-second save when a pet is about to die.
+Taming gains XP from taming, breeding, pet damage, and pet kills.
 
-Early on the skill mostly rewards the things you already do. Tame a cat. Breed some horses. Let a wolf finish a skeleton. XP comes in. Later the pack starts doing work you would otherwise do yourself. Wolves walk over and pick up your drops. Pets body-block arrows. A bone in your hand becomes a "kill that" button.
-
-Mounted play is part of the skill too. Mounted Tactics changes how horses, striders, and pigs handle and hit. Riding is a real combat style instead of just travel.
-
-Most of the pack adaptations are passive and stack quietly. Only three ask for a gesture: Beast Recall (lead), Alpha's Command (bone), and Wild Empathy (the animal's normal taming food).
+Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, damage sharing, item retrieval, projectile protection, mounted combat, taming, and lethal-hit survival. Beast Recall uses a lead, Alpha's Command uses a bone, and Wild Empathy uses the animal's taming food.
 
 ## How you earn Taming XP
 

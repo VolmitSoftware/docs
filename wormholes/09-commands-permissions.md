@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-03T07:34:52.375Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,19 +43,17 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 
 Pocket sizes range from 8 to 128. `size=0`, `material=keep`, and `door=keep` preserve the current value. Shrinking a pocket with blocks or entities requires `confirm=true`; non-empty containers must be emptied first.
 
-`deleteeverything` has no confirmation prompt and refuses to run while someone is inside or entering a pocket dimension.
+> **Warning:** `deleteeverything` has no confirmation prompt. It refuses to run while someone is inside or entering a pocket dimension.
 
 ## Diagnostic reports
 
-`/wormholes debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/wormholes debugdump upload=false` to save it locally without uploading. The command requires `wormholes.debugdump` (default `op`), independently of the root administration permission.
-
-Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
+`/wormholes debugdump` writes a report to the plugin's `debug/` directory and uploads it to mclo.gs by default. Use `upload=false` to keep it local. A failed upload does not delete the report. See [Shared diagnostic reports](/volmlib/api/diagnostics) for its contents.
 
 ## Permissions
 
-Personal language selection requires both `wormholes.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`.
+Personal language selection requires both `wormholes.language.self` and `volmit.language.self`. Both are granted by default.
 
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+`/volmit plugins languages` manages the server default for every enabled Volmit plugin. It only offers locales supported by all providers and does not change personal selections.
 
 | Permission | Purpose |
 |---|---|

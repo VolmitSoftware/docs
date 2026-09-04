@@ -1,22 +1,19 @@
 ---
 title: "API - Skills & Adaptations"
-description: "Adapt documentation: API - Skills & Adaptations"
+description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`Skill` and `Adaptation` are the catalogue objects Adapt hands you in its events and registries. A skill is one of the 23 lines a player levels. An adaptation is one purchasable ability inside a line. Their read-only accessors and `AdaptationLearningTransaction` are supported integration surfaces. The rest of the package is Adapt's own authoring machinery.
+`Skill` represents one of the 23 progression lines. `Adaptation` represents a purchasable ability inside a skill. Use the supported read-only members listed below, and use `AdaptationLearningTransaction` to change a player's learned level.
 
-You reach for this document when you already have a `Skill<?>` or an `Adaptation<?>` and want to know what is safe to ask it. You also reach for it when you want to give a player a level in something. It
-avoids reimplementing the knowledge, power, and economy checks by hand.
-
-The caveat is linkage. These are the classes where Adapt's relocated utility library shows through. Some accessors return VolmLib collections. Calling one bakes a build-time package path into your jar. Stick to the members listed in Reference and you never touch one. See [Adapt relocates VolmLib](/adapt/41-api-getting-started#adapt-relocates-volmlib).
+Some unsupported accessors expose relocated VolmLib collections and bind that package path into your jar. See [Adapt relocates VolmLib](/adapt/41-api-getting-started#adapt-relocates-volmlib).
 
 ## Getting the registry
 
-There is one registry and it lives on the enabled plugin. Ask for it after Adapt has enabled. Never ask in your own `onLoad`.
+Get the registry from an enabled Adapt instance. Do not request it from `onLoad`.
 
 ```java
 Plugin plugin = Bukkit.getPluginManager().getPlugin("Adapt");
@@ -32,7 +29,7 @@ Registration, hot reload, advancement and recipe synchronization, the registry's
 
 ## Reading a skill or an adaptation
 
-Stick to the accessors that return a `String`, an `int`, a `boolean`, a `Material`, or a Bukkit type. Those are listed in Reference. They are stable. Two of them deserve a warning.
+Supported accessors return a `String`, `int`, `boolean`, `Material`, or another Bukkit type. Two methods need extra care.
 
 `Skill.getLocalizedName()` does not resolve the localization catalogue despite the name. It capitalizes the registry id. `rift` becomes `Rift` in every locale. Use `getDisplayName()` for player-facing text.
 

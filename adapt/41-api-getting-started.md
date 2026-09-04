@@ -1,8 +1,8 @@
 ---
 title: "API - Getting Started"
-description: "Adapt documentation: API - Getting Started"
+description: "Add Adapt as a dependency and choose a supported API"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,9 @@ if (plugin instanceof Adapt adapt && adapt.isEnabled()) {
 }
 ```
 
-Adapt relocates VolmLib. Use only types and methods documented in these API pages; do not expose or import Adapt's relocated utility types.
+## Adapt relocates VolmLib
+
+Use only types and methods documented in these API pages. Do not expose or import Adapt's relocated utility types.
 
 ## Choose an API
 

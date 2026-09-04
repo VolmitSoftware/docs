@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -10,10 +10,9 @@ dateCreated: 2026-07-31T23:34:19.060Z
 
 ![Volmit Software](/home-assets/volmit.png =96x){.align-center .radius-16}
 
-## Build the server you imagined. {.text-center}
+## Plugin documentation {.text-center}
 
-World generation, progression, performance, portals, displays, and developer
-tooling for modern Minecraft servers.
+Installation, configuration, commands, and reference material for Volmit plugins.
 {.text-center}
 
 [Explore the plugins](#choose-a-plugin) ·
@@ -23,11 +22,10 @@ tooling for modern Minecraft servers.
 
 ## Choose a plugin
 
-Pick a project to see its requirements, installation guide, configuration,
-commands, and developer APIs.
+Pick a project to open its documentation.
 
 <div class="layout wrap">
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/iris" class="d-flex align-center">
@@ -40,7 +38,7 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/adapt" class="d-flex align-center">
@@ -53,7 +51,7 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/react" class="d-flex align-center">
@@ -66,7 +64,7 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/wormholes" class="d-flex align-center">
@@ -79,7 +77,7 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/gloss" class="d-flex align-center">
@@ -92,7 +90,20 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/foundation" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">F</span>
+          <span>
+            <strong class="title">Foundation</strong>
+            <span class="d-block text--secondary">Homes, moderation, utilities, kits, and economy</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/hiddenore" class="d-flex align-center">
@@ -105,7 +116,7 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/rift" class="d-flex align-center">
@@ -118,7 +129,7 @@ commands, and developer APIs.
       </li>
     </ul>
   </div>
-  <div class="flex xs12 sm6 pa-2">
+  <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/shapedportals" class="d-flex align-center">
@@ -199,6 +210,6 @@ commands, and developer APIs.
   </div>
 </div>
 
-> Compatibility and support vary by project. Plugin pages identify exact
-> requirements, audited revisions, and legacy status where applicable.
+> Compatibility and support vary by project. Check a plugin's installation page
+> before adding it to a server.
 {.is-info}

@@ -1,8 +1,8 @@
 ---
 title: "Operations, Storage, and Recovery"
-description: "Foundation diagnostics, persistence safety, reload behavior, and build gates"
+description: "Foundation diagnostics, persistence safety, reload behavior, and recovery"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "foundation, operations, storage, recovery"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z

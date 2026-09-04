@@ -1,19 +1,15 @@
 ---
 title: "Skill - Stealth"
-description: "Adapt documentation: Skill - Stealth"
+description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Stealth is the rogue skill. You level it by sneaking around and by hurting or killing things while crouched. It pays best when you open a fight from a shadow instead of walking into it. It has 14 adaptations. It shows up in the menu as a dark gray `WITHER_ROSE`.
+Stealth gains XP from sneaking and from damaging or killing targets while crouched. It has 14 adaptations and uses a dark gray `WITHER_ROSE` icon.
 
-The one that matters most is Stealth itself. It runs a concealment session while you sneak. It watches every nearby mob and player to work out whether anyone can actually see you. It multiplies your melee damage when nobody can. Cutpurse and Assassinate both hang off that same undetected check. Learning the core first is the whole point of the tree.
-
-Around that sit the utility picks. Sneak Speed makes crouching bearable. Item Snatch vacuums drops off the floor. Ghost's Armor charges a free hit absorber while you avoid damage. Stealth Vision lights up the dark and reveals invisible players. Enderveil stops endermen aggroing on you. Trap Sense outlines traps and stops sculk hearing your footsteps. Umbral Recovery feeds you and stretches your invisibility on every sneaking kill.
-
-Then there are the escapes. Shadow Decoy leaves a copy of you behind and turns you invisible. Decoy Swap teleports you to that copy. Shadowmeld makes you actually invisible for staying still and unseen. Smoke Pellet throws an aimed cloud that blinds everything in it and wipes aggro out to 64 blocks.
+The core Stealth adaptation checks whether nearby mobs or players can see you, then applies concealment and undetected melee damage. Other adaptations add sneaking speed, item collection, temporary protection, vision, trap detection, recovery, decoys, invisibility, teleporting, and smoke.
 
 ## Adaptations
 

@@ -2,18 +2,18 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-03T23:10:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-<nav aria-label="Breadcrumb" style="display:flex;align-items:center;gap:.45rem;margin:0 0 1.5rem;padding:0 0 .85rem;border-bottom:1px solid rgba(127,127,127,.25);font-size:.9rem"><a href="/shapedportals" style="font-weight:700;text-underline-offset:.18em">Shaped Portals</a><span aria-hidden="true" style="opacity:.45">/</span><span aria-current="page" style="opacity:.72">Installation and configuration</span></nav>
+<nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Installation and configuration</span></nav>
 
 Install the plugin, open its in-game editor, or edit the TOML file directly. Every setting is available in-game, and file changes reload automatically by default.
 
 - [Install](#install)
-- [In-game editor](#complete-in-game-editor)
+- [In-game editor](#in-game-editor)
 - [Settings](#settings)
 - [Languages](#language-files)
 {.grid-list}
@@ -57,9 +57,7 @@ Run `/sp config` with `shapedportals.config`. Choose General, Portal Rules, Effe
 | List input | Separate entries with commas; use `none` to clear the list |
 | Cancel chat entry | Type `cancel`, or wait 60 seconds without saving |
 
-Changes are validated and saved to the same files used by the server. A successful edit writes one compact prefixed chat line naming the setting and showing its previous and applied values; long values use the same bounded preview as the inventory. Invalid values leave the previous settings active and return one compact failure line.
-
-The editor has no manual Reload control and does not open a Director result page after a save. Changes apply immediately; use Back to return to the preceding page or Close to leave the inventory.
+Changes are validated and saved to the same files used by the server. Valid changes apply immediately. Invalid values leave the previous setting active and show an error.
 
 ## Live configuration behavior
 
@@ -167,8 +165,6 @@ Integrity checks skip unloaded portal chunks. See [Repair-based integrity](/shap
 | `presentation.titleStayTicks` | `30` | Title visible time; range 1–600 ticks |
 | `presentation.titleFadeOutTicks` | `10` | Title fade out; range 0–200 ticks |
 
-The enabled startup splash identifies `ShapedPortals, Free-form Nether and End Portals`, the full plugin version, `VolmitSoftware (Arcane Arts) | VolmitSoftware.com`, the server build, the supported `1.20.1 - 26.x` Minecraft range, the current Java major version, and the startup date.
-
 {.dense}
 
 Command results stay in chat even when an extra overlay is enabled. Creation notice text and the type-specific title heading are edited under Languages in the GUI. Action bars and titles cooperate with other VolmLib plugins; boss bars are short-lived and cleaned up automatically.
@@ -197,7 +193,7 @@ Reports contain server, plugin, configuration, portal, performance, and system d
 
 ## Language files
 
-Run `/sp language` to open the ShapedPortals language controls. The landing menu is ordered as Your language, Server default, Reset your language, and Edit language messages; entries that require administrative access appear only when permitted. Use `/sp language server edit [locale]` or Languages inside `/sp config` to open the per-language message editor. The General → Active language locale control opens the picker for the server default. Back controls return each language or editor submenu to its parent page.
+Run `/sp language` to open the language controls. Use `/sp language server edit [locale]` or Languages inside `/sp config` to edit messages. The active-language control under General changes the server default.
 
 Available locales:
 
@@ -205,27 +201,23 @@ Available locales:
 
 ### Select a language
 
-`/sp language self` and `/sp language server` open pickers using the same Director frame as the other ShapedPortals menus. Locale IDs use the menu's purple gradient, a normal hyphen separates them from gray full names, and a green check marks the active choice. Scope links appear only on the first picker page, and their hover text includes the direct command syntax. Scope, locale, and page controls do not issue another close-screen action while the player is using the chat menu; plugin messages use the selected translation.
-
 The picker supports a server default and persistent per-player overrides. `/sp language self de_DE` selects German for you; `/sp language self reset` returns to the server default. Personal language selection requires both `shapedportals.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Choices are saved by UUID in `languages/language-preferences.properties`.
 
 `/sp language server de_DE` changes `general.language` for players without an override. This requires `shapedportals.config` or `volmit.language.admin`.
 
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+`/volmit plugins languages` changes the server default across enabled Volmit plugins. It preserves personal overrides and requires permission to administer every provider being changed.
 
-The picker shows locale IDs and language names. Missing repository translations download only when selected or opened for editing. A valid translation that predates new message keys activates normally; translated entries come from its TOML file and missing entries use code-owned English in memory without changing the downloaded file. A network, TOML, formatting, or required-placeholder failure instead uses validated built-in English and saves `en_US` for the requested personal or server scope. Invalid command syntax and unlisted locales are rejected without changing the selection.
-
-Installed files work offline and are not replaced automatically. The jar’s language manifest follows the repository’s `main` language directory. You can also create a custom locale based on English.
+Missing translations download when first selected or opened for editing. Installed files work offline and are not replaced automatically. Missing messages fall back to English, while an invalid download leaves the current selection unchanged. You can also create a custom locale from the English file.
 
 ### Edit messages
 
-The message editor is VolmLib's shared Bukkit language editor, opened with the ShapedPortals Director theme. Its full-height locale screen restores the full dark inventory background, two-tone ShapedPortals title, green check for the active choice, white locale IDs, muted gray language names, centered magenta category controls, and colored navigation controls. Inventory transitions run immediately when the player already owns the execution region, and the existing picker remains open while a locale is prepared so the client does not flash back to the world. It requires `shapedportals.config` or `volmit.language.admin`. Opening it does not select a language or change the server default or any personal override.
+The message editor requires `shapedportals.config` or `volmit.language.admin`. Opening a locale for editing does not select it or change a personal override.
 
 1. Run `/sp language server edit`, or open `/sp config` and choose Languages. Add a locale, such as `/sp language server edit en_US`, to open that locale directly.
-2. Select a locale, then choose the Runtime, Command, Portal, HUD, GUI, or Director group. These categories come from the first TOML section name, so newly registered groups appear automatically. The category screen uses centered contiguous rows instead of staggered slots.
-3. Use Search on the category screen to find matching keys or values across the whole language file. Its description identifies it as the all-message search; individual category lists do not repeat the control. Click a result to edit it. Message lists use 45 entries per page. The bottom row keeps Previous and Next in positions 4 and 6, with Search or Clear Search centered between them. Back, Close, locale-book, search, and page controls route through the currently open editor inventory. There is no Reload control because editor saves apply immediately and watched file changes reload automatically when hot reload is enabled.
+2. Select a locale, then choose the Runtime, Command, Portal, HUD, GUI, or Director group.
+3. Use Search to find a key or value across the language file, then select the message.
 4. Type the replacement in private chat, keeping its required placeholders. Use `\n` for a line break or `\\` for a backslash. Inputs are limited to 512 characters; type `cancel` or wait 60 seconds to return without saving.
-5. The editor confirms the save with one compact prefixed line showing the message key and its previous and applied values, then returns to the same group and page with its updated contents.
+5. The editor saves the change and returns to the same group and page.
 
 Editing the active locale applies immediately. Editing a different locale updates its file and cached player translations without switching the server default. Changes are written directly to `languages/<locale>.toml`; there is no separate overrides file or folder. If the message changed after it was opened, the stale edit is rejected so the newer contents remain intact.
 
@@ -235,7 +227,7 @@ Installed incomplete languages can be opened for repair, with English shown for 
 
 Messages accept classic colors such as `&c`, formatting such as `&l`, RGB colors, and MiniMessage. Each language file starts with a localized, sectioned reference for file behavior, formatting, escaping, and every available placeholder.
 
-`runtime.prefix` sets the prefix. Remove the optional `{prefix}` token from an individual message to hide it there. Other placeholders required by that message must stay intact. The `{type}` token in `portal.navigation.list.entry` is also optional so portal-list customizations made before End portal support continue to load; add it wherever the row should show `NETHER` or `END`.
+`runtime.prefix` sets the prefix. Remove the optional `{prefix}` token from an individual message to hide it there. Other placeholders required by that message must stay intact.
 
 Missing messages fall back to English. Invalid formatting or missing required placeholders rejects the edit and keeps the last working language file.
 

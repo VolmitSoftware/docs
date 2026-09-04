@@ -1,18 +1,14 @@
 ---
-title: "HiddenOre — Configuration"
+title: "HiddenOre: Configuration"
 description: "Every hiddenore.yml key and default"
 published: true
-date: 2026-09-03T07:34:52.375Z
+date: 2026-09-04T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`plugins/HiddenOre/hiddenore.yml`. Values shown are the defaults.
-
-Changes to `hiddenore.yml` and `language.yml` reload automatically. Invalid changes leave the current settings active. Use `/hiddenore reload` to apply them immediately.
-
-`language.yml` contains sparse message overrides and reload sound settings. Select the server default through `language` in `hiddenore.yml` or the in-game picker.
+Configuration lives at `plugins/HiddenOre/hiddenore.yml`; the tables below show its defaults. Changes to `hiddenore.yml` and `language.yml` reload automatically, while invalid files leave the current settings active. Use `/hiddenore reload` to apply changes immediately, and use the in-game picker or the `language` key to select the server default.
 
 ## Top level
 
@@ -130,18 +126,16 @@ streams. Duplicates stay supported. List order is not significant.
 
 ## Language files
 
-VolmLib downloads a selected non-English catalog on demand, validates its templates and placeholders, and installs it atomically. Locale files are excluded from the plugin jar. Installed catalogs are reused offline, and English defaults remain in Java.
-
-If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection.
+Selected non-English catalogs download when needed. HiddenOre validates them before use and keeps English active if preparation fails. Installed catalogs work offline.
 
 Player preferences are stored by UUID in `language-preferences.properties` in the plugin data folder. `self reset` removes a personal override. The server default applies to console output and players without an override. Sparse local message overrides remain active above the downloaded catalog.
 
-HiddenOre starts with English and prepares a configured non-English locale asynchronously; a failed download leaves English active. HiddenOre installs catalogs to `plugins/HiddenOre/languages/<locale>.yml`. `/hiddenore language` opens the clickable picker. Debug messages and command feedback use each recipient's selected locale. Reloading the overrides also refreshes cached player catalogs.
+HiddenOre installs catalogs to `plugins/HiddenOre/languages/<locale>.yml`. `/hiddenore language` opens the picker. Debug messages and command feedback use each recipient's selected locale.
 
 ### In-game language editor
 
 `/hiddenore language server edit [locale]` opens the inventory editor for a language. Omit the locale to choose one; browsing and editing leave the server default and every personal selection unchanged. Access requires `hiddenore.admin` or `volmit.language.admin`.
 
-The editor shows message keys and current values, with search and pages of up to 45 entries. Select a message, then enter its replacement in private chat; `cancel` or 60 seconds without input cancels the prompt. Placeholders and message shapes are validated before saving, and a message changed since the editor opened must be reopened before editing.
+Select a message and enter its replacement in private chat. Enter `cancel` or wait 60 seconds to stop. HiddenOre validates placeholders, message shape, and stale edits before saving.
 
-Edits are saved atomically to `plugins/HiddenOre/languages/overrides/<locale>.yml`. These per-language values override `language.yml`, which continues to override the installed `languages/<locale>.yml` catalog. English overrides use `en_US.yml` and work without downloading a catalog. A successful save immediately updates users of the edited locale; other locales and all selected preferences remain unchanged. Installed incomplete catalogs can be edited without selecting them; opening a missing official catalog may download it, and failed loads leave the editor closed and selections unchanged.
+Edits are saved atomically to `plugins/HiddenOre/languages/overrides/<locale>.yml`. They override `language.yml`, which overrides the installed catalog. English overrides work offline. Saving refreshes users of that locale without changing language selections.

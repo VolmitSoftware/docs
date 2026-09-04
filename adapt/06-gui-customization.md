@@ -1,20 +1,16 @@
 ---
 title: "GUI Customization"
-description: "Adapt documentation: GUI Customization"
+description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt's menus can be reshaped without touching code. You choose how tall the skills menu is, which item represents each skill and adaptation, and what order they appear in. Everything lives in `plugins/Adapt/adapt.toml` under the `gui` table, plus the one top-level toggle `guiShowAllSkills`.
+Menu settings are in the `gui` table of `plugins/Adapt/adapt.toml`. The top-level `guiShowAllSkills` setting controls whether untouched skills appear.
 
-Every setting on this page hot-reloads. Adapt checks native filesystem events twice a second, periodically reconciles exact content to recover events the platform missed, and applies only a stable latest-state save. A save that parses cleanly re-reads the config and reopens any Adapt window a player currently has on screen. You see the change without a restart.
-
-There are three menu surfaces. The skills menu is a 5-wide card grid with a navigation row at the bottom. It is the only one whose height you set directly. The adaptation list inside a skill and the level buttons inside an adaptation are 9-wide. They size themselves from their own contents.
-
-Icons resolve through the same lookup on all three surfaces. One key can change a skill's card, its entry in a list, and its level buttons. If you also use a resource pack, `models.toml` sits above these icon overrides and stays in charge.
+These settings hot-reload. A valid save refreshes open Adapt menus; invalid TOML leaves the current settings active. Resource-pack entries in `models.toml` take priority over material icon overrides.
 
 ## Setting the skills menu height
 
@@ -26,7 +22,7 @@ Leave it at `0` to let each page size itself to its contents. Set `2` through `6
 
 Auto-sizing behaves differently from a fixed height in one visible way. The viewport is recomputed per page from the cards actually on that page. A last page holding three cards renders as a 2-row window even though the earlier pages were taller.
 
-Bad values are corrected rather than rejected, with one console warning per distinct bad value. The warning set clears when a config reload replaces the config object. A fresh mistake warns again.
+Values outside the supported range are corrected and logged.
 
 `skillsGuiRows` is one of the fields you can edit from `/adapt configure` in game. The icon and order tables below are maps and lists. That editor shows them read-only. Edit those in the file.
 
@@ -37,7 +33,7 @@ Bad values are corrected rather than rejected, with one console warning per dist
 3. Set the value to a Bukkit material name.
 4. Save.
 
-The value parser is forgiving. It trims whitespace, drops everything up to and including the first `:`, uppercases, and turns spaces into underscores. So `netherite axe`, `NETHERITE_AXE` and `minecraft:netherite_axe` all land on the same material. `AIR` and legacy materials are refused.
+The parser trims whitespace, removes the namespace before `:`, uppercases the value, and changes spaces to underscores. `netherite axe`, `NETHERITE_AXE`, and `minecraft:netherite_axe` all resolve to the same material. `AIR` and legacy materials are refused.
 
 Keys are matched exactly first, then case-insensitively. A value Adapt cannot turn into a usable material warns once per key and keeps the built-in icon. The warning names the section, the key, the value you wrote, and the icon it kept.
 

@@ -1,8 +1,8 @@
 ---
 title: "Data Files & Hot Reload"
-description: "Gloss documentation: Data Files & Hot Reload"
+description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-08-26
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -14,7 +14,7 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 
 | Content | Path | Reset |
 |---|---|---|
-| Holograms | `holograms/<id>.json` | — |
+| Holograms | `holograms/<id>.json` | None |
 | Scoreboards | `boards/<id>.json` | `/gloss board reset [name=*]` |
 | Tablist | `tablist.json` | `/gloss tablist reset` |
 | MOTD | `motd.json` | `/gloss motd reset` |
@@ -23,10 +23,10 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 | Bubble styles | `bubbles/<id>.json` | `/gloss bubbles reset [name=*]` |
 | Damage indicators | `damage-indicators/default.json` | `/gloss indicators reset` |
 | Real Drops | `real-drops/default.json` | `/gloss drops reset [name=*]` |
-| Menus | `menus/**.json` | — |
-| Images | `images/<file>` | — |
+| Menus | `menus/**.json` | None |
+| Images | `images/<file>` | None |
 | Container previews | `previews/<id>.json` | `/gloss preview reset [name=*]` |
-| Panels | `panels/<id>.json` | — |
+| Panels | `panels/<id>.json` | None |
 
 For most documents, the file name is the ID. Renaming the file renames the document. Menu IDs include their path below `menus/`.
 

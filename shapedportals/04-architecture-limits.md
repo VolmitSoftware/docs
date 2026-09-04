@@ -2,13 +2,13 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry, persistence, region ownership, and build instructions"
 published: true
-date: 2026-09-03T21:52:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-<nav aria-label="Breadcrumb" style="display:flex;align-items:center;gap:.45rem;margin:0 0 1.5rem;padding:0 0 .85rem;border-bottom:1px solid rgba(127,127,127,.25);font-size:.9rem"><a href="/shapedportals" style="font-weight:700;text-underline-offset:.18em">Shaped Portals</a><span aria-hidden="true" style="opacity:.45">/</span><span aria-current="page" style="opacity:.72">Developer reference</span></nav>
+<nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Developer reference</span></nav>
 
 Shaped Portals separates geometry, region-owned world access, configuration, and persistent portal records. This page explains those boundaries for developers and integrations.
 
@@ -83,15 +83,9 @@ The Gradle wrapper uses Java 25 and produces Java 17 bytecode.
 ./gradlew build
 ```
 
-The shaded artifact is `build/libs/ShapedPortals-2.0.1.jar`. The build also exports the React pack to `build/distributions/react-api-packs/`.
+The shaded artifact is written to `build/libs/ShapedPortals-<version>.jar`. The build also exports the React pack to `build/distributions/react-api-packs/` and checks Java 17 class compatibility.
 
-Build checks cover tests, Spigot 1.20.1 and current Paper/Spigot API compilation, Java 17 class compatibility, VolmLib relocation, and the remote-language manifest. The manifest lists the 17 repository translations and pins a published repository revision; locale TOML files are downloaded when needed rather than bundled in the jar.
-
-`./gradlew publishToMavenLocal` runs the checks and publishes the shaded plugin and sources as `com.volmit:shapedportals:2.0.1`. The repository's build and local-publication tasks also refresh its configured staging jar.
-
-`./gradlew buildPsychoLT` runs the checks, exports the React pack, and copies the shaded jar to the sibling `[Minecraft Server]/consumers/plugin-consumers/dropins/plugins/ShapedPortals.jar`. It also stages the versioned `ShapedPortals-2.0.1.jar` in the workspace `PluginOuts/` directory. The workspace `build-psycho-lt.sh` includes ShapedPortals with the other plugins and forwards its command-line arguments to Gradle.
-
-The workspace script builds plugins concurrently by default and supports `--tests-only`, project and test worker limits, and per-project logs. See [Workspace builds](/volmlib/api/building).
+`./gradlew publishToMavenLocal` publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building) for shared build commands.
 
 ## Related pages
 

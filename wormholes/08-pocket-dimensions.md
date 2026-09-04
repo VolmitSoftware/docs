@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,7 +35,7 @@ after start, PERSONAL/PUBLIC entry cannot provision or enter pockets.
 
 ## Allocation
 
-`PocketAllocator` places rooms on a deterministic square spiral.
+Rooms are placed on a fixed square spiral.
 
 | Constant | Value |
 |----------|-------|
@@ -44,17 +44,9 @@ after start, PERSONAL/PUBLIC entry cannot provision or enter pockets.
 | Chunk center offset | +8 on X/Z so the seed sits inside the first room chunk |
 | Slot reuse | Never. Slots are monotonic |
 
-Each allocation stores a `PocketSpace`: stable `spaceId` (name-UUID from
-binding), binding, slot index, center coordinates, and the room's own shell
-(size and materials). Restoring from disk reloads existing spaces. `nextSlot`
-must stay greater than every allocated slot.
+Each pocket stores its binding, slot, location, size, and materials. Existing spaces reload from disk, and used slots are not reused.
 
-A pocket's shell is fixed at creation from the `pocket-room-size`,
-`pocket-shell-material`, and `pocket-return-door-material` settings and is then
-stored with the pocket. Changing those settings later shapes only pockets
-created after the change; existing pockets keep what they were built with until
-an operator resizes them. Pockets written before shells were configurable load
-as the original 32-block smooth-stone room.
+A pocket keeps the size and materials used when it was created. Later configuration changes apply only to new pockets unless an operator resizes an existing one.
 
 The 8,192-block stride leaves room for any supported size, so a pocket never
 grows into its neighbour.
@@ -70,12 +62,7 @@ grows into its neighbour.
 | Return door offset | `(size / 2) − 1` | Keeps the exit centred on the wall at any size |
 | Anchor | Minimum corner | `minX`/`minY`/`minZ` never move when a pocket is resized |
 
-Bounds are chunk-aligned from the pocket center, and the minimum corner is the
-anchor: the floor and the minimum-X/minimum-Z walls stay where they are at every
-size, and only the maximum walls, the ceiling, and the return door move. Shell
-blocks are protected (`isProtected` = shell only). Interior blocks are
-player-editable. Provisioning fills the shell once. Later provision calls leave
-player interior space and always repair the return door and its support.
+The minimum corner stays fixed when a pocket changes size. The floor and minimum X/Z walls do not move; the opposite walls, ceiling, and return door do. Shell blocks are protected, while the interior remains editable.
 
 Larger rooms cost more per entry, because the shell integrity check reads every
 shell block before a traveler is allowed to arrive, and every chunk the room
@@ -133,16 +120,7 @@ Changing only materials relays the shell in place at the same size and replaces
 the exit door. A resize also moves the stored return-door endpoint to its new
 wall position, so the exit keeps working without a restart.
 
-Before world mutation, Wormholes writes a per-pocket resize intent under
-`doors/pending-resizes/`. The intent is removed only after the room geometry,
-every displaced-entity teleport, stored shell, return endpoint, and runtime
-index agree. On Folia, the old and new shells must both belong to the one region
-running the resize; an unsupported cross-region shape is refused before an
-intent is written. If the server stops during the operation, startup immediately
-quarantines only each pocket named by a pending intent while replaying it. A
-failed intent stays on disk for the next restart; unrelated door entries are
-never paused, and occupants of an affected pocket can still use its return door
-or rescue route to leave.
+Before changing the world, Wormholes records the resize under `doors/pending-resizes/`. Interrupted work resumes on startup. On Folia, a resize is refused if the old and new rooms cannot be handled by one region.
 
 A resize is refused when the requested room would not fit the pocket
 dimension's build height, when the pocket world is not loaded, or when the size
@@ -150,17 +128,9 @@ falls outside 8 to 128 blocks.
 
 ## Escape and lethal damage
 
-**Shell leave (escape):** if a player moves outside the pocket layout with
-lateral margin 1 block (vertical margin 0), they are treated as escaped.
-Wormholes applies a glitch effect. Then it ejects them on the same
-return-ticket path as rescue.
+Moving outside the pocket shell triggers a glitch effect and sends the player through the normal rescue route.
 
-**Lethal damage in the pocket world:** `EntityDamageEvent` on players in
-`wormholes:pockets` is evaluated by `PocketRescuePolicy`. Damage that would
-kill is cancelled. Health is set to one heart (2.0, or max health if lower).
-Fall and fire are cleared. I-frames are extended. Ejection starts through the
-return ticket (with the same fallbacks). Concurrent rescue holds further lethal
-hits at one heart until ejection finishes.
+Lethal damage inside `wormholes:pockets` is cancelled. The player is left at one heart, fall and fire state is cleared, and the rescue route ejects them.
 
 Spectators are not escape-ejected by the move path. Objects never receive
 return tickets.
@@ -174,10 +144,7 @@ return tickets.
 | `PAIR` | None | Not applicable | No pocket. Destination is the mate endpoint |
 | `RETURN` | Pocket of `spaceId` on identity | Traveler UUID on ticket | Exit only |
 
-Pocket `spaceId` is derived as
-`nameUUID("wormholes:pocket:" + kind + ":" + bindingId)`. The stored `IRON`
-binding name is an internal persistence identifier for Public doors. The
-player-facing door kind remains `PUBLIC`.
+The stored `IRON` binding name is an internal identifier for Public doors. The player-facing kind remains `PUBLIC`.
 
 ## Related
 

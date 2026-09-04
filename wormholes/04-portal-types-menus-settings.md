@@ -1,16 +1,14 @@
 ---
-title: "Portal Types Menus & Settings"
+title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Each local frame portal has a home menu and nested type, orientation,
-destination, settings, cost, and cosmetics screens. Defaults below match a
-newly constructed portal (`LocalPortalSettings` constructor). Concepts:
+Each frame portal has menus for its type, orientation, destination, settings, cost, and appearance. The defaults below apply to new portals. Concepts:
 [02 - Concepts](/wormholes/02-concepts). Construction:
 [03 - Building Portals](/wormholes/03-building-portals).
 
@@ -66,12 +64,7 @@ as `CUSTOM` on load.
 
 ### Settings sync
 
-If settings sync is enabled, Wormholes broadcasts setting changes through the
-portal sync service. Linked locals and gateway peers receive those changes when
-they apply. If settings sync is disabled, local edits stay local. Gateway
-portals also emit a settings-toggle broadcast on enable and disable.
-`publicLookLabel` remains local to its portal and is not copied by Settings
-Sync.
+Settings Sync copies supported changes to linked local portals and gateways. When disabled, edits stay local. `publicLookLabel` is never copied.
 
 ## Per-portal permission node
 
@@ -211,13 +204,7 @@ Invalid stored travel cost loads as free and logs a warning. Third-party
 ([21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events))
 and gated by `[main] traversal-api-enabled`.
 
-Vanilla-item and Vault charges reserve on the traveler owner and commit only
-after the traversal succeeds. A failed traversal restores the item or Vault
-charge only after reacquiring that owner; rejected, retired, or accepted-but-
-cancelled entity tasks retry eight times with exponential backoff and a
-watchdog. Exhausted retries, plugin shutdown, or retry-executor rejection fail
-closed without off-owner inventory/economy access and emit a severe log naming
-the traveler.
+Vanilla-item and Vault charges commit only after successful travel. Failed travel refunds the reserved item or balance.
 
 ## Orientation menu
 
@@ -245,12 +232,7 @@ Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
-Blackout builds a concrete display seal from the farthest valid slice of the
-projected volume. The thin seal is inset inside that final sampled slab so
-local-world blocks beyond the projection cannot silhouette or depth-fight it.
-That seal stops the client from seeing beyond the sampled view. If that display
-cannot be sent safely, projection continues without the seal. Opaque surface
-skins block projection entirely (`blocksProjection`).
+Blackout adds a concrete-colored background behind the projected view. If it cannot be displayed, the normal projection remains active. Opaque surface skins block projection.
 
 ## Behavior notes
 

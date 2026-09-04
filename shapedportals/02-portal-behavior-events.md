@@ -2,13 +2,13 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-09-03T19:15:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-<nav aria-label="Breadcrumb" style="display:flex;align-items:center;gap:.45rem;margin:0 0 1.5rem;padding:0 0 .85rem;border-bottom:1px solid rgba(127,127,127,.25);font-size:.9rem"><a href="/shapedportals" style="font-weight:700;text-underline-offset:.18em">Shaped Portals</a><span aria-hidden="true" style="opacity:.45">/</span><span aria-current="page" style="opacity:.72">Portal behavior and troubleshooting</span></nav>
+<nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Portal behavior and troubleshooting</span></nav>
 
 Shaped Portals keeps track of the portals it creates so their unusual shapes can survive block updates and restarts. Minecraft still handles travel and destination portals.
 
@@ -47,7 +47,7 @@ Each record stores its UUID, world identity, plane axis, anchor, interior and fr
 
 Use [the portal commands](/shapedportals/00-overview#find-and-visit-a-portal) to find or visit a managed portal.
 
-The player list shows four portals per page, sorted by world, anchor, creation time, and UUID. Entries show the type, world, location, plane axis, size, creator, and creation time in the server's local time. Nether landing checks look beside the surface; End landing checks stand above solid frame blocks so the command does not immediately send the player through the portal.
+Portal entries show the type, world, location, axis, size, creator, and creation time. Nether landing checks look beside the surface. End landing checks stand above the frame so the command does not send the player straight through the portal.
 
 Teleportation fails if the portal or world is unavailable, no safe landing exists, or another plugin cancels it.
 
@@ -55,22 +55,11 @@ An unsafe landing requires a separate permission and confirmation. Read the [uns
 
 ## Ignition and protection plugins
 
-Ignition denied by a protection plugin is ignored. Before placing shaped portal blocks, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE`. If it is cancelled, or the frame changes during the event, no portal is placed and no success sound plays.
+Cancelled ignition events are ignored. Before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A cancelled event or changed frame stops creation.
 
-Player notices use the configured [presentation channels](/shapedportals/01-installation-configuration#presentation). Ordinary terrain fires are ignored before feedback and statistics.
+Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 
-For End portals, the plugin waits for the uncancelled, buildable `BlockPlaceEvent` or `BlockMultiPlaceEvent` emitted after an Eye of Ender changes the frame. A custom frame normally produces the single-block event; vanilla's complete 3×3 ring produces the multi-block event because the same action also creates its portal surface. Shaped Portals waits one tick, checks every actual frame eye, and leaves the surface alone when vanilla already placed `END_PORTAL`. A completed custom shape fires `BlockCanBuildEvent` for every proposed portal cell, rechecks the frame, and then commits native End portal blocks.
-
-The earlier `EntityChangeBlockEvent` describes the proposed eye state before the complete item-use placement transaction has been accepted, so it is not used as the activation trigger. A protection plugin can stop a shaped End portal by cancelling the placement event, setting its build result to false, or rejecting one of the later `BlockCanBuildEvent` checks.
-
-Bukkit does not fire `PortalCreateEvent` when an End frame activates, and its reason enum has no End-activation value. `END_PLATFORM` means the obsidian arrival platform created after entering the End; `FIRE` and `NETHER_PAIR` are Nether-only. Shaped Portals therefore does not emit a falsely labelled portal event. Plugins that watch only `PortalCreateEvent` will see shaped Nether proposals but not shaped End activation.
-<details>
-<summary>Event and region details for integrations</summary>
-<p>Player-placed fire is handled through <code>BlockPlaceEvent</code>; other configured causes use <code>BlockIgniteEvent</code>. Both listeners use <code>MONITOR</code> and ignore cancelled events. Direct ignition, placed fire, and player-launched fireballs check the responsible player's creation permission when required.</p>
-<p>A bounded walk from the ignition cell through replaceable materials must reach a configured lower frame boundary. Ordinary terrain fires fail this check before deduplication, permissions, scheduling, or counters.</p>
-<p>Both vertical axes are scanned on the owning region, followed by <code>PortalCreateEvent(proposedStates, world, creator, FIRE)</code> and a second shape check. Successful portals are registered and filled without initial neighbor physics. Creation cannot span independently owned Folia regions.</p>
-<p>Physics events mark records for later checks; Shaped Portals does not globally cancel block physics. Recorded frame materials are refreshed and persisted after intact boundary changes.</p>
-</details>
+Bukkit has no `PortalCreateEvent` reason for End-frame activation, so Shaped Portals does not emit one with an unrelated reason. Integrations that need End activation should watch the placement and build events. Creation of either portal type must remain inside one Folia-owned region.
 
 ## Troubleshooting
 

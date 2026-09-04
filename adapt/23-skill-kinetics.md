@@ -1,21 +1,15 @@
 ---
 title: "Skill - Kinetics"
-description: "Adapt documentation: Skill - Kinetics"
+description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Kinetics is the momentum skill. It pays attention to force. Mace smashes, spear charges, and knockback in both directions all count. Bounces
-off slime and beds, launches off pistons, and levitation also count. Big falls
-you survive and anvils you drop on things count too. Do any of that and you earn `kinetics` XP.
+Kinetics gains XP from mace smashes, spear charges, knockback, slime or bed bounces, piston launches, levitation, large survived falls, and falling anvils.
 
-The tree splits into three families. The movement adaptations change how you jump, land, slide, and fall. A Kinetics player moves differently from everyone else on the server. The mace adaptations hang off the vanilla smash attack. Dive faster into it. Shred armor with it. Blow the room apart with it. Land braced and springy afterward. The spear adaptations are about spacing. You get extra reach. Damage scales with how fast you are moving. You get a slowness pin at the right distance, better lunges, mounted charges, and a shove that clears anyone crowding your point.
-
-Most of it is Paper-only. The smash, lunge, and knockback hooks come from Paper events. The whole combat listener stays unregistered if those classes are missing.
-
-Anvils get special treatment. Kinetics keeps a ledger of who placed which anvil. It follows that anvil through piston pushes and falls. It pays the owner when it lands on something. Nearby players get a cut. Drop one from high enough for a kill and it counts toward the skill's only challenge.
+Its 18 adaptations change movement, mace attacks, and spear combat. Most combat hooks require Paper events. Adapt tracks placed anvils through piston movement and falling, then credits the owner and nearby players when one hits a target.
 
 ## Adaptations
 

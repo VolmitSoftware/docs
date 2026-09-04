@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-09-03T19:34:26.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -65,13 +65,11 @@ Distance values must be from `2` through `32`. Player settings and server/world/
 
 `/react monitoring-only` does not rewrite any feature or tweak TOML. The state survives `/react reload` in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
 
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. Catalog downloads complete before a choice is applied. See [Localization](/react/13-localization).
+`/volmit plugins languages [locale]` manages the server default for every enabled Volmit language provider. It keeps personal choices and offers only shared locales. See [Localization](/react/13-localization).
 
 ## Diagnostic reports
 
-`/react debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/react debugdump upload=false` to save it locally without uploading. The command requires `react.debugdump` (default `op`), independently of the root administration permission.
-
-Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
+`/react debugdump` saves a report under `plugins/React/debug/` and uploads it to mclo.gs by default. Add `upload=false` for a local-only report. See [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 ## `/react config` (`cfg`)
 
@@ -110,6 +108,8 @@ Parameters vary by action (world, radius, max entities/chunks, ages). Defaults c
 | Subcommand | Aliases | Description |
 |------------|---------|-------------|
 | `info` | `i` | Print platform, CPU, memory, storage, network-interface, display, sensor, GPU, and power information. Also POST a smaller server, platform, storage, memory, and CPU summary to `https://paste.bytecode.ninja/documents` and return its link |
+
+The upload uses an external service. If it is unavailable, React still prints the environment details and reports that the upload failed.
 
 ## `/react benchmark` (`bench`)
 

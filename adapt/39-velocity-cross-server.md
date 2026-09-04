@@ -1,8 +1,8 @@
 ---
 title: "Cross-Server SQL & Redis"
-description: "Adapt documentation: Cross-Server SQL & Redis"
+description: "Fenced SQL storage and Redis handoff across backend servers"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

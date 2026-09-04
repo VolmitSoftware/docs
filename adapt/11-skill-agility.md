@@ -1,19 +1,15 @@
 ---
 title: "Skill - Agility"
-description: "Adapt documentation: Skill - Agility"
+description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Agility is the movement line. You level it by moving. The game counts sprinting, swimming, hanging in the air, and climbing on a slow pulse. Every block you travel also pays a small trickle. The line tends to level itself while you play.
+Agility gains XP from movement, sprinting, swimming, airtime, and climbing. Its 13 adaptations add sprint speed, wall jumps, charged jumps, slides, air dashes, safer landings, projectile dodging, and movement protections.
 
-What you get back is parkour. Sprint long enough and you outrun your own walk speed. Latch a wall and climb a shaft with nothing but shift. Dash mid-air. Slide under a one-block gap. Roll out of a fall that would otherwise cost you half your hearts.
-
-Not all of it is flashy. Several adaptations are quiet insurance. You burn less hunger per sprint. You have a chance to sidestep an incoming arrow. You stop trampling farmland. You stop setting off pressure plates.
-
-Agility uses the `FEATHER` icon. It shows green in menus. Its passive XP pulse runs every 975 ms. It has 13 adaptations. Most of them are cheap to unlock.
+The skill uses a green `FEATHER` icon. Its passive XP pulse runs every 975 ms.
 
 ## How you earn Agility XP
 

@@ -2,13 +2,13 @@
 title: "BileTools"
 description: "Plugin hot-reload and deployment utility"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-BileTools watches the plugins directory and reloads changed jars without a server restart. It also provides plugman-style lifecycle commands and optional remote deployment.
+BileTools watches the plugins directory and reloads changed jars. It also provides manual plugin lifecycle commands and optional remote deployment for development servers.
 
 | | |
 |---|---|
@@ -22,11 +22,11 @@ BileTools watches the plugins directory and reloads changed jars without a serve
 > access. Use this plugin on a development server.
 {.is-danger}
 
-- [Installation *Requirements, install, first build*](/biletools/installation)
-- [Commands & Permissions *The `/bile` tree*](/biletools/commands)
-- [Configuration *Every `biletools.yml` key and default*](/biletools/configuration)
-- [Hot Reload Behavior *What works, what is best-effort, and why*](/biletools/hot-reload)
-- [Remote Deploy *Master/slave jar distribution, and its security model*](/biletools/remote-deploy)
+- [Installation *Requirements and setup*](/biletools/installation)
+- [Commands and permissions *The `/bile` command tree*](/biletools/commands)
+- [Configuration *Settings and defaults*](/biletools/configuration)
+- [Hot reload behavior *Limits and restart guidance*](/biletools/hot-reload)
+- [Remote deploy *Setup and security*](/biletools/remote-deploy)
 {.links-list}
 
 ## Support

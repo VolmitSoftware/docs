@@ -1,8 +1,8 @@
 ---
 title: "API - Events"
-description: "Adapt documentation: API - Events"
+description: "Listen for ability, teleport, brewing, and cost events"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

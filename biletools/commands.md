@@ -1,8 +1,8 @@
 ---
-title: "BileTools — Commands & Permissions"
+title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-09-04T04:02:05.398Z
+date: 2026-09-04T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,24 +60,20 @@ Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and
 
 ## Diagnostic reports
 
-`/biletools debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/biletools debug dump upload=false` to save it locally without uploading. The command requires `biletools.debug` (default `op`), independently of the root administration permission.
-
-Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. The BileTools section follows the shared section-and-value format and includes service state, watcher/reload counts, effective settings, and known-file metadata. Receiver secrets and target passwords are redacted. `/volmit plugins debug all` includes the same BileTools contribution in the combined VolmLib report. Players receive Director-styled controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
+`/biletools debug dump` saves a report under `plugins/BileTools/debug/` and uploads it to mclo.gs by default. Add `upload=false` for a local-only report. Secrets and target passwords are redacted. See [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 ## Configuration editor
 
-`/bile config` opens the 54-slot BileTools editor. Its eight categories cover general behavior, metrics, the remote receiver, remote deployment, network limits, watcher cadence and filters, lifecycle checks, and languages. Settings are centered within each category. Boolean settings toggle on click, numeric settings support left/right and shift adjustments, and non-secret list settings use a 60-second chat prompt. Saves are serialized, written atomically to `biletools.yml`, and applied without reloading BileTools; each successful edit sends one compact Bile-prefixed line showing the setting, new value, and previous value rather than a Director page.
+`/bile config` opens the settings editor. Changes are validated, saved to `biletools.yml`, and applied without a reload. Boolean, numeric, and non-secret list settings can be edited in game.
 
 The receiver secret and password-bearing deployment target list are deliberately read-only in the GUI. Edit those two values directly in `biletools.yml`, then reload BileTools or restart the server; they are never copied into inventory lore or chat prompts.
 
 ## Language selection
 
-The Bukkit picker uses BileTools's Director menu theme, header, clickable controls, and pagination. BileTools-owned message IDs use direct `command.*`, `parameter.*`, `error.*`, `message.*`, and `gui.*` sections; the language editor does not add a `bile.` prefix. Tab completion includes the `self` and `server` scopes, available locales, and personal reset according to the sender's permissions.
-
-`/bile language` opens the personal picker in game and the server picker from console. `/bile language server de_DE` changes the server default; `/bile language self de_DE` sets a personal preference; `/bile language self reset` returns to the default. Missing locale catalogs download before the selection is applied. If a requested download fails, is incomplete, or fails catalog preparation, the selected personal or server scope uses validated built-in English. The selected personal preference or server default is saved as `en_US`. The unavailable locale is never activated or saved, and the command reports that the language is unavailable and English is being used. Invalid command syntax and unlisted locales are rejected without changing the selection.
+`/bile language` opens the personal picker in game and the server picker from console. Use `self reset` to return to the server default. If a selected catalog cannot be prepared, BileTools keeps English active.
 
 Personal language selection requires both `biletools.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. BileTools server selection requires `biletools.config` or `volmit.language.admin` (default `op`).
 
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
+`/volmit plugins languages [locale]` manages the server default for all enabled Volmit language providers. It keeps personal choices and offers only locales shared by every provider.
 
-`/bile language server edit` opens the language list; add a locale to open its message editor directly. The Languages category in `/bile config` opens the same selector and editor. Editing requires `biletools.config` or `volmit.language.admin` and does not change any personal preference or server default. See [Configuration](/biletools/configuration) for file and editing behavior.
+`/bile language server edit [locale]` opens the message editor. Editing requires `biletools.config` or `volmit.language.admin` and does not change anyone's selected language. See [Configuration](/biletools/configuration) for file behavior.

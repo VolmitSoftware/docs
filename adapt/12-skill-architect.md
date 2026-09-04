@@ -1,19 +1,15 @@
 ---
 title: "Skill - Architect"
-description: "Adapt documentation: Skill - Architect"
+description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Architect is the building line. You level it by placing blocks. The payout scales with what you place. A wall of diamond blocks is worth more than a wall of dirt. Breaking blocks does not pay Architect XP. It only feeds the demolition challenge counters.
+Architect gains XP from placing blocks, scaled by material value. Breaking blocks advances demolition challenges but does not award Architect XP.
 
-The adaptations are tools for people who build a lot. You get a builders wand that fills a whole face at once. Chalk wands project a guide line, circle, or arc in the air before you commit. A magic foundation runs a floor out under your feet while you sneak. An eraser deletes your own fresh mistakes and hands the items straight back.
-
-There is a survival side too. Steady Hands stops you getting shoved off your own bridge. Supply Line refills your hand from a shulker box when a stack runs dry. Scaffolder builds temporary blocks that dissolve and refund themselves. Elevator gives you a wool-and-ender-pearl block pair you can jump and sneak between.
-
-Architect runs on a 3100 ms pulse. It shows aqua in menus. It has 12 adaptations.
+Its 12 adaptations include builder tools, chalk guides, temporary scaffolding, inventory refills, bridge safety, elevators, and demolition. Architect uses an aqua icon and a 3100 ms skill pulse.
 
 ## How you earn Architect XP
 

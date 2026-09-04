@@ -1,19 +1,15 @@
 ---
 title: "Skill - Ranged"
-description: "Adapt documentation: Skill - Ranged"
+description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Ranged is the bow and thrown-projectile skill. Its id is `ranged`. It uses a crossbow icon in the menu. It carries 12 adaptations. You level it by firing arrows and by landing projectile hits. Longer shots pay more.
+Ranged gains XP from firing arrows, spectral arrows, or tridents and from landing projectile hits. Distance and damage increase hit rewards.
 
-The adaptations turn a bow from a poking tool into a real weapon. Force Shot makes arrows fly faster and flatter. Heavy Draw trades speed for damage. Arrow Piercing pushes shots through a line of mobs. Arrow Recovery hands arrows back so you stop running dry. Ricochet Bolt bounces shots off walls and gets stronger with every bounce.
-
-Some of it is utility rather than damage. Trajectory Sight draws a dotted arc showing exactly where your shot lands. Fetch Shot pulls dropped items to you by shooting them. Web Snare is a crafted snowball that cages whatever it hits. Floaters and Pinning Shot are crowd control. One lifts targets off the ground. The other cuts their movement speed to a crawl.
-
-Heartseeker is the top of the tree. Right-click a creature with a bow to lock on. Your next arrow curves after it around corners. With Arrow Piercing or Ricochet Bolt learned, that arrow keeps chaining to new targets after each hit.
+Its 12 adaptations change projectile speed, damage, piercing, recovery, and ricochets. Utility adaptations preview trajectories, retrieve items, trap or slow targets, lift enemies, and guide arrows toward a marked target.
 
 ## Earning XP
 

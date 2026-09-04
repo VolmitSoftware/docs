@@ -1,8 +1,8 @@
 ---
-title: "BileTools — Hot Reload Behavior"
+title: "BileTools: Hot Reload Behavior"
 description: "What hot-reload does, what it cannot do, and how to tell when it failed"
 published: true
-date: 2026-08-22T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,21 +16,17 @@ This wiki uses a Git repository. The wiki syncs in both directions with
 **Through Wiki.js.** Use the pencil icon on any page. The next sync commits
 your change.
 
-**Through a pull request.** Fork the repository. Edit the `.md` file. Open
-a pull request. File paths map to wiki paths. `iris/commands.md` is
-`/iris/commands`.
+**Through a pull request.** Fork the repository, edit the `.md` file, and open a
+pull request. File paths map to wiki paths. For example,
+`shapedportals/00-overview.md` is `/shapedportals/00-overview`.
 
 ## Where content comes from
 
-This repository is the source of truth for all plugin documentation. The
-plugin repositories have no `docs/` trees. Edit every page here. That
-includes numbered plugin pages, landing pages, the BileTools set, HiddenOre
-operator pages, and `home.md`.
+This repository is the source of truth for plugin documentation. Plugin
+repositories do not contain separate documentation trees.
 
-Each plugin repository has an `AGENTS.md` file. If a change alters a
-feature, command, permission, setting, config shape, schema, or API
-surface, update the matching page here. Make that update in the same
-workstream.
+When a plugin change affects behavior, commands, permissions, configuration,
+schemas, or APIs, update the matching page here at the same time.
 
 ## Frontmatter
 
@@ -51,20 +47,16 @@ changes and preserve `dateCreated`.
 
 ## Conventions
 
-- Use [Wiki.js Page Examples](/wiki-page-examples) for syntax, renderer
-  features, and prompting patterns.
-- Use [Wiki.js CSS & Layout Gallery](/wiki-css-layout-examples) for heroes,
-  navigation cards, dashboards, timelines, and responsive page compositions.
-- Use absolute internal links such as `/iris/commands`. Do not use `iris/commands.md`.
+- Use [Wiki.js page examples](/wiki-page-examples) for syntax and renderer
+  features.
+- Use [Wiki.js CSS layouts](/wiki-css-layout-examples) for responsive layout
+  patterns.
+- Use absolute internal links such as `/shapedportals/00-overview`. Do not link
+  to a `.md` path.
 - Write command syntax as `<required>` and `[optional]`.
 - Mark a destructive operation with `{.is-warning}` or `{.is-danger}`.
 - Wiki.js also supports `{.links-list}`, `{.grid-list}`, `{.tabset}`, `{.dense}`,
   and `{.is-info}` / `{.is-success}` / `{.is-warning}` / `{.is-danger}`.
 - Do not document behavior that you have not verified against the source.
 
-## Source branches
-
-Iris, Adapt, and React use the **`unification`** branch. They do not use
-`master`. The `master` branches are older. Those branches target earlier
-Minecraft versions. Gloss, HiddenOre, BileTools, and Wormholes use
-`master`.
+See [Repository readme](/README) for the file layout and page rules.

@@ -1,8 +1,8 @@
 ---
 title: "API - PlaceholderAPI"
-description: "Adapt documentation: API - PlaceholderAPI"
+description: "Read Adapt player and catalog values through PlaceholderAPI"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

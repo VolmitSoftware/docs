@@ -1,8 +1,8 @@
 ---
-title: "Rift — Storage & Operations"
+title: "Rift: Storage and Operations"
 description: "Managed profiles, quarantine manifests, protection, backups, and recovery"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "rift, storage, quarantine, restore, operations"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -25,7 +25,7 @@ Rift keeps operational metadata under `plugins/Rift/` and world data in the serv
 | `<primary-world>/dimensions/<namespace>/<key>/` | Standard Paper 26.1+ world directory |
 | `<world-container>/.rift-trash/<id>/` | Recoverable quarantined world directory |
 
-Old Rift JSON files are not migrated or interpreted. The current 2.0 format is a hard break: only the current TOML paths are active. Managed profiles record their validated storage location relative to the world container; profiles created before this field was introduced are resolved from either supported layout and canonicalized after a successful load. Bukkit or Paper selects the world directory when `WorldCreator` runs. [Paper 26.1+ intentionally stores API-created worlds below the primary world's `dimensions` tree](https://papermc.io/news/26-1/) and maps a simple `WorldCreator("name")` call to `minecraft:name`, which produces `dimensions/minecraft/<name>`. A custom `rift:name` key changes the Bukkit-visible identity to `rift_name` and is unavailable on the supported Spigot floor, so Rift keeps the simple world name other plugins expect and records the server's authoritative location instead of relocating it. Unmanaged primary dimension keys and other plugins' custom namespaces are excluded from Rift's simple-name discovery.
+Rift 2.0 reads the current TOML paths and does not migrate older JSON files. Managed profiles record their validated storage location. [Paper 26.1+ stores API-created worlds below the primary world's `dimensions` tree](https://papermc.io/news/26-1/), while older Bukkit layouts use standalone world directories. Rift supports both layouts without relocating worlds.
 
 ## Unload
 
@@ -35,9 +35,9 @@ Use `/rift protect <name> true` for worlds that other plugins assume remain load
 
 ## Externally removed worlds
 
-Startup reconciliation runs independently of `autoLoadManagedWorlds` and the profile's `autoLoad` field. If an unloaded, unprotected managed world has no entry at either supported storage location, Rift moves its profile into `plugins/Rift/worlds/retired/`, removes it from the managed inventory, and continues startup without invoking Bukkit's world loader. Restoring the world directory later does not reactivate that profile automatically; run `/rift import <name>` to manage the restored world again, using the retired TOML as a reference if needed.
+At startup, Rift retires the profile of an unloaded, unprotected world only when both supported storage locations are missing. Restoring the directory does not reactivate the profile; run `/rift import <name>` again.
 
-Rift does not retire protected profiles or infer deletion from an ambiguous filesystem result. An existing directory without valid world markers, a symbolic or invalid path, an inaccessible path, an unavailable world container, or a recorded-path conflict leaves the profile managed and emits the full error for operator review. The active profile directory must itself be a readable regular directory; Rift now stops enabling instead of silently accepting an unreadable or invalid profile store.
+Protected profiles and ambiguous filesystem results remain managed for operator review. Rift stops enabling if its active profile directory is unreadable or invalid.
 
 ## Quarantine and restore
 
@@ -59,6 +59,6 @@ Before lifecycle changes to valuable worlds, back up the world container and `pl
 
 If a manual config, language, or profile edit is invalid, Rift logs the validation failure and keeps the last valid in-memory state. Correct the current file and save it again; Rift automatically retries when the stable content changes and does not replace invalid current files with defaults.
 
-Debug reports are not automatically deleted. Operators control local retention. Public upload is enabled by default, can be disabled globally in config, and can be suppressed for one run with `/rift debug dump false`; when enabled, mclo.gs controls the remote report's retention and Rift does not store or log the service's one-time deletion token.
+Debug reports remain on disk until an operator removes them. Public upload can be disabled globally or for one run with `/rift debug dump false`.
 
-Next: [Configuration & Localization](/rift/04-configuration-localization)
+Next: [Configuration and localization](/rift/04-configuration-localization)

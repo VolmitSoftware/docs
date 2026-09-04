@@ -2,16 +2,13 @@
 title: "Overview"
 description: "Wormholes features, portal lifecycle, compatibility, and documentation map"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes is a portal, projection, and traversal plugin for modern Paper and
-Folia servers. A frame portal can show destination blocks and entities before a
-traveler crosses it. The same runtime also supports random teleport, survival
-Dimensional Doors, pocket dimensions, and signed cross-server gateways.
+Wormholes creates portals that can show their destination before travel. It also supports random teleportation, Dimensional Doors, pocket dimensions, and cross-server gateways.
 
 ## What Wormholes includes
 
@@ -36,9 +33,7 @@ Dimensional Doors, pocket dimensions, and signed cross-server gateways.
    direction, access, cooldown, cost, destination readiness, and API vetoes
    before it moves or transfers the traveler.
 
-Projection and traversal are intentionally separate. A portal can show a view
-while travel is locked, allow travel with projection disabled, or render a
-mirror without having a linked destination.
+Projection and travel are separate. A portal can show a view while travel is locked, allow travel without a view, or act as a mirror.
 
 ## Portal families
 
@@ -51,6 +46,7 @@ mirror without having a linked destination.
 
 Dimensional Doors are a separate survival system. They do not use frame portal
 types, names, or destinations.
+
 ## Find the right page
 
 ### Players and server owners

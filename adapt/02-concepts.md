@@ -1,18 +1,16 @@
 ---
 title: "Concepts"
-description: "Adapt documentation: Concepts"
+description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt's core progression uses knowledge and ability power. Play of a skill earns skill XP. Skill XP raises that skill's level and pays knowledge you can spend only inside that skill. Leveling any skill also feeds a single account-wide master level. Master level sets your ability power. Ability power is the budget that limits how many adaptation levels you can hold at once. A server can optionally charge Vault currency on top of knowledge when learning adaptations.
+Playing earns skill XP. Skill levels award knowledge for that skill and contribute to one account-wide master level. Master level grants ability power, which limits the total adaptation levels a player can hold.
 
-Knowledge answers "can I afford this?". Power answers "can I carry it?". A player with lots of knowledge in one line and no spare power has to unlearn something before buying anything new. That limit stops a long-lived character from owning every ability at once.
-
-Adaptations only do anything when they are learned and enabled. They must also be allowed in the current world and game mode. Protection plugins must clear them. Another plugin must not block them through the ability API. All of those checks run every time an adaptation would fire, not once at purchase.
+Learning an adaptation costs knowledge and ability power. Servers may also charge Vault currency. An adaptation runs only when it is learned, enabled, permitted in the current world and game mode, allowed by protection plugins, and accepted by the ability API.
 
 ## Skills
 
@@ -28,7 +26,7 @@ An adaptation is a purchasable ability under a skill. Its id is kebab-case and s
 
 One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Level 1 also costs `initialCost`. Buying several levels at once sums each individual step. A jump from level 0 to level 4 costs the same as buying 1, 2, 3, and 4 one at a time. Selling back works the same way in reverse.
 
-Power is simpler. Holding an adaptation at level `L` costs `L` power. A move from level `m` to level `L` costs `L - m` more. Region-granted adaptation levels are excluded from that total. A region can hand out an ability without eating the player's budget.
+Holding an adaptation at level `L` costs `L` power. A move from level `m` to level `L` costs `L - m` more. Region-granted adaptation levels do not use the player's power budget.
 
 Each adaptation gets its own file at `plugins/Adapt/adaptations/<id>.toml`. The file has its own knobs plus the shared `enabled`, `permanent`, `showParticles`, and `showSounds` flags. Some adaptations also carry a tick interval, cooldowns, or per-use hunger, item, and durability costs.
 

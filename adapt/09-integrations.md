@@ -1,18 +1,16 @@
 ---
 title: "Integrations"
-description: "Adapt documentation: Integrations"
+description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt looks for thirteen optional plugins while it enables. It wires itself to whichever ones are running. Nothing here is required, and an absent plugin never stops startup. Adapt can warn when a configured or installed integration cannot be used, such as Vault pricing without an economy provider or an installed-but-disabled HiddenOre.
+Adapt detects thirteen optional plugins at startup. Missing integrations do not stop Adapt from enabling, but an unusable configured integration may produce a warning.
 
-Because the discovery happens once during enable, installing, removing, enabling or disabling any of these plugins needs a server restart. Bukkit load order decides what Adapt can see. Adapt's protector and adaptation registries are built from what it saw.
-
-The integrations fall into three groups. Protection plugins get to veto what adaptations do. Vault and PlaceholderAPI hook Adapt into the rest of your server's economy and text. HiddenOre, Iris, AdvancedChests and MagicCosmetics change how specific adaptations behave.
+Restart after installing, removing, enabling, or disabling an integration. Protection plugins can deny adaptation actions. The other integrations add economy charges, placeholders, or support for specific abilities.
 
 ## PlaceholderAPI
 
@@ -22,14 +20,14 @@ Values come from a snapshot, not a live read. That keeps placeholder-heavy score
 
 ## Vault
 
-Vault lets you charge real currency for learning adaptations on top of the normal knowledge cost.
+Vault lets you charge economy currency for learning adaptations in addition to knowledge.
 
 1. Install Vault and an economy provider.
 2. Set `learningEconomy.enabled = true` in `adapt.toml`.
 3. Set `learningEconomy.moneyPerKnowledge` to the price per point of knowledge.
 4. Set `learningEconomy.refundPercent` to how much of that comes back on unlearn, or `0` for none.
 
-Adapt withdraws `knowledgeCost * moneyPerKnowledge` before it changes anything. It only spends knowledge once the withdrawal succeeds. A failed withdrawal rejects the whole learning transaction. Nobody loses knowledge to a bounced payment.
+Adapt withdraws `knowledgeCost * moneyPerKnowledge` before spending knowledge. A failed withdrawal rejects the purchase.
 
 Each level bought stores its own refund receipt on the skill line. A normal unlearn pays back `refundPercent` of the receipts covering the levels being dropped, unless `hardcoreNoRefunds` is on. If the deposit itself fails, the amount is parked on the skill line and paid out by the next learn or unlearn that player performs.
 
@@ -47,7 +45,7 @@ If HiddenOre is installed but disabled, Adapt logs a warning and runs without th
 
 Iris controls whether the `axe-iris-feller` adaptation exists at all. Adapt only registers it when Iris is enabled. The adaptation reports itself disabled if Iris goes away.
 
-Tree recognition and the felling itself belong to Iris, through the `IrisTreeFellerService` Bukkit service. Adapt supplies the parts that are its business. Those parts are the hunger reservation, the durability preservation chance for the player's level, and the activation cooldown. Adapt also supplies the stop and refund hooks Iris calls back into. Adapt's other axe veinminers ignore any break the Iris tree-feller service already owns. The two never fight over the same tree. There is no general Iris biome bridge. This is the only Iris hook.
+Iris handles tree recognition and felling through `IrisTreeFellerService`. Adapt handles hunger, durability preservation, cooldowns, stopping, and refunds. Other axe veinminers ignore breaks owned by that service. Adapt has no general Iris biome integration.
 
 ## AdvancedChests
 

@@ -2,17 +2,13 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes models frame portals as typed apertures. Each portal can have a
-destination tunnel, through-portal projection, and a separate travel and access
-policy. Local portals live on this server, and remote gateway portals are
-peer-replicated for cross-server pairing. Dimensional Doors and pocket worlds
-are a survival path that does not use frame-portal menus.
+Each frame portal has a type, destination, projection mode, travel direction, and access policy. Gateways connect servers. Dimensional Doors and pockets use a separate system.
 
 ## Portal types
 
@@ -23,12 +19,7 @@ are a survival path that does not use frame-portal menus.
 | `GATEWAY` | Cross-server capable type. Pairs with other gateway locals and remote gateways. Uses export/import codes. |
 | `RTP` | Random teleport portal. No destination tunnel. The RTP service samples the destination. |
 
-`LocalPortal.supportsProjections()` is `true` for every type. A normal portal
-projects only when projection mode is `ON` and the portal is open. The surface
-must not block projection. The portal must have a tunnel or mirror mode. An RTP
-portal also needs an authorized READY destination view for that observer. The
-menu may describe `PORTAL` as basic and `WORMHOLE` as viewport projection. Both
-types can project under the same conditions. See
+Every frame type can project when the portal is open, projection is on, and its surface does not block the view. A normal portal needs a destination or mirror mode; an RTP portal needs a ready destination. `PORTAL` and `WORMHOLE` follow the same projection rules. See
 [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
 RTP cannot be a tunnel destination. If you switch a portal to `RTP` or away
@@ -91,8 +82,7 @@ apply only when the portal frame normal is vertical. Non-vertical frames coerce
 
 ## Travel modes
 
-Travel is stored as two booleans (`outgoingTraversalsEnabled`,
-`incomingTraversalsEnabled`) and shown as:
+The menu offers these travel modes:
 
 | Mode | Outgoing | Incoming |
 |------|----------|----------|

@@ -1,14 +1,14 @@
 ---
 title: "Getting Started"
-description: "Gloss documentation: Getting Started"
+description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data tree with working defaults. Settings live in `plugins/Gloss/gloss.toml`. Content lives in JSON documents beside that file. Both reload from disk while the server runs. Scoreboards, tablist text, bubble styles, indicators and real drops can select presentations with the same player, world, event, PlaceholderAPI and metric conditions. Most changes need no restart and no command.
+Put the Gloss jar in `plugins/` and start the server once. Settings live in `plugins/Gloss/gloss.toml`; display content lives in JSON files under `plugins/Gloss/`. Most edits reload automatically.
 
 ## Requirements
 
@@ -19,7 +19,7 @@ Put the Gloss jar in `plugins/` and start the server once. Gloss writes the data
 | Java | 25 |
 | Plugin version | `3.0.1-26.2`, api-version `26.1` |
 
-Gloss works without optional dependencies. PlaceholderAPI enables `%...%` tokens, Vault enables groups, and supported item plugins enable their item providers.
+Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, Vault adds group conditions, and supported item plugins provide custom item icons.
 
 ## Install
 
@@ -29,8 +29,7 @@ Gloss works without optional dependencies. PlaceholderAPI enables `%...%` tokens
 
 ## What the first boot creates
 
-Gloss never creates a folder it has nothing to put in. A first boot writes the config, the language
-file and the defaults of the features that are enabled. Nothing else exists yet:
+The first boot creates the config, language file, and defaults for enabled features:
 
 ```
 plugins/Gloss/
@@ -49,12 +48,9 @@ plugins/Gloss/
 └── previews/              container preview documents (14 included)
 ```
 
-`tablist.json` sits at the root of the data folder. It does not sit inside a `tablist/` folder, and
-neither does `motd.json` when it appears.
+`tablist.json` and `motd.json` sit at the root of the data folder.
 
-Every other path is created the first time something is actually written into it. An empty folder is
-never left lying around. Deleting one does not bring it back on the next hot-reload pass. It
-returns when a document is saved:
+Other paths appear only when Gloss has data to store:
 
 | Path | Written when |
 |---|---|
@@ -64,7 +60,7 @@ returns when a document is saved:
 | `motd.json` | `[features] motd` is turned on |
 | `preview-scales.json` | Shutdown, and whenever a player finishes adjusting a preview scale. Holds every per-player scale that is not 1.0 |
 | `bubble-styles.json` | A player picks a personal chat bubble style |
-| `editor-sync-sessions.json` | A web editor sync session is created. Session secrets — never copied by an importer |
+| `editor-sync-sessions.json` | A web editor sync session is created. Importers never copy session secrets |
 | `editor-sync-transactions/` | A web editor publication is in flight |
 | `editor-sync-backups/<id>/` | A web editor publication replaced at least one file |
 | `custom-items.json` | `/gloss item export` runs. Regenerable, so nothing preserves it |
@@ -73,7 +69,7 @@ returns when a document is saved:
 
 ## Defaults
 
-Gloss extracts default documents only where the target file is missing. An edited file is never overwritten. A deleted file comes back on the next boot. The bundled defaults are:
+Gloss extracts a bundled default only when its target file is missing. Existing files are not overwritten during startup.
 
 | Folder | Documents | Extracted while |
 |---|---|---|
@@ -88,20 +84,13 @@ Gloss extracts default documents only where the target file is missing. An edite
 | `tablist.json` | one singleton document | `[features] tablist` |
 | `motd.json` | one singleton document | `[features] motd` |
 
-Turning `motd`, `tablist`, `emoji`, `animations`, `boards`,
-`chatBubbles`, `damageIndicators`, `realDrops` or `menus` on extracts its defaults on the config reload, without a restart. `previews` is the
-exception: the preview registry is only built during enable, so turning that feature on takes a
-restart before `previews/` appears.
+Enabling a document-backed feature extracts its defaults on reload. Enabling `previews` requires a restart before `previews/` appears.
 
-Gloss includes no defaults for `holograms/`, `panels/` or `images/`; boot-seeding a hologram or panel would place content into a real world, while an image is an operator asset. The safe menu baseline is `menus/default.json`, which is also the source for `/gloss menu new`. Details and the per-kind reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
+Gloss does not create default holograms, panels, or images. Reset commands are listed on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Feature toggles
 
-`[features]` in `gloss.toml` gates each subsystem. An effective off state stops that subsystem
-from rendering or listening. Most document-backed features keep their documents loaded and editable;
-`emoji` and `animations` shut down their loaders completely but can restart on reload. Panels and
-previews are selected during enable, so enabling either after it was disabled at startup requires a
-restart to construct that subsystem.
+The `[features]` table in `gloss.toml` controls each subsystem. Most changes apply on reload. Enabling `panels` or `previews` after startup requires a restart.
 
 | Key | Default | Gates |
 |---|---|---|
@@ -119,37 +108,21 @@ restart to construct that subsystem.
 | `previews` | `true` | Look-at container previews |
 | `motd` | `false` | The custom server list MOTD |
 
-`motd` is the only feature disabled by default. If you turn it on, the bundled `motd.json` takes over the server list ping at once. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
+`motd` is the only feature disabled by default. See [Tablist & Server List MOTD](/gloss/06-tablist-motd) before enabling it alongside another MOTD plugin.
 
 ## Coming from HoloUi
 
-HoloUi is merged into Gloss. If a `plugins/holoui` (or `plugins/HoloUi`) folder still exists beside the Gloss data folder on first boot, Gloss copies its data across. The source folder is never modified. The copy runs exactly once. Session secrets are never copied. The import writes `holoui-import.json` and lists every path it touched.
+On first boot, Gloss can copy data from `plugins/holoui` or `plugins/HoloUi`. It does not change the source folder or copy session secrets. The one-time result is recorded in `holoui-import.json`.
 
-Commands, permissions and placeholders all moved. `/holoui ...` is gone. Use the `/gloss` subtrees. `holoui.*` permissions became `gloss.*`. `%holoui_*%` placeholders became `%gloss_*%`. HoloUi "boards" (world-anchored hologram menus) are now called panels. Gloss keeps the name "board" for scoreboards. The full import contract is on [Data Files & Hot Reload](/gloss/03-data-files).
+Use `/gloss`, `gloss.*`, and `%gloss_*%` instead of the old HoloUI names. HoloUI boards are called panels; Gloss uses "board" for scoreboards. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Current conditional document versions
 
-Boards use schema 2, tablist uses schema 2, bubble styles use schema 3, damage indicators use schema 2 and real drops use schema 2. These are hard breaks: Gloss silently ignores documents on any other schema and does not migrate them during startup. Rewrite custom files to the current format or use the relevant reset command for a default. `/gloss import legacy` does not translate old boards, groups or tablist formats. The condition language is documented on [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
+Boards and tablist use schema 2, bubble styles use schema 4, and damage indicators and real drops use schema 3. Gloss ignores other schema versions. Rewrite custom files or restore a bundled default with its reset command. `/gloss import legacy` does not translate old boards, groups, or tablist files. See [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
 
-## Where to go next
+## Next steps
 
-- [Configuration *Every knob in gloss.toml, with defaults and ranges*](/gloss/02-configuration)
-- [Data Files & Hot Reload *The JSON document system, importers and reset commands*](/gloss/03-data-files)
-- [Holograms *Persistent text displays*](/gloss/04-holograms)
-- [Scoreboards & Groups *Sidebars and Vault group resolution*](/gloss/05-scoreboards-groups)
-- [Tablist & Server List MOTD *Header, footer, list names and ping text*](/gloss/06-tablist-motd)
-- [Emoji, Text & Animations *The text pipeline*](/gloss/07-emoji-text-animations)
-- [Chat Bubbles, Indicators & Drops *Temporary hologram effects*](/gloss/08-bubbles-indicators-drops)
-- [Hologram Menus *Interactive in-world menus*](/gloss/09-menus)
-- [Components & Hitboxes *What a menu is built from*](/gloss/10-components-hitboxes)
-- [Icons *Text, item, image and head icons*](/gloss/11-icons)
-- [Actions *What a click does*](/gloss/12-actions)
-- [Expressions & Placeholders *Dynamic values in documents*](/gloss/13-expressions-placeholders)
-- [Custom Items & Item Providers *Icons sourced from other item plugins*](/gloss/14-custom-items)
-- [Container Previews *Look-at chest and furnace previews*](/gloss/15-container-previews)
-- [Panels *World-anchored menus*](/gloss/16-panels)
-- [Commands & Permissions *The whole command tree*](/gloss/17-commands-permissions)
-- [Web Editor & Sync *The hosted builder and the sync relay*](/gloss/18-web-editor)
-- [Localization *17 downloadable locales and player choices*](/gloss/19-localization)
-- [API: Getting Started *Driving Gloss from another plugin*](/gloss/21-api-getting-started)
+- [Configuration](/gloss/02-configuration)
+- [Data Files & Hot Reload](/gloss/03-data-files)
+- [Commands & Permissions](/gloss/17-commands-permissions)
 {.links-list}

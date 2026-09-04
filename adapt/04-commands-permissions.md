@@ -1,8 +1,8 @@
 ---
 title: "Commands & Permissions"
-description: "Adapt documentation: Commands & Permissions"
+description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-09-03T07:33:50.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

@@ -1,19 +1,14 @@
 ---
 title: "Custom Items & Item Providers"
-description: "Gloss documentation: Custom Items & Item Providers"
+description: "Use items from supported plugins in Gloss menus and panels"
 published: true
-date: 2026-08-24
+date: 2026-09-04T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-A menu or panel icon can draw an item that belongs to another plugin. Examples are an ItemsAdder
-ruby, an MMOItems sword, or a HeadDatabase head. The icon does not need a vanilla `Material`.
-
-Ten adapters resolve a foreign item id into a Bukkit `ItemStack` on the server. Resolution happens
-when the icon is built. The stack is sent to the client as it is. Players see the model, name, lore
-and data components that the host plugin put on it. This page also covers the catalog export that
-feeds the web editor.
+Gloss menus and panels can show items from ten supported item plugins. The resulting icon keeps the
+model, name, lore, and data components supplied by that plugin.
 
 ## The `customItem` icon
 
@@ -31,16 +26,14 @@ are the JSON keys.
 
 | Key | Type | Required | Omitted | Meaning |
 |---|---|---|---|---|
-| `type` | string | yes | — | Literally `customItem` |
+| `type` | string | yes | Not applicable | Literally `customItem` |
 | `provider` | string | no | treated as `auto` | A provider id, trimmed and lowercased before matching, or `auto` to try every active provider in activation order |
-| `item` | string | yes | — | The provider's own id, passed through verbatim with case preserved |
+| `item` | string | yes | Not applicable | The provider's own id, passed through verbatim with case preserved |
 | `count` | int | no | `0`, rendered as `1` | Stack size. The icon applies `count > 0 ? count : 1` |
 | `style` | object | no | icon defaults | The shared display-style block every icon type accepts |
 
-Gloss never parses, splits or case-folds `item`. Splitting on `:` is provider behavior (MMOItems
-`TYPE:ID`, EcoItems namespacing), not registry behavior. `namespace:id` means whatever the named
-provider means by it. Whether `MY_ITEM` and `my_item` are the same id is decided by the plugin that
-owns the id, not by Gloss.
+Gloss passes `item` to the provider with its case preserved. The provider decides how namespaces and
+letter case work.
 
 `item` is the same key the vanilla `item` icon uses. The two icon types read alike.
 
@@ -82,7 +75,7 @@ Every adapter clones each stack it successfully resolves.
 | `mythicmobs` | MythicMobs | bare item config name, no namespace | item manager present | no |
 | `headdatabase` | HeadDatabase | numeric head id string, for example `7129` | always ready, but see below | no |
 
-Per-provider behavior worth knowing:
+Provider-specific behavior:
 
 | Provider | Behavior |
 |---|---|
@@ -116,10 +109,8 @@ Other plugins cannot add providers at runtime.
 | `customItems` | `true` | Master switch. False blocks provider activation, makes every lookup resolve to nothing, and refuses both `/gloss item` subcommands |
 | `customItemProviders` | `[]` | Allowlist. An empty list allows every provider |
 
-Allowlist entries are trimmed, lowercased and de-duplicated when the config is normalized. The
-normalized list is written back to disk. Each entry is matched against **either** the provider id
-**or** the plugin name. `ItemsAdder` and `itemsadder` are equally valid. Both land in the file as
-`itemsadder`.
+Allowlist entries can use either the provider id or plugin name. Gloss trims, lowercases, removes
+duplicates, and writes the normalized list back to the file.
 
 Changing either key rebuilds the provider list in place. No restart is needed. Config reload rules
 are on [Configuration](/gloss/02-configuration).
@@ -128,7 +119,7 @@ are on [Configuration](/gloss/02-configuration).
 
 | Command | Permission | Behavior |
 |---|---|---|
-| `/gloss item status` | `gloss.items` | One row per definition — always ten rows, in declaration order — showing provider id and state |
+| `/gloss item status` | `gloss.items` | One row per definition, always ten rows in declaration order, showing provider id and state |
 | `/gloss item export` | `gloss.items.export` | Writes the catalog. Refuses while an export is already running |
 
 `items` is an alias of `item`. `/gloss items status` works too. Both subcommands abort with
@@ -140,23 +131,21 @@ false.
 | State | Meaning |
 |---|---|
 | `not installed` | The plugin is absent, or present but not enabled |
-| `present, no adapter` | The plugin is enabled but no adapter is registered — excluded by the allowlist, or activation threw |
+| `present, no adapter` | The plugin is enabled but no adapter is registered because the allowlist excluded it or activation failed |
 | `present, still loading` | An adapter is registered but the host registry is not ready yet |
-| `ready, <n> ids` | Active and ready.`<n>` is what the provider enumerates right now |
+| `ready, <n> ids` | Active and ready. `<n>` is what the provider enumerates right now |
 
 When the sender also has `gloss.items.export`, the status output includes `/gloss item export`.
 
 ## The custom item catalog
 
-`/gloss item export` writes `plugins/Gloss/custom-items.json`. Its consumer is the web editor. The
-editor has no connection to your server. You must hand it the file: open **Settings**, choose
-**Import custom item catalog** and pick the file. Without a catalog the editor's custom item field
-degrades to free text.
+`/gloss item export` writes `plugins/Gloss/custom-items.json`. In the web editor, open **Settings**,
+choose **Import custom item catalog**, and select that file. Without a catalog, the custom-item field
+accepts free text.
 
-The editor cannot verify ids offline. With a catalog loaded it can autocomplete and tell you an id
-is not in it. Without one it accepts anything typed. Either way the id is only really checked by the
-server when the menu opens. An unknown id is a console warning and a checkered icon. It is never a
-broken menu. See [Web Editor & Sync](/gloss/18-web-editor).
+The catalog adds autocomplete and offline checks, but the server performs the final lookup when a
+menu opens. Unknown ids log a warning and show the missing-icon checker without breaking the menu.
+See [Web Editor & Sync](/gloss/18-web-editor).
 
 ### Shape
 
@@ -179,7 +168,7 @@ broken menu. See [Web Editor & Sync](/gloss/18-web-editor).
 | `items[].provider` | The provider id |
 | `items[].id` | The provider's own id, trimmed, case preserved |
 | `items[].name` | The provider's display name with legacy section color codes stripped and trimmed, falling back to the id when it is null, blank or throws |
-| `items[].material` | The resolved stack's vanilla key path only — lowercase, `minecraft:` stripped — so the editor can draw an approximate sprite |
+| `items[].material` | The resolved stack's lowercase vanilla key path without `minecraft:`, used for an approximate editor sprite |
 
 The catalog includes up to 10,000 ready items per provider. Unresolved items are omitted, but they can still work in menus when entered manually. Only one export runs at a time. An export with no items still writes an empty catalog.
 
@@ -189,6 +178,5 @@ The catalog includes up to 10,000 ready items per provider. Unresolved items are
 
 ## Container previews
 
-Item providers take no part in container-preview authorization. The permission, lock, double-chest,
-WorldGuard and access-event sequence is documented once on
-[Container Previews](/gloss/15-container-previews).
+Item providers do not affect container-preview access. See
+[Container Previews](/gloss/15-container-previews) for its permissions and protection checks.
