@@ -10,6 +10,16 @@ dateCreated: 2026-08-21T00:31:42.920Z
 
 React measures where server time goes. It then gives operators tools to act on those measurements. Monitoring comes first. Optimization comes second.
 
+<section class="volmit-headliner" aria-labelledby="react-web-headline">
+  <p class="volmit-headliner__kicker">React / Web control plane</p>
+  <h2 id="react-web-headline">Monitor and operate every React server in one place.</h2>
+  <p>Inspect telemetry, maps, incidents, actions, and console access from the local-first React Web control plane.</p>
+  <nav class="volmit-headliner__actions" aria-label="React Web">
+    <a href="https://react.volmitsoftware.com/">Open React Web</a>
+    <a href="/react/01-installation-configuration#react-web">Read the connection guide</a>
+  </nav>
+</section>
+
 | | |
 |---|---|
 | Command | `/react` (`re`) |
