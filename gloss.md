@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-04T09:19:16.341Z
+date: 2026-09-04T09:19:20.494Z
 tags: gloss
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
