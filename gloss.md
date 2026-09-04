@@ -1,14 +1,24 @@
 ---
-title: "Gloss"
-description: "Set up Gloss displays, menus, chat effects, scoreboards, and server text"
+title: Gloss
+description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-04T00:00:00.000Z
-tags: "gloss"
+date: 2026-09-04T09:13:48.920Z
+tags: gloss
 editor: markdown
-dateCreated: 2026-08-18T00:00:00.000Z
+dateCreated: 2026-08-21T00:31:30.433Z
 ---
 
 Gloss manages holograms, menus, panels, container previews, scoreboards, tablist text, chat effects, item displays, and the server-list MOTD.
+
+<section class="volmit-headliner" aria-labelledby="gloss-editor-headline">
+  <p class="volmit-headliner__kicker">Gloss / Web editor</p>
+  <h2 id="gloss-editor-headline">Build and preview Gloss layouts in the browser.</h2>
+  <p>Edit menus, panels, holograms, scoreboards, and other Gloss documents with forms, JSON tools, and visual previews.</p>
+  <nav class="volmit-headliner__actions" aria-label="Gloss web editor">
+    <a href="https://gloss.volmitsoftware.com/">Open Gloss Editor</a>
+    <a href="/gloss/18-web-editor">Read the editor guide</a>
+  </nav>
+</section>
 
 ## At a glance
 
