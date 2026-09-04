@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -238,9 +238,9 @@ The backup is only eligible for deletion after `WorldLoad` proves the replacemen
 
 ### Safe entry after an Overworld replacement
 
-Replacing `minecraft:overworld` also replaces the terrain underneath saved player positions and the old world spawn. Before Iris retires that replacement's entry guard, it generates the new initial-spawn chunk. It searches only inside that Folia-owned chunk for a dry collision-supporting floor with two collision-free, fluid-free body blocks. It applies the result as the canonical world spawn and saves the world. Water, waterlogged blocks, leaves, powder snow, magma, cactus, and fire are not accepted as the floor or body space. Portals, cobwebs, pointed dripstone, berry bushes, and wither roses are also refused. Other explicit collision hazards are also refused. If no candidate can be verified, Iris keeps the guard active and refuses guarded login instead of guessing an unsafe position.
+Replacing `minecraft:overworld` also replaces the terrain underneath saved player positions and the old world spawn. Before Iris retires that replacement's entry guard, it generates the new initial-spawn chunk at urgent priority. It searches only inside that Folia-owned chunk for a dry collision-supporting floor with two collision-free, fluid-free body blocks. It applies the result as the canonical world spawn and makes that verified position available for login. The next normal world save confirms persistence before guard retirement; Iris does not force a whole-world save. Water, waterlogged blocks, leaves, powder snow, magma, cactus, and fire are not accepted as the floor or body space. Portals, cobwebs, pointed dripstone, berry bushes, and wither roses are also refused. Other explicit collision hazards are also refused. If no candidate can be verified, Iris keeps the guard active and refuses guarded login instead of guessing an unsafe position.
 
-The staged replacement records every player whose current data file exists in the selected save. On that player's first post-replacement login, Iris leaves a saved Overworld location alone when both body blocks are still passable. Otherwise the Paper pre-login spawn event redirects the player to the persisted safe spawn while preserving yaw and pitch. After the join succeeds, Iris saves the redirected player data and atomically removes that player's durable receipt. The marker retires only after every recorded player has either entered safely or logged in from another dimension. A crash or restart cannot turn the one-time rescue into an untracked partial operation. New players also use the verified replacement spawn while the guard is active.
+The staged replacement records every player whose current data file exists in the selected save. On that player's first post-replacement login, Iris leaves a saved Overworld location alone when its replacement chunk already exists and both body blocks are still passable. Iris never generates a missing chunk only to preserve an old coordinate. A missing, slow, failed, or obstructed saved-location check instead redirects the player to the verified safe spawn while preserving yaw and pitch. Cold safe-spawn generation may use the same ten-minute allowance as production-world initial spawn generation, while persistence waits for the normal autosave without holding the login open. After the join succeeds, Iris saves the redirected player data and atomically removes that player's durable receipt. The marker retires only after the world spawn is persisted and every recorded player has either entered safely or logged in from another dimension. A crash or restart cannot turn the one-time rescue into an untracked partial operation. New players also use the verified replacement spawn while the guard is active.
 
 ## Studio create
 

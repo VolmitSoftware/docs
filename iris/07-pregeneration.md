@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-04T03:50:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -119,7 +119,7 @@ The command root is `/iris pregen` with alias `/iris pregenerate`.
 
 ## Area model
 
-`PregenTask` validates every block edge at `center ± radius` against Minecraft's safe ±29,999,984 limit before any runtime mutation. It converts the accepted bounds to chunk and region ranges. It then iterates regions in a spiral from the center, ordering chunks within each region toward the center too. That ordering is why the area around your center becomes playable first.
+`PregenTask` validates every block edge at `center ± radius` against Minecraft's safe ±29,999,984 limit before any runtime mutation. It converts the accepted bounds to chunk and region ranges, then iterates regions in a spiral from the center. The region containing the center uses a contiguous chunk spiral so nearby playable terrain completes first. Later regions use four-chunk-spaced lattices to reduce overlapping mantle work while preserving center-directed order inside each lattice.
 
 Bounds are inclusive on both edges. The minimum block floors to a chunk, the maximum ceils. For radius 352 at `0,0` that gives chunks `-22..22` on each axis: 45 per axis, 2,025 total.
 
@@ -192,7 +192,7 @@ Full settings reference: [03 - Configuration](/iris/03-configuration). Tuning gu
 | Action | What happens |
 |---|---|
 | Pause | `PregeneratorJob.pauseResume()` flips the flag. The generator loop spins while paused, and also while heap high-water is engaged |
-| Stop | `shutdownInstance()` closes the pregenerator and interrupts the worker asynchronously, so the command returns before the job is fully closed |
+| Stop | `shutdownInstance()` requests cancellation asynchronously. Active chunk work settles first, then Iris flushes tracked chunk I/O, reclaims and saves mantle plates, closes protocol state, and releases the singleton job. The worker interrupt is consumed as a cancellation signal rather than reported as a failure |
 | Status | `progressSnapshot()` returns percent, generated, total chunks, remaining chunks, rates, ETA, elapsed time, method name, paused flag, failed count, world name, and world identity. Rates include overall plus 10-, 30-, and 60-second chunk rates |
 
 Failed chunks are counted separately from generated ones and only appear in the status line when the count is above zero. A run can reach 100% with failures. Check the failed count, not just the percentage.
@@ -213,7 +213,11 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 
 ## Performance profile
 
-Starting pregeneration temporarily applies Iris's pregen performance settings. Normal settings return when the job ends.
+Starting pregeneration temporarily applies Iris's pregen performance settings on the pregenerator worker. Existing compatible natural-height and final-height caches are resized in place, avoiding a full engine rebuild before generation begins. Normal settings return when the job ends.
+
+On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. It does not enqueue every hydrology tile in the requested area at startup. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+
+Stopping or completing a job unloads its tracked chunks with saving enabled and waits for the resulting chunk I/O flush. Iris does not issue a plugin-induced whole-world save, so servers with automatic saving enabled do not emit the manual-save performance warning during normal pregen cleanup.
 
 ## Operator notes
 

@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-03T18:00:00.000Z
+date: 2026-09-04T03:50:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,6 +37,8 @@ once, and keeping all three. Do this instead:
    mismatch, no new failures, no unacceptable heap growth, and no worse
    tick latency.
 6. Restore the old value before testing the next knob.
+
+For sustained-rate acceptance, discard the startup and hydrology-planning warmup, then average consecutive 10-second samples. Keep startup-to-ready latency as a separate measurement; averaging the two describes neither behavior accurately.
 
 Reach for JProfiler when the numbers move without an obvious cause:
 stalls, allocation pressure, or scheduler behavior. A faster
@@ -107,7 +109,7 @@ command line there if you want it covering ordinary generation too.
 
 ### Hydrology-heavy packs
 
-A pregeneration plans every hydrology tile of its area up front, nearest the centre first, on a planning pool of about a third of the cores, and keeps the ring of tiles around the generation front planned as it moves, so chunk generation rarely waits on a cold plan. Height bounds at grid corners are shared between threads and from planning into generation, which is what makes the up-front planning cheap enough to run alongside generation.
+A pregeneration requests a bounded one-tile lookahead around its centre, nearest first, then keeps the ring around the generation front planned as it moves. It does not flood the planner with the whole requested area at startup. The center region uses a contiguous spiral so the first playable chunks complete promptly; later regions use four-chunk-spaced lattices to reduce overlapping mantle work. Height bounds at grid corners are shared between threads and from planning into generation.
 
 Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Tune one field at a time over the same seed and cold frontier, then compare the Java 25 generation probe and a warm repeat. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
 
@@ -220,8 +222,9 @@ the planning.
 
 Iris starts planning every tile within half a tile of the initial spawn as
 soon as the generator is injected into a new world, so the tiles a cold
-entry touches plan together and the wait overlaps world setup, and a
-pregeneration plans its whole area ahead of the spiral. The chunk system
+entry touches plan together and the wait overlaps world setup. Pregeneration
+adds a bounded one-tile lookahead around its center, then advances that
+lookahead with the generation front instead of planning the whole area. The chunk system
 generates a few hundred blocks around the player and each chunk's mantle
 window reaches further, so a spawn touches its neighbouring tiles no matter
 where on a tile it sits; the cold entry is bounded by the deepest chain of
@@ -279,6 +282,15 @@ wall-clock interval rather than adding them.
 Iris never changes a player's view distance, and never changes a world's view
 or simulation distance. Those settings belong to the server and to the player's
 own client; entry works within whatever they are.
+
+Standard Studio stores successfully completed entry and initial-pregeneration
+hydrology tiles under `packs/<key>/.iris/studio-hydrology/<identity>/`. The
+identity covers the visible pack snapshot, validation context, dimension, seed,
+height, and hydrology settings. A process-cold reopen of the unchanged identity
+loads those final tiles and their resolved owner state instead of repeating the
+cross-tile plan. A changed pack or seed is cold again, and the first successful
+plan for that identity must finish before there is anything to reuse.
+
 Capture JProfiler around any slow pack
 preparation, runtime construction, structure activation, destination-chunk
 generation, or scheduler queue. Do not accelerate entry by changing its

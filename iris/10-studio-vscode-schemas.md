@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-03T18:00:00.000Z
+date: 2026-09-04T03:50:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -77,7 +77,7 @@ Studio settings live in `iris.json` under `studio` (`IrisSettings.IrisSettingsSt
 | `openVSCode` | `true` | When true and the JVM is not headless, `open`/`vscode` may launch the desktop opener on the pack's `*.code-workspace`. Set false on servers where a desktop launch would be pointless or unwanted |
 | `entitySpawning` | `true` | Only affects Studio worlds. False stops Iris ambient entity spawning there. Production worlds always spawn regardless of this key |
 | `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds. Set false to let them run while authoring. Night and storm Iris spawners do not fire here until this is false or you test in a production world |
-| `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot |
+| `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot. This can warm the exact Standard Studio hydrology tiles reused by a later open of the unchanged pack and seed, including after a server restart |
 
 ## Hotload rules
 
@@ -186,6 +186,8 @@ A new or changed required registry entry invalidates reuse. So does an unavailab
 Compiler-input discovery resolves the canonical Iris authoring-pack and world-snapshot roots directly. It never searches saved region, entity, POI, or other chunk-storage trees for a nested `iris/pack`. Verification time scales with pack inputs rather than generated world size.
 
 Ordinary Studio completes runtime construction, then starts the canonical generation-cache warm as lifecycle-tracked asynchronous work while native structure-ring activation proceeds. Runtime worlds perform the same warm synchronously. Studio `generate` and `generateMatter`, Bukkit Studio hotload, and coordinator entry teleport cannot proceed until the warm completes, so the overlap changes readiness latency but not generated output. A console-issued `STANDARD` open does not request or load the landing chunk. A real player open and a later `tpstudio` delegate the fixed anchor and let Paper's normal FULL pipeline generate the destination on demand. Studio does not replace the center with a lobby, plate, precomputed entry area, simplified biome field, lower chunk status, or reduced generation pipeline. The entry and all of Minecraft's required dependencies use the same terrain, mantle, accepted hydrology, structures, carvers, decoration, heightmaps, and visible biomes as production generation. Studio may launch the pack workspace and preserves native structures for generation previews after bootstrap. On Paper 26.2, WorldInit publishes the filtered native-structure placement state once but leaves it uninitialized while native starts, locates, and object-collision volume queries are gated. Injection verifies that Paper's canonical chunk-generator getter owns the new Iris generator before native structure state is published.
+
+Standard Studio keeps a small, ten-minute in-process cache of successfully completed hydrology tiles and a bounded persistent cache for the entry and initial-pregeneration neighborhood. Persistent entries live under `packs/<key>/.iris/studio-hydrology/<identity>/` as atomically replaced compressed files. Reuse requires the same complete authoring-pack snapshot, validation context, dimension key, seed, world height, hydrology settings, and tile coordinate. A loaded final tile also restores the planner's resolved owner state so the adjacent tile does not repeat the same cross-tile dependency work. Iris fingerprints the full visible packs directory before and after runtime construction; a concurrent edit disables reuse, old identities are ignored, invalid files are replanned, failed or interrupted plans are never shared, and closing or invalidating a runtime cannot publish late work. The first cold plan for a new identity still pays the planning cost before it can populate this cache. Object and Jigsaw Studio do not use it.
 
 Opening Studio prepares the authoring world before moving the player. If preparation fails or times out, Iris closes the temporary world and reports the reason.
 

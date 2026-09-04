@@ -123,12 +123,12 @@ The loop passes when the source closure validates. Both package commands automat
 | `pack` | mutually exclusive with `link` | Accepts exactly `overworld` or `underworld`. Values are case-insensitive |
 | `link` | mutually exclusive with `pack` | Direct HTTP(S) URL whose path ends in `.zip` |
 
-`overworld` and `underworld` are built-in packs whose immutable stable-release URLs are embedded in Iris. Updating a release on GitHub does not change an existing Iris jar; the jar must be rebuilt with the new versioned URL.
+`overworld` and `underworld` are built-in packs whose embedded URLs follow each repository's latest GitHub release asset. A fresh install therefore receives the newest stable V+ release available when the command runs without requiring a new Iris jar. An existing pack directory is never overwritten by this command; preserve or remove it yourself before intentionally installing another release.
 
 | Pack | Source |
 |------|--------|
-| `overworld` | `https://github.com/IrisDimensions/overworld/releases/download/4002/overworld.zip` |
-| `underworld` | `https://github.com/IrisDimensions/underworld/releases/download/1005/underworld.zip` |
+| `overworld` | `https://github.com/IrisDimensions/overworld/releases/latest/download/overworld.zip` |
+| `underworld` | `https://github.com/IrisDimensions/underworld/releases/latest/download/underworld.zip` |
 
 There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
 

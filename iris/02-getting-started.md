@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ Work through the sections in order. Confirm each one before you move on. Confirm
 - A Java 25 server or mod instance running
 - Operator access on Bukkit (the `iris.all` permission), or permission level 2 / gamemaster on modded for anything that mutates state
 - The managed `overworld` and `underworld` packs present, or your own pack installed under the platform's packs directory
-- Any external datapacks declared by a custom pack installed through the platform-specific workflow. The built-in Overworld 4002 and Underworld 1005 declare none
+- Any external datapacks declared by a custom pack installed through the platform-specific workflow. The current built-in Overworld and Underworld releases declare none
 
 ## The one syntax rule that trips everyone up
 

@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-03T20:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -960,7 +960,9 @@ Both managed packs also carry the independent `deep_lava` entry from the complet
 
 ## Performance and determinism
 
-Cold accepted-plan work is controlled by `tileSize`, `sampleSpacing`, `maximumRouteLength`, both source budgets and spacing floors, complete-course floors, and the maximum channel, blend, basin, and grotto envelope. Smaller spacings, longer routes, more sources, and wider blend or containment envelopes increase planner and footprint work. `banks.maximumBlendWidth` bounds how far a course can affect terrain from its centerline, which in turn bounds the cross-tile publication radius. A warm column query reuses an immutable cached tile; the runtime retains at most 64 tiles.
+Cold accepted-plan work is controlled by `tileSize`, `sampleSpacing`, `maximumRouteLength`, both source budgets and spacing floors, complete-course floors, and the maximum channel, blend, basin, and grotto envelope. Smaller spacings, longer routes, more sources, and wider blend or containment envelopes increase planner and footprint work. `banks.maximumBlendWidth` bounds how far a course can affect terrain from its centerline, which in turn bounds the cross-tile publication radius. Planning uses a dedicated pool sized to the available processors. Pregeneration submits only the nearest half-cache window and keeps planning ahead as generation advances, avoiding whole-area speculative work that would evict the tiles needed first. A warm column query reuses an immutable cached tile; the runtime retains at most 64 tiles.
+
+Standard Studio may reuse up to eight recently completed tiles across exact-equivalent transient worlds in the same server process. Pack bytes and validation context, seed, dimension, height, settings, and tile identity all participate in the cache key. This is a latency optimization only: failed plans and work completed after close or invalidation are not shared, and pack changes disable reuse.
 
 Hydrology output is a deterministic function of pack bytes, world seed, and coordinates. The coarse graph, source quotas, outlet choice, refined centerlines, heads, segment labels, profile/content selection, and compiled footprint use stable identities and ordering. Tile, chunk, platform, and worker order must not change the accepted result. Use GoldenHash plus fresh-world feature inspection to verify that contract.
 

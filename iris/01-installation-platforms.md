@@ -107,7 +107,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Installing the first pack
 
-Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to version-pinned GitHub stable-release ZIPs: Overworld 4002 and Underworld 1005. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. The current built-in pair has no external datapack imports, so that one registry-loading restart is sufficient before ordinary world creation.
+Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve through GitHub's latest-release asset URLs, so a fresh install receives the newest stable Overworld or Underworld release available when the command runs. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. The current built-in pair has no external datapack imports, so that one registry-loading restart is sufficient before ordinary world creation.
 
 Before you create a world you care about, run the Bukkit fresh-install runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks).
 
@@ -180,7 +180,7 @@ Paths are relative to the game instance's `config/` directory.
 | `config/irisworldgen/generated/datapack/iris/` | The generated forced datapack (datapack id `iris_worldgen`), plus a hash sidecar used to detect staleness. Iris owns this. Do not edit it |
 | `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override |
 | `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
-| `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The built-in Overworld 4002 and Underworld 1005 need none |
+| `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The current built-in Overworld and Underworld releases need none |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.
 

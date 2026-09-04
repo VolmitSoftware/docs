@@ -320,6 +320,8 @@ A placement using `ObjectPlaceMode.CEILING_HANG` is forced to the `CEILING` anch
 
 Snippet key: `dimension-carving-entry`. These override the cave biome inside an absolute world-Y band, independent of what the surface biome above is. Every enabled entry whose biome has an enabled `caveProfile` adds that profile as an extra carving pass. The pass is restricted to the band. It sits on top of the two-blended-profile budget.
 
+If the version-content gate excludes a cave biome on the running Minecraft version, Iris removes that biome from dimension carving selection and from the reachable-biome closure. Its derivative is not registered for native structure eligibility, and the rest of the cave pools continue without it.
+
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `id` | string | `""` | Stable identifier. Other entries reference it through `children`, and floating child biomes can reference it by id |

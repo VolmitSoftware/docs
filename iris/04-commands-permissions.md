@@ -163,7 +163,7 @@ Use the Bukkit command names shown below.
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `debug` | | Both | — | Toggle `general.debug` and save settings |
 | `debugdump` | | **Bukkit-only** | `[upload=true]` | Save a diagnostic report, uploading by default |
-| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install a version-pinned built-in stable-release pack or direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
+| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install the latest stable built-in pack release or a direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics. Player origin on Bukkit |
 | `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
