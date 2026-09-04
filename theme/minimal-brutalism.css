@@ -147,20 +147,20 @@
 }
 
 .v-application.volmit-light-mode {
-  --volmit-ink: #18181b;
-  --volmit-paper: #fafafa;
-  --volmit-surface: #f4f4f5;
-  --volmit-surface-raised: #e4e4e7;
-  --volmit-line: #d4d4d8;
-  --volmit-line-strong: #71717a;
-  --volmit-muted: #52525b;
+  --volmit-ink: #151516;
+  --volmit-paper: #e9e9e6;
+  --volmit-surface: #f5f5f2;
+  --volmit-surface-raised: #ffffff;
+  --volmit-line: #c4c4be;
+  --volmit-line-strong: #686864;
+  --volmit-muted: #4a4a47;
   background: var(--volmit-paper) !important;
   color: var(--volmit-ink) !important;
 }
 
 body:has(.volmit-light-mode),
 #root:has(.volmit-light-mode) {
-  background: #fafafa;
+  background: #e9e9e6;
 }
 
 .theme--dark.v-application .v-application--wrap,
@@ -170,7 +170,7 @@ body:has(.volmit-light-mode),
 
 .v-application.volmit-light-mode .v-application--wrap,
 .v-application.volmit-light-mode .v-main__wrap {
-  background-color: #fafafa !important;
+  background-color: #e9e9e6 !important;
 }
 
 #root .theme--dark.v-application .v-main .container.grey.darken-4-l3 {
@@ -179,8 +179,8 @@ body:has(.volmit-light-mode),
 }
 
 #root .v-application.volmit-light-mode .v-main .container.grey.darken-4-l3 {
-  background-color: #fafafa !important;
-  border-color: #fafafa !important;
+  background-color: #e9e9e6 !important;
+  border-color: #e9e9e6 !important;
 }
 
 .v-application:has(.breadcrumbs-nav a[href="/adapt"]) {
@@ -225,6 +225,55 @@ body:has(.volmit-light-mode),
 
 .v-application:has(.contents img[src="/home-assets/volmit.png"]) {
   --volmit-accent: #d8d8d2;
+}
+
+.v-application.volmit-light-mode {
+  --volmit-accent: #a51f2b;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/adapt"]) {
+  --volmit-accent: #a51f2b;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/iris"]) {
+  --volmit-accent: #006985;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/react"]) {
+  --volmit-accent: #2748ac;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/wormholes"]) {
+  --volmit-accent: #745000;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/gloss"]) {
+  --volmit-accent: #6f3ac1;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/foundation"]) {
+  --volmit-accent: #a51f2b;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/hiddenore"]) {
+  --volmit-accent: #4d5861;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/shapedportals"]) {
+  --volmit-accent: #86239f;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/rift"]) {
+  --volmit-accent: #7131ad;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/biletools"]) {
+  --volmit-accent: #08783c;
+}
+
+.v-application.volmit-light-mode:has(.breadcrumbs-nav a[href="/volmlib"]),
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) {
+  --volmit-accent: #4b4b47;
 }
 
 body,
@@ -1985,6 +2034,186 @@ body,
     height: 2px;
   }
 
+}
+
+.v-application.volmit-light-mode .nav-header,
+.v-application.volmit-light-mode .nav-header .v-toolbar__content,
+.v-application.volmit-light-mode .nav-header .v-toolbar__extension {
+  background: var(--volmit-surface) !important;
+}
+
+.v-application.volmit-light-mode .nav-header {
+  border-bottom-color: var(--volmit-line-strong) !important;
+}
+
+.v-application.volmit-light-mode .nav-header .org-logo {
+  filter: brightness(0);
+}
+
+.v-application.volmit-light-mode .nav-header .v-btn,
+.v-application.volmit-light-mode .nav-header .v-icon {
+  color: var(--volmit-muted) !important;
+}
+
+.v-application.volmit-light-mode .nav-header .v-text-field .v-input__slot {
+  background: var(--volmit-surface-raised) !important;
+}
+
+.v-application.volmit-light-mode .nav-header .v-btn:hover,
+.v-application.volmit-light-mode .nav-header .v-btn:focus-visible,
+.v-application.volmit-light-mode .nav-header .volmit-theme-toggle:hover,
+.v-application.volmit-light-mode .nav-header .volmit-theme-toggle:focus-visible {
+  background: #deded9 !important;
+}
+
+.v-application.volmit-light-mode .search-results {
+  background: color-mix(in srgb, var(--volmit-paper) 92%, transparent) !important;
+}
+
+.v-application.volmit-light-mode .search-results-container,
+.v-application.volmit-light-mode .search-results-items {
+  background: var(--volmit-surface-raised) !important;
+}
+
+.v-application.volmit-light-mode .v-main > .v-toolbar,
+.v-application.volmit-light-mode .page-header-section {
+  background: var(--volmit-surface) !important;
+}
+
+.v-application.volmit-light-mode .page-header-headings .headline.grey--text {
+  color: var(--volmit-ink) !important;
+}
+
+.v-application.volmit-light-mode .page-header-headings .caption.grey--text,
+.v-application.volmit-light-mode .breadcrumbs-nav .v-btn {
+  color: var(--volmit-muted) !important;
+}
+
+.v-application.volmit-light-mode .volmit-project-sidebar {
+  background: var(--volmit-paper);
+}
+
+.v-application.volmit-light-mode .volmit-project-sidebar__masthead,
+.v-application.volmit-light-mode .page-toc-card .overline {
+  background: #deded9 !important;
+}
+
+.v-application.volmit-light-mode .page-toc-card {
+  background: var(--volmit-surface) !important;
+}
+
+.v-application.volmit-light-mode .page-toc-card .v-list {
+  background: var(--volmit-surface) !important;
+}
+
+.v-application.volmit-light-mode .page-toc-card .overline.grey--text {
+  color: var(--volmit-ink) !important;
+}
+
+.v-application.volmit-light-mode .page-toc-card .overline * {
+  color: inherit !important;
+}
+
+.v-application.volmit-light-mode .volmit-project-sidebar__link.is-active {
+  color: var(--volmit-ink) !important;
+}
+
+.v-application.volmit-light-mode .v-main .contents code:not([class*="language-"]) {
+  background: #deded9 !important;
+}
+
+.v-application.volmit-light-mode .v-main .contents table {
+  background: var(--volmit-surface);
+}
+
+.v-application.volmit-light-mode .v-main .contents th {
+  background: #deded9;
+}
+
+.v-application.volmit-light-mode .v-main .contents tbody tr:nth-child(even) {
+  background: #eeeeea;
+}
+
+.v-application.volmit-light-mode .v-main .contents blockquote,
+.v-application.volmit-light-mode .v-main .contents .volmit-headliner,
+.v-application.volmit-light-mode .v-main .contents .sp-types article,
+.v-application.volmit-light-mode .v-main .contents .sp-guides a,
+.v-application.volmit-light-mode .comments-container {
+  background: var(--volmit-surface) !important;
+}
+
+.v-application.volmit-light-mode .comments-container .comments-header {
+  background: #deded9 !important;
+}
+
+.v-application.volmit-light-mode .comments-container .comments-main {
+  background: var(--volmit-surface-raised) !important;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/iris"]) {
+  --volmit-card-accent: #006985;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/adapt"]),
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/foundation"]) {
+  --volmit-card-accent: #a51f2b;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/react"]) {
+  --volmit-card-accent: #2748ac;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/wormholes"]) {
+  --volmit-card-accent: #745000;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/gloss"]) {
+  --volmit-card-accent: #6f3ac1;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/hiddenore"]) {
+  --volmit-card-accent: #4d5861;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/shapedportals"]) {
+  --volmit-card-accent: #86239f;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/rift"]) {
+  --volmit-card-accent: #7131ad;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/biletools"]) {
+  --volmit-card-accent: #08783c;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/volmlib"]) {
+  --volmit-card-accent: #30302e;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img),
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(.project-mark) {
+  border-color: var(--volmit-card-accent, var(--volmit-line-strong)) !important;
+  background: var(--volmit-surface) !important;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li .title {
+  color: var(--volmit-ink) !important;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li .text--secondary {
+  color: var(--volmit-muted) !important;
+  caret-color: var(--volmit-muted) !important;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:hover,
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:focus-within {
+  background: color-mix(in srgb, var(--volmit-card-accent, var(--volmit-accent)) 7%, var(--volmit-surface-raised)) !important;
+}
+
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .project-mark,
+.v-application.volmit-light-mode:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li img {
+  background: var(--volmit-surface-raised);
 }
 
 @media (prefers-reduced-motion: reduce) {
