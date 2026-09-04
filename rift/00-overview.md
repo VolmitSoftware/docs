@@ -2,7 +2,7 @@
 title: "Rift — Overview"
 description: "World states, lifecycle behavior, and the Rift safety model"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "rift, world-management, lifecycle, safety"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -19,21 +19,21 @@ Rift creates, imports, loads, unloads, protects, and safely removes worlds.
 | On disk | A valid world exists but may not be loaded or managed |
 | Quarantined | Rift moved it to `.rift-trash` and can restore it |
 
-Use `/rift list` for every known world and `/rift info <name>` for one world's status, generator, seed, auto-load, and protection settings.
+Use the paged Director menu at `/rift list [page]` for every known world and `/rift info <name>` for one world's status, generator, seed, auto-load, and protection settings. `/rift status` uses the same Director framing for server, Java, platform, locale, storage, and world-count health.
 
 ## Managed worlds
 
-<<<<<<< Updated upstream
 `/rift create` makes a managed world. `/rift import` adds a profile to an existing world. `/rift load` can open a world without making it managed.
-=======
-`/rift debug` creates a timestamped support report under `plugins/Rift/debug/`. It expands the local doctor view with service health, scheduler and hot-reload state, active locale file and remote-language catalog state, detailed per-world storage checks, plugin metadata, the active configuration, managed-file hashes, JVM and JIT data, CPU, memory pools, threads and locks, garbage collectors, filesystems, and Rift artifact identity. Public mclo.gs publishing is enabled by default; set `debugUploadEnabled` to `false` for local-only reports.
->>>>>>> Stashed changes
 
 The built-in `void` generator creates an empty world with a small bedrock spawn platform.
 
+`/rift language` provides separate personal and server-default locale controls plus the shared in-game message editor. Personal choices persist by UUID under `plugins/Rift/languages/`, and Rift participates in `/volmit plugins languages` alongside the other enabled Volmit language providers.
+
+During startup, Rift stops managing an unloaded, unprotected world when both supported storage locations are conclusively absent. Its profile is moved to `plugins/Rift/worlds/retired/` instead of deleted. Loaded or protected worlds remain managed, and existing but incomplete, inaccessible, conflicting, or unsafe storage is preserved for operator review with the full failure logged.
+
 ## Diagnostics
 
-`/rift debug` creates a timestamped support report under `plugins/Rift/debug/`. It expands the local doctor view with service health, scheduler and hot-reload state, active locale file and remote-language catalog state, detailed per-world storage checks, plugin metadata, the active configuration, managed-file hashes, JVM and JIT data, CPU, memory pools, threads and locks, garbage collectors, filesystems, and Rift artifact identity. Public mclo.gs publishing is enabled by default; set `debugUploadEnabled` to `false` for local-only reports.
+`/rift debug dump` creates a timestamped support report under `plugins/Rift/debug/`; `/rift debug` opens its help page. The report combines VolmLib's shared server diagnostics with Rift service health, scheduler and hot-reload state, locale and remote-catalog state, detailed per-world storage checks, configuration, managed-file hashes, JVM and JIT data, bounded memory totals, CPU, garbage collectors, filesystems, and artifact identity. Per-thread state, locks, and stack traces are excluded. Rift also registers with `/volmit plugins debug`. Public mclo.gs publishing is enabled by default; set `debugUploadEnabled` to `false` globally or pass `upload=false` for one local-only report.
 
 ## Safe removal
 

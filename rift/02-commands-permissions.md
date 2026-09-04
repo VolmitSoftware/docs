@@ -2,7 +2,7 @@
 title: "Rift — Commands & Permissions"
 description: "Rift command syntax, help behavior, aliases, and granular permission nodes"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -25,17 +25,23 @@ Arguments in brackets have defaults.
 | `/rift restore <id>` | `rift.restore` | Restore a quarantined directory and managed profile |
 | `/rift tp <world>` | `rift.teleport` | Teleport the executing player to world spawn |
 | `/rift send <player> <world>` | `rift.teleport.others` | Teleport another online player to world spawn |
-| `/rift list` | `rift.list` | List loaded, managed, discovered, and quarantined worlds |
+| `/rift list [page]` | `rift.list` | Browse loaded, managed, discovered, and quarantined worlds in a paged Director menu |
 | `/rift info <name>` | `rift.info` | Show detailed state for one world |
-| `/rift generators` | `rift.generators` | Show Bukkit world types and configured generator identifiers |
+| `/rift generators [page]` | `rift.generators` | Browse Bukkit world types and configured generator identifiers in a paged Director menu |
 | `/rift config` | `rift.config` | Open the in-game configuration editor |
-| `/rift language <locale>` | `rift.config` | Select an available locale; a missing repository translation is downloaded and validated before activation |
-| `/rift doctor` | `rift.doctor` | Report platform, Java, paths, locale, and world counts |
-| `/rift debug` | `rift.debug` | Save a detailed support report and, when enabled, publish a clickable mclo.gs link |
+| `/rift language` | Scope-dependent | Open the personal, server-default, reset, and message-editor menu |
+| `/rift language self [locale\|reset]` | `volmit.language.self` and `rift.language.self` | List or select a personal locale without changing the server default, or clear that preference |
+| `/rift language server [locale]` | `volmit.language.admin` or `rift.config` | List or select the server-default locale |
+| `/rift language server edit [locale]` | `volmit.language.admin` or `rift.config` | Open the in-game message editor, optionally at one locale |
+| `/rift status` | `rift.status` | Show platform, Java, paths, locale, and world counts in a Director menu |
+| `/rift debug` | None | Open the diagnostic-tools help page |
+| `/rift debug dump [upload]` | `rift.debug` | Save a detailed report; `upload` defaults to `true` and may be set to `false` for this run |
 | `/rift autoload <name> <enabled>` | `rift.config` | Change a managed profile's startup auto-load flag |
 | `/rift protect <name> <enabled>` | `rift.config` | Change a managed profile's protection flag |
 
-Aliases include `teleport` for `tp`, `editor` for `config`, and `status` for `doctor`. Config, active language, and managed-profile changes reload automatically; Rift has no manual reload command. The language command is also the click target used by the configuration editor's chat picker.
+Aliases include `teleport` for `tp` and `editor` for `config`. Config, active server language, and managed-profile changes reload automatically; Rift has no manual reload command or inventory reload control. The Language setting opens the shared server picker, while the Languages category opens the shared message editor.
+
+`/volmit plugins languages [locale]` changes the server default for every enabled Volmit language provider that supports that locale and for which the sender has permission. `/volmit plugins debug`, `/volmit plugins debug Rift [upload=true|false]`, and `/volmit plugins debug all [upload=true|false]` expose Rift through the same cross-plugin control center used by ShapedPortals and the other registered plugins.
 
 ## Create arguments
 
@@ -59,10 +65,10 @@ The built-in `void` generator creates empty `THE_VOID` biome chunks and a bedroc
 
 ## Permission defaults
 
-`rift.command` defaults to everyone so explicitly granted subcommand nodes are usable. Every operational node and `rift.admin` defaults to operators. `rift.admin` grants all Rift capabilities.
+`rift.command`, `rift.language.self`, and the dynamically registered `volmit.language.self` default to everyone. Every operational node, `rift.config`, `rift.debug`, the dynamically registered `volmit.language.admin`, and `rift.admin` default to operators. The Bukkit command registration does not impose a second root-permission gate: a specifically granted subcommand node is sufficient. `rift.admin` grants all Rift capabilities.
 
-`/rift doctor` is a compact local chat summary. `/rift debug` performs one report at a time: it captures Bukkit state on the global scheduler, performs JVM inspection, hashing, disk writes, and HTTP off-thread, then writes `plugins/Rift/debug/rift-debug-<UTC timestamp>.txt`. The `debugUploadEnabled` setting is enabled by default; set it to `false` before running the command when the report must remain local.
+`/rift status`, `/rift list [page]`, and `/rift generators [page]` use VolmLib's Director content layout with the Rift theme, Back navigation, localized hovers, and page controls where needed. `/rift debug dump` performs one report at a time: VolmLib captures shared Bukkit state on the global scheduler, Rift captures its world and service state there, and report formatting, JVM inspection, hashing, disk writes, and HTTP run off-thread. The result is written atomically as `plugins/Rift/debug/rift-v<version>-debugdump-<UTC timestamp>.txt`. Players receive a full-path copy control and a Back action to the debug submenu.
 
-When upload is enabled, the same local report is sent to the fixed HTTPS mclo.gs API and Rift returns a clickable public URL. The report includes plugin metadata, Rift world names and storage state, active configuration values, runtime details, thread stacks, and managed-file hashes, so review the local file before sharing when server topology is confidential.
+An upload occurs only when both `debugUploadEnabled` and the command's `upload` argument are true. The same local report is then sent to the fixed HTTPS mclo.gs API and Rift returns a clickable public URL. The report includes plugin metadata, Rift world names and storage state, active configuration values, bounded runtime and memory details, and managed-file hashes; it excludes per-thread state and stack traces. Review the local file before sharing when server topology is confidential.
 
 Next: [Storage & Operations](/rift/03-storage-operations)

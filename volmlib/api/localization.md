@@ -2,7 +2,11 @@
 title: "Shared localization"
 description: "Language downloads, server defaults, player preferences, and the in-game picker"
 published: true
+<<<<<<< Updated upstream
 date: 2026-09-03T19:15:00.000Z
+=======
+date: 2026-09-03T20:40:00.000Z
+>>>>>>> Stashed changes
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
@@ -47,13 +51,23 @@ Server selection requires `volmit.language.admin` (default `op`) or the selected
 
 Every Bukkit plugin provides `/[plugin] language server edit [locale]`. Omitting the locale opens a language list; specifying one opens its messages. The server-language picker also has editor links. Editing requires the same server-language administration permission as selection, or `volmit.language.admin`; personal language permissions do not grant editing access.
 
+<<<<<<< Updated upstream
 The inventory shows 45 entries per page, with search, refresh, back, and page controls. Click a text message to enter its replacement privately in chat. Multiline messages open their individual lines, and plural messages open their individual forms; editing one preserves the others. The prompt shows the current template and its variables; `\n` inserts a newline, `\\` inserts a literal backslash, and `cancel` returns without writing. Input is limited to 512 characters and expires after 60 seconds. Permissions are checked again when input is submitted. The editor supports both the legacy Bukkit inventory-view ABI and Paper's 26.x interface ABI, including creative-mode inventory events.
+=======
+The shared inventory opens at full chest height and derives its categories from the first segment of each registered message ID. For example, `portal.created` belongs to Portal and `gui.editor.saved` belongs to GUI. New top-level groups appear automatically without plugin-specific slot code. Each category shows 45 entries per page and provides search, refresh, back, and page controls.
+
+Click a text message to enter its replacement privately in chat. Multiline messages open their individual lines, and plural messages open their individual forms; editing one preserves the others. The Director-framed prompt shows the formatted current template and its exact variables. `\n` inserts a newline, `\\` inserts a literal backslash, and `cancel` returns without writing. Input is limited to 512 characters and expires after 60 seconds. A successful save reports the old and new formatted values before returning to the same category. Permissions are checked again when input is submitted.
+>>>>>>> Stashed changes
 
 The editor validates message shape, required variables, and each plugin's format before an atomic save. Stale edits and invalid files are rejected without overwriting them. Installed incomplete catalogs can be edited using English for missing entries; opening the editor never selects a locale or applies selection fallback. Successful edits refresh that locale's personal snapshots and its active server snapshot, while preserving every server and personal language choice. Already-rendered items refresh through their owning feature's normal lifecycle.
 
 ShapedPortals edits `languages/<locale>.toml` and keeps its configuration GUI's Languages tile as another entrypoint. Adapt and React use `languages/overrides/<locale>.toml`; Iris uses `.json`; BileTools, Gloss, and HiddenOre use `.yml`; Wormholes uses `.toml`. These per-locale overrides take precedence over the existing global overrides or downloaded catalogs. English editing works offline. The inventory frontend applies to Bukkit-family servers; Iris mod loaders retain their native command interface.
 
-## Server defaults across plugins
+## Shared plugin tools
+
+`/volmit plugins` opens the Director-styled Volmit plugin tools menu. Its clickable entries and hover text expose the shared language and diagnostic selectors. Providers are discovered from Bukkit's services registry when the command runs, so enabling or disabling a participating plugin updates the menu without a hard-coded plugin list.
+
+### Server defaults across plugins
 
 `/volmit plugins languages` opens a shared locale picker for every enabled language provider. `/volmit plugins languages <lang>` changes all of their server defaults to that locale. For example, `/volmit plugins languages de_DE` selects German across the registered plugins. This command preserves every player's personal overrides; players with an override continue using it until they change or reset that plugin's own preference.
 
@@ -83,13 +97,13 @@ Construct `PluginLanguageService` with typed `Options`: preference path, locale 
 
 Use `snapshot(UUID)` for a known recipient, or `snapshot()` inside `LanguageAudience.run`, `call`, or an `open` scope. Scopes restore the previous audience even when an action fails. Shared entity scheduling and inventory callbacks establish their player's audience. Explicitly scope custom command dispatch, menu construction, and other deferred player rendering too. Use `invalidate()` after reloading overlays and `cache(locale, snapshot)` after editing an already prepared locale.
 
-On Bukkit platforms, `BukkitLanguageSwitcher.register(plugin, service, options)` registers the provider, player-join listener, and inventory editor. Its typed `Options` contains the plugin's root command without a slash, administration permission, existing `DirectorMiniMenu.Theme`, current `DirectorTextResolver`, and `PluginLanguageEditor.Options`. The switcher derives the personal permission from the lowercase plugin name followed by `.language.self` and registers it with default `true` when the plugin descriptor does not already define it.
+On Bukkit platforms, `BukkitLanguageSwitcher.register(plugin, service, options)` registers the provider, player-join listener, and inventory editor. Its typed `Options` contains the plugin's root command without a slash, administration permission, existing `DirectorMiniMenu.Theme`, current `DirectorTextResolver`, and `PluginLanguageEditor.Options`. Plugins may also supply `LanguageEditFeedback` to replace the default framed save result with one plugin-owned `ComponentText`; the callback receives a typed `LanguageEditChange` containing locale, key, previous value, and new value. The switcher derives the personal permission from the lowercase plugin name followed by `.language.self` and registers it with default `true` when the plugin descriptor does not already define it.
 
 `PluginLanguageEditor.Options` supplies a preparation-only `SnapshotLoader` and a `MessageWriter`. The writer receives an `Edit` containing locale, key, expected value, and replacement value; it validates and atomically persists the native file, installs a matching active server snapshot, and returns the saved snapshot. The shared editor serializes its asynchronous work, rejects stale values, and refreshes personal caches after saves. `LanguageFileEditor.update` provides strict UTF-8, size bounds, regular-path checks, external-write detection, and atomic file publication around a typed preparation callback. The switcher closes its editor during shutdown.
 
 `TomlLanguageEditor.upsert` accepts typed text, line, and plural values and preserves literal dotted message IDs. Native serialization retains plural table boundaries and unrelated file values.
 
-While language providers are registered, the shared switcher automatically maintains one `/volmit` command for `/volmit plugins languages [lang]`. If the owning plugin closes, ownership passes to another registered provider; no additional plugin configuration is required.
+While language providers are registered, the shared switcher automatically maintains one `/volmit` command for `/volmit plugins`, `/volmit plugins languages [lang]`, and `/volmit plugins debug [plugin] [upload=true|false]`. If the owning plugin closes, ownership passes to another registered provider; no additional command configuration is required. Language and debug providers use separate service protocols, so a plugin's debug report remains discoverable without coupling it to another plugin's locale implementation.
 
 The plugin owns its local language command registration. `open(sender)` opens its picker; `command(sender, arguments)` and `complete(sender, arguments)` handle the arguments after `language`. Route this subcommand before a root administration check so players can reach their personal preferences. Providers exchange only JDK types through Bukkit's services registry, so separately relocated VolmLib copies can coordinate without sharing plugin classes. Close both the switcher and service during shutdown.
 

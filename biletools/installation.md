@@ -2,7 +2,7 @@
 title: "BileTools — Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T04:02:05.398Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,9 +12,9 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 | | |
 |---|---|
-| Runtime JVM | Java 25+ |
-| Compile target | Paper API 26.2 |
-| `api-version` | `26.2` |
+| Runtime JVM | Java 17+ |
+| Compile target | Bukkit/Paper API 1.20.1 |
+| `api-version` | `1.20` |
 
 ## Platform support
 
@@ -31,7 +31,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 1. Copy `BileTools-x.x.x.jar` into `plugins/`.
 2. Restart the server. BileTools writes `plugins/BileTools/biletools.yml` and
-   `language.yml` on first run.
+   `languages/en_US.toml` on first run.
 3. Build a plugin into `plugins/`.
 4. Watch the console for the reload.
 
@@ -58,10 +58,12 @@ Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
 Chinese.
 
 Canonical English lives in the Java catalog at
-`src/main/java/com/volmit/bile/localization/BileMessages.java`. There is no
-English bundle file. `language.yml` is an overrides-only file. Omitted
-entries resolve from the selected bundle, then from code-owned English.
+`src/main/java/com/volmit/bile/localization/BileMessages.java`. BileTools generates
+`languages/en_US.toml` from it on first run. Omitted entries in any locale file
+resolve from code-owned English.
 
-`language.yml` reloads automatically after a complete valid save. Invalid edits leave the current messages active.
+Every repository language file and the generated English file document each case-sensitive placeholder by purpose. BileTools-owned keys use the direct TOML sections `command`, `parameter`, `error`, `message`, and `gui`; shared keys use `director` and `language`, and there is no outer `bile` table.
 
-The former top-level `locale` key is rejected. Move that selection to `language` in `biletools.yml`; to reset the override file, delete `plugins/BileTools/language.yml`, which permanently removes its local message overrides, and restart BileTools to regenerate it. No locale key is migrated.
+The active `languages/<locale>.toml` reloads automatically after a complete valid save. Invalid edits leave the current messages active.
+
+Language files now use direct TOML catalogs. Retired `language.yml`, YAML locale catalogs, and `languages/overrides/` files are ignored. Move wanted values into the matching `languages/<locale>.toml` file before upgrading.

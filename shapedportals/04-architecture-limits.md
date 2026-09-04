@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry, persistence, region ownership, and build instructions"
 published: true
-date: 2026-09-03T04:58:11.006Z
+date: 2026-09-03T21:52:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -32,7 +32,7 @@ Nether ignition tests both vertical axes independently. End activation tests the
 | One owning Folia region | There is no atomic multi-region block commit |
 | Revalidation before commit | Rejects changes made while integrations inspect the proposal |
 
-For Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any blocks are placed. End portals instead check the eye interaction and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
+For Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any blocks are placed. End portals start from the accepted Eye of Ender placement transaction and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
 
 ## Why portal records are required
 
@@ -48,7 +48,7 @@ See [Persistent ownership](/shapedportals/02-portal-behavior-events#persistent-o
 
 | Work | Execution context |
 |---|---|
-| Automatic file reloads, GUI reloads, and GUI writes | Off the gameplay thread |
+| Automatic file reloads and GUI editor writes | Off the gameplay thread |
 | Registry persistence | Dedicated asynchronous writer |
 | Configuration and language activation | Atomic snapshot replacement |
 | Shape scans, portal placement, repairs, and removal | Owning region |

@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-03T07:42:04.995Z
+date: 2026-09-03T22:35:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -25,6 +25,7 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.board` | Scoreboard sidebars |
 | `util.inventorygui` | Inventory menus |
 | `util.config` | Typed TOML configuration |
+| `util.io` | File and directory change detection |
 | `util.nbt` / `util.nbt.mca` | NBT and region files |
 | `util.noise` / `util.stream` | Procedural generation |
 
@@ -63,6 +64,10 @@ Aliases remain executable, while help and completion show canonical command name
 ## Threading
 
 Use `FoliaScheduler` for Bukkit work. Entity and player state belongs on the entity scheduler; world and block state belongs on the owning region; global tasks use the global scheduler. Keep file and network I/O off those threads.
+
+## File watching
+
+`FileWatcher` and `FolderWatcher` combine filesystem snapshots with native watch events. A full scan reports each create or delete transition once, including on Windows where the native delete notification may arrive after the scan has already observed the missing path. Native modification events still detect writes whose size, timestamp, and file identity remain unchanged.
 
 For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
 

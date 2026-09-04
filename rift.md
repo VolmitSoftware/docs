@@ -2,7 +2,7 @@
 title: "Rift World Manager"
 description: "Safe world creation, import, lifecycle, quarantine, restore, and teleport management"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "rift, world-management, bukkit, paper, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -12,7 +12,7 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 
 | | |
 |---|---|
-| Version | 3.0.0 |
+| Version | 2.0.0-1.20.1-26.2 |
 | Servers | Spigot 1.20.1 through 26.2 |
 | Server Java | The Java version required by the selected server, at least Java 17 |
 | Command | `/rift` (`/rft`) |

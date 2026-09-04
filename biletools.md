@@ -2,7 +2,7 @@
 title: "BileTools"
 description: "Plugin hot-reload and deployment utility"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,10 +12,10 @@ BileTools watches the plugins directory and reloads changed jars without a serve
 
 | | |
 |---|---|
-| Command | `/biletools` (`bile`, `bi`, `b`, `volmit`, `vomit`, `vom`) |
+| Command | `/biletools` (`bile`, `bi`, `b`, `vomit`, `vom`) |
 | Folia | Supported |
 | Permission | `bile.use` |
-| Runtime | Java 25+, Paper API 26.2 |
+| Runtime | Java 17+, Bukkit API 1.20.1+ |
 
 > BileTools can load, unload, and **delete** plugin jars. The remote-deploy
 > listener accepts jars over a socket. Treat `bile.use` as equivalent to console

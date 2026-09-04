@@ -2,7 +2,7 @@
 title: "BileTools — Remote Deploy"
 description: "Push plugin jars to other servers, and the security model"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-03T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,6 +21,8 @@ over a TCP socket. Both the master and the slave are disabled by default.
 > listener to the internet. Do not reuse a password from another system. Do not
 > enable this on production.
 {.is-danger}
+
+The in-game configuration editor shows the receiver secret and password-bearing target list as redacted, file-only settings. Change them directly in `biletools.yml`, then reload BileTools or restart the server. BileTools does not place them in inventory lore, chat prompts, or diagnostic reports.
 
 ## Slave side
 

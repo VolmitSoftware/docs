@@ -2,7 +2,7 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-09-01T00:00:00.000Z
+date: 2026-09-03T19:15:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -32,11 +32,6 @@ Shaped Portals keeps track of the portals it creates so their unusual shapes can
 {.dense}
 
 Integrity must be enabled for repair and cleanup. It checks the recorded portal type, plane, and frame before refilling cells, and removes only portal blocks owned by the affected record. Managed End frames remain valid only while every recorded End Portal Frame is present and eyed.
-<<<<<<< Updated upstream
-=======
-
-<div class="sp-media"><strong>Portal-repair GIF goes here</strong><span>Show a missing portal cell being repaired, followed by a broken frame deactivating the portal.</span></div>
->>>>>>> Stashed changes
 
 Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, and chunk loads trigger checks of nearby portals. A bounded periodic sweep catches other edits. See [Integrity settings](/shapedportals/01-installation-configuration#integrity) for timing and limits.
 
@@ -64,13 +59,11 @@ Ignition denied by a protection plugin is ignored. Before placing shaped portal 
 
 Player notices use the configured [presentation channels](/shapedportals/01-installation-configuration#presentation). Ordinary terrain fires are ignored before feedback and statistics.
 
-For End portals, the plugin observes an allowed Eye of Ender interaction and waits one tick for the frame eye to exist. Incomplete boundaries and vanilla-created 3×3 surfaces are ignored silently. A completed custom shape fires `BlockCanBuildEvent` for every proposed `END_PORTAL` cell, rechecks the eyed frame, and then commits native End portal blocks. Bukkit does not define a correct `PortalCreateEvent.CreateReason` for End portal activation, so Shaped Portals does not mislabel it as `END_PLATFORM` or `FIRE`.
+For End portals, the plugin waits for the uncancelled, buildable `BlockPlaceEvent` or `BlockMultiPlaceEvent` emitted after an Eye of Ender changes the frame. A custom frame normally produces the single-block event; vanilla's complete 3×3 ring produces the multi-block event because the same action also creates its portal surface. Shaped Portals waits one tick, checks every actual frame eye, and leaves the surface alone when vanilla already placed `END_PORTAL`. A completed custom shape fires `BlockCanBuildEvent` for every proposed portal cell, rechecks the frame, and then commits native End portal blocks.
 
-<<<<<<< Updated upstream
-A protection plugin can stop a shaped End portal by cancelling the eye interaction or rejecting one of those `BlockCanBuildEvent` checks. Plugins that watch only `PortalCreateEvent` will see shaped Nether proposals but not shaped End activation.
+The earlier `EntityChangeBlockEvent` describes the proposed eye state before the complete item-use placement transaction has been accepted, so it is not used as the activation trigger. A protection plugin can stop a shaped End portal by cancelling the placement event, setting its build result to false, or rejecting one of the later `BlockCanBuildEvent` checks.
 
-=======
->>>>>>> Stashed changes
+Bukkit does not fire `PortalCreateEvent` when an End frame activates, and its reason enum has no End-activation value. `END_PLATFORM` means the obsidian arrival platform created after entering the End; `FIRE` and `NETHER_PAIR` are Nether-only. Shaped Portals therefore does not emit a falsely labelled portal event. Plugins that watch only `PortalCreateEvent` will see shaped Nether proposals but not shaped End activation.
 <details>
 <summary>Event and region details for integrations</summary>
 <p>Player-placed fire is handled through <code>BlockPlaceEvent</code>; other configured causes use <code>BlockIgniteEvent</code>. Both listeners use <code>MONITOR</code> and ignore cancelled events. Direct ignition, placed fire, and player-launched fireballs check the responsible player's creation permission when required.</p>
@@ -86,12 +79,8 @@ A protection plugin can stop a shaped End portal by cancelling the eye interacti
 | Lighting the frame does nothing | Run `/sp status`. Check creation is enabled, the world and ignition cause are allowed, and the player has creation permission |
 | A frame is rejected | Close every edge, remove blocked interior cells, check the size limits, and keep it in one vertical plane |
 | A shaped End frame does not activate | Make the boundary horizontal, use only End Portal Frames, insert every eye, keep the interior replaceable, and check the End-specific limits |
-<<<<<<< Updated upstream
 | A valid Nether frame is blocked in a protected area | Check the protection plugin's ignition and `PortalCreateEvent` rules |
-| A valid End frame is blocked in a protected area | Check Eye of Ender interaction rules and `BlockCanBuildEvent` handling |
-=======
-| A valid frame is blocked in a protected area | Check the protection plugin's ignition and `PortalCreateEvent` rules |
->>>>>>> Stashed changes
+| A valid End frame is blocked in a protected area | Check `BlockPlaceEvent`, `BlockMultiPlaceEvent`, and `BlockCanBuildEvent` handling |
 | A frame fails on Folia | Keep the full shape inside one currently owned region |
 | Missing portal blocks come back | This is normal repair behavior while the frame is valid and the cells are replaceable |
 | A portal disappears | Check for a broken frame or occupied interior, then inspect the console for persistence or region errors |
