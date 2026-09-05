@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-04T22:13:55.376Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,3 +71,11 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 | `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet channel |
 
 `surfaceKind` reports `RIVER`, `RIVER_SHORE`, or `DRY_CHANNEL` inside a footprint, and `surfaceHeight` under a river is the bed. A cold read may plan the river tile on the calling thread, so keep wide scans off tick threads. See [36 - Rivers](/iris/36-rivers).
+
+## Engine generation-history queries
+
+`Engine.getObjectsAt(chunkX, chunkZ)` returns object keys recorded for a sealed chunk. `Engine.getPOIsAt(chunkX, chunkZ)` returns recorded POI keys and positions. These reads do not open an archived runtime or require its pack. A sealed empty record returns an empty set.
+
+POI positions use world X/Z and internal Y. Add the dimension minimum height to internal Y when converting to an absolute world height. The current mantle fallback uses the same coordinates for chunks without sealed records.
+
+Recorded cave facts include only cells that remain open after terrain reconciliation. These are generation facts, not a live inventory of player edits. Terrain placement queries in the transition band use resolved natural geometry. Speculative queries do not record generated ownership or native terrain capsules.

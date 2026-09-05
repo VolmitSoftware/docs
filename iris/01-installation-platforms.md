@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T22:13:55.376Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ Whichever path you take, you are done when all three of these are true:
 
 On a modded client, the Iris keybind category shows that the client mod loaded. It does not prove that the server can generate chunks. Always check the server.
 
-Keep the old jar and the entire Iris data directory until the new build passes these checks. A swap of the binary does **not** update pack snapshots already copied into existing worlds. That is a separate operation in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+Keep the old jar and complete world backups until you finish the upgrade checks. A changed generation build revision activates the current generator for future chunks at startup. It keeps the selected pack unless you stage a pack update. Existing terrain supplies the transition boundary. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
 
 ## Requirements
 
@@ -74,15 +74,35 @@ A command that responds is not proof the generator can produce chunks. Finish wi
 
 ### Startup validation gates login
 
-Iris blocks player login until external datapack validation and dimension-pack validation both complete. The kick message names the reason and tells you to check the console.
+Iris blocks player login until runtime initialization, external datapack validation, and dimension-pack validation complete. The kick message names the reason and tells you to check the console.
 
-The two gates behave differently. A failed or restart-pending **external datapack** state keeps login locked. It also blocks all Iris world creation until you fix it and restart. Iris tells you when a restart is what is required.
+A failed **runtime initialization** keeps login locked and blocks world and Studio creation. Iris requires a working Java agent and successful server code injection. A responding command tree or a loaded pack does not prove those requirements passed. Studio `force=true` cannot bypass a runtime failure.
+
+A failed or restart-pending **external datapack** state keeps login locked. It also blocks all Iris world creation until you fix it and restart. Iris tells you when a restart is what is required.
 
 When validated external datapacks change, Iris completes its initialization and then invokes the server's immediate restart capability, when present, before default worlds begin loading. Plain Spigot has no such API, so Iris stops at that startup boundary instead; if an available restart API throws or returns unexpectedly, Iris also requests shutdown. Every configured Iris default world remains bound to a non-generating refusal, so CraftBukkit cannot substitute vanilla terrain.
 
 Unchanged, already-validated datapacks and packs reuse their persisted results. Iris still reads the local authored bytes to confirm the exact fingerprint. It skips remote resolution, semantic revalidation, copying, installation, and pack compilation.
 
 A **dimension pack** with blocking errors does *not* lock the server. That one pack is refused for world and Studio creation. An error listing the reasons is printed at startup. Every healthy pack stays usable.
+
+### Recover from a Java agent failure
+
+If startup reports a Java Agent or Code Injection failure, resolve that failure before retrying world creation. Without injection, Minecraft can select vanilla height bounds instead of the Iris dimension's bounds.
+
+1. Stop the server completely.
+2. Confirm the first Iris boot extracted `plugins/Iris/agent.jar`.
+3. Add `-javaagent:plugins/Iris/agent.jar` before `-jar` in the server startup command. Preserve your other JVM options.
+
+```sh
+java -javaagent:plugins/Iris/agent.jar -jar server.jar nogui
+```
+
+4. Start the server from its server directory, or use an absolute agent path.
+5. Check for `Injecting Bukkit` and confirm no Java Agent or Code Injection failure follows it.
+6. Complete any pack or datapack restart requirement before creating a world.
+
+`-XX:+EnableDynamicAgentLoading` permits dynamic agent loading, but host restrictions can still prevent attachment. Loading the extracted agent at JVM startup avoids that attachment step. If injection still fails, retain the complete startup stack trace and check the Iris/server version combination.
 
 ### Permissions
 

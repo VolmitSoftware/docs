@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-05T01:18:38.187Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,11 +15,13 @@ See also: [02 - Getting Started](/iris/02-getting-started), [04 - Commands & Per
 
 ## Create a world you intend to keep
 
-The difference between a throwaway world and one you will still run in six months is the setup. You decide the pack, seed, and height **before** the first chunk generates. None of those are editable afterwards without regenerating terrain.
+The difference between a throwaway world and one you will still run in six months is the setup. Choose the seed and dimension layout before the first chunk generates. Compatible pack updates can change future terrain while generation history preserves existing chunks.
 
 Before you start: a pack that validates, a seed you have written down, a current backup, and no other lifecycle command running.
 
 ### Bukkit-family
+
+World creation requires successful Java agent loading and server code injection. Iris refuses creation before world setup when runtime initialization fails. Resolve the startup failure using [Java agent recovery](/iris/01-installation-platforms#recover-from-a-java-agent-failure), then restart completely.
 
 ```text
 /iris pack validate pack=overworld
@@ -59,7 +61,7 @@ Now prove it survives a restart. A world that only works in the session that cre
 
 Wait for it to finish (see [07 - Pregeneration](/iris/07-pregeneration)). Restart the server cleanly. Teleport back in, and fly past the pregenerated boundary. New terrain must still appear.
 
-**The world is now committed.** It generates from `<world>/iris/pack`, its own frozen copy. Continuing to edit `packs/overworld/` affects Studio only. Never delete or replace that snapshot while the world is loaded. To deploy pack changes into it later, use the deliberate path in [25 - Pack Management](/iris/25-pack-management). For anything that changes height or dimension type, create a new world instead.
+The world generates from its active immutable epoch under `<world>/iris/generation/epochs/<epoch>/pack/`. Authoring edits do not automatically update production worlds. Preserve the complete generation history with the world backup. Use [25 - Pack Management](/iris/25-pack-management) for compatible updates. Height and dimension-layout changes require a new world.
 
 ### Fabric / Forge / NeoForge
 
@@ -109,12 +111,13 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | Symptom | What it means | What to do |
 |---|---|---|
 | "busy" response | Another lifecycle operation holds the coordinator. It is one global mutex, so a pack download or publish blocks world create just as much as another create does | Wait for the running operation. Retrying concurrently will not help |
-| Startup validation pending / failed / restart-required on login or create | External datapack ingestion or dimension-pack validation has not reached a safe state | Fix the first logged failure, or complete the requested restart. Do not hand-create world folders or hand-edit `bukkit.yml` |
+| Startup validation pending / failed / restart-required on login or create | Runtime initialization, external datapack ingestion, or dimension-pack validation has not reached a safe state | Fix the first logged failure, or complete the requested restart. Do not hand-create world folders or hand-edit `bukkit.yml` |
+| Java Agent or Code Injection failure at startup | Iris cannot install the server hooks needed for world creation and dimension heights | Follow [Java agent recovery](/iris/01-installation-platforms#recover-from-a-java-agent-failure). Restart completely and confirm injection succeeds before retrying |
 | A configured startup world is reported as generation-locked | The immediate startup restart or shutdown did not complete, or startup validation failed before world loading. Iris bound a non-generating safety generator so Bukkit cannot fall back to vanilla terrain | Fix the first logged restart or validation failure, then restart. Do not force chunk generation while the lock remains |
 | Folia create reports `paper_like_runtime` unavailable | Iris cannot prove a safe runtime world-creation backend and refuses before invoking Folia's unsupported public path | Update to a compatible Folia/Iris build, then retry without hand-editing world storage |
 | Create fails during initial-spawn preparation | The spawn chunk returned null or failed, its owning-region task was rejected, spawn placement failed, or the 120-second initial-spawn wait expired | Treat the create as failed and follow the logged reconciliation or restart instruction. Do not start another lifecycle mutation until Iris releases or fences the operation |
 | Create reports that automatic teleport failed | The world was created, but entry-chunk generation, safe-position resolution, or Paper's asynchronous teleport failed or did not finish within 60 seconds | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
-| Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the `iris/pack` snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |
+| Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the active generation snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |
 | Unload hits its terminal timeout | Work did not drain in 150 s | Allow the restart. Do not force-delete the live directory |
 | Remove returns `DELETE_QUEUED` | Files were quarantined for startup deletion | Restart, confirm the target is gone, then reuse the name |
 | Modded registry renamed to `.broken-<timestamp>` | The whole `iris-dimensions.json` failed to parse | Keep the backup. Iris logs whatever ids it could salvage from the raw text. Recreate each with its original pack, dimension, and seed, then verify with `/iris world status` |
@@ -128,7 +131,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | Selected level root | `Server#getLevelDirectory` on Paper-family servers. If that method is missing, Iris latches `<world-container>/<level-name>` from `server.properties` (default `world`) for save-scoped registry and datapack work |
 | Paper-family dimension folder | `<levelRoot>/dimensions/iris/<key>/` |
 | Spigot dimension folder | `<world-container>/<level-name>_iris_<key>/dimensions/iris/<key>/`. The outer name is CraftBukkit's configured world root, while chunks, `iris/pack`, and `iris/pregen` all remain under the canonical nested dimension root |
-| Pack snapshot | `<dimensionRoot>/iris/pack/` |
+| Pack snapshots | `<dimensionRoot>/iris/generation/epochs/<epoch>/pack/`, selected by the generation manifest |
 | Pregen cache | `<dimensionRoot>/iris/pregen/` |
 | Registry | `<level-root>/iris/worlds.json` (a save-scoped flat `worldIdentity → dimensionType` map, written atomically) plus the global `worlds:` section of `bukkit.yml`, which stores `generator: "Iris:<dimension>"` and the seed |
 | Name normalization | The name is lowercased and spaces become `_` before validation, so `My World` becomes `my_world` rather than being rejected |
@@ -173,7 +176,7 @@ On an unchanged create, Iris reuses the compiler-input fingerprint already produ
 1. Resolve the managed key and dimension. No directory is created yet.
 2. Require startup datapack readiness and a loadable validation result for the owning pack.
 3. Install datapacks for the dimension types. A changed compiler-input fingerprint does not itself require a restart when the loaded runtime already satisfies every current dimension-type, custom-biome, and biome-tag requirement. A new or changed required registry entry still queues the normal restart.
-4. Copy the pack into `<world>/iris/pack` through `StudioSVC.installIntoWorld`, staged into a temp directory and published atomically. Iris may reuse the source's exact validation result only when a strong content fingerprint of the copied snapshot matches the validated source. Otherwise it runs full semantic validation at the new root. A validation failure rolls the publication back. The lifecycle reporter identifies this as the `Preparing world pack` phase; Iris does not emit a separate synthetic snapshot ID such as `overworld:overworld`.
+4. Publish the validated pack and its registry contract as the initial immutable generation epoch through `StudioSVC.installIntoWorld`. Source fingerprint checks reject concurrent changes. The lifecycle reporter shows `Preparing world pack`.
 5. Build a `WorldCreator` with the Iris generator and `studio=false`.
 6. Create the world through `WorldLifecycleService` / NMS async create, with a 120-second timeout. A timeout triggers a server restart rather than leaving a half-created world.
 7. Wait up to 10 minutes for the production generator's initial-spawn future. The actual spawn chunk must resolve and spawn placement must complete on that chunk's owning region. A null chunk future or result, scheduling rejection, generation failure, placement failure, or timeout fails creation. Iris does not register the world, report success, or release lifecycle admission early. Studio and benchmark worlds do not use this production-spawn barrier.
@@ -247,9 +250,9 @@ The staged replacement records every player whose current data file exists in th
 Studio worlds use `IrisCreator.studio(true)` and differ from production worlds in ways that matter:
 
 - Startup datapack validation and the pack's own validation must both be loadable before any Studio folder, snapshot, generator, or Bukkit world is created. Missing validation fails closed.
-- The pack is **not** copied into the world folder, except for benchmark runs. The engine reads the live pack directly, which is what enables hotload.
+- Bukkit Studio captures its initial immutable pack and generation history before world creation. A separate watcher reads the editable authoring folder.
 - Studio worlds are transient. They are never written into Iris's persistent world registry. Unloaded Studio worlds are cleaned up, and their `bukkit.yml` entries are removed during shutdown cleanup.
-- Standard Studio uses the same engine contract as production generation. With identical pack bytes and seed it generates the same blocks, biomes, structures, and terrain; it does not replace terrain with blank chunks or a landing pad.
+- Standard Studio uses the production generation contract. With identical pack bytes, seed, and generation history, it produces the same terrain. Accepted edits activate a new immutable pack for future chunks and blend the boundary. Existing chunks retain their earlier generation.
 - Opening Studio after creating a persistent world from the same pack reuses the already-loaded matching dimension type and custom biomes. The new frozen world snapshot and its `bukkit.yml` LevelStem binding are boot-time persistence inputs. They are not a reason to restart the current server solely to open Studio. New or changed registry content still requires the normal restart boundary.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 - Biome Buffet prepares a changed focus before opening the chunk generation session. Its exclusive fair-stage admission downgrades straight to the retained chunk permit so no other transition can slip in between the focus hotload and that chunk.
@@ -264,7 +267,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 2. Run `BukkitWorldReconciler.loadWorld(bukkit.yml, worldKey)`.
 3. Report success, busy, restart-required, or failure.
 
-Load never downloads a pack. The world must already have `iris/pack` content and registration data consistent with Iris. Reconciliation checks startup readiness and then lazily validates that world's exact snapshot root before it touches `bukkit.yml` or calls a world backend. Validation results are path-scoped, so two worlds whose snapshot folders are both named `pack` cannot authorize or reject one another.
+Load never downloads a pack. The world must already have its active generation snapshot and consistent registration data. Reconciliation checks startup readiness and then lazily validates that world's exact snapshot root before it touches `bukkit.yml` or calls a world backend. Validation results are path-scoped, so two worlds whose snapshot folders are both named `pack` cannot authorize or reject one another.
 
 ## Unload
 
@@ -364,15 +367,45 @@ If the whole file fails to parse, only the startup load path quarantines it as `
 
 Runtime enable and removal publish each loader's normal level lifecycle. Fabric fires `ServerLevelEvents.LOAD` and `UNLOAD`; Forge and NeoForge post `LevelEvent.Load` and `Unload`. Unload is published before Iris unbinds and removes the dynamic level. If removal fails after that boundary and Iris restores the retained level, rollback publishes the matching load event again.
 
-## Pack snapshot vs studio
+## Generation updates and retained terrain
+
+Future chunks use the current generator and active pack. A changed build revision creates a new activation at startup. Production pack changes require explicit staging. Ordinary Bukkit Studio applies accepted authoring edits while the world remains open.
+
+Before activation, Iris drains generation and checkpoints native chunk storage. Chunks at `noise` or later contribute to the frozen terrain boundary. Earlier native stages do not establish generated terrain. Structure starts carry a separate activation stamp before `noise`; the checkpoint saves that stamp with the native start. Recovery discards outgoing terrain claims without stored native terrain and preserves earlier historical ownership.
+
+Iris records natural edge columns before objects and other content modify the chunk. A compressed capsule in the native chunk stores their three-dimensional block and fluid states, biome samples, and generation provenance. Boundary snapshots use those columns instead of executing an archived generator. Column encoding skips duplicate palette work for consecutive equal voxels without changing the stored representation. Lookups for regions absent from the frozen boundary index skip mask-cache locking. Biome transitions reuse one boundary sample per column while preserving each height’s biome selection. A separate bounded cache retains final surface and ocean-floor heights after full geometry leaves the smaller cache, so repeated height queries can reuse the resolved result. It stores heights only after fluid containment. Speculative terrain queries create no native capsule. During natural terrain generation, cave-biome and surface fallback queries reuse the matching scoped runtime, including samples across chunk edges. Content and external queries still route by coordinate. Queued deposit workers carry their chunk/session context and any existing generation runtime scope, then restore the worker’s prior context when the task finishes or fails. Speculative natural terrain fills its cached column data on the requesting thread, so native placement does not depend on queued prefill work in the content worker pool. Other contexts retain their existing asynchronous prefill policy.
+
+The transition affects only new terrain within `generator.generationTransitionWidthBlocks` of the frozen boundary. Its influence ends at that finite width. Later activations freeze the expanded frontier again. Repeated edits do not continually shift an earlier activation's boundary.
+
+### Placement and transition limits
+
+Terrain reconciliation includes solid volume, cave openings, materials, and fluids. Iris objects and structures can populate new terrain inside the transition band and use the resolved geometry for placement. Their complete footprints must remain outside historical chunks; the band itself does not exclude them. New native structure starts use the same historical-footprint restriction. Native feature decoration separately checks its surrounding 3×3 chunk write area and skips the pass when that area contains a completed historical chunk.
+
+Accepted underground and deep-fluid hydrology layers retain their planned bed, fluid-head, and ceiling coordinates before final terrain blending. Cave seals are omitted when they belong only to planned volume excluded from the current publication at a historical boundary. Surface hydrology layers still taper toward natural terrain height. The final geometry blend and local fluid banks handle their terrain transition.
+
+Local fluid banks replace exposed liquid cells beside air or above unsupported air with stable solid material. They preserve interior liquid. Waterlogged and protected content remain unchanged. This rule does not simulate every partial-block collision or later fluid update. Large terrain changes can still produce abrupt shapes or cave changes.
+
+Saved native chunks can have unfinished generation stages. Their existing terrain remains the boundary source, while the current native pipeline completes permitted later stages. Saved structure starts from an earlier activation can finish their remaining chunk-local placement without passing the new-start footprint check. The activation stamp identifies those starts even when they were saved before `noise`. Completed stages are not rerun, and an update does not convert every `noise` chunk into a fully decorated chunk.
+
+The world seed, physical height bounds, logical height, environment, dimension type, and coordinate scale remain fixed. Generation mode, fluid baseline, materials, caves, and upper-terrain settings can change within those bounds. New or changed registry content can require a restart before activation.
+
+### Retained world data
+
+The manifest references immutable epoch metadata, activation records, ownership, boundary snapshots, and semantic indexes. Iris keeps full pack copies for active and pending epochs. It releases older copies after their runtimes retire. No archived executable generator is required.
+
+Registry metadata preserves custom biome definitions, tags, dimension-type definitions, and renderer identities needed by saved chunks. Object, structure, biome, region, river, and point-of-interest records preserve generated facts. Recorded Iris pack identifiers retain their original case and punctuation; native Minecraft registry keys follow their separate validation rules. Empty sealed records remain authoritative. Back up the complete dimension directory, including native chunks and `iris/generation`.
+
+History grows as the world expands and activations accumulate. Immutable metadata files keep full epoch descriptors out of each manifest rewrite. This is not a fixed-size world archive.
+
+### Pack and Studio operations
 
 | Operation | Effect on the pack |
 |---|---|
-| Production create | Full pack tree installed under the world's `iris/pack` and frozen there |
-| Studio open | Engine reads the live packs root. Nothing is installed into the world |
+| Production create | Captures the initial immutable generation epoch and pack |
+| Bukkit Studio open | Captures an initial world-local epoch and watches the separate authoring pack |
 | Bukkit `/iris pack package`; modded `/iris studio package` | Exports an archive. No world is touched |
-| `/iris dev update-world` | Replaces a world's `iris/pack`. Unsafe, and restarts the server if an engine still holds that pack |
-| Hotload | Studio only. A production snapshot never changes underneath a running world |
+| `/iris dev update-world` | Stages a validated epoch for activation after restart. Existing chunks retain their recorded generation |
+| Ordinary Bukkit Studio hotload | Activates accepted edits for new chunks with a terrain transition. Saved terrain remains intact. Archived pack copies can be released |
 
 ## Concurrent lifecycle guards
 

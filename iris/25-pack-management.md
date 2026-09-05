@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-03T12:00:00.000Z
+date: 2026-09-04T22:22:28.804Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ See also:
 A pack exists in up to three places at once. Confusing them is the usual source of "my edit did nothing":
 
 - **The authoring copy**, at `packs/<key>/`. This is what Studio edits and what `/iris create` copies from.
-- **The world snapshot**, at `<world>/iris/pack`. Every Iris world holds a full copy of the pack it was created with. It is frozen at creation time. Editing the authoring copy never touches an existing world.
+- **Generation snapshots**, at `<world>/iris/generation/epochs/<epoch>/pack/`. Production worlds and Bukkit Studio keep immutable packs for active and pending epochs. Archived epoch metadata remains after Iris releases the corresponding pack. Authoring edits automatically update ordinary Bukkit Studio, while production updates require explicit staging.
 - **The export**, at `exports/<key>.iris`. A zip of the dimension dependency closure, for handing to somebody else.
 
 Validation runs against a directory, not a key. A pack can be valid in the workspace and stale in a world. Iris caches startup validation results. It re-uses them only when the pack bytes, the visible pack set, the platform, and the relevant game registries all still match. Otherwise it revalidates. Fresh validation rechecks the content fingerprint after parsing. If files keep changing, Iris retries once and then refuses the unstable result until writes stop.
@@ -97,9 +97,9 @@ Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. The
 
 Success is `exports/<key>.iris` plus a completion message. The source pack and every world snapshot are untouched.
 
-**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again. A hydrology or `riverPolicy` change requires a new or fully regenerated world because accepted terrain, fluid, biome, and mantle ownership is fixed into generated chunks.
+**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again. A compatible hydrology or `riverPolicy` update affects future chunks. Saved terrain and recorded generation facts retain their provenance. New terrain uses the current generator within the world's fixed physical layout.
 
-**7. Only then consider replacing an existing world snapshot.** Take a backup first and use the update-world procedure at the bottom of this page.
+**7. Stage the production update.** Back up the complete world, including generation history, then use the update-world procedure below.
 
 The loop passes when the source closure validates. Both package commands automatically run the shared read-only pack validator and image-map compiler before clearing staging or copying files. The package command must still produce the expected export, and a fresh world from that export must reload cleanly. If your release process distributes the `.iris` file rather than the source tree, unpack and validate that final closure separately; source preflight does not replace artifact verification.
 
@@ -176,7 +176,7 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Rivers (`hydrology` and `riverPolicy`) | Routing, channel, bank, bed, flow, mouth, pool, grotto, and deep-fluid bounds, unique profile and pool IDs, biome and profile references, and dimension-height fit are blocking. See [36 - Rivers](/iris/36-rivers) |
 | Object surface support | Blocking |
 | `rotation` / `translate` / `scale` on surfaces that do not support them | Blocking |
-| Structure graph and compiled structure graph | Errors blocking, warnings advisory |
+| Structure graph and compiled structure graph | Errors blocking, warnings advisory. Dimension, region, and biome placements require exactly one non-empty backend. Native placements allow only an omitted, null, or `LEGACY` anchor |
 | Native structure replacement envelopes | Blocking |
 | Spawner entries pointing at entities that exist, across both `spawns` and `initialSpawns` | Blocking |
 | Custom biome spawn category resolution | Blocking |
@@ -318,7 +318,7 @@ The ambient-spawning graph is exported in full. `spawners/` and `markers/` are w
 
 One platform difference beyond that: Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle. Validate the unpacked tree before you publish an `.iris` artifact.
 
-## Developer update-world (unsafe)
+## Developer update-world
 
 | Command |
 |---------|
@@ -328,19 +328,23 @@ Aliases: the command group is `/iris developer` or `/iris dev`. The subcommand i
 
 | Param | Default | What it does |
 |-------|---------|--------------|
-| `world` | contextual | The world whose `iris/pack` snapshot gets replaced |
+| `world` | contextual | The world that receives a pending generation epoch |
 | `pack` | contextual | The source dimension, resolved from the live packs root |
 | `confirm` | `false` | Required. Without it the command only prints the warning and exits |
 
-What it does:
+Back up the complete world before this operation, including its `iris/generation` directory.
 
-1. Refuse unless `confirm=true`.
-2. Take a `PACK_MUTATION` / `PACK_PUBLISH` lease, so it cannot race another pack publish. If the lease is busy it reports that and stops.
-3. Copy the pack into a staging directory next to the target. Confirm the dimension loads from staging. Then publish atomically over `<world>/iris/pack`.
-4. Invalidate the previous validation result for that exact root and validate the newly published snapshot. **If validation fails, the publication rolls back** and the world keeps its old pack.
-5. If an engine is still holding the old pack data, restart the server with the reason `"An active Iris world pack was replaced."`
+1. Run the command with `confirm=true`.
+2. Iris validates the source pack, captures an immutable snapshot, and stages a pending epoch under the world history.
+3. A changed activation requests a server restart. The running world keeps its active generation until restart.
+4. Before activation, Iris checkpoints native chunks and freezes their saved natural boundary.
+5. New chunks use the current generator and active pack, with a finite transition beside that boundary.
 
-This is unsafe for production without a backup for reasons the command cannot fix. Chunks that already exist keep their old terrain. Only future generation and pack-driven systems (loot, spawners, effects, and block drops) see the new content. A pack change that alters terrain shape leaves a visible seam at the edge of the generated region. Prefer staging a new world whenever the pack terrain contract changes.
+Updates must preserve the world seed, physical heights, environment, dimension type, and coordinate scale. Generation mode, fluid baseline, terrain content, and upper-terrain settings can change within that layout. New custom registry definitions can require a server restart.
+
+Iris retains registry definitions and generation metadata referenced by existing chunks. It does not require archived executable generators or every old pack directory. Staging an older pack creates another activation for future terrain. It does not undo saved blocks. See [generation update limits](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+
+Ordinary Bukkit Studio uses the same history model and activates compatible authoring edits while the world remains open. It does not require the production update command. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ## Related operations
 
@@ -362,4 +366,4 @@ This is unsafe for production without a backup for reasons the command cannot fi
 4. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
 5. Create a new world with `/iris create …`, which copies the pack into the world, or open Studio for live editing.
 6. Package with `/iris pack package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then extract and validate the exact archive.
-7. Replace an existing world snapshot only after a backup, with `/iris dev update-world world=<world> pack=<dimension> confirm=true`. A changed river configuration needs a new world; replacing a snapshot does not regenerate chunks.
+7. Stage a production update after a complete backup with `/iris dev update-world world=<world> pack=<dimension> confirm=true`. Compatible river changes affect future chunks, with existing terrain preserved.

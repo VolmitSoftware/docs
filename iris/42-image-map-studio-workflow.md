@@ -2,7 +2,7 @@
 title: "Image Map Studio Workflow"
 description: "Import, inspect, configure, preview, export, and validate image-driven Iris generation"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T22:13:55.376Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -31,11 +31,11 @@ On a headless server the runtime, schemas, validation, packaging, and image-driv
 9. **Inspect overlays.** Enable block coordinates, source pixels, chunks, regions, the origin, the configured world boundary, and source coverage. Pan and zoom to both positive and negative coordinates.
 10. **Resolve diagnostics.** Unknown-pixel and clipped-height counts remain visible; ambiguous tolerance matches are blocking compiler errors with source pixel coordinates. Invalid pixels, transparent fallbacks, out-of-bounds samples, and uncovered boundary areas must be fixed or explicitly handled.
 11. **Save or apply a preset.** Presets retain type, transform, decoding, legend, alpha, sampling, out-of-bounds, and mask settings. They do not turn a source into an implicitly different type.
-12. **Export.** Commit the PNG, typed image-map resource, dimension binding, and any preset updates atomically. A failed write leaves the previous project intact. A successful export invalidates cached presets and hotloads the active engine so preview and runtime use the new bytes.
+12. **Export.** Commit the PNG, typed image-map resource, dimension binding, and any preset updates atomically. A failed write leaves the previous project intact. A successful export writes the authoring pack and requests a Studio generation update. It never edits a retained generation snapshot.
 13. **Validate.** Run the exported project through the same runtime compiler and pack validator. Export succeeds only when there are no blocking image-map or pack-graph errors.
 14. **Verify in Vision and terrain.** Select Height or Biome mode in the Vision map, compare checkpoint coordinates against the final runtime field, then generate fresh chunks on the same seed.
 
-The workflow passes when the interpreted preview, Vision layer, and fresh generated chunks agree at the checkpoints; the pack validates; and closing and reopening Studio reproduces the same result.
+The interpreted preview shows the current authored map. Existing world chunks retain their saved terrain. Fresh boundary chunks include three-dimensional reconciliation against that terrain. Compare unchanged inputs or checkpoints beyond the finite transition band. Reopen Studio for a fresh world that uses only the latest pack.
 
 ## Required preview modes
 
@@ -86,6 +86,6 @@ Packaging runs the shared pack validator and image-map compiler before it clears
 | Unknown or ambiguous colors remain | Repair pixels or legend colors, reduce tolerance, or deliberately set the unknown fallback |
 | Terrain is shifted or mirrored | Check `origin`, `sourceOrigin`, axes, rotation, and mirror order against the coordinate checkpoints |
 | Export validation fails | Fix the first blocking diagnostic and export again; the previous project remains intact |
-| Existing terrain did not change | Generate fresh chunks or recreate the disposable world; image-map hotload does not rewrite generated chunks |
+| Existing terrain did not change | Generate chunks beyond the transition band, or reopen Studio for a fresh world. Hotload preserves existing chunks |
 
 Use [31 - Operator Runbooks](/iris/31-operator-runbooks) for the acceptance pass and [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the broader Studio lifecycle.

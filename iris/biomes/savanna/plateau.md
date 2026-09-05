@@ -2,7 +2,7 @@
 title: "Biome Atlas — Savanna Plateau"
 description: "Iris biome atlas entry for savanna/plateau in Overworld 4002 and Underworld 1005"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T00:19:31.005Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 - **Minecraft identity:** derivative `minecraft:savanna_plateau`; native-structure derivative `minecraft:savanna`; custom identities `savanna_plateau`; underground scatter `minecraft:savanna`, `minecraft:desert`; sky scatter `minecraft:desert`, `minecraft:savanna`.
 - **Surface:** 3-5 block(s) at slope >= 6.9: `minecraft:granite`; 3-5 block(s) at slope >= 4.6: `minecraft:coarse_dirt`, `minecraft:gravel`; 1 block(s): `minecraft:grass_block`; 2-4 block(s): `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
-- **Content:** 6 object placement rule(s) drawing from 38 object key(s), including `clutter/camp1`, `clutter/bincluster1`, `trees/acacia/savannaD1`, `trees/acacia/savannaD2`, `trees/acacia/savannaD3`, `trees/acacia/savannaF1`, `trees/acacia/savannaF2`, and 31 more. 6 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dead_bush`, `minecraft:cactus`, `minecraft:cactus_flower`, `minecraft:short_grass`, `minecraft:tall_grass`.
+- **Content:** 6 object placement rule(s) drawing from 38 object key(s), including `clutter/camp1`, `clutter/bincluster1`, `trees/acacia/savannad1`, `trees/acacia/savannad2`, `trees/acacia/savannad3`, `trees/acacia/savannaf1`, `trees/acacia/savannaf2`, and 31 more. 6 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dead_bush`, `minecraft:cactus`, `minecraft:cactus_flower`, `minecraft:short_grass`, `minecraft:tall_grass`.
 
 ## Underworld 1005 treatment
 

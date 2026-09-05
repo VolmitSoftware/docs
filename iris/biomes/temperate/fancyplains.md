@@ -2,7 +2,7 @@
 title: "Biome Atlas — Fancy Plains"
 description: "Iris biome atlas entry for temperate/fancyplains in Overworld 4002 and Underworld 1005"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T00:19:31.005Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 - **Minecraft identity:** derivative `minecraft:plains`; native-structure derivative `minecraft:plains`; no custom or scatter identities.
 - **Surface:** 1 block(s) at slope <= 4: `minecraft:grass_block`. Wall palette: `minecraft:andesite`, `minecraft:stone`, `minecraft:cobblestone`.
-- **Content:** 1 object placement rule(s) drawing from 13 object key(s), including `trees/oak/oakFancy1`, `trees/oak/oakFancy2NS`, `trees/oak/oakFancy3`, `trees/oak/oakFancy4`, `trees/oak/oakFancy5`, `trees/oak/oakFancy6`, `trees/oak/oakFancy7`, and 6 more. 8 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 9 more.
+- **Content:** 1 object placement rule(s) drawing from 13 object key(s), including `trees/oak/oakfancy1`, `trees/oak/oakfancy2ns`, `trees/oak/oakfancy3`, `trees/oak/oakfancy4`, `trees/oak/oakfancy5`, `trees/oak/oakfancy6`, `trees/oak/oakfancy7`, and 6 more. 8 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 9 more.
 
 ## Underworld 1005 treatment
 

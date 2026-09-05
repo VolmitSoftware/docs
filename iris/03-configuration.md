@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T22:13:55.376Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,7 +96,7 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | `world` | `IrisSettingsWorld` | Entity systems, async world tick, WorldEdit CUI, pregen cache |
 | `gui` | `IrisSettingsGUI` | Server-launched desktop GUIs |
 | `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot/Paper server-file fixups, custom-biome restart |
-| `generator` | `IrisSettingsGenerator` | Default pack for world creation, leaf decay |
+| `generator` | `IrisSettingsGenerator` | Default pack, generation transitions, leaf decay |
 | `concurrency` | (not serialized) | Nothing configurable — see below |
 | `studio` | `IrisSettingsStudio` | Studio world behavior |
 | `performance` | `IrisSettingsPerformance` | Mantle residency, loader caches, SIMD, engine service pool |
@@ -186,6 +186,7 @@ These keys are no-ops on mod loaders.
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
+| `generationTransitionWidthBlocks` | `256` | Next generation activation | Finite width of the transition beside saved terrain. Clamped to 16–8192 blocks. Applies to pack updates, changed generation build revisions, and ordinary Bukkit Studio updates |
 | `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** The pack key used whenever a world, studio, or command omits one — including a bare `Iris` generator string in `bukkit.yml` and `/iris create name=<name>` with no `type`. The accepted `type=default` sentinel resolves the same way but is not advertised by completion. Mod loaders use `defaultPack` in `modded.json` instead |
 | `preventLeafDecay` | `true` | Effectively **restart** | Marks generated leaves persistent so they do not decay. The flag is baked into resolved block data that is then cached, so already-resolved leaf blocks keep the old behavior after a reload. Unrelated to the per-dimension `preventLeafDecay` field in pack JSON |
 

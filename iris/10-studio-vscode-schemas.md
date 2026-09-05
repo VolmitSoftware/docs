@@ -2,14 +2,14 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-04T03:50:00.000Z
+date: 2026-09-04T22:22:28.804Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Studio opens a pack in a temporary world and applies saved JSON or object edits to new chunks.
+Studio opens a pack in a temporary world and applies accepted pack edits to new chunks.
 
-For this ordinary pack-authoring mode, Studio generates the same blocks, biomes, structures, and terrain as a normal world with the same pack and seed. It does not generate blank chunks or a landing pad. The behavioral difference is that Studio reads and hotloads the live authoring pack while a production world reads its frozen snapshot.
+For this ordinary pack-authoring mode, Studio generates the same blocks, biomes, structures, and terrain as a normal world with the same pack and seed. It does not generate blank chunks or a landing pad. On Bukkit, Studio watches the editable authoring pack and captures immutable generation snapshots. Existing chunks retain their earlier generation when a new snapshot activates.
 
 Related: see [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), and [36 - Rivers](/iris/36-rivers).
 
@@ -27,8 +27,8 @@ Prerequisites: a writable packs directory. You also need operator access on Bukk
    Refreshes `<pack>/<pack>.code-workspace`, rewrites `.iris/schema/*`, and opens that exact workspace. Generation still completes when `studio.openVSCode` is false or the server is headless; only the desktop launch is skipped. Copy the pack folder to your machine and open the workspace file yourself.
    *Success condition:* typing `"` inside any object in `biomes/starter.json` offers field names, and hovering a field shows its description, type, and default value. If it does not, the workspace was not opened or the schemas were never written. Run `/iris studio update dimension=tutorial`.
 4. **Make one change.** Edit `packs/tutorial/biomes/starter.json` and change only its display `name`. Save once.
-5. **Wait for the hotload result** before saving anything else. A failed hotload leaves the previous runtime active and reports the error; enable `/iris debug` when you need a console confirmation for routine success. Stacking more edits on top makes the first failure hard to find.
-6. **Verify in fresh terrain.** Walk into chunks that have never generated and run `/iris what biome`. The new display name appears there. Hotload never rewrites blocks that already exist, so standing still and expecting the world to change is the usual false negative.
+5. **Wait for the hotload result** before another save. Rejected edits leave the previous generation active. Enable `/iris debug` for routine success details.
+6. **Verify in fresh terrain.** Enter ungenerated chunks beyond the transition band and run `/iris what biome`. Existing chunks retain their earlier terrain and recorded semantics.
 7. **Validate.** `/iris pack validate pack=tutorial`: no blocking errors.
 8. **Close.** `/iris studio close`
 
@@ -51,10 +51,12 @@ A rejected height or dimension-type change is not evidence that hotload is broke
 
 ### When something goes wrong
 
+On Bukkit, Java agent or server code injection failure blocks every Studio world opening, including `force=true`. Follow [Java agent recovery](/iris/01-installation-platforms#recover-from-a-java-agent-failure) and restart completely before retrying.
+
 | Symptom | Meaning | Recovery |
 |---|---|---|
 | Ordinary or Jigsaw `open` reports startup validation pending, missing, failed, restart-required, or blocking pack errors | Datapacks or the pack graph cannot safely build the transient world | Complete the requested restart or run the platform's `pack validate` form, fix the first blocking error, and retry. The player receives the cached reasons and the console receives one warning without an expected-failure stack trace. Bukkit ordinary Studio alone accepts `force=true` to attempt the currently loaded registry state when only the restart boundary remains; it never bypasses blocking pack validation and may still fail if the required registry entry is absent |
-| Save reports hotload failure | The new data or runtime build failed. The previous runtime may remain active | Fix the first console error and save again before making unrelated edits |
+| Save reports hotload failure | Validation rejected the edit, or generation activation failed | Fix the first console error. Rejected edits keep the current generation. If activation stopped the engine, close and reopen Studio after repair |
 | Height, environment, or generated dimension-type change is rejected | The edit violates the Studio runtime contract | Close Studio and reopen. On modded, restart when regenerated dimension-type datapacks require a registry reload |
 | A valid change is invisible | The chunks you are standing in are already materialized, or the edited resource is unreachable from the active dimension | Move to new chunks. Trace dimension → region → biome to confirm the resource is actually referenced. Use `focus`/`focusRegion` or a buffet studio mode to isolate |
 | No autocomplete, or resource keys are stale | Schemas were not generated or refreshed, or the editor never opened the workspace | Run `/iris studio update`, then open the pack's `.code-workspace`. On headless servers open it manually |
@@ -65,8 +67,8 @@ A rejected height or dimension-type change is not evidence that hotload is broke
 | Concept | Behavior |
 |---------|----------|
 | Pack workspace | Packs live under the platform data directory in the folder named `packs` (`StudioSVC.WORKSPACE_NAME`) |
-| Studio world | Opened from a pack dimension key. Uses a studio chunk generator bound to the live pack folder with file watching |
-| Hotload | Studio worlds apply saved JSON and object changes to newly generated chunks. Production worlds use their saved pack snapshot |
+| Studio world | On Bukkit, opens an immutable pack snapshot and watches the separate authoring folder |
+| Hotload | Ordinary Bukkit Studio captures accepted JSON, IOB, and PNG edits as new generation activations. Existing chunks keep their earlier generation |
 | Hotload contract | Iris refuses hotload if the dimension type key, exact environment, or effective generated dimension type changes. The generated type includes min height, total height, logical height, resolved `dimensionOptions`, and the `fullbright` ambient-light override |
 | Non-studio worlds | No pack file watcher. Production worlds keep the pack snapshot installed at create or update time |
 
@@ -83,11 +85,21 @@ Studio settings live in `iris.json` under `studio` (`IrisSettings.IrisSettingsSt
 
 - The watcher runs only when `PlatformChunkGenerator.isStudio()` is true, the world is not closing, and no Jigsaw Studio session is active. Jigsaw Studio deliberately suppresses ordinary pack-file hotload.
 - Studio detects normal editor saves, file replacements, and FTP uploads. Temporary files and `.iris` output are ignored. Invalid edits leave the current pack active.
-- On change: load a new `IrisData` from the same folder. Reload the dimension key and check the hotload contract. Build a new engine runtime and retire the previous data. Refresh the workspace and schemas. Reload datapacks when a platform world is bound. Broadcast a client studio-hotload toast on success or failure.
-- `hotloadComplex` is a narrower rebuild that reconstructs `IrisComplex` without reopening the pack.
-- A failed hotload rolls the runtime back where possible and reports the error.
+- Ordinary Bukkit Studio validates the saved authoring tree, dimension contract, and required loaded registry definitions. Invalid structure backends or native anchors reject the edit before cutover and leave the active epoch unchanged. Identical pack bytes create no new activation.
+- An accepted update drains generation, checkpoints native chunks, freezes saved natural boundaries, and activates the replacement runtime.
+- File watching continues during terrain generation and pregeneration. The generation gate drains active work before each cutover. Maintenance and initial cache warming still pause watching.
+- New terrain uses `generator.generationTransitionWidthBlocks` to reconcile against the frozen natural boundary. Terrain already stored in native chunks remains intact.
+- Editor exports, workspace files, schemas, and preset reads use the authoring folder. Generation reads the immutable snapshot.
+- With generation history attached, `hotloadComplex` uses the same pack-update path.
+- Validation failures leave the active generation unchanged. A failure after durable activation stops generation and reports the full error. Repair the cause, then reopen Studio.
 
-The dimension type key, exact environment, and effective generated dimension type are pinned for the life of the world and cannot hotload. The generated type contains min height, total height, logical height, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Close and reopen Studio after editing the dimension file name or any of those fields when the edit changes the effective contract. See [11 - Dimensions](/iris/11-dimensions).
+The same saved-boundary path handles startup upgrades and live Studio edits. It reconciles three-dimensional terrain, cave openings, materials, and fluids within a finite band. Large edits can still produce visible changes. Fluid banks do not simulate every waterlogged or partial-block interaction. See [generation update limits](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+
+Routine world-manager tasks skip an active cutover so owner-thread checkpoint work can proceed. Accepted generation work must drain before activation. Unfinished native stages can still complete after their saved terrain exists.
+
+Inspect new chunks beyond the transition band to assess the replacement pack alone. Closing Studio deletes its temporary world and history. Reopening starts a fresh world from the latest authoring pack.
+
+The dimension type key, exact environment, and effective generated dimension type are pinned for the life of the world and cannot hotload. The generated type contains min height, total height, logical height, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Close and reopen Studio after changes to those fields, the dimension key, or coordinate scale. Generation mode and fluid baseline can change within the fixed physical layout. New or changed required registry definitions can require a server restart. See [11 - Dimensions](/iris/11-dimensions).
 
 ## Commands (Bukkit)
 

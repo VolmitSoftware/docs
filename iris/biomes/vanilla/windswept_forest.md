@@ -2,7 +2,7 @@
 title: "Biome Atlas — Windswept Forest"
 description: "Iris biome atlas entry for vanilla/windswept_forest in Overworld 4002 and Underworld 1005"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T00:19:31.005Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,11 +43,13 @@ Underworld keeps the terrain links but uses its Nether derivative, materials, ob
 
 ## Children
 
-### Mountain Middle (`mountain/Cute_Cliffs+`)
+### Mountain Middle
+
+Overworld uses `mountain/cute_cliffs+`; Underworld uses `mountain/Cute_Cliffs+`.
 
 This child-only biome is selected from `vanilla/windswept_forest`, not from a region list. Its rarity is `1`.
 In that immediate child choice it contributes `1` of `2` slots (50.00%); later child hops are resolved separately.
-`mountain/Cute_Cliffs+` then intentionally lists itself as its own child. Its explicit self entry and implicit current-biome option both resolve to the same biome through Iris's bounded four-hop child recursion; this preserves reachability without adding region-list weight.
+Each pack’s Mountain Middle biome intentionally lists its own key as its child. Its explicit self entry and implicit current-biome option both resolve to the same biome through Iris's bounded four-hop child recursion; this preserves reachability without adding region-list weight.
 
 **Shared terrain:** `mountain` (106..185); combined authored contribution `106..185` blocks relative to fluid height.
 

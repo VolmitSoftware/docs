@@ -2,12 +2,12 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T22:13:55.376Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris loads it through `IrisData`, which registers one loader per resource type. It turns short string keys into files on disk and caches what it reads. Every world you create gets its own frozen copy of the pack. Only Studio worlds read the folder you edit.
+A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris loads it through `IrisData`, which registers one loader per resource type. It turns short string keys into files on disk and caches what it reads. Production worlds and Bukkit Studio generate from immutable pack snapshots. Bukkit Studio watches the separate folder you edit and activates accepted changes for new chunks.
 
 See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
 
@@ -121,27 +121,22 @@ resolves to `<packRoot>/snippet/style/soft-hills.json`.
 
 The bundled overworld uses `snippet/decorator/*` and `snippet/style/*`.
 
-## Two copies of every pack
+## Authoring packs and generation snapshots
 
-This is the concept that causes the most confusion, so it is worth being blunt about.
+Edit the source pack under `packs/<key>/`. Production worlds and Bukkit Studio capture immutable copies under `<world>/iris/generation/epochs/<epoch>/pack/`. The manifest selects the active epoch and references immutable epoch metadata. Iris releases archived pack copies after their runtimes retire.
 
-**The pack you edit and the pack a world generates from are different files.**
+| Mode | Generation source | How changes apply |
+|---|---|---|
+| Ordinary Bukkit Studio | Immutable world-local epochs | Watches authoring JSON, IOB, and PNG files. Accepted edits activate for new chunks with a boundary transition |
+| Modded Studio | Live authoring pack | Uses the modded Studio hotload path |
+| Production | Immutable world-local epochs | Explicit update staging and restart |
+| Benchmark without Studio | `<world>/iris/pack` | Disposable copied pack |
 
-When you create a non-Studio world, Iris copies the entire pack tree into `<world>/iris/pack`. The world's engine reads only that copy for the rest of its life. Editing `packs/overworld/` afterwards changes nothing about that world. This is deliberate. A world's terrain must stay reproducible even if you keep authoring.
+Bukkit Studio editors, exports, presets, and schemas use the authoring folder. Generation reads the active snapshot. Invalid edits leave the active generation unchanged. A failure after durable activation stops generation and requires repair before reopening Studio.
 
-Studio worlds are the exception. A Studio world's engine points directly at the live pack folder and watches it for changes, which is what makes hotload possible.
+Existing chunks keep their saved terrain and recorded generation semantics. New chunks use the current generator and reconcile terrain, caves, materials, and fluids against saved natural edge columns. The transition has a finite width. It does not reconstruct an old generator.
 
-| Mode | Pack the engine reads | Hotload | Copied into the world? |
-|---|---|---|---|
-| Studio (`studio=true`) | Live `packs/<key>/` (or the studio project path) | Yes | No |
-| Production create | `<world>/iris/pack` | No | Yes, atomic stage then publish via `StudioSVC.installIntoWorld` |
-| Benchmark | `<world>/iris/pack` | Studio flag still governs transient cleanup | Yes |
-
-Hotload opens a fresh `IrisData` on the same folder. It reloads the dimension by its key and builds a replacement engine runtime under the lifecycle lock. It publishes that runtime, retires the old `IrisData`, then refreshes the editor workspace and datapacks in the background. If any step fails it rolls back to the previous runtime and reports the error.
-
-Studio watches `.json` and `.iob` files and applies complete saved changes to new chunks. Temporary files and `.iris` output are ignored. Invalid edits leave the current pack active.
-
-To push pack edits into an existing production world, see `update-world` in [25 - Pack Management](/iris/25-pack-management), or just create a new world. That is the right answer for any change to height or dimension type.
+See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the edit loop and [25 - Pack Management](/iris/25-pack-management) for production updates. Physical height, dimension type, and coordinate-scale changes require a new world. Generation modes, fluid baselines, and upper-terrain content can change within that fixed layout.
 
 ## Where packs live
 
@@ -149,7 +144,7 @@ To push pack edits into an existing production world, see `update-world` in [25 
 |---|---|---|
 | Packs you author and download into | `plugins/Iris/packs/<key>/` | `config/irisworldgen/packs/<key>/` |
 | Platform data dir (`iris.json`, languages, caches) | `plugins/Iris/` | `config/iris/` |
-| A world's frozen snapshot | `<dimensionRoot>/iris/pack/` | same, under the modded world root |
+| A world's generation snapshots | `<dimensionRoot>/iris/generation/epochs/<epoch>/pack/` | same, under the modded world root |
 | Prefetch key indexes | `<platform data dir>/prefetch/<dimId>/<hash>.ipfch` | same |
 | Studio schemas | `<packRoot>/.iris/schema/` | same |
 
@@ -214,7 +209,7 @@ An archive installed through `link=` has no expected key. Iris uses its shortest
 | Snippet loaded the wrong file | A `snippet/<otherType>/…` string was re-rooted under this field's own type | Use the type that matches the field |
 | Studio does not offer a new resource in completions | Workspace schema enums are stale | `/iris studio update dimension=<pack>` on Bukkit, `/iris studio update <pack>` on modded |
 | Console warns "Ambiguous \<type\> \<key\>" | Two files share a base name before the first dot | Keep one canonical filename. Iris took the alphabetically first |
-| Production world ignores your fix | It is reading `<world>/iris/pack`, not your live pack | Validate in Studio, then run the explicit world-update workflow or create a new world |
+| Production world ignores your fix | Its active generation epoch still references the previous pack | Validate in Studio, then run the explicit world-update workflow or create a new world |
 
 ## The bundled overworld pack
 

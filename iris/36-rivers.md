@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-03T20:30:00.000Z
+date: 2026-09-04T23:45:15.779Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -808,6 +808,8 @@ Before an immutable tile becomes visible, its cave view lazily generates every p
 Each all-or-nothing cave transaction is limited to 262,144 planned mutation positions across its complete course, including attached non-grotto sections. A larger candidate receives `VOLUME_LIMIT` before Iris materializes cave positions or reads voxel state. The configured grotto `maximumVolume` remains the smaller, feature-specific chamber limit.
 
 An accepted cave plan stores every bed, wet source, falling throat, dry-headroom, and seal-guard action together with the exact baseline cave preconditions used for admission. The mantle pass rechecks all relevant preconditions before compiling a chunk and publishes nothing from that chunk when any check differs, so it cannot write a partial local subset after its proof becomes invalid. When `connectToExistingCaves` is enabled, a planned dry boundary may open into suitable cave air without exposing the wet volume. Hydrology-owned cells and seal guards remain protected from later object or structure writes that would break containment; the cave network never becomes a shared reservoir. Dry headroom above an underground river uses the `floodedCaveBiomes` content of the course.
+
+During a generation update, hydrology tapering preserves accepted underground and deep-fluid layer coordinates so their beds, fluid heads, and ceilings still match the containment action map. Cave seals are omitted when all their neighboring planned cave volume is excluded from the current publication, such as a historical boundary halo; a supplied cave column without a valid owner or a plan without neighboring volume remains an error. Surface layers still taper toward natural terrain height. The final three-dimensional terrain blend and local fluid banks handle the transition to saved terrain; see [generation update limits](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
 
 ### Decorators and freezing
 

@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-04T03:50:00.000Z
+date: 2026-09-05T02:32:33.511Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -145,7 +145,7 @@ The `threadCount` argument is vestigial. `AsyncPregenMethod` ignores it. On Pape
 
 ## Cache
 
-The cache records which chunks are already generated so a restarted or repeated run can skip them.
+The cache records completed chunks and regions as skip hints. Cached chunks must have saved native `FULL` status before Iris skips them. A region skip requires all 1,024 chunks to pass that check. Missing or partially generated chunks go through the normal generation backend.
 
 | Piece | Where | Behavior |
 |---|---|---|
@@ -213,7 +213,7 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 
 ## Performance profile
 
-Starting pregeneration temporarily applies Iris's pregen performance settings on the pregenerator worker. Existing compatible natural-height and final-height caches are resized in place, avoiding a full engine rebuild before generation begins. Normal settings return when the job ends.
+Starting pregeneration temporarily applies Iris's pregen performance settings on the pregenerator worker. The natural-height and raw-height caches are resized in place before generation begins. The resolved terrain stream and its boundary transition state remain active; cache resizing does not rebuild the engine. Normal settings return when the job ends.
 
 On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. It does not enqueue every hydrology tile in the requested area at startup. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

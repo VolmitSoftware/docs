@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Lower Mountain"
-description: "Iris biome atlas entry for mountain/Cute_Cliffs in Overworld 4002 and Underworld 1005"
+description: "Paired Iris atlas entry for Overworld mountain/cute_cliffs and Underworld mountain/Cute_Cliffs"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T00:19:31.006Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mountain/Cute_Cliffs` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mountain/cute_cliffs` in the current Overworld and `mountain/Cute_Cliffs` in Underworld are the paired directly selected land biome. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -43,11 +43,13 @@ Underworld keeps the terrain links but uses its Nether derivative, materials, ob
 
 ## Children
 
-### Mountain Middle (`mountain/Cute_Cliffs+`)
+### Mountain Middle
 
-This child-only biome is selected from `mountain/Cute_Cliffs`, not from a region list. Its rarity is `1`.
+Overworld uses `mountain/cute_cliffs+`; Underworld uses `mountain/Cute_Cliffs+`.
+
+This child-only biome is selected from Overworld `mountain/cute_cliffs` or Underworld `mountain/Cute_Cliffs`, not from a region list. Its rarity is `1`.
 In that immediate child choice it contributes `1` of `2` slots (50.00%); later child hops are resolved separately.
-`mountain/Cute_Cliffs+` then intentionally lists itself as its own child. Its explicit self entry and implicit current-biome option both resolve to the same biome through Iris's bounded four-hop child recursion; this preserves reachability without adding region-list weight.
+Each pack’s Mountain Middle biome intentionally lists its own key as its child. Its explicit self entry and implicit current-biome option both resolve to the same biome through Iris's bounded four-hop child recursion; this preserves reachability without adding region-list weight.
 
 **Shared terrain:** `mountain` (106..185); combined authored contribution `106..185` blocks relative to fluid height.
 
@@ -63,9 +65,9 @@ No floating child biomes are declared.
 Run these in an Iris world and inspect freshly generated terrain:
 
 ```text
-/iris find biome mountain/Cute_Cliffs
+/iris find biome mountain/cute_cliffs
 /iris what biome
 /iris what region
 ```
 
-The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.
+For Underworld, use `/iris find biome mountain/Cute_Cliffs` instead. The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.

@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-04T23:19:19.294Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -737,3 +737,11 @@ Third-party templates using the legacy slab property `half=top|bottom`, or the m
 | `/iris developer update-world` | | `world=<w> pack=<dim> confirm=true` — all keyed |
 
 Related dimension fields: `datapackImports`, `importedStructures`, `structures[]`. Settings in `plugins/Iris/iris.json`: `general.autoIngestDatapacks` (default true), `general.autoImportDatapackStructures` (default false).
+
+## Native content beside generation updates
+
+Generation updates use saved natural terrain as their boundary. New native structure starts require their complete footprint to avoid historical chunks. The new transition band permits structure placement. Native feature decoration checks its surrounding 3×3 chunk write area and skips the pass when that area contains a completed historical chunk.
+
+Native structure starts carry their activation in native chunk storage, including starts saved before `noise`. After an update, those older starts can finish remaining chunk-local placement without the new-start footprint check. Completed stages are not rerun.
+
+Height and base-column queries in the transition band use the same resolved geometry as terrain placement. The current native pipeline completes permitted later work without reconstructing an archived Iris generator. See [generation updates and retained terrain](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).

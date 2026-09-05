@@ -2,7 +2,7 @@
 title: "Biome Atlas — Wooded Badlands"
 description: "Iris biome atlas entry for vanilla/wooded_badlands in Overworld 4002 and Underworld 1005"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T00:19:31.006Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 - **Minecraft identity:** derivative `minecraft:wooded_badlands`; native-structure derivative `minecraft:wooded_badlands`; custom identities `wooded_badlands`.
 - **Surface:** 1 block(s) at slope 2-10: `minecraft:terracotta`; 1 block(s) at slope 0-2: `minecraft:red_sand`, `minecraft:orange_terracotta`, `minecraft:grass_block`; 1 block(s): `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`, `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`; 2 block(s): `minecraft:orange_terracotta`; 1 block(s): `minecraft:terracotta`; 1 block(s): `minecraft:terracotta`, `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`. Wall palette: none.
-- **Content:** 6 object placement rule(s) drawing from 33 object key(s), including `trees/acacia/vexed1`, `trees/acacia/vexed2`, `trees/acacia/vexed3`, `clutter/camp1`, `clutter/bincluster1`, `trees/acacia/savannaD1`, `trees/acacia/savannaD2`, and 26 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:white_tulip`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:tall_grass`, `minecraft:short_grass`.
+- **Content:** 6 object placement rule(s) drawing from 33 object key(s), including `trees/acacia/vexed1`, `trees/acacia/vexed2`, `trees/acacia/vexed3`, `clutter/camp1`, `clutter/bincluster1`, `trees/acacia/savannad1`, `trees/acacia/savannad2`, and 26 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:white_tulip`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:tall_grass`, `minecraft:short_grass`.
 
 ## Underworld 1005 treatment
 

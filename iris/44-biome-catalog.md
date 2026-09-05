@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-03T04:14:00.000Z
+date: 2026-09-05T00:19:31.006Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ Overworld 4004 reduces every subterranean ore pass by 30% and permits ore on ext
 
 ## Catalog scope
 
-The paired catalog contains 375 reachable biome keys:
+The paired catalog contains 375 reachable biome identities:
 
 | Kind | Count | Documentation treatment |
 |---|---:|---|
@@ -52,6 +52,8 @@ The Overworld repository contains seven unreachable files. They are not active c
 | [Vanilla](/iris/biomes/vanilla) | 20 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. They add a regional cave root and one child to the current pack sources, with ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
+
+Current Overworld resources use lowercase paths. Lower Mountain uses `mountain/cute_cliffs` and its Mountain Middle child uses `mountain/cute_cliffs+`. Underworld retains `mountain/Cute_Cliffs` and `mountain/Cute_Cliffs+`. The paired terrain and selection weights remain the same; the [Lower Mountain page](/iris/biomes/mountain/cute_cliffs) lists both identifiers.
 
 ## Read the atlas
 

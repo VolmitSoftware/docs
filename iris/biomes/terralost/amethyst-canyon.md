@@ -2,7 +2,7 @@
 title: "Biome Atlas — Amethyst Rainforest"
 description: "Iris biome atlas entry for terralost/amethyst-canyon in Overworld 4002 and Underworld 1005"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T00:19:31.006Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 - **Minecraft identity:** derivative `minecraft:jungle`; native-structure derivative `minecraft:jungle`; custom identities `terralost_amethyst_rainforest1`, `terralost_amethyst_rainforest2`.
 - **Surface:** 1-3 block(s): `minecraft:calcite`, `minecraft:smooth_basalt`; 2-5 block(s): `minecraft:tuff`. Wall palette: none.
-- **Content:** 4 object placement rule(s) drawing from 40 object key(s), including `trees/mixed/AmyLarge1`, `trees/mixed/AmyLarge2`, `trees/mixed/AmyLarge3`, `trees/mixed/AmyLarge4`, `trees/mixed/AmyLarge5`, `trees/mixed/AmyLarge6`, `trees/mixed/AmyLarge7`, and 33 more. 2 decorator rule(s) using `minecraft:allium`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:large_fern`.
+- **Content:** 4 object placement rule(s) drawing from 40 object key(s), including `trees/mixed/amylarge1`, `trees/mixed/amylarge2`, `trees/mixed/amylarge3`, `trees/mixed/amylarge4`, `trees/mixed/amylarge5`, `trees/mixed/amylarge6`, `trees/mixed/amylarge7`, and 33 more. 2 decorator rule(s) using `minecraft:allium`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:large_fern`.
 
 ## Underworld 1005 treatment
 
