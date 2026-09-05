@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T16:27:35.585Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,10 +59,12 @@ Iris collects every generator referenced by every biome the dimension can reach.
 For each bucket, at each column:
 
 1. The interpolator samples the surrounding columns and blends their biomes height bands for that bucket. That gives a smoothed low and high.
-2. Every generator in the bucket is evaluated at the column and mapped into that smoothed low..high range.
+2. When low and high differ, each generator is evaluated at the column and mapped into that range. Equal finite bounds contribute their constant height without sampling generator noise.
 3. The results are averaged.
 
 Bucket results are then added together to give the column height. `fluidHeight` plus any dimension `overlayNoise` is added on top before the final clamp to the dimension usable range.
+
+Iris rejects nonfinite interpolated bounds or active generator noise before the result enters the terrain-height cache. The error identifies the generator, column, and height bounds. A constant-height bucket skips its inactive noise sampling.
 
 Two practical consequences:
 
