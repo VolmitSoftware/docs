@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-05T00:19:31.006Z
+date: 2026-09-05T15:58:06.036Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -53,11 +53,11 @@ The Overworld repository contains seven unreachable files. They are not active c
 
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. They add a regional cave root and one child to the current pack sources, with ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
 
-Current Overworld resources use lowercase paths. Lower Mountain uses `mountain/cute_cliffs` and its Mountain Middle child uses `mountain/cute_cliffs+`. Underworld retains `mountain/Cute_Cliffs` and `mountain/Cute_Cliffs+`. The paired terrain and selection weights remain the same; the [Lower Mountain page](/iris/biomes/mountain/cute_cliffs) lists both identifiers.
+Overworld 4006 resources use lowercase paths. Lower Mountain uses `mountain/cute_cliffs` and its Mountain Middle child uses `mountain/cute_cliffs+`. Underworld retains `mountain/Cute_Cliffs` and `mountain/Cute_Cliffs+`. The paired terrain and selection weights remain the same; the [Lower Mountain page](/iris/biomes/mountain/cute_cliffs) lists both identifiers.
 
 ## Read the atlas
 
-- [Overworld 4002](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
+- [Overworld 4006](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
 - [Underworld 1005](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
 - [Shorelines](/iris/biomes/shorelines) collects the short transition biomes that do not need individual pages.
 - Individual entries live at `/iris/biomes/<load-key>`. For example, `temperate/plains` is [Temperate Plains](/iris/biomes/temperate/plains), while `carving/standard-deepdark` is [the global Deep Dark family](/iris/biomes/carving/standard-deepdark).

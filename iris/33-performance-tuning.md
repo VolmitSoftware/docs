@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-04T03:50:00.000Z
+date: 2026-09-05T01:32:40.452Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -115,6 +115,14 @@ Hydrology planning is paid once per cold immutable tile; warm generation reuses 
 
 Exact routing-grid rows are sampled concurrently. Surface-course search uses that grid only to rank provisional candidates, then resolves exact terrain, bank, and transition costs along the currently selected path. If one route layer has no viable candidate, Iris adds only that layer's exact guide fallback instead of rebuilding every route candidate. These optimizations preserve the full terrain-safety validation contract.
 
+Cold hydrology tile planning and chunk-column composition run outside cache insertion locks. Concurrent requests for one key share its result, while unrelated keys can proceed together even when their hashes select the same cache bucket. Cache invalidation prevents older work from repopulating the cleared cache. The scheduler defers queued speculative neighbors until required tile batches finish. Active plans and cross-tile owner dependencies continue.
+
+Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original evaluation order. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
+
+Height, policy, and footprint basis queries skip slope calculations when the result does not use slope. This avoids two neighboring height samples for each such uncached query. Route scoring and terrain checks that use slope retain those calculations. Repeated centerline refinement reuses its geometric turn costs and completed guides within the current owner draft.
+
+Large cave-density passes divide independent samples among up to four workers in the current pool. Fixed noise styles also calculate aquifer eligibility in those tasks. Expression styles keep their serial evaluation order. Mantle writes and final fluid-support resolution remain on the calling generation worker. Workers claim pending density tasks themselves and drain started tasks before returning, including on failure or interruption.
+
 ## Symptom: the first chunks pause while strongholds initialize
 
 Minecraft 26.2 prepares its concentric stronghold rings before ordinary
@@ -217,14 +225,10 @@ tiles are planned, and a cold tile is expensive: the planner samples the
 natural terrain of the tile and its neighbours, routes every candidate
 river, and then resolves the lower-ranked neighbouring tiles its rivers and
 caves reach into before it can publish. A spawn on a tile corner needs four
-tiles at once. Generation itself is fast once the tiles exist; the wait is
-the planning.
+tiles at once. The first chunks also initialize terrain, caves, and native
+structure reference windows after their required hydrology tiles are ready.
 
-Iris starts planning every tile within half a tile of the initial spawn as
-soon as the generator is injected into a new world, so the tiles a cold
-entry touches plan together and the wait overlaps world setup. Pregeneration
-adds a bounded one-tile lookahead around its center, then advances that
-lookahead with the generation front instead of planning the whole area. The chunk system
+Runtime worlds start planning every tile within half a tile of the initial spawn when Iris injects the generator. For an ungenerated destination chunk, Normal Studio instead starts its hydrology task at injection, in parallel with world setup. That task uses the opening runtime and participates in reload and shutdown tracking. Pregeneration adds a bounded one-tile lookahead around its center, then advances that lookahead with the generation front instead of planning the whole area. Starting a new pregen removes queued speculative plans outside its initial lookahead; plans already running and required tile requests still complete. The chunk system
 generates a few hundred blocks around the player and each chunk's mantle
 window reaches further, so a spawn touches its neighbouring tiles no matter
 where on a tile it sits; the cold entry is bounded by the deepest chain of
@@ -240,7 +244,9 @@ Hydrology owner -1,-2 rank=1 drafted in 9420ms: context=3635ms select=155ms sett
 selection, `publish` is the publication passes including `wait`, the time
 spent waiting for lower-ranked neighbour drafts (`deps`). A tile with a
 large `wait` is bounded by its neighbours; a tile with a large `context` is
-bounded by terrain sampling, which scales with the burst pool.
+bounded by terrain sampling, which scales with the burst pool. Owner logs also report the number of early neighboring drafts (`earlyOwners`), centerline solve counts and time (`routes`, `reuses`, `routeSolve`), validation raster counts and time (`rasters`, `raster`), and cave-filter counts and time (`filters`, `filter`). These measurements separate local work from dependency waits.
+
+When owner tiles use two colors on each axis, selected river candidates start lower-ranked neighboring drafts before local validation finishes. Higher-ranked dependencies enter the queue first. Terrain routing contexts compute outside cache mapping locks, so unrelated tiles can initialize concurrently; requests for the same tile share the calculation. Hydrology also reuses the terrain generator's cached base-biome selection when selection noise has no expressions and no chunk context is bound; shore selection still uses the requested natural height.
 
 A plugin that asks Iris for heights or biomes on the server thread (map
 overlays, statistics, teleport helpers) never waits for planning: for a
@@ -279,6 +285,9 @@ warming. Generation, Matter generation, Studio hotload, and entry teleport
 wait for completion, and `generation_cache_warm` must report
 `skipped=false`. Treat the overlapping warm and ring durations as one
 wall-clock interval rather than adding them.
+
+Object and Jigsaw Studio use flat authoring floors and a plains biome. They skip normal generation-cache warmup, spawn hydrology prefetch, native structure activation, and imported-feature placement. Their opens still require pack validation, runtime construction, and object loading. These authoring modes and `OBJECT_BUFFET` derive native heightmaps from actual blocks and skip native structure and imported-feature placement. Measure them separately from Standard Studio without `OBJECT_BUFFET`, which retains full pack generation.
+
 Iris never changes a player's view distance, and never changes a world's view
 or simulation distance. Those settings belong to the server and to the player's
 own client; entry works within whatever they are.
@@ -294,7 +303,7 @@ plan for that identity must finish before there is anything to reuse.
 Capture JProfiler around any slow pack
 preparation, runtime construction, structure activation, destination-chunk
 generation, or scheduler queue. Do not accelerate entry by changing its
-output: Studio must generate the same blocks, biomes, structures, and
+output: Standard Studio must generate the same blocks, biomes, structures, and
 terrain as a normal world with the same pack and seed, without blank chunks
 or a landing pad.
 

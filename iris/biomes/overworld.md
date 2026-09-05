@@ -1,17 +1,17 @@
 ---
-title: "Overworld 4004"
+title: "Overworld 4006"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-05T00:19:31.006Z
+date: 2026-09-05T15:58:06.036Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Overworld 4004 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
+Overworld 4006 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Overworld 4004 |
+| Built-in pack | Overworld 4006 |
 | Environment | `NORMAL` |
 | Build range | Y `-256..512` |
 | Logical height | `512` |
