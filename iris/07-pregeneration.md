@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-04T03:50:00.000Z
+date: 2026-09-05T01:59:17.711Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -123,6 +123,8 @@ The command root is `/iris pregen` with alias `/iris pregenerate`.
 
 Bounds are inclusive on both edges. The minimum block floors to a chunk, the maximum ceils. For radius 352 at `0,0` that gives chunks `-22..22` on each axis: 45 per axis, 2,025 total.
 
+Iris calculates the total directly from these chunk bounds before generation starts. It does not traverse every requested chunk just to count them. The count and generation order remain unchanged.
+
 | Limit | Value |
 |---|---|
 | Safe block edge | ±29,999,984 inclusive for every `center ± radius` result |
@@ -215,7 +217,7 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 
 Starting pregeneration temporarily applies Iris's pregen performance settings on the pregenerator worker. Existing compatible natural-height and final-height caches are resized in place, avoiding a full engine rebuild before generation begins. Normal settings return when the job ends.
 
-On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. It does not enqueue every hydrology tile in the requested area at startup. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. Iris does not enqueue every hydrology tile in the requested area at startup. Iris discards queued speculative plans outside the initial lookahead and admits the new frontier in one queue update, so concurrent spawn-area prefetch cannot enter between those operations; active plans and requested tiles still complete. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 Stopping or completing a job unloads its tracked chunks with saving enabled and waits for the resulting chunk I/O flush. Iris does not issue a plugin-induced whole-world save, so servers with automatic saving enabled do not emit the manual-save performance warning during normal pregen cleanup.
 
