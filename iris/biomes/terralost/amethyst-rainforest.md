@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Amethyst Rainforest"
-description: "Iris biome atlas entry for terralost/amethyst-rainforest in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for terralost/amethyst-rainforest in Overworld 4002 and Underworld 1009"
 published: true
-date: 2026-09-05T00:19:31.006Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`terralost/amethyst-rainforest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`terralost/amethyst-rainforest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1009 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4002 | `terralost` (Terralost) | 1 | 1 | 1 | 20.00% |
-| Underworld 1005 | `terralost` (Underworld Terralost) | 1 | 1 | 1 | 20.00% |
+| Underworld 1009 | `terralost` (Underworld Terralost) | 1 | 1 | 1 | 20.00% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -32,11 +32,11 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:stone`, `minecraft:coarse_dirt`, `minecraft:diorite`; 2-4 block(s): `minecraft:dirt`; 1 block(s): `minecraft:stone`. Wall palette: none.
 - **Content:** 4 object placement rule(s) drawing from 39 object key(s), including `trees/mixed/amylarge1`, `trees/mixed/amylarge2`, `trees/mixed/amylarge3`, `trees/mixed/amylarge4`, `trees/mixed/amylarge5`, `trees/mixed/amylarge7`, `trees/mixed/amylarge8`, and 32 more. 2 decorator rule(s) using `minecraft:allium`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:large_fern`.
 
-## Underworld 1005 treatment
+## Underworld 1009 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_terralost_amethyst_rainforest_56058a4a`.
 - **Surface:** 1 block(s): `minecraft:soul_soil`, `minecraft:basalt`, `minecraft:quartz_block`; 2-4 block(s): `minecraft:soul_soil`; 1 block(s): `minecraft:basalt`. Wall palette: none.
-- **Content:** 4 object placement rule(s) drawing from 39 object key(s), including `underworld/soul/trees/mixed/AmyLarge1`, `underworld/soul/trees/mixed/AmyLarge2`, `underworld/soul/trees/mixed/AmyLarge3`, `underworld/soul/trees/mixed/AmyLarge4`, `underworld/soul/trees/mixed/AmyLarge5`, `underworld/soul/trees/mixed/AmyLarge7`, `underworld/soul/trees/mixed/AmyLarge8`, and 32 more. 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_roots`, `minecraft:nether_sprouts`, `minecraft:soul_fire`.
+- **Content:** 4 object placement rule(s) drawing from 39 object key(s), including `underworld/soul/trees/mixed/amylarge1`, `underworld/soul/trees/mixed/amylarge2`, `underworld/soul/trees/mixed/amylarge3`, `underworld/soul/trees/mixed/amylarge4`, `underworld/soul/trees/mixed/amylarge5`, `underworld/soul/trees/mixed/amylarge7`, `underworld/soul/trees/mixed/amylarge8`, and 32 more. 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_roots`, `minecraft:nether_sprouts`, `minecraft:soul_fire`.
 - **Entity spawners:** `nether/surface/soul-sand-valley`, `nether/cave`.
 
 Underworld keeps the terrain links but uses its Nether derivative, materials, objects, and surface/cave spawners.

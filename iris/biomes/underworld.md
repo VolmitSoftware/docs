@@ -1,17 +1,17 @@
 ---
-title: "Underworld 1005"
+title: "Underworld 1009"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Underworld 1005 reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
+Underworld 1009 reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Underworld 1005 |
+| Built-in pack | Underworld 1009 |
 | Environment | `NETHER` |
 | Terrain mode | `OVERWORLD` |
 | Coordinate scale | 1:1 with the paired Overworld seed |
@@ -24,6 +24,8 @@ Underworld 1005 reuses the Overworld terrain graph at the same seed and coordina
 | Dimension carving | `carving/standard-deepdark` from Y `-250..-175` |
 | Dimension ores / deposits | 11 independent ore definitions and 12 deposit passes |
 | External datapacks | None |
+
+Underworld 1009 normalizes 148 resource paths and 273 references to lowercase. Lower Mountain uses `mountain/cute_cliffs`, and Mountain Middle uses `mountain/cute_cliffs+`. The casing update preserves terrain, selection weights, materials, ecology, and the independent ore and deposit tables.
 
 ## Foundation and fluids
 
@@ -41,4 +43,4 @@ Underworld does not copy Overworld ores, deposits, native structures, palettes, 
 
 The active key set matches Overworld, but exact selector membership is not universally identical. Estranged exposes additional shared shore keys in Underworld. Atlas pages therefore report region membership from each pack independently.
 
-Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld 4002](/iris/biomes/overworld).
+Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld 4006](/iris/biomes/overworld).

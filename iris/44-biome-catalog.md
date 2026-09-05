@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-05T15:58:06.036Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -27,7 +27,7 @@ The paired catalog contains 375 reachable biome identities:
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
 | Child-only and floating-only variants | 113 | Included with a parent root rather than given an orphan page |
 
-The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1005 has no unreachable biome files.
+The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1009 has no unreachable biome files.
 
 ## Family navigation
 
@@ -53,12 +53,12 @@ The Overworld repository contains seven unreachable files. They are not active c
 
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. They add a regional cave root and one child to the current pack sources, with ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
 
-Overworld 4006 resources use lowercase paths. Lower Mountain uses `mountain/cute_cliffs` and its Mountain Middle child uses `mountain/cute_cliffs+`. Underworld retains `mountain/Cute_Cliffs` and `mountain/Cute_Cliffs+`. The paired terrain and selection weights remain the same; the [Lower Mountain page](/iris/biomes/mountain/cute_cliffs) lists both identifiers.
+Overworld 4006 and Underworld 1009 use lowercase resource paths. Underworld 1009 corrects the casing of 148 resource paths and 273 references. Both packs use `mountain/cute_cliffs` for Lower Mountain and `mountain/cute_cliffs+` for Mountain Middle; the `+` remains part of the child key. This casing update preserves terrain settings, selection weights, materials, ecology, and the independent Underworld ore table. See [Lower Mountain](/iris/biomes/mountain/cute_cliffs) for the paired treatments.
 
 ## Read the atlas
 
 - [Overworld 4006](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
-- [Underworld 1005](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
+- [Underworld 1009](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
 - [Shorelines](/iris/biomes/shorelines) collects the short transition biomes that do not need individual pages.
 - Individual entries live at `/iris/biomes/<load-key>`. For example, `temperate/plains` is [Temperate Plains](/iris/biomes/temperate/plains), while `carving/standard-deepdark` is [the global Deep Dark family](/iris/biomes/carving/standard-deepdark).
 

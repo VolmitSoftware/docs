@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Fancy Plains"
-description: "Iris biome atlas entry for temperate/fancyplains in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for temperate/fancyplains in Overworld 4002 and Underworld 1009"
 published: true
-date: 2026-09-05T00:19:31.005Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/fancyplains` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/fancyplains` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1009 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4002 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
+| Underworld 1009 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -32,11 +32,11 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 - **Surface:** 1 block(s) at slope <= 4: `minecraft:grass_block`. Wall palette: `minecraft:andesite`, `minecraft:stone`, `minecraft:cobblestone`.
 - **Content:** 1 object placement rule(s) drawing from 13 object key(s), including `trees/oak/oakfancy1`, `trees/oak/oakfancy2ns`, `trees/oak/oakfancy3`, `trees/oak/oakfancy4`, `trees/oak/oakfancy5`, `trees/oak/oakfancy6`, `trees/oak/oakfancy7`, and 6 more. 8 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 9 more.
 
-## Underworld 1005 treatment
+## Underworld 1009 treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_fancyplains_71753d3f`.
 - **Surface:** 1 block(s) at slope <= 4: `minecraft:netherrack`. Wall palette: `minecraft:basalt`, `minecraft:netherrack`, `minecraft:blackstone`.
-- **Content:** 1 object placement rule(s) drawing from 13 object key(s), including `underworld/wastes/trees/oak/oakFancy1`, `underworld/wastes/trees/oak/oakFancy2NS`, `underworld/wastes/trees/oak/oakFancy3`, `underworld/wastes/trees/oak/oakFancy4`, `underworld/wastes/trees/oak/oakFancy5`, `underworld/wastes/trees/oak/oakFancy6`, `underworld/wastes/trees/oak/oakFancy7`, and 6 more. 9 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
+- **Content:** 1 object placement rule(s) drawing from 13 object key(s), including `underworld/wastes/trees/oak/oakfancy1`, `underworld/wastes/trees/oak/oakfancy2ns`, `underworld/wastes/trees/oak/oakfancy3`, `underworld/wastes/trees/oak/oakfancy4`, `underworld/wastes/trees/oak/oakfancy5`, `underworld/wastes/trees/oak/oakfancy6`, `underworld/wastes/trees/oak/oakfancy7`, and 6 more. 9 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
 - **Entity spawners:** `nether/surface/nether-wastes`, `nether/cave`.
 
 Underworld keeps the terrain links but uses its Nether derivative, materials, objects, and surface/cave spawners.

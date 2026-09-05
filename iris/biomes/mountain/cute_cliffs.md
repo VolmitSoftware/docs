@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Lower Mountain"
-description: "Paired Iris atlas entry for Overworld mountain/cute_cliffs and Underworld mountain/Cute_Cliffs"
+description: "Paired Iris atlas entry for mountain/cute_cliffs in Overworld and Underworld"
 published: true
-date: 2026-09-05T00:19:31.006Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mountain/cute_cliffs` in the current Overworld and `mountain/Cute_Cliffs` in Underworld are the paired directly selected land biome. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mountain/cute_cliffs` is the paired directly selected land biome in Overworld 4006 and Underworld 1009. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4002 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
+| Underworld 1009 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -32,7 +32,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 - **Surface:** 1 block(s) at slope 0-2.6: `minecraft:grass_block`; 2-4 block(s) at slope >= 3.95: `minecraft:gravel`; 2-3 block(s): `minecraft:stone`, `minecraft:andesite`, `minecraft:gravel`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 3 decorator rule(s) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
 
-## Underworld 1005 treatment
+## Underworld 1009 treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_mountain_cute_cliffs_f6b51764`.
 - **Surface:** 1 block(s) at slope 0-2.6: `minecraft:basalt`; 2-4 block(s) at slope >= 3.95: `minecraft:gravel`; 2-3 block(s): `minecraft:blackstone`, `minecraft:basalt`, `minecraft:gravel`; 6-18 block(s): `minecraft:blackstone`, `minecraft:basalt`. Wall palette: `minecraft:blackstone`, `minecraft:basalt`.
@@ -45,16 +45,16 @@ Underworld keeps the terrain links but uses its Nether derivative, materials, ob
 
 ### Mountain Middle
 
-Overworld uses `mountain/cute_cliffs+`; Underworld uses `mountain/Cute_Cliffs+`.
+Both packs use `mountain/cute_cliffs+`; the `+` is part of the child key.
 
-This child-only biome is selected from Overworld `mountain/cute_cliffs` or Underworld `mountain/Cute_Cliffs`, not from a region list. Its rarity is `1`.
+This child-only biome is selected from `mountain/cute_cliffs` in both packs, not from a region list. Its rarity is `1`.
 In that immediate child choice it contributes `1` of `2` slots (50.00%); later child hops are resolved separately.
 Each pack’s Mountain Middle biome intentionally lists its own key as its child. Its explicit self entry and implicit current-biome option both resolve to the same biome through Iris's bounded four-hop child recursion; this preserves reachability without adding region-list weight.
 
 **Shared terrain:** `mountain` (106..185); combined authored contribution `106..185` blocks relative to fluid height.
 
 - **Overworld 4002:** `minecraft:old_growth_spruce_taiga` identity; surface 1 block(s) at slope 0-2.6: `minecraft:grass_block`; 2-4 block(s) at slope >= 3.95: `minecraft:gravel`, `minecraft:cyan_terracotta`; 2-4 block(s) at slope >= 3.95: `minecraft:stone`, `minecraft:cobblestone`; 1 block(s) at slope 0-4: `minecraft:grass_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 decorator rule(s) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
-- **Underworld 1005:** `minecraft:basalt_deltas` identity; surface 1 block(s) at slope 0-2.6: `minecraft:basalt`; 2-4 block(s) at slope >= 3.95: `minecraft:gravel`, `minecraft:warped_nylium`; 2-4 block(s) at slope >= 3.95: `minecraft:blackstone`; 1 block(s) at slope 0-4: `minecraft:basalt`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
+- **Underworld 1009:** `minecraft:basalt_deltas` identity; surface 1 block(s) at slope 0-2.6: `minecraft:basalt`; 2-4 block(s) at slope >= 3.95: `minecraft:gravel`, `minecraft:warped_nylium`; 2-4 block(s) at slope >= 3.95: `minecraft:blackstone`; 1 block(s) at slope 0-4: `minecraft:basalt`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
 
 ## Floating variants
 
@@ -70,4 +70,4 @@ Run these in an Iris world and inspect freshly generated terrain:
 /iris what region
 ```
 
-For Underworld, use `/iris find biome mountain/Cute_Cliffs` instead. The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.
+These commands use the same lowercase key in both packs. The first command locates the biome. The other commands confirm its load key and region at your position. Pack edits do not change existing chunks.

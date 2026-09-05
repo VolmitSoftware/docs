@@ -2,7 +2,7 @@
 title: "Mountain Biomes"
 description: "Navigation for the built-in mountain biomes across Overworld and Underworld"
 published: true
-date: 2026-09-05T00:19:31.006Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biomes, overworld, underworld, mountain"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -15,7 +15,7 @@ This family has **5 child-only reachable variants**. Those variants are document
 
 | Page | Load key | Role | Region membership |
 |---|---|---|---|
-| [Cute Cliffs](/iris/biomes/mountain/cute_cliffs) | Overworld: `mountain/cute_cliffs`; Underworld: `mountain/Cute_Cliffs` | Land | Temperate |
+| [Cute Cliffs](/iris/biomes/mountain/cute_cliffs) | `mountain/cute_cliffs` | Land | Temperate |
 | [Calcite Base](/iris/biomes/mountain/calcite-base) | `mountain/calcite-base` | Land | Tundra |
 | [Cliffs](/iris/biomes/mountain/cliffs) | `mountain/cliffs` | Land | Tundra |
 | [Forest](/iris/biomes/mountain/forest) | `mountain/forest` | Land | Tundra |

@@ -2,7 +2,7 @@
 title: "Overworld 4006"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-05T15:58:06.036Z
+date: 2026-09-05T16:39:48.011Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -36,6 +36,6 @@ The global Deep Dark band is different from an ordinary regional cave. Between Y
 
 Overworld is the geometry authority. Shape changes to its dimension transforms, region and biome selection, terrain generators, cave profiles, children, or floating islands are mirrored into Underworld so equal seeds remain coordinate-compatible. Materials, derivatives, ambience, ecology, objects, ores, deposits, and structures are allowed to differ and are documented separately on every atlas entry.
 
-The two packs share active terrain identities, but resource keys can differ: Overworld uses `mountain/cute_cliffs` and `mountain/cute_cliffs+`, while Underworld retains `mountain/Cute_Cliffs` and `mountain/Cute_Cliffs+`. A region can expose a paired identity through a slightly different selector list. Read each biome page for its exact memberships instead of assuming every region array is byte-identical.
+Overworld 4006 and Underworld 1009 share lowercase active terrain keys, including `mountain/cute_cliffs` and `mountain/cute_cliffs+`. A region can expose a paired identity through a slightly different selector list. Read each biome page for its exact memberships instead of assuming every region array is byte-identical.
 
-Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Underworld 1005](/iris/biomes/underworld).
+Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Underworld 1009](/iris/biomes/underworld).
