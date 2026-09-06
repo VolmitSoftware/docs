@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -267,13 +267,13 @@ The stacks:
 |-------|---------------|
 | `layers` | The column downward from the terrain surface. First entry is the top. Anything below the stack becomes the dimension rock palette (or an ore, if an ore generator claims that block). Required. The default is a single grass layer. |
 | `seaLayers` | The water column, indexed **downward from the water surface**, not upward from the sea floor. Index 0 sits at `fluidHeight`. Anything the stack does not cover becomes the dimension fluid. This is how you get a layer of ice or a band of murky water on top of an ocean. |
-| `caveCeilingLayers` | The underside of carved ceilings, downward from the ceiling. The default is empty, so an omitted field leaves the existing ceiling material unchanged. |
+| `caveCeilingLayers` | Carved ceiling material, upward from the first solid block above the highest carved cell. The default is empty, so an omitted field leaves the existing ceiling material unchanged. |
 | `slab` | Palette for the half-slabs the post processor adds on single-block steps. Default is an empty palette, meaning no slabs. |
 | `wall` | Palette for the vertical faces the post processor paints when a neighboring column is more than two blocks lower. Default is empty. Set it to stone/andesite to stop cliffs showing dirt. |
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |
 | `lockLayersMax` | Depth cap, in blocks, for locked layers. Default `7`. |
 
-`caveCeilingLayers` reuses the per-layer thickness generators built from `layers`. It must not have more entries than `layers` does. `/iris pack validate` rejects a biome that violates this. At generation time any extra ceiling entries are skipped rather than crashing.
+`caveCeilingLayers` uses its own thickness generators. Its entry count is independent of `layers`, and every entry can contribute within the requested ceiling depth. Ceiling layers do not apply `slopeCondition`.
 
 Slabs and walls only appear when the dimension has `postProcessing`, `postProcessingSlabs` and `postProcessingWalls` enabled. See [11 - Dimensions](/iris/11-dimensions).
 
@@ -562,7 +562,6 @@ Needs `generators/flat.json` to exist. Everything else in the file has a working
 | Sea biome with positive `min`/`max` | It generates above water, then gets replaced by a land biome anyway |
 | Sea biome with a non-ocean `vanillaDerivative` | No native ocean structures generate there |
 | Empty `palette` on the first layer | No surface block. The rock palette shows through |
-| More `caveCeilingLayers` entries than `layers` entries | Blocked by validation. The engine skips the extra entries if such a pack is forced through |
 | Expecting a `type` field on the biome | Role comes from the region list that selected it |
 | Expecting `slopeCondition` to thin a layer gradually | Out-of-range columns skip the layer entirely. There is no taper |
 | Judging changes in already generated chunks | Biome and layer edits only apply to new chunks |

@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-05T23:20:48.000Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -201,11 +201,13 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 
 **Rotation is never baked in.** A `.iob` stores exactly one orientation. Rotation ranges belong to the placement. `paste rotate=90` rotates a throwaway copy and does not touch the file.
 
+When a non-solid directional block cannot represent the rotated orientation, rotation omits that block and its tile data. Other blocks still rotate. Scaling reads dimensions, center, blocks, and tile data under one volume read lock, so a concurrent transform cannot mix geometry snapshots.
+
 **Two separate loot mechanisms.** A chest saved into the `.iob` with a vanilla loot table on it keeps that table. Pack loot tables are attached by the placement instead (`loot`, `vanillaLoot`, `overrideGlobalLoot`). See [20 - Object Placement](/iris/20-object-placement).
 
 **Blocks the running Minecraft does not have.** An object saved on a newer version can hold blocks an older server lacks. Iris reads the object's palette header when a placement builds its pool and drops the object from that pool if any block in the final placed result is missing. It stays in the pool when the placement's `edit` rules type-replace the block (a rule with `chance: 1` whose `find` matches it), or when a dimension `blockFallbacks` entry or a per-entry `backup` covers it. The `.iob` file is never rewritten and the object remains usable on a server that has the block. An emptied pool means the placement is skipped. See [20 - Object Placement](/iris/20-object-placement) and [25 - Pack Management](/iris/25-pack-management).
 
-**Caches and hotload.** Objects are cached per pack. Studio worlds watch the pack folder for `.iob` and `.json` changes. They hotload at most once a second. They back off to about four seconds while the world is busy generating or running maintenance. A hotload swaps the engine whole pack runtime. Already generated chunks are untouched. Only later ones see the edit. Ordinary worlds never hotload. They serve the cached copy until the pack reloads.
+**Caches and hotload.** Objects are cached per pack. Copying holds the source volume's read lock, so transforms cannot change it during the copy. Upscaling writes expanded cells directly without temporary voxel lists. Studio worlds watch the pack folder for `.iob` and `.json` changes. They hotload at most once a second. They back off to about four seconds while the world is busy generating or running maintenance. A hotload swaps the engine whole pack runtime. Already generated chunks are untouched. Only later ones see the edit. Ordinary worlds never hotload. They serve the cached copy until the pack reloads.
 
 ## 8. Common failure modes
 

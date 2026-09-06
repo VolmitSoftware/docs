@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-06T08:19:20.988Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -66,6 +66,10 @@ Aliases remain executable, while help and completion show canonical command name
 Use `FoliaScheduler` for Bukkit work. Entity and player state belongs on the entity scheduler; world and block state belongs on the owning region; global tasks use the global scheduler. Keep file and network I/O off those threads.
 
 `FoliaScheduler.isStopping(Server)` reports terminal shutdown when the server exposes that capability; it returns false for an unavailable capability or a null server. On Folia, shutdown can report entity ownership after the region world-data context is gone. Consumers can use this check to skip removal of nonpersistent visual entities during terminal shutdown while retaining normal reload and plugin-disable cleanup.
+
+## Mantle storage
+
+`Mantle.saveAll()` and `close()` propagate region write failures after reporting the original exception. Failed writes retain their live region and chunk data for retry. A failed close keeps the mantle open and preserves its region locks; only a successful flush and region-IO close complete shutdown. An IO-close failure can be retried without rewriting regions already saved. Consumers must drain generation before closing storage and retain the mantle when close fails.
 
 ## File watching
 

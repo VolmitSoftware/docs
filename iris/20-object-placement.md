@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,6 +41,8 @@ Use dimension `staticObjects` for a landmark, spawn building, or other object th
 Static objects generate after Iris terrain and decoration, regardless of biome, slope, water, caves, density, or chance. Later native structures and imported features cannot overwrite blocks written by static objects. Each destination chunk receives its own portion; visiting the far side first does not omit the rest. Entries apply in array order, and the later entry wins wherever their written blocks overlap. Saved air writes air; unsaved space stays unchanged unless `bore` or `smartBore` fills it. This can replace terrain, including the bedrock layer.
 
 Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles are supported; angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. Directional block states use the existing object rotation rules. Saved block-entity data, such as container or sign data, accompanies its transformed blocks. Edits apply before block-state rotation and leave the source `.iob` unchanged. Changing a block's material discards incompatible saved block-entity data.
+
+A non-solid directional block that cannot represent its rotated orientation is skipped. Its tile data and placement callback are skipped with it; the remaining object still places.
 
 | Field | Default | Meaning |
 |-------|---------|---------|
@@ -535,7 +537,7 @@ Ground-hugging mushroom carpet:
 6. Water. A submerged surface placement needs `underwater` or `onwater`.
 7. `clamp` too tight, or written in world Y instead of engine-internal Y.
 8. `slopeCondition` too strict. `maximumSlope` under about 1 excludes most terrain.
-9. Native structure overlap. Objects never write into a vanilla or datapack structure piece, not even with `force`.
+9. Native structure overlap. Objects never write into a vanilla or datapack structure piece, not even with `force`. The broad overlap check uses transformed object bounds, including oblique rotations and saved origins.
 10. Console lines worth grepping: `Implausible object placement rejected` (bedrock-row anchor) and `Couldn't find loot table`.
 
 **It appears but sits wrong.**

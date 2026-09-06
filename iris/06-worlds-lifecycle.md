@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-06T00:32:42.000Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -294,6 +294,12 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 Load never downloads a pack. The world must already have its active generation snapshot and consistent registration data. Reconciliation checks startup readiness and then lazily validates that world's exact snapshot root before it touches `bukkit.yml` or calls a world backend. Validation results are path-scoped, so two worlds whose snapshot folders are both named `pack` cannot authorize or reject one another.
 
 ## Unload
+
+Shutdown stops new hydrology requests and cancels queued plans. Active river and cave planning finishes before Iris releases mantle data. If that drain fails, dependent resources remain available for a shutdown retry.
+
+Failed runtime assembly, publication, service shutdown, or mantle persistence retains the resources it still owns. A later close retries those releases before closing the target and pack data. A failed mantle save does not proceed to storage close.
+
+Complex hotload restores the previous runtime only after unpublished replacement cleanup succeeds. If failure occurs after publication, the replacement remains owned in the failed state for shutdown. Iris does not restore the retired complex.
 
 `/iris unload` runs synchronously from a player origin:
 

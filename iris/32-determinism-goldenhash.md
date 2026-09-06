@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-09-04T22:13:55.376Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,5 +40,9 @@ Verification checks that the packaged revision matches that build's inputs. Thes
 On startup, a changed implementation revision creates a new activation for future terrain, even when the pack bytes remain unchanged. Existing terrain supplies the saved boundary. Iris does not execute an archived generator to reconstruct it.
 
 Generation history retains the revision as provenance. The current persistent format and registry contracts govern whether Iris can read the world. Changes to those formats still require deliberate format design.
+
+Offline generation probes provide decorator support through their stub platform without loading Bukkit classes. Their simplified block predicates do not establish native block-shape or client-rendering parity.
+
+Cross-chunk object overlaps can still depend on generation order when no object collision rules apply. Competing objects from different origin chunks can write different final blocks at the same destination. GoldenHash can expose this difference even when biome hashes match.
 
 GoldenHash checks generated output for selected inputs. Compare identical builds, packs, seeds, and generation histories when testing determinism. For upgrades, also test expansion from saved terrain and repeated Studio edits. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).

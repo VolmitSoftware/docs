@@ -2,7 +2,7 @@
 title: "Trees, Fungi, Coral, Crystals, Formations, Ruins"
 description: "Iris documentation: Trees, Fungi, Coral, Crystals, Formations, Ruins"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -244,7 +244,7 @@ Snippet key: `tree-branches`. Adding a `branches` object switches the tree from 
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `secondaryLeaves` | unset | A single accent block scattered through the canopy — blossoms, shroomlight, berries |
-| `weightedSecondaryLeaves` | `[]` | Weighted list of accent blocks (`block` plus `weight`), overriding the single block |
+| `weightedSecondaryLeaves` | `[]` | Weighted list of accent blocks (`block` plus `weight`), overriding the single block. Weight totals use 64-bit counts, so large individual weights retain their proportions |
 | `secondaryLeavesPalette` | unset | Noise palette, overriding both of the above |
 | `secondaryLeafFraction` | `0.35` | Share of leaves replaced by the accent. Values near 1 recolour the whole crown |
 | `decorators` | `[]` | `IrisTreeDecorator` entries applied after the tree is built |
@@ -265,6 +265,10 @@ Snippet key: `tree-decorator`.
 Targets: `BRANCH_TIP`, `TRUNK_SURFACE`, `CANOPY_TOP`, `CANOPY_BOTTOM`, `TRUNK_BASE`, `LEAF_SURFACE`, `CANOPY_HANG`, `BRANCH_SURFACE`, `TRUNK_TOP`, `GROUND_SCATTER`.
 
 Branch endpoints are only collected when at least one decorator exists. An empty `decorators` list costs nothing.
+
+Tree palette resolution shares one seeded random source per object. Persistent leaves skip distance traversal when `plausible` is false. Fungi write stem roles directly into the final geometry map, and coral arms reuse their endpoint sample. These changes preserve the authored geometry and palette settings.
+
+`BRANCH_TIP` accents occupy the first free block outside the terminal leaf cluster in the branch's outward direction. They preserve branch wood and leaves. Repeated application stops at an existing accent instead of extending an accent chain.
 
 ### A complete tree
 
@@ -327,7 +331,7 @@ Snippet key: `coral`. Defaults to `underwater: true` and `waterlogged: true`, so
 | `waterlogged` | `true` | Forces every waterloggable block in the structure waterlogged. Set false for dead, dry coral on a beach |
 | `form` | `BRANCHING` | `BRANCHING`, `FAN`, `BRAIN`, `PILLAR`, `TENDRIL`. Each runs a different generator |
 | `block` / `blockPalette` | `minecraft:tube_coral_block` | Structural body. A palette mixes tube/brain/bubble/fire/horn tones across one reef |
-| `tipBlock` / `tipPalette` | unset | Placed at branch tips and the top — fans, sea pickles |
+| `tipBlock` / `tipPalette` | unset | Placed at branch tips and the top. `FAN` uses the highest occupied cell in each column, keeping tips on its silhouette |
 | `tipChance` | `0.6` | Per eligible tip position |
 | `heightMin` / `heightMax` | `4` / `8` | Overall height |
 | `spread` | `3` | Horizontal reach. Arm length for `BRANCHING`, base footprint for the others |
@@ -379,7 +383,7 @@ Snippet key: `formation`. Natural and magical landmarks. Default `chance: 0.02`.
 | `block` / `blockPalette` | `minecraft:stone` | Main rock body |
 | `capBlock` / `capPalette` | unset | Caprock on the crown, and the overhanging cap for `HOODOO`. Unset means the main rock everywhere |
 | `strataPalette` | unset | Horizontal color bands. Every `strataThickness` blocks the palette advances, which is what produces the badlands look |
-| `strataThickness` | `3` (1–32) | Band thickness |
+| `strataThickness` | `3` (1–32) | Band thickness. Resolution reuses one seeded palette source per occupied band, including negative bands |
 | `heightMin` / `heightMax` | `14` / `26` | Total height |
 | `baseWidthMin` / `baseWidthMax` | `3` / `6` | Base radius |
 | `topWidth` | `0` | Radius at the very top before the profile applies. 0 tapers to a point |

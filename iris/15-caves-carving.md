@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -359,6 +359,8 @@ If the version-content gate excludes a cave biome on the running Minecraft versi
 | `wall` | cave biome | Painted onto every solid block horizontally adjacent to carved space that is below the terrain surface. The same palette also paints surface cliffs in the post pass, so a cave biome usually wants its own `wall` |
 | `decorators` | cave biome | Default-part decorators land on the cave floor. `partOf: CEILING` decorators hang from the roof |
 | `objects` / `proceduralObjects` | cave biome | Props, gated by `carvingSupport: CARVING_ONLY` and the profile anchor settings |
+
+Ceiling layers use their own thickness generators and can contain more entries than the floor layers. Their requested depth still limits how many blocks are painted.
 
 Cave biomes still accept height generators, but nothing reads them underground. Leave them out or use a trivial filler.
 

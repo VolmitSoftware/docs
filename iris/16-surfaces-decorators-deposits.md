@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -134,7 +134,7 @@ Snippet key: `biome-palette`.
 
 `caveCeilingLayers` ignores `slopeCondition`. Cave roofs have no meaningful slope.
 
-**`lockLayers` (mesa mode).** Instead of indexing the stack from the surface, Iris builds the full expanded layer stack once. It then reads it with an offset derived from the column own terrain height. Bands therefore stay at fixed world heights across the whole biome and line up horizontally into stripes. The stack repeats cyclically rather than running out. `lockLayersMax` limits how deep the banded region goes before the rock palette takes over.
+**`lockLayers` (mesa mode).** Instead of indexing the stack from the surface, Iris builds the full expanded layer stack once. It then reads it with an offset derived from the column own terrain height. Bands therefore stay at fixed world heights across the whole biome and line up horizontally into stripes. The stack repeats cyclically rather than running out. `lockLayersMax` limits how deep the banded region goes before the rock palette takes over. Cyclic indexing continues on both sides of the internal Y512 reference, including terrain above that height.
 
 ### Material palette (`IrisMaterialPalette`)
 
@@ -233,6 +233,8 @@ Vines get their attachment faces recomputed against surrounding blocks. Stacked 
 
 Spikes require a full sturdy support face in their growth direction or another matching spike behind them, including when force-placed. Ceiling spikes check the underside of the ceiling. Stacked floor and ceiling decorators honor surface whitelists and blacklists. Authored waterlogging is preserved, and spikes replacing water in an underwater decoration are waterlogged automatically; spikes never replace lava. Cave decoration still skips fluid targets. After objects and pools are inserted, the final cleanup removes unsupported spike chains, restores water from waterlogged segments, and normalizes surviving tapers and merged tips. Exposed tips receive native post-load updates on Bukkit and modded platforms. Sulfur spikes require Minecraft 26.2.
 
+Sea-floor and sea-surface stacks apply `absoluteMaxStack` when `scaleStack` is enabled. Both stay inside the available height and output bounds. An unresolved sea-floor palette entry leaves the existing block intact and ends the stack.
+
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `chance` | double 0..1 | `0.1` | Fraction of the noise field that qualifies. Raise it while debugging, then dial back |
@@ -323,12 +325,14 @@ Weighting air into the palette is a useful trick. The column still wins the buck
 
 Snippet key: `deposit`. Declared on **dimension**, **region**, and **biome**. All three lists run. Biome deposits add to regional and global ones rather than replacing them.
 
+Clump preparation can run in parallel, retaining at most 32 prepared clumps before placement. All configured attempts still run. Placement follows dimension, region, then biome order, preserving each list's configured order. Each later deposit checks the host blocks left by earlier deposits. Worker completion order does not decide which overlapping deposit wins.
+
 ### What a deposit actually does
 
 For each generator, once per chunk:
 
 1. Roll `spawnChance` for the whole generator.
-2. Pick a clump count between `minPerChunk` and `maxPerChunk`. Each clump then rolls `perClumpSpawnChance` on its own.
+2. Pick one clump count between `minPerChunk` and `maxPerChunk`. Each clump uses its own seeded random sequence and rolls `perClumpSpawnChance` on its own.
 3. Build the selected `shape`. `IRIS` picks one of `varience` cached fixed-block-count clumps. Either vanilla shape is generated fresh from its configured vein size.
 4. Pick a random position in the chunk and sample the center Y using `heightDistribution`.
 5. Apply the placement scope, biome filter, host-block filter and air-exposure rule while stamping the clump.
@@ -404,7 +408,7 @@ Separate from deposits and much cheaper. No clumps, no per-chunk budget, just a 
 |-------|---------|--------------|
 | `palette` | empty | Material palette for the ore. An empty palette makes the generator inert |
 | `chanceStyle` | `STATIC` | The 3D field tested against `threshold`. Cellular styles give clustered pockets. Static gives evenly sprinkled specks |
-| `threshold` | `0.5` | The cell becomes ore when the noise value is at or below this. Higher means more ore |
+| `threshold` | `0.5` | Positive values place ore when noise is at or below the threshold. Zero disables this ore generator and skips noise sampling |
 | `range` | `30..80` | Engine-local Y band. Cells outside it are skipped before the noise sample |
 | `generateSurface` | `false` | `false` runs the generator in the underground pass, after the biome layer stack has been exhausted, so it replaces rock. `true` runs it in a pass that executes **before** layers and fluid at every Y in the column. It can overwrite soil, water, and anything else |
 

@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-05T01:32:40.452Z
+date: 2026-09-06T08:19:20.988Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -115,13 +115,21 @@ Hydrology planning is paid once per cold immutable tile; warm generation reuses 
 
 Exact routing-grid rows are sampled concurrently. Surface-course search uses that grid only to rank provisional candidates, then resolves exact terrain, bank, and transition costs along the currently selected path. If one route layer has no viable candidate, Iris adds only that layer's exact guide fallback instead of rebuilding every route candidate. These optimizations preserve the full terrain-safety validation contract.
 
-Cold hydrology tile planning and chunk-column composition run outside cache insertion locks. Concurrent requests for one key share its result, while unrelated keys can proceed together even when their hashes select the same cache bucket. Cache invalidation prevents older work from repopulating the cleared cache. The scheduler defers queued speculative neighbors until required tile batches finish. Active plans and cross-tile owner dependencies continue.
+Drainage routes reuse completed downstream distances instead of walking each shared suffix again. Footprint construction sorts primitive coordinate keys and retains the same signed coordinate order. Cave containment uses one ordered membership set. Cold-query diagnostic history is bounded to the tile-cache limit.
+
+Cold hydrology tile planning and chunk-column composition run outside cache insertion locks. Concurrent requests for one key share its result, while unrelated keys can proceed together even when their hashes select the same cache bucket. Cache invalidation prevents older work from repopulating the cleared cache. The scheduler defers queued speculative neighbors until required tile batches finish. Active plans and cross-tile owner dependencies continue. During shutdown, Iris rejects new planning and cancels queued work. Started tile plans and column composition finish before the engine releases mantle data. A failed drain keeps dependent resources available for a shutdown retry.
+
+The JVM property `iris.mantle.componentTimeout` defaults to 120,000 milliseconds. When the wait detects that threshold, it reports the timeout and requests cancellation. A queued component cannot start after cancellation. A running component retains its shared task entry and writer until it exits. Work that does not exit leaves generation and shutdown incomplete instead of releasing storage beneath active writes.
 
 Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original evaluation order. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
 
 Height, policy, and footprint basis queries skip slope calculations when the result does not use slope. This avoids two neighboring height samples for each such uncached query. Route scoring and terrain checks that use slope retain those calculations. Repeated centerline refinement reuses its geometric turn costs and completed guides within the current owner draft.
 
 Large cave-density passes divide independent samples among up to four workers in the current pool. Fixed noise styles also calculate aquifer eligibility in those tasks. Expression styles keep their serial evaluation order. Mantle writes and final fluid-support resolution remain on the calling generation worker. Workers claim pending density tasks themselves and drain started tasks before returning, including on failure or interruption.
+
+Child-biome and carving-child selection plans store cumulative rarity counts. Plan storage scales with the number of choices, without allocating repeated entries for each rarity slot. Existing authored rarity ranges and ordinary selection results remain unchanged.
+
+Object smart boring scans its occupied bounds directly in X, Y, then Z order under the volume write lock. It uses no queued tasks or atomic cell counter. Negative-only object bounds no longer add empty scans toward the origin.
 
 ## Symptom: the first chunks pause while strongholds initialize
 
