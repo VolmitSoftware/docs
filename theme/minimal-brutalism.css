@@ -3,7 +3,7 @@
   src: url("/home-assets/fonts/akz-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -11,7 +11,7 @@
   src: url("/home-assets/fonts/itc-book.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   src: url("/home-assets/fonts/itc-book-oblique.woff2") format("woff2");
   font-style: italic;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -27,7 +27,7 @@
   src: url("/home-assets/fonts/itc-demi.woff2") format("woff2");
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -35,7 +35,7 @@
   src: url("/home-assets/fonts/itc-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700 900;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -43,7 +43,7 @@
   src: url("/home-assets/fonts/hack-regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -51,7 +51,7 @@
   src: url("/home-assets/fonts/hack-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -59,7 +59,7 @@
   src: url("/home-assets/fonts/hack-italic.woff2") format("woff2");
   font-style: italic;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -67,7 +67,7 @@
   src: url("/home-assets/fonts/hack-bold-italic.woff2") format("woff2");
   font-style: italic;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {

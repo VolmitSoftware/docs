@@ -9,6 +9,7 @@ const upstreamOrigin = "https://docs.volmitsoftware.com";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const themePath = path.resolve(scriptDirectory, "../theme/minimal-brutalism.css");
 const themeScriptPath = path.resolve(scriptDirectory, "../theme/minimal-brutalism.js");
+const fontPreloadsPath = path.resolve(scriptDirectory, "../theme/font-preloads.html");
 const fontDirectory = path.resolve(scriptDirectory, "../home-assets/fonts");
 
 const fontContentTypes = new Map([
@@ -112,7 +113,13 @@ async function proxy(request, response) {
     const themeScript = localUrl.searchParams.get("plain") === "1"
       ? ""
       : '<script src="/__volmit_theme.js" data-volmit-theme-preview defer></script>';
-    const html = source.replace("</head>", `${themeLink}${themeScript}</head>`);
+    const fontPreloads = themeLink ? await readFile(fontPreloadsPath, "utf8") : "";
+    const themedSource = themeLink
+      ? source.replace(/<link\b[^>]*href="\/theme\/minimal-brutalism\.css[^"\s]*"[^>]*>/g, "")
+      : source;
+    const html = themedSource
+      .replace("<head>", `<head>${fontPreloads}`)
+      .replace("</head>", `${themeLink}${themeScript}</head>`);
     response.statusCode = upstreamResponse.status;
     response.setHeader("cache-control", "no-store");
     response.end(html);
