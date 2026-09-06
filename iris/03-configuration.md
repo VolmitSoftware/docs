@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-05T23:20:48.000Z
+date: 2026-09-06T18:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -167,7 +167,7 @@ Iris can open AWT windows on the machine running the server: the noise explorer,
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
 | `useServerLaunchedGuis` | `true` | Live | Allows server-side GUI hosts to open windows. Set false on any remote or headless server. The commands then report that GUIs are unavailable instead of trying |
-| `maximumPregenGuiFPS` | `false` | Live | Repaints the pregen map window as fast as possible instead of roughly four times a second. Only affects the local window, never generation throughput |
+| `maximumPregenGuiFPS` | `false` | Per window open | Checks desktop pregen updates every 4 ms instead of every 250 ms. Only changed map pixels and status values trigger updates. Minimizing the window stops its refresh timer. This setting controls the local preview, not generation concurrency |
 | `colorMode` | `true` | Per window open | Color rendering in the noise explorer instead of grayscale. It is captured when the window opens, so close and reopen the explorer to apply a change |
 
 ## `autoConfiguration` — Bukkit server-file fixups

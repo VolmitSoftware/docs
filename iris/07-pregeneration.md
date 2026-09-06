@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-06T16:11:26.578Z
+date: 2026-09-06T18:43:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -205,11 +205,17 @@ Console progress is emitted every 30 seconds instead of every 10 seconds, follow
 
 | Surface | Behavior |
 |---|---|
-| Desktop GUI (Bukkit) | `PregenRenderer` opens when `gui=true` and a GUI host is available. It shows the four labeled rates. It draws the progress text and pause hint over a coalesced, bounded chunk map. There is no color legend on screen. Closing the window disposes only the renderer. Generation and the server continue. Noise Explorer and Vision use the same close lifecycle, and macOS application Quit is cancelled while these server-launched windows are active. Chunks being generated are muted green and network-sourced chunks purple. Finished and pre-existing chunks first use green and dark-green status colors. For an Iris world, the bounded renderer worker replaces these with biome colors when the saved biome information is ready. A saturated queue keeps the status color. Hidden or closed previews skip biome reads, and pending saved reads do not block generation or emit loading stacktraces. Failed saved reads retain their full console error |
+| Desktop GUI | `PregenRenderer` opens on Bukkit and mod loaders when `gui=true` and a GUI host is available. The window separates the chunk map from progress, controls, a status legend, and the four labeled rates. Closing it disposes only the renderer; generation and the server continue. Noise Explorer and Vision use the same close lifecycle, and macOS application Quit is cancelled while these server-launched windows are active |
 | Boss bar | **`/iris pregen` on Bukkit shows no boss bar.** Only creation-time pregen retains a Bukkit boss bar, and it stays up for the whole run — it is persistent background status, not an overflow surface. Modded pregen does show a boss bar — green while running, yellow while paused — and skips it entirely for players running the Iris client mod |
-| Client HUD | `IrisProtocolServer.broadcastPregenProgress` sends progress every tick to connected Iris client sessions that hold the pregen capability, plus per-region deltas. This is the only path client HUDs are fed on any platform |
+| Client HUD | `IrisProtocolServer.broadcastPregenProgress` sends progress once per second to connected Iris client sessions that hold the pregen capability, plus per-region deltas. This is the only path client HUDs are fed on any platform |
 
 GUI toggles live at `settings.gui.useServerLaunchedGuis` and `settings.gui.maximumPregenGuiFPS`. Client HUD detail: [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
+
+The desktop window shows the world name, current phase, completed and total chunks, percentage, and a progress bar. Click **Pause** or press **P** to pause; click **Resume** or press **P** again to continue. The button also supports keyboard focus and Space. Controls are disabled while initializing, stopping, or displaying a terminal state. The metrics panel shows the current 10-second rate, overall rate, 30- and 60-second averages, remaining time, elapsed time, heap usage, allocation rate, and generation method. Remaining time stays **Pending** until an estimate is available. Cached generation is labeled beside the method.
+
+The map preserves the target area's aspect ratio when resized. Its legend identifies waiting chunks, amber generating chunks, green ready chunks, dark-green existing chunks, and purple network work. For an Iris world, a bounded background worker replaces finished status colors with biome and height colors when saved biome information is ready. A saturated queue keeps the status color. Pending saved reads do not block generation or emit loading stacktraces; failed saved reads retain their full console error.
+
+Minimizing the window stops its refresh timer and skips new biome reads while retaining coalesced chunk-status updates. Restoring it displays those updates. Normal completion and requested cancellation close the preview automatically. A startup failure leaves an error window open with guidance to check the server log and a tooltip containing the failure cause.
 
 The existing public API, PlaceholderAPI value, integration telemetry, boss bar, and client protocol carry one rate and expose the corrected 10-second average. The desktop popup, Bukkit and modded status commands, console progress, and terminal summary expose all four rates.
 
