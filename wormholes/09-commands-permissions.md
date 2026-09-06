@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -44,6 +44,9 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 Pocket sizes range from 8 to 128. `size=0`, `material=keep`, and `door=keep` preserve the current value. Shrinking a pocket with blocks or entities requires `confirm=true`; non-empty containers must be emptied first.
 
 > **Warning:** `deleteeverything` has no confirmation prompt. It refuses to run while someone is inside or entering a pocket dimension.
+
+Both deletion commands retire each loaded portal's pending saves before
+removing portal storage. Queued saves cannot recreate deleted portal files.
 
 ## Diagnostic reports
 

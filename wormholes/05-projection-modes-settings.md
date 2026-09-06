@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,10 @@ Per-portal mode and render mode combine with global `[projection]` and
 ## What projection does for a viewer
 
 When a player is inside the portal's viewing range, Wormholes sends that player a view of the destination or mirror. Entity spoofing can add destination-side entities. Projection does not move the player.
+
+Changing or removing a portal's destination retires its existing projections.
+Nearby observers receive a fresh view of the new destination even when they
+remain stationary.
 
 ## ProjectionMode (ON / OFF)
 
@@ -78,6 +82,11 @@ If a view exceeds `max-projected-cells`, Wormholes reduces side padding first an
 | `blackoutColor` | `BLACK` | One of 16 concrete colors: `WHITE`, `ORANGE`, `MAGENTA`, `LIGHT_BLUE`, `YELLOW`, `LIME`, `PINK`, `GRAY`, `LIGHT_GRAY`, `CYAN`, `PURPLE`, `BLUE`, `BROWN`, `GREEN`, `RED`, `BLACK`. |
 
 Each color maps to the matching concrete block. Blackout closes the far and side edges of the sampled view without replacing projected destination blocks. Projection continues if the background cannot be displayed.
+
+Adjacent background panels overlap by 1/256 block to close seams. Their client
+culling bounds cover the full panel, including its overlap. Moving a panel
+updates its position. Shape, color, and range metadata are sent only when those
+values change. A background uses at most 128 panels.
 
 ## Entity spoofing (`[render]`)
 
@@ -164,7 +173,15 @@ sampled. Recursive sampling follows portals that are open and projecting. It
 masks cycles and non-traversable hits, and it does not turn a closed or
 unlinked portal into a view.
 
-Local tunnels sample the destination world directly. Cross-server gateways use
+Local tunnels sample the destination world directly on Paper. Folia captures
+immutable chunk snapshots on the owning region. Active snapshots update entity
+motion at a 250 ms cadence and refresh metadata, equipment, and map contents
+every 500 ms. Block snapshots are reused until a tracked chunk change or a
+60-second safety refresh. Motion captures do not postpone either content
+refresh. Each block scan shares local chunk readiness and requests across all
+cells in that chunk, then checks them again on the next scan.
+
+Cross-server gateways use
 the replicated remote block and entity stream. Cells not yet present in that
 stream use the portal's configured `networkViewFallbackBlock` (air by default).
 Remote subscriptions, heartbeat, grace, and compression are in

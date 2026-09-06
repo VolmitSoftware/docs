@@ -407,3 +407,5 @@ API icon factories use the matching JSON behavior and default styles. `animatedI
 `schema/gloss.schema.json` describes the JSON icon fields and validation used by the web editor. `itemStack` is not listed because it has no JSON form.
 
 The schema describes the JSON format and powers validation in the web editor. The server ignores unknown icon keys. See [Web Editor & Sync](/gloss/18-web-editor).
+
+In the menu preview, `item`, `block`, `entity`, and `playerHead` icons render as 3D models drawn from the client's own asset pack; an entity with no rig shows its catalog sprite instead.

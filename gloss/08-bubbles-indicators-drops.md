@@ -349,7 +349,7 @@ Paper-derived servers provide the exact `event.critical` value. Spigot sets `eve
 
 ### Web renderer
 
-The web editor previews damage, healing, critical conditions, motion, scale, and fading. Check the final appearance in Minecraft because browser text and camera rendering differ from the client.
+The indicator stage previews damage, healing, critical conditions, motion, scale, and fading against a textured target picked from the player or the six rigged mobs, with a red hit flash on the target and crit stars around it for a critical hit. Check the final appearance in Minecraft because browser text and camera rendering differ from the client.
 
 ### Commands and permissions
 
@@ -490,7 +490,7 @@ An omitted `labels.style` uses center billboard, glyph shadow, see-through, cent
 
 Labels retain their authored functions, viewer expressions, and named particle spans. Viewer-dependent formats keep a literal count/type name on the underlying item; their authored text is evaluated only for the player viewing the label. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
 
-The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including display style, box, particles, physics, script, and animation.
+The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including display style, box, particles, physics, script, and animation. On the drop stage, a cube draws the block's real model and a flat item draws the item's extruded texture, both over the rendered world.
 
 `NATURAL` keeps the airborne rotation and settles the nearest face toward the ground. Partial blocks are positioned against their actual bounds instead of intersecting the surface.
 

@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,10 @@ The dimension is installed from the plugin’s bundled datapack
 Paper bootstrap stages the pack before registries load). Installing or updating
 the pack requires a **full server restart**. If `wormholes:pockets` is missing
 after start, PERSONAL/PUBLIC entry cannot provision or enter pockets.
+
+If the pocket world unloads, dimensional doors wait until it loads again. A
+cancelled world unload leaves its region tasks, RTP registrations, projection
+change tracking, and pocket-world availability active.
 
 ## Allocation
 

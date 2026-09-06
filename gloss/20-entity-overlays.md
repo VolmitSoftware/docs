@@ -108,6 +108,6 @@ Adapt owns learning, target selection, range, and XP. Its selected target can ap
 
 ## Web editor
 
-The HUI editor provides ordered rows, text formatting, show expressions, full display styling, box decorations, and particle controls. Its sample preview can show damage, a named entity, a React stack, and Adapt Insight with or without the exclusive restriction. Sample controls do not change Adapt or React configuration.
+The HUI editor provides ordered rows, text formatting, show expressions, full display styling, box decorations, and particle controls. Its sample preview can show damage, a named entity, a React stack, and Adapt Insight with or without the exclusive restriction, against a textured rig where the sample entity has one and a catalog sprite otherwise, over the same rendered world every stage shares. Sample controls do not change Adapt or React configuration.
 
 Import, export, undo, and live sync use the singleton ID `default`. The exported server path is `entity-overlays/default.json`. Check text size and placement in a Minecraft client. A browser preview does not reproduce the client renderer.

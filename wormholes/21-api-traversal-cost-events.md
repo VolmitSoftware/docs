@@ -2,7 +2,7 @@
 title: "API - Traversal Cost & Events"
 description: "Price or veto travel, settle receipts, and consume traversal events safely"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,5 +46,7 @@ Register it through Bukkit's `ServicesManager` under `TraversalCostProvider`.
 `TraversalContext` includes the traveler, portal, origin, destination when known, and kind: `LOCAL`, `CROSS_SERVER`, `RANDOM_TELEPORT`, or `DIMENSIONAL_DOOR`.
 
 Use `WormholesPortalTraverseEvent` to cancel before pricing. Use `WormholesPortalTraversedEvent` to observe a completed traversal. Events do not charge or refund anything.
+
+For cross-server travel, pricing settles when the source dispatches the transfer after destination admission. The traversed event reports that source settlement. Destination arrival receipts update transfer completion statistics separately. A later connection failure does not refund an already committed charge.
 
 All provider and event calls run on the traveler's owning thread. Keep them fast and make reservations safe to commit or refund once.

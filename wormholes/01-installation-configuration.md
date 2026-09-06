@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -86,7 +86,7 @@ global particle switch. `quality` controls the projection and render profile.
 Wormholes clamps config values when it applies them to runtime. Network port,
 handoff, and replication bounds are normalized before startup or explicit
 reload writes the canonical file, so those corrected values persist. Other
-`Settings.refresh` clamps occur after canonical rewriting; those source values
+`Settings.refresh` clamps occur after canonical rewriting. Those source values
 can remain on disk while the live value is bounded. Passive hotload never writes
 the watched file.
 
@@ -224,14 +224,32 @@ Cross-server networking. Default `enabled = false`. Import and export set
 | `listen-port` | `8901` | Preferred raw-stream port, 1–65535; invalid values become 8901. Bind scans through the next 50 valid ports, capped at 65535. Otherwise game-port sideband is used |
 | `trust-on-first-use` | `true` | Trust unknown peer keys on first approved contact when no stored key |
 | `entity-transfer-deny-types` | `""` | Comma-separated entity type names denied for entity transfer |
-| `advertise-host-override` | `""` | Force advertised host in export codes |
+| `advertise-host-override` | `""` | Raw peer host and default public game host |
+| `game-host-override` | `""` | Public game host. Blank uses the advertised host |
+| `game-port-override` | `0` | Public game port. Zero uses Bukkit game port. Set the external port for NAT mappings |
+| `private-game-host-override` | `""` | Private game host. Blank uses a concrete game bind address, otherwise the detected LAN address |
+| `private-game-port-override` | `0` | Private game port. Zero uses Bukkit game port |
 | `server-name` | `""` | Local network name override (empty uses identity default) |
 | `transfer-mode` | `auto` | `auto` \| `proxy` \| `direct` (see networking doc) |
-| `handoff-timeout-ms` | `5000` | Admission / handoff deadline, normalized to 50–60000 ms |
+| `proxy-servers` | `[]` | Destination names that use the proxy when transfer mode is `auto` |
+| `handoff-timeout-ms` | `5000` | Base source deadline, normalized to 50–60000 ms. Direct transfers add 7000 ms for the combined endpoint check and admission |
 | `auto-accept-transfers` | `true` | Compatibility rewrite of TRANSFER handshakes to LOGIN when native `accepts-transfers` is not set |
 
 Static `[[peers]]` are not written into this file. Peers live in
 `routes/peers.properties`.
+
+### `[[network.client-routes]]`
+
+Optional client routes select a specific destination endpoint before automatic address selection. The longest matching CIDR wins. These entries do not create or trust peers.
+
+| Key | Type | Meaning |
+|-----|------|---------|
+| `server` | string | Imported destination server name |
+| `client-cidr` | string | IPv4 or IPv6 client subnet, such as `192.168.1.0/24` or `fd00::/64` |
+| `host` | string | Game host reachable from those clients |
+| `port` | integer | Game port, 1–65535 |
+
+See [Cross-Server Networking](/wormholes/10-cross-server-networking) for same-machine, NAT, LAN, VPN, and private-server examples. Game endpoint port overrides must be zero or 1 through 65535. Invalid host overrides or routes reject the configuration update and preserve the active settings.
 
 ### `[network.transport]`
 
@@ -329,6 +347,8 @@ Projection behavior detail:
 ## Hot reload
 
 `wormholes.toml` reloads automatically after a complete save. Invalid files leave the current settings active and report the problem. Use `/wormholes reload` when you want to apply changes immediately.
+
+Canonical settings preserve string arrays, literal backslashes, and escaped control characters. Integer overflow rejects the update instead of wrapping into another value.
 
 ## Related docs
 

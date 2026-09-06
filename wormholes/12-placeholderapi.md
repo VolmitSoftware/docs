@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "%wormholes_…% keys for operators"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,7 +70,7 @@ Ignore the player. Same answer for everyone and for a no-player parse.
 | `%wormholes_projections.observers%` | integer | Distinct players with a projection frame in flight (one player on two portals counts once) |
 | `%wormholes_peers.connected%` | integer | READY wire peers (`PeerConnection.State.READY`). Same count as `wormholes.peers-connected` |
 | `%wormholes_peers.link%` | enum | Cross-server link health (see vocabularies) |
-| `%wormholes_transfers.in-flight%` | integer | Player handoffs plus non-player entity transfers in progress |
+| `%wormholes_transfers.in-flight%` | integer | Pending player admissions, dispatched players awaiting arrival receipts, and non-player entity transfers in progress |
 | `%wormholes_failures%` | integer | Cumulative internal failures since startup |
 | `%wormholes_failures.per-minute%` | decimal | Failures per minute extrapolated from the latest elapsed sample interval (at least one second) |
 

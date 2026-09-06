@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -232,7 +232,7 @@ Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
-Blackout adds a concrete-colored background behind the projected view. If it cannot be displayed, the normal projection remains active. Opaque surface skins block projection.
+Blackout adds a concrete-colored background behind the projected view. Thin display panels cover the far boundary and exposed floor, ceiling, and sides, with a small overlap at panel edges. The client can cull panels outside its view. Moving panels retain their entity IDs and update only changed metadata. If the background cannot be displayed, the normal projection remains active. Opaque surface skins block projection.
 
 ## Behavior notes
 

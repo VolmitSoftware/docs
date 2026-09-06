@@ -11,7 +11,7 @@ dateCreated: 2026-08-19T00:00:00.000Z
 Each JSON file in `plugins/Gloss/holograms/` defines one persistent text hologram. The file name is the hologram ID, and command or file edits apply live.
 
 `/gloss web edit hologram <id>` opens one hologram in a restricted live editor session;
-`/gloss web workspace` includes every hologram.
+`/gloss web workspace` includes every hologram. The editor previews the hologram over a rendered block world in the same WebGL2 stage every surface shares; check text size and placement in a Minecraft client, since a browser preview does not reproduce the client renderer.
 
 ## The hologram document
 
