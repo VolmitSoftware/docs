@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-06T18:22:00.000Z
+date: 2026-09-06T20:15:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -132,6 +132,8 @@ Child-biome and carving-child selection plans store cumulative rarity counts. Pl
 Object smart boring scans its occupied bounds directly in X, Y, then Z order under the volume write lock. It uses no queued tasks or atomic cell counter. Negative-only object bounds no longer add empty scans toward the origin.
 
 Generation-history routing leases a ready runtime in one metadata-lock acquisition. Repeated coordinate queries read an attached router without acquiring its attachment monitor. Missing routers still pass synchronized publication and detach checks. Routing and generation admission use nonfair lock handoffs to reduce contention between generation workers. Waiting cutovers explicitly block later stage admission until existing stages drain and publication finishes. Coordinate ownership, activation boundaries, and shutdown drains retain their existing checks. These changes require no configuration changes.
+
+Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims keep their existing serialization and become visible only after their journal entries are flushed to durable storage.
 
 Bukkit terrain capture reuses biome wrappers in one cache bounded to 4,096 native handles. The wrapper reads the typed registry key only when inserted. Identity-based lookup keeps replacement registry handles distinct and removes repeated reflective key lookup from terrain capture.
 
