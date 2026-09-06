@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-05T20:12:14.000Z
+date: 2026-09-06T01:48:10.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,6 +43,8 @@ Look up services when needed instead of keeping them across an Iris reload. Terr
 When switching over Iris enums, include a `default` branch so future values do not break your integration.
 
 ## Build artifacts
+
+Iris has no GitHub Actions CI workflow. Run builds, tests, and artifact verification locally; pushes and pull requests do not run these checks automatically.
 
 All four Iris platform builds use [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning). The build removes unreachable VolmLib classes while retaining Iris classes, reflective Matter slices, resources, and loader-specific library packaging. Runtime jars retain source locations and parameter names.
 
