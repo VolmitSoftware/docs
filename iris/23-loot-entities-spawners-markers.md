@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-09-03T12:00:00.000Z
+date: 2026-09-06T00:32:42.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,6 +30,10 @@ Two independent pipelines share the loot table format.
 **Containers.** When a chunk finishes generating, Iris walks the blocks it recorded and fills every storage chest it placed. It builds a list of loot tables for that exact block, then rolls each one and drops the results into the inventory. The list comes from up to four sources, in this order. First is the object placement that owns the block. Then come the dimension, region, surface biome, and cave biome the block sits in. Each source can add to the list, wipe it, or only contribute when nothing else did.
 
 **Ambient mobs.** A background loop ticks each Iris world roughly twice a second. Each tick it measures how crowded the world is. If there is room, it picks a handful of chunks from the loaded-chunk snapshot refreshed by the three-second world-maintenance pass and tries one spawn in each, after confirming that the chunk is still loaded. A spawn attempt gathers every spawner the dimension, region, and surface biome list. It throws out the ones whose time, weather, rate, or crowding gates fail. It then pools their entries, picks exactly one, and places one to a few mobs.
+
+Ambient spawns resolve the saved biome environment and its owning activation's dimension, region, spawner, and entity definitions. Initial spawn flags are claimed only after those inputs have resolved; a loading record leaves the attempt pending. Pack updates retain those definitions on disk. Existing entities are not recreated by a generation update. An older position with no recoverable biome identity cannot supply an ambient spawn environment.
+
+Native inherited spawn rules use the physical Minecraft biome holder and its saved activation’s retained derivative mapping. Explicit custom-biome spawn entries and native structure overrides remain authoritative. A pending record skips the current spawn attempt; an unsupported record cannot supply inherited Iris rules. Native and Iris spawning still execute with the running jar and Minecraft version.
 
 Vanilla natural spawning is a third pipeline. It stays on via the biome `vanillaDerivative` unless you replace that table. Iris spawners do not turn it off. Custom biome `spawns` merge with it. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
@@ -385,7 +389,9 @@ Bukkit and modded both apply AI and awareness flags, spawn effects, and raw comm
 
 ## Ambient effects (`IrisEffect`, snippet type `effect`)
 
-Biomes and regions accept `effects[]`. Each entry runs at most once per `interval` milliseconds and, when it runs, has a 1-in-`chance` shot at firing. A single entry can apply a potion, play a sound, emit particles, and run commands. The whole system is gated by `world.effectSystem` in `iris.json`.
+Biomes and regions accept `effects[]`. Each entry runs at most once per `interval` milliseconds and has a 1-in-`chance` shot at firing. A single entry can apply a potion, play a sound, emit particles, and run commands. The whole system is gated by `world.effectSystem` in `iris.json`.
+
+Effects use the player position's saved environment and the definitions retained for its owning activation. An unknown historical biome skips dependent effects instead of using the current pack. Retained definitions cannot restore a feature removed from the running jar. See [saved biome environments](/iris/06-worlds-lifecycle#saved-biome-environments).
 
 | Field | Default / range | What it does |
 |-------|-----------------|--------------|

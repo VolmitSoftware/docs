@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-05T22:49:09.579Z
+date: 2026-09-06T00:32:42.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -227,11 +227,13 @@ Biome completion and parsing are scoped to the active Iris dimension's reachable
 | Command | Platforms | Params | Description |
 |---------|-----------|--------|-------------|
 | (empty) / `here` | **Modded** | — | Full inspect at the player position |
-| `biome` | Both | — | Current Iris biome |
-| `region` | Both | — | Current Iris region |
+| `biome` | Both | — | Saved Iris biome at the player position |
+| `region` | Both | — | Saved Iris region at the player position |
 | `block` | Both | — | Target block |
 | `hand` | Both | — | Held item |
 | `markers` | Both | `<marker>` | Reveal nearby markers (for example `cave_floor`, `cave_ceiling`, `object`) |
+
+Biome and region inspection resolve saved identities through their owning activation's retained pack definitions. A later pack can reuse a key without changing the older location's definition. If an older chunk lacks an unambiguous saved identity, inspection reports unavailable instead of predicting a biome from the current generator. See [saved biome environments](/iris/06-worlds-lifecycle#saved-biome-environments).
 
 ---
 

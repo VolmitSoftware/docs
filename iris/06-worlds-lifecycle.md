@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-05T22:49:09.580Z
+date: 2026-09-06T00:32:42.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -415,11 +415,21 @@ The world seed, physical height bounds, logical height, environment, dimension t
 
 ### Retained world data
 
-The manifest references immutable epoch metadata, activation records, ownership, boundary snapshots, and semantic indexes. Iris keeps full pack copies for active and pending epochs. It releases older copies after their runtimes retire. No archived executable generator is required.
+The manifest references immutable epoch metadata, activation records, ownership, boundary snapshots, and semantic indexes. Iris retains immutable pack definitions for historical activations as well as active and pending epochs. Saved biome environments resolve through those definitions. Iris does not bundle historical generator code.
 
 Registry metadata preserves custom biome definitions, tags, dimension-type definitions, and renderer identities needed by saved chunks. Object, structure, biome, region, river, and point-of-interest records preserve generated facts. Recorded Iris pack identifiers retain their original case and punctuation; native Minecraft registry keys follow their separate validation rules. Empty sealed records remain authoritative. Back up the complete dimension directory, including native chunks and `iris/generation`.
 
-History grows as the world expands and activations accumulate. Immutable metadata files keep full epoch descriptors out of each manifest rewrite. This is not a fixed-size world archive.
+History consumes more disk space as chunks, biome records, retained packs, and activations accumulate. Immutable metadata files keep full epoch descriptors out of each manifest rewrite. Keep the complete `iris/generation` directory when backing up or moving a world.
+
+Generation history format 6 remains valid. Saved biome records use a separate versioned store and do not require a world reset.
+
+### Saved biome environments
+
+Iris records three-dimensional biome identities on Minecraft's native 4×4×4 biome grid. It also records the exact surface biome, base cave biome, and region for each block column. Each identity includes its owning activation, so the same resource key can retain different definitions across pack updates. Floating child biomes retain their logical identity even when they share a physical Minecraft biome with their parent. Historical ownership takes precedence where the boundary transition selects an older biome.
+
+Position inspection, ambient spawns, and effects use the saved environment and its retained pack definitions. Updating a jar or pack does not regenerate saved blocks or recreate existing entities. The current runtime executes supported behavior from those definitions; saved configuration does not freeze Java defaults, implementation details, or Minecraft behavior. A feature removed from the runtime cannot execute merely because its old configuration remains on disk. Native inherited spawn rules also resolve by the saved activation and physical biome holder, independently of the logical Iris biome at that height.
+
+Chunks generated before biome recording may lack an exact environment. Recovery only accepts a provable single-biome case from sealed generation facts and the owning immutable pack. Ambiguous selectors, vertical overrides, and blended boundary columns prevent recovery. Iris does not replay old noise or substitute the current biome. Unresolved positions report unavailable, and dependent ambient behavior skips them.
 
 ### Pack and Studio operations
 
@@ -429,7 +439,7 @@ History grows as the world expands and activations accumulate. Immutable metadat
 | Bukkit Studio open | Captures an initial world-local epoch and watches the separate authoring pack |
 | Bukkit `/iris pack package`; modded `/iris studio package` | Exports an archive. No world is touched |
 | `/iris dev update-world` | Stages a validated epoch for activation after restart. Existing chunks retain their recorded generation |
-| Ordinary Bukkit Studio hotload | Activates accepted edits for new chunks with a terrain transition. Saved terrain remains intact. Archived pack copies can be released |
+| Ordinary Bukkit Studio hotload | Activates accepted edits for new chunks with a terrain transition. Saved terrain, biome environments, and their pack definitions remain intact |
 
 ## Concurrent lifecycle guards
 
