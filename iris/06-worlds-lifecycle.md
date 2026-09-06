@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-06T08:44:33.577Z
+date: 2026-09-06T17:31:26.195Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -296,6 +296,8 @@ Load never downloads a pack. The world must already have its active generation s
 ## Unload
 
 Shutdown stops new hydrology requests and cancels queued plans. Active river and cave planning finishes before Iris releases mantle data. If that drain fails, dependent resources remain available for a shutdown retry.
+
+On Java 26.2 Paper-family servers, native structure placement records pending point-of-interest (POI) repairs in the affected chunk before changing blocks. Queued generation can finish during shutdown without dispatching POI updates to a stopped main executor. Saved repairs run when the chunk next loads on its owning thread, then clear after successful reconciliation.
 
 Failed runtime assembly, publication, service shutdown, or mantle persistence retains the resources it still owns. A later close retries those releases before closing the target and pack data. A failed mantle save does not proceed to storage close.
 

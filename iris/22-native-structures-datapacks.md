@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-05T16:04:10.729Z
+date: 2026-09-06T17:31:26.195Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -560,6 +560,8 @@ Scoping matches Iris placements. Validation requires the structure's effective a
 On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. Statusless chunk access inside that region retains `WorldGenRegion`'s current-stage lookup instead of being converted into a `FULL`-status request.
 This lets ordinary native piece placement, including mineshaft supports, read the generation chunk without asking Paper for a status that is unavailable during FEATURES. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads. If it explicitly requires a distant chunk, it receives an empty ephemeral chunk.
 Distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper write-radius contract. It does not widen the radius or suppress Leaf/Paper diagnostics. It removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings. It prevents the unavailable-chunk exception that Leaf and Paper treat as an unrecoverable generation failure.
+
+On Java 26.2 Paper-family servers, native structure changes to point-of-interest (POI) blocks record the affected chunk sections before placement. Iris reconciles those sections on the owning chunk-load thread, adding missing POIs and removing stale ones while retaining matching records and their occupied tickets. Pending repairs persist with the chunk across shutdown and clear only after successful reconciliation. No pack setting is required.
 
 Fabric, Forge, and NeoForge apply the equivalent boundary around the generation chunk. Native post-processing can read and write only the current 3×3-chunk area.
 Reads beyond it receive deterministic Iris surface/floor terrain or an empty ephemeral chunk. Far block changes, entities, events, and scheduled ticks never reach the live level. The modded structure-template palette lazy block lookup is also concurrent and boot-audited. Parallel native-volume inspection cannot mutate one vanilla cache through an unsafe `HashMap` path.
