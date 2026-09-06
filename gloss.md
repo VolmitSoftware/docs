@@ -1,11 +1,11 @@
 ---
-title: "Gloss"
-description: "Set up Gloss displays, menus, chat effects, scoreboards, and server text"
+title: Gloss
+description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-05T20:00:00.000Z
+date: 2026-09-06T00:58:00.000Z
 tags: "gloss"
 editor: markdown
-dateCreated: 2026-08-18T00:00:00.000Z
+dateCreated: 2026-08-21T00:31:30.433Z
 ---
 
 Gloss manages holograms, entity health overlays, menus, panels, container previews, scoreboards, tablist text, chat effects, item displays, and the server-list MOTD.

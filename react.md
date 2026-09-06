@@ -1,11 +1,11 @@
 ---
-title: "React"
-description: "React performance monitoring and optimization for Paper and Folia"
+title: React
+description: React performance monitoring and optimization for Paper and Folia
 published: true
-date: 2026-09-04T00:00:00.000Z
-tags: "react"
+date: 2026-09-04T09:19:46.771Z
+tags: react
 editor: markdown
-dateCreated: 2026-08-09T00:00:00.000Z
+dateCreated: 2026-08-21T00:31:42.920Z
 ---
 
 React measures where server time goes. It then gives operators tools to act on those measurements. Monitoring comes first. Optimization comes second.
