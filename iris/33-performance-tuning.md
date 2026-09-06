@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-06T09:02:49.068Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -236,7 +236,7 @@ caves reach into before it can publish. A spawn on a tile corner needs four
 tiles at once. The first chunks also initialize terrain, caves, and native
 structure reference windows after their required hydrology tiles are ready.
 
-Runtime worlds start planning every tile within half a tile of the initial spawn when Iris injects the generator. For an ungenerated destination chunk, Normal Studio instead starts its hydrology task at injection, in parallel with world setup. That task uses the opening runtime and participates in reload and shutdown tracking. Pregeneration adds a bounded one-tile lookahead around its center, then advances that lookahead with the generation front instead of planning the whole area. Starting a new pregen removes queued speculative plans outside its initial lookahead; plans already running and required tile requests still complete. The chunk system
+At generator injection, Iris asynchronously checks for an existing initial spawn chunk without generating it. This check lets saved worlds finish Folia startup without waiting for region ticks. If the chunk is absent, runtime worlds start planning every tile within half a tile of the initial spawn; Normal Studio instead starts its tracked entry hydrology task. A completion from a closed or replaced runtime cannot start planning. Pregeneration adds a bounded one-tile lookahead around its center, then advances that lookahead with the generation front instead of planning the whole area. Starting a new pregen removes queued speculative plans outside its initial lookahead; plans already running and required tile requests still complete. The chunk system
 generates a few hundred blocks around the player and each chunk's mantle
 window reaches further, so a spawn touches its neighbouring tiles no matter
 where on a tile it sits; the cold entry is bounded by the deepest chain of
