@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-05T18:30:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -120,7 +120,7 @@ Use `/gloss`, `gloss.*`, and `%gloss_*%` instead of the old HoloUI names. HoloUI
 
 ## Current conditional document versions
 
-Boards and tablist use schema 2, bubble styles use schema 4, and damage indicators and real drops use schema 3. Gloss ignores other schema versions. Rewrite custom files or restore a bundled default with its reset command. `/gloss import legacy` does not translate old boards, groups, or tablist files. See [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
+Holograms use schema 3. Boards, tablist, and entity overlays use schema 2. Bubble styles use schema 5. Damage indicators and Real Drops use schema 4. See [Data Files & Hot Reload](/gloss/03-data-files) for document paths and [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents) for conditions.
 
 ## Next steps
 

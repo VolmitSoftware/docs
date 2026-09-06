@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-09-06T00:23:42.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -72,7 +72,25 @@ Dynamic `show` works even when the lines are static or `perViewerPlaceholders` i
 
 `style` uses the same [display contract as entity overlays](/gloss/20-entity-overlays#style-and-decorations): billboard, alignment, shadow, see-through rendering, ARGB background, text opacity, line width, paired block/sky brightness, view range, shadow size and strength, culling dimensions, glow color, and independent XYZ scale. Scale axes accept `0.01` through `64`. An explicit partial object uses the shared member defaults; include `"billboard": "center"` and `"seeThrough": true` to retain the hologram orientation and visibility defaults.
 
-`box.enabled` allocates the decoration. `padding` is `0`–`64` pixels and `borderWidth` is `0`–`16` pixels. `backgroundArgb` and `borderArgb` use independent `#AARRGGBB` colors, so a transparent panel can have an opaque complete perimeter. Defaults are padding `4`, border width `1`, background `#B31B1B22` and border `#FFAAAAAA`. Zero-width borders and fully transparent parts allocate no display. Boxes disappear with their text, viewer conditions, unloaded worlds, or feature disablement.
+| Shared style field | Default inside an explicit style object | Accepted value |
+|---|---|---|
+| `billboard` | `fixed` | `fixed`, `vertical`, `horizontal`, or `center` |
+| `shadow`, `seeThrough` | `false` | Boolean; text shadow and visibility through blocks |
+| `textAlignment` | `center` | `left`, `center`, or `right` |
+| `backgroundArgb` | `#00000000` | Text background, `#AARRGGBB` |
+| `textOpacity` | `255` | Integer `0`–`255` |
+| `lineWidth` | `16384` | Integer `1`–`16384` text pixels |
+| `blockLight`, `skyLight` | Both absent | Supply both as integers `0`–`15`, or omit both for natural lighting |
+| `viewRange` | `1.0` | `0.01`–`64`; native range multiplier, with `1.0` representing 64 blocks before other visibility limits |
+| `shadowRadius` | `0` | `0`–`64` |
+| `shadowStrength` | `0` | `0`–`1` |
+| `cullingWidth`, `cullingHeight` | `0` | `0`–`4096`; zero disables the explicit culling bound |
+| `glowColor` | Absent | Optional `#AARRGGBB` outline color |
+| `scaleX`, `scaleY`, `scaleZ` | `1.0` | Independent finite scale values `0.01`–`64` |
+
+The document's `lines` array is the display order. Move entries to reorder rows, and use inline formatting or expressions within each entry. `style.backgroundArgb` controls the text display itself; `box.backgroundArgb` and `box.borderArgb` control separate decorative parts.
+
+`box.enabled` allocates the decoration. `padding` is `0`–`64` pixels and `borderWidth` is `0`–`16` pixels. `backgroundArgb` and `borderArgb` use independent `#AARRGGBB` colors, so a transparent panel can have an opaque complete perimeter. Defaults are padding `4`, border width `1`, background `#B31B1B22` and border `#FFAAAAAA`. Zero-width borders and fully transparent parts allocate no display. A box uses at most five decorative parts: its inner panel and four perimeter edges. Boxes disappear with their text, viewer conditions, unloaded worlds, or feature disablement.
 
 ## Particle layers
 
@@ -144,7 +162,7 @@ If you set `[features] holograms = false`, Gloss despawns every hologram on the 
 
 ### Shared and personalized modes
 
-With `[holograms] perViewerPlaceholders = true`, player placeholders and viewer expressions render separately for each nearby player. Viewer-independent text remains shared. Setting the option to `false` keeps text shared and leaves player-only values unresolved unless a dynamic `show` condition requires per-viewer rendering.
+With `[holograms] perViewerPlaceholders = true`, player placeholders and viewer expressions render separately for each nearby player. Viewer-independent text remains shared. Setting the option to `false` keeps text shared and leaves player-only values unresolved unless a dynamic `show` condition requires per-viewer rendering. Personalized text and boxes refresh when the client starts tracking their native display again, including after respawn or a world change. This uses outgoing entity packets on Spigot, Paper, and Folia; it does not depend on player movement.
 
 Persistent and temporary hologram displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap text at a smaller pixel width. Configured entries remain separate logical lines, and an explicit legacy reset between them prevents `&k` and other styles from bleeding into the next line.
 
@@ -177,13 +195,14 @@ This creates a normal one-line hologram and applies native display scale. Scale 
 
 The result is an ordinary hologram document. You can edit its text, scale, position and
 orientation on disk, and move or delete it by command like any other hologram.
+
 ## Temporary holograms
 
 Chat bubbles, damage indicators, entity overlays, and drop labels use temporary holograms. They are not saved to disk and update every `[holograms] temporaryUpdateIntervalTicks` (default 2). They can follow an entity and use viewer allowlists or denylists. With `perViewerPlaceholders` enabled, authored player expressions, placeholders, and custom functions receive the viewer context; other text stays shared. Each viewer's personalized box uses packet displays without adding world entities.
 
 `[holograms] interpolatedMotion` smooths movement, scale, and rotation between updates where the server supports it. Raising the update interval still reduces how often Gloss updates the display.
 
-Temporary holograms also accept particle layers through the inherited API. Source lines retain named span metadata; already-rendered frames do not. Other plugins can create them directly. See [API: Getting Started](/gloss/21-api-getting-started) and [Particle Layers](/gloss/25-particle-layers). The features built on them are covered in [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Temporary holograms also accept particle layers through the inherited API. Source lines retain named span metadata. Rendered-only lines or frame sources can supply their own measured span ranges with `setRenderedParticleText`; update those ranges when the rendered text changes. Other plugins can create them directly. See [API: Getting Started](/gloss/21-api-getting-started) and [Particle Layers](/gloss/25-particle-layers). The features built on them are covered in [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
 ## Migrating pre-envelope hologram files
 

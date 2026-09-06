@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -173,7 +173,9 @@ If your beaches stay one block wide no matter what, the coastline is too steep. 
 | `landBiomes` | string[] | Yes | Candidates for columns whose height ends up above the shore band. This is the list that defines the character of the region. |
 | `seaBiomes` | string[] | No | Candidates for columns below the water line. Empty is only valid if no column in this region can ever fall below `fluidHeight`. |
 | `shoreBiomes` | string[] | No | Candidates for the vertical band around the water line. Usually beaches and stony shores. |
-| `caveBiomes` | string[] | No | Candidates for the biome used underground for layers, decorators and cave-anchored structures. Empty means carved space keeps the surface biome data. |
+| `caveBiomes` | string[] | No | Candidates for the biome used underground for layers, decorators and cave-anchored structures. Omitted or empty lists use the surface biome for biome queries and saved generation history, unless a dimension carving band selects another biome. |
+
+Packs without caves, including superflat packs, can omit `caveBiomes`. This fallback does not enable cave generation or add entries to the cave decoration and structure pools.
 
 List root parents only. Child biomes are declared on their parent via `children` (see [13 - Biomes](/iris/13-biomes)). If you list a child here, it competes as a root as well and breaks the nesting you intended. Keys are load keys relative to `biomes/`. `temperate/plains` means `biomes/temperate/plains.json`.
 

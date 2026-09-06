@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -168,7 +168,7 @@ Two rules decide whether any of this appears:
 For a given `(x, y, z)`, in order:
 
 1. If an enabled dimension `carving[]` entry `worldYRange` contains the absolute world Y, its biome wins outright. Child entries subdivide that band into patches.
-2. Otherwise the region `caveBiomes` pool is sampled by `caveBiomeStyle` and biome `rarity`, zoomed by the dimension `biomeZoom` multiplied by the region `caveBiomeZoom`.
+2. Otherwise the region `caveBiomes` pool is sampled by `caveBiomeStyle` and biome `rarity`, zoomed by the dimension `biomeZoom` multiplied by the region `caveBiomeZoom`. An omitted or empty pool uses the surface biome for biome queries and saved generation history. It does not enable cave generation.
 3. If the sampled cave biome `caveMinDepthBelowSurface` is deeper than the point, the **surface** biome is used instead. The same fallback applies if the point is at or above the surface.
 
 Results are blended. The resolver samples the center plus four points three blocks out. Where they disagree it picks the center half the time and one of the four neighbors otherwise, seeded per block position. That produces a speckled transition band rather than a hard edge between two cave biomes.

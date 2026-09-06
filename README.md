@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,3 +42,26 @@ See [Wiki.js page examples](/wiki-page-examples) for supported Markdown and
 ## Contributing
 
 See [Contributing](/contributing).
+
+## Theme assets
+
+The wiki uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and the fonts under `home-assets/fonts/`. Serve these files at their matching root-relative URLs.
+
+In Wiki.js **Administration > Theme**, use **Code Injection > Head HTML Injection**. These fields are part of the [Wiki.js theme configuration](https://github.com/requarks/wiki/blob/main/client/components/admin/admin-theme.vue).
+
+Copy the contents of `theme/font-preloads.html` into the head field before this stylesheet and script:
+
+```html
+<link rel="stylesheet" href="/theme/minimal-brutalism.css">
+<script src="/theme/minimal-brutalism.js" defer></script>
+```
+
+Keep one copy of each theme reference and preserve unrelated head content. Updating the repository does not insert the preload snippet into Wiki.js settings. The snippet preloads the main heading and body fonts. The text fonts use `font-display: optional` to prevent a late font replacement from shifting the page.
+
+From this repository, run the local theme preview:
+
+```sh
+node tools/theme-preview.mjs
+```
+
+Open `http://127.0.0.1:4177`. Set `PORT` to use another port. The preview combines public wiki pages with local CSS, JavaScript, and font preloads. It removes the existing theme stylesheet reference before injection. Add `?plain=1` to view the upstream styling. Check desktop and mobile layouts in both color modes.

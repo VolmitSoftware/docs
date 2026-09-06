@@ -2079,10 +2079,6 @@ body,
   border-bottom-color: var(--volmit-line-strong) !important;
 }
 
-.v-application.volmit-light-mode .nav-header .org-logo {
-  filter: brightness(0);
-}
-
 .v-application.volmit-light-mode .nav-header .v-btn,
 .v-application.volmit-light-mode .nav-header .v-icon {
   color: var(--volmit-muted) !important;

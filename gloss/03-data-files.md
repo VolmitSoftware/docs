@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-09-05T23:37:20.700Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -42,7 +42,21 @@ Versioned documents contain:
 }
 ```
 
-Holograms use schema 3, bubble styles use schema 5, and damage indicators and Real Drops use schema 4. Entity overlays use schema 2. Keep the schema used by that document type. Gloss updates `revision` when it writes the file; hand edits do not need to change it. An invalid file leaves the previous valid version active.
+Use the schema version for the document being edited:
+
+| Document | `schemaVersion` |
+|---|---|
+| Holograms | `3` |
+| Scoreboards and tablist | `2` |
+| Bubble styles | `5` |
+| Damage indicators and Real Drops | `4` |
+| Entity overlays | `2` |
+| Animations, emoji, MOTD, and panels | `1` |
+| Menus and container previews | No version envelope |
+
+Gloss updates `revision` when it writes a versioned file; hand edits do not need to change it. An invalid file leaves the previous valid version active. Menu and preview documents use their own root fields without `schemaVersion` or `revision`.
+
+Persistent holograms and bubble styles store their shared appearance in root `style` and `box` objects. Indicator presentations use `style` and `box`; Real Drops presentations use `labels.style` and `labels.box`. Previews use root `textStyle` and `itemStyle`, per-element `style`, label `box`, and `card` chrome settings. These are JSON document settings, separate from the feature and refresh controls in `gloss.toml`.
 
 Display documents accept an optional boolean or expression `show` field, defaulting to `true`. Entity overlays also apply their `enabled`, range, entity-type, and world settings.
 See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) for supported fields, contexts, and examples. Drop-label visibility uses

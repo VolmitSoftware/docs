@@ -2,7 +2,7 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
@@ -17,13 +17,13 @@ Run a plugin's report command to save and upload its report, or append `upload=f
 | Command | Permission |
 |---|---|
 | `/adapt debugdump [upload=true]` | `adapt.debugdump` |
-| `/biletools debugdump [upload=true]` | `biletools.debugdump` |
+| `/biletools debug dump [upload=true]` | `biletools.debug` |
 | `/gloss debugdump [upload=true]` | `gloss.debugdump` |
 | `/hiddenore debugdump [upload=true]` | `hiddenore.debugdump` |
 | `/iris debugdump [upload=true]` | `iris.debugdump` |
 | `/react debugdump [upload=true]` | `react.debugdump` |
 | `/rift debug dump [upload=true]` | `rift.debug` |
-| `/sp debug dump [upload=true]` | `shapedportals.debug` |
+| `/sp debugdump [upload=true]` | `shapedportals.debugdump` |
 | `/wormholes debugdump [upload=true]` | `wormholes.debugdump` |
 
 These commands use the Bukkit service; Iris's mod-loader command trees do not expose this service. Existing gameplay debug toggles and debug subcommands remain separate from report generation.

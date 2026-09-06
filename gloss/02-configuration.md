@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-05T22:12:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -83,7 +83,7 @@ defaults on reload; previews require the restart noted above. See [Getting Start
 | `updateIntervalTicks` | `10` | 1 – 200 | Ticks between ordinary persistent hologram refreshes; clock-driven expressions and named animations automatically sample every tick |
 | `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which personalized metadata is sent |
 | `perViewerPlaceholders` | `true` | Not applicable | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
-| `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, API temporaries) |
+| `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, entity overlays, drop labels, and API temporaries) |
 | `interpolatedMotion` | `true` | Not applicable | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
 | `highFrequencyAnimations` | `true` | Not applicable | Drive animation clips faster than 20 fps from the dedicated `Gloss Animator` thread with sub-tick packet updates. Off restores the tick-bounded behavior exactly |
 | `maxAnimationFps` | `120` | 1 – 240 | Frame-rate ceiling of the high-frequency animator loop. Sets its adaptive floor to `1000 / fps` ms (at least 4 ms) |
@@ -154,13 +154,13 @@ Stage gates for the rendering pipeline. Neither applies to chat messages.
 |---|---|---|
 | `blacklistWorlds` | `[]` | World folder names where chat bubbles never appear. Null entries are dropped. No case folding is applied, so match the folder name exactly |
 
-Bubble wrapping, appearance, lifetime, conditional selection, expression-driven motion and particle layers are per-style, in schema-4 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Bubble wrapping, appearance, lifetime, conditional selection, expression-driven motion and particle layers are per-style, in schema-5 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
 
 ## `damage-indicators/default.json`
 
 Nearby persistent health bars use the separate schema-2 `entity-overlays/default.json` document. They are enabled by default and have their own `enabled` switch. See [Entity Overlays](/gloss/20-entity-overlays) for range, segments, names, hit feedback, React counts, and Adapt Insight settings.
 
-Damage-indicator settings live in `plugins/Gloss/damage-indicators/default.json`. The schema-3 file
+Damage-indicator settings live in `plugins/Gloss/damage-indicators/default.json`. The schema-4 file
 contains `limits`, `damage`, `healing`, and `audience`, reloads automatically, and is available in the
 web editor.
 
@@ -189,9 +189,11 @@ affected entity.
 | Key | Damage default | Healing default | Meaning |
 |---|---|---|---|
 | `when` | `"true"` | `"true"` | Condition that gates this event type |
-| `presentation.format` | `"&c&l{amount}"` | `"&a&l{amount}"` | Configured indicator text; the required `{amount}` token is the formatted health delta |
+| `presentation.format` | `"&c&l{amount}"` | `"&a&l{amount}"` | Configured indicator text; optional `{amount}` inserts the formatted health delta |
 | `presentation.offset` | `[0, 0.7, 0]` | `[0, -0.1, 0]` | Spawn offset from the entity; each finite component is clamped to -32 – 32 |
 | `variants` | `[]` | `[]` | Complete presentations selected by `priority` and `when` |
+
+Each presentation accepts the shared `style` and `box` objects for display settings and decorations. Motion scale and opacity multiply those authored settings. See [Display styling](/gloss/08-bubbles-indicators-drops#damage-indicators).
 
 Each presentation also carries `motion`:
 
@@ -237,7 +239,7 @@ Damage conditions can use applied-delta event values plus immutable affected-ent
 
 ## `real-drops/default.json`
 
-Real Drops settings live in `plugins/Gloss/real-drops/default.json`. The schema-3 file contains a base
+Real Drops settings live in `plugins/Gloss/real-drops/default.json`. The schema-4 file contains a base
 `presentation`, conditional `variants`, and `audience.when`. It reloads automatically and is available
 in the web editor. The headings below describe fields inside `presentation`.
 
@@ -296,18 +298,14 @@ real-drop update loop.
 
 | Key | Default | Range | Meaning |
 |---|---:|---|---|
-| `enabled` | `true` | Not applicable | Mirror the effective item name through one TextDisplay |
-| `yOffset` | `0.55` | 0 – 4 | Label height above the model in blocks |
-| `scale` | `0.85` | 0.1 – 4 | TextDisplay scale |
-| `viewRange` | `32.0` | 4 – 128 | Label tracking range in blocks |
-| `billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, `VERTICAL` | Billboard constraint |
-| `seeThrough` | `true` | Not applicable | Draw the label through blocks |
-| `shadow` | `true` | Not applicable | Draw the text shadow |
-| `background` | `true` | Not applicable | Draw the configured full background |
-| `backgroundRed` | `0` | 0 – 255 | Background red channel |
-| `backgroundGreen` | `0` | 0 – 255 | Background green channel |
-| `backgroundBlue` | `0` | 0 – 255 | Background blue channel |
-| `backgroundAlpha` | `80` | 0 – 255 | Background alpha channel |
+| `enabled` | `true` | Not applicable | Render the effective item name with the shared hologram engine |
+| `yOffset` | `0.55` | -4 – 16 | Label height above the item in blocks |
+| `style` | Centered, shadowed, see-through text at 0.85 XYZ scale | Shared display-style limits | Scale, alignment, background, opacity, light, billboard, view range, culling, and glow |
+| `box` | Disabled | Shared box limits | Padding, background, border width, and border color |
+
+The default text background is `#50000000`; `style.viewRange` defaults to `0.5` (32 blocks). See [Drop label styling](/gloss/08-bubbles-indicators-drops#real-drops) for all defaults and ranges. The label and up to five box parts count toward the chunk budget. Viewer-specific boxes use packet displays, so they add no server entities per viewer.
+
+Labels use `[features] holograms` and the shared `[holograms]` refresh and placeholder settings. When Real Drops models are disabled, Gloss-owned labels retain the same style and box.
 
 ### `filters`
 
@@ -339,7 +337,7 @@ Clips specify a `trigger`, `durationTicks`, `loop`, and ordered tracks. Triggers
 
 `materialProperties` is a map of named material maps. Each exact or glob material entry supplies `glow` as numeric ARGB and `lightLevel` from 0 through 15; `GLOW` and `LIGHT_LEVEL` keyframes can name the map and retain their literal value as the fallback. `PHYSICS` values below `0.5` hold the item and preserve its incoming velocity, while values at or above `0.5` release it. `LIGHT_LEVEL` applies display brightness and an air-only temporary light block, capped at eight active lights per chunk and moved no faster than every four ticks.
 
-Real drops use a non-persistent `BlockDisplay` carrier for placeable materials and `ItemDisplay` for true items, with additional models and the label mounted to it. Only the carrier receives position updates. Turning the feature off removes Gloss-owned displays, temporary lights, and restores native item and name visibility. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) for lifecycle, performance, and React bundle integration details.
+Real drops use non-persistent `BlockDisplay` models for placeable materials and `ItemDisplay` models for other items. On ordinary servers, additional models ride one carrier. Folia moves each display on its owning scheduler. Labels follow the item through the shared temporary-hologram engine. Turning the feature off removes Gloss-owned displays, temporary lights, and restores native item and name visibility. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) for lifecycle, performance, and React bundle integration details.
 
 ## `[commands]`
 
@@ -459,6 +457,4 @@ Three groups of settings moved out of configuration. They are now content docume
 
 The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Board schema 2 and tablist schema 2 express group-dependent behavior as ordinary conditions; `/gloss import legacy` does not convert old boards, groups or tablist formats.
 
-The former `line-stagger-ticks` and `fly-away` switches have no direct schema-3 keys. One wrapped message is one multiline entity, and translation, scale, rotation and opacity use BubbleStyle motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
-
-Board schema 1, tablist schema 1, bubble schema 2, damage-indicator schema 1 and real-drop schema 1 are hard breaks. Gloss silently ignores those document versions and does not migrate them during startup. Rewrite custom content to the current schema or reset it to the default.
+A bubble document renders one wrapped message as one multiline entity; translation, scale, rotation and opacity use its motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.

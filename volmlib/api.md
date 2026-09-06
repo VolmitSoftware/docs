@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -64,6 +64,8 @@ Aliases remain executable, while help and completion show canonical command name
 ## Threading
 
 Use `FoliaScheduler` for Bukkit work. Entity and player state belongs on the entity scheduler; world and block state belongs on the owning region; global tasks use the global scheduler. Keep file and network I/O off those threads.
+
+`FoliaScheduler.isStopping(Server)` reports terminal shutdown when the server exposes that capability; it returns false for an unavailable capability or a null server. On Folia, shutdown can report entity ownership after the region world-data context is gone. Consumers can use this check to skip removal of nonpersistent visual entities during terminal shutdown while retaining normal reload and plugin-disable cleanup.
 
 ## File watching
 

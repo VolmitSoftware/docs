@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-06T00:23:42.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -85,6 +85,8 @@ Temporary holograms expire and are not written to disk:
 ```java
 TemporaryHologram tag = gloss.createTemporaryHologram("combat-tag", location, 4000L);
 tag.setRenderedLines(List.of("§c-4", "§7Critical hit"));
+tag.setStyle(IconDisplayStyle.hologramDefaults().withScale(0.9F, 0.9F, 0.9F));
+tag.setBox(new HologramBox(true, 4, 1, null, null));
 tag.bindPosition(entity, () -> entity.getLocation().add(0, 2.2, 0));
 tag.viewers().whitelist();
 tag.viewers().add(player.getUniqueId());
@@ -92,7 +94,13 @@ tag.viewers().add(player.getUniqueId());
 
 Use `setStyle(IconDisplayStyle)` for the shared text-display appearance and `setBox(HologramBox)` for an automatically sized background and border. Both follow the temporary hologram's position binding, presentation, and viewers. Box dimensions use Minecraft text pixels; decorations disappear with the hologram. `setParticleLayers(List<ParticleLayer>)` adds shared particle effects.
 
-Use `setLines` for authored MiniMessage, functions, animations, player expressions, and PlaceholderAPI. With `[holograms] perViewerPlaceholders` enabled, Gloss resolves viewer-dependent content on each viewer's scheduler and measures that viewer's box from the rendered text. `setRenderedLines` and `bindRenderedFrames` accept section-formatted text without interpreting player-written markup or expressions. Use `setRenderedParticleText` to attach span offsets to those rendered frames.
+Use `setLines` for authored MiniMessage, functions, animations, player expressions, and PlaceholderAPI. With `[holograms] perViewerPlaceholders` enabled, Gloss resolves viewer-dependent content on each viewer's scheduler and measures that viewer's box from the rendered text. `setRenderedLines` and `bindRenderedFrames` accept section-formatted text without interpreting player-written markup or expressions. `setRenderedParticleText(String, List<ParticleTextSpan>)` supplies particle geometry and named ranges; it does not replace the displayed lines. Each range uses zero-based Java string offsets, with an exclusive end, in the supplied rendered text. `setRenderedLines` clears the prior particle override, so set its matching particle text afterward.
+
+`bindRenderedFrames(LongFunction<List<String>>)` receives a wall-clock millisecond value on the animator's asynchronous packet loop. Its callback must be cheap, thread-safe, and free of Bukkit state reads; it can run more often than a server tick. Pass `null` to remove the frame binding and resume the stored lines. Publish corresponding particle text when a frame changes the geometry.
+
+`bindPosition` and `bindPresentation` sample on their declared entity owner's scheduler. The presentation contains XYZ scale, XYZ rotation in degrees, and opacity. Its scale multiplies `IconDisplayStyle` scale; its opacity multiplies style text opacity. Presentation scales clamp to `0`–`16`, opacity to `0`–`1`, and finite rotations wrap through 360 degrees. Text, boxes, and particle transforms follow the same presentation. A null binder removes that binding.
+
+All appearance types above are in `art.arcane.gloss.api` and ship in the API jar. `IconDisplayStyle.defaults()` uses fixed billboard and opaque glyphs; `hologramDefaults()` selects center billboard and see-through text. A partial style object uses the shared member defaults. `HologramBox.defaults()` disables decoration, and a null box restores that disabled default. See [Display style and boxes](/gloss/04-holograms#display-style-and-boxes) for every field and range.
 
 ## Scoreboards and tablist
 
@@ -125,7 +133,7 @@ Gloss owns nearby entity health displays. `refreshEntityOverlay(LivingEntity, in
 String rendered = gloss.filter(player, "&d|animation.rainbow| %player_name% :heart:");
 ```
 
-This applies Gloss functions, PlaceholderAPI values, emoji, and colors. A `null` player leaves player placeholders unresolved.
+This applies Gloss functions, inline expressions, PlaceholderAPI values, emoji, and colors. A `null` player leaves player placeholders unresolved; use a real player for expressions that read player state. MiniMessage tags remain available for the display renderer to interpret.
 
 ## More APIs
 

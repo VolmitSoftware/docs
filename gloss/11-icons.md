@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -101,10 +101,39 @@ Invalid ranges, colors, brightness pairs, or enum values reject the menu file. A
 |---|---|---|---|---|
 | `text` | string | yes (schema) | `null` | `null` is treated as `""` and renders as one empty line |
 | `refreshTicks` | integer 0 – 1200 | no | automatic | Explicit ticks between live re-renders. `0` freezes after the first render. When omitted, ordinary dynamic text uses 10 ticks and clock-driven or named-animation text uses 1 tick |
+| `box` | object | no | disabled | Shared background and complete border around the rendered text block |
 
 `text` splits on `\n`, with one display per line. `refreshTicks` must be from 0 to 1200.
 
 The default `lineWidth` of `16384` avoids wrapping. Smaller values use the client's font-pixel width; automatic hitboxes still measure the configured line.
+
+### Text boxes
+
+The optional `box` object adds a panel around the complete text icon. It follows the icon's position, rotation, scale, and visibility. Text refreshes resize the box to the rendered content. The box does not enlarge the component's click plane.
+
+```json
+{
+  "type": "text",
+  "text": "<gold>Balance</gold>\n%vault_eco_balance%",
+  "box": {
+    "enabled": true,
+    "padding": 4,
+    "borderWidth": 1,
+    "backgroundArgb": "#B31B1B22",
+    "borderArgb": "#FFAAAAAA"
+  }
+}
+```
+
+| Key | Default | Contract |
+|---|---|---|
+| `enabled` | `false` | Show the box |
+| `padding` | `4` | Integer `0` through `64`, in Minecraft text pixels |
+| `borderWidth` | `1` | Integer `0` through `16`, in Minecraft text pixels. Zero removes the border |
+| `backgroundArgb` | `#B31B1B22` | Panel color in `#AARRGGBB` format. Zero alpha hides the panel fill |
+| `borderArgb` | `#FFAAAAAA` | Border color in `#AARRGGBB` format. Zero alpha hides the border |
+
+The box uses the shared [hologram decoration contract](/gloss/20-entity-overlays#style-and-decorations). The icon's `style.backgroundArgb` remains a separate text-display background. Boxes apply to `text` icons; image icons retain their pixel-based presentation.
 
 ### Text formatting
 

@@ -2,7 +2,7 @@
 title: "API: Menus"
 description: "Build and open holographic menus through the Gloss API"
 published: true
-date: 2026-09-05T23:55:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z

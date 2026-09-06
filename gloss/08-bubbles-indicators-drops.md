@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Configure chat bubbles, health indicators, drop labels, and display-backed items"
 published: true
-date: 2026-09-06T00:06:08.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -119,7 +119,7 @@ The bubble keeps the formatting already allowed in chat. It does not grant color
 
 Wrapping counts visible characters and keeps color and decoration state. One message uses one multiline display. Older messages move upward to make room for newer ones.
 
-The configured `prefix` supports functions, expressions, PlaceholderAPI, emoji, legacy colors, and MiniMessage formatting. Formatting-only prefixes color the chat text; closed tags restore the preceding formatting before chat is appended. Player chat is not interpreted as Gloss code. The bubble remains for `maxAliveMs` while the feature and permission checks pass.
+The configured `prefix` supports functions, expressions, PlaceholderAPI, emoji, legacy colors, and MiniMessage formatting. Formatting-only prefixes color the chat text; closed tags restore the preceding formatting before chat is appended. Player chat is not interpreted as Gloss code. For example, `"prefix": "<gold>[Chat]</gold> "` styles only the configured label, while `"prefix": "<gold>"` carries gold formatting into the message. The bubble remains for `maxAliveMs` while the feature and permission checks pass.
 
 Particle layers can follow the bubble or target a line, prefix span, or local geometry. Chat text cannot create particle ranges. See [Particle Layers](/gloss/25-particle-layers).
 
@@ -306,6 +306,8 @@ The base `when` condition enables each event type. The matching variant with the
 
 Each base or variant presentation accepts full shared `style` and `box` settings. Omitted styles use center billboard, see-through text and unit XYZ scale. Style scale multiplies the indicator transform, and style opacity multiplies its fade; boxes follow motion, rotation, visibility and expiry. See [Display style and boxes](/gloss/04-holograms#display-style-and-boxes).
 
+For a text-only hit label, a presentation can use `"format": "<gold>HIT</gold>"` with no `{amount}` token. To add a frame, include `"box": {"enabled": true, "padding": 4, "borderWidth": 1}` in that same presentation. Set the presentation's `style` explicitly when changing billboard, independent scale axes, brightness, alignment, or text opacity. These fields apply equally to the base presentation and every conditional variant.
+
 Each presentation can include particle layers that follow the indicator. A named span can limit particles to part of the format. See [Particle Layers](/gloss/25-particle-layers).
 
 Motion fields use continuous units rather than per-tick impulses:
@@ -396,7 +398,7 @@ Bundle (12 items)
 +1 more
 ```
 
-A bundle with no contents, or whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle`. The horizontal fallback remains on the hidden item entity for presentations that cannot be admitted within the configured display budget.
+A bundle with no contents, or whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle`. The horizontal fallback remains on the hidden item entity for presentations that cannot be admitted within the configured display budget. Viewer-dependent formats use a plain count and item type for that fallback; the displayed label retains the authored format.
 
 React super-stack bundles can supply their own label formats and entry limit.
 
@@ -486,7 +488,7 @@ An omitted `labels.style` uses center billboard, glyph shadow, see-through, cent
 
 `labels.box` accepts `enabled`, `padding` (0–64 font pixels), `borderWidth` (0–16 font pixels), `backgroundArgb`, and `borderArgb`. A visible box uses up to five extra display parts. The Real Drops chunk budget reserves the label and its maximum box parts; personalized boxes are sent only to their viewer. The box follows the item, label scale, billboard, and audience; it is removed with the label. Ordinary Gloss-owned drop names also use the shared style and box when Real Drops models are disabled. Externally authored item names remain subject to `preserveCustomNames`.
 
-Labels retain their authored functions, viewer expressions, and named particle spans. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
+Labels retain their authored functions, viewer expressions, and named particle spans. Viewer-dependent formats keep a literal count/type name on the underlying item; their authored text is evaluated only for the player viewing the label. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
 
 The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including display style, box, particles, physics, script, and animation.
 
@@ -498,7 +500,7 @@ The optional `animation` block adds event-driven tracks for position, rotation, 
 
 Presentations are removed when the item merges, is picked up, despawns, unloads, or when the feature stops. Display entities are not persistent.
 
-Disabling `drops` removes Gloss-owned labels. Disabling `realDrops` removes display models and restores vanilla item visibility. The config and presentation document reload automatically. See [Particle Layers](/gloss/25-particle-layers).
+Disabling `drops` removes Gloss-owned labels. Disabling `realDrops` removes display models and restores vanilla item visibility. When drop labels remain enabled, the item keeps its styled standalone label, including viewer expressions and its configured box. The config and presentation document reload automatically. See [Particle Layers](/gloss/25-particle-layers).
 
 ## Reference
 

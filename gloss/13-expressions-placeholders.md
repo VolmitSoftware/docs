@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-09-04T16:34:48.424Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,13 +15,13 @@ below.
 
 | System | Syntax | Applies to |
 |---|---|---|
-| PlaceholderAPI | `%expansion_key%` | Per-viewer hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text icons, menu and panel toggle conditions, menu `message` actions |
-| Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, configured chat-bubble prefixes, and damage indicators |
+| PlaceholderAPI | `%expansion_key%` | Per-viewer hologram lines, entity-overlay templates, board titles and lines, tablist text, menu/panel text and conditions, menu messages, configured bubble prefixes, and personalized indicator/drop-label text |
+| Text pipeline functions | `\|name\|` | Hologram lines, entity-overlay templates, board titles and lines, tablist text, menu/panel text and messages, drop-label formats, MOTD lines, configured chat-bubble prefixes, and damage indicators |
 | Inline text expressions | `{{ expression }}` | Every configured text-pipeline surface above; player/PAPI values require a player-backed surface |
 | Particle text ranges | `<particles:name>...</particles>` | Configured text on particle-capable in-world holograms, menus, panels, previews, indicators, and drop labels |
 | Show conditions | boolean or boolean expression string | Display visibility; see [Show conditions](#show-conditions) |
 | Conditions | bare boolean expression, no delimiter | Scoreboard selection and variants, tablist variants, bubble-style selection, damage/healing styles and audiences, Real Drops variants and audiences |
-| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-4 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
+| Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-5 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
 | Preview expression DSL | bare expression source, no delimiter | Container preview documents in `plugins/Gloss/previews/` only |
 
 Action commands, icon values, component ids, panel transforms, emoji triggers, and preview selectors
@@ -90,6 +90,7 @@ policy for retaining its last valid version.
 |---|---|---|
 | Scoreboard | document `show` | Live viewer; gates automatic and sticky boards on the selection pass. A hidden sticky board keeps its selected id and returns when true |
 | Persistent hologram | document `show` | Live viewer; gates text and particles during updates, including otherwise static holograms |
+| Entity overlay | document `show`, `lines[].show` | Live viewer plus captured entity values and Insight state; the document gate controls the pane, and row gates control its contents |
 | Tablist | document `show`, `headerFooter.show`, `listNames.show` | Player being formatted; top-level and section gates both apply. Hidden headers/footers clear, including API overrides; hidden list-name formatting resets to the player's name |
 | MOTD | document `show` | Evaluated per ping without a viewer or world; false leaves the ping response unchanged |
 | Emoji | document `show` | Live on the player's owning thread; async chat reads the sender's visibility snapshot, sampled every 10 ticks while conditional emoji exist. False or a missing snapshot leaves the token or trigger unchanged |
@@ -241,20 +242,25 @@ A render without a viewer skips PlaceholderAPI substitution:
 |---|---|---|
 | Personalized hologram lines | the player receiving metadata for the shared entity | yes |
 | Shared hologram lines | none | no |
+| Entity-overlay templates | the player viewing the pane | yes |
 | Board title and lines | the board's holder | yes |
 | Tablist header, footer, name formats | the player being formatted | yes |
 | Menu/panel text, conditions and messages | the session player | yes |
 | Container preview expressions | the preview viewer, except console/static diagnostics | `papi(...)` calls only; raw `%...%` is modulo syntax |
 | BubbleStyle prefix | the speaker | yes |
-| `[drops] nameFormat` | none | no |
+| Drop-label formats | the player viewing the label | yes, when personalized hologram text is enabled |
 | MOTD lines | none | no |
-| Damage indicators | none | no |
+| Damage indicators | the player viewing the indicator | yes, when personalized hologram text is enabled |
 
 A hologram renders per viewer when a line contains a complete `%name%`, `|function|`, or viewer-backed
 `{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`.
 
 Setting that key to `false` keeps text shared unless a dynamic `show` condition requires per-viewer
 rendering. Shared lines with `%` keep the tokens. See [Holograms](/gloss/04-holograms).
+
+Temporary indicator and drop-label text also uses `[holograms] perViewerPlaceholders`.
+Disabling it keeps their authored text shared. Entity-overlay templates always evaluate for their viewer.
+Entity names and Insight details remain literal data and cannot supply executable placeholders.
 
 ### In menu and panel documents
 

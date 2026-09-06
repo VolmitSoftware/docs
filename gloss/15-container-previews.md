@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-09-05T23:50:00.000Z
+date: 2026-09-06T01:32:26.266Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -203,6 +203,27 @@ The contract includes billboard, alignment, shadow, see-through, ARGB background
 
 A label accepts `box` to add a measured panel and a complete perimeter. Its decorations resize with dynamic text and follow preview motion, scaling, conditions and closure. An explicit `background` overrides `style.backgroundArgb`; omitting it uses the inherited style background.
 
+Style objects are whole overrides, not field-by-field merges. A label with `"style": {"scaleX": 1.2}` uses shared defaults for every other style field rather than inheriting those fields from `textStyle`. Style and box fields are typed constants; use the element's expression fields for changing text, colors, and visibility.
+
+For example, this label uses inherited text styling, a transparent text background, and an independently colored panel and border:
+
+```json
+{
+  "type": "label",
+  "text": "'<gold>Contents</gold>'",
+  "background": "#00000000",
+  "box": {
+    "enabled": true,
+    "padding": 5,
+    "borderWidth": 1,
+    "backgroundArgb": "#B31B1B22",
+    "borderArgb": "#FFFFCC66"
+  }
+}
+```
+
+Rich text is resolved before particle glyph geometry is measured. Formatting tags do not become visible glyphs or enlarge a named particle span.
+
 ### `card`
 
 Add `card` to draw the preview frame. Its `framed` field defaults to `true`.
@@ -223,6 +244,8 @@ Add `card` to draw the preview frame. Its `framed` field defaults to `true`.
 | `trayArgb` | ARGB | `#FF33333E` | Grid tray color |
 | `borderArgb` | ARGB or null | null | Explicit frame color; null uses accent RGB with `CC` alpha |
 | `titleArgb` | ARGB or null | null | Explicit title bar color; null uses accent RGB with `E6` alpha |
+
+The card chrome uses layered outer-frame, panel, tray, and title panels. Their explicit ARGB fills take precedence over the text style background; a translucent panel can reveal the frame beneath it. Label `box` decorations use separate perimeter edges and allow an independently transparent interior.
 
 Card fields are evaluated when built. Dynamic `show` and `framed` also update every four ticks;
 a visibility change rebuilds the layout.
