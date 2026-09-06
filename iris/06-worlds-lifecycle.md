@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-06T08:44:33.577Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -299,6 +299,8 @@ Shutdown stops new hydrology requests and cancels queued plans. Active river and
 
 Failed runtime assembly, publication, service shutdown, or mantle persistence retains the resources it still owns. A later close retries those releases before closing the target and pack data. A failed mantle save does not proceed to storage close.
 
+Successful shutdown releases generation admission after the last runtime owner closes. A later load opens fresh admission and can promote a pending compatible activation. Old history handles cannot start generation stages or promote updates. Failed cleanup retains admission for retry. Bukkit's update command still requests a server restart, and startup registry checks remain in force.
+
 Complex hotload restores the previous runtime only after unpublished replacement cleanup succeeds. If failure occurs after publication, the replacement remains owned in the failed state for shutdown. Iris does not restore the retired complex.
 
 `/iris unload` runs synchronously from a player origin:
@@ -310,7 +312,7 @@ Complex hotload restores the previous runtime only after unpublished replacement
 
 There are two timers in play. The inner `WorldLifecycleService` unload has its own 120-second budget. The command wraps the whole sequence in the 150-second ceiling.
 
-Wait for `/iris unload` to finish before moving, replacing, or deleting a world. If unloading fails, Iris leaves the world and its generator active.
+Wait for `/iris unload` to finish before moving, replacing, or deleting a world. A failure before world removal leaves it loaded. If generator cleanup fails afterward, the world can already be unloaded; dependent resources remain available for a cleanup retry.
 
 On a true server stop, Iris first drains Jigsaw Studio autosaves while Paper's region access is still available. It then quiesces its own producers. Generators, generation-facing services, and shared pools stay alive while Paper closes the world and drains its chunk system. Destructive generator teardown and final Mantle persistence begin only after that authoritative boundary. Already-queued Paper generation cannot encounter a closed Mantle. It also cannot meet a generator that has started rejecting generation stages.
 
