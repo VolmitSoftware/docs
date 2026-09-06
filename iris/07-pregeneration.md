@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-06T22:00:00.000Z
+date: 2026-09-06T22:23:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -199,7 +199,7 @@ Full settings reference: [03 - Configuration](/iris/03-configuration). Tuning gu
 
 Failed chunks are counted separately from generated ones and only appear in the status line when the count is above zero. A run can reach 100% with failures. Check the failed count, not just the percentage.
 
-During Bukkit shutdown, pregeneration callbacks check Iris's enabled state without acquiring the plugin-manager lock held by plugin disable. This lets the worker finish saving and cleanup while the server waits for it. Normal event scheduling remains unchanged; scheduling failures retain their full console trace.
+During Paper-family shutdown without Folia threading, the server thread processes native chunk tasks while waiting for pregeneration to drain. Final chunk unloads and flushes belong to the server's subsequent world close. Ordinary pregen stops retain Iris's unload and flush path. Shutdown callbacks check Iris's enabled state without acquiring the plugin-manager lock; scheduling failures retain their full console trace.
 
 Console progress is emitted every 30 seconds instead of every 10 seconds, followed by a forced completion or cancellation summary. Each line labels the actual wall-clock overall, 10-second, 30-second, and 60-second averages. Short runs use their available elapsed time, so the startup sample no longer dilutes a five-second run with an artificial zero.
 
