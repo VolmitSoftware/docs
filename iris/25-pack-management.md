@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-04T22:22:28.804Z
+date: 2026-09-05T20:37:19.937Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,12 +24,12 @@ See also:
 A pack exists in up to three places at once. Confusing them is the usual source of "my edit did nothing":
 
 - **The authoring copy**, at `packs/<key>/`. This is what Studio edits and what `/iris create` copies from.
-- **Generation snapshots**, at `<world>/iris/generation/epochs/<epoch>/pack/`. Production worlds and Bukkit Studio keep immutable packs for active and pending epochs. Archived epoch metadata remains after Iris releases the corresponding pack. Authoring edits automatically update ordinary Bukkit Studio, while production updates require explicit staging.
+- **Generation snapshots**, at `<world>/iris/generation/epochs/<epoch>/pack/`. Production worlds and Bukkit Studio retain immutable definitions for historical, active, and pending epochs. Saved biome environments use the pack from their owning activation. Authoring edits automatically update ordinary Bukkit Studio, while production updates require explicit staging.
 - **The export**, at `exports/<key>.iris`. A zip of the dimension dependency closure, for handing to somebody else.
 
 Validation runs against a directory, not a key. A pack can be valid in the workspace and stale in a world. Iris caches startup validation results. It re-uses them only when the pack bytes, the visible pack set, the platform, and the relevant game registries all still match. Otherwise it revalidates. Fresh validation rechecks the content fingerprint after parsing. If files keep changing, Iris retries once and then refuses the unstable result until writes stop.
 
-When Iris atomically copies a validated source pack into a new world snapshot, it may transfer that exact validation result. It does so only after a strong content fingerprint proves the copied tree matches the source. Root-level hidden metadata such as `.git/`, `.iris/`, and `.idea/`, plus `*.code-workspace` files, is not copied into production snapshots or included in that proof. Hidden resources inside active pack folders remain covered. A mismatch or unreadable fingerprint runs the full semantic validator against the snapshot root instead.
+When Iris atomically copies a validated source pack into a new world snapshot, it may transfer that exact validation result. It does so only after a strong content fingerprint proves the copied tree matches the source. Root-level hidden metadata such as `.git/`, `.iris/`, and `.idea/`, plus `*.code-workspace` files, is not copied into production snapshots or included in that proof. New generation snapshots use fingerprint version 2, which excludes Finder `.DS_Store` files at every depth. Other hidden resources inside active pack folders remain covered. Existing epochs retain their recorded fingerprint version and do not need resealing. A mismatch or unreadable fingerprint runs the full semantic validator against the snapshot root instead.
 
 ## Walkthrough: take a pack from workspace to release
 
@@ -342,7 +342,9 @@ Back up the complete world before this operation, including its `iris/generation
 
 Updates must preserve the world seed, physical heights, environment, dimension type, and coordinate scale. Generation mode, fluid baseline, terrain content, and upper-terrain settings can change within that layout. New custom registry definitions can require a server restart.
 
-Iris retains registry definitions and generation metadata referenced by existing chunks. It does not require archived executable generators or every old pack directory. Staging an older pack creates another activation for future terrain. It does not undo saved blocks. See [generation update limits](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+Iris retains registry definitions, generation metadata, saved biome identities, and the immutable pack definitions used by historical chunks. These definitions preserve the original environment for position inspection, ambient spawns, and effects. Historical generator code is not bundled. Retained data consumes additional disk space as the world expands and packs change.
+
+Staging an older pack creates another activation for future terrain. It does not undo saved blocks or recreate existing entities. Missing historical biome records permit only [unambiguous single-biome recovery](/iris/06-worlds-lifecycle#saved-biome-environments). Other unknown positions remain unavailable. History format 6 remains valid, with biome records in a separate versioned store.
 
 Ordinary Bukkit Studio uses the same history model and activates compatible authoring edits while the world remains open. It does not require the production update command. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

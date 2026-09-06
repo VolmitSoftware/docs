@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-05T15:58:06.036Z
+date: 2026-09-05T20:37:19.937Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -89,6 +89,7 @@ Studio settings live in `iris.json` under `studio` (`IrisSettings.IrisSettingsSt
 - An accepted update drains generation, checkpoints native chunks, freezes saved natural boundaries, and activates the replacement runtime.
 - File watching continues during terrain generation and pregeneration. The generation gate drains active work before each cutover. Maintenance and initial cache warming still pause watching.
 - New terrain uses `generator.generationTransitionWidthBlocks` to reconcile against the frozen natural boundary. Terrain already stored in native chunks remains intact.
+- Saved biome and region identities retain their owning activation. Position inspection, ambient spawns, and effects use that activation's retained pack definitions. Historical generator code is not bundled.
 - Editor exports, workspace files, schemas, and preset reads use the authoring folder. Generation reads the immutable snapshot.
 - With generation history attached, `hotloadComplex` uses the same pack-update path.
 - Validation failures leave the active generation unchanged. A failure after durable activation stops generation and reports the full error. Repair the cause, then reopen Studio.
@@ -97,7 +98,7 @@ The same saved-boundary path handles startup upgrades and live Studio edits. It 
 
 Routine world-manager tasks skip an active cutover so owner-thread checkpoint work can proceed. Accepted generation work must drain before activation. Unfinished native stages can still complete after their saved terrain exists.
 
-Inspect new chunks beyond the transition band to assess the replacement pack alone. Closing Studio deletes its temporary world and history. Reopening starts a fresh world from the latest authoring pack.
+Inspect new chunks beyond the transition band to assess the replacement pack alone. Retained pack definitions and biome records increase disk use during repeated edits. Closing Studio deletes its temporary world and history. Reopening starts a fresh world from the latest authoring pack.
 
 The dimension type key, exact environment, and effective generated dimension type are pinned for the life of the world and cannot hotload. The generated type contains min height, total height, logical height, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Close and reopen Studio after changes to those fields, the dimension key, or coordinate scale. Generation mode and fluid baseline can change within the fixed physical layout. New or changed required registry definitions can require a server restart. See [11 - Dimensions](/iris/11-dimensions).
 
