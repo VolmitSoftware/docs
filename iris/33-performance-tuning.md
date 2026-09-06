@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-06T20:15:00.000Z
+date: 2026-09-06T22:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -134,6 +134,12 @@ Object smart boring scans its occupied bounds directly in X, Y, then Z order und
 Generation-history routing leases a ready runtime in one metadata-lock acquisition. Repeated coordinate queries read an attached router without acquiring its attachment monitor. Missing routers still pass synchronized publication and detach checks. Routing and generation admission use nonfair lock handoffs to reduce contention between generation workers. Waiting cutovers explicitly block later stage admission until existing stages drain and publication finishes. Coordinate ownership, activation boundaries, and shutdown drains retain their existing checks. These changes require no configuration changes.
 
 Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims keep their existing serialization and become visible only after their journal entries are flushed to durable storage.
+
+Saved-biome records are encoded outside the region write lock. Each append writes its length, payload, and checksum as one record, then flushes it before publishing the claim. A second check under the lock rejects conflicting claims and avoids duplicate writes. The file format, rollback behavior, and durability requirements remain unchanged.
+
+Natural-terrain receipts buffer their field writes before compression. Complete and boundary-only receipts retain the same encoded data, biome identities, geometry, and provenance. No format or configuration change is required.
+
+Native volume-cache invalidation transfers the runtime-retirement listener to the replacement index. Retirement removes pending build registrations under the same locks that publish cache entries, so an older build cannot restore its retired entry after eviction. Origin-window locking and cache capacities retain their existing behavior.
 
 Bukkit terrain capture reuses biome wrappers in one cache bounded to 4,096 native handles. The wrapper reads the typed registry key only when inserted. Identity-based lookup keeps replacement registry handles distinct and removes repeated reflective key lookup from terrain capture.
 
