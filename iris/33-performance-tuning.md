@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-06T09:02:49.068Z
+date: 2026-09-06T16:11:26.578Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -130,6 +130,10 @@ Large cave-density passes divide independent samples among up to four workers in
 Child-biome and carving-child selection plans store cumulative rarity counts. Plan storage scales with the number of choices, without allocating repeated entries for each rarity slot. Existing authored rarity ranges and ordinary selection results remain unchanged.
 
 Object smart boring scans its occupied bounds directly in X, Y, then Z order under the volume write lock. It uses no queued tasks or atomic cell counter. Negative-only object bounds no longer add empty scans toward the origin.
+
+Generation-history routing leases a ready runtime in one metadata-lock acquisition and uses nonfair lock handoffs to reduce contention between generation workers. Coordinate ownership, activation boundaries, Studio cutovers, and shutdown drains retain their existing checks. These changes require no configuration changes.
+
+Bukkit terrain capture reuses biome wrappers in one cache bounded to 4,096 native handles. The wrapper reads the typed registry key only when inserted. Identity-based lookup keeps replacement registry handles distinct and removes repeated reflective key lookup from terrain capture.
 
 ## Symptom: the first chunks pause while strongholds initialize
 

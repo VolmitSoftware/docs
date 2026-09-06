@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-05T15:58:06.036Z
+date: 2026-09-06T16:11:26.578Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -205,7 +205,7 @@ Console progress is emitted every 30 seconds instead of every 10 seconds, follow
 
 | Surface | Behavior |
 |---|---|
-| Desktop GUI (Bukkit) | `PregenRenderer` opens when `gui=true` and a GUI host is available. It shows the four labeled rates. It draws the progress text and pause hint over a coalesced, bounded chunk map. There is no color legend on screen. Closing the window disposes only the renderer. Generation and the server continue. Noise Explorer and Vision use the same close lifecycle, and macOS application Quit is cancelled while these server-launched windows are active. Chunks being generated are muted green and network-sourced chunks purple. For an Iris world, finished and pre-existing chunks are painted with the engine's biome colors instead of flat status colors. The flat green and dark-green status colors only appear when there is no engine |
+| Desktop GUI (Bukkit) | `PregenRenderer` opens when `gui=true` and a GUI host is available. It shows the four labeled rates. It draws the progress text and pause hint over a coalesced, bounded chunk map. There is no color legend on screen. Closing the window disposes only the renderer. Generation and the server continue. Noise Explorer and Vision use the same close lifecycle, and macOS application Quit is cancelled while these server-launched windows are active. Chunks being generated are muted green and network-sourced chunks purple. Finished and pre-existing chunks first use green and dark-green status colors. For an Iris world, the bounded renderer worker replaces these with biome colors when the saved biome information is ready. A saturated queue keeps the status color. Hidden or closed previews skip biome reads, and pending saved reads do not block generation or emit loading stacktraces. Failed saved reads retain their full console error |
 | Boss bar | **`/iris pregen` on Bukkit shows no boss bar.** Only creation-time pregen retains a Bukkit boss bar, and it stays up for the whole run — it is persistent background status, not an overflow surface. Modded pregen does show a boss bar — green while running, yellow while paused — and skips it entirely for players running the Iris client mod |
 | Client HUD | `IrisProtocolServer.broadcastPregenProgress` sends progress every tick to connected Iris client sessions that hold the pregen capability, plus per-region deltas. This is the only path client HUDs are fed on any platform |
 

@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-06T00:32:42.000Z
+date: 2026-09-06T16:11:26.578Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -101,6 +101,8 @@ Routine world-manager tasks skip an active cutover so owner-thread checkpoint wo
 Inspect new chunks beyond the transition band to assess the replacement pack alone. Retained pack definitions and biome records increase disk use during repeated edits. Closing Studio deletes its temporary world and history. Reopening starts a fresh world from the latest authoring pack.
 
 The dimension type key, exact environment, and effective generated dimension type are pinned for the life of the world and cannot hotload. The generated type contains min height, total height, logical height, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Close and reopen Studio after changes to those fields, the dimension key, or coordinate scale. Generation mode and fluid baseline can change within the fixed physical layout. New or changed required registry definitions can require a server restart. See [11 - Dimensions](/iris/11-dimensions).
+
+The ordinary Studio scoreboard reads its region and biome together, including saved cave and flooded-biome overrides. Pending saved data displays localized `Loading...` rows and retries on the normal 20-tick refresh without requiring movement. A failed saved read displays `Unavailable` and logs its full cause once for the current world, engine, chunk, and failure message. A successful read clears that suppression. Entering another Studio world refreshes the rows immediately.
 
 ## Commands (Bukkit)
 

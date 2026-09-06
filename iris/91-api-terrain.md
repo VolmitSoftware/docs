@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-04T22:13:55.376Z
+date: 2026-09-06T16:11:26.578Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,6 +71,12 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 | `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet channel |
 
 `surfaceKind` reports `RIVER`, `RIVER_SHORE`, or `DRY_CHANNEL` inside a footprint, and `surfaceHeight` under a river is the bed. A cold read may plan the river tile on the calling thread, so keep wide scans off tick threads. See [36 - Rivers](/iris/36-rivers).
+
+## Engine biome previews
+
+`Engine.getBiomeOrMantleEnvironment(x, y, z)` returns the region, biome, and defining data together. It includes mantle cave and flooded-biome overrides where saved records do not apply. Saved records remain authoritative. A pending saved read throws `SavedBiomeUnavailableException` with `isLoading()` set; callers that display status should retry later without blocking the gameplay thread.
+
+`Engine.drawForPreview(x, z)` is an interruptible background-rendering operation. Iris waits for a bounded saved surface-biome read and retains its historical definitions until the color is computed. Call it from a renderer worker, never from a gameplay callback. The ordinary `draw(x, z)` path keeps its immediate-query behavior.
 
 ## Engine generation-history queries
 
