@@ -2,7 +2,7 @@
 title: "HiddenOre API"
 description: "Developer API index"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-05T18:30:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,3 +69,7 @@ Block queries must run on the thread that owns the block's region.
 - [Events](/hiddenore/api/events)
 - [Placeholders](/hiddenore/api/placeholders)
 {.links-list}
+
+## Build artifacts
+
+HiddenOre applies [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) during normal archive builds. SlimJar continues to load external libraries, while the build prunes eligible unused VolmLib classes and compacts the final archive. Run `./gradlew verifyPluginJars` to assemble and check the runtime jar without staging.

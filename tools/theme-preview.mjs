@@ -8,6 +8,7 @@ const port = Number.parseInt(process.env.PORT ?? "4177", 10);
 const upstreamOrigin = "https://docs.volmitsoftware.com";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const themePath = path.resolve(scriptDirectory, "../theme/minimal-brutalism.css");
+const themeScriptPath = path.resolve(scriptDirectory, "../theme/minimal-brutalism.js");
 const fontDirectory = path.resolve(scriptDirectory, "../home-assets/fonts");
 
 const fontContentTypes = new Map([
@@ -51,6 +52,16 @@ async function proxy(request, response) {
       "cache-control": "no-store"
     });
     response.end(css);
+    return;
+  }
+
+  if (localUrl.pathname === "/__volmit_theme.js") {
+    const script = await readFile(themeScriptPath);
+    response.writeHead(200, {
+      "content-type": "text/javascript; charset=utf-8",
+      "cache-control": "no-store"
+    });
+    response.end(script);
     return;
   }
 
@@ -98,7 +109,10 @@ async function proxy(request, response) {
     const themeLink = localUrl.searchParams.get("plain") === "1"
       ? ""
       : '<link rel="stylesheet" href="/__volmit_theme.css" data-volmit-theme-preview>';
-    const html = source.replace("</head>", `${themeLink}</head>`);
+    const themeScript = localUrl.searchParams.get("plain") === "1"
+      ? ""
+      : '<script src="/__volmit_theme.js" data-volmit-theme-preview defer></script>';
+    const html = source.replace("</head>", `${themeLink}${themeScript}</head>`);
     response.statusCode = upstreamResponse.status;
     response.setHeader("cache-control", "no-store");
     response.end(html);

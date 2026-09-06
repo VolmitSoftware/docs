@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T23:37:20.700Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -22,6 +22,7 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 | Animations | `animations/<id>.json` | `/gloss animations reset [name=*]` |
 | Bubble styles | `bubbles/<id>.json` | `/gloss bubbles reset [name=*]` |
 | Damage indicators | `damage-indicators/default.json` | `/gloss indicators reset` |
+| Entity overlays | `entity-overlays/default.json` | None |
 | Real Drops | `real-drops/default.json` | `/gloss drops reset [name=*]` |
 | Menus | `menus/**.json` | None |
 | Images | `images/<file>` | None |
@@ -41,7 +42,11 @@ Versioned documents contain:
 }
 ```
 
-Keep the schema used by that document type. Gloss updates `revision` when it writes the file; hand edits do not need to change it. An invalid file leaves the previous valid version active.
+Holograms use schema 3, bubble styles use schema 5, and damage indicators and Real Drops use schema 4. Entity overlays use schema 2. Keep the schema used by that document type. Gloss updates `revision` when it writes the file; hand edits do not need to change it. An invalid file leaves the previous valid version active.
+
+Display documents accept an optional boolean or expression `show` field, defaulting to `true`. Entity overlays also apply their `enabled`, range, entity-type, and world settings.
+See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) for supported fields, contexts, and examples. Drop-label visibility uses
+`[drops] show` in `gloss.toml`.
 
 ## Reloading
 

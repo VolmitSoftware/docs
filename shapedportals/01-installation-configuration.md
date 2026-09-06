@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T17:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -28,6 +28,8 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 
 The plugin supports Spigot 1.20.1 and newer compatible servers. See [Compatibility](/shapedportals/03-compatibility-operations) for Java and Folia requirements.
 
+The first start downloads Gson, TOML, and Adventure, so the server needs access to the library repositories. SlimJar caches these libraries under `plugins/ShapedPortals/.libs/` and reuses them on later starts. Keep that directory when moving an installation to a server without internet access. Libraries use plugin-specific packages and must load before Shaped Portals enables.
+
 ### Where files live
 
 All paths below are inside `plugins/ShapedPortals/`.
@@ -35,6 +37,7 @@ All paths below are inside `plugins/ShapedPortals/`.
 | Path | Purpose |
 |---|---|
 | `config.toml` | All plugin settings |
+| `.libs/` | Downloaded libraries and their relocated copies |
 | `languages/language-preferences.properties` | Persistent per-player language choices, created after the first selection |
 | `languages/en_US.toml` | Editable English messages, created on first start |
 | `languages/<locale>.toml` | Installed translations and custom languages |

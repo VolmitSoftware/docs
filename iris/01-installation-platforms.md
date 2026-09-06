@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-04T22:13:55.376Z
+date: 2026-09-05T16:04:10.730Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -184,11 +184,11 @@ The HUD talks to both modded Iris servers and Bukkit/Paper Iris over channel `ir
 | `<level-root>/datapacks/iris/` | The aggregate worldgen datapack Iris compiles from your installed packs. Iris owns this. Do not hand-edit it |
 | `<level-root>/dimensions/<namespace>/<name>/` | Storage for a managed Iris world on Paper-family servers. Namespace is `iris` for worlds Iris creates |
 | `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>/` | Storage for a managed `iris:<name>` world on plain Spigot/CraftBukkit |
-| `<dimension-root>/iris/pack/` | The per-world pack **snapshot**. A production engine reads only this copy, never `plugins/Iris/packs/` |
+| `<dimension-root>/iris/generation/` | The per-world generation history: immutable pack epochs, activation mantles, ownership, boundaries, semantics, and manifest. Production never reads `plugins/Iris/packs/` directly |
 
-`<level-root>` is the server's selected level directory. That is the folder named by `level-name` in `server.properties`. Plain Spigot gives each created `iris:*` world its configured outer root next to that level. It then keeps the canonical dimension chunks, frozen pack, and pregen cache together under the nested `dimensions/iris/<name>/` root.
+`<level-root>` is the server's selected level directory. That is the folder named by `level-name` in `server.properties`. Plain Spigot gives each created `iris:*` world its configured outer root next to that level. It then keeps the canonical dimension chunks, generation history, and pregen cache together under the nested `dimensions/iris/<name>/` root.
 
-That last row is worth internalizing early. Editing `plugins/Iris/packs/overworld/` has no effect on a world that already exists. That world froze a copy of the pack at creation time. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
+That last row is worth internalizing early. Editing `plugins/Iris/packs/overworld/` has no immediate effect on an existing world. Validate it, stage a new activation, and restart. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
 
 ### Mod
 
@@ -263,7 +263,7 @@ The one failure case is a pack whose dimension itself needs missing content, or 
 | A non-op cannot run any Iris command | `iris.all` is not granted | Grant `iris.all`. `iris.treefeller` only covers survival tree felling and grants no commands |
 | Client HUD missing but server commands work | Client mod absent, keybind unbound, or capability not negotiated | Install the matching client mod, reconnect, check the Iris keybind category. Server-side generation never depends on the client HUD |
 | A biome, object, or mob from the pack never appears | It needs registry content this Minecraft version does not have | Read the `content unavailable on Minecraft <version>` block in the startup log, or run `/iris pack compat`. Declare a dimension `blockFallbacks` entry or update the server — [25 - Pack Management](/iris/25-pack-management) |
-| An existing world ignores a newly installed pack | The world is reading its frozen snapshot | Use the explicit snapshot update or create a new world — [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [25 - Pack Management](/iris/25-pack-management) |
+| An existing world ignores a newly installed pack | The world is reading its active immutable epoch | Stage an explicit world update and restart — [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [25 - Pack Management](/iris/25-pack-management) |
 
 ## Native worldgen over Iris terrain
 
@@ -281,3 +281,15 @@ Iris replaces the chunk generator outright, so vanilla and mod worldgen only run
 With `importedFeatures` off (the default), chunk output is pure Iris. Pack-author recipes for features, mobs, loot, saplings, and dimension-type gameplay are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The loader-level feature contract is restated on [94 - API - Modded](/iris/94-api-modded).
 
 Separately from that flag, Iris custom biomes inherit the biome tags of their vanilla derivative on every platform. Tag-driven content such as `#minecraft:is_overworld` and mod spawn rules therefore applies to Iris custom biomes without any extra configuration.
+
+## Building from source
+
+Use JDK 25 and run this command from the Iris repository root:
+
+```sh
+./gradlew buildAll
+```
+
+`buildAll` copies all four verified platform jars into `../PluginOuts/` and keeps the local test-server consumer copies. The consumer directory defaults to `../../[Minecraft Server]/consumers/` when it exists, otherwise `build/consumers/` inside the repository. `-Plocation=/path/to/consumers` changes only the consumer directory.
+
+Use `./gradlew buildAllToOut` to copy all four platform jars into `../PluginOuts/` without updating consumer dropins.

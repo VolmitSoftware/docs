@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-05T23:20:48.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -77,6 +77,7 @@ Both parse automatic settings changes from immutable bytes without rewriting the
 | Concern | Bukkit | Modded |
 |---------|--------|--------|
 | Create | `/iris create` → absent managed `iris:*` world with an explicit creation seed | `/iris create` or `/iris world enable` → dimension id plus pack injection |
+| Update generation | `/iris dev update-world world=<world> pack=<pack> confirm=true` → pending immutable activation and restart | `/iris world update <dimension> <pack>` → the same pending activation and restart |
 | Replace | `/iris replace` (aliases `override`, `overwrite`) → existing safe `iris:*` world or exact Overworld/Nether/End slot, preserving the target's saved world-generation seed by default or accepting an explicit replacement seed, then publishing on restart | Not available |
 | Load / unload | `/iris load` (alias `import`), `/iris unload` | `/iris world disable` unloads. There is no separate load command |
 | Remove / delete | `/iris remove`, optionally deleting the folder | `/iris world delete` wipes chunk and mantle data |
@@ -151,6 +152,7 @@ Full command tables and stubs:
 | Jigsaw Studio (`/iris jigsaw` authoring tree) | yes | not registered | not registered | not registered |
 | Pack validate / cleanup / restore / status | yes | yes | yes | yes |
 | Pack download (`/iris download`, root-level on both) | yes | yes | yes | yes |
+| Existing-world generation history and blended pack/kernel updates | yes | yes | yes | yes |
 | Cold restart replacement of existing safe Iris or exact Overworld/Nether/End slots | Paper/Purpur/Leaf/Folia | no | no | no |
 | Pregen | yes (Paper-like / Folia modes) | yes (`moddedPregenInFlight`) | yes | yes |
 | Studio open / close / vscode / package | yes | yes | yes | yes |
@@ -198,7 +200,6 @@ separate compatibility gate.
 | `pregen.paperLikeBackendMode` | Bukkit only. Ticket versus service chunk acquisition |
 | `pregen.moddedPregenInFlight` | Mod loaders only. Concurrent pregen chunk budget |
 | `autoConfiguration.*` | Bukkit only. Spigot keep-alive, Paper watchdog, custom-biome restart |
-| `world.worldEditWandCUI` | Bukkit only. Requires WorldEdit |
 | `general.autoIngestDatapacks` / `general.autoImportDatapackStructures` | Bukkit datapack ingest pipeline is the primary consumer |
 | `gui.useServerLaunchedGuis` | Both, but the host implementation differs (`BukkitGuiHost` versus `ModdedGuiHost`) |
 

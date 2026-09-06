@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-05T16:27:35.585Z
+date: 2026-09-05T23:21:50.747Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -153,7 +153,7 @@ Prefer the first when only one biome needs to be flat. Prefer the second when yo
 | `offsetX` / `offsetZ` | double | `0` | Shifts where this generator samples the world. Use it to break the alignment between two generators that would otherwise peak in the same places. |
 | `cliffHeightMin` | double 0..8192 | `0` | Lower bound of the per-column cliff step height. |
 | `cliffHeightMax` | double 0..8192 | `0` | Upper bound. Cliffs are active whenever this is above 0. `cliffHeightMin` alone does nothing. Larger steps give taller terraces. |
-| `cliffHeightGenerator` | `IrisNoiseGenerator` | default layer | Picks the step height between min and max per column, so terrace heights can vary across the map. `CELLULAR_HEIGHT` is the usual choice because it gives one height per cell. |
+| `cliffHeightGenerator` | `IrisNoiseGenerator` | default layer | Picks the step height between min and max per column, so terrace heights can vary across the map. `CELLULAR` gives one height per cell; `CELLULAR_HEIGHT` varies smoothly toward cell interiors. |
 | `cellFractureHeight` | double | `0` | `0` disables cell cracks. Non-zero multiplies the height outside cell cores. `0.2` drops the veins to a fifth of the plateau height and carves canyons. |
 | `cellFractureZoom` | double >= 0.001 | `1` | Size of the cells. |
 | `cellFractureShuffle` | double >= 0 | `12` | Randomizes the cell centers. Low values give a regular lattice. High values look organic. |
@@ -185,8 +185,8 @@ Available as the `generator` snippet.
 | `offsetX` / `offsetZ` | double | `0` | Shifts the sample position after the zoom divide, so the unit is style space rather than blocks. |
 | `offsetY` | double | `0` | Added to the output, not the coordinates. Avoid it in terrain generators. It pushes the layer outside 0..1 and skews the average. |
 | `exponent` | double | `1` | Power curve on the output, sign-preserving. Above 1 pushes mid values down (flat basins, sharp peaks). Below 1 lifts them (plateaus with narrow valleys). |
-| `octaves` | int >= 1 | `1` | Stacks the style at successively finer scales. Cheap way to add detail without more layers. |
-| `parametric` | boolean | `false` | S-curve remap. Steepens the middle and softens both ends. |
+| `octaves` | int 1..16 | `1` | Multiplies the built-in style's octave count, capped at 16. A four-octave preset with this field set to `2` uses eight octaves. The base feature scale stays fixed. Applies to algorithms that support octaves. |
+| `parametric` | boolean | `false` | Symmetric S-curve remap with exponent 2. Preserves 0, 0.5, and 1; maps 0.25 to 0.1 and 0.75 to 0.9. |
 | `bezier` | boolean | `false` | Softer S-curve remap. `generators/plain.json` uses it to keep lowlands gentle. |
 | `sinCentered` | boolean | `false` | Maps 0 and 1 to 0 and 0.5 to 1 with a sine shape, turning a gradient into a ridge. |
 | `fracture` | `IrisNoiseGenerator[]` | `[]` | Child layers whose output warps this layer input coordinates, producing the swirled, non-grid look. Each child costs a full extra noise evaluation, and children can nest. |
@@ -200,30 +200,94 @@ Available as the `style` snippet, and accepted anywhere Iris configures noise: g
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `style` | `NoiseStyle` | `FLAT` | The built-in algorithm. Used only when neither `expression` nor `imageMap` produced a usable source. |
-| `zoom` | double >= 0.00001 | `1` | Feature scale. Applied as a coordinate multiplier of `1/zoom`, so larger zoom means larger features. |
-| `exponent` | double 0.01562..64 | `1` | Power curve on the style output before anything else consumes it. |
+| `zoom` | double >= 0.00001 | `1` | Feature scale for the complete style, including nested distortion and cellularisation. Larger zoom enlarges the existing pattern. |
+| `exponent` | double 0.01562..64 | `1` | Power curve on the style output. Compounds any preset curve; the default preserves the preset. |
 | `multiplier` | double >= 0.00001 | `1` | Only read when this style is somebody `fracture` child. It scales the coordinate displacement applied to the parent, roughly plus or minus half this value. `18` gives noticeable swirls. `55` heavily distorts. |
 | `fracture` | `IrisGeneratorStyle` | `null` | Warps the coordinates fed into this style. This is the main tool for making cellular and vascular styles look organic instead of geometric. |
 | `cellularFrequency` | double | `0` | Above 0, post-processes the style into cells, so continuous noise becomes flat-valued patches. |
 | `cellularZoom` | double | `1` | Cell size after cellularising. Ignored when `cellularFrequency` is 0. |
 | `expression` | expression key | `null` | Use `expressions/<key>.json` as the noise source instead of `style`. |
 | `imageMap` | image-map key | `null` | Use a typed resource under `image-maps/` as the noise source instead of `style`. |
-| `cacheSize` | int 0..8192 | `0` | Above 0, the built noise is cached to a `.cnm` file under the pack `.cache` folder. Worth it for expensive expression or heavily fractured styles that are sampled repeatedly. Wasted on cheap styles. |
+| `cacheSize` | int 0..8192 | `0` | Above 0, the built noise is cached to a `.cnm` file under the pack `.cache` folder. Cache identities include the generation implementation, caller seed, layer octave multiplier, style settings, and source content. Octaves are applied before baking. Worth it for expensive expression or heavily fractured styles that are sampled repeatedly. Wasted on cheap styles. |
 
 Source priority: if `expression` is set, Iris loads it and uses it. If the expression fails to load, the style falls straight back to `NoiseStyle`; `imageMap` is not tried. `imageMap` is consulted only when `expression` is unset. A missing or invalid image-map resource is a blocking pack error before world generation.
 
+### Scale, detail, and geometry
+
+Built-in noise uses a common 64-block base scale at `zoom: 1`. This describes the underlying lattice or root shape, not an identical visual wavelength: simplex, cubic, cellular, recursive geometry, and coordinate-warped presets retain their different patterns. A style's `zoom` multiplies the complete pattern's feature size; `zoom: 2` doubles the source, its distortion, and any cellularisation together. Fracture sources retain their own relative zooms within that pattern. `STATIC` remains unscaled per-block scatter, `FLAT` remains constant, and expressions and image maps retain their own coordinate units.
+
+| Family | Base scale at zoom 1 |
+|--------|----------------------|
+| Simplex, Perlin, cubic, cellular, glob, vascular, and their fractal variants | 64-block lattice spacing |
+| Clover | 64 blocks per native coordinate unit |
+| Pattern styles listed below | 64 blocks per native coordinate unit: carrier wavelength for wave patterns, tile or cell spacing for local patterns |
+| `HEXAGON`, `HEX_SIMPLEX` | 64-block point-to-point hex diameter; each cell has one simplex-derived value at a fixed height |
+| `HEX_JAMES`, `HEX_RANDOM_SIZE` | 64-block root hex diameter, subdivided into smaller hexagons |
+| `SIERPINSKI_TRIANGLE` | 64-block equilateral root triangle, four subdivisions, 4-block smallest triangle side |
+| Interpolated styles | 32-block interpolation grid over the corresponding scaled source |
+
+Simplex, Perlin, and the patterns below sample octave frequencies `1, 2, 4, ...` with amplitudes `1, 0.5, 0.25, ...`, normalized once when their octave count is set. More octaves add finer detail without moving the base scale or changing the base seed. Choosing a two-octave preset uses the same source seed as setting its one-octave counterpart to two octaves. Fractal presets and layer octave multipliers reach the underlying generator through offsets and interpolation. Octave counts are bounded to 1..16; hexagon and Sierpinski presets apply octaves to their color field while keeping cell boundaries fixed. The fifteen pattern styles below instead superimpose smaller copies of their complete geometry.
+
+`HEXAGON` and `HEX_SIMPLEX` form complete regular hexagonal tilings with neighboring colors sampled from a coherent simplex field. `HEX_JAMES` and `HEX_RANDOM_SIZE` recursively place contained child hexagons. Sierpinski removes the middle triangle at each level of an equilateral triangle and tiles the result across positive and negative coordinates. These patterns use the X/Z plane; height changes their color field continuously without blending different cell grids.
+
+`PERLIN` and billow Perlin use quintic smoothing at lattice boundaries. `CUBIC` uses the seed in all dimensions. Ridged simplex normalizes its actual octave-dependent range, so a single octave is not restricted to the upper half of the palette. `VASCULAR` peaks at cell borders; `VASCULAR_THIN` narrows those bright veins. `CELLULAR_HEIGHT` is their interior-peaking counterpart, not a flat cell value. `STATIC` hashes full double coordinates and the full seed without an 8192-block repeating tile.
+
+One-, two-, and three-coordinate calls use the corresponding native noise kernels. Terrain and previews use the same two-coordinate path. Interpolated noise retains fractional coordinates across the origin, fractional grid spacing stays exact, starcast taps and accumulation use double precision, and `BICUBIC` uses its sixteen-sample cubic kernel. Catmull-Rom preserves linear slopes and parametric interpolation remains symmetric around 0.5. Interpolated noise presets clamp cubic and Hermite overshoot to 0..1; general interpolation of arbitrary values retains overshoot. Their three-coordinate calls remain horizontal X/Z fields. Cellular noise also keeps double coordinates near the world border. Distance-based cell styles include outer neighbors when they can be closer than the current candidates, preventing search-grid seams. Style creation rejects non-finite or nonpositive zooms and exponents, invalid active cellular zooms, and non-finite or negative cellular frequencies.
+
+Noise changes affect generated terrain and placement. World seed derivation also uses `STATIC`, so its corrected coordinate hashing changes the derived seeds used by generation systems, including styles whose geometry is unchanged. Compare on a fixed seed in a fresh Studio world; existing chunks retain their saved blocks. Cached styles use the current generation implementation's identity. Only integer coordinates inside the baked two-dimensional cache area use stored samples; negative, out-of-range, fractional, and three-dimensional coordinates evaluate the generator directly.
+
 ### Choosing a `NoiseStyle`
 
-There are 171 constants. The Studio schema lists all of them. These are the ones that matter for terrain work:
+There are 186 constants. The Studio schema lists all of them. The [Noise Atlas](/iris/45-noise-atlas) shows every style in 2D and 3D. You can also [download the complete illustrated PDF](/iris-assets/noise/iris-noise-atlas.pdf). These are the ones that matter for terrain work:
 
 | Purpose | Styles | Notes |
 |---------|--------|-------|
 | General terrain | `IRIS`, `IRIS_DOUBLE`, `IRIS_THICK`, `IRIS_HALF`, `SIMPLEX`, `PERLIN`, `PERLIN_IRIS` | `IRIS*` are pre-fractured signature noises and are the default choice for land. |
 | Large dramatic forms | `FRACTAL_SMOKE`, `FRACTAL_WATER`, `FRACTAL_FBM_SIMPLEX`, `FRACTAL_BILLOW_PERLIN` | `FRACTAL_SMOKE` at a large `horizontalScale` is what the bundled `mountain` generator uses. |
 | Coordinate warping (as a `fracture` child) | `NOWHERE`, `NOWHERE_CELLULAR`, `STATIC` | `NOWHERE` with a small zoom and a large `multiplier` is the standard swirl recipe. |
-| Plateaus and cliffs | `GLOB`, `CELLULAR_HEIGHT` | `CELLULAR_HEIGHT` gives one constant value per cell, which is what a cliff-height generator wants. |
+| Plateaus and cliffs | `CELLULAR`, `CELLULAR_IRIS`, `CELLULAR_HEIGHT` | `CELLULAR` gives one constant value per cell; `CELLULAR_HEIGHT` rises toward the interior. |
 | Cells and veins | `CELLULAR`, `CELLULAR_IRIS_DOUBLE`, `CELLULAR_IRIS_THICK`, `VASCULAR`, `VASCULAR_THIN`, `SIMPLEX_VASCULAR`, `CLOVER`, the `HEX*` family | Used for region and biome placement more often than for height. |
 | Scatter and flat | `STATIC` (white noise), `STATIC_BILINEAR`, `FLAT` | `STATIC` is for per-block palette scatter, never terrain relief. `FLAT` returns 1.0 at every coordinate. |
+
+### Pattern styles
+
+These fifteen styles produce seeded values in 0..1, support 1..16 octaves, and use all three coordinates for volume sampling. Their 2D field is exactly their 3D field at Y=0. Start with one octave to keep each shape distinct. Additional octaves overlay finer patterns. `MENGER_SPONGE` intentionally uses sharp solid/void boundaries.
+
+| Style | Pattern | Three-dimensional behavior |
+|-------|---------|----------------------------|
+| `GYROID` | Warped maze-like ridges with varying thickness and open spaces | Connected curved sheets form a labyrinth through the volume |
+| `QUASICRYSTAL` | Fivefold wave interference with stars, rosettes, and nested contours | Height shifts the wave phases and changes the contour network continuously |
+| `TRUCHET` | Connected quarter-circle ribbons and closed loops | The tiled ribbon field twists continuously with height |
+| `CRATER` | Scattered depressions with raised circular rims | Bowl and rim profiles extend into hollow spherical shells |
+| `VORTEX` | Overlapping spiral eddies with seeded centers and handedness | Spiral arms rotate with height to form winding funnels |
+| `DUNE` | Crescent dunes with asymmetric slopes | Dune forms shift and change through height |
+| `STRATA` | Folded sedimentary bands | Layer spacing and folds vary through the volume |
+| `WOOD` | Distorted growth rings and knot-like forms | Ring shapes change along the grain |
+| `GABOR` | Sparse directional wave packets | Local waves extend through the volume |
+| `MARBLE` | Warped stone veins and smooth regions | Veins twist through the volume |
+| `SCALES` | Overlapping scalloped scales | Scale shapes change continuously with height |
+| `CHLADNI` | Standing-wave nodal figures | Height changes the balance between standing modes |
+| `KALEIDOSCOPE` | Mirrored wedge motifs | Motifs change through height inside local supports |
+| `MENGER_SPONGE` | Recursive square-hole slices | Three levels of cubic cutouts form a hard-edged sponge |
+| `CIRCUIT` | Orthogonal traces and ring pads | The connected track field shifts continuously with height |
+
+![Gyroid mazes, Quasicrystal rosettes, Truchet loops, Crater rims, and Vortex spirals at the same scale](/iris-assets/noise/pattern-styles.png)
+
+![Dune, Strata, Wood, Gabor, Marble, Scales, Chladni, Kaleidoscope, Menger Sponge, and Circuit at the same scale](/iris-assets/noise/diverse-patterns.png)
+
+These samples use style seed `1337`, `zoom: 1`, one octave, and a 384-by-384-block window. Black means 0 and white means 1. [Open the larger comparisons](/iris/45-noise-atlas#pattern-comparisons) to see how height, zoom, and octaves change each pattern.
+
+For example, use this complete generator in `generators/vortex.json`:
+
+```json
+{
+  "composite": [
+    { "style": { "style": "VORTEX", "zoom": 1 }, "octaves": 1 }
+  ]
+}
+```
+
+Reference `vortex` from a biome's `generators` list and set its `min` and `max` height band. Replace `VORTEX` with any style in the table. `zoom: 2` doubles its feature size; set the layer's `octaves` to `3` to add finer copies. Use these same style names in palettes or cave fields for volume patterns. Validate the pack and inspect a fresh Studio world to see the configured height and material ranges.
 
 ## Expressions (`IrisExpression`)
 

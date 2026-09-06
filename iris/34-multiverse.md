@@ -2,7 +2,7 @@
 title: "Multiverse"
 description: "Iris documentation: Multiverse"
 published: true
-date: 2026-08-20T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -47,14 +47,15 @@ directory.
 
 An Iris world is not a folder in the world container. It is a **dimension
 inside the level**, at `<level>/dimensions/iris/<key>/`, and it carries a
-world-local copy of the pack that generated it at `.../iris/pack`. That
-snapshot is what makes the world reproducible. Delete it and the terrain is
-no longer regenerable.
+world-local generation history at `.../iris/generation`. That history keeps
+the immutable packs, kernels, ownership, boundaries, and recorded facts that
+make each generated coordinate reproducible. Delete part of it and Iris
+refuses generation.
 
 Three consequences follow, and every item in the table further down is one
 of them:
 
-- Multiverse's folder operations would destroy the pack snapshot, so Iris
+- Multiverse's folder operations would destroy generation history, so Iris
   blocks them.
 - Iris worlds use the `CUSTOM` environment, which the server refuses to
   create through the normal world-creation call, so Multiverse cannot load
@@ -105,7 +106,7 @@ a wrong generator string there can stop the world loading.
 | `/mv unload` | Allowed. Nothing on disk is touched |
 | `/mv load` | Works. Iris performs the load and hands the world back to Multiverse |
 | `/mv remove` | Allowed. Removes the Multiverse entry only. The `bukkit.yml` entry stays, so the world returns on the next restart |
-| `/mv delete` | **Refused.** It would delete the world-local pack snapshot. Use `/iris remove` |
+| `/mv delete` | **Refused.** It would delete world-local generation history. Use `/iris remove` |
 | `/mv regen` | **Refused.** Same reason |
 | `/mv clone` | **Refused**, both as source and as destination |
 | `/mv create -g Iris` | **Refused.** Use `/iris create` |

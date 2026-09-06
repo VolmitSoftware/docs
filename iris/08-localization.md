@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-09-03T19:15:00.000Z
+date: 2026-09-05T20:33:07.771Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -122,7 +122,7 @@ Complete server translations are kept outside the jar. Selecting a locale downlo
 | `zh_CN` | Simplified Chinese |
 | `zh_TW` | Traditional Chinese |
 
-Downloads are capped at 2 MiB and validated against the typed catalog before atomic publication. Missing or failed downloads leave English available, while an existing valid cache supports offline starts. Interactive language selections activate the requested catalog only after preparation succeeds; unavailable downloads use validated built-in English for the requested scope. A custom locale can be supplied through an override file and `general.language`.
+Downloads are capped at 2 MiB and validated against the typed catalog before atomic publication. Downloaded overlays can contain keys for multiple platforms. Iris loads only keys declared by its active platform catalog and requires every active key before accepting a download. Incomplete cached downloads are invalid and are fetched again during language preparation. Operator overrides remain partial and still reject unknown keys. Missing or failed downloads leave English available, while an existing valid cache supports offline starts. Interactive language selections activate the requested catalog only after preparation succeeds; unavailable downloads use validated built-in English for the requested scope. A custom locale can be supplied through an override file and `general.language`.
 
 ## Override files
 
@@ -177,4 +177,4 @@ Everything else the client draws resolves through `IrisLanguage` and `ClientUiMe
 
 ## Platforms
 
-Localization works the same on Bukkit-family and on Fabric/Forge/NeoForge, from the same catalogs and the same override file. Only the surfaces differ. The modded command tree uses `ModdedCommandMessages`/`ModdedHelpMessages`. The Bukkit tree uses the Bukkit catalogs. Each ignores the other's keys. Keybind lang assets apply only where the client mod is installed. See [30 - Platform Differences](/iris/30-platform-differences).
+Localization uses the same file format and resolution order on Bukkit-family and Fabric/Forge/NeoForge. Bukkit omits modded and client-only catalog classes. Loader builds register those catalogs during initialization. The modded command tree uses `ModdedCommandMessages`/`ModdedHelpMessages`. The Bukkit tree uses the Bukkit catalogs. Downloaded translations select the active catalog keys. Keybind lang assets apply only where the client mod is installed. See [30 - Platform Differences](/iris/30-platform-differences).

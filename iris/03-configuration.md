@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-04T22:13:55.376Z
+date: 2026-09-05T23:20:48.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -93,7 +93,7 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | Field | Nested class | Covers |
 |-------|--------------|--------|
 | `general` | `IrisSettingsGeneral` | Locale, debug output, console colors, datapack ingest, strict keys, splash |
-| `world` | `IrisSettingsWorld` | Entity systems, async world tick, WorldEdit CUI, pregen cache |
+| `world` | `IrisSettingsWorld` | Entity systems, async world tick, pregen cache |
 | `gui` | `IrisSettingsGUI` | Server-launched desktop GUIs |
 | `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot/Paper server-file fixups, custom-biome restart |
 | `generator` | `IrisSettingsGenerator` | Default pack, generation transitions, leaf decay |
@@ -156,7 +156,6 @@ Iris runs its own spawning and effects pass on a background loop, separate from 
 | `targetSpawnEntitiesPerChunk` | `0.95` | Live | Entity saturation ceiling. Once entities per loaded chunk exceed this, Iris stops spawning (the Bukkit path also backs off for 5 seconds). Lower it on servers already near their entity budget |
 | `markerEntitySpawningSystem` | `true` | Live | Enables spawning driven by mantle marker blocks, which is how packs place specific mobs at specific generated features |
 | `effectSystem` | `true` | Live | Applies per-biome and per-region `IrisEffect`s (potion effects, particles, sounds) to players |
-| `worldEditWandCUI` | `true` | Live | **Bukkit only.** Lets a WorldEdit selection act as an Iris wand and draws the particle outline for it |
 | `globalPregenCache` | `false` | Live, one event late | **Bukkit only.** Maintains a persistent per-world bitmap of already-generated chunks so pregen can skip finished work across restarts. The enable/disable flip is observed on the following world-init or chunk-load event, not the current one |
 
 With both `markerEntitySpawningSystem` and `ambientEntitySpawningSystem` false, the world manager skips all related entity work.
@@ -186,7 +185,7 @@ These keys are no-ops on mod loaders.
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
-| `generationTransitionWidthBlocks` | `256` | Next generation activation | Finite width of the transition beside saved terrain. Clamped to 16–8192 blocks. Applies to pack updates, changed generation build revisions, and ordinary Bukkit Studio updates |
+| `generationTransitionWidthBlocks` | `256` | Next generation activation | Finite width of the transition beside saved terrain. Clamped to 16–8192 blocks. Applies to pack updates, changed generation build revisions, and ordinary Bukkit Studio updates. Changing it does not alter an existing transition |
 | `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** The pack key used whenever a world, studio, or command omits one — including a bare `Iris` generator string in `bukkit.yml` and `/iris create name=<name>` with no `type`. The accepted `type=default` sentinel resolves the same way but is not advertised by completion. Mod loaders use `defaultPack` in `modded.json` instead |
 | `preventLeafDecay` | `true` | Effectively **restart** | Marks generated leaves persistent so they do not decay. The flag is baked into resolved block data that is then cached, so already-resolved leaf blocks keep the old behavior after a reload. Unrelated to the per-dimension `preventLeafDecay` field in pack JSON |
 

@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04T16:32:49.516Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,6 +12,20 @@ Gloss uses one text pipeline for holograms, scoreboards, tablists, menu text, bu
 
 `/gloss web edit emoji <id>` and `/gloss web edit animation <id>` open focused live editor
 sessions; `/gloss web workspace` includes both document families.
+
+## Visibility
+
+Emoji and animation documents accept `show`, defaulting to `true`. A boolean expression uses the
+player supplied to text rendering; chat emoji uses the sender. Existing emoji `enabled` and
+permission checks still apply. A hidden emoji leaves its token or trigger unchanged; a hidden
+animation renders an empty string. Dynamic conditions are reevaluated as the containing surface
+refreshes. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
+For asynchronous chat, conditional emoji reads an immutable visibility snapshot for the sender.
+Gloss samples these boolean results on each player's entity scheduler every 10 server ticks
+(about half a second at 20 TPS), only while conditional emoji exist. Until a snapshot is available,
+the conditional replacement is hidden and the original token or trigger remains. Text rendered on
+the player's owning thread evaluates `show` live.
 
 ## The text pipeline
 

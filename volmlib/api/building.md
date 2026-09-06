@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-03T03:00:00.000Z
+date: 2026-09-05T20:12:14.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -55,8 +55,49 @@ Add `--rerun` to execute the tests again even when their previous results are up
 
 ## Local dependencies and logs
 
-Each plugin receives a separate cached VolmLib source copy under `.build-work/volmlib/<project>/VolmLib/`. Before that job starts, `rsync` updates the copy from the local VolmLib checkout and removes source files deleted there. Each copy keeps its own Gradle state and build outputs between runs, and Gradle can reuse the shared build cache. No Maven publication or remote VolmLib artifact is required.
+Each plugin receives a separate temporary VolmLib source copy, including the shared packaging module. The runner removes these copies after the build. Gradle can reuse its shared build cache. No Maven publication or remote VolmLib artifact is required.
 
 Each invocation prints its log directory under `.buildlogs/<run>/`. That directory contains one log per project and a `summary.json` with results, exit codes, and durations. A failed build prints the end of its log and makes the script exit nonzero. Only one invocation of the workspace script can run at a time; an interrupt cancels its active builds and releases the lock.
 
-Both `.build-work/` and `.buildlogs/` are local, ignored output. To discard the cached VolmLib copies, remove `.build-work/volmlib/` while the script is stopped.
+Both `.build-work/` and `.buildlogs/` are local, ignored output.
+
+## Automatic jar thinning
+
+Every plugin build applies the `art.arcane.volmit-packaging` Gradle plugin from VolmLib's `packaging` module. The local VolmLib composite supplies this build dependency. Builds without the local checkout need the matching published packaging artifact.
+
+The plugin runs directly on each distributable archive task, including all four Iris platforms. Normal `shadowJar`, `jar`, and build commands use it without a workspace init script. It adds no build-tool classes to the runtime jar.
+
+Thinning follows Shadow's existing minimization. It removes unreachable classes only from explicitly selected VolmLib packages. All plugin-owned classes remain roots. The analysis follows bytecode, constant pools, descriptors, signatures, annotations, exact reflective class-name strings, nested classes, and service providers. Computed reflection names need explicit keep rules. Iris retains its Matter slices and leaves generated Caffeine classes outside pruning.
+
+Compilation omits local-variable debug tables while retaining source locations and parameter names. Projects that already disable debug metadata keep that setting. Iris Bukkit also strips local-variable tables from bundled dependency classes after shading. This preserves executable instructions, annotations, source locations, and parameter names. Archive compaction uses level-9 DEFLATE compression, retains resources, verifies content, and replaces the archive only when smaller. Package directories remain present except in Iris Bukkit, which retains its existing directory-free archive layout.
+
+Each archive must pass its size budget, required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
+
+Canonical budgets and required entries live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy and dependency keep rules in `pluginPackaging` inside its build file. Review a size increase before changing its budget.
+
+Reports under `build/reports/packaging/` record before/after sizes, removed classes, package sizes, resource bytes, and archive overhead. Reports are local build output.
+
+To build and check a plugin without staging, run from its project directory:
+
+```bash
+./gradlew verifyPluginJars
+```
+
+For Iris, that command covers Bukkit. Use `verifyBukkitArtifact verifyModdedArtifacts` to assemble and check all four platform jars without staging.
+
+For the smallest Bukkit release archive, run:
+
+```bash
+./gradlew verifyBukkitArtifact -PcompactRelease=true
+```
+
+Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. It verifies decompressed contents before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. This step takes longer than normal packaging. The flag is an archive-task input, so switching modes rebuilds the jar. Reports record both metadata stripping and release compression.
+
+To inspect an existing jar without building or modifying it, run from the workspace:
+
+```bash
+python3 gradle/jar_audit.py PluginOuts/Gloss-3.0.1-26.2.jar \
+  --report .buildlogs/jar-audit-gloss.json
+```
+
+The standalone audit uses the same policy catalog and also lists the SlimJar runtime dependency coordinates. Runtime downloads reduce the distributed jar size but still require library files on the server.

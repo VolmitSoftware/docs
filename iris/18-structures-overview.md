@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -165,7 +165,7 @@ An Iris structure and a native structure both arrive through the same `structure
 
 **Only new chunks change.** Editing a placement or a structure control never rewrites terrain that already generated. Every check you run has to happen in chunks generated after the edit.
 
-**Worlds carry their own copy of the pack.** On world create the pack is copied to `<world>/iris/pack`. That copy is what the world loads from then on. Editing `packs/<pack>` changes nothing in an existing world until you run `/iris developer update-world world=<world> pack=<dimension> confirm=true` and the world is loaded again. Studio worlds are the exception. They read the live pack and hotload JSON and `.iob` edits into newly generated chunks about once a second.
+**Worlds retain every pack epoch they use.** World creation records the first immutable epoch under `iris/generation/`. Editing `packs/<pack>` changes nothing until an operator stages an activation and restarts. Existing structures and chunks keep their recorded ownership. New structure footprints are held outside the protected transition boundary. Studio worlds read the live pack and hotload JSON and `.iob` edits into newly generated chunks.
 
 **Placement scope is explicit.** `structures[]` can sit on a dimension, a region, or a biome. Scope is sampled at the center of the start chunk. Cave-biome entries only participate when the placement resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, or `CAVE_ANY`. An optional `caveBiomes` allowlist is rechecked at the anchor Iris actually picked. See [15 - Caves & Carving](/iris/15-caves-carving).
 

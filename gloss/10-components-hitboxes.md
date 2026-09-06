@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, decorations, toggles, and their click areas"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04T16:31:36.767Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,17 +12,22 @@ The `components` array holds a menu's buttons, decorations, and toggles. See [Ho
 
 ## The component entry
 
-Every entry of `components` is an object with three keys.
+Every entry of `components` is an object with three required keys and optional `show`.
 
 | Key | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | yes | Identifier within this menu. Used as the key for API icon updates and click handlers, and in click and error log lines |
 | `offset` | `vector3` | yes | Offset from the menu center |
 | `data` | object | yes | The type-discriminated component body |
+| `show` | boolean or expression | no | Defaults to `true`; combines with menu and panel visibility |
 
 `vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted.
 
-All three keys are required. A missing `offset` or `data` value is reported when the menu opens.
+`id`, `offset`, and `data` are required. A missing `offset` or `data` value is reported when the menu opens.
+
+Place `show` beside `id`, `offset`, and `data`. It applies to buttons, decorations, and toggles.
+Hidden components have no visible icon or active click target and return when their condition
+passes during a session tick. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 Gloss transforms each local component offset into the menu's position, scale, and rotation:
 

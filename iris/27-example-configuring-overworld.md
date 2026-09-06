@@ -2,12 +2,12 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The built-in `overworld` pack is what most Iris servers generate from after an operator installs it with `/iris download pack=overworld` and restarts. This is a guided build. You will fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises the parts of the workflow that actually bite: references, hotload, world snapshots, and rollback. It does not touch height or registries.
+The built-in `overworld` pack is what most Iris servers generate from after an operator installs it with `/iris download pack=overworld` and restarts. This is a guided build. You will fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises references, hotload, immutable world epochs, and rollback. It does not touch height or registries.
 
 Related:
 
@@ -40,7 +40,7 @@ Prerequisites:
 | Bukkit / Paper / Folia / Purpur | `plugins/Iris/packs/overworld/` |
 | Fabric / Forge / NeoForge | `config/irisworldgen/packs/overworld/` |
 
-A world created from a pack stores its own **copy** at `<world>/iris/pack/`. `StudioSVC.installIntoWorld` and `replaceIntoWorld` write that copy. Normal world generation reads it and never looks at the global `packs/` tree again. Studio worlds are the exception. They run directly off `packs/<key>/`, which is why Studio is where authoring happens.
+A world created from a pack stores its first immutable epoch under `<dimensionRoot>/iris/generation/`. Normal world generation reads the active epoch and never looks at the global `packs/` tree. Later updates add epochs instead of replacing them. Studio worlds run directly off `packs/<key>/`, which is why Studio is where authoring happens.
 
 Iris does not download packs at startup. `/iris download pack=overworld` installs the latest stable Overworld release ZIP into `packs/`. Restart afterward before you open Studio or create a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
 
@@ -153,23 +153,23 @@ If terrain is empty, confirm `generators/plain.json` still exists in the fork. I
 4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`. Folia creates the world in the current process, so it is immediately available for teleport after creation completes.
 5. Generate new chunks. Stop the server cleanly. Restart. Verify another new area.
 
-**Why.** Focus mode proves the biome renders. Only unfocused generation proves it is actually reachable through region selection. The disposable world proves the pack snapshot works outside Studio. The restart proves the generated dimension type and custom biomes survive a registry reload.
+**Why.** Focus mode proves the biome renders. Only unfocused generation proves it is reachable through region selection. The disposable world proves the immutable epoch works outside Studio. The restart proves the generated dimension type and custom biomes survive a registry reload.
 
-**What you should see.** The meadow appearing naturally in temperate regions, `<world>/iris/pack/` present in the world folder, and a clean restart with no pack or registry errors.
+**What you should see.** The meadow appearing naturally in temperate regions, `iris/generation/` present in the dimension root, and a clean restart with no pack or registry errors.
 
 ## 6. Package or recover
 
 **What you do.** Package with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris studio package my-overworld`.
 
-**Why.** The validated fork under `packs/` is the source of truth. The `.iris` export and the world snapshot are outputs. Both are reproducible from it.
+**Why.** The validated fork under `packs/` is the authoring source. The `.iris` export and each immutable world epoch are outputs with exact content fingerprints.
 
 | Failure | Recovery |
 |---------|----------|
 | Fork creation fails or is partial | Move only the newly created incomplete `my-overworld` folder aside, confirm the source pack validates, then rerun |
 | Studio still shows old content | Generate untouched chunks. Close and reopen after a dimension-contract or registry change |
 | Natural selection cannot find the biome | Confirm it is still in `regions/temperate.json`, that both focus fields are gone, and sample a broader new area |
-| Disposable world differs from Studio | Inspect `<world>/iris/pack/`. Recreate the world from the current validated fork |
-| A production update would change height, registries, or large terrain systems | Do not update in place. Create a new world and migrate deliberately |
+| Disposable world differs from Studio | Inspect the active epoch and its manifest fingerprint. Recreate the disposable world from the current validated fork |
+| A production update would change seed, height, environment, or dimension type | Create a new world and migrate deliberately |
 
 ## What the bundled dimension actually sets
 
@@ -234,15 +234,15 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 7. Make one small change at a time. Nudge `biomes/temperate/plains.json` generator `min`/`max` by a few blocks. Validate. Compare the same seed in fresh chunks.
 8. Close Studio. Create a disposable world from the fork. Restart-test it before touching anything real.
 
-### Do not treat the world copy as the source
+### Do not edit world epochs
 
-Editing `<world>/iris/pack/` changes only that world and is overwritten by the next pack install or update. Author under `packs/`.
+Files below `<dimensionRoot>/iris/generation/` are immutable runtime state. Never edit or replace them. Author under `packs/`, validate there, and stage an activation.
 
 ## Practical recipes
 
 ### Change sea level
 
-Set `fluidHeight` in `dimensions/my-overworld.json`. Default value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Only newly generated chunks change, so expect a visible shoreline seam on an existing world.
+Set `fluidHeight` in `dimensions/my-overworld.json`. Default value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Existing chunks remain unchanged; a staged update blends new surface terrain from the frozen edge and starts new hydrology outside the protected band.
 
 ### Add a biome to a region
 
@@ -274,7 +274,7 @@ The pack includes `entities/standard/**` and `spawners/**`. Ambient Iris spawnin
 
 ## Pushing changes into an existing world
 
-World creation installs the pack copy once. Changing `packs/` does **not** update existing worlds.
+World creation records the first pack epoch. Changing `packs/` does **not** update an existing world until you stage and restart it.
 
 ### `/iris dev update-world` (Bukkit)
 
@@ -283,8 +283,10 @@ World creation installs the pack copy once. Changing `packs/` does **not** updat
 ```
 
 1. Without `confirm=true` it prints the warning and does nothing.
-2. Replaces `<world>/iris/pack/` with a fresh copy of the already-installed source pack.
-3. It is described as UNSAFE in the command itself. Already generated chunks keep their old terrain. For most features only newly generated chunks use the new content. Back the world up first.
+2. Adds a content-addressed immutable epoch and pending activation. It never overwrites an epoch that owns chunks.
+3. Requests a restart. Already generated chunks keep their old activation; new chunks blend to the new pack. Back up the complete dimension root first.
+
+On Fabric, Forge, and NeoForge use `/iris world update <dimension> my-overworld`. It stages the same history transition and keeps the current runtime active until restart.
 
 ### Choosing between update-world and a new world
 
@@ -292,10 +294,10 @@ World creation installs the pack copy once. Changing `packs/` does **not** updat
 |------|----------|
 | Live design iteration | Studio open on `packs/` |
 | Deploy pack changes into an existing survival world | Back up, then `update-world … confirm=true` |
-| Guaranteed consistent terrain | New world from the updated pack |
+| One generation era with no historical transition | New world from the updated pack |
 | Experimental or partial changes | Fork the pack with `studio create` |
 
-Never use `update-world` for a change to `dimensionHeight`, `logicalHeight`, `environment`, or the dimension file name. Those are the world contract. The world will not load against a different one.
+An in-place update cannot change the seed, `dimensionHeight`, `logicalHeight`, `environment`, coordinate scale, dimension type, or dimension file key. Iris rejects a candidate that changes that world contract.
 
 ## Validation and packaging
 
@@ -310,9 +312,9 @@ Never use `update-world` for a change to `dimensionHeight`, `logicalHeight`, `en
 
 1. Verify in Studio, not by reading JSON.
 2. Run pack validate and fix every broken key.
-3. Back up the target world folder.
-4. Run `update-world` with `confirm=true`. It copies the already-installed source pack.
-5. Explore **new** chunks. Do not expect existing terrain to change.
+3. Back up the complete target dimension root, including `iris/generation/`.
+4. Stage the already-installed source pack with the platform's world-update command, then restart cleanly.
+5. Verify an old chunk, the transition band, new content in a distant chunk, and locate results. Existing terrain must not change.
 6. Record operator-facing changes in the workspace changelog when releasing.
 
 ## Cross-links

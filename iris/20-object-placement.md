@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-03T12:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -56,7 +56,7 @@ Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative 
 
 Missing objects and invalid settings are errors. The origin and the full transformed object must fit inside the dimension's build height; the runtime rejects an overflowing object instead of placing only a clipped fragment. Validate catches origin errors; full transformed bounds are checked while the world runtime loads the object.
 
-These settings affect newly generated chunks. They do not repair objects players break, paste into existing chunks, or rewrite existing buildings after a reload. Test changes in fresh chunks or a newly created disposable world. Production worlds use their own pack snapshot; see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout). A partially generated object can contain both old and new versions if its configuration changes between visits to its chunks.
+These settings affect newly generated chunks. They do not repair objects players break, paste into existing chunks, or rewrite existing buildings after a reload. Test changes in fresh chunks or a newly created disposable world. Production worlds use immutable activations; see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout). A new-activation object footprint is rejected when it would cross historical or transition terrain.
 
 ## Tutorial: get one object into the world
 
@@ -88,7 +88,7 @@ Merge this into one focused biome, keeping the biome other fields:
 
 The placement is done when a manual paste and natural generation agree on orientation. The object must sit on the ground the way you want. It must stay absent outside its configured scope.
 
-If validation cannot resolve the object, the `place` key does not match the path under `objects/`. If nothing generates, work section 10 top to bottom. If a non-Studio world still generates the old placement, it is reading its own pack snapshot. See [18 - Structures Overview](/iris/18-structures-overview).
+If validation cannot resolve the object, the `place` key does not match the path under `objects/`. If nothing generates, work section 10 top to bottom. If a non-Studio world still generates the old placement, confirm the update was staged and activated on restart. See [18 - Structures Overview](/iris/18-structures-overview).
 
 ## 1. Which files carry placements
 

@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04T16:31:36.767Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -52,6 +52,7 @@ Each schema-2 JSON file in `plugins/Gloss/boards/` defines one scoreboard. Condi
 |---|---|---|
 | `schemaVersion` | required | Must be `2` |
 | `revision` | required | `1` to `9007199254740991`. Gloss owns this value and bumps it by one on every write it makes |
+| `show` | `true` | Boolean or boolean expression; gates automatic and sticky visibility |
 | `select.priority` | `0` | Outer board-selection priority. Higher wins; equal priorities use the smaller board id |
 | `select.when` | `"false"` | Required boolean condition. False keeps the board out of automatic selection |
 | `presentation` | empty | Complete fallback title, lines and number-visibility policy |
@@ -126,14 +127,16 @@ Use `/gloss board show animation-showcase` to inspect it, or edit its `select` c
 
 ## Selection order
 
-Every board with a true `select.when` condition is a candidate. The highest priority wins; ties use the lexicographically smallest ID. The same rule selects a presentation variant. If no board matches, the player sees no Gloss sidebar.
+Every board with true `show` and `select.when` conditions is a candidate. The highest priority wins; ties use the lexicographically smallest ID. The same rule selects a presentation variant. If no board matches, the player sees no Gloss sidebar.
 
 Gloss reevaluates selection every `[boards] updateIntervalTicks` (default 20) and after relevant player or document changes. See [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents) for condition syntax.
 
 ### Manual selection
 
 `/gloss board show <id>` and `/gloss board hide` override the automatic board id and mark the player
-sticky. A shown board still re-evaluates its own variants on the ordinary selection pass. Sticky
+sticky. A shown board still re-evaluates its `show` condition and variants on the ordinary selection
+pass. A false `show` removes the sidebar but preserves that sticky id; it returns when `show` becomes
+true. Manual selection bypasses `select.when`, but does not bypass `show`. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions). Sticky
 state is dropped when the player quits, or when the board they are showing is deleted.
 
 `/gloss board hide` is also sticky. It leaves the player with no board and no automatic re-selection until they log out.

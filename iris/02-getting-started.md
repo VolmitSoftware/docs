@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -233,7 +233,7 @@ Run `/iris pregen status` right away and confirm the target dimension, total, an
 
 ## 5. Open a Studio
 
-Studio worlds are transient. They are discarded when you close them and any leftovers are purged at startup. Crucially, a Studio world reads the **live** pack directory and hotloads JSON and object edits into newly generated chunks. Production worlds never do this. They read the frozen snapshot copied into the world at creation. Studio generates the same blocks, biomes, structures, and terrain as a normal world with the same pack and seed; it does not substitute blank chunks or a landing pad. That live-versus-frozen pack source is the reason Studio exists, and the reason pack edits appear to do nothing on a production world.
+Studio worlds are transient. They are discarded when you close them and any leftovers are purged at startup. A Studio world reads the **live** pack directory and hotloads JSON and object edits into newly generated chunks. Production worlds read immutable epochs in their world-local generation history. Studio generates the same blocks, biomes, structures, and terrain as a production activation with the same pack, kernel, and seed; it does not substitute blank chunks or a landing pad.
 
 ### Plugin
 
@@ -297,7 +297,7 @@ The Studio gate passes when the transient world opens. The workspace must point 
 4. Optional: `/iris pregen start radius=352 …` for a 45×45-chunk area.
 5. Optional: `/iris studio open <pack>` and use the VSCode schemas for block, item, and entity autocomplete. Mod content is included in those schemas on mod loaders.
 
-The session is finished when you restart the server cleanly. The production world must load again. It must generate new chunks from its copied pack snapshot. Remove a disposable world through the lifecycle command after evacuating players, never by deleting folders. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+The session is finished when you restart the server cleanly. The production world must load its generation history and generate new chunks from the same active epoch. Remove a disposable world through the lifecycle command after evacuating players, never by deleting folders. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 ## Common pitfalls
 
@@ -307,7 +307,7 @@ The session is finished when you restart the server cleanly. The production worl
 | `/iris studio create mypack` | Fails — both params are optional so neither is positional | `/iris studio create name=mypack` |
 | `/iris pack validate` with no argument | Validates every installed pack | Name one with `pack=<key>` to check a single pack |
 | World named `iris` or `benchmark` | Create rejected | Pick another name, e.g. `irisworld` |
-| Editing `packs/<pack>` after creating a production world | **No effect** on that world, ever | Production engines read `<world>/iris/pack`. Push changes with `/iris developer update-world world=<world> pack=<dimension> confirm=true` and restart, or accept that only new chunks change. Studio reads the live pack |
+| Editing `packs/<pack>` after creating a production world | No immediate effect | Production engines read their active immutable epoch. Stage an update and restart; only new chunks use it. Studio reads the live pack |
 | Expecting pack edits to change existing chunks | Only newly generated chunks use the new config | Fly to unexplored terrain, pregen a fresh radius, or use a Studio world |
 | Folia create reports `paper_like_runtime` unavailable | Iris cannot safely use Folia's unsupported public world creator | Keep the world data untouched and update to a compatible Folia/Iris build before retrying |
 | Modded: new pack's heights or biomes missing | The forced datapack was not applied before registries loaded | Restart once with the pack already installed |

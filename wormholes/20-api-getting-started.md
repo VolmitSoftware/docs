@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Depend on the API jar, acquire services, and follow the threading contract"
 published: true
-date: 2026-08-28T00:00:00.000Z
+date: 2026-09-05T18:30:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,3 +38,7 @@ if (plugin != null && plugin.isEnabled()) {
 ```
 
 Traversal callbacks run on the traveler's owning thread. Placeholder and metric reads use snapshots and may run from any thread.
+
+## Build artifacts
+
+Wormholes applies [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) to its runtime archive. Its public API jar remains separate. Run `./gradlew verifyPluginJars` to assemble and check the runtime jar without staging.

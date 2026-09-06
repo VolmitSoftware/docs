@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-05T20:12:14.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,3 +41,11 @@ IrisTerrainService terrain = registration == null ? null : registration.getProvi
 Look up services when needed instead of keeping them across an Iris reload. Terrain reads are safe from any thread. Tree-feller calls must run on the thread delivering the block event. World and pregeneration events run on the server's global thread.
 
 When switching over Iris enums, include a `default` branch so future values do not break your integration.
+
+## Build artifacts
+
+All four Iris platform builds use [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning). The build removes unreachable VolmLib classes while retaining Iris classes, reflective Matter slices, resources, and loader-specific library packaging. Runtime jars retain source locations and parameter names.
+
+Run `./gradlew verifyBukkitArtifact verifyModdedArtifacts` from the Iris repository to assemble and check all four jars without staging. Artifact checks include class references from field and method descriptors. Reports under each platform's `build/reports/packaging/` list removed classes and archive sizes.
+
+For the smallest Bukkit jar, run `./gradlew verifyBukkitArtifact -PcompactRelease=true`. Normal builds strip unnecessary dependency debug tables. Release mode also uses stronger compression without changing entry contents or adding runtime downloads. Both modes keep source locations and parameter names.

@@ -2,13 +2,15 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Configure chat bubbles, health indicators, drop labels, and display-backed items"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-06T00:06:08.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 Gloss can show chat above players, health changes beside entities, labels above drops, and display-backed item models.
+
+Nearby living entities also have default segmented health bars, custom names, and combat statistics. See [Entity Overlays](/gloss/20-entity-overlays) for that display and its Adapt and React integrations.
 
 Use `/gloss web edit bubble-style <id>`, `/gloss web edit real-drops default`, or `/gloss web edit damage-indicators default` to open a focused editor.
 
@@ -22,9 +24,11 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 
 ```json
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "revision": 1,
   "prefix": "&7",
+  "style": {"billboard": "center", "seeThrough": true},
+  "box": {"enabled": false},
   "offset": [0, 0.3, 0],
   "wordWrapChars": 32,
   "maxAliveMs": 5000,
@@ -55,7 +59,7 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 
 | Key | Default when absent | Clamp / notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `4`. Any other version is silently ignored |
+| `schemaVersion` | required | Must be `5`. Any other version is silently ignored |
 | `revision` | required | `1` to `9007199254740991` |
 | `prefix` | `"&7"` | Configured text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
 | `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
@@ -66,11 +70,19 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 | `motion` | default late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
 | `shimmer` | default shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
+| `style` | center, see-through, unit XYZ scale | Full shared display settings, including line width, opacity, background, brightness, glow and alignment |
+| `box` | disabled | Shared measured panel and complete perimeter settings |
 | `particleLayers` | `[]` | Up to 64 layers attached to the one multiline temporary hologram |
 
-Write `followPlayer` and `hideOwn` explicitly because an omitted value is `false`. Bubble movement belongs in `motion`; `shimmer.flyAway` controls only the shine pass.
+Write `followPlayer` and `hideOwn` explicitly because an omitted value is `false`. Style scale multiplies motion scale on each axis; style text opacity multiplies motion opacity. Boxes follow the complete motion and visibility state. The [shared style and box settings](/gloss/04-holograms#display-style-and-boxes) apply unchanged. Bubble movement belongs in `motion`; `shimmer.flyAway` controls only the shine pass.
 
 There is no config table for bubble styles. `gloss.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
+
+### Visibility
+
+A bubble style accepts `show`, defaulting to `true`. After style selection, it gates each viewer
+while the bubble lives and combines with `hideOwn`, world restrictions, and other viewer rules.
+False hides the bubble; it does not select a different style. Use [Show conditions](/gloss/13-expressions-placeholders#show-conditions) for expressions.
 
 ### The `select` block
 
@@ -107,7 +119,7 @@ The bubble keeps the formatting already allowed in chat. It does not grant color
 
 Wrapping counts visible characters and keeps color and decoration state. One message uses one multiline display. Older messages move upward to make room for newer ones.
 
-The configured `prefix` supports functions, expressions, PlaceholderAPI, emoji, and colors. Player chat is not interpreted as Gloss code. The bubble remains for `maxAliveMs` while the feature and permission checks pass.
+The configured `prefix` supports functions, expressions, PlaceholderAPI, emoji, legacy colors, and MiniMessage formatting. Formatting-only prefixes color the chat text; closed tags restore the preceding formatting before chat is appended. Player chat is not interpreted as Gloss code. The bubble remains for `maxAliveMs` while the feature and permission checks pass.
 
 Particle layers can follow the bubble or target a line, prefix span, or local geometry. Chat text cannot create particle ranges. See [Particle Layers](/gloss/25-particle-layers).
 
@@ -215,6 +227,10 @@ Gloss writes this file when a player sets or clears a style. Deleting it returns
 
 ## Damage and heal indicators
 
+The indicator document accepts `show`, defaulting to `true`. It combines with `audience.when` for
+each viewer and uses the same event snapshot. Dynamic conditions are reevaluated while an indicator
+is alive; hidden indicators cannot outlive their normal lifetime. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
 ### Profile document
 
 Damage and healing share `plugins/Gloss/damage-indicators/default.json`. Gloss creates it while the feature is enabled and reloads valid edits automatically.
@@ -223,7 +239,7 @@ The included document is:
 
 ```json
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "revision": 1,
   "limits": {
     "maxPerSecond": 40,
@@ -286,7 +302,9 @@ The limits are clamped when the document loads:
 | `minimumDelta` | `0`..`1000` |
 | `decimals` | `0`..`4` |
 
-The base `when` condition enables each event type. The matching variant with the highest priority wins; ties use the lexicographically smallest ID. `format` must contain `{amount}`. `offset` is measured from the affected entity and clamps each axis to `-32`..`32`.
+The base `when` condition enables each event type. The matching variant with the highest priority wins; ties use the lexicographically smallest ID. `format` accepts any authored label, icon text, formatting, function, expression, or animation. Include `{amount}` where the numeric change belongs; it is optional. `offset` is measured from the affected entity and clamps each axis to `-32`..`32`.
+
+Each base or variant presentation accepts full shared `style` and `box` settings. Omitted styles use center billboard, see-through text and unit XYZ scale. Style scale multiplies the indicator transform, and style opacity multiplies its fade; boxes follow motion, rotation, visibility and expiry. See [Display style and boxes](/gloss/04-holograms#display-style-and-boxes).
 
 Each presentation can include particle layers that follow the indicator. A named span can limit particles to part of the format. See [Particle Layers](/gloss/25-particle-layers).
 
@@ -351,6 +369,12 @@ With `[features] drops = true` (the default) every item entity that spawns gets 
 
 The default is `"&7{count}x {type}"`, giving `64x cobblestone` and `1x diamond sword` even when that sword was renamed in an anvil. Set `[drops] useItemDisplayNames = true` to show `1x Excalibur` instead. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
 
+Under `[drops]` in `gloss.toml`, `show` accepts a boolean or an expression string. Use `show = false`
+to hide labels, or `show = "world.time > 12000"` to show them only after that world-time threshold.
+Gloss writes normalized values as quoted expression strings, so `show = false` becomes
+`show = "false"`. The condition uses each viewer and the item snapshot; the underlying item remains
+present. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
 ### Bundles
 
 A dropped `BUNDLE` whose `BundleMeta` carries stacks keeps a horizontal fallback name from `[drops] bundleFormat`. A merged React super-stack therefore describes its contents rather than retaining the target item that existed before the merge:
@@ -372,11 +396,11 @@ Bundle (12 items)
 +1 more
 ```
 
-A bundle with no contents, or whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle`. The horizontal fallback remains on the hidden item entity, so turning real drops off immediately returns to a readable vanilla nametag.
+A bundle with no contents, or whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle`. The horizontal fallback remains on the hidden item entity for presentations that cannot be admitted within the configured display budget.
 
 React super-stack bundles can supply their own label formats and entry limit.
 
-Labels support colors, emoji, and static functions. Viewer placeholders do not resolve, and Gloss does not change the `ItemStack`.
+Real Drops, standalone, and conditional labels use the temporary-hologram engine for formatting, functions, animations, viewer expressions, PlaceholderAPI, and named particle spans. Gloss does not change the `ItemStack`.
 
 With `[drops] preserveCustomNames = true`, Gloss leaves names from other plugins unchanged. Set it to `false` to allow Gloss to overwrite them.
 
@@ -384,15 +408,19 @@ Labels refresh after spawns, merges, partial pickups, loads, and reloads. Removi
 
 ### Real drops
 
+The Real Drops document accepts `show`, defaulting to `true`. It gates the display presentation
+per viewer together with `audience.when` and the selected presentation settings. It does not
+remove the underlying dropped item. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
 `[features] realDrops` defaults to `true`. The real item entity still controls physics, merging, pickup, and despawn. Gloss hides its vanilla model and shows `BlockDisplay` or `ItemDisplay` models instead.
 
-Presentation settings live in the schema-3 file `plugins/Gloss/real-drops/default.json`. A stack shows one to five models, subject to the configured per-chunk limit and a server-wide limit of 2,048 presentations. Items above a limit keep their vanilla model and name.
+Presentation settings live in the schema-4 file `plugins/Gloss/real-drops/default.json`. A stack shows one to five models, subject to the configured per-chunk limit and a server-wide limit of 2,048 presentations. Items above a limit keep their vanilla model and name.
 
 The document has one complete fallback `presentation`, zero or more complete conditional `variants`, and one per-viewer `audience` condition:
 
 ```json
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "revision": 1,
   "presentation": { "limits": {}, "scale": {}, "motion": {}, "landing": {}, "labels": {}, "filters": {}, "physics": {}, "script": {}, "animation": {}, "particleLayers": [] },
   "variants": [
@@ -445,19 +473,22 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 | `landing.movingFaceAttraction` | `0.15` | Face attraction retained during rolling; 0 – 1 |
 | `landing.alignmentDegrees` | `0.5` | Final subvisual alignment tolerance; 0.05 – 10 degrees |
 | `landing.settleDelayTicks` | `4` | Stable ticks before sparse polling; 0 – 100 |
-| `labels.enabled` | `true` | Mirrors the effective drop name through one TextDisplay |
-| `labels.yOffset` | `0.55` | Label translation above the model; 0 – 4 blocks |
-| `labels.scale` | `0.85` | Label scale; 0.1 – 4 |
-| `labels.viewRange` | `32.0` | Label tracking range; 4 – 128 blocks |
-| `labels.billboard` | `"CENTER"` | `CENTER`, `FIXED`, `HORIZONTAL`, or `VERTICAL` |
-| `labels.seeThrough` | `true` | Draws through blocks when on |
-| `labels.shadow` | `true` | Draws the glyph shadow |
-| `labels.background` | `true` | Enables the full label background |
-| `labels.backgroundRed/Green/Blue/Alpha` | `0/0/0/80` | Channels clamp to 0 – 255 |
+| `labels.enabled` | `true` | Shows the effective drop name through the Gloss text engine |
+| `labels.yOffset` | `0.55` | Label translation above the item; -4 – 16 blocks |
+| `labels.style` | See below | Shared Gloss display style, including independent XYZ scale, billboard, alignment, opacity, lights, view range, culling, and glow |
+| `labels.box` | Disabled | Shared padded background and uniform border; colors use `#AARRGGBB` |
 | `filters.disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
 | `filters.materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
 | `filters.onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
 | `particleLayers` | `[]` | Layers targeting the whole projection, model, label, line, span or local geometry |
+
+An omitted `labels.style` uses center billboard, glyph shadow, see-through, center alignment, background `#50000000`, opacity 255, line width 16384, view range 0.5, and scale 0.85 on each axis. Display-style view range is a native multiplier: 0.5 corresponds to 32 blocks. Fields omitted from an explicitly supplied style use the shared display defaults. See [Icons](/gloss/11-icons) for field ranges.
+
+`labels.box` accepts `enabled`, `padding` (0–64 font pixels), `borderWidth` (0–16 font pixels), `backgroundArgb`, and `borderArgb`. A visible box uses up to five extra display parts. The Real Drops chunk budget reserves the label and its maximum box parts; personalized boxes are sent only to their viewer. The box follows the item, label scale, billboard, and audience; it is removed with the label. Ordinary Gloss-owned drop names also use the shared style and box when Real Drops models are disabled. Externally authored item names remain subject to `preserveCustomNames`.
+
+Labels retain their authored functions, viewer expressions, and named particle spans. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
+
+The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including display style, box, particles, physics, script, and animation.
 
 `NATURAL` keeps the airborne rotation and settles the nearest face toward the ground. Partial blocks are positioned against their actual bounds instead of intersecting the surface.
 
@@ -471,7 +502,7 @@ Disabling `drops` removes Gloss-owned labels. Disabling `realDrops` removes disp
 
 ## Reference
 
-Bubble schema 4, damage-indicator schema 3 and real-drop schema 3 are hard breaks. Older documents are silently ignored rather than migrated; rewrite custom files to the current shapes or reset them to the defaults.
+Bubble styles use schema 5; damage indicators and Real Drops use schema 4. Use these current shapes when authoring documents.
 
 | Command | Arguments | Permission |
 |---|---|---|

@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T18:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -26,6 +26,8 @@ Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, V
 1. Put the Gloss jar in `plugins/`.
 2. Start the server. Gloss creates `plugins/Gloss/` and its default files.
 3. Edit `gloss.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
+
+Gloss downloads external libraries, including bStats, before plugin enable. The first start needs access to the library repositories. SlimJar keeps original and relocated libraries under `plugins/Gloss/.libs/` for later starts.
 
 ## What the first boot creates
 

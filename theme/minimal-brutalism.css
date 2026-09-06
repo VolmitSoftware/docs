@@ -121,24 +121,66 @@
 
 .v-application {
   --volmit-accent: #e33b3f;
-  --volmit-ink: #111111;
-  --volmit-paper: #f5f3ee;
-  --volmit-surface: #ebe8e0;
-  --volmit-line: #c9c6bd;
-  --volmit-muted: #686868;
+  --volmit-ink: #18181b;
+  --volmit-paper: #fafafa;
+  --volmit-surface: #f4f4f5;
+  --volmit-surface-raised: #ffffff;
+  --volmit-line: #e4e4e7;
+  --volmit-line-strong: #a1a1aa;
+  --volmit-muted: #52525b;
+  --volmit-radius: 4px;
   --volmit-accent-soft: color-mix(in srgb, var(--volmit-accent) 9%, transparent);
   font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
   line-height: 1.65;
 }
 
 .theme--dark.v-application {
-  --volmit-ink: #f1f1ed;
-  --volmit-paper: #0e0e0f;
-  --volmit-surface: #171719;
-  --volmit-line: #363638;
-  --volmit-muted: #a7a7a4;
+  --volmit-ink: #f5f5f5;
+  --volmit-paper: #000000;
+  --volmit-surface: #171717;
+  --volmit-surface-raised: #262626;
+  --volmit-line: #303030;
+  --volmit-line-strong: #525252;
+  --volmit-muted: #a3a3a3;
   background: var(--volmit-paper) !important;
   color: var(--volmit-ink) !important;
+}
+
+.v-application.volmit-light-mode {
+  --volmit-ink: #18181b;
+  --volmit-paper: #fafafa;
+  --volmit-surface: #f4f4f5;
+  --volmit-surface-raised: #e4e4e7;
+  --volmit-line: #d4d4d8;
+  --volmit-line-strong: #71717a;
+  --volmit-muted: #52525b;
+  background: var(--volmit-paper) !important;
+  color: var(--volmit-ink) !important;
+}
+
+body:has(.volmit-light-mode),
+#root:has(.volmit-light-mode) {
+  background: #fafafa;
+}
+
+.theme--dark.v-application .v-application--wrap,
+.theme--dark.v-application .v-main__wrap {
+  background-color: #000000 !important;
+}
+
+.v-application.volmit-light-mode .v-application--wrap,
+.v-application.volmit-light-mode .v-main__wrap {
+  background-color: #fafafa !important;
+}
+
+#root .theme--dark.v-application .v-main .container.grey.darken-4-l3 {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+#root .v-application.volmit-light-mode .v-main .container.grey.darken-4-l3 {
+  background-color: #fafafa !important;
+  border-color: #fafafa !important;
 }
 
 .v-application:has(.breadcrumbs-nav a[href="/adapt"]) {
@@ -169,12 +211,6 @@
   --volmit-accent: #c14df0;
 }
 
-.theme--dark.v-application:has(.breadcrumbs-nav a[href="/shapedportals"]) {
-  --volmit-paper: #070609;
-  --volmit-surface: #120e15;
-  --volmit-line: #33273a;
-}
-
 .v-application:has(.breadcrumbs-nav a[href="/rift"]) {
   --volmit-accent: #a855f7;
 }
@@ -187,20 +223,13 @@
   --volmit-accent: #d8d8d2;
 }
 
-.theme--dark.v-application:has(.breadcrumbs-nav a[href="/volmlib"]) {
-  --volmit-paper: #050505;
-  --volmit-surface: #101010;
-  --volmit-line: #303030;
-  --volmit-muted: #999995;
-}
-
 .v-application:has(.contents img[src="/home-assets/volmit.png"]) {
   --volmit-accent: #d8d8d2;
 }
 
 body,
 #root {
-  background: #0e0e0f;
+  background: #000000;
 }
 
 .v-application button,
@@ -251,6 +280,71 @@ body,
   box-shadow: none !important;
 }
 
+.nav-header,
+.nav-header > .v-toolbar__content,
+.nav-header-inner,
+.nav-header-inner > .v-toolbar__content {
+  height: 52px !important;
+}
+
+.v-main {
+  padding-top: 52px !important;
+}
+
+#root .v-application .nav-header.black {
+  background-color: var(--volmit-paper) !important;
+}
+
+#root .v-application .nav-header .nav-header-inner.black {
+  background-color: transparent !important;
+}
+
+.nav-header .v-toolbar__content > .layout.row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.nav-header-inner .v-toolbar__content.volmit-home-link {
+  border-radius: var(--volmit-radius);
+  cursor: pointer;
+}
+
+.nav-header-inner .v-toolbar__content.volmit-home-link:focus-visible {
+  outline: 2px solid var(--volmit-accent);
+  outline-offset: -3px;
+}
+
+.nav-header .volmit-theme-toggle {
+  display: inline-grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  margin-right: 4px;
+  place-items: center;
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: var(--volmit-radius);
+  background: transparent;
+  color: var(--volmit-muted);
+  cursor: pointer;
+}
+
+.nav-header .volmit-theme-toggle:hover,
+.nav-header .volmit-theme-toggle:focus-visible {
+  border-color: var(--volmit-accent);
+  background: var(--volmit-surface-raised);
+  color: var(--volmit-ink);
+  outline: none;
+}
+
+.nav-header .volmit-theme-toggle:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--volmit-accent);
+}
+
+.nav-header .volmit-theme-toggle .v-icon {
+  color: inherit !important;
+  font-size: 20px;
+}
+
 .nav-header {
   border-bottom: 1px solid var(--volmit-line) !important;
 }
@@ -269,13 +363,17 @@ body,
 
 .nav-header .v-btn:hover,
 .nav-header .v-btn:focus-visible {
-  background: var(--volmit-accent) !important;
-  color: #ffffff !important;
+  background: var(--volmit-surface-raised) !important;
+  color: var(--volmit-accent) !important;
 }
 
 .nav-header .v-btn:hover .v-icon,
 .nav-header .v-btn:focus-visible .v-icon {
-  color: #ffffff !important;
+  color: var(--volmit-accent) !important;
+}
+
+.nav-header .v-btn::before {
+  opacity: 0 !important;
 }
 
 .nav-header .v-btn,
@@ -284,17 +382,163 @@ body,
 .v-main .v-chip,
 .v-main .v-alert,
 .v-main .v-card {
-  border-radius: 0 !important;
+  border-radius: var(--volmit-radius) !important;
   box-shadow: none !important;
 }
 
 .nav-header .v-input__slot {
+  border: 1px solid var(--volmit-line-strong);
+}
+
+.nav-header .v-text-field,
+.nav-header .v-text-field .v-input__control,
+.nav-header .v-text-field .v-input__slot {
+  min-height: 36px !important;
+}
+
+.nav-header .v-text-field .v-input__slot {
+  padding-right: 12px !important;
+  padding-left: 12px !important;
+  background: color-mix(in srgb, var(--volmit-surface) 72%, transparent) !important;
+}
+
+.nav-header .v-text-field .v-input__slot:focus-within {
+  border-color: var(--volmit-accent);
+  background: var(--volmit-surface) !important;
+}
+
+@media (min-width: 960px) {
+  .nav-header > .v-toolbar__content > .layout.row {
+    display: grid;
+    grid-template-columns: 250px minmax(320px, 1fr) auto;
+    width: 100%;
+  }
+
+  .nav-header > .v-toolbar__content > .layout.row > .flex {
+    width: auto !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+}
+
+.search-results {
+  top: 52px !important;
+  z-index: 1000 !important;
+  padding: clamp(16px, 3vw, 32px) !important;
+  overflow-y: auto !important;
+  background: color-mix(in srgb, var(--volmit-paper) 84%, transparent) !important;
+  backdrop-filter: blur(8px);
+}
+
+.search-results-container {
+  width: min(900px, 100%) !important;
+  max-width: 900px !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 84px);
+  margin: 0 auto !important;
+  padding: 16px !important;
+  overflow-y: auto;
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: var(--volmit-radius);
+  background: var(--volmit-paper);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 36%);
+}
+
+.search-results-help {
+  display: flex !important;
+  min-height: 110px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: var(--volmit-muted);
+  font-size: 0.95rem;
+  text-align: left !important;
+}
+
+.search-results-help img {
+  width: 48px !important;
+  height: 48px !important;
+  margin: 0 !important;
+  opacity: 0.8;
+}
+
+.search-results-help .mt-4 {
+  margin-top: 0 !important;
+}
+
+.search-results .v-subheader {
+  height: auto;
+  min-height: 0;
+  padding: 0 0 11px;
+  color: var(--volmit-muted) !important;
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.search-results-items {
+  max-height: calc(100vh - 245px);
+  overflow-y: auto;
   border: 1px solid var(--volmit-line);
+  border-radius: var(--volmit-radius) !important;
+  background: var(--volmit-paper) !important;
+}
+
+.search-results-items .v-list-item {
+  min-height: 62px;
+  padding: 7px 12px;
+  border-radius: 0 !important;
+}
+
+.search-results-items .v-list-item:hover,
+.search-results-items .v-list-item:focus-visible,
+.search-results-items .v-list-item.highlighted {
+  background: var(--volmit-accent-soft) !important;
+  color: var(--volmit-ink) !important;
+  outline: none;
+}
+
+.search-results-items .v-list-item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--volmit-accent);
+}
+
+.search-results-items .v-list-item__title {
+  color: var(--volmit-ink);
+  font-weight: 700;
+}
+
+.search-results-items .v-list-item__subtitle,
+.search-results-items .caption {
+  color: var(--volmit-muted) !important;
+}
+
+.search-results-items .v-divider {
+  border-color: var(--volmit-line) !important;
+}
+
+.search-results .v-pagination__item,
+.search-results .v-pagination__navigation,
+.search-results .v-btn,
+.search-results .v-chip {
+  border-radius: var(--volmit-radius) !important;
+  box-shadow: none !important;
+}
+
+.search-results .v-pagination__item--active {
+  background: var(--volmit-accent) !important;
+  color: #ffffff !important;
 }
 
 .v-main > .v-toolbar {
   background: var(--volmit-paper) !important;
   border-bottom: 1px solid var(--volmit-line);
+}
+
+#root .v-application .v-main .v-toolbar.grey.darken-4-d3 {
+  background-color: var(--volmit-paper) !important;
+  border-color: var(--volmit-line) !important;
 }
 
 .breadcrumbs-nav .v-btn {
@@ -307,6 +551,7 @@ body,
   height: 72px !important;
   background: var(--volmit-paper);
   border-bottom: 1px solid var(--volmit-line);
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--volmit-accent) 72%, transparent);
 }
 
 .page-header-headings .headline {
@@ -314,35 +559,57 @@ body,
   font-size: clamp(1.35rem, 2vw, 1.75rem) !important;
   font-weight: 850;
   letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.page-header-headings .headline::before {
+  content: "REFERENCE / ACTIVE";
+  display: block;
+  margin-bottom: 5px;
+  color: var(--volmit-accent);
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
 }
 
 .page-header-headings {
-  max-width: 820px;
+  width: 100%;
+  max-width: none;
   min-height: 46px !important;
-  margin: 0 auto;
-  padding-left: 14px;
-  padding-right: 14px;
-  text-align: center;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
 .page-header-headings .caption {
   color: var(--volmit-muted) !important;
   font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
   letter-spacing: 0;
+  line-height: 1.2;
 }
 
 .page-edit-shortcuts {
   display: none !important;
 }
 
-.v-main > .v-container.grey {
-  background: var(--volmit-paper) !important;
+#root .v-application .v-main .container.grey.darken-4-l3 {
+  background-color: var(--volmit-paper) !important;
+}
+
+.v-main > .container.grid-list-xl {
+  padding-top: 16px !important;
+  padding-right: 20px !important;
+  padding-left: 20px !important;
 }
 
 .page-col-sd {
-  margin-top: -72px;
-  top: 64px;
-  padding-right: 28px !important;
+  margin-top: 0;
+  top: 76px;
+  padding-right: 0 !important;
+  padding-left: 12px !important;
+  scrollbar-color: var(--volmit-line-strong) transparent;
+  scrollbar-width: thin;
 }
 
 .page-col-sd .page-tags-card,
@@ -353,24 +620,43 @@ body,
 }
 
 .page-toc-card {
+  overflow: hidden;
   background: transparent !important;
-  border: 0 !important;
-  border-right: 1px solid var(--volmit-line) !important;
+  border: 1px solid var(--volmit-line-strong) !important;
+  border-radius: var(--volmit-radius) !important;
 }
 
 .page-toc-card .overline {
-  display: none !important;
+  display: block !important;
+  padding: 13px 14px 11px !important;
+  border-bottom: 1px solid var(--volmit-line-strong);
+  background: var(--volmit-surface) !important;
+  color: var(--volmit-ink) !important;
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.62rem !important;
+  font-weight: 700;
+  letter-spacing: 0.14em !important;
+  line-height: 1.2;
+}
+
+.page-toc-card .overline::before {
+  content: "// ";
+  color: var(--volmit-accent);
 }
 
 .page-toc-card .v-list {
-  padding: 6px 0 10px !important;
+  position: relative;
+  padding: 8px 8px 10px 10px !important;
   background: transparent !important;
   counter-reset: volmit-toc;
 }
 
 .page-toc-card .v-list-item {
-  min-height: 32px;
-  padding: 0 14px 0 10px;
+  position: relative;
+  min-height: 36px;
+  margin: 1px 0;
+  padding: 5px 8px;
+  border-radius: var(--volmit-radius);
   color: var(--volmit-ink) !important;
 }
 
@@ -382,20 +668,25 @@ body,
 .page-toc-card .v-list-item:focus-visible {
   color: var(--volmit-accent) !important;
   background: var(--volmit-accent-soft) !important;
+  outline: none;
 }
 
 .page-toc-card .v-list-item .v-icon {
-  width: 26px;
-  min-width: 26px;
+  width: 30px;
+  min-width: 30px;
   padding: 0 !important;
   color: var(--volmit-accent) !important;
   font-size: 0 !important;
 }
 
 .page-toc-card .v-list-item .v-icon::before {
-  content: "■";
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 1px solid currentColor;
+  background: var(--volmit-paper);
   font-family: "Volmit ITC", Futura, Century Gothic, sans-serif;
-  font-size: 9px;
+  font-size: 0;
   font-weight: 800;
 }
 
@@ -405,24 +696,61 @@ body,
 
 .page-toc-card .v-list-item:has(> .v-icon:not(.px-3)) > .v-icon::before {
   content: counter(volmit-toc, decimal-leading-zero);
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
   color: var(--volmit-accent);
-  font-size: 11px;
-  letter-spacing: -0.08em;
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: -0.04em;
 }
 
 .page-toc-card .v-list-item .v-icon.px-3 {
-  margin-left: 4px;
+  position: relative;
+  width: 26px;
+  min-width: 26px;
+  margin-left: 16px;
 }
 
 .page-toc-card .v-list-item .v-icon.px-3::before {
-  content: "\e06f";
-  color: var(--volmit-muted);
-  font-family: "Volmit Lucide";
-  font-size: 11px;
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--volmit-line-strong);
+  background: var(--volmit-paper);
+  transform: rotate(45deg);
+}
+
+.page-toc-card .v-list-item:has(> .v-icon.px-3)::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  right: auto;
+  bottom: -2px;
+  left: 17px;
+  width: 17px;
+  height: auto;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 1px solid var(--volmit-line);
+  border-left: 1px solid var(--volmit-line);
+  border-radius: 0 0 0 3px;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+.page-toc-card .v-list-item:has(> .v-icon.px-3):hover > .v-icon::before,
+.page-toc-card .v-list-item:has(> .v-icon.px-3):focus-visible > .v-icon::before {
+  border-color: var(--volmit-accent);
+  background: var(--volmit-accent);
 }
 
 .page-toc-card .v-list-item__title {
-  padding: 0 0 0 9px !important;
+  padding: 0 0 0 5px !important;
   font-size: 0.82rem;
   font-weight: 700;
   line-height: 1.25;
@@ -436,8 +764,9 @@ body,
 }
 
 .page-col-content > .contents {
-  max-width: 820px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   color: var(--volmit-ink);
 }
 
@@ -462,8 +791,9 @@ body,
 }
 
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .page-col-content > .contents {
-  max-width: 960px;
+  max-width: 1120px;
   margin: 0 auto;
+  padding-top: clamp(1.5rem, 4vw, 3.5rem);
 }
 
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .page-header-section {
@@ -477,12 +807,13 @@ body,
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h2,
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h3,
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h4 {
-  text-align: center;
+  text-align: left;
 }
 
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center {
-  margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
+  margin-left: 0;
+  text-align: left !important;
 }
 
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center br {
@@ -493,12 +824,42 @@ body,
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.2rem 0.65rem;
 }
 
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents p.text-center a {
   display: inline-block;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h2#plugin-documentation {
+  max-width: 15ch;
+  margin-top: 0;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0;
+  border-bottom: 0;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  text-align: left !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h2#plugin-documentation::before {
+  content: "VOLMIT / KNOWLEDGE SYSTEM";
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--volmit-accent);
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents h2#plugin-documentation + p {
+  max-width: 58ch;
+  color: var(--volmit-muted);
+  font-size: 1.05rem;
 }
 
 .v-main .contents h2,
@@ -510,10 +871,26 @@ body,
 }
 
 .v-main .contents h2 {
+  counter-increment: volmit-section;
   margin-top: 2.8rem;
-  padding-bottom: 0.45rem;
-  border-bottom: 1px solid var(--volmit-line);
+  padding: 0 0 0.55rem;
+  border-bottom: 1px solid var(--volmit-line-strong);
   font-size: clamp(1.35rem, 2vw, 1.7rem);
+}
+
+.v-main:not(:has(.contents img[src="/home-assets/volmit.png"])) .page-col-content > .contents {
+  counter-reset: volmit-section;
+}
+
+.v-main:not(:has(.contents img[src="/home-assets/volmit.png"])) .contents h2::before {
+  content: counter(volmit-section, decimal-leading-zero) " /";
+  margin-right: 0.8rem;
+  color: var(--volmit-accent);
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  vertical-align: 0.22em;
 }
 
 .v-main .contents h2 .toc-anchor,
@@ -537,6 +914,19 @@ body,
   font-size: 1.15rem;
 }
 
+.v-main:not(:has(.contents img[src="/home-assets/volmit.png"])) .contents h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+
+.v-main:not(:has(.contents img[src="/home-assets/volmit.png"])) .contents h3::before {
+  content: "◆";
+  color: var(--volmit-accent);
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.5rem;
+}
+
 .v-main .contents h2::after,
 .v-main .contents h3::after,
 .v-main .contents h4::after {
@@ -544,7 +934,8 @@ body,
 }
 
 .v-main .contents p,
-.v-main .contents li {
+.v-main .contents ul:not(.links-list):not(.tabset-tabs) li,
+.v-main .contents ol:not(.links-list):not(.tabset-tabs) li {
   max-width: 78ch;
 }
 
@@ -588,20 +979,42 @@ body,
 .v-main .contents code:not([class*="language-"]) {
   padding: 0.12em 0.34em;
   border: 1px solid var(--volmit-line);
-  border-radius: 0;
+  border-radius: var(--volmit-radius);
   background: transparent !important;
   color: var(--volmit-ink) !important;
   font-size: 0.88em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .v-main .contents pre,
 .v-main .contents .prismjs,
 .v-main .contents div.code-toolbar {
-  border-radius: 0 !important;
+  border-radius: var(--volmit-radius) !important;
 }
 
 .v-main .contents pre {
   border: 1px solid var(--volmit-line);
+  scrollbar-color: var(--volmit-muted) var(--volmit-surface);
+  scrollbar-width: thin;
+}
+
+.v-main .contents pre::-webkit-scrollbar,
+.v-main .contents table::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.v-main .contents pre::-webkit-scrollbar-track,
+.v-main .contents table::-webkit-scrollbar-track {
+  background: var(--volmit-surface);
+}
+
+.v-main .contents pre::-webkit-scrollbar-thumb,
+.v-main .contents table::-webkit-scrollbar-thumb {
+  border: 2px solid var(--volmit-surface);
+  border-radius: var(--volmit-radius);
+  background: var(--volmit-muted);
 }
 
 .v-main .contents table {
@@ -635,8 +1048,8 @@ body,
 
 .v-main .contents blockquote {
   border: 1px solid var(--volmit-line) !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+  border-radius: var(--volmit-radius) !important;
+  background: color-mix(in srgb, var(--volmit-accent) 5%, var(--volmit-surface)) !important;
   color: var(--volmit-ink) !important;
 }
 
@@ -646,9 +1059,9 @@ body,
 
 .v-main .contents ul.links-list li,
 .v-main .contents ol.links-list li {
-  border: 1px solid var(--volmit-line) !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+  padding: 0 !important;
+  border: 1px solid var(--volmit-line-strong) !important;
+  border-radius: var(--volmit-radius) !important;
   box-shadow: none !important;
   background: var(--volmit-surface) !important;
   transition: border-color 120ms ease, background-color 120ms ease;
@@ -722,6 +1135,67 @@ body,
   width: 100%;
 }
 
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list > li {
+  display: flex;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list > li,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list > li > a {
+  width: 100%;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list,
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap > .flex > .links-list > li {
+  flex: 1 1 auto;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  counter-reset: volmit-plugin;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) > .flex {
+  width: auto !important;
+  max-width: none !important;
+  flex: none !important;
+  counter-increment: volmit-plugin;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) > .flex > .links-list > li {
+  position: relative;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) > .flex > .links-list > li::after {
+  content: counter(volmit-plugin, decimal-leading-zero);
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: var(--volmit-card-accent, var(--volmit-muted));
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  pointer-events: none;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(img),
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(.project-mark) {
+  border-color: color-mix(in srgb, var(--volmit-card-accent, var(--volmit-line)) 55%, var(--volmit-line)) !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li .title {
+  color: var(--volmit-card-accent, var(--volmit-ink));
+}
+
+.theme--dark.v-application:has(.contents img[src="/home-assets/volmit.png"]) .contents .links-list li:has(a[href="/volmlib"]) {
+  --volmit-card-accent: #d8d8d2;
+}
+
 .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .project-mark {
   display: grid;
   flex: 0 0 52px;
@@ -729,6 +1203,7 @@ body,
   height: 52px;
   place-items: center;
   border: 1px solid var(--volmit-line);
+  border-radius: var(--volmit-radius);
   background: var(--volmit-paper);
   color: var(--volmit-ink);
   font-family: "Volmit Akz", "Volmit ITC", sans-serif;
@@ -749,7 +1224,19 @@ body,
 
 .v-main .contents ul.links-list li a,
 .v-main .contents ol.links-list li a {
+  width: 100%;
+  margin: 0 !important;
+  padding: 16px !important;
+  box-sizing: border-box;
   text-decoration: none !important;
+}
+
+.v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) .links-list li a {
+  padding-right: 42px !important;
+}
+
+.v-main .contents ul.grid-list li {
+  max-width: none !important;
 }
 
 .v-main .contents ul.links-list li .title,
@@ -762,9 +1249,89 @@ body,
 .v-main .contents ul.links-list li img,
 .v-main .contents ol.links-list li img {
   border: 1px solid var(--volmit-line);
-  border-radius: 0 !important;
+  border-radius: var(--volmit-radius) !important;
   background: var(--volmit-paper);
   transition: border-color 120ms ease;
+}
+
+.theme--dark.v-application img[src="/home-assets/riftworldmanager.jpg"] {
+  background: #f6f6f4 !important;
+  filter: invert(1);
+}
+
+.v-main .contents .volmit-headliner {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.75rem 0 2.25rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: var(--volmit-radius);
+  background: var(--volmit-surface);
+}
+
+.v-main .contents .volmit-headliner__kicker {
+  margin: 0;
+  color: var(--volmit-accent);
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.v-main .contents .volmit-headliner h2 {
+  max-width: 18ch;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.v-main:not(:has(.contents img[src="/home-assets/volmit.png"])) .contents .volmit-headliner h2::before {
+  display: none;
+}
+
+.v-main .contents .volmit-headliner > p:not(.volmit-headliner__kicker) {
+  max-width: 66ch;
+  margin: 0;
+  color: var(--volmit-muted);
+  font-size: 1rem;
+}
+
+.v-main .contents .volmit-headliner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.v-main .contents .volmit-headliner__actions a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: var(--volmit-radius);
+  background: var(--volmit-paper);
+  color: var(--volmit-ink) !important;
+  line-height: 1.2;
+  text-decoration: none !important;
+}
+
+.v-main .contents .volmit-headliner__actions a:first-child {
+  border-color: var(--volmit-accent);
+  background: var(--volmit-accent);
+  color: #ffffff !important;
+}
+
+.v-main .contents .volmit-headliner__actions a:hover,
+.v-main .contents .volmit-headliner__actions a:focus-visible {
+  border-color: var(--volmit-accent);
+  background: var(--volmit-surface-raised);
+  color: var(--volmit-ink) !important;
 }
 
 .v-main .contents .sp-home {
@@ -786,6 +1353,7 @@ body,
   align-items: center;
   padding: clamp(1.5rem, 5vw, 3.5rem);
   border: 1px solid var(--volmit-line);
+  border-radius: var(--volmit-radius);
   background: color-mix(in srgb, var(--sp-accent) 8%, var(--volmit-surface));
 }
 
@@ -827,6 +1395,7 @@ body,
   display: inline-block;
   padding: 0.68rem 0.9rem;
   border: 1px solid var(--volmit-ink);
+  border-radius: var(--volmit-radius);
   text-decoration: none !important;
 }
 
@@ -843,6 +1412,7 @@ body,
   gap: 0.35rem;
   padding: 1.25rem;
   border: 1px dashed var(--volmit-muted);
+  border-radius: var(--volmit-radius);
   background: var(--volmit-paper);
   text-align: center;
 }
@@ -868,6 +1438,7 @@ body,
 .v-main .contents .sp-types article {
   padding: 1.15rem;
   border: 1px solid var(--volmit-line);
+  border-radius: var(--volmit-radius);
   background: var(--volmit-surface);
 }
 
@@ -882,7 +1453,8 @@ body,
 .v-main .contents .sp-note {
   margin: 1rem 0 0;
   padding: 1rem;
-  border-left: 4px solid var(--sp-accent);
+  border: 1px solid var(--sp-accent);
+  border-radius: var(--volmit-radius);
   background: color-mix(in srgb, var(--sp-accent) 7%, transparent);
 }
 
@@ -892,6 +1464,7 @@ body,
   min-height: 126px;
   padding: 1rem;
   border: 1px solid var(--volmit-line);
+  border-radius: var(--volmit-radius);
   background: var(--volmit-surface);
   text-decoration: none !important;
 }
@@ -935,7 +1508,7 @@ body,
   margin: 0 !important;
   border: 1px solid var(--volmit-line) !important;
   border-bottom: 0 !important;
-  border-radius: 0 !important;
+  border-radius: var(--volmit-radius) var(--volmit-radius) 0 0 !important;
 }
 
 .v-main .contents .tabset-tabs li.active,
@@ -948,7 +1521,7 @@ body,
 .v-main .contents .tabset-content {
   border: 1px solid var(--volmit-line);
   border-top: 0;
-  border-radius: 0 !important;
+  border-radius: 0 0 var(--volmit-radius) var(--volmit-radius) !important;
 }
 
 .v-main .contents hr {
@@ -961,9 +1534,10 @@ body,
 .comments-container {
   margin-top: 4rem !important;
   border: 1px solid var(--volmit-line) !important;
-  border-radius: 0 !important;
+  border-radius: var(--volmit-radius) !important;
   background: var(--volmit-paper) !important;
   box-shadow: none !important;
+  overflow: hidden;
 }
 
 .comments-container .comments-header {
@@ -987,13 +1561,334 @@ body,
   caret-color: var(--volmit-accent) !important;
 }
 
+.v-speed-dial,
+.v-btn[aria-label="Return to top"] {
+  display: none !important;
+}
+
+.v-application:not(:has(.contents img[src="/home-assets/volmit.png"]))::after {
+  content: "";
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1001;
+  height: 3px;
+  background: var(--volmit-accent);
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: volmit-reading-progress linear both;
+  animation-timeline: scroll(root block);
+}
+
+.volmit-project-sidebar {
+  --volmit-project-sidebar-width: 232px;
+  position: fixed;
+  top: 100px;
+  bottom: 3px;
+  left: 0;
+  z-index: 6;
+  display: flex;
+  width: var(--volmit-project-sidebar-width);
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--volmit-line-strong);
+  background: var(--volmit-paper);
+  color: var(--volmit-ink);
+  transition: width 160ms ease;
+}
+
+.volmit-project-sidebar.is-collapsed {
+  --volmit-project-sidebar-width: 60px;
+}
+
+.volmit-project-sidebar__masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  min-height: 56px;
+  border-bottom: 1px solid var(--volmit-line-strong);
+  background: var(--volmit-surface);
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__masthead {
+  grid-template-columns: 1fr;
+}
+
+.volmit-project-sidebar__home,
+.volmit-project-sidebar__link {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  color: var(--volmit-ink) !important;
+  text-decoration: none !important;
+}
+
+.volmit-project-sidebar__home {
+  gap: 10px;
+  padding: 8px 12px;
+  font-family: "Volmit Akz", "Arial Narrow", Arial, sans-serif;
+  font-size: 0.77rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.volmit-project-sidebar__home:hover,
+.volmit-project-sidebar__home:focus-visible {
+  background: var(--volmit-accent-soft);
+  outline: none;
+}
+
+.volmit-project-sidebar__home-mark {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border: 1px solid var(--volmit-ink);
+  border-radius: 50%;
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.volmit-project-sidebar__toggle {
+  display: grid;
+  width: 48px;
+  min-height: 56px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-left: 1px solid var(--volmit-line-strong);
+  border-radius: 0 !important;
+  background: transparent;
+  color: var(--volmit-ink);
+  cursor: pointer;
+}
+
+.volmit-project-sidebar__toggle:hover,
+.volmit-project-sidebar__toggle:focus-visible {
+  background: var(--volmit-accent);
+  color: #ffffff;
+  outline: none;
+}
+
+.volmit-project-sidebar__toggle-icon {
+  position: relative;
+  width: 15px;
+  height: 12px;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+.volmit-project-sidebar__toggle-icon::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 0;
+  left: 0;
+  border-top: 1px solid currentColor;
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__home {
+  display: none;
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__toggle {
+  width: 60px;
+  border-left: 0;
+}
+
+.volmit-project-sidebar__nav {
+  padding: 10px 8px 18px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-color: var(--volmit-line-strong) transparent;
+  scrollbar-width: thin;
+}
+
+.volmit-project-sidebar__group + .volmit-project-sidebar__group {
+  margin-top: 15px;
+  padding-top: 11px;
+  border-top: 1px solid var(--volmit-line);
+}
+
+.volmit-project-sidebar__heading {
+  margin: 0 6px 7px;
+  color: var(--volmit-muted);
+  font-family: "Volmit Hack", Hack, ui-monospace, monospace;
+  font-size: 0.57rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.volmit-project-sidebar__link {
+  gap: 11px;
+  min-height: 43px;
+  margin: 2px 0;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--volmit-radius);
+  font-size: 0.79rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.volmit-project-sidebar__link:hover,
+.volmit-project-sidebar__link:focus-visible {
+  border-color: var(--volmit-line-strong);
+  background: var(--volmit-surface);
+  outline: none;
+}
+
+.volmit-project-sidebar__link.is-active {
+  border-color: var(--volmit-accent);
+  background: var(--volmit-accent-soft);
+  color: var(--volmit-accent) !important;
+}
+
+.volmit-project-sidebar__icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: 2px;
+  background: #0c0c0d;
+  color: #ffffff;
+  font-family: "Volmit Akz", "Arial Narrow", Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.volmit-project-sidebar__icon img {
+  display: block;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.volmit-project-sidebar__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.volmit-project-sidebar a:focus-visible,
+.volmit-project-sidebar button:focus-visible {
+  outline: 2px solid var(--volmit-accent) !important;
+  outline-offset: -3px;
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__nav {
+  padding-right: 6px;
+  padding-left: 6px;
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__heading {
+  height: 1px;
+  margin: 7px 2px;
+  overflow: hidden;
+  background: var(--volmit-line);
+  color: transparent;
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__link {
+  justify-content: center;
+  min-height: 46px;
+  padding: 7px 6px;
+}
+
+.volmit-project-sidebar.is-collapsed .volmit-project-sidebar__label {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .v-main:has(> .volmit-project-sidebar) .page-header-section,
+  .v-main:has(> .volmit-project-sidebar) .container.grid-list-xl {
+    width: calc(100% - 232px) !important;
+    margin-left: 232px !important;
+    transition: width 160ms ease, margin-left 160ms ease;
+  }
+
+  .v-main:has(> .volmit-project-sidebar.is-collapsed) .page-header-section,
+  .v-main:has(> .volmit-project-sidebar.is-collapsed) .container.grid-list-xl {
+    width: calc(100% - 60px) !important;
+    margin-left: 60px !important;
+  }
+}
+
+@keyframes volmit-reading-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (min-width: 1264px) {
+  .page-col-sd {
+    order: 3 !important;
+    max-width: 292px !important;
+    height: calc(100vh - 80px);
+    padding-bottom: 16px !important;
+    flex: 0 0 292px !important;
+    overflow-y: auto;
+  }
+
+  .page-col-content:not(.is-page-header) {
+    order: 2 !important;
+    min-width: 0;
+    max-width: calc(100% - 292px) !important;
+    flex: 1 1 0 !important;
+  }
+
+  .page-col-content.is-page-header {
+    width: calc(100% - 292px) !important;
+    max-width: calc(100% - 292px) !important;
+    margin-right: 292px !important;
+    margin-left: 0 !important;
+    padding-right: 12px !important;
+    padding-left: 20px !important;
+    flex: 0 0 calc(100% - 292px) !important;
+  }
+}
+
 @media (max-width: 1263px) {
   .page-col-content > .contents {
-    max-width: 820px;
+    max-width: 100%;
+  }
+
+  .page-col-sd {
+    display: none !important;
+  }
+
+  .page-col-content:not(.is-page-header),
+  .page-col-content.is-page-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    flex: 0 0 100% !important;
+  }
+
+  .page-col-content.is-page-header {
+    padding-right: 20px !important;
+    padding-left: 20px !important;
   }
 }
 
 @media (max-width: 959px) {
+  .volmit-project-sidebar {
+    display: none !important;
+  }
+
+  .v-main:has(> .volmit-project-sidebar) .page-header-section,
+  .v-main:has(> .volmit-project-sidebar) .container.grid-list-xl {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
   .page-header-section {
     height: 68px !important;
   }
@@ -1006,8 +1901,16 @@ body,
     max-width: none;
   }
 
+  .page-header-headings .headline::before {
+    display: none;
+  }
+
   .v-main .contents .sp-hero {
     grid-template-columns: 1fr;
+  }
+
+  .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1031,7 +1934,7 @@ body,
   }
 
   .v-main .container.grid-list-xl {
-    padding: 16px !important;
+    padding: 14px !important;
   }
 
   .v-main .contents h2 {
@@ -1052,7 +1955,13 @@ body,
 
   .v-main .contents th,
   .v-main .contents td {
+    min-width: 14rem;
     padding: 0.5rem;
+  }
+
+  .v-main .contents th:first-child,
+  .v-main .contents td:first-child {
+    min-width: 9rem;
   }
 
   .v-main .contents .sp-home {
@@ -1066,6 +1975,14 @@ body,
   .v-main .contents .sp-footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .v-main:has(.contents img[src="/home-assets/volmit.png"]) .contents .layout.wrap:has(a[href="/iris"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .v-application:not(:has(.contents img[src="/home-assets/volmit.png"]))::after {
+    height: 2px;
   }
 
 }

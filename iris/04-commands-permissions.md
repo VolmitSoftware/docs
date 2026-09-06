@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-03T18:00:00.000Z
+date: 2026-09-05T22:49:09.579Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 `type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`. Completion lists installed pack/dimension values and does not advertise the internal `default` sentinel. Bukkit refuses the names `iris` and `benchmark`. It also refuses any name whose dimension folder already exists.
 
-On Bukkit-family servers, including Folia, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, frozen-pack publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. Frozen-pack publication is represented by that lifecycle stage only; Iris does not print a separate synthetic pack/dimension snapshot identifier. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. Bukkit does not print `Successfully created your world!` until the actual initial-spawn chunk is ready and spawn placement has completed on its owning region; only then is the world registered and immediately teleportable with `/iris tp tutorial`. Folia uses the Paper-like runtime lifecycle backend without restarting. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
+On Bukkit-family servers, including Folia, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, first-epoch publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. Epoch publication is represented by that lifecycle stage only; Iris does not print a separate synthetic pack/dimension identifier. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. Bukkit does not print `Successfully created your world!` until the actual initial-spawn chunk is ready and spawn placement has completed on its owning region; only then is the world registered and immediately teleportable with `/iris tp tutorial`. Folia uses the Paper-like runtime lifecycle backend without restarting. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
 For a player-issued Bukkit create, Iris delegates the teleport immediately to the world's resolved entry anchor after creation. Paper's asynchronous teleport owns any destination-chunk readiness; Iris does not serially preload the chunk or scan thousands of blocks for a separate safe location first. The operation has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
 
@@ -192,6 +192,8 @@ The supported exact bundled-pair sequence is `/iris download pack=overworld`, wa
 
 On Paper-family servers, `/iris replace` is deliberately restart-only. Spigot rejects it because it has no pre-registry plugin bootstrap. Spigot still supports ordinary `/iris create` for new managed `iris:*` worlds. The exact replacement target dimension folder must already exist.
 
+Replacement staging reports its start, current phase, and elapsed time in chat or the console. It repeats the current phase every ten seconds during longer work. Pack copying and validation can take time on hosted storage. Wait for the staged-success message before restarting. Additional lifecycle commands report busy while staging is active.
+
 Accepted canonical targets are a safe `iris:*` key or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`. Friendly and configured Bukkit world-name aliases resolve to those keys. Other bare names resolve to `iris:*`. Other `minecraft:*` and foreign namespaces are rejected.
 
 Iris stages and validates a fresh pack snapshot. It compare-and-swaps only that world's `bukkit.yml` generator. It retains the existing dimension folder as a rollback backup until the restarted world proves its Iris identity, pack, dimension, environment, and effective seed. The default `seed=preserve` clones the target's authoritative Paper seed. An explicit signed 64-bit seed changes only `data.seed` in the staged current-format world-generation settings.
@@ -214,7 +216,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
 
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Hydrology feature location searches immutable accepted plans and never reports an unaccepted route, outlet, or deep-fluid candidate.
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Locators merge recorded facts from generated chunks with current-activation predictions in eligible ungenerated terrain. Hydrology search never reports a suppressed transition candidate or an unaccepted route, outlet, or deep-fluid feature.
 
 ---
 
@@ -422,6 +424,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
 | `enable` | `create` | `<dimension> <pack\|pack:dimensionKey> [seed\|random]` | Create/inject a persistent Iris dimension. Refuses if the pack is missing |
+| `update` | | `<dimension> <pack\|pack:dimensionKey>` | Stage an immutable generation activation for an existing dimension. Keeps the running pack active and requires restart |
 | `replace-overworld` | | `<pack\|pack:dimensionKey> [seed\|random]` | Inject primary world routing |
 | `mainworld` | | `<pack\|pack:dimensionKey\|off> [seed\|random]` | Configure the main-world preset in `modded.json` |
 | `disable` | | `<dimension>` | Evacuate and unload. Keep disk data |
@@ -437,7 +440,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 |---------|---------|-----------|--------|-------------|
 | `EngineStatus` | | **Bukkit** | — | Loaded tectonic plate count |
 | `genhash` | | **Bukkit** | `[radius=4] [centerX=0] [centerZ=0]`, contextual `world` | Hash generated blocks in a fixed area. The center parameters are `centerX`/`centerZ` here, not the hyphenated `goldenhash` names |
-| `update-world` | `^world` | **Bukkit** | `[confirm=false]`, contextual `world` and `pack` (`pack` alias `dimension`. `confirm` alias `c`) | Unsafe pack swap into a world using an already-installed source pack |
+| `update-world` | `^world` | **Bukkit** | `[confirm=false]`, contextual `world` and `pack` (`pack` alias `dimension`. `confirm` alias `c`) | Stage an immutable generation activation. The current pack remains active until restart |
 | `mantle` | | **Bukkit** | `[plate=false] [name=21474836474]` | Dump a mantle section or plate under the dump folder |
 | `packBenchmark` | | **Bukkit** | `[dimension=overworld] [radius=2048] [gui=false]` (`dimension` alias `pack`) | Pack benchmark |
 | `upgrade` | | **Bukkit** | `[version=latest]` | Data version upgrade helper |
@@ -446,6 +449,8 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | `network` | `ip` | Both | — | List network interfaces |
 | `regen` | `rg` | **Bukkit** (modded root) | `[radius=5]`, player origin | Delete and regenerate nearby chunks |
 | `goldenhash` | `gold` | **Bukkit** (modded root) | `[radius=8] [center-x=0] [center-z=0] [reset-mantle=true] [threads=8] [deep=false]`, contextual `world` | Buffer golden hash capture/verify |
+
+`update-world` requires `confirm=true` and a complete backup. It rejects seed, height, environment, and dimension-type changes. On success Iris retains the old pack and generated-chunk ownership, requests a restart, and blends new terrain from the frozen old edge. See [25 - Pack Management](/iris/25-pack-management).
 
 The modded developer group implements only `network`/`ip`. Its help section still advertises a region file scan that has no command node.
 

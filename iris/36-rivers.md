@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-04T23:45:15.779Z
+date: 2026-09-05T16:04:10.728Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -11,7 +11,7 @@ Iris hydrology plans surface rivers that sit in eroded valleys, independently so
 
 A surface river never raises terrain and never writes the ocean. It cuts a channel into the natural surface, holds its water flush with the ground beside it unless `channel.sink` lowers it, and blends the cut back out to natural terrain across a valley whose width grows with the depth of the cut. Water flows downhill in one-block steps; where the land falls faster than the channel can follow, the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. A river reaches the sea through an inlet: its last `mouths.inletLength` blocks are held at sea level, widened toward `mouths.flareRatio` and cut into the coast up to `mouths.maximumIncision`, so the sea visibly reaches inland through a drowned, widening valley instead of the river stopping at the shoreline. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
 
-Hydrology is a persistent terrain contract. Its canonical persistent matter store is `mantle-hydrology/`. Create a new world or fully regenerate the affected world whenever its hydrology or river policies change; generated chunks are not retrofitted with a different accepted plan.
+Hydrology is persistent activation state. Each production activation has its own `mantle-hydrology/` under `iris/generation/activations/<id>/`. A staged pack update never retrofits generated chunks. Surface hydrology tapers within the finite transition beside saved terrain. Accepted underground and deep-fluid layers retain their planned containment coordinates before final terrain blending.
 
 Related:
 
@@ -843,7 +843,7 @@ Locate accepted features from an Iris world:
 
 Bukkit optional arguments use Director `key=value`, so the explicit non-teleporting form is `teleport=false`. Supported type selectors are `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `deep`, and `pool`. Any other value is treated as a deep-fluid or surface-pool ID and matches only the deep or standing pool features with that profile. Bukkit and modded completion append the active dimension's configured deep-fluid IDs to those built-ins; `deep_lava` appears only when the pack declares it. Built-in selector names are reserved and cannot be deep-fluid IDs.
 
-The search is bounded to the smaller of 8,192 blocks and fifteen routing tiles. It searches accepted immutable plans, not candidate cells, and it has to plan every tile it visits: each ring of tiles is planned together on the hydrology planning pool and the command reports the tile count after every ring, but a feature type the pack rarely produces can still take minutes per ring once the search leaves already-planned terrain. Search for a type the pack actually configures (`/iris pack validate` lists the hydrology coverage a pack reaches) before searching far. `/iris find biome` and `/iris goto biome` remain available for reachable surface river-content biomes.
+The search is bounded to the smaller of 8,192 blocks and fifteen routing tiles. It compares exact accepted feature records from generated chunks with accepted active-activation plans in eligible new terrain. Active river predictions require the full current hydrology weight and an eligible unowned chunk. Historical matches require recorded river facts. Iris does not reconstruct missing historical river records. Planning a type the active pack rarely produces can still take minutes once the search leaves cached terrain. Search for a type the pack actually configures (`/iris pack validate` lists the hydrology coverage a pack reaches) before searching far. `/iris find biome` and `/iris goto biome` use the same recorded-history and active-prediction split.
 
 ## Validation
 
@@ -958,7 +958,7 @@ Both managed packs also carry the independent `deep_lava` entry from the complet
 2. Give the dimension a `riverPolicy` with `placement: NATURAL`, `routing: ALLOW`, a profile, and the content pools you want everywhere by default.
 3. In regions and biomes, override only what differs: `placement: DISABLED` for deserts that should stay dry, `routing: AVOID` for terrain rivers should skirt, `PREFERRED_HEADWATER` on mountain biomes, `bankBiomes` and `shoreBiomes` where the valley should read differently from its surroundings, and `bankMultiplier` above `1` for soft, wide valleys or below `1` for gorges.
 4. Run `/iris pack validate`, then the river transect probe on a few tiles to look at the valleys before opening a world.
-5. Create a new world; rivers are not retrofitted into existing chunks.
+5. Create a new world, or stage an existing-world pack update and restart. Existing chunks are never retrofitted. New terrain reconciles with saved natural boundaries within the finite transition band.
 
 ## Performance and determinism
 
@@ -984,5 +984,5 @@ Hydrology output is a deterministic function of pack bytes, world seed, and coor
 | Missing biome in find/goto | Reference it from a reachable policy and ensure every child/carving key exists |
 | No deep lava | Check the `deepFluids` entry density, height envelope, spacing/footprint relationship, and both `containedPools` / `shortChannels` switches |
 | No sea caves | `grottos.coastal.enabled` and `grottos.coastal.seaCaves.enabled` must both be true; the coast must stand `seaCaves.minimumCoastHeight` above the sea across the whole chamber (lower it on gentle coasts, or shrink `horizontalRadius`); `seaCaves.minimumSpacing` and the clearance from river mouths must leave room on the tile's coast; the swept chamber must fit `maximumVolume`; `CAVE_CONTAINMENT` rejections mean the chamber breaks out of the coast somewhere other than its ocean face, so lower `depth` or `headroom` |
-| Hard boundary between generated areas | Use a new or fully regenerated world for the changed hydrology contract |
+| Hard boundary between generated areas | Confirm the world was updated through generation history, then check `generator.generationTransitionWidthBlocks` and the first generation-history error in the log. Do not replace an epoch pack by hand |
 | `Hydrology tile x,z failed to plan` in the log | Terrain there generated without rivers. The error report names the column and lists the region, biome, fluid height, overlay, and every interpolator's bounds and generator heights, so check the generator or biome it names; the world stays usable |

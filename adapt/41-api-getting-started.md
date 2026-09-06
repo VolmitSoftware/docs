@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Add Adapt as a dependency and choose a supported API"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T18:30:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,3 +59,7 @@ Use only types and methods documented in these API pages. Do not expose or impor
 | Recipes, effects, and telemetry | [Utilities](/adapt/50-api-recipes-fx-telemetry-utilities) |
 
 Bukkit player and world calls must run on their owning thread. Service callbacks document whether Adapt may call them asynchronously.
+
+## Build artifacts
+
+Adapt builds use [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) and retain their existing parameter metadata. The jar contains Adapt's maintained glow implementation without the unused upstream GlowingEntities classes and mapping file. Run `./gradlew verifyPluginJars` to assemble and check the runtime jar without staging.

@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T23:37:20.700Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -74,6 +74,11 @@ Nested folders are allowed. Symbolic links and noncanonical paths are rejected.
 | `transform` | yes | World, position, rotation and scale |
 | `follow` | yes | Follow mode, target player and rotation mode |
 | `visibility` | yes | Visibility mode, permissions and ranges |
+| `show` | no | Boolean or expression; defaults to `true` |
+
+The panel `show`, current menu `show`, and component `show` conditions must all pass for a
+component to appear. They use the panel viewer and update during session ticks; hidden components
+cannot receive clicks. Existing access permissions and ranges still apply. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 The panel document stays at schema 1 and has no `particleLayers` field of its own. Its
 `rootMenuId` supplies the menu's particle layers. Each eligible viewer receives those particles
@@ -102,6 +107,10 @@ not load.
 > Deleting the file removes the panel on the next reload. Deleting a panel never touches its menu
 > document, and deleting a menu leaves panels pointing at a menu that no longer resolves.
 {.is-warning}
+
+## Browser authoring
+
+In a menu flow map, use **Create world panel** to supply an id, root menu, world key, and world UUID. **Import world panel** reads a runtime panel file; **Export world panel** writes that definition without the local flow layout. The inspector edits placement, world binding, follow behavior, visibility, and `show`. Duplicating a linked panel assigns a new runtime id and UUID while copying its settings. Applied edits support undo and redo; linked panels also support seeded randomization that preserves identity and content references.
 
 ## Placement, rotation and scale
 

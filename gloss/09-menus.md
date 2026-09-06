@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T23:50:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -85,6 +85,7 @@ Menu files do not use `schemaVersion` or `revision` fields. Gloss still rejects 
 
 | Key | Type | Required | Default | Meaning |
 |---|---|---|---|---|
+| `show` | boolean or expression | no | `true` | Visibility for the session viewer |
 | `offset` | `vector3` | yes | none | Position of the menu center relative to the session anchor. Never scaled by `uiScale` |
 | `components` | array of component | yes | none | The elements of the menu. A single component object is accepted in place of a one-element array |
 | `particleLayers` | array of particle layer | no | `[]` | Viewer-targeted particles attached to the projection, components or marked text ranges |
@@ -95,6 +96,13 @@ Menu files do not use `schemaVersion` or `revision` fields. Gloss still rejects 
 | `closeOnTeleport` | boolean | no | `false` | Close on `PlayerTeleportEvent` |
 
 `offset` and `components` are required to open the menu. A missing value is logged when the menu is opened.
+
+### Visibility
+
+Document-level `show` and `components[].show` use the session viewer. Gloss reevaluates them
+during session ticks. A hidden menu retains its session but hides its components and particles,
+blocks clicks, and releases `lockPosition` while hidden. It reappears if the condition becomes true
+before the session closes. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ### Offset semantics
 
@@ -161,6 +169,18 @@ For a text icon, each line of the `text` value is split on `\n` and rendered in 
 5. **Legacy and bracket-hex colors**, followed by MiniMessage parsing.
 
 Text resolves for each viewer. `refreshTicks` controls dynamic refreshes from `0` to `1200`; `0` disables them. If a refresh fails, Gloss keeps the previous text and logs the error.
+
+A text icon also accepts `box`, using the same [measured panel and perimeter settings](/gloss/04-holograms#display-style-and-boxes) as holograms. The box surrounds the text block, resizes after text or animation changes, and follows menu movement, rotation, scale, component visibility, and session closure. Padding and border width are in Minecraft text pixels. Transparent parts allocate no display.
+
+```json
+"icon": {
+  "type": "text",
+  "text": "&aWelcome\n&7%player_name%",
+  "style": {"billboard": "fixed", "scaleX": 1.2, "scaleY": 1.2},
+  "box": {"enabled": true, "padding": 6, "borderWidth": 2,
+          "backgroundArgb": "#B31B1B22", "borderArgb": "#FFAAAAAA"}
+}
+```
 
 A toggle `condition` uses the same full viewer-aware renderer, but only once when the session is constructed. A `message` action renders through the same pipeline each time it fires. See [Components & Hitboxes](/gloss/10-components-hitboxes).
 

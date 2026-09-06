@@ -2,7 +2,7 @@
 title: "Tablist & Server List MOTD"
 description: "Configure player-list text and randomized server-list messages"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04T16:31:36.767Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -72,6 +72,13 @@ This is a single file at the root of the data folder. It is not a folder of docu
 
 If the file is missing at startup, Gloss uses its built-in default. If a live edit is invalid, the last valid document stays active and Gloss logs the reason.
 
+### Visibility
+
+The tablist document, `headerFooter`, and `listNames` each accept `show`, defaulting to `true`.
+Both the document and section conditions must pass, alongside `enabled`. Conditions run for the
+player being formatted on refresh. False clears headers and footers, including API overrides, or
+restores the plain list name. The presentation returns when the condition becomes true. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
 ### List name resolution
 
 Gloss chooses the matching list-name variant with the highest priority; ties use the lexicographically smallest ID. If none match, it uses the base presentation. Conditions are documented in [Expressions & Placeholders](/gloss/13-expressions-placeholders).
@@ -91,7 +98,7 @@ Headers and footers render per player. The highest-priority matching variant win
 
 `$player` and `$group` are **not** substituted in `header` or `footer`. Those tokens exist only in list-name formats. Use a PlaceholderAPI placeholder such as `%player_name%` instead.
 
-Other plugins can override both per player through `GlossAPI.setTab(player, header, footer)` and clear the override with `resetTab(player)`. An override replaces the selected document header and footer as a pair. It is only consulted while `headerFooter.enabled` is true. Overrides are dropped when the player quits. See [API: Getting Started](/gloss/21-api-getting-started).
+Other plugins can override both per player through `GlossAPI.setTab(player, header, footer)` and clear the override with `resetTab(player)`. An override replaces the selected document header and footer as a pair. It is only displayed while `headerFooter.enabled`, document `show`, and `headerFooter.show` are true. Overrides are dropped when the player quits. See [API: Getting Started](/gloss/21-api-getting-started).
 
 ### Configuration and lifecycle
 
@@ -142,6 +149,10 @@ The vanilla server list supports at most two lines. Use two array entries rather
 An invalid document is rejected as a whole. Gloss keeps the built-in or last valid document and logs the reason.
 
 `/gloss motd reset` restores the included document (permission `gloss.motd.reset`).
+
+The MOTD document also accepts `show`, defaulting to `true`. It is evaluated for each ping without
+a viewer or world. False leaves the existing ping response unchanged, including its player limit.
+Use server or calendar-time conditions here; see [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ### How a ping is answered
 

@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-02T00:00:00.000Z
+date: 2026-09-05T22:48:35.579Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,8 +59,8 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | First steps | Create, load, teleport, pregen, studio | [02 - Getting Started](/iris/02-getting-started) |
 | Configuration | `iris.json` keys, defaults, hotload | [03 - Configuration](/iris/03-configuration) |
 | Commands and permissions | Full `/iris` tree, Bukkit vs modded argument style | [04 - Commands & Permissions](/iris/04-commands-permissions) |
-| Pack layout | Roots, keys, snippets, world snapshot vs studio | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
-| Worlds | create / load / unload / remove, main world, Folia, pack copy | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Pack layout | Roots, keys, snippets, generation history vs Studio | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
+| Worlds | create / update / load / unload / remove, main world, Folia, generation history | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Pregeneration | Jobs, cache, mantle, HUD | [07 - Pregeneration](/iris/07-pregeneration) |
 | Localization | Locales, overrides, client lang | [08 - Localization](/iris/08-localization) |
 | PlaceholderAPI | `%iris_…%` keys and migration | [09 - PlaceholderAPI](/iris/09-placeholderapi) |
@@ -69,6 +69,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Regions | Region-level content | [12 - Regions](/iris/12-regions) |
 | Biomes | Biome JSON, layers, custom biomes, spawns | [13 - Biomes](/iris/13-biomes) |
 | Generators and noise | Generators, styles, expressions, images | [14 - Generators & Noise](/iris/14-generators-noise) |
+| Noise atlas | All style previews, 3D slices, zoom and octave comparisons, PDF | [45 - Noise Atlas](/iris/45-noise-atlas) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
 | Rivers | Terrain-first routing, hydraulic transitions, caves, deep fluids, and river policy | [36 - Rivers](/iris/36-rivers) |
 | Image-map concepts | Typed resources, applications, runtime compiler, deterministic behavior | [37 - Image Map Concepts](/iris/37-image-map-concepts) |
@@ -116,4 +117,4 @@ Seven terms carry most of the documentation. Learn them here. The rest of the se
 | Object / structure | Placed content. An object is a single saved build (`.iob`). A structure is either an Iris jigsaw of several objects, or a vanilla/datapack/mod structure Iris allows through |
 | Image map | A typed `image-maps/<key>.json` resource that decodes and places one canonical PNG as height, categorical, or mask data. Dimensions bind maps to generation applications |
 | Studio | A throwaway authoring world that reads the live pack folder and hotloads your edits into new chunks. Deleted when you close it, and any leftovers are purged at startup |
-| World pack snapshot | A production world copies the pack into `<world>/iris/pack` at creation and reads only that copy forever after. This is the single most common source of "my edits did nothing" — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
+| Generation history | A production world keeps every pack epoch it has used under `<dimensionRoot>/iris/generation/`. Existing chunks stay owned by their original activation; staged updates apply only to new chunks after restart — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |

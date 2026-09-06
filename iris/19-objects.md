@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-05T23:20:48.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -84,9 +84,9 @@ Any flat world works too. `/iris object save` only resolves the target pack auto
 | Left-click a block | Sets corner 1 |
 | Right-click a block | Sets corner 2 |
 
-Main hand only. Both clicks are cancelled so you never break or place while selecting. Setting a corner in a different world clears the other corner rather than producing a cross-world box. Outline particles are drawn for the selection while you are in the same world, out to 256 blocks from you, thinning out with distance.
+Main hand only. Both clicks are cancelled so you never break or place while selecting. Setting a corner in a different world clears the other corner rather than producing a cross-world box. Outline particles appear while you hold the Iris wand in the selection's world, out to 256 blocks, with fewer particles at greater distances. Dust particle size stays within the server's `0.01` to `4.0` range.
 
-**WorldEdit interop.** With the `worldEditWandCUI` setting on (the default), a live WorldEdit selection stands in for an Iris wand across the `/iris object` selection and save commands. `/iris object we` converts the current WorldEdit selection into a real Iris wand. It works whether or not that setting is on. `position2` is the exception: it needs an actual Iris wand. Run `/iris object we` first if you have only a WorldEdit selection.
+**WorldEdit import.** Iris selection commands, object saves, and automatic outlines require an Iris wand in your main hand. WorldEdit wands and selections stay separate. `/iris object we` copies the current WorldEdit selection into a new Iris wand. Hold that wand to edit, preview, or save the copied selection. Later WorldEdit selection changes do not change the Iris wand.
 
 ### Adjusting the selection
 
@@ -181,9 +181,10 @@ The converter cannot preserve tile data. Anything with chests, signs, or spawner
 
 1. Open a build world: `/iris studio open <pack>` or any flat world.
 2. `//schem load <name>` and `//paste` with WorldEdit or FAWE.
-3. Keep the WorldEdit selection (Iris accepts it directly) or run `/iris object we`, or re-select with the Iris wand.
-4. Tighten with `/iris object x+y` or `contract`.
-5. `/iris object save <name> [overwrite=true]`.
+3. Run `/iris object we` to copy the WorldEdit selection, or select the build with an Iris wand.
+4. Hold the Iris wand in your main hand.
+5. Tighten with `/iris object x+y` or `contract`.
+6. `/iris object save <name> [overwrite=true]`.
 
 The wand save reads live blocks, so it captures full block-entity NBT. This is the only import route that preserves it.
 
@@ -208,7 +209,7 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 
 ## 8. Common failure modes
 
-1. **"You need to hold your wand!"**: no Iris wand selection and no WorldEdit selection.
+1. **"You need to hold your wand!"**: hold an Iris wand in your main hand. To copy a WorldEdit selection, run `/iris object we` first.
 2. **"File already exists."**: pass `overwrite=true` (or `force=true`).
 3. **Save complains about a missing `dimension`**: you are not standing in a loaded Iris world. Pass `dimension=<pack>`.
 4. **Objects landed in the wrong pack folder**: the dimension load key is not the pack folder name (section 3).
@@ -216,7 +217,7 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 6. **Converted objects have empty chests**: the converter never reads block entities. Use the paste-then-wand route (6.2).
 7. **The converter ate the schematic**: that is by design after a successful conversion.
 8. **The selection vanished**: corners live on the wand item. `paste edit=true` overwrites the held wand selection.
-9. **`position2` does nothing**: you have a WorldEdit-only selection. Run `/iris object we` first.
+9. **No selection outline appears**: hold an Iris wand with both corners set, in the world where you selected those corners.
 10. **Entities are gone**: objects never store entities. Use placement markers.
 11. **Jigsaw or structure-void blocks are gone**: they are filtered out when the file is read. Connectors are JSON, not blocks.
 12. **A paste is offset from where you expected**: the origin is the bounding-box center, so air padding inside the selection moves it. Re-select tightly or run `shrink`.

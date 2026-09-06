@@ -2,13 +2,13 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-05T23:20:48.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris can use these Bukkit plugins and coexist with PlotSquared. WorldEdit
-handles selections. Multiverse-Core handles world management. Nine item,
+supplies selections for explicit import. Multiverse-Core handles world management. Nine item,
 block, or entity plugins handle pack content. MythicMobs handles skill
 conditions. PlaceholderAPI handles scoreboard values. PlotSquared's own
 generator discovery calls Iris without becoming an Iris integration. React
@@ -44,7 +44,7 @@ success.
 
 | Boundary | Positive proof | Negative control |
 |---|---|---|
-| WorldEdit | Make a cuboid selection with the WorldEdit wand, run `/iris object we`, and save a disposable object | Clear the selection and run `/iris object we` again. Iris must say you have no WorldEdit selection in this world |
+| WorldEdit | Make a cuboid selection with WorldEdit, run `/iris object we`, hold the new Iris wand, and save a disposable object | Hold the WorldEdit wand. Iris must not draw its selection or accept it for an object save. Clear the WorldEdit selection and run `/iris object we` again. Iris must report no selection in this world |
 | Multiverse-Core | Create a disposable Iris world and confirm Multiverse lists it with generator `Iris:<pack>` | On a separate disposable copy, restart without Multiverse installed. Iris world creation must still succeed |
 | Item/block/entity provider | Reference one exact namespaced key from a pack and generate a fresh chunk containing it | Reference a key that does not exist. Iris must log `No matching Provider found` or a missing-resource error and keep generating |
 | MythicMobs conditions | `irisbiome{b=<load key>}` returns true inside that biome | The same condition returns false in a vanilla world |
@@ -65,9 +65,9 @@ runs without WorldEdit on the classpath.
 | Use | Behavior |
 |---|---|
 | Reading a selection | Returns an Iris `Cuboid` for the player's current WorldEdit selection **in the world they stand in**. Returns `null` if WorldEdit is absent, the player has no session, or there is no selection in that world |
-| Accepting a selection | With `world.worldEditWandCUI` (default `true`), a WorldEdit selection satisfies Iris anywhere Iris asks for one, without the Iris wand |
+| Wand commands and outlines | Require an Iris wand in the main hand. WorldEdit wands and selections do not activate Iris selection commands or automatic particle outlines |
 | `/iris object we` | Checks WorldEdit is enabled, reads your current selection, and puts a **new Iris object wand into your inventory** already carrying those two corners |
-| Limitation | `position2` will not operate on a WorldEdit-only selection. Run `/iris object we` first so a real Iris wand exists |
+| After import | Hold the new Iris wand to edit, preview, or save its selection. Later WorldEdit selection changes do not change the copied corners |
 
 Two behaviors matter. First, Iris caches only a *positive* WorldEdit
 detection. If WorldEdit is absent or not yet enabled, Iris checks again on
@@ -87,8 +87,8 @@ before you run any Multiverse command against an Iris world.
 The short version: Multiverse can list, inspect, teleport to, and configure
 Iris worlds. It cannot create, delete, regenerate, or clone them. Those
 commands are refused, because an Iris world is a dimension inside the level
-carrying a world-local pack snapshot, not a folder in the world container,
-and Multiverse's folder operations would destroy that snapshot.
+carrying world-local generation history, not a folder in the world container,
+and Multiverse's folder operations would destroy that history.
 
 | Operation | Behavior |
 |---|---|

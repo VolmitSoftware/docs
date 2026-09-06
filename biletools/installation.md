@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T18:30:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,6 +37,12 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Older `plugins/BileTools/config.yml` files are not migrated. Copy any settings you still need, remove the old file, and restart to generate `biletools.yml`.
 
+## Runtime libraries
+
+BileTools downloads Gson, TOML, and Adventure before plugin startup instead of bundling them in its jar. The first start needs access to the library repositories. SlimJar caches the libraries under `plugins/BileTools/.libs/` and reuses them on later starts and self-reloads. Keep this directory when moving an installation to a server without internet access.
+
+The libraries use BileTools-specific package names to avoid conflicts with server libraries and other plugins. Missing libraries must load successfully before BileTools can enable.
+
 ## Verifying it works
 
 Build a plugin into the server's `plugins/` folder and watch the console. BileTools waits for the jar to stop changing before it reloads. If nothing happens, check `watcher.ignore` and `watcher.only` in [Configuration](/biletools/configuration).
@@ -53,3 +59,7 @@ Chinese.
 English is generated as `languages/en_US.toml`. Missing entries use the built-in English text. Valid edits to the active locale reload automatically; invalid edits leave the current messages active.
 
 Current language files use TOML. Older `language.yml`, YAML catalogs, and `languages/overrides/` files are ignored.
+
+## Build from source
+
+BileTools applies [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) during normal builds. Run `./gradlew verifyPluginJars` to assemble and check the runtime jar without staging. Its Java 17 compatibility checks still apply.

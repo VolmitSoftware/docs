@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-05T22:48:35.579Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,6 +63,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Regions](/iris/12-regions)
 - [Biomes](/iris/13-biomes)
 - [Generators, Noise & Expressions](/iris/14-generators-noise)
+- [Noise Atlas](/iris/45-noise-atlas)
 - [Caves & Carving](/iris/15-caves-carving)
 - [Rivers & Hydrology](/iris/36-rivers)
 - [Image Map Concepts](/iris/37-image-map-concepts)

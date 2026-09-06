@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -20,7 +20,7 @@ Related:
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
 
-Every task below changes newly generated chunks only. Production worlds read a frozen pack snapshot. Push edits with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart, or open a fresh world.
+Every task below changes newly generated chunks only. Production worlds read an active immutable epoch. Stage edits with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart, or open a fresh world.
 
 ## Pick a task
 
@@ -73,7 +73,7 @@ Use this when Iris terrain should also run Minecraft's placed-feature pass: ores
 ```
 
 2. Confirm every biome that should receive those features has a matching `vanillaDerivative` (or `derivative`). A plains derivative receives plains ores. A void derivative receives nothing useful.
-3. Validate the pack, update the world snapshot or open a fresh world, and generate new chunks.
+3. Validate the pack, stage a world activation or open a fresh world, restart, and generate new chunks.
 
 **Success:** diamond ore is absent if you denied it, other vanilla ores and snow layers appear, and Iris procedural trees and `objects[]` trees are not doubled by vanilla tree features.
 
@@ -127,7 +127,7 @@ There is no `importedStructures.disabled` equivalent for mobs.
 ```
 
 3. If you also list `entitySpawners`, those Iris mobs still appear on top of the custom table. Omit the list when the custom table should be the only pack source.
-4. Validate, update the snapshot or open a fresh world, and wait through a night and a day in new chunks.
+4. Validate, stage and restart the world activation or open a fresh world, and wait through a night and a day in new chunks.
 
 **Success:** the vanilla derivative's cows and zombies are gone. Only the listed custom entries (and any Iris spawners you kept) appear.
 
@@ -289,7 +289,7 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 | `mods/` | The old pack-mod injectors load and never apply. Use snippets. A snippet string must start with `snippet/` or the field becomes null with no error. The prefix is rewritten to the **field's** snippet type |
 | Minecraft `generateStructures` | The world option still gates native structures even if the pack allows them |
 | `world.forcePersistEntities` | Default true. Iris-spawned mobs do not despawn like vanilla |
-| Pack file edits on a live world | The world reads `<world>/iris/pack`. Studio reads the live folder. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
+| Pack file edits on a live world | The world reads its active immutable epoch. Studio reads the live folder. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 | Deposit biome filters | `includedBiomes` accepts Iris load keys **or** vanilla derivative ids. The bundled overworld mixes both: emerald extra veins use `minecraft:cherry_grove`-style ids, copper dripstone bonus uses Iris paths such as `carving/drip`. `biomeScope` defaults to `CAVE` |
 | Stronghold rings on 26.2 | Iris evaluates preferred biomes once per chunk center, not per quart. Eyes of Ender follow the new rings. Old chunks keep old strongholds |
 

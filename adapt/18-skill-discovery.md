@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T20:45:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,9 +81,11 @@ Not enough food, still on cooldown, or nothing found in range and you get a smok
 
 ### Insight (`discovery-insight`)
 
-Study creatures at a glance. The entity you are looking at shows its name and a health bar over its head. Tameable creatures also show their live speed, jump, and attack values. Your own hits sprout floating damage numbers with crits in orange. The HUD scales with distance so it stays the same size on your screen.
+Insight adds details to the creature you look at through [Gloss entity overlays](/gloss/20-entity-overlays). Its extra lines show species, movement speed, jump strength, armor toughness, knockback resistance, and detection range when those attributes exist. Animals affected by Stable Hand also show that state. Gloss supplies the name, segmented health bar, hit response, attack, armor, and React stack count.
 
-Works on its own once learned. Look at something.
+Install Gloss and enable its entity overlays, then learn Insight and look at a creature. Nearby Gloss overlays remain available to everyone by default. Set `restrictGlossToInsight = true` in the Insight adaptation config to show entity overlays only for each learner's inspected target. This restriction does not enable a disabled Gloss feature. Without Gloss, Insight produces no display or inspection XP.
+
+Gloss must provide the entity-overlay API used by the current Adapt build. If the loaded Gloss API lacks it, Adapt reports the installed version once and leaves Insight unavailable for that API. Install the current Gloss build and restart the server. Loading a supported Gloss API restores the configured Insight restriction.
 
 ### Trailblazer (`discovery-trailblazer`)
 
@@ -399,22 +401,19 @@ Milestones: `challenge_discovery_cartographer_100` and `challenge_discovery_cart
 
 Milestones: `challenge_discovery_insight_100` and `challenge_discovery_insight_1000` on `discovery.insight.entities-inspected` at 100 and 1000, rewarding 300 and 1200.
 
-- `EntityDamageByEntityEvent` (`on`): spawns damage numbers
-- `PlayerMoveEvent` (`on`): refreshes the inspected target display
-- `PlayerQuitEvent` (`on`)
+- `PlayerMoveEvent` (`on`): prioritizes the learner's next target inspection.
+- `PlayerQuitEvent` (`on`): clears the learner's Insight contribution.
+- `PluginEnableEvent` and `ServiceRegisterEvent` (`on`): reconnect to Gloss and apply the current restriction.
+
+Insight samples learned viewers in bounded batches, including stationary viewers. Target attributes are read on the target's entity scheduler. The viewer receives details only after its current request and active adaptation pass validation. Contributions expire after two seconds if Adapt stops refreshing them. Turning away, losing access, quitting, or disabling the adaptation clears the contribution.
+
+Gloss owns presentation and damage effects. Its entity-overlay configuration controls their layout, health segments, and display limits. Adapt's restriction updates on config reload and clears when the adaptation stops.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `rangeBase` | `6` | Inspection range in blocks at level 0. |
 | `rangeFactor` | `18` | Additional inspection range in blocks across the level range. |
-| `hudScalePerBlock` | `0.22` | Display scale added per block of distance so the HUD keeps a constant on-screen size. |
-| `hudMinScale` | `0.5` | Floor on the HUD display scale. |
-| `hudMaxScale` | `4.0` | Ceiling on the HUD display scale. |
-| `healthBarSegments` | `12` | Segments used to draw the inspected entity's health bar. |
-| `showDamageNumbers` | `true` | Shows floating damage numbers when you hit something. |
-| `damageNumberRise` | `0.7` | Blocks a damage number drifts upward over its lifetime. |
-| `damageNumberLifeTicks` | `16` | Lifetime of a damage number in ticks. |
-| `maxDamageNumbersPerTick` | `16` | Damage numbers spawned per scheduler tick, capped internally at 16. |
+| `restrictGlossToInsight` | `false` | Restricts Gloss entity overlays to each active Insight learner's inspected target when true. False keeps nearby Gloss overlays and adds Insight details to the selected target. |
 | `xpPerInspection` | `3` | Discovery XP per inspection. |
 | `xpCooldownMs` | `10000` | Milliseconds between inspection XP grants for one player. |
 | `maxPlayersPerPass` | `32` | Viewers refreshed per scheduler tick, capped internally at 32. |

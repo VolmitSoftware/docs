@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-04T23:19:19.294Z
+date: 2026-09-05T16:04:10.729Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,7 @@ Prerequisite: the structure appears in `/iris structure list <dimension>`.
    }
    ```
 
-4. Validate the pack, reopen Studio or update the test world's pack snapshot, then generate new chunks.
+4. Validate the pack, reopen Studio or stage a test-world activation, then restart and generate new chunks.
 5. Locate the key and inspect several starts.
 
 **Success:** newly generated starts keep their native blocks, entities, processors, and loot, and the requested terrain operation is visible. Existing chunks are unchanged.
@@ -103,7 +103,7 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
 If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart.
 It does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
 
-To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list or remove its ZIP from `plugins/Iris/datapacks/imports/`. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and update the world snapshot.
+To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list or remove its ZIP from `plugins/Iris/datapacks/imports/`. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and stage a world activation.
 If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL or drop-folder ZIP. Restart before verifying the restored policy. Only newly generated chunks change.
 Existing starts remain.
 
@@ -121,7 +121,7 @@ Existing starts remain.
    }
    ```
 
-3. Validate the pack, update the world snapshot or open a fresh world, and restart.
+3. Validate the pack, stage a world activation or open a fresh world, and restart.
 4. Run `/iris structure verify <dimension> radius=48`.
 
 **Success:** the key reports `[disabled]`, and `/iris goto structure <key>` answers that it is disabled by this dimension's `importedStructures` settings. New chunks no longer contain it.
@@ -168,7 +168,7 @@ This example disables every vanilla structure at dimension scope, then allows na
    }
    ```
 
-3. Validate the pack, update the world snapshot or open a fresh world, and restart. Run `/iris structure verify <dimension> radius=48`; `minecraft:swamp_hut` must report `[iris-planned]` even though the `minecraft:` namespace is disabled.
+3. Validate the pack, stage a world activation or open a fresh world, and restart. Run `/iris structure verify <dimension> radius=48`; `minecraft:swamp_hut` must report `[iris-planned]` even though the `minecraft:` namespace is disabled.
 
 The placement is eligible when the selected start chunk's center belongs to that Iris biome. It bypasses the witch hut's normal swamp-biome restriction and retains the native generator and structure identity. A hut can extend across the biome boundary after its start qualifies. Smaller `spacing` values make attempts more frequent. Do not put `nativeSuppression: "REPLACE_SOURCE"` on this biome entry: replacement suppression is valid only at dimension scope, and the namespace deny already stops natural vanilla starts.
 
@@ -204,7 +204,7 @@ The placement puts the building back on an Iris grid:
    ```
 
 3. Validate the pack: `/iris pack validate pack=<dimension>`.
-4. Open a fresh test world, or update the world's pack snapshot and restart.
+4. Open a fresh test world, or stage a world activation and restart.
 5. Run `/iris structure verify <dimension> radius=48`. The tavern must report `[iris-planned]`, not `[disabled]`, because an explicit placement bypasses the deny list.
 6. Run `/iris goto structure nova_structures:tavern_oak`, generate the planned chunk, and inspect its native processors, entities, spawners, and loot.
 7. Generate several more grid cells.
@@ -708,7 +708,7 @@ Third-party templates using the legacy slab property `half=top|bottom`, or the m
 
 ### Traps
 
-- Worlds snapshot the pack. Push changes with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart. Back up first.
+- Worlds retain immutable pack epochs. Stage changes with `/iris developer update-world world=<w> pack=<dim> confirm=true` or the modded `/iris world update` form, then restart. Back up first.
 - Optional args are keyed: `radius=200`, not a bare `200`.
 - New datapack structures need a restart before the registry knows them.
 - Only new chunks change.
@@ -735,6 +735,7 @@ Third-party templates using the legacy slab property `half=top|bottom`, or the m
 | `/iris goto structure <key>` | `/iris find structure` | |
 | `/iris goto unregistered` | | |
 | `/iris developer update-world` | | `world=<w> pack=<dim> confirm=true` — all keyed |
+| `/iris world update` | | `<dimension> <pack>` — modded only |
 
 Related dimension fields: `datapackImports`, `importedStructures`, `structures[]`. Settings in `plugins/Iris/iris.json`: `general.autoIngestDatapacks` (default true), `general.autoImportDatapackStructures` (default false).
 

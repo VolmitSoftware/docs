@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-09-04T22:13:55.376Z
+date: 2026-09-05T16:04:10.731Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -123,7 +123,7 @@ The bundled overworld uses `snippet/decorator/*` and `snippet/style/*`.
 
 ## Authoring packs and generation snapshots
 
-Edit the source pack under `packs/<key>/`. Production worlds and Bukkit Studio capture immutable copies under `<world>/iris/generation/epochs/<epoch>/pack/`. The manifest selects the active epoch and references immutable epoch metadata. Iris releases archived pack copies after their runtimes retire.
+Edit the source pack under `packs/<key>/`. Production worlds and Bukkit Studio capture immutable copies under `<world>/iris/generation/epochs/<epoch>/pack/`. The manifest selects the active epoch and references immutable epoch metadata. Epoch metadata records the pack fingerprint, implementation revision, registry definitions, and dimension contract. Selecting an earlier pack later creates another activation with its own saved boundary. Iris releases archived pack copies after their runtimes retire.
 
 | Mode | Generation source | How changes apply |
 |---|---|---|

@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry, persistence, region ownership, and build instructions"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T18:30:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -84,6 +84,8 @@ The Gradle wrapper uses Java 25 and produces Java 17 bytecode.
 ```
 
 The shaded artifact is written to `build/libs/ShapedPortals-<version>.jar`. The build also exports the React pack to `build/distributions/react-api-packs/` and checks Java 17 class compatibility.
+
+Shadow and [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) remove unused VolmLib classes and compact the final jar. SlimJar loads Gson, TOML, and Adventure at startup, using the same package relocations as the plugin. Artifact checks require the dependency bootstrap and reject bundled copies of these libraries. Tests exercise packaged configuration, persistence, serializers, and reflective command discovery with a separate test library jar.
 
 `./gradlew publishToMavenLocal` publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building) for shared build commands.
 

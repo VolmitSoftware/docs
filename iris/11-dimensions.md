@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-03T12:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -115,7 +115,7 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 |-------|------|---------|------------------------------------|
 | `dimensionHeight` | `IrisRange` | `{ "min": -64, "max": 320 }` | The world build floor and ceiling in world Y. Raise `max` for tall mountain packs. Lower `min` for deep-cave packs. Contract field: pick it once per world |
 | `logicalHeight` | int | `256` | The vanilla logical height of the generated dimension type. Gameplay teleports respect this ceiling (nether portal search, chorus fruit). Usually set it equal to the total height. Contract field |
-| `fluidHeight` | int | `63` | World Y of the ocean surface. Every biome generator height is measured from this baseline. If you lower it, the same biome generators produce taller land. If you raise it, low biomes drown. Not a contract field. A change on a live world leaves a visible seam between old and new chunks |
+| `fluidHeight` | int | `63` | World Y of the ocean surface. Every biome generator height is measured from this baseline. If you lower it, the same biome generators produce taller land. If you raise it, low biomes drown. Not a fixed world-contract field. A staged update blends new surface terrain from the frozen historical edge; existing chunks remain unchanged |
 | `bedrock` | boolean | `true` | Writes a bedrock layer at the build floor. Turn it off for void-bottom or stacked-dimension packs |
 | `caveLavaHeight` | int | `8` | Internal Y at or below which carved cave space fills with lava instead of air. Raise it to flood deep caves. Set it to 0 for dry caves. Explicit fluid intent from a carver overrides this |
 | `name` | string | `"A Dimension"` | Display name shown by commands and the studio scoreboard. Cosmetic |
@@ -659,4 +659,4 @@ The baseline passes when Studio opens clean. Validation must report no blocking 
 | Embedding image-map settings inside a generator style | `imageMap` is a first-class resource key under `image-maps/` |
 | Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |
 | Leaving `focus` or `focusRegion` set when packaging | The included pack generates exactly one biome or region |
-| Changing pack files and expecting an existing world to change | Production worlds run from `<world>/iris/pack/`. See [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |
+| Changing pack files and expecting an existing world to change immediately | Production worlds run from their active immutable epoch. Stage an update and restart; see [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |

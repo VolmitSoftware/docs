@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T23:50:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -109,13 +109,16 @@ Changing `[preview] scale` in `gloss.toml` re-renders open previews immediately.
 Each `.json` file in `plugins/Gloss/previews/` defines one preview. Its id is the filename without
 `.json`. Preview documents have no `schemaVersion` or `revision`, and subfolders are ignored.
 
-A document has five top-level keys. All are optional:
+All top-level keys are optional:
 
 ```json
 {
+  "show":     true,
   "match":    { },
   "variants": [ ],
   "card":     { },
+  "textStyle": { },
+  "itemStyle": { },
   "elements": [ ],
   "particleLayers": [ ]
 }
@@ -134,6 +137,20 @@ contract and limitations.
 
 The JSON Schema is at `Gloss/schema/gloss-preview.schema.json`. Runtime validation also enforces
 rules that JSON Schema cannot express.
+
+### Visibility
+
+`show`, `card.show`, and `elements[].show` accept booleans or preview expressions and default
+to `true`. The document gate hides the whole preview. `card.show` combines with `card.framed`
+and hides only the frame and title chrome; element `show` combines with `visible`. Dynamic gates
+update every four ticks while open, so hidden content can return without reopening the preview.
+A false gate does not select a different matching document.
+
+Use preview state and declared `vars.*` values, for example `"show": "cookTime > 0"` on a furnace
+or `"show": "vars.display"` with `"display": true` in `match.vars`. Shared role functions are not
+part of this scope. Built-in `world.name` and `world.time` use the preview target's world;
+`"show": "world.name != 'world_nether' && world.time > 12000"` is also supported.
+See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) and the preview DSL reference there.
 
 ### `match`
 
@@ -178,18 +195,37 @@ variants supply their titles and colors.
 A string beginning with `#` is parsed as `#RGB`, `#RRGGBB`, or `#AARRGGBB`. An invalid color is a
 compile error. A value such as `"<#F2A535>"` remains text.
 
+### Shared display styles
+
+`textStyle` supplies the full shared display style for labels, card chrome, cells, slot wells, and stack counts. `itemStyle` supplies it for slot item displays. An element's `style` replaces the inherited style for its text, fill, or item; slot wells and counts retain the root `textStyle`. Omitted text style uses fixed billboard, unit XYZ scale, full opacity, transparent text background and natural brightness. Omitted item style adds paired block/sky brightness `15`/`15`.
+
+The contract includes billboard, alignment, shadow, see-through, ARGB background, opacity, line width, paired brightness, view range, shadow radius/strength, culling bounds, glow color, and independent XYZ scale. These scales multiply the existing preview size and depth scaling. See [Display style and boxes](/gloss/04-holograms#display-style-and-boxes).
+
+A label accepts `box` to add a measured panel and a complete perimeter. Its decorations resize with dynamic text and follow preview motion, scaling, conditions and closure. An explicit `background` overrides `style.backgroundArgb`; omitting it uses the inherited style background.
+
 ### `card`
 
 Add `card` to draw the preview frame. Its `framed` field defaults to `true`.
 
 | Key | Type | Default | Meaning |
 |---|---|---|---|
+| `show` | bool or expression | `true` | Additional gate for the frame and title chrome |
 | `framed` | bool or expression | `true` | Draw the frame, panel, tray and title bar |
 | `title` | expression | none | Title text. Parsed for legacy `&` codes and MiniMessage tags, so it styles itself inline |
 | `accent` | expression | neutral gray `#CBD0D9` | Chrome accent. Only the low 24 bits are used |
 | `minHalfWidth` | int | `82` | Minimum panel half-width in pixels, so a short title does not collapse the card |
+| `padding` | int | `7` | Content padding, `0`–`256` pixels |
+| `borderWidth` | int | `3` | Complete frame width, `0`–`256` pixels |
+| `trayPadding` | int | `4` | Grid tray padding, `0`–`256` pixels |
+| `titleHeight` | int | `17` | Title bar height, `0`–`256` pixels |
+| `titleGap` | int | `6` | Gap above content, `0`–`256` pixels |
+| `backgroundArgb` | ARGB | `#F21B1B22` | Card panel color |
+| `trayArgb` | ARGB | `#FF33333E` | Grid tray color |
+| `borderArgb` | ARGB or null | null | Explicit frame color; null uses accent RGB with `CC` alpha |
+| `titleArgb` | ARGB or null | null | Explicit title bar color; null uses accent RGB with `E6` alpha |
 
-Every card field is evaluated **once**, when the preview is built.
+Card fields are evaluated when built. Dynamic `show` and `framed` also update every four ticks;
+a visibility change rebuilds the layout.
 
 The default title format keeps a player-named container's name and falls back to a localized theme
 title:
@@ -223,7 +259,10 @@ order where higher draws in front. The card sizes itself around whatever the ele
 | `wellColor` | slot | `#FF15151B` | Color behind the item |
 | `index` | slot | Not applicable | Inventory slot index. Gloss does not clamp it, so guard it against `inventory.size` |
 | `text` | label | Not applicable | Emoji triggers substituted, then parsed for legacy `&` codes and MiniMessage tags |
-| `background` | label | transparent | Text background color |
+| `background` | label | `style.backgroundArgb` | Explicit text background color overrides the style |
+| `style` | all | inherited | Full display style; slot override applies to the item |
+| `box` | label | disabled | Measured panel and perimeter with independent ARGB colors |
+| `show` | all | `true` | Boolean or expression; false skips the element |
 | `visible` | all | `true` | `false` skips the element |
 | `repeat` | all | none | Emit the element once per index |
 
@@ -266,14 +305,10 @@ later elements.
 
 ### What is live and what is not
 
-Only two fields are re-evaluated while the preview is on screen:
-
-- `cell.color`
-- `label.text`
-
-Both update every four ticks. Positions, sizes, `z`, panel and well colors, `visible`, repeat counts,
-and card fields are evaluated once when the preview opens. Put changing conditions in `color` or
-`text`.
+`cell.color`, `label.text`, and dynamic visibility (`show`, `card.show`, `elements[].show`,
+`elements[].visible`, and `card.framed`) update every four ticks. A visibility change rebuilds the
+layout. Positions, sizes, `z`, panel and well colors, repeat counts, and other card fields are
+evaluated at build, including these visibility rebuilds.
 
 The item shown in a `slot` is not an expression at all. The renderer re-reads that inventory slot on
 the same four-tick beat. It swaps the displayed item and its count when it changes.
@@ -299,7 +334,8 @@ an inventory (furnaces, brewing stands and jukeboxes included). It also gets the
 category.
 
 Gloss assigns one category from the target and adds its variables to the universal and inventory
-groups.
+groups. `world.name` (string) and `world.time` (number) are sampled from the preview target's
+world: the world folder name and Minecraft time of day in ticks, respectively.
 
 | Group | Variables |
 |---|---|
@@ -436,8 +472,8 @@ The gauge works as follows:
 - `sin(time / vars.pulseRate + i)` supplies a different phase for each cell.
 - `mix(vars.fill, vars.pulse, ...)` converts that phase into a smooth color pulse.
 
-`cell.color` refreshes every four ticks. Fields such as `visible` and `x` do not, so use the color
-expression when an existing cell needs to change while the preview is open.
+`cell.color` refreshes every four ticks. Use a color expression to recolor an existing cell, or
+`show`/`visible` to remove and restore it. Position `x` is evaluated when the layout builds.
 
 ### Inventory, formatting and state labels
 

@@ -2,7 +2,7 @@
 title: "Image Map Studio Workflow"
 description: "Import, inspect, configure, preview, export, and validate image-driven Iris generation"
 published: true
-date: 2026-09-04T22:13:55.376Z
+date: 2026-09-05T16:04:10.730Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -12,7 +12,7 @@ This page defines the guided desktop authoring contract for typed image maps. Th
 ## Prerequisites
 
 - Run Iris on a machine with a graphical desktop and enable `gui.useServerLaunchedGuis`.
-- Work in the live pack under the platform packs directory, not a production world's frozen pack snapshot.
+- Work in the live pack under the platform packs directory, not a production world's immutable generation epoch.
 - Keep the server console visible and use a fixed Studio seed.
 - Start with a PNG that satisfies [38 - Supported Image Inputs](/iris/38-supported-image-inputs).
 

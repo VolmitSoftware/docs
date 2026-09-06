@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-05T15:58:06.036Z
+date: 2026-09-05T16:04:10.730Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,7 +70,7 @@ On Bukkit, Java agent or server code injection failure blocks every Studio world
 | Studio world | On Bukkit, opens an immutable pack snapshot and watches the separate authoring folder |
 | Hotload | Ordinary Bukkit Studio captures accepted JSON, IOB, and PNG edits as new generation activations. Existing chunks keep their earlier generation |
 | Hotload contract | Iris refuses hotload if the dimension type key, exact environment, or effective generated dimension type changes. The generated type includes min height, total height, logical height, resolved `dimensionOptions`, and the `fullbright` ambient-light override |
-| Non-studio worlds | No pack file watcher. Production worlds keep the pack snapshot installed at create or update time |
+| Non-studio worlds | No pack file watcher. Production worlds keep active and pending pack snapshots and retain metadata for archived epochs |
 
 Studio settings live in `iris.json` under `studio` (`IrisSettings.IrisSettingsStudio`):
 
@@ -191,11 +191,11 @@ With a template (`/iris studio create name=mypack template=overworld`), Iris req
 5. Optionally launch VSCode when `studio.openVSCode` is true.
 6. Datapack installation requires a restart only when the selected pack needs new or changed dimension-type, custom-biome, or biome-tag registry content. The message tells you to re-run `open` after restarting.
 
-Ordinary, Object, and Jigsaw Studio compare the selected dimension with the registry requirements pinned when the server loaded Iris's datapack. That comparison uses generated dimension type, custom-biome JSON, and per-biome tag membership. When every requested entry is present and identical, Studio reuses that loaded runtime. Creating a persistent Iris world from the same pack adds a frozen pack copy and a boot-time LevelStem binding. Those duplicate or unrelated entries do not change the selected Studio dimension's registry requirements. They do not trigger a restart.
+Ordinary, Object, and Jigsaw Studio compare the selected dimension with the registry requirements pinned when the server loaded Iris's datapack. That comparison uses generated dimension type, custom-biome JSON, and per-biome tag membership. When every requested entry is present and identical, Studio reuses that loaded runtime. Creating a persistent Iris world from the same pack adds an immutable generation epoch and a boot-time LevelStem binding. Those duplicate or unrelated entries do not change the selected Studio dimension's registry requirements. They do not trigger a restart.
 
 A new or changed required registry entry invalidates reuse. So does an unavailable registry, failed startup recovery, or changed/failed external datapack ingest or removal. Iris then falls back to recovery, compilation, publication, and the existing restart gate. Object, structure, jigsaw, pool, ownership, and other non-registry edits do not force that fallback.
 
-Compiler-input discovery resolves the canonical Iris authoring-pack and world-snapshot roots directly. It never searches saved region, entity, POI, or other chunk-storage trees for a nested `iris/pack`. Verification time scales with pack inputs rather than generated world size.
+Compiler-input discovery resolves canonical authoring packs and required world generation metadata and snapshots directly. It never searches saved region, entity, POI, or other chunk-storage trees for packs. Verification time scales with compiler inputs rather than generated world size.
 
 Ordinary Studio completes runtime construction, then starts the canonical generation-cache warm as lifecycle-tracked asynchronous work while native structure-ring activation proceeds. Runtime worlds perform the same warm synchronously. Studio `generate` and `generateMatter`, Bukkit Studio hotload, and coordinator entry teleport cannot proceed until the warm completes, so the overlap changes readiness latency but not generated output. A console-issued `STANDARD` open does not request or load the landing chunk. A real player open and a later `tpstudio` delegate the fixed anchor and let Paper's normal FULL pipeline generate the destination on demand. Studio does not replace the center with a lobby, plate, precomputed entry area, simplified biome field, lower chunk status, or reduced generation pipeline. The entry and all of Minecraft's required dependencies use the same terrain, mantle, accepted hydrology, structures, carvers, decoration, heightmaps, and visible biomes as production generation. Studio may launch the pack workspace and preserves native structures for generation previews after bootstrap. On Paper 26.2, WorldInit publishes the filtered native-structure placement state once but leaves it uninitialized while native starts, locates, and object-collision volume queries are gated. Injection verifies that Paper's canonical chunk-generator getter owns the new Iris generator before native structure state is published.
 

@@ -2,7 +2,7 @@
 title: "Example - Minimal Dimension"
 description: "Iris documentation: Example - Minimal Dimension"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -215,11 +215,11 @@ Validation checks that the dimension load key resolves, every region and biome k
 2. Teleport: Bukkit `/iris tp minimal-test`, modded `/iris tp irisworldgen:minimal-test`.
 3. Generate ordinary new chunks and confirm the same flat grass result you saw in Studio.
 4. Stop the server cleanly, start it again, teleport back, and generate another new area.
-5. Confirm `<world>/iris/pack/` contains the four-file snapshot.
+5. Confirm `<dimensionRoot>/iris/generation/epochs/<epoch-id>/pack/` contains the four-file immutable epoch.
 
-**Why.** World creation copies the pack into the world folder. From then on that world generates from its own copy. Later edits under `packs/minimal/` do not reach it. The restart in step 4 is what proves the generated dimension type survives a registry reload. That is the most common way a height or environment mistake surfaces.
+**Why.** World creation records the first immutable pack epoch. Later edits under `packs/minimal/` do not reach it until you stage an update. The restart in step 4 proves the generated dimension type survives a registry reload. That is the most common way a height or environment mistake surfaces.
 
-**What you should see.** Identical terrain in Studio and in the world, no pack or registry errors on the restart, and a real `iris/pack/` directory inside the world folder.
+**What you should see.** Identical terrain in Studio and in the world, no pack or registry errors on restart, and a complete `iris/generation/` directory inside the dimension root.
 
 The walkthrough passes only when validation, the Studio reopen, world creation, teleport, and the server restart all succeed.
 
@@ -249,7 +249,7 @@ Add one thing at a time and re-validate after each. A broken key is then always 
 | The world is all void | `derivative` is probably still the `minecraft:the_void` default on some biome |
 | Studio shows old terrain | Move to untouched chunks. Close and reopen after a contract change |
 | Dimension type fails to compile | `dimensionHeight` span or minimum is not a multiple of 16, or `logicalHeight` exceeds the span |
-| Production world ignores your edits | It runs from `<world>/iris/pack/`. Create a new world, or follow the backed-up update procedure in [25 - Pack Management](/iris/25-pack-management) |
+| Production world ignores your edits | It runs from its active immutable epoch. Follow the backed-up staged update in [25 - Pack Management](/iris/25-pack-management) |
 | Baseline stops working | Restore these exact four files and validate before reintroducing extensions |
 
 ## Next steps

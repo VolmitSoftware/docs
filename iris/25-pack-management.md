@@ -2,12 +2,12 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-04T22:22:28.804Z
+date: 2026-09-05T16:04:10.731Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Download, validate, clean, package, or update an Iris pack. Authoring packs live under the platform pack root; production worlds use `<world>/iris/pack`.
+Download, validate, clean, package, or update an Iris pack. Authoring packs live under the platform pack root. Production worlds retain immutable pack epochs under `<dimensionRoot>/iris/generation/`.
 
 See also:
 
@@ -21,7 +21,7 @@ See also:
 
 ## The mental model
 
-A pack exists in up to three places at once. Confusing them is the usual source of "my edit did nothing":
+A pack can exist in three forms. Confusing them is the usual source of "my edit did nothing":
 
 - **The authoring copy**, at `packs/<key>/`. This is what Studio edits and what `/iris create` copies from.
 - **Generation snapshots**, at `<world>/iris/generation/epochs/<epoch>/pack/`. Production worlds and Bukkit Studio keep immutable packs for active and pending epochs. Archived epoch metadata remains after Iris releases the corresponding pack. Authoring edits automatically update ordinary Bukkit Studio, while production updates require explicit staging.
@@ -29,7 +29,7 @@ A pack exists in up to three places at once. Confusing them is the usual source 
 
 Validation runs against a directory, not a key. A pack can be valid in the workspace and stale in a world. Iris caches startup validation results. It re-uses them only when the pack bytes, the visible pack set, the platform, and the relevant game registries all still match. Otherwise it revalidates. Fresh validation rechecks the content fingerprint after parsing. If files keep changing, Iris retries once and then refuses the unstable result until writes stop.
 
-When Iris atomically copies a validated source pack into a new world snapshot, it may transfer that exact validation result. It does so only after a strong content fingerprint proves the copied tree matches the source. Root-level hidden metadata such as `.git/`, `.iris/`, and `.idea/`, plus `*.code-workspace` files, is not copied into production snapshots or included in that proof. Hidden resources inside active pack folders remain covered. A mismatch or unreadable fingerprint runs the full semantic validator against the snapshot root instead.
+When Iris atomically copies a validated source pack into a world epoch, it may transfer that exact validation result. It does so only after a strong content fingerprint proves the copied tree matches the source. Root-level hidden metadata such as `.git/`, `.iris/`, and `.idea/`, plus `*.code-workspace` files, is not copied into production epochs or included in that proof. Hidden resources inside active pack folders remain covered. A mismatch or unreadable fingerprint runs the full semantic validator against the epoch root instead.
 
 ## Walkthrough: take a pack from workspace to release
 
@@ -95,9 +95,9 @@ Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. The
 /iris studio package <key>
 ```
 
-Success is `exports/<key>.iris` plus a completion message. The source pack and every world snapshot are untouched.
+Success is `exports/<key>.iris` plus a completion message. The source pack and every world epoch are untouched.
 
-**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again. A compatible hydrology or `riverPolicy` update affects future chunks. Saved terrain and recorded generation facts retain their provenance. New terrain uses the current generator within the world's fixed physical layout.
+**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again. Test changed hydrology and locators beyond the generated boundary. A compatible hydrology or `riverPolicy` update affects future chunks. Saved terrain and recorded generation facts retain their provenance. New terrain uses the current generator within the world's fixed physical layout.
 
 **7. Stage the production update.** Back up the complete world, including generation history, then use the update-world procedure below.
 
@@ -299,7 +299,7 @@ Restore operates on the **latest** dump only. It refuses the whole operation whe
 | `obfuscate` | `false` | Rename every object to a random UUID in the export and rewrite placement references to match. Bukkit only |
 | `minify` | `true` | Write JSON with no indentation. Bukkit only. The modded packager always minifies |
 
-Output is `exports/<dimensionKey>.iris`: under the plugin data folder on Bukkit and under `config/irisworldgen/exports/` on modded. Before touching an existing staging tree, both adapters run the shared read-only pack validator, including image-map source decoding and compilation. A blocking error leaves staging and the prior archive untouched. Successful staging is deleted after zipping (compression level 9). Neither the source pack nor any world snapshot is modified.
+Output is `exports/<dimensionKey>.iris`: under the plugin data folder on Bukkit and under `config/irisworldgen/exports/` on modded. Before touching an existing staging tree, both adapters run the shared read-only pack validator, including image-map source decoding and compilation. A blocking error leaves staging and the prior archive untouched. Successful staging is deleted after zipping (compression level 9). Neither the source pack nor any world epoch is modified.
 
 ### What the package actually contains
 
@@ -318,13 +318,14 @@ The ambient-spawning graph is exported in full. `spawners/` and `markers/` are w
 
 One platform difference beyond that: Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle. Validate the unpacked tree before you publish an `.iris` artifact.
 
-## Developer update-world
+## Stage a production world update
 
-| Command |
-|---------|
-| `/iris developer update-world world=<world> pack=<dimension> confirm=true` |
+| Platform | Command |
+|---|---|
+| Bukkit | `/iris developer update-world world=<world> pack=<dimension> confirm=true` |
+| Fabric / Forge / NeoForge | `/iris world update <dimension> <pack-or-pack:dimension>` |
 
-Aliases: the command group is `/iris developer` or `/iris dev`. The subcommand is `update-world` or `^world`. `pack` also accepts the alias `dimension`, and `confirm` accepts `c`.
+On Bukkit, the command group is `/iris developer` or `/iris dev`; `update-world` also has alias `^world`. `pack` accepts alias `dimension`, and `confirm` accepts `c`.
 
 | Param | Default | What it does |
 |-------|---------|--------------|
@@ -334,7 +335,7 @@ Aliases: the command group is `/iris developer` or `/iris dev`. The subcommand i
 
 Back up the complete world before this operation, including its `iris/generation` directory.
 
-1. Run the command with `confirm=true`.
+1. On Bukkit, run the command with `confirm=true`. On modded, use the positional world-update form above.
 2. Iris validates the source pack, captures an immutable snapshot, and stages a pending epoch under the world history.
 3. A changed activation requests a server restart. The running world keeps its active generation until restart.
 4. Before activation, Iris checkpoints native chunks and freezes their saved natural boundary.
@@ -364,6 +365,6 @@ Ordinary Bukkit Studio uses the same history model and activates compatible auth
 2. Validate until loadable: `/iris pack validate pack=<key>` on Bukkit, `/iris pack validate <key>` on modded.
 3. Run the generation probe for the selected dimension.
 4. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
-5. Create a new world with `/iris create …`, which copies the pack into the world, or open Studio for live editing.
+5. Create a new world with `/iris create …`, which records the first immutable epoch, or open Studio for live editing.
 6. Package with `/iris pack package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then extract and validate the exact archive.
-7. Stage a production update after a complete backup with `/iris dev update-world world=<world> pack=<dimension> confirm=true`. Compatible river changes affect future chunks, with existing terrain preserved.
+7. Stage a production update after a complete backup with `/iris dev update-world world=<world> pack=<dimension> confirm=true` on Bukkit or `/iris world update <dimension> <pack>` on modded. Restart, then verify old chunks, the transition band, new content, and locate results. Compatible river changes affect future chunks, with existing terrain preserved.

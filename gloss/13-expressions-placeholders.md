@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04T16:34:48.424Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -19,6 +19,7 @@ below.
 | Text pipeline functions | `\|name\|` | Hologram lines, board titles and lines, tablist text, menu/panel text and messages, `[drops] nameFormat`, MOTD lines, configured chat-bubble prefixes, and damage indicators |
 | Inline text expressions | `{{ expression }}` | Every configured text-pipeline surface above; player/PAPI values require a player-backed surface |
 | Particle text ranges | `<particles:name>...</particles>` | Configured text on particle-capable in-world holograms, menus, panels, previews, indicators, and drop labels |
+| Show conditions | boolean or boolean expression string | Display visibility; see [Show conditions](#show-conditions) |
 | Conditions | bare boolean expression, no delimiter | Scoreboard selection and variants, tablist variants, bubble-style selection, damage/healing styles and audiences, Real Drops variants and audiences |
 | Bubble motion expressions | bare expression source, no delimiter | BubbleStyle schema-4 `motion.translation`, `motion.scale`, `motion.rotation` and `motion.opacity` fields |
 | Preview expression DSL | bare expression source, no delimiter | Container preview documents in `plugins/Gloss/previews/` only |
@@ -37,6 +38,83 @@ a tagged range inherits that range, but rendered values cannot add tags. Tags ca
 ### Bubble motion context
 
 Bubble motion uses the same operators and numeric function library documented below, including `pow` and `smoothstep`, but has its own bounded runtime scope. It exposes `t`, `remaining`, `ageMs`, `lifetimeMs`, `stackIndex`, `stackCount`, `lineCount`, `stackY`, `seed` and `pi`. Translation results are blocks clamped to `-64`..`64`; scale multipliers clamp to `0`..`16`; rotations are finite degrees normalized modulo 360; opacity clamps to `0`..`1`; and each source is limited to 512 characters. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops#motion) for the field layout and examples.
+
+## Show conditions
+
+`show` accepts a JSON boolean or a string containing a boolean expression. It defaults to `true`
+when omitted. `false` hides the configured surface; an expression decides visibility in that
+surface's current context. It is an additional gate: existing feature switches, `enabled`, `when`,
+permissions, ranges, and audience rules still apply.
+
+Each example below is one alternative value for the same field:
+
+```json
+"show": false
+```
+
+```json
+"show": "world.name != 'world_nether'"
+```
+
+```json
+"show": "world.time > 12000"
+```
+
+```json
+"show": "world.name == 'survival' && world.time > 12000"
+```
+
+```json
+"show": "viewer.sneaking"
+```
+
+```json
+"show": "papi('viewer', 'key', 'false') == 'true'"
+```
+
+`viewer.sneaking` is a boolean viewer variable. Replace `key` in the PAPI example with the
+expansion key that returns `true` or `false`. `world.time` is Minecraft time of day in ticks;
+`time.hour` is calendar time. Expressions may also use the roles and functions below. The string
+is the expression itself; `{{ ... }}` around the whole `show` expression is accepted but optional.
+Raw `%placeholder%` tokens are not conditions: use `papi` or `papiNumber`.
+
+Drop labels use `[drops] show` in `gloss.toml`. It accepts TOML booleans and expression strings:
+`show = false` hides labels; `show = "world.time > 12000"` makes visibility conditional. Gloss
+normalizes the file to quoted expression strings, including `show = "true"` and `show = "false"`.
+
+Invalid syntax or a known non-boolean type rejects the document at load. A runtime evaluation
+failure hides that surface for that evaluation. A failed hot reload follows the document's normal
+policy for retaining its last valid version.
+
+| Surface | Field | Context and effect |
+|---|---|---|
+| Scoreboard | document `show` | Live viewer; gates automatic and sticky boards on the selection pass. A hidden sticky board keeps its selected id and returns when true |
+| Persistent hologram | document `show` | Live viewer; gates text and particles during updates, including otherwise static holograms |
+| Tablist | document `show`, `headerFooter.show`, `listNames.show` | Player being formatted; top-level and section gates both apply. Hidden headers/footers clear, including API overrides; hidden list-name formatting resets to the player's name |
+| MOTD | document `show` | Evaluated per ping without a viewer or world; false leaves the ping response unchanged |
+| Emoji | document `show` | Live on the player's owning thread; async chat reads the sender's visibility snapshot, sampled every 10 ticks while conditional emoji exist. False or a missing snapshot leaves the token or trigger unchanged |
+| Animation | document `show` | Player supplied to text rendering; false makes the animation token render empty |
+| Bubble style | document `show` | Each live viewer of the selected style's bubble; combines with `hideOwn` and other viewer rules |
+| Damage/healing indicators | document `show` | Live viewer plus event snapshot; combines with `audience.when` while the indicator lives |
+| Real Drops | document `show` | Live viewer plus item snapshot; combines with the selected presentation and audience rules |
+| Drop labels | `[drops] show` in `gloss.toml` | Live viewer plus item snapshot; hides the label without removing the item |
+| Menu | document `show`, `components[].show` | Session viewer; gates update while the session remains open, and hidden components cannot receive clicks |
+| Panel | document `show` | Panel viewer; also requires the current menu and component gates and existing panel access rules |
+| Container preview | document `show`, `card.show`, `elements[].show` | Preview DSL context, described below; visibility updates every four ticks while open |
+
+For ordinary viewer-backed surfaces, `world.*` describes that viewer's world. Indicator and drop
+conditions use their event/item world snapshot. MOTD has no player-backed context, so use server or
+time values there.
+
+Preview `show` uses the preview DSL, with `vars.*`, target state, and repeat variables in elements.
+Its built-in `world.name` and `world.time` are sampled from the preview target's world, so
+`"show": "world.name != 'world_nether' && world.time > 12000"` works for previews too.
+It does not use the shared role functions above. For example, declare `"display": true` in
+`match.vars`, then set `"show": "vars.display"`; `"show": "cookTime > 0"` can gate a furnace
+preview or element. Preview PAPI uses `papi('key', 'false') == 'true'`, without a role argument.
+`card.show` gates only the frame and title chrome and also requires `card.framed`;
+`elements[].show` also requires that element's `visible`. A false document-level `show` hides the
+whole preview and its particles without selecting a different document.
 
 ## Conditional documents
 
@@ -59,7 +137,7 @@ Every conditional list follows one deterministic rule: the matching entry with t
 integer `priority` wins, and equal priorities use the lexicographically smallest `id`. A variant is
 a complete presentation and never merges with the base presentation. When no variant matches, the
 base presentation is used. Scoreboard documents add one outer contest: only boards whose
-`select.when` is true enter it, using `select.priority` and then board id; no match means no sidebar.
+`show` and `select.when` are true enter it, using `select.priority` and then board id; no match means no sidebar.
 
 ### Roles and shared variables
 
@@ -127,7 +205,7 @@ samplers are not available through this bridge.
 | Tablist list-name variants | live subject/player values | Every ordinary or selected fast tablist refresh |
 | Bubble-style `select.when` | live speaker values | Once per chat message |
 | Damage/healing style and variants | `event.*`, immutable `subject.*` and `source.*` | On the affected entity's owning thread after the applied health delta is known |
-| Damage audience | live `viewer.*` plus the immutable event snapshot | At spawn and when that viewer joins, respawns, changes world or crosses a chunk boundary while the indicator lives |
+| Damage audience | live `viewer.*` plus the immutable event snapshot | At spawn and on viewer tracking changes; dynamic `show` also reevaluates visibility during display updates while the indicator lives |
 | Real Drops variants | `drop.*`, `event.*`, immutable subject/source/world values | On the item-owning thread when its presentation is selected |
 | Real Drops audience | live `viewer.*` plus the immutable item snapshot | Per nearby viewer while the presentation reconciles |
 
@@ -175,8 +253,8 @@ A render without a viewer skips PlaceholderAPI substitution:
 A hologram renders per viewer when a line contains a complete `%name%`, `|function|`, or viewer-backed
 `{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`.
 
-If you set that key to `false`, every hologram renders once for all viewers. Lines with `%` then keep
-the tokens. See [Holograms](/gloss/04-holograms).
+Setting that key to `false` keeps text shared unless a dynamic `show` condition requires per-viewer
+rendering. Shared lines with `%` keep the tokens. See [Holograms](/gloss/04-holograms).
 
 ### In menu and panel documents
 
@@ -320,7 +398,8 @@ requested.
 
 Menu and panel text icons, toggle conditions and `message` actions receive the session player and
 use the same function, inline-expression, PlaceholderAPI, emoji and color facilities as boards.
-Text icons refresh complete dynamic tokens at `refreshTicks`; conditions render once per session;
+Text icons refresh complete dynamic tokens at `refreshTicks`; toggle conditions render when opened;
+`show` gates update during session ticks;
 messages render each time the action fires.
 
 ## Inline text expressions
@@ -444,7 +523,7 @@ Every field in a preview document falls into one of three forms.
 | Form | Accepts | Fields |
 |---|---|---|
 | number or expression | a JSON number, or a JSON string parsed as an expression | `elements[].x`, `.y`, `.z`, `.width`, `.height`, `.size`, `.index`, `.color`, `.wellColor`, `.background`, `elements[].repeat.count` |
-| boolean or expression | a JSON boolean, or a JSON string parsed as an expression | `elements[].visible`, `card.framed` |
+| boolean or expression | a JSON boolean, or a JSON string parsed as an expression | `show`, `card.show`, `elements[].show`, `elements[].visible`, `card.framed` |
 | expression only | always a string, always parsed as an expression | `elements[].text`, `card.title`, `card.accent` |
 
 Fields that are never expressions: `match.*` and `variants[].*` selectors, `elements[].type`,
@@ -468,13 +547,14 @@ starts evaluation. None of those wrappers suppress it.
 ### Evaluation cadence
 
 Expressions without variables or function calls are evaluated when the document loads. Other fields
-are evaluated when the preview opens. Only the fields below continue updating every four ticks.
+are evaluated when the preview opens. Visibility and the live text/color fields below continue updating every four ticks.
 
 | Field | Evaluated |
 |---|---|
 | `elements[].color` on a `cell` | live, every four ticks |
 | `elements[].text` on a `label` | live, every four ticks, unless it folded to a constant, in which case the Component is parsed once and reused |
-| Everything else, including `panel` and `slot` colors, `wellColor`, `index`, `background`, `visible`, `repeat.count`, `card.framed`, `card.title` and `card.accent` | once, per build |
+| `show`, `card.show`, `elements[].show`, `elements[].visible`, `card.framed` | live, every four ticks; a visibility change rebuilds the layout |
+| Everything else, including `panel` and `slot` colors, `wellColor`, `index`, `background`, `repeat.count`, `card.title` and `card.accent` | per build, including rebuilds after visibility changes |
 
 Because folding happens at load, a constant expression that throws is a load error. `"x": "1 / 0"`
 rejects the whole document.
@@ -632,7 +712,9 @@ from the block state, entity or inventory type: `furnace`, `brewing`, `beehive`,
 `jukebox`, `inventory` or `static`.
 
 The full target-state catalog with types and fallback values is in
-[Container Previews](/gloss/15-container-previews). Preview expressions also publish
+[Container Previews](/gloss/15-container-previews). `world.name` is the preview target's world
+folder name and `world.time` is that world's time of day in ticks. These are sampled target-world
+values. Preview expressions also publish
 `time.ms`, `time.seconds`, `time.ticks`, `server.online`, `server.maxPlayers`, `server.tps`,
 `player.name`, `player.ping`, `player.health` and `player.level`. The `player.*` values are absent in
 viewerless static/console contexts rather than invented.

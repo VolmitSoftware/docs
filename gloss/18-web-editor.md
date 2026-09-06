@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-04
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -51,6 +51,8 @@ If the server file changed after the editor opened, refresh the session before p
 | `/gloss web sessions revoke <session>` | End access immediately |
 
 Session IDs may be shortened to a unique prefix of at least 12 characters.
+Only one pull or revoke operation can run for a session at a time. After a pull command completes,
+the session is immediately available for revocation.
 
 ## Security
 

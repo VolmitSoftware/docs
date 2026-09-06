@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T22:12:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -158,6 +158,8 @@ Bubble wrapping, appearance, lifetime, conditional selection, expression-driven 
 
 ## `damage-indicators/default.json`
 
+Nearby persistent health bars use the separate schema-2 `entity-overlays/default.json` document. They are enabled by default and have their own `enabled` switch. See [Entity Overlays](/gloss/20-entity-overlays) for range, segments, names, hit feedback, React counts, and Adapt Insight settings.
+
 Damage-indicator settings live in `plugins/Gloss/damage-indicators/default.json`. The schema-3 file
 contains `limits`, `damage`, `healing`, and `audience`, reloads automatically, and is available in the
 web editor.
@@ -222,6 +224,7 @@ Damage conditions can use applied-delta event values plus immutable affected-ent
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
+| `show` | `"true"` | Boolean or expression string | Per-viewer label visibility; accepts `show = false` or `show = "world.time > 12000"`. Gloss normalizes it to a quoted expression string. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) |
 | `nameFormat` | `"&7{count}x {type}"` | Not applicable | Name format for dropped stacks. `{count}` and `{type}` are replaced. A null value restores the default |
 | `bundleFormat` | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | Not applicable | Name format for a dropped bundle carrying stacks. `{total}` and `{contents}` are replaced. A null value restores the default. An empty bundle falls back to `nameFormat` |
 | `bundleEntryLimit` | `3` | 1 – 10 | Bundle content entries listed before the rest collapse into a `+N more` suffix |

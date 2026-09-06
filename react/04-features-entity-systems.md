@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-05T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,11 @@ Stacking, trim, and sleep honor the protection API. See [17 - API - Entity Prote
 
 ### `mob-stacking`
 
-This feature merges compatible living entities into stacks. Stack count uses health or `ReactEntity`. Optional custom names and vacuum collect packets are available. The feature processes dirty chunks on a batch interval.
+This feature merges compatible living entities into stacks. `ReactEntity` persists the stack count on each entity. The feature processes dirty chunks on a batch interval and supports vacuum collect packets.
+
+When Gloss entity overlays are enabled, React supplies the count for the shared health, name, and combat display. Gloss controls its layout and visibility, including Adapt Insight restrictions. React removes its own native stack label to prevent duplicate names and preserves names assigned by players or other plugins. Count changes publish immediately, and sampled stacks refresh at most once every five seconds to reconnect after a Gloss reload.
+
+Without Gloss, or with its entity overlays disabled, `customNames` controls native stack labels. This setting does not suppress the count in Gloss. Existing stacks retain their count and death replacement behavior when new stacking is disabled.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -23,7 +27,7 @@ This feature merges compatible living entities into stacks. Stack count uses hea
 | `maxStackSize` | int | `10` | Maximum stack size. |
 | `maxHealth` | double | `100` | Maximum health for stack targets. |
 | `stackableTypes` | `Set<EntityType>` | see notes | Types allowed to stack. |
-| `customNames` | boolean | `true` | Apply custom stack names. |
+| `customNames` | boolean | `true` | Apply native stack names when Gloss entity overlays are unavailable. Gloss receives counts independently. |
 | `searchRadius` | double | `6` | Search radius (blocks). |
 | `vacuumEffect` | boolean | `true` | Send vacuum/collect packet effect. |
 | `skipCustomMobs` | boolean | `true` | Skip custom/plugin mobs. |
