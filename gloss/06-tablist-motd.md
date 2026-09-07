@@ -88,7 +88,7 @@ Once a template is picked, `$player` and `$group` are substituted literally. The
 | Token | Substituted with |
 |---|---|
 | `$player` | The player's name |
-| `$group` | The player's current Vault primary group, or an empty string when unavailable |
+| `$group` | The player's current Vault primary group, or an empty string when unavailable. Vault is queried only when the selected format uses this token |
 
 A blank result restores the vanilla list name.
 
@@ -107,7 +107,7 @@ Other plugins can override both per player through `GlossAPI.setTab(player, head
 | `[features] tablist` | `true` | Enables header/footer and list-name management |
 | `[tablist] updateIntervalTicks` | `40` | 1..400 |
 
-Gloss normally refreshes tablist content every 40 ticks. Clock expressions and named animations can update every tick. Joins, respawns, world changes, document edits, and API overrides also refresh the affected player.
+Gloss normally refreshes tablist content every 40 ticks, spreading players across that interval. A list-name format with a clock expression or named animation updates every tick; that cadence is decided from the format itself, not from a player or group name substituted into it. Joins, respawns, world changes, document edits, and API overrides also refresh the affected player.
 
 Disabling a surface restores its vanilla state:
 

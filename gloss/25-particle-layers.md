@@ -42,7 +42,7 @@ Wrap authored text in `<particles:name>text</particles>` and use `{"scope":"span
 
 Geometry types are `point`, `line`, `polyline`, `outline`, `filledPlane`, `cuboid`, `letterBounds`, `glyphOutline`, and `glyphFill`. Use `placement.layer` and `placement.depth` to move particles in front of or behind the display.
 
-Documents allow up to 64 uniquely named layers. Increase `geometry.spacing` or `emission.intervalTicks` to reduce particle work. Gloss applies per-viewer and global particle budgets and the configured particle view range, independently of display view range. Drop-label range is measured from the label's vertical offset.
+Documents allow up to 64 uniquely named layers. Increase `geometry.spacing` or `emission.intervalTicks` to reduce particle work. Gloss applies per-viewer and global particle budgets and the configured particle view range, independently of display view range. Particles a viewer's own quota clips stay in the shared per-tick pool for other viewers. Drop-label range is measured from the label's vertical offset.
 
 ## Java API
 

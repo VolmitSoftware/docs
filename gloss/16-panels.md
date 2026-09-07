@@ -147,6 +147,9 @@ in different worlds. Valid axis sets are `x`, `y`, `z`, `xy`, `xz`, `yz` and `xy
 `interactPermission`. Permission values are lowercased and must match `[a-z0-9][a-z0-9._-]*`. A `-`
 argument clears one.
 
+A viewer's permission answers are cached for about one second, so a permission change takes
+effect within that time rather than on the next tick.
+
 `interactPermission` is independent of viewing. A public panel with an interact permission is
 visible to everybody and clickable only by the holders.
 

@@ -156,13 +156,13 @@ Command edits save automatically. See [Data Files & Hot Reload](/gloss/03-data-f
 
 ## Rendering
 
-Gloss applies style, orientation, and visibility edits to the existing display. Box geometry follows text changes, animated frames, orientation and XYZ scale; viewer-specific text gets a box measured for that viewer. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render.
+Gloss applies style, orientation, and visibility edits to the existing display. Box geometry follows text changes, animated frames, orientation and XYZ scale; viewer-specific text gets a box measured for that viewer. A box is re-measured only when its text changes size or style, so a colour-only frame leaves it in place. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render.
 
 If you set `[features] holograms = false`, Gloss despawns every hologram on the next driver tick. Documents still load and hot-reload. The commands still edit them. Nothing renders.
 
 ### Shared and personalized modes
 
-With `[holograms] perViewerPlaceholders = true`, player placeholders and viewer expressions render separately for each nearby player. Viewer-independent text remains shared. Setting the option to `false` keeps text shared and leaves player-only values unresolved unless a dynamic `show` condition requires per-viewer rendering. Personalized text and boxes refresh when the client starts tracking their native display again, including after respawn or a world change. This uses outgoing entity packets on Spigot, Paper, and Folia; it does not depend on player movement.
+With `[holograms] perViewerPlaceholders = true`, player placeholders and viewer expressions render separately for each nearby player. Viewer-independent text remains shared. Setting the option to `false` keeps text shared and leaves player-only values unresolved unless a dynamic `show` condition requires per-viewer rendering. Personalized text and boxes refresh when the client starts tracking their native display again, including after respawn or a world change. This uses outgoing entity packets on Spigot, Paper, and Folia; it does not depend on player movement, and crossing a chunk border alone does not resend it. Viewer-specific text keeps the `updateIntervalTicks` cadence even when a box or particle layer holds the hologram on the per-tick driver; lines with expressions, functions or fast animation clips still refresh every tick.
 
 Persistent and temporary hologram displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap text at a smaller pixel width. Configured entries remain separate logical lines, and an explicit legacy reset between them prevents `&k` and other styles from bleeding into the next line.
 

@@ -498,7 +498,9 @@ The optional `animation` block adds event-driven tracks for position, rotation, 
 
 `animation.materialProperties` can map materials or globs to glow colors and light levels. Temporary light blocks use air only and are limited to eight per chunk.
 
-Presentations are removed when the item merges, is picked up, despawns, unloads, or when the feature stops. Display entities are not persistent.
+Presentations are removed when the item merges, is picked up, despawns, unloads, or when the feature stops. Display entities are not persistent. Items removed without a despawn or pickup, by `/kill`, lava, fire, or an explosion, stop being tracked at once. A presentation whose display entities were removed by another plugin is torn down after two polls and rebuilt on the next drop event.
+
+A merged stack shows its new label on the tick after the merge. An authored `PHYSICS` animation track takes effect on the poll after the motion change. A stack whose item meta is rewritten in place with the same material and amount keeps its current model until the next drop event or a refresh through the API.
 
 Disabling `drops` removes Gloss-owned labels. Disabling `realDrops` removes display models and restores vanilla item visibility. When drop labels remain enabled, the item keeps its styled standalone label, including viewer expressions and its configured box. The config and presentation document reload automatically. See [Particle Layers](/gloss/25-particle-layers).
 

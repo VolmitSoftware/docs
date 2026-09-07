@@ -12,7 +12,7 @@ Gloss shows segmented health above nearby living entities by default. Named enti
 
 ## Default behavior
 
-The display follows the entity and uses Gloss's temporary hologram engine. Each viewer gets the entities within their configured range, excluding themselves, invisible entities, and spectators. Gloss excludes armor stands by default. Entity death, unloading, player disconnects, and world changes remove the applicable displays.
+The display follows the entity and uses Gloss's temporary hologram engine. One display per entity is shared by every viewer in range; rows whose values differ per viewer, such as Insight or a viewer's own recent hits, render for that viewer alone. Each viewer sees the nearest entities within their configured range, excluding themselves, invisible entities, and spectators, up to the per-viewer and server-wide limits. Gloss excludes armor stands by default. Entity death, unloading, player disconnects, and world changes remove the applicable displays. On Folia an overlay can appear one refresh interval after the viewer comes into range.
 
 The health bar uses ten segments. A living entity retains at least one filled segment. Green means at least half health, yellow means at least one quarter, and red means less than one quarter. Empty segments are dark gray. A hit updates health, briefly marks lost segments red, and adds the damage amount. Healing updates the bar on the next refresh.
 
@@ -32,7 +32,8 @@ The shared engine also requires `[features] holograms = true` in `gloss.toml`. I
 | `show` | `true` | Boolean or expression that controls the complete pane, including decorations |
 | `range` | `16` | Radius in blocks, `1` to `64` |
 | `updateIntervalTicks` | `5` | Entity and viewer refresh, `1` to `40` ticks |
-| `maxEntitiesPerViewer` | `64` | Maximum overlays per viewer, `1` to `256` |
+| `maxEntitiesPerViewer` | `16` | Maximum overlays per viewer, nearest first, `1` to `256` |
+| `maxActiveOverlays` | `1024` | Server-wide maximum of entities carrying an overlay, `16` to `16384` |
 | `includePlayers` | `true` | Include other visible players |
 | `verticalOffset` | `0.35` | Offset above entity height, `-2` to `8` blocks |
 | `healthSegments` | `10` | Segments per health bar, `1` to `40` |

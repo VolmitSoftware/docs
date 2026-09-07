@@ -28,7 +28,10 @@ clamped to `1.0` through `24.0`. Fluids and passable blocks are skipped. It chec
 
 If only one hits, that is the target. If both hit, the entity wins unless the block is closer by
 more than 0.01 blocks. When the target changes, the open preview is closed and a new one is built.
-When the ray hits nothing, the preview closes.
+When the ray hits nothing, the preview closes. The entity check runs every fourth tick until an
+entity preview is open, so a chest minecart or chest boat opens within four ticks; blocks open on
+the next tick. With hundreds of players looking around at once, new previews are spread out and
+appear within about a second.
 
 The preview is visible only to that player.
 
@@ -337,6 +340,9 @@ The item shown in a `slot` is not an expression at all. The renderer re-reads th
 the same four-tick beat. It swaps the displayed item and its count when it changes.
 
 Each repeated live expression keeps its own loop index. Constant expressions are resolved once.
+
+The card follows the viewer's eye every tick with client-side interpolation between steps, and
+ignores movements under 0.02 blocks or half a degree of turn.
 
 ### Failure policy
 

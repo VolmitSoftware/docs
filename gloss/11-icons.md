@@ -201,7 +201,7 @@ Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder 
 
 Paths must name a file inside `plugins/Gloss/images/`. Blank, absolute, missing, directory, traversal, and symlink-escape paths are rejected. API paths are limited to 256 characters and cannot contain control characters or `:`.
 
-Adding, replacing, or removing an image refreshes open menus and panels automatically.
+Adding, replacing, or removing an image refreshes open menus and panels automatically. Decoded images stay cached in memory; a changed file is picked up when its size or modification time changes or when the images folder reports it.
 
 ### Pixels to characters
 

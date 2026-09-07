@@ -177,7 +177,7 @@ Command edits save the document and increment its revision. See [Data Files & Ho
 
 ## Rendering
 
-Ordinary sidebars update at `[boards] updateIntervalTicks` (default 20). A selected board with a clock expression or named animation can update every tick. Gloss sends rows only when their rendered value changes.
+Ordinary sidebars update at `[boards] updateIntervalTicks` (default 20), with each player's refresh spread across that interval rather than every board landing on one tick. On a board with a clock expression or named animation, only the rows that carry one update every tick; its other dynamic rows keep the configured interval. Gloss sends rows only when their rendered value changes.
 
 Titles and lines support functions, PlaceholderAPI, emoji, colors, and viewer expressions. Minecraft displays at most 15 sidebar rows. Newlines inside one JSON row become spaces.
 
