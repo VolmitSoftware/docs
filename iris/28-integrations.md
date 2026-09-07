@@ -2,13 +2,13 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-05T23:20:48.000Z
+date: 2026-09-07T23:15:21.846Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris can use these Bukkit plugins and coexist with PlotSquared. WorldEdit
-supplies selections for explicit import. Multiverse-Core handles world management. Nine item,
+supplies selections for explicit import. Multiverse-Core handles world management. Ten item,
 block, or entity plugins handle pack content. MythicMobs handles skill
 conditions. PlaceholderAPI handles scoreboard values. PlotSquared's own
 generator discovery calls Iris without becoming an Iris integration. React
@@ -46,7 +46,7 @@ success.
 |---|---|---|
 | WorldEdit | Make a cuboid selection with WorldEdit, run `/iris object we`, hold the new Iris wand, and save a disposable object | Hold the WorldEdit wand. Iris must not draw its selection or accept it for an object save. Clear the WorldEdit selection and run `/iris object we` again. Iris must report no selection in this world |
 | Multiverse-Core | Create a disposable Iris world and confirm Multiverse lists it with generator `Iris:<pack>` | On a separate disposable copy, restart without Multiverse installed. Iris world creation must still succeed |
-| Item/block/entity provider | Reference one exact namespaced key from a pack and generate a fresh chunk containing it | Reference a key that does not exist. Iris must log `No matching Provider found` or a missing-resource error and keep generating |
+| Item/block/entity provider | Reference one exact namespaced key from a pack and generate a fresh chunk containing it | Reference a key that does not exist. Iris reports missing content and applies the configured fallback or refuses an unusable pack |
 | MythicMobs conditions | `irisbiome{b=<load key>}` returns true inside that biome | The same condition returns false in a vanilla world |
 | PlaceholderAPI | Run the parse sequence in [09 - PlaceholderAPI](/iris/09-placeholderapi) | A player outside an Iris world gets `world.available` = `false` |
 | Tree feller | A sneaking survival player with the permission and an axe fells an Iris-generated tree | A tree the player grew from a sapling stays intact. Only the broken log drops |
@@ -124,36 +124,183 @@ PlotSquared. The two plugins can own separate worlds on the same server.
 `ExternalDataSVC` makes a provider for each supported plugin that is
 enabled. It also listens for `PluginEnableEvent`. A plugin that enables
 after Iris is still picked up. Packs then reference external content by
-namespaced id. Iris routes each lookup to the first active provider that
-claims that namespace for that data type (`ITEM`, `BLOCK`, or `ENTITY`).
+namespaced id. Block lookups accept a native key or an explicit provider key.
+Item and entity lookups retain their provider-specific identifier formats.
 
 | Plugin id | Provider class | Claims | Types |
 |---|---|---|---|
 | CraftEngine | `CraftEngineDataProvider` | Any namespace, but only if CraftEngine actually has an item, block, or furniture with that exact key | ITEM, BLOCK |
-| Nexo | `NexoDataProvider` | Namespace `nexo` | ITEM, BLOCK |
-| ItemsAdder | `ItemAdderDataProvider` | The item and block namespaces ItemsAdder reports at init, tracked separately | ITEM, BLOCK |
+| Nexo | `NexoDataProvider` | Registered items, blocks, and furniture under namespace `nexo` | ITEM, BLOCK |
+| Oraxen | `OraxenDataProvider` | Registered items and blocks under namespace `oraxen`. Furniture is excluded | ITEM, BLOCK |
+| ItemsAdder | `ItemAdderDataProvider` | Exact registered block keys. Item namespaces come from the item registry. Both refresh on `ItemsAdderLoadDataEvent` | ITEM, BLOCK |
 | ExecutableItems | `ExecutableItemsDataProvider` | Namespace `executable_items` | ITEM |
 | MMOItems | `MMOItemsDataProvider` | Items: `mmoitems_<type>:<item-id>`, for example `mmoitems_sword:excalibur`. Blocks: `mmoitems:<numeric-id>` | ITEM, BLOCK |
 | EcoItems | `EcoItemsDataProvider` | Namespace `ecoitems` | ITEM |
 | MythicMobs | `MythicMobsDataProvider` | Namespace `mythicmobs` | ENTITY |
-| MythicCrucible | `MythicCrucibleDataProvider` | Namespace `crucible` | ITEM, BLOCK |
-| KGenerators | `KGeneratorsDataProvider` | Namespace `kgenerators` | ITEM, BLOCK |
+| MythicCrucible | `MythicCrucibleDataProvider` | Items under `crucible`. Blocks require a registered block or furniture context | ITEM, BLOCK |
+| KGenerators | `KGeneratorsDataProvider` | Items under `kgenerators`. Blocks require a registered generator ID | ITEM, BLOCK |
 
-Block ids may carry a vanilla-style state suffix,
-`namespace:key[facing=north,waterlogged=true]`. A malformed state entry
-logs and resolves to nothing. It does not throw into generation.
+### ItemsAdder note-block pop-in
 
-Failures stay contained. An unresolvable key logs
-`No matching Provider found for modded material "<key>"` or a
-missing-resource error that names the namespace and key. The caller gets
-an empty result. Generation continues. A provider that throws during
-activation is logged and skipped. The rest still load.
+ItemsAdder's glitched-block repair can reset generated `REAL_NOTE` states before
+Iris registers their custom identity. The block then changes to its intended
+state when Iris's deferred placement pass reaches the chunk.
 
-Third parties can add their own with `ExternalDataSVC#registerProvider`.
-It throws `IllegalArgumentException` if the plugin id belongs to a built-in
-provider or one already registered. You cannot silently displace an
-existing one. A provider that also implements `Listener` is registered as
-one automatically.
+With players present, Iris checks eligible chunks roughly every three seconds.
+This can produce a visible delay of several seconds after the reset. A loaded
+chunk outside the nearby-player or force-loaded update area can retain the
+reset state until it becomes eligible; server load can extend the wait.
+
+For Iris-generated `REAL_NOTE` terrain, update these existing keys in
+`plugins/ItemsAdder/config.yml`, then restart the server:
+
+```yaml
+blocks:
+  fix-glitched-blocks:
+    enabled: false
+```
+
+This disables ItemsAdder's glitched-block repair across the server, including
+cleanup of old vanilla note blocks that use custom model states. Setting
+`only-new-chunks: true` still runs repair on newly generated Iris chunks.
+See [ItemsAdder's repair configuration](https://wiki.itemsadder.com/faq/glitched-blocks/).
+
+Check a fresh chunk after restarting. Its generated note-block state should
+remain intact while provider registration is pending. Already reset chunks
+still need Iris's placement pass once to restore their states. Provider
+metadata and behavior still depend on that pass, which runs near players or
+for force-loaded chunks with their surrounding 3×3 chunks loaded.
+
+A custom block in `rockPalette` fills the solid terrain beneath the surface,
+so even a flat world can require thousands of provider placements per chunk.
+Use the biome's surface layers when only the surface needs that block.
+
+For example, with `dimensionHeight.min: -64`, `fluidHeight: -64`, and a flat
+generator whose `min` and `max` are both `64`, the surface is at world Y=0.
+Using the custom block for both rock and surface fills Y=-64 through Y=0:
+65 layers × 16 × 16 = 16,640 custom blocks per chunk. A single surface layer
+does not remove the rock fill underneath it.
+
+### Oraxen release requirement
+
+Oraxen 1.218.0 unconditionally loads its own Iris integration against the
+old `com.volmit.iris` API. That integration fails during Oraxen startup with
+this Iris build. Use an Oraxen build that removes its embedded Iris
+integration before using Iris's provider. The stock release has no setting
+to disable that hook. Iris does not supply an old-package compatibility shim.
+
+See the [Oraxen compatibility registration source](https://github.com/oraxen/oraxen/blob/v1.218.0/src/main/java/io/th0rgal/oraxen/compatibilities/CompatibilitiesManager.java)
+and the [Oraxen block API](https://docs.oraxen.com/developers/api).
+
+### Use a custom block in a pack
+
+Install the provider and its required dependencies before loading the Iris pack.
+Wait for the provider to finish loading its content registry.
+
+1. Confirm the provider can place the block with its own command.
+2. Put its ID in an Iris palette entry. For an ItemsAdder block named `forest:amber_ore`, use:
+
+   ```json
+   {
+     "block": "itemsadder:forest/amber_ore",
+     "backup": { "block": "minecraft:stone" }
+   }
+   ```
+
+3. Validate the pack with `/iris pack validate pack=<pack>`.
+4. Generate a fresh chunk that uses that palette.
+5. Confirm the provider recognizes the placed block and supplies its configured drops.
+
+| Provider | Native block ID in Iris | Explicit provider ID in Iris |
+|---|---|---|
+| ItemsAdder | `forest:amber_ore` | `itemsadder:forest/amber_ore` |
+| CraftEngine | `forest:amber_ore` | `craftengine:forest/amber_ore` |
+| Oraxen | `oraxen:amber_ore` | `oraxen:oraxen/amber_ore` |
+| Nexo | `nexo:amber_ore` | `nexo:nexo/amber_ore` |
+| MMOItems | `mmoitems:1` | `mmoitems:mmoitems/1` |
+
+The explicit format is `<plugin-id-lowercase>:<native-namespace>/<native-key>`.
+The native key can contain more slashes. A matching explicit form takes
+precedence. If that form does not name a block, the selected provider can
+still recognize the original ID as a native key containing a slash.
+
+A native ID resolves only when one active provider claims that exact block.
+If two providers claim it, Iris logs the qualified alternatives and leaves
+the native ID unresolved. Use an explicit ID to select the intended provider.
+An explicit ID for an unavailable provider does not route to another plugin.
+Installed blocks and their qualified forms appear in Studio schema completion.
+
+Block properties use the palette entry's `data` object or a state suffix,
+`namespace:key[property=value]`. Only properties supported by that provider
+have meaning. ItemsAdder and Oraxen blocks expose no Iris property overrides
+and reject nonempty property maps. CraftEngine exposes its block properties
+and furniture properties. Nexo exposes its existing furniture properties.
+Malformed suffixes and duplicate properties fail resolution.
+
+Iris generates the backing block state first. It retains the selected
+provider ID and calls that provider's placement API during chunk updates
+near players or for force-loaded chunks, on the owning server context.
+Pending placement reads the chunk’s recorded generation storage across pack
+and Iris updates. The surrounding 3×3 chunks must be loaded for this pass.
+This step supplies provider metadata
+and behavior that a vanilla block state cannot represent. Pack `blocks/`
+aliases and object serialization retain custom IDs and provider properties.
+Terrain transitions also retain the custom ID while using the backing state
+for geometry and fluid checks. Fractional properties such as furniture yaw
+retain their precision. Property names and text values retain their case.
+
+An unresolved block uses the normal dimension fallback chain and the entry's
+`backup`. Pack compatibility validation can exclude content with missing
+blocks or refuse a pack that cannot generate. A direct unresolved entry
+without a fallback returns air with a warning. Provider lookup failures
+include their stack trace. Placement failures keep pending chunk metadata
+for a later materialization attempt.
+
+Iris validates installed packs after its services initialize. When a provider
+activates, or ItemsAdder or Oraxen reports loaded content, Iris refreshes
+authoring-pack caches and revalidates them asynchronously. An early missing
+block result therefore does not stay cached after that provider becomes
+available. These refreshes preserve active engines and immutable generation
+snapshots. Reload an affected Studio pack or restart to replace those loaded
+runtime definitions after changing provider content.
+
+Load provider content before creating a new Iris world. Saved Iris dimensions
+can wait for installed providers during startup. Iris binds its generator from
+the frozen dimension contract, then validates the saved pack and starts the
+engine when provider content is ready. It rejects generation during the wait.
+A missing provider fails validation; a provider that remains unavailable for
+120 seconds leaves generation locked and triggers shutdown. See
+[06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle). Clients need the provider's
+resource pack to display its custom textures and models.
+
+The normal terrain, decorator, and object generation paths support deferred
+placement. Object and jigsaw Studio previews, direct command paste, and
+native-structure terrain preparation still write carrier states only.
+These paths do not prove provider placement. Capturing an arbitrary existing
+world selection does not discover a custom ID from its carrier state.
+Oraxen furniture is outside this block integration.
+
+### Add another provider
+
+Third parties can implement `ExternalDataProvider` and register it through
+`ExternalDataSVC#registerProvider`. Return exact ownership from
+`isValidProvider(id, BLOCK)` and enumerate native IDs through `getTypes(BLOCK)`.
+The service also exposes qualified IDs using the registered plugin name.
+A provider with delayed content loading reports readiness through `isReady()`
+and calls `ExternalDataSVC#notifyContentChanged()` after its registry is ready or changes.
+
+`getBlockData` must resolve without touching world state. Return ordinary
+`BlockData` when the state alone is sufficient. Otherwise return
+`IrisCustomData.of(base, nativeId)` and implement `processUpdate` to call the
+provider's placement API. Include supported properties in the deferred
+native ID. The service qualifies it for storage and restores the native ID
+before placement. Let placement failures propagate so pending data survives.
+
+Registration rejects a plugin ID that belongs to a built-in provider or one
+already registered. A provider that implements `Listener` registers its
+event handlers automatically. Optional providers are loaded only when their
+plugin is enabled. An activation failure logs its stack trace and leaves
+other providers available.
 
 ## MythicMobs skill conditions
 

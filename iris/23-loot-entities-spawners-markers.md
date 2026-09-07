@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-09-06T00:32:42.000Z
+date: 2026-09-07T22:00:18.976Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,9 @@ Two independent pipelines share the loot table format.
 
 **Containers.** When a chunk finishes generating, Iris walks the blocks it recorded and fills every storage chest it placed. It builds a list of loot tables for that exact block, then rolls each one and drops the results into the inventory. The list comes from up to four sources, in this order. First is the object placement that owns the block. Then come the dimension, region, surface biome, and cave biome the block sits in. Each source can add to the list, wipe it, or only contribute when nothing else did.
 
-**Ambient mobs.** A background loop ticks each Iris world roughly twice a second. Each tick it measures how crowded the world is. If there is room, it picks a handful of chunks from the loaded-chunk snapshot refreshed by the three-second world-maintenance pass and tries one spawn in each, after confirming that the chunk is still loaded. A spawn attempt gathers every spawner the dimension, region, and surface biome list. It throws out the ones whose time, weather, rate, or crowding gates fail. It then pools their entries, picks exactly one, and places one to a few mobs.
+If saved biome information is still loading, chunk maintenance leaves unfinished container updates pending and retries them on a later pass. Earlier completed updates are retained, so retrying does not roll their loot again. Missing or damaged saved biome information still reports an error.
+
+**Ambient mobs.** A background loop ticks each Iris world roughly twice a second. It refreshes the entity count roughly every three seconds. A timed-out count pauses Iris spawning until a complete count succeeds; expired callbacks cannot run later. If there is room, it picks a handful of chunks from the loaded-chunk snapshot refreshed by the three-second world-maintenance pass and tries one spawn in each, after confirming that the chunk is still loaded. A spawn attempt gathers every spawner the dimension, region, and surface biome list. It throws out the ones whose time, weather, rate, or crowding gates fail. It then pools their entries, picks exactly one, and places one to a few mobs.
 
 Ambient spawns resolve the saved biome environment and its owning activation's dimension, region, spawner, and entity definitions. Initial spawn flags are claimed only after those inputs have resolved; a loading record leaves the attempt pending. Pack updates retain those definitions on disk. Existing entities are not recreated by a generation update. An older position with no recoverable biome identity cannot supply an ambient spawn environment.
 
@@ -580,6 +582,8 @@ When marker spawning is on, each chunk pass reads the mantle markers in that chu
 
 Dimensions, regions, and biomes accept `blockDrops[]`. When a player breaks a block, matching providers from the biome run first.
 Unless a matching biome provider sets `skipParents`, matching region and then dimension providers are appended.
+
+On Bukkit servers, a break attempt is cancelled while the chunk's saved biome information loads. Try breaking the block again shortly. The cancelled attempt leaves the block and drops untouched; Iris does not replay it. This also applies to protection checks from custom-block plugins such as ItemsAdder. Missing or invalid saved data still reports an error.
 
 | Field | Default | What it does |
 |-------|---------|--------------|

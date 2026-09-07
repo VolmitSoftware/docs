@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-03T12:00:00.000Z
+date: 2026-09-07T08:15:43.944Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -439,6 +439,8 @@ The create/open `<key>` is the root structure's internal lowercase resource path
 | `preview assemble [seed=1337]` | Compute a deterministic read-only assembly at the player coordinates. Report its complete piece count. Show in-range bounds as purple particles for 10 seconds within the shared particle budget. Place no blocks |
 | `export [namespace=iris] [output=jigsaw-export] [format=zip] [replace=false]` | Start a background strict export of the clean on-disk graph as a Minecraft 26.2 directory or zip. Completion is reported with the originating structure key |
 | `delete [confirm=false]` | With `confirm=true`, inspect reverse references, close Studio, and atomically remove the complete hash-pinned owned project. External references or changed ownership bytes block deletion. Alias `remove` |
+
+Live preview and temporary assembly outlines use the complete assembled bounds. The authored-cell width, depth, height, and volume limits do not constrain preview outlines; particle range and budget limits still apply.
 
 The control chest is the primary workflow. Its six-row GUI rechecks the exact Studio request before every callback. It manages workcell capacities and labels, per-variant dimensions and labels, enabled states, and rotation. It also manages pool-entry weights and chances, themes, piece rules, mandatory caps, automatic evaluation, preview navigation, toolbox sticks, and destructive deletion. **Duplicate This Cell's Variant** creates one independent variant.
 **Duplicate All Enabled Cells as Family** clones and atomically loads one matching variant across every enabled cell. Accepted asynchronous actions close the GUI while work runs. Variant geometry and details are editable only for owned variants, and building and capture apply only to the loaded variant.

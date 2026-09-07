@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-06T17:31:26.195Z
+date: 2026-09-07T20:11:07.511Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -278,6 +278,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 - Studio worlds are transient. They are never written into Iris's persistent world registry. Unloaded Studio worlds are cleaned up, and their `bukkit.yml` entries are removed during shutdown cleanup.
 - Standard Studio uses the production generation contract. With identical pack bytes, seed, and generation history, it produces the same terrain. Accepted edits activate a new immutable pack for future chunks and blend the boundary. Existing chunks retain their earlier generation.
 - Opening Studio after creating a persistent world from the same pack reuses the already-loaded matching dimension type and custom biomes. The new frozen world snapshot and its `bukkit.yml` LevelStem binding are boot-time persistence inputs. They are not a reason to restart the current server solely to open Studio. New or changed registry content still requires the normal restart boundary.
+- Closing a world discards queued Iris entity-count and spawn callbacks before detaching its runtime. Callbacks already admitted participate in the lifecycle drain, and expired waits cannot start queued work afterward.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 - Biome Buffet prepares a changed focus before opening the chunk generation session. Its exclusive fair-stage admission downgrades straight to the retained chunk permit so no other transition can slip in between the focus hotload and that chunk.
 - Ordinary Studio activates its native structure state, then delegates the fixed spectator anchor directly to Paper's asynchronous teleport. Iris performs no entry-area precompute, separate chunk request, or surface lookup.
@@ -292,6 +293,8 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 3. Report success, busy, restart-required, or failure.
 
 Load never downloads a pack. The world must already have its active generation snapshot and consistent registration data. Reconciliation checks startup readiness and then lazily validates that world's exact snapshot root before it touches `bukkit.yml` or calls a world backend. Validation results are path-scoped, so two worlds whose snapshot folders are both named `pack` cannot authorize or reject one another.
+
+On Bukkit, a saved dimension that needs an installed custom-block provider can wait for that provider's content registry during startup. Iris binds its own generator immediately and checks the frozen dimension contract. It starts the engine only after the exact saved pack passes content validation. Generation requests during this wait are rejected before writing terrain. Startup reconciliation waits for engine initialization. Missing providers still fail validation; a provider that does not become ready within 120 seconds leaves generation locked and triggers shutdown. See [28 - Integrations](/iris/28-integrations) for supported providers and block IDs.
 
 ## Unload
 

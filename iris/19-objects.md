@@ -2,12 +2,18 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-07T19:50:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 An Iris object is a sparse voxel volume: block states plus block-entity data. It is stored as a `.iob` file under a pack `objects/` folder. You build it in a world, select it with a wand, and save it into the pack. Nothing about the object itself says where it generates. Wiring it into generation is [20 - Object Placement](/iris/20-object-placement). Using objects as jigsaw pieces is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+
+Custom states already present in an object palette retain their qualified
+provider IDs when serialized. Selection capture still reads carrier states
+and does not discover provider IDs from placed blocks. Direct paste and
+Studio previews use carrier states only. Normal object generation performs
+deferred provider placement. See [28 - Integrations](/iris/28-integrations).
 
 ## Capture and save an object
 
@@ -153,9 +159,10 @@ Inspection and maintenance:
 
 ## 5. Object studio: click-to-save
 
-Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. It is the quickest loop for touching up a library of small objects.
+Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. The gallery generator is ready before the first chunks are requested. Objects are aligned from their stored block coordinates so their lower edges stay inside their cells and above the floor.
 
-- The saved volume is the cell original bounding box, so the center is preserved and nothing is shrinkwrapped. Tile data is always written in full, unlike `/iris object save`.
+- The saved volume retains the object dimensions and original signed block coordinates; saving reverses the gallery placement offset without shrinkwrapping. Tile data is always written in full, unlike `/iris object save`.
+- Reopening checks cached cell dimensions against the current object files and rebuilds the layout if they changed.
 - Each cell carries a content hash. Clicking a cell you did not change reports no changes and writes nothing. The hashes are in memory only, so the first click on any cell after a world load always writes.
 - The save aborts **silently** if any chunk covering the cell is unloaded. If a click seems to do nothing, walk closer and click again.
 

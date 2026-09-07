@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-07T02:20:03.219Z
+date: 2026-09-07T19:50:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -155,7 +155,7 @@ Dimension-level palettes:
 
 ### Block data and reusable `blocks/*.json`
 
-`IrisBlockData` is the entry type used by every palette, plus decorators, deposits, drop filters, and object replacement rules. A vanilla id works with or without the `minecraft:` prefix.
+`IrisBlockData` is the entry type used by every palette, plus decorators, deposits, drop filters, and object replacement rules. A vanilla id works with or without the `minecraft:` prefix. Custom providers accept native IDs such as `forest:amber_ore` or explicit IDs such as `itemsadder:forest/amber_ore`. Use the explicit form when multiple providers own the same native ID. See [28 - Integrations](/iris/28-integrations) for provider requirements and examples.
 
 ```json
 {
@@ -178,7 +178,7 @@ Dimension-level palettes:
 
 A `backup` is resolved through the same chain as `block`: live registry, legacy rename table, dimension `blockFallbacks`, then this `backup`. A backup that is itself missing on the running server counts as missing. A missing palette block no longer becomes air with its weight retained; the unit that composes it is left out of generation instead, and the decision is listed at startup and by `/iris pack compat`. See [25 - Pack Management](/iris/25-pack-management) and [11 - Dimensions](/iris/11-dimensions).
 
-Files under `blocks/<key>.json` use the same shape and act as reusable aliases. Reference one with `"block": "<key>"`. Properties on the referencing entry override properties from the alias. Aliases may chain but must not form cycles.
+Files under `blocks/<key>.json` use the same shape and act as reusable aliases. Reference one with `"block": "<key>"`. Properties on the referencing entry override properties from the alias. Aliases retain the resolved custom provider ID and inherited properties through each reference. Fractional property values retain their precision. Aliases may chain but must not form cycles.
 
 `tileData` is read from the entry being placed. It does **not** inherit from a referenced alias. Put block-entity data on the referencing entry. For spawners, a legacy `data.entitySpawn` value is converted into `tileData.SpawnData.entity.id` before placement. Invalid tile data, or tile data on a block with no tile entity, produces no payload rather than an error.
 
