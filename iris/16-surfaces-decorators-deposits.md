@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-07T02:20:03.219Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -325,7 +325,7 @@ Weighting air into the palette is a useful trick. The column still wins the buck
 
 Snippet key: `deposit`. Declared on **dimension**, **region**, and **biome**. All three lists run. Biome deposits add to regional and global ones rather than replacing them.
 
-Clump preparation can run in parallel, retaining at most 32 prepared clumps before placement. All configured attempts still run. Placement follows dimension, region, then biome order, preserving each list's configured order. Each later deposit checks the host blocks left by earlier deposits. Worker completion order does not decide which overlapping deposit wins.
+Clump preparation can run in parallel, retaining at most 32 prepared clumps before placement. All configured attempts still run. Placement follows dimension, region, then biome order, preserving each list's configured order. Each later deposit checks the host blocks left by earlier deposits. Worker completion order does not decide which overlapping deposit wins. A preparation failure aborts the chunk after all submitted workers finish. Iris retains the original failure and concurrent causes instead of completing the chunk with a missing deposit batch.
 
 ### What a deposit actually does
 

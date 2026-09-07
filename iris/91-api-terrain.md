@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-06T16:11:26.578Z
+date: 2026-09-07T04:32:21.784Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -72,6 +72,12 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 
 `surfaceKind` reports `RIVER`, `RIVER_SHORE`, or `DRY_CHANNEL` inside a footprint, and `surfaceHeight` under a river is the bed. A cold read may plan the river tile on the calling thread, so keep wide scans off tick threads. See [36 - Rivers](/iris/36-rivers).
 
+## River policy resolution
+
+`RiverPolicyResolver.resolveWithStatus(dimension, region, biome)` returns the inherited policy and a `complete` flag. The flag is false if a declared river-biome reference returns null during that resolution. Filtering and inheritance match `resolve(...)`.
+
+`IrisRiverPolicy.compatBiomes(declared, data, field, onUnresolvedReference)` calls the callback for each reference that the loader cannot resolve. The three-argument overload keeps its existing filtering behavior.
+
 ## Engine biome previews
 
 `Engine.getBiomeOrMantleEnvironment(x, y, z)` returns the region, biome, and defining data together. It includes mantle cave and flooded-biome overrides where saved records do not apply. Saved records remain authoritative. A pending saved read throws `SavedBiomeUnavailableException` with `isLoading()` set; callers that display status should retry later without blocking the gameplay thread.
@@ -85,3 +91,13 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 POI positions use world X/Z and internal Y. Add the dimension minimum height to internal Y when converting to an absolute world height. The current mantle fallback uses the same coordinates for chunks without sealed records.
 
 Recorded cave facts include only cells that remain open after terrain reconciliation. These are generation facts, not a live inventory of player edits. Terrain placement queries in the transition band use resolved natural geometry. Speculative queries do not record generated ownership or native terrain capsules.
+
+## Engine terrain journals
+
+`TerrainMatterView.getComposedCavern(chunk, x, y, z)` reads cave intent under one chunk lock, using internal Y and chunk-local X/Z coordinates. It honors captured original values from object placement; non-null hydrology overrides the baseline cavern, including a seal guard that returns `null`. Missing chunks, sections, and out-of-range Y return `null`.
+
+## Engine mantle cleanup
+
+`EngineMantle.cleanupChunk(x, z)` and `forceCleanupChunk(x, z)` validate coverage before removing temporary slices. `cleanupChunksCoveredBy(x, z, force, callback)` visits candidates affected by a completed chunk and calls back only for newly cleaned chunks. Coordinates are chunk coordinates.
+
+`cleanupCoveredChunk(x, z, force)` requires the caller to have already verified the complete coverage halo. It performs the atomic cleaned-flag and slice update without checking coverage itself. Prefer the coverage-checking methods for ordinary callers. Retained mantle slices survive both normal and forced cleanup.

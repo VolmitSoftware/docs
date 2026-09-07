@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-06T22:00:00.000Z
+date: 2026-09-07T05:11:49.713Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,9 +11,9 @@ Iris throughput is bounded by four things. First, how many chunks the
 platform will let Iris generate at once. Second, how much mantle stays
 resident in heap. Third, how often pack resources are reloaded from disk.
 Fourth, whether the JVM has the incubator Vector API. This page is organized by the symptom you are
-looking at, not by settings file order. Every knob lives in
+looking at, not by settings file order. Iris settings live in
 `iris.json` under the Iris data directory
-([03 - Configuration](/iris/03-configuration)). Pregeneration operations
+([03 - Configuration](/iris/03-configuration)); platform settings live in the server configuration. Pregeneration operations
 are in [07 - Pregeneration](/iris/07-pregeneration). Tuning must leave
 GoldenHash unchanged. A deliberate generation-contract change must be
 documented and re-baselined instead
@@ -43,6 +43,12 @@ For sustained-rate acceptance, discard the startup and hydrology-planning warmup
 Reach for JProfiler when the numbers move without an obvious cause:
 stalls, allocation pressure, or scheduler behavior. A faster
 pregeneration status line on its own does not tell you why.
+
+Keep diagnostic captures separate from throughput acceptance. Use a fresh JVM with no profiler attached for the acceptance run, with the same jar, pack, seed, area, and configuration.
+
+## LEAF entity RNG
+
+On LEAF 26.2-99 with the faster random generator disabled, set `world-settings.default.settings.entity.shared-random: false` in `purpur.yml` before parallel pregeneration and restart. The enabled shared RNG uses an unsynchronized seed update when entity constructors generate UUIDs; concurrent creation can repeat UUIDs and cause entities to be rejected. Disabling sharing gives each entity its own RNG without disabling spawns or structures. Check world-specific overrides if present.
 
 ## Symptom: pregeneration is slow
 
@@ -121,11 +127,19 @@ Cold hydrology tile planning and chunk-column composition run outside cache inse
 
 The JVM property `iris.mantle.componentTimeout` defaults to 120,000 milliseconds. When the wait detects that threshold, it reports the timeout and requests cancellation. A queued component cannot start after cancellation. A running component retains its shared task entry and writer until it exits. Work that does not exit leaves generation and shutdown incomplete instead of releasing storage beneath active writes.
 
-Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original evaluation order. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
+Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original evaluation order. Signed noise checks mutable generator state once before entering its fast sampling path; cache invalidation and nested mutation behavior are unchanged. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
+
+Each hydrology runtime reuses resolved river policies and profile lists for up to 1,024 region, biome, and loader identities. Coordinate-dependent geometry and biome selection still run for each sample. Failed reference loads remain retryable. Reloads rebuild this cache with the runtime.
 
 Height, policy, and footprint basis queries skip slope calculations when the result does not use slope. This avoids two neighboring height samples for each such uncached query. Route scoring and terrain checks that use slope retain those calculations. Repeated centerline refinement reuses its geometric turn costs and completed guides within the current owner draft.
 
 Large cave-density passes divide independent samples among up to four workers in the current pool. Fixed noise styles also calculate aquifer eligibility in those tasks. Expression styles keep their serial evaluation order. Mantle writes and final fluid-support resolution remain on the calling generation worker. Workers claim pending density tasks themselves and drain started tasks before returning, including on failure or interruption.
+
+Carving resolution checks runtime, dimension, and data identity at each public entry, then reuses that bound data during the traversal. Nested runtime changes still invalidate the resolver state. Wall palette application also reuses the current invocation’s dimension data instead of resolving it for each wall block. Natural cave decoration reads the fixed chunk dimensions once before its column scans.
+
+Terrain scans avoid rereading each occupied mantle cell. Object-placement journals still restore original terrain, including removed cells, and preserve callback order. Cave composition reads the section and original-cell journal once under the chunk lock. Hydrology takes precedence, and its presence skips the unused baseline cave read.
+
+Cave-biome blending resolves the center and makes its existing deterministic weighted choice before sampling a neighbor. It queries only the selected neighbor, retaining the same coordinate, weight, and null-to-center fallback. The selected query keeps normal runtime routing, and the parent random generator is unchanged.
 
 Child-biome and carving-child selection plans store cumulative rarity counts. Plan storage scales with the number of choices, without allocating repeated entries for each rarity slot. Existing authored rarity ranges and ordinary selection results remain unchanged.
 
@@ -133,13 +147,23 @@ Object smart boring scans its occupied bounds directly in X, Y, then Z order und
 
 Generation-history routing leases a ready runtime in one metadata-lock acquisition. Repeated coordinate queries read an attached router without acquiring its attachment monitor. Missing routers still pass synchronized publication and detach checks. Routing and generation admission use nonfair lock handoffs to reduce contention between generation workers. Waiting cutovers explicitly block later stage admission until existing stages drain and publication finishes. Coordinate ownership, activation boundaries, and shutdown drains retain their existing checks. These changes require no configuration changes.
 
-Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims keep their existing serialization and become visible only after their journal entries are flushed to durable storage.
+Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims enter a bounded queue before acquiring the history lock. A writer validates up to 32 waiting claims and shares one durable flush per region journal. Full queues apply backpressure without rejecting claims. Publication and successful returns wait for durable storage; each claim keeps its duplicate, conflict, and failure result. Journal frames and activation admission rules are unchanged. Point queries read the last durable semantic snapshot while an append flushes. The writing region’s prior snapshot remains available through cache eviction, so readers cannot replay unflushed bytes. Mutation, bulk-query, and activation-cutover ordering remain serialized.
 
-Saved-biome records are encoded outside the region write lock. Each append writes its length, payload, and checksum as one record, then flushes it before publishing the claim. A second check under the lock rejects conflicting claims and avoids duplicate writes. The file format, rollback behavior, and durability requirements remain unchanged.
+Mantle cleanup rechecks a previously missing neighbor before rescanning an overlapping coverage halo. A still-missing neighbor rules out that candidate immediately; successful cleanup still requires a full current coverage scan. Cleanup order, retained slices, and chunk locking are unchanged.
 
-Natural-terrain receipts buffer their field writes before compression. Complete and boundary-only receipts retain the same encoded data, biome identities, geometry, and provenance. No format or configuration change is required.
+Semantic cave capture tracks duplicate coordinates with a chunk-local bitset. It retains the first cave biome at each position and still collects hydrology fluid profiles from overlapping cells. This removes per-voxel coordinate objects during capture without changing saved records. Semantic builders validate each distinct resource key once while accumulating it, then sort keys when creating the immutable record. Duplicate samples skip repeated UTF-8 encoding; key validation, limits, and saved ordering remain unchanged.
 
-Native volume-cache invalidation transfers the runtime-retirement listener to the replacement index. Retirement removes pending build registrations under the same locks that publish cache entries, so an older build cannot restore its retired entry after eviction. Origin-window locking and cache capacities retain their existing behavior.
+Saved-biome records are encoded outside the region write lock. A writer processes up to 64 already-queued claims, sharing one durable flush among records in the same region. Each record retains its length, payload, and checksum. Claims become visible only after that flush completes, and duplicate and conflict checks remain under the region lock. A failed batch rolls back all its appended records. No configuration or file-format change is required.
+
+Saved-biome and semantic journal writes retain the original failure and any rollback failure. If an append cannot confirm either durable success or durable rollback, the affected store rejects further writes and uncached reads until it is reopened. Resolve the storage failure before restarting generation.
+
+World column caches compare the current thread’s last chunk before calculating its map key. Cache capacity, eviction, and resolved values remain unchanged.
+
+Ore variant conversion reuses mapped materials instead of copying the full material array for each converted block. Each converted ore still receives fresh block data with the target material’s default state; unchanged ores retain their original state.
+
+Natural-terrain receipts buffer field writes before compression and reuse encoded biome and block names within each receipt. The string cache has fixed entry and byte limits. Complete and boundary-only receipts retain identical encoded bytes, biome identities, geometry, and provenance. No format or configuration change is required.
+
+Native volume-cache invalidation transfers the runtime-retirement listener to the replacement index. Retirement removes pending build registrations under the same locks that publish cache entries, so an older build cannot restore its retired entry after eviction. Queries with a pinned matching generation runtime reuse cached origins without opening another coordinate scope for each cache hit. Cache misses and unpinned or mismatched runtimes retain coordinate routing. Origin-window locking and cache capacities retain their existing behavior.
 
 Bukkit terrain capture reuses biome wrappers in one cache bounded to 4,096 native handles. The wrapper reads the typed registry key only when inserted. Identity-based lookup keeps replacement registry handles distinct and removes repeated reflective key lookup from terrain capture.
 
