@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-06T22:23:00.000Z
+date: 2026-09-08T10:20:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -170,7 +170,7 @@ Pregen's per-chunk cleanup keeps retained mantle slices. Marker spawn points and
 |---|---|---|
 | `pregen.maxResidentTectonicPlates` | `96`, floored at `16` | The headline speed/memory tradeoff. Raise it to keep more mantle in RAM and cut re-reads. Lower it when the run is pushing the heap |
 | Effective plate cap | `max(16, min(baseCap, heightScaledCap, heapBudgetCap))` | Computed, not configured. `heightScaledCap` scales the base cap by `384 / worldHeight`, so tall worlds automatically hold fewer plates. `heapBudgetCap` allows about 60% of max heap against a 48 MB reference plate |
-| `mantleBackpressureWaitMs` | `25`, clamped 5–1000 | How long the generator sleeps per backpressure check. Rarely worth changing |
+| `mantleBackpressureWaitMs` | `25`, clamped 5–1000 | Upper bound on one backpressure wait. The wait ends as soon as a chunk finishes and frees mantle pressure, so this is a ceiling, not a fixed sleep. Rarely worth changing |
 | `mantleBackpressureTimeoutMs` | `60000`, clamped 5s–600s | How long backpressure waits before giving up. On timeout Iris logs and proceeds anyway — it never deadlocks the run |
 | Hard cap trigger | Loaded plates greater than `effectiveCap × 2` | Forces a wait-and-evict cycle. Seeing this in logs means the cap is too high for your heap |
 | Heap pressure gate | Pause at 92% used. Release at 82%, or after 60 seconds continuously below 92% | The bounded hysteresis prevents flapping without wedging a run whose collector settles between the two thresholds. Returning to 92% resets the 60-second release window |
@@ -228,6 +228,8 @@ Starting pregeneration temporarily applies Iris's pregen performance settings on
 On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. Iris does not enqueue every hydrology tile in the requested area at startup. Iris discards queued speculative plans outside the initial lookahead and admits the new frontier in one queue update, so concurrent spawn-area prefetch cannot enter between those operations; active plans and requested tiles still complete. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 Stopping or completing a job unloads its tracked chunks with saving enabled and waits for the resulting chunk I/O flush. Iris does not issue a plugin-induced whole-world save, so servers with automatic saving enabled do not emit the manual-save performance warning during normal pregen cleanup.
+
+Pregeneration raises the shared burst pool's parallelism while a job runs and returns it to its previous size when the last concurrent job finishes, so a server that pregenerates once no longer keeps the enlarged pool for the rest of its uptime.
 
 ## Operator notes
 

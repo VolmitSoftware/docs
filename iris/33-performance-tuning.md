@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-07T05:11:49.713Z
+date: 2026-09-08T10:20:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -436,39 +436,11 @@ If you need less generation concurrency, use `serial=true` (Bukkit) or
 
 ## SIMD
 
-What actually uses vector kernels today is narrow: an array rounding path
-in the chunked double data cache, and array operations in mantle carving.
-The 2D fractal noise vector kernels (`VectorNoiseKernels2D`) exist and
-are correct, but nothing in the production worldgen path calls
-`SimdSupport.noiseKernels2D()` yet. Treat noise SIMD as unfinished and do
-not size hardware around it.
+What actually uses vector kernels today is narrow: an array rounding path in the chunked double data cache, and array operations in mantle carving. There are no vector noise kernels; a 2D fractal noise vector kernel was measured at 0.07x scalar on 2-lane NEON and removed. Do not size hardware around noise SIMD.
 
-Selection happens once, at class initialization:
+Selection happens once, at class initialization: `performance.simdKernels` false selects scalar; otherwise, if `jdk.incubator.vector` is present and the vector kernel class loads, vector kernels are used; otherwise scalar. On a 2-lane CPU such as Apple Silicon NEON, the array kernels are roughly a wash: rounding is slower, max is faster.
 
-1. `performance.simdKernels` false → scalar kernels.
-2. Otherwise, if the `jdk.incubator.vector` module is present and the
-   vector kernel class loads → vector kernels.
-3. Otherwise → scalar kernels, with a startup log line telling you to add
-   the flag.
-
-The 2D noise kernels add one more gate. They are selected only when the
-preferred `double` and `long` vector species have matching lane counts
-and at least 4 double lanes. Apple Silicon NEON, at 2 lanes, does not
-qualify.
-
-The JVM flag is required for any vector path:
-
-```
---add-modules jdk.incubator.vector
-```
-
-Add the flag to the production server's start script.
-
-To A/B on a real server: set `performance.simdKernels` false, restart,
-and measure pregeneration chunks/second. Then set it true, restart, and
-measure again. Confirm GoldenHash is unchanged
-([32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)).
-The standalone SIMD benchmark does not predict end-to-end pregeneration gains.
+The startup log prints one of five SIMD lines: vector kernels active; scalar kernels active because `performance.simdKernels` is false; scalar kernels active because `jdk.incubator.vector` is not added to the JVM; `SIMD: scalar kernels active; vector kernel initialization failed: <class>: <message>`; or `SIMD: scalar kernels active; the Vector API reported no usable vector shape on this CPU`. A load failure is reported as a load failure instead of being labelled `performance.simdKernels=false`.
 
 ## Measurement checklist
 

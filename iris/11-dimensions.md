@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-08T07:50:00.000Z
+date: 2026-09-08T08:08:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -471,12 +471,12 @@ If the referenced key cannot be loaded, Iris warns and skips upper terrain. It d
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
 | `upperDimension` | string | `"none"` | Load key of the dimension whose terrain becomes the ceiling. Self-reference is allowed and produces a mirrored world |
-| `upperDimensionGap` | int | `32` | Minimum air blocks kept between the lower surface and the upper surface, 0 to 256. Raise it if the two halves close up in high terrain |
+| `upperDimensionGap` | int | `32` | Minimum vertical distance between the lower and upper solid surfaces, 0 to 256. A distance of 32 leaves 31 air blocks. Clipping into a `terrain3D` opening can move the upper face farther away |
 | `upperDimensionCarving` | boolean | `false` | Lets cave carving cut through the ceiling terrain. When false, the cave carver leaves upper terrain unchanged; intrinsic biome `terrain3D` openings remain |
 | `upperDimensionObjects` | boolean | `false` | Lets mantle objects place in the upper zone. False protects the ceiling from trees and structures |
 | `upperObjectsForcePlace` | boolean | `false` | Upper objects ignore slope, underwater, clamp, collision, and carving restrictions. Lower-dimension objects always place first. If you enable this, upper objects can clip through them |
 
-Biome `terrain3D` also shapes the referenced upper terrain. Iris mirrors the resulting solid spans, including their openings, into the ceiling space. Surface and support queries use the rendered volume after gap and world-height clipping.
+Biome `terrain3D` also shapes the referenced upper terrain. Iris mirrors the resulting solid spans, including their openings, into the ceiling space. Each span uses its source height and slope to select surface layers and locked layer patterns. Upper object anchors and terrain support queries follow the solid faces after gap and world-height clipping.
 
 ## Upright dimension stacks
 
@@ -493,7 +493,7 @@ Biome `terrain3D` also shapes the referenced upper terrain. Iris mirrors the res
 
 `spacer` accepts `0..256` blocks and defaults to `32`. Without `blend`, the configured air gap is constant. Optional `blend` supplies a noise `style` and an `amplitude` in `0..256` blocks. Its default amplitude is `8`, with `SIMPLEX` noise. Each adjacent boundary uses an independent noise seed.
 
-Each extra layer supplies base terrain, biome `terrain3D` spans, surface and sea materials, rock, fluid, bedrock, image maps and biome identity. The owning dimension's generation pipeline runs once. Referenced-layer caves, hydrology, decorators, objects and structures do not receive separate generation passes. The stack fits inside the owning world's height limits. Clipped height and support queries follow the actual remaining solid spans.
+Each extra layer supplies base terrain, biome `terrain3D` spans, surface and sea materials, rock, fluid, bedrock, image maps and biome identity. Surface palettes use each span's source height and slope, including locked layer patterns. Regions selected only by an image map contribute their biomes and terrain profiles. The owning dimension's generation pipeline runs once. Referenced-layer caves, hydrology, decorators, objects and structures do not receive separate generation passes. The stack fits inside the owning world's height limits. Clipped height and support queries follow the actual remaining solid spans.
 
 ## Loot, spawners, and block drops
 
