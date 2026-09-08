@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-08T00:00:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ Pages `00`–`44` cover server operation and pack authoring. Pages `90`–`94` c
 |---|---|
 | Get Iris running and make one world | [01 - Installation & Platforms](/iris/01-installation-platforms) → [02 - Getting Started](/iris/02-getting-started) → [31 - Operator Runbooks](/iris/31-operator-runbooks) |
 | Write a pack from scratch | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) → [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) → [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
-| Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) |
+| Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) → [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Drive generation from PNG data | [37 - Image Map Concepts](/iris/37-image-map-concepts) → [38 - Supported Image Inputs](/iris/38-supported-image-inputs) → the relevant type guide → [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) → [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
 | Browse every active built-in biome | [44 - Biome Catalog](/iris/44-biome-catalog) |
 | Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
@@ -69,6 +69,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Regions | Region-level content | [12 - Regions](/iris/12-regions) |
 | Biomes | Biome JSON, layers, custom biomes, spawns | [13 - Biomes](/iris/13-biomes) |
 | Generators and noise | Generators, styles, expressions, images | [14 - Generators & Noise](/iris/14-generators-noise) |
+| Volumetric terrain | Biome `terrain3D` profile, spans and ledges, validation, terrain probe | [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Noise atlas | All style previews, 3D slices, zoom and octave comparisons, PDF | [45 - Noise Atlas](/iris/45-noise-atlas) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
 | Rivers | Terrain-first routing, hydraulic transitions, caves, deep fluids, and river policy | [36 - Rivers](/iris/36-rivers) |

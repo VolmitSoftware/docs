@@ -2,7 +2,7 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-09-08T08:00:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,7 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [20 - Object Placement](/iris/20-object-placement)
 - [25 - Pack Management](/iris/25-pack-management)
+- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
 
 ## The mental model
 
@@ -141,7 +142,7 @@ Skip it when a value appears once. A snippet reference costs a file open and add
 Because the adapter writes resolved objects rather than strings, exported packs handle snippets differently per platform:
 
 - **Bukkit `/iris pack package`** re-serializes the loaded object graph. Snippet references are inlined into the dimension, region, biome, and generator JSON. The export has no `snippet/` folder and does not need one.
-- **Modded `/iris studio package`** preserves source references and copies all JSON files under `snippet/`, including subfolders. Terrain profiles and their nested style snippets remain available in the exported pack.
+- **Modded `/iris studio package`** preserves source references and copies all JSON files under `snippet/`, including subfolders. Terrain profiles and their nested style snippets remain available in the exported pack. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain).
 
 See [25 - Pack Management](/iris/25-pack-management) for the full export contents and the gaps in both compilers.
 
@@ -214,7 +215,7 @@ Each value is the folder name under `snippet/` and the required prefix for refer
 | `stilt-settings` | `IrisStiltSettings` |
 | `style` | `IrisGeneratorStyle` |
 | `style-range` | `IrisStyledRange` |
-| `terrain-3d` | `IrisTerrain3D` |
+| `terrain-3d` | `IrisTerrain3D` — see [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | `time-block` | `IrisTimeBlock` |
 | `tree` | `IrisTree` |
 | `tree-branches` | `IrisTreeBranches` |

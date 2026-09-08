@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-08T07:30:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,12 +21,13 @@ Related:
 - [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
 
 The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur), a 26.2 cave family derived from the dripstone profiles with sulfur spikes, banded mineral formations and contained pools. The paired Underworld uses the same shapes with lava and Nether ecology.
 
 ## Biome overhangs and cave carving
 
-Biome [`terrain3D`](/iris/13-biomes#volumetric-biome-terrain) creates solid spans and open gaps during terrain generation. It works independently of `carvingEnabled` and can add volume as well as remove it. Cave profiles operate on the resulting terrain. Natural gaps beneath overhangs retain their surface biome and receive surface decoration on their ledges. Ordinary cave intent does not fill these gaps with cave fluid. Accepted hydrology retains its planned terrain and fluid ownership.
+Biome [`terrain3D`](/iris/47-volumetric-terrain) creates solid spans and open gaps during terrain generation. It works independently of `carvingEnabled` and can add volume as well as remove it. Cave profiles operate on the resulting terrain. Natural gaps beneath overhangs retain their surface biome and receive surface decoration on their ledges. Ordinary cave intent does not fill these gaps with cave fluid. Accepted hydrology retains its planned terrain and fluid ownership.
 
 ## The mental model
 

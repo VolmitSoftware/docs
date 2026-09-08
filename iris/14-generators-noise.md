@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-08T07:30:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,7 +81,16 @@ Generators control shape and smoothing radius; biomes control the height range. 
 
 ### Volumetric shaping after height generation
 
-Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around that height. It can produce overhangs, covered ledges and fissures that a single height per column cannot represent. Generator cliffs and cell fracture remain height-map operations. See [Volumetric biome terrain](/iris/13-biomes#volumetric-biome-terrain) for the profile fields.
+Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around that height. It can produce overhangs, covered ledges and fissures that a single height per column cannot represent. Generator cliffs and cell fracture remain height-map operations.
+
+The profile consumes two `IrisGeneratorStyle` values, both defaulting to `SIMPLEX` and both sampled signed in three dimensions:
+
+| Profile field | Role | Sampling |
+|---|---|---|
+| `densityStyle` | Displaces terrain density above and below the base height | `64 / horizontalScale` per block in X and Z, `64 / verticalScale` per block in Y |
+| `crackStyle` | Its zero crossings define tall narrow fissures | `64 / crackScale` per block in X and Z, a quarter of that in Y |
+
+Style `zoom` multiplies the configured feature sizes, and each style is seeded independently from the profile seed. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain) for the full profile reference.
 
 ## Walkthrough: add a generator and prove it is wired
 

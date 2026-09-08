@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-08T07:30:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -74,7 +74,7 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 
 ## Volumetric terrain queries
 
-For biome `terrain3D`, natural-height queries return the highest solid block after volumetric shaping. `surfaceHeight` remains a single height per column. It does not enumerate lower ledges. River-owned columns report the accepted bed. Biome queries within a natural overhang gap and at its exposed floors retain the surface biome. A lower Y alone does not select a cave biome.
+For biome [`terrain3D`](/iris/47-volumetric-terrain), natural-height queries return the highest solid block after volumetric shaping. `surfaceHeight` remains a single height per column. It does not enumerate lower ledges. River-owned columns report the accepted bed. Biome queries within a natural overhang gap and at its exposed floors retain the surface biome. A lower Y alone does not select a cave biome.
 
 Engine terrain-column queries expose the shaped solid spans in internal Y. Solidity and carving queries include their open gaps. Object-placement transactions use the same density openings in prerequisite carving queries, with saved geometry and hydrology overrides retaining precedence. Additional stacked, inverted or floating terrain supplies its own support volume. Generation-history records remain authoritative for saved terrain.
 

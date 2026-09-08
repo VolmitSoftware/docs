@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-08T07:30:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,7 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
+- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
 - [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
@@ -49,11 +50,11 @@ A cold `derivative` tints grass and can freeze water. It does not stamp snow lay
 
 ## Layers on volumetric terrain
 
-With biome [`terrain3D`](/iris/13-biomes#volumetric-biome-terrain), the terrain actuator skips air gaps and restarts the layer stack at each exposed solid floor. Ores cannot claim the skipped cells. The bottom two blocks of an overhang use `caveCeilingLayers`, or dimension rock when those layers are absent, while retaining the top two blocks of thin ledges.
+With biome [`terrain3D`](/iris/47-volumetric-terrain), the terrain actuator skips air gaps and restarts the layer stack at each exposed solid floor. Ores cannot claim the skipped cells. The bottom two blocks of an overhang use `caveCeilingLayers`, or dimension rock when those layers are absent, while retaining the top two blocks of thin ledges.
 
-The surface decorator actuator also visits covered lower floors and their opposing ceilings. It checks the generated support and limits decoration to the available headroom. Surface palettes come from the biome at that column. Trees, objects and structures retain their existing placement rules.
+The decorant pass walks every span pair in the column. Where a ledge floor is solid and at least one block of headroom is open above it, the surface decorator runs on that floor with the headroom as its space. Where the span above that gap is solid, the ceiling decorator runs on its underside, one block down from the covering span's base. Surface palettes come from the biome at that column. Trees, objects and structures retain their existing placement rules.
 
-Slope clips for lower-floor layers and surface decorators use neighboring ledge heights. A steep upper cap does not make a flat lower ledge use steep-slope materials. These clips retain the existing three-block slope metric, separate from the density profile's rise/run gate.
+Slope clips for lower-floor layers and decorator `slopeCondition` are evaluated against the slope of the ledge they sit on, not the column heightmap: the nearest solid surface three blocks east and three blocks south of that ledge. A steep upper cap does not make a flat lower ledge use steep-slope materials. Columns with no shaped span, and any Y that is not itself a span floor, fall back to the ordinary slope stream. These clips retain the existing three-block slope metric, separate from the density profile's rise/run gate.
 
 ## Walkthrough: a surface, a flower scatter, and an ore vein
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-06T00:32:42.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -153,7 +153,7 @@ Use the Bukkit command names shown below.
 | `version` | | Both | — | Print Iris/platform/Minecraft version and engine count |
 | `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions and pack details. Seed only for gamemasters |
 | `create` | `c` | Both | **Bukkit:** `<name=…> [type=<installed-pack-or-dimension>] [seed=1337]` (`name` alias `world-name`. `type` aliases `dimension`,`pack`. Omitting `type` uses `generator.defaultWorldType`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension. Bukkit creation is confined to `iris:*` and remains supported on Spigot |
-| `replace` | `override`, `overwrite` | **Paper-family**. Spigot rejects it | `<target> [type=default] [seed=preserve]` (`type` aliases `dimension`,`pack`. `seed` alias `s`) | Cold-replace an existing safe `iris:*` world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot. Omit `seed` to preserve it or provide a signed 64-bit replacement seed |
+| `replace` | `override`, `overwrite` | **Paper-family**. Spigot rejects it | `<target> [type=default] [seed=preserve]` (`target` alias `world-name`. `type` aliases `dimension`,`pack`. `seed` alias `s`) | Cold-replace an existing safe `iris:*` world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot. Omit `seed` to preserve it or provide a signed 64-bit replacement seed |
 | `teleport` | `tp` | Both | **Bukkit:** `<world> [player]` (defaults to the sender). **Modded:** `<dimension> [player]` | Teleport self or a named player into an Iris world/dimension |
 | `evacuate` | | Both | **Bukkit:** `<world>`, player origin. **Modded:** `[dimension]` | Move players out of an Iris world to fallback/primary |
 | `height` | | Both | — | Print world height. Player origin on Bukkit |
@@ -178,7 +178,7 @@ Use the Bukkit command names shown below.
 | `object` | `o` | Both | see Object | Object tools |
 | `studio` | `std`, `s` | Both | see Studio | Studio / pack authoring |
 | `jigsaw` | `jig`, `jgs` | **Bukkit** | see Jigsaw | Transaction-owned planar/spatial Jigsaw Studio |
-| `pack` | `pk` | Both | see Pack | Validate/cleanup/restore/status/compat |
+| `pack` | `pk` | Both | see Pack | Validate/package/cleanup/restore/status/compat |
 | `structure` | `struct`, `str` | Both | see Structure | Structure index/import/place |
 | `datapack` | `datapacks`, `dp` | Both | see Datapack | Datapack helpers |
 | `Developer` | `dev` | Both | see Developer | Diagnostics. The group name is registered with a capital `D`, but matching is case-insensitive |
@@ -300,11 +300,12 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `tpstudio` | `stp` | Both | — | Teleport into the open studio under the same absolute 10-second command-admission deadline |
 | `status` | | **Modded** | — | Show the open studio and pack |
 | `create` | `+` | Both | **Bukkit:** `[name=studio] [template]`. **Modded:** `[name] [template=example]` | Create a pack project |
-| `pkg` | `package` | Both | **Bukkit:** `[dimension=default] [obfuscate=false] [minify=true]`. **Modded:** `[pack]` | Zip and package a pack. The Bukkit command name is `pkg`. `package` is the alias |
+| `package` | `pkg` | **Modded** | `[pack]` | Zip and package a pack. On Bukkit this node lives under `/iris pack pkg` instead |
 | `version` | | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Pack version |
 | `regions` | | Both | **Bukkit:** `[radius=500]`, player origin. **Modded:** `[radius]`, default 500 | Nearby region distribution |
 | `noise` | `nmap` | Both | **Bukkit:** `[generator] [seed=12345]`. **Modded:** `[generator] [seed]` | Noise explorer GUI |
 | `map` | `render` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Vision map GUI |
+| `imagemap` | `imap` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Image-map studio GUI. Exports are written into that world's active pack |
 | `vscode` | `vsc` | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Generate and open the code workspace |
 | `update` | | Both | same pack argument as `vscode` | Regenerate the workspace only |
 | `importvanilla` | `importv`, `iv` | **Bukkit**. Stub on modded | `<dimension> [variants=3] [structures=true]` | Import vanilla trees/objects/structures into a pack |
@@ -377,10 +378,11 @@ Bukkit has one global Studio project/world and the Jigsaw session belongs to one
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
 | `validate` | `v` | `[pack]` on both platforms. Empty (or `*` on Bukkit) validates every pack | Validate pack(s) and publish results |
+| `pkg` | `package` | **Bukkit-only:** `[dimension=default] [obfuscate=false] [minify=true]` (`dimension` alias `dim`, contextual) | Zip and package a validated dimension. The command name is `pkg`; `package` is the alias. On mod loaders the same node lives under `/iris studio package` |
 | `cleanup` | `c` | **Bukkit:** `<pack> [mode=preview]`. **Modded:** `<pack> [apply]` | Preview or quarantine unused resources |
 | `restore` | `r` | same pattern as `cleanup` | Preview or restore the latest quarantine |
 | `status` | `s` | `[pack]` on both platforms. Empty (or `*` on Bukkit) reports every pack | Startup-published validation status, including persisted unchanged results |
-| `compat` | | `[pack]` on both platforms. Empty (or `*` on Bukkit) reports every pack | List pack content that does not exist on the running Minecraft version, and what the gate did about it. Reads the published validation report and does not reload the pack |
+| `compat` | `cp` | `[pack]` on both platforms. Empty (or `*` on Bukkit) reports every pack | List pack content that does not exist on the running Minecraft version, and what the gate did about it. Reads the published validation report and does not reload the pack |
 
 Every `/iris pack` subcommand shares one permission gate: `iris.all` on Bukkit, gamemaster level 2 on the mod loaders. `compat` is no exception.
 

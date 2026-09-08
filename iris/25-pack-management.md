@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-08T08:00:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -173,6 +173,7 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Pack folder missing, `dimensions/` missing, or no dimension JSON in it | Blocking, and stops the rest of validation |
 | Dimension JSON integrity | Blocking errors and warnings, as emitted |
 | Legacy cave-profile field names, in dimensions/regions/biomes and in `snippet/cave-profile/` | Blocking, with the replacement name named |
+| Biome `terrain3D` profiles and `snippet/terrain-3d/` files — unknown fields, wrong types, out-of-range numbers, unknown noise styles, style nesting past 32 levels, and snippet references that escape the pack | Blocking. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Loot graph — every referenced loot table resolves | Blocking |
 | Removed worldgen fields (currently `fluidBodies`) | Blocking |
 | Rivers (`hydrology` and `riverPolicy`) | Routing, channel, bank, bed, flow, mouth, pool, grotto, and deep-fluid bounds, unique profile and pool IDs, biome and profile references, and dimension-height fit are blocking. See [36 - Rivers](/iris/36-rivers) |

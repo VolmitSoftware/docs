@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-08T11:30:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -95,7 +95,7 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | `general` | `IrisSettingsGeneral` | Locale, debug output, console colors, datapack ingest, strict keys, splash |
 | `world` | `IrisSettingsWorld` | Entity systems, async world tick, pregen cache |
 | `gui` | `IrisSettingsGUI` | Server-launched desktop GUIs |
-| `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot/Paper server-file fixups, custom-biome restart |
+| `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot timeout and Paper watchdog fixups applied at boot |
 | `generator` | `IrisSettingsGenerator` | Default pack, generation transitions, leaf decay |
 | `concurrency` | (not serialized) | Nothing configurable — see below |
 | `studio` | `IrisSettingsStudio` | Studio world behavior |
@@ -216,12 +216,12 @@ This is the memory-versus-rework group. Larger loader caches trade heap for fewe
 
 ### `performance.engineSVC`
 
-The engine maintenance service is a small scheduled pool that trims and unloads mantle plates. Its three sizing keys are read once at enable, so a restart is required for any change to matter.
+The engine maintenance service is a small scheduled pool that trims and unloads mantle plates. Its thread-factory and sizing keys are read once at enable, so a restart is required for those to matter. `forceMulticoreWrite` is the exception and is read live.
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
 | `useVirtualThreads` | `true` | **Restart** | Builds the maintenance thread factory from virtual threads instead of platform threads |
-| `forceMulticoreWrite` | `false` | Live | Makes every maintenance pass unload all eligible tectonic plates instead of only unloading under heap pressure. Trades steadier memory for more write work. Useful during long pregens on a small heap |
+| `forceMulticoreWrite` | `false` | Live | Two effects. Every world fans chunk generation stages and mantle components across the burst pool, which otherwise happens only while a pregeneration is active. Every maintenance pass also unloads all eligible tectonic plates instead of only unloading under heap pressure. Trades steadier memory for more write work and fewer cores left for the rest of the server |
 | `priority` | `5` (`Thread.NORM_PRIORITY`) | **Restart** | Thread priority, clamped to `[MIN_PRIORITY, MAX_PRIORITY]`. It is applied only when `useVirtualThreads` is false, so with the defaults this key does nothing |
 | `parallelism` | `-1` | **Restart** | Maintenance pool size. `>0` is capped at `processors * 2`. `<=0` uses `ceil(sqrt(processors))`, at least 1 |
 

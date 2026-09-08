@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-08T10:20:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,9 +69,9 @@ Then restart the server cleanly and fly to the edge of the generated area. Chunk
 /iris pregen stop
 ```
 
-Stop lets in-flight chunks finish, then cancels. Wait for it to actually close before starting another job. Starting a new one closes the previous instance, which is not the same as it having shut down cleanly.
+Stop lets in-flight chunks finish, then cancels. Wait for it to actually close before starting another job. Starting a new one while the old job still exists is rejected outright — Iris never kills a running job to make room, because the old job's teardown would overlap the new job's generation.
 
-Unloading or removing a world also stops a pregen targeting that world. That path blocks for up to 15 seconds waiting for the job to close and throws if it does not.
+Unloading or removing a world also stops a pregen targeting that world. That path blocks for up to 200 seconds waiting for the job to close and throws if it does not.
 
 ### Fabric / Forge / NeoForge
 
@@ -223,7 +223,7 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 
 ## Performance profile
 
-Starting pregeneration temporarily applies Iris's pregen performance settings on the pregenerator worker. The natural-height and raw-height caches are resized in place before generation begins. The resolved terrain stream and its boundary transition state remain active; cache resizing does not rebuild the engine. Normal settings return when the job ends.
+Starting pregeneration applies Iris's pregen performance settings on the pregenerator worker. `performance.noiseCacheSize` is raised to at least 4096 in memory, and the natural-height and raw-height caches are resized in place before generation begins. The resolved terrain stream and its boundary transition state remain active; cache resizing does not rebuild the engine. The raised noise cache size is not lowered again for the life of the process. The burst pool parallelism is the one thing that does return when the job ends.
 
 On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. Iris does not enqueue every hydrology tile in the requested area at startup. Iris discards queued speculative plans outside the initial lookahead and admits the new frontier in one queue update, so concurrent spawn-area prefetch cannot enter between those operations; active plans and requested tiles still complete. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

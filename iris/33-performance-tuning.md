@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-08T10:20:00.000Z
+date: 2026-09-08T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -106,12 +106,13 @@ something.
    raises the effective plate count without any settings change.
 
 `performance.noiseCacheSize` is not worth tuning for pregeneration.
-Starting a pregeneration raises it to at least 4096 in memory, hotloads
-the engine, and sets `iris.cache.fast` as a system property. Neither is
-lowered again for the life of the process. The Bukkit plugin already sets
-`iris.cache.fast` during startup. On mod loaders it only comes on with
-the first pregeneration. Pass `-Diris.cache.fast=true` on the JVM
-command line there if you want it covering ordinary generation too.
+Starting a pregeneration raises it to at least 4096 in memory and resizes
+the engine's natural-height and raw-height caches in place. The engine is
+not rebuilt, and the raised value is not lowered again for the life of
+the process. The `iris.cache.fast` system property is separate: the
+Bukkit plugin sets it in its class initializer, before anything else
+runs. Mod loaders never set it, so pass `-Diris.cache.fast=true` on the
+JVM command line there if you want it.
 
 ### Hydrology-heavy packs
 
@@ -254,15 +255,20 @@ appear close to the panel limit even while most of that heap is empty.
 5. **Slow the pregeneration down.** Backpressure knobs decide how long a
    generation thread waits when the mantle plate budget is full.
    `pregen.mantleBackpressureWaitMs` (default 25, clamped 5–1000) is the
-   wait between retries. `pregen.mantleBackpressureTimeoutMs` (default
-   60000, clamped 5000–600000) is how long it waits before giving up on
-   that chunk. Raising the timeout buys a slow job time to finish instead
-   of failing chunks. It does not reduce memory use.
+   upper bound on one wait; it ends early as soon as a chunk completes
+   and frees pressure. `pregen.mantleBackpressureTimeoutMs` (default
+   60000, clamped 5000–600000) is how long the wait can accumulate before
+   Iris gives up on waiting. On timeout it warns, lowers the adaptive
+   in-flight limit, and proceeds with the chunk anyway; nothing is failed
+   and the run never deadlocks. Neither knob reduces memory use.
 
-`performance.engineSVC.forceMulticoreWrite` (default false) makes mantle
-plate unloading use the parallel path all the time instead of only under
-heap pressure. It returns memory faster during sustained generation and
-costs CPU that would otherwise go to generating.
+`performance.engineSVC.forceMulticoreWrite` (default false) does two
+things. It makes mantle plate unloading use the parallel path all the
+time instead of only under heap pressure, which returns memory faster
+during sustained generation. It also makes every world fan chunk
+generation across the burst pool, which otherwise happens only while a
+pregeneration is active. Both cost CPU that would otherwise go to the
+rest of the server. See [03 - Configuration](/iris/03-configuration).
 
 ## Symptom: Entering a fresh world or a new Studio takes tens of seconds
 
@@ -403,8 +409,8 @@ separately (see below).
 | `pregen.timeoutWarnIntervalMs` | `500` | Minimum gap between repeated slow-request warnings. Minimum 250 |
 | `pregen.saveIntervalMs` | `30000` | Gap between pregen progress flushes. Clamped 5000–900000 |
 | `pregen.maxResidentTectonicPlates` | `96` | Ceiling on resident mantle plates before the height and heap budgets narrow it further. Never drops below 16 |
-| `pregen.mantleBackpressureWaitMs` | `25` | Pause between retries when the plate budget is full. Clamped 5–1000 |
-| `pregen.mantleBackpressureTimeoutMs` | `60000` | How long a chunk waits on backpressure before failing. Clamped 5000–600000 |
+| `pregen.mantleBackpressureWaitMs` | `25` | Upper bound on one backpressure wait when the plate budget is full; a completing chunk ends it early. Clamped 5–1000 |
+| `pregen.mantleBackpressureTimeoutMs` | `60000` | How long backpressure waits before it warns, lowers the adaptive in-flight limit, and proceeds anyway. The chunk is not failed. Clamped 5000–600000 |
 | `pregen.moddedPregenInFlight` | `0` | Concurrent pregen chunks on mod loaders. `0` resolves to `clamp(16, cpu*2, 48)`. Positive values cap at 512. The result is floored at 8 |
 
 Related: `world.globalPregenCache` (default `false`); see
@@ -418,10 +424,10 @@ computed from CPU count at runtime and cannot be overridden from the
 file:
 
 - Generation burst pool: `max(2, availableProcessors)`, raised to
-  `availableProcessors × 2` for the rest of the process once a
-  pregeneration starts
-- Hydrology planning pool: `max(2, availableProcessors / 3)`, so long
-  tile plans never occupy generation workers
+  `max(4, availableProcessors × 2)` while a pregeneration runs and
+  returned to its previous size when the last concurrent job finishes
+- Hydrology planning pool: `max(2, availableProcessors)`, kept separate
+  so long tile plans never occupy generation workers
 - IO burst pool: `max(2, availableProcessors / 2)`
 - Bukkit pregen in-flight cap: effective worker threads × 8, clamped
   16–256 on Paper-like servers and 64–192 on Folia. Paper-like effective
@@ -436,11 +442,11 @@ If you need less generation concurrency, use `serial=true` (Bukkit) or
 
 ## SIMD
 
-What actually uses vector kernels today is narrow: an array rounding path in the chunked double data cache, and array operations in mantle carving. There are no vector noise kernels; a 2D fractal noise vector kernel was measured at 0.07x scalar on 2-lane NEON and removed. Do not size hardware around noise SIMD.
+The kernel interface has three operations — `roundToInt`, `sum`, and `max` — and generation calls two of them from exactly two places: the array rounding path in the chunked double data cache, and one array max in mantle carving. `sum` has no generation call site, and the vector implementation of it is deliberately scalar anyway, because lane-wise accumulation reassociates floating-point addition and would make reductions differ between the two kernel sets. There are no vector noise kernels; a 2D fractal noise vector kernel was measured at 0.07x scalar on 2-lane NEON and removed. Do not size hardware around noise SIMD.
 
 Selection happens once, at class initialization: `performance.simdKernels` false selects scalar; otherwise, if `jdk.incubator.vector` is present and the vector kernel class loads, vector kernels are used; otherwise scalar. On a 2-lane CPU such as Apple Silicon NEON, the array kernels are roughly a wash: rounding is slower, max is faster.
 
-The startup log prints one of five SIMD lines: vector kernels active; scalar kernels active because `performance.simdKernels` is false; scalar kernels active because `jdk.incubator.vector` is not added to the JVM; `SIMD: scalar kernels active; vector kernel initialization failed: <class>: <message>`; or `SIMD: scalar kernels active; the Vector API reported no usable vector shape on this CPU`. A load failure is reported as a load failure instead of being labelled `performance.simdKernels=false`.
+The startup log prints one of five SIMD lines: `SIMD: vector kernels enabled (<description>)`; `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector to JVM flags to enable vectorized generation kernels`; `SIMD: scalar kernels active; vector kernel initialization failed: <class>: <message>`; `SIMD: vector kernels disabled (performance.simdKernels=false)`; or `SIMD: scalar kernels active; the Vector API reported no usable vector shape on this CPU`. Those reasons are reported in that order, so a JVM without the module reports the missing module even when `performance.simdKernels` is also false. A load failure is reported as a load failure instead of being labelled `performance.simdKernels=false`. The line comes from the Bukkit plugin's enable; mod loaders never print it.
 
 ## Measurement checklist
 
