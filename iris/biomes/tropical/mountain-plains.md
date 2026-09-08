@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Mountain Plains"
 description: "Iris biome atlas entry for tropical/mountain-plains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-08T16:43:54.130Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,7 +33,7 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
 |---|---|---:|---|---|---|
-| `tropical/mountain-plains` | Mountain | 52 | 112 / 20 | 28 / 3 / 176 | 0.18 / 0.5 |
+| `tropical/mountain-plains` | Mountain | 52 | 144 / 28 | 22 / 3 / 240 | 0.18 / 0.5 |
 
 Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.

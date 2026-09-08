@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-08T07:14:15.291Z
+date: 2026-09-08T16:44:00.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 This atlas documents the current sources of the built-in Overworld and Underworld packs. Each entry treats the shared terrain identity once, then records how the two packs render and populate it differently. Only reachable content is included. An installed world keeps its active immutable epoch until the operator stages an update; source changes are not automatically present in previously downloaded releases.
 
 Overworld 4007 and Underworld 1010 configure 197 land biomes and children for 3D terrain. Another 25 identities explicitly protect wetlands, dunes, water basins, lava craters, or existing floating geometry. The profiles vary from small lowland recesses to deep cliff undercuts, projecting mountain shelves, and narrow rock fissures.
+
+The profiles retain displacement amplitudes from 10 to 56 blocks, with horizontal density scales from 112 to 160 blocks and vertical scales from 20 to 28 blocks. These feature sizes favor broader shelves and recesses. Active cracks use shallower depths and longer scales to space fissures farther apart.
 
 The paired terrain tables give each biome's density amplitude, horizontal and vertical scales, crack dimensions, and slope gate. See [Terrain shaping](/iris/biomes/terrain-shaping) for coverage and exclusions. Seas, shorelines, and cave biomes retain their separate terrain systems.
 

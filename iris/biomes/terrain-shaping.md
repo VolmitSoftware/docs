@@ -2,7 +2,7 @@
 title: "Biome Terrain Shaping"
 description: "Shared 3D terrain profiles and protected terrain in the built-in Iris packs"
 published: true
-date: 2026-09-08T07:31:07.237Z
+date: 2026-09-08T16:44:00.000Z
 tags: "iris, biomes, terrain, overworld, underworld"
 editor: markdown
 dateCreated: 2026-09-08T07:14:15.291Z
@@ -31,8 +31,9 @@ Horizontal scale controls feature width. Vertical scale controls how quickly den
 | Sculptural | 4 | Large recesses and shelves in Estranged and amethyst terrain. |
 | Volcanic | 2 | Broken volcanic slopes with recesses and narrow fissures. |
 
-All active profiles use Simplex noise. Lowland amplitude is 10 blocks. Cliff amplitude reaches 56 blocks, with a 16-block vertical feature scale.
-The separate crack field supplies narrow fissures. Lowland profiles disable cracks. Other profiles configure crack depths from 8 to 36 blocks.
+All active profiles use Simplex noise. Lowland amplitude is 10 blocks. Cliff amplitude reaches 56 blocks, with a 24-block vertical feature scale.
+Horizontal density scales range from 112 to 160 blocks, and vertical scales range from 20 to 28 blocks. These longer scales favor broad shelves and recesses while retaining each profile's displacement amplitude.
+The separate crack field supplies narrow fissures. Lowland profiles disable cracks. Other profiles configure crack depths from 6 to 28 blocks and horizontal crack scales from 192 to 256 blocks. Crack half-widths remain 2.5 to 3 blocks.
 
 Every active profile starts its elevation fade above fluid level plus 8 blocks. Full elevation strength starts 24 blocks above that threshold.
 The slope gate further reduces deformation on gentle terrain. The atlas tables give both the starting slope and the slope for full strength.

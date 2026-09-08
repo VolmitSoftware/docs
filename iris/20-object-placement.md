@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-08T20:03:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ A non-solid directional block that cannot represent its rotated orientation is s
 | `object` | required | One load key under `objects/`, without `.iob` |
 | `position` | required | Absolute integer world coordinates; Y is not measured from the dimension floor |
 | `rotation` | `{ "x": 0, "y": 0, "z": 0 }` | Fixed degrees per axis, from -360 to 360 |
-| `scale` | `1` | Fixed size multiplier, 0.01 to 50 |
+| `scale` | Dimension factor | Fixed size multiplier, 0.01 to 50; an explicit value overrides `allObjectScaleFactor` |
 | `scaleInterpolation` | `NONE` | Enlargement interpolation: `NONE`, `TRILINEAR`, `TRICUBIC`, or `TRIHERMITE` |
 | `edit` | `[]` | The same material/state replacement rules described in section 6 below |
 | `bore` | `false` | Clear the complete transformed bounding box before writing the object |
@@ -212,7 +212,7 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 { "mode": "MAX_HEIGHT" }
 ```
 
-`MAX_HEIGHT` samples every column in the transformed footprint and takes the highest. The footprint includes rotation, rotated translation, and warp reach. Nothing gets buried but the object floats off cliffs. `MIN_HEIGHT` takes the lowest. Nothing overhangs but slopes swallow it. The `FAST_` variants sample representative edge points instead of the full footprint. `PAINT` is the outlier. It drops each column of the object to that column own surface height. The object melts over the terrain rather than placing as a rigid block. Vines are exempt so they keep hanging.
+`MAX_HEIGHT` samples every column in the transformed footprint and takes the highest. The footprint includes rotation, rotated translation, and warp reach. Nothing gets buried but the object floats off cliffs. `MIN_HEIGHT` takes the lowest. Nothing overhangs but slopes swallow it. The `FAST_` variants sample representative edge points instead of the full footprint. `PAINT` follows a connected surface from the placement anchor. Neighboring columns may rise or fall by up to four blocks, and gradual slopes can accumulate larger height changes across the object. Beneath an overhang it follows the nearby exposed ledge instead of jumping to the highest roof. The patch stops where no nearby surface connects, so it does not project onto a distant valley floor. Iris resolves the surface before writing any object blocks. Vines retain their hanging behavior.
 
 **Stilts.** Stilt modes take a height mode, then repeat the object bottom blocks downward until they hit ground.
 
@@ -260,7 +260,9 @@ They anchor like `CENTER_HEIGHT`. They then raise or carve every column out to a
 
 Per axis (`xAxis`, `yAxis`, `zAxis`, each `{enabled, min, max, interval}`): `min == max == 0` means any multiple of `interval`. `min == max` at some other value locks the object to that angle. Anything else picks a multiple of `interval` and clips it into `[min, max]`. In the free case an `interval` below 1 is treated as 1 (one-degree steps). In a clipped range always set a real `interval`. Non-90-degree angles look bad at block resolution. Turn rotation off with `"rotation": { "enabled": false }`. X and Z rotation are incompatible with `bottom: true`.
 
-`scale` is inert until you ask for something other than 1.
+An omitted `scale` inherits the dimension's `allObjectScaleFactor`, which defaults to `1`. An explicit `scale` object replaces that default entirely, including `{ "size": 1 }` or `{}`. Use `{ "size": 1 }` to keep one placement at its saved size when the rest of the pack is scaled.
+
+Jigsaw structure pieces are excluded from `allObjectScaleFactor` and retain their authored size.
 
 ```json
 { "scale": { "size": 1, "minimumScale": 0.75, "maximumScale": 1.25, "variations": 7, "interpolation": "TRILINEAR" } }
@@ -389,7 +391,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `translate.yRandom` | `0` | Random vertical spread per placement, downward if negative |
 | `rotation` | Y free, 90 degree steps | Random orientation per placement |
 | `rotateTowardsSlope` | `false` | Turns the object to face downhill, in 90 degree steps |
-| `scale` | `1` | Resizes the object. A min/max spread pre-builds `variations` cached copies |
+| `scale` | Dimension factor | An explicit scale overrides `allObjectScaleFactor`. A min/max spread pre-builds `variations` cached copies |
 | `bottom` | `false` | On explicit-Y paths (cave, structure, sapling), seats the object bottom-up instead of centered |
 | `fromBottom` | `false` | Anchors near the world floor. An unfinished code path. Avoid it |
 | `warp` | flat | Noise displacement of each block X and Z. Inert until `multiplier` is raised |
@@ -438,7 +440,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `CENTER_HEIGHT` | One height sample under the middle carries the whole object. Cheap, and correct on flat ground |
 | `MAX_HEIGHT` / `FAST_MAX_HEIGHT` | Nothing gets buried, but the object hangs off the downhill side of cliffs |
 | `MIN_HEIGHT` / `FAST_MIN_HEIGHT` | Nothing overhangs, but slopes swallow the uphill side |
-| `PAINT` | Every column drops to its own surface, so the object melts over whatever it lands on |
+| `PAINT` | Follows a connected nearby surface, allowing up to four blocks of height change per step and clipping columns beyond cliffs |
 | `STILT` / `FAST_STILT` | Highest-point seating with legs dropped to the ground under every bottom block |
 | `MIN_STILT` / `FAST_MIN_STILT` | Lowest-point seating with the same legs |
 | `CENTER_STILT` | Center seating with legs. The cheapest stilt worth using |

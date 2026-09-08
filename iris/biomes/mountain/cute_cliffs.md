@@ -2,7 +2,7 @@
 title: "Biome Atlas — Lower Mountain"
 description: "Paired Iris atlas entry for mountain/cute_cliffs in Overworld and Underworld"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-08T16:43:54.130Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,8 +33,8 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
 |---|---|---:|---|---|---|
-| `mountain/cute_cliffs` | Cliff | 56 | 96 / 16 | 36 / 3 / 144 | 0.12 / 0.4 |
-| `mountain/cute_cliffs+` | Cliff | 56 | 96 / 16 | 36 / 3 / 144 | 0.12 / 0.4 |
+| `mountain/cute_cliffs` | Cliff | 56 | 128 / 24 | 28 / 3 / 192 | 0.12 / 0.4 |
+| `mountain/cute_cliffs+` | Cliff | 56 | 128 / 24 | 28 / 3 / 192 | 0.12 / 0.4 |
 
 Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.

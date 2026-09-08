@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-07T08:15:43.944Z
+date: 2026-09-08T20:03:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -383,6 +383,8 @@ Vanilla marker fields stay owned by Mojang's UI and ordinary capture.
 `final_state` must be a valid canonical Minecraft block state. Use `minecraft:structure_void` for an absent cell in a portable template, and the exact solid block state when the connector should leave a block behind. A final state of air is accepted and retained explicitly by capture, so it is not the same as an absent cell.
 
 ## How assembly chooses pieces
+
+Jigsaw pieces retain their authored size. The dimension's `allObjectScaleFactor` does not affect structure generation, manual structure placement, or Jigsaw Studio.
 
 1. Iris selects one declared structure theme by positive relative weight. With no declared themes the assembly is unthemed, and a piece with no theme list is eligible for every selected theme.
 2. It filters the start pool by enabled planar workcell, selected theme, and depth and placement rules, then rolls each exact pool membership's independent chance. No passing membership is an intentional empty result, and an explicit `empty: true` winner also produces no structure.

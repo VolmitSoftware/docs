@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-08T20:34:51.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -74,6 +74,8 @@ Use `FoliaScheduler` for Bukkit work. Entity and player state belongs on the ent
 ## File watching
 
 `FileWatcher` and `FolderWatcher` combine filesystem snapshots with native watch events. A full scan reports each create or delete transition once, including on Windows where the native delete notification may arrive after the scan has already observed the missing path. Native modification events still detect writes whose size, timestamp, and file identity remain unchanged.
+
+`ReactiveFolder` debounces changes and checks file stability before invoking its callback. A detected save can be delivered while an unrelated content-reconciliation scan is still running. Silent content changes remain batched until their scan finishes, and a failed callback retains pending changes for retry.
 
 For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
 

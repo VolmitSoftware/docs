@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mesa Plateau"
 description: "Iris biome atlas entry for mesa/plateau in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-08T16:43:54.130Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,8 +33,8 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
 |---|---|---:|---|---|---|
-| `mesa/plateau` | Mesa | 48 | 112 / 16 | 32 / 2.5 / 160 | 0.14 / 0.42 |
-| `mesa/plateau-dirt` | Mesa | 48 | 112 / 16 | 32 / 2.5 / 160 | 0.14 / 0.42 |
+| `mesa/plateau` | Mesa | 48 | 144 / 24 | 24 / 2.5 / 224 | 0.14 / 0.42 |
+| `mesa/plateau-dirt` | Mesa | 48 | 144 / 24 | 24 / 2.5 / 224 | 0.14 / 0.42 |
 
 Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.

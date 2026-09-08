@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-06T16:11:26.578Z
+date: 2026-09-08T20:34:51.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -85,6 +85,7 @@ Studio settings live in `iris.json` under `studio` (`IrisSettings.IrisSettingsSt
 
 - The watcher runs only when `PlatformChunkGenerator.isStudio()` is true, the world is not closing, and no Jigsaw Studio session is active. Jigsaw Studio deliberately suppresses ordinary pack-file hotload.
 - Studio detects normal editor saves, file replacements, and FTP uploads. Temporary files and `.iris` output are ignored. Invalid edits leave the current pack active.
+- Edit the active server's authoring folder under `plugins/Iris/packs/<pack>` on Bukkit. A separate checkout or another server's pack copy is not watched. A detected save waits for file stability, but does not wait behind an unrelated background content scan. Silent changes with unchanged file metadata still use periodic reconciliation.
 - Ordinary Bukkit Studio validates the saved authoring tree, dimension contract, and required loaded registry definitions. Invalid structure backends or native anchors reject the edit before cutover and leave the active epoch unchanged. Identical pack bytes create no new activation.
 - An accepted update drains generation, checkpoints native chunks, freezes saved natural boundaries, and activates the replacement runtime.
 - File watching continues during terrain generation and pregeneration. The generation gate drains active work before each cutover. Maintenance and initial cache warming still pause watching.

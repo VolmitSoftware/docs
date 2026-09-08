@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Volcanic Plains"
 description: "Iris biome atlas entry for tropical/volcanic-plains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-08T16:43:54.130Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,8 +33,8 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
 |---|---|---:|---|---|---|
-| `tropical/volcanic-plains` | Volcanic | 44 | 88 / 18 | 24 / 2.5 / 144 | 0.22 / 0.52 |
-| `tropical/volcanoes` | Volcanic | 44 | 88 / 18 | 24 / 2.5 / 144 | 0.22 / 0.52 |
+| `tropical/volcanic-plains` | Volcanic | 44 | 112 / 24 | 18 / 2.5 / 192 | 0.22 / 0.52 |
+| `tropical/volcanoes` | Volcanic | 44 | 112 / 24 | 18 / 2.5 / 192 | 0.22 / 0.52 |
 | `tropical/volcanoes-lava` | Protected | 0 | None | None | None |
 
 Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.

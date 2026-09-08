@@ -2,7 +2,7 @@
 title: "Biome Atlas — Cherry Grove"
 description: "Iris biome atlas entry for vanilla/cherry_grove in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-08T16:43:54.130Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,7 +33,7 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
 |---|---|---:|---|---|---|
-| `vanilla/cherry_grove` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+| `vanilla/cherry_grove` | Lowland | 10 | 112 / 20 | None | 0.18 / 0.48 |
 | `magnetics/glass-shard` | Protected | 0 | None | None | None |
 
 Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.

@@ -2,7 +2,7 @@
 title: "Biome Atlas — Emberbark Woods"
 description: "Iris biome atlas entry for estranged/emberbark-woods in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T07:15:29.268Z
+date: 2026-09-08T16:43:54.130Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,7 +33,7 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
 |---|---|---:|---|---|---|
-| `estranged/emberbark-woods` | Hills | 22 | 112 / 18 | 8 / 2.5 / 176 | 0.18 / 0.5 |
+| `estranged/emberbark-woods` | Hills | 22 | 144 / 24 | 6 / 2.5 / 240 | 0.18 / 0.5 |
 
 Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.

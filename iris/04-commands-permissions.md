@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-08T20:03:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -273,7 +273,7 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `wand` | | Both | — | Give the Iris object wand |
 | `dust` | `d` | Both | — | Give reveal dust |
 | `save` | | Both | **Bukkit:** `<name> [overwrite=false] [legacy=true]` (`overwrite` alias `force`. A contextual `dimension` is resolved from your world, or passed as `dimension=`). **Modded:** `[overwrite] <name>` | Save the wand selection as `.iob`. Bukkit shows scan/write progress as a large title plus labeled bottom action-bar meter, never a boss bar |
-| `paste` | | Both | **Bukkit:** `<object> [edit=false] [rotate=0] [scale=1]`. **Modded:** `[at x y z] [rotate degrees] <key>` | Paste an object |
+| `paste` | | Both | **Bukkit:** `<object> [edit=false] [rotate=0] [scale=dimension]`. **Modded:** `[at x y z] [rotate degrees] <key>` | Paste an object |
 | `expand` | | **Modded** | `[amount=1]`, range `1..256` | Expand the selection along your look direction |
 | `contract` | `-` | Both | `[amount=1]` | Contract the selection along your look direction |
 | `shift` | | Both | `[amount=1]` | Shift the selection along your look direction |

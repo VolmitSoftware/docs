@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-07T19:50:00.000Z
+date: 2026-09-08T20:34:51.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ Not stored:
 
 - **Entities.** Armor stands, item frames, paintings, and mobs are dropped on save. Runtime entity spawns come from placement markers instead ([20 - Object Placement](/iris/20-object-placement)).
 - **Biomes.**
-- **Jigsaw blocks, structure blocks, and structure voids.** These are filtered out when the `.iob` is *read*, not when it is written. They can sit in a file and still never reach the world. Only the block is dropped. A tile-data entry saved at that position still loads. Iris jigsaw connectors are JSON metadata, not blocks ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
+- **Jigsaw blocks, structure blocks, structure voids, and moving-piston placeholders.** These are filtered out when the `.iob` is read. Tile data at an omitted or missing block position is also discarded. Moving-piston placeholders are temporary animation states and cannot function as saved object blocks; ordinary and sticky pistons remain supported. Iris jigsaw connectors are JSON metadata, not blocks ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
 
 **Air is not one thing.** `minecraft:air` is skipped at capture. `cave_air` and `void_air` are both captured. At placement time Iris skips `air` and `cave_air` blocks and only writes `void_air`. So `void_air` is the block to use when you want an object to carve terrain away. `cave_air` inside an object is dead weight in every mode except the internal `STRUCTURE_PIECE` path.
 
@@ -136,10 +136,10 @@ The target folder uses the **dimension load key**, not the folder the dimension 
 ## 4. Pasting, editing, and inspecting
 
 ```
-/iris object paste <object> [edit=false] [rotate=0] [scale=1]
+/iris object paste <object> [edit=false] [rotate=0] [scale=dimension]
 ```
 
-The paste lands on the block you are looking at, with the object bottom resting on it. All air variants and small foliage (grass, snow layers, vines, torches, dead bushes, poppies, dandelions) are transparent to the 256-block raycast, so flight height does not move an in-range paste anchor toward the player. If the scan reaches its limit without an opaque target, Iris asks you to look at a block and does not paste at the terminal air block. `rotate` is degrees around Y. `scale` resizes with tricubic interpolation and is clamped down for large objects. A big object silently pastes at a smaller factor than you asked for.
+The paste lands on the block you are looking at, with the object bottom resting on it. All air variants and small foliage (grass, snow layers, vines, torches, dead bushes, poppies, dandelions) are transparent to the 256-block raycast, so flight height does not move an in-range paste anchor toward the player. If the scan reaches its limit without an opaque target, Iris asks you to look at a block and does not paste at the terminal air block. `rotate` is degrees around Y. Omit `scale` or use `scale=dimension` to inherit the current Iris world's `allObjectScaleFactor`; outside an Iris world the default is `1`. A numeric `scale`, including `1`, overrides the dimension. It accepts finite values from `0.01` to `50`. Inherited scaling uses `NONE` interpolation, matching pack object defaults; a numeric Bukkit paste uses `TRICUBIC`. Both retain the size-dependent paste limit for large objects. Iris reports when that limit reduces the requested scale. Modded paste inherits the current dimension factor and has no explicit scale argument.
 
 ```
 /iris object undo [amount=1]
@@ -249,7 +249,7 @@ All under `/iris object` (alias `/iris o`). On Bukkit, optional parameters are `
 | `contract` | `-` | `amount=1` |
 | `expand` | | `amount=1`, modded only |
 | `save` | | `dimension` (contextual), `<name>`, `overwrite=false` (alias `force`), `legacy=true` |
-| `paste` | | `<object>`, `edit=false`, `rotate=0`, `scale=1` |
+| `paste` | | `<object>`, `edit=false`, `rotate=0`, `scale=dimension` |
 | `undo` | `u` | `amount=1` |
 | `analyze` | | `<object>` |
 | `shrink` | | `<object>` |

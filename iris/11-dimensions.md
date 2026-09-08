@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-08T08:08:52.000Z
+date: 2026-09-08T20:03:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -396,9 +396,23 @@ These fields gate the passes that run after terrain and carving. All of them hot
 | `preventLeafDecay` | boolean | `false` | Marks generated leaves persistent so they never decay when the supporting log is removed. Turn it on for packs whose custom trees have unusual leaf-to-log distances |
 | `treeSettings` | `IrisTreeSettings` | disabled default | Overrides vanilla sapling growth with pack objects. Off until `enabled` is true. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). Fields in [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 
+## Default object scale
+
+`allObjectScaleFactor` sets the default size of objects in the dimension. It accepts finite values from `0.01` to `50` and defaults to `1`; `0.5` halves object dimensions and `2` doubles them. Set it in `dimensions/<loadKey>.json`:
+
+```json
+{
+  "allObjectScaleFactor": 0.5
+}
+```
+
+An explicit placement `scale` overrides this default, including an explicit size of `1`. Iris uses the local scale as written; it does not multiply it by the dimension factor. Omitted scales inherit the dimension factor. Changes affect new placements and newly generated chunks; existing objects retain their size.
+
+Jigsaw structures are excluded. Their pieces, connectors, and assembly dimensions retain their authored size regardless of `allObjectScaleFactor`.
+
 ## Static objects
 
-`staticObjects` places saved `.iob` objects at exact world coordinates. Each entry names one object and its origin; rotation defaults to zero and scale defaults to one.
+`staticObjects` places saved `.iob` objects at exact world coordinates. Each entry names one object and its origin; rotation defaults to zero and an omitted scale inherits `allObjectScaleFactor`. An explicit `scale: 1` preserves the saved size.
 
 ```json
 {
