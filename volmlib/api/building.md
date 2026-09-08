@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-07T23:30:00.000Z
+date: 2026-09-08T03:40:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -67,15 +67,29 @@ Every plugin build applies the `art.arcane.volmit-packaging` Gradle plugin from 
 
 The plugin runs directly on each distributable archive task, including all four Iris platforms. Normal `shadowJar`, `jar`, and build commands use it without a workspace init script. It adds no build-tool classes to the runtime jar.
 
-Thinning follows Shadow's existing minimization. It removes unreachable classes only from explicitly selected VolmLib packages. All plugin-owned classes remain roots. The analysis follows bytecode, constant pools, descriptors, signatures, annotations, exact reflective class-name strings, nested classes, and service providers. Computed reflection names need explicit keep rules. Iris retains its Matter slices and leaves generated Caffeine classes outside pruning.
+Packaging runs three passes inside the archive task, in this order: a ProGuard shrink, VolmLib dependency pruning, and archive compaction. The archive is final when the task completes.
+
+### ProGuard shrink
+
+Non-modded profiles pass the assembled archive through ProGuard 7.10 in shrink-only mode (`-dontobfuscate -dontoptimize`), so package, class, and member names never change. The pass removes classes and members that nothing reachable references. Reachability starts from generated keep rules: the `main`, `bootstrapper`, and `loader` classes of `plugin.yml` and `paper-plugin.yml`; every `keepPrefixes` entry and every `required_entries` class; every `META-INF/services` interface and provider; every class whose full name appears as a string constant in bytecode or inside a text resource; every annotation type; all constructors of retained classes; enum `values` and `valueOf`; members carrying Gson `SerializedName`/`Expose` or `ConfigDoc`/`ConfigDescription` annotations; the fields of classes named `*Config*` or `*Settings*`; record members; `EventHandler` and `Subscribe` methods; Java serialization and `ConfigurationSerializable` hooks; the shared reflective families matched by relocated-package wildcards (`**.slimjar.**`, `**.bstats.**`, `**.packetevents.**`, `**.bytebuddy.**`, `**.caffeine.**`, `**.director.**`, `**.matter.slices.**`, `**.papi.**`); classes and members annotated with any `**.director.annotations.Director` or `Param`; and the per-profile `shrink_keep` rule lines from `artifact-policies.json`. Iris Bukkit keeps its whole `engine.object` model, its NMS bindings, its scanned service and mantle-component packages, its SIMD kernels, and its agent.
+
+The library classpath is the JDK of the Gradle JVM (exported once from the runtime image into `<gradle user home>/caches/volmit-packaging/`) plus the project's resolved `compileClasspath`. Library jars whose class entries overlap the archive, such as project-built modules already shaded in, are excluded automatically. A build can add more library jars with `shrinkLibraries.from(...)` inside its artifact block; projects whose NMS bindings live in a subproject add that subproject's compile classpath so preverification sees the server hierarchy. `shrinkRelocations` maps original packages to their relocated names so runtime-downloaded SlimJar libraries are analysed under the relocated hierarchy the jar actually references. Unresolved references fail the build unless the referenced or referencing class matches a shared default (`javax.annotation.**`, `org.jetbrains.annotations.**`, `org.checkerframework.**`, `edu.umd.cs.findbugs.annotations.**`, `com.google.errorprone.annotations.**`, `kotlin.**`, `android.**`, `dalvik.**`, `org.apache.logging.log4j.**`, `java.lang.invoke.**`, `me.clip.placeholderapi.**`) or a per-profile `shrink_dontwarn` pattern; every tolerated warning is listed in the JSON report. The shrunk archive replaces the original only when ProGuard succeeded and the result is smaller.
+
+The shrink can be switched off three ways: `-PvolmitShrink=false` or the environment variable `VOLMIT_SHRINK=false` disables it for every project in that build; `shrink = false` inside an artifact block disables it for one artifact; `"modded": true` on a policy profile disables it for that profile. Iris Fabric, Forge, and NeoForge are modded profiles. The report records which of these applied.
+
+### Dependency pruning and compaction
+
+Pruning follows Shadow's existing minimization. It removes unreachable classes only from explicitly selected VolmLib packages. All plugin-owned classes remain roots. The analysis follows bytecode, constant pools, descriptors, signatures, annotations, exact reflective class-name strings, nested classes, and service providers. Computed reflection names need explicit keep rules. Iris retains its Matter slices and leaves generated Caffeine classes outside pruning.
 
 Compilation omits local-variable debug tables while retaining source locations and parameter names. Projects that already disable debug metadata keep that setting. Iris Bukkit also strips local-variable tables from bundled dependency classes after shading. This preserves executable instructions, annotations, source locations, and parameter names. Archive compaction uses level-9 DEFLATE compression, retains resources, verifies content, and replaces the archive only when smaller. Package directories remain present except in Iris Bukkit, which retains its existing directory-free archive layout.
 
-Each archive must pass its size budget, required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
+### Size gate
 
-Canonical budgets and required entries live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy and dependency keep rules in `pluginPackaging` inside its build file. Review a size increase before changing its budget.
+Every non-modded plugin jar must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Modded profiles keep their own larger budgets. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
 
-Reports under `build/reports/packaging/` record before/after sizes, removed classes, package sizes, resource bytes, and archive overhead. Reports are local build output.
+Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Review a size increase before changing its budget.
+
+Reports under `build/reports/packaging/` record before/after sizes, removed classes, package sizes, resource bytes, and archive overhead. `<artifact>.json` carries a `shrink` block with the applied state or skip reason, bytes before and after, the removed class count, and the tolerated warnings. `<artifact>-shrink-rules.txt`, `-seeds.txt`, `-usage.txt`, `-configuration.txt`, and `-warnings.txt` hold the generated rules, the ProGuard seeds, everything ProGuard removed, the effective configuration, and the classified warnings. Reports are local build output.
 
 To build and check a plugin without staging, run from its project directory:
 
