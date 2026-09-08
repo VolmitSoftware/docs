@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-08T07:30:00.000Z
+date: 2026-09-08T08:27:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -177,6 +177,8 @@ Add an inline profile to a biome, or reference `snippet/terrain-3d/<key>.json` w
 Noise style `zoom` multiplies the corresponding scale. Smaller vertical scales allow more folds within the displacement band. A large amplitude alone can produce a taller hill without an overhang. Crack width and scale control the field, so they do not guarantee a fixed visible opening width at every height.
 
 Iris selects each profile from the biome before volumetric shaping, then blends nearby profile contributions. This avoids a feedback loop between the new height and the profile that produces it. A missing profile contributes zero displacement at its sample points, so neighboring shaped terrain fades across the boundary. When a dimension has no enabled profiles, Iris skips the volumetric runtime.
+
+Shaping samples a bounded vertical band around the base height. Larger `amplitude` and `crackDepth` values widen that band and increase generation work. Density samples and solid columns use bounded caches. Repeated queries on one generation thread reuse its last column. Clearing the runtime invalidates that reuse across threads.
 
 The resulting highest solid block becomes the natural height used by hydrology and ordinary surface placement. Accepted river-owned columns retain the river plan's continuous bed. Additional exposed floors receive biome surface layers and decorators. Overhang undersides use `caveCeilingLayers` or dimension rock. Ordinary trees, objects and structures keep their existing placement rules.
 

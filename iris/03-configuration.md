@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-06T18:30:00.000Z
+date: 2026-09-08T11:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -117,6 +117,7 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `debug` | `false` | Live | Enables verbose engine tracing on the console, including passive hotload success, Studio timing, adapter discovery, object-placement and structure diagnostics, and writes per-chunk crash dumps under `debug/chunk-errors/`. Failures remain visible when debug is off. Toggle with `/iris debug` rather than editing by hand. Leave off in production because it is loud |
 | `dumpMantleOnError` | `false` | Live | When a tectonic plate read reports an error, dump the decoded region to `dump/<name>.bin` instead of logging a timing line. Turn on only when investigating mantle corruption |
 | `disableNMS` | `false` | **Restart** | **Bukkit only.** Forces the no-op NMS binding. Iris logs a warning and world creation stops working entirely, so this is a diagnostic escape hatch, not a compatibility switch. Read in a class initializer, so a reload will not change it |
+| `eagerRuntimeInjection` | `false` | **Restart** | **Bukkit only.** Attaches the Java agent and installs the server-code injection while Iris enables instead of the first time a world Iris generates is about to load. Off, a boot costs about a second less and the `injection` check reports Stable with nothing to verify; a server that never loads an Iris world never pays for either step, and an install that fails later locks the runtime with the same reason. On, the startup safeguard verifies both during startup |
 | `splashLogoStartup` | `true` | **Restart** | Prints the ASCII logo and version block at startup. Set false for quieter console logs |
 | `useConsoleCustomColors` | `true` | Live | Gradient/hex coloring for console output. Set false if your log viewer mangles it — you still get legacy color codes. Iris also forces both color keys off in memory if Adventure fails to bind |
 | `useCustomColorsIngame` | `true` | Live | Same, for messages sent to players |
