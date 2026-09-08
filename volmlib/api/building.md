@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-08T08:30:00.000Z
+date: 2026-09-08T09:10:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -48,6 +48,9 @@ Other arguments are forwarded to each top-level Gradle invocation. The runner co
 ./build-psycho-lt.sh --tests-only
 ./build-psycho-lt.sh --tests-only --rerun
 ```
+
+Iris's `moddedTest` is part of `check`, not `test`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` for that.
+
 
 This runs `test` in VolmLib and every plugin. It does not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
 

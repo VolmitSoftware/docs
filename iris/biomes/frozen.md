@@ -2,7 +2,7 @@
 title: "Frozen Biomes"
 description: "Navigation for the built-in frozen biomes across Overworld and Underworld"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biomes, overworld, underworld, frozen"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -38,3 +38,7 @@ This family has **8 child-only reachable variants**. Those variants are document
 | [Vander](/iris/biomes/frozen/vander) | `frozen/vander` | Land | Frozen |
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).
+
+## 3D terrain coverage
+
+The paired packs explicitly configure 24 terrain identities in this family: 4 forest, 6 glacial, 9 hills, 4 lowland, 1 protected. Each entry lists the numeric `terrain3D` settings for its root and children.

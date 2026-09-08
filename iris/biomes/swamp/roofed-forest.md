@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Swamp Roofed Forest"
-description: "Iris biome atlas entry for swamp/roofed-forest in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for swamp/roofed-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`swamp/roofed-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`swamp/roofed-forest` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
-| Underworld 1005 | `swamp` (Underworld Swamp) | 1 | 1 | 1 | 11.67% |
+| Overworld 4007 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
+| Underworld 1010 | `swamp` (Underworld Swamp) | 1 | 1 | 1 | 11.67% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,28 @@ Both packs use the same generator links: `plain` (4..11); combined authored cont
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `swamp/roofed-forest` | Protected | 0 | None | None | None |
+| `swamp/roofed-forest-extended` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+- `swamp/roofed-forest`: Low wetland forest retains its floor. Its elevated child supplies rock shelves.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:swamp`; native-structure derivative `minecraft:dark_forest`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 8 object placement rule(s) drawing from 53 object key(s), including `trees/oak/mroofed1`, `trees/oak/mroofed2`, `trees/oak/mroofed3`, `trees/oak/mroofed4`, `trees/oak/mroofed5`, `trees/oak/mroofed6`, `trees/oak/mroofed7`, and 46 more. 4 decorator rule(s) using `minecraft:dead_bush`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:crimson_fungus`, `minecraft:dark_oak_button`, `minecraft:short_grass`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_swamp_roofed_forest_23165d44`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -52,8 +67,8 @@ In that immediate child choice it contributes `1` of `3` slots (33.33%); later c
 
 **Shared terrain:** `mountain` (45..61); combined authored contribution `45..61` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 8 object placement rule(s) drawing from 53 object key(s), including `trees/oak/mroofed1`, `trees/oak/mroofed2`, `trees/oak/mroofed3`, `trees/oak/mroofed4`, `trees/oak/mroofed5`, `trees/oak/mroofed6`, `trees/oak/mroofed7`, and 46 more. 4 decorator rule(s) using `minecraft:dead_bush`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:crimson_fungus`, `minecraft:dark_oak_button`, `minecraft:short_grass`.
-- **Underworld 1005:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 8 object placement rule(s) drawing from 53 object key(s), including `underworld/warped/trees/oak/mroofed1`, `underworld/warped/trees/oak/mroofed2`, `underworld/warped/trees/oak/mroofed3`, `underworld/warped/trees/oak/mroofed4`, `underworld/warped/trees/oak/mroofed5`, `underworld/warped/trees/oak/mroofed6`, `underworld/warped/trees/oak/mroofed7`, and 46 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:crimson_fungus`, `minecraft:warped_button`, `minecraft:nether_sprouts`.
+- **Overworld 4007:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 8 object placement rule(s) drawing from 53 object key(s), including `trees/oak/mroofed1`, `trees/oak/mroofed2`, `trees/oak/mroofed3`, `trees/oak/mroofed4`, `trees/oak/mroofed5`, `trees/oak/mroofed6`, `trees/oak/mroofed7`, and 46 more. 4 decorator rule(s) using `minecraft:dead_bush`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:crimson_fungus`, `minecraft:dark_oak_button`, `minecraft:short_grass`.
+- **Underworld 1010:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 8 object placement rule(s) drawing from 53 object key(s), including `underworld/warped/trees/oak/mroofed1`, `underworld/warped/trees/oak/mroofed2`, `underworld/warped/trees/oak/mroofed3`, `underworld/warped/trees/oak/mroofed4`, `underworld/warped/trees/oak/mroofed5`, `underworld/warped/trees/oak/mroofed6`, `underworld/warped/trees/oak/mroofed7`, and 46 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:crimson_fungus`, `minecraft:warped_button`, `minecraft:nether_sprouts`.
 
 Direct-root children continue on their own pages: [`swamp/sea/lake`](/iris/biomes/swamp/sea/lake).
 

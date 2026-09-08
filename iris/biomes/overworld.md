@@ -1,17 +1,17 @@
 ---
-title: "Overworld 4006"
+title: "Overworld 4007"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-05T16:39:48.011Z
+date: 2026-09-08T07:14:15.291Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Overworld 4006 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
+Overworld 4007 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Overworld 4006 |
+| Built-in pack | Overworld 4007 |
 | Environment | `NORMAL` |
 | Build range | Y `-256..512` |
 | Logical height | `512` |
@@ -26,6 +26,13 @@ Overworld 4006 is the normal-environment half of the paired biome atlas. It supp
 
 All 19 subterranean ore passes retain 70% of their configured clump attempts. Across dimension, region, and Rough Plains biome deposits, ore on exterior terrain surfaces may replace only exact `minecraft:stone`; buried and cave-wall ore retains each pass's broader host rules. Individual surface biomes can override the exterior host list. Underworld ore configuration remains independent.
 
+## 3D terrain
+
+The paired packs configure 197 active biome profiles and 25 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, loose dunes, and lava craters retain their current terrain.
+
+Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
+
+
 ## How selection works
 
 The dimension first chooses one of twelve regions. Each region supplies independent land, sea, shore, and cave pools. The chosen role selects a root biome by its effective rarity, then the biome may resolve through children or contribute a floating biome above the column.
@@ -36,6 +43,6 @@ The global Deep Dark band is different from an ordinary regional cave. Between Y
 
 Overworld is the geometry authority. Shape changes to its dimension transforms, region and biome selection, terrain generators, cave profiles, children, or floating islands are mirrored into Underworld so equal seeds remain coordinate-compatible. Materials, derivatives, ambience, ecology, objects, ores, deposits, and structures are allowed to differ and are documented separately on every atlas entry.
 
-Overworld 4006 and Underworld 1009 share lowercase active terrain keys, including `mountain/cute_cliffs` and `mountain/cute_cliffs+`. A region can expose a paired identity through a slightly different selector list. Read each biome page for its exact memberships instead of assuming every region array is byte-identical.
+Overworld 4007 and Underworld 1010 share lowercase active terrain keys, including `mountain/cute_cliffs` and `mountain/cute_cliffs+`. Their terrain selector lists now match, including Estranged shores and wetland rarity weights.
 
-Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Underworld 1009](/iris/biomes/underworld).
+Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Underworld 1010](/iris/biomes/underworld).

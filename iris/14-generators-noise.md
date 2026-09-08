@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-05T23:21:50.747Z
+date: 2026-09-08T07:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -78,6 +78,10 @@ If you want a new generator to be its own independent layer, give it an interpol
 The biome link clamps the generator output to 0..1 and lerps it into `min`..`max`, in blocks relative to the dimension `fluidHeight`. Negative bands put the surface under water. See [13 - Biomes](/iris/13-biomes).
 
 Generators control shape and smoothing radius; biomes control the height range. Share one generator across many biomes, then vary `min` and `max` per biome to create continuous terrain across height bands.
+
+### Volumetric shaping after height generation
+
+Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around that height. It can produce overhangs, covered ledges and fissures that a single height per column cannot represent. Generator cliffs and cell fracture remain height-map operations. See [Volumetric biome terrain](/iris/13-biomes#volumetric-biome-terrain) for the profile fields.
 
 ## Walkthrough: add a generator and prove it is wired
 

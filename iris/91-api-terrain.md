@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-07T04:32:21.784Z
+date: 2026-09-08T07:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,6 +71,12 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 | `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet channel |
 
 `surfaceKind` reports `RIVER`, `RIVER_SHORE`, or `DRY_CHANNEL` inside a footprint, and `surfaceHeight` under a river is the bed. A cold read may plan the river tile on the calling thread, so keep wide scans off tick threads. See [36 - Rivers](/iris/36-rivers).
+
+## Volumetric terrain queries
+
+For biome `terrain3D`, natural-height queries return the highest solid block after volumetric shaping. `surfaceHeight` remains a single height per column. It does not enumerate lower ledges. River-owned columns report the accepted bed. Biome queries within a natural overhang gap and at its exposed floors retain the surface biome. A lower Y alone does not select a cave biome.
+
+Engine terrain-column queries expose the shaped solid spans in internal Y. Solidity and carving queries include their open gaps. Object-placement transactions use the same density openings in prerequisite carving queries, with saved geometry and hydrology overrides retaining precedence. Additional stacked, inverted or floating terrain supplies its own support volume. Generation-history records remain authoritative for saved terrain.
 
 ## River policy resolution
 

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Tropical Mountain Extreme"
-description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tropical/mountain-extreme` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tropical/mountain-extreme` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
-| Underworld 1005 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
+| Overworld 4007 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
+| Underworld 1010 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,28 @@ Both packs use the same generator links: `mountain` (112..195); combined authore
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `tropical/mountain-extreme` | Mountain | 52 | 112 / 20 | 28 / 3 / 176 | 0.18 / 0.5 |
+| `tropical/mountain-water` | Protected | 0 | None | None | None |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+- `tropical/mountain-water`: Elevated water terrain retains its basin.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:sparse_jungle`; native-structure derivative `minecraft:jungle`; custom identities `tropical_mountain_extreme`.
 - **Surface:** 1 block(s) at slope 0-4.5: `minecraft:grass_block`; 2 block(s) at slope 0-4.5: `minecraft:dirt`. Wall palette: none.
 - **Content:** 3 object placement rule(s) drawing from 24 object key(s), including `clutter/sbush1`, `clutter/sbush2`, `clutter/sbush3`, `trees/jungle/lgeneric1`, `trees/jungle/lgeneric2`, `trees/jungle/lgeneric3`, `trees/jungle/lgeneric4`, and 17 more. 4 decorator rule(s) using `minecraft:short_grass`, `minecraft:tall_grass`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, and 6 more.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_tropical_mountain_extreme_b321353c`.
 - **Surface:** 1 block(s) at slope 0-4.5: `minecraft:basalt`; 2 block(s) at slope 0-4.5: `minecraft:blackstone`. Wall palette: none.
@@ -50,8 +65,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `mountain` (2..5); combined authored contribution `2..5` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:jungle` identity; surface 0-2 block(s): `minecraft:cave_air`; 1 block(s): `minecraft:water`; 1-4 block(s): `minecraft:water`; 2-4 block(s): `minecraft:gravel`; 3 decorator rule(s) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
-- **Underworld 1005:** `minecraft:basalt_deltas` identity; surface 0-2 block(s): `minecraft:cave_air`; 1 block(s): `minecraft:lava`; 1-4 block(s): `minecraft:lava`; 2-4 block(s): `minecraft:gravel`; 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
+- **Overworld 4007:** `minecraft:jungle` identity; surface 0-2 block(s): `minecraft:cave_air`; 1 block(s): `minecraft:water`; 1-4 block(s): `minecraft:water`; 2-4 block(s): `minecraft:gravel`; 3 decorator rule(s) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
+- **Underworld 1010:** `minecraft:basalt_deltas` identity; surface 0-2 block(s): `minecraft:cave_air`; 1 block(s): `minecraft:lava`; 1-4 block(s): `minecraft:lava`; 2-4 block(s): `minecraft:gravel`; 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
 
 ## Floating variants
 

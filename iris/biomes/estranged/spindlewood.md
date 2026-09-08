@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Spindlewood"
-description: "Iris biome atlas entry for estranged/spindlewood in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for estranged/spindlewood in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:15:29.268Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`estranged/spindlewood` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`estranged/spindlewood` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `estranged` (Estranged) | 1 | 3 | 0.3333 | 7.04% |
-| Underworld 1005 | `estranged` (Underworld Estranged) | 1 | 3 | 0.3333 | 5.88% |
+| Overworld 4007 | `estranged` (Estranged) | 1 | 3 | 0.3333 | 7.04% |
+| Underworld 1010 | `estranged` (Underworld Estranged) | 1 | 3 | 0.3333 | 7.04% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `smooth-dunes` (5..12), `rare-hills` (0
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `estranged/spindlewood` | Hills | 22 | 112 / 18 | 8 / 2.5 / 176 | 0.18 / 0.5 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:forest`; native-structure derivative `minecraft:forest`; custom identities `estranged_spindle`.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:stone`. Wall palette: `minecraft:stone`, `minecraft:andesite`, `minecraft:cobblestone`.
 - **Content:** 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:cornflower`, `minecraft:oxeye_daisy`, `minecraft:azure_bluet`. Procedural content: 2 trees (spindle-golden, spindle-whorl).
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_estranged_spindlewood_3ab4fb34`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`, `minecraft:blackstone`.

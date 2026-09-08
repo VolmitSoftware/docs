@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Rough Plains"
-description: "Iris biome atlas entry for temperate/roughplains in Overworld 4004 and Underworld 1005"
+description: "Iris biome atlas entry for temperate/roughplains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/roughplains` is a directly selected land biome in the pinned Overworld 4004 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/roughplains` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4004 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
+| Overworld 4007 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
+| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `mountain` (-15..50); combined authored
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4004 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `temperate/roughplains` | Hills | 22 | 112 / 18 | 8 / 2.5 / 176 | 0.18 / 0.5 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:plains`; native-structure derivative `minecraft:plains`; no custom or scatter identities.
 - **Surface:** 1 block(s) at slope <= 4: `minecraft:grass_block`. Wall palette: `minecraft:andesite`, `minecraft:stone`, `minecraft:cobblestone`.
 - **Content:** 2 object placement rule(s) drawing from 32 object key(s), including `trees/oak/antioch1`, `trees/oak/antioch2`, `trees/oak/antioch4`, `trees/oak/antioch5`, `trees/oak/antioch6`, `trees/oak/antioch7`, `trees/oak/antioch8`, and 25 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 6 more. Seven above-terrain ore deposit rules mineralize buried and cave-air-facing floating bodies at their authored frequency, while exterior terrain candidates may replace only exact `minecraft:stone` unless this biome's override is configured.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_roughplains_f02a733d`.
 - **Surface:** 1 block(s) at slope <= 4: `minecraft:netherrack`. Wall palette: `minecraft:basalt`, `minecraft:netherrack`, `minecraft:blackstone`.

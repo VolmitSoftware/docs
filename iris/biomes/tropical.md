@@ -2,7 +2,7 @@
 title: "Tropical Biomes"
 description: "Navigation for the built-in tropical biomes across Overworld and Underworld"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biomes, overworld, underworld, tropical"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -37,3 +37,7 @@ This family has **9 child-only reachable variants**. Those variants are document
 | [Wilds](/iris/biomes/tropical/wilds) | `tropical/wilds` | Land | Tropical |
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).
+
+## 3D terrain coverage
+
+The paired packs explicitly configure 19 terrain identities in this family: 2 cliff, 2 forest, 2 hills, 4 lowland, 5 mountain, 2 protected, 2 volcanic. Each entry lists the numeric `terrain3D` settings for its root and children.

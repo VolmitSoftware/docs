@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Sakura Forest"
-description: "Iris biome atlas entry for temperate/sakura-forest in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for temperate/sakura-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/sakura-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/sakura-forest` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `temperate` (Temperate) | 1 | 4 | 0.25 | 1.54% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 4 | 0.25 | 1.54% |
+| Overworld 4007 | `temperate` (Temperate) | 1 | 4 | 0.25 | 1.54% |
+| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 4 | 0.25 | 1.54% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `plain` (4..7); combined authored contr
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `temperate/sakura-forest` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:flower_forest`; native-structure derivative `minecraft:forest`; custom identities `sakura_forest_pink1`, `sakura_forest_pink2`, `sakura_forest_pink3`, `sakura_forest_pink4`, and 1 more; underground scatter `minecraft:birch_forest`.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 5 object placement rule(s) drawing from 37 object key(s), including `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, `trees/oak/hoakgeneric5`, `trees/oak/hoakgeneric6`, `trees/oak/hoakgeneric7`, `trees/oak/hoakgeneric8`, `trees/oak/hoakgeneric9`, and 30 more. 10 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:stone_button`, `minecraft:oak_leaves`, `minecraft:tall_grass`, `minecraft:allium`, `minecraft:cobblestone_slab`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_sakura_forest_e92fbeca`.
 - **Surface:** 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.

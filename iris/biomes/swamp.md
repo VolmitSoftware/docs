@@ -2,7 +2,7 @@
 title: "Swamp Biomes"
 description: "Navigation for the built-in swamp biomes across Overworld and Underworld"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biomes, overworld, underworld, swamp"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -30,3 +30,7 @@ This family has **7 child-only reachable variants**. Those variants are document
 | [Willow Forest](/iris/biomes/swamp/willow-forest) | `swamp/willow-forest` | Land | Swamp |
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).
+
+## 3D terrain coverage
+
+The paired packs explicitly configure 16 terrain identities in this family: 3 forest, 2 hills, 1 lowland, 10 protected. Each entry lists the numeric `terrain3D` settings for its root and children.

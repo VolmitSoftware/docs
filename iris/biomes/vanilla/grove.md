@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Grove"
-description: "Iris biome atlas entry for vanilla/grove in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for vanilla/grove in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`vanilla/grove` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`vanilla/grove` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
-| Underworld 1005 | `frozen` (Underworld Frozen) | 1 | 1 | 1 | 5.69% |
+| Overworld 4007 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
+| Underworld 1010 | `frozen` (Underworld Frozen) | 1 | 1 | 1 | 5.69% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `mountain` (48..103); combined authored
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `vanilla/grove` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:grove`; native-structure derivative `minecraft:grove`; custom identities `grove`.
 - **Surface:** 0-2 block(s) at slope <= 3.5: `minecraft:snow_block`; 1 block(s) at slope <= 3.5: `minecraft:grass_block`; 7-18 block(s) at slope <= 3.5: `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 2 object placement rule(s) drawing from 16 object key(s), including `trees/spruce/pine1`, `trees/spruce/pine2`, `trees/spruce/pine3`, `trees/spruce/pine4`, `trees/spruce/pine5`, `trees/spruce/pine6`, `trees/spruce/pine7`, and 9 more. 1 decorator rule(s) using `minecraft:snow`, `minecraft:air`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_vanilla_grove_0ebc8f16`.
 - **Surface:** 0-2 block(s) at slope <= 3.5: `minecraft:soul_soil`; 1 block(s) at slope <= 3.5: `minecraft:soul_soil`; 7-18 block(s) at slope <= 3.5: `minecraft:soul_soil`; 6-18 block(s): `minecraft:basalt`. Wall palette: `minecraft:basalt`.

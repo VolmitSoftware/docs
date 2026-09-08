@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-07T19:50:00.000Z
+date: 2026-09-08T07:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,6 +46,14 @@ Everything else lands in later stages. Using the `OVERWORLD` pipeline order:
 Two consequences worth internalising. Deposits go in *after* caves are cut and skip any cell carrying a cavern mark. Veins never hang in open air. Decorators run after carving. A cave that broke the surface does not get flowers planted over the hole.
 
 A cold `derivative` tints grass and can freeze water. It does not stamp snow layers. Snow layers come from Iris decorators, object `snow`, or `importedFeatures` with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
+
+## Layers on volumetric terrain
+
+With biome [`terrain3D`](/iris/13-biomes#volumetric-biome-terrain), the terrain actuator skips air gaps and restarts the layer stack at each exposed solid floor. Ores cannot claim the skipped cells. The bottom two blocks of an overhang use `caveCeilingLayers`, or dimension rock when those layers are absent, while retaining the top two blocks of thin ledges.
+
+The surface decorator actuator also visits covered lower floors and their opposing ceilings. It checks the generated support and limits decoration to the available headroom. Surface palettes come from the biome at that column. Trees, objects and structures retain their existing placement rules.
+
+Slope clips for lower-floor layers and surface decorators use neighboring ledge heights. A steep upper cap does not make a flat lower ledge use steep-slope materials. These clips retain the existing three-block slope metric, separate from the density profile's rise/run gate.
 
 ## Walkthrough: a surface, a flower scatter, and an ore vein
 

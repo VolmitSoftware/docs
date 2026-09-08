@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Swamp Willow Forest"
-description: "Iris biome atlas entry for swamp/willow-forest in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for swamp/willow-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`swamp/willow-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`swamp/willow-forest` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
-| Underworld 1005 | `swamp` (Underworld Swamp) | 1 | 1 | 1 | 11.67% |
+| Overworld 4007 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
+| Underworld 1010 | `swamp` (Underworld Swamp) | 1 | 1 | 1 | 11.67% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,30 @@ Both packs use the same generator links: `mountain` (4..11); combined authored c
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `swamp/willow-forest` | Protected | 0 | None | None | None |
+| `swamp/denmyre` | Protected | 0 | None | None | None |
+| `swamp/willow-forest-extended` | Hills | 22 | 112 / 18 | 8 / 2.5 / 176 | 0.18 / 0.5 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+- `swamp/willow-forest`: Low wetland forest retains its floor. Its elevated child supplies rock shelves.
+- `swamp/denmyre`: Low wetland terrain retains its water and tree supports.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:swamp`; native-structure derivative `minecraft:dark_forest`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 6 object placement rule(s) drawing from 32 object key(s), including `trees/darkoak/generic1`, `trees/darkoak/generic2`, `trees/darkoak/generic3`, `trees/darkoak/generic5`, `trees/darkoak/generic6`, `trees/darkoak/generic7`, `trees/darkoak/generic8`, and 25 more. 3 decorator rule(s) using `minecraft:dead_bush`, `minecraft:crimson_fungus`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:short_grass`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_swamp_willow_forest_9ec04f6f`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -54,8 +71,8 @@ Its single child-list occurrence contributes `1` of `6` slots (16.67%) in the im
 
 **Shared terrain:** `plain` (4..7); combined authored contribution `4..7` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 4 object placement rule(s) drawing from 25 object key(s), including `clutter/bincluster1`, `trees/acacia/denmyre1`, `trees/acacia/denmyre2`, `trees/acacia/denmyre3`, `trees/acacia/denmyre4`, `trees/acacia/denmyre5`, `trees/acacia/denmyre6`, and 18 more. 4 decorator rule(s) using `minecraft:dead_bush`, `minecraft:brown_mushroom`, `minecraft:short_grass`, `minecraft:dark_oak_button`, `minecraft:tall_grass`.
-- **Underworld 1005:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 4 object placement rule(s) drawing from 25 object key(s), including `underworld/warped/clutter/bincluster1`, `underworld/warped/trees/acacia/denmyre1`, `underworld/warped/trees/acacia/denmyre2`, `underworld/warped/trees/acacia/denmyre3`, `underworld/warped/trees/acacia/denmyre4`, `underworld/warped/trees/acacia/denmyre5`, `underworld/warped/trees/acacia/denmyre6`, and 18 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:nether_sprouts`, `minecraft:warped_button`.
+- **Overworld 4007:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 4 object placement rule(s) drawing from 25 object key(s), including `clutter/bincluster1`, `trees/acacia/denmyre1`, `trees/acacia/denmyre2`, `trees/acacia/denmyre3`, `trees/acacia/denmyre4`, `trees/acacia/denmyre5`, `trees/acacia/denmyre6`, and 18 more. 4 decorator rule(s) using `minecraft:dead_bush`, `minecraft:brown_mushroom`, `minecraft:short_grass`, `minecraft:dark_oak_button`, `minecraft:tall_grass`.
+- **Underworld 1010:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 4 object placement rule(s) drawing from 25 object key(s), including `underworld/warped/clutter/bincluster1`, `underworld/warped/trees/acacia/denmyre1`, `underworld/warped/trees/acacia/denmyre2`, `underworld/warped/trees/acacia/denmyre3`, `underworld/warped/trees/acacia/denmyre4`, `underworld/warped/trees/acacia/denmyre5`, `underworld/warped/trees/acacia/denmyre6`, and 18 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:nether_sprouts`, `minecraft:warped_button`.
 
 ### Swamp Willow Forest (`swamp/willow-forest-extended`)
 
@@ -64,8 +81,8 @@ Its three repeated child-list occurrences contribute `3` of `6` slots (50%) in t
 
 **Shared terrain:** `mountain` (34..51); combined authored contribution `34..51` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 6 object placement rule(s) drawing from 32 object key(s), including `trees/darkoak/generic1`, `trees/darkoak/generic2`, `trees/darkoak/generic3`, `trees/darkoak/generic5`, `trees/darkoak/generic6`, `trees/darkoak/generic7`, `trees/darkoak/generic8`, and 25 more. 3 decorator rule(s) using `minecraft:dead_bush`, `minecraft:crimson_fungus`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:short_grass`.
-- **Underworld 1005:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 6 object placement rule(s) drawing from 32 object key(s), including `underworld/warped/trees/darkoak/generic1`, `underworld/warped/trees/darkoak/generic2`, `underworld/warped/trees/darkoak/generic3`, `underworld/warped/trees/darkoak/generic5`, `underworld/warped/trees/darkoak/generic6`, `underworld/warped/trees/darkoak/generic7`, `underworld/warped/trees/darkoak/generic8`, and 25 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`.
+- **Overworld 4007:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 6 object placement rule(s) drawing from 32 object key(s), including `trees/darkoak/generic1`, `trees/darkoak/generic2`, `trees/darkoak/generic3`, `trees/darkoak/generic5`, `trees/darkoak/generic6`, `trees/darkoak/generic7`, `trees/darkoak/generic8`, and 25 more. 3 decorator rule(s) using `minecraft:dead_bush`, `minecraft:crimson_fungus`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:short_grass`.
+- **Underworld 1010:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 6 object placement rule(s) drawing from 32 object key(s), including `underworld/warped/trees/darkoak/generic1`, `underworld/warped/trees/darkoak/generic2`, `underworld/warped/trees/darkoak/generic3`, `underworld/warped/trees/darkoak/generic5`, `underworld/warped/trees/darkoak/generic6`, `underworld/warped/trees/darkoak/generic7`, `underworld/warped/trees/darkoak/generic8`, and 25 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`.
 
 ## Floating variants
 

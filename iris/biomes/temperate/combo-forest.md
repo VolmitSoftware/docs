@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Combo Forest"
-description: "Iris biome atlas entry for temperate/combo-forest in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for temperate/combo-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/combo-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/combo-forest` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,10 +15,10 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `forests` (Forests) | 1 | 2 | 0.5 | 5.73% |
-| Overworld 4002 | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
-| Underworld 1005 | `forests` (Underworld Forests) | 1 | 2 | 0.5 | 5.73% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 2 | 0.5 | 3.07% |
+| Overworld 4007 | `forests` (Forests) | 1 | 2 | 0.5 | 5.73% |
+| Overworld 4007 | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
+| Underworld 1010 | `forests` (Underworld Forests) | 1 | 2 | 0.5 | 5.73% |
+| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 2 | 0.5 | 3.07% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -28,13 +28,27 @@ Both packs use the same generator links: `plain` (5..12); combined authored cont
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `temperate/combo-forest` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+| `temperate/combo-forest-extended` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+| `temperate/oak-denmyre` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:forest`; native-structure derivative `minecraft:forest`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 8 object placement rule(s) drawing from 66 object key(s), including `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, `trees/oak/hoakgeneric5`, `trees/oak/hoakgeneric6`, `trees/oak/hoakgeneric7`, `trees/oak/hoakgeneric8`, `trees/oak/hoakgeneric9`, and 59 more. 10 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:oak_leaves`, `minecraft:tall_grass`, `minecraft:rose_bush`, `minecraft:red_mushroom`, `minecraft:poppy`, `minecraft:cobblestone_slab`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_combo_forest_859c40da`.
 - **Surface:** 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -52,8 +66,8 @@ In that immediate child choice it contributes `1` of `7` slots (14.29%); later c
 
 **Shared terrain:** `plain` (5..12); combined authored contribution `5..12` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:forest` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 4 object placement rule(s) drawing from 20 object key(s), including `clutter/camp1`, `trees/acacia/denmyre1`, `trees/acacia/denmyre2`, `trees/acacia/denmyre3`, `trees/acacia/denmyre4`, `trees/acacia/denmyre5`, `trees/acacia/denmyre6`, and 13 more. 10 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:lily_of_the_valley`, `minecraft:allium`, `minecraft:poppy`, `minecraft:oak_leaves`, `minecraft:tall_grass`, `minecraft:rose_bush`, `minecraft:red_mushroom`, `minecraft:cobblestone_slab`.
-- **Underworld 1005:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 4 object placement rule(s) drawing from 20 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/trees/acacia/denmyre1`, `underworld/wastes/trees/acacia/denmyre2`, `underworld/wastes/trees/acacia/denmyre3`, `underworld/wastes/trees/acacia/denmyre4`, `underworld/wastes/trees/acacia/denmyre5`, `underworld/wastes/trees/acacia/denmyre6`, and 13 more. 11 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_sprouts`, `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:blackstone_slab`.
+- **Overworld 4007:** `minecraft:forest` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 4 object placement rule(s) drawing from 20 object key(s), including `clutter/camp1`, `trees/acacia/denmyre1`, `trees/acacia/denmyre2`, `trees/acacia/denmyre3`, `trees/acacia/denmyre4`, `trees/acacia/denmyre5`, `trees/acacia/denmyre6`, and 13 more. 10 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:lily_of_the_valley`, `minecraft:allium`, `minecraft:poppy`, `minecraft:oak_leaves`, `minecraft:tall_grass`, `minecraft:rose_bush`, `minecraft:red_mushroom`, `minecraft:cobblestone_slab`.
+- **Underworld 1010:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 4 object placement rule(s) drawing from 20 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/trees/acacia/denmyre1`, `underworld/wastes/trees/acacia/denmyre2`, `underworld/wastes/trees/acacia/denmyre3`, `underworld/wastes/trees/acacia/denmyre4`, `underworld/wastes/trees/acacia/denmyre5`, `underworld/wastes/trees/acacia/denmyre6`, and 13 more. 11 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_sprouts`, `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:blackstone_slab`.
 
 ### Combo Forest (`temperate/combo-forest-extended`)
 
@@ -62,8 +76,8 @@ In that immediate child choice it contributes `3` of `7` slots (42.86%); later c
 
 **Shared terrain:** `mountain` (45..62); combined authored contribution `45..62` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:forest` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 8 object placement rule(s) drawing from 66 object key(s), including `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, `trees/oak/hoakgeneric5`, `trees/oak/hoakgeneric6`, `trees/oak/hoakgeneric7`, `trees/oak/hoakgeneric8`, `trees/oak/hoakgeneric9`, and 59 more. 10 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:oak_leaves`, `minecraft:tall_grass`, `minecraft:rose_bush`, `minecraft:red_mushroom`, `minecraft:poppy`, `minecraft:cobblestone_slab`.
-- **Underworld 1005:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 8 object placement rule(s) drawing from 66 object key(s), including `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, `underworld/wastes/trees/oak/hoakgeneric5`, `underworld/wastes/trees/oak/hoakgeneric6`, `underworld/wastes/trees/oak/hoakgeneric7`, `underworld/wastes/trees/oak/hoakgeneric8`, `underworld/wastes/trees/oak/hoakgeneric9`, and 59 more. 11 decorator rule(s) (4 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:blackstone_slab`.
+- **Overworld 4007:** `minecraft:forest` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 8 object placement rule(s) drawing from 66 object key(s), including `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, `trees/oak/hoakgeneric5`, `trees/oak/hoakgeneric6`, `trees/oak/hoakgeneric7`, `trees/oak/hoakgeneric8`, `trees/oak/hoakgeneric9`, and 59 more. 10 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:oak_leaves`, `minecraft:tall_grass`, `minecraft:rose_bush`, `minecraft:red_mushroom`, `minecraft:poppy`, `minecraft:cobblestone_slab`.
+- **Underworld 1010:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 8 object placement rule(s) drawing from 66 object key(s), including `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, `underworld/wastes/trees/oak/hoakgeneric5`, `underworld/wastes/trees/oak/hoakgeneric6`, `underworld/wastes/trees/oak/hoakgeneric7`, `underworld/wastes/trees/oak/hoakgeneric8`, `underworld/wastes/trees/oak/hoakgeneric9`, and 59 more. 11 decorator rule(s) (4 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:blackstone_slab`.
 
 ## Floating variants
 

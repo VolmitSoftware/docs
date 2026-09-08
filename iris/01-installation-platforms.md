@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-08T00:00:00.000Z
+date: 2026-09-08T09:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -295,3 +295,7 @@ Use JDK 25 and run this command from the Iris repository root:
 `buildAll` copies all four verified platform jars into `../PluginOuts/` and keeps the local test-server consumer copies. The consumer directory defaults to `../../[Minecraft Server]/consumers/` when it exists, otherwise `build/consumers/` inside the repository. `-Plocation=/path/to/consumers` changes only the consumer directory.
 
 Use `./gradlew buildAllToOut` to copy all four platform jars into `../PluginOuts/` without updating consumer dropins.
+
+`./gradlew build` runs the full gate: the Bukkit unit tests, the external provider tests, the Bukkit and Minecraft purity ratchets, the Bukkit artifact verifier, and `moddedTest`, which runs the `adapters/modded-common` suite once through the Fabric adapter build. `./gradlew test` stays Bukkit-only and does not launch a loader build. The build-logic tests under `buildSrc` run whenever the build-logic jar is rebuilt.
+
+Dependencies resolve from the remote repositories and the local VolmLib composite build. `mavenLocal()` is not in the repository list unless you ask for it: it is added when you build with `-PuseLocalVolmLib=false`, which is the `publish-volmlib.sh` workflow, or when you pass `-PuseMavenLocal=true`.

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Pallid Necropolis"
-description: "Iris biome atlas entry for estranged/pallid-necropolis in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for estranged/pallid-necropolis in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:15:29.268Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`estranged/pallid-necropolis` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`estranged/pallid-necropolis` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
-| Underworld 1005 | `estranged` (Underworld Estranged) | 1 | 4 | 0.25 | 4.41% |
+| Overworld 4007 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
+| Underworld 1010 | `estranged` (Underworld Estranged) | 1 | 4 | 0.25 | 5.28% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `smooth-dunes` (8..20), `vascular-crack
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `estranged/pallid-necropolis` | Sculptural | 38 | 96 / 18 | 22 / 3 / 160 | 0.16 / 0.46 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:dark_forest`; native-structure derivative `minecraft:pale_garden`; custom identities `estranged_pallid_necropolis`.
 - **Surface:** 1 block(s): `minecraft:pale_moss_block`, `minecraft:calcite`, `minecraft:diorite`, `minecraft:bone_block`; 2-5 block(s): `minecraft:calcite`, `minecraft:diorite`, `minecraft:rooted_dirt`; 8-20 block(s): `minecraft:tuff`, `minecraft:calcite`, `minecraft:stone`. Wall palette: `minecraft:calcite`, `minecraft:diorite`, `minecraft:tuff`, `minecraft:bone_block`.
 - **Content:** 2 object placement rule(s) drawing from 2 object key(s), including `clutter/grave1`, `clutter/genericgrave1`. 2 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`. Procedural content: 2 trees (pallid-willow, pallid-spindle), 1 formations (ossuary-spire), 1 ruins (pallid-marker).
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_estranged_pallid_necropolis_8bcbe4bc`.
 - **Surface:** 1 block(s): `minecraft:warped_wart_block`, `minecraft:netherrack`, `minecraft:quartz_block`, `minecraft:bone_block`; 2-5 block(s): `minecraft:netherrack`, `minecraft:quartz_block`; 8-20 block(s): `minecraft:netherrack`. Wall palette: `minecraft:netherrack`, `minecraft:quartz_block`, `minecraft:bone_block`.

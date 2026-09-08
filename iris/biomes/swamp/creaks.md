@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — The Creaks"
-description: "Iris biome atlas entry for swamp/creaks in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for swamp/creaks in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`swamp/creaks` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`swamp/creaks` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `swamp` (Swamp) | 1 | 15 | 0.0667 | 0.78% |
-| Underworld 1005 | `swamp` (Underworld Swamp) | 1 | 15 | 0.0667 | 0.78% |
+| Overworld 4007 | `swamp` (Swamp) | 1 | 15 | 0.0667 | 0.78% |
+| Underworld 1010 | `swamp` (Underworld Swamp) | 1 | 15 | 0.0667 | 0.78% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `plain` (18..24); combined authored con
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `swamp/creaks` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:swamp`; native-structure derivative `minecraft:dark_forest`; custom identities `pale_garden1`, `pale_garden2`, `pale_garden3`, `pale_garden4`, and 2 more.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:pale_moss_block`; 2-4 block(s): `minecraft:dirt`, `minecraft:pale_moss_block`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 8 object placement rule(s) drawing from 53 object key(s), including `trees/oak/troofed1`, `trees/oak/troofed2`, `trees/oak/troofed3`, `trees/oak/troofed4`, `trees/oak/troofed5`, `trees/oak/troofed6`, `trees/oak/troofed7`, and 46 more. 5 decorator rule(s) using `minecraft:pale_oak_sapling`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:pale_moss_carpet`, `minecraft:crimson_fungus`, `minecraft:dead_bubble_coral_fan`, `minecraft:dead_tube_coral`, and 1 more.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_swamp_creaks_f436feb9`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`, `minecraft:warped_wart_block`; 2-4 block(s): `minecraft:netherrack`, `minecraft:warped_wart_block`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.

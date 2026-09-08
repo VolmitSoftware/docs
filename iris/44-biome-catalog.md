@@ -2,12 +2,16 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-05T16:39:48.011Z
+date: 2026-09-08T07:14:15.291Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 This atlas documents the current sources of the built-in Overworld and Underworld packs. Each entry treats the shared terrain identity once, then records how the two packs render and populate it differently. Only reachable content is included. An installed world keeps its active immutable epoch until the operator stages an update; source changes are not automatically present in previously downloaded releases.
+
+Overworld 4007 and Underworld 1010 configure 197 land biomes and children for 3D terrain. Another 25 identities explicitly protect wetlands, dunes, water basins, lava craters, or existing floating geometry. The profiles vary from small lowland recesses to deep cliff undercuts, projecting mountain shelves, and narrow rock fissures.
+
+The paired terrain tables give each biome's density amplitude, horizontal and vertical scales, crack dimensions, and slope gate. See [Terrain shaping](/iris/biomes/terrain-shaping) for coverage and exclusions. Seas, shorelines, and cave biomes retain their separate terrain systems.
 
 Overworld 4004 reduces every subterranean ore pass by 30% and permits ore on exterior terrain surfaces only in exact `minecraft:stone`. Cave-air walls retain normal deposit host rules, and individual surface biomes can replace the exterior host list. Underworld retains its independent ore table and exposure behavior.
 
@@ -27,7 +31,7 @@ The paired catalog contains 375 reachable biome identities:
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
 | Child-only and floating-only variants | 113 | Included with a parent root rather than given an orphan page |
 
-The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1009 has no unreachable biome files.
+The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1010 has no unreachable biome files. River-policy references account for ten roots and two additional children in this total.
 
 ## Family navigation
 
@@ -57,8 +61,8 @@ Overworld 4006 and Underworld 1009 use lowercase resource paths. Underworld 1009
 
 ## Read the atlas
 
-- [Overworld 4006](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
-- [Underworld 1009](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
+- [Overworld 4007](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
+- [Underworld 1010](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
 - [Shorelines](/iris/biomes/shorelines) collects the short transition biomes that do not need individual pages.
 - Individual entries live at `/iris/biomes/<load-key>`. For example, `temperate/plains` is [Temperate Plains](/iris/biomes/temperate/plains), while `carving/standard-deepdark` is [the global Deep Dark family](/iris/biomes/carving/standard-deepdark).
 
@@ -66,7 +70,7 @@ An atlas page lists every region and selection role that can choose the root. Re
 
 ## What counts as in use
 
-Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists; dimension-level carving entries; ordinary children; floating-biome targets; and the relevant carving references. A file that cannot be reached by that graph is omitted even if it parses successfully.
+Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, children, floating targets, carving references, and hydrology biome references. River policies can select surface, mouth, shore, bank, and flooded-cave biomes. A file outside this graph is omitted even if it parses successfully.
 
 This distinction matters when editing a pack. An authored biome can validate yet never generate because nothing selects it. Use [13 - Biomes](/iris/13-biomes) for the configuration contract and [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) for the editing workflow.
 

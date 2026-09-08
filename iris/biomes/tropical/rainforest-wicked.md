@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Tropical Rainforest Wicked"
-description: "Iris biome atlas entry for tropical/rainforest-wicked in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for tropical/rainforest-wicked in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tropical/rainforest-wicked` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tropical/rainforest-wicked` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
-| Underworld 1005 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
+| Overworld 4007 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
+| Underworld 1010 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,27 @@ Both packs use the same generator links: `mountain` (30..90); combined authored 
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `tropical/rainforest-wicked` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+| `tropical/jungle-denmyre` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+| `tropical/rainforest-wicked-child` | Cliff | 56 | 96 / 16 | 36 / 3 / 144 | 0.12 / 0.4 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:jungle`; native-structure derivative `minecraft:sparse_jungle`; custom identities `tropical_rainforest_wicked`.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 2-4 block(s): `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stripped_jungle_wood`, `minecraft:jungle_leaves`.
 - **Content:** 7 object placement rule(s) drawing from 35 object key(s), including `clutter/bincluster1`, `clutter/camp1`, `trees/jungle/cocogeneric2`, `trees/jungle/cocogeneric3`, `trees/jungle/cocogeneric4`, `trees/jungle/cocogeneric5`, `trees/jungle/lgeneric6`, and 28 more. 3 decorator rule(s) using `minecraft:jungle_leaves`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:jungle_wood`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:crimson_forest`; native-structure derivative `minecraft:crimson_forest`; custom identities `underworld_tropical_rainforest_wicked_5c2e5dfb`.
 - **Surface:** 1 block(s): `minecraft:crimson_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:stripped_crimson_hyphae`, `minecraft:nether_wart_block`.
@@ -52,8 +66,8 @@ In that immediate child choice it contributes `1` of `4` slots (25.00%); later c
 
 **Shared terrain:** `plain` (4..7); combined authored contribution `4..7` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:jungle` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 2 object placement rule(s) drawing from 17 object key(s), including `trees/acacia/denmyre1`, `trees/acacia/denmyre2`, `trees/acacia/denmyre3`, `trees/acacia/denmyre4`, `trees/acacia/denmyre5`, `trees/acacia/denmyre6`, `trees/acacia/denmyre7`, and 10 more. 3 decorator rule(s) using `minecraft:short_grass`, `minecraft:stone_button`, `minecraft:tall_grass`.
-- **Underworld 1005:** `minecraft:crimson_forest` identity; surface 1 block(s): `minecraft:crimson_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 2 object placement rule(s) drawing from 17 object key(s), including `underworld/crimson/trees/acacia/denmyre1`, `underworld/crimson/trees/acacia/denmyre2`, `underworld/crimson/trees/acacia/denmyre3`, `underworld/crimson/trees/acacia/denmyre4`, `underworld/crimson/trees/acacia/denmyre5`, `underworld/crimson/trees/acacia/denmyre6`, `underworld/crimson/trees/acacia/denmyre7`, and 10 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:nether_sprouts`, `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
+- **Overworld 4007:** `minecraft:jungle` identity; surface 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 2 object placement rule(s) drawing from 17 object key(s), including `trees/acacia/denmyre1`, `trees/acacia/denmyre2`, `trees/acacia/denmyre3`, `trees/acacia/denmyre4`, `trees/acacia/denmyre5`, `trees/acacia/denmyre6`, `trees/acacia/denmyre7`, and 10 more. 3 decorator rule(s) using `minecraft:short_grass`, `minecraft:stone_button`, `minecraft:tall_grass`.
+- **Underworld 1010:** `minecraft:crimson_forest` identity; surface 1 block(s): `minecraft:crimson_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 2 object placement rule(s) drawing from 17 object key(s), including `underworld/crimson/trees/acacia/denmyre1`, `underworld/crimson/trees/acacia/denmyre2`, `underworld/crimson/trees/acacia/denmyre3`, `underworld/crimson/trees/acacia/denmyre4`, `underworld/crimson/trees/acacia/denmyre5`, `underworld/crimson/trees/acacia/denmyre6`, `underworld/crimson/trees/acacia/denmyre7`, and 10 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:nether_sprouts`, `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
 
 ### Tropical Rainforest Wicked Child (`tropical/rainforest-wicked-child`)
 
@@ -62,8 +76,8 @@ In that immediate child choice it contributes `1` of `4` slots (25.00%); later c
 
 **Shared terrain:** `mountain` (98..170); combined authored contribution `98..170` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:jungle` identity; surface 1 block(s): `minecraft:grass_block`; 2-4 block(s): `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 7 object placement rule(s) drawing from 35 object key(s), including `clutter/bincluster1`, `clutter/camp1`, `trees/jungle/cocogeneric2`, `trees/jungle/cocogeneric3`, `trees/jungle/cocogeneric4`, `trees/jungle/cocogeneric5`, `trees/jungle/lgeneric6`, and 28 more. 3 decorator rule(s) using `minecraft:jungle_leaves`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:jungle_wood`.
-- **Underworld 1005:** `minecraft:crimson_forest` identity; surface 1 block(s): `minecraft:crimson_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 7 object placement rule(s) drawing from 35 object key(s), including `underworld/crimson/clutter/bincluster1`, `underworld/crimson/clutter/camp1`, `underworld/crimson/trees/jungle/cocogeneric2`, `underworld/crimson/trees/jungle/cocogeneric3`, `underworld/crimson/trees/jungle/cocogeneric4`, `underworld/crimson/trees/jungle/cocogeneric5`, `underworld/crimson/trees/jungle/lgeneric6`, and 28 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:crimson_hyphae`.
+- **Overworld 4007:** `minecraft:jungle` identity; surface 1 block(s): `minecraft:grass_block`; 2-4 block(s): `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 7 object placement rule(s) drawing from 35 object key(s), including `clutter/bincluster1`, `clutter/camp1`, `trees/jungle/cocogeneric2`, `trees/jungle/cocogeneric3`, `trees/jungle/cocogeneric4`, `trees/jungle/cocogeneric5`, `trees/jungle/lgeneric6`, and 28 more. 3 decorator rule(s) using `minecraft:jungle_leaves`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:jungle_wood`.
+- **Underworld 1010:** `minecraft:crimson_forest` identity; surface 1 block(s): `minecraft:crimson_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 7 object placement rule(s) drawing from 35 object key(s), including `underworld/crimson/clutter/bincluster1`, `underworld/crimson/clutter/camp1`, `underworld/crimson/trees/jungle/cocogeneric2`, `underworld/crimson/trees/jungle/cocogeneric3`, `underworld/crimson/trees/jungle/cocogeneric4`, `underworld/crimson/trees/jungle/cocogeneric5`, `underworld/crimson/trees/jungle/lgeneric6`, and 28 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:nether_wart_block`, `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:crimson_hyphae`.
 
 ## Floating variants
 

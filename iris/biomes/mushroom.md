@@ -2,7 +2,7 @@
 title: "Mushroom Biomes"
 description: "Navigation for the built-in mushroom biomes across Overworld and Underworld"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biomes, overworld, underworld, mushroom"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -25,3 +25,7 @@ This family has **2 child-only reachable variants**. Those variants are document
 | [Warped Forest](/iris/biomes/mushroom/warped-forest) | `mushroom/warped-forest` | Land | Mushroom |
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).
+
+## 3D terrain coverage
+
+The paired packs explicitly configure 7 terrain identities in this family: 6 fungal, 1 lowland. Each entry lists the numeric `terrain3D` settings for its root and children.

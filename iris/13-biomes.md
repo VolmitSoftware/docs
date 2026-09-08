@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-08T07:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,7 +35,9 @@ column (x, z)
   |
   generators[]  ->  terrain height Y   (each link maps 0..1 noise into min..max, relative to fluidHeight)
   |
-  layers[]      ->  block stack downward from Y
+  terrain3D     ->  optional solid spans, overhangs and fissures around that height
+  |
+  layers[]      ->  block stack downward from each exposed floor
   |
   remaining depth below the layers  ->  dimension rock palette
   |
@@ -131,6 +133,54 @@ To stack a rare feature on top of a base shape, use two links with different gen
 ```
 
 Observable result: rolling dunes 5-12 above water, with occasional hills adding up to another 40. The bands add, so the biome full range is 5 to 52. How the two shapes combine depends on their generators interpolators. See [14 - Generators & Noise](/iris/14-generators-noise).
+
+## Volumetric biome terrain
+
+`terrain3D` shapes solid volume around the height supplied by `generators`. It can add rock above that height and remove rock below it. A column can contain several solid spans, with air between a lower ledge and an overhang. The original generator still controls the broad landform.
+
+Add an inline profile to a biome, or reference `snippet/terrain-3d/<key>.json` with `"terrain3D": "snippet/terrain-3d/<key>"`:
+
+```json
+{
+  "terrain3D": {
+    "amplitude": 40,
+    "horizontalScale": 72,
+    "verticalScale": 20,
+    "densityStyle": { "style": "SIMPLEX" },
+    "crackDepth": 20,
+    "crackWidth": 3,
+    "crackScale": 96,
+    "minimumSlope": 0.15,
+    "slopeFade": 0.35,
+    "fluidClearance": 8,
+    "fluidFade": 24
+  }
+}
+```
+
+| Field | Default | Effect |
+|---|---|---|
+| `enabled` | `true` | Enables this profile; omitting `terrain3D` leaves the biome without a profile |
+| `seed` | `0` | Adds a repeatable profile seed to the world seed |
+| `amplitude` | `32` | Maximum density displacement in blocks; range `0..128` |
+| `horizontalScale`, `verticalScale` | `96`, `24` | Horizontal and vertical noise scales in blocks; each accepts `8..4096` |
+| `densityStyle` | `SIMPLEX` | Three-dimensional noise that shapes solid spans |
+| `crackDepth` | `0` | Strength of the subtractive fissure field in blocks; range `0..128` |
+| `crackWidth` | `4` | Fissure width control in blocks; range `0.25..64` |
+| `crackScale` | `96` | Fissure spacing scale in blocks; range `8..4096` |
+| `crackStyle` | `SIMPLEX` | Three-dimensional noise that places fissures |
+| `minimumSlope` | `0.15` | Base-terrain slope below which shaping fades out; `0` disables the slope gate |
+| `slopeFade` | `0.35` | Slope interval over which shaping reaches full strength |
+| `fluidClearance` | `8` | Protected vertical clearance above the dimension fluid level |
+| `fluidFade` | `24` | Height interval above that clearance over which shaping reaches full strength |
+
+Noise style `zoom` multiplies the corresponding scale. Smaller vertical scales allow more folds within the displacement band. A large amplitude alone can produce a taller hill without an overhang. Crack width and scale control the field, so they do not guarantee a fixed visible opening width at every height.
+
+Iris selects each profile from the biome before volumetric shaping, then blends nearby profile contributions. This avoids a feedback loop between the new height and the profile that produces it. A missing profile contributes zero displacement at its sample points, so neighboring shaped terrain fades across the boundary. When a dimension has no enabled profiles, Iris skips the volumetric runtime.
+
+The resulting highest solid block becomes the natural height used by hydrology and ordinary surface placement. Accepted river-owned columns retain the river plan's continuous bed. Additional exposed floors receive biome surface layers and decorators. Overhang undersides use `caveCeilingLayers` or dimension rock. Ordinary trees, objects and structures keep their existing placement rules.
+
+For the bundled profiles and each biome's numeric settings, see [Terrain shaping](/iris/biomes/terrain-shaping). Inspect a side cut in fresh Studio chunks when tuning: a top-down height preview cannot show covered ledges. Changes to saved worlds follow [world lifecycle rules](/iris/06-worlds-lifecycle).
 
 ## Walkthrough: turn it into an ocean floor
 

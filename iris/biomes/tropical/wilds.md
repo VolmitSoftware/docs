@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Tropical Wilds"
-description: "Iris biome atlas entry for tropical/wilds in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for tropical/wilds in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tropical/wilds` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tropical/wilds` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
-| Underworld 1005 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
+| Overworld 4007 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
+| Underworld 1010 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,26 @@ Both packs use the same generator links: `mountain` (10..20); combined authored 
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `tropical/wilds` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+| `tropical/highlands` | Mountain | 52 | 112 / 20 | 28 / 3 / 176 | 0.18 / 0.5 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:jungle`; native-structure derivative `minecraft:jungle`; custom identities `tropical_wilds`; underground scatter `minecraft:jungle`.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 9 object placement rule(s) drawing from 39 object key(s), including `clutter/oakshrub1`, `clutter/oakshrub2`, `clutter/oakshrub3`, `clutter/obelisk1`, `clutter/obelisk2`, `clutter/obelisk3`, `clutter/obelisk4`, and 32 more. 7 decorator rule(s) using `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:oxeye_daisy`, `minecraft:pink_tulip`, `minecraft:lily_of_the_valley`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:rose_bush`, and 3 more.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:crimson_forest`; native-structure derivative `minecraft:crimson_forest`; custom identities `underworld_tropical_wilds_bad3e830`.
 - **Surface:** 1 block(s): `minecraft:crimson_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -50,8 +63,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `mountain` (99..164); combined authored contribution `99..164` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:jungle` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 1 object placement rule(s) drawing from 10 object key(s), including `clutter/oakclutt1`, `clutter/oakclutt2`, `clutter/oakclutt3`, `clutter/oakclutt4`, `clutter/oakclutt5`, `clutter/birchclutt1`, `clutter/birchclutt2`, and 3 more. 4 decorator rule(s) using `minecraft:wither_rose`, `minecraft:oxeye_daisy`, `minecraft:pink_tulip`, `minecraft:lily_of_the_valley`, `minecraft:sunflower`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:rose_bush`, `minecraft:large_fern`, and 3 more.
-- **Underworld 1005:** `minecraft:crimson_forest` identity; surface 1 block(s): `minecraft:crimson_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 1 object placement rule(s) drawing from 10 object key(s), including `underworld/crimson/clutter/oakclutt1`, `underworld/crimson/clutter/oakclutt2`, `underworld/crimson/clutter/oakclutt3`, `underworld/crimson/clutter/oakclutt4`, `underworld/crimson/clutter/oakclutt5`, `underworld/crimson/clutter/birchclutt1`, `underworld/crimson/clutter/birchclutt2`, and 3 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:crimson_roots`.
+- **Overworld 4007:** `minecraft:jungle` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 1 object placement rule(s) drawing from 10 object key(s), including `clutter/oakclutt1`, `clutter/oakclutt2`, `clutter/oakclutt3`, `clutter/oakclutt4`, `clutter/oakclutt5`, `clutter/birchclutt1`, `clutter/birchclutt2`, and 3 more. 4 decorator rule(s) using `minecraft:wither_rose`, `minecraft:oxeye_daisy`, `minecraft:pink_tulip`, `minecraft:lily_of_the_valley`, `minecraft:sunflower`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:rose_bush`, `minecraft:large_fern`, and 3 more.
+- **Underworld 1010:** `minecraft:crimson_forest` identity; surface 1 block(s): `minecraft:crimson_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 1 object placement rule(s) drawing from 10 object key(s), including `underworld/crimson/clutter/oakclutt1`, `underworld/crimson/clutter/oakclutt2`, `underworld/crimson/clutter/oakclutt3`, `underworld/crimson/clutter/oakclutt4`, `underworld/crimson/clutter/oakclutt5`, `underworld/crimson/clutter/birchclutt1`, `underworld/crimson/clutter/birchclutt2`, and 3 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:crimson_roots`.
 
 ## Floating variants
 

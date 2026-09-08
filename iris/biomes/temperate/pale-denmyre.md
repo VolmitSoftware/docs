@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Pale Denmyre"
-description: "Iris biome atlas entry for temperate/pale-denmyre in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for temperate/pale-denmyre in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/pale-denmyre` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/pale-denmyre` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `temperate` (Temperate) | 1 | 5 | 0.2 | 1.23% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 5 | 0.2 | 1.23% |
+| Overworld 4007 | `temperate` (Temperate) | 1 | 5 | 0.2 | 1.23% |
+| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 5 | 0.2 | 1.23% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `plain` (4..8), `rare-hills` (0..12); c
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `temperate/pale-denmyre` | Lowland | 10 | 96 / 16 | None | 0.18 / 0.48 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:dark_forest`; native-structure derivative `minecraft:pale_garden`; custom identities `pale_denmyre`.
 - **Surface:** 1 block(s): `minecraft:pale_moss_block`, `minecraft:mud`, `minecraft:rooted_dirt`; 2-4 block(s): `minecraft:dirt`, `minecraft:mud`, `minecraft:calcite`; 6-18 block(s): `minecraft:stone`, `minecraft:tuff`, `minecraft:calcite`. Wall palette: `minecraft:stone`, `minecraft:calcite`, `minecraft:tuff`.
 - **Content:** 2 object placement rule(s) drawing from 22 object key(s), including `trees/darkoak/denmyre1`, `trees/darkoak/denmyre2`, `trees/darkoak/denmyre3`, `trees/darkoak/denmyre4`, `trees/darkoak/denmyre5`, `trees/darkoak/denmyre6`, `trees/darkoak/denmyre7`, and 15 more. 3 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_temperate_pale_denmyre_33ec4b0d`.
 - **Surface:** 1 block(s): `minecraft:warped_wart_block`, `minecraft:netherrack`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`. Wall palette: `minecraft:netherrack`.

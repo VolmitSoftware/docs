@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Birch Forest"
-description: "Iris biome atlas entry for temperate/birch-forest in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for temperate/birch-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/birch-forest` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/birch-forest` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `temperate` (Temperate) | 1 | 6 | 0.1667 | 1.02% |
-| Underworld 1005 | `temperate` (Underworld Temperate) | 1 | 6 | 0.1667 | 1.02% |
+| Overworld 4007 | `temperate` (Temperate) | 1 | 6 | 0.1667 | 1.02% |
+| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 6 | 0.1667 | 1.02% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,26 @@ Both packs use the same generator links: `highplains` (5..12), `rare-hills` (0..
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `temperate/birch-forest` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+| `temperate/birch-forest-extended` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:birch_forest`; native-structure derivative `minecraft:birch_forest`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:gravel`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 6 object placement rule(s) drawing from 27 object key(s), including `clutter/bincluster1`, `clutter/camp1`, `trees/birch/antioch3`, `trees/birch/antioch4`, `trees/birch/antioch5`, `trees/birch/antioch6`, `trees/birch/antioch7`, and 20 more. 5 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:allium`, `minecraft:poppy`, `minecraft:dandelion`, `minecraft:azure_bluet`, `minecraft:pink_tulip`, `minecraft:cornflower`, `minecraft:lily_of_the_valley`, `minecraft:short_grass`, `minecraft:tall_grass`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_birch_forest_020baae5`.
 - **Surface:** 1 block(s): `minecraft:netherrack`, `minecraft:gravel`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -52,8 +65,8 @@ In that immediate child choice it contributes `4` of `8` slots (50.00%); later c
 
 **Shared terrain:** `mountain` (5..12), `rare-hills` (43..71); combined authored contribution `48..83` blocks relative to fluid height.
 
-- **Overworld 4002:** `minecraft:birch_forest` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:gravel`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 6 object placement rule(s) drawing from 27 object key(s), including `clutter/bincluster1`, `clutter/camp1`, `trees/birch/antioch3`, `trees/birch/antioch4`, `trees/birch/antioch5`, `trees/birch/antioch6`, `trees/birch/antioch7`, and 20 more. 5 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:allium`, `minecraft:poppy`, `minecraft:dandelion`, `minecraft:azure_bluet`, `minecraft:pink_tulip`, `minecraft:cornflower`, `minecraft:lily_of_the_valley`, `minecraft:short_grass`, `minecraft:tall_grass`.
-- **Underworld 1005:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`, `minecraft:gravel`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 6 object placement rule(s) drawing from 27 object key(s), including `underworld/wastes/clutter/bincluster1`, `underworld/wastes/clutter/camp1`, `underworld/wastes/trees/birch/antioch3`, `underworld/wastes/trees/birch/antioch4`, `underworld/wastes/trees/birch/antioch5`, `underworld/wastes/trees/birch/antioch6`, `underworld/wastes/trees/birch/antioch7`, and 20 more. 6 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:nether_sprouts`, `minecraft:crimson_fungus`, `minecraft:fire`.
+- **Overworld 4007:** `minecraft:birch_forest` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:gravel`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 6 object placement rule(s) drawing from 27 object key(s), including `clutter/bincluster1`, `clutter/camp1`, `trees/birch/antioch3`, `trees/birch/antioch4`, `trees/birch/antioch5`, `trees/birch/antioch6`, `trees/birch/antioch7`, and 20 more. 5 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:allium`, `minecraft:poppy`, `minecraft:dandelion`, `minecraft:azure_bluet`, `minecraft:pink_tulip`, `minecraft:cornflower`, `minecraft:lily_of_the_valley`, `minecraft:short_grass`, `minecraft:tall_grass`.
+- **Underworld 1010:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`, `minecraft:gravel`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 6 object placement rule(s) drawing from 27 object key(s), including `underworld/wastes/clutter/bincluster1`, `underworld/wastes/clutter/camp1`, `underworld/wastes/trees/birch/antioch3`, `underworld/wastes/trees/birch/antioch4`, `underworld/wastes/trees/birch/antioch5`, `underworld/wastes/trees/birch/antioch6`, `underworld/wastes/trees/birch/antioch7`, and 20 more. 6 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:nether_sprouts`, `minecraft:crimson_fungus`, `minecraft:fire`.
 
 Direct-root children continue on their own pages: [`temperate/birch-thin`](/iris/biomes/temperate/birch-thin).
 

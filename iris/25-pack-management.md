@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-06T00:32:42.000Z
+date: 2026-09-08T08:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -309,16 +309,16 @@ Both compilers walk the dimension, its regions, their biomes, and collect genera
 
 Written to the export:
 
-`dimensions/`, `regions/`, `biomes/`, `generators/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, `spawners/`, `markers/`, `image-maps/`, referenced `images/` PNGs, the structure closure, and `package.json`.
+`dimensions/`, `regions/`, `biomes/`, `generators/`, `expressions/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, `spawners/`, `markers/`, `image-maps/`, referenced `images/` PNGs, the structure closure, and `package.json`.
 
 The ambient-spawning graph is exported in full. `spawners/` and `markers/` are written. Object placements on regions as well as biomes are followed (markers on those placements pull in their spawners). Spawner entities are collected from both `spawns` and `initialSpawns`. Entity loot tables land in `loot/`. Adding spawner or marker files changes `package.json` hash, so re-exported packages hash differently than older ones.
 
 **Not written by either compiler:**
 
 - `mods/`: never collected or written. Harmless, since nothing applies them (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)).
-- `expressions/`, `caves/`, and other folders outside the collected set.
+- `caves/` and other folders outside the collected set.
 
-One platform difference beyond that: Bukkit re-serializes from the loaded object graph, which inlines snippet references. Modded copies the source JSON verbatim and does not copy `snippet/`, so snippet references in a modded export dangle. Validate the unpacked tree before you publish an `.iris` artifact.
+The Bukkit compiler inlines resolved snippets into the exported objects. The modded compiler preserves references and copies the complete `snippet/` JSON tree, including terrain profiles and nested styles. Both export all expression resources, including expressions used only by terrain styles. Validate the unpacked tree before you publish an `.iris` artifact.
 
 ## Stage a production world update
 

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Alpine Grove"
-description: "Iris biome atlas entry for terralost/alpine-grove in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for terralost/alpine-grove in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`terralost/alpine-grove` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`terralost/alpine-grove` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `terralost` (Terralost) | 1 | 1 | 1 | 20.00% |
-| Underworld 1005 | `terralost` (Underworld Terralost) | 1 | 1 | 1 | 20.00% |
+| Overworld 4007 | `terralost` (Terralost) | 1 | 1 | 1 | 20.00% |
+| Underworld 1010 | `terralost` (Underworld Terralost) | 1 | 1 | 1 | 20.00% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `plain` (42..51); combined authored con
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `terralost/alpine-grove` | Forest | 30 | 128 / 20 | 12 / 3 / 192 | 0.2 / 0.55 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:frozen_peaks`; native-structure derivative `minecraft:old_growth_spruce_taiga`; custom identities `terralost_alpine_grove1`, `terralost_alpine_grove2`; underground scatter `minecraft:old_growth_pine_taiga`, `minecraft:windswept_hills`.
 - **Surface:** 3-5 block(s): `minecraft:powder_snow`, `minecraft:snow_block`; 1-2 block(s): `minecraft:snow_block`; 1 block(s): `minecraft:packed_ice`. Wall palette: none.
 - **Content:** 2 object placement rule(s) drawing from 23 object key(s), including `trees/mixed/pollup1`, `trees/mixed/pollup2`, `trees/mixed/pollup3`, `trees/mixed/pollup4`, `trees/mixed/pollup5`, `trees/mixed/pollup6`, `trees/mixed/pollup7`, and 16 more.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_terralost_alpine_grove_81a1a327`.
 - **Surface:** 3-5 block(s): `minecraft:soul_soil`; 1-2 block(s): `minecraft:soul_soil`; 1 block(s): `minecraft:soul_soil`. Wall palette: none.

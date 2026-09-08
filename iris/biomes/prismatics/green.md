@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Prismatics Green"
-description: "Iris biome atlas entry for prismatics/green in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for prismatics/green in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`prismatics/green` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`prismatics/green` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `prismatics` (Prismatics) | 1 | 1 | 1 | 6.25% |
-| Underworld 1005 | `prismatics` (Underworld Prismatics) | 1 | 1 | 1 | 6.25% |
+| Overworld 4007 | `prismatics` (Prismatics) | 1 | 1 | 1 | 6.25% |
+| Underworld 1010 | `prismatics` (Underworld Prismatics) | 1 | 1 | 1 | 6.25% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `plain` (24..52), `highplains` (52..72)
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `prismatics/green` | Prismatic | 36 | 112 / 16 | 22 / 2.5 / 160 | 0.14 / 0.42 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:plains`; native-structure derivative `minecraft:plains`; no custom or scatter identities.
 - **Surface:** 2-3 block(s): `minecraft:green_concrete_powder`; 4-8 block(s): `minecraft:green_concrete`. Wall palette: `minecraft:green_concrete`.
 - **Content:** 5 object placement rule(s) drawing from 34 object key(s), including `clutter/concretelith1`, `clutter/concretelith2`, `clutter/concretelith3`, `clutter/concretelith4`, `clutter/concretelith5`, `clutter/concretelith6`, `clutter/concretelith7`, and 27 more.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_prismatics_green_70cd70fa`.
 - **Surface:** 2-3 block(s): `minecraft:warped_nylium`; 4-8 block(s): `minecraft:warped_nylium`. Wall palette: `minecraft:warped_nylium`.

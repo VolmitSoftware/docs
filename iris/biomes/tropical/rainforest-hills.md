@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Rainforest Hills"
-description: "Iris biome atlas entry for tropical/rainforest-hills in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for tropical/rainforest-hills in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tropical/rainforest-hills` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tropical/rainforest-hills` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
-| Underworld 1005 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
+| Overworld 4007 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
+| Underworld 1010 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `plain-cliffs` (32..65); combined autho
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `tropical/rainforest-hills` | Cliff | 56 | 96 / 16 | 36 / 3 / 144 | 0.12 / 0.4 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:jungle`; native-structure derivative `minecraft:jungle`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 2-4 block(s): `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stripped_jungle_wood`, `minecraft:jungle_leaves`.
 - **Content:** 6 object placement rule(s) drawing from 37 object key(s), including `clutter/bincluster1`, `trees/jungle/cocogeneric2`, `trees/jungle/cocogeneric3`, `trees/jungle/cocogeneric4`, `trees/jungle/cocogeneric5`, `trees/jungle/spire1`, `trees/jungle/spire2`, and 30 more. 5 decorator rule(s) using `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:jungle_leaves`, `minecraft:fern`, `minecraft:jungle_sapling`, `minecraft:dead_bush`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:crimson_forest`; native-structure derivative `minecraft:crimson_forest`; custom identities `underworld_tropical_rainforest_hills_d8d03778`.
 - **Surface:** 1 block(s): `minecraft:crimson_nylium`; 2-4 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:stripped_crimson_hyphae`, `minecraft:nether_wart_block`.

@@ -2,7 +2,7 @@
 title: "Mountain Biomes"
 description: "Navigation for the built-in mountain biomes across Overworld and Underworld"
 published: true
-date: 2026-09-05T16:39:48.011Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biomes, overworld, underworld, mountain"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -29,3 +29,7 @@ This family has **5 child-only reachable variants**. Those variants are document
 | [Shorelines](/iris/biomes/shorelines) | `mountain/shore/beach` | Shore | Estranged, Temperate |
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).
+
+## 3D terrain coverage
+
+The paired packs explicitly configure 14 terrain identities in this family: 4 cliff, 3 forest, 4 hills, 3 mountain. Each entry lists the numeric `terrain3D` settings for its root and children.

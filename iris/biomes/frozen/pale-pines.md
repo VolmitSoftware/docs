@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Pale Pines"
-description: "Iris biome atlas entry for frozen/pale-pines in Overworld 4002 and Underworld 1005"
+description: "Iris biome atlas entry for frozen/pale-pines in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-08T07:09:46.981Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`frozen/pale-pines` is a directly selected land biome in the pinned Overworld 4002 and Underworld 1005 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`frozen/pale-pines` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4002 | `frozen` (Frozen) | 1 | 6 | 0.1667 | 0.95% |
-| Underworld 1005 | `frozen` (Underworld Frozen) | 1 | 6 | 0.1667 | 0.95% |
+| Overworld 4007 | `frozen` (Frozen) | 1 | 6 | 0.1667 | 0.95% |
+| Underworld 1010 | `frozen` (Underworld Frozen) | 1 | 6 | 0.1667 | 0.95% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -26,13 +26,25 @@ Both packs use the same generator links: `mountain` (10..26); combined authored 
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
-## Overworld 4002 treatment
+## 3D terrain
+
+Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
+|---|---|---:|---|---|---|
+| `frozen/pale-pines` | Hills | 22 | 112 / 18 | 8 / 2.5 / 176 | 0.18 / 0.5 |
+
+Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
+
+## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:snowy_taiga`; native-structure derivative `minecraft:snowy_taiga`; custom identities `frozen_pale_pines`.
 - **Surface:** 0-1 block(s): `minecraft:snow_block`; 1 block(s): `minecraft:pale_moss_block`, `minecraft:grass_block`; 3-6 block(s): `minecraft:dirt`, `minecraft:calcite`, `minecraft:packed_ice`; 6-18 block(s): `minecraft:stone`, `minecraft:calcite`. Wall palette: `minecraft:stone`, `minecraft:calcite`, `minecraft:packed_ice`.
 - **Content:** 1 object placement rule(s) drawing from 10 object key(s), including `trees/spruce/levergreen1`, `trees/spruce/mevergreen1`, `trees/spruce/mevergreen2`, `trees/spruce/mevergreen3`, `trees/spruce/vgeneric1`, `trees/spruce/vgeneric2`, `trees/spruce/vgeneric3`, and 3 more. 2 decorator rule(s) using `minecraft:snow`, `minecraft:air`, `minecraft:pale_moss_carpet`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_frozen_pale_pines_3ea25f8c`.
 - **Surface:** 0-1 block(s): `minecraft:soul_soil`; 1 block(s): `minecraft:warped_wart_block`, `minecraft:soul_soil`; 3-6 block(s): `minecraft:soul_soil`, `minecraft:basalt`; 6-18 block(s): `minecraft:basalt`. Wall palette: `minecraft:basalt`, `minecraft:soul_soil`.
