@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-05T16:04:10.730Z
+date: 2026-09-08T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -103,6 +103,8 @@ java -javaagent:plugins/Iris/agent.jar -jar server.jar nogui
 6. Complete any pack or datapack restart requirement before creating a world.
 
 `-XX:+EnableDynamicAgentLoading` permits dynamic agent loading, but host restrictions can still prevent attachment. Loading the extracted agent at JVM startup avoids that attachment step. If injection still fails, retain the complete startup stack trace and check the Iris/server version combination.
+
+The agent and injection failures are two of the startup checks behind the Stable, Warning, and Danger mode banner. See [46 - Startup Safeguard](/iris/46-startup-safeguard) for the full check list and what each failure locks.
 
 ### Permissions
 

@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-05T22:48:35.579Z
+date: 2026-09-08T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,6 +96,7 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Client HUD | Client mod HUD and protocol channel | [29 - Client HUD & Protocol](/iris/29-client-hud-protocol) |
 | Platform matrix | Bukkit vs Fabric / Forge / NeoForge differences | [30 - Platform Differences](/iris/30-platform-differences) |
 | Operator checks | Manual verification | [31 - Operator Runbooks](/iris/31-operator-runbooks) |
+| Startup safeguard | Stable, Warning, and Danger modes and what they lock | [46 - Startup Safeguard](/iris/46-startup-safeguard) |
 | Determinism | Goldenhash cross-platform gate | [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash) |
 | Performance | Threads, mantle, SIMD, pregen caps | [33 - Performance Tuning](/iris/33-performance-tuning) |
 | Multiverse | What Multiverse may and may not do with Iris worlds | [34 - Multiverse](/iris/34-multiverse) |

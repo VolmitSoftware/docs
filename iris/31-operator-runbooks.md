@@ -2,7 +2,7 @@
 title: "Operator Runbooks"
 description: "Iris documentation: Operator Runbooks"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-08T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -20,6 +20,14 @@ Use these checks after installing Iris, updating it, or changing a pack.
 7. Verify an old chunk, the transition band, a distant new chunk, and a locator for newly added content.
 
 See [Installation & Platforms](/iris/01-installation-platforms) and [Pack Management](/iris/25-pack-management).
+
+## Iris starts in Warning or Danger Mode
+
+Iris prints a mode banner at the end of its Bukkit startup checks. `Iris is running in Warning Mode` means a non-fatal check failed and startup continues. `Iris is running in Danger Mode` means a check failed at error severity, and a `Java Agent` or `Code Injection` failure additionally locks player login, world creation, Studio open, and generation for every configured Iris world.
+
+Read the check output printed above the banner, fix what it names, and restart. Do not delete files from a dimension root to clear a lock.
+
+See [46 - Startup Safeguard](/iris/46-startup-safeguard) for every check, what its failure means, and the recovery steps.
 
 ## A pack will not load
 
