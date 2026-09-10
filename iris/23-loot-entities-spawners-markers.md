@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-09-07T22:00:18.976Z
+date: 2026-09-09T05:41:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -157,6 +157,7 @@ On Fabric/Forge/NeoForge that command is not registered and reports that it is B
 
 **6. If nothing spawns.** Work down the gate list in order rather than raising `rarity` or the rate:
 
+- Difficulty. Iris skips native entity types that the server forbids in Peaceful before creating them. This is an expected rejection and produces no spawn-error log. Passive entities and native Peaceful exceptions remain eligible. The same rule applies to Studio entity commands and shared platform spawn requests on Bukkit and mod loaders.
 - World-wide crowding. If living entities divided by loaded chunks exceeds `world.targetSpawnEntitiesPerChunk` (0.95 by default, scaled by 1.28), Iris stops spawning for five seconds. It logs the stop under debug. A test world full of mobs will starve your spawner.
 - Chunk crowding. `maxEntitiesPerChunk` is compared against the living entities already in that chunk.
 - Time and weather. Both are read from the world at attempt time.

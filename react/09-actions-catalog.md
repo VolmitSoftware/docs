@@ -2,7 +2,7 @@
 title: "Actions Catalog"
 description: "Operator actions, parameters, and safety rules"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-08T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,6 +43,8 @@ This action attempts a saved unload of selected chunks in a world or area. It do
 
 This action purges matching entities in an area. Type, named-entity, and protection guards apply. All-world traversal waits for Observer's startup coordinate seed, streams loaded coordinates in waves of at most 256, and resolves each chunk only on its owner without retaining chunk handles or loading missing chunks.
 
+Ender Dragons are always excluded, including when a saved blacklist omits them or an execution filter explicitly includes them. They receive no purge countdown or removal, preserving the dragon fight and its boss bar.
+
 - **Config:** `plugins/React/action/purge-entities.toml`
 - **CLI:** `/react action purge-entities [radius=0] [world=ALL]` (alias `pe`). A positive player radius is clamped to 10 chunks. Zero does not add a radius restriction.
 
@@ -51,7 +53,7 @@ TOML fields:
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this action. |
-| `blacklist` | list of entity types | built-in protected list | Entity types excluded when `defaultBlacklist` is enabled. |
+| `blacklist` | list of entity types | built-in protected list | Entity types excluded when `defaultBlacklist` is enabled. Includes `ENDER_DRAGON`; dragon protection also applies independently of this list. |
 | `defaultBlacklist` | boolean | `true` | Applies the built-in entity type blacklist. |
 | `secondsToPurge` | int | `5` | Baseline for the randomized 4–6 second kill countdown chosen by the action instance. It is not an entity-age check. |
 | `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names in default action parameters. Disable to make them eligible. |

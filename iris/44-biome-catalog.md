@@ -2,27 +2,32 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-08T16:44:00.000Z
+date: 2026-09-09T05:29:01.778Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 This atlas documents the current sources of the built-in Overworld and Underworld packs. Each entry treats the shared terrain identity once, then records how the two packs render and populate it differently. Only reachable content is included. An installed world keeps its active immutable epoch until the operator stages an update; source changes are not automatically present in previously downloaded releases.
 
-Overworld 4007 and Underworld 1010 configure 197 land biomes and children for 3D terrain. Another 25 identities explicitly protect wetlands, dunes, water basins, lava craters, or existing floating geometry. The profiles vary from small lowland recesses to deep cliff undercuts, projecting mountain shelves, and narrow rock fissures.
+Overworld 4007 and Underworld 1010 configure 197 land biomes and children for 3D terrain. Another 23 identities explicitly protect wetlands, dunes, water basins or existing floating geometry. The profiles vary from small lowland recesses to deep cliff undercuts, projecting mountain shelves, and narrow rock fissures.
 
-The profiles retain displacement amplitudes from 10 to 56 blocks, with horizontal density scales from 112 to 160 blocks and vertical scales from 20 to 28 blocks. These feature sizes favor broader shelves and recesses. Active cracks use shallower depths and longer scales to space fissures farther apart.
+The profiles retain displacement amplitudes from 10 to 56 blocks. Horizontal density scales range from 144 to 280 blocks, and vertical scales range from 24 to 36 blocks.
+The five density styles vary by terrain family: `PERLIN`, `NOWHERE`, `IRIS_HALF`, `HEXAGON`, and `SIMPLEX`. Most profiles use larger feature scales for broader shelves and recesses.
+Stony Peaks keeps its original `SIMPLEX` density pattern and scales to avoid new detached formations. Its crack field uses reduced depth and greater spacing.
+Cracks remain active in 73 profiles, with depths from 7 to 14 blocks and horizontal scales from 336 to 416 blocks. Lowland, Hills, Forest, Fungal, and Magnetic treatments disable the separate crack field.
 
-The paired terrain tables give each biome's density amplitude, horizontal and vertical scales, crack dimensions, and slope gate. See [Terrain shaping](/iris/biomes/terrain-shaping) for coverage and exclusions. Seas, shorelines, and cave biomes retain their separate terrain systems.
+The paired terrain tables give each biome's density amplitude, feature scales, crack dimensions, slope gate, and exact density and crack noise styles. See [Terrain shaping](/iris/biomes/terrain-shaping) for family defaults, coverage, and exclusions. Seas, shorelines, and cave biomes retain their separate terrain systems.
 
 Overworld 4004 reduces every subterranean ore pass by 30% and permits ore on exterior terrain surfaces only in exact `minecraft:stone`. Cave-air walls retain normal deposit host rules, and individual surface biomes can replace the exterior host list. Underworld retains its independent ore table and exposure behavior.
+
+Overworld restores original oak, spruce, and dark oak fences in `trees/mixed/dotree1` through `trees/mixed/dotree10`. Seven biome identities share these objects, including [Tundra Magic Violet Forest](/iris/biomes/temperate/reaching-forest-violet). Underworld uses its separate Nether tree assets.
 
 > **Pack maintenance requirement:** any update to either built-in pack that changes biome files, region selectors, dimension carving, children, floating biomes, terrain, materials, decoration, ecology, or reachability must update this atlas in the same workstream. A pack update with stale atlas pages is incomplete.
 {.is-warning}
 
 ## Catalog scope
 
-The paired catalog contains 375 reachable biome identities:
+The paired catalog contains 373 reachable biome identities:
 
 | Kind | Count | Documentation treatment |
 |---|---:|---|
@@ -31,7 +36,7 @@ The paired catalog contains 375 reachable biome identities:
 | Direct shore roots | 19 | Consolidated in [Shorelines](/iris/biomes/shorelines), with distinct variants called out |
 | Region-selected cave roots | 47 | One paired page per root, except the 16-color Prismatic family |
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
-| Child-only and floating-only variants | 113 | Included with a parent root rather than given an orphan page |
+| Child-only and floating-only variants | 111 | Included with a parent root rather than given an orphan page |
 
 The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1010 has no unreachable biome files. River-policy references account for ten roots and two additional children in this total.
 
@@ -53,7 +58,7 @@ The Overworld repository contains seven unreachable files. They are not active c
 | [Swamp](/iris/biomes/swamp) | 13 | 7 | Marshes, mangroves, forests, lakes, oceans, and shores |
 | [Temperate](/iris/biomes/temperate) | 32 | 11 | Plains, meadows, forests, waters, and shared shores |
 | [Terralost](/iris/biomes/terralost) | 5 | 0 | Alpine, amethyst, and ancient-sand terrain |
-| [Tropical](/iris/biomes/tropical) | 20 | 9 | Rainforests, islands, volcanoes, waters, and distinct shores |
+| [Tropical](/iris/biomes/tropical) | 20 | 7 | Rainforests, islands, volcanoes, waters, and distinct shores |
 | [Tundra](/iris/biomes/tundra) | 17 | 9 | Taiga, redwoods, alpine terrain, mountains, water, and shores |
 | [Vanilla](/iris/biomes/vanilla) | 20 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 

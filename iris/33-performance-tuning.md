@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-09T11:40:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,6 +128,8 @@ Cold hydrology tile planning and chunk-column composition run outside cache inse
 
 The JVM property `iris.mantle.componentTimeout` defaults to 120,000 milliseconds. When the wait detects that threshold, it reports the timeout and requests cancellation. A queued component cannot start after cancellation. A running component retains its shared task entry and writer until it exits. Work that does not exit leaves generation and shutdown incomplete instead of releasing storage beneath active writes.
 
+Each generation caller outside Iris's worker pool submits at most eight mantle components at a time, reduced to the processor count on smaller machines. It drains that batch before submitting more. Shared work retains its pass barrier, and recursive generation on an Iris worker runs its own claims inline. This bounds the backlog retained while native structure queries wait without omitting components or limiting the worker pool's ability to complete dependencies.
+
 Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original evaluation order. Signed noise checks mutable generator state once before entering its fast sampling path; cache invalidation and nested mutation behavior are unchanged. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
 
 Each hydrology runtime reuses resolved river policies and profile lists for up to 1,024 region, biome, and loader identities. Coordinate-dependent geometry and biome selection still run for each sample. Failed reference loads remain retryable. Reloads rebuild this cache with the runtime.
@@ -147,6 +149,12 @@ Child-biome and carving-child selection plans store cumulative rarity counts. Pl
 Object smart boring scans its occupied bounds directly in X, Y, then Z order under the volume write lock. It uses no queued tasks or atomic cell counter. Negative-only object bounds no longer add empty scans toward the origin.
 
 Generation-history routing leases a ready runtime in one metadata-lock acquisition. Repeated coordinate queries read an attached router without acquiring its attachment monitor. Missing routers still pass synchronized publication and detach checks. Routing and generation admission use nonfair lock handoffs to reduce contention between generation workers. Waiting cutovers explicitly block later stage admission until existing stages drain and publication finishes. Coordinate ownership, activation boundaries, and shutdown drains retain their existing checks. These changes require no configuration changes.
+
+Transition blending evaluates the saved geometry's compact runs directly. It avoids expanding each contributing column into full-height distance and material arrays while retaining the same material ties, protected blocks, fluid handling, and saved format.
+
+Native structure height queries reuse up to 65,536 resolved transition heights per generator. Each entry includes the routed runtime, signed coordinates, native heightmap predicate, and vertical bounds. Runtime retirement removes its entries. Ordinary height queries remain live, including hydrology that is still being planned.
+
+Bukkit world-save events queue native structure ownership serialization as tracked background work. Mantle and world-manager hooks and engine metadata stay on the calling owner thread. Reload and shutdown drain admitted ownership writes before releasing their runtime, including a save accepted just before background admission closes.
 
 Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims enter a bounded queue before acquiring the history lock. A writer validates up to 32 waiting claims and shares one durable flush per region journal. Full queues apply backpressure without rejecting claims. Publication and successful returns wait for durable storage; each claim keeps its duplicate, conflict, and failure result. Journal frames and activation admission rules are unchanged. Point queries read the last durable semantic snapshot while an append flushes. The writing region’s prior snapshot remains available through cache eviction, so readers cannot replay unflushed bytes. Mutation, bulk-query, and activation-cutover ordering remain serialized.
 

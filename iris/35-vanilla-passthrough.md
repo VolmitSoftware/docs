@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-09T06:54:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -188,7 +188,7 @@ Loot ownership depends on what created the container.
 
 ## Task 4: Replace grown saplings with pack trees
 
-Vanilla sapling growth continues until you opt in. Pack procedural trees and `objects[]` trees do not change what a player grows.
+Vanilla sapling growth continues until you opt in. Pack procedural trees and `objects[]` trees do not change what a player grows. During a generation cutover, Iris defers the growth event so the owning thread can complete the terrain checkpoint; the sapling remains available for a later growth attempt.
 
 1. Enable the dimension gate:
 

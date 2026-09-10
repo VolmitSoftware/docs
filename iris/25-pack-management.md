@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-09T05:57:10.311Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ A pack can exist in three forms. Confusing them is the usual source of "my edit 
 - **Generation snapshots**, at `<world>/iris/generation/epochs/<epoch>/pack/`. Production worlds and Bukkit Studio retain immutable definitions for historical, active, and pending epochs. Saved biome environments use the pack from their owning activation. Authoring edits automatically update ordinary Bukkit Studio, while production updates require explicit staging.
 - **The export**, at `exports/<key>.iris`. A zip of the dimension dependency closure, for handing to somebody else.
 
-Validation runs against a directory, not a key. A pack can be valid in the workspace and stale in a world. Iris caches startup validation results. It re-uses them only when the pack bytes, the visible pack set, the platform, and the relevant game registries all still match. Otherwise it revalidates. Fresh validation rechecks the content fingerprint after parsing. If files keep changing, Iris retries once and then refuses the unstable result until writes stop.
+Validation runs against a directory, not a key. A pack can be valid in the workspace and stale in a world. Iris caches startup validation results. Reuse requires matching pack bytes, the visible pack set, the platform, relevant game registries, and the loaded Iris generation build revision. Validator and model changes therefore invalidate saved results even when the Iris version number stays the same. An unavailable build revision disables cache reuse. Fresh validation rechecks the content fingerprint after parsing. If files keep changing, Iris retries once and then refuses the unstable result until writes stop.
 
 When Iris atomically copies a validated source pack into a world epoch, it may transfer that exact validation result. It does so only after a strong content fingerprint proves the copied tree matches the source. Production epochs and their fingerprints exclude root-level hidden metadata such as `.git/`, `.iris/`, and `.idea/`, plus `*.code-workspace` files.
 

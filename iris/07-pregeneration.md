@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-09T09:41:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,7 +53,7 @@ Poll `/iris pregen status`. The job is finished when:
 - failed is still `0`,
 - and `/iris pregen status` reports no active task after it ends.
 
-The last one is the real signal. While a job exists, status prints progress. Once the job closes, status tells you there is no active pregeneration task. That transition is the completion condition. It is not the percentage, which can sit at 100% while in-flight chunks finish writing.
+Iris publishes final progress after active chunk requests finish. Check the final generated and failed counts before treating the run as complete. No active task alone does not prove success: cancelled and failed runs also release the job.
 
 Then restart the server cleanly and fly to the edge of the generated area. Chunks inside must load without generating. Chunks past the boundary must generate normally.
 
@@ -197,11 +197,15 @@ Full settings reference: [03 - Configuration](/iris/03-configuration). Tuning gu
 | Stop | `shutdownInstance()` requests cancellation asynchronously. Active chunk work settles first, then Iris flushes tracked chunk I/O, reclaims and saves mantle plates, closes protocol state, and releases the singleton job. The worker interrupt is consumed as a cancellation signal rather than reported as a failure |
 | Status | `progressSnapshot()` returns percent, generated, total chunks, remaining chunks, rates, ETA, elapsed time, method name, paused flag, failed count, world name, and world identity. Rates include overall plus 10-, 30-, and 60-second chunk rates |
 
-Failed chunks are counted separately from generated ones and only appear in the status line when the count is above zero. A run can reach 100% with failures. Check the failed count, not just the percentage.
+Failed chunks are counted separately from generated ones and only appear in the status line when the count is above zero. Traversal can finish with failed chunks. Check the failed count and final generated total.
+
+Pregeneration releases chunk tickets and saves and unloads chunks on their owning threads. It then drains native chunk I/O on Iris's I/O pool, so disk completion does not block the server or region thread. Job close waits for outstanding drains.
 
 During Paper-family shutdown without Folia threading, the server thread processes native chunk tasks while waiting for pregeneration to drain. Final chunk unloads and flushes belong to the server's subsequent world close. Ordinary pregen stops retain Iris's unload and flush path. Shutdown callbacks check Iris's enabled state without acquiring the plugin-manager lock; scheduling failures retain their full console trace.
 
 Console progress is emitted every 30 seconds instead of every 10 seconds, followed by a forced completion or cancellation summary. Each line labels the actual wall-clock overall, 10-second, 30-second, and 60-second averages. Short runs use their available elapsed time, so the startup sample no longer dilutes a five-second run with an artificial zero.
+
+The final progress snapshot and terminal event include chunks completed during shutdown. A successful final batch therefore reports the full generated count and `COMPLETED`, even if the preceding periodic snapshot was incomplete.
 
 ## HUD, GUI, and protocol
 

@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tundra Ether"
 description: "Iris biome atlas entry for tundra/ether in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T16:43:54.130Z
+date: 2026-09-09T05:29:01.778Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -31,12 +31,12 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
-| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
-|---|---|---:|---|---|---|
-| `tundra/ether` | Forest | 30 | 160 / 28 | 8 / 3 / 256 | 0.2 / 0.55 |
-| `tundra/taiga-extended` | Forest | 30 | 160 / 28 | 8 / 3 / 256 | 0.2 / 0.55 |
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
+|---|---|---:|---|---|---|---|
+| `tundra/ether` | Forest | 30 | 280 / 36 | None | 0.2 / 0.55 | `IRIS_HALF` / None |
+| `tundra/taiga-extended` | Forest | 30 | 280 / 36 | None | 0.2 / 0.55 | `PERLIN` / None |
 
-Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 ## Overworld 4007 treatment
@@ -44,6 +44,8 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 - **Minecraft identity:** derivative `minecraft:windswept_hills`; native-structure derivative `minecraft:old_growth_spruce_taiga`; custom identities `tunether`; underground scatter `minecraft:old_growth_pine_taiga`, `minecraft:windswept_hills`.
 - **Surface:** 3-5 block(s) at slope >= 6.9: `minecraft:stone`, `minecraft:andesite`, `minecraft:gravel`; 3-5 block(s) at slope >= 5.3: `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:gravel`; 1 block(s): `minecraft:grass_block`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 3 object placement rule(s) drawing from 21 object key(s), including `clutter/gravelsplotch1`, `clutter/gravelsplotch2`, `clutter/gravelsplotch3`, `clutter/gravelsplotch4`, `trees/mixed/dotree1`, `trees/mixed/dotree2`, `trees/mixed/dotree3`, and 14 more. 3 decorator rule(s) using `minecraft:white_tulip`, `minecraft:blue_orchid`, `minecraft:poppy`, `minecraft:sweet_berry_bush`, `minecraft:short_grass`.
+
+- **Tree materials:** The shared `trees/mixed/dotree1` through `trees/mixed/dotree10` objects use their original oak, spruce, and dark oak fences and connections.
 
 ## Underworld 1010 treatment
 

@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-06T01:48:10.000Z
+date: 2026-09-09T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,6 +41,10 @@ IrisTerrainService terrain = registration == null ? null : registration.getProvi
 Look up services when needed instead of keeping them across an Iris reload. Terrain reads are safe from any thread. Tree-feller calls must run on the thread delivering the block event. World and pregeneration events run on the server's global thread.
 
 When switching over Iris enums, include a `default` branch so future values do not break your integration.
+
+## Engine save requests
+
+Call `Engine.requestSave()` from the appropriate world-owning thread. It returns `false` when lifecycle admission rejects the request; an accepted request runs mantle and world-manager hooks and saves engine metadata on the caller, while native structure ownership serialization runs as tracked background work. Acceptance does not mean the background write has finished. Reload and shutdown drain accepted writes before releasing their runtime. `Engine.save()` and `Engine.saveNow()` retain their synchronous behavior.
 
 ## Build artifacts
 

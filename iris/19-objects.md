@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-08T20:34:51.000Z
+date: 2026-09-09T08:49:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,10 +10,12 @@ dateCreated: 2026-08-09T00:00:00.000Z
 An Iris object is a sparse voxel volume: block states plus block-entity data. It is stored as a `.iob` file under a pack `objects/` folder. You build it in a world, select it with a wand, and save it into the pack. Nothing about the object itself says where it generates. Wiring it into generation is [20 - Object Placement](/iris/20-object-placement). Using objects as jigsaw pieces is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 Custom states already present in an object palette retain their qualified
-provider IDs when serialized. Selection capture still reads carrier states
-and does not discover provider IDs from placed blocks. Direct paste and
-Studio previews use carrier states only. Normal object generation performs
-deferred provider placement. See [28 - Integrations](/iris/28-integrations).
+provider IDs when serialized. CraftEngine selection capture records named
+block IDs and their properties; block paste, previews, and undo use its API.
+Rotation retains standard orientation properties. Other providers still use
+carrier states in direct previews. Normal object generation performs deferred
+provider placement. CraftEngine furniture entities are not captured or
+spawned by direct previews. See [28 - Integrations](/iris/28-integrations).
 
 ## Capture and save an object
 
@@ -159,7 +161,7 @@ Inspection and maintenance:
 
 ## 5. Object studio: click-to-save
 
-Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. The gallery generator is ready before the first chunks are requested. Objects are aligned from their stored block coordinates so their lower edges stay inside their cells and above the floor.
+Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. The gallery generator is ready before the first chunks are requested. Objects are aligned from their stored block coordinates so their lower edges stay inside their cells and above the floor. Saved block-entity data is restored when each gallery chunk loads, after Minecraft creates its block entities. Click-to-save waits for that restoration, preserving container contents and other tile data instead of overwriting the source with an empty state. A successful save invalidates the authoring resource cache so a reopened gallery reads the edited file.
 
 - The saved volume retains the object dimensions and original signed block coordinates; saving reverses the gallery placement offset without shrinkwrapping. Tile data is always written in full, unlike `/iris object save`.
 - Reopening checks cached cell dimensions against the current object files and rebuilds the layout if they changed.

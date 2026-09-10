@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-06T17:31:26.195Z
+date: 2026-09-09T04:59:25.776Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,7 +48,7 @@ Prerequisite: the structure appears in `/iris structure list <dimension>`.
        "adjustments": [
          {
            "match": ["minecraft:village_plains"],
-           "terrain": { "mode": "VACUUM" }
+           "terrain": { "mode": "FLATTEN", "flattenRange": 64, "horizontalPadding": 24 }
          }
        ]
      }
@@ -359,7 +359,7 @@ Iris object placements are rejected as a complete unit before any write when the
 preserveSourceY  >  yBand  >  burial (underground steps)  >  plain yShift
 ```
 
-Three structures honor only `yShift` among these controls. `minecraft:monument` aligns 24 below sea level. `minecraft:desert_pyramid` sits one block above the lowest surface Y of its footprint. `minecraft:jungle_pyramid` sits one block above the average surface Y.
+Among the vertical placement controls, three structures honor only `yShift`. `minecraft:monument` aligns 24 below sea level. `minecraft:desert_pyramid` sits one block above the lowest surface Y of its footprint. `minecraft:jungle_pyramid` sits one block above the average surface Y.
 
 #### Terrain modes
 
@@ -370,9 +370,18 @@ Three structures honor only `yShift` among these controls. `minecraft:monument` 
 | `BORE` | Clear the padded piece volume (box) before placement. |
 | `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
 | `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground and is unchanged by the bounded default `SOURCE` behavior. |
+| `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. |
 | `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
 
 Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding` (0..64, where 0 preserves the floor). ERODED adds `erosionStrength` (default 0.8), `erosionFrequency` (0.07), `lobeFrequency`, and `lobeStrength` (0.85).
+
+For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Support beneath projected solid path columns uses the same `flattenRange` limit and stops at fluids.
+
+Native terrain fitting and placement keep chunk access inside the active generation region. Distant piece references use deterministic terrain samples. In ordinary worlds, local height queries use the fitted terrain heightmaps.
+
+Dimension stacks still supply the original layer surface to native height queries. Igloos, swamp huts, and terrain-matching village paths can therefore retain their original projected elevations after `FLATTEN`.
+
+The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils retain their existing placement rules.
 
 #### Examples
 

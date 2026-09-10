@@ -2,7 +2,7 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-09T06:54:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
@@ -27,12 +27,12 @@ Iris builds the volumetric runtime once per engine, and only when at least one b
 When it is active, each column is resolved like this:
 
 1. The biome's blended generator height is sampled as the base height. That value stays available on its own stream, separate from the shaped height.
-2. A signed density field and a signed fissure field are sampled on a four-block lattice — the four surrounding grid corners in X and Z, and every fourth Y — then interpolated to the block.
-3. A column is solid at `y` when `baseHeight + 0.5 - y + displacement - fissure >= 0`. Crossings of that test become the span boundaries, so one column can carry many `ceiling..floor` pairs.
+2. The density base height, signed displacement field, and signed fissure field use the same four-block lattice: the surrounding grid corners in X and Z, and every fourth Y for the noise fields. The density base blends toward the interpolated anchor heights using the existing elevation and slope strength. This prevents individual base-height peaks from becoming tall, one-block-wide spires. The original generator-height stream remains unchanged.
+3. A column is solid at `y` when `densityHeight + 0.5 - y + displacement - fissure >= 0`. Crossings of that test become the span boundaries, so one column can carry many `ceiling..floor` pairs.
 4. Span components are flood-filled across the four cardinal neighbour columns. A component that never connects to a ground span and totals 512 blocks or fewer is dropped; a larger connected mass is kept. This is what stops isolated rock from floating in the air.
 5. The highest solid block of the resolved column becomes the natural terrain height.
 
-Shaping is bounded vertically. The sampled band starts at the higher of `floor(fluidHeight) + 1` and `floor(baseHeight - amplitude - crackDepth)`, and ends at the lower of `height - 1` and `ceil(baseHeight + amplitude)`. Nothing below the fluid line is touched, and a column whose band is empty is returned unshaped.
+Shaping is bounded vertically. The sampled band starts at the higher of `floor(fluidHeight) + 1` and `floor(densityHeight - amplitude - crackDepth)`, and ends at the lower of `height - 1` and `ceil(densityHeight + amplitude)`. Nothing below the fluid line is touched, and a column whose band is empty is returned unshaped.
 
 Two gates fade the effect in rather than switching it on. Both use a smoothstep curve over the interval you configure, and they multiply:
 

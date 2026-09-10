@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tundra Mountains"
 description: "Iris biome atlas entry for tundra/mountains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T16:43:54.130Z
+date: 2026-09-08T23:35:09.010Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,11 +33,11 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
-| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
-|---|---|---:|---|---|---|
-| `tundra/mountains` | Forest | 30 | 160 / 28 | 8 / 3 / 256 | 0.2 / 0.55 |
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
+|---|---|---:|---|---|---|---|
+| `tundra/mountains` | Forest | 30 | 280 / 36 | None | 0.2 / 0.55 | `PERLIN` / None |
 
-Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 ## Overworld 4007 treatment

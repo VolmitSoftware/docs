@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-07T23:15:21.846Z
+date: 2026-09-08T23:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -129,7 +129,7 @@ Item and entity lookups retain their provider-specific identifier formats.
 
 | Plugin id | Provider class | Claims | Types |
 |---|---|---|---|
-| CraftEngine | `CraftEngineDataProvider` | Any namespace, but only if CraftEngine actually has an item, block, or furniture with that exact key | ITEM, BLOCK |
+| CraftEngine | `CraftEngineDataProvider` | Exact registered item, block, and furniture keys in any namespace. Registries refresh on `CraftEngineReloadEvent` | ITEM, BLOCK |
 | Nexo | `NexoDataProvider` | Registered items, blocks, and furniture under namespace `nexo` | ITEM, BLOCK |
 | Oraxen | `OraxenDataProvider` | Registered items and blocks under namespace `oraxen`. Furniture is excluded | ITEM, BLOCK |
 | ItemsAdder | `ItemAdderDataProvider` | Exact registered block keys. Item namespaces come from the item registry. Both refresh on `ItemsAdderLoadDataEvent` | ITEM, BLOCK |
@@ -139,6 +139,46 @@ Item and entity lookups retain their provider-specific identifier formats.
 | MythicMobs | `MythicMobsDataProvider` | Namespace `mythicmobs` | ENTITY |
 | MythicCrucible | `MythicCrucibleDataProvider` | Items under `crucible`. Blocks require a registered block or furniture context | ITEM, BLOCK |
 | KGenerators | `KGeneratorsDataProvider` | Items under `kgenerators`. Blocks require a registered generator ID | ITEM, BLOCK |
+
+### CraftEngine
+
+Iris targets the CraftEngine 26.8.2 API. Use the named key from CraftEngine's
+content configuration. Blocks also accept the qualified form
+`craftengine:namespace/block`; items use their native `namespace:item` key.
+
+```json
+{
+  "block": "craftengine:default/palm_log",
+  "data": { "axis": "x" }
+}
+```
+
+CraftEngine blocks generate with their native backing state and retain their
+named identity for deferred placement through CraftEngine's API. Iris waits
+for CraftEngine's initial content load before validating saved worlds and
+refreshes authoring caches after CraftEngine reloads. Unknown properties and
+invalid values fail resolution instead of silently using the default state.
+Studio schemas list installed blocks and their allowed properties.
+
+Wand saves, including imported WorldEdit selections, store CraftEngine's
+named block ID and complete properties. Object rotation updates standard
+orientation properties such as `axis` and `facing`; property edits retain the
+custom identity. Direct block paste, object previews, and block undo use
+CraftEngine's placement API. These block operations also work in vanilla
+worlds with CraftEngine installed.
+
+Use furniture IDs in generated palettes or objects with `variant`, `yaw`,
+`pitch`, `randomYaw`, and `randomPitch`. Angles must be finite, at least zero,
+and below 360 degrees. Random angles depend on the world seed and placement
+coordinates. An omitted variant selects the first variant in sorted order.
+Furniture is placed during deferred generation updates. Furniture entities
+are not captured by the wand or spawned by direct paste and previews.
+
+Numbered native states such as `craftengine:custom_18` resolve only while
+CraftEngine has a corresponding state loaded in that runtime. They are not
+portable pack identifiers. Save objects with named content keys so that a
+changed state allocation does not alter their meaning. Iris cannot identify
+an old numbered state when its original mapping is unavailable.
 
 ### ItemsAdder note-block pop-in
 
@@ -257,7 +297,7 @@ include their stack trace. Placement failures keep pending chunk metadata
 for a later materialization attempt.
 
 Iris validates installed packs after its services initialize. When a provider
-activates, or ItemsAdder or Oraxen reports loaded content, Iris refreshes
+activates, or CraftEngine, ItemsAdder, or Oraxen reports loaded content, Iris refreshes
 authoring-pack caches and revalidates them asynchronously. An early missing
 block result therefore does not stay cached after that provider becomes
 available. These refreshes preserve active engines and immutable generation
@@ -274,10 +314,10 @@ A missing provider fails validation; a provider that remains unavailable for
 resource pack to display its custom textures and models.
 
 The normal terrain, decorator, and object generation paths support deferred
-placement. Object and jigsaw Studio previews, direct command paste, and
-native-structure terrain preparation still write carrier states only.
-These paths do not prove provider placement. Capturing an arbitrary existing
-world selection does not discover a custom ID from its carrier state.
+placement. Direct paste and object previews also place CraftEngine blocks
+through its API. Other providers and native-structure terrain preparation
+still use carrier states in those direct paths. Selection capture discovers
+CraftEngine block identities; other providers retain their carrier states.
 Oraxen furniture is outside this block integration.
 
 ### Add another provider
@@ -296,6 +336,13 @@ provider's placement API. Include supported properties in the deferred
 native ID. The service qualifies it for storage and restores the native ID
 before placement. Let placement failures propagate so pending data survives.
 
+Implement `identifyBlock(BlockData)` to return a named native ID with its
+properties when capturing a placed block. Return an empty optional for
+unrecognized states. `placeBlock(Block, Identifier)` is an optional direct
+placement hook for object paste, previews, and undo: return `true` only after
+placement succeeds, or `false` when that content needs deferred placement.
+These calls run on the owning server context and do not require an Iris engine.
+
 Registration rejects a plugin ID that belongs to a built-in provider or one
 already registered. A provider that implements `Listener` registers its
 event handlers automatically. Optional providers are loaded only when their
@@ -303,6 +350,12 @@ plugin is enabled. An activation failure logs its stack trace and leaves
 other providers available.
 
 ## MythicMobs skill conditions
+
+MythicMobs, MythicCrucible, and MMOItems providers can activate when their
+plugin enables after Iris. Their optional Paper dependencies, including
+MythicLib API access, impose no relative load order. Iris retains its
+load-before relationship with Multiverse without creating a reverse ordering
+through those integrations.
 
 When MythicMobs is active, its `MythicConditionLoadEvent` gives Iris two
 location conditions.

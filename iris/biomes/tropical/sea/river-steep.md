@@ -2,32 +2,29 @@
 title: "Tropical River Steep — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for tropical/sea/river-steep"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-09T00:23:13.301Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`tropical/sea/river-steep` is a direct sea root in the pinned Overworld 4002 and Underworld 1005 packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`tropical/sea/river-steep` is hydrology channel content in the Overworld 4007 and Underworld 1010 packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
-## Selection role and weight
+## Selection role
 
-Biome and region `rarity` values contribute relative weight as `1 / rarity`; slot fractions below show this key's entries in each region role list, not a whole-world probability.
-
-| Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
-|------|-------------------------|-----------------------|-----------------------|
-| Overworld 4002 | `tropical` (1/7 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
-| Underworld 1005 | `tropical` (1/7 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+The tropical region and `tropical/mountain` list this biome in `riverPolicy.surfaceBiomes`, alongside the other tropical river variant. It supplies content to accepted channels and is absent from the region’s ordinary sea list. Its transit-only policy allows a course through it but starts no sources or outlets.
 
 ## Terrain and generator
 
 `mountain` maps to `-32..-10` relative to the dimension fluid height.
 
-## Overworld 4002 treatment
+Hydrology supplies the accepted channel height and shape when selecting this content biome.
+
+## Overworld 4007 treatment
 
 Derivative `minecraft:warm_ocean`; vanilla derivative `minecraft:warm_ocean`. Primary sea palette: `minecraft:sand`, `minecraft:clay`, `minecraft:gravel`, `minecraft:dirt`. Decorator blocks: `minecraft:kelp_plant`, `minecraft:seagrass`, `minecraft:tall_seagrass`. Object set: `clutter/ellipsoid1`.
 
-## Underworld 1005 treatment
+## Underworld 1010 treatment
 
 Derivative `minecraft:basalt_deltas`; vanilla derivative `minecraft:basalt_deltas`. Primary sea palette: `minecraft:blackstone`, `minecraft:gravel`. Decorator blocks: `minecraft:lava`. Object set: `underworld/basalt/clutter/ellipsoid1`. Entity spawners: `nether/lava`, `nether/cave`. Custom registered biome id: `underworld_tropical_sea_river_steep_1fe60d83`.
 

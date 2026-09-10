@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Mountain Extreme"
 description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T16:43:54.130Z
+date: 2026-09-09T00:23:13.301Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -31,15 +31,17 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
-| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
-|---|---|---:|---|---|---|
-| `tropical/mountain-extreme` | Mountain | 52 | 144 / 28 | 22 / 3 / 240 | 0.18 / 0.5 |
-| `tropical/mountain-water` | Protected | 0 | None | None | None |
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
+|---|---|---:|---|---|---|---|
+| `tropical/mountain-extreme` | Mountain | 52 | 256 / 36 | 11 / 2.25 / 416 | 0.18 / 0.5 | `NOWHERE` / `SIMPLEX` |
 
-Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-- `tropical/mountain-water`: Elevated water terrain retains its basin.
+
+## Hydrology
+
+This biome inherits the tropical region’s denser surface river and lake policy. Hydrology cuts channels into its mountain terrain; there is no fluid-painted child biome. Overworld uses water and Underworld uses lava.
 
 ## Overworld 4007 treatment
 
@@ -58,15 +60,7 @@ Underworld keeps the terrain links but uses its Nether derivative, materials, ob
 
 ## Children
 
-### Tropical Mountain Water (`tropical/mountain-water`)
-
-This child-only biome is selected from `tropical/mountain-extreme`, not from a region list. Its rarity is `1`.
-In that immediate child choice it contributes `1` of `2` slots (50.00%); later child hops are resolved separately.
-
-**Shared terrain:** `mountain` (2..5); combined authored contribution `2..5` blocks relative to fluid height.
-
-- **Overworld 4007:** `minecraft:jungle` identity; surface 0-2 block(s): `minecraft:cave_air`; 1 block(s): `minecraft:water`; 1-4 block(s): `minecraft:water`; 2-4 block(s): `minecraft:gravel`; 3 decorator rule(s) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
-- **Underworld 1010:** `minecraft:basalt_deltas` identity; surface 0-2 block(s): `minecraft:cave_air`; 1 block(s): `minecraft:lava`; 1-4 block(s): `minecraft:lava`; 2-4 block(s): `minecraft:gravel`; 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
+No child biomes are declared.
 
 ## Floating variants
 

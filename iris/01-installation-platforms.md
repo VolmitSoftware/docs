@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-09T05:57:10.311Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -82,7 +82,7 @@ A failed or restart-pending **external datapack** state keeps login locked. It a
 
 When validated external datapacks change, Iris completes its initialization and then invokes the server's immediate restart capability, when present, before default worlds begin loading. Plain Spigot has no such API, so Iris stops at that startup boundary instead; if an available restart API throws or returns unexpectedly, Iris also requests shutdown. Every configured Iris default world remains bound to a non-generating refusal, so CraftBukkit cannot substitute vanilla terrain.
 
-Unchanged, already-validated datapacks and packs reuse their persisted results. Iris still reads the local authored bytes to confirm the exact fingerprint. It skips remote resolution, semantic revalidation, copying, installation, and pack compilation.
+Unchanged, already-validated datapacks and packs reuse their persisted results. Pack-validation reuse also requires the same Iris generation build revision. Iris still reads the local authored bytes to confirm the exact fingerprint. It skips remote resolution, semantic revalidation, copying, installation, and pack compilation.
 
 A **dimension pack** with blocking errors does *not* lock the server. That one pack is refused for world and Studio creation. An error listing the reasons is printed at startup. Every healthy pack stays usable.
 

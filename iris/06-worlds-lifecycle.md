@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-07T20:11:07.511Z
+date: 2026-09-09T08:27:35.123866Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -280,7 +280,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 - Opening Studio after creating a persistent world from the same pack reuses the already-loaded matching dimension type and custom biomes. The new frozen world snapshot and its `bukkit.yml` LevelStem binding are boot-time persistence inputs. They are not a reason to restart the current server solely to open Studio. New or changed registry content still requires the normal restart boundary.
 - Closing a world discards queued Iris entity-count and spawn callbacks before detaching its runtime. Callbacks already admitted participate in the lifecycle drain, and expired waits cannot start queued work afterward.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
-- Biome Buffet prepares a changed focus before opening the chunk generation session. Its exclusive fair-stage admission downgrades straight to the retained chunk permit so no other transition can slip in between the focus hotload and that chunk.
+- Biome Buffet resolves each cell from its coordinates within the active immutable pack. Adjacent chunks retain their own biome and region identities without changing authoring focus or creating a generation activation for each cell.
 - Ordinary Studio activates its native structure state, then delegates the fixed spectator anchor directly to Paper's asynchronous teleport. Iris performs no entry-area precompute, separate chunk request, or surface lookup.
 - A failed open cleans up its transient world immediately unless a terminal server lifecycle operation is already active. In that case Iris queues any materialized transient state for startup deletion instead of competing for the live lifecycle lease.
 

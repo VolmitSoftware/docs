@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-06T08:19:20.988Z
+date: 2026-09-09T01:55:17.160Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -343,6 +343,8 @@ Geometry shapes what routing and the surface and underground sections have alrea
 | `smoothingPasses` | `1` | Terrain-safe centerline smoothing passes after route solving, `0..4` |
 | `maximumTurnDegrees` | `82` | Largest retained centerline turn angle in degrees, `10..150` |
 
+Surface route candidates use their continuous coordinates for turn checks before rounding to block positions. Valley anchors stay within the local permitted cut, and steep surface routes can make bounded sideways detours. Terrain admission and rendered-channel containment still apply.
+
 #### `geometry.surface`, `geometry.underground` and `geometry.grottos`
 
 The three sections share one set of fields. `geometry.surface` shapes the carved throat of a surface waterfall or cascade and the walls the erosion compiler reads, `geometry.underground` shapes contained passages, and `geometry.grottos` shapes chambers. The three roughness fields of `geometry.surface` are nullable and fall back to `surface.channel`; the underground and grotto sections always carry a value.
@@ -580,7 +582,7 @@ A site that fails a rule is reported as an `OUTLET` candidate of type `COASTAL_G
 }
 ```
 
-Each `id` is unique and each `fluidPalette` must resolve to at least one fluid block. Policies reference profile IDs. If the effective policy profile list is empty, the runtime selects the first configured river profile. Omitting `hydrology.rivers` still materializes its implicit `default` profile, so a deep-fluid entry may not use `default` as its ID. Fluid is resolved from the accepted layer profile with `resolveHydrologyFluid(profileKey, x, z)`; the dimension ocean `fluidPalette` does not replace it.
+Each `id` is unique and each `fluidPalette` must resolve to at least one fluid block. Policies reference profile IDs. Surface routes require one common permitted profile along the complete route and outlet; tributaries retain their stem’s profile. Disjoint profile lists separate drainage networks, including at coasts. An empty effective list uses the first configured profile. If the effective policy profile list is empty, the runtime selects the first configured river profile. Omitting `hydrology.rivers` still materializes its implicit `default` profile, so a deep-fluid entry may not use `default` as its ID. Fluid is resolved from the accepted layer profile with `resolveHydrologyFluid(profileKey, x, z)`; the dimension ocean `fluidPalette` does not replace it.
 
 ### `hydrology.deepFluids`
 
@@ -601,6 +603,8 @@ Deep fluids are independent of both river source budgets and do not join the sur
 Spacing must contain the complete horizontal footprint, depth plus headroom must fit inside the vertical diameter, and the height envelope must fit inside the dimension. A short channel has no separate authored length: its maximum length is `spacing / 3`, capped to half `routing.tileSize`, and its derived containment-volume bound may shorten it further. Contained pools use one connected deterministic multi-lobed basin with an ellipsoid bowl. The managed Overworld uses a denser `deep_lava` entry independently of its water river profile.
 
 ### `hydrology.surfacePools`
+
+Named probe selectors use `STANDING_POOL@<pool-id>` for these pools and `SURFACE_POOL@<river-profile>` for river reaches.
 
 Standing pools are bowls cut into open ground and filled with their own fluid: lava pools in a badland, a tar pit, a hot spring. They are independent of the river budgets and never touch a river. Each entry has:
 
@@ -687,6 +691,14 @@ A non-null field at the later scope replaces the inherited value. Omitted or `nu
 
 A viable `REQUIRED_HEADWATER` policy site intrinsically requests at least one source. `sources.minimumPerTile` may raise that required quota and may override ordinary source spacing when enough policy-owned routes remain legal; it does not impose a floor on tiles that contain only natural candidates. Density selects the bounded accepted-source target. When containment or route publication rejects a selected course, Iris tries the remaining admitted candidates until that target is restored or no viable candidate remains.
 
+### Local surface budgets
+
+The five `surfaceSource*`, `surfaceTributaries`, and `surface*Outlets` controls replace inherited values for one policy area. Mixed tiles apportion budgets by owned area, and an area spends its allocation only on candidates inside it. Adjacent source pairs respect both areas’ spacing. `surfaceMinimumCourseLength` and `surfaceMaximumIncision` control local course geometry without dividing those budgets into new areas. Underground source and tributary settings remain independent.
+
+The built-in tropical region uses density `8`, spacing `160`, tributaries `3`, inland outlets `3`, and coastal outlets `4`. It permits 64-block courses with a 32-block incision cap, uses width multiplier `0.65`, depth multiplier `1.15`, bank multiplier `1`, and a 1-block shore bench. It adds `tropical_lake` pools with radius `8..16` and depth `3`. Terrain, minimum course length, and containment still limit acceptance; density is a target, not a guaranteed river count.
+
+Volcanic Plains and Volcanoes select `volcanic_lava`, density `6`, spacing `128`, tributaries `2`, inland outlets `3`, and no coastal outlets. Their courses require 128 blocks, allow a 24-block incision cap, and use width multiplier `0.5` and depth multiplier `1.25`. Both use lava in both packs, with independent `volcanic_pool` bowls of radius `6..12` and depth `3`. Their empty content-biome lists retain volcanic layers along channels. The ambient tropical profile remains water in Overworld and lava in Underworld.
+
 ### Content and geometry fields
 
 | Field | Meaning |
@@ -698,9 +710,16 @@ A viable `REQUIRED_HEADWATER` policy site intrinsically requests at least one so
 | `bankBiomes` | Content of the eroded bank and valley blend outside the shore; leave it empty to keep the parent biome |
 | `floodedCaveBiomes` | Underground, grotto, and deep-fluid content |
 | `surfacePools` | Standing pool ids from `hydrology.surfacePools` allowed in this area; an empty list disables them |
+| `surfaceSourceDensity` | Expected surface sources per fully covered tile, `0..64`; unset inherits the dimension surface source density |
+| `surfaceSourceSpacing` | Minimum surface source spacing in blocks, `0..8192`; unset inherits `surface.sources.minimumSpacing` |
+| `surfaceTributaries` | Extra surface courses per outlet, `0..4`; unset inherits `routing.tributaries` |
+| `surfaceInlandOutlets` | Surface inland outlet budget per fully covered tile, `0..256`; unset inherits `routing.maximumOutletsPerTile` |
+| `surfaceCoastalOutlets` | Surface coastal outlet budget per fully covered tile, `0..64`; unset inherits `routing.maximumCoastalOutletsPerTile` |
+| `surfaceMinimumCourseLength` | Minimum complete surface course length from this area, `16..4096` blocks; unset inherits `routing.minimumSurfaceCourseLength` |
+| `surfaceMaximumIncision` | Maximum surface channel cut at this terrain column, `1..32` blocks; unset inherits `surface.channel.maximumIncision`. Ocean inlets retain their separately configured incision allowance. |
 | `widthMultiplier` | Channel-width scale, greater than zero through `16` |
 | `depthMultiplier` | Channel-depth scale, greater than zero through `16` |
-| `incisionMultiplier` | Local scale on `channel.maximumIncision`, `0..16`; it may tighten the permitted cut but cannot exceed the configured maximum |
+| `incisionMultiplier` | Local scale on the resolved surface incision cap, `0..16`; it may tighten the permitted cut but cannot exceed that cap |
 | `routingMultiplier` | Local route-cost scale, `0..64` |
 | `bankMultiplier` | Local scale on `banks.blendSlope`, `0..4` |
 | `shoreBiomeWidth` | Width in blocks of the shore biome band beside the water, `0..32`; unset areas use `banks.shoreWidth` |
@@ -920,11 +939,17 @@ The generation probe constructs the real engine and generates chunks into buffer
 
 ## Managed pack profiles
 
-The managed Overworld and Underworld use 1,024-block watersheds and 64-block coarse samples. Both managed packs require 384 exposed blocks per surface course and 384 blocks per underground course. Surface density is `1.75`, underground density is `1.5`, neither has an ordinary per-tile quota, and source spacing is 384/640 blocks. Each tile selects at most one outlet network, and each surface outlet publishes one complete main stem plus up to `routing.tributaries` tributaries joining it.
+The managed Overworld and Underworld use 1,024-block watersheds and 64-block coarse samples. Dimension defaults set both surface and underground course minima to 384 blocks. Surface density is `1.75`, underground density is `1.5`, and both source minima are zero. Default source spacing is 384 blocks for surface rivers and 640 blocks underground. Dimension outlet budgets are one inland outlet and two coastal outlets per tile. Each surface outlet can publish one complete main stem plus the configured tributaries.
 
-The refined route uses 192/48-block meander wavelengths, strengths `0.55`/`0.18`, a `0.45` offset ratio, and a 20-degree authored turn limit. Managed surface channels are 4 to 8 blocks wide and 2 to 4 blocks deep, sit flush with the lowest bank (`channel.sink` is 0), and may cut up to 16 blocks (Overworld) or 10 blocks (Underworld) into a hillside; an Overworld river meets the sea through a 64-block inlet flared to 2.5 times its width and cut up to 32 blocks into the coast. Banks carry a 1.5-block shore, and a blend that runs three blocks for every block of cut between 4 and 32 blocks wide, showing the biome's deeper layers where it cuts. Rapids start where the land drops faster than one block in two, and a cliff of six blocks or more between adjacent stations makes a waterfall. Overworld mouths keep an eight-block non-owning ocean apron, and underground mouths level into the sea across 128 blocks. Underground passages connect to suitable existing caves and both grotto forms retain 10 blocks of dry headroom. Deep lava uses density `0.5`, 1,024-block spacing, and isolated contained pools without channel offshoots. Overworld enables direct mouths and coastal grottos; Underworld disables both and uses contained inland lava grottos and surface sinkholes.
+Local surface policies replace those defaults. Tropical regions use density `8`, spacing `160`, three tributaries, three inland outlets, four coastal outlets, and a 64-block course minimum. Volcanic biomes use density `6`, spacing `128`, two tributaries, three inland outlets, no coastal outlets, and a 128-block course minimum. Mixed tiles scale local budgets by eligible area.
 
-Their fluid profiles differ:
+The refined route uses 192/48-block meander wavelengths, strengths `0.55`/`0.18`, a `0.45` offset ratio, and a 20-degree authored turn limit. Before local overrides, both packs use channels 4 to 8 blocks wide and 2 to 4 blocks deep, with a 16-block incision cap. Channels sit flush with the lowest bank because `channel.sink` is `0`. Tropical policies raise the incision cap to `32`, while volcanic policies use `24`.
+
+Banks carry a 1.5-block shore bench by default. Their blend extends three blocks per block of cut, within a 4-to-32-block width, and exposes the biome's deeper layers. Rapids start where the land drops faster than one block in two. A cliff of six blocks or more between adjacent stations makes a waterfall.
+
+Both packs enable direct ocean mouths, coastal grottos, inland grottos, and surface sinkholes. Surface mouths use a 64-block inlet, a width flare of `2.5`, a 32-block incision cap, and an eight-block ocean apron that owns no writes. Underground mouths level into the sea across 128 blocks. Underground passages connect to suitable existing caves, and both grotto forms retain 10 blocks of dry headroom. The `deep_lava` entry uses density `0.5`, 1,024-block spacing, and isolated contained pools without channel offshoots.
+
+Their ambient river profiles differ:
 
 Overworld:
 
@@ -952,7 +977,7 @@ Underworld:
 }
 ```
 
-Both managed packs also carry the independent `deep_lava` entry from the complete example. Underworld river policies reference `lava`; Overworld river policies reference `water`. Region policies tune headwater and transit preference, while biome policies provide specific source, routing, profile, and content behavior without duplicating the dimension physical solver.
+Both managed packs also carry the independent `deep_lava` entry from the complete example. Default Underworld river policies reference `lava`, and default Overworld policies reference `water`. Volcanic policies in both packs reference `volcanic_lava`. Region policies tune headwater and transit preference, while biome policies provide specific source, routing, profile, and content behavior without duplicating the dimension physical solver.
 
 ## Adding rivers to a pack
 

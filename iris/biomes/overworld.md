@@ -2,7 +2,7 @@
 title: "Overworld 4007"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-08T07:14:15.291Z
+date: 2026-09-09T00:23:13.301Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -28,7 +28,7 @@ All 19 subterranean ore passes retain 70% of their configured clump attempts. Ac
 
 ## 3D terrain
 
-The paired packs configure 197 active biome profiles and 25 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, loose dunes, and lava craters retain their current terrain.
+The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes retain their current terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 

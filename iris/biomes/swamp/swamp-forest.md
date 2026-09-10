@@ -2,7 +2,7 @@
 title: "Biome Atlas — Swamp Forest"
 description: "Iris biome atlas entry for swamp/swamp-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-09T05:29:01.778Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -31,12 +31,12 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
-| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full |
-|---|---|---:|---|---|---|
-| `swamp/swamp-forest` | Protected | 0 | None | None | None |
-| `swamp/swamp-puddle` | Protected | 0 | None | None | None |
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
+|---|---|---:|---|---|---|---|
+| `swamp/swamp-forest` | Protected | 0 | None | None | None | None / None |
+| `swamp/swamp-puddle` | Protected | 0 | None | None | None | None / None |
 
-Active profiles use Simplex density and crack noise. Deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
+The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 - `swamp/swamp-forest`: Low wetland forest retains its floor and tree supports.
@@ -47,6 +47,8 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 - **Minecraft identity:** derivative `minecraft:swamp`; native-structure derivative `minecraft:swamp`; custom identities `k530forestswamp`.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:brown_concrete_powder`, `minecraft:dirt`, `minecraft:coarse_dirt`; 3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:stone`. Wall palette: none.
 - **Content:** 3 object placement rule(s) drawing from 19 object key(s), including `trees/mixed/dotree1`, `trees/mixed/dotree2`, `trees/mixed/dotree3`, `trees/mixed/dotree4`, `trees/mixed/dotree5`, `trees/mixed/dotree6`, `trees/mixed/dotree7`, and 12 more. 6 decorator rule(s) using `minecraft:dark_oak_leaves`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:blue_orchid`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:large_fern`.
+
+- **Tree materials:** The shared `trees/mixed/dotree1` through `trees/mixed/dotree10` objects use their original oak, spruce, and dark oak fences and connections.
 
 ## Underworld 1010 treatment
 

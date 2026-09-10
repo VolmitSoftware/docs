@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-08T20:03:07.000Z
+date: 2026-09-09T08:27:35.132692Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -56,6 +56,8 @@ Dimension → regions[] → Region → land/sea/shore/cave biomes[] → Biome �
           → caveProfile, carving[], structures[], importedStructures, importedFeatures
           → loot, entitySpawners, blockDrops
 ```
+
+A focused biome retains its authored region, including when reached through children, carving replacements, floating biomes, or river-policy targets. Region cave and hydrology settings therefore still apply. A biome with no authored region uses a neutral focus region whose identity is stable in saved generation history.
 
 The dimension never names a biome directly, except in `focus` and carving entries. Biomes are reached through regions. An unreferenced region file is dead weight. A biome that is missing from every region list never generates.
 
@@ -610,7 +612,7 @@ These exist to help you inspect the generator, not for production. `studioMode` 
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
-| `studioMode` | `StudioMode` | `NORMAL` | Swaps in a debug generator. `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` lay every biome out in a grid of that cell size. `OBJECT_BUFFET` lays out objects. `REGION_BUFFET` currently installs no generator and behaves exactly like `NORMAL`. Remove before packaging |
+| `studioMode` | `StudioMode` | `NORMAL` | Swaps in a debug generator. `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` lay supported pack biomes out by load key in cells of that many chunks. Cell coordinates select the biome and owner region without mutating `focus` or creating new generation activations. `OBJECT_BUFFET` lays out objects. `REGION_BUFFET` currently installs no generator and behaves exactly like `NORMAL`. Remove before packaging |
 | `debugChunkCrossSections` | boolean | `false` | Deletes whole chunks on a grid so you can walk up and read the terrain column like a diagram |
 | `debugCrossSectionsMod` | int | `3` | The X/Z modulus that decides which chunks get cut, 2 to 16. Larger values cut fewer chunks |
 | `explodeBiomePalettes` | boolean | `false` | Inserts air gaps between palette layers so you can count and identify them visually |

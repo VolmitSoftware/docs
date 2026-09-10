@@ -277,8 +277,17 @@ overworld.reachable.each do |key|
              else
                ["0", "None", "None", "None"]
              end
+  expected_noise = if profile["enabled"]
+                     density_noise = "`#{profile.fetch('densityStyle').fetch('style')}`"
+                     crack_noise = profile.fetch("crackDepth").zero? ? "None" : "`#{profile.fetch('crackStyle').fetch('style')}`"
+                     "#{density_noise} / #{crack_noise}"
+                   else
+                     "None / None"
+                   end
   rows.each do |row|
-    errors << "Biome #{key} has stale terrain3D numbers in the paired atlas" unless row.split("|").map(&:strip)[3, 4] == expected
+    columns = row.split("|").map(&:strip)
+    errors << "Biome #{key} has stale terrain3D numbers in the paired atlas" unless columns[3, 4] == expected
+    errors << "Biome #{key} has stale terrain3D noise styles in the paired atlas" unless columns[7] == expected_noise
   end
 end
 
