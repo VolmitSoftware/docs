@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-09-11T01:50:00.000Z
+date: 2026-09-11T16:13:57.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -81,7 +81,7 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 
 `/sp tp` is an alias for `/sp teleport`. Configuration files reload automatically by default.
 
-`/sp debug version` prints `ShapedPortals › v<version>` using the localized `runtime.prefix` name and requires `shapedportals.command`. `/sp version` runs the same command but is hidden from help and suggestions. Editing the prefix in the viewer's language changes the displayed name in both commands.
+`/sp debug version` prints `ShapedPortals v<version>` with one regular-weight gradient across the whole line matching the help menu and requires `shapedportals.command`. `/sp version` runs the same command but is hidden from help and suggestions. Editing `runtime.prefix` in the viewer's language changes the displayed name in both commands; version output uses its text with the version-line gradient.
 
 ### Find and visit a portal
 

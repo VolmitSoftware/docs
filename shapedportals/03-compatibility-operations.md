@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-09-11T01:22:00.000Z
+date: 2026-09-11T16:41:06.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -72,7 +72,7 @@ Reports upload to the public mclo.gs service by default. Use `upload=false` for 
 
 Use `/volmit plugins debug ShapedPortals [upload=true|false]` for the same report through VolmLib. `/volmit plugins debug all [upload=true|false]` requests reports from every provider the sender can use. See [Shared diagnostic reports](/volmlib/api/diagnostics) for the common report format.
 
-Diagnostic feedback uses the `debug.*` entries in the Shaped Portals language catalog, including requests made through `/volmit plugins debug all`. Missing translations use English defaults.
+Diagnostic feedback uses the `debug.*` entries in the Shaped Portals language catalog, including requests made through `/volmit plugins debug all`. The individual dump menu renders the selected language's prefix and message formatting in progress, saved, uploaded, and error rows. Copy and open controls retain exact file paths and URLs, including literal backslashes and color-like text. Missing translations use English defaults.
 
 ## React Plugin API pack
 

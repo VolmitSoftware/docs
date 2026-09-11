@@ -2,7 +2,7 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-09-09T18:00:00.000Z
+date: 2026-09-11T16:41:06.000Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
@@ -39,7 +39,7 @@ These commands use the Bukkit service; Iris's mod-loader command trees do not ex
 
 The service saves the report under the plugin's `debug/` directory before upload. Filenames use `<plugin>-v<version>-debugdump-yyyy-MM-dd-HH-mm-ss.txt` in UTC. A second report allocated during the same second receives `-2`, then higher bounded numeric suffixes, and never replaces an existing file or symbolic link. Players receive copy and open controls; console receives plain text. Upload failure does not remove the local report.
 
-Plugins may supply a `BukkitDebugDump.Presentation` for themed feedback. Providers that omit it use compact component output.
+Plugins may supply a `BukkitDebugDump.Presentation` for themed feedback. Formatted prefixes, messages, action labels, and hover descriptions retain their component styles through delivery. File paths and link targets remain literal, including backslashes and color-like text. Providers that omit a presentation use compact component output.
 
 Uploads require both the command's `upload` flag and the service's `uploadEnabled` supplier to return `true`. The default service allows uploads. Foundation, Rift, and ShapedPortals connect that supplier to their own debug-upload setting, so a command cannot override a disabled setting. Passing `upload=false` suppresses upload for one report.
 
@@ -68,12 +68,16 @@ The entry point is `art.arcane.volmlib.util.diagnostics.BukkitDebugDump`.
 | `BukkitDebugDump.create(plugin, options)` | Create the service with typed upload policy and a diagnostic contributor |
 | `new BukkitDebugDump.Options(uploadEnabled, contributor)` | Supply a `BooleanSupplier` and `DebugDumpContributor` with compact default feedback |
 | `new BukkitDebugDump.Options(uploadEnabled, contributor, presentation)` | Add a plugin-owned Director command, parent command, theme, and text resolver for result menus |
+| `new BukkitDebugDump.Presentation(command, parentCommand, theme, textResolver)` | Supply a `BukkitDebugDump.TextResolver` that returns `ComponentText` for each `TextKey` and `MessageArgs` |
+| `BukkitDebugDump.TextResolver.ENGLISH` | Resolve built-in English messages as literal components |
 | `request(sender, upload)` | Check the dedicated permission, capture state, then save and optionally upload a report |
 | `permission()` | Return an existing `<plugin>.debug` permission, or derive `<plugin>.debugdump` when none is declared |
 | `updateTheme(theme)` | Replace the presentation colors used by later feedback without reregistering the provider or cancelling its active request |
 | `close()` | Unregister the provider and close the service during plugin shutdown |
 
 Creation registers an `OP` permission when the plugin descriptor does not declare one, then publishes the provider through Bukkit's services registry. The service enforces the dedicated permission. Plugins may keep their own report command.
+
+The text resolver runs with the requesting player's language context. Component-based language services can provide their render method directly; plain-text services wrap their resolved text with `ComponentText.literal(...)`. The theme fills absent colors while retaining explicit formatting. Cross-plugin aggregate results export plain notice and error text alongside exact paths and URLs.
 
 ## Clipboard controls
 

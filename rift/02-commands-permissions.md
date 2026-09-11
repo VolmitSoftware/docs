@@ -2,7 +2,7 @@
 title: "Rift: Commands and Permissions"
 description: "Rift command syntax, help behavior, aliases, and granular permission nodes"
 published: true
-date: 2026-09-11T01:50:00.000Z
+date: 2026-09-11T16:41:06.000Z
 tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -35,7 +35,7 @@ Arguments in brackets have defaults.
 | `/rift language server edit [locale]` | `volmit.language.admin` or `rift.config` | Open the in-game message editor, optionally at one locale |
 | `/rift status` | `rift.status` | Show platform, Java, paths, locale, and world counts in a Director menu |
 | `/rift debug` | None | Open the diagnostic-tools help page |
-| `/rift debug version` | `rift.command` | Show the localized plugin prefix followed by `› v<version>` |
+| `/rift debug version` | `rift.command` | Show `Rift v<version>` in the help-menu gradient |
 | `/rift debug dump [upload]` | `rift.debug` | Save a detailed report; `upload` defaults to `true` and may be set to `false` for this run |
 | `/rift autoload <name> <enabled>` | `rift.config` | Change a managed profile's startup auto-load flag |
 | `/rift protect <name> <enabled>` | `rift.config` | Change a managed profile's protection flag |
@@ -44,7 +44,7 @@ Aliases include `teleport` for `tp` and `editor` for `config`. Config, active se
 
 `/volmit plugins languages [locale]` changes the server default for every enabled Volmit language provider that supports it. `/volmit plugins debug` also includes Rift.
 
-Version is listed under `/rift debug` in help. `/rift version` provides the same output and is hidden from help and completion. Both paths require `rift.command` or `rift.admin` and work for players and console. The default output is `Rift › v<version>`; the displayed name comes from `runtime.prefix` in the viewer's language.
+Version is listed under `/rift debug` in help. `/rift version` provides the same output and is hidden from help and completion. Both paths require `rift.command` or `rift.admin` and work for players and console. The default output is `Rift v<version>`, with one regular-weight gradient across the whole line matching the help menu. The displayed name comes from `runtime.prefix` in the viewer's language; version output uses its text with the version-line gradient.
 
 ## Create arguments
 
@@ -71,5 +71,7 @@ The built-in `void` generator creates empty `THE_VOID` biome chunks and a bedroc
 `rift.command`, `rift.language.self`, and the dynamically registered `volmit.language.self` default to everyone. Every operational node, `rift.config`, `rift.debug`, the dynamically registered `volmit.language.admin`, and `rift.admin` default to operators. The Bukkit command registration does not impose a second root-permission gate: a specifically granted subcommand node is sufficient. `rift.admin` grants all Rift capabilities.
 
 `/rift debug dump` writes `plugins/Rift/debug/rift-v<version>-debugdump-<UTC timestamp>.txt`. Upload requires both `debugUploadEnabled` and the command's `upload` argument. Review reports before sharing them when world names or server layout are private.
+
+Debug feedback renders the selected language's prefix and message formatting in progress, saved, uploaded, and error rows. Copy and open controls retain exact file paths and URLs, including literal backslashes and color-like text.
 
 Next: [Storage and operations](/rift/03-storage-operations)

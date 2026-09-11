@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-11T01:50:00.000Z
+date: 2026-09-11T16:13:57.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -238,13 +238,13 @@ Language files use grouped TOML sections: `[command.feedback]` with `saved = "..
 
 Messages accept classic colors such as `&c`, formatting such as `&l`, RGB colors, and MiniMessage. Each language file starts with a localized, sectioned reference for file behavior, formatting, escaping, and every available placeholder.
 
-`runtime.prefix` sets the displayed plugin name and its formatting for that locale. Chat messages use a bold purple gradient name, a gray `›` separator, and gray body text, with colors reserved for results, warnings, failures, and highlighted values. Localized plugin-name references in messages, help, and menus use `{prefix}` so one edit changes their displayed name together.
+`runtime.prefix` sets the displayed plugin name and its formatting for that locale. Ordinary chat messages use a bold purple name matching ShapedPortals' help gradient (`#6f35c5` to `#35135f`), a gray `›` separator, and gray body text, with colors reserved for results, warnings, failures, and highlighted values. Localized plugin-name references in messages, help, and menus use `{prefix}` so one edit changes their displayed name together. Version output uses the name's text in a single regular-weight help gradient across `ShapedPortals v<version>`.
 
 The separator belongs to each message template, outside `runtime.prefix`. Remove `{prefix}` and its separator from a message to hide its leading label. An empty `runtime.prefix` hides the name wherever it is referenced; any separator or surrounding text remains in its template. Other placeholders required by that message must stay intact. Prefix formatting is isolated from the surrounding message.
 
 ```toml
 [runtime]
-prefix = "<bold><gradient:#BB8CDD:#D1ADE8>ShapedPortals</gradient></bold>"
+prefix = "<bold><gradient:#6f35c5:#35135f>ShapedPortals</gradient></bold>"
 ```
 
 A chat template starts with `{prefix}&r &7› &7`; an inline name or menu heading can use `{prefix}` without the separator. Command and portal overlays omit that default leading chat label while retaining plugin names that are part of the message itself.
