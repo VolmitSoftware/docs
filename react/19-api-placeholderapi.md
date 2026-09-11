@@ -2,13 +2,13 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-10T04:12:59.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-React provides read-only `%react_...%` placeholders. Install PlaceholderAPI before React, or run `/react reload` after installing it.
+React provides read-only `%react_...%` placeholders. Install PlaceholderAPI before starting React. If you install it while the server is running, restart the server to initialize the integration.
 
 ## Common keys
 

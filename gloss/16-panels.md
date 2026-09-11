@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T03:24:18.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -97,14 +97,13 @@ its case.
 Gloss increments `revision` on each command or editor write. A stale write fails with a conflict.
 
 A hand-edited file must therefore raise `revision` itself. On reload, a document whose content
-changed but whose revision did not is rejected with `board content changed without a revision
+changed but whose revision did not is rejected with `panel content changed without a revision
 increment`. A revision that moved backwards is rejected too.
 
-A rejected reload keeps the last working definition. `/gloss panel reload` reports loaded, retained,
-removed, and failed counts, with each failure logged by filename. A broken file on first startup does
-not load.
+A rejected automatic reload keeps the last working definition, with each failure logged by filename.
+A broken file on first startup does not load.
 
-> Deleting the file removes the panel on the next reload. Deleting a panel never touches its menu
+> Deleting the file removes the panel once Gloss detects the stable deletion. Deleting a panel never touches its menu
 > document, and deleting a menu leaves panels pointing at a menu that no longer resolves.
 {.is-warning}
 
@@ -217,7 +216,6 @@ image values are joined automatically and do not need quotes.
 | `delete` (`remove`) | `<panel>` | Removes only the panel document |
 | `rename` | `<panel> <newPanel>` | Keeps the uuid, moves the file, bumps the revision |
 | `copy` | `<panel> <newPanel>` | New uuid at revision 1, same `rootMenuId`, no menu file copied |
-| `reload` | none | Re-reads `panels/` and reports loaded, retained, removed and failed counts |
 
 `create` captures your world, position, yaw and pitch. It sets roll `0` and scale `1`. It writes a
 public panel with the default ranges at revision 1. The `menu` argument must name an already loaded
@@ -338,13 +336,18 @@ a restart.
 Panel views are built directly from menu documents rather than through the personal-session manager.
 `[features] menus` governs `/gloss menu open` and API menus, not panel rendering.
 
-## Reload behavior
+## Hot reload
 
-`panels/` is not watched. Run `/gloss panel reload` after editing a panel file. `/gloss reload` does
-not reread this folder.
+Gloss watches `panels/` for stable file changes. Valid additions and edits update live panels
+automatically; deleting a file removes its panel. Invalid edits retain the last working definition
+and log the failure with the filename.
 
-Menu documents are watched at `[hotload] watchIntervalTicks`. Menu content changes appear without a
-panel reload; panel placement changes do not.
+Panel files must contain UTF-8 JSON and be no larger than 2 MiB. Gloss requires two matching
+read passes before applying an edit, and confirms a deletion for at least three seconds before
+removing its panel. Reads and validation run off the server thread.
+
+Menu documents are also watched. Changes to a panel's menu content and placement both apply
+automatically.
 
 ## Permissions
 

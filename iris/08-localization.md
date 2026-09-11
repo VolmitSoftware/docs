@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-09-05T20:33:07.771Z
+date: 2026-09-10T00:32:00.678Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -100,7 +100,7 @@ Saving writes that locale's message to `plugins/Iris/languages/overrides/<locale
 
 ## Downloaded server locales
 
-Complete server translations are kept outside the jar. Selecting a locale downloads `core/src/main/resources/languages/<locale>.json` from the configured Iris source reference and caches it at `languages/downloaded/<source-reference>/<locale>.json`. English remains available without network access.
+Complete server translations are kept outside the jar. Selecting a locale downloads `core/src/main/resources/languages/<locale>.json` from the configured Iris source reference and installs it directly as `languages/<locale>.json` only when that file is missing. Existing files work offline and preserve local edits. English remains available without network access.
 
 | Locale id | Language |
 |---|---|
@@ -122,7 +122,7 @@ Complete server translations are kept outside the jar. Selecting a locale downlo
 | `zh_CN` | Simplified Chinese |
 | `zh_TW` | Traditional Chinese |
 
-Downloads are capped at 2 MiB and validated against the typed catalog before atomic publication. Downloaded overlays can contain keys for multiple platforms. Iris loads only keys declared by its active platform catalog and requires every active key before accepting a download. Incomplete cached downloads are invalid and are fetched again during language preparation. Operator overrides remain partial and still reject unknown keys. Missing or failed downloads leave English available, while an existing valid cache supports offline starts. Interactive language selections activate the requested catalog only after preparation succeeds; unavailable downloads use validated built-in English for the requested scope. A custom locale can be supplied through an override file and `general.language`.
+Downloads are capped at 2 MiB and validated against the typed catalog before atomic publication. Downloaded overlays can contain keys for multiple platforms. Iris loads only keys declared by its active platform catalog and requires every active key before accepting a download. Invalid or incomplete installed files remain unchanged on disk. Operator overrides remain partial and still reject unknown keys. Missing or failed downloads leave English available, while an existing valid language file supports offline starts. Interactive language selections activate the requested catalog only after preparation succeeds; unavailable downloads use validated built-in English for the requested scope. A custom locale can be supplied through an override file and `general.language`.
 
 ## Override files
 
@@ -154,7 +154,7 @@ Validation is all-or-nothing. A rejected reload leaves the previous locale fully
 
 ## Resolution order
 
-For a non-`en_US` locale a key resolves as: operator override → downloaded locale cache → English catalog default. For `en_US` the downloaded layer is skipped entirely, so it is: operator override → English catalog default.
+For a non-`en_US` locale a key resolves as: `languages/overrides/<locale>.json` → `languages/<locale>.json` → English catalog default. For `en_US` the downloaded layer is skipped entirely, so it is: operator override → English catalog default.
 
 Templates use `{name}` tokens. Arguments are classified as trusted or untrusted at the call site. Trusted arguments may carry color codes. Untrusted arguments are player names, world names, pack-authored strings, and exception text. Legacy section codes are stripped. `&`, `<`, and `>` are rewritten to lookalike characters so they cannot inject formatting.
 

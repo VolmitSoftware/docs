@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T02:57:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -59,7 +59,7 @@ With a hard dependency, use `GlossAPI.get()`. It throws while Gloss is unavailab
 GlossAPI gloss = GlossAPI.get();
 ```
 
-Reacquire the service after Gloss is disabled and enabled. A normal `/gloss reload` does not invalidate it.
+Reacquire the service after Gloss is disabled and enabled. Automatic config and content reloads keep the service valid.
 
 ## Threading
 

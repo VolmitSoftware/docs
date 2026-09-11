@@ -2,7 +2,7 @@
 title: "Rift: Storage and Operations"
 description: "Managed profiles, quarantine manifests, protection, backups, and recovery"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-10T00:00:00.000Z
 tags: "rift, storage, quarantine, restore, operations"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -22,10 +22,13 @@ Rift keeps operational metadata under `plugins/Rift/` and world data in the serv
 | `plugins/Rift/trash/<id>.toml` | Quarantine manifest and restorable profile fields |
 | `plugins/Rift/debug/rift-v<version>-debugdump-<UTC timestamp>.txt` | Detailed report created by `/rift debug dump` or the shared `/volmit plugins debug` menu |
 | `<world-container>/<name>/` | Standalone world directory used by older Bukkit implementations |
-| `<primary-world>/dimensions/<namespace>/<key>/` | Standard Paper 26.1+ world directory |
+| `<primary-world>/dimensions/rift/<key>/` | Rift-created world directory on Paper 26.1 and newer |
+| `<primary-world>/dimensions/minecraft/<key>/` | Existing Paper world directory that Rift can import and manage in place |
 | `<world-container>/.rift-trash/<id>/` | Recoverable quarantined world directory |
 
-Rift 2.0 reads the current TOML paths and does not migrate older JSON files. Managed profiles record their validated storage location. [Paper 26.1+ stores API-created worlds below the primary world's `dimensions` tree](https://papermc.io/news/26-1/), while older Bukkit layouts use standalone world directories. Rift supports both layouts without relocating worlds.
+Rift 2.0 reads the current TOML paths and does not migrate older JSON files. Managed profiles record their validated storage location. On Paper 26.1 and newer, Rift creates each new world with a `rift:<key>` identity under the primary world's `dimensions/rift/` directory. The command name retains the operator's capitalization while the dimension key is lowercase. Older Bukkit implementations continue using standalone world directories.
+
+Rift can import existing standalone worlds and Paper worlds under `dimensions/minecraft/` without moving them. It also keeps current profiles at their recorded storage locations. Rift never relocates an existing world merely because it was imported or loaded.
 
 ## Unload
 
@@ -35,7 +38,7 @@ Use `/rift protect <name> true` for worlds that other plugins assume remain load
 
 ## Externally removed worlds
 
-At startup, Rift retires the profile of an unloaded, unprotected world only when both supported storage locations are missing. Restoring the directory does not reactivate the profile; run `/rift import <name>` again.
+At startup, Rift retires the profile of an unloaded, unprotected world only when its recorded path and every supported same-name storage location are missing. Restoring the directory does not reactivate the profile; run `/rift import <name>` again.
 
 Protected profiles and ambiguous filesystem results remain managed for operator review. Rift stops enabling if its active profile directory is unreadable or invalid.
 

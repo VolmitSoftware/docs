@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-05T18:30:00.000Z
+date: 2026-09-09T22:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -56,9 +56,7 @@ French, Hebrew, Italian, Japanese, Korean, Lithuanian, Dutch, Polish,
 Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
 Chinese.
 
-English is generated as `languages/en_US.toml`. Missing entries use the built-in English text. Valid edits to the active locale reload automatically; invalid edits leave the current messages active.
-
-Current language files use TOML. Older `language.yml`, YAML catalogs, and `languages/overrides/` files are ignored.
+English is created on startup as editable `languages/en_US.toml` when missing. Missing or invalid messages use the built-in English text. Changes to a readable active language file reload automatically; malformed TOML leaves the current messages active.
 
 ## Build from source
 

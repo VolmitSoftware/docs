@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,9 +18,13 @@ Use `/adapt` for menus, progression, configuration, and player-data administrati
 
 `/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. See [07 - Localization](/adapt/07-localization).
 
+## Plugin version
+
+`/adapt debug version` displays `Adapt vVERSION`, using the installed plugin version and the Director help heading gradient. `/adapt version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
+
 ## Diagnostic reports
 
-`/adapt debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/adapt debugdump upload=false` to save it locally without uploading. The command requires `adapt.debugdump` (default `op`), independently of the root administration permission.
+`/adapt debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/adapt debug dump upload=false` to save it locally without uploading. The command requires `adapt.debugdump` (default `op`), independently of the root administration permission.
 
 Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
 
@@ -29,7 +33,8 @@ Reports are written atomically under the plugin data folder's `debug/` directory
 | Command | Permission | Purpose |
 |---|---|---|
 | `/adapt gui [target=main] [player] [force=false]` | `adapt.gui` | Open an Adapt menu |
-| `/adapt debugdump [upload=true]` | `adapt.debugdump` | Save a diagnostic report, uploading by default |
+| `/adapt debug version` | `adapt.main` | Show the installed plugin version |
+| `/adapt debug dump [upload=true]` | `adapt.debugdump` | Save a diagnostic report, uploading by default |
 | `/adapt effects [enabled=toggle]` | `adapt.effects` | Toggle your particles and sounds |
 | `/adapt configure` | `adapt.configurator` | Open the configuration menu |
 | `/adapt boost [seconds=10] [multiplier=10] [player]` | `adapt.boost` | Add a temporary player XP multiplier |

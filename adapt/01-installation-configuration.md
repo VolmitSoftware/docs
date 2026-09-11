@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install Adapt and configure progression, storage, integrations, and Mutations"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-10T00:20:29.856Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutat
 1. Run Paper, Purpur, or Folia for Minecraft 26.1 on Java 25.
 2. Copy `Adapt-<version>.jar` into each backend server's `plugins/` folder, not the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
-4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads only that locale, verifies it against the build manifest, caches it, and activates it without a restart.
+4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads that locale from the current `master` language sources and installs it directly as `languages/<locale>.toml` only when the file is missing, then activates it without a restart. Existing files work offline and preserve local edits.
 5. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
 6. Grant `adapt.main` to anyone who should reach `/adapt` at all, then add the specific command nodes. The gameplay `adapt.use.*` nodes default to true but do not get anyone past that root gate.
 
@@ -67,7 +67,7 @@ Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, no
 
 `/adapt configure` opens the config editor in a menu instead of a text editor, and needs `adapt.configurator` or op.
 
-`/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` delete that file, regenerate it from defaults, and reconcile mutations. `/adapt default all` archives `adapt.toml` and every skill and adaptation TOML into `config-archive/<timestamp>/` first, then deletes, regenerates, and reloads them. It leaves `mutations.toml`, `models.toml`, language overrides, SQL and Redis data, and player progression alone. All three need `adapt.configurator`.
+`/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` delete that file, regenerate it from defaults, and reconcile mutations. `/adapt default all` archives `adapt.toml` and every skill and adaptation TOML into `config-archive/<timestamp>/` first, then deletes, regenerates, and reloads them. It leaves `mutations.toml`, `models.toml`, language files, SQL and Redis data, and player progression alone. All three need `adapt.configurator`.
 
 This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` directory before upgrading, which permanently removes any local settings stored there, then start the server to generate `adapt.toml`, `models.toml`, `mutations.toml`, `skills/`, and `adaptations/` directly under `plugins/Adapt/`. Adapt does not migrate the old directory, JSON configuration files, or the former misspelled value-multiplier key; restart after applying the desired settings.
 
@@ -111,9 +111,8 @@ plugins/Adapt/
   adaptations/<adaptation-id>.toml
   config-archive/<timestamp>/
   languages/en_US.toml
-  languages/downloaded/<source-revision>/<locale>.toml
-  languages/overrides/<locale>.toml
-  languages/players.properties
+  languages/<locale>.toml
+  languages/language-preferences.properties
   data/players/<uuid>.json
   data/players/<uuid>.json.pending-sql   # SQL mode only
   data/players/<uuid>.json.pending-delete # local JSON mode only
@@ -134,7 +133,7 @@ plugins/Adapt/
 | `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
 | `splashScreen` | `true` | Prints the startup banner |
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
-| `language` | `en_US` | Server default locale. Players may override it with the shared in-game picker. Supported non-English values download automatically; the same name selects the optional override file |
+| `language` | `en_US` | Server default locale. Players may override it with the shared in-game picker. Supported non-English values download automatically into `languages/<locale>.toml` only when the file is missing; edit that file to customize messages |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
 | `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the level-search cursor clamps to |
 | `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP granted per skill level crossed |

@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-05T17:00:00.000Z
+date: 2026-09-11T01:50:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -68,6 +68,7 @@ By default, changes to `config.toml` and the selected language file load automat
 
 - Invalid edits keep the last working settings and log the error.
 - Changes from `/sp config` apply immediately.
+- Consecutive external edits remain detectable after a successful reload; refreshing watcher timing does not discard pending changes to the same files.
 - If hot reload is disabled, restart the server after editing files on disk. Changes saved through `/sp config` still apply immediately.
 
 ## Settings
@@ -84,8 +85,11 @@ Changes apply when the configuration loads. Turning off creation does not remove
 | `general.language` | `"en_US"` | Selects the directly editable `languages/<locale>.toml`; path characters are rejected |
 | `general.requireCreatePermission` | `true` | Requires `shapedportals.create` from players creating Nether or End portals |
 | `general.failureFeedback` | `true` | Explains recognized rejected candidates; unrelated fires and incomplete End frames are ignored silently |
+| `general.updateNotifications` | `true` | Checks GitHub releases and notifies operators or players with `shapedportals.update` when they join and a newer version is available |
 
 {.dense}
+
+The General menu includes a GitHub update notifications toggle. To disable it in `config.toml`, set `updateNotifications = false` under `[general]`. Once the configuration applies, disabling it stops further checks and clears cached and pending notifications; enabling it starts a new check. The notifier never downloads or installs plugin updates. See [Update notifications](/shapedportals/03-compatibility-operations#update-notifications) for release selection and network behavior.
 
 ### Portal rules
 
@@ -202,6 +206,8 @@ Available locales:
 
 `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, `zh_TW`.
 
+The 17 repository translations cover the complete ShapedPortals, Director, and shared VolmLib language-picker and editor catalog. Layout templates containing only formatting and placeholders remain identical across locales because they contain no natural-language text.
+
 ### Select a language
 
 The picker supports a server default and persistent per-player overrides. `/sp language self de_DE` selects German for you; `/sp language self reset` returns to the server default. Personal language selection requires both `shapedportals.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Choices are saved by UUID in `languages/language-preferences.properties`.
@@ -210,7 +216,7 @@ The picker supports a server default and persistent per-player overrides. `/sp l
 
 `/volmit plugins languages` changes the server default across enabled Volmit plugins. It preserves personal overrides and requires permission to administer every provider being changed.
 
-Missing translations download when first selected or opened for editing. Installed files work offline and are not replaced automatically. Missing messages fall back to English, while an invalid download leaves the current selection unchanged. You can also create a custom locale from the English file.
+Missing translations download when first selected or opened for editing. Installed files work offline and are not replaced automatically. Missing or invalid entries fall back to English without preventing the remaining translations from downloading or being selected. Unreadable files use English and remain unchanged on disk. You can also create a custom locale from the English file.
 
 ### Edit messages
 
@@ -228,11 +234,22 @@ Installed incomplete languages can be opened for repair, with English shown for 
 
 ### Colors and placeholders
 
+Language files use grouped TOML sections: `[command.feedback]` with `saved = "..."` represents `command.feedback.saved`. Generated English and downloaded catalogs share four localized header sections: file editing, prefix behavior, formatting, and individual variable definitions. Editor saves keep the existing leading comments and group message keys; other valid local files are not rewritten just to change their layout.
+
 Messages accept classic colors such as `&c`, formatting such as `&l`, RGB colors, and MiniMessage. Each language file starts with a localized, sectioned reference for file behavior, formatting, escaping, and every available placeholder.
 
-`runtime.prefix` sets the prefix. Remove the optional `{prefix}` token from an individual message to hide it there. Other placeholders required by that message must stay intact.
+`runtime.prefix` sets the displayed plugin name and its formatting for that locale. Chat messages use a bold purple gradient name, a gray `›` separator, and gray body text, with colors reserved for results, warnings, failures, and highlighted values. Localized plugin-name references in messages, help, and menus use `{prefix}` so one edit changes their displayed name together.
 
-Missing messages fall back to English. Invalid formatting or missing required placeholders rejects the edit and keeps the last working language file.
+The separator belongs to each message template, outside `runtime.prefix`. Remove `{prefix}` and its separator from a message to hide its leading label. An empty `runtime.prefix` hides the name wherever it is referenced; any separator or surrounding text remains in its template. Other placeholders required by that message must stay intact. Prefix formatting is isolated from the surrounding message.
+
+```toml
+[runtime]
+prefix = "<bold><gradient:#BB8CDD:#D1ADE8>ShapedPortals</gradient></bold>"
+```
+
+A chat template starts with `{prefix}&r &7› &7`; an inline name or menu heading can use `{prefix}` without the separator. Command and portal overlays omit that default leading chat label while retaining plugin names that are part of the message itself.
+
+Missing or invalid file entries fall back to English while valid translations remain active. Invalid in-game replacements are rejected before saving. `languages/en_US.toml` is created at startup even when another language is selected, and existing edits are preserved.
 
 ## Related pages
 

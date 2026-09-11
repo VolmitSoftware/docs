@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-09T08:49:00.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Related: see [04 - Commands & Permissions](/iris/04-commands-permissions), [05 -
 
 ## The edit loop
 
-Prerequisites: a writable packs directory. You also need operator access on Bukkit or gamemaster access on a mod loader. Put VSCode/Cursor (or IntelliJ) on the machine that holds the pack folder. Keep the server console visible. Hotload failures are always reported there, while routine success and timing detail require `/iris debug`.
+Prerequisites: a writable packs directory. You also need operator access on Bukkit or gamemaster access on a mod loader. Put VSCode/Cursor (or IntelliJ) on the machine that holds the pack folder. Keep the server console visible. Hotload failures are always reported there, while routine success and timing detail require `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders.
 
 ### Bukkit-family
 
@@ -27,7 +27,7 @@ Prerequisites: a writable packs directory. You also need operator access on Bukk
    Refreshes `<pack>/<pack>.code-workspace`, rewrites `.iris/schema/*`, and opens that exact workspace. Generation still completes when `studio.openVSCode` is false or the server is headless; only the desktop launch is skipped. Copy the pack folder to your machine and open the workspace file yourself.
    *Success condition:* typing `"` inside any object in `biomes/starter.json` offers field names, and hovering a field shows its description, type, and default value. If it does not, the workspace was not opened or the schemas were never written. Run `/iris studio update dimension=tutorial`.
 4. **Make one change.** Edit `packs/tutorial/biomes/starter.json` and change only its display `name`. Save once.
-5. **Wait for the hotload result** before another save. A successful Bukkit hotload sends the amethyst-block break sound and an `Engine Hotloaded` action bar to players in the Studio world. Rejected edits leave the previous generation active. Enable `/iris debug` for routine console details.
+5. **Wait for the hotload result** before another save. A successful Bukkit hotload sends the amethyst-block break sound and an `Engine Hotloaded` action bar to players in the Studio world. Rejected edits leave the previous generation active. Enable `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders for routine console details.
 6. **Verify in fresh terrain.** Enter ungenerated chunks beyond the transition band and run `/iris what biome`. Existing chunks retain their earlier terrain and recorded semantics.
 7. **Validate.** `/iris pack validate pack=tutorial`: no blocking errors.
 8. **Close.** `/iris studio close`

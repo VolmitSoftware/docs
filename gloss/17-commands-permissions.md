@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -18,9 +18,13 @@ Gloss uses `/gloss`, with `/hologram` and `/board` as shortcuts. Optional argume
 
 `/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. See [Localization](/gloss/19-localization) for persistence and downloaded files.
 
+## Plugin version
+
+`/gloss debug version` displays `Gloss vVERSION`, using the installed plugin version and the Director help heading gradient. `/gloss version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
+
 ## Diagnostic reports
 
-`/gloss debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/gloss debugdump upload=false` to save it locally without uploading. The command requires `gloss.debugdump` (default `op`), independently of the root administration permission.
+`/gloss debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/gloss debug dump upload=false` to save it locally without uploading. The command requires `gloss.debugdump` (default `op`), independently of the root administration permission.
 
 Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
 
@@ -72,9 +76,9 @@ Reports are written atomically under the plugin data folder's `debug/` directory
 
 | Command | Permission | Purpose |
 |---|---|---|
-| `/gloss debugdump [upload=true]` | `gloss.debugdump` | Save a diagnostic report, uploading by default |
+| `/gloss debug version` | any Gloss command access | Show the installed plugin version |
+| `/gloss debug dump [upload=true]` | `gloss.debugdump` | Save a diagnostic report, uploading by default |
 | `/gloss status` | `gloss.admin` | Show feature counts |
-| `/gloss reload` | `gloss.admin` | Reload Gloss |
 | `/gloss emoji list` | `gloss.emoji.use` | List emoji |
 | `/gloss bubbles style <style>` | `gloss.bubbles.style` | Choose a bubble style |
 | `/gloss item status` | `gloss.items` | List custom-item providers |

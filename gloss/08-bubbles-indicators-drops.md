@@ -2,7 +2,7 @@
 title: "Chat Bubbles, Indicators & Drops"
 description: "Configure chat bubbles, health indicators, drop labels, and display-backed items"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T03:34:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,6 +15,8 @@ Nearby living entities also have default segmented health bars, custom names, an
 Use `/gloss web edit bubble-style <id>`, `/gloss web edit real-drops default`, or `/gloss web edit damage-indicators default` to open a focused editor.
 
 ## Chat bubbles
+
+Viewers must be able to see the speaker through Bukkit's player-visibility API before they can see a bubble. This honors Foundation vanish and other plugins using Bukkit hide/show, in addition to the style's `show` condition and `hideOwn`. Gloss applies the visibility condition before registering the bubble and reevaluates live bubbles during normal updates on each viewer's entity scheduler. Hidden viewers are excluded from bubble text, animations, and attached particle effects.
 
 ### Style documents
 

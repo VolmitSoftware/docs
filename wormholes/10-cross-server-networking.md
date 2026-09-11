@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-09T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -327,7 +327,7 @@ points at `/wh network status`.
 |---------|-----|
 | `/wormholes network status` | Listen address or outbound-only, fingerprint, peer state + RTT + last error. Auto-runs doctor when any listed peer is not `CONNECTED`. |
 | `/wormholes network doctor` | Free-form diagnostic lines when peers fail to connect |
-| `/wormholes debug` | Toggle one-second projection/network/queue/peer/handoff telemetry to **console** on both servers while reproducing a failed handoff. Toggle again to stop |
+| `/wormholes debug toggle` | Toggle one-second projection/network/queue/peer/handoff telemetry to **console** on both servers while reproducing a failed handoff. Toggle again to stop |
 | `/wormholes stats` | Path to live snapshot file (network/view state) |
 
 Verbose logging adds endpoint, handoff, admission, and arrival details while reproducing a problem. Ordinary joins remain quiet.

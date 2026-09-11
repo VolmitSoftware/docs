@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T03:09:03.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -54,7 +54,7 @@ Use the schema version for the document being edited:
 | Animations, emoji, MOTD, and panels | `1` |
 | Menus and container previews | No version envelope |
 
-Gloss updates `revision` when it writes a versioned file; hand edits do not need to change it. An invalid file leaves the previous valid version active. Menu and preview documents use their own root fields without `schemaVersion` or `revision`.
+Gloss updates `revision` when it writes a versioned file. Hand edits to panel files must also increment it; other document kinds do not require a manual revision change. An invalid file leaves the previous valid version active. Menu and preview documents use their own root fields without `schemaVersion` or `revision`.
 
 Persistent holograms and bubble styles store their shared appearance in root `style` and `box` objects. Indicator presentations use `style` and `box`; Real Drops presentations use `labels.style` and `labels.box`. Previews use root `textStyle` and `itemStyle`, per-element `style`, label `box`, and `card` chrome settings. These are JSON document settings, separate from the feature and refresh controls in `gloss.toml`.
 
@@ -66,7 +66,7 @@ See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) for su
 
 Gloss reloads config and content files automatically. Changes affect the matching live feature. Open menus and previews may close so they can be rebuilt.
 
-Use `/gloss reload` for a complete config reload. Panel files are the exception: after editing them directly, run `/gloss panel reload`.
+Panel files also reload automatically after stable edits, additions, or deletions. Invalid edits keep the last working definition active. See [Panels](/gloss/16-panels) for revision and identity requirements.
 
 ## Imports
 

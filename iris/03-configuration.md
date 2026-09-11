@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,7 +20,7 @@ The defaults are correct for almost every server. Most operators only ever touch
 | You want to | Change |
 |---|---|
 | Run the server in another language | `general.language` |
-| See why generation is behaving oddly | `general.debug`, or `/iris debug` |
+| See why generation is behaving oddly | `general.debug`, or `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders |
 | Stop Iris opening desktop windows on the host | `gui.useServerLaunchedGuis`, `studio.openVSCode` |
 | Survive pregen on a memory-constrained box | `pregen.maxResidentTectonicPlates`, the `performance.*CacheSize` keys |
 | Turn on the survival tree feller | `treeFeller.enabled` |
@@ -45,7 +45,7 @@ The modded split is real and easy to get wrong. The engine data folder is `<conf
 2. Copy `iris.json` outside the server directory as a rollback file.
 3. Change one key. Keep its JSON type. Quoted values such as `"false"` are strings, not booleans.
 4. Save the file. Then run `/iris reload` or wait for automatic hotload. Both platforms drain filesystem events about every 500 ms, wait for a stable snapshot, and apply automatic batches no more than once every 3 seconds.
-5. Confirm the reload success message, or enable `/iris debug` to see passive hotload success, with no parse error.
+5. Confirm the reload success message, or enable `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders to see passive hotload success, with no parse error.
 6. Exercise the affected feature. If nothing changed, check the "Takes effect" column below. Several keys are captured when a service, pool, or cache is constructed and need a restart.
 
 If automatic parsing fails, Iris keeps the previously active settings and leaves the edited file untouched. Fix the JSON or restore the backup, then save again. Deleting `iris.json` during automatic watching retains the live settings and does not recreate the file; a later manual reload or restart recreates defaults.
@@ -84,7 +84,7 @@ That fragment shows the field location. Do not replace a populated settings file
 | Hotload (Bukkit) | The shared core `SettingsHotloadWatch` drains native events about every 500 ms for `iris.json` and `languages/overrides/`. Bounded exact-content reconciliation detects silent, atomic, FTP, and same-metadata saves. A stable strict-UTF-8 snapshot of at most 2 MiB is applied without rewriting the file, at most once every 3 seconds with one latest-state trailing batch. Successful passive hotloads are debug-only; invalid or rejected changes remain normal console errors |
 | Hotload (modded) | `ModdedSettingsHotloadService` schedules the same core watcher and therefore has the same event-first checks, 2 MiB immutable snapshot ceiling, content reconciliation, and completion-anchored 3-second queue. It does not rewrite a passive save. Successful passive hotloads are debug-only; invalid or rejected changes remain normal console errors |
 | Locale refresh | Native directory events queue locale overrides without rereading the active file every 500 ms while idle. Only the configured locale applies; inactive overrides are tracked without changing the runtime. Deleting the active override falls back to its bundled translation or the code-owned English catalog, invalid bytes keep the last-good catalog, and `/iris reload` remains immediate |
-| `forceSave()` | Only `/iris debug` writes settings back from memory |
+| `forceSave()` | Only `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders writes settings back from memory |
 
 ## Root object
 
@@ -114,7 +114,7 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `language` | `"en_US"` | Live | Selects the locale catalog for all Iris messages. Reloaded by `/iris reload` and by the shared Bukkit/modded hotload watcher |
 | `metrics` | `true` | **Restart** | **Bukkit only.** Registers the bStats reporter at enable |
 | `commandSounds` | `true` | Live | **Bukkit only.** Plays the amethyst chime on `/iris` tab completion and success/failure sounds after a command. Turn off if the noise annoys staff |
-| `debug` | `false` | Live | Enables verbose engine tracing on the console, including passive hotload success, Studio timing, adapter discovery, object-placement and structure diagnostics, and writes per-chunk crash dumps under `debug/chunk-errors/`. Failures remain visible when debug is off. Toggle with `/iris debug` rather than editing by hand. Leave off in production because it is loud |
+| `debug` | `false` | Live | Enables verbose engine tracing on the console, including passive hotload success, Studio timing, adapter discovery, object-placement and structure diagnostics, and writes per-chunk crash dumps under `debug/chunk-errors/`. Failures remain visible when debug is off. Toggle with `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders rather than editing by hand. Leave off in production because it is loud |
 | `dumpMantleOnError` | `false` | Live | When a tectonic plate read reports an error, dump the decoded region to `dump/<name>.bin` instead of logging a timing line. Turn on only when investigating mantle corruption |
 | `disableNMS` | `false` | **Restart** | **Bukkit only.** Forces the no-op NMS binding. Iris logs a warning and world creation stops working entirely, so this is a diagnostic escape hatch, not a compatibility switch. Read in a class initializer, so a reload will not change it |
 | `eagerRuntimeInjection` | `false` | **Restart** | **Bukkit only.** Attaches the Java agent and installs the server-code injection while Iris enables instead of the first time a world Iris generates is about to load. Off, a boot costs about a second less and the `injection` check reports Stable with nothing to verify; a server that never loads an Iris world never pays for either step, and an install that fails later locks the runtime with the same reason. On, the startup safeguard verifies both during startup |

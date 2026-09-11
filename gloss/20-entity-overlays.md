@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-09-05T22:12:00.000Z
+date: 2026-09-11T00:00:46.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -20,7 +20,7 @@ Attack and armor are current Bukkit attribute values. An entity without an attri
 
 ## Configuration
 
-Edit `plugins/Gloss/entity-overlays/default.json`, or open it with `/gloss web edit entity-overlays default`. Valid edits reload automatically. `/gloss reload` also applies them. Set `enabled` to `false` in this document to stop overlays.
+Edit `plugins/Gloss/entity-overlays/default.json`, or open it with `/gloss web edit entity-overlays default`. Valid edits reload automatically. Set `enabled` to `false` in this document to stop overlays.
 
 The shared engine also requires `[features] holograms = true` in `gloss.toml`. If that engine is disabled, React can return to native stack labels.
 
@@ -77,7 +77,7 @@ For example, this layout puts combat statistics above health and adds a conditio
 
 `style` uses the same fields as Gloss text icons: billboard, text alignment, background ARGB, opacity, shadow, see-through, line width, block and sky light, view range, shadow radius and strength, culling dimensions, glow color, and independent X/Y/Z scale. Supply block and sky light together. Center billboard keeps the default pane facing its viewer.
 
-Enable `box` for an automatically sized panel behind the text. Padding and border width are measured in Minecraft text pixels. The complete border surrounds the panel on every side and follows the same movement, scale, orientation, and visibility as the pane.
+Enable `box` for an automatically sized panel behind the text. Padding and border width are measured in Minecraft text pixels. The complete border surrounds the panel on every side and follows the same movement, scale, orientation, and visibility as the pane. Background and border parts stay behind the foreground text after rotation and scaling, preserving the colors of health bars and other text.
 
 ```json
 "box": {

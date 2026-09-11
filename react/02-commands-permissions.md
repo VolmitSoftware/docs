@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T01:30:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,7 +41,7 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 
 | Subcommand | Aliases | Origin | Description |
 |------------|---------|--------|-------------|
-| `language` | | both | Open the clickable language picker |
+| `language` | `languages` | both | Open the clickable language picker |
 | `language self <locale\|reset>` | | player | Select or reset your personal React language |
 | `language server <locale>` | | both | Change the React server default |
 | `language server edit [locale]` | | player | Edit one locale's messages without changing language selections; requires `react.use` or `volmit.language.admin` |
@@ -58,18 +58,20 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 | `distance player simulation <distance> [player=<player>]` | setting: `sd`, `simulation-distance` | both | Set only the selected player's simulation distance; `-1` inherits the world value |
 | `distance player send <distance> [player=<player>]` | setting: `svd`, `send-view-distance` | both | Set only the selected player's chunk send distance; `-1` inherits the world value |
 | `map [renderer=unknown]` | | player | Open the map selector, or give the selected React renderer map |
-| `reload` | `rl` | both | Reload React |
-| `version` | `v` | both | Show React version |
+
+Every `/react language ...` form also accepts `/react languages ...`, including personal selection, server selection, message editing, and tab completion.
+
+Configuration and language changes apply automatically after their files are saved. See [Installation & Configuration](/react/01-installation-configuration) for live settings and the JVM instrumentation restart requirement.
 
 Distance values must be from `2` through `32`. Player settings and server/world/player send distance also accept `-1` to inherit their parent setting. The server scope changes every currently loaded world; server configuration remains authoritative for worlds loaded later. Players may omit a world or player target to use themselves or their current world; console must name targets for those two scopes. Client-selected view distance is read-only, and the retired no-tick name is the same setting as view distance. An enabled `dynamic-view-distance` feature can later govern world view and simulation values, while `afk-view-shedding` can govern player send distance.
 
-`/react monitoring-only` does not rewrite any feature or tweak TOML. The state survives `/react reload` in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
+`/react monitoring-only` does not rewrite any feature or tweak TOML. The state remains active through automatic configuration updates in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
 
 `/volmit plugins languages [locale]` manages the server default for every enabled Volmit language provider. It keeps personal choices and offers only shared locales. See [Localization](/react/13-localization).
 
 ## Diagnostic reports
 
-`/react debugdump` saves a report under `plugins/React/debug/` and uploads it to mclo.gs by default. Add `upload=false` for a local-only report. See [Shared diagnostic reports](/volmlib/api/diagnostics).
+`/react debug dump` saves a report under `plugins/React/debug/` and uploads it to mclo.gs by default. Add `upload=false` for a local-only report. See [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 ## `/react config` (`cfg`)
 
@@ -107,9 +109,9 @@ Parameters vary by action (world, radius, max entities/chunks, ages). Defaults c
 
 | Subcommand | Aliases | Description |
 |------------|---------|-------------|
-| `info` | `i` | Print platform, CPU, memory, storage, network-interface, display, sensor, GPU, and power information. Also POST a smaller server, platform, storage, memory, and CPU summary to `https://paste.bytecode.ninja/documents` and return its link |
+| `info` | `i` | Print platform, CPU, memory, storage, network-interface, display, sensor, GPU, and power information. Upload a smaller server, platform, storage, memory, and CPU summary to mclo.gs and return a clickable link |
 
-The upload uses an external service. If it is unavailable, React still prints the environment details and reports that the upload failed.
+Environment uploads use the same shared publisher as `/react debug dump`, with a 5-second connection timeout and a 10-second request timeout. Uploads run asynchronously and return the link on the player's scheduler. Upload failure does not interrupt the printed environment details; React reports a localized error and records the full exception stack trace in the server console.
 
 ## `/react benchmark` (`bench`)
 
@@ -124,9 +126,12 @@ Only one benchmark run is accepted at a time. CPU and memory tests execute synth
 
 ## `/react debug`
 
+Version is listed in this help category. `/react version` and `/react v` provide the same output and are hidden from help and completion. Both paths use the normal React administration permission and send the installed version without a message prefix.
+
 | Subcommand | Aliases | Origin | Description |
 |------------|---------|--------|-------------|
 | `entity-data` | `ed` | player | Raycast entity. Print priority and crowding diagnostics |
+| `version` | | both | Show `React v<version>` using the help title gradient |
 
 ## `/react dev` (`developer`, `d`)
 

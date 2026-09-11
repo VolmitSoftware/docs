@@ -2,7 +2,7 @@
 title: React
 description: React performance monitoring and optimization for Paper and Folia
 published: true
-date: 2026-09-04T09:19:46.771Z
+date: 2026-09-09T00:00:00.000Z
 tags: react
 editor: markdown
 dateCreated: 2026-08-21T00:31:42.920Z
@@ -32,7 +32,7 @@ Permissions and command conflicts are documented on [Commands and permissions](/
 ## Getting started
 
 - [Overview *Feature map and documentation index*](/react/00-overview)
-- [Installation & Configuration *Requirements, data folder, and reload*](/react/01-installation-configuration)
+- [Installation & Configuration *Requirements, data folder, and automatic updates*](/react/01-installation-configuration)
 - [Commands & Permissions *`/react` tree and permission nodes*](/react/02-commands-permissions)
 - [Concepts *Registries, TOML layout, and enable model*](/react/03-concepts)
 {.links-list}
@@ -52,7 +52,7 @@ Permissions and command conflicts are documented on [Commands and permissions](/
 - [Samplers & Metrics *Sampler ids and observation model*](/react/10-samplers-metrics)
 - [Monitors Maps & In-Game GUI *Action bar, maps, and config UI*](/react/11-monitors-maps-in-game-gui)
 - [Incident Mode & Playbooks *Incident score and response*](/react/12-incident-mode-playbooks)
-- [Localization *Locales and overrides*](/react/13-localization)
+- [Localization *Locales and editable catalogs*](/react/13-localization)
 - [NMS Bridges & Platform Notes *Bridges, Folia, and jar workflow*](/react/14-nms-bridges-platform-notes)
 - [Operator Runbooks & Smoke Tests *Manual checklists*](/react/15-operator-runbooks-smoke-tests)
 {.links-list}

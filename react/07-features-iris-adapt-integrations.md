@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-10T04:12:59.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,11 +15,9 @@ Use `/react integration status` for live capability status. Global `integrationS
 
 - `IntegrationController` / `ReactIntegrationService` discover peer plugins and publish mirrored metrics. Prefixes: `iris-`, `adapt-`, `wormholes-`, `gloss-`, `hiddenore-`, `biletools-`. See [10 - Samplers & Metrics](/react/10-samplers-metrics).
 - `CapabilityGatedFeature` declares `requiredCapabilities()` and optional `isSecretBundle()`.
-- `ReactCapabilityFeature.autoRegister()`:
-  - secret + `!integrationSecretsEnabled` → do not register
-  - missing required plugin install → do not register
+- `ReactCapabilityFeature.autoRegister()` registers a feature only when its required plugins are installed. `integrationSecretsEnabled` controls secret-feature activation through `FeatureController`.
 - `FeatureController` re-checks activation every two seconds. With a live integration controller, capability requires an accepting or healthy metrics node. Installed-plugin detection is only the fallback when that controller is unavailable.
-- Secret features only appear under `plugins/React/feature/` after they successfully register. That requires secrets on and the plugins present.
+- Secret feature configuration files appear under `plugins/React/feature/` when their required plugins are installed, even while `integrationSecretsEnabled = false`. Saving the global setting automatically reconciles activation.
 - Adapt ability-operation volume remains neutral telemetry and never creates an integration-timeline alert by itself. React alerts only after three consecutive samples where Adapt's measured rolling guard-check timing budget is at least 100 percent and server MSPT is at least 50 milliseconds; either signal recovering resets the streak. The current operation rate remains in the alert as context, not as a trigger.
 
 ## Map overlays (cross-ref)
@@ -88,9 +86,9 @@ Requires `iris` **and** `adapt`. Secret: yes. It enters when either Iris or Adap
 
 ## Operator enable checklist (secret path)
 
-1. Install and enable Iris and/or Adapt as needed.
-2. Set `integrationSecretsEnabled = true` in global React config.
-3. Restart React or run a full `/react reload` so the feature registry is rebuilt.
+1. Install Iris and/or Adapt as needed, then start the server with those plugins enabled.
+2. Set `integrationSecretsEnabled = true` in `react.toml`.
+3. Save the file; automatic file watching applies the setting and reconciles secret-feature activation.
 4. Confirm TOMLs under `plugins/React/feature/` and `enabled = true`.
 5. Confirm integration metrics healthy via `/react integration status`.
 6. Trinity needs **both** Iris and Adapt. Single-cap surge guards need their own plugin.

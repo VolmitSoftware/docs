@@ -2,7 +2,7 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-09T22:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -80,11 +80,13 @@ The master and the slave both default to off. Read
 
 ## Language files
 
-Selected non-English catalogs download when needed. BileTools validates them before use and keeps English active if preparation fails. Installed catalogs work offline.
+Startup creates editable `plugins/BileTools/languages/en_US.toml` when missing. Non-English catalogs download only when their local file is missing. Partial catalogs remain selectable; valid translations stay active and missing or invalid messages fall back to built-in English individually. Installed catalogs work offline. An unreadable file uses English at startup or selection. During hot reload, invalid TOML syntax keeps the last readable snapshot until the file is repaired.
 
 Player preferences are stored by UUID in `plugins/BileTools/languages/language-preferences.properties`. `self reset` removes a personal override. The server default applies to console output and players without an override.
 
-BileTools stores catalogs at `plugins/BileTools/languages/<locale>.toml`. Local files are not replaced automatically. Missing keys use built-in English, unknown TOML keys are retained, and a valid save reloads the active file.
+Language files use grouped TOML sections: `[command.feedback]` with `saved = "..."` represents `command.feedback.saved`. Generated English and downloaded catalogs share four localized header sections: file editing, prefix behavior, formatting, and individual variable definitions. Editor saves keep the existing leading comments and group message keys; other valid local files are not rewritten just to change their layout.
+
+BileTools stores catalogs at `plugins/BileTools/languages/<locale>.toml`. Local files are not replaced automatically. Missing or invalid values use built-in English, unknown TOML keys are retained, and a valid save reloads the active file. Localized header comments explain formatting and variables; the Bile prefix is written directly in each chat message.
 
 ## In-game settings editor
 

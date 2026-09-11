@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-08T20:03:07.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -558,7 +558,7 @@ Ground-hugging mushroom carpet:
 
 - Studio worlds hotload both JSON and `.iob` edits within about a second, into newly generated chunks only. Non-studio worlds do not hotload at all.
 - Separate the object from the placement. `/iris object paste` proves geometry. Natural generation proves the placement.
-- Deep forensics: write `chunkX,chunkZ[,radius]` into `plugins/Iris/goldendebug.txt` (or set `-Diris.goldendebug=`), enable `/iris debug`, then restart. The target is read once at startup. Every attempt, height query, pick, and rejection in those chunks is logged at debug level. Extremely verbose. Use radius 0.
+- Deep forensics: write `chunkX,chunkZ[,radius]` into `plugins/Iris/goldendebug.txt` (or set `-Diris.goldendebug=`), enable `/iris debug toggle`, then restart. The target is read once at startup. Every attempt, height query, pick, and rejection in those chunks is logged at debug level. Extremely verbose. Use radius 0.
 
 ## 11. Content unavailable on this Minecraft version
 

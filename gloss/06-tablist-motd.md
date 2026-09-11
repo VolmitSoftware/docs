@@ -2,7 +2,7 @@
 title: "Tablist & Server List MOTD"
 description: "Configure player-list text and randomized server-list messages"
 published: true
-date: 2026-09-04T16:31:36.767Z
+date: 2026-09-10T02:57:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -116,7 +116,7 @@ Disabling a surface restores its vanilla state:
 - `listNames.enabled: false` resets applied list names on the next document reload.
 - On plugin disable, headers and footers are cleared. List names are reset for every online player.
 
-If you edit `tablist.json` on disk, the change applies without a reload. `[features] tablist` and `[tablist] updateIntervalTicks` live in `gloss.toml`. That file also hot-reloads. An on-disk config edit restarts the driver on its own. `/gloss reload` does the same.
+Edits to `tablist.json` on disk apply automatically. `[features] tablist` and `[tablist] updateIntervalTicks` live in `gloss.toml`. That file also hot-reloads. An on-disk config edit restarts the driver on its own.
 
 The web editor can edit, export and live-sync the tablist document. Open it alone with
 `/gloss web edit tablist tablist`, or include it in `/gloss web workspace`. `/gloss tablist reset`
@@ -180,7 +180,7 @@ Animations use server time and work in the MOTD. See [Emoji, Text & Animations](
 
 If rendering throws, Gloss logs `MOTD render failed: <reason>` once and leaves that ping MOTD untouched. The warning is armed again by the next reload.
 
-If you edit `motd.json`, the change applies without a reload. If you flip `[features] motd`, that is a config change. It hot-reloads on its own or on `/gloss reload`. Gloss then re-registers or unregisters the listener.
+Edits to `motd.json` apply automatically. Changing `[features] motd` in `gloss.toml` also hot-reloads. Gloss then re-registers or unregisters the listener.
 
 The web editor can live-sync this singleton with `/gloss web edit motd motd`, or include it in
 `/gloss web workspace`.

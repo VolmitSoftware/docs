@@ -2,7 +2,7 @@
 title: "Startup Safeguard"
 description: "Iris documentation: Startup Safeguard"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-11T01:50:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T00:00:00.000Z
@@ -82,7 +82,7 @@ The same lock is shared with external datapack and dimension-pack validation, so
 3. Look for `Injecting Bukkit`. It is logged when code injection begins, so a `Java Agent` heading means Iris never got that far, and a `Code Injection` heading after it means injection itself failed.
 4. `Installing Java Agent...` appears only when Iris has to attach the agent dynamically. A server already started with `-javaagent` skips that step and logs nothing for it.
 5. `[Attach Listener/ERROR]` and `[STDERR]` lines around the dynamic attach come from the JVM, not from Iris. Iris logs a note saying so.
-6. Run `/iris debugdump` for a report to attach to a support request. It uploads to mclo.gs by default; `/iris debugdump upload=false` writes it to `plugins/Iris/debug/` only. It requires `iris.debugdump`, which is checked independently of `iris.all`. Alongside the general plugin and server state, the report carries the safeguard results: a `Startup safeguard: <mode> (<n> issues)` line, then one `<check id>: <mode>` line per check in run order, each followed by that check's diagnostic lines. The check ids are `memory`, `incompatibilities`, `software`, `version`, `injection`, `dimensionTypes`, `diskSpace`, and `java`.
+6. Run `/iris debug dump` for a report to attach to a support request. It uploads to mclo.gs by default; `/iris debug dump upload=false` writes it to `plugins/Iris/debug/` only. It requires `iris.debugdump`, which is checked independently of `iris.all`. Alongside the general plugin and server state, the report carries the safeguard results: a `Startup safeguard: <mode> (<n> issues)` line, then one `<check id>: <mode>` line per check in run order, each followed by that check's diagnostic lines. The check ids are `memory`, `incompatibilities`, `software`, `version`, `injection`, `dimensionTypes`, `diskSpace`, and `java`.
 
 The banner is printed once per enable. It is not re-evaluated on `/iris reload`, and there is no command that re-prints it; restart the server to re-run the checks.
 

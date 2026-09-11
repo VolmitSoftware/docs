@@ -2,11 +2,15 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
+
+## Plugin version
+
+`/biletools debug version` displays `BileTools vVERSION`, using the installed plugin version and the Director help heading gradient. `/biletools version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
 
 ## Commands
 
@@ -20,6 +24,7 @@ The root command is `/biletools`. The aliases are `bile`, `bi`, `b`, `vomit`, an
 | `/bile language server edit [locale]` | Open the per-language message editor in game |
 | `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default |
 | `/bile config` | Open the complete in-game settings and language editor |
+| `/biletools debug version` | Show the installed plugin version |
 | `/biletools debug dump [upload=true]` | Save a diagnostic report, uploading by default |
 | `/bile load <plugin>` | Load a plugin jar from the plugins directory |
 | `/bile unload <plugin>` | Unload an installed plugin |

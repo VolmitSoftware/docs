@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T03:09:03.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -135,4 +135,4 @@ If publishing fails:
 3. Refresh if the server reports a revision conflict.
 4. Publish again.
 
-Use `/gloss reload` after restoring files from a backup. Panel file restores also need `/gloss panel reload`.
+Restored config and watched content files, including panel files, apply automatically. Panel restores must satisfy the current revision and identity rules in [Panels](/gloss/16-panels).

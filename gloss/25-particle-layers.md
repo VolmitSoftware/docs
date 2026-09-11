@@ -2,7 +2,7 @@
 title: "Particle Layers"
 description: "Gloss documentation: particle geometry behind in-world displays"
 published: true
-date: 2026-09-06T00:23:42.000Z
+date: 2026-09-10T22:05:44.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z
@@ -41,6 +41,25 @@ Wrap authored text in `<particles:name>text</particles>` and use `{"scope":"span
 ## Geometry
 
 Geometry types are `point`, `line`, `polyline`, `outline`, `filledPlane`, `cuboid`, `letterBounds`, `glyphOutline`, and `glyphFill`. Use `placement.layer` and `placement.depth` to move particles in front of or behind the display.
+
+Particle layers attached to text displays follow the display's billboard mode. Gloss uses the player's look yaw and pitch for camera rotation:
+
+| Billboard | Yaw | Pitch |
+|---|---|---|
+| `center` | Camera | Camera |
+| `vertical` | Camera | Display |
+| `horizontal` | Display | Camera |
+| `fixed` | Display | Display |
+
+Moving without changing the player's look direction keeps the particle plane's orientation unchanged. Local geometry and placement offsets follow billboard and presentation rotation. After presentation rotation, `front` points toward the text's readable face and `behind` points away.
+
+## Emission
+
+Gloss tracks `emission.intervalTicks` separately for each particle source, viewer, and layer, starting from its last successful emission. The first eligible emission runs immediately. After a delayed or skipped update, a due layer emits once at the next eligible update, without replaying missed emissions. A layer that receives no particle budget remains due.
+
+Gloss spawns geometry particles with zero added speed. Minecraft still applies each particle's inherent movement and lifetime, and the client's particle setting still applies.
+
+Hot-loaded changes to `features.particles` or `text.functions` update the persistent-hologram driver without replacing existing displays when hologram settings stay unchanged.
 
 Documents allow up to 64 uniquely named layers. Increase `geometry.spacing` or `emission.intervalTicks` to reduce particle work. Gloss applies per-viewer and global particle budgets and the configured particle view range, independently of display view range. Particles a viewer's own quota clips stay in the shared per-tick pool for other viewers. Drop-label range is measured from the label's vertical offset.
 

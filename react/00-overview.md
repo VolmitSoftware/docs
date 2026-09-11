@@ -2,7 +2,7 @@
 title: "Overview"
 description: "React documentation: Overview"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-10T04:12:59.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,7 @@ React monitors server performance. Optional features and tweaks control specific
 | [10 - Samplers & Metrics](/react/10-samplers-metrics) | Sampler ids and observation model |
 | [11 - Monitors Maps & In-Game GUI](/react/11-monitors-maps-in-game-gui) | Action bar, maps, in-game config UI |
 | [12 - Incident Mode & Playbooks](/react/12-incident-mode-playbooks) | Incident score and response |
-| [13 - Localization](/react/13-localization) | Locales and overrides |
+| [13 - Localization](/react/13-localization) | Locales and editable catalogs |
 | [14 - NMS Bridges & Platform Notes](/react/14-nms-bridges-platform-notes) | Bridges, Folia, jar workflow |
 | [15 - Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests) | Manual checklists |
 | [16 - API - Getting Started](/react/16-api-getting-started) | Third-party dependency setup |

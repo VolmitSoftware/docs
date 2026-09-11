@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry, persistence, region ownership, and build instructions"
 published: true
-date: 2026-09-05T18:30:00.000Z
+date: 2026-09-11T02:08:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -74,6 +74,8 @@ No event set covers every possible external block mutation, which is why the per
 VolmLib supplies TOML handling, file watching, localization, validated translation downloads, command/help presentation, HUD coordination, scheduling, and [diagnostic report collection and upload](/volmlib/api/diagnostics). ShapedPortals contributes an immutable capture of its service, settings, registry, and statistics state and retains its `debug.uploadEnabled` control.
 
 Shaped Portals owns geometry, registry policy, integrity decisions, commands, presentation settings, and its categorized configuration editor. Optional React integration reads concurrent counts without accessing live world state during sampling.
+
+`LanguageService.render`, `renderPrefixed`, and `renderWithoutPrefix` return `ComponentText`. Send these results directly through `ComponentMessenger`; use `.legacy()`, `.plain()`, or `.miniMessage()` only when an output API requires that representation. Message formatting and the editable name are resolved before delivery, so completed messages must not be passed through mixed-format parsing again.
 
 ## Build from source
 

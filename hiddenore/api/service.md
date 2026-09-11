@@ -2,7 +2,7 @@
 title: "Service"
 description: "HiddenOreService read API"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-10T03:05:07.654Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | Method | Result |
 |---|---|
 | `isSeeded()` | Whether generation uses seeded veins |
-| `isManagedBase(Material)` | Whether a material is listed under `blocks:` |
+| `isManagedBase(Material)` | Whether a material is configured in the `blocks` tables |
 | `originOf(Block)` | `PLAYER_PLACED`, `PRESUMED_GENERATED`, or `UNTRACKED` |
 | `provenanceOf(Chunk)` | Snapshot of tracked placements in one chunk |
 | `veinAt(Block)` | Unconsumed seeded vein at the block, or `null` |

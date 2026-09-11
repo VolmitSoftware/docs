@@ -2,7 +2,7 @@
 title: "Rift: Commands and Permissions"
 description: "Rift command syntax, help behavior, aliases, and granular permission nodes"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T01:50:00.000Z
 tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -35,6 +35,7 @@ Arguments in brackets have defaults.
 | `/rift language server edit [locale]` | `volmit.language.admin` or `rift.config` | Open the in-game message editor, optionally at one locale |
 | `/rift status` | `rift.status` | Show platform, Java, paths, locale, and world counts in a Director menu |
 | `/rift debug` | None | Open the diagnostic-tools help page |
+| `/rift debug version` | `rift.command` | Show the localized plugin prefix followed by `› v<version>` |
 | `/rift debug dump [upload]` | `rift.debug` | Save a detailed report; `upload` defaults to `true` and may be set to `false` for this run |
 | `/rift autoload <name> <enabled>` | `rift.config` | Change a managed profile's startup auto-load flag |
 | `/rift protect <name> <enabled>` | `rift.config` | Change a managed profile's protection flag |
@@ -42,6 +43,8 @@ Arguments in brackets have defaults.
 Aliases include `teleport` for `tp` and `editor` for `config`. Config, active server language, and managed-profile changes reload automatically; Rift has no manual reload command or inventory reload control. The Language setting opens the shared server picker, while the Languages category opens the shared message editor.
 
 `/volmit plugins languages [locale]` changes the server default for every enabled Volmit language provider that supports it. `/volmit plugins debug` also includes Rift.
+
+Version is listed under `/rift debug` in help. `/rift version` provides the same output and is hidden from help and completion. Both paths require `rift.command` or `rift.admin` and work for players and console. The default output is `Rift › v<version>`; the displayed name comes from `runtime.prefix` in the viewer's language.
 
 ## Create arguments
 

@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-10T01:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -205,6 +205,10 @@ stealth-shadowmeld = "minecraft:black_dye"
 [gui.adaptationOrder]
 stealth = ["stealth-shadowmeld", "stealth-cutpurse"]
 ```
+
+## Language editor
+
+The language editor uses 36 left-aligned entries across the first four rows of each page. The bottom row holds Back, Previous, Search or Clear Search, Next, and Close. Skill categories and skill or adaptation messages reuse their gameplay menu icons, including material overrides and resource-pack models. Other message groups retain the shared category icons.
 
 ## See also
 

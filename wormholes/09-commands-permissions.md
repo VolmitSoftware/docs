@@ -2,13 +2,17 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-11T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help` and `info` are public. Personal language permissions are granted by default; commands require the permissions shown.
+
+## Plugin version
+
+`/wormholes debug version` displays `Wormholes vVERSION`, using the installed plugin version and the Director help heading gradient. `/wormholes version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
 
 ## Commands
 
@@ -23,8 +27,10 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes wand [rune=true]` | `wormholes.admin.items` | Give a Portal Wand and, by default, a rune |
 | `/wormholes door [type=pair]` | `wormholes.admin.items` | Give a Dimensional Door |
 | `/wormholes reload` | `wormholes.admin.reload` | Reload config and language files |
-| `/wormholes debugdump [upload=true]` | `wormholes.debugdump` | Save a diagnostic report, uploading by default |
-| `/wormholes debug` | `wormholes.admin` | Toggle verbose diagnostics until the next reload |
+| `/wormholes debug version` | any Wormholes administration command access | Show the installed plugin version |
+| `/wormholes debug dump [upload=true]` | `wormholes.debugdump` | Save a diagnostic report, uploading by default |
+| `/wormholes debug` | `wormholes.admin` or `wormholes.debugdump` | Open diagnostic command help |
+| `/wormholes debug toggle` | `wormholes.admin` | Toggle verbose diagnostics until the next reload |
 | `/wormholes stats [now=false]` | `wormholes.admin` | Show the stats file; `now=true` writes it first |
 | `/wormholes pocket info` | `wormholes.admin.pocket` | Show the current pocket's size and materials |
 | `/wormholes pocket resize [size=0] [material=keep] [door=keep] [confirm=false]` | `wormholes.admin.pocket` | Resize the current pocket |
@@ -50,7 +56,7 @@ removing portal storage. Queued saves cannot recreate deleted portal files.
 
 ## Diagnostic reports
 
-`/wormholes debugdump` writes a report to the plugin's `debug/` directory and uploads it to mclo.gs by default. Use `upload=false` to keep it local. A failed upload does not delete the report. See [Shared diagnostic reports](/volmlib/api/diagnostics) for its contents.
+`/wormholes debug dump` writes a report to the plugin's `debug/` directory and uploads it to mclo.gs by default. Use `upload=false` to keep it local. A failed upload does not delete the report. See [Shared diagnostic reports](/volmlib/api/diagnostics) for its contents.
 
 ## Permissions
 

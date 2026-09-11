@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-09-04T16:32:49.516Z
+date: 2026-09-10T02:57:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -46,7 +46,7 @@ In-world text can mark ranges for particle layers. Rendered values cannot create
 A function token is a name between two pipe characters. Example: `|animation.rainbow|`.
 
 - A name with no registered function is left in the string exactly as written, pipes included.
-- A function that throws renders as an empty string and logs one warning per function name (`Text function |<name>| failed: ...`). The warning is not repeated until the function is registered again or `/gloss reload` runs.
+- A function that throws renders as an empty string and logs one warning per function name (`Text function |<name>| failed: ...`). The warning is not repeated until the function is registered again or Gloss applies a change to its `[text]` settings.
 - A function that returns `null` renders as an empty string.
 
 Gloss registers two families of functions. There is no public API for registering a third:

@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "Mining drop-control and anti-xray plugin"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-10T03:05:07.654Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,7 +34,7 @@ HiddenOre never places ore blocks. See [Configuration](/hiddenore/configuration)
 
 - [Installation *Requirements and first-run setup*](/hiddenore/installation)
 - [Commands and permissions *Commands and access*](/hiddenore/commands)
-- [Configuration *Every `hiddenore.yml` key and default*](/hiddenore/configuration)
+- [Configuration *Every `hiddenore.toml` key and default*](/hiddenore/configuration)
 - [API Overview *Developer API index*](/hiddenore/api)
 - [API events *`HiddenOreDropsEvent` and related events*](/hiddenore/api/events)
 - [API service *Block and vein queries*](/hiddenore/api/service)

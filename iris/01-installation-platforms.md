@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-09T05:57:10.311Z
+date: 2026-09-11T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -66,7 +66,7 @@ Then verify from the server console:
 /iris pack validate pack=underworld
 ```
 
-`/iris version` prints exactly one line: `Iris v<version> by Volmit Software`. That is the whole output. It does not report platform or Minecraft version. Use it only as a "the command tree is alive" check. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
+`/iris debug version` prints exactly one line: `Iris v<version>`, using the Director help heading gradient. `/iris version` is a shortcut hidden from help and suggestions. This checks the installed plugin version and command routing. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
 
 `/iris pack validate` with no argument validates every installed pack. Name one with `pack=<key>` to check a single pack.
 

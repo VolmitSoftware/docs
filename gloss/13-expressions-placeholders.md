@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T02:57:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -366,7 +366,7 @@ stages also process the function's result.
 - A function that returns `null` renders as an empty string.
 - A function that throws renders as an empty string and logs one warning per function name
   (`Text function |<name>| failed: ...`). That warning is not repeated until the function is registered
-  again or `/gloss reload` runs.
+  again or Gloss applies a change to its `[text]` settings.
 
 ### The function catalog
 
@@ -397,7 +397,9 @@ requested.
 
 - **One interval of warm-up.** The first render of a token asks for the key and gets an empty
   string. The value appears on the next sampler pass, `[integration] sampleIntervalTicks` later
-  (default 20 ticks). The same holds after a `/gloss reload` and after a plugin enables or disables.
+  (default 20 ticks). Changes to the sample interval preserve cached values. When plugins enable or
+  disable, metrics that remain available retain their cached values; newly available metrics need
+  their first sample.
 - **No idle sampling.** Gloss does not call another plugin's sampler when no content uses its metrics.
 
 ### Menus and panels

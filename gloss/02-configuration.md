@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T02:57:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -20,7 +20,7 @@ Feature switches and general settings live in `plugins/Gloss/gloss.toml`. JSON d
 #
 # Gloss runtime configuration. Every knob is emitted with a comment, values outside their documented range are clamped back on load, and edits hot-reload while the server runs.
 
-# Server-wide locale used for in-game text. Blank values fall back to en_US; language.yml only overrides individual messages.
+# Server-wide locale used for in-game text. Blank values fall back to en_US; edit messages in languages/<locale>.toml.
 language = "en_US"
 # Sends anonymous bStats usage metrics.
 metrics = true
@@ -28,13 +28,13 @@ metrics = true
 splashScreen = true
 ```
 
-Each key has a comment. Changes reload automatically, and invalid changes leave the current settings active. Use `/gloss reload` (`gloss.admin`) to reload immediately. Settings marked restart-only still require a restart.
+Each key has a comment. Changes reload automatically, and invalid changes leave the current settings active. Settings marked restart-only still require a restart.
 
 ## Root keys
 
 | Key | Default | Notes |
 |---|---|---|
-| `language` | `"en_US"` | Server default for players without a personal override. Official translations download when selected; custom IDs use their local file and `language.yml` over English. Blank values become `en_US`. Select defaults or player overrides with `/gloss language` |
+| `language` | `"en_US"` | Server default for players without a personal override. Official translations download when selected; custom IDs use their local file with English fallback. Blank values become `en_US`. Select defaults or player overrides with `/gloss language` |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
 | `splashScreen` | `true` | Print the console splash banner during startup. `false` suppresses it for clean startups. A failed enable always prints it |
 

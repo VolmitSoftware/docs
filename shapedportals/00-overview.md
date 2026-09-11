@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T01:50:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -74,11 +74,14 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 | `/sp teleport` | Open the portal list; `/sp teleport list` does the same | Player or console |
 | `/sp teleport <UUID/prefix>` | Move to a safe spot beside the chosen portal | Player |
 | `/sp debug` | Open the diagnostic command help menu | Player or console |
+| `/sp debug version` | Show the installed ShapedPortals version | Player or console |
 | `/sp debug dump [upload=true]` | Save a diagnostic report and upload it when enabled | Player or console |
 
 {.dense}
 
 `/sp tp` is an alias for `/sp teleport`. Configuration files reload automatically by default.
+
+`/sp debug version` prints `ShapedPortals › v<version>` using the localized `runtime.prefix` name and requires `shapedportals.command`. `/sp version` runs the same command but is hidden from help and suggestions. Editing the prefix in the viewer's language changes the displayed name in both commands.
 
 ### Find and visit a portal
 
@@ -120,6 +123,7 @@ This selects German for you. Use `/sp language self reset` to follow the server 
 | `volmit.language.self` | Everyone | Shared requirement for personal language selection |
 | `volmit.language.admin` | Operators | Change language defaults across enabled plugins |
 | `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
+| `shapedportals.update` | Operators | Receive a chat notice on joining when a newer GitHub release is available and update notifications are enabled |
 | `shapedportals.portals` | Operators | List portals, including through bare `/sp teleport` |
 | `shapedportals.teleport` | Operators | Teleport to a selected portal |
 | `shapedportals.teleport.unsafe` | Operators | Confirm an unsafe landing; also needs `shapedportals.teleport` |
@@ -127,6 +131,8 @@ This selects German for you. Use `/sp language self reset` to follow the server 
 {.dense}
 
 Denying `shapedportals.language.self` or `volmit.language.self` blocks the personal picker, direct locale selection, and `self reset`.
+
+Operators receive update notices even if a permission plugin denies `shapedportals.update`. Grant that permission to let non-operators receive them. Set `general.updateNotifications = false` to disable the checks and notices for everyone. See [Update notifications](/shapedportals/03-compatibility-operations#update-notifications).
 
 `/volmit plugins languages` manages the server language for all enabled Volmit providers. It preserves personal overrides and requires permission to administer every provider being changed.
 

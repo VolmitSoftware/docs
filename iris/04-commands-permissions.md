@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-08T20:03:07.000Z
+date: 2026-09-11T01:50:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,9 +21,13 @@ On Bukkit-family servers, `/volmit plugins languages` opens the picker for every
 
 Mod loaders use `/iris language self <locale|reset>` and `/iris language server <locale>` with gamemaster permission for the server default. See [08 - Localization](/iris/08-localization).
 
-## Diagnostic reports
+## Diagnostics
 
-On Bukkit-family servers, `/iris debugdump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/iris debugdump upload=false` to save it locally without uploading. The command requires `iris.debugdump` (default `op`), independently of the root administration permission.
+On Bukkit-family servers, `/iris debug` opens diagnostic help. `/iris debug version` prints exactly `Iris v<version>` in the Director help heading gradient. `/iris version` runs the same action but is hidden from help and suggestions. `/iris debug toggle` toggles `general.debug` and saves settings. These commands require `iris.all`.
+
+### Diagnostic reports
+
+On Bukkit-family servers, `/iris debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/iris debug dump upload=false` to save it locally without uploading. The command appears in debug help and requires `iris.debugdump` (default `op`), independently of the root administration permission. On mod loaders, the report command remains `/iris debugdump`.
 
 Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
 
@@ -128,7 +132,7 @@ If a command fails before doing work, check in this order. Check platform syntax
 | `volmit.language.self` | `true` | Shared requirement for personal language selection |
 | `iris.treefeller` | `op` | Use survival tree felling; also requires `treeFeller.enabled` |
 
-`iris.all` grants the administration command tree except `debugdump`, which checks `iris.debugdump` independently. Personal language selection checks both language permissions independently. Custom-biome restart warnings notify operators and players with this permission.
+`iris.all` grants the administration command tree except `debug dump`, which checks `iris.debugdump` independently. Personal language selection checks both language permissions independently. Custom-biome restart warnings notify operators and players with this permission.
 
 ### Modded
 
@@ -150,7 +154,8 @@ Use the Bukkit command names shown below.
 | Command | Aliases | Platforms | Params (Bukkit-style) | Description |
 |---------|---------|-----------|------------------------|-------------|
 | (empty) / help | | Both | `[section]` (modded) | Open help. Modded supports a section path and page number |
-| `version` | | Both | — | Print Iris/platform/Minecraft version and engine count |
+| `debug version` | | **Bukkit-only** | — | Print `Iris v<version>`; `/iris version` is hidden from help |
+| `version` | | **Modded-only** | — | Print Iris/platform/Minecraft version and engine count |
 | `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions and pack details. Seed only for gamemasters |
 | `create` | `c` | Both | **Bukkit:** `<name=…> [type=<installed-pack-or-dimension>] [seed=1337]` (`name` alias `world-name`. `type` aliases `dimension`,`pack`. Omitting `type` uses `generator.defaultWorldType`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension. Bukkit creation is confined to `iris:*` and remains supported on Spigot |
 | `replace` | `override`, `overwrite` | **Paper-family**. Spigot rejects it | `<target> [type=default] [seed=preserve]` (`target` alias `world-name`. `type` aliases `dimension`,`pack`. `seed` alias `s`) | Cold-replace an existing safe `iris:*` world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot. Omit `seed` to preserve it or provide a signed 64-bit replacement seed |
@@ -161,8 +166,9 @@ Use the Bukkit command names shown below.
 | `remove` | `rm` | **Bukkit** | `<world> [delete=true]` | Remove a managed Iris world. Disk deletion defaults to true. `world` is a name, so worlds that exist only on disk are accepted |
 | `loadWorld` | `import` | **Bukkit** | `<world>`, player origin | Load a managed Iris world |
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
-| `debug` | | Both | — | Toggle `general.debug` and save settings |
-| `debugdump` | | **Bukkit-only** | `[upload=true]` | Save a diagnostic report, uploading by default |
+| `debug` | | Both | — | **Bukkit:** open diagnostic help. **Modded:** toggle `general.debug` and save settings |
+| `debug toggle` | | **Bukkit-only** | — | Toggle `general.debug` and save settings |
+| `debug dump` | | **Bukkit-only** | `[upload=true]` | Save a diagnostic report, uploading by default |
 | `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install the latest stable built-in pack release or a direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
 | `metrics` | `measure` | Both | — | Generation metrics. Player origin on Bukkit |
 | `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |

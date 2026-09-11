@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-11T01:22:00.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -15,6 +15,7 @@ Shaped Portals supports Spigot 1.20.1 and newer compatible servers. It does not 
 - [Requirements](#platform-matrix)
 - [Java](#java-runtime-floors)
 - [Native portals](#native-portal-compatibility)
+- [Update notices](#update-notifications)
 - [Diagnostics](#diagnostic-reports)
 - [React](#react-plugin-api-pack)
 {.grid-list}
@@ -49,6 +50,20 @@ Shaped Portals writes ordinary `NETHER_PORTAL` and `END_PORTAL` blocks. Minecraf
 
 Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shaped End creation starts only after the Eye of Ender's `BlockPlaceEvent` or `BlockMultiPlaceEvent` is accepted, then asks `BlockCanBuildEvent` about every proposed cell. Bukkit has no End-activation `PortalCreateEvent` reason; `END_PLATFORM` identifies the End arrival platform instead. See [Ignition and protection plugins](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) for the event sequence.
 
+## Update notifications
+
+With `general.updateNotifications = true` (the default), Shaped Portals checks the latest stable release published in [VolmitSoftware/ShapedPortals on GitHub](https://github.com/VolmitSoftware/ShapedPortals/releases). It checks asynchronously at startup and caches the result for one hour. Joining players share that result rather than each making a network request.
+
+When a newer version is available, operators and players with `shapedportals.update` receive a localized chat message when they join. The message includes the installed version, the release version, and a clickable release link. The notifier does not send announcements to everyone already online.
+
+Only a newer numeric plugin version triggers a notice. Drafts and prereleases are excluded. Minecraft compatibility suffixes do not affect the comparison: an installed version of `2.0.0-1.20.1-26.2` compares as `2.0.0`, so a release with the same plugin version and a different compatibility range does not trigger an update notice.
+
+The notifier needs outbound HTTPS access to `api.github.com`. It reads release metadata only and never downloads release assets, replaces jars, or installs updates. Install any chosen update manually after reviewing its release notes and server compatibility.
+
+If GitHub is unavailable, rate-limits the request, or returns an invalid response, the check produces no update notice and retries after an hour. The console logs the first failure with its cause; repeated failures stay quiet until a successful check.
+
+Set `updateNotifications = false` under `[general]` in `config.toml`, or turn off GitHub update notifications in `/sp config` under General. The change takes effect as soon as the configuration applies, stops further checks, and clears cached and pending notices. Turning it on starts a fresh check.
+
 ## Diagnostic reports
 
 `/sp debug dump [upload=true]` requires `shapedportals.debug` (default `op`) and saves a report under `plugins/ShapedPortals/debug/`. The report includes server, Java, performance, plugin, configuration, portal, and creation statistics. File contents are not copied into the report.
@@ -56,6 +71,8 @@ Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shap
 Reports upload to the public mclo.gs service by default. Use `upload=false` for one local-only report or set `debug.uploadEnabled = false` to block all uploads. The local file remains available if an upload fails.
 
 Use `/volmit plugins debug ShapedPortals [upload=true|false]` for the same report through VolmLib. `/volmit plugins debug all [upload=true|false]` requests reports from every provider the sender can use. See [Shared diagnostic reports](/volmlib/api/diagnostics) for the common report format.
+
+Diagnostic feedback uses the `debug.*` entries in the Shaped Portals language catalog, including requests made through `/volmit plugins debug all`. Missing translations use English defaults.
 
 ## React Plugin API pack
 

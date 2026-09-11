@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-10T02:57:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -25,7 +25,7 @@ Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, V
 
 1. Put the Gloss jar in `plugins/`.
 2. Start the server. Gloss creates `plugins/Gloss/` and its default files.
-3. Edit `gloss.toml`. A save reloads Gloss in place. `/gloss reload` (permission `gloss.admin`) does the same thing on demand.
+3. Edit `gloss.toml`. A save reloads Gloss in place.
 
 Gloss downloads external libraries, including bStats, before plugin enable. The first start needs access to the library repositories. SlimJar keeps original and relocated libraries under `plugins/Gloss/.libs/` for later starts.
 
@@ -36,9 +36,9 @@ The first boot creates the config, language file, and defaults for enabled featu
 ```
 plugins/Gloss/
 ├── gloss.toml            every runtime knob, commented, clamped and hot-reloading
-├── language.yml           sparse message overrides
 ├── languages/             translations installed when selected
-├── language-preferences.properties  persistent player language choices
+│   ├── en_US.toml          editable English messages, generated at startup
+│   └── language-preferences.properties  persistent player language choices
 ├── tablist.json           conditional tablist header, footer and list-name presentations
 ├── boards/                conditional scoreboard sidebars (default.json and animation-showcase.json included)
 ├── emoji/                 one JSON per emoji (67 included)
@@ -114,7 +114,7 @@ The `[features]` table in `gloss.toml` controls each subsystem. Most changes app
 
 ## Coming from HoloUi
 
-On first boot, Gloss can copy data from `plugins/holoui` or `plugins/HoloUi`. It does not change the source folder or copy session secrets. The one-time result is recorded in `holoui-import.json`.
+On first boot, Gloss can import menus, images, panels, preview definitions, preview scales and settings from `plugins/holoui` or `plugins/HoloUi`. It does not change the source folder or copy session secrets. The one-time result is recorded in `holoui-import.json`.
 
 Use `/gloss`, `gloss.*`, and `%gloss_*%` instead of the old HoloUI names. HoloUI boards are called panels; Gloss uses "board" for scoreboards. See [Data Files & Hot Reload](/gloss/03-data-files).
 

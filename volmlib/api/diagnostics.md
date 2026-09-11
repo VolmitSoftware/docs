@@ -2,41 +2,46 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-09T18:00:00.000Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
 ---
 
-VolmLib provides a common diagnostic report service for the Bukkit versions of Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes. Reports combine server and JVM information with plugin-owned diagnostic state, save a local file, and upload to public mclo.gs by default.
+VolmLib provides a common diagnostic report service for the Bukkit versions of Adapt, BileTools, Foundation, Fulcrum, Gilt, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes. Reports combine server and JVM information with plugin-owned diagnostic state and save a local file. Uploads to public mclo.gs depend on the invoking command and the plugin's upload setting.
 
 ## Commands and permissions
 
-Run a plugin's report command to save and upload its report, or append `upload=false` to keep the report local. Both players and console can invoke the command. Each permission defaults to `op` and is checked independently of that plugin's root administration permission.
+For commands exposing an `upload` argument, append `upload=false` to keep the report local. Both players and console can invoke the command. Each permission defaults to `op` and is checked independently of that plugin's root administration permission.
 
 | Command | Permission |
 |---|---|
-| `/adapt debugdump [upload=true]` | `adapt.debugdump` |
+| `/adapt debug dump [upload=true]` | `adapt.debugdump` |
 | `/biletools debug dump [upload=true]` | `biletools.debug` |
-| `/gloss debugdump [upload=true]` | `gloss.debugdump` |
-| `/hiddenore debugdump [upload=true]` | `hiddenore.debugdump` |
+| `/foundations debug dump [upload=true]` | `foundation.debug` |
+| `/fulcrum debug dump [upload=false]` | `fulcrum.debug` |
+| `/gilt debug` | `gilt.debug` |
+| `/gloss debug dump [upload=true]` | `gloss.debugdump` |
+| `/hiddenore debug dump [upload=true]` | `hiddenore.debugdump` |
 | `/iris debugdump [upload=true]` | `iris.debugdump` |
-| `/react debugdump [upload=true]` | `react.debugdump` |
+| `/react debug dump [upload=true]` | `react.debugdump` |
 | `/rift debug dump [upload=true]` | `rift.debug` |
-| `/sp debugdump [upload=true]` | `shapedportals.debugdump` |
-| `/wormholes debugdump [upload=true]` | `wormholes.debugdump` |
+| `/sp debug dump [upload=true]` | `shapedportals.debug` |
+| `/wormholes debug dump [upload=true]` | `wormholes.debugdump` |
 
 These commands use the Bukkit service; Iris's mod-loader command trees do not expose this service. Existing gameplay debug toggles and debug subcommands remain separate from report generation.
+
+`/gilt debug` always saves a local report and has no upload argument. A shared request for Gilt can upload only when its `debugUpload` setting is enabled; that setting defaults to false. See [Gilt diagnostics](/gilt/04-compatibility-operations#diagnostic-reports).
 
 `/volmit plugins debug` lists the available report providers. Use `/volmit plugins debug <plugin> [upload=true|false]` for one plugin or `/volmit plugins debug all [upload=true|false]` for every provider you may access. One failed provider does not stop the others. Results include local paths and any upload links.
 
 ## Saving and uploading
 
-The service saves the report under the plugin's `debug/` directory before upload. Filenames use `<plugin>-v<version>-debugdump-yyyy-MM-dd-HH-mm-ss.txt` in UTC. Players receive copy and open controls; console receives plain text. Upload failure does not remove the local report.
+The service saves the report under the plugin's `debug/` directory before upload. Filenames use `<plugin>-v<version>-debugdump-yyyy-MM-dd-HH-mm-ss.txt` in UTC. A second report allocated during the same second receives `-2`, then higher bounded numeric suffixes, and never replaces an existing file or symbolic link. Players receive copy and open controls; console receives plain text. Upload failure does not remove the local report.
 
 Plugins may supply a `BukkitDebugDump.Presentation` for themed feedback. Providers that omit it use compact component output.
 
-Uploads require both the command's `upload` flag and the service's `uploadEnabled` supplier to return `true`. The default service allows uploads. Rift and ShapedPortals connect that supplier to their own debug-upload setting, so a command cannot override a disabled setting. Passing `upload=false` suppresses upload for one report.
+Uploads require both the command's `upload` flag and the service's `uploadEnabled` supplier to return `true`. The default service allows uploads. Foundation, Rift, and ShapedPortals connect that supplier to their own debug-upload setting, so a command cannot override a disabled setting. Passing `upload=false` suppresses upload for one report.
 
 Only one report per service can be prepared at a time. A concurrent request is rejected while the active report is being captured, written, or uploaded.
 
@@ -65,6 +70,7 @@ The entry point is `art.arcane.volmlib.util.diagnostics.BukkitDebugDump`.
 | `new BukkitDebugDump.Options(uploadEnabled, contributor, presentation)` | Add a plugin-owned Director command, parent command, theme, and text resolver for result menus |
 | `request(sender, upload)` | Check the dedicated permission, capture state, then save and optionally upload a report |
 | `permission()` | Return an existing `<plugin>.debug` permission, or derive `<plugin>.debugdump` when none is declared |
+| `updateTheme(theme)` | Replace the presentation colors used by later feedback without reregistering the provider or cancelling its active request |
 | `close()` | Unregister the provider and close the service during plugin shutdown |
 
 Creation registers an `OP` permission when the plugin descriptor does not declare one, then publishes the provider through Bukkit's services registry. The service enforces the dedicated permission. Plugins may keep their own report command.
@@ -77,4 +83,4 @@ Creation registers an `OP` permission when the plugin descriptor does not declar
 
 `DebugDumpContributor.capture()` runs on the global scheduler and returns a `DebugDumpContributor.Report`. `Report.render()` runs on the asynchronous worker. Capture immutable values or copies of safely readable plugin state, then format those captured values in `render()`. Do not access live region-owned world or entity state from the global capture or asynchronous render callback.
 
-The shared service captures Bukkit state on the global scheduler, performs formatting, hashing, file writes, and network upload off gameplay threads, and delivers player feedback through the player's entity scheduler. Contributor failures retain the common report with a failure marker and emit the full exception to the console. Call `close()` during shutdown to prevent new work and suppress later command feedback.
+The shared service captures Bukkit state on the global scheduler, performs formatting, hashing, file writes, and network upload off gameplay threads, and delivers player feedback through the player's entity scheduler. Contributor failures retain the common report with a failure marker and emit the full exception to the console. Call `close()` during shutdown to cancel queued capture and writer work, interrupt an active upload, complete aggregate callers, prevent new work, and suppress later command feedback.
