@@ -2,7 +2,7 @@
 title: "Rift: Configuration and Localization"
 description: "TOML settings, automatic hot reload, in-game editing, and language files"
 published: true
-date: 2026-09-11T01:50:00.000Z
+date: 2026-09-11T02:21:36.000Z
 tags: "rift, configuration, hot-reload, localization, gui"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -81,6 +81,6 @@ created = "{prefix}&r &7› &7Created and managed &f{world}&7."
 operation_failed = "{prefix}&r &7› &c{operation} failed &7for &f{world}&7: {reason}"
 ```
 
-Each file begins with a localized prefix and placeholder reference. Rift validates each message separately for type, formatting, and placeholders, using English when that entry is invalid. In-game edits still reject invalid replacements before saving. Values such as world, player, operation, and failure text have formatting codes stripped before insertion.
+Each file begins with a localized prefix and placeholder reference. Rift validates each message separately for type, formatting, and placeholders, using English when that entry is invalid. In-game edits still reject invalid replacements before saving. Values such as world, player, operation, and failure text remain literal when inserted; section-sign color codes are stripped, and other color-like text cannot alter message formatting.
 
 Return to [Rift World Manager](/rift).

@@ -93,19 +93,6 @@ Pick a project to open its documentation.
   <div class="flex xs12 sm6 md4 pa-2">
     <ul class="links-list ma-0">
       <li class="ma-0">
-        <a href="/dread" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">D</span>
-          <span>
-            <strong class="title">Dread</strong>
-            <span class="d-block text--secondary">Boss encounters, combat abilities, and contribution rewards</span>
-          </span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="flex xs12 sm6 md4 pa-2">
-    <ul class="links-list ma-0">
-      <li class="ma-0">
         <a href="/foundation" class="d-flex align-center">
           <span class="project-mark mr-4" aria-hidden="true">F</span>
           <span>
@@ -150,45 +137,6 @@ Pick a project to open its documentation.
           <span>
             <strong class="title">Shaped Portals</strong>
             <span class="d-block text--secondary">Custom-shaped Nether and End portals with native travel</span>
-          </span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="flex xs12 sm6 md4 pa-2">
-    <ul class="links-list ma-0">
-      <li class="ma-0">
-        <a href="/siphon" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">S</span>
-          <span>
-            <strong class="title">Siphon</strong>
-            <span class="d-block text--secondary">Upgradeable hoppers, item filters, and container routing</span>
-          </span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="flex xs12 sm6 md4 pa-2">
-    <ul class="links-list ma-0">
-      <li class="ma-0">
-        <a href="/static" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">S</span>
-          <span>
-            <strong class="title">Static</strong>
-            <span class="d-block text--secondary">Player statistics, offline profiles, and rankings</span>
-          </span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="flex xs12 sm6 md4 pa-2">
-    <ul class="links-list ma-0">
-      <li class="ma-0">
-        <a href="/verdant" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">V</span>
-          <span>
-            <strong class="title">Verdant</strong>
-            <span class="d-block text--secondary">Crop and livestock controllers, storage, and upgrades</span>
           </span>
         </a>
       </li>
