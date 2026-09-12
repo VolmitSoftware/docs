@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-09T01:55:17.160Z
+date: 2026-09-11T02:52:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -144,7 +144,7 @@ This is the managed Overworld shape with every physical section written explicit
           "minimumBlendWidth": 4,
           "maximumBlendWidth": 32,
           "exposeCutStrata": true,
-          "shoreMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1},
+          "shoreMaterial": {"enabled": true, "palette": {"palette": [{"block": "minecraft:sand"}]}, "depth": 2},
           "bankMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
         },
         "erosion": {
@@ -163,7 +163,7 @@ This is the managed Overworld shape with every physical section written explicit
           "terminal": {"enabled": true, "minimumRadius": 4, "maximumRadius": 7, "depth": 3}
         },
         "bed": {
-          "allowGravityBlocks": false,
+          "allowGravityBlocks": true,
           "padding": 2,
           "paddingPalette": {
             "palette": [{"block": "minecraft:clay"}, {"block": "minecraft:dirt"}]
@@ -424,7 +424,7 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 | `minimumBlendWidth` | `4` | Narrowest blend band even for a shallow cut, `1..maximumBlendWidth` |
 | `maximumBlendWidth` | `32` | Widest blend band even for a deep cut, up to `64`; this also bounds how far a river can affect terrain from its centerline |
 | `exposeCutStrata` | `true` | Show the biome's deeper layers on eroded banks instead of repeating the surface layer, so a cut through grassland shows dirt and stone |
-| `shoreMaterial` | disabled | Palette painted over the shore bench columns instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
+| `shoreMaterial` | enabled, sand, depth 2 | Palette painted over the shore bench columns instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
 | `bankMaterial` | disabled | Palette painted over the eroded bank columns outside the bench instead of the biome's own layers; same three fields |
 
 `bankMultiplier` in a region or biome policy scales `blendSlope` locally: values below `1` make steeper, narrower valleys and values above `1` make wider, gentler ones. `riverPolicy.shoreWidth` replaces `shoreWidth` per area, so one region can carry a wide bench and a biome inside it none.
@@ -470,12 +470,12 @@ The bed is what sits under and beside the water. Falling blocks under a river co
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `allowGravityBlocks` | `false` | Keep sand, gravel and concrete powder from the biome layers in the bed, shore and eroded banks; set it when you want a gravel river on purpose |
+| `allowGravityBlocks` | `true` | Keep sand, gravel and concrete powder from the biome layers in the bed, shore and eroded banks; set it to `false` when those blocks should use `paddingPalette` instead |
 | `padding` | `2` | Blocks below the bed surface that are also kept free of falling blocks, `0..8` |
 | `paddingPalette` | clay and dirt | Blocks used in place of falling blocks; any solid palette |
 | `material` | disabled | Palette painted over the wet channel bed under the water instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
 
-Without `material`, `banks.shoreMaterial` and `banks.bankMaterial`, the river channel keeps the layers of the channel biome (`surfaceBiomes`), the shore keeps `shoreBiomes` and the eroded bank keeps `bankBiomes`, and the bed rule only swaps the blocks that would fall. A biome override remains the way to make a river bottom or beach follow the terrain it crosses; the three material palettes are the way to give every river in the dimension the same bed, shore or bank blocks regardless of biome. Both routes may be used together: the palette wins for its top `depth` layers and the biome supplies everything below.
+Without an explicit `material` or `banks.bankMaterial`, the river channel keeps the layers of the channel biome (`surfaceBiomes`) and the eroded bank keeps `bankBiomes`; the default shore palette supplies two sand layers before the biome continues below. A biome override remains the way to make a river bottom or beach follow the terrain it crosses; the material palettes are the way to give every river in the dimension the same bed, shore or bank blocks regardless of biome. Both routes may be used together: the palette wins for its top `depth` layers and the biome supplies everything below.
 
 #### `surface.flow`
 
