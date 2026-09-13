@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-09T05:29:01.778Z
+date: 2026-09-13T18:16:54.244Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -24,6 +24,14 @@ Overworld restores original oak, spruce, and dark oak fences in `trees/mixed/dot
 
 > **Pack maintenance requirement:** any update to either built-in pack that changes biome files, region selectors, dimension carving, children, floating biomes, terrain, materials, decoration, ecology, or reachability must update this atlas in the same workstream. A pack update with stale atlas pages is incomplete.
 {.is-warning}
+
+Overworld disables the standalone aquifer pass in its dimension, region, and biome cave profiles to prevent isolated water sources from spilling through caves. Hydrology, natural surface water, and deep lava retain their settings. Underworld keeps its separate cave-fluid treatment.
+
+Amethyst clutter retains its native block scale. Frostspar uses fewer solid tapered shards, and large frozen formations extend continuous organic supports toward the terrain.
+
+Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain amplitudes and scales retain their settings.
+
+Mesa land biomes in both packs use unwarped `PERLIN` density noise. Their height generators and 3D amplitude, scale, and crack settings retain their values; cliff details change with the density field. See [Mesa biomes](/iris/biomes/mesa).
 
 ## Catalog scope
 

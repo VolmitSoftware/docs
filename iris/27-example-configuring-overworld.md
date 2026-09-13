@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,8 @@ Prerequisites:
 - Operator access on Bukkit, or gamemaster access on a mod loader.
 - The keys `my-overworld`, `overworld-test`, and `tutorial/meadow` are unused.
 - The fork is in source control or has a filesystem backup before you rely on it.
+
+The current pack sets nonflat terrain generators to `surfaceDetail: 0.5` to reduce local surface roughness. This retains half the variation around an interpolated six-block grid without changing generator seeds or broad terrain settings. Mirror this control into the paired Underworld generators.
 
 ## Where everything lives before you start
 

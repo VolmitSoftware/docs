@@ -2,7 +2,7 @@
 title: "Estranged Biomes"
 description: "Navigation for the built-in estranged biomes across Overworld and Underworld"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biomes, overworld, underworld, estranged"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 Unusual woodland, wetland, and sculptural land biomes selected by the Estranged region.
 
 This family has no child-only reachable variants.
+
+Estranged cave decoration includes Frostspar with three to five tapered shards, each five to nine blocks long, on continuous organic supports. Overworld uses solid quartz and calcite. Underworld retains its separate base and crying-obsidian tips.
 
 ## Direct roots
 

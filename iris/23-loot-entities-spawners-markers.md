@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -584,7 +584,9 @@ When marker spawning is on, each chunk pass reads the mantle markers in that chu
 Dimensions, regions, and biomes accept `blockDrops[]`. When a player breaks a block, matching providers from the biome run first.
 Unless a matching biome provider sets `skipParents`, matching region and then dimension providers are appended.
 
-On Bukkit servers, a break attempt is cancelled while the chunk's saved biome information loads. Try breaking the block again shortly. The cancelled attempt leaves the block and drops untouched; Iris does not replay it. This also applies to protection checks from custom-block plugins such as ItemsAdder. Missing or invalid saved data still reports an error.
+On Bukkit servers, Iris skips saved-biome lookups when no loaded current or historical drop rule can match the broken block's material. Unrelated vanilla blocks and custom-block carriers therefore break without a first-attempt cancellation. Iris prepares this material index when pack definitions load, outside the block-break event.
+
+A potentially matching material still requires its saved biome and region rules. If those records are loading, Iris cancels that attempt without changing the block or its drops. Try again shortly. Unloaded historical definitions also require the normal lookup, so old drop rules remain authoritative. Missing or invalid saved data still reports an error.
 
 | Field | Default | What it does |
 |-------|---------|--------------|

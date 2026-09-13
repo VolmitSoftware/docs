@@ -2,12 +2,14 @@
 title: "Biome Atlas — Skyreach Pines"
 description: "Iris biome atlas entry for estranged/skyreach-pines in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T23:51:55.324Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 `estranged/skyreach-pines` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+
+Estranged cave decoration includes Frostspar with three to five tapered shards, each five to nine blocks long, on continuous organic supports. Overworld uses solid quartz and calcite. Underworld retains its separate base and crying-obsidian tips.
 
 ## Selection and weighting
 
@@ -21,6 +23,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
+
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `highplains` (18..38), `rare-hills` (0..60); combined authored contribution `18..98` blocks relative to fluid height.
 

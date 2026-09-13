@@ -2,13 +2,17 @@
 title: "Prismatic Caves"
 description: "Paired atlas entry for the 16 direct prismatic cave roots"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
 The Prismatic region selects 16 color-specific cave roots, one slot each, in both Overworld 4002 and Underworld 1005. They share one cave design and differ primarily in their color material set, so this family page documents all 16 without hiding any direct key.
+
+Overworld disables standalone cave aquifers in this family. Hydrology still supplies its contained underground water, and deep lava retains its configured behavior. Underworld retains its independent cave fluids.
+
+Amethyst clutter keeps its authored scale in both packs so each bud retains its solid support. Other clutter keeps its configured scale.
 
 ## Selection role and weight
 

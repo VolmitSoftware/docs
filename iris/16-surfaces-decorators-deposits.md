@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-13T18:21:00.769Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -141,9 +141,9 @@ Snippet key: `biome-palette`.
 
 `IrisSlopeClip` (snippet `slope-clip`) has `minimumSlope` (default `0`) and `maximumSlope` (default `10`). The default clip accepts every slope and short-circuits before the slope stream is sampled. Slope is measured over a 3-block radius.
 
-`caveCeilingLayers` ignores `slopeCondition`. Cave roofs have no meaningful slope.
+Surface and locked layers check `slopeCondition` before sampling thickness noise. `caveCeilingLayers` ignores `slopeCondition`. Cave roofs have no meaningful slope.
 
-**`lockLayers` (mesa mode).** Instead of indexing the stack from the surface, Iris builds the full expanded layer stack once. It then reads it with an offset derived from the column own terrain height. Bands therefore stay at fixed world heights across the whole biome and line up horizontally into stripes. The stack repeats cyclically rather than running out. `lockLayersMax` limits how deep the banded region goes before the rock palette takes over. Cyclic indexing continues on both sides of the internal Y512 reference, including terrain above that height.
+**`lockLayers` (mesa mode).** Iris samples the active layer thicknesses and maps the requested world-height positions into the resulting cycle. It resolves only the palette entries those positions use, and repeated cycles reuse the resolved blocks. Bands therefore stay at fixed world heights across the whole biome and line up horizontally into stripes. The stack repeats cyclically rather than running out. `lockLayersMax` limits how deep the banded region goes before the rock palette takes over. Cyclic indexing continues on both sides of the internal Y512 reference, including terrain above that height.
 
 ### Material palette (`IrisMaterialPalette`)
 

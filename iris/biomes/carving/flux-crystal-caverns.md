@@ -2,13 +2,17 @@
 title: "Flux Crystal Caverns — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/flux-crystal-caverns"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
 `carving/flux-crystal-caverns` is a direct cave root in the pinned Overworld 4002 and Underworld 1005 packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+
+Overworld disables standalone cave aquifers in this family. Hydrology still supplies its contained underground water, and deep lava retains its configured behavior. Underworld retains its independent cave fluids.
+
+Amethyst clutter keeps its authored scale in both packs so each bud retains its solid support. Other clutter keeps its configured scale.
 
 ## Selection role and weight
 
@@ -23,7 +27,7 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 No surface generator band is declared; this root supplies biome treatment to an already selected carved or floating volume.
 
-**Overworld carving.** Enabled local cave profile with declared vertical range `6..680`; sample step `2`; surface clearance `12`; surface breaking `disabled`; fluids `allowed`; lava `allowed`; a minimum depth below surface of `12`.
+**Overworld carving.** Enabled local cave profile with declared vertical range `6..680`; sample step `2`; surface clearance `12`; surface breaking `disabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `12`.
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..680`; sample step `2`; surface clearance `12`; surface breaking `disabled`; fluids `allowed`; lava `allowed`; a minimum depth below surface of `12`.
 

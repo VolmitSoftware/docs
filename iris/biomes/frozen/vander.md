@@ -2,12 +2,14 @@
 title: "Biome Atlas — Frozen Vander"
 description: "Iris biome atlas entry for frozen/vander in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T23:35:09.010Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 `frozen/vander` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+
+Large frozen formations use organic supports that can reach terrain up to 96 blocks below their bases. Overworld uses packed ice for these supports. Underworld retains its Nether materials. Small drift boulders retain their placement settings.
 
 ## Selection and weighting
 
@@ -21,6 +23,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
+
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `mountain` (15..34); combined authored contribution `15..34` blocks relative to fluid height.
 

@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -92,6 +92,12 @@ The profile consumes two `IrisGeneratorStyle` values, both defaulting to `SIMPLE
 
 Style `zoom` multiplies the configured feature sizes, and each style is seeded independently from the profile seed. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain) for the full profile reference.
 
+## Reduce block-scale surface detail
+
+Set `surfaceDetail: 0.5` on a generator to halve its deviation from a surface interpolated between the original six-block grid heights. `1` preserves the original noise, and `0` uses the interpolated surface alone. The setting accepts finite values from `0` to `1`.
+
+The original grid heights and planar slopes remain exact. This control leaves the generator seed, feature scale, biome height range, and 3D density settings intact. Both built-in packs apply `0.5` to nonflat terrain generators.
+
 ## Walkthrough: add a generator and prove it is wired
 
 Prerequisites: a validating pack, one biome you can `focus`, and a fixed seed.
@@ -157,6 +163,7 @@ Prefer the first when only one biome needs to be flat. Prefer the second when yo
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
+| `surfaceDetail` | double | `1` | Fraction of the detail retained between original six-block grid heights. Range `0..1`. |
 | `seed` | long | `1` | Required. Mixed with the engine height seed. Changing it re-rolls the terrain of every biome using this generator. |
 | `interpolator` | `IrisInterpolator` | `BILINEAR_STARCAST_6`, scale `7` | Required. Both the border smoothing and the bucket key. See "Step 2" above. |
 | `composite` | `IrisNoiseGenerator[]` | `[]` | The noise layers. Empty gives 0 everywhere. |

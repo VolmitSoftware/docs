@@ -2,7 +2,7 @@
 title: "Biome Atlas — Stranged Plains"
 description: "Iris biome atlas entry for temperate/stranged-plains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-08T23:35:09.010Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -21,6 +21,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
+
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain` (4..10); combined authored contribution `4..10` blocks relative to fluid height.
 

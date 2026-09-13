@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-08T16:43:33.848Z
+date: 2026-09-13T18:16:54.244Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -328,6 +328,8 @@ The stacks:
 | `wall` | Palette for the vertical faces the post processor paints when a neighboring column is more than two blocks lower. Default is empty. Set it to stone/andesite to stop cliffs showing dirt. |
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |
 | `lockLayersMax` | Depth cap, in blocks, for locked layers. Default `7`. |
+
+Locked layers sample active thicknesses, then resolve only the requested positions in the repeating band stack. Repeated cycles reuse those resolved blocks. Surface and locked layers test `slopeCondition` before sampling thickness noise.
 
 `caveCeilingLayers` uses its own thickness generators. Its entry count is independent of `layers`, and every entry can contribute within the requested ceiling depth. Ceiling layers do not apply `slopeCondition`.
 

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Mesa Valley"
-description: "Iris biome atlas entry for mesa/valleys in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for mesa/valleys in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-08T23:35:09.010Z
+date: 2026-09-13T18:16:54.244Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mesa/valleys` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mesa/valleys` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `hot` (Hot) | 2 | 1 | 2 | 11.65% |
-| Underworld 1010 | `hot` (Underworld Hot) | 2 | 1 | 2 | 11.65% |
+| Overworld 4009 | `hot` (Hot) | 2 | 1 | 2 | 11.65% |
+| Underworld 1011 | `hot` (Underworld Hot) | 2 | 1 | 2 | 11.65% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -24,29 +24,33 @@ The `hot` region intentionally lists `mesa/valleys` twice. Those two direct occu
 
 ## Shared terrain
 
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+
 Both packs use the same generator links: `smooth-dunes` (5..15); combined authored contribution `5..15` blocks relative to fluid height.
 
 Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Generator minima and maxima are contributions relative to each dimension fluid height; stacked links add together.
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
-The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
+Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the start slope plus the fade range.
 
-| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
+| Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / fade | Density noise / Crack noise |
 |---|---|---:|---|---|---|---|
-| `mesa/valleys` | Sandstone | 26 | 256 / 30 | 7 / 2 / 416 | 0.24 / 0.56 | `NOWHERE` / `PERLIN` |
+| `mesa/valleys` | Sandstone | 20 | 160 / 40 | 2 / 2 / 416 | 0.34 / 0.4 | `PERLIN` / `PERLIN` |
+
+Mesa density uses unwarped Perlin noise in both packs. The height generators, amplitude, scale, and crack settings are unchanged; the 3D cliff details use the new field.
 
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld 4009 treatment
 
 - **Minecraft identity:** derivative `minecraft:savanna`; native-structure derivative `minecraft:badlands`; no custom or scatter identities.
 - **Surface:** 1 block(s) at slope 2-10: `minecraft:terracotta`; 1 block(s) at slope 0-2: `minecraft:red_sand`, `minecraft:orange_terracotta`, `minecraft:grass_block`; 1 block(s): `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`, `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`; 2 block(s): `minecraft:orange_terracotta`; 1 block(s): `minecraft:terracotta`; 1 block(s): `minecraft:terracotta`, `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`. Wall palette: none.
 - **Content:** 6 object placement rule(s) drawing from 33 object key(s), including `trees/acacia/vexed1`, `trees/acacia/vexed2`, `trees/acacia/vexed3`, `clutter/camp1`, `clutter/bincluster1`, `trees/acacia/savannad1`, `trees/acacia/savannad2`, and 26 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:white_tulip`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:tall_grass`, `minecraft:short_grass`.
 
-## Underworld 1010 treatment
+## Underworld 1011 treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_mesa_valleys_4ba9014b`.
 - **Surface:** 1 block(s) at slope 2-10: `minecraft:netherrack`; 1 block(s) at slope 0-2: `minecraft:blackstone`, `minecraft:magma_block`, `minecraft:basalt`; 1 block(s): `minecraft:quartz_bricks`; 1 block(s): `minecraft:netherrack`, `minecraft:quartz_bricks`; 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:magma_block`; 1 block(s): `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`, `minecraft:quartz_bricks`; 1 block(s): `minecraft:quartz_bricks`; 1 block(s): `minecraft:netherrack`. Wall palette: none.

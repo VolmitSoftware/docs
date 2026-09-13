@@ -2,7 +2,7 @@
 title: "Underworld 1010"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-09-09T00:23:13.301Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ Underworld 1010 reuses the Overworld terrain graph at the same seed and coordina
 | External datapacks | None |
 
 The preceding Underworld 1009 update normalized 148 resource paths and 273 references to lowercase. Lower Mountain uses `mountain/cute_cliffs`, and Mountain Middle uses `mountain/cute_cliffs+`. Underworld 1010 adds the paired 3D profiles and aligns terrain-selection drift. Materials, ecology, and the independent ore and deposit tables remain unchanged.
+
+Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
 
 ## 3D terrain
 

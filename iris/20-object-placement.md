@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -225,7 +225,7 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 
 `STILT` is `MAX_HEIGHT` plus columns. `MIN_STILT` is `MIN_HEIGHT` plus columns. `CENTER_STILT` is `CENTER_HEIGHT` plus columns and is the cheapest one worth using. The `FAST_` variants are cheaper and less accurate, so pair them with `overStilt` to drive the legs further under the surface. `ERODE_STILT` tapers the legs like a cone: deepest at the footprint centroid, dropping off toward the edges, with the lower portion randomly broken up.
 
-Only occluding blocks stilt. Stairs, slabs, and dirt paths are excluded. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns. A `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
+Occluding blocks and full ice or glass blocks can stilt. Containers, block entities, stairs, slabs, and dirt paths are excluded. Authored containers remain in place and keep their saved data. `stiltSettings.exclude` adds material keys to the exclusion list. Iris checks the original base and the resulting support material after palette selection and edits. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns. A `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
 
 `ORGANIC_STILT` and `CEILING_HANG` are for caves. `ORGANIC_STILT` scans down to the first solid block and fills the gap with noise-varied roots. `CEILING_HANG` flips the object vertically, anchors its top to the roof, and grows the same organic column up into the ceiling. Both read `organicMaxScan`, `organicJitter`, and `organicScratch`.
 
@@ -418,6 +418,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `yMax` | `0` | Caps how far a leg extends before the random and over-stilt terms apply |
 | `yRand` | `0` | Random extra leg length per column |
 | `overStilt` | `0` | Pushes every leg this much further under the surface. Use it with the `FAST_` modes |
+| `exclude` | `[]` | Additional material keys that must never become support columns, such as `["minecraft:calcite"]`. Containers and block entities are always excluded |
 | `palette` | unset | Material for the legs. Without it Iris repeats the object bottom block and swaps grass-family blocks for dirt |
 | `organicMaxScan` | `48` | How far `ORGANIC_STILT` and `CEILING_HANG` search for solid rock before giving up |
 | `organicJitter` | `3` | Random shortening per column, so the underside is ragged instead of a flat disc |

@@ -2,13 +2,15 @@
 title: "Shorelines"
 description: "Paired atlas reference for all 19 direct shoreline roots"
 published: true
-date: 2026-09-08T07:15:29.268Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
 The pinned Overworld 4007 and Underworld 1010 each expose 19 direct shore roots. This consolidated reference keeps ordinary beaches together while preserving every load key, regional selection slot and materially distinct shoreline treatment.
+
+The Frozen Beach large-formation entries use organic supports with a 96-block scan. Overworld uses packed ice supports, and Underworld retains its Nether materials.
 
 ## All direct shore roots
 

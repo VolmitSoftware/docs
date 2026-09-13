@@ -2,7 +2,7 @@
 title: "Overworld 4007"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-09T00:23:13.301Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -25,6 +25,10 @@ Overworld 4007 is the normal-environment half of the paired biome atlas. It supp
 | External datapacks | None |
 
 All 19 subterranean ore passes retain 70% of their configured clump attempts. Across dimension, region, and Rough Plains biome deposits, ore on exterior terrain surfaces may replace only exact `minecraft:stone`; buried and cave-wall ore retains each pass's broader host rules. Individual surface biomes can override the exterior host list. Underworld ore configuration remains independent.
+
+Overworld disables the standalone aquifer pass in its dimension, region, and biome cave profiles to prevent isolated water sources from spilling through caves. Hydrology, natural surface water, and deep lava retain their settings. Underworld keeps its separate cave-fluid treatment.
+
+Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
 
 ## 3D terrain
 

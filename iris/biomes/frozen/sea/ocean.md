@@ -2,13 +2,15 @@
 title: "Frozen Ocean — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for frozen/sea/ocean"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
 `frozen/sea/ocean` is a direct sea root in the pinned Overworld 4002 and Underworld 1005 packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+
+Large frozen formations use organic supports that can reach terrain up to 96 blocks below their bases. Overworld uses packed ice for these supports. Underworld retains its Nether materials. Small drift boulders retain their placement settings.
 
 ## Selection role and weight
 
@@ -20,6 +22,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 | Underworld 1005 | `frozen` (1/4 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
 
 ## Terrain and generator
+
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
 
 `mountain` maps to `-32..-10` relative to the dimension fluid height.
 

@@ -2,7 +2,7 @@
 title: "Tropical River Soft — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for tropical/sea/river-soft"
 published: true
-date: 2026-09-09T00:23:13.301Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -15,6 +15,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 The tropical region and `tropical/mountain` list this biome in `riverPolicy.surfaceBiomes`, alongside the other tropical river variant. It supplies content to accepted channels and is absent from the region’s ordinary sea list. Its transit-only policy allows a course through it but starts no sources or outlets.
 
 ## Terrain and generator
+
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
 
 `plain` maps to `-71..-37` relative to the dimension fluid height.
 

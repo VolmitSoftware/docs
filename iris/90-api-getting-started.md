@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-13T19:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,33 @@ Iris exposes Bukkit APIs for terrain queries, world and pregeneration events, an
 
 ## Add Iris to your project
 
-Compile against the Iris plugin jar without bundling it:
+Use Java 25 and compile against the same Iris revision installed on the server. Do not bundle Iris into your plugin.
+
+JitPack serves Iris under `com.github.VolmitSoftware:Iris:<tag-or-commit>`. Select a revision with a successful [JitPack build](https://jitpack.io/#VolmitSoftware/Iris). The version is a Git tag or commit, not the version string inside `plugin.yml`.
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.VolmitSoftware</groupId>
+        <artifactId>Iris</artifactId>
+        <version>${iris.revision}</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+
+Set `iris.revision` to the selected tag or commit. The generated API jar contains class signatures and throwing method stubs. Use it only for compilation. Install the full Bukkit jar on the server.
+
+For a local source build, run `./gradlew publishToMavenLocal`. This installs `art.arcane:iris:<irisVersion>` into local Maven. Use those coordinates with `provided` when building against your own checkout. They do not identify the JitPack artifact.
+
+You can also compile against the full plugin jar:
 
 ```groovy
 dependencies {
@@ -28,6 +54,24 @@ dependencies {
 ```
 
 Declare Iris as an optional dependency. Paper plugins that import the API need `join-classpath: true`.
+
+## Access Iris Toolbelt
+
+Toolbelt remains part of Iris. Its current package is `art.arcane.iris.world`.
+
+```java
+import art.arcane.iris.generation.runtime.Engine;
+import art.arcane.iris.platform.generation.PlatformChunkGenerator;
+import art.arcane.iris.world.IrisToolbelt;
+
+PlatformChunkGenerator generator = IrisToolbelt.access(world);
+Engine engine = generator == null ? null : generator.getEngine();
+if (engine == null || engine.isClosed()) {
+    return;
+}
+```
+
+The API jar includes the VolmLib types needed by these signatures. Toolbelt access does not require a separate VolmLib dependency. Prefer the terrain service below for terrain queries that do not need engine access.
 
 ## Get a service
 
@@ -49,6 +93,10 @@ Call `Engine.requestSave()` from the appropriate world-owning thread. It returns
 ## Build artifacts
 
 Iris has no GitHub Actions CI workflow. Run builds, tests, and artifact verification locally; pushes and pull requests do not run these checks automatically.
+
+JitPack uses `jitpack.yml` to build and publish the API with remote dependencies. Reproduce that build with `./gradlew --no-daemon build publishToMavenLocal -PuseLocalVolmLib=false -PuseMavenLocal=false`. Iris pins the shared VolmLib artifact and packaging plugin to the same revision. Integration repositories only resolve their own groups or modules. ItemsAdder's API resolves from Maven Central.
+
+Run `./gradlew irisApi` to generate the API jar and a Maven repository under `build/api`. Set `DEPLOY_DIR` to use another output directory. This writes files locally and does not upload them to a remote repository.
 
 All four Iris platform builds use [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning). The build removes unreachable VolmLib classes while retaining Iris classes, reflective Matter slices, resources, and loader-specific library packaging. Runtime jars retain source locations and parameter names.
 

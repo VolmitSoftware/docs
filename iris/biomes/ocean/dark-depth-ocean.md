@@ -2,7 +2,7 @@
 title: "Dark depths — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for ocean/dark-depth-ocean"
 published: true
-date: 2026-08-27T00:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -20,6 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 | Underworld 1005 | `estranged` (1/8 slots; region rarity 1, weight `1/1`); `forests` (1/3 slots; region rarity 1, weight `1/1`); `magnetics` (1/4 slots; region rarity 15, weight `1/15`); `temperate` (1/8 slots; region rarity 1, weight `1/1`); `tropical` (1/7 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
 
 ## Terrain and generator
+
+The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
 
 `smooth-dunes` maps to `-80..-70` relative to the dimension fluid height.
 

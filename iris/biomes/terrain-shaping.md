@@ -2,13 +2,15 @@
 title: "Biome Terrain Shaping"
 description: "Shared 3D terrain profiles and protected terrain in the built-in Iris packs"
 published: true
-date: 2026-09-09T00:23:13.301Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biomes, terrain, overworld, underworld"
 editor: markdown
 dateCreated: 2026-09-08T07:14:15.291Z
 ---
 Overworld 4007 and Underworld 1010 explicitly configure 220 terrain identities. There are 197 active profiles and 23 protected identities.
 The audit covers every region-selected land biome, its ordinary children, and the floating-only Glass Shard child. Each paired atlas entry gives its dimensions and exact density and crack noise styles.
+
+Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
 
 ## Terrain profiles
 

@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-08T23:00:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -179,6 +179,12 @@ CraftEngine has a corresponding state loaded in that runtime. They are not
 portable pack identifiers. Save objects with named content keys so that a
 changed state allocation does not alter their meaning. Iris cannot identify
 an old numbered state when its original mapping is unavailable.
+
+### Custom terrain block breaking
+
+Iris checks whether any loaded pack drop rule can match a block material before requesting its saved biome. Unrelated custom-block carriers can break on the first attempt in Creative and Survival. This includes ItemsAdder terrain whose carrier has no matching Iris `blockDrops` rule.
+
+A potentially matching rule or an unloaded historical pack still requires the saved-biome check. See [Custom block drops](/iris/23-loot-entities-spawners-markers) for that loading behavior. ItemsAdder retains control of its own break and drop handling.
 
 ### ItemsAdder note-block pop-in
 

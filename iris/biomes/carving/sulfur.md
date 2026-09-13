@@ -2,13 +2,15 @@
 title: "Sulfur Galleries — Cave Biome"
 description: "Sulfur Galleries and Sulfur Hollows, with native sulfur pools, spikes and cube ecology"
 published: true
-date: 2026-09-03T04:14:00.000Z
+date: 2026-09-13T17:00:00.000Z
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
 ---
 
 `carving/sulfur` is a regional cave root in the current Overworld and Underworld pack sources, with `carving/sulfur-hollows` as its child. Both require Minecraft 26.2. Existing worlds need the updated pack snapshot and fresh chunks; updating Iris alone does not add this content.
+
+Overworld disables standalone cave aquifers in this family. Hydrology still supplies its contained underground water, and deep lava retains its configured behavior. Underworld retains its independent cave fluids.
 
 ## Selection and shape
 
