@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-09T00:00:00.000Z
+date: 2026-09-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -113,6 +113,52 @@ proxy-servers = ["lobby", "survival"]
 ```
 
 Explicit `direct` or `proxy` mode overrides this list. Names must match the imported destination and the proxy server configuration. Imports preserve each endpoint as a host and port pair. Direct transfer requires a client protocol from Minecraft 1.20.5 or later.
+
+### Velocity backends
+
+For two backends behind Velocity, set `transfer-mode = "proxy"` on both. Each backend's `server-name` must match its key under Velocity's `[servers]` table, including case. This applies when the backends share a machine or run in separate containers on that machine. Players join through Velocity.
+
+The examples below use `lobby` and `survival` as placeholder backend names. Replace them with your Velocity server keys. Edit the existing `[network]` table in each backend's `plugins/Wormholes/wormholes.toml`.
+
+On `lobby`:
+
+```toml
+[network]
+server-name = "lobby"
+transfer-mode = "proxy"
+```
+
+On `survival`:
+
+```toml
+[network]
+server-name = "survival"
+transfer-mode = "proxy"
+```
+
+In Velocity's existing `[advanced]` table, enable the [BungeeCord plugin message channel](https://docs.papermc.io/velocity/configuration/#advanced-section):
+
+```toml
+[advanced]
+bungee-plugin-message-channel = true
+```
+
+Save `wormholes.toml` on both backends and wait for `Configuration hot-reloaded.` in each console. There is no `/wh reload` command. If you changed `velocity.toml`, restart Velocity to apply its configuration.
+
+1. Run `/wh network status` on both backends. Their local names must match your Velocity server keys.
+2. If you renamed generated peers, remove each obsolete peer with `/wh server remove <old-name>` on both sides where it is listed.
+3. Run `/wh server export` on `lobby`, then `/wh server import <code>` on `survival`. Repeat in reverse with a fresh export from `survival`.
+4. Open each gateway's Destination menu. Export its fresh portal code and use Import on the opposite gateway to link it. Link both directions for return travel.
+5. Test `/wh server connect survival` from `lobby`, then `/wh server connect lobby` from `survival`.
+6. Walk through both gateways as the player who will use them. A successful admin command does not test that player's portal access. Check Permission mode and Travel direction on both portals if traversal is denied.
+
+The standard proxy transfer path uses Velocity's BungeeCord `Connect` support. It does not require the optional WormholesProxy module. Leave `[network.proxy] enabled = false` unless that module and its shared secret are configured.
+
+`auto` does not detect Velocity forwarding. A manually imported peer uses direct transfer unless `proxy-servers` includes its name or its route selects the proxy. Direct login cannot preserve a forwarded online player UUID on an offline backend, so admission rejects that transfer.
+
+A `connected` peer with a low RTT confirms the Wormholes peer connection. It does not confirm that Velocity recognizes the destination name or accepts the player transfer.
+
+The raw peer link still carries portal views and handoff control. Each backend must reach the other's advertised raw endpoint. In separate containers, `127.0.0.1` refers to the current container. Use a reachable container or host address for the peer link. The Minecraft backend addresses remain the ones configured under Velocity's `[servers]` table.
 
 ## Network endpoints
 
