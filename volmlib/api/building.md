@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-09T08:47:00.000Z
+date: 2026-09-12T16:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -76,7 +76,7 @@ Packaging runs three passes inside the archive task, in this order: a ProGuard s
 
 Director parameter handlers are retained as reflective command entry points, including nested handlers referenced by parameter annotations. Their nest membership remains intact, so packaged handlers can call private methods on their enclosing command class.
 
-Non-modded profiles pass the assembled archive through ProGuard 7.10 in shrink-only mode (`-dontobfuscate -dontoptimize`), so package, class, and member names never change. The pass removes classes and members that nothing reachable references. Reachability starts from generated keep rules: the `main`, `bootstrapper`, and `loader` classes of `plugin.yml` and `paper-plugin.yml`; every `keepPrefixes` entry and every `required_entries` class; every `META-INF/services` interface and provider; every class whose full name appears as a string constant in bytecode or inside a text resource; every annotation type; all constructors of retained classes; enum `values` and `valueOf`; members carrying Gson `SerializedName`/`Expose` or `ConfigDoc`/`ConfigDescription` annotations; the fields of classes named `*Config*` or `*Settings*`; record members; `EventHandler` and `Subscribe` methods; Java serialization and `ConfigurationSerializable` hooks; the shared reflective families matched by relocated-package wildcards (`**.slimjar.**`, `**.bstats.**`, `**.packetevents.**`, `**.bytebuddy.**`, `**.caffeine.**`, `**.director.**`, `**.matter.slices.**`, `**.papi.**`); classes and members annotated with any `**.director.annotations.Director` or `Param`; and the per-profile `shrink_keep` rule lines from `artifact-policies.json`. Iris Bukkit keeps its whole `engine.object` model, its NMS bindings, its scanned service and mantle-component packages, its SIMD kernels, and its agent.
+Non-modded profiles pass the assembled archive through ProGuard 7.10 in shrink-only mode (`-dontobfuscate -dontoptimize`), so package, class, and member names never change. The pass removes classes and members that nothing reachable references. Reachability starts from generated keep rules: the `main`, `bootstrapper`, and `loader` classes of `plugin.yml` and `paper-plugin.yml`; every `keepPrefixes` entry and every `required_entries` class; every `META-INF/services` interface and provider; every class whose full name appears as a string constant in bytecode or inside a text resource; every annotation type; all constructors of retained classes; enum `values` and `valueOf`; members carrying Gson `SerializedName`/`Expose` or `ConfigDoc`/`ConfigDescription` annotations; the fields of classes named `*Config*` or `*Settings*`; record members; `EventHandler` and `Subscribe` methods; Java serialization and `ConfigurationSerializable` hooks; the shared reflective families matched by relocated-package wildcards (`**.slimjar.**`, `**.bstats.**`, `**.packetevents.**`, `**.bytebuddy.**`, `**.caffeine.**`, `**.director.**`, `**.matter.slices.**`, `**.papi.**`); classes and members annotated with any `**.director.annotations.Director` or `Param`; and the per-profile `shrink_keep` rule lines from `artifact-policies.json`. Iris Bukkit keeps its annotated pack models, NMS bindings, scanned services, command handlers, mantle components, SIMD kernels, and embedded agent. The artifact gate requires each command handler and mantle component discovered in the source packages.
 
 The library classpath is the JDK of the Gradle JVM (exported once from the runtime image into `<gradle user home>/caches/volmit-packaging/`) plus the project's resolved `compileClasspath`. Library jars whose class entries overlap the archive, such as project-built modules already shaded in, are excluded automatically. A build can add more library jars with `shrinkLibraries.from(...)` inside its artifact block; projects whose NMS bindings live in a subproject add that subproject's compile classpath so preverification sees the server hierarchy. `shrinkRelocations` maps original packages to their relocated names so runtime-downloaded SlimJar libraries are analysed under the relocated hierarchy the jar actually references. Unresolved references fail the build unless the referenced or referencing class matches a shared default (`javax.annotation.**`, `org.jetbrains.annotations.**`, `org.checkerframework.**`, `edu.umd.cs.findbugs.annotations.**`, `com.google.errorprone.annotations.**`, `kotlin.**`, `android.**`, `dalvik.**`, `org.apache.logging.log4j.**`, `java.lang.invoke.**`, `me.clip.placeholderapi.**`, `lombok.**`) or a per-profile `shrink_dontwarn` pattern; every tolerated warning is listed in the JSON report. Classes that carry ByteBuddy `Advice` annotations are kept whole and their original bytes are written back over ProGuard's output, because the preverifier rewrites their stack-map frames in a form ByteBuddy refuses to inline; the report lists them as restored. The shrunk archive replaces the original only when ProGuard succeeded and the result is smaller.
 
@@ -104,13 +104,13 @@ To build and check a plugin without staging, run from its project directory:
 
 For Iris, that command covers Bukkit. Use `verifyBukkitArtifact verifyModdedArtifacts` to assemble and check all four platform jars without staging.
 
-For the smallest Bukkit release archive, run:
+Iris Bukkit release builds enable stronger compression by default:
 
 ```bash
-./gradlew verifyBukkitArtifact -PcompactRelease=true
+./gradlew verifyBukkitArtifact
 ```
 
-Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. It verifies decompressed contents before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. This step takes longer than normal packaging. The flag is an archive-task input, so switching modes rebuilds the jar. Reports record both metadata stripping and release compression.
+Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. It verifies decompressed contents before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. This step takes longer than normal packaging. Iris development mode skips stronger compression by default. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
 
 To inspect an existing jar without building or modifying it, run from the workspace:
 

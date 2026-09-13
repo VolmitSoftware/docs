@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-09-09T05:41:07.000Z
+date: 2026-09-12T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -210,7 +210,7 @@ Failing that, entries with no filter. Within the winning bucket the pick is weig
 4. **Multiplier.** The multipliers from every contributing scope are multiplied together, and the resulting factor scales the *length of the table list*, not stack sizes. A factor of 0.5 randomly drops half the tables.
 A factor of 2 randomly duplicates entries until the list doubles. The list is capped at 256 sources and Iris throws rather than silently truncating past that.
 
-5. **Event hook.** On Bukkit, `art.arcane.iris.core.events.IrisLootEvent` fires with the engine, block, slot type, and the resolved table list. The list is mutable, so a plugin can add, remove, or clear tables before the roll. Iris also bridges the rolled items through Bukkit's `LootGenerateEvent`, so plugins that already listen for vanilla loot generation see Iris chests too. This is not part of the documented public API surface in the `90`-series pages.
+5. **Event hook.** On Bukkit, `art.arcane.iris.world.event.IrisLootEvent` fires with the engine, block, slot type, and the resolved table list. The list is mutable, so a plugin can add, remove, or clear tables before the roll. Iris also bridges the rolled items through Bukkit's `LootGenerateEvent`, so plugins that already listen for vanilla loot generation see Iris chests too. This is not part of the documented public API surface in the `90`-series pages.
 
 6. **Roll.** For each table: pick a random target count between `minPicked` and `maxPicked`, then loop up to `maxTries`. Each try picks a random entry index. The entry only counts if its `slotTypes` is `STORAGE` and it passes a 1-in-(table `rarity` x entry `rarity`) check. That check is derived from the loot seed, the table's key, the entry index, and the block coordinates, not from a running random sequence. **The same entry at the same block always gives the same answer**, so tries that re-roll a rare entry that already failed are wasted. This is why `maxTries` should sit well above `maxPicked` when a table has rare entries.
 

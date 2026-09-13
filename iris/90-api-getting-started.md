@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-09T16:00:00.000Z
+date: 2026-09-12T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -54,4 +54,8 @@ All four Iris platform builds use [shared automatic jar thinning](/volmlib/api/b
 
 Run `./gradlew verifyBukkitArtifact verifyModdedArtifacts` from the Iris repository to assemble and check all four jars without staging. Artifact checks include class references from field and method descriptors. Reports under each platform's `build/reports/packaging/` list removed classes and archive sizes.
 
-For the smallest Bukkit jar, run `./gradlew verifyBukkitArtifact -PcompactRelease=true`. Normal builds strip unnecessary dependency debug tables. Release mode also uses stronger compression without changing entry contents or adding runtime downloads. Both modes keep source locations and parameter names.
+Bukkit release builds use stronger compression by default. Run `./gradlew verifyBukkitArtifact` to build and check the jar. Compression preserves entry contents and adds no runtime downloads. Development mode (`-PvolmitPackaging=dev` or `VOLMIT_PACKAGING=dev`) skips stronger compression by default. Set `-PcompactRelease=true` or `false` to override that choice. Both modes strip unnecessary dependency debug tables while keeping source locations and parameter names.
+
+## Source ownership
+
+The Bukkit API remains under `art.arcane.iris.api`. Internal types use the feature packages listed in [Source organization](/iris/88-source-organization). Reusable noise, interpolation, streams, and hunk storage come from VolmLib.

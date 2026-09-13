@@ -2,11 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-<<<<<<< Updated upstream
-date: 2026-09-08T20:34:51.000Z
-=======
-date: 2026-09-05T18:00:00.000Z
->>>>>>> Stashed changes
+date: 2026-09-12T16:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -32,8 +28,11 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.config` | Typed TOML configuration |
 | `util.io` | File and directory change detection |
 | `util.nbt` / `util.nbt.mca` | NBT and region files |
-| `util.noise` / `util.stream` | Procedural generation |
+| `util.noise` / `util.interpolation` / `util.stream` | Seeded procedural fields and interpolation |
+| `util.hunk` / `util.math` | Three-dimensional storage, coordinates, and rarity selection |
 | `integration` | Vault economy availability, charging, and settlement |
+
+For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
 
 ## Dependency
 
@@ -107,6 +106,14 @@ Call economy operations from the correct gameplay thread. A successful withdrawa
 
 `FoliaScheduler.isStopping(Server)` reports terminal shutdown when the server exposes that capability; it returns false for an unavailable capability or a null server. On Folia, shutdown can report entity ownership after the region world-data context is gone. Consumers can use this check to skip removal of nonpersistent visual entities during terminal shutdown while retaining normal reload and plugin-disable cleanup.
 
+## Matter slice identifiers
+
+Register slice codecs before reading or writing their data. `IrisMatter.registerSliceType(String id, MatterSlice<?> slice)` binds one stored identifier to a payload type and codec. Keep that identifier stable when source packages change. The overload without an ID uses the payload type's canonical Java name. Built-in types retain their existing identifiers.
+
+Repeated registration of the same ID, payload type, and codec has no effect. Conflicting IDs, payload types, or codecs fail registration. IDs must be nonempty, contain no whitespace or control characters, and fit the UTF header limit of 65,535 encoded bytes.
+
+Readers resolve IDs through this registry and skip unregistered slices using their declared byte length. Writers reject payload types without a registered codec. The stored format does not change when an explicit ID retains the existing value.
+
 ## Mantle storage
 
 `Mantle.saveAll()` and `close()` propagate region write failures after reporting the original exception. Failed writes retain their live region and chunk data for retry. A failed close keeps the mantle open and preserves its region locks; only a successful flush and region-IO close complete shutdown. An IO-close failure can be retried without rewriting regions already saved. Consumers must drain generation before closing storage and retain the mantle when close fails.
@@ -115,13 +122,11 @@ Call economy operations from the correct gameplay thread. A successful withdrawa
 
 `FileWatcher` and `FolderWatcher` combine filesystem snapshots with native watch events. A full scan reports each create or delete transition once, including on Windows where the native delete notification may arrive after the scan has already observed the missing path. Native modification events still detect writes whose size, timestamp, and file identity remain unchanged.
 
-<<<<<<< Updated upstream
 `ReactiveFolder` debounces changes and checks file stability before invoking its callback. A detected save can be delivered while an unrelated content-reconciliation scan is still running. Silent content changes remain batched until their scan finishes, and a failed callback retains pending changes for retry.
-=======
+
 ## TOML configuration
 
 `TomlCodec.toToml(...)` writes collections and arrays of objects as TOML arrays of tables (`[[rewards]]`), including nested tables and quoted keys. Both the typed-object and JSON-tree overloads support this structure; primitive lists remain inline arrays. A table array must contain only objects, and `fromToml(...)` reconstructs the typed list or array.
->>>>>>> Stashed changes
 
 For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
 

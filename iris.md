@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-12T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -105,6 +105,7 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 
 ### Developer API
 
+- [Source organization](/iris/88-source-organization)
 - [API - Getting Started](/iris/90-api-getting-started)
 - [API - Terrain](/iris/91-api-terrain)
 - [API - World Events](/iris/92-api-world-events)

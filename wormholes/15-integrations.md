@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-12T16:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -50,7 +50,7 @@ That path is independent of the portal menu cost types.
 
 ## Iris
 
-When Iris is active, Wormholes can reject fluid columns and biome mismatches before loading an RTP candidate chunk. Without Iris, it uses normal chunk-backed biome and landing-safety checks.
+When Iris is active, Wormholes can reject fluid columns and biome mismatches before loading an RTP candidate chunk. Without Iris, it uses normal chunk-backed biome and landing-safety checks. RTP biome menus also use the active Iris dimension to list reachable pack biomes by name.
 
 ## Citizens
 

@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-12T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -106,6 +106,8 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | API — events | Engine and pregen events | [92 - API - World Events](/iris/92-api-world-events) |
 | API — tree feller | Tree feller service | [93 - API - Tree Feller](/iris/93-api-tree-feller) |
 | API — modded | Modded public API (`art.arcane.iris.modded.api`) | [94 - API - Modded](/iris/94-api-modded) |
+
+For Java package ownership and shared dependencies, see [Source organization](/iris/88-source-organization).
 
 ## Content model
 
