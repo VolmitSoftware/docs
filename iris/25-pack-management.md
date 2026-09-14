@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-09T05:57:10.311Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,16 +53,6 @@ Run this after the pack works in Studio and before you create or update a produc
 
 `validate` re-runs every check and republishes the result. `status` prints the currently published result, which may be a reused startup result. Run `validate` first if you have edited files. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them. Unresolved content keys become blocking the moment strict content mode is on. If the console names content unavailable on this Minecraft version, run `/iris pack compat` and decide whether to accept the loss or declare a fallback before you release.
 
-To generate chunks without a server, run the generation probe from the Iris repository with Java 25:
-
-```bash
-./gradlew --no-daemon :probe:genProbe \
-  -PprobePack=/absolute/path/to/pack \
-  -PprobeDimension=<dimension-key>
-```
-
-The probe builds the real engine and generates chunks into memory. Run it against the pack tree you intend to package, then again on the extracted archive.
-
 **3. Preview cleanup without writing anything.**
 
 ```
@@ -99,11 +89,9 @@ Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. The
 
 Success is `exports/<key>.iris` plus a completion message. The source pack and every world epoch are untouched.
 
-**6. Test on a disposable world.** Create a fresh world from the release pack. Walk it. Restart the server. Walk it again. Test changed hydrology and locators beyond the generated boundary. A compatible hydrology or `riverPolicy` update affects future chunks. Saved terrain and recorded generation facts retain their provenance. New terrain uses the current generator within the world's fixed physical layout.
+**6. Update an existing world.** Back up the complete world, including generation history, then use the update-world procedure below.
 
-**7. Stage the production update.** Back up the complete world, including generation history, then use the update-world procedure below.
-
-The loop passes when the source closure validates. Both package commands automatically run the shared read-only pack validator and image-map compiler before clearing staging or copying files. The package command must still produce the expected export, and a fresh world from that export must reload cleanly. If your release process distributes the `.iris` file rather than the source tree, unpack and validate that final closure separately; source preflight does not replace artifact verification.
+Both package commands run the pack validator and image-map compiler before copying files. Packaging stops if a blocking error remains.
 
 ## Pack workspace
 
@@ -363,13 +351,3 @@ Ordinary Bukkit Studio uses the same history model and activates compatible auth
 | Strict content key enforcement | `settings.general.strictContentKeys` — [03 - Configuration](/iris/03-configuration) |
 | List content unavailable on this Minecraft version | `/iris pack compat` — [Version content compatibility](#version-content-compatibility) |
 | Datapack bootstrap and install | `/iris datapack` — [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
-
-## Checklist
-
-1. Place or download the pack under `packs/<key>/` with at least one `dimensions/*.json`.
-2. Validate until loadable: `/iris pack validate pack=<key>` on Bukkit, `/iris pack validate <key>` on modded.
-3. Run the generation probe for the selected dimension.
-4. Optionally preview cleanup, review every candidate, then apply and validate again. Restore if it took something needed.
-5. Create a new world with `/iris create …`, which records the first immutable epoch, or open Studio for live editing.
-6. Package with `/iris pack package dimension=<key>` (Bukkit) or `/iris studio package <key>` (modded), then extract and validate the exact archive.
-7. Stage a production update after a complete backup with `/iris dev update-world world=<world> pack=<dimension> confirm=true` on Bukkit or `/iris world update <dimension> <pack>` on modded. Restart, then verify old chunks, the transition band, new content, and locate results. Compatible river changes affect future chunks, with existing terrain preserved.

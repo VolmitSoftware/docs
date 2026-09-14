@@ -2,7 +2,7 @@
 title: "Cross-Server SQL & Redis"
 description: "Fenced SQL storage and Redis handoff across backend servers"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:36:31.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,10 +31,8 @@ A reset replaces the player's Adapt profile on the current backend. If the playe
 2. Remove any obsolete Adapt or Velocity companion jar from the proxy. Install the same current shaded Adapt jar on every backend.
 3. Configure identical SQL and Redis endpoints on every backend. Set `sql.enabled = true` and `redis.enabled = true`.
 4. Lock Redis down with network rules and ACL credentials. Adapt exposes no TLS, Redis database-number, or channel-name setting.
-5. Start one disposable backend first. Confirm both SQL tables exist and use InnoDB, then complete a player login, save, quit, and reload.
+5. Start one backend first. Confirm both SQL tables exist and use InnoDB.
 6. Start the remaining backends. Confirm SQL initialization and Redis subscription on each one, with no recovery or decoding errors.
-7. Move a disposable player between two backends. Compare skill XP, knowledge, learned adaptations, effect preferences, and mutation equipment after each hop.
-8. Test a reset and purge with backed-up disposable profiles. Confirm the initiating backend replaces its hosted online profile live, stale-owner writes from another backend are fenced, that older Minecraft session remains connected with Adapt inactive, and reconnecting claims a new runtime.
 
 The `Adapt:data:v2` format is a hard break. Stop the whole network and replace every backend jar in one maintenance window. Mixed versions cannot exchange snapshots, and there is no compatibility decoder or proxy-side bridge.
 
@@ -54,7 +52,7 @@ Snapshot JSON is strict UTF-8 and may contain at most 16,777,215 encoded bytes, 
 
 Redis staging closes the lost-reply window only after `SETEX` completes. A source process failure after its runtime freezes but before that asynchronous write completes can still lose the final uncommitted delta. A staging failure followed by lost direct replies has the same limitation. Once staging succeeds, the exact predecessor is recoverable for 60 seconds; after the TTL, SQL and any matching fenced recovery envelope remain the available authorities.
 
-If Redis is intentionally disabled, the destination adopts from committed SQL and matching local fenced recovery only. If Redis is enabled but transfer verification errors, Adapt fails closed for that player without rejecting the Minecraft login. It makes at most three online retries after 2, 4, and 8 seconds plus deterministic 0-19 tick jitter; reconnecting starts a new claim cycle after the storage problem is fixed. A healthy Redis publish is not proof of a complete handoff; verify the adopted profile and SQL fence on the destination.
+If Redis is intentionally disabled, the destination adopts from committed SQL and matching local fenced recovery only. If Redis is enabled but transfer verification errors, Adapt fails closed for that player without rejecting the Minecraft login. It makes at most three online retries after 2, 4, and 8 seconds plus deterministic 0-19 tick jitter; reconnecting starts a new claim cycle after the storage problem is fixed.
 
 | Symptom | What to check |
 |---|---|
@@ -79,4 +77,4 @@ SQL and Redis settings are restart-bound. Hotloading the core config preserves t
 ## See also
 
 - [01 - Installation & Configuration](/adapt/01-installation-configuration)
-- [40 - Operator Runbooks](/adapt/40-operator-runbooks)
+- [Updates and Recovery](/adapt/40-operator-runbooks)

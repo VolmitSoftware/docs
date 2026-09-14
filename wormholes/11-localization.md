@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Editable locales and English fallbacks"
 published: true
-date: 2026-09-10T02:34:00.000Z
+date: 2026-09-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -112,12 +112,11 @@ Unknown message keys are ignored. Wrong value types, changed line counts, placeh
 
 | Trigger | Behavior |
 |---------|----------|
-| `/wormholes reload` | Reloads config and language, and clears cached player translations (`wormholes.admin.reload` + root gate. See [09 - Commands & Permissions](/wormholes/09-commands-permissions)) |
 | `wormholes.toml` hotload | Reloads the selected language after the config load succeeds |
-| Direct `languages/*.toml` edit | Not watched. Use `/wormholes reload` or touch the config file |
+| Direct `languages/*.toml` edit | The resource watcher reloads the language files and refreshes language consumers. The console reports `Language files hot-reloaded.` |
 | Invalid language entries or unreadable document | Valid translations remain active; affected messages use fallback values. Console reports unreadable files |
 
 ## Related docs
 
 - [01 - Installation & Configuration](/wormholes/01-installation-configuration), `language` and `language-fallbacks` defaults
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions), reload command
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions), language commands

@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -310,14 +310,9 @@ An in-place update cannot change the seed, `dimensionHeight`, `logicalHeight`, `
 | Package for distribution | Bukkit `/iris pack package dimension=my-overworld`. Modded `/iris studio package my-overworld` |
 | Version stamp | The dimension `version` field. The bundled pack uses large integers such as `4000` |
 
-## Checklist before a production update
+## Update an existing world
 
-1. Verify in Studio, not by reading JSON.
-2. Run pack validate and fix every broken key.
-3. Back up the complete target dimension root, including `iris/generation/`.
-4. Stage the already-installed source pack with the platform's world-update command, then restart cleanly.
-5. Verify an old chunk, the transition band, new content in a distant chunk, and locate results. Existing terrain must not change.
-6. Record operator-facing changes in the workspace changelog when releasing.
+Back up the complete target dimension, including `iris/generation/`, then stage the pack and restart. See [Pack Management](/iris/25-pack-management) for the platform-specific commands.
 
 ## Cross-links
 

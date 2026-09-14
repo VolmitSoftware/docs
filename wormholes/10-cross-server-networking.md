@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-13T00:00:00.000Z
+date: 2026-09-14T00:56:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -149,8 +149,8 @@ Save `wormholes.toml` on both backends and wait for `Configuration hot-reloaded.
 2. If you renamed generated peers, remove each obsolete peer with `/wh server remove <old-name>` on both sides where it is listed.
 3. Run `/wh server export` on `lobby`, then `/wh server import <code>` on `survival`. Repeat in reverse with a fresh export from `survival`.
 4. Open each gateway's Destination menu. Export its fresh portal code and use Import on the opposite gateway to link it. Link both directions for return travel.
-5. Test `/wh server connect survival` from `lobby`, then `/wh server connect lobby` from `survival`.
-6. Walk through both gateways as the player who will use them. A successful admin command does not test that player's portal access. Check Permission mode and Travel direction on both portals if traversal is denied.
+5. Connect from `lobby` with `/wh server connect survival`. Use `/wh server connect lobby` to return.
+6. If gateway travel is denied, check Permission mode and Travel direction on both portals. Admin command access does not grant ordinary players portal access.
 
 The standard proxy transfer path uses Velocity's BungeeCord `Connect` support. It does not require the optional WormholesProxy module. Leave `[network.proxy] enabled = false` unless that module and its shared secret are configured.
 
@@ -200,7 +200,7 @@ The source stores the selected endpoint for that handoff. Discovery updates cann
 
 Use distinct server names and game ports. Both servers can request raw port 8901. The second listener selects another free port and advertises that port.
 
-For testing with a client on the server machine:
+For a client on the server machine:
 
 ```toml
 [network]
@@ -251,12 +251,12 @@ Gateway travel and `/wormholes server connect` use the same admission path. Befo
 
 Destination checks include:
 
-- Live destination portal is open and not mirror-only. Incoming traversals must be enabled for non-op players. Ops bypass that direction flag
+- Live destination portal is open and not mirror-only. Incoming traversals must be enabled unless the traveler has OP or `*` bypass
 - Selected transfer method is supported
 - Direct source and destination use the same authentication mode
 - Offline direct login preserves the supplied player UUID. Forwarded identities require the configured proxy path
-- Profile passes ban and whitelist gates (ops exempt from whitelist)
-- Online players + pending arrivals stay under the player limit
+- Profile passes ban checks. OP and source-authorized `*` travelers bypass whitelist and player-limit restrictions for the admitted crossing
+- Other travelers fit within online players plus reservations for players not yet online. Connected arrivals do not count twice
 - Direct transfer support: native Paper transfers or compatibility path
 - Portal arrivals have loaded the destination chunk and its eight neighbors
 
@@ -264,6 +264,8 @@ Destination checks include:
 |---------|--------|
 | Deny / timeout / cooldown | Traveler returned to the source-facing side of the portal (not left in-plane / not orphaned disconnect) |
 | Accept | Reservation remains active until portal placement succeeds, or the normal join completes for a server command |
+
+A trusted handoff carries the source player's OP or literal `*` privilege through destination admission and placement. This bypass applies only to that reservation. It does not grant OP or permissions on the destination. A return trip evaluates privileges on its own source server. Ban, identity, endpoint, portal availability, and placement checks remain active.
 
 ### Rate limits
 
@@ -281,6 +283,12 @@ sets the base source deadline. Direct handoffs add 7000 ms for endpoint verifica
 After dispatch, the source waits up to 60 seconds for an arrival receipt. Only a confirmed arrival increments the completed transfer count. Lost receipts trigger one status query per second. The destination retains terminal receipts for 120 seconds.
 
 Portal placement retries transient failures up to five times. Destination access is checked again after the asynchronous teleport. A denied arrival requests a new admitted return trip when possible. Otherwise, the player remains at the destination and receives a failure notice.
+
+Gateway placement offsets the traveler along the exit plane's normal. Vertical or lateral momentum cannot redirect this offset into the floor or frame. The outgoing velocity still follows the configured momentum policy.
+
+Departure commitment checks movement from the captured hold position. A fast crossing recovered after a delayed portal check does not fail solely because it ended far beyond the aperture. Retreat, further drift, world changes, and expired or replaced holds still cancel departure.
+
+Departure holds use asynchronous teleports on Folia. Each hold waits for its current position correction before starting another. An acknowledged transfer waits for any pending correction, then rechecks the current attempt on the player's entity scheduler before dispatch. Rejection also waits for pending corrections, and callbacks from expired holds or queue tickets cannot cancel a newer crossing.
 
 If a traveler reconnects while destination placement is pending, the new session can resume the active reservation. Callbacks from the retired session cannot change the new placement or its arrival receipt.
 
@@ -303,11 +311,11 @@ platform reports accepting transfers. Direct transfers fail admission with
 
 | Constant | Value |
 |----------|--------|
-| `WireCodec.PROTOCOL_VERSION` | **20** |
+| `WireCodec.PROTOCOL_VERSION` | **22** |
 | Signed status-sideband envelope | **7** |
 | Route entry format | **2** |
 
-Raw handshakes and signed sideband envelopes require matching Minecraft, Wormholes, and wire versions. Handshake signatures bind the full Hello/Challenge transcript, including endpoints, versions, and compression fields.
+The current wire version is 22. Raw handshakes and signed sideband envelopes require matching Minecraft, Wormholes, and wire versions. Handshake signatures bind the full Hello/Challenge transcript, including endpoints, versions, and compression fields.
 
 Upgrade all linked servers together. Export and import fresh `WHS2.` or `WHP6.` codes on both sides to populate the current endpoint format. Keep each server's identity and trust files. Existing gateway targets remain identified by peer name and portal UUID.
 
@@ -378,13 +386,35 @@ points at `/wh network status`.
 
 Verbose logging adds endpoint, handoff, admission, and arrival details while reproducing a problem. Ordinary joins remain quiet.
 
+### Portal access denied
+
+If `/wh server connect` works but walking through a gateway reports `Portal access denied`, inspect the portal's access checks. The source checks outbound access and the remote portal's availability and direction before requesting a handoff. Destination permissions are evaluated on the destination after login.
+
+In each portal's Settings menu, confirm Travel direction allows the intended trip. Permission mode defaults to `BLACKLIST`: holding `wormholes.portal.<key>` blocks ordinary players. In `WHITELIST`, that permission grants access. A scoped wildcard can match the portal node. OP and the literal `*` permission bypass these restrictions. Each backend evaluates its own stable access key and enabled name alias. Source-side OP or `*` privilege also authorizes destination access for that crossing.
+
+For public portals, use `BLACKLIST` with no matching permission grant for ordinary travelers. For restricted portals, use `WHITELIST` and grant the displayed node to the intended players on both backends. Portal roles, land claims, and integration rules can impose additional restrictions. See [Portal access](/wormholes/04-portal-types-menus-settings#per-portal-permission-node).
+
+With LuckPerms, check each node reported by the denial log on the backend that rejected the player:
+
+```text
+lp user <player> permission check <node>
+```
+
+For an ordinary traveler at a `BLACKLIST` portal, an explicit `false` overrides an inherited scoped wildcard grant:
+
+```text
+lp user <player> permission set <node> false
+```
+
+Use `true` for an intended traveler at a `WHITELIST` portal. Replace `<node>` with the complete `wormholes.portal.…` node, and check both stable and name-derived nodes when they differ. See the [LuckPerms permission commands](https://luckperms.net/wiki/Permission-Commands) for permission checks and server contexts.
+
+Run `/wh debug toggle` on both backends, reproduce one denied crossing, and inspect the console access and handoff lines. Toggle again to stop. The debug command requires `wormholes.admin`. Ordinary gateway travel does not require `wormholes.admin.network`.
+
 `HANDOFF_ENDPOINT_REJECTED` means the game endpoint failed verification before dispatch. `HANDOFF_ARRIVAL_FAILED` means the destination reported a placement failure. `HANDOFF_ARRIVAL_UNCONFIRMED` means no receipt arrived within 60 seconds. Check both server logs for client login rejection or a lost control connection.
 
 Native and compatibility transfers still use the destination connection throttle. Rapid return trips or players sharing one public IP can encounter that throttle. Diagnose the destination login message before changing server policy. A backend that requires Velocity or Bungee forwarding needs the configured proxy transfer path.
 
-For an entity-transfer denial check, add a Bukkit entity type name to
-`entity-transfer-deny-types` and verify the source entity is restored. The
-TRANSFERS and failure sections in the stats snapshot include both player
+The TRANSFERS and failure sections in the stats snapshot include both player
 handoffs and entity transfers.
 
 ## Related docs

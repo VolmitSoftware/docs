@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install Adapt and configure progression, storage, integrations, and Mutations"
 published: true
-date: 2026-09-10T00:20:29.856Z
+date: 2026-09-14T00:36:31.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,7 +35,7 @@ By default a player's progression lives in `data/players/<uuid>.json`. SQL mode 
 2. Fill in the `sql.*` host, port, database, username, and password keys, then set `sql.enabled = true`.
 3. For Redis, set `redis.host` and `redis.port`, add `redis.username` and `redis.password` only if your Redis uses ACLs, then set `redis.enabled = true`. Redis stays inert unless `sql.enabled` is also true.
 4. Restart. Both clients are only built during enable.
-5. Confirm both tables are InnoDB and that a test player's progression survives a relog and a server switch.
+5. Confirm both tables use InnoDB.
 
 Adapt puts the SQL credentials straight into the JDBC URL. It has no TLS switch of its own. Configure transport security on the database endpoint and in the driver environment. SQL startup fails closed unless both tables are InnoDB. After backing up the schema, convert legacy tables with `ALTER TABLE ADAPT_DATA ENGINE=InnoDB;` and `ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;`, then restart every backend.
 

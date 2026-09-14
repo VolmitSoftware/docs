@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-09T22:00:00.000Z
+date: 2026-09-14T00:36:31.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,9 +43,9 @@ BileTools downloads Gson, TOML, and Adventure before plugin startup instead of b
 
 The libraries use BileTools-specific package names to avoid conflicts with server libraries and other plugins. Missing libraries must load successfully before BileTools can enable.
 
-## Verifying it works
+## Automatic reload
 
-Build a plugin into the server's `plugins/` folder and watch the console. BileTools waits for the jar to stop changing before it reloads. If nothing happens, check `watcher.ignore` and `watcher.only` in [Configuration](/biletools/configuration).
+BileTools waits for a jar in `plugins/` to stop changing before it reloads the plugin. If nothing happens, check `watcher.ignore` and `watcher.only` in [Configuration](/biletools/configuration).
 
 Temporary `.jar.part` files are ignored. A brief delete and recreate has a three-second grace period.
 
@@ -57,7 +57,3 @@ Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
 Chinese.
 
 English is created on startup as editable `languages/en_US.toml` when missing. Missing or invalid messages use the built-in English text. Changes to a readable active language file reload automatically; malformed TOML leaves the current messages active.
-
-## Build from source
-
-BileTools applies [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) during normal builds. Run `./gradlew verifyPluginJars` to assemble and check the runtime jar without staging. Its Java 17 compatibility checks still apply.

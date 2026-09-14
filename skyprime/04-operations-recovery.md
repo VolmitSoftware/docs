@@ -1,9 +1,9 @@
 ---
 title: 04 - Operations & Recovery
-description: Persistence, interrupted jobs, diagnostics and release verification
+description: Persistence, interrupted jobs and diagnostics
 published: true
-date: 2026-09-05T16:24:00.000Z
-tags: skyprime, operations, recovery, testing
+date: 2026-09-14T00:37:05.832Z
+tags: skyprime, operations, recovery
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
 ---
@@ -31,13 +31,3 @@ Generation and clearing run through chunk-region tasks. At most two world jobs r
 `/sky debug dump` creates a local shared-format report containing server and plugin diagnostics plus island counts, persistence health, managed worlds and scheduling information. Upload requires both `general.debugUploadEnabled = true` and an explicit `upload=true` request. Local reporting works without upload access.
 
 Configuration reload prepares a complete candidate before installation. Languages include nested per-player selection, all installed locale files participate in change detection, and invalid messages retain the previous snapshots.
-
-## Verification boundaries
-
-The Gradle build provides unit tests, baseline Spigot 1.20.1 compilation, current Paper/Spigot 26.2 compilation and jar-wide Java 17 bytecode verification. These checks cannot prove plugin enable order, actual region ownership, client rendering or behavior on a running server.
-
-Before a release, validate startup, create, home, team acceptance, private/public visits, each visitor permission independently, channel chat, one-time/daily/weekly mission claims, all four upgrade tracks, guest grants and expiry, reset limits, custom template capture, reload and shutdown on isolated servers. Restart during creation and deletion, then verify recovery and nonoverlapping protection. Test optional PlaceholderAPI both present and absent, including current-island values. Check personal borders with stationary upgrades and another plugin's border replacement. Include a catalog edit during generation, restart with a missing catalog file, expired coop access, two simultaneous reward claims, and delete/recreate attempts during reset cooldown.
-
-Mineflayer can assert joining, commands, movement, block state and inventory behavior on protocols supported by the installed harness. Use a supported 1.21.11 server for automated gameplay while the harness cannot speak 26.2; this does not establish 26.2 gameplay coverage. A real client is still required to check the cyan/white menus, language editor, visual feedback and actual player experience.
-
-This workspace's initial implementation was not deployed to a server. Runtime and real-client acceptance remain unverified.

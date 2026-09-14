@@ -2,7 +2,7 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,11 +63,9 @@ The goal is one decorator definition placing wildflowers in several biomes, with
 }
 ```
 
-**3. Verify one call site.** Validate the pack. Then open Studio on a fixed seed and generate fresh chunks in that biome. Success is both flowers appearing only on slopes the snippet allows, with no `Couldn't find snippet` line in the console. If the field resolves to null, the console names the path it tried. Compare it against the file on disk.
+**3. Validate the pack.** If the snippet cannot load, compare the reported path with the file on disk.
 
-**4. Add the second call site.** Only once the first one works. Paste the same string into another biome `decorators`.
-
-**5. Prove they are linked.** Change one value inside the snippet. Raise `chance` to `0.3`. Hotload. Generate fresh chunks in both biomes. Both should get denser. Restore the value afterwards. That round trip is the actual test that you have one definition and not two.
+**4. Reuse the snippet.** Add the same path to another biome's `decorators` list. Changes to the snippet apply to every reference after hotload, in newly generated chunks.
 
 Generate the VSCode workspace (`/iris studio vscode`) so schema completion offers valid snippet paths for each field. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

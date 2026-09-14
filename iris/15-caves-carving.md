@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T00:40:24.195Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -86,8 +86,6 @@ Start from a validating `OVERWORLD` pack whose surface height and fluid level ar
 3. Validate the pack and reopen Studio. Carving is written into the mantle. Only **freshly generated** chunks change. Fly out past your previously generated area or use a new Studio world.
 4. Dig down between world Y `-48` and `32` (engine-local 16 to 96 with the default height range). Success is open cave volume with intact grass overhead, no water pockets, and no lava at the bottom of the band.
 5. If nothing is carved, work down this list before you touch noise values. Confirm dimension `mode.type` is `OVERWORLD`. Confirm `carvingEnabled` and `useMantle` are both true. Confirm `CARVED` is not listed in `disabledComponents`. Confirm the profile you edited is the one that actually wins for those columns (see resolution order below). Confirm the chunks are new.
-
-Once the void is right, turn the other switches back on one at a time: `allowLava`, then `allowFluid`, then `allowSurfaceBreak`. Regenerate between each. Each one changes a distinct, observable thing. Changing two at once makes it impossible to tell which produced the result.
 
 ## Walkthrough: give one biome its own cave shape
 

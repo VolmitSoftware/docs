@@ -2,13 +2,13 @@
 title: "Installation and Configuration"
 description: "Foundation requirements, typed TOML settings, hot reload, and in-game editor"
 published: true
-date: 2026-09-06T03:30:00.000Z
+date: 2026-09-14T00:37:05.833Z
 tags: "foundation, installation, configuration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Foundation targets Minecraft 1.20.1 through 26.x on Paper, Spigot, and Folia without NMS or CraftBukkit implementation references. The distributed jar uses Java 17 bytecode; run it with the Java version required by the selected server, such as Java 17 for a 1.20.1 server or Java 25 for a 26.x server. Building the project requires JDK 25 because the verification gate compiles against baseline and current Paper and Spigot APIs, resolves every packaged Bukkit/Paper method and field reference against all four API jars, and rejects class-to-interface linkage mismatches across Foundation and its shaded VolmLib runtime.
+Foundation targets Minecraft 1.20.1 through 26.x on Paper, Spigot, and Folia without NMS or CraftBukkit implementation references. The distributed jar uses Java 17 bytecode; run it with the Java version required by the selected server, such as Java 17 for a 1.20.1 server or Java 25 for a 26.x server.
 
 ## Requirements
 

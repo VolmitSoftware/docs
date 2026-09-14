@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-09-05T00:00:00.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,11 +19,15 @@ This feature merges compatible living entities into stacks. `ReactEntity` persis
 
 When Gloss entity overlays are enabled, React supplies the count for the shared health, name, and combat display. Gloss controls its layout and visibility, including Adapt Insight restrictions. React removes its own native stack label to prevent duplicate names and preserves names assigned by players or other plugins. Count changes publish immediately, and sampled stacks refresh at most once every five seconds to reconnect after a Gloss reload.
 
-Without Gloss, or with its entity overlays disabled, `customNames` controls native stack labels. This setting does not suppress the count in Gloss. Existing stacks retain their count and death replacement behavior when new stacking is disabled.
+Without Gloss, or with its entity overlays disabled, `customNames` controls native stack labels. This setting does not suppress the count in Gloss.
+
+Setting `enabled = false` stops new merges immediately and automatically expands existing loaded stacks in bounded batches. Recovery needs no command. Recovery also runs when the server starts with stacking disabled. React does not force chunks to load. Stored stacks expand when their chunks load, including types removed from `stackableTypes`. Setting `enabled = true` stops recovery and permits new merges.
+
+Restored mobs use the surviving mob's state. React stores the count, not separate records of the removed mobs, so recovery cannot restore their original UUIDs or distinct state. Recovery preserves real custom names and removes React's stack labels from single mobs. If a spawn fails or another plugin cancels it, the stack retains the count of mobs still to restore. React retries the remaining count while stacking stays disabled.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `enabled` | boolean | `true` | Enables or disables this feature. |
+| `enabled` | boolean | `true` | Allows new merges when true. When false, stops merging and automatically expands existing stacks as their chunks load. |
 | `maxStackSize` | int | `10` | Maximum stack size. |
 | `maxHealth` | double | `100` | Maximum health for stack targets. |
 | `stackableTypes` | `Set<EntityType>` | see notes | Types allowed to stack. |

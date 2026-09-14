@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-08T12:00:00.000Z
+date: 2026-09-14T00:56:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,6 +45,7 @@ OptionalInt surfaceHeight(World world, int x, int z);
 IrisSurfaceKind surfaceKind(World world, int x, int z);
 Optional<String> surfaceBiomeKey(World world, int x, int z);
 Optional<String> surfaceBiomeName(World world, int x, int z);
+Optional<IrisBiomeInfo> surfaceBiomeInfo(World world, int x, int z);
 Optional<String> biomeKey(World world, int x, int y, int z);
 Optional<String> regionKey(World world, int x, int z);
 Optional<String> regionName(World world, int x, int z);
@@ -52,11 +53,21 @@ Optional<String> regionName(World world, int x, int z);
 
 Keys are stable pack IDs suitable for storage. Names are display text and may change with the pack.
 
+## Surface biome metadata
+
+`surfaceBiomeInfo(world, x, z)` returns one immutable snapshot from a single history-aware surface environment. `IrisBiomeInfo` contains `key`, `name`, `regionKey`, `regionName`, `derivativeKey`, `vanillaDerivativeKey`, `type`, and `customDerivatives`. The type is lowercase `land`, `sea`, `shore`, or `cave`, or an empty string when unclassified. Saved biome records do not preserve this inferred category, so retained definitions can report an empty type.
+
+Each `IrisCustomBiomeInfo` entry contains the authored `customDerivitives[].id` and its namespaced `registryKey`. The list preserves definition order and is immutable. It is empty for a biome without custom derivatives. These are all configured derivatives, not the randomly selected physical biome at an exact Y.
+
+Saved columns resolve their biome, region, and custom registry mappings from the retained generation definitions. A missing registry mapping preserves the authored ID with an empty `registryKey` and reports the failure through the terrain API's rate-limited logger. Missing string metadata is normalized to an empty string; failure to resolve the surface environment returns an empty optional.
+
+`IrisWorldInfo` also supplies absolute `minHeight`, exclusive `maxHeight`, `height()` as their difference, and absolute `fluidHeight`. The fluid level describes dimension configuration, not the current water block at a location.
+
 ## Batch reads
 
 Use `sampleColumns(world, query, sink)` for rectangular scans. Respect `maxSampleColumns()` and `maxSampleChunks()`. The sink receives each requested field without allocating a result list.
 
-Terrain reads are thread-safe and return inline. Empty optionals mean the world is not active in Iris or the requested value does not exist.
+Terrain reads are thread-safe and return inline. Empty optionals mean the world is not active in Iris, the requested value does not exist, or saved biome data is still loading. Pending saved reads return the method's unavailable result without logging a fault; retry on a later refresh. A batch that encounters pending data returns `false` and may have already delivered earlier columns. Actual read failures still use the rate-limited error logger.
 
 ## River fields
 

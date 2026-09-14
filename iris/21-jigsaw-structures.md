@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-08T20:03:07.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -724,7 +724,7 @@ Vanilla templates have no per-piece collision flag.
 The exporter does not export tile or block-entity NBT. A chest, spawner, sign, or other tile-bearing object blocks strict export even though it works fine inside Iris. The command exposes only namespace, one direct output filename, directory or zip format, and the replacement choice.
 Biome, height projection, generation step, terrain adaptation, and structure-set placement stay at the fixed defaults above. Edit the emitted datapack afterward if those defaults are not the vanilla placement you want.
 
-Test the exported artifact on an unmodded Minecraft 26.2 server or client. Stop the disposable world. Install the pack in that world `datapacks/`. Restart so the worldgen registries load it. Confirm it is enabled without data errors. Locate `<namespace>:<resourcePath>`. Generate fresh chunks around the located start. `/reload` can list a newly copied pack as enabled without registering its worldgen structure in the running world. It is not a substitute for the restart. Iris validation and NBT round-trip tests do not substitute for the vanilla load and generation check.
+To use the export, place it in an unmodded Minecraft 26.2 world's `datapacks/` directory and restart the server. `/reload` does not register newly added worldgen structures. Use `/locate structure <namespace>:<resourcePath>` to find a generated start.
 
 ## Content unavailable on this Minecraft version
 

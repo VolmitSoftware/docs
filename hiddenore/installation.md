@@ -2,7 +2,7 @@
 title: "HiddenOre: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-10T03:05:07.654Z
+date: 2026-09-14T00:36:31.000Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ PlaceholderAPI is optional.
 
 ## Choose the drop mode
 
-HiddenOre can replace ore drops, add bonus drops, or leave vanilla drops unchanged. Configure each ore in `hiddenore.toml`, then test with a normal player before enabling it for everyone.
+HiddenOre can replace ore drops, add bonus drops, or leave vanilla drops unchanged. Configure each ore in `hiddenore.toml`.
 
 ## Language
 

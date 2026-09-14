@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,13 +27,13 @@ Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `
 2. Start the server so Wormholes creates its data folder and `wormholes.toml`.
 3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
    have no schema or a wrong schema. The file must use `schema = 3`.
-4. Apply config changes with `/wormholes reload` or the config file watcher.
+4. Save the file and wait for `Configuration hot-reloaded.` in the console.
 
 WorldGuard is optional and adds protection checks for RTP destinations.
 
 Legacy configuration is not migrated. Back up any values you need, remove the old `plugins/Wormholes/config/` directory, restart the server, and reapply them to `wormholes.toml`.
 
-Direct edits to `languages/*.toml` need `/wormholes reload` or a config change.
+The resource watcher applies direct edits to `languages/*.toml` automatically.
 Dimensional Doors pack and registry changes need a full server restart. See
 [07 - Dimensional Doors](/wormholes/07-dimensional-doors).
 
@@ -67,7 +67,7 @@ and trust under `routes/` and `trust/`. See
 | Sections | `[main]`, `[recipes]` (+ product tables), `[network]` (+ nested), `[projection]`, `[render]` |
 | Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
 
-Startup and `/wormholes reload` rewrite the file with every known key. This removes custom comments and unknown or misspelled keys. Automatic hot reload does not rewrite the file. Invalid files leave the previous settings active.
+Startup rewrites the file with every known key. This removes custom comments and unknown or misspelled keys. Automatic hot reload does not rewrite the file. Invalid files leave the previous settings active.
 
 ## Visual quality (`quality`)
 
@@ -158,7 +158,7 @@ the watched file.
 | `pocket-shell-material` | `SMOOTH_STONE` | Wall, floor, and ceiling block of a newly created pocket. Must be solid and non-falling. Existing pockets keep their own material |
 | `pocket-return-door-material` | `CRIMSON_DOOR` | Exit door of a newly created pocket. Must be hand-operable, so iron doors are rejected. Existing pockets keep their own door |
 | `portal-collapse-speed` | `0.91` | Collapse animation factor |
-| `verbose-logging` | `false` | Verbose console logs (`Settings.DEBUG`) |
+| `verbose-logging` | `false` | Persistent console debug: one-second telemetry, access checks, handoffs, and failure details |
 | `debug-rendering` | `false` | Debug rendering aids |
 | `teleport-cooldown-millis` | `1000` | Local teleport cooldown. Also floors cross-server handoff rate limit (min 1000 ms) |
 | `portal-pushback-multiplier` | `1.0` | Rejected-traversal push scale. 0 mutes knockback |
@@ -182,7 +182,7 @@ the watched file.
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
-Normal console output covers lifecycle changes and failures that need attention. Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled.
+Normal console output covers lifecycle changes and failures that need attention. Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled. `/wh debug toggle` enables the same diagnostics temporarily. A settings hot-reload restores the file's value. See [Live console debug mode](/wormholes/09-commands-permissions#live-console-debug-mode).
 
 Traversal API behavior and provider contracts are in
 [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
@@ -346,13 +346,15 @@ Projection behavior detail:
 
 ## Hot reload
 
-`wormholes.toml` reloads automatically after a complete save. Invalid files leave the current settings active and report the problem. Use `/wormholes reload` when you want to apply changes immediately.
+`wormholes.toml` reloads automatically after a complete save. The console confirms a successful update with `Configuration hot-reloaded.` Invalid files leave the current settings active and report the problem.
 
 Canonical settings preserve string arrays, literal backslashes, and escaped control characters. Integer overflow rejects the update instead of wrapping into another value.
 
+If a reload leaves portals or projections in an inconsistent state, restart the server. Back up Wormholes data before a reset or manual restoration.
+
 ## Related docs
 
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions), reload, debug, stats, and network commands
+- [09 - Commands & Permissions](/wormholes/09-commands-permissions), debug, stats, and network commands
 - [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), network keys in operation
 - [11 - Localization](/wormholes/11-localization), language and override behavior
 - [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events), traversal API contract

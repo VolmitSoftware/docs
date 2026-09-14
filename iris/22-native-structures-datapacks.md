@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-09T04:59:25.776Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Field details are in 1.5.
 
 This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The current built-in `overworld` and `underworld` packs declare no external datapack imports; this workflow is for custom packs that opt into them.
 
-Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, one nondeclaring Iris dimension, and a vanilla control world.
+Prerequisites: a Bukkit-family server and the Iris dimension pack that will use the datapack.
 
 1. Add a Modrinth, direct archive, or absolute local `file:` URL to `datapackImports` in the declaring dimension only. Pin a Modrinth version URL when the pack requires an exact release:
 
@@ -85,7 +85,7 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
 
    To enable a local datapack for every Iris dimension without editing JSON, place its ZIP directly under `plugins/Iris/datapacks/imports/`. Iris creates that folder automatically, scans only its top level, and ignores non-ZIP files, nested directories, hidden files, and symbolic links. Its managed structures remain excluded from vanilla-world generation and locate state.
 
-2. For a dimension-owned source, leave the URL out of the second test dimension and keep the vanilla world as a control. For a drop-folder source, both Iris dimensions should receive it while the vanilla world remains the control. Confirm the selected datapack supports the server's Minecraft version.
+2. Choose a datapack that supports the server's Minecraft version.
 3. Validate the pack, then run:
 
    ```text
@@ -95,10 +95,10 @@ Prerequisites: a disposable Bukkit-family server, one declaring Iris dimension, 
    With `general.autoIngestDatapacks=true`, startup performs the equivalent installation automatically. A newly installed or repaired source still requires the ensuing clean restart before its registry keys are live.
 
 4. After the full restart, run `/iris datapack list`, then `/iris structure list <declaring-dimension>` and pick one registered structure key from that source.
-5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before the generation test (see 1.2).
-6. Create fresh declaring and nondeclaring Iris worlds. In all three worlds, run `/locate structure <key>` and generate new chunks.
+5. Run `/iris structure verify <declaring-dimension> radius=48`. If the key is `[unreachable]`, set a compatible `vanillaDerivative` on an Iris biome before generating new chunks (see 1.2).
+6. Open the Iris world that uses this dimension. Use `/iris goto structure <key>` to find the structure in new terrain.
 
-**Success:** a dimension-owned source locates and naturally generates only in the declaring Iris world. A drop-folder source does so in both Iris dimensions. The vanilla world locates and generates structures from neither source. Restart without deleting the installed datapack and confirm the same result.
+Dimension-owned sources apply only to dimensions that declare them. Drop-folder sources apply to every Iris dimension. Neither source changes vanilla-world generation.
 
 If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart.
 It does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
@@ -576,9 +576,8 @@ Fabric, Forge, and NeoForge apply the equivalent boundary around the generation 
 Reads beyond it receive deterministic Iris surface/floor terrain or an empty ephemeral chunk. Far block changes, entities, events, and scheduled ticks never reach the live level. The modded structure-template palette lazy block lookup is also concurrent and boot-audited. Parallel native-volume inspection cannot mutate one vanilla cache through an unsafe `HashMap` path.
 
 Before modded native placement, Iris registers every POI-bearing block already present in the target protochunk. The subsequent structure block transition can then unregister or replace that POI normally after a vertical shift.
-A shifted Trial Chamber that removed four pre-existing Iris barrels finished with air at all four positions and no stale POI mismatch on exact replay.
 
-External-pack acceptance can still report authored-content warnings for unresolved `minecraft:grass` forms, invalid block properties, empty third-party pools, stale replacement identifiers, or stale block-attached-entity `block_pos` values. Iris reports those inputs and uses only Minecraft's safe fallback where one exists. It does not rewrite or migrate third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
+External datapacks can produce content warnings for unresolved `minecraft:grass` forms, invalid block properties, empty third-party pools, stale replacement identifiers, or stale block-attached-entity `block_pos` values. Iris reports those inputs and uses only Minecraft's safe fallback where one exists. It does not rewrite or migrate third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
 
 The managed Overworld pack authors big dripleaf stems with Minecraft 26.2's `facing` and `waterlogged` properties and mature beetroots at age 3. Normal worlds and Studio consume those same pack bytes, so Studio does not substitute a simplified block state or special landing-area content.
 
@@ -702,7 +701,7 @@ Automatic import is off by default because native generation and `nativeStructur
 
 Third-party templates using the legacy slab property `half=top|bottom`, or the misspelling `minecraft:chisled_polished_blackstone`, are corrected during conversion. Other invalid final states are omitted and reported as fidelity losses.
 
-## 6. Verification and debugging
+## Structure diagnostics
 
 ```
 /iris structure list <dimension>            # write + print key index

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,11 +26,10 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes info` | none | Show portal-building instructions |
 | `/wormholes wand [rune=true]` | `wormholes.admin.items` | Give a Portal Wand and, by default, a rune |
 | `/wormholes door [type=pair]` | `wormholes.admin.items` | Give a Dimensional Door |
-| `/wormholes reload` | `wormholes.admin.reload` | Reload config and language files |
 | `/wormholes debug version` | any Wormholes administration command access | Show the installed plugin version |
 | `/wormholes debug dump [upload=true]` | `wormholes.debugdump` | Save a diagnostic report, uploading by default |
 | `/wormholes debug` | `wormholes.admin` or `wormholes.debugdump` | Open diagnostic command help |
-| `/wormholes debug toggle` | `wormholes.admin` | Toggle verbose diagnostics until the next reload |
+| `/wormholes debug toggle` | `wormholes.admin` | Toggle formatted console diagnostics until config hot-reload or restart |
 | `/wormholes stats [now=false]` | `wormholes.admin` | Show the stats file; `now=true` writes it first |
 | `/wormholes pocket info` | `wormholes.admin.pocket` | Show the current pocket's size and materials |
 | `/wormholes pocket resize [size=0] [material=keep] [door=keep] [confirm=false]` | `wormholes.admin.pocket` | Resize the current pocket |
@@ -58,6 +57,16 @@ removing portal storage. Queued saves cannot recreate deleted portal files.
 
 `/wormholes debug dump` writes a report to the plugin's `debug/` directory and uploads it to mclo.gs by default. Use `upload=false` to keep it local. A failed upload does not delete the report. See [Shared diagnostic reports](/volmlib/api/diagnostics) for its contents.
 
+### Live console debug mode
+
+Run `/wh debug toggle` in-game as an administrator or `wh debug toggle` in the server console. Run it again to stop. For cross-server problems, enable it on both backends before reproducing the problem.
+
+Console output includes projection work, packet rates, remote views, peer connections, queues, handoffs, and failure counts every second. Access-denial lines identify the rejected portal and check. Failure details appear when debug starts and when a reason's count changes. Exceptions retain their normal stack traces.
+
+The `render` value measures accumulated projection work per elapsed second. For example, `700 ms/s` means 0.7 seconds of projection work per second, not a single frame's duration.
+
+The toggle lasts until the next settings hot-reload or server restart. To keep debug enabled through either, set `verbose-logging = true` in the existing `[main]` table of `plugins/Wormholes/wormholes.toml`. Set it to `false` to disable persistent debug. File changes apply automatically. Live debug writes to the server console and log. It does not upload a report.
+
 ## Permissions
 
 Personal language selection requires both `wormholes.language.self` and `volmit.language.self`. Both are granted by default.
@@ -71,7 +80,6 @@ Personal language selection requires both `wormholes.language.self` and `volmit.
 | `volmit.language.self` | Shared requirement for personal language selection |
 | `wormholes.admin` | All administration permissions |
 | `wormholes.debugdump` | Save and optionally upload diagnostic reports; default `op` |
-| `wormholes.admin.reload` | Reload files |
 | `wormholes.admin.items` | Give portal and door items |
 | `wormholes.admin.network` | Manage linked servers |
 | `wormholes.admin.projection` | Freeze or rebuild projections |
@@ -84,6 +92,6 @@ Personal language selection requires both `wormholes.language.self` and `volmit.
 | `wormholes.portals.wormhole` | Create wormhole portals |
 | `wormholes.portals.portal` | Create portal and RTP portals |
 
-Portal traversal can also use `wormholes.portal.<name>`. Names are lowercase; unsupported character runs become `_`. Renaming a portal changes this permission.
+Portal traversal uses `wormholes.portal.<key>`, whose stable key starts from the sanitized portal name. Renaming the portal preserves that key. With `[access] legacy-name-node-enabled = true`, the current name-derived node also acts as an alias. Without OP or the literal `*` permission, either matching grant blocks travel in `BLACKLIST` mode and permits it in `WHITELIST` mode. OP and `*` bypass portal access and direction restrictions. Source-side privilege also applies to that admitted gateway crossing. See [Portal access](/wormholes/04-portal-types-menus-settings#per-portal-permission-node).
 
 See [Building Portals](/wormholes/03-building-portals), [Pocket Dimensions](/wormholes/08-pocket-dimensions), and [Cross-Server Networking](/wormholes/10-cross-server-networking).

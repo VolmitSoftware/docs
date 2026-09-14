@@ -2,7 +2,7 @@
 title: "Image Map Studio Workflow"
 description: "Import, inspect, configure, preview, export, and validate image-driven Iris generation"
 published: true
-date: 2026-09-05T16:04:10.730Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -46,7 +46,7 @@ The interpreted preview shows the current authored map. Existing world chunks re
 | Binary mask | Threshold footprint, falloff, and configured smoothing |
 | Grayscale or alpha mask | Continuous zero-through-one weight; composed threshold and falloff are visible on the target preview |
 
-The source-image view is useful for visual orientation but does not prove decoding. Use the interpreted view for acceptance.
+Use the interpreted view to inspect decoded heights, target keys, and mask weights.
 
 Composed previews follow runtime application semantics. Biome, region, and surface-block targets select the mapped value at a final mask weight of at least `0.5` and leave the ordinary pipeline in control below it. Terrain-height masks blend from the active engine's procedural height baseline at weight `0` to the mapped height at weight `1`; they are not previewed against a synthetic zero-height plane.
 
@@ -88,4 +88,4 @@ Packaging runs the shared pack validator and image-map compiler before it clears
 | Export validation fails | Fix the first blocking diagnostic and export again; the previous project remains intact |
 | Existing terrain did not change | Generate chunks beyond the transition band, or reopen Studio for a fresh world. Hotload preserves existing chunks |
 
-Use [31 - Operator Runbooks](/iris/31-operator-runbooks) for the acceptance pass and [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the broader Studio lifecycle.
+See [Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for opening, saving, and closing a Studio session.

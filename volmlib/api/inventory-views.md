@@ -2,7 +2,7 @@
 title: "Bukkit inventory views and editors"
 description: "Inventory access, shared configuration menus, and menu shutdown"
 published: true
-date: 2026-09-10T21:10:39.163Z
+date: 2026-09-14T00:37:05.833Z
 tags: "volmlib, api, bukkit, inventory, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T04:40:00.000Z
@@ -27,8 +27,6 @@ HumanEntity viewer = BukkitInventoryViews.player(event.getView());
 ## Resolution and failures
 
 The utility resolves `getTopInventory` and `getPlayer` once through the runtime `InventoryView` type and caches the reflective methods. A missing required method fails class initialization. Reflective access or invocation failures throw `IllegalStateException` with the cause retained.
-
-This boundary covers these two operations only. It does not certify all Bukkit calls or server versions as compatible. Supplement compilation with runtime testing of the shaded consumer artifact.
 
 Relocate `art.arcane.volmlib` into the consuming plugin's private namespace. See [VolmLib API](/volmlib/api) for dependency and threading conventions.
 

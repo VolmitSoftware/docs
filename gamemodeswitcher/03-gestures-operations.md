@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Gestures and operations"
 description: "Default key gestures, event handling, and troubleshooting"
 published: true
-date: 2026-09-10T21:30:27.164Z
+date: 2026-09-14T00:37:05.831Z
 tags: "gamemodeswitcher, gestures, operations, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -49,33 +49,5 @@ Gesture and cooldown state uses UUIDs and clears on logout, death, world changes
 bStats uses plugin ID `33967` and respects both `metrics.enabled` and the shared `plugins/bStats/config.yml` opt-out. Changes to either file apply automatically. Invalid shared bStats configuration retains the previous metrics state and logs the failure.
 
 If gestures do not work, check `/gsw status`, personal opt-out, both required permissions, world restrictions, empty-hand requirements, timing, and the cooldown. Use `/gsw set creative` to distinguish gesture recognition from permission or mode-change cancellation. Check the console for failed reload or persistence stacktraces.
-
-## Compatibility verification
-
-The initial September 10, 2026 migration validation used isolated instances with the following results. Lifecycle checks include plugin enablement, console status, configuration application, local diagnostics, and graceful shutdown.
-
-| Platform | Minecraft version | Java used | Verification |
-| --- | --- | --- | --- |
-| Spigot | 1.20.1 | 17 | Gameplay and lifecycle |
-| Paper | 26.1.2 | 25 | Gameplay and lifecycle |
-| Paper | 26.2 | 25 | Lifecycle |
-| Purpur | 26.2 | 25 | Lifecycle |
-| Leaf | 26.2 | 25 | Lifecycle |
-| Folia | 1.21.11 | 25 | Gameplay and lifecycle |
-| Canvas | 26.2 | 25 | Lifecycle |
-
-Gameplay checks covered mode transitions, tap timing, spectator exit, permission denial, personal preferences across restart, inventory actions, configuration and translation editing, invalid-config retention, and English-only fallback. The installed Mineflayer harness connected with protocols 1.20.1, 1.21.11, and 26.1; it rejected 26.2 before connecting. That limits automated gameplay evidence for the 26.2 servers.
-
-The subsequent automatic-reload, language-download, and bStats update passed 47 unit tests and 52 runtime checks across Spigot 1.20.1 on Java 17 and Folia 1.21.11. These checks verified English-only startup, language headers, current command completion, gestures, editors, automatic configuration and language updates, English fallback, and live plugin/shared bStats opt-outs, including a shared opt-out while plugin TOML was invalid. Successful production GitHub downloads require the repository catalogs to be published on `main`; bStats initialization and reconfiguration checks do not establish backend receipt of telemetry.
-
-The menu update passed 49 plugin tests, 28 shared editor and text tests, and 46 Mineflayer checks across Spigot 1.20.1 on Java 17 and Folia 1.21.11. Checks covered filled inventory layouts, selected and unavailable modes, category and language-editor navigation, live boolean and timer changes, exact chat input and cancellation, item-movement protection, permission changes while a menu was open, and title/name/lore metadata without stray formatting tags. The shared catalog change also passed HiddenOre's language-header regression test.
-
-The configuration-help update passed 49 plugin tests, 13 shared editor tests, and 36 gameplay checks on Spigot 1.20.1 with Java 17 and Folia 1.21.11. These verified world-name examples in tooltips and chat prompts, automatic world-list application, cancellation, clearing restrictions with `[]`, and preservation of every configuration comment through editor saves.
-
-The switch-feedback update passed 59 plugin tests, 76 shared editor/HUD tests, and 36 gameplay checks: 18 on Spigot 1.20.1 with Java 17 and 18 on Folia 1.21.11 with Java 25, using matching bot protocols. Packet checks verified chat suppression, title and action-bar content and duration, immediate clearing of active popups, configured sound keys/volume/pitch, decimal sound edits from integer TOML values, and rejected-switch feedback. Inventory checks verified feedback editor controls and preservation of other menus, including an inventory opened by another plugin during a cancelled mode change. Both test instances shut down normally and were removed.
-
-Protocol tests can verify gamemode changes, inventories, commands, gestures, and title/sound packets. Minecraft rendering, text layout under resource packs, audible playback, and key-binding feel need a real-client check.
-
-The default-popup regression passed 59 plugin tests and 16 additional gameplay checks on Spigot 1.20.1/Java 17 and Folia 1.21.11/Java 25 with matching bot protocols. Fresh configurations enabled titles and action bars. Command switches, ordinary double-swap gestures, and sneaking double-swap gestures sent both HUD notifications without opening an inventory. Each notification toggle changed only its own setting, and the manual selector and an already-open configuration editor remained usable.
 
 [Installation and configuration](/gamemodeswitcher/01-installation-configuration) · [Commands and permissions](/gamemodeswitcher/02-commands-permissions)

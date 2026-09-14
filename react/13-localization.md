@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Server and React Web language settings"
 published: true
-date: 2026-09-10T06:12:13.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,10 +64,8 @@ English defaults and repository translations use `&0`–`&9` and `&a`–`&f` for
 
 Backslashes and angle brackets in plain-text variables remain literal, including Windows drive and network paths. They do not alter the message's formatting or escape its closing color tags.
 
-Renderer text, configuration annotations, and test details are plain text; `test.result.*` messages support chat formatting. TOML escapes remain distinct: `\n` inserts a line break, while `\\n` displays the literal characters `\n` used in editor instructions.
+Renderer text and configuration annotations are plain text. TOML escapes remain distinct: `\n` inserts a line break, while `\\n` displays the literal characters `\n` used in editor instructions.
 
 Hotload validates entries independently before installing the resulting locale. Malformed TOML uses English and logs a contextual React error with its complete exception diagnostics. In-game edits still validate the replacement and reject invalid or stale values before writing.
 
 Missing messages do not prevent personal or server locale selection. React renders those messages in built-in English while keeping the selected locale active and leaving the local file unchanged. Invalid individual templates or placeholders also fall back to English without rejecting the remaining translations. Malformed TOML uses English for the whole file until it is corrected.
-
-Add new server-visible strings to the English Java catalog and every repository translation. Catalog tests check registered message definitions, literal message lookups, matching keys, required placeholders, formatting, and variable references. Local TOML catalogs may omit entries and use fallback.

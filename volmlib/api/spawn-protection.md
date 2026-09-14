@@ -2,7 +2,7 @@
 title: "Native spawn-protection checks"
 description: "Query the server's spawn-protection decision across Bukkit implementation boundaries"
 published: true
-date: 2026-09-05T14:21:00.000Z
+date: 2026-09-14T00:37:05.833Z
 tags: "volmlib, api, bukkit, protection, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T14:10:53.000Z
@@ -42,6 +42,6 @@ This checks native spawn protection only. Consumers must still apply their own p
 
 Missing accessors, incompatible signatures, and native invocation failures mark that instance unavailable and log one contextual failure with the full cause through the server logger. Consumers should pause affected block changes on `UNSUPPORTED` and expose that state to operators. They may keep unrelated features available.
 
-The binding recognizes mapped and Spigot-shaped native types and validates exact public method signatures. It does not assume that every server fork exposes those bindings. Fixture tests prove binding and failure behavior; server runtime verification remains necessary for a consuming plugin.
+The binding recognizes mapped and Spigot-shaped native types and validates exact public method signatures. It does not assume that every server fork exposes those bindings.
 
 See [VolmLib API](/volmlib/api) for dependency, shading, and threading conventions.

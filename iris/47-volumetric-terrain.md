@@ -2,7 +2,7 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-09-09T06:54:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
@@ -152,49 +152,9 @@ A snippet reference written as `"snippet/cliff"` is rewritten to `snippet/terrai
 
 Run the checks with `/iris pack validate <key>` and read the result as described in [25 - Pack Management](/iris/25-pack-management).
 
-## The terrain probe
+## Example: stacked ledges
 
-The probe generates real chunks from a real pack, compares the geometry the runtime predicts against the blocks that were actually written, and exports cross-sections. It runs from the Iris source tree, not from a server.
-
-```
-./gradlew :probe:terrain3DProbe \
-  -PprobePack=/absolute/path/to/pack \
-  -PprobeDimension=overworld \
-  -PprobeSeed=1337 \
-  -PprobeMinimumChunkX=-4 -PprobeMaximumChunkX=4 \
-  -PprobeMinimumChunkZ=-4 -PprobeMaximumChunkZ=4 \
-  -PprobeRequiredCoverage=ledges \
-  -PprobeOutput=/absolute/path/to/output
-```
-
-| Property | Required | Meaning |
-|---|---|---|
-| `probePack` | Yes | Absolute path to the pack folder |
-| `probeDimension` | Yes | Dimension load key, no whitespace |
-| `probeSeed` | Yes | World seed |
-| `probeMinimumChunkX`, `probeMaximumChunkX` | Yes | Chunk X range, ordered, at most 64 chunks wide |
-| `probeMinimumChunkZ`, `probeMaximumChunkZ` | Yes | Chunk Z range, same limits |
-| `probeRequiredCoverage` | Yes | Comma-separated biome load keys that must produce both retained added terrain and retained covered gaps, or `-` for none |
-| `probeOutput` | Yes | Absolute output directory, created if missing |
-| `probeStrictGeometry` | No, `false` | Also fails when the final chunk differs from the terrain actuator's own output, which catches later passes overwriting shaped terrain |
-| `probeStudio` | No, `false` | Opens the engine in studio mode |
-| `probeJfr` | No | Absolute recording path outside the repository; adds a Flight Recorder profile recording |
-
-The task exits `0` when there are no failures, `1` when there are, and `2` when the probe itself threw before producing a result. It prints one `IRIS_TERRAIN3D_RESULT` line carrying the status and the resolved arguments, then a per-biome line with the shaped column count, retained added blocks, retained covered gaps, maximum gap height and geometry error count.
-
-It fails when a biome's generated blocks disagree with the predicted spans or with the height query, when strict mode is on and the final chunk differs from the actuator output, when the rectangle produced no shaped columns at all, or when a biome named in `probeRequiredCoverage` did not produce both retained added terrain and retained covered air gaps.
-
-### Output
-
-`terrain3d-summary.json` holds `status`, the resolved `configuration`, `generatedChunks`, `worldMinimumY`, per-biome `biomes` counters, a `topology` block, the `failures` list, `sections` with the absolute paths of the focused cross-section images, and a `metricDefinitions` block that spells out the histogram bin ranges and how to normalize the counters. Gap-height and thickness bins are `1`, `2–3`, `4–7`, `8–15`, `16+`; detached-component size bins are `1–8`, `9–64`, `65–512`, `513+`. Per-biome counts are normalized by dividing by `sampledColumns`, which includes unshaped columns.
-
-The topology block counts grounded, censored and detached components, the detached and retained-detached block totals, and how many small components survived fully. Components that touch the rectangle edge, the world ceiling, or terrain owned by another layer are censored rather than counted as detached, and examples are given as local `X,Y,Z` relative to the rectangle and the world minimum Y.
-
-Per chunk row the probe writes four PNGs, named with the world Z of the slice: `section-z-<z>-full.png` and `section-z-<z>.png` for the row's highest-scoring Z slice, and `fixed-section-z-<z>-full.png` and `fixed-section-z-<z>.png` for the fixed slice at local Z 8. The `-full` images show the whole world height in two stacked panels — terrain actuator output above, complete generated chunk below. The other two crop to the shaped band with a margin and scale up. Gold marks blocks added above the base height, mauve marks shaped air, green marks vegetation, blue and orange mark water and lava. The colors identify categories, not Minecraft rendering.
-
-### Worked example
-
-The repository carries a minimal fixture pack at `probe/src/test/resources/terrain3d-pack/`. It is a flat 256-block dimension with fluid level 0 and caves disabled, one region, and one biome whose generator is pinned flat at 128 so every effect on screen comes from the profile:
+This biome uses a flat generator at Y 128. The profile adds ledges above that height and cuts covered gaps into the terrain.
 
 ```json
 {
@@ -214,9 +174,7 @@ The repository carries a minimal fixture pack at `probe/src/test/resources/terra
 }
 ```
 
-Both gates are opened deliberately: `minimumSlope` at `0` removes the slope gate that flat ground would otherwise fail, and `fluidClearance` at `0` with `fluidFade` at `1` removes the elevation fade. A 16-block vertical scale against a 64-block amplitude puts several folds inside the displacement band, which is what produces stacked ledges. Point `probeRequiredCoverage` at `ledges` to require that this biome actually generates both added rock and covered gaps.
-
-The same trick is worth borrowing when tuning a real profile: temporarily flatten the generator and open the gates so you can see the field itself, then restore them.
+`minimumSlope: 0` allows shaping on flat ground. `fluidClearance: 0` and `fluidFade: 1` remove the elevation fade. The smaller vertical scale creates several folds within the 64-block displacement band.
 
 ## Cost
 

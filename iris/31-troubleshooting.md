@@ -1,25 +1,13 @@
 ---
-title: "Operator Runbooks"
-description: "Iris documentation: Operator Runbooks"
+title: "Troubleshooting"
+description: "Resolve Iris startup, pack loading, world loading, and generation problems"
 published: true
-date: 2026-09-08T00:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
 ---
-Use these checks after installing Iris, updating it, or changing a pack.
-
-## Install or update
-
-1. Confirm the server runs Java 25 and uses the correct Iris jar or mod.
-2. Start the server and check that Iris enables without errors.
-3. Validate each production pack with `/iris pack validate pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a mod loader.
-4. Generate new chunks in a disposable world before opening production worlds.
-5. Back up the complete dimension root. Do not omit or prune `iris/generation/`.
-6. For a pack update, run `/iris dev update-world world=<world> pack=<pack> confirm=true` on Bukkit or `/iris world update <dimension> <pack>` on modded. Restart cleanly.
-7. Verify an old chunk, the transition band, a distant new chunk, and a locator for newly added content.
-
-See [Installation & Platforms](/iris/01-installation-platforms) and [Pack Management](/iris/25-pack-management).
+Find the startup or generation symptom below. Back up the complete dimension root before restoring data or changing a world activation.
 
 ## Iris starts in Warning or Danger Mode
 
@@ -47,7 +35,7 @@ See [Pregeneration](/iris/07-pregeneration) and [Performance Tuning](/iris/33-pe
 
 ## Terrain changed after an update
 
-Stop generation and compare the world with a backup. Confirm that the update was staged before restart and that `iris/generation/manifest.json` and all referenced epoch, activation, ownership, boundary, and semantic files are present. Existing owned coordinates must still route to their recorded pack and generation kernel. New chunks should blend across `generator.generationTransitionWidthBlocks`; hydrology begins only after the protected terrain band. GoldenHash can compare output from identical activation inputs; see [Determinism & Goldenhash](/iris/32-determinism-goldenhash).
+Stop generation and compare the world with a backup. Confirm that the update was staged before restart and that `iris/generation/manifest.json` and all referenced epoch, activation, ownership, boundary, and semantic files are present. See [Worlds & Lifecycle](/iris/06-worlds-lifecycle) for generation updates and retained terrain.
 
 ## Roll back pack generation
 

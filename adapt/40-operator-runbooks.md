@@ -1,25 +1,14 @@
 ---
-title: "Operator Guide"
-description: "Install, update, recover, and troubleshoot Adapt"
+title: "Updates and Recovery"
+description: "Update Adapt, restore player data, and troubleshoot common problems"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:36:31.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
 ---
 
-Back up `plugins/Adapt/` before an update. Back up the database too when SQL storage is enabled.
-
-## First installation
-
-1. Run Java 25 with Paper, Purpur, or Folia on the supported Minecraft API line.
-2. Place the Adapt jar in the backend server's `plugins/` folder.
-3. Start the server and confirm Adapt enables.
-4. Join in Survival and right-click the side of a bookshelf with no placeable block in either hand.
-5. Grant the required command permissions to a non-operator account and check its menus.
-6. Stop the server cleanly and check the log for save or shutdown errors.
-
-Configuration files are created under `plugins/Adapt/`. See [Installation and Configuration](/adapt/01-installation-configuration) for the full layout.
+Back up `plugins/Adapt/` before an update. Back up the database too when SQL storage is enabled. For first-time setup, see [Installation and Configuration](/adapt/01-installation-configuration).
 
 ## Updating
 
@@ -28,7 +17,6 @@ Configuration files are created under `plugins/Adapt/`. See [Installation and Co
 3. Replace the jar on every backend.
 4. Start one backend first and check configuration and storage initialization.
 5. Start the remaining backends after the first one is healthy.
-6. Check one disposable player's XP, knowledge, learned adaptations, settings, and mutations.
 
 Do not mix backend versions when Redis handoff uses `Adapt:data:v2`. The transfer format has no compatibility decoder.
 
@@ -73,19 +61,6 @@ A failed fenced save may create `data/players/<uuid>.json.pending-sql`. Stop eve
 
 Do not rename raw JSON into a pending SQL recovery file. Adapt preserves incompatible recovery data and keeps the affected profile inactive.
 
-## Cross-server checks
-
-Every backend must use the same SQL database and compatible Redis settings. Redis transfers a fenced handoff snapshot; SQL remains the authority. No proxy plugin is required.
-
-After setup:
-
-1. Move a disposable player between two backends.
-2. Compare XP, knowledge, learned adaptations, effect settings, and mutations.
-3. Confirm both SQL tables retain the expected owner and sequence.
-4. Review both backend logs for transfer, staging, decoding, or fence errors.
-
-See [Cross-Server SQL and Redis](/adapt/39-velocity-cross-server) for setup and failure behavior.
-
 ## Common problems
 
 | Symptom | Check |
@@ -103,6 +78,7 @@ Use a non-operator account when checking permissions. Operator status bypasses m
 ## Related guides
 
 - [Commands and Permissions](/adapt/04-commands-permissions)
+- [Cross-Server SQL and Redis](/adapt/39-velocity-cross-server)
 - [Protection and Region Policy](/adapt/08-protection-region-policy)
 - [Integrations](/adapt/09-integrations)
 - [Mutations Overview](/adapt/34-mutations-overview)

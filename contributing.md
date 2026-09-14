@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:37:41.703Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,6 +27,10 @@ repositories do not contain separate documentation trees.
 
 When a plugin change affects behavior, commands, permissions, configuration,
 schemas, or APIs, update the matching page here at the same time.
+
+Plugin guides cover installation, use, configuration, integrations, and
+troubleshooting. Keep smoke tests, regression plans, QA scripts, test results,
+and release sign-off out of these pages.
 
 ## Frontmatter
 

@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -66,6 +66,8 @@ The package scan registers **155** built-in sampler ids. The telemetry controlle
 | `biletools-watched-jars` |
 
 ### chunks
+
+`chunk-tickets` counts plugin ticket memberships across all worlds. Two plugins that hold the same chunk count as two tickets. On Folia, the native bridge counts a locked ticket snapshot without creating Bukkit chunk objects or loading chunks. The sampler caches results for five seconds. If the bridge is unavailable or a query fails, the metric reports unavailable until its sampler restarts.
 
 | Sampler id |
 |---|

@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-13T20:41:58.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -127,6 +127,10 @@ Readers resolve IDs through this registry and skip unregistered slices using the
 ## TOML configuration
 
 `TomlCodec.toToml(...)` writes collections and arrays of objects as TOML arrays of tables (`[[rewards]]`), including nested tables and quoted keys. Both the typed-object and JSON-tree overloads support this structure; primitive lists remain inline arrays. A table array must contain only objects, and `fromToml(...)` reconstructs the typed list or array.
+
+## JSON optional booleans
+
+`JSONObject.optBoolean(key, defaultValue)` returns the default without logging when the key is absent. Present values accept booleans and case-insensitive `"true"` or `"false"` strings. Other values, including JSON null, retain the default and report the conversion exception with its stack trace. `getBoolean(key)` still throws for missing or invalid values.
 
 For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
 

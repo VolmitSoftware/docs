@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Installation and configuration"
 description: "Install the plugin and configure gestures, switch feedback, languages, and diagnostics"
 published: true
-date: 2026-09-10T21:30:27.164Z
+date: 2026-09-14T00:37:41.703Z
 tags: "gamemodeswitcher, configuration, languages"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -14,7 +14,7 @@ GamemodeSwitcher targets Spigot 1.20.1 and newer compatible servers, including P
 
 Stop the server, place `GamemodeSwitcher.jar` in its plugin directory, and restart. Confirm enablement in the console, then run `/gsw status`. Libraries and built-in English are bundled, so a default first startup works offline. Only English is generated initially; other languages download from GitHub when selected.
 
-Build from source with JDK 25 and `.\gradlew.bat build` on Windows or `./gradlew build` elsewhere. Java compilation uses `--release 17`. The build checks every class in the shaded artifact and compiles against current Spigot and Paper APIs. Outputs are `build/libs/GamemodeSwitcher-2.0.0.jar` and the workspace `BUILDS/GamemodeSwitcher.jar`.
+Build from source with JDK 25 and `.\gradlew.bat build` on Windows or `./gradlew build` elsewhere. Outputs are `build/libs/GamemodeSwitcher-2.0.0.jar` and the workspace `BUILDS/GamemodeSwitcher.jar`.
 
 ## Files
 

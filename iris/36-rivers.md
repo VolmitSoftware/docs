@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-11T02:52:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -21,7 +21,7 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [25 - Pack Management](/iris/25-pack-management)
-- [31 - Operator Runbooks](/iris/31-operator-runbooks)
+- [31 - Troubleshooting](/iris/31-troubleshooting)
 - [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [33 - Performance Tuning](/iris/33-performance-tuning)
 

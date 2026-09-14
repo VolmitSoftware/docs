@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-09T08:27:35.123866Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -52,14 +52,6 @@ The immediate path starts its lifecycle progress presentation before validation,
 **Expected result:** `release_candidate` appears in `/iris worlds` as a loaded Iris world, you spawn in it, and chunks generate as you fly.
 
 When a player runs the create command, Iris first generates the resolved entry chunk, searches the generated column area for a collision-free supported position, and only then delegates Paper's asynchronous teleport. The operation has a 60-second watchdog. A failure or timeout is non-terminal: Iris cancels only that entry attempt, keeps the successfully created world loaded and registered, and does not request a restart. Wait for initial generation to settle and run `/iris tp release_candidate` again.
-
-Now prove it survives a restart. A world that only works in the session that created it is not actually created:
-
-```text
-/iris pregen start radius=352 world=release_candidate center=0,0 gui=false
-```
-
-Wait for it to finish (see [07 - Pregeneration](/iris/07-pregeneration)). Restart the server cleanly. Teleport back in, and fly past the pregenerated boundary. New terrain must still appear.
 
 The world generates from its active immutable epoch under `<world>/iris/generation/epochs/<epoch>/pack/`. Authoring edits do not automatically update production worlds. Preserve the complete generation history with the world backup. Use [25 - Pack Management](/iris/25-pack-management) for compatible updates. Height and dimension-layout changes require a new world.
 

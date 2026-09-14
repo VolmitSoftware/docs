@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-13T18:16:54.244Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -596,7 +596,7 @@ The custom derivative only changes colors. `derivative` and `vanillaDerivative` 
 
 Needs `generators/flat.json` to exist. Everything else in the file has a working default.
 
-## Checklist for a new biome
+## Create a biome
 
 1. Create `biomes/<path>/<name>.json`. The path is the load key regions will reference. Pick it before you wire anything.
 2. Set `name`, `derivative` and `vanillaDerivative`.

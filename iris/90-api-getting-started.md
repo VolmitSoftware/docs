@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-13T19:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -90,20 +90,6 @@ When switching over Iris enums, include a `default` branch so future values do n
 
 Call `Engine.requestSave()` from the appropriate world-owning thread. It returns `false` when lifecycle admission rejects the request; an accepted request runs mantle and world-manager hooks and saves engine metadata on the caller, while native structure ownership serialization runs as tracked background work. Acceptance does not mean the background write has finished. Reload and shutdown drain accepted writes before releasing their runtime. `Engine.save()` and `Engine.saveNow()` retain their synchronous behavior.
 
-## Build artifacts
+## Build an API artifact
 
-Iris has no GitHub Actions CI workflow. Run builds, tests, and artifact verification locally; pushes and pull requests do not run these checks automatically.
-
-JitPack uses `jitpack.yml` to build and publish the API with remote dependencies. Reproduce that build with `./gradlew --no-daemon build publishToMavenLocal -PuseLocalVolmLib=false -PuseMavenLocal=false`. Iris pins the shared VolmLib artifact and packaging plugin to the same revision. Integration repositories only resolve their own groups or modules. ItemsAdder's API resolves from Maven Central.
-
-Run `./gradlew irisApi` to generate the API jar and a Maven repository under `build/api`. Set `DEPLOY_DIR` to use another output directory. This writes files locally and does not upload them to a remote repository.
-
-All four Iris platform builds use [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning). The build removes unreachable VolmLib classes while retaining Iris classes, reflective Matter slices, resources, and loader-specific library packaging. Runtime jars retain source locations and parameter names.
-
-Run `./gradlew verifyBukkitArtifact verifyModdedArtifacts` from the Iris repository to assemble and check all four jars without staging. Artifact checks include class references from field and method descriptors. Reports under each platform's `build/reports/packaging/` list removed classes and archive sizes.
-
-Bukkit release builds use stronger compression by default. Run `./gradlew verifyBukkitArtifact` to build and check the jar. Compression preserves entry contents and adds no runtime downloads. Development mode (`-PvolmitPackaging=dev` or `VOLMIT_PACKAGING=dev`) skips stronger compression by default. Set `-PcompactRelease=true` or `false` to override that choice. Both modes strip unnecessary dependency debug tables while keeping source locations and parameter names.
-
-## Source ownership
-
-The Bukkit API remains under `art.arcane.iris.api`. Internal types use the feature packages listed in [Source organization](/iris/88-source-organization). Reusable noise, interpolation, streams, and hunk storage come from VolmLib.
+Run `./gradlew irisApi` from the Iris repository to generate the API jar and a Maven repository under `build/api`. Set `DEPLOY_DIR` to choose another local output directory.

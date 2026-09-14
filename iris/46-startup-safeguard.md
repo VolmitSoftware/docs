@@ -2,7 +2,7 @@
 title: "Startup Safeguard"
 description: "Iris documentation: Startup Safeguard"
 published: true
-date: 2026-09-11T01:50:21.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T00:00:00.000Z
@@ -96,7 +96,7 @@ The banner is printed once per enable. It is not re-evaluated on `/iris reload`,
 - **Low Memory, Insufficient Disk Space, Unsupported Java version.** Fix the host: raise the heap, free space on the level root volume, or move to Java 25.
 - **Dynmap, Stratos, Unsupported Server Software.** Remove the conflicting plugin or move to a supported server, or accept that Iris runs unverified against it.
 
-Never work around a lock by deleting files from a dimension root. Restore from backup instead; see [31 - Operator Runbooks](/iris/31-operator-runbooks).
+Never work around a lock by deleting files from a dimension root. Restore from backup instead; see [31 - Troubleshooting](/iris/31-troubleshooting).
 
 ## Related
 
@@ -104,4 +104,4 @@ Never work around a lock by deleting files from a dimension root. Restore from b
 - [03 - Configuration](/iris/03-configuration)
 - [04 - Commands & Permissions](/iris/04-commands-permissions)
 - [30 - Platform Differences](/iris/30-platform-differences)
-- [31 - Operator Runbooks](/iris/31-operator-runbooks)
+- [31 - Troubleshooting](/iris/31-troubleshooting)

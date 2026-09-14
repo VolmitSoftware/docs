@@ -2,7 +2,7 @@
 title: "Client HUD & Protocol"
 description: "Iris documentation: Client HUD & Protocol"
 published: true
-date: 2026-08-23T00:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -242,15 +242,3 @@ through `ClientUiMessages` on whichever process renders them. Only the
 three keybind labels and their category come from the client jar's
 `assets/irisworldgen/lang/*.json`. See
 [08 - Localization](/iris/08-localization).
-
-## Operator verification checklist
-
-- Modded server plus Iris client: progress on the native HUD, and **no**
-  boss bar for that player
-- Bukkit Iris plus Iris client: the same HUD, over plugin messaging
-- Vanilla client on either server: no protocol traffic, and on modded the
-  boss bar as described
-- Non-Iris server plus Iris client: silent after roughly 10 s of hello
-  retries
-- `H` toggles the HUD, `M` opens Vision where the capability is granted,
-  `J` toggles What where the capability is granted

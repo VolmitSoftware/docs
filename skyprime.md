@@ -2,7 +2,7 @@
 title: SkyPrime
 description: Shared-grid survival islands, teams, protection and progression
 published: true
-date: 2026-09-05T16:24:00.000Z
+date: 2026-09-14T00:37:05.832Z
 tags: skyprime, skyblock, islands
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -17,4 +17,4 @@ SkyPrime gives each island a permanent identity and a reserved area in a shared 
 - [06 - Starter Templates](/skyprime/06-starter-templates)
 - [90 - Placeholders & API](/skyprime/90-placeholders-api)
 
-The plugin builds against Spigot 1.20.1 with Java 17 bytecode and has additional compilation gates for Paper 26.2 and Spigot 26.2. The server still requires the Java version appropriate to its Minecraft release. Server startup, real-client presentation and gameplay acceptance are separate release checks described in [Operations](/skyprime/04-operations-recovery).
+See [Installation & Configuration](/skyprime/01-installation-configuration) for server and Java requirements.

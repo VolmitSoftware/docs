@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Pages `00`–`44` cover server operation and pack authoring. Pages `90`–`94` c
 
 | You want to | Read, in order |
 |---|---|
-| Get Iris running and make one world | [01 - Installation & Platforms](/iris/01-installation-platforms) → [02 - Getting Started](/iris/02-getting-started) → [31 - Operator Runbooks](/iris/31-operator-runbooks) |
+| Get Iris running and make one world | [01 - Installation & Platforms](/iris/01-installation-platforms) → [02 - Getting Started](/iris/02-getting-started) → [31 - Troubleshooting](/iris/31-troubleshooting) |
 | Write a pack from scratch | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) → [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) → [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) → [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Drive generation from PNG data | [37 - Image Map Concepts](/iris/37-image-map-concepts) → [38 - Supported Image Inputs](/iris/38-supported-image-inputs) → the relevant type guide → [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) → [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
@@ -27,7 +27,7 @@ Pages `00`–`44` cover server operation and pack authoring. Pages `90`–`94` c
 | Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
 | Place a building or structure | [18 - Structures Overview](/iris/18-structures-overview) → [19 - Objects](/iris/19-objects) → [20 - Object Placement](/iris/20-object-placement) → [21 - Jigsaw Structures](/iris/21-jigsaw-structures) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Control what vanilla still generates | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for structures |
-| Deploy a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) → [31 - Operator Runbooks](/iris/31-operator-runbooks) |
+| Deploy a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) → [31 - Troubleshooting](/iris/31-troubleshooting) |
 | Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
 Each tutorial page ends with something you can observe. That can be a world that loads, a chunk that generates, or a hotload that lands. Confirm that result before you open the next page.
@@ -43,9 +43,9 @@ One plugin jar covers the whole Bukkit family. Each mod loader gets its own jar.
 | Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing. This is the reference plugin target |
 | Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
 | Folia | plugin jar | 26.1.2 – 26.2 | Region-safe scheduling. `/iris create` builds the managed world live through Iris's Paper-like runtime backend without an ordinary restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
-| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD. Current acceptance target is Fabric Loader 0.19.3 on Java 25 |
-| Forge | mod jar | 26.2 | Same. Current acceptance target is Forge 26.2-65.1.1 |
-| NeoForge | mod jar | 26.2 | Same. Current acceptance target is NeoForge 26.2.0.59 |
+| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD. Requires Fabric Loader 0.19.3+ and Java 25 |
+| Forge | mod jar | 26.2 | Same. Forge 65.x |
+| NeoForge | mod jar | 26.2 | Same. NeoForge 26.2.x |
 
 Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree felling uses `iris.treefeller`.
 
@@ -96,9 +96,9 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Integrations | WorldEdit, Multiverse, Mythic, item plugins, tree feller | [28 - Integrations](/iris/28-integrations) |
 | Client HUD | Client mod HUD and protocol channel | [29 - Client HUD & Protocol](/iris/29-client-hud-protocol) |
 | Platform matrix | Bukkit vs Fabric / Forge / NeoForge differences | [30 - Platform Differences](/iris/30-platform-differences) |
-| Operator checks | Manual verification | [31 - Operator Runbooks](/iris/31-operator-runbooks) |
+| Troubleshooting | Startup and generation problems | [31 - Troubleshooting](/iris/31-troubleshooting) |
 | Startup safeguard | Stable, Warning, and Danger modes and what they lock | [46 - Startup Safeguard](/iris/46-startup-safeguard) |
-| Determinism | Goldenhash cross-platform gate | [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash) |
+| Determinism | Compare generation output | [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash) |
 | Performance | Threads, mantle, SIMD, pregen caps | [33 - Performance Tuning](/iris/33-performance-tuning) |
 | Multiverse | What Multiverse may and may not do with Iris worlds | [34 - Multiverse](/iris/34-multiverse) |
 | API — setup | Bukkit public API dependency | [90 - API - Getting Started](/iris/90-api-getting-started) |
@@ -107,7 +107,6 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | API — tree feller | Tree feller service | [93 - API - Tree Feller](/iris/93-api-tree-feller) |
 | API — modded | Modded public API (`art.arcane.iris.modded.api`) | [94 - API - Modded](/iris/94-api-modded) |
 
-For Java package ownership and shared dependencies, see [Source organization](/iris/88-source-organization).
 
 ## Content model
 

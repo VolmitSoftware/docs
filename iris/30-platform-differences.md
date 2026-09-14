@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-05T23:20:48.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -186,11 +186,7 @@ and one owning Jigsaw session. Non-owner block, inventory, interaction,
 and mutating-command changes are cancelled across that Studio world.
 Autosave and graph-operation barriers serialize the owner's changes. On
 Folia a save schedules every intersecting chunk snapshot on its owning
-region and writes only after the complete capture validates. These
-protections have automated coverage but still need the live multi-region
-runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks). A strict
-`VANILLA_PORTABLE` export targets unmodded Minecraft 26.2 and is a
-separate compatibility gate.
+region and writes only after the complete capture validates. A strict `VANILLA_PORTABLE` export targets unmodded Minecraft 26.2.
 
 ## Platform-sensitive settings
 
@@ -280,12 +276,7 @@ Detail and the commands: [25 - Pack Management](/iris/25-pack-management).
    modded or the ingest flow on Bukkit.
    Compare `/iris pack compat` on both platforms: on the same Minecraft
    version the two reports must match.
-8. Create a disposable world with the same seed. Run the same small
-   GoldenHash inputs plus the platform's fresh-install runbook.
-
-The move passes when validation, world creation, restart, and the
-deterministic comparison all pass. Matching screenshots are useful
-context. The hash comparison is what counts.
+8. Create a new world on the destination platform with `/iris create`.
 
 ## Related
 
@@ -298,7 +289,7 @@ context. The hash comparison is what counts.
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [28 - Integrations](/iris/28-integrations)
 - [29 - Client HUD & Protocol](/iris/29-client-hud-protocol)
-- [31 - Operator Runbooks](/iris/31-operator-runbooks)
+- [31 - Troubleshooting](/iris/31-troubleshooting)
 - [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [37 - Image Map Concepts](/iris/37-image-map-concepts)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)

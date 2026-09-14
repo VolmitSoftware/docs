@@ -2,7 +2,7 @@
 title: "Supported Image Inputs"
 description: "Canonical PNG formats, channel layouts, bit depths, and size limits for Iris image maps"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -63,7 +63,7 @@ Iris reads raster samples as data:
 
 An image editor that performs color-profile conversion, dithering, palette quantization, or lossy export can change data pixels even when the picture looks the same. Export data maps with those operations disabled.
 
-## Inspection checklist
+## Source image information
 
 Before configuring a map, Image Map Studio reports:
 

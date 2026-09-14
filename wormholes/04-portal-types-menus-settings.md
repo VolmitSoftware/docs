@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-14T00:10:27.350Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,23 +68,25 @@ Settings Sync copies supported changes to linked local portals and gateways. Whe
 
 ## Per-portal permission node
 
-Node: `wormholes.portal.<sanitizedName>`.
+Node: `wormholes.portal.<key>`. The access key starts from the sanitized portal name and remains stable when the portal is renamed. Set it with `/wh access key <portal> <key>` or the Access menu. With `[access] legacy-name-node-enabled = true` (default), the current name-derived node is also accepted as an alias.
 
 Sanitization works as follows:
 
 1. Convert the portal name to lower case.
 2. Keep `a-z`, `0-9`, `.`, `-`, and `_`.
 3. Collapse other characters to `_`.
-4. If the result is empty, use `unnamed`.
+4. Trim leading and trailing underscores. If the result is empty, use `unnamed`.
 
-| Mode | Effect for non-op players |
+| Mode | Effect without OP or `*` bypass |
 |------|---------------------------|
 | `BLACKLIST` | Holding the node **blocks** use |
 | `WHITELIST` | Holding the node **allows** use |
 
-Ops always pass the permission check and the outgoing/incoming travel-direction
-flags, including mirrored remote gateway admission. Mirror mode remains travel
-locked. Portal topology, cooldowns, RTP safety, configured travel costs, and
+When the name alias is enabled, either node counts. A scoped wildcard grant that matches the node can block an ordinary player in `BLACKLIST` mode. The literal `*` permission bypasses this check. Public portals normally use `BLACKLIST` without granting the matching nodes to ordinary travelers. Restricted portals use `WHITELIST` with explicit grants. Check effective permissions on both backends for cross-server travel.
+
+Access roles and groups add another gate. A `DENIED` role refuses the player. Adding a trusted player role makes the role list a whitelist. Trusted players, the owner, and players with an allowed group node pass that gate. These access grants also satisfy the frame permission gate. Direction checks still apply. Land-claim and integration checks can also reject travel.
+
+OP players and holders of the literal `*` permission bypass portal roles, permission mode, and outgoing/incoming direction restrictions. A gateway carries source-side privilege for that crossing, even when the destination grants neither OP nor `*`. It does not change destination permissions. The return trip uses permissions on the server the player leaves. Mirror mode remains travel locked. Portal topology, cooldowns, RTP safety, configured travel costs, and
 external integration decisions are not bypassed. Cycle permission mode in
 Settings. The whitelist/blacklist node is **players only**. Non-player entities
 always pass the portal permission check.
@@ -149,6 +151,10 @@ create B→A.
 Cross-server handoff detail:
 [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
+Linked frame arrivals place the traveler 1.25 blocks clear of the exit plane along its normal. Jumping, falling, or strafing does not change that clearance axis. The configured momentum policy still controls the outgoing velocity.
+
+Player capture checks the movement segment since the previous portal check, including players who have just left its capture area. Several movement packets in one slow tick cannot skip a straight crossing. Teleports, reconnects, respawns, portal closure, and destination changes invalidate that history. The outgoing momentum uses the latest movement packet rather than the accumulated capture distance.
+
 ## Type menu
 
 Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
@@ -183,6 +189,9 @@ is still ON/OFF for all types
 | Public look label | Toggle whether nearby players without a portal tool see this portal's name while looking at it. Off by default |
 | Travel cost | Opens cost menu |
 | Fallback block | Chat block-state string (custom quality layout / advanced) |
+| More settings | Opens portal extension controls, including Access |
+
+Select More settings, then Access, to edit player roles, allowed groups, the stable permission key, and public-directory visibility.
 
 Custom quality expands the window to show depth, full-refresh ticks, entity
 interval, and view grace editors.

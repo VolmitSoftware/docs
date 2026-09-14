@@ -2,7 +2,7 @@
 title: "Noise and procedural streams"
 description: "Seeded noise, composition, interpolation, and procedural fields shared by Volmit plugins."
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-14T00:37:05.832Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -42,7 +42,3 @@ The canonical implementations retain Iris's seed handling, noise composition, in
 Iris interprets pack `NoiseStyle` definitions and resolves expression and image-map resources. Its `generation.noise` package owns those bindings. Its `generation.stream` package owns engine context injection and caches registered with a generation runtime.
 
 Generic VolmLib streams do not own an Iris runtime, preservation registry, or generation executor. Callers supply the executor factory for parallel fills. See [Hunks and coordinate math](/volmlib/api/hunks).
-
-## Verification
-
-The shared tests cover exact seeded samples, coordinate boundaries, octave behavior, interpolation bounds, and concurrent sampling. A classloader isolation test blocks Iris, Bukkit, and Paper while sampling every noise type and composing an interpolated stream.

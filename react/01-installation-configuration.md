@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-09-10T04:12:59.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -52,6 +52,8 @@ PlaceholderAPI and the other Volmit plugins are optional.
 React watches configuration and language files whenever the plugin is enabled. Save changes to apply them automatically, including feature, tweak, action, sampler, global, and web settings. Invalid configuration files leave the previous working settings active. Language catalogs use the per-message and file-level fallback rules in [Localization](/react/13-localization).
 
 Changing `metrics` starts or stops anonymous bStats reporting without a restart. Setting `unsafeBytecode = true` can attach React's general ByteBuddy agent while the server is running. Attached instrumentation remains until the server JVM restarts. Set `unsafeBytecode = false` before restarting to prevent the general agent from attaching again; versioned NMS features can still attach their own instrumentation when activated.
+
+If React reports that a task or ticker did not stop during a reload, restart the server.
 
 ## Metric history
 

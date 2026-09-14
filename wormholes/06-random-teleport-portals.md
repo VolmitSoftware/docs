@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:56:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -186,6 +186,8 @@ scan that avoids the roof band.
 
 Wormholes tries up to 32 candidates over 30 seconds. It publishes the first valid destination, then prepares spare destinations in the background. Failed searches retry after a delay that grows from one to 30 seconds.
 
+On Folia, a departure hold corrects the traveler's position with one asynchronous teleport at a time. Departure and rejection wait for any pending correction, then recheck the current attempt on the traveler's entity scheduler. Expired holds and replaced player sessions cannot resume from an old callback or cancel a newer attempt.
+
 The previous ready projection can remain visible while a replacement is prepared. `leaseIdleMillis`, default 30 seconds, prevents brief departures from immediately releasing it.
 
 ## Runtime behavior notes
@@ -235,10 +237,10 @@ Keys (portal-scoped. See
 
 Priority in `WormholesPortalSnapshot.rtpState`:
 
-1. not RTP / not registered → unavailable  
-2. `rerolling`  
-3. `warming` (searching)  
-4. `ready`  
+1. not RTP / not registered → unavailable
+2. `rerolling`
+3. `warming` (searching)
+4. `ready`
 5. `cooldown` if cooldown millis remain, else `idle`
 
 ## Cross-references
@@ -246,4 +248,3 @@ Priority in `WormholesPortalSnapshot.rtpState`:
 - Portal types and menus: [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)
 - Projection of RTP destinations: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings)
 - Commands: [09 - Commands & Permissions](/wormholes/09-commands-permissions)
-- Smoke checklist: [14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests)

@@ -2,30 +2,22 @@
 title: "PlaceholderAPI"
 description: "Iris documentation: PlaceholderAPI"
 published: true
-date: 2026-08-19T00:00:00.000Z
+date: 2026-09-14T00:56:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris registers a PlaceholderAPI expansion with id `iris` on Bukkit-family servers. It publishes sixteen read-only values: one service flag, six terrain readings scoped to a player's position, and nine global pregeneration readings. Scoreboard, chat, and HUD plugins can show Iris state without writing Java.
+Iris registers a PlaceholderAPI expansion with id `iris` on Bukkit-family servers. It publishes twenty-nine read-only values: one service flag, nineteen world readings scoped to a player's position, and nine global pregeneration readings. Scoreboard, chat, and HUD plugins can show Iris state without writing Java.
 
 Plugins that need the same data with real types and no string parsing should use the API pages instead. Start at [90 - API - Getting Started](/iris/90-api-getting-started). Then see [91 - API - Terrain](/iris/91-api-terrain) and [92 - API - World Events](/iris/92-api-world-events). There is no PlaceholderAPI on Fabric/Forge/NeoForge. See [07 - Pregeneration](/iris/07-pregeneration) and [28 - Integrations](/iris/28-integrations) for the surrounding runtime.
 
 ## Put an Iris value on a scoreboard
 
-Work outward. Prove the placeholder resolves in PlaceholderAPI itself before you touch the plugin that will display it. Half of all "the placeholder is broken" reports are a formatting mistake in the consumer.
+Install PlaceholderAPI before starting Iris, then restart the server. World placeholders need an online player in a loaded Iris world.
 
-Prerequisites: Bukkit-family Iris, PlaceholderAPI installed *before* Iris starts, a full server restart, and a player standing in a loaded Iris world.
+Add a placeholder such as `%iris_world.biome%` to your scoreboard plugin's format and reload that plugin. Use `%iris_world.available%` as a display condition when supported.
 
-1. `/papi info iris`: the expansion must be listed with author `Volmit Software` and version `2.0.0`, along with all sixteen paths. If it is not listed at all, skip to the recovery table. Nothing else will work.
-2. `/papi parse me %iris_available%`: expect `true`. This only means Iris registered its terrain service, not that you are in an Iris world.
-3. `/papi parse me %iris_world.available%`: expect `true`. This is the guard you will use in the board template.
-4. `/papi parse me %iris_world.biome-key%`: expect a load key such as `desert/hot-dunes`. A `---` here means Iris has no reading for you yet. See the recovery table.
-5. Start a job to test the pregen family: `/iris pregen start radius=352 center=0,0 gui=false`, then `/papi parse me %iris_pregen.percent%`. Expect a bare number between `0.00` and `100.00` with no percent sign.
-6. `/iris pregen stop`, then `/papi parse me %iris_pregen.available%`. Expect `false`, and every other `pregen.*` key to read `---`.
-7. Now paste the exact string you verified into the consumer plugin, wrap it in whatever guard that plugin offers, and reload it.
-
-Success is the board showing the same text `/papi parse` showed. If step 7 disagrees with step 4, the bug is in the consumer's template or refresh interval, not in Iris.
+To inspect a value directly, run `/papi parse me %iris_world.biome%`. If it resolves there but differs on the scoreboard, check the scoreboard format and refresh interval. `/papi info iris` lists all available keys.
 
 ### Recovery
 
@@ -83,11 +75,40 @@ Everything except `%iris_available%` needs an online player with a tracked posit
 | `%iris_world.available%` | `true` when the reading player's tracked position is in a world Iris generates. The guard for every other `world.*` key |
 | `%iris_world.biome%` | Display name of the surface biome at the player's X/Z column, for example `Hot Desert Dunes` |
 | `%iris_world.biome-key%` | Load key of that same biome, for example `desert/hot-dunes`. This is what a pack file is named after |
+| `%iris_world.biome-custom%` | `true` when the surface biome defines custom derivatives, otherwise `false` |
+| `%iris_world.biome-custom-id%` | Authored `customDerivitives[].id` when exactly one derivative is defined, for example `golden-dunes`; `---` for none or multiple |
+| `%iris_world.biome-custom-ids%` | All authored custom derivative IDs, comma-and-space separated in definition order; `---` for none |
+| `%iris_world.biome-custom-key%` | Namespaced Minecraft registry key for the sole custom derivative, such as `iris:biomes/<hash>`; `---` for none, multiple, or unavailable mapping |
+| `%iris_world.biome-custom-keys%` | Registry keys for all custom derivatives in definition order, comma-and-space separated; `---` for none or any unavailable mapping |
+| `%iris_world.biome-custom-count%` | Number of authored custom derivatives; `0` for a vanilla-only biome |
+| `%iris_world.biome-derivative%` | Configured base derivative registry key, for example `minecraft:desert` |
+| `%iris_world.biome-vanilla-derivative%` | Effective vanilla derivative registry key used when a vanilla biome is required |
+| `%iris_world.biome-type%` | Inferred biome category: `land`, `sea`, `shore`, or `cave`; `---` when unavailable, including retained definitions without a recorded category |
+| `%iris_world.min-height%` | World minimum absolute Y, inclusive |
+| `%iris_world.max-height%` | World maximum absolute Y, exclusive |
+| `%iris_world.height%` | World vertical span, equal to maximum minus minimum height |
+| `%iris_world.fluid-height%` | Dimension fluid level in absolute world Y; this is configuration, not a measurement of water at the player |
 | `%iris_world.region%` | Display name of the region covering the player's X/Z |
 | `%iris_world.region-key%` | Load key of that region |
 | `%iris_world.dimension%` | Load key of the dimension the player's world generates from, for example `overworld`. This is the dimension file's key, which is usually but not necessarily the pack folder name |
 
 From the console, for an offline player, or before a player's first tracked position: `world.available` is `false` and the rest are `---`.
+
+### Authored IDs and registry keys
+
+For a biome file `biomes/desert/hot-dunes.json` with `"name": "Hot Desert Dunes"` and one `customDerivitives` entry containing `"id": "golden-dunes"`, the three authored values are:
+
+- `%iris_world.biome%`: `Hot Desert Dunes`.
+- `%iris_world.biome-key%`: `desert/hot-dunes`.
+- `%iris_world.biome-custom-id%`: `golden-dunes`.
+
+Minecraft's physical custom biome registry key is separate and can contain a content hash. `%iris_world.biome-custom-key%` exposes that mapping. The plural placeholders list all configured derivatives; the singular placeholders return `---` when more than one is defined. These are surface-biome definitions, not a lookup of the randomly selected physical biome at the player's exact Y. Iris does not rerun random selection to guess that value.
+
+Biome names, region names, and custom mappings use the retained generation definitions for saved columns. Editing the active pack does not relabel an already recorded column. Missing registry mappings leave authored IDs available while the affected key placeholders return `---`.
+
+While saved biome data loads, biome and region placeholders return `---`. Iris retries on the next request after its one-second cache expires, even if the player stays still. Normal loading does not log a terrain API error; actual read failures still do.
+
+For MythicMobs RandomSpawns, use the location-based `irisbiome` condition with the biome load key. Player placeholders do not describe an arbitrary spawn point. See [28 - Integrations](/iris/28-integrations).
 
 ### Pregeneration family
 
@@ -122,8 +143,21 @@ pregen.total
 pregen.world
 world.available
 world.biome
+world.biome-custom
+world.biome-custom-count
+world.biome-custom-id
+world.biome-custom-ids
+world.biome-custom-key
+world.biome-custom-keys
+world.biome-derivative
 world.biome-key
+world.biome-type
+world.biome-vanilla-derivative
 world.dimension
+world.fluid-height
+world.height
+world.max-height
+world.min-height
 world.region
 world.region-key
 ```
@@ -132,7 +166,7 @@ Prefix each with `%iris_` and suffix with `%`.
 
 ## What "surface" means, and what a board costs
 
-`world.biome`, `world.biome-key`, `world.region`, and `world.region-key` are **surface column** readings: whatever the generator places at ground level for that X/Z. Y is not part of the query. A player 60 blocks down in a cave still reads the surface biome overhead, not the cave biome. If you need the biome at an actual Y, that is a terrain API call, not a placeholder. See [91 - API - Terrain](/iris/91-api-terrain).
+All `world.biome*` values, `world.region`, and `world.region-key` are **surface column** readings: whatever the generator places at ground level for that X/Z. Y is not part of the query. A player 60 blocks down in a cave still reads the surface biome overhead, not the cave biome. If you need the biome at an actual Y, that is a terrain API call, not a placeholder. See [91 - API - Terrain](/iris/91-api-terrain).
 
 ### When a position is published
 
@@ -148,7 +182,7 @@ Because teleports publish immediately, a player who arrives somewhere and stands
 
 A player's world view is rebuilt at most once per second (`VIEW_TTL_MS = 1000`), and only when something actually reads a `world.*` key. This has three effects on a board:
 
-- A board with six `world.*` keys costs one rebuild per player per second, not six.
+- All `world.*` keys share one cached view. A rebuild queries one biome environment and one world-info snapshot per player.
 - Values can trail a sprinting player by up to a second.
 - A board nobody is reading costs nothing. Iris does not poll terrain in the background for this.
 

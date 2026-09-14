@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "%wormholes_…% keys for operators"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ leaves the text unreplaced.
 
 ## Lifecycle
 
-The expansion registers when both plugins are enabled, including when PlaceholderAPI starts later. `/wormholes reload` leaves it registered, and `/papi reload` does not remove it. Before Wormholes publishes its first snapshot, most keys return `---` and availability keys return `false`.
+The expansion registers when both plugins are enabled, including when PlaceholderAPI starts later. Configuration hot reload leaves it registered, and `/papi reload` does not remove it. Before Wormholes publishes its first snapshot, most keys return `---` and availability keys return `false`.
 
 ## Where values come from
 

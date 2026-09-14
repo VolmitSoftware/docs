@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Wormholes features, portal lifecycle, compatibility, and documentation map"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -67,7 +67,6 @@ types, names, or destinations.
 - [Cross-server networking](/wormholes/10-cross-server-networking)
 - [Localization](/wormholes/11-localization)
 - [PlaceholderAPI](/wormholes/12-placeholderapi)
-- [Operator checks and recovery](/wormholes/14-operator-runbooks-smoke-tests)
 - [Integrations](/wormholes/15-integrations)
 {.grid-list}
 

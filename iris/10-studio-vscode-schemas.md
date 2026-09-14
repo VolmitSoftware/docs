@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -283,7 +283,7 @@ Registry-backed enums are captured from the live server. A schema generated on a
 
 On Bukkit-family servers, block and item enum discovery excludes legacy `Material` constants. Schemas therefore offer only current registry values and do not initialize CraftLegacy while the schema builder starts.
 
-## Studio dimension modes (author testing)
+## Studio dimension modes
 
 The dimension field `studioMode` swaps in a debug generator. It is applied by the Bukkit chunk generator only. Fabric, Forge and NeoForge ignore it.
 

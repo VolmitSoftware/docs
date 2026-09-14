@@ -2,7 +2,7 @@
 title: "Loot, Entities, Spawners, Markers"
 description: "Iris documentation: Loot, Entities, Spawners, Markers"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -637,7 +637,7 @@ From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)
 | `asyncTickIntervalMS` | `700` | How often the spawn loop runs per world |
 | `forcePersistEntities` | `true` | Marks every Iris-spawned entity persistent regardless of `keepEntity` |
 
-## Checklist
+## Add loot and entity spawns
 
 1. Write `loot/<key>.json` tables. Give `maxTries` room above `maxPicked` if any entry is rare.
 2. Reference them from `loot.tables` on a dimension, region, or biome, or from `loot[].name` on an object placement.

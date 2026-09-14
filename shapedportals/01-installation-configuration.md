@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-11T16:13:57.000Z
+date: 2026-09-14T00:37:05.834Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -24,7 +24,7 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 2. Place the Shaped Portals jar in `plugins/`.
 3. Start the server and check that Shaped Portals enables without errors.
 4. Run `/sp status`, then `/sp config` in-game to review the settings.
-5. [Build a test portal](/shapedportals/00-overview#build-your-first-portal).
+5. [Build your first portal](/shapedportals/00-overview#build-your-first-portal).
 
 The plugin supports Spigot 1.20.1 and newer compatible servers. See [Compatibility](/shapedportals/03-compatibility-operations) for Java and Folia requirements.
 

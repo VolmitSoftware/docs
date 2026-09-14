@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-10T02:57:34.000Z
+date: 2026-09-14T00:36:31.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -142,7 +142,3 @@ This applies Gloss functions, inline expressions, PlaceholderAPI values, emoji, 
 - [API: Previews](/gloss/24-api-previews)
 - [Particle Layers](/gloss/25-particle-layers)
 {.links-list}
-
-## Build artifacts
-
-Gloss uses [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) during normal archive builds. SlimJar downloads bStats with the other external libraries before plugin enable. Run `./gradlew verifyPluginJars` to assemble and check the runtime jar without staging.

@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-09T11:40:00.000Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,37 +14,11 @@ Fourth, whether the JVM has the incubator Vector API. This page is organized by 
 looking at, not by settings file order. Iris settings live in
 `iris.json` under the Iris data directory
 ([03 - Configuration](/iris/03-configuration)); platform settings live in the server configuration. Pregeneration operations
-are in [07 - Pregeneration](/iris/07-pregeneration). Tuning must leave
-GoldenHash unchanged. A deliberate generation-contract change must be
-documented and re-baselined instead
-([32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)).
+are in [07 - Pregeneration](/iris/07-pregeneration).
 
-## Before you turn any knob
+## Change one setting at a time
 
-Most bad tuning comes from changing three things, seeing a better number
-once, and keeping all three. Do this instead:
-
-1. Freeze the inputs: Iris artifact, pack bytes, seed, center, radius, JVM
-   flags, and server population.
-2. Run one warmup, then three measured runs. Record the overall,
-   10-second, 30-second, and 60-second chunk rates, wall time, peak heap,
-   GC behavior, and failed chunk count.
-3. Change exactly one setting. Restart if the setting is read once at
-   startup. Thread pools, caches, and SIMD kernel selection all are.
-4. Repeat the warmup and three runs over the same area. A comparison
-   across different terrain is not a comparison.
-5. Keep the change only if the median improves with no determinism
-   mismatch, no new failures, no unacceptable heap growth, and no worse
-   tick latency.
-6. Restore the old value before testing the next knob.
-
-For sustained-rate acceptance, discard the startup and hydrology-planning warmup, then average consecutive 10-second samples. Keep startup-to-ready latency as a separate measurement; averaging the two describes neither behavior accurately.
-
-Reach for JProfiler when the numbers move without an obvious cause:
-stalls, allocation pressure, or scheduler behavior. A faster
-pregeneration status line on its own does not tell you why.
-
-Keep diagnostic captures separate from throughput acceptance. Use a fresh JVM with no profiler attached for the acceptance run, with the same jar, pack, seed, area, and configuration.
+Compare chunk rate, tick latency, and memory use under the same workload. Thread-pool, cache, and SIMD changes require a restart. Restore the previous value if a change causes errors or worse performance.
 
 ## LEAF entity RNG
 
@@ -118,7 +92,7 @@ JVM command line there if you want it.
 
 A pregeneration requests a bounded one-tile lookahead around its centre, nearest first, then keeps the ring around the generation front planned as it moves. It does not flood the planner with the whole requested area at startup. The center region uses a contiguous spiral so the first playable chunks complete promptly; later regions use four-chunk-spaced lattices to reduce overlapping mantle work. Height bounds at grid corners are shared between threads and from planning into generation.
 
-Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Tune one field at a time over the same seed and cold frontier, then compare the Java 25 generation probe and a warm repeat. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
+Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
 
 Exact routing-grid rows are sampled concurrently. Surface-course search uses that grid only to rank provisional candidates, then resolves exact terrain, bank, and transition costs along the currently selected path. If one route layer has no viable candidate, Iris adds only that layer's exact guide fallback instead of rebuilding every route candidate. These optimizations preserve the full terrain-safety validation contract.
 
@@ -455,15 +429,3 @@ The kernel interface has three operations — `roundToInt`, `sum`, and `max` —
 Selection happens once, at class initialization: `performance.simdKernels` false selects scalar; otherwise, if `jdk.incubator.vector` is present and the vector kernel class loads, vector kernels are used; otherwise scalar. On a 2-lane CPU such as Apple Silicon NEON, the array kernels are roughly a wash: rounding is slower, max is faster.
 
 The startup log prints one of five SIMD lines: `SIMD: vector kernels enabled (<description>)`; `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector to JVM flags to enable vectorized generation kernels`; `SIMD: scalar kernels active; vector kernel initialization failed: <class>: <message>`; `SIMD: vector kernels disabled (performance.simdKernels=false)`; or `SIMD: scalar kernels active; the Vector API reported no usable vector shape on this CPU`. Those reasons are reported in that order, so a JVM without the module reports the missing module even when `performance.simdKernels` is also false. A load failure is reported as a load failure instead of being labelled `performance.simdKernels=false`. The line comes from the Bukkit plugin's enable; mod loaders never print it.
-
-## Measurement checklist
-
-Record for every experiment: pack identity, seed, radius, serial/sync
-flags, JVM version and flags, heap size, and CPU. Also record the
-`performance` and `pregen` excerpts you changed. Record overall,
-10-second, 30-second, and 60-second chunk rates, duration, failed chunks,
-peak heap, and the GoldenHash combined value. Reject any optimization that changes the hash unless the
-behavior change was intended and is documented.
-
-Never tune by editing pack content. Pack edits change terrain, which
-changes the hash, which means you are no longer comparing the same thing.

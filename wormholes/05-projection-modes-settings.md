@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-14T00:40:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,6 +22,18 @@ When a player is inside the portal's viewing range, Wormholes sends that player 
 Changing or removing a portal's destination retires its existing projections.
 Nearby observers receive a fresh view of the new destination even when they
 remain stationary.
+
+Observer movement reuses unchanged local and cross-server block claims while recalculating visibility. Matching portal transforms also reuse claim coordinates. Recursive views still resample when movement can change their contents. Destination updates, local content changes, and settings changes invalidate reuse.
+
+When the previous claim set still matches, arbitration applies only changed and removed cells. Priority changes still resolve overlapping portals. Full resends, replacements, and observer lifecycle changes retain complete reconciliation.
+
+Scans skip cached runs of empty or buried cells that produce no visible claims. This optimization preserves projection depth and detail. Blackout shells and intersecting recursive views use the complete scan. Client chunk updates revisit only affected chunks when restoring or replaying projected blocks.
+
+When a stationary view exhausts its visibility budget, later passes continue the unfinished checks without rebuilding the complete block volume. This requires unchanged content, loaded geometry, and matching view settings. Equivalent detail settings retain the fitted view between passes. Movement rebuilds visibility while reusing valid content and empty-cell runs. Invalidation requires fresh content sampling. Projection depth and detail remain unchanged.
+
+Irregular apertures use indexed face and block lookups during camera movement. The index limits its storage and preserves the same aperture boundaries. Aperture rows reuse plane-intersection constants and membership checks for repeated hit cells. Eligible view rows combine each face's exact accepted interval in a bounded bit mask. Short, oversized, or unsupported rows retain individual cell checks. Aperture holes remain intact. Venticular visibility skips rays whose bounds cannot reach any projected blocker. These checks preserve depth, detail, and the visibility budget.
+
+Lighting retains projected cells by chunk section and updates membership from changed claims. Pending sections use the latest claims when their budget permits delivery. Local lighting restoration remains active.
 
 ## ProjectionMode (ON / OFF)
 
@@ -63,16 +75,21 @@ When `foveated-unrendering` is false, everyone inside the view AABB is intereste
 
 ## Budgets
 
-Global per-tick budgets (from `[projection]`, refreshed into `Settings`):
+Projection budgets (from `[projection]`, refreshed into `Settings`):
 
 | Key | Default | Clamp | Role |
 |-----|---------|-------|------|
 | `max-projectors-per-tick` | `24` | 1–512 | Total block-update projector slots per tick across all observers. |
 | `max-portals-per-observer-tick` | `4` | 1–64 | Cap on portals one observer may block-update in one frame. |
+| `max-frame-micros` | `30000` | 0–1000000 | Soft rendering time budget per execution thread and manager tick, including observer-frame claim flushing. `0` disables the time limit. |
 | `max-new-observer-scans-per-tick` | `64` | 1–4096 | Shared cap on player-owner reconciliation frames per tick across normal projection and surface skins. |
 | `max-projected-cells` | `250000` | 0–50000000 | Hard ceiling on candidate block positions scanned for one portal pass. `0` disables the ceiling (not recommended). |
 
 If a view exceeds `max-projected-cells`, Wormholes reduces side padding first and then depth. A view that still cannot fit remains empty. A nearer portal can temporarily hide a fully covered portal behind it.
+
+The time budget uses recent observer costs to decide whether another observer's block work fits. Long geometry scans yield at the frame deadline and resume on later admitted ticks, including ticks between scheduled refreshes. Observer order rotates so expensive views still make progress. Folia execution threads have independent budgets.
+
+Pending scans retain the last committed blocks, blackout shell, and entity visibility. A completed geometry scan finalizes on a later turn before publishing its new view. Camera movement queues the next view instead of restarting unfinished work. Content changes require a subsequent refresh; changes to the portal, world, viewing side, or presentation settings cancel stale work. Depth and detail remain unchanged, while complete block updates can arrive less often under load. Entity updates and traversal continue. Finalization and required cleanup can exceed the budget, so this is not a hard server tick limit.
 
 ## Blackout background
 
@@ -133,6 +150,7 @@ the raw config values.
 | `side-grace-dot` | `0.12` | Minimum absolute side-of-portal normal dot when foveated. |
 | `max-projectors-per-tick` | `24` | See budgets. |
 | `max-portals-per-observer-tick` | `4` | See budgets. |
+| `max-frame-micros` | `30000` | See budgets. |
 | `max-new-observer-scans-per-tick` | `64` | See budgets. |
 | `interest-grace-ticks` | `5` | Interest grace after losing live interest. |
 | `initial-resend-passes` | `1` | Full startup projection sends after a view is created. |
@@ -222,8 +240,7 @@ unlimited.
 | `/wh admin freeze [seconds]` | `wormholes.admin.projection` | Freeze all projections for 5–300 s (default 30). `0` resumes. |
 | `/wh admin flush` | `wormholes.admin.projection` | Revert every observer’s projected blocks to ground truth and rebuild. |
 
-See [09 - Commands & Permissions](/wormholes/09-commands-permissions) and
-[14 - Operator Runbooks & Smoke Tests](/wormholes/14-operator-runbooks-smoke-tests).
+See [09 - Commands & Permissions](/wormholes/09-commands-permissions).
 
 ## Behavior notes
 

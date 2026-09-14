@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,9 +32,9 @@ Keep the old jar and complete world backups until you finish the upgrade checks.
 | Java | 25. The mod jars declare `java >= 25` and refuse to load on anything older |
 | Minecraft (plugin) | 26.1.2 – 26.2. One jar covers both. `api-version` is pinned to 26.1 so it loads on the older line too |
 | Minecraft (mod) | 26.2 only |
-| Fabric Loader | 0.19.3+ (current acceptance target: 0.19.3) |
-| Forge | 65.x (current acceptance target: 26.2-65.1.1) |
-| NeoForge | 26.2.x (current acceptance target: 26.2.0.59) |
+| Fabric Loader | 0.19.3+ |
+| Forge | 65.x |
+| NeoForge | 26.2.x |
 | Network | Outbound HTTP or HTTPS for `/iris download`, Bukkit ingest of unresolved `datapackImports`, and the first uncached Bukkit runtime-library provision. Once those four libraries and all declared imports are cached and verified, an unchanged startup is network-free. Mod jars remain self-contained |
 
 Before you replace an existing installation:
@@ -131,7 +131,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve through GitHub's latest-release asset URLs, so a fresh install receives the newest stable Overworld or Underworld release available when the command runs. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. The current built-in pair has no external datapack imports, so that one registry-loading restart is sufficient before ordinary world creation.
 
-Before you create a world you care about, run the Bukkit fresh-install runbook in [31 - Operator Runbooks](/iris/31-operator-runbooks).
+Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
 ## Mod install (Fabric / Forge / NeoForge)
 
@@ -142,7 +142,7 @@ Before you create a world you care about, run the Bukkit fresh-install runbook i
 
 ### Youer 26.2
 
-Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The accepted 26.2 runtime is the official Youer build at commit `4eb14c90`, which bundles NeoForge 26.2.0.67. A clean save must complete two consecutive cold starts with the same Iris jar.
+Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The accepted 26.2 runtime is the official Youer build at commit `4eb14c90`, which bundles NeoForge 26.2.0.67.
 
 Youer stores the primary world's current generation settings at `<level-name>/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`. If startup reports `Unable to read or access the world gen settings file` followed by `Overworld settings missing`, the save is already incomplete or that path is inaccessible before Iris receives a server-start callback. Stop the process and back up the complete save before changing anything. Restore the complete save from one known-good backup, or restore that exact file from the same save's known-good backup. Never copy it from another world because it contains the authoritative seed and dimension registry settings. If no valid backup exists, move the damaged save aside and let Youer create a fresh save under `level-name`; do not fabricate the NBT file. `--safeMode` disables datapacks but does not reconstruct missing Overworld settings.
 
@@ -283,19 +283,3 @@ Iris replaces the chunk generator outright, so vanilla and mod worldgen only run
 With `importedFeatures` off (the default), chunk output is pure Iris. Pack-author recipes for features, mobs, loot, saplings, and dimension-type gameplay are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The loader-level feature contract is restated on [94 - API - Modded](/iris/94-api-modded).
 
 Separately from that flag, Iris custom biomes inherit the biome tags of their vanilla derivative on every platform. Tag-driven content such as `#minecraft:is_overworld` and mod spawn rules therefore applies to Iris custom biomes without any extra configuration.
-
-## Building from source
-
-Use JDK 25 and run this command from the Iris repository root:
-
-```sh
-./gradlew buildAll
-```
-
-`buildAll` copies all four verified platform jars into `../PluginOuts/` and keeps the local test-server consumer copies. The consumer directory defaults to `../../[Minecraft Server]/consumers/` when it exists, otherwise `build/consumers/` inside the repository. `-Plocation=/path/to/consumers` changes only the consumer directory.
-
-Use `./gradlew buildAllToOut` to copy all four platform jars into `../PluginOuts/` without updating consumer dropins.
-
-`./gradlew build` runs the full gate: the Bukkit unit tests, the external provider tests, the `bukkitPurityRatchet` and `minecraftPurityRatchet` checks, and `moddedTest`, which runs the `adapters/modded-common` suite once through the Fabric adapter build. `./gradlew test` stays Bukkit-only and does not launch a loader build. The four artifact verifiers are not part of `build`; each one runs with the task that copies its jar, so `buildAll` and `buildAllToOut` cover them. The build-logic tests under `buildSrc` run whenever the build-logic jar is rebuilt.
-
-Dependencies resolve from the remote repositories and the local VolmLib composite build. `mavenLocal()` is not in the repository list unless you ask for it: it is added when you build with `-PuseLocalVolmLib=false`, which is the `publish-volmlib.sh` workflow, or when you pass `-PuseMavenLocal=true`.

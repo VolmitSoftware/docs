@@ -2,7 +2,7 @@
 title: "Image Map Configuration & Coordinates"
 description: "Complete Iris image-map, binding, coordinate, sampling, and world-boundary reference"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-14T00:37:56.518Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -220,13 +220,6 @@ When `worldBoundary` is absent, Iris does not apply or reset the native world bo
 
 The boundary limits player movement; it does not change image-map out-of-bounds behavior. Configure both explicitly. Studio overlays the boundary and warns when source coverage and the border do not align.
 
-## Validation checklist
+## Validate the configuration
 
-- Every `source`, `map`, target, and mask binding key resolves.
-- Binding keys are unique, mask references point to `MASK`, and the mask graph is acyclic.
-- Type, channel layout, bit depth, alpha, sampling, legend, and tolerance combinations are valid.
-- Height ranges, curves, smoothing, thresholds, falloff, dimensions, and boundary numbers are finite and within their documented limits.
-- Exact and tolerant color matching has no unknown or ambiguous pixels under the selected policy.
-- Dimension bindings configured with `ERROR` have kernel-complete coverage for the enforced generation boundary; generator-style references use a safe out-of-bounds policy.
-
-Use [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) to create this configuration and [31 - Operator Runbooks](/iris/31-operator-runbooks) to verify it on a disposable world.
+Run `/iris pack validate` to find invalid image formats, unresolved resources, mask cycles, and coverage errors. See [Image Map Studio Workflow](/iris/42-image-map-studio-workflow) for authoring and preview tools.

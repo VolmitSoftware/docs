@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-09-10T04:12:59.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -84,11 +84,11 @@ Requires `iris` **and** `adapt`. Secret: yes. It enters when either Iris or Adap
 | `playbookCooldownMS` | int | `20000` | Min time between playbook queues (ms). |
 | `verboseTransitions` | boolean | `true` | Log engage/release transitions. |
 
-## Operator enable checklist (secret path)
+## Enable secret integrations
 
 1. Install Iris and/or Adapt as needed, then start the server with those plugins enabled.
 2. Set `integrationSecretsEnabled = true` in `react.toml`.
-3. Save the file; automatic file watching applies the setting and reconciles secret-feature activation.
-4. Confirm TOMLs under `plugins/React/feature/` and `enabled = true`.
-5. Confirm integration metrics healthy via `/react integration status`.
-6. Trinity needs **both** Iris and Adapt. Single-cap surge guards need their own plugin.
+3. Save the file. React applies the setting automatically.
+4. Set `enabled = true` in the relevant TOML files under `plugins/React/feature/`.
+
+Use `/react integration status` to see whether the required integrations are available. Trinity needs both Iris and Adapt. Each surge guard needs its corresponding plugin.

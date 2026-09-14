@@ -2,7 +2,7 @@
 title: React
 description: React performance monitoring and optimization for Paper and Folia
 published: true
-date: 2026-09-09T00:00:00.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: react
 editor: markdown
 dateCreated: 2026-08-21T00:31:42.920Z
@@ -53,8 +53,7 @@ Permissions and command conflicts are documented on [Commands and permissions](/
 - [Monitors Maps & In-Game GUI *Action bar, maps, and config UI*](/react/11-monitors-maps-in-game-gui)
 - [Incident Mode & Playbooks *Incident score and response*](/react/12-incident-mode-playbooks)
 - [Localization *Locales and editable catalogs*](/react/13-localization)
-- [NMS Bridges & Platform Notes *Bridges, Folia, and jar workflow*](/react/14-nms-bridges-platform-notes)
-- [Operator Runbooks & Smoke Tests *Manual checklists*](/react/15-operator-runbooks-smoke-tests)
+- [NMS Bridges & Platform Notes *Bridge availability and platform support*](/react/14-nms-bridges-platform-notes)
 {.links-list}
 
 ## Developer API

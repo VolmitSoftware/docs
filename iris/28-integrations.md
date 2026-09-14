@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T00:40:00.440Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,39 +24,12 @@ Bukkit and on the mod loaders. See also
 [19 - Objects](/iris/19-objects), and
 [93 - API - Tree Feller](/iris/93-api-tree-feller).
 
-## Confirm an integration is live
+## Install an integration
 
-Add integrations one at a time. Prove each one before you add the next. Iris
-often stays silent when it does not link a plugin. No error is not proof of
-success.
+Install the integration and its dependencies, then restart the server. External data providers log `Enabled ExternalDataProvider for <Plugin>.` when they load.
 
-1. Start from a server where Iris alone generates a fresh world cleanly.
-2. Install one integration and its own dependencies. Then do a **full
-   restart**. A plugin-manager reload does not copy real enable order. It
-   gives a false result.
-3. Watch the startup log. Each external data provider logs
-   `<Plugin> found, loading <Provider>...` and then
-   `Enabled ExternalDataProvider for <Plugin>.` The other links log nothing
-   on success.
-4. Run the positive proof for that boundary from the table below. Then run
-   the negative control. The negative control shows if Iris gates on the
-   plugin or only happens to work.
+If an integration is unavailable, check both plugin versions, dependencies, and startup errors before changing the pack. The sections below describe each integration's requirements and commands.
 
-| Boundary | Positive proof | Negative control |
-|---|---|---|
-| WorldEdit | Make a cuboid selection with WorldEdit, run `/iris object we`, hold the new Iris wand, and save a disposable object | Hold the WorldEdit wand. Iris must not draw its selection or accept it for an object save. Clear the WorldEdit selection and run `/iris object we` again. Iris must report no selection in this world |
-| Multiverse-Core | Create a disposable Iris world and confirm Multiverse lists it with generator `Iris:<pack>` | On a separate disposable copy, restart without Multiverse installed. Iris world creation must still succeed |
-| Item/block/entity provider | Reference one exact namespaced key from a pack and generate a fresh chunk containing it | Reference a key that does not exist. Iris reports missing content and applies the configured fallback or refuses an unusable pack |
-| MythicMobs conditions | `irisbiome{b=<load key>}` returns true inside that biome | The same condition returns false in a vanilla world |
-| PlaceholderAPI | Run the parse sequence in [09 - PlaceholderAPI](/iris/09-placeholderapi) | A player outside an Iris world gets `world.available` = `false` |
-| Tree feller | A sneaking survival player with the permission and an axe fells an Iris-generated tree | A tree the player grew from a sapling stays intact. Only the broken log drops |
-
-5. Restart and repeat the positive proof once. Some link failures show only
-   on the second boot, when caches are warm and enable order shifts.
-
-When something fails, collect both plugin versions and the enable order from
-the log. Do this before you edit pack JSON. Most integration failures are
-version or ordering problems, not pack problems.
 ## WorldEdit
 
 `WorldEditLink` reaches into WorldEdit only by reflection. Iris compiles and
@@ -376,9 +349,62 @@ when the target world is not an Iris world or its engine is unavailable.
 A condition can fail quietly while a world is still booting. Do not make a
 mob's only spawn gate an Iris condition during startup.
 
+### RandomSpawns by Iris biome
+
+Use `irisbiome` in a RandomSpawn's `Conditions` list to check the proposed
+spawn location. The example assumes an existing `ForestWolf` MythicMob, an
+Iris world named `example_world`, and a pack biome at `biomes/forest/pines.json`.
+
+```yaml
+PineWolves:
+  Type: ForestWolf
+  Worlds: example_world
+  Action: ADD
+  Chance: 0.02
+  PositionType: LAND
+  Conditions:
+    - irisbiome{b=forest/pines;s=false} true
+```
+
+For `Action: ADD`, enable `GenerateSpawnPoints` in
+`plugins/MythicMobs/config/config-spawning.yml`. MythicMobs proposes spawn
+locations around survival and adventure players, then evaluates the
+conditions at those locations. See the
+[MythicMobs RandomSpawns reference](https://wiki.mythiccraft.io/mythicmobs/Random-Spawns).
+
+`s=false` checks the Iris biome at the proposed spawn's X/Y/Z, including
+cave and mantle biomes. Use `s=true` to check the surface biome at that X/Z
+regardless of the spawn height. Multiple biome load keys use commas with
+no surrounding spaces, such as `b=forest/pines,forest/birch`. Matches are
+exact and case-sensitive. The condition does not support wildcards.
+
+| Biome identity | Use in a spawn rule |
+|---|---|
+| Pack load key, such as `forest/pines` | Accepted by `irisbiome{b=forest/pines}`. Omit `biomes/` and `.json` |
+| Biome `name`, such as `Pine Forest` | Display text. `irisbiome` does not match it |
+| Authored `customDerivitives[].id`, such as `pine_forest` | Identifies an authored custom derivative. `irisbiome` does not match it or distinguish derivatives within one pack biome |
+| Physical Minecraft registry key | Used by MythicMobs' ordinary `Biomes:` filter and `biome` condition. Iris custom biomes use generated namespaced keys that include hashes |
+
+The direct Iris condition does not depend on the generated registry key.
+For ordinary Minecraft biome conditions, use the complete namespaced key
+described in the
+[MythicMobs biome reference](https://wiki.mythiccraft.io/mythicmobs/skills/conditions/biome).
+
+Do not use an Iris player PlaceholderAPI value with `stringequals` as a
+RandomSpawn location filter. Player placeholders read the evaluated
+player's location. They do not receive the proposed spawn location, and
+`Action: ADD` provides no entity context for its conditions. MythicMobs
+documents this distinction in its
+[PlaceholderAPI parsing rules](https://wiki.mythiccraft.io/mythicmobs/Skills/Placeholders#placeholderapi-parsing).
+
+After both plugins and the Iris world are ready, reload the MythicMobs
+configuration. If MythicMobs reports an unknown
+`irisbiome` condition, check that its Iris integration is active before
+loading the spawn rule again.
+
 ## PlaceholderAPI
 
-Expansion id `iris`, soft-depended. Registration timing, all sixteen keys,
+Expansion id `iris`, soft-depended. Registration timing, all twenty-nine keys,
 and the pre-2.0 migration table are in
 [09 - PlaceholderAPI](/iris/09-placeholderapi).
 

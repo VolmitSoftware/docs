@@ -2,7 +2,7 @@
 title: "Rift: Installation and Compatibility"
 description: "Server range, Java requirements, installation, and Folia limits"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:37:05.833Z
 tags: "rift, installation, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -29,9 +29,8 @@ Java 17 is the plugin's bytecode floor, not a promise that every server release 
 2. Put the Rift jar in `plugins/`.
 3. Start the server.
 4. Run `/rift status`.
-5. Test world creation and recovery with a disposable world before managing production worlds.
 
-Rift does not require a separate VolmLib jar. Do not use `/reload` or a generic plugin hot-loader for world lifecycle validation.
+Rift does not require a separate VolmLib jar. Restart the server to update Rift; do not use `/reload` or a generic plugin hot-loader.
 
 ## Build from source
 

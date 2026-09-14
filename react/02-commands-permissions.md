@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-09-11T01:30:00.000Z
+date: 2026-09-14T00:38:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -133,13 +133,6 @@ Version is listed in this help category. `/react version` and `/react v` provide
 | `entity-data` | `ed` | player | Raycast entity. Print priority and crowding diagnostics |
 | `version` | | both | Show `React v<version>` using the help title gradient |
 
-## `/react dev` (`developer`, `d`)
-
-| Subcommand | Aliases | Origin | Description |
-|------------|---------|--------|-------------|
-| `test-all [radius=2]` | `ta` | player | Audit registries. Queue the direct action suite near the player. Radius is clamped to 0–6 |
-| `verify` | `v`, `selftest` | both | Verify bridges, key samplers, lazy-gravity (PASS/FAIL) |
-
 ## `/react integration` (`int`)
 
 | Subcommand | Aliases | Description |
@@ -162,15 +155,6 @@ Example: `/react bridge status`.
 | `reload` | `rl` | Queue a rescan of `plugins/React/plugin-apis/` |
 
 The pack folder is also scanned every three seconds. Invalid changed files retain the last valid runtime until corrected; deleted files retire their dynamic samplers. See [20 - API - Plugin API Packs](/react/20-api-plugin-api-packs).
-
-## `/react test` (`selftest`)
-
-| Subcommand | Aliases | Description |
-|------------|---------|-------------|
-| `run [full=true] [json=true]` | `r` | Validation suite. `full` is currently report metadata and does not reduce the checks. JSON reports go to `plugins/React/test-reports/` |
-| `loadtest <confirm> [players=1000] [duration=600]` | `load` | Two-pass synthetic load test on world 0. `confirm=true` is required |
-
-Both test commands mutate their test world. `run` queues cleanup actions around world spawn. It creates and removes map-frame fixtures. It also spawns falling sand. `loadtest` generates heavy synthetic load. It currently does not bound `players` or `duration`. Run them only in a disposable isolated server. Or run them after you back up the target world. See [15 - Operator Runbooks & Smoke Tests](/react/15-operator-runbooks-smoke-tests).
 
 ## `/react web` (`w`)
 

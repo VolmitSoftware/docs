@@ -2,7 +2,7 @@
 title: "Overview"
 description: "How Adapt skills, knowledge, adaptations, and ability power work"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-14T00:36:31.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,5 +58,5 @@ Optional integrations add economy charges, placeholders, region checks, hidden o
 | [Items, Orbs and Bound Objects](/adapt/36-items-orbs-bound-objects) | Adapt items and stored data |
 | [Recipes, Brewing and Value](/adapt/37-recipes-brewing-value) | Crafting and brewing |
 | [Cross-Server SQL and Redis](/adapt/39-velocity-cross-server) | Backend handoff |
-| [Operator Runbooks](/adapt/40-operator-runbooks) | Backups, recovery, and checks |
+| [Updates and Recovery](/adapt/40-operator-runbooks) | Backups, recovery, and troubleshooting |
 | [Developer API](/adapt/41-api-getting-started) | Supported integration points |

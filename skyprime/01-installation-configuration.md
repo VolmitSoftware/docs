@@ -2,7 +2,7 @@
 title: 01 - Installation & Configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-09-05T16:24:00.000Z
+date: 2026-09-14T00:37:41.702Z
 tags: skyprime, installation, configuration, folia
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -12,7 +12,7 @@ SkyPrime targets Spigot, Paper and Folia APIs from Minecraft 1.20.1 through 26.2
 
 ## Build and install
 
-Build the independent `SkyPrime/` project with JDK 25 using `./gradlew build` or `gradlew.bat build`. The build runs tests, compiles against the baseline and current server APIs, checks every shaded class for Java 17 compatibility, and stages `SkyPrime.jar` in the workspace's `BUILDS` directory. `-PbuildsDirectory=<path>` changes that staging directory.
+Build the independent `SkyPrime/` project with JDK 25 using `./gradlew build` or `gradlew.bat build`. The build writes `SkyPrime.jar` to the workspace's `BUILDS` directory. `-PbuildsDirectory=<path>` changes that staging directory.
 
 Place the shaded jar in the intended server's plugin directory and restart. Initial startup creates the configuration and all 18 language files locally. The plugin enables at startup to provide its void generator; managed-world initialization runs after server worlds load. It disables itself if configuration, island storage or world prerequisites are invalid.
 

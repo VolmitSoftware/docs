@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -172,8 +172,8 @@ pass. Craft permission alone does not allow placement.
 ## Configuring recipes
 
 The `[recipes]` block of `wormholes.toml` holds one table per product
-plus the two reskin toggles. Changes hot-reload: `/wormholes reload`
-re-registers the recipes and re-sends every online player's recipe book.
+plus the two reskin toggles. Saving the config automatically reloads the recipes
+and refreshes every online player's recipe book.
 
 | Table | Controls |
 |-------|----------|
