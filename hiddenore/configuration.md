@@ -70,6 +70,23 @@ Accepted ore keys: `COAL_ORE`, `COPPER_ORE`, `IRON_ORE`, `GOLD_ORE`, `DIAMOND_OR
 `DEEPSLATE_LAPIS_ORE`, `DEEPSLATE_EMERALD_ORE`, `NETHER_GOLD_ORE`, `NETHER_QUARTZ_ORE`,
 `ANCIENT_DEBRIS`
 
+### Iris worlds
+
+Iris removes its own ores. For an Iris world set `hideOresForHiddenOre` to
+`true` on the Iris dimension rather than enabling `[ore-removal]` for it: Iris
+skips its ore generators during terrain and rewrites any vanilla ore a deposit,
+object, or imported vanilla feature placed, leaving nothing for a block
+populator to find. Ore removal on top of that rescans every generated chunk
+column for ores that are already gone.
+
+An Iris dimension leaves stone, deepslate, netherrack, or blackstone where its
+ores would have been, so `[blocks]` needs a table for whichever of those the
+dimension's rock actually is. The default `[blocks.stone]` and
+`[blocks.deepslate]` cover an ordinary overworld pack. Drop-rule `min_y` and
+`max_y` stay world Y; an Iris ore `range` is engine-local Y where 0 is the
+bottom of the dimension, so its numbers do not carry across. See
+[Iris — Integrations](/iris/28-integrations).
+
 ## Managed blocks
 
 ```toml

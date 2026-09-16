@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-16T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,8 @@ block, or entity plugins handle pack content. MythicMobs handles skill
 conditions. PlaceholderAPI handles scoreboard values. PlotSquared's own
 generator discovery calls Iris without becoming an Iris integration. React
 consumes Iris's published runtime metrics, and Wormholes consults Iris before
-it loads random-teleport destination chunks.
+it loads random-teleport destination chunks. HiddenOre takes over ore drops in
+a dimension that hides its ores.
 All integrations are optional. Iris checks that a plugin is enabled before
 it uses that plugin. A soft-depend only sets load order. It does not make
 sure the plugin is present. Tree felling is a separate feature. It runs on
@@ -422,6 +423,33 @@ React configuration and gates are documented in
 [React — Iris, Adapt & Integrations](/react/07-features-iris-adapt-integrations).
 Wormholes behavior and fallback rules are documented in
 [Wormholes — Integrations](/wormholes/15-integrations).
+
+## HiddenOre
+
+HiddenOre needs no code link. It is a pack setting. Set `hideOresForHiddenOre`
+to `true` on the dimension and Iris writes no vanilla ore blocks, leaving
+HiddenOre to pay ore rewards when a player mines plain rock.
+
+| Stage | Behavior when the flag is on |
+|---|---|
+| Terrain | Dimension, region, and biome ore generators are skipped outright, so they cost nothing to run |
+| Deposits, objects, vanilla passthrough | Any vanilla ore they still write is rewritten in the perfection pass to its host rock: stone, deepslate, netherrack, and blackstone for gilded blackstone. Modded and custom ore blocks are outside that set and pass through unchanged |
+
+The flag applies to chunks Iris generates after you set it. Terrain already on
+disk keeps its ores, so regenerate or pregenerate the world to see the change.
+
+Leave HiddenOre's own `[ore-removal]` disabled for an Iris world. That feature
+is a block populator that rescans every generated chunk column for ores Iris
+has already replaced. HiddenOre's bundled `[blocks.stone]` and
+`[blocks.deepslate]` tables match what an overworld dimension writes; a
+dimension whose rock is netherrack or blackstone needs a matching
+`[blocks.<material>]` table, or mining it pays nothing. HiddenOre's `min_y` and
+`max_y` are world Y, while an Iris ore `range` is engine-local Y where 0 is the
+bottom of the dimension, so the two sets of numbers do not carry across.
+
+See [11 - Dimensions](/iris/11-dimensions),
+[16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits),
+and [HiddenOre — Configuration](/hiddenore/configuration).
 
 ## Tree feller
 
