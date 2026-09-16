@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-09T08:27:35.132692Z
+date: 2026-09-15T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -295,6 +295,7 @@ Automatic biome and region objects reject support footprints that intersect acce
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
+| `surfaceLayerFallback` | `ROCK` or `TOP_LAYER` | `ROCK` | Surface material when all biome layers are rejected. `TOP_LAYER` emits one block from the first layer despite its slope gate or zero thickness; `ROCK` leaves the dimension rock exposed. Biomes can override this. Applies to ordinary and locked layers, within their depth limits |
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |

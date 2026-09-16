@@ -1,15 +1,15 @@
 ---
 title: "Biome Atlas — Hilly Plains"
-description: "Iris biome atlas entry for frozen/fields/hilly-plains in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for frozen/fields/hilly-plains in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`frozen/fields/hilly-plains` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`frozen/fields/hilly-plains` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
-Large frozen formations use organic supports that can reach terrain up to 96 blocks below their bases. Overworld uses packed ice for these supports. Underworld retains its Nether materials. Small drift boulders retain their placement settings.
+Both packs use matching compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Placement chances, variant seeds, dimensions, and support settings match. Large formations use continuous organic supports with a 96-block terrain scan. Underworld uses soul soil and bone for these forms.
 
 ## Selection and weighting
 
@@ -17,8 +17,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
-| Underworld 1010 | `frozen` (Underworld Frozen) | 1 | 1 | 1 | 5.69% |
+| Overworld 4009 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
+| Underworld 1011 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -32,7 +32,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -44,13 +44,13 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - `frozen/fields/hilly-plains`: Low river-shaped terrain retains its current channels.
 
-## Overworld 4007 treatment
+## Overworld 4009 treatment
 
 - **Minecraft identity:** derivative `minecraft:snowy_plains`; native-structure derivative `minecraft:snowy_plains`; custom identities `winter_mountain_forest1`, `winter_mountain_forest2`, `winter_mountain_forest3`.
 - **Surface:** 1 block(s) at slope 0-3.3: `minecraft:snow_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 block(s) at slope 0-3: `minecraft:dirt`, `minecraft:stone`. Wall palette: `minecraft:stone`, `minecraft:andesite`, `minecraft:gravel`.
 - **Content:** 1 object placement rule(s) drawing from 3 object key(s), including `clutter/sbush1`, `clutter/sbush2`, `clutter/sbush3`.
 
-## Underworld 1010 treatment
+## Underworld 1011 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_frozen_fields_hilly_plains_85504a5f`.
 - **Surface:** 1 block(s) at slope 0-3.3: `minecraft:soul_soil`; 3 block(s) at slope 0-3: `minecraft:soul_soil`; 3 block(s) at slope 0-3: `minecraft:soul_soil`, `minecraft:basalt`. Wall palette: `minecraft:basalt`, `minecraft:soul_sand`.

@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-15T01:26:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,6 +71,10 @@ if (engine == null || engine.isClosed()) {
 }
 ```
 
+Custom `PlatformChunkGenerator` implementations must implement `beginInitialEntry(boolean playerEntry)` and `completeInitialEntry()`. Creation passes whether its sender needs a player teleport, begins the scope before the generator initializes, and completes it after initial entry, before optional pregeneration. Implementations must release any scoped prefetch deferral on failure and close; ordinary server startup does not enter this scope.
+
+`IrisEngine.InitializationMode.WORLD_CREATION` warms generation caches as tracked background work for fresh normal world creation. `RUNTIME` retains synchronous warming for restored worlds and other runtime callers. Both modes retain normal world behavior; generation awaits cache readiness and propagates uncaught warmup task failures.
+
 The API jar includes the VolmLib types needed by these signatures. Toolbelt access does not require a separate VolmLib dependency. Prefer the terrain service below for terrain queries that do not need engine access.
 
 ## Get a service
@@ -85,6 +89,12 @@ IrisTerrainService terrain = registration == null ? null : registration.getProvi
 Look up services when needed instead of keeping them across an Iris reload. Terrain reads are safe from any thread. Tree-feller calls must run on the thread delivering the block event. World and pregeneration events run on the server's global thread.
 
 When switching over Iris enums, include a `default` branch so future values do not break your integration.
+
+## World creation
+
+`StudioSVC.installIntoWorld` returns `StudioSVC.GenerationPublication`, which contains the published `dimension()` and verified `history()`. Pass that history to `IrisWorldCreator.generationHistory(...)` before `create()`. It must match the target dimension directory and seed; transient worlds cannot accept a generation history.
+
+Without a supplied history, persistent and Studio creation open and validate the saved history. Generator startup retains its final active-pack verification in both paths.
 
 ## Engine save requests
 

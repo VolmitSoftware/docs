@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-14T23:29:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -208,7 +208,7 @@ This is the memory-versus-rework group. Larger loader caches trade heap for fewe
 |-----|---------|--------------|--------------|
 | `trimMantleInStudio` | `false` | Live | Enables routine mantle maintenance in studio worlds. With the default `false`, routine trimming stays off for responsive editing. Emergency maintenance still runs when heap crosses Iris's high-water threshold. Studio cannot disable memory-pressure recovery |
 | `mantleKeepAlive` | `30` | Live | Seconds a mantle plate stays resident before it is eligible for trimming. Scaled down automatically as reclaim pressure rises. Lower it when heap is tight, raise it if the same regions are reloaded repeatedly |
-| `noiseCacheSize` | `1024` | Mixed | Capacity of the noise sample caches. The terrain query API picks it up live. The engine's own caches need an engine hotload or restart. Pregen temporarily raises it to at least 4096 in memory and does not lower it again or persist the change |
+| `noiseCacheSize` | `1024` | Mixed | Base capacity of the noise caches. Engine caches count 16×16 chunks per stream; normal hydrology runtimes expand selected terrain caches on uncached planning demand within a shared heap allowance. Loading a world alone reserves no allowance. The terrain query API picks this setting up live. Engine caches need a hotload or restart. Pregen raises it to at least 4096 in memory and does not lower it again or persist the change |
 | `resourceLoaderCacheSize` | `1024` | **Restart / pack reload** | How many loaded pack resources stay cached per loader. Captured when a pack's `IrisData` is opened |
 | `objectLoaderCacheSize` | `4096` | **Restart / pack reload** | Same, for `.iob` objects, matter objects, and images. Raise it for object-heavy packs when heap allows. Lower it first when profiling shows retained pack data |
 | `mantleCleanupDelay` | `200` | Live | Delay in **ticks** before a loaded chunk's mantle cleanup runs — the default is 10 seconds. Read from the raw field with no clamping, so a negative value is floored at 0 ms and a huge value really does postpone cleanup |

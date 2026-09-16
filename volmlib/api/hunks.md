@@ -2,7 +2,7 @@
 title: "Hunks and coordinate math"
 description: "Shared three-dimensional storage, views, parallel computation, and integer coordinates."
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-14T13:42:11.591Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -35,6 +35,8 @@ try {
 ```
 
 The example uses `java.util.concurrent.ExecutorService`, `java.util.concurrent.Executors`, and `art.arcane.volmlib.util.parallel.BurstExecutorSupport`. Long-lived generation services should pass their existing executor factory and close that executor during service shutdown. `ProceduralStream` parallel fill methods accept the same factory.
+
+`MultiBurstSupport` owns reusable burst pools. Subclasses can override the protected `createPool(parallelism, factory, handler)` method to select pool scheduling behavior. The default retains the standard asynchronous fork/join pool. Reuse the supplied worker factory and exception handler to preserve thread naming, priority, and failure reporting.
 
 ## Coordinate helpers
 

@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mesa Valley"
 description: "Iris biome atlas entry for mesa/valleys in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-13T18:16:54.244Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4009 | `hot` (Hot) | 2 | 1 | 2 | 11.65% |
-| Underworld 1011 | `hot` (Underworld Hot) | 2 | 1 | 2 | 11.65% |
+| Underworld 1011 | `hot` (Hot) | 2 | 1 | 2 | 11.65% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 

@@ -1,17 +1,17 @@
 ---
-title: "Underworld 1010"
+title: "Underworld 1011"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Underworld 1010 reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
+Underworld 1011 reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Underworld 1010 |
+| Built-in pack | Underworld 1011 |
 | Environment | `NETHER` |
 | Terrain mode | `OVERWORLD` |
 | Coordinate scale | 1:1 with the paired Overworld seed |
@@ -25,7 +25,7 @@ Underworld 1010 reuses the Overworld terrain graph at the same seed and coordina
 | Dimension ores / deposits | 11 independent ore definitions and 12 deposit passes |
 | External datapacks | None |
 
-The preceding Underworld 1009 update normalized 148 resource paths and 273 references to lowercase. Lower Mountain uses `mountain/cute_cliffs`, and Mountain Middle uses `mountain/cute_cliffs+`. Underworld 1010 adds the paired 3D profiles and aligns terrain-selection drift. Materials, ecology, and the independent ore and deposit tables remain unchanged.
+The preceding Underworld 1009 update normalized 148 resource paths and 273 references to lowercase. Lower Mountain uses `mountain/cute_cliffs`, and Mountain Middle uses `mountain/cute_cliffs+`. Underworld shares the paired 3D profiles and terrain selection. Materials, ecology, and the independent ore and deposit tables remain unchanged.
 
 Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
 
@@ -38,7 +38,7 @@ Every reachable land root and ordinary child has an explicit setting. [Terrain s
 
 ## Foundation and fluids
 
-The dimension rock palette is weighted toward netherrack, with blackstone, basalt, and soul soil mixed through a Simplex distribution. Lava replaces water as the dimension fluid. Underworld retains its single deep-lava profile and disables ordinary cave-fluid admission. Overworld also has a smaller deep-lava profile. Individual biomes can override their surface, wall, cave, and object materials; the paired atlas entries list those local treatments rather than reducing every biome to the dimension defaults.
+The dimension rock palette is weighted toward netherrack, with blackstone, basalt, and soul soil mixed through a Simplex distribution. Lava replaces water as the dimension fluid. Both packs disable standalone cave aquifers and declare matching `deep_lava` and `deep_lava_small` contained-pool profiles. Underworld keeps lava for ambient rivers and surface fluids. Individual biomes can override their surface, wall, cave, and object materials; the paired atlas entries list those local treatments rather than reducing every biome to the dimension defaults.
 
 ## Biomes and ecology
 
@@ -48,8 +48,10 @@ The twelve regions and the global Deep Dark band remain recognizable at the same
 
 ## Structures and terrain parity
 
-Underworld does not copy Overworld ores, deposits, native structures, palettes, or object assets blindly. Those systems are intentionally independent. Only terrain shape, selection geometry, child layout, cave shapes, and floating-island geometry are synchronized.
+Underworld does not copy Overworld ores, deposits, native structures, palettes, or object assets blindly. Those systems are intentionally independent. Terrain shape, selection geometry, child layout, cave shapes, and floating-island geometry follow Overworld. Procedural shapes, chances, seeds, support settings, and paired object placement controls also match, with Nether materials and assets.
 
-The active biome keys, region selector lists, and rarity weights match Overworld. Estranged now uses the same shore heights, shore scale, and shore list. Coastal river geometry and Hot and Magnetics lava pools also match.
+Frozen surface decorations use compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Soul forms use soul soil and bone. Blackstone forms use blackstone and crying obsidian. Frozen cave rocks and Jungle cave trees use `scale.size: 0.375`. The tree placements in Jungle, Lush, Moss Pillars, and Swamp caves use `density: 2`, as do Mushroom cave fungi placements.
 
-Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld 4007](/iris/biomes/overworld).
+The active biome keys, region display names, selector lists, and rarity weights match Overworld. Region name length contributes to shoreline noise. The shared names keep shore heights aligned at the same seed and coordinates. Estranged now uses the same shore heights, shore scale, and shore list. Coastal river geometry and Hot and Magnetics lava pools also match.
+
+Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld 4009](/iris/biomes/overworld).

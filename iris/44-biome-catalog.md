@@ -2,14 +2,14 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-13T18:16:54.244Z
+date: 2026-09-15T12:00:00.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 This atlas documents the current sources of the built-in Overworld and Underworld packs. Each entry treats the shared terrain identity once, then records how the two packs render and populate it differently. Only reachable content is included. An installed world keeps its active immutable epoch until the operator stages an update; source changes are not automatically present in previously downloaded releases.
 
-Overworld 4007 and Underworld 1010 configure 197 land biomes and children for 3D terrain. Another 23 identities explicitly protect wetlands, dunes, water basins or existing floating geometry. The profiles vary from small lowland recesses to deep cliff undercuts, projecting mountain shelves, and narrow rock fissures.
+Overworld 4009 and Underworld 1011 configure 197 land biomes and children for 3D terrain. Another 23 identities explicitly protect wetlands, dunes, water basins or existing floating geometry. The profiles vary from small lowland recesses to deep cliff undercuts, projecting mountain shelves, and narrow rock fissures.
 
 The profiles retain displacement amplitudes from 10 to 56 blocks. Horizontal density scales range from 144 to 280 blocks, and vertical scales range from 24 to 36 blocks.
 The five density styles vary by terrain family: `PERLIN`, `NOWHERE`, `IRIS_HALF`, `HEXAGON`, and `SIMPLEX`. Most profiles use larger feature scales for broader shelves and recesses.
@@ -20,19 +20,27 @@ The paired terrain tables give each biome's density amplitude, feature scales, c
 
 Overworld 4004 reduces every subterranean ore pass by 30% and permits ore on exterior terrain surfaces only in exact `minecraft:stone`. Cave-air walls retain normal deposit host rules, and individual surface biomes can replace the exterior host list. Underworld retains its independent ore table and exposure behavior.
 
-Overworld restores original oak, spruce, and dark oak fences in `trees/mixed/dotree1` through `trees/mixed/dotree10`. Seven biome identities share these objects, including [Tundra Magic Violet Forest](/iris/biomes/temperate/reaching-forest-violet). Underworld uses its separate Nether tree assets.
+The `trees/mixed/dotree1` through `trees/mixed/dotree10` objects use connected fences at matching positions in both packs. Overworld uses oak, spruce, and dark oak fences. Underworld uses warped fences in soul and warped assets. Wastes assets use both crimson and warped fences to match their branch materials. Seven biome identities share these objects, including [Tundra Magic Violet Forest](/iris/biomes/temperate/reaching-forest-violet).
 
 > **Pack maintenance requirement:** any update to either built-in pack that changes biome files, region selectors, dimension carving, children, floating biomes, terrain, materials, decoration, ecology, or reachability must update this atlas in the same workstream. A pack update with stale atlas pages is incomplete.
 {.is-warning}
 
-Overworld disables the standalone aquifer pass in its dimension, region, and biome cave profiles to prevent isolated water sources from spilling through caves. Hydrology, natural surface water, and deep lava retain their settings. Underworld keeps its separate cave-fluid treatment.
+Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
-Amethyst clutter retains its native block scale. Frostspar uses fewer solid tapered shards, and large frozen formations extend continuous organic supports toward the terrain.
+Amethyst clutter retains its native block scale. Frostspar uses fewer solid tapered shards. Frozen surface formations share compact spires, drift boulders, shard fans, frost blooms, and sprigs, with matching seeds and support settings. Underworld uses the corresponding Nether palettes.
+
+Both packs declare `deep_lava` and `deep_lava_small` as contained lava pools with matching placement settings. Frozen cave rocks use `scale.size: 0.375`. Jungle cave trees use the same scale and `density: 2`. Lush, Moss Pillars, Swamp, and Mushroom caves also share their reduced tree or fungi densities. Amethyst Rainforest large trees share `FAST_STILT` placement. Croak omits surface pointed dripstone in Overworld and its basalt counterpart in Underworld.
+
+Both packs use the same twelve region display names because each name’s length contributes to shoreline noise. This keeps shoreline sampling aligned at the same seed and coordinates.
 
 Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain amplitudes and scales retain their settings.
 
 Mesa land biomes in both packs use unwarped `PERLIN` density noise. Their height generators and 3D amplitude, scale, and crack settings retain their values; cliff details change with the density field. See [Mesa biomes](/iris/biomes/mesa).
 
+[Lush Plains](/iris/biomes/temperate/lush-plains) and its yellow child use a 1% wildflower placement chance in Overworld, a 60% reduction. Other biomes retain the shared wildflower setting.
+
+
+The current Overworld sources give [Calm Plains](/iris/biomes/temperate/calmplains), [Fancy Plains](/iris/biomes/temperate/fancyplains), and [Rough Plains](/iris/biomes/temperate/roughplains) ungated dirt and mixed-soil layers below their slope-gated grass. Steep columns can retain those layers when grass is rejected. Their Underworld counterparts retain their existing material stacks.
 ## Catalog scope
 
 The paired catalog contains 373 reachable biome identities:
@@ -46,7 +54,7 @@ The paired catalog contains 373 reachable biome identities:
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
 | Child-only and floating-only variants | 111 | Included with a parent root rather than given an orphan page |
 
-The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1010 has no unreachable biome files. River-policy references account for ten roots and two additional children in this total.
+The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1011 has no unreachable biome files. River-policy references account for ten roots and two additional children in this total.
 
 ## Family navigation
 
@@ -76,8 +84,8 @@ Overworld 4006 and Underworld 1009 use lowercase resource paths. Underworld 1009
 
 ## Read the atlas
 
-- [Overworld 4007](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
-- [Underworld 1010](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
+- [Overworld 4009](/iris/biomes/overworld) explains the normal-world environment, selection graph, terrain scale, water, ores, and native structure policy.
+- [Underworld 1011](/iris/biomes/underworld) explains the coordinate-compatible Nether treatment, lava, lighting, materials, ecology, and lack of a Nether roof.
 - [Shorelines](/iris/biomes/shorelines) collects the short transition biomes that do not need individual pages.
 - Individual entries live at `/iris/biomes/<load-key>`. For example, `temperate/plains` is [Temperate Plains](/iris/biomes/temperate/plains), while `carving/standard-deepdark` is [the global Deep Dark family](/iris/biomes/carving/standard-deepdark).
 

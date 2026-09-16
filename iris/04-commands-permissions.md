@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-11T01:50:21.000Z
+date: 2026-09-14T13:29:28.712Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,7 +46,7 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 
 On Bukkit-family servers, including Folia, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, first-epoch publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. Epoch publication is represented by that lifecycle stage only; Iris does not print a separate synthetic pack/dimension identifier. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. Bukkit does not print `Successfully created your world!` until the actual initial-spawn chunk is ready and spawn placement has completed on its owning region; only then is the world registered and immediately teleportable with `/iris tp tutorial`. Folia uses the Paper-like runtime lifecycle backend without restarting. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
 
-For a player-issued Bukkit create, Iris delegates the teleport immediately to the world's resolved entry anchor after creation. Paper's asynchronous teleport owns any destination-chunk readiness; Iris does not serially preload the chunk or scan thousands of blocks for a separate safe location first. The operation has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
+For a player-issued Bukkit create, Iris first generates the resolved entry chunk, finds a collision-free supported position, and then delegates Paper’s asynchronous teleport. This post-creation entry sequence has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
 
 If the pack is missing, Iris identifies the exact supported download form (`pack=overworld`, `pack=underworld`, or `link=<zip-url>`) and does not create the world. After a successful runtime pack install, `/iris create` remains locked until the requested server restart loads that pack's registry entries; it reports the restart requirement without restarting or creating a world.
 
@@ -70,7 +70,7 @@ Confirm with `/iris pregen status`. A running job prints the target world, gener
 /iris studio open overworld 1337             # modded
 ```
 
-A transient studio world opens and you are teleported into it in spectator mode. Player arrival for `open` and `tpstudio` has one absolute 10-second deadline measured from command admission, including time queued behind an existing Studio transition; an expired request cannot teleport late. Iris never changes the entering player's view distance. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio remain creative editing workspaces. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+A transient studio world opens and you are teleported into it in spectator mode. Player arrival for `open` and `tpstudio` waits for destination readiness and teleport completion without a fixed overall deadline. Iris never changes the entering player's view distance. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio remain creative editing workspaces. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ### Check a pack before you rely on it
 
@@ -301,9 +301,9 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 
 | Command | Aliases | Platforms | Params | Description |
 |---------|---------|-----------|--------|-------------|
-| `open` | `o` | Both | **Bukkit:** `<dimension> [seed=1337] [force=false]` (`dimension` alias `dim`, `seed` alias `s`, `force` alias `f`). **Modded:** `<pack> [seed]` | Open a temporary studio dimension. Bukkit refuses while a downloaded pack still requires a registry restart. `force=true` deliberately attempts the currently loaded registry state without installing datapacks or restarting, but never bypasses broken-pack validation. Player arrival has an absolute 10-second command-admission deadline. The owning player may replace an active Jigsaw Studio, and Iris waits for its autosave and active-operation barriers before closing it |
+| `open` | `o` | Both | **Bukkit:** `<dimension> [seed=1337] [force=false]` (`dimension` alias `dim`, `seed` alias `s`, `force` alias `f`). **Modded:** `<pack> [seed]` | Open a temporary studio dimension. Bukkit refuses while a downloaded pack still requires a registry restart. `force=true` deliberately attempts the currently loaded registry state without installing datapacks or restarting, but never bypasses broken-pack validation. Player arrival waits for destination readiness and teleport completion without a fixed overall deadline. The owning player may replace an active Jigsaw Studio, and Iris waits for its autosave and active-operation barriers before closing it |
 | `close` | `x` | Both | — | Close the studio and discard the world. Bukkit requires `/iris jigsaw close` for an active Jigsaw Studio |
-| `tpstudio` | `stp` | Both | — | Teleport into the open studio under the same absolute 10-second command-admission deadline |
+| `tpstudio` | `stp` | Both | — | Teleport into the open studio after destination readiness, without a fixed overall arrival deadline |
 | `status` | | **Modded** | — | Show the open studio and pack |
 | `create` | `+` | Both | **Bukkit:** `[name=studio] [template]`. **Modded:** `[name] [template=example]` | Create a pack project |
 | `package` | `pkg` | **Modded** | `[pack]` | Zip and package a pack. On Bukkit this node lives under `/iris pack pkg` instead |

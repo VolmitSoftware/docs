@@ -2,7 +2,7 @@
 title: "Noise and procedural streams"
 description: "Seeded noise, composition, interpolation, and procedural fields shared by Volmit plugins."
 published: true
-date: 2026-09-14T00:37:05.832Z
+date: 2026-09-14T22:50:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -36,6 +36,12 @@ double height = heights.get(128.5D, -32.25D);
 `NoiseGenerator` and `ProceduralStream` expose coordinate-specific sampling methods. Preserve the intended dimensions when choosing an overload. A two-dimensional sample and a three-dimensional sample with a zero coordinate are not interchangeable contracts.
 
 The canonical implementations retain Iris's seed handling, noise composition, interpolation, and cache invalidation. Configure a field before sharing it between workers. Do not change its configuration while workers sample it.
+
+Deep fixed two-dimensional fracture chains reuse repeated coordinate samples within one evaluation. The bounded temporary cache clears after that evaluation and preserves the original arithmetic. Shallow chains, expressions, custom generators and injectors, child compositions, and image caches keep their existing evaluation paths.
+
+## World column caches
+
+`WorldCache2D` stores bounded 16×16 column caches. Each thread reuses its last chunk. Repeated reads across several chunks update access order periodically to reduce contention, while each such read still checks the shared cache for an existing entry. The recent-key table retains no additional chunks, and an evicted entry is recomputed when requested through the shared cache. `setMaximumChunks(int)` changes the retained chunk limit in place and requires a positive capacity. Eviction changes retention only; resolved values keep their existing contract.
 
 ## Iris bindings
 

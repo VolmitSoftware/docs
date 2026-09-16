@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-09T09:41:00.000Z
+date: 2026-09-16T02:07:57.737Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -227,7 +227,7 @@ The existing public API, PlaceholderAPI value, integration telemetry, boss bar, 
 
 ## Performance profile
 
-Starting pregeneration applies Iris's pregen performance settings on the pregenerator worker. `performance.noiseCacheSize` is raised to at least 4096 in memory, and the natural-height and raw-height caches are resized in place before generation begins. The resolved terrain stream and its boundary transition state remain active; cache resizing does not rebuild the engine. The raised noise cache size is not lowered again for the life of the process. The burst pool parallelism is the one thing that does return when the job ends.
+Starting pregeneration applies Iris's pregen performance settings on the pregenerator worker. `performance.noiseCacheSize` is raised to at least 4096 in memory. Iris grows the underlying natural-height and resolved-height caches in place, preserving larger existing capacities and the main-thread query wrapper. The resolved terrain stream and its boundary transition state remain active; cache resizing does not rebuild the engine. The raised noise cache size is not lowered again for the life of the process. The burst pool parallelism is the one thing that does return when the job ends.
 
 On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. Iris does not enqueue every hydrology tile in the requested area at startup. Iris discards queued speculative plans outside the initial lookahead and admits the new frontier in one queue update, so concurrent spawn-area prefetch cannot enter between those operations; active plans and requested tiles still complete. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-16T02:20:06.948Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,7 +51,7 @@ The immediate path starts its lifecycle progress presentation before validation,
 
 **Expected result:** `release_candidate` appears in `/iris worlds` as a loaded Iris world, you spawn in it, and chunks generate as you fly.
 
-When a player runs the create command, Iris first generates the resolved entry chunk, searches the generated column area for a collision-free supported position, and only then delegates Paper's asynchronous teleport. The operation has a 60-second watchdog. A failure or timeout is non-terminal: Iris cancels only that entry attempt, keeps the successfully created world loaded and registered, and does not request a restart. Wait for initial generation to settle and run `/iris tp release_candidate` again.
+When a player runs the create command, Iris generates the required entry chunks concurrently, searches the canonical spawn chunk for a collision-free supported position, and then delegates Paper's asynchronous teleport. New normal worlds request the canonical chunk at urgent priority when the server supports it. Player-issued creation starts the other chunks in the native entry footprint at the same time, avoiding another generation wait when teleport begins. Console creation requests only the canonical chunk. Fresh world creation warms generation caches in parallel with world setup and destination hydrology; chunk generation waits for warmup to finish. During this initial entry, hydrology prioritizes exact entry columns and defers speculative neighbor planning until teleport finishes. Required native chunks and structures remain unrestricted; console creation restores neighbor planning after spawn preparation. Failure and close also end this deferral. The operation has a 60-second watchdog. A failure or timeout is non-terminal: Iris cancels only that entry attempt, keeps the successfully created world loaded and registered, and does not request a restart. Wait for initial generation to settle and run `/iris tp release_candidate` again.
 
 The world generates from its active immutable epoch under `<world>/iris/generation/epochs/<epoch>/pack/`. Authoring edits do not automatically update production worlds. Preserve the complete generation history with the world backup. Use [25 - Pack Management](/iris/25-pack-management) for compatible updates. Height and dimension-layout changes require a new world.
 
@@ -127,7 +127,7 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | Java Agent or Code Injection failure at startup | Iris cannot install the server hooks needed for world creation and dimension heights | Follow [Java agent recovery](/iris/01-installation-platforms#recover-from-a-java-agent-failure). Restart completely and confirm injection succeeds before retrying |
 | A configured startup world is reported as generation-locked | The immediate startup restart or shutdown did not complete, or startup validation failed before world loading. Iris bound a non-generating safety generator so Bukkit cannot fall back to vanilla terrain | Fix the first logged restart or validation failure, then restart. Do not force chunk generation while the lock remains |
 | Folia create reports `paper_like_runtime` unavailable | Iris cannot prove a safe runtime world-creation backend and refuses before invoking Folia's unsupported public path | Update to a compatible Folia/Iris build, then retry without hand-editing world storage |
-| Create fails during initial-spawn preparation | The spawn chunk returned null or failed, its owning-region task was rejected, spawn placement failed, or the 120-second initial-spawn wait expired | Treat the create as failed and follow the logged reconciliation or restart instruction. Do not start another lifecycle mutation until Iris releases or fences the operation |
+| Create fails during initial-spawn preparation | A required entry chunk returned null or failed, the owning-region task was rejected, spawn placement failed, or the 10-minute initial-spawn wait expired | Treat the create as failed and follow the logged reconciliation or restart instruction. Do not start another lifecycle mutation until Iris releases or fences the operation |
 | Create reports that automatic teleport failed | The world was created, but entry-chunk generation, safe-position resolution, or Paper's asynchronous teleport failed or did not finish within 60 seconds | The world remains valid and no restart is requested solely for this failure. Wait for initial generation, then run `/iris tp <world>` |
 | Load reports missing or inconsistent data | The dimension root, the `bukkit.yml` registration, or the active generation snapshot is incomplete | Keep the directory and restore from backup. Load never re-downloads a snapshot |
 | Unload hits its terminal timeout | Work did not drain in 150 s | Allow the restart. Do not force-delete the live directory |
@@ -151,6 +151,8 @@ Unload has a hard 150-second ceiling. If the world, generator, or scheduler work
 | Reserved names | `/iris create` rejects `iris` and `benchmark` case-insensitively. This is a create-time check only. The storage layer does not enforce it |
 
 The vanilla main, Nether, and End worlds have the canonical keys `minecraft:overworld`, `minecraft:the_nether`, and `minecraft:the_end`. They are not Iris-managed dimension folders and are only reachable through the exact-slot replacement path below.
+
+Registry housekeeping removes entries only when their canonical dimension storage is absent. Unusable saved history or a missing dimension definition remains registered so removal and recovery commands can find it. Resolving or loading a saved pack still validates its frozen content.
 
 The startup configuration name is separate from both identity and display name. On Paper-family servers, an `iris:moon` dimension in level root `world` is displayed as `moon`, stored at `world/dimensions/iris/moon`, and bound in `bukkit.yml` as `world_iris_moon`. Plain Spigot uses the same startup name and identity but configures the outer root `world_iris_moon`, with the persistent dimension at `world_iris_moon/dimensions/iris/moon`. Iris parses the startup name back to the canonical key. Because `bukkit.yml` is server-global, Iris imports an entry only when its exact platform-specific canonical dimension directory is a real non-symlink directory for the selected save. Switching `level-name` cannot silently reinterpret another save's Iris registry.
 
@@ -181,17 +183,17 @@ Aliases and permissions: [04 - Commands & Permissions](/iris/04-commands-permiss
 
 Create refuses to run on the primary thread. Before it takes a lifecycle lease it requires startup datapack validation to be ready and the chosen pack to have a loadable validation result. Then the `WORLD_MUTATION` / `WORLD_CREATE` lease must be free or the command fails busy. A refusal at any of those gates leaves no dimension folder and no registration behind.
 
-On an unchanged create, Iris reuses the compiler-input fingerprint already produced while recovering external datapacks instead of hashing the same inputs again. Compiler discovery enumerates authoring packs and required world generation metadata and snapshots directly. It does not recursively scan saved region, entity, POI, or other chunk-storage trees.
+Normal creation and Studio reuse the loaded datapack runtime when it already supplies the selected dimension type and all required registry definitions. Reusing the loaded runtime does not apply unrelated external datapack edits; use `/iris datapack ingest restart=true` as described in [Native Structures & Datapacks](/iris/22-native-structures-datapacks). If the required definitions are unavailable, Iris runs datapack installation and retains its restart checks. Compiler discovery enumerates authoring packs and required generation metadata and snapshots without scanning saved chunk-storage trees.
 
 ## What create actually does
 
 1. Resolve the managed key and dimension. No directory is created yet.
 2. Require startup datapack readiness and a loadable validation result for the owning pack.
-3. Install datapacks for the dimension types. A changed compiler-input fingerprint does not itself require a restart when the loaded runtime already satisfies every current dimension-type, custom-biome, and biome-tag requirement. A new or changed required registry entry still queues the normal restart.
+3. Verify that the loaded runtime satisfies the selected dimension-type, custom-biome, and biome-tag requirements. Reuse that runtime when ready; otherwise install datapacks and require a restart for new or changed required registry entries.
 4. Publish the validated pack and its registry contract as the initial immutable generation epoch through `StudioSVC.installIntoWorld`. Source fingerprint checks reject concurrent changes. The lifecycle reporter shows `Preparing world pack`.
-5. Build a `WorldCreator` with the Iris generator and `studio=false`.
+5. Build a `WorldCreator` with the Iris generator and `studio=false`. Pass the published dimension and verified generation history together, avoiding another history read. Generator startup still verifies the active pack before generating terrain.
 6. Create the world through `WorldLifecycleService` / NMS async create, with a 120-second timeout. A timeout triggers a server restart rather than leaving a half-created world.
-7. Wait up to 10 minutes for the production generator's initial-spawn future. The actual spawn chunk must resolve and spawn placement must complete on that chunk's owning region. A null chunk future or result, scheduling rejection, generation failure, placement failure, or timeout fails creation. Iris does not register the world, report success, or release lifecycle admission early. Studio and benchmark worlds do not use this production-spawn barrier.
+7. Wait up to 10 minutes for the production generator's initial-spawn future. The actual spawn chunk and any requested player-entry chunks must resolve before spawn placement completes on the canonical chunk's owning region. A null chunk future or result, scheduling rejection, generation failure, placement failure, or timeout fails creation. Iris does not register the world, report success, or release lifecycle admission early. Studio and benchmark worlds do not use this production-spawn barrier.
 8. Register the world in `bukkit.yml` with the Iris generator, dimension key, and seed. Update the Multiverse link if Multiverse is present. That step has its own 30-second budget and also escalates to a restart.
 9. For a player-issued create, resolve a supported collision-free entry position and delegate one asynchronous teleport there. The operation has a 60-second watchdog. Failure cancels the teleport only and retains the created world without requesting a restart.
 10. Run creation-time pregen if the caller attached a `PregenTask` through the API.
@@ -237,7 +239,7 @@ After the server returns, stage both exact slots:
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Pack snapshots copy their files before flushing each destination to disk. Iris completes all file flushes and fingerprint checks before publishing the snapshot.
+Pack snapshots copy files concurrently with at most four workers, capped at half the available processors. All copies finish before the same bounded worker set flushes the destinations. If a worker fails or is cancelled during shutdown, Iris waits for active file operations to finish before returning the failure or cleaning up the snapshot. Iris completes all file and directory flushes and fingerprint checks before publishing the snapshot. Loading an exact copied snapshot can reuse the source pack’s validation result when its content fingerprint and validation context match; other snapshots receive full validation.
 
 Each replacement reports progress while it checks datapacks, prepares the seed, copies and validates the pack, and saves the pending replacement. Long phases repeat every ten seconds with elapsed time. A second replacement request reports busy while the first is active. Wait for each staged-success message before issuing the next replacement or restarting.
 
@@ -273,7 +275,7 @@ Studio worlds use `IrisCreator.studio(true)` and differ from production worlds i
 - Closing a world discards queued Iris entity-count and spawn callbacks before detaching its runtime. Callbacks already admitted participate in the lifecycle drain, and expired waits cannot start queued work afterward.
 - Open and close go through the `StudioSVC` transition queue ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 - Biome Buffet resolves each cell from its coordinates within the active immutable pack. Adjacent chunks retain their own biome and region identities without changing authoring focus or creating a generation activation for each cell.
-- Ordinary Studio activates its native structure state, then delegates the fixed spectator anchor directly to Paper's asynchronous teleport. Iris performs no entry-area precompute, separate chunk request, or surface lookup.
+- Ordinary Studio activates its native structure state, then delegates the fixed spectator anchor directly to Paper's asynchronous teleport. Tracked hydrology planning can run alongside world setup; final entry uses no separate chunk request or surface lookup.
 - A failed open cleans up its transient world immediately unless a terminal server lifecycle operation is already active. In that case Iris queues any materialized transient state for startup deletion instead of competing for the live lifecycle lease.
 
 ## Load
@@ -289,6 +291,8 @@ Load never downloads a pack. The world must already have its active generation s
 On Bukkit, a saved dimension that needs an installed custom-block provider can wait for that provider's content registry during startup. Iris binds its own generator immediately and checks the frozen dimension contract. It starts the engine only after the exact saved pack passes content validation. Generation requests during this wait are rejected before writing terrain. Startup reconciliation waits for engine initialization. Missing providers still fail validation; a provider that does not become ready within 120 seconds leaves generation locked and triggers shutdown. See [28 - Integrations](/iris/28-integrations) for supported providers and block IDs.
 
 ## Unload
+
+Shutdown interrupts registered background threads and executors, then waits for them to terminate before checking whether the plugin class loader can close. Unfinished work retains its resources when the shutdown deadline expires.
 
 Shutdown stops new hydrology requests and cancels queued plans. Active river and cave planning finishes before Iris releases mantle data. If that drain fails, dependent resources remain available for a shutdown retry.
 

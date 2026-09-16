@@ -2,11 +2,13 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-09-04T16:31:36.767Z
+date: 2026-09-15T21:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
+
+For proxy tablists, scoreboards, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
 Each schema-2 JSON file in `plugins/Gloss/boards/` defines one scoreboard. Conditions select a board and its presentation for each player. Vault group names are available to those conditions when Vault is installed.
 

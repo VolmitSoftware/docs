@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mesa Plateau High"
 description: "Iris biome atlas entry for mesa/plateau-high in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-13T18:16:54.244Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4009 | `hot` (Hot) | 1 | 3 | 0.3333 | 1.94% |
-| Underworld 1011 | `hot` (Underworld Hot) | 1 | 3 | 0.3333 | 1.94% |
+| Underworld 1011 | `hot` (Hot) | 1 | 3 | 0.3333 | 1.94% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 

@@ -2,7 +2,7 @@
 title: "Carving Biomes"
 description: "Navigation for the built-in carving biomes across Overworld and Underworld"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:38:38.181Z
 tags: "iris, biomes, overworld, underworld, carving"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -11,7 +11,7 @@ Underground cave roots and the dimension-level Deep Dark carving band shared by 
 
 This family has **49 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
-Overworld disables the standalone aquifer pass in its dimension, region, and biome cave profiles to prevent isolated water sources from spilling through caves. Hydrology, natural surface water, and deep lava retain their settings. Underworld keeps its separate cave-fluid treatment.
+Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
 ## Direct roots
 

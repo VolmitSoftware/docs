@@ -2,15 +2,15 @@
 title: "Prismatic Caves"
 description: "Paired atlas entry for the 16 direct prismatic cave roots"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:38:38.181Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-The Prismatic region selects 16 color-specific cave roots, one slot each, in both Overworld 4002 and Underworld 1005. They share one cave design and differ primarily in their color material set, so this family page documents all 16 without hiding any direct key.
+The Prismatic region selects 16 color-specific cave roots, one slot each, in both Overworld 4009 and Underworld 1011. They share one cave design and differ primarily in their color material set, so this family page documents all 16 without hiding any direct key.
 
-Overworld disables standalone cave aquifers in this family. Hydrology still supplies its contained underground water, and deep lava retains its configured behavior. Underworld retains its independent cave fluids.
+Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
 Amethyst clutter keeps its authored scale in both packs so each bud retains its solid support. Other clutter keeps its configured scale.
 
@@ -20,9 +20,9 @@ Each key occupies `1/16` cave-selection slots in `prismatics`. The region declar
 
 ## Shared carving design
 
-**Overworld.** Enabled local cave profile with declared vertical range `6..760`; sample step `2`; surface clearance `5`; surface breaking `enabled`; fluids `allowed`; lava `allowed`; a minimum depth below surface of `18`.
+**Overworld.** Enabled local cave profile with declared vertical range `6..760`; sample step `2`; surface clearance `5`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `18`.
 
-**Underworld.** Enabled local cave profile with declared vertical range `6..760`; sample step `2`; surface clearance `5`; surface breaking `enabled`; fluids `allowed`; lava `allowed`; a minimum depth below surface of `18`.
+**Underworld.** Enabled local cave profile with declared vertical range `6..760`; sample step `2`; surface clearance `5`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `18`.
 
 No member declares a surface generator band. The selected root paints the cave volume with its own wall, ceiling and floor palettes, decorators and child patch.
 

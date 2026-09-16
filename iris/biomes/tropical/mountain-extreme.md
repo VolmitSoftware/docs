@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Mountain Extreme"
 description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4007 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
-| Underworld 1010 | `tropical` (Underworld Tropical) | 1 | 1 | 1 | 8.33% |
+| Underworld 1010 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 

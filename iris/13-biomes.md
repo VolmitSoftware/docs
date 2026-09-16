@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-15T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -326,12 +326,15 @@ The stacks:
 | `caveCeilingLayers` | Carved ceiling material, upward from the first solid block above the highest carved cell. The default is empty, so an omitted field leaves the existing ceiling material unchanged. |
 | `slab` | Palette for the half-slabs the post processor adds on single-block steps. Default is an empty palette, meaning no slabs. |
 | `wall` | Palette for the vertical faces the post processor paints when a neighboring column is more than two blocks lower. Default is empty. Set it to stone/andesite to stop cliffs showing dirt. |
+| `surfaceLayerFallback` | Omit to inherit the dimension setting. `ROCK` leaves rock exposed when every layer is rejected. `TOP_LAYER` emits one block from the first palette despite its slope gate or zero thickness. Applies to ordinary and locked layers; empty layer lists and zero depth limits remain empty. |
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |
 | `lockLayersMax` | Depth cap, in blocks, for locked layers. Default `7`. |
 
 Locked layers sample active thicknesses, then resolve only the requested positions in the repeating band stack. Repeated cycles reuse those resolved blocks. Surface and locked layers test `slopeCondition` before sampling thickness noise.
 
 `caveCeilingLayers` uses its own thickness generators. Its entry count is independent of `layers`, and every entry can contribute within the requested ceiling depth. Ceiling layers do not apply `slopeCondition`.
+
+The surface wall pass skips shore biomes, preserving their beach material beside coastal drops. Cave wall painting remains available.
 
 Slabs and walls only appear when the dimension has `postProcessing`, `postProcessingSlabs` and `postProcessingWalls` enabled. See [11 - Dimensions](/iris/11-dimensions).
 

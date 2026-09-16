@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tundra Autumn"
 description: "Iris biome atlas entry for tundra/autumn in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -17,8 +17,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 |---|---|---:|---:|---:|---:|
 | Overworld 4007 | `forests` (Forests) | 1 | 1 | 1 | 11.46% |
 | Overworld 4007 | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
-| Underworld 1010 | `forests` (Underworld Forests) | 1 | 1 | 1 | 11.46% |
-| Underworld 1010 | `tundra` (Underworld Tundra) | 1 | 1 | 1 | 6.12% |
+| Underworld 1010 | `forests` (Forests) | 1 | 1 | 1 | 11.46% |
+| Underworld 1010 | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 

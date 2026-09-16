@@ -2,11 +2,13 @@
 title: "Tablist & Server List MOTD"
 description: "Configure player-list text and randomized server-list messages"
 published: true
-date: 2026-09-10T02:57:34.000Z
+date: 2026-09-15T21:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
+
+For proxy tablists, scoreboards, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
 Player-list text lives in `plugins/Gloss/tablist.json`; server-list messages live in `plugins/Gloss/motd.json`. Both files reload automatically.
 

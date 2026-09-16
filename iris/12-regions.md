@@ -66,7 +66,7 @@ Shores are not chosen by noise. After the height for a column is known, Iris com
 | `fluidHeight - 1` up to `fluidHeight + shoreHeight` | shore |
 | above `fluidHeight + shoreHeight` | land |
 
-`shoreHeight` is per column. Noise is fitted between `shoreHeightMin` and `shoreHeightMax`. It is sampled at `x / shoreHeightZoom, z / shoreHeightZoom`. The beach is the vertical slice of the world from one block below the water line up to a few blocks above it. The width of the beach on the ground is however far that slice stretches across your terrain slope. Flat coastline plus a large `shoreHeightMax` gives wide beaches. A cliff gives none regardless of the setting.
+`shoreHeight` is per column. Noise is fitted between `shoreHeightMin` and `shoreHeightMax`. It is sampled at `x / shoreHeightZoom, z / shoreHeightZoom`. The beach is the vertical slice of the world from one block below the water line up to a few blocks above it. The width of the beach on the ground is however far that slice stretches across your terrain slope. Flat coastline plus a large `shoreHeightMax` gives wide beaches. A cliff gives almost none, because the slice is crossed in a block or two. Set `shoreMinimumWidth` above zero to buy the width back: the band then also climbs with the local slope, so the beach stays roughly that many blocks wide across the ground instead of collapsing on steep coast.
 
 The shore-height noise is seeded from the region name length, `landBiomeZoom` and the number of land biomes. It is not seeded from the world seed. If you rename a region or add a land biome, the shoreline wobble pattern changes.
 
@@ -216,6 +216,7 @@ The physical drainage graph, density, channel dimensions, and legal outlet famil
 | `shoreHeightMin` | double >= 0 | `1.2` | Lower bound, in blocks above the water line, of the shore band. |
 | `shoreHeightMax` | double >= 0 | `3.2` | Upper bound of the shore band. Raise both to get taller, and therefore usually wider, beaches. |
 | `shoreHeightZoom` | double >= 0.0001 | `3.14` | Horizontal scale of the noise that picks the band height per column. Small values make the beach width vary rapidly along the coast. Large values make it uniform. |
+| `shoreMinimumWidth` | double 0-64 | `0` | Minimum beach width in blocks across the ground. `0` keeps the band purely vertical, which is the historical behaviour. Above zero the band also climbs with the local slope so a steep coast still gets a beach; the climb is capped at three blocks of height per block of width. Distinct from `riverPolicy.shoreWidth`, which is the river bench. |
 
 ### Content attached to the region
 

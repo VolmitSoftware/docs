@@ -2,7 +2,7 @@
 title: "Biome Atlas — Wilted Lollipops"
 description: "Iris biome atlas entry for estranged/slinky-spires in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -18,7 +18,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4007 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
-| Underworld 1010 | `estranged` (Underworld Estranged) | 1 | 4 | 0.25 | 5.28% |
+| Underworld 1010 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Tundra Ether"
-description: "Iris biome atlas entry for tundra/ether-extended in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for tundra/ether-extended in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tundra/ether-extended` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tundra/ether-extended` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,8 +15,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `tundra` (Tundra) | 1 | 13 | 0.0769 | 0.47% |
-| Underworld 1010 | `tundra` (Underworld Tundra) | 1 | 13 | 0.0769 | 0.47% |
+| Overworld 4009 | `tundra` (Tundra) | 1 | 13 | 0.0769 | 0.47% |
+| Underworld 1011 | `tundra` (Tundra) | 1 | 13 | 0.0769 | 0.47% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -40,7 +40,7 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld 4009 treatment
 
 - **Minecraft identity:** derivative `minecraft:windswept_hills`; native-structure derivative `minecraft:old_growth_spruce_taiga`; custom identities `tunether`; underground scatter `minecraft:old_growth_pine_taiga`, `minecraft:windswept_hills`.
 - **Surface:** 3-5 block(s) at slope >= 6.9: `minecraft:stone`, `minecraft:andesite`, `minecraft:gravel`; 3-5 block(s) at slope >= 5.3: `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:gravel`; 1 block(s): `minecraft:grass_block`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
@@ -48,12 +48,14 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - **Tree materials:** The shared `trees/mixed/dotree1` through `trees/mixed/dotree10` objects use their original oak, spruce, and dark oak fences and connections.
 
-## Underworld 1010 treatment
+## Underworld 1011 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_tundra_ether_extended_ac0d224d`.
 - **Surface:** 3-5 block(s) at slope >= 6.9: `minecraft:basalt`, `minecraft:soul_sand`; 3-5 block(s) at slope >= 5.3: `minecraft:soul_soil`, `minecraft:soul_sand`; 1 block(s): `minecraft:soul_soil`; 6-18 block(s): `minecraft:basalt`. Wall palette: `minecraft:basalt`.
 - **Content:** 3 object placement rule(s) drawing from 21 object key(s), including `underworld/soul/clutter/gravelsplotch1`, `underworld/soul/clutter/gravelsplotch2`, `underworld/soul/clutter/gravelsplotch3`, `underworld/soul/clutter/gravelsplotch4`, `underworld/soul/trees/mixed/dotree1`, `underworld/soul/trees/mixed/dotree2`, `underworld/soul/trees/mixed/dotree3`, and 14 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:soul_fire`, `minecraft:crimson_roots`.
 - **Entity spawners:** `nether/surface/soul-sand-valley`, `nether/cave`.
+
+- **Tree materials:** The paired Nether `dotree1` through `dotree10` objects use `minecraft:warped_fence` at the same fence positions, with matching connections.
 
 Underworld keeps the terrain links but uses its Nether derivative, materials, objects, and surface/cave spawners.
 

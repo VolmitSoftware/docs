@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-15T23:18:52.453Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -427,6 +427,8 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 | `shoreMaterial` | enabled, sand, depth 2 | Palette painted over the shore bench columns instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
 | `bankMaterial` | disabled | Palette painted over the eroded bank columns outside the bench instead of the biome's own layers; same three fields |
 
+Increasing `channel.sink` lowers the head and leaves less of `channel.maximumIncision` available for the bed. A route near that limit can disappear when sink increases. Wider `shoreWidth` expands the bank probe band; it does not guarantee more accepted rivers. Source spacing uses deterministic greedy selection with stable hash ordering for equal-priority candidates. Accepted river counts need not increase with either setting.
+
 `bankMultiplier` in a region or biome policy scales `blendSlope` locally: values below `1` make steeper, narrower valleys and values above `1` make wider, gentler ones. `riverPolicy.shoreWidth` replaces `shoreWidth` per area, so one region can carry a wide bench and a biome inside it none.
 
 `shoreMaterial` and `bankMaterial` paint over the layers the shore and bank biomes would otherwise supply, down `depth` blocks from the surface, and change nothing while `enabled` is `false`. The bed padding rule still runs after the paint, so a falling block from one of these palettes is replaced by `bed.paddingPalette` unless `bed.allowGravityBlocks` is set. Content that should vary with the surrounding terrain belongs in `shoreBiomes` or `bankBiomes` instead; these palettes are for one fixed material along every river in the dimension.
@@ -600,7 +602,7 @@ Deep fluids are independent of both river source budgets and do not join the sur
 | `containedPools` | Enables `DEEP_POOL` features |
 | `shortChannels` | Enables `DEEP_CHANNEL` features |
 
-Spacing must contain the complete horizontal footprint, depth plus headroom must fit inside the vertical diameter, and the height envelope must fit inside the dimension. A short channel has no separate authored length: its maximum length is `spacing / 3`, capped to half `routing.tileSize`, and its derived containment-volume bound may shorten it further. Contained pools use one connected deterministic multi-lobed basin with an ellipsoid bowl. The managed Overworld uses a denser `deep_lava` entry independently of its water river profile.
+Spacing must contain the complete horizontal footprint, depth plus headroom must fit inside the vertical diameter, and the height envelope must fit inside the dimension. A short channel has no separate authored length: its maximum length is `spacing / 3`, capped to half `routing.tileSize`, and its derived containment-volume bound may shorten it further. Contained pools use one connected deterministic multi-lobed basin with an ellipsoid bowl. Both managed packs use matching `deep_lava` and `deep_lava_small` entries independently of their ambient river profiles.
 
 ### `hydrology.surfacePools`
 
@@ -745,7 +747,7 @@ For each bounded hydrology tile Iris:
 2. selects up to `maximumCoastalOutletsPerTile` sea outlets from the coast, the tile's own shoreline before a neighbour's and mouths and coastal grottos in turn, then up to `maximumOutletsPerTile` permitted inland grottos for the ground no coast can drain; the two budgets are independent, and a sea outlet an underground river cannot reach because the sea sits above `underground.fluidLevel` is reported as `OUTLET_LEVEL`;
 3. builds one acyclic drainage potential toward accepted outlets;
 4. admits surface and underground sources from separate budgets;
-5. routes toward valleys using `valleyPreference`, `uphillPenalty`, `slopePenalty`, policy cost, and `confluenceAttraction`; a surface route never climbs more than the cut the channel may make (`channel.maximumIncision` less the inset and depth) between two lattice samples, so ground behind a ridge drains to an inland grotto instead of an impossible sea mouth;
+5. routes toward valleys using `valleyPreference`, `uphillPenalty`, `slopePenalty`, policy cost, and `confluenceAttraction`; surface routing bounds each uphill lattice step by the available channel incision, but a cumulative climb can still fail the refined channel and bank checks;
 6. refines each accepted coarse route into a terrain-following centerline with the configured meanders;
 7. shapes every surface course as a valley (below) and every underground course as a contained passage;
 8. compiles exact terrain, fluid, shore, bank, biome, cave, render, and locator footprints;
@@ -771,11 +773,13 @@ The head is derived from the banks rather than the centerline so a river running
 
 `erosion.bedProfile` decides the cross-section of the wet bed. `BOWL` holds full depth over `thalwegFraction` of the half-width and eases up to a one-block edge, and it is the profile Iris cut before the field existed. `FLAT` holds full depth to the waterline, so the channel edge drops straight to the bed. `V` slopes straight from full depth at the centerline to one block at the edge and ignores `thalwegFraction`. `U` holds the thalweg deep almost to the edge and then rises steeply, giving a trough with steep sides.
 
-When `banks.exposeCutStrata` is `true`, eroded bank columns use the biome layer that would naturally sit at that depth, so a cut through grassland shows dirt and then stone rather than repeating the surface layer down the whole bank.
+When `banks.exposeCutStrata` is `true`, eroded bank columns offset the biome palette by the erosion depth. The offset stops at the deepest authored layer, so a cut deeper than the layer stack repeats that last material within the original stack thickness. Below that thickness, dimension rock and ore rules resume. Uncut columns keep their original layers.
 
 Each accepted column layer records its exact `bedY`, `fluidHeadY`, `ceilingY`, ownership flags, connected/falling/receiving state, profile key, and selected content keys. `IrisComplex` uses that footprint for final terrain height, surface biome, and fluid selection. Cave and decorator stages consume the same ownership rather than estimating a channel from nearby coordinates.
 
-The runtime exposes accepted-plan queries through `IrisHydrologyRuntime.sample(x, z)`, `renderSample(x, z)`, `tile(HydrologyTileKey)`, and `nearestFeature(...)`. Column and render queries compose overlapping immutable tile footprints before returning the final sample. The plan cache and cold-query diagnostic history are each bounded to 64 tiles.
+The runtime exposes accepted-plan queries through `IrisHydrologyRuntime.sample(x, z)`, `renderSample(x, z)`, `tile(HydrologyTileKey)`, and `nearestFeature(...)`. Column and render queries compose overlapping immutable tile footprints before returning the final sample. The plan cache and complete diagnostic cache are each bounded to 64 tiles.
+
+`HydrologyTile.localDiagnosticCandidates()` returns the local planning candidates already stored with that immutable tile. `localDiagnosticRenderAt(...)` filters those stored candidates. Use `IrisHydrologyRuntime.diagnosticCandidates(HydrologyTileKey)` or `HydrologyTileCache.diagnosticCandidates(HydrologyTileKey)` for the complete sorted list, including regional basin rejections. `sampleDiagnosticFootprint(...)` also resolves complete diagnostics. A cold complete query can run regional planning; call it from a thread allowed to wait. It rejects a cold call on a protected server thread. Concurrent requests share the result, and interruption of one caller does not cancel work needed by another. Reload and shutdown clear the cache and drain started queries.
 
 Shutdown rejects new planning and cancels queued work. Started tile plans and column composition finish before Iris releases mantle data. A failed drain retains dependent resources for a later shutdown attempt.
 
@@ -816,6 +820,8 @@ The accepted plan resolves the first true natural land/ocean crossing. An expose
 Ocean classification is conservative: either the route classifier or the sampled natural terrain may veto ownership. Independently of biome classification, any surface column whose natural height is at or below sea level rejects river-owned terrain, fluid, shore content, and bank writes. Only the bounded non-owning mouth apron may remain. These guards apply to exposed hydrology only, so independently contained underground and deep-fluid features remain legal below sea level. A mouth or coastal grotto cannot turn along the coastline, raise the sea, place a wall across it, or excavate an ocean channel.
 
 ### Mantle and cave containment
+
+When a surface pool overlaps part of a cave-water volume, Iris publishes only the accepted cave cells through the containment plan. The remaining pool cells retain surface-water ownership. Underground and deep-fluid layers still require complete containment coverage.
 
 Any active river or deep-fluid configuration requires:
 
@@ -939,6 +945,8 @@ The generation probe constructs the real engine and generates chunks into buffer
 
 ## Managed pack profiles
 
+The managed Overworld disables regional rivers; Underworld retains the regional default. Disabling regional rivers removes their planning work and their possible courses.
+
 The managed Overworld and Underworld use 1,024-block watersheds and 64-block coarse samples. Dimension defaults set both surface and underground course minima to 384 blocks. Surface density is `1.75`, underground density is `1.5`, and both source minima are zero. Default source spacing is 384 blocks for surface rivers and 640 blocks underground. Dimension outlet budgets are one inland outlet and two coastal outlets per tile. Each surface outlet can publish one complete main stem plus the configured tributaries.
 
 Local surface policies replace those defaults. Tropical regions use density `8`, spacing `160`, three tributaries, three inland outlets, four coastal outlets, and a 64-block course minimum. Volcanic biomes use density `6`, spacing `128`, two tributaries, three inland outlets, no coastal outlets, and a 128-block course minimum. Mixed tiles scale local budgets by eligible area.
@@ -948,6 +956,8 @@ The refined route uses 192/48-block meander wavelengths, strengths `0.55`/`0.18`
 Banks carry a 1.5-block shore bench by default. Their blend extends three blocks per block of cut, within a 4-to-32-block width, and exposes the biome's deeper layers. Rapids start where the land drops faster than one block in two. A cliff of six blocks or more between adjacent stations makes a waterfall.
 
 Both packs enable direct ocean mouths, coastal grottos, inland grottos, and surface sinkholes. Surface mouths use a 64-block inlet, a width flare of `2.5`, a 32-block incision cap, and an eight-block ocean apron that owns no writes. Underground mouths level into the sea across 128 blocks. Underground passages connect to suitable existing caves, and both grotto forms retain 10 blocks of dry headroom. The `deep_lava` entry uses density `0.5`, 1,024-block spacing, and isolated contained pools without channel offshoots.
+
+The paired `deep_lava_small` entry uses density `1.5`, spacing `320`, and height range Y `-160..40`. Its horizontal and vertical radii are 6 and 4 blocks. It has one block of depth, four blocks of headroom, and no channel offshoots.
 
 Their ambient river profiles differ:
 
@@ -977,7 +987,7 @@ Underworld:
 }
 ```
 
-Both managed packs also carry the independent `deep_lava` entry from the complete example. Default Underworld river policies reference `lava`, and default Overworld policies reference `water`. Volcanic policies in both packs reference `volcanic_lava`. Region policies tune headwater and transit preference, while biome policies provide specific source, routing, profile, and content behavior without duplicating the dimension physical solver.
+Both managed packs carry independent `deep_lava` and `deep_lava_small` entries. Both entries use contained lava pools with `shortChannels: false`. Default Underworld river policies reference `lava`, and default Overworld policies reference `water`. Volcanic policies in both packs reference `volcanic_lava`. Region policies tune headwater and transit preference, while biome policies provide specific source, routing, profile, and content behavior without duplicating the dimension physical solver.
 
 ## Adding rivers to a pack
 

@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-14T00:40:24.195Z
+date: 2026-09-14T01:38:38.181Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -188,7 +188,7 @@ Enabled dimension `carving` biomes are likewise included in the recursive reacha
 
 Aquifers and deep lava are two independent mechanisms. Neither changes cave geometry.
 
-The built-in Overworld sources disable standalone aquifers at every profile level. Underground hydrology still supplies contained water. Underworld retains its independent fluid settings.
+Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
 **Deep lava** is a straight Y test done while the carve marks are written. Any carved cell at or below the dimension `caveLavaHeight` (engine-local, default `8`) is marked lava when `allowLava` is true. When `allowLava` is false those cells are marked *forced air*, which the carve modifier honors explicitly. That is how a dry lava-level cave stays dry. A cavern mark with plain air intent that reaches the carve modifier from some other source (structure boring, for example) below `caveLavaHeight` becomes lava. Plain air is the "use the default for this depth" intent.
 

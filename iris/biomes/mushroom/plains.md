@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mushroom Plains"
 description: "Iris biome atlas entry for mushroom/plains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4007 | `mushroom` (Mushroom) | 1 | 1 | 1 | 25.00% |
-| Underworld 1010 | `mushroom` (Underworld Mushroom) | 1 | 1 | 1 | 25.00% |
+| Underworld 1010 | `mushroom` (Mushroom) | 1 | 1 | 1 | 25.00% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 

@@ -1,17 +1,17 @@
 ---
-title: "Overworld 4007"
+title: "Overworld 4009"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:38:38.181Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Overworld 4007 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
+Overworld 4009 is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Overworld 4007 |
+| Built-in pack | Overworld 4009 |
 | Environment | `NORMAL` |
 | Build range | Y `-256..512` |
 | Logical height | `512` |
@@ -26,7 +26,7 @@ Overworld 4007 is the normal-environment half of the paired biome atlas. It supp
 
 All 19 subterranean ore passes retain 70% of their configured clump attempts. Across dimension, region, and Rough Plains biome deposits, ore on exterior terrain surfaces may replace only exact `minecraft:stone`; buried and cave-wall ore retains each pass's broader host rules. Individual surface biomes can override the exterior host list. Underworld ore configuration remains independent.
 
-Overworld disables the standalone aquifer pass in its dimension, region, and biome cave profiles to prevent isolated water sources from spilling through caves. Hydrology, natural surface water, and deep lava retain their settings. Underworld keeps its separate cave-fluid treatment.
+Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
 Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
 
@@ -45,8 +45,8 @@ The global Deep Dark band is different from an ordinary regional cave. Between Y
 
 ## Relationship to Underworld
 
-Overworld is the geometry authority. Shape changes to its dimension transforms, region and biome selection, terrain generators, cave profiles, children, or floating islands are mirrored into Underworld so equal seeds remain coordinate-compatible. Materials, derivatives, ambience, ecology, objects, ores, deposits, and structures are allowed to differ and are documented separately on every atlas entry.
+Overworld is the geometry authority. Shape changes to its dimension transforms, region and biome selection, terrain generators, cave profiles, children, or floating islands are mirrored into Underworld so equal seeds remain coordinate-compatible. Procedural geometry, placement chances, seeds, support settings, and paired object placement controls also follow Overworld. Materials, derivatives, ambience, ecology, object assets, ores, deposits, and structures keep their dimension-specific treatment.
 
-Overworld 4007 and Underworld 1010 share lowercase active terrain keys, including `mountain/cute_cliffs` and `mountain/cute_cliffs+`. Their terrain selector lists now match, including Estranged shores and wetland rarity weights.
+Overworld 4009 and Underworld 1011 share lowercase active terrain keys, including `mountain/cute_cliffs` and `mountain/cute_cliffs+`. Their terrain selector lists now match, including Estranged shores and wetland rarity weights.
 
-Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Underworld 1010](/iris/biomes/underworld).
+Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Underworld 1011](/iris/biomes/underworld).

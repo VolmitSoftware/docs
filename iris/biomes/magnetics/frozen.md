@@ -1,15 +1,15 @@
 ---
 title: "Biome Atlas — Magnetics Frozen"
-description: "Iris biome atlas entry for magnetics/frozen in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for magnetics/frozen in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`magnetics/frozen` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`magnetics/frozen` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
-Large frozen formations use organic supports that can reach terrain up to 96 blocks below their bases. Overworld uses packed ice for these supports. Underworld retains its Nether materials. Small drift boulders retain their placement settings.
+Both packs use matching compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Placement chances, variant seeds, dimensions, and support settings match. Large formations use continuous organic supports with a 96-block terrain scan. Underworld uses blackstone and crying obsidian for these forms.
 
 ## Selection and weighting
 
@@ -17,8 +17,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
-| Underworld 1010 | `magnetics` (Underworld The Magnetics) | 1 | 1 | 1 | 16.67% |
+| Overworld 4009 | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
+| Underworld 1011 | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -32,7 +32,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -42,13 +42,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld 4009 treatment
 
 - **Minecraft identity:** derivative `minecraft:frozen_peaks`; native-structure derivative `minecraft:frozen_peaks`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:snow_block`, `minecraft:powder_snow`; 1-3 block(s): `minecraft:packed_ice`, `minecraft:snow_block`; 3-6 block(s): `minecraft:blue_ice`, `minecraft:ice`, `minecraft:packed_ice`; 6-18 block(s): `minecraft:diorite`, `minecraft:stone`, `minecraft:andesite`, `minecraft:blue_ice`. Wall palette: `minecraft:packed_ice`, `minecraft:blue_ice`, `minecraft:ice`, `minecraft:diorite`.
 - **Content:** 2 object placement rule(s) drawing from 18 object key(s), including `trees/sproak/generic1`, `trees/sproak/generic2`, `trees/sproak/generic3`, `trees/sproak/generic4`, `trees/sproak/generic5`, `trees/sproak/generic6`, `trees/sproak/generic7`, and 11 more. 1 decorator rule(s) using `minecraft:snow`, `minecraft:air`.
 
-## Underworld 1010 treatment
+## Underworld 1011 treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_magnetics_frozen_f3cc3252`.
 - **Surface:** 1 block(s): `minecraft:blackstone`; 1-3 block(s): `minecraft:blackstone`; 3-6 block(s): `minecraft:blackstone`; 6-18 block(s): `minecraft:quartz_block`, `minecraft:blackstone`, `minecraft:basalt`. Wall palette: `minecraft:blackstone`, `minecraft:quartz_block`.
@@ -63,12 +63,12 @@ No ordinary child biomes are declared.
 
 ## Floating variants
 
-- **Overworld 4007: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `150..185` blocks above the surface, top mode `NOISE`, maximum thickness `76`, carving biome `carving/ice-child`; decorators inherit and objects inherit.
-- **Overworld 4007: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `110..145` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/glacial-child`; decorators inherit and objects inherit.
-- **Overworld 4007: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `220..270` blocks above the surface, top mode `NOISE`, maximum thickness `80`, carving biome `carving/frost-shards-child`; decorators inherit and objects inherit.
-- **Underworld 1010: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `150..185` blocks above the surface, top mode `NOISE`, maximum thickness `76`, carving biome `carving/ice-child`; decorators inherit and objects inherit.
-- **Underworld 1010: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `110..145` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/glacial-child`; decorators inherit and objects inherit.
-- **Underworld 1010: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `220..270` blocks above the surface, top mode `NOISE`, maximum thickness `80`, carving biome `carving/frost-shards-child`; decorators inherit and objects inherit.
+- **Overworld 4009: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `150..185` blocks above the surface, top mode `NOISE`, maximum thickness `76`, carving biome `carving/ice-child`; decorators inherit and objects inherit.
+- **Overworld 4009: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `110..145` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/glacial-child`; decorators inherit and objects inherit.
+- **Overworld 4009: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `220..270` blocks above the surface, top mode `NOISE`, maximum thickness `80`, carving biome `carving/frost-shards-child`; decorators inherit and objects inherit.
+- **Underworld 1011: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `150..185` blocks above the surface, top mode `NOISE`, maximum thickness `76`, carving biome `carving/ice-child`; decorators inherit and objects inherit.
+- **Underworld 1011: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `110..145` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/glacial-child`; decorators inherit and objects inherit.
+- **Underworld 1011: [`frozen/vander`](/iris/biomes/frozen/vander):** rarity `1`, altitude `220..270` blocks above the surface, top mode `NOISE`, maximum thickness `80`, carving biome `carving/frost-shards-child`; decorators inherit and objects inherit.
 
 ## Inspect in game
 

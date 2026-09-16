@@ -2,7 +2,7 @@
 title: "Biome Atlas — Calm Plains"
 description: "Iris biome atlas entry for temperate/calmplains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-15T12:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4007 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
-| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 1 | 1 | 6.15% |
+| Underworld 1010 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -45,7 +45,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 ## Overworld 4007 treatment
 
 - **Minecraft identity:** derivative `minecraft:plains`; native-structure derivative `minecraft:plains`; no custom or scatter identities.
-- **Surface:** 1 block(s) at slope <= 4: `minecraft:grass_block`. Wall palette: `minecraft:andesite`, `minecraft:stone`, `minecraft:cobblestone`.
+- **Surface:** One grass block where slope is at most 4, then two dirt blocks, 1–3 dirt/coarse-dirt blocks, and 6–18 dirt/stone blocks. The lower layers have no slope gate, so steep columns retain soil when grass is rejected. Wall palette: `minecraft:andesite`, `minecraft:stone`, `minecraft:cobblestone`.
 - **Content:** 1 object placement rule(s) drawing from 12 object key(s), including `trees/mixed/pollup1`, `trees/mixed/pollup2`, `trees/mixed/pollup4`, `trees/mixed/pollup5`, `trees/mixed/pollup6`, `trees/mixed/pollup7`, `trees/mixed/pollup8`, and 5 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 6 more.
 
 ## Underworld 1010 treatment

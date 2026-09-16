@@ -2,7 +2,7 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-15T21:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,6 +17,8 @@ looking at, not by settings file order. Iris settings live in
 are in [07 - Pregeneration](/iris/07-pregeneration).
 
 ## Change one setting at a time
+
+Generation waits for cache warming to finish. A warming failure logs its cause and blocks generation for that engine; correct the reported pack or resource error and reopen the world.
 
 Compare chunk rate, tick latency, and memory use under the same workload. Thread-pool, cache, and SIMD changes require a restart. Restore the previous value if a change causes errors or worse performance.
 
@@ -79,7 +81,20 @@ something.
    mantle plates are budgeted against process memory. A bigger heap
    raises the effective plate count without any settings change.
 
-`performance.noiseCacheSize` is not worth tuning for pregeneration.
+`performance.noiseCacheSize` controls terrain noise retention. Larger caches
+can reduce repeated hydrology terrain sampling at the cost of more heap.
+Dimensions without region or biome image maps reuse the procedural cache
+for that field; they do not allocate a second mapping cache.
+When uncached hydrology planning begins, normal worlds can expand up to five final
+biome, region, ocean-classification, and natural-height caches to 32,768
+chunks each. Additional capacity shares an allowance of one eighth of
+the maximum JVM heap across runtimes, charged at 4 KiB per added cache
+chunk. A limited remaining allowance produces smaller increases.
+Explicit configured capacities and Studio's existing larger caches are
+kept; detached historical runtimes keep their configured capacities.
+Loading worlds and restoring cached hydrology tiles reserve no allowance.
+Unloading releases the allowance after active hydrology work drains.
+
 Starting a pregeneration raises it to at least 4096 in memory and resizes
 the engine's natural-height and raw-height caches in place. The engine is
 not rebuilt, and the raised value is not lowered again for the life of
@@ -88,27 +103,37 @@ Bukkit plugin sets it in its class initializer, before anything else
 runs. Mod loaders never set it, so pass `-Diris.cache.fast=true` on the
 JVM command line there if you want it.
 
+Normal creation and Studio check the selected dimension against already loaded registry definitions before deciding whether datapack installation is needed. Registry housekeeping checks storage presence without hashing every saved pack; explicit pack resolution still validates frozen content. Fresh creation passes its verified generation history directly to the generator, whose startup retains the final active-pack verification. Player-issued normal creation requests the native entry footprint concurrently with its canonical spawn chunk, so teleport does not start a second round of chunk generation.
+
+Large-pack fingerprint checks buffer at most 64 small files, up to 16 MiB, through up to four readers. They hash the bytes in the original sorted order, preserving existing fingerprints. Larger files and small packs retain streaming reads. Failure and interruption drain the readers before cleanup.
+
 ### Hydrology-heavy packs
 
 A pregeneration requests a bounded one-tile lookahead around its centre, nearest first, then keeps the ring around the generation front planned as it moves. It does not flood the planner with the whole requested area at startup. The center region uses a contiguous spiral so the first playable chunks complete promptly; later regions use four-chunk-spaced lattices to reduce overlapping mantle work. Height bounds at grid corners are shared between threads and from planning into generation.
 
-Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
+Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Standard Studio also persists completed entry tiles with their regional course ownership. A planner revision starts a fresh cache scope, so its first visit requires cold planning. Restoring those tiles reconstructs local owner state directly, without repeating terrain sampling or regional route planning. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
 
 Exact routing-grid rows are sampled concurrently. Surface-course search uses that grid only to rank provisional candidates, then resolves exact terrain, bank, and transition costs along the currently selected path. If one route layer has no viable candidate, Iris adds only that layer's exact guide fallback instead of rebuilding every route candidate. These optimizations preserve the full terrain-safety validation contract.
 
 Drainage routes reuse completed downstream distances instead of walking each shared suffix again. Footprint construction sorts primitive coordinate keys and retains the same signed coordinate order. Cave containment uses one ordered membership set. Cold-query diagnostic history is bounded to the tile-cache limit.
 
-Cold hydrology tile planning and chunk-column composition run outside cache insertion locks. Concurrent requests for one key share its result, while unrelated keys can proceed together even when their hashes select the same cache bucket. Cache invalidation prevents older work from repopulating the cleared cache. The scheduler defers queued speculative neighbors until required tile batches finish. Active plans and cross-tile owner dependencies continue. During shutdown, Iris rejects new planning and cancels queued work. Started tile plans and column composition finish before the engine releases mantle data. A failed drain keeps dependent resources available for a shutdown retry.
+Cold hydrology tile planning, regional basin planning, and chunk-column composition run outside cache insertion locks. Concurrent requests for one key share its result, while unrelated keys can proceed together even when their hashes select the same cache bucket. Cache invalidation prevents older work from repopulating the cleared cache. The scheduler defers queued speculative neighbors until required tile batches finish. Active plans and cross-tile owner dependencies continue. During shutdown, Iris rejects new planning and cancels queued work. Started tile plans and column composition finish before the engine releases mantle data. A failed drain keeps dependent resources available for a shutdown retry.
+
+Regional basin requests run concurrently on the hydrology worker pool. Requests for the same basin share one calculation. Independent regional source trials and alternative local outlets also plan concurrently, with results applied in the original selection order. Fine route searches evaluate neighboring steps inline to avoid scheduling a task for each small step. Search and hydraulic budgets remain unchanged. The hydrology pool replaces workers blocked on managed waits to maintain its configured runnable target while planning tasks remain. Plugin unload and server shutdown close this pool; the next enable or integrated-world start reopens it. River corridor checks sample at most 128 columns per batch with up to eight workers, then apply validation in the original order.
+
+Terrain sampling and reach refinement run outside cache insertion locks. Routing terrain caches distribute reads and updates across independent sections while preserving their total capacity. Shared terrain retention fills on demand and scales with the JVM maximum heap: one entry per 8 KiB, bounded from 65,536 to 4,194,304 entries. A 16 GiB heap permits 2,097,152 entries. Each route search still admits at most 65,536 coordinates. These changes preserve route selection, generation settings, and player view distance.
+
+Before fine regional searches run, Iris bounds every eligible route using the coarse drainage plan. A basin outside the terrain required by a tile can skip refinement. Full neighboring-basin plans still participate in course conflict checks. Rejected regional candidates are calculated when diagnostics are requested, so distant diagnostic work does not delay world entry. Opening a cold diagnostic view can therefore take longer than reading an already generated tile.
 
 The JVM property `iris.mantle.componentTimeout` defaults to 120,000 milliseconds. When the wait detects that threshold, it reports the timeout and requests cancellation. A queued component cannot start after cancellation. A running component retains its shared task entry and writer until it exits. Work that does not exit leaves generation and shutdown incomplete instead of releasing storage beneath active writes.
 
 Each generation caller outside Iris's worker pool submits at most eight mantle components at a time, reduced to the processor count on smaller machines. It drains that batch before submitting more. Shared work retains its pass barrier, and recursive generation on an Iris worker runs its own claims inline. This bounds the backlog retained while native structure queries wait without omitting components or limiting the worker pool's ability to complete dependencies.
 
-Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original evaluation order. Signed noise checks mutable generator state once before entering its fast sampling path; cache invalidation and nested mutation behavior are unchanged. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
+Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original arithmetic. Deep fixed two-dimensional fracture chains reuse identical samples within one evaluation; shallow chains, expressions, and custom callbacks keep their existing paths. Signed noise checks mutable generator state once before entering its fast sampling path; cache invalidation and nested mutation behavior are unchanged. Surface-corner samples use a bounded cache without locks or recency updates. Collisions recompute the exact sample; key, seed, loader, and engine identity checks remain in place. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
 
 Each hydrology runtime reuses resolved river policies and profile lists for up to 1,024 region, biome, and loader identities. Coordinate-dependent geometry and biome selection still run for each sample. Failed reference loads remain retryable. Reloads rebuild this cache with the runtime.
 
-Height, policy, and footprint basis queries skip slope calculations when the result does not use slope. This avoids two neighboring height samples for each such uncached query. Route scoring and terrain checks that use slope retain those calculations. Repeated centerline refinement reuses its geometric turn costs and completed guides within the current owner draft.
+Height, policy, and footprint basis queries skip slope calculations when the result does not use slope. This avoids two neighboring height samples for each such uncached query. Forward-slope queries reuse a retained terrain basis when its separate height-cache entry has been evicted. Route scoring and terrain checks that use slope retain those calculations. Repeated centerline refinement reuses its geometric turn costs and completed guides within the current owner draft.
 
 Large cave-density passes divide independent samples among up to four workers in the current pool. Fixed noise styles also calculate aquifer eligibility in those tasks. Expression styles keep their serial evaluation order. Mantle writes and final fluid-support resolution remain on the calling generation worker. Workers claim pending density tasks themselves and drain started tasks before returning, including on failure or interruption.
 
@@ -130,17 +155,17 @@ Native structure height queries reuse up to 65,536 resolved transition heights p
 
 Bukkit world-save events queue native structure ownership serialization as tracked background work. Mantle and world-manager hooks and engine metadata stay on the calling owner thread. Reload and shutdown drain admitted ownership writes before releasing their runtime, including a save accepted just before background admission closes.
 
-Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims enter a bounded queue before acquiring the history lock. A writer validates up to 32 waiting claims and shares one durable flush per region journal. Full queues apply backpressure without rejecting claims. Publication and successful returns wait for durable storage; each claim keeps its duplicate, conflict, and failure result. Journal frames and activation admission rules are unchanged. Point queries read the last durable semantic snapshot while an append flushes. The writing region’s prior snapshot remains available through cache eviction, so readers cannot replay unflushed bytes. Mutation, bulk-query, and activation-cutover ordering remain serialized.
+Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read or the manifest, active-activation, and active-epoch lookups used by native structures and saved-biome readers. Durable claims still prevent activation promotion from overtaking their writes. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims enter a bounded queue before acquiring the history lock. A writer validates up to 32 waiting claims and shares one durable flush per region journal. Full queues apply backpressure without rejecting claims. Publication and successful returns wait for durable storage; each claim keeps its duplicate, conflict, and failure result. Journal frames and activation admission rules are unchanged. Point queries read the last durable semantic snapshot while an append flushes. The writing region’s prior snapshot remains available through cache eviction, so readers cannot replay unflushed bytes. Mutation, bulk-query, and activation-cutover ordering remain serialized.
 
 Mantle cleanup rechecks a previously missing neighbor before rescanning an overlapping coverage halo. A still-missing neighbor rules out that candidate immediately; successful cleanup still requires a full current coverage scan. Cleanup order, retained slices, and chunk locking are unchanged.
 
 Semantic cave capture tracks duplicate coordinates with a chunk-local bitset. It retains the first cave biome at each position and still collects hydrology fluid profiles from overlapping cells. This removes per-voxel coordinate objects during capture without changing saved records. Semantic builders validate each distinct resource key once while accumulating it, then sort keys when creating the immutable record. Duplicate samples skip repeated UTF-8 encoding; key validation, limits, and saved ordering remain unchanged.
 
-Saved-biome records are encoded outside the region write lock. A writer processes up to 64 already-queued claims, sharing one durable flush among records in the same region. Each record retains its length, payload, and checksum. Claims become visible only after that flush completes, and duplicate and conflict checks remain under the region lock. A failed batch rolls back all its appended records. No configuration or file-format change is required.
+Saved-biome records are encoded outside the region write lock. The four regions meeting at the world origin use separate write locks, allowing their saves to proceed concurrently. A writer processes up to 64 already-queued claims, sharing one durable flush among records in the same region. Each record retains its length, payload, and checksum. Claims become visible only after that flush completes, and duplicate and conflict checks remain under the region lock. A failed batch rolls back all its appended records. No configuration or file-format change is required.
 
 Saved-biome and semantic journal writes retain the original failure and any rollback failure. If an append cannot confirm either durable success or durable rollback, the affected store rejects further writes and uncached reads until it is reopened. Resolve the storage failure before restarting generation.
 
-World column caches compare the current thread’s last chunk before calculating its map key. Cache capacity, eviction, and resolved values remain unchanged.
+World column caches compare the current thread’s last chunk before calculating its map key. Repeated reads across several chunks update access order periodically to reduce contention. These reads still check shared cache membership; the recent-key table retains no additional chunks. Configured capacity and resolved values remain unchanged.
 
 Ore variant conversion reuses mapped materials instead of copying the full material array for each converted block. Each converted ore still receives fresh block data with the target material’s default state; unchanged ores retain their original state.
 
@@ -262,7 +287,7 @@ caves reach into before it can publish. A spawn on a tile corner needs four
 tiles at once. The first chunks also initialize terrain, caves, and native
 structure reference windows after their required hydrology tiles are ready.
 
-At generator injection, Iris asynchronously checks for an existing initial spawn chunk without generating it. This check lets saved worlds finish Folia startup without waiting for region ticks. If the chunk is absent, runtime worlds start planning every tile within half a tile of the initial spawn; Normal Studio instead starts its tracked entry hydrology task. A completion from a closed or replaced runtime cannot start planning. Pregeneration adds a bounded one-tile lookahead around its center, then advances that lookahead with the generation front instead of planning the whole area. Starting a new pregen removes queued speculative plans outside its initial lookahead; plans already running and required tile requests still complete. The chunk system
+At generator injection, Iris asynchronously checks for an existing initial spawn chunk without generating it. This check lets saved worlds finish Folia startup without waiting for region ticks. If the chunk is absent, Normal Studio and worlds opened by the create command start tracked planning for the exact entry columns. Normal creation defers speculative neighbor tiles until its initial player teleport finishes, or until spawn preparation finishes for a console request. Required chunk and native structure requests remain available throughout. Failure and generator close end the deferral. Other runtime world startup retains its half-tile spawn prefetch. A completion from a closed or replaced runtime cannot start planning. Pregeneration adds a bounded one-tile lookahead around its center, then advances that lookahead with the generation front instead of planning the whole area. Starting a new pregen removes queued speculative plans outside its initial lookahead; plans already running and required tile requests still complete. The chunk system
 generates a few hundred blocks around the player and each chunk's mantle
 window reaches further, so a spawn touches its neighbouring tiles no matter
 where on a tile it sits; the cold entry is bounded by the deepest chain of
@@ -303,10 +328,7 @@ production worlds.
 
 ## Symptom: Studio entry is slow or times out
 
-Player `open` and `tpstudio` have one absolute 10-second arrival deadline
-measured from command admission. Queued close or replacement work consumes
-the same budget, and a timed-out request cannot teleport late. This is a
-functional bound, not a setting.
+Player `open` and `tpstudio` wait for destination readiness and teleport completion. Studio has no fixed overall arrival deadline. Cold pack preparation and hydrology planning can therefore delay arrival beyond ten seconds.
 
 Benchmark with one artifact, pack, seed, player, and machine. Record cold
 and warm library, pack, and chunk-cache states separately. On Bukkit use
@@ -314,11 +336,14 @@ the `Studio player <name> arrived in <milliseconds>` line together with
 the `[Studio timing]` phase lines; on modded measure command admission to
 the observed dimension change. Ordinary Bukkit Studio runs its canonical
 generation-cache warm as lifecycle-tracked asynchronous work overlapped
-with native structure-ring activation; runtime worlds retain synchronous
-warming. Generation, Matter generation, Studio hotload, and entry teleport
-wait for completion, and `generation_cache_warm` must report
-`skipped=false`. Treat the overlapping warm and ring durations as one
-wall-clock interval rather than adding them.
+with native structure-ring activation. Fresh normal world creation also
+warms caches asynchronously, allowing destination hydrology and world setup
+to proceed together. Restored runtime worlds retain synchronous warming.
+Generation and Matter generation wait for warmup; Studio hotload and entry
+teleport also wait for it. Uncaught task failures propagate through readiness, and reload or shutdown
+drains the tracked work.
+`generation_cache_warm` must report `skipped=false`. Treat overlapping phase
+durations as one wall-clock interval rather than adding them.
 
 Object and Jigsaw Studio use flat authoring floors and a plains biome. They skip normal generation-cache warmup, spawn hydrology prefetch, native structure activation, and imported-feature placement. Their opens still require pack validation, runtime construction, and object loading. These authoring modes and `OBJECT_BUFFET` derive native heightmaps from actual blocks and skip native structure and imported-feature placement. Measure them separately from Standard Studio without `OBJECT_BUFFET`, which retains full pack generation.
 
@@ -367,7 +392,7 @@ and matter bodies do not use this history.
 | `performance.mantleKeepAlive` | `30` | Seconds an idle mantle plate survives before maintenance trims it. Shrinks toward zero as used heap climbs from 82% to 92% |
 | `performance.mantleCleanupDelay` | `200` | Ticks a loaded chunk waits before its mantle cleanup runs (200 = 10 s). Raising it keeps mantle data resident longer after chunk loads. See [03 - Configuration](/iris/03-configuration) |
 | `performance.trimMantleInStudio` | `false` | Whether studio worlds get routine mantle maintenance. Emergency high-water maintenance runs regardless |
-| `performance.noiseCacheSize` | `1024` | Noise sample cache capacity per engine. Starting a pregeneration raises it to at least 4096 for the rest of the process |
+| `performance.noiseCacheSize` | `1024` | Noise cache capacity per stream in 16×16 chunks. Starting a pregeneration raises it to at least 4096 for the rest of the process |
 | `performance.resourceLoaderCacheSize` | `1024` | Parsed pack resource entries held before eviction |
 | `performance.objectLoaderCacheSize` | `4096` | `.iob`, matter, and image loader entries held before eviction |
 | `performance.engineSVC.useVirtualThreads` | `true` | Maintenance workers run on virtual threads. `false` uses platform threads |

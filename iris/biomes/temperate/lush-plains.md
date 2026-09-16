@@ -2,7 +2,7 @@
 title: "Biome Atlas — Lush Plains"
 description: "Iris biome atlas entry for temperate/lush-plains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T12:37:03.133Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,7 +16,7 @@ The percentage is this biome's weighted share after Iris selects its region and 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
 | Overworld 4007 | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
-| Underworld 1010 | `temperate` (Underworld Temperate) | 1 | 2 | 0.5 | 3.07% |
+| Underworld 1010 | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -50,6 +50,8 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 - **Minecraft identity:** derivative `minecraft:flower_forest`; native-structure derivative `minecraft:flower_forest`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 4 object placement rule(s) drawing from 53 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 46 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:allium`, `minecraft:pink_tulip`, and 9 more.
+
+Wildflower placement chance is `0.01` (1%) in the Overworld root and yellow child, reduced from `0.025` (2.5%). Both use `snippet/decorator/wildflowers-lush-plains`; flower amounts and facing choices are unchanged. The shared wildflower snippet and Underworld decorators keep their own settings.
 
 ## Underworld 1010 treatment
 

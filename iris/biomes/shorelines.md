@@ -2,7 +2,7 @@
 title: "Shorelines"
 description: "Paired atlas reference for all 19 direct shoreline roots"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:38:38.181Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -48,7 +48,7 @@ Both packs keep the same shoreline load keys and broadly the same generator band
 
 This is the pack's snow-and-ice shoreline rather than a recolored sand beach.
 
-**`frozen/shore/beach`: Frozen Beach.** `plain` maps to `-5..1` relative to the dimension fluid height. Overworld uses `minecraft:snow_block`, `minecraft:grass_block`, `minecraft:dirt`, a one-to-seven-block `minecraft:packed_ice` sea layer, and snow slabs; it decorates with `minecraft:snow` and places `snippet/procedural-objects/frozen/magical-ice-surface`. Underworld uses `minecraft:blackstone` and `minecraft:basalt`, replaces the sea layer with blackstone, and uses `snippet/procedural-objects/frozen/magical-blackstone-surface` plus the shared surface-quartz decorator.
+**`frozen/shore/beach`: Frozen Beach.** `plain` maps to `-5..1` relative to the dimension fluid height. Overworld uses `minecraft:snow_block`, `minecraft:grass_block`, `minecraft:dirt`, a one-to-seven-block `minecraft:packed_ice` sea layer, and snow slabs; it decorates with `minecraft:snow` and places `snippet/procedural-objects/frozen/magical-ice-surface`. Underworld uses `minecraft:blackstone` and `minecraft:basalt`, replaces the sea layer with blackstone, and uses `snippet/procedural-objects/frozen/magical-blackstone-surface` plus the shared surface-quartz decorator. Both packs share compact spires, drift boulders, shard fans, frost blooms, and sprigs, with matching chances, seeds, and support settings.
 
 ### Hot, grassy, mesa and savanna shores
 

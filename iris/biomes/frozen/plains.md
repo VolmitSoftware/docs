@@ -1,15 +1,15 @@
 ---
 title: "Biome Atlas — Frozen Plains"
-description: "Iris biome atlas entry for frozen/plains in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for frozen/plains in Overworld 4009 and Underworld 1011"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-14T01:45:50.873Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`frozen/plains` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`frozen/plains` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
-Large frozen formations use organic supports that can reach terrain up to 96 blocks below their bases. Overworld uses packed ice for these supports. Underworld retains its Nether materials. Small drift boulders retain their placement settings.
+Both packs use matching compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Placement chances, variant seeds, dimensions, and support settings match. Large formations use continuous organic supports with a 96-block terrain scan. Underworld uses soul soil and bone for these forms.
 
 ## Selection and weighting
 
@@ -17,8 +17,8 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
-| Underworld 1010 | `frozen` (Underworld Frozen) | 1 | 1 | 1 | 5.69% |
+| Overworld 4009 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
+| Underworld 1011 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
@@ -32,7 +32,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -42,13 +42,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld 4009 treatment
 
 - **Minecraft identity:** derivative `minecraft:snowy_taiga`; native-structure derivative `minecraft:snowy_taiga`; custom identities `frozen_plains`.
 - **Surface:** 0-1 block(s): `minecraft:snow_block`; 1 block(s): `minecraft:grass_block`; 4-7 block(s): `minecraft:dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 4 object placement rule(s) drawing from 18 object key(s), including `clutter/grave1`, `clutter/obelisk1`, `clutter/obelisk2`, `clutter/obelisk3`, `clutter/obelisk4`, `clutter/obelisk5`, `clutter/obelisk6`, and 11 more. 1 decorator rule(s) using `minecraft:snow`, `minecraft:air`.
 
-## Underworld 1010 treatment
+## Underworld 1011 treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_frozen_plains_268470e8`.
 - **Surface:** 0-1 block(s): `minecraft:soul_soil`; 1 block(s): `minecraft:soul_soil`; 4-7 block(s): `minecraft:soul_soil`; 6-18 block(s): `minecraft:basalt`. Wall palette: `minecraft:basalt`.
