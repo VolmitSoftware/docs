@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-09-10T02:57:34.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,6 +12,11 @@ Gloss uses one text pipeline for holograms, scoreboards, tablists, menu text, bu
 
 `/gloss web edit emoji <id>` and `/gloss web edit animation <id>` open focused live editor
 sessions; `/gloss web workspace` includes both document families.
+
+The Velocity edition reads the same emoji and animation documents from its own `emoji/` and
+`animations/` folders, seeded from the ones shipped here, so the same ids resolve on both sides of a
+network. Proxy text has no PlaceholderAPI or world context, so `show` there is a proxy expression.
+See [Velocity Proxy](/gloss/27-velocity).
 
 ## Visibility
 

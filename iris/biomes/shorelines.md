@@ -1,20 +1,20 @@
 ---
 title: "Shorelines"
-description: "Paired atlas reference for all 19 direct shoreline roots"
+description: "Paired atlas reference for 17 direct shoreline roots and two unselected shoreline assets"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-16T03:11:58.172Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-The pinned Overworld 4007 and Underworld 1010 each expose 19 direct shore roots. This consolidated reference keeps ordinary beaches together while preserving every load key, regional selection slot and materially distinct shoreline treatment.
+The pinned Overworld 4007 and Underworld 1010 each expose 17 direct shore roots. This consolidated reference keeps ordinary beaches together while preserving every load key, regional selection slot and materially distinct shoreline treatment.
 
 The Frozen Beach large-formation entries use organic supports with a 96-block scan. Overworld uses packed ice supports, and Underworld retains its Nether materials.
 
-## All direct shore roots
+## Shoreline selection
 
-Biome and region `rarity` values contribute relative weight as `1 / rarity`. Every listed shore key appears once in each named regional list; the fraction is its conditional slot share within that region, not a whole-world probability.
+Biome and region `rarity` values contribute relative weight as `1 / rarity`. Each selected shore key appears once in each named regional list; the fraction is its conditional slot share within that region, not a whole-world probability.
 
 | Key | Overworld regions and slots | Underworld regions and slots | Biome rarity | Overworld / Underworld primary palettes |
 |-----|-----------------------------|------------------------------|--------------|-----------------------------------------|
@@ -22,21 +22,21 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`. Eve
 | `hot/shore/beach` | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:smooth_sandstone` / `minecraft:blackstone`, `minecraft:smooth_basalt` |
 | `hot/shore/beach-grass` | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `1` / `1` | `minecraft:grass_block`, `minecraft:dirt`, `minecraft:smooth_sandstone`, `minecraft:sand` / `minecraft:basalt`, `minecraft:blackstone`, `minecraft:smooth_basalt` |
 | `mesa/shore/beach` | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `1` / `1` | `minecraft:red_sand`, `minecraft:red_sandstone`, `minecraft:red_sandstone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:smooth_basalt`, `minecraft:blackstone_slab`, `minecraft:air` |
-| `mountain/shore/beach` | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:stone`, `minecraft:andesite`, `minecraft:stone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:basalt`, `minecraft:polished_blackstone_brick_slab`, `minecraft:air` |
+| `mountain/shore/beach` | Not selected | Not selected | `1` / `1` | `minecraft:stone`, `minecraft:andesite`, `minecraft:stone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:basalt`, `minecraft:polished_blackstone_brick_slab`, `minecraft:air` |
 | `mushroom/shore/beach` | `mushroom` (1/1 slots; region rarity 15, weight `1/15`) | `mushroom` (1/1 slots; region rarity 15, weight `1/15`) | `1` / `1` | `minecraft:stone`, `minecraft:andesite`, `minecraft:dirt`, `minecraft:stone_slab`, `minecraft:andesite_slab`, and 1 more / `minecraft:blackstone`, `minecraft:basalt`, `minecraft:polished_blackstone_brick_slab`, `minecraft:blackstone_slab`, `minecraft:air` |
-| `ocean/shore/beach` | `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:grass_block`, `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:stone`, `minecraft:andesite` / `minecraft:basalt`, `minecraft:blackstone` |
+| `ocean/shore/beach` | `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/3 slots; region rarity 1, weight `1/1`) | `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/3 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:grass_block`, `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:stone`, `minecraft:andesite` / `minecraft:basalt`, `minecraft:blackstone` |
 | `prismatics/shore` | `prismatics` (1/1 slots; region rarity 20, weight `1/20`) | `prismatics` (1/1 slots; region rarity 20, weight `1/20`) | `1` / `1` | `minecraft:white_concrete_powder`, `minecraft:orange_concrete_powder`, `minecraft:magenta_concrete_powder`, `minecraft:light_blue_concrete_powder`, `minecraft:yellow_concrete_powder`, and 27 more / `minecraft:quartz_block`, `minecraft:magma_block`, `minecraft:nether_wart_block`, `minecraft:warped_wart_block`, `minecraft:glowstone`, and 8 more |
 | `savanna/shore/beach` | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `hot` (1/4 slots; region rarity 3, weight `1/3`) | `1` / `1` | `minecraft:grass_block`, `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:stone`, `minecraft:andesite` / `minecraft:basalt`, `minecraft:blackstone` |
 | `swamp/shore/beach` | `swamp` (1/1 slots; region rarity 2, weight `1/2`) | `swamp` (1/1 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:coarse_dirt`, `minecraft:mud` / `minecraft:blackstone` |
-| `temperate/shore/beach` | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `forests` (1/2 slots; region rarity 1, weight `1/1`); `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `forests` (1/2 slots; region rarity 1, weight `1/1`); `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:sand`, `minecraft:sandstone`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:smooth_basalt`, `minecraft:blackstone_slab`, `minecraft:air` |
-| `temperate/shore/oak-beach` | `forests` (1/2 slots; region rarity 1, weight `1/1`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `forests` (1/2 slots; region rarity 1, weight `1/1`); `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:stone`, `minecraft:andesite` / `minecraft:blackstone`, `minecraft:basalt` |
+| `temperate/shore/beach` | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `forests` (1/2 slots; region rarity 1, weight `1/1`); `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/3 slots; region rarity 1, weight `1/1`) | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `forests` (1/2 slots; region rarity 1, weight `1/1`); `magnetics` (1/2 slots; region rarity 15, weight `1/15`); `temperate` (1/3 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:sand`, `minecraft:sandstone`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:smooth_basalt`, `minecraft:blackstone_slab`, `minecraft:air` |
+| `temperate/shore/oak-beach` | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `forests` (1/2 slots; region rarity 1, weight `1/1`); `temperate` (1/3 slots; region rarity 1, weight `1/1`) | `estranged` (1/2 slots; region rarity 1, weight `1/1`); `forests` (1/2 slots; region rarity 1, weight `1/1`); `temperate` (1/3 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:stone`, `minecraft:andesite` / `minecraft:blackstone`, `minecraft:basalt` |
 | `tropical/beach` | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:smooth_sandstone` / `minecraft:blackstone`, `minecraft:smooth_basalt` |
 | `tropical/beach-bamboo` | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:smooth_sandstone` / `minecraft:blackstone`, `minecraft:smooth_basalt` |
 | `tropical/beach-charred` | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:black_concrete_powder`, `minecraft:dirt`, `minecraft:smooth_sandstone`, `minecraft:blackstone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:smooth_basalt`, `minecraft:blackstone_slab`, `minecraft:air` |
 | `tropical/island-beach` | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `tropical` (1/4 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:smooth_sandstone`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, and 1 more / `minecraft:blackstone`, `minecraft:smooth_basalt`, `minecraft:blackstone_slab`, `minecraft:air` |
 | `tundra/shore/beach` | `terralost` (1/1 slots; region rarity 5, weight `1/5`); `tundra` (1/2 slots; region rarity 2, weight `1/2`) | `terralost` (1/1 slots; region rarity 5, weight `1/5`); `tundra` (1/2 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:sand`, `minecraft:dirt`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, `minecraft:air` / `minecraft:blackstone`, `minecraft:blackstone_slab`, `minecraft:air` |
 | `tundra/shore/beach-stone` | `tundra` (1/2 slots; region rarity 2, weight `1/2`) | `tundra` (1/2 slots; region rarity 2, weight `1/2`) | `1` / `1` | `minecraft:stone`, `minecraft:andesite`, `minecraft:dirt`, `minecraft:stone_slab`, `minecraft:andesite_slab`, and 1 more / `minecraft:blackstone`, `minecraft:basalt`, `minecraft:polished_blackstone_brick_slab`, `minecraft:blackstone_slab`, `minecraft:air` |
-| `vanilla/stony_shore` | `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `temperate` (1/5 slots; region rarity 1, weight `1/1`) | `1` / `1` | `minecraft:white_concrete_powder`, `minecraft:orange_concrete_powder`, `minecraft:magenta_concrete_powder`, `minecraft:light_blue_concrete_powder`, `minecraft:yellow_concrete_powder`, and 27 more / `minecraft:quartz_block`, `minecraft:magma_block`, `minecraft:nether_wart_block`, `minecraft:warped_wart_block`, `minecraft:glowstone`, and 8 more |
+| `vanilla/stony_shore` | Not selected | Not selected | `1` / `1` | `minecraft:white_concrete_powder`, `minecraft:orange_concrete_powder`, `minecraft:magenta_concrete_powder`, `minecraft:light_blue_concrete_powder`, `minecraft:yellow_concrete_powder`, and 27 more / `minecraft:quartz_block`, `minecraft:magma_block`, `minecraft:nether_wart_block`, `minecraft:warped_wart_block`, `minecraft:glowstone`, and 8 more |
 
 ## Shared paired behavior
 
@@ -116,7 +116,7 @@ The tundra roots distinguish cold sediment from a deliberately stony coast. Desp
 
 ## Child and floating variants
 
-None of the 19 pinned shore roots declares `children` or `floatingChildBiomes`; every shoreline key on this page is directly selected by at least one region.
+None of the 19 shoreline assets declares `children` or `floatingChildBiomes`. Seventeen are directly selected; `mountain/shore/beach` and `vanilla/stony_shore` have no current regional or river-shore selection slots.
 
 ## Inspect shorelines in game
 
@@ -134,4 +134,6 @@ Use any key from the table:
 
 Shore biomes omit `terrain3D`. Adjacent land profiles reduce deformation near fluid level and on gentle slopes.
 
-Underworld 1010 now matches the Estranged shore list and shape settings in Overworld 4007. Both select Sand Beach or Mountain Beach, with shore heights 0.75 to 2.25, shore-height zoom 3.2, and shore-biome zoom 2.5.
+Underworld 1010 now matches the Estranged shore list and shape settings in Overworld 4007. Both select Sand Beach or Temperate Oak Beach, with shore heights 0.75 to 2.25, shore-height zoom 3.2, and shore-biome zoom 2.5.
+
+Both packs select `temperate/shore/beach`, `temperate/shore/oak-beach`, or `ocean/shore/beach` for Temperate shores and for the Temperate and Estranged river-shore policies. Underworld retains its Nether palettes.

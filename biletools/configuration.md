@@ -2,13 +2,13 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-09-09T22:00:00.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Configuration lives in `plugins/BileTools/biletools.yml`. The table below lists the defaults written on first run. BileTools rewrites supported values after loading and restores missing keys.
+Configuration lives in `plugins/BileTools/biletools.yml`. The table below lists the defaults written on first run. BileTools rewrites supported values after loading and restores missing keys. On a Velocity proxy, settings live in `plugins/biletools/biletools.json` instead; that file has its own section below.
 
 ## Runtime
 
@@ -77,6 +77,27 @@ Keep `health-check` enabled so a failed `onEnable` does not report a successful 
 
 The master and the slave both default to off. Read
 [Remote Deploy](/biletools/remote-deploy) before you enable either half.
+
+## Velocity proxy (biletools.json)
+
+The proxy edition reads `plugins/biletools/biletools.json`. It is written with every key on first run, and missing keys are restored with their defaults on load.
+
+| Key | Default | Effect |
+|---|---|---|
+| `watcher.enabled` | `true` | Watch the proxy's plugins directory and reload changed jars automatically |
+| `watcher.idle-poll-millis` | `1000` | Check interval when no work is pending. Clamped to 100-60000 |
+| `watcher.active-poll-millis` | `250` | Check interval while a change is being processed. Clamped to 50 up to the idle interval |
+| `watcher.fingerprint-debounce-polls` | `8` | Consecutive unchanged checks required before a jar is staged. Clamped to 1-200 |
+| `watcher.ignore` | `[]` | Plugin ids the watcher never manages automatically |
+| `watcher.only` | `[]` | If non-empty, switches to allowlist mode: only these ids are managed automatically |
+| `archive-plugins` | `true` | Move a plugin's working copy to `plugins/biletools/archive/` when it is unloaded instead of deleting it |
+| `lifecycle.health-check` | `true` | Fail the operation if the plugin is not actually registered and running afterwards |
+| `lifecycle.operation-timeout-seconds` | `120` | Give up on a plugin that never returns from its initialize or shutdown event. Clamped to 5-3600 |
+| `observability.log-timings` | `true` | Log one timing line per load, unload, and reload |
+| `notifications.players` | `true` | Send automatic reload results to players with `bile.use`, not just the console |
+{.dense}
+
+Plugin ids are matched without case, and manual commands bypass `watcher.ignore` and `watcher.only`. The proxy edition has no language, metrics, remote-deploy, or in-game editor settings. See [Velocity proxy](/biletools/velocity).
 
 ## Language files
 

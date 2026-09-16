@@ -2,7 +2,7 @@
 title: "BileTools"
 description: "Plugin hot-reload and deployment utility"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,10 +10,12 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 BileTools watches the plugins directory and reloads changed jars. It also provides manual plugin lifecycle commands and optional remote deployment for development servers.
 
+The same jar runs on Bukkit servers and on Velocity proxies. On a proxy it hot-loads, unloads, and reloads proxy plugins with a smaller command set and its own settings file.
+
 | | |
 |---|---|
 | Command | `/biletools` (`bile`, `bi`, `b`, `vomit`, `vom`) |
-| Folia | Supported |
+| Platforms | Paper-family servers, Folia, and Velocity 3.4+ proxies |
 | Permission | `bile.use` |
 | Runtime | Java 17+, Bukkit API 1.20.1+ |
 
@@ -26,6 +28,7 @@ BileTools watches the plugins directory and reloads changed jars. It also provid
 - [Commands and permissions *The `/bile` command tree*](/biletools/commands)
 - [Configuration *Settings and defaults*](/biletools/configuration)
 - [Hot reload behavior *Limits and restart guidance*](/biletools/hot-reload)
+- [Velocity proxy *Hot reload for proxy plugins*](/biletools/velocity)
 - [Remote deploy *Setup and security*](/biletools/remote-deploy)
 {.links-list}
 

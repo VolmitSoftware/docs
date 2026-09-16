@@ -2,7 +2,7 @@
 title: "Biome Atlas — Calm Plains"
 description: "Iris biome atlas entry for temperate/calmplains in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-15T12:00:00.000Z
+date: 2026-09-16T03:11:58.172Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -51,7 +51,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 ## Underworld 1010 treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_calmplains_58839d0c`.
-- **Surface:** 1 block(s) at slope <= 4: `minecraft:netherrack`. Wall palette: `minecraft:basalt`, `minecraft:netherrack`, `minecraft:blackstone`.
+- **Surface:** One netherrack block where slope is at most 4, then netherrack layers of 2, 1–3, and 6–18 blocks. These lower layers share Overworld thickness and noise settings without a slope gate. Wall palette: `minecraft:basalt`, `minecraft:netherrack`, `minecraft:blackstone`.
 - **Content:** 1 object placement rule(s) drawing from 12 object key(s), including `underworld/wastes/trees/mixed/pollup1`, `underworld/wastes/trees/mixed/pollup2`, `underworld/wastes/trees/mixed/pollup4`, `underworld/wastes/trees/mixed/pollup5`, `underworld/wastes/trees/mixed/pollup6`, `underworld/wastes/trees/mixed/pollup7`, `underworld/wastes/trees/mixed/pollup8`, and 5 more. 7 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`, `minecraft:crimson_stem`.
 - **Entity spawners:** `nether/surface/nether-wastes`, `nether/cave`.
 

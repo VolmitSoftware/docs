@@ -2,15 +2,15 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-15T21:20:00.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
 ---
 
-For proxy tablists, scoreboards, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
+For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
-Gloss manages holograms, entity health overlays, menus, panels, container previews, scoreboards, tablist text, chat effects, item displays, and the server-list MOTD.
+Gloss manages holograms, entity health overlays, menus, panels, container previews, scoreboards, tablist text, chat effects, item displays, connection messages, and the server-list MOTD.
 
 <section class="volmit-headliner" aria-labelledby="gloss-editor-headline">
   <p class="volmit-headliner__kicker">Gloss / Web editor</p>
@@ -36,7 +36,7 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 
 ## Start here
 
-- [Velocity Proxy *Install proxy tablists, scoreboards, and MOTD management*](/gloss/27-velocity)
+- [Velocity Proxy *Install proxy tablists, scoreboards, surfaces, connection messages, and MOTD management*](/gloss/27-velocity)
 - [Getting Started *Install Gloss and check the generated files*](/gloss/01-getting-started)
 - [Configuration *Change feature switches and runtime settings*](/gloss/02-configuration)
 - [Commands & Permissions *Find commands and access nodes*](/gloss/17-commands-permissions)
@@ -47,6 +47,7 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 - [Holograms](/gloss/04-holograms)
 - [Scoreboards & Groups](/gloss/05-scoreboards-groups)
 - [Tablist & Server List MOTD](/gloss/06-tablist-motd)
+- [Connection Messages](/gloss/26-connection-messages)
 - [Emoji, Text & Animations](/gloss/07-emoji-text-animations)
 - [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops)
 - [Entity Overlays](/gloss/20-entity-overlays)

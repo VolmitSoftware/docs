@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,6 +26,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | Folia | Supported | GlobalRegionScheduler only. Hot-reload is best-effort |
 | Canvas | Supported | Folia fork. Same regionized scheduling rules |
 | Spigot | Best-effort | The target plugin must support Spigot |
+| Velocity | Supported | Proxies 3.4 and newer, including 4.x. Manages proxy plugins only |
 
 ## Install
 
@@ -36,6 +37,12 @@ dateCreated: 2026-08-09T00:00:00.000Z
 4. Watch the console for the reload.
 
 Older `plugins/BileTools/config.yml` files are not migrated. Copy any settings you still need, remove the old file, and restart to generate `biletools.yml`.
+
+## Velocity proxies
+
+The same jar runs on a Velocity proxy. Copy `BileTools-x.x.x.jar` into the proxy's `plugins/` directory and start the proxy; it needs Velocity 3.4 or newer, including 4.x, on the JVM that proxy build requires (Velocity 4.x runs on Java 25).
+
+Proxy settings live in `plugins/biletools/biletools.json`, not in `biletools.yml`, and the proxy edition uses the libraries Velocity already provides instead of downloading its own. The proxy command set and its limits are on the [Velocity proxy](/biletools/velocity) page.
 
 ## Runtime libraries
 

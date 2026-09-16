@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-15T23:18:52.453Z
+date: 2026-09-16T03:10:02.513Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -945,7 +945,7 @@ The generation probe constructs the real engine and generates chunks into buffer
 
 ## Managed pack profiles
 
-The managed Overworld disables regional rivers; Underworld retains the regional default. Disabling regional rivers removes their planning work and their possible courses.
+Both managed packs explicitly disable regional rivers and three-dimensional river banks. Their local river geometry and excavation limits match. River shores receive two layers of sand in Overworld and blackstone in Underworld. Both packs allow gravity blocks in river beds.
 
 The managed Overworld and Underworld use 1,024-block watersheds and 64-block coarse samples. Dimension defaults set both surface and underground course minima to 384 blocks. Surface density is `1.75`, underground density is `1.5`, and both source minima are zero. Default source spacing is 384 blocks for surface rivers and 640 blocks underground. Dimension outlet budgets are one inland outlet and two coastal outlets per tile. Each surface outlet can publish one complete main stem plus the configured tributaries.
 

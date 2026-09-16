@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Commands
 
-The root command is `/biletools`. The aliases are `bile`, `bi`, `b`, `vomit`, and `vom`. Notation: `<required>`, `[optional]`.
+The root command is `/biletools`. On a Bukkit server the aliases are `bile`, `bi`, `b`, `vomit`, and `vom`. Notation: `<required>`, `[optional]`.
 
 | Command | Description |
 |---|---|
@@ -62,6 +62,23 @@ Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and
 | `volmit.language.self` | `true` | Shared requirement for personal language selection |
 
 `bile.use` covers plugin-management commands. There is no read-only subset or separate node for the destructive `uninstall` subcommand.
+
+## Velocity proxy
+
+On a Velocity proxy BileTools registers a smaller command set. Every subcommand requires `bile.use`.
+
+| Command | Description |
+|---|---|
+| `/biletools load <jar or id>` | Load a plugin from the proxy's plugins directory |
+| `/biletools unload <id>` | Unload a loaded plugin |
+| `/biletools reload <id>` | Unload a loaded plugin and load it again |
+| `/biletools list` | List loaded plugins and the watcher state |
+| `/biletools version` | Show the installed BileTools version |
+| `/biletools help` | List the proxy subcommands |
+
+`biletools` and `bile` are the only two aliases on the proxy. A proxy command takes precedence over a backend command with the same name, so the short aliases are not registered there; they would shadow backend commands for every connected player.
+
+`/bile reload biletools` is refused. See [Velocity proxy](/biletools/velocity).
 
 ## Diagnostic reports
 

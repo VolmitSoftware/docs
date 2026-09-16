@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-10T02:57:34.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -62,9 +62,10 @@ startup requires a server restart.
 | `panels` | `true` | World-anchored panels |
 | `previews` | `true` | Look-at container previews |
 | `motd` | `false` | The custom server list MOTD |
+| `connections` | `false` | Join and leave messages from `connections.json` |
 | `particles` | `true` | Viewer-targeted particle layers on supported in-world renders |
 
-`motd` is the only feature disabled by default.
+`motd` and `connections` are the only features disabled by default.
 
 Gloss extracts bundled documents only for enabled features. Enabling most features later extracts their
 defaults on reload; previews require the restart noted above. See [Getting Started](/gloss/01-getting-started).

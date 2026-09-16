@@ -2,7 +2,7 @@
 title: "Vanilla Biomes"
 description: "Navigation for the built-in vanilla biomes across Overworld and Underworld"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-16T03:11:58.172Z
 tags: "iris, biomes, overworld, underworld, vanilla"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -29,12 +29,13 @@ This family has no child-only reachable variants.
 | [Savanna Plateau](/iris/biomes/vanilla/savanna_plateau) | `vanilla/savanna_plateau` | Land | Hot |
 | [Snowy Slopes](/iris/biomes/vanilla/snowy_slopes) | `vanilla/snowy_slopes` | Land | Frozen |
 | [Stony Peaks](/iris/biomes/vanilla/stony_peaks) | `vanilla/stony_peaks` | Land | Temperate |
-| [Shorelines](/iris/biomes/shorelines) | `vanilla/stony_shore` | Shore | Overworld: Temperate; Underworld: Estranged, Temperate |
 | [Sunflower Plains](/iris/biomes/vanilla/sunflower_plains) | `vanilla/sunflower_plains` | Land | Temperate |
 | [Windswept Forest](/iris/biomes/vanilla/windswept_forest) | `vanilla/windswept_forest` | Land | Forests |
 | [Windswept Gravelly Hills](/iris/biomes/vanilla/windswept_gravelly_hills) | `vanilla/windswept_gravelly_hills` | Land | Temperate |
 | [Windswept Savanna](/iris/biomes/vanilla/windswept_savanna) | `vanilla/windswept_savanna` | Land | Hot |
 | [Wooded Badlands](/iris/biomes/vanilla/wooded_badlands) | `vanilla/wooded_badlands` | Land | Hot |
+
+`vanilla/stony_shore` is not selected by either pack. Its material treatment remains listed in [Shorelines](/iris/biomes/shorelines).
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).
 

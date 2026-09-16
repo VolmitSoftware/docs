@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "Mining drop-control and anti-xray plugin"
 published: true
-date: 2026-09-10T03:05:07.654Z
+date: 2026-09-16T00:00:00.000Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,11 +20,13 @@ deepslate instead. An xray client finds nothing in the world.
 
 ## How it works
 
-Configured stone and deepslate blocks can award hidden items, experience, or command rewards when mined.
+Configured stone and deepslate blocks can award hidden items, experience, or command rewards when mined, or when a qualifying explosion destroys them and [blast mining](/hiddenore/configuration) is on.
 
-The pipeline skips creative players, non-pickaxe breaks, unmanaged blocks, and
+For mining, the pipeline skips creative players, non-pickaxe breaks, unmanaged blocks, and
 cancelled block-break events. Rewards commit only after Bukkit accepts the block
-break. `HiddenOreDropsEvent` fires before HiddenOre delivers anything.
+break. For explosions, it runs once the server has accepted the explosion and pays the
+share of destroyed managed blocks set by `blast_mining.yield`. `HiddenOreDropsEvent`
+fires before HiddenOre delivers anything.
 
 In `seeded` mode, rewards occupy repeatable virtual vein positions and each position pays once, including across restarts.
 

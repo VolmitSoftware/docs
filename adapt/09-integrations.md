@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,6 +38,8 @@ If Vault is missing, or Vault has no active economy provider, learning stays kno
 The HiddenOre bridge only activates when Bukkit reports HiddenOre as enabled. Once it is, hidden veins stop being invisible to Adapt. Breaking one awards Pickaxes XP from the same material-value table normal ores use. Several pickaxe and excavation adaptations start seeing veins as real targets.
 
 Autosmelt turns raw iron, gold and copper drops into ingots. Drop to Inventory asks HiddenOre to deliver straight to the player's inventory. Pickaxe Veinminer chains through HiddenOre vein siblings. Quarry Sense and Excavation's Seismic Ping both include hidden veins in what they detect. Trophy Polish does not run through HiddenOre because hidden veins are not rare trophies.
+
+The bridge applies to pickaxe mining only. It does not act on HiddenOre's blast-mining rewards: an explosion awards no Pickaxes XP, its drops are not autosmelted, and Drop to Inventory does not apply to them.
 
 If HiddenOre is installed but disabled, Adapt logs a warning and runs without the bridge.
 
@@ -122,7 +124,7 @@ Skill-line storage keys used by the economy: `vault-learning-refund-<adaptation>
 
 ### HiddenOre bridge
 
-The bridge listens to `HiddenOreDropsEvent` and applies Autosmelt, Drop to Inventory, and the ore XP award in that order. Autosmelt covers `RAW_IRON`, `RAW_GOLD` and `RAW_COPPER`. The XP award uses the vein's display material against the Pickaxes value table, credited at the block's location. The bridge records `pickaxe.autosmelt.ores-smelted`; it has no Trophy Polish reward path.
+The bridge listens to `HiddenOreDropsEvent`, returns without acting when `getCause()` is `EXPLODED`, and otherwise applies Autosmelt, Drop to Inventory, and the ore XP award in that order. Autosmelt covers `RAW_IRON`, `RAW_GOLD` and `RAW_COPPER`. The XP award uses the vein's display material against the Pickaxes value table, credited at the block's location. The bridge records `pickaxe.autosmelt.ores-smelted`; it has no Trophy Polish reward path.
 
 Outside that event the bridge also answers nearest-vein and vein-radius queries for Quarry Sense and Seismic Ping. It also answers vein-sibling lookups for Pickaxe Veinminer.
 

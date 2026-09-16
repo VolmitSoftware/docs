@@ -2,7 +2,7 @@
 title: "Underworld 1011"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-16T03:10:02.513Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -35,6 +35,8 @@ The paired packs configure 197 active biome profiles and 23 explicit protected i
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 
+
+Underworld mirrors the paired regional-river and three-dimensional-bank settings, with both disabled. River excavation limits match Overworld, and river shores use two layers of blackstone in place of sand.
 
 ## Foundation and fluids
 

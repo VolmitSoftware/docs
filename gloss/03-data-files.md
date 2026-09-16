@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-09-10T03:09:03.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -18,6 +18,7 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 | Scoreboards | `boards/<id>.json` | `/gloss board reset [name=*]` |
 | Tablist | `tablist.json` | `/gloss tablist reset` |
 | MOTD | `motd.json` | `/gloss motd reset` |
+| Connection messages | `connections.json` | None |
 | Emoji | `emoji/<id>.json` | `/gloss emoji reset [name=*]` |
 | Animations | `animations/<id>.json` | `/gloss animations reset [name=*]` |
 | Bubble styles | `bubbles/<id>.json` | `/gloss bubbles reset [name=*]` |
@@ -51,7 +52,7 @@ Use the schema version for the document being edited:
 | Bubble styles | `5` |
 | Damage indicators and Real Drops | `4` |
 | Entity overlays | `2` |
-| Animations, emoji, MOTD, and panels | `1` |
+| Animations, emoji, MOTD, connections, and panels | `1` |
 | Menus and container previews | No version envelope |
 
 Gloss updates `revision` when it writes a versioned file. Hand edits to panel files must also increment it; other document kinds do not require a manual revision change. An invalid file leaves the previous valid version active. Menu and preview documents use their own root fields without `schemaVersion` or `revision`.

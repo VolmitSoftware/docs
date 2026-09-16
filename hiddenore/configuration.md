@@ -2,7 +2,7 @@
 title: "HiddenOre: Configuration"
 description: "Every hiddenore.toml key and default"
 published: true
-date: 2026-09-10T04:06:43.496Z
+date: 2026-09-16T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,7 +20,7 @@ Automatic reloads notify online operators with a message and the HiddenOre comma
 |---|---|---|
 | `language` | `en_US` | Select the default message locale |
 | `metrics` | `true` | Enable anonymous bStats reporting; enabling or disabling it applies automatically |
-| `auto_pickup_drops` | `false` | Send hidden drops straight to the player's inventory |
+| `auto_pickup_drops` | `false` | Send mined hidden drops straight to the player's inventory; blast mining rewards always drop on the ground |
 | `suppress_block_drop_on_custom_drop` | `true` | Suppress the block's normal drop when a reward fires |
 
 Use TOML assignments such as `language = "en_US"`, and place top-level settings before the first table. Single brackets such as `[ore-removal]` define a settings table; each `[[drops]]` adds another reward rule. The default file has short setting comments, generation choices, discovery controls, and one annotated item and command example.
@@ -80,7 +80,7 @@ drop = "cobblestone"
 drop = "cobbled_deepslate"
 ```
 
-Blocks listed here enter the reward pipeline. Item and command rewards require a pickaxe and a player outside Creative mode. `drop` selects the single base item to give when no reward fires, or alongside a reward when `suppress_block_drop_on_custom_drop` is `false`. Add another `[blocks.<material>]` table to manage a different block. Automatic pickup includes these base items and hidden item rewards; overflow drops at the mined block and experience remains in orbs.
+Blocks listed here enter the reward pipeline. When mined, item and command rewards require a pickaxe and a player outside Creative mode; a qualifying explosion can also pay them, see [Blast mining](#blast-mining). `drop` selects the single base item to give when no reward fires, or alongside a reward when `suppress_block_drop_on_custom_drop` is `false`. Add another `[blocks.<material>]` table to manage a different block. Automatic pickup includes these base items and hidden item rewards; overflow drops at the mined block and experience remains in orbs.
 
 ## Veins
 
@@ -88,6 +88,7 @@ Blocks listed here enter the reward pipeline. Item and command rewards require a
 |---|---|---|
 | `veins.generation` | `seeded` | `seeded` or `pure_random` |
 | `veins.allow_placed_blocks` | `false` | Whether player-placed blocks can pay |
+| `veins.max_targets_per_chunk` | `1024` | Ceiling on combined worst-case reward positions per chunk, `1` through `16384` |
 | `veins.discovery_sound.sound` | `BLOCK_BEACON_POWER_SELECT` | Bukkit sound name or namespaced sound key; unknown names use the default |
 | `veins.discovery_sound.volume` | `1.0` | Nonnegative loudness; `0.0` silences discovery |
 | `veins.discovery_sound.pitch` | `1.0` | Pitch from `0.5` through `2.0`; `1.0` is normal |
@@ -99,6 +100,55 @@ Discovery sound plays only to the miner. In seeded mode it plays when the first 
 `allow_placed_blocks = false` closes the place-and-remine exploit. HiddenOre
 tracks player-placed blocks persistently. Records survive piston movement and
 restarts.
+
+## Blast mining
+
+Explosions normally destroy managed blocks without paying anything. `[blast_mining]` lets a
+qualifying explosion award the same hidden rewards a pickaxe would.
+
+| Key | Default | Effect |
+|---|---|---|
+| `blast_mining.enabled` | `false` | Whether explosions pay hidden rewards |
+| `blast_mining.yield` | `0.5` | Chance each destroyed block pays its reward, `0.0` through `1.0` |
+| `blast_mining.tool_tier` | `IRON_PICKAXE` | Pickaxe tier the explosion counts as against each rule's `tool_tiers` |
+| `blast_mining.sources` | `[ "TNT", "MINECART_TNT" ]` | Explosion kinds that qualify |
+
+The complete source names are `TNT`, `MINECART_TNT`, `CREEPER`, `END_CRYSTAL`, `FIREBALL`,
+`WITHER`, `ENDER_DRAGON`, `BED`, and `RESPAWN_ANCHOR`. Sources are matched on entity and block
+type rather than on the server's `EntityType` names, so a rename in a future Minecraft version
+cannot silently change what a configured source means. `FIREBALL` covers ghast and blaze fireballs
+but never wind charges, which list blocks they only trigger and leave standing. Explosions outside
+the list, and every explosion while `enabled = false`, destroy blocks with no hidden reward. An
+explosion another plugin creates directly, rather than through one of the listed entities or
+blocks, never qualifies and cannot be added to the list. An empty `sources` list is rejected while
+`enabled = true`; with `enabled = false` it is accepted and nothing qualifies.
+
+One charge breaks far more blocks than a pickaxe does, so `yield` exists to price that
+difference. At the default `0.5` about half the destroyed reward positions pay. A block that
+loses its `yield` roll keeps its seeded position unconsumed, but the block itself is gone.
+
+An explosion carries no tool, so `tool_tier` stands in for one: a rule whose `tool_tiers` list
+excludes the configured tier pays nothing to an explosion, exactly as a disallowed pickaxe would,
+and still consumes the seeded position. Fortune never applies to blast rewards, and they always
+drop on the ground even when `auto_pickup_drops` is on, because the player who lit the charge can
+be far away or absent.
+
+Rewards go to the player credited with the explosion when there is one: the igniter of primed TNT
+and the shooter of a fireball. TNT minecarts, creepers, beds, and redstone-fired charges have no
+such player; they still pay, but with no credited player there is no debug output, no command
+reward, and `%player%` has nothing to resolve to. Command rules roll once per explosion at the
+explosion's own Y level rather than once per block, and only when a player is credited.
+
+Blast rewards do not play the vein discovery sound; a single charge would fire it many times over.
+Vein discovery still counts toward statistics.
+
+Blocks the explosion destroys are left to the server, which drops whatever the block's own loot
+gives. When `suppress_block_drop_on_custom_drop` is on, a block that paid a hidden reward is
+cleared by HiddenOre first, so only the reward drops. This means an exploded block that pays
+nothing yields its vanilla loot rather than the `[blocks]` `drop` material configured for mining.
+
+At most 1,024 blocks per explosion are examined for rewards. Placement tracking is cleaned up for
+every destroyed block regardless of that cap, and regardless of whether blast mining is enabled.
 
 ## Drops
 
@@ -136,8 +186,18 @@ In `pure_random` mode, item chance is `veins_per_chunk * average vein size / (25
 
 - 64 veins per chunk for a single rule
 - 256 blocks per vein
-- 1,024 worst-case target blocks across all item rules
+- `veins.max_targets_per_chunk` worst-case target blocks across all item rules, `1,024` by default
+- 1,024 managed blocks examined for rewards per explosion
 - `exp_drop` no greater than 1,000
+
+A rule charges the shared per-chunk budget as its `veins_per_chunk` rounded up, times its
+`vein_max_size`, which is the worst case rather than what it places on average. A rule with a wide
+size range therefore spends the budget faster than it fills a chunk: the bundled rules charge 140 of
+the default 1,024 while placing about 70 reward positions per chunk, roughly 0.07% of a chunk
+column. Raise `veins.max_targets_per_chunk` when the rules you want are refused for combined work.
+
+Denser chunks cost more to generate and to hold. The vein cache is bounded by the positions it holds
+as well as by chunk count, so a high ceiling means fewer chunks stay cached and more are recomputed.
 
 Under `seeded`, each item rule gets a stable identity from its material, vein
 count, size, and height range. Reordering `[[drops]]` tables does not move veins.
@@ -151,7 +211,7 @@ streams. Duplicates stay supported. List order is not significant.
 
 ### Command rewards
 
-Command rules use `type = "command"`, a nonempty `commands` list, `chance`, inclusive `min_y` and `max_y`, and `execute_as`. They roll independently in both generation modes, including when no item reward fires. Every command in a successful rule runs.
+Command rules use `type = "command"`, a nonempty `commands` list, `chance`, inclusive `min_y` and `max_y`, and `execute_as`. They roll independently in both generation modes, including when no item reward fires. Every command in a successful rule runs. On an explosion the rule rolls once, and only when at least one destroyed managed block reached the reward checks; a charge that breaks no managed blocks rolls no commands. See [Blast mining](#blast-mining).
 
 `chance` is a fraction from `0.0` to `1.0`: the bundled `0.0005` means `0.05%`, or about one success per 2,000 eligible breaks. `execute_as` accepts `"console"` or `"player"`; a command's `console:` or `player:` prefix overrides that choice. Player commands use the miner's permissions.
 

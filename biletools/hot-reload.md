@@ -2,7 +2,7 @@
 title: "BileTools: Hot Reload Behavior"
 description: "What hot-reload does, what it cannot do, and how to tell when it failed"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,6 +22,12 @@ Paper plugin dependency ordering cannot be recreated perfectly at runtime. Resta
 ## Platform notes
 
 Folia is supported when the plugin being reloaded also supports Folia. On Spigot, the target plugin must support Spigot.
+
+## Velocity proxies
+
+The proxy edition works the same way, with different lifecycle calls. Velocity plugins have no enable and disable step, so BileTools sends the plugin a shutdown event scoped to that plugin only, then unregisters its listeners, cancels its tasks, removes its commands, drops it from the plugin manager, and closes its class loader; loading registers the plugin and sends it a scoped initialize event. Dependents are unloaded first and reloaded afterwards, exactly as on a server.
+
+BileTools cannot reload itself on the proxy. When its own jar changes it logs a notice asking for a proxy restart. See [Velocity proxy](/biletools/velocity) for the proxy commands, settings, and limits.
 
 ## Exclude plugins
 

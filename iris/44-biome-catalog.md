@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-15T12:00:00.000Z
+date: 2026-09-16T03:10:02.513Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -40,21 +40,23 @@ Mesa land biomes in both packs use unwarped `PERLIN` density noise. Their height
 [Lush Plains](/iris/biomes/temperate/lush-plains) and its yellow child use a 1% wildflower placement chance in Overworld, a 60% reduction. Other biomes retain the shared wildflower setting.
 
 
-The current Overworld sources give [Calm Plains](/iris/biomes/temperate/calmplains), [Fancy Plains](/iris/biomes/temperate/fancyplains), and [Rough Plains](/iris/biomes/temperate/roughplains) ungated dirt and mixed-soil layers below their slope-gated grass. Steep columns can retain those layers when grass is rejected. Their Underworld counterparts retain their existing material stacks.
+[Calm Plains](/iris/biomes/temperate/calmplains), [Fancy Plains](/iris/biomes/temperate/fancyplains), and [Rough Plains](/iris/biomes/temperate/roughplains) share ungated lower-layer thicknesses in both packs. Overworld uses dirt and mixed soil. Underworld uses netherrack. Steep columns retain these layers when the slope-gated surface is rejected.
+
+Both packs disable regional rivers and three-dimensional river banks, and share excavation limits and two-layer river shores. Overworld uses sand shores. Underworld uses blackstone. Temperate and Estranged share their coastal and river-shore selector lists.
 ## Catalog scope
 
-The paired catalog contains 373 reachable biome identities:
+The paired catalog contains 371 reachable biome identities:
 
 | Kind | Count | Documentation treatment |
 |---|---:|---|
 | Direct land roots | 164 | One paired page per root |
 | Direct sea roots | 31 | One paired page per root |
-| Direct shore roots | 19 | Consolidated in [Shorelines](/iris/biomes/shorelines), with distinct variants called out |
+| Direct shore roots | 17 | Consolidated in [Shorelines](/iris/biomes/shorelines), with distinct variants called out |
 | Region-selected cave roots | 47 | One paired page per root, except the 16-color Prismatic family |
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
 | Child-only and floating-only variants | 111 | Included with a parent root rather than given an orphan page |
 
-The Overworld repository contains seven unreachable files. They are not active catalog entries. Underworld 1011 has no unreachable biome files. River-policy references account for ten roots and two additional children in this total.
+The Overworld repository contains nine unreachable biome files, while Underworld contains two. The shared unselected assets are `mountain/shore/beach` and `vanilla/stony_shore`. They remain documented under Shorelines but are not active catalog entries. River-policy references account for ten roots and two additional children in this total.
 
 ## Family navigation
 
@@ -66,7 +68,7 @@ The Overworld repository contains seven unreachable files. They are not active c
 | [Hot](/iris/biomes/hot) | 10 | 2 | Dunes, desert mountains, oases, warm water, and shores |
 | [Magnetics](/iris/biomes/magnetics) | 6 | 1 | Metallic, glassy, frozen, fungal, and noise-driven terrain |
 | [Mesa](/iris/biomes/mesa) | 7 | 7 | Plateaus, valleys, badlands, rivers, and shores |
-| [Mountain](/iris/biomes/mountain) | 12 | 5 | Mountains, cliffs, highlands, forests, rivers, and shores |
+| [Mountain](/iris/biomes/mountain) | 11 | 5 | Mountains, cliffs, highlands, forests, rivers, and shores |
 | [Mushroom](/iris/biomes/mushroom) | 8 | 2 | Fungal land, water, and shoreline biomes |
 | [Ocean](/iris/biomes/ocean) | 5 | 1 | Shared deep, dark, rich, warm, and shoreline roots |
 | [Prismatics](/iris/biomes/prismatics) | 18 | 0 | Sixteen color families plus shared sea and shore roots |
@@ -76,7 +78,7 @@ The Overworld repository contains seven unreachable files. They are not active c
 | [Terralost](/iris/biomes/terralost) | 5 | 0 | Alpine, amethyst, and ancient-sand terrain |
 | [Tropical](/iris/biomes/tropical) | 20 | 7 | Rainforests, islands, volcanoes, waters, and distinct shores |
 | [Tundra](/iris/biomes/tundra) | 17 | 9 | Taiga, redwoods, alpine terrain, mountains, water, and shores |
-| [Vanilla](/iris/biomes/vanilla) | 20 | 0 | Vanilla-compatible roots mixed into Iris selectors |
+| [Vanilla](/iris/biomes/vanilla) | 19 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. They add a regional cave root and one child to the current pack sources, with ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
 

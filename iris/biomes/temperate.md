@@ -2,7 +2,7 @@
 title: "Temperate Biomes"
 description: "Navigation for the built-in temperate biomes across Overworld and Underworld"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-09-16T03:11:58.172Z
 tags: "iris, biomes, overworld, underworld, temperate"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -44,7 +44,7 @@ This family has **11 child-only reachable variants**. Those variants are documen
 | [Sea / River](/iris/biomes/temperate/sea/river) | `temperate/sea/river` | Sea | Estranged, Temperate |
 | [Shattered Plains](/iris/biomes/temperate/shattered-plains) | `temperate/shattered-plains` | Land | Temperate |
 | [Shorelines](/iris/biomes/shorelines) | `temperate/shore/beach` | Shore | Estranged, Forests, Magnetics, Temperate |
-| [Shorelines](/iris/biomes/shorelines) | `temperate/shore/oak-beach` | Shore | Overworld: Forests, Temperate; Underworld: Estranged, Forests, Temperate |
+| [Shorelines](/iris/biomes/shorelines) | `temperate/shore/oak-beach` | Shore | Estranged, Forests, Temperate |
 | [Stranged Plains](/iris/biomes/temperate/stranged-plains) | `temperate/stranged-plains` | Land | Temperate |
 | [Wilds](/iris/biomes/temperate/wilds) | `temperate/wilds` | Land | Temperate |
 

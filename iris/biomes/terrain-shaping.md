@@ -2,7 +2,7 @@
 title: "Biome Terrain Shaping"
 description: "Shared 3D terrain profiles and protected terrain in the built-in Iris packs"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-16T03:12:40.152Z
 tags: "iris, biomes, terrain, overworld, underworld"
 editor: markdown
 dateCreated: 2026-09-08T07:14:15.291Z
@@ -91,7 +91,7 @@ Hot and Magnetics now select the shared lava-pool geometry in both packs. The po
 
 ## Coverage validation
 
-The atlas validator follows hydrology references as well as region lists, children, floating targets, and carving entries. Both packs have 373 reachable biome identities.
+The atlas validator follows hydrology references as well as region lists, children, floating targets, and carving entries. Both packs have 371 reachable biome identities.
 It checks paired terrain geometry and requires an explicit profile for each reachable land identity. It checks each configured profile's atlas row against its dimensions and exact noise styles. Disabled profiles show `None / None`, and disabled crack fields show `None`.
 
 ```text
