@@ -2,7 +2,7 @@
 title: "Multiverse"
 description: "Iris documentation: Multiverse"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-17T01:11:12.066Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -153,6 +153,5 @@ server fully after any Iris update.
 | `World "iris:<key>" is loaded, but it is not an Iris world` | Iris was hot reloaded. Restart the server |
 | A world is missing after you deleted its folder by hand | Iris reports it once at startup and leaves the `bukkit.yml` and Multiverse entries in place, so restoring the folder from a backup brings the world back. Use `/iris remove` if you meant to remove it |
 
-See also [28 - Integrations](/iris/28-integrations),
-[06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle), and
-[31 - Troubleshooting](/iris/31-troubleshooting).
+See also [28 - Integrations](/iris/28-integrations) and
+[06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).

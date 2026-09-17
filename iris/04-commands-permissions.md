@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-14T13:29:28.712Z
+date: 2026-09-17T00:39:03.798Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -222,7 +222,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
 
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Locators merge recorded facts from generated chunks with current-activation predictions in eligible ungenerated terrain. Hydrology search never reports a suppressed transition candidate or an unaccepted route, outlet, or deep-fluid feature.
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Locators merge recorded facts from generated chunks with current-activation predictions in eligible ungenerated terrain. Hydrology search never reports a suppressed transition candidate or an unaccepted route, outlet, or deep-fluid feature. On Bukkit, a hydrology teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
 
 ---
 

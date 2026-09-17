@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-17T01:11:12.066Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -289,7 +289,6 @@ Detail and the commands: [25 - Pack Management](/iris/25-pack-management).
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [28 - Integrations](/iris/28-integrations)
 - [29 - Client HUD & Protocol](/iris/29-client-hud-protocol)
-- [31 - Troubleshooting](/iris/31-troubleshooting)
 - [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [37 - Image Map Concepts](/iris/37-image-map-concepts)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)

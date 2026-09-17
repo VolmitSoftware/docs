@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-17T01:11:12.066Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,7 +96,6 @@ unload, evacuate, and delete worlds. Grant it to administrators only. Use
 - [Integrations](/iris/28-integrations)
 - [Client HUD & Protocol](/iris/29-client-hud-protocol)
 - [Platform Differences](/iris/30-platform-differences)
-- [Troubleshooting](/iris/31-troubleshooting)
 - [Startup Safeguard](/iris/46-startup-safeguard)
 - [Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [Performance Tuning](/iris/33-performance-tuning)

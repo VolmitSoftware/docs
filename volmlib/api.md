@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-13T20:41:58.000Z
+date: 2026-09-16T23:13:17.909Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -33,6 +33,12 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `integration` | Vault economy availability, charging, and settlement |
 
 For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
+
+## Region access and interruption
+
+Mantle region access reports a failed load and propagates its original cause. A failed request does not retry recursively. A later explicit request can retry after the cause is resolved. Asynchronous access releases acquired maintenance permits once, including when lookup or load setup throws. Canceling its returned future does not release permits until the underlying load finishes or prevent their later release. Existing corrupt-file recovery remains part of the region loader.
+
+`HyperLockSupport.lock` preserves the thread interrupt flag and throws `IllegalStateException` with the original `InterruptedException` when acquisition is interrupted. Protected work does not run without an acquired lock. The long-wait warning still reports successful lock acquisition after contention.
 
 ## Dependency
 

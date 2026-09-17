@@ -2,13 +2,13 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-10T03:09:03.000Z
+date: 2026-09-16T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Use the Gloss web editor to edit menus, panels, holograms, entity overlays, previews, animations, scoreboards, MOTD, emoji, bubble styles, damage indicators, tablist, and Real Drops.
+Use the Gloss web editor to edit menus, panels, holograms, entity overlays, previews, animations, scoreboards, surfaces, tablist, MOTD, connection messages, emoji, bubble styles, damage indicators, and Real Drops.
 
 ## Open it
 
@@ -24,7 +24,9 @@ Examples:
 /gloss web edit menu shop
 /gloss web edit hologram spawn
 /gloss web edit scoreboard default
+/gloss web edit surface welcome
 /gloss web edit motd motd
+/gloss web edit connections connections
 ```
 
 The command gives you a link with temporary access to the selected content. Do not share it with someone you do not trust.
@@ -52,7 +54,9 @@ Visual inspectors edit the same document fields used by Gloss. Code and Split vi
 | Animations | Frames, timing, playback settings, and visibility | Animated text and [text animations](/gloss/07-emoji-text-animations) |
 | Scoreboards | Conditional presentations, title and line formats, update rates, and visibility | Sidebar and [scoreboards](/gloss/05-scoreboards-groups) |
 | Tablist | Header/footer rows, list-name presentations, selection, update rates, and root/channel visibility | Player list and [tablist](/gloss/06-tablist-motd) |
-| MOTD | Text variants, icons, server-list settings, and visibility | Server list and [MOTD](/gloss/06-tablist-motd) |
+| Surfaces | Surface kind, lane and eligibility, default presentation, conditional variants, slots, HUD priority, timing, trigger, and visibility | Action bar, boss bar and title in the game frame; [surfaces](/gloss/27-velocity#surfaces) |
+| MOTD | Text entries, document and per-entry server-list icons, pause-menu server links, hover sample, player counts, version label, and visibility | Server list and [MOTD](/gloss/06-tablist-motd) |
+| Connection messages | Join and leave blocks, per-recipient conditional variants, audience, and visibility | Chat sample and [connection messages](/gloss/26-connection-messages) |
 | Emoji | Text/image definition, aliases, permission, and visibility | Chat sample and [emoji](/gloss/07-emoji-text-animations) |
 
 The 3D previews draw the client's own block and item models and textures in WebGL2, over a rendered block world, with a shared orbit camera: drag to orbit, wheel to dolly, right-drag to pan, and WASD (with space and shift for height) to fly while the stage is focused. Entities are textured rigs for the player and for zombies, skeletons, creepers, pigs, cows, and sheep, and a catalog sprite billboard for every other mob. Text — holograms, drop labels, bubbles, damage numbers, and overlay lines — is drawn by the browser in a layer that shares the same camera, so it is never hidden behind geometry. A browser without WebGL2 shows a rendered still of the world and sprites instead of models.
@@ -69,7 +73,7 @@ Global feature switches, service limits, and defaults remain in `gloss.toml`. Th
 
 ## Document IDs and files
 
-Menus, holograms, animations, scoreboards, emoji, bubble styles, and container previews can have separate named documents. These runtime settings have one canonical document:
+Menus, holograms, animations, scoreboards, surfaces, emoji, bubble styles, and container previews can have separate named documents; surfaces live under `surfaces/`, one document per action bar, boss bar, or title. These runtime settings have one canonical document:
 
 | Surface | Runtime ID | Export path under `plugins/Gloss/` |
 |---|---|---|
@@ -78,6 +82,7 @@ Menus, holograms, animations, scoreboards, emoji, bubble styles, and container p
 | Real Drops | `default` | `real-drops/default.json` |
 | Tablist | `tablist` | `tablist.json` |
 | MOTD | `motd` | `motd.json` |
+| Connection messages | `connections` | `connections.json` |
 
 Creating a singleton opens its existing workspace document. Importing or applying a template updates that document, and singleton duplication and renaming are unavailable. This prevents editing a second file the server would not load. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [data files](/gloss/03-data-files).
 

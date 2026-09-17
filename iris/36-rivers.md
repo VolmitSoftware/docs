@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, river policy, and the tooling that inspects an accepted plan"
 published: true
-date: 2026-09-16T03:10:02.513Z
+date: 2026-09-17T01:11:12.066Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -21,7 +21,6 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [25 - Pack Management](/iris/25-pack-management)
-- [31 - Troubleshooting](/iris/31-troubleshooting)
 - [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [33 - Performance Tuning](/iris/33-performance-tuning)
 
@@ -848,7 +847,7 @@ Exposed water is published as ordinary water. The standard exposed-water freezin
 
 The normal **Biome** view composites accepted surface hydrology content over the natural biome field. The **River network** view reads the accepted feature footprint and labels it `headwater / source`, `surface pool`, `riffle`, `cascade`, `waterfall`, `sinkhole`, `underground pool`, `underground drop`, `coastal grotto`, `inland grotto`, `mouth`, `deep pool`, or `deep channel`. Each accepted headwater carries a compact arrow aligned to the signed X/Z flow vector stored in that accepted feature reference. Rejected candidates use visibly separate `projected source`, `projected outlet`, and `projected deep fluid` colors. The immutable diagnostic plan retains each projected feature type and its rejection reason, while the current Vision legend groups them by candidate kind. They are absent from accepted footprints, biome samples, normal render samples, and locators.
 
-Locate accepted features from an Iris world:
+Locate accepted features from an Iris world. On Bukkit, `goto` is an alias of `find`; `/iris goto river type=surface` searches and teleports, while `teleport=false` only reports coordinates. Changing worlds during the search cancels the pending teleport. Iris reports teleport success only after it completes:
 
 ```text
 # Bukkit
