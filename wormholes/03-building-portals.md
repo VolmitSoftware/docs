@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-17T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -65,12 +65,14 @@ Aliases: `/wh`, `/wormhole`. Full command list:
    ceiling plane). Max **4096** cells.
 4. If the selection is valid and complete, **left-click** the selection to
    open the portal. Click a block inside the box, or aim at the selection pane
-   within 64 blocks.
+   within 64 blocks and left-click the air. No block behind the pane is required.
 5. Construction creates a `PORTAL` owned by the player. Change its type later in the [portal menu](/wormholes/04-portal-types-menus-settings).
 
 The selection UI is a light-blue pane while valid. The pane is red when the
 selection is not flat or is too large. If you change world, drop or swap off
 the wand, or change hotbar away from the wand, Wormholes clears the selection.
+
+Container previews do not select wand corners, open portal menus, apply skins, or unpack door kits. These actions require a player click.
 
 If a wand interaction aims at an existing portal, Wormholes opens that portal’s
 menu instead of editing the selection. See Menu access.

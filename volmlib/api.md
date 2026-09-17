@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-16T23:13:17.909Z
+date: 2026-09-17T01:40:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -17,6 +17,7 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | Package | Use |
 |---|---|
 | `util.scheduling` | Paper/Folia-safe global, region, and entity tasks |
+| `util.event` | Shared permission-check interaction events |
 | `util.bukkit` | Inventory-view access and entity initialization; native spawn-protection checks require the optional `native-bukkit` module |
 | `util.bukkit.papi` | PlaceholderAPI expansions and snapshot stores |
 | `util.director` | Commands, help, and completion |
@@ -79,6 +80,12 @@ Aliases remain executable, while help and completion show canonical command name
 The optional `native-bukkit` module provides `BukkitSpawnProtection.create(server)` to bind the native spawn-protection decision once. `check(player, block)` reports `ALLOWED`, `PROTECTED`, or `UNSUPPORTED`; consumers retain region-ownership and third-party protection checks. See [Native spawn protection](/volmlib/api/spawn-protection) for dependency setup, bypasses, capability handling, and failure behavior.
 
 `BSupport.isUpdatable(...)` recognizes exposed pointed-dripstone and sulfur-spike tips through the server’s speleothem API; body and merged-tip segments are excluded. On the supported Bukkit 26.1.2 boundary, pointed-dripstone detection uses that version’s API.
+
+## Protection checks
+
+`art.arcane.volmlib.util.event.ProtectionProbe.blockInteract(player, block, hand)` and `entityInteract(player, entity)` create permission-check events. Dispatch them through Bukkit on the thread owning the player and target, then inspect their cancellation and use results. They retain the standard interaction handler lists, so protection listeners receive them.
+
+Gameplay listeners should return early when `ProtectionProbe.isProbe(event)` is true. Protection listeners must still evaluate the request. The marker works across separately shaded VolmLib copies, allowing preview and remote-access checks to run without activating held items or menus.
 
 ## Item snapshots
 

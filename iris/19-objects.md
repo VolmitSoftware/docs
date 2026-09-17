@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-09T08:49:00.000Z
+date: 2026-09-17T01:40:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,8 @@ provider placement. CraftEngine furniture entities are not captured or
 spawned by direct previews. See [28 - Integrations](/iris/28-integrations).
 
 ## Capture and save an object
+
+Container previews do not activate the held Object Studio save tool. Saving requires the tool's player click or the save command.
 
 Prerequisites: a writable pack, operator access on a Bukkit-family server, and something built to capture. A Studio world is the shortest path because it hotloads pack edits; ordinary Studio starts in spectator, while Object Studio remains creative for block editing.
 

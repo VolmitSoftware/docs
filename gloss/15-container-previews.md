@@ -2,13 +2,14 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-17T01:40:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 Container previews show a private holographic card when a player looks at a supported block or entity.
 They do not open the inventory or fire `InventoryOpenEvent`.
+Looking at a container while holding an Adapt Portkey does not activate the item or change its binding. Sneak-left-click the container to bind it, then right-click to open it remotely; container permissions still apply.
 
 `/gloss web edit container-preview <id>` opens one preview in a restricted live editor session;
 `/gloss web workspace` includes every preview document.

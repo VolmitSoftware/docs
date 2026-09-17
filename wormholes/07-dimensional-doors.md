@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-09-13T00:00:00.000Z
+date: 2026-09-17T01:40:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -100,7 +100,7 @@ outside portal transit.
 
 ## Portal surface and block protection
 
-When OpenState matches the physical block, Wormholes shows an animated portal surface to nearby players. Particles and sounds follow the global Wormholes settings. The surface disappears when the endpoint is no longer active.
+When OpenState matches the physical block, Wormholes shows an animated portal surface to nearby players. The surface emits no repeating ambient portal sound. Particles and open, close, and traversal sounds follow the global Wormholes settings. The surface disappears when the endpoint is no longer active.
 
 Registered dimensional doors, their hinged-door support blocks, and pocket core
 blocks are protected from fire, piston movement, entity block changes, and

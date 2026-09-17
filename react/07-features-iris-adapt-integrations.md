@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-17T01:40:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,8 @@ Use `/react integration status` for live capability status. Global `integrationS
 ### `feature-adapt-runtime-surge-guard`
 
 Requires `adapt`. Secret: yes. While surging, this feature rate-limits player interact, combat, and consume events. Bypass: `react.secret.adapt.bypass`.
+
+Container previews and remote-access permission checks do not consume the player's interaction allowance.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

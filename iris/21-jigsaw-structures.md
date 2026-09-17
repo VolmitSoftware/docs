@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-17T01:40:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,6 +71,8 @@ The Iris scoreboard switches to Jigsaw context automatically and reports the str
 ### Step 3 — Make a piece
 
 Open the controls three ways: right-click the generated control chest with the main hand, run `/iris jigsaw menu`, or sneak three times within 1.5 seconds. The six-row GUI shows the six workcells and pages only the variants belonging to the selected rotational archetype. Walking into a workcell selects it for your next menu open. Left-clicking a workcell in the GUI selects it, closes the menu, and teleports you to its horizontal center.
+
+Container previews do not open Studio controls, activate held tools, or mark the Studio as edited. The control chest's inventory remains inaccessible through previews and remote access.
 
 Left-click **Hallway**, then click **New Blank Variant**. Iris clones the active owned piece complete metadata and every exact pool-entry membership into a service-named owned piece. It creates an empty object with the source object dimensions. It closes the GUI while the graph transaction runs. It then loads the new variant into Hallway. Reopen the menu after the completion message.
 

@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-17T01:40:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,8 @@ Entity-side features cover stacking, sleep, trim, items, spawns, vehicles, porta
 ## Entity features
 
 Stacking, trim, and sleep honor the protection API. See [17 - API - Entity Protection](/react/17-api-entity-protection). The operations are `STACK`, `TRIM`, and `SLEEP`.
+
+Container preview access checks do not split entity stacks or cancel an entity's pending removal countdown. Actual player interaction retains its normal protection behavior.
 
 ### `mob-stacking`
 

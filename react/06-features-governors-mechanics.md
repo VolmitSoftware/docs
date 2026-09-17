@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-17T01:40:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,6 +70,8 @@ This feature adjusts each world's view and simulation distance from tick time an
 ### `afk-view-shedding`
 
 This feature lowers view distance for idle players. It can also cap every player's view distance during pressure, then restores previous values when the conditions clear. Unsupported servers disable it automatically.
+
+Looking at a container preview does not reset the player's idle timer.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

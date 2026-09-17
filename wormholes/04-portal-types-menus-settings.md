@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-14T00:10:27.350Z
+date: 2026-09-17T06:30:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -230,6 +230,8 @@ not these buttons.
 
 ## Cosmetics and blackout
 
+Active portal surfaces do not emit repeating portal or lava ambience. Projection synchronization is silent. Deliberate open, close, and traversal effects retain their sounds.
+
 | Ambient style | Icon material (menu) |
 |---------------|----------------------|
 | `SPARKS` | Firework star |
@@ -241,7 +243,7 @@ Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
-Blackout adds a concrete-colored background behind the projected view. Thin display panels cover the far boundary and exposed floor, ceiling, and sides, with a small overlap at panel edges. The client can cull panels outside its view. Moving panels retain their entity IDs and update only changed metadata. If the background cannot be displayed, the normal projection remains active. Opaque surface skins block projection.
+Blackout adds a concrete-colored background behind the projected view. The far boundary and the exposed floor, ceiling, and sides of the view are sent as concrete blocks through the same block updates as the rest of the projection, so the shell is present from the first frame and while the viewer moves. Destination blocks that are already opaque are left as they are. Opaque surface skins block projection.
 
 ## Behavior notes
 

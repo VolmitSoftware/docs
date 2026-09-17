@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-17T01:40:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,6 +41,8 @@ Remote Access gives you a crafted portkey bound to one container. After that you
 1. Learn it, then craft an ender pearl with a compass to get a Reliquary Portkey.
 2. Sneak-left-click the container you want to bind. Left-clicking air binds the container you are looking at within 5 blocks, except on Folia.
 3. Right-click the portkey anywhere to open that container remotely.
+
+Gloss container previews work while holding a Portkey. Looking at the preview does not bind or activate it; use the gestures above.
 
 Binding and every remote open run the full container permission checks,
 including both halves of a double chest. It never opens something you could not

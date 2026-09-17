@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-14T00:40:00.000Z
+date: 2026-09-17T06:30:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -89,16 +89,16 @@ If a view exceeds `max-projected-cells`, Wormholes reduces side padding first an
 
 The time budget uses recent observer costs to decide whether another observer's block work fits. Long geometry scans yield at the frame deadline and resume on later admitted ticks, including ticks between scheduled refreshes. Observer order rotates so expensive views still make progress. Folia execution threads have independent budgets.
 
-Pending scans retain the last committed blocks, blackout shell, and entity visibility. A completed geometry scan finalizes on a later turn before publishing its new view. Camera movement queues the next view instead of restarting unfinished work. Content changes require a subsequent refresh; changes to the portal, world, viewing side, or presentation settings cancel stale work. Depth and detail remain unchanged, while complete block updates can arrive less often under load. Entity updates and traversal continue. Finalization and required cleanup can exceed the budget, so this is not a hard server tick limit.
+Pending scans retain the last committed blocks, including the blackout shell, and entity visibility. A completed geometry scan finalizes on a later turn before publishing its new view. Camera movement queues the next view instead of restarting unfinished work. Content changes require a subsequent refresh; changes to the portal, world, viewing side, or presentation settings cancel stale work. Depth and detail remain unchanged, while complete block updates can arrive less often under load. Entity updates and traversal continue. Finalization and required cleanup can exceed the budget, so this is not a hard server tick limit.
 
 ## Blackout background
 
 | Setting | Default | Notes |
 |---------|---------|-------|
-| `blackoutBackground` | `false` | Per-portal. Builds a colored display shell around the far, top, bottom, and side boundaries of the sampled view. |
+| `blackoutBackground` | `false` | Per-portal. Fills the far, top, bottom, and side boundaries of the sampled view with the blackout block wherever the destination is transparent. |
 | `blackoutColor` | `BLACK` | One of 16 concrete colors: `WHITE`, `ORANGE`, `MAGENTA`, `LIGHT_BLUE`, `YELLOW`, `LIME`, `PINK`, `GRAY`, `LIGHT_GRAY`, `CYAN`, `PURPLE`, `BLUE`, `BROWN`, `GREEN`, `RED`, `BLACK`. |
 
-Each color maps to the matching concrete block. Blackout closes the far and side edges of the sampled view without replacing projected destination blocks. Projection continues if the background cannot be displayed.
+Each color maps to the matching concrete block. Shell cells are ordinary projected blocks: they arrive with the block updates of the same pass, work for Bedrock viewers, and are resampled as soon as a cell stops being part of the boundary. Opaque destination blocks on the boundary are never replaced. In `full` atmosphere mode with `[atmosphere] fog-plate = true`, the shell uses the destination dimension's fog block instead of the concrete color.
 
 Adjacent background panels overlap by 1/256 block to close seams. Their client
 culling bounds cover the full panel, including its overlap. Moving a panel
@@ -170,6 +170,12 @@ the raw config values.
 | `entity-candidate-cache-ticks` | `3` | Candidate cache ticks. |
 | `max-spoofed-entities` | `24` | Entity cap. |
 | `capture-zone-radius` | `8.0` | Capture zone radius. Applies on reload. |
+
+## Optional destination colors and lighting
+
+Projection leaves the viewer's biome colors and lighting unchanged by default. `[atmosphere]` defaults to `mode-default = "off"`, `biome-tint = false`, and `sky-light = false`; `[render] lighting-fidelity` also defaults to `false`.
+
+To enable destination biome colors, set `[atmosphere] biome-tint = true` and select `tint`, `tint_light`, or `full` atmosphere mode. To enable destination sky lighting through atmosphere mode, set `sky-light = true` and select `tint_light` or `full`. `[render] lighting-fidelity = true` enables projected lighting independently. Existing explicit settings remain in effect.
 
 ## Per-portal activation range
 
