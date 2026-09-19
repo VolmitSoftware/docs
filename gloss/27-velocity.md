@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-18T00:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -12,13 +12,14 @@ Gloss on Velocity provides network tablists, scoreboard sidebars, server-list MO
 
 ## Install
 
-Requirements: Java 25, Velocity 3.4 or newer, and the Velocity edition of PacketEvents 2.13.0. Proxy scoreboards require Minecraft clients 1.20.3 or newer. Pause-menu server links require 1.21 or newer.
+Requirements: Java 25 and Velocity 3.4 or newer. Proxy scoreboards require Minecraft clients 1.20.3 or newer. Pause-menu server links require 1.21 or newer.
 
 1. Put `Gloss-<version>.jar` in the proxy's `plugins/` directory.
-2. Put the PacketEvents 2.13.0 Velocity jar in the same directory.
-3. Start the proxy.
-4. Edit the generated files under `plugins/gloss/`.
-5. Run `/gloss reload` from the proxy console or an account with `gloss.admin`.
+2. Start the proxy.
+3. Edit the generated files under `plugins/gloss/`.
+4. Run `/gloss reload` from the proxy console or an account with `gloss.admin`.
+
+Gloss loads PacketEvents itself on first start and stores it under `plugins/gloss/libraries/`. Install a PacketEvents plugin only when another proxy plugin requires that plugin.
 
 The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids are not part of the proxy edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
 
@@ -353,7 +354,7 @@ The toggle lasts until the player disconnects. The proxy does not expose the ser
 
 ## Troubleshooting
 
-If Gloss fails to start, check the proxy log for missing PacketEvents or invalid documents. If a reload fails, correct the reported document and repeat `/gloss reload`.
+If Gloss fails to start, check the proxy log for library download errors or invalid documents. If a reload fails, correct the reported document and repeat `/gloss reload`.
 
 If no board appears, check the client version, feature switch, `show`, and `select.when`. Check conditions against proxy values, especially backend names and proxy permissions.
 

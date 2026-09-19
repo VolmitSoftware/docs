@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -112,15 +112,43 @@ Both package commands run the pack validator and image-map compiler before copyi
 |-------|---------|--------------|
 | `pack` | mutually exclusive with `link` | Accepts exactly `overworld` or `underworld`. Values are case-insensitive |
 | `link` | mutually exclusive with `pack` | Direct HTTP(S) URL whose path ends in `.zip` |
+| `overwrite` | `false` | Replace an installed authoring pack and retain its previous directory in `packs/.backups/<key>-<id>/` |
 
-`overworld` and `underworld` are built-in packs whose embedded URLs follow each repository's latest GitHub release asset. A fresh install therefore receives the newest stable V+ release available when the command runs without requiring a new Iris jar. An existing pack directory is never overwritten by this command; preserve or remove it yourself before intentionally installing another release.
+`overworld` and `underworld` follow each repository's latest stable GitHub release asset. Downloads receive the current release without requiring a new Iris jar. Existing directories remain unchanged unless you specify `overwrite=true`.
 
 | Pack | Source |
 |------|--------|
 | `overworld` | `https://github.com/IrisDimensions/overworld/releases/latest/download/overworld.zip` |
 | `underworld` | `https://github.com/IrisDimensions/underworld/releases/latest/download/underworld.zip` |
 
-There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, overwrite option, or implicit download from world and Studio commands. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
+There is no listing lookup, arbitrary repository-name lookup, Git branch selector, positional source, or implicit download from world and Studio commands. A GitHub branch archive works through `link=https://github.com/<owner>/<repository>/archive/refs/heads/<branch>.zip`. For a direct ZIP with multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the destination folder.
+
+### Update an installed pack
+
+Close Studio before replacing its authoring pack. Use the built-in source or provide a ZIP URL:
+
+```text
+/iris download pack=overworld overwrite=true
+/iris download pack=underworld overwrite=true
+/iris download link=https://packs.example.test/custom.zip overwrite=true
+```
+
+Run one command at a time and wait for completion. Iris validates the new pack before replacement and prints the retained backup path. Failed publication restores the previous directory. Replacement uses the complete downloaded pack, so local edits remain only in the backup.
+
+Restart after downloading an update. Existing production worlds retain their current pack until you run the world-update command below. To use a pack already installed on the server, skip the download and stage that installed dimension directly.
+
+### Startup update notices
+
+Startup checks installed `overworld` and `underworld` packs against their latest stable GitHub releases:
+
+```text
+[Iris]: Custom Dimensions: 2
+[Iris]:   overworld v4010 -> v4011 available
+[Iris]:   underworld v1012
+[Iris]: Update overworld: /iris download pack=overworld overwrite=true
+```
+
+These version numbers are examples. The list shows authoring pack versions, which can differ from the packs active in existing worlds. Checks run asynchronously with a five-second request timeout and do not download packs. Failed checks show `(update check unavailable)` beside the installed version. Custom packs have no automatic release check.
 
 After downloading a pack, restart before creating a world or opening ordinary Studio. Use `/iris pack validate <pack>` to check it first.
 
@@ -313,10 +341,10 @@ The Bukkit compiler inlines resolved snippets into the exported objects. The mod
 
 | Platform | Command |
 |---|---|
-| Bukkit | `/iris developer update-world world=<world> pack=<dimension> confirm=true` |
+| Bukkit | `/iris pack update-world world=<world> pack=<dimension> confirm=true` |
 | Fabric / Forge / NeoForge | `/iris world update <dimension> <pack-or-pack:dimension>` |
 
-On Bukkit, the command group is `/iris developer` or `/iris dev`; `update-world` also has alias `^world`. `pack` accepts alias `dimension`, and `confirm` accepts `c`.
+On Bukkit, `/iris developer update-world` and `/iris dev update-world` also run this operation. `pack` accepts alias `dimension`, and `confirm` accepts `c`. Select a loaded production Iris world. Studio worlds use their authoring workflow instead.
 
 | Param | Default | What it does |
 |-------|---------|--------------|

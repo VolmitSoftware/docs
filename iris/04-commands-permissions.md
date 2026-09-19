@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-17T00:39:03.798Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -169,7 +169,7 @@ Use the Bukkit command names shown below.
 | `debug` | | Both | — | **Bukkit:** open diagnostic help. **Modded:** toggle `general.debug` and save settings |
 | `debug toggle` | | **Bukkit-only** | — | Toggle `general.debug` and save settings |
 | `debug dump` | | **Bukkit-only** | `[upload=true]` | Save a diagnostic report, uploading by default |
-| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>` | Install the latest stable built-in pack release or a direct ZIP. Restart before live-registry use. Branch, listing, arbitrary-name, positional, force, and overwrite forms are not supported |
+| `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>`, plus optional `overwrite=false` | Install the latest stable built-in release or a direct ZIP. `overwrite=true` replaces the installed authoring pack and retains its backup. Close Studio first and restart after installation |
 | `metrics` | `measure` | Both | — | Generation metrics. Player origin on Bukkit |
 | `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |
 | `seed` | | **Modded** | — | Print world and engine seeds |
@@ -384,6 +384,7 @@ Bukkit has one global Studio project/world and the Jigsaw session belongs to one
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
 | `validate` | `v` | `[pack]` on both platforms. Empty (or `*` on Bukkit) validates every pack | Validate pack(s) and publish results |
+| `update-world` | | **Bukkit:** `world=<loaded-world> pack=<dimension> confirm=true` (`pack` alias `dimension`, `confirm` alias `c`) | Stage an installed pack for a production Iris world and request a restart. Retains generation history and existing chunks |
 | `pkg` | `package` | **Bukkit-only:** `[dimension=default] [obfuscate=false] [minify=true]` (`dimension` alias `dim`, contextual) | Zip and package a validated dimension. The command name is `pkg`; `package` is the alias. On mod loaders the same node lives under `/iris studio package` |
 | `cleanup` | `c` | **Bukkit:** `<pack> [mode=preview]`. **Modded:** `<pack> [apply]` | Preview or quarantine unused resources |
 | `restore` | `r` | same pattern as `cleanup` | Preview or restore the latest quarantine |

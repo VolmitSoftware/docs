@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-16T02:20:06.948Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -447,7 +447,7 @@ Chunks generated before biome recording may lack an exact environment. Recovery 
 | Production create | Captures the initial immutable generation epoch and pack |
 | Bukkit Studio open | Captures an initial world-local epoch and watches the separate authoring pack |
 | Bukkit `/iris pack package`; modded `/iris studio package` | Exports an archive. No world is touched |
-| `/iris dev update-world` | Stages a validated epoch for activation after restart. Existing chunks retain their recorded generation |
+| `/iris pack update-world` | Stages a validated installed pack for activation after restart. Existing chunks retain their recorded generation. `/iris dev update-world` also runs this operation |
 | Ordinary Bukkit Studio hotload | Activates accepted edits for new chunks with a terrain transition. Saved terrain, biome environments, and their pack definitions remain intact |
 
 ## Concurrent lifecycle guards
