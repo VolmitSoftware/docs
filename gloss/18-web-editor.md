@@ -2,13 +2,15 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-18T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Use the Gloss web editor to edit menus, panels, holograms, entity overlays, previews, animations, scoreboards, surfaces, tablist, MOTD, connection messages, emoji, bubble styles, damage indicators, and Real Drops.
+Use the Gloss web editor to edit menus, holograms, boards, chat surfaces, and the other Gloss JSON documents.
+
+A screenshot walkthrough is in [Web editor tutorial](/gloss/18-web-editor-tutorial). Open the hosted editor at [gloss.volmitsoftware.com](https://gloss.volmitsoftware.com/).
 
 ## Open it
 
@@ -27,9 +29,21 @@ Examples:
 /gloss web edit surface welcome
 /gloss web edit motd motd
 /gloss web edit connections connections
+/gloss web edit dialog example
+/gloss web edit inventory example
 ```
 
 The command gives you a link with temporary access to the selected content. Do not share it with someone you do not trust.
+
+## Tutorial
+
+1. Open [gloss.volmitsoftware.com](https://gloss.volmitsoftware.com/) or a `/gloss web` link.
+2. Follow the first-run tour, or skip it.
+3. Select **New document** or **More actions** then **Templates**.
+4. Edit in Visual, check Preview, and fix issues in Code.
+5. Export the JSON, or publish a live session.
+
+The [Web editor tutorial](/gloss/18-web-editor-tutorial) shows each of those screens.
 
 ## Editing
 
@@ -51,6 +65,14 @@ Visual inspectors edit the same document fields used by Gloss. Code and Split vi
 | Bubble styles | Selection, trusted prefix, wrapping, lifetime, motion, follow/hide settings, visibility, display style, box, and particles | Chat sample over the rendered world and [bubbles](/gloss/08-bubbles-indicators-drops) |
 | Damage indicators | Damage/healing admission, conditional variants, audience, text, offset, lifetime, motion, display style, box, and particles | Damage, healing and critical-hit samples on the Minecraft stage; [indicators](/gloss/08-bubbles-indicators-drops) |
 | Real Drops | Display limits, conditional plans and audience, models, label placement/style/box, physics, animation timelines, modifier expressions, and particles | Drop stage over the rendered world and [Real Drops](/gloss/08-bubbles-indicators-drops) |
+| Dialogs | Title, body, buttons, and native dialog fallback | Export to `plugins/Gloss/dialogs/` |
+| Inventories | Chest GUI resolution, mask, keys, and slots | Export to `plugins/Gloss/inventories/` |
+| Nameplates | Selection, presentation prefix and suffix, variants | Export to `plugins/Gloss/nameplates/` |
+| Nametags | Selection, presentation, name-tag visibility, collision | Export to `plugins/Gloss/nametags/` |
+| Motion | Tracks with bone, channel, and keyframes | Export to `plugins/Gloss/motion/` |
+| Rigs | Bones, attachments, and display-entity models | Export to `plugins/Gloss/rigs/` |
+| Markers | World anchor and outline | Export to `plugins/Gloss/markers/` |
+| Zones | World bounds and outline | Export to `plugins/Gloss/zones/` |
 | Animations | Frames, timing, playback settings, and visibility | Animated text and [text animations](/gloss/07-emoji-text-animations) |
 | Scoreboards | Conditional presentations, title and line formats, update rates, and visibility | Sidebar and [scoreboards](/gloss/05-scoreboards-groups) |
 | Tablist | Header/footer rows, list-name presentations, selection, update rates, and root/channel visibility | Player list and [tablist](/gloss/06-tablist-motd) |

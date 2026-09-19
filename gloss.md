@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-18T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
@@ -18,7 +18,7 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
   <p>Edit menus, panels, holograms, scoreboards, and other Gloss documents with forms, JSON tools, and visual previews.</p>
   <nav class="volmit-headliner__actions" aria-label="Gloss web editor">
     <a href="https://gloss.volmitsoftware.com/">Open Gloss Editor</a>
-    <a href="/gloss/18-web-editor">Read the editor guide</a>
+    <a href="/gloss/18-web-editor-tutorial">Editor tutorial</a>
   </nav>
 </section>
 
@@ -38,6 +38,7 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 
 - [Velocity Proxy *Install proxy tablists, scoreboards, surfaces, connection messages, and MOTD management*](/gloss/27-velocity)
 - [Getting Started *Install Gloss and check the generated files*](/gloss/01-getting-started)
+- [Web editor tutorial *Open the editor and export a document*](/gloss/18-web-editor-tutorial)
 - [Configuration *Change feature switches and runtime settings*](/gloss/02-configuration)
 - [Commands & Permissions *Find commands and access nodes*](/gloss/17-commands-permissions)
 {.links-list}
@@ -69,6 +70,7 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 
 - [Data Files & Hot Reload](/gloss/03-data-files)
 - [Web Editor & Sync](/gloss/18-web-editor)
+- [Web editor tutorial](/gloss/18-web-editor-tutorial)
 - [Localization](/gloss/19-localization)
 - [Particle Layers](/gloss/25-particle-layers)
 {.links-list}
