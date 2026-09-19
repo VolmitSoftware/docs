@@ -2,7 +2,7 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
@@ -22,17 +22,11 @@ Related:
 
 ## What it does
 
-Iris builds the volumetric runtime once per engine, and only when at least one biome reachable from the dimension declares a profile with `enabled` true. With no such biome the runtime is never constructed and every terrain query answers exactly as before.
+With no biome declaring an enabled profile, nothing is built and every terrain query answers exactly as before.
 
-When it is active, each column is resolved like this:
+Where a profile is active, a signed displacement field and a signed fissure field push the solid/air boundary around the generator height, so one column can carry several `ceiling..floor` pairs. Solid mass that never connects to the ground and totals 512 blocks or fewer is dropped, which is what stops isolated rock floating in the air. The highest solid block of the resolved column becomes the natural terrain height; the unshaped generator height stays available on its own stream and is what the profile is evaluated against.
 
-1. The biome's blended generator height is sampled as the base height. That value stays available on its own stream, separate from the shaped height.
-2. The density base height, signed displacement field, and signed fissure field use the same four-block lattice: the surrounding grid corners in X and Z, and every fourth Y for the noise fields. The density base blends toward the interpolated anchor heights using the existing elevation and slope strength. This prevents individual base-height peaks from becoming tall, one-block-wide spires. The original generator-height stream remains unchanged.
-3. A column is solid at `y` when `densityHeight + 0.5 - y + displacement - fissure >= 0`. Crossings of that test become the span boundaries, so one column can carry many `ceiling..floor` pairs.
-4. Span components are flood-filled across the four cardinal neighbour columns. A component that never connects to a ground span and totals 512 blocks or fewer is dropped; a larger connected mass is kept. This is what stops isolated rock from floating in the air.
-5. The highest solid block of the resolved column becomes the natural terrain height.
-
-Shaping is bounded vertically. The sampled band starts at the higher of `floor(fluidHeight) + 1` and `floor(densityHeight - amplitude - crackDepth)`, and ends at the lower of `height - 1` and `ceil(densityHeight + amplitude)`. Nothing below the fluid line is touched, and a column whose band is empty is returned unshaped.
+Shaping is bounded vertically. **Nothing below the fluid line is touched**, and the sampled band never reaches above `densityHeight + amplitude` or below `densityHeight - amplitude - crackDepth`. A column whose band is empty is returned unshaped.
 
 Two gates fade the effect in rather than switching it on. Both use a smoothstep curve over the interval you configure, and they multiply:
 
@@ -41,11 +35,11 @@ Two gates fade the effect in rather than switching it on. Both use a smoothstep 
 | Elevation | Base height minus dimension fluid level minus `fluidClearance` | `fluidFade` blocks |
 | Slope | Base-terrain rise over run, taken four blocks east and four blocks south, minus `minimumSlope` | `slopeFade` |
 
-A profile with `minimumSlope` at `0` skips the slope gate entirely and keeps full strength. The elevation gate is applied twice: once per lattice anchor against the base height, and again per sampled Y so the field itself thins out toward the fluid line.
+A profile with `minimumSlope` at `0` skips the slope gate entirely and keeps full strength.
 
 ## The `terrain3D` object
 
-Add the object to a biome, or point the field at a snippet. Every numeric field is range-checked before the runtime compiles it, and a value outside its range is a blocking pack error rather than a clamp.
+Add the object to a biome, or point the field at a snippet. Every numeric field is range-checked before the runtime compiles it, and **a value outside its range is a blocking pack error rather than a clamp.**
 
 ```json
 {
@@ -85,9 +79,9 @@ Add the object to a biome, or point the field at a snippet. Every numeric field 
 | `fluidClearance` | double | `0`–`128` | `8` | Height above the dimension fluid level below which terrain stays solid and unchanged | — |
 | `fluidFade` | double | `1`–`128` | `24` | Vertical distance over which shaping grows from zero above `fluidClearance` | — |
 
-Fourteen fields in total. `amplitude` and `crackDepth` are interpolated between the four lattice anchors, so a biome without a profile contributes zero displacement at its own anchors and shaped terrain fades across the boundary instead of ending at a seam. When `amplitude + crackDepth` resolves to zero for a column, that column is returned unshaped.
+Fourteen fields in total. `amplitude` and `crackDepth` are interpolated between lattice anchors, so a biome without a profile contributes zero displacement at its own anchors and shaped terrain fades across the boundary instead of ending at a seam. When `amplitude + crackDepth` resolves to zero for a column, that column is returned unshaped.
 
-Both style fields accept the whole `IrisGeneratorStyle` shape — `style`, `zoom`, `multiplier`, `exponent`, `cellularFrequency`, `cellularZoom`, `cacheSize`, `expression`, `imageMap`, and a nested `fracture`. The two fields are seeded independently from the same profile seed, so changing `crackStyle` does not move the density shape.
+Both style fields accept the whole `IrisGeneratorStyle` shape — `style`, `zoom`, `multiplier`, `exponent`, `cellularFrequency`, `cellularZoom`, `cacheSize`, `expression`, `imageMap`, and a nested `fracture`. They are seeded independently from the same profile seed, so changing `crackStyle` does not move the density shape.
 
 ## Snippets
 
@@ -99,35 +93,31 @@ Both style fields accept the whole `IrisGeneratorStyle` shape — `style`, `zoom
 }
 ```
 
-The file is `<pack>/snippet/terrain-3d/cliff.json` and contains the profile object at the top level. Subfolders are allowed; the path in the reference is everything after `snippet/terrain-3d/`. The `densityStyle` and `crackStyle` fields inside it can themselves be `snippet/style/<key>` references, and those may nest further through `fracture`.
+The file is `<pack>/snippet/terrain-3d/cliff.json` and contains the profile object at the top level. Subfolders are allowed; the path in the reference is everything after `snippet/terrain-3d/`. The `densityStyle` and `crackStyle` fields inside it can themselves be `snippet/style/<key>` references, nesting further through `fracture`. Studio schema generation offers the field as an object-or-string `anyOf` with the string branch enumerating the snippet files that exist. See [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets).
 
-Studio schema generation emits `.iris/schema/snippet/terrain-3d-schema.json` and offers the field as an object-or-string `anyOf`, with the string branch enumerating the snippet files that currently exist. See [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets) for the resolution rules that apply to every snippet type.
-
-The modded `/iris studio package` export copies the entire `snippet/` tree, so terrain profiles and the style snippets they reference survive the export. The Bukkit `/iris pack package` compiler re-serializes the loaded object graph and inlines them instead.
+The modded `/iris studio package` export copies the entire `snippet/` tree so terrain profiles and the style snippets they reference survive; the Bukkit `/iris pack package` compiler inlines them instead.
 
 ## Interaction with the rest of the engine
 
-**Heights.** The shaped column top is reported as the natural terrain height. The unshaped generator height remains available as its own stream and is what the profile itself is evaluated against, which keeps the shaped height from feeding back into the field that produced it. Height queries still return one value per column, so a lower ledge under an overhang is not reachable through a height query — see [91 - API - Terrain](/iris/91-api-terrain).
+**Heights.** Height queries still return one value per column, so a lower ledge under an overhang is not reachable through a height query — see [91 - API - Terrain](/iris/91-api-terrain).
 
-**Terrain writing.** The normal terrain actuator walks the spans from the top down. Blocks in the gaps are written as air, and ores cannot claim those cells. Each exposed ledge floor restarts the layer stack with a fresh surface palette generated for that floor's own height. Under an overhang, the bottom two blocks of the covering span use the biome's `caveCeilingLayers`, falling back to dimension rock when the biome declares none. The top two blocks of a span always win, so a ledge two blocks thick keeps its surface layers rather than becoming a ceiling, and the lowest span in a column never takes ceiling layers.
+**Terrain writing.** Blocks in the gaps are written as air and ores cannot claim those cells. Each exposed ledge floor restarts the layer stack with a fresh surface palette generated for that floor's own height. Under an overhang, the bottom two blocks of the covering span use the biome's `caveCeilingLayers`, falling back to dimension rock when the biome declares none. The top two blocks of a span always win, so a ledge two blocks thick keeps its surface layers rather than becoming a ceiling, and the lowest span in a column never takes ceiling layers.
 
-**Slope.** Surface slope is measured between neighbouring ledge floors rather than off the flat heightmap: the nearest solid surface three blocks east and three blocks south of the ledge being generated. A steep upper cap therefore does not force a flat ledge below it to use steep-slope materials. Layer slope clips and decorator `slopeCondition` both read that per-ledge slope. Columns with no shaped span, and any Y that is not itself a span floor, fall back to the ordinary slope stream.
+**Slope.** Surface slope is measured between neighbouring ledge floors rather than off the flat heightmap, so a steep upper cap does not force a flat ledge below it to use steep-slope materials. Layer slope clips and decorator `slopeCondition` both read that per-ledge slope.
 
-**Decorators.** The decorant pass walks every span pair in the column. Where the floor is solid and there is at least one block of headroom, the surface decorator runs on that floor with the headroom as its available space; where the span above is solid, the ceiling decorator runs on its underside. See [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits).
+**Decorators.** Where a span floor is solid and has at least one block of headroom, the surface decorator runs on that floor with the headroom as its available space; where the span above is solid, the ceiling decorator runs on its underside. See [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits).
 
-**Caves.** Shaped openings are treated as surface, not cave. The carve modifier skips them so cave carving cannot widen or re-fill them, cave zone markers are suppressed inside them, and the boundary biome for such a column resolves from the surface biome stream instead of the cave biome resolver. This is independent of `carvingEnabled`; profiles add volume as well as remove it, and cave profiles then operate on the resulting terrain. See [15 - Caves & Carving](/iris/15-caves-carving).
+**Caves.** Shaped openings are treated as surface, not cave: cave carving cannot widen or re-fill them, cave zone markers are suppressed inside them, and the boundary biome resolves from the surface biome stream. This is independent of `carvingEnabled` — profiles add volume as well as remove it, and cave profiles then operate on the resulting terrain. See [15 - Caves & Carving](/iris/15-caves-carving).
 
-**Mantle and object placement.** Mantle carve queries and carved-column reads include shaped openings, so objects and structures see them as open space. Surface-solid checks across the normal, stacked and upper terrain paths fall back to terrain solidity when no boundary signature is resolved.
+**Mantle and object placement.** Mantle carve queries and carved-column reads include shaped openings, so objects and structures see them as open space. On a floating island, both the carve query and the surface-solid query are answered from the island's own solid mask rather than the terrain below it.
 
-**Floating islands.** When an object is placed on a floating island, both the carve query and the surface-solid query are answered from the island's own solid mask rather than the terrain below it.
+**Hydrology.** Where hydrology owns the terrain it keeps its continuous bed and no volumetric column is returned for that position. See [36 - Rivers](/iris/36-rivers).
 
-**Hydrology.** A river's planned surface now reports whether it owns a column. Where hydrology owns the terrain, it keeps its continuous bed and no volumetric column is returned for that position; where it does not, the cave voxel view consults natural terrain solidity instead. See [36 - Rivers](/iris/36-rivers).
-
-**Dimension stack and upper dimensions.** Each stacked layer and the referenced upper terrain carry their own column, so stack top heights, solidity and surface lookups follow the spans. Each exposed face draws its palette from its own source height and slope. Regions reachable only through an image map are enumerated when biomes are collected for stacked and upper terrain, and compat-excluded regions are skipped. See [11 - Dimensions](/iris/11-dimensions).
+**Dimension stack and upper dimensions.** Each stacked layer and the referenced upper terrain carry their own column, so stack top heights, solidity and surface lookups follow the spans, and each exposed face draws its palette from its own source height and slope. See [11 - Dimensions](/iris/11-dimensions).
 
 ## Validation
 
-`terrain3D` is validated as a blocking pack error by `PackValidator`, so a pack with a bad profile is not loadable and world and studio creation are refused. The validator reads `biomes/**.json` and every file under `snippet/terrain-3d/**.json` directly from disk, before any of it is deserialized.
+`terrain3D` is a blocking pack error, so a pack with a bad profile is not loadable and world and studio creation are refused. The validator reads `biomes/**.json` and every file under `snippet/terrain-3d/**.json` directly from disk before any of it is deserialized.
 
 | Error | Cause | Fix |
 |---|---|---|
@@ -135,7 +125,7 @@ The modded `/iris studio package` export copies the entire `snippet/` tree, so t
 | `… must be a JSON boolean.` | `enabled` given a non-boolean | Use `true` or `false` |
 | `… must be a finite JSON number.` | A numeric field given a string, object, or a non-finite value | Supply a plain finite number |
 | `… must be an integer in the signed 64-bit range.` | `seed` or a style `cacheSize` with a fractional or oversized value | Use a whole number that fits a signed 64-bit integer |
-| `… must be between <min> and <max>.` | A style number outside its range | Bring it into range; the style ranges are `exponent` `0.01562`–`64`, `cacheSize` `0`–`8192`, `cellularFrequency` `0` upward, and `0.00001` upward for `zoom`, `cellularZoom` and `multiplier` |
+| `… must be between <min> and <max>.` | A style number outside its range | The style ranges are `exponent` `0.01562`–`64`, `cacheSize` `0`–`8192`, `cellularFrequency` `0` upward, and `0.00001` upward for `zoom`, `cellularZoom` and `multiplier` |
 | `terrain3D.<field> must be finite and between <min> and <max>` | A profile number outside the range in the field table above | Bring it into range |
 | `… is not a generator style field.` | An unknown key inside `densityStyle` or `crackStyle` | Remove it; the accepted keys are `style`, `zoom`, `multiplier`, `exponent`, `cellularFrequency`, `cellularZoom`, `cacheSize`, `expression`, `imageMap`, `fracture`, `$schema` |
 | `… is not a known noise style.` | A `style` value that is not a `NoiseStyle` constant | Use a name from [45 - Noise Atlas](/iris/45-noise-atlas) |
@@ -148,7 +138,7 @@ The modded `/iris studio package` export copies the entire `snippet/` tree, so t
 | `… must contain a JSON object.` | A snippet file whose top-level value is an array, string or number | Wrap the profile in `{ }` |
 | `… contains unreadable JSON: …` | Malformed JSON or an unreadable file | Fix the syntax named in the message |
 
-A snippet reference written as `"snippet/cliff"` is rewritten to `snippet/terrain-3d/cliff` before resolution, so the short form and the full form both work for the profile field. Unknown-field and type errors are reported first; the profile is only deserialized and range-checked once those pass, so fix the reported errors and revalidate rather than expecting every problem in one run.
+A snippet reference written as `"snippet/cliff"` is rewritten to `snippet/terrain-3d/cliff` before resolution, so the short and full forms both work for the profile field. Unknown-field and type errors are reported first and the profile is only range-checked once those pass, so fix the reported errors and revalidate rather than expecting every problem in one run.
 
 Run the checks with `/iris pack validate <key>` and read the result as described in [25 - Pack Management](/iris/25-pack-management).
 
@@ -178,12 +168,6 @@ This biome uses a flat generator at Y 128. The profile adds ledges above that he
 
 ## Cost
 
-The runtime is built only when a profile is enabled, and the enabled check is per engine. Where it is active:
+The runtime is built only when a profile is enabled, per engine. Where it is active, density and fissure samples are taken on a four-block lattice in all three axes and interpolated, so the field is evaluated at roughly one sixty-fourth of the block count, and resolved columns are held in a bounded cache sized from `performance.noiseCacheSize`.
 
-- Density and fissure samples are taken on a four-block lattice in all three axes and interpolated, so the field is evaluated at roughly one sixty-fourth of the block count.
-- Resolved columns and lattice anchors are held in bounded caches, striped sixteen ways, with least-recently-used eviction per stripe. The column cache holds the larger of 4096 entries and the engine's noise cache size, which is `performance.noiseCacheSize` in a production world and a raised floor in a studio world; the anchor cache holds a quarter of that.
-- Each generation thread also memoizes its most recent column, so repeated queries against the same position on one thread skip the cache entirely. Clearing the runtime invalidates that reuse across all threads.
-- Anchor samples are stored per lattice Y and filled with a compare-and-set, so concurrent generation threads share work rather than duplicating it.
-- Larger `amplitude` and `crackDepth` values widen the sampled vertical band, which is the main lever on how much work a profile costs.
-
-Fragment removal walks at most 512 blocks of span per component before it stops and keeps the component, and it reuses per-thread scratch arrays, so the flood fill does not allocate per column.
+**Larger `amplitude` and `crackDepth` values widen the sampled vertical band, which is the main lever on how much a profile costs.**

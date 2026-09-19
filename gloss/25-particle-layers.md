@@ -2,7 +2,7 @@
 title: "Particle Layers"
 description: "Gloss documentation: particle geometry behind in-world displays"
 published: true
-date: 2026-09-10T22:05:44.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z
@@ -55,13 +55,14 @@ Moving without changing the player's look direction keeps the particle plane's o
 
 ## Emission
 
-Gloss tracks `emission.intervalTicks` separately for each particle source, viewer, and layer, starting from its last successful emission. The first eligible emission runs immediately. After a delayed or skipped update, a due layer emits once at the next eligible update, without replaying missed emissions. A layer that receives no particle budget remains due.
+Each layer emits on its own `emission.intervalTicks`, per viewer, with the first emission
+immediate. Missed emissions are never replayed. Geometry particles spawn with zero added speed, so
+Minecraft's own particle movement, lifetime and the client's particle setting still apply.
 
-Gloss spawns geometry particles with zero added speed. Minecraft still applies each particle's inherent movement and lifetime, and the client's particle setting still applies.
-
-Hot-loaded changes to `features.particles` or `text.functions` update the persistent-hologram driver without replacing existing displays when hologram settings stay unchanged.
-
-Documents allow up to 64 uniquely named layers. Increase `geometry.spacing` or `emission.intervalTicks` to reduce particle work. Gloss applies per-viewer and global particle budgets and the configured particle view range, independently of display view range. Particles a viewer's own quota clips stay in the shared per-tick pool for other viewers. Drop-label range is measured from the label's vertical offset.
+A document allows up to 64 uniquely named layers. Raise `geometry.spacing` or
+`emission.intervalTicks` to reduce particle work. Per-viewer and global particle budgets apply, as
+does the configured particle view range, which is independent of display view range. Drop-label
+range is measured from the label's vertical offset.
 
 ## Java API
 

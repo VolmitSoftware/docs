@@ -2,57 +2,11 @@
 title: "Wormholes"
 description: "Live portals, random teleport, Dimensional Doors, and cross-server travel"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-
-<style>
-.wh-media {
-  min-height: 9rem;
-  margin: 1.5rem 0 2.5rem;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  border: 1px dashed rgba(127, 127, 127, .5);
-  border-radius: 10px;
-  background: rgba(127, 127, 127, .045);
-  text-align: center;
-}
-
-.wh-media span {
-  max-width: 46rem;
-  line-height: 1.6;
-  opacity: .74;
-}
-
-.wh-media-grid {
-  margin: 1.5rem 0 2.5rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .85rem;
-}
-
-.wh-media-grid.three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.wh-media-grid .wh-media {
-  min-height: 11rem;
-  margin: 0;
-}
-
-@media (max-width: 760px) {
-  .wh-media-grid,
-  .wh-media-grid.three {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
 
 ![Wormholes](/home-assets/wormholes.png =112x){.align-center .radius-16}
 
@@ -63,11 +17,6 @@ Wormholes adds portals with live destination views, random teleportation, Dimens
 [Build a portal](/wormholes/03-building-portals) ·
 [Commands](/wormholes/09-commands-permissions)
 {.text-center}
-
-<div class="wh-media">
-  <strong>Media placeholder 1: Gameplay overview</strong>
-  <span>Short video or looping GIF approaching a portal, viewing the live destination, and walking through it.</span>
-</div>
 
 ## Start in three steps
 
@@ -91,44 +40,7 @@ Wormholes adds portals with live destination views, random teleportation, Dimens
 | Pocket dimension | Gives personal and public doors a managed room with a return exit | [Pocket dimensions](/wormholes/08-pocket-dimensions) |
 | Cross-server gateway | Shows a remote server destination and transfers travelers | [Cross-server networking](/wormholes/10-cross-server-networking) |
 
-## Portal controls
-
-Portal owners and administrators use the in-game menu to manage destinations, travel, projection, access, appearance, and costs.
-
-- Use the Portal Wand while looking at the portal.
-- You can also sneak, keep the main hand empty, and right-click the portal.
-- Start with [Portal menus and settings](/wormholes/04-portal-types-menus-settings)
-  for every available control.
-
-<div class="wh-media-grid">
-  <div class="wh-media">
-    <strong>Media placeholder 2: Portal home menu</strong>
-    <span>Screenshot showing the portal name, destination, type, projection, settings, and destroy controls.</span>
-  </div>
-  <div class="wh-media">
-    <strong>Media placeholder 3: Projection settings</strong>
-    <span>Screenshot or short GIF switching between Venticular and PanOptic, paired with the resulting in-world view.</span>
-  </div>
-</div>
-
-## Special portal systems
-
-Random teleport portals, Dimensional Doors, and gateways have their own setup screens.
-
-<div class="wh-media-grid three">
-  <div class="wh-media">
-    <strong>Media placeholder 4: Random teleport editor</strong>
-    <span>RTP overview and editor screenshots with world, radius, biome, landing, rotation, and ready state visible.</span>
-  </div>
-  <div class="wh-media">
-    <strong>Media placeholder 5: Dimensional Doors</strong>
-    <span>Short GIF showing placement, opening, entry, and return, plus a screenshot of the access menu.</span>
-  </div>
-  <div class="wh-media">
-    <strong>Media placeholder 6: Cross-server gateway</strong>
-    <span>Short video showing the remote destination, gateway crossing, and arrival on the linked server.</span>
-  </div>
-</div>
+To manage a portal, use the Portal Wand while looking at it, or sneak with an empty main hand and right-click it. Every control is on [Portal menus and settings](/wormholes/04-portal-types-menus-settings).
 
 ## Server setup
 

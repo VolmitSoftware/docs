@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Shores are not chosen by noise. After the height for a column is known, Iris com
 
 `shoreHeight` is per column. Noise is fitted between `shoreHeightMin` and `shoreHeightMax`. It is sampled at `x / shoreHeightZoom, z / shoreHeightZoom`. The beach is the vertical slice of the world from one block below the water line up to a few blocks above it. The width of the beach on the ground is however far that slice stretches across your terrain slope. Flat coastline plus a large `shoreHeightMax` gives wide beaches. A cliff gives almost none, because the slice is crossed in a block or two. Set `shoreMinimumWidth` above zero to buy the width back: the band then also climbs with the local slope, so the beach stays roughly that many blocks wide across the ground instead of collapsing on steep coast.
 
-The shore-height noise is seeded from the region name length, `landBiomeZoom` and the number of land biomes. It is not seeded from the world seed. If you rename a region or add a land biome, the shoreline wobble pattern changes.
+The shore-height noise is seeded from the region's name length, `landBiomeZoom`, and its number of land biomes — **not** from the world seed. Renaming a region or adding a land biome changes the shoreline wobble pattern.
 
 ## Walkthrough: add a region and prove it generates
 
@@ -225,9 +225,9 @@ Everything here applies anywhere this region is selected, on top of what the bio
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `objects` | `IrisObjectPlacement[]` | empty | `.iob` placements that should exist across the whole region rather than in one biome. Regional landmarks, scattered wrecks. Split at runtime into surface and carving sets by each placement `carvingSupport`. See [20 - Object Placement](/iris/20-object-placement). |
-| `proceduralObjects` | `IrisProceduralObjects` | empty | Trees, ruins, formations, coral, fungi and crystals generated from parameters rather than `.iob` files. See [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins). |
+| `proceduralObjects` | `IrisProceduralObjects` | empty | Trees, ruins, formations, coral, fungi and crystals generated from parameters rather than `.iob` files. See [17 - Procedural Objects](/iris/17-procedural-objects). |
 | `structures` | `IrisStructurePlacement[]` | empty | Jigsaw and native structure placements evaluated where this region owns the chunk center. Use this instead of copying a placement onto every biome in the region. See [21 - Jigsaw Structures](/iris/21-jigsaw-structures). |
-| `entitySpawners` | string[] | empty | `IrisSpawner` keys that keep replenishing mobs while a player is in this region. See [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers). |
+| `entitySpawners` | string[] | empty | `IrisSpawner` keys that keep replenishing mobs while a player is in this region. See [23b - Entities & Spawners](/iris/23b-entities-spawners). |
 | `effects` | `IrisEffect[]` | empty | Client-side ambience (potion effects, sounds, particles) delivered per player by packet. Use for regional mood. No two players see each other effects. |
 | `loot` | `IrisLootReference` | empty | Loot tables that apply to containers generated in this region. |
 | `blockDrops` | `IrisBlockDrops[]` | empty | Overrides what blocks drop when broken inside this region. |
@@ -262,10 +262,9 @@ Region keys listed by the bundled overworld dimension: `frozen`, `hot`, `terralo
 
 ## Resolution details worth knowing
 
-- `getAllBiomeIds()` is the union of the four lists. It is what the dimension uses to decide which biomes exist for a region.
-- Expanding a region to its full biome set walks each listed biome `children` and its `carvingBiome`. It then repeats until no new names appear. Cycles are safe. The walk stops when the pending name set empties.
-- Objects declared on the region are pre-split into a surface list and a carving list by each placement `carvingSupport`. A placement that only supports carving never gets evaluated on the surface.
-- Structure placements are gathered per chunk from the biome, the cave biome and the region at the chunk center (block `chunkX*16+8`, `chunkZ*16+8`), plus the dimension. Cave biomes contribute only placements whose resolved anchor is a cave anchor.
+- A region's full biome set is the union of its four lists, expanded through each biome's `children` and `carvingBiome`. Cycles are safe.
+- Objects declared on the region are split into a surface list and a carving list by each placement's `carvingSupport`, so a carving-only placement is never evaluated on the surface.
+- Structure placements are gathered per chunk from the biome, the cave biome, the region, and the dimension, all sampled at the chunk center (block `chunkX*16+8`, `chunkZ*16+8`). Cave biomes contribute only placements whose resolved anchor is a cave anchor.
 
 ## Common mistakes
 

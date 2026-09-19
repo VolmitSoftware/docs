@@ -2,7 +2,7 @@
 title: "Shaped Portals"
 description: "Build custom-shaped Nether and End portals and manage them in-game"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -18,10 +18,6 @@ dateCreated: 2026-08-27T00:00:00.000Z
       <a class="sp-primary" href="/shapedportals/00-overview#build-your-first-portal">Build your first portal</a>
       <a href="/shapedportals/01-installation-configuration">Install and configure</a>
     </nav>
-  </div>
-  <div class="sp-media" role="img" aria-label="Placeholder for a Shaped Portals gameplay video">
-    <strong>Gameplay video goes here</strong>
-    <span>Show an irregular frame being completed and used.</span>
   </div>
 </section>
 
@@ -41,38 +37,35 @@ dateCreated: 2026-08-27T00:00:00.000Z
   </div>
   <p class="sp-note"><strong>Shape, not routing.</strong> The plugin changes which portal frames can activate and keeps managed surfaces intact. Minecraft still handles travel and destination selection.</p>
 </section>
-
-<section class="sp-section" aria-labelledby="sp-guides">
-  <h2 id="sp-guides">Find what you need</h2>
-  <nav class="sp-guides" aria-label="Shaped Portals documentation">
-    <a href="/shapedportals/00-overview"><strong>Getting started</strong><span>Build either portal type and find the command and permission reference.</span></a>
-    <a href="/shapedportals/01-installation-configuration"><strong>Installation and configuration</strong><span>Install the plugin, use the settings menu, and change portal rules.</span></a>
-    <a href="/shapedportals/02-portal-behavior-events"><strong>Behavior and troubleshooting</strong><span>Learn how portals are saved, repaired, protected, and removed.</span></a>
-    <a href="/shapedportals/03-compatibility-operations"><strong>Compatibility and diagnostics</strong><span>Check server versions, Java requirements, Folia limits, and debug reports.</span></a>
-    <a href="/shapedportals/04-architecture-limits"><strong>Developer reference</strong><span>Read about geometry, events, persistence, threading, and builds.</span></a>
-  </nav>
-</section>
-
-<section class="sp-section" aria-labelledby="sp-media-plan">
-  <h2 id="sp-media-plan">In-game examples</h2>
-  <div class="sp-media-grid">
-    <div class="sp-media" role="img" aria-label="Placeholder for a Nether portal demonstration">
-      <strong>Nether portal GIF goes here</strong>
-      <span>Show an unusual frame being lit and entered.</span>
-    </div>
-    <div class="sp-media" role="img" aria-label="Placeholder for an End portal demonstration">
-      <strong>End portal GIF goes here</strong>
-      <span>Show the final eye activating a custom horizontal portal.</span>
-    </div>
-    <div class="sp-media" role="img" aria-label="Placeholder for a configuration menu screenshot">
-      <strong>Configuration menu image goes here</strong>
-      <span>Show the main <code>/sp config</code> screen.</span>
-    </div>
-  </div>
-</section>
-
-<footer class="sp-footer">
-  <div><strong>Commands</strong><span><code>/shapedportals</code>, <code>/shapedportal</code>, or <code>/sp</code></span></div>
-  <nav aria-label="Downloads and support"><a href="https://www.spigotmc.org/resources/shaped-portals.95595/">Download</a><a href="https://volmitsoftware.com/discord">Discord</a><a href="https://github.com/VolmitSoftware/ShapedPortals">GitHub</a></nav>
-</footer>
 </div>
+
+## At a glance
+
+| | |
+|---|---|
+| Server software | Spigot 1.20.1 or newer, including Paper and Folia |
+| Java | Whatever your server version needs: 17, 21, or 25 |
+| Main command | `/shapedportals` (`/shapedportal`, `/sp`) |
+| Config file | `plugins/ShapedPortals/config.toml` |
+| Portal records | `plugins/ShapedPortals/portals.json` |
+
+## Start here
+
+- [Getting started *Build either portal type, and the command and permission reference*](/shapedportals/00-overview)
+- [Installation and configuration *Install the plugin, use the settings menu, and change portal rules*](/shapedportals/01-installation-configuration)
+- [Portal behavior *How portals are saved, repaired, protected, and removed*](/shapedportals/02-portal-behavior-events)
+{.links-list}
+
+## Reference
+
+- [Compatibility and operations *Server versions, Java, Folia limits, and debug reports*](/shapedportals/03-compatibility-operations)
+- [Developer reference *Geometry, the registry, the Wormholes handoff, and builds*](/shapedportals/04-architecture-limits)
+- [Languages *Choosing a language and editing messages*](/languages)
+{.links-list}
+
+## Support
+
+- [Download *spigotmc.org*](https://www.spigotmc.org/resources/shaped-portals.95595/)
+- [Discord *Support and development chat*](https://volmitsoftware.com/discord)
+- [Source *github.com/VolmitSoftware/ShapedPortals*](https://github.com/VolmitSoftware/ShapedPortals)
+{.links-list}

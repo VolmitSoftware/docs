@@ -1,8 +1,8 @@
 ---
-title: 03 - Islands & Progression
+title: SkyPrime - Islands and progression
 description: Starter terrain, teams, protection, material value and internal credits
 published: true
-date: 2026-09-05T16:24:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: skyprime, islands, protection, progression
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -12,13 +12,13 @@ Each island reserves one cell in a shared grid and keeps the same UUID through o
 
 ## Create and settle
 
-Use `/sky create small`, `/sky create normal`, `/sky create big` or a custom starter ID from `/sky template list`. Operators can [capture starter bundles](/skyprime/06-starter-templates) with per-dimension terrain and supplies. SkyPrime reserves the cell and persists the creation operation before placing terrain. Generation applies a bounded number of blocks on the owning region thread and provides starter supplies. Creation finishes after the terrain is generated and the active state is persisted.
+Use `/sky create small`, `/sky create normal`, `/sky create big` or a custom starter ID from `/sky template list`. Operators can [capture starter bundles](/skyprime/06-starter-templates) with per-dimension terrain and supplies. You are teleported once the terrain is finished.
 
-Starter terrain varies deterministically with island identity, cell, size and dimension. Normal islands have irregular ground and undersides, limited ore resources, and varied trees, while retaining a clear home and starter chest. Retrying the same operation reproduces its terrain.
+Starter terrain varies with island identity, cell, size and dimension, so no two islands look the same. Normal islands get irregular ground and undersides, limited ore, and varied trees, plus a clear home spot and a starter chest.
 
-Players inside an active island see a personal world border aligned with its claim. It follows the current radius, including upgrades while standing still, and leaves the server world's border unchanged. Leaving the island restores the previous personal border when SkyPrime still controls it; another plugin's replacement border takes precedence.
+Inside an active island you see a personal world border matching its claim. It follows the current radius, including an upgrade bought while you stand there, and leaves the server world's own border alone. If another plugin sets your border, that one wins.
 
-`/sky home` uses the `main` home. Owners and managers can save additional named homes and a `visitor` home. Each home includes its dimension; home names are shared across the island's dimensions. Travel checks current access, island bounds, a safe standing position and warmup movement. A failed or cancelled teleport does not count as successful travel. Void rescue sends players to the configured fallback world's safe spawn.
+`/sky home` uses the `main` home. Owners and managers can save more named homes and a `visitor` home. A home remembers its dimension, and home names are shared across the island's dimensions. Falling into the void sends you to the fallback world's spawn.
 
 Reset rebuilds the island's terrain and homes but preserves membership, upgrades, bank credits, votes, trusted guests and mission progress/completions. Temporary guest access ends. The default reset policy allows ten replacements per owner, with a 24-hour wait after creation or the last reset. First creation is free; recreating an island after deletion consumes the same persistent replacement allowance and has its own 24-hour cooldown. Deleting an island does not erase owner history. The reset menu displays the remaining allowance and next availability time in UTC; the final admission checks the policy again. Players are evacuated before reset or deletion clears blocks. Deletion removes the island after clearing finishes; its grid cell is never assigned to a new island.
 
@@ -46,9 +46,9 @@ Only enabled island dimensions participate in island travel. A private island is
 
 ## Value, levels and generators
 
-`config/values.toml` assigns nonnegative values to blocks. A reconciliation captures chunk snapshots on their owning region, then counts their contents on a bounded worker. Subsequent changes mark affected chunks for coalesced reconciliation. Inventories and container contents do not contribute value.
+`config/values.toml` assigns a value to each block material. Items in chests and inventories are worth nothing; only placed blocks count.
 
-`/sky value` requests a full reconciliation of one island's claimed chunks. One value scan runs at a time, and requests for an island already scanning share its current operation. Rankings use cached island snapshots, ordered by value, votes, creation time and UUID. Level is integer island value divided by `runtime.levelDivisor`.
+`/sky value` recounts your island. One scan runs at a time. Rankings order islands by value, then votes, creation time and UUID. Level is the island's value divided by `runtime.levelDivisor`.
 
 In the Normal dimension, stone, cobblestone and basalt formation selects the highest level tier the island has reached, then advances by its purchased generator-tier boost, capped at the last configured tier. Each tier uses positive relative material weights. Outputs must be supported solid blocks without gravity. Invalid materials, empty tables and duplicate or invalid thresholds reject the configuration candidate. Nether and End formation does not use these generator tiers.
 
@@ -69,7 +69,7 @@ Daily periods begin at 00:00 UTC; weekly periods begin Monday at 00:00 UTC. Uncl
 | `KILL` | Credited mob kills inside the member's island |
 | `CRAFT` | Full recipe results collected by ordinary left-click; shift, right-click, hotbar and drop crafting are not counted |
 
-Generator provenance is an in-memory cache, bounded at 32,768 blocks. Chunk unload, restart, movement by piston and replacement clear eligibility. After a chunk reload, newly formed output qualifies again. Creative and spectator actions do not earn event progress.
+A generator block only counts toward a mission once. Blocks you placed, or moved with a piston, do not count, and neither does anything done in creative or spectator mode. Newly formed output qualifies again after its chunk reloads.
 
 The three initial checkpoints award 100, 250 and 500 credits. Five daily missions award a total of 1,400 credits when all are completed and claimed; five weekly missions award a total of 10,800 after their checkpoint prerequisites. Daily and weekly objectives may advance together. Defaults cover generator mining, wheat harvests, cod fishing, zombie kills and bread crafting. Operators can change targets, amounts, prerequisites and rewards in `config/missions.toml`.
 
@@ -86,6 +86,4 @@ Each track costs `baseCost × (current track level + 1)`. Only owners and manage
 
 Generator upgrades advance relative to the tier already earned from island level, clamped to the strongest configured tier. They do not change island value or leaderboard level. Settings live in `config/progression.toml`.
 
-Each island stores at most one vote per player UUID, and accepting votes requires public access. Team members cannot vote for their own island, and banned players cannot vote. Joining the team or being banned removes that player's vote; they can vote again if they later become eligible. Closing public access retains existing votes.
-
-`/sky chat` toggles a private channel for the accessible island currently occupied, or the player's own team when elsewhere. It reaches online teammates and visitors still on the island. `/sky chat <message>` sends one message, while `/sky chat off` returns to public chat. Visitors lose channel access when they leave; banned or removed players cannot keep receiving messages through a stale channel.
+An island takes one vote per player, and only while it is public. You cannot vote for your own island, and banned players cannot vote. Joining a team or being banned removes your vote there. Closing public access keeps the votes already cast.

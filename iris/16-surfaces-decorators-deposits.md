@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-15T12:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
-- [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
@@ -33,18 +33,7 @@ The terrain actuator walks each column downward from `max(fluidHeight, terrainHe
 
 Layers are therefore a *depth-indexed list*, not a set of absolute Y bands. The first layer covers the topmost block. The second covers whatever depth the first did not. And so on.
 
-Everything else lands in later stages. Using the `OVERWORLD` pipeline order:
-
-| Stage | What runs |
-|---|---|
-| 1 | biome actuator, mantle generation, **terrain actuator** (layers, sea layers, ores, rock) |
-| 2 | carve modifier — cave biome floor/ceiling/wall materials and cave decorators ([15 - Caves & Carving](/iris/15-caves-carving)) |
-| 3 | post modifier — biome `slab` and `wall` on surface terrain |
-| 4 | floating child biome solids |
-| 5 | **deposit modifier**, mantle object insertion, **surface decorator actuator** — these three run concurrently |
-| 6 | floating decoration, perfection, custom |
-
-Two consequences worth internalising. Deposits go in *after* caves are cut and skip any cell carrying a cavern mark. Veins never hang in open air. Decorators run after carving. A cave that broke the surface does not get flowers planted over the hole.
+Two consequences worth internalising. Deposits go in **after** caves are cut and skip any cell carrying a cavern mark, so veins never hang in open air. Decorators also run after carving, so a cave that broke the surface does not get flowers planted over the hole. Slabs and walls are painted between the two.
 
 A cold `derivative` tints grass and can freeze water. It does not stamp snow layers. Snow layers come from Iris decorators, object `snow`, or `importedFeatures` with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
@@ -52,9 +41,7 @@ A cold `derivative` tints grass and can freeze water. It does not stamp snow lay
 
 With biome [`terrain3D`](/iris/47-volumetric-terrain), the terrain actuator skips air gaps and restarts the layer stack at each exposed solid floor. Ores cannot claim the skipped cells. The bottom two blocks of an overhang use `caveCeilingLayers`, or dimension rock when those layers are absent, while retaining the top two blocks of thin ledges.
 
-The decorant pass walks every span pair in the column. Where a ledge floor is solid and at least one block of headroom is open above it, the surface decorator runs on that floor with the headroom as its space. Where the span above that gap is solid, the ceiling decorator runs on its underside, one block down from the covering span's base. Surface palettes come from the biome at that column. Trees, objects and structures retain their existing placement rules.
-
-Slope clips for lower-floor layers and decorator `slopeCondition` are evaluated against the slope of the ledge they sit on, not the column heightmap: the nearest solid surface three blocks east and three blocks south of that ledge. A steep upper cap does not make a flat lower ledge use steep-slope materials. Columns with no shaped span, and any Y that is not itself a span floor, fall back to the ordinary slope stream. These clips retain the existing three-block slope metric, separate from the density profile's rise/run gate.
+Every exposed ledge with headroom above it gets the ordinary surface decorator; the underside of the span covering that gap gets the ceiling decorator. Slope clips and decorator `slopeCondition` are evaluated against the slope of the ledge they sit on rather than the column heightmap, so a steep upper cap does not make a flat lower ledge use steep-slope materials.
 
 ## Walkthrough: a surface, a flower scatter, and an ore vein
 
@@ -143,7 +130,7 @@ Snippet key: `biome-palette`.
 
 Surface and locked layers check `slopeCondition` before sampling thickness noise. `caveCeilingLayers` ignores `slopeCondition`. Cave roofs have no meaningful slope.
 
-**`lockLayers` (mesa mode).** Iris samples the active layer thicknesses and maps the requested world-height positions into the resulting cycle. It resolves only the palette entries those positions use, and repeated cycles reuse the resolved blocks. Bands therefore stay at fixed world heights across the whole biome and line up horizontally into stripes. The stack repeats cyclically rather than running out. `lockLayersMax` limits how deep the banded region goes before the rock palette takes over. Cyclic indexing continues on both sides of the internal Y512 reference, including terrain above that height.
+**`lockLayers` (mesa mode).** Bands are keyed to world height instead of depth below the surface, so they stay at fixed heights across the whole biome and line up horizontally into stripes. The stack repeats cyclically rather than running out, and `lockLayersMax` limits how deep the banded region goes before the rock palette takes over.
 
 ### Material palette (`IrisMaterialPalette`)
 
@@ -238,11 +225,7 @@ The block is written one above the surface block (`height + 1`), and only into a
 
 By default the surface block must have a sturdy full up-face and satisfy the placed block platform support rule. For example, cactus accepts sand, red sand, or another cactus, but not stone. `forcePlace: true` skips that test entirely. `forceBlock` replaces the surface block with the given block first and implies `forcePlace`. When not force-placing, `whitelist` and `blacklist` are matched against the surface block. An explicitly empty `whitelist` matches nothing and blocks all placement. Omit the field rather than setting it to `[]`.
 
-Vines get their attachment faces recomputed against surrounding blocks. Stacked weeping and twisting vines use the corresponding `_plant` state for their body and retain one vine tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` receive native direction and taper states for both single decorations and stacks. One-block spikes are tips; two-block spikes are frustum plus tip; longer columns add base and middle segments. Placement stops at occupied blocks and world bounds, then rebuilds the taper using the actual length. Adjacent opposing tips of the same material become `tip_merge`; sulfur and dripstone do not merge with each other.
-
-Spikes require a full sturdy support face in their growth direction or another matching spike behind them, including when force-placed. Ceiling spikes check the underside of the ceiling. Stacked floor and ceiling decorators honor surface whitelists and blacklists. Authored waterlogging is preserved, and spikes replacing water in an underwater decoration are waterlogged automatically; spikes never replace lava. Cave decoration still skips fluid targets. After objects and pools are inserted, the final cleanup removes unsupported spike chains, restores water from waterlogged segments, and normalizes surviving tapers and merged tips. Exposed tips receive native post-load updates on Bukkit and modded platforms. Sulfur spikes require Minecraft 26.2.
-
-Sea-floor and sea-surface stacks apply `absoluteMaxStack` when `scaleStack` is enabled. Both stay inside the available height and output bounds. An unresolved sea-floor palette entry leaves the existing block intact and ends the stack.
+Vines get their attachment faces recomputed, and stacked weeping and twisting vines use the matching `_plant` state for their body with one tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` get correct direction and taper states for both single decorations and stacks, and adjacent opposing tips of the same material become `tip_merge` (sulfur and dripstone never merge with each other). Spikes require a full sturdy support face in their growth direction or another matching spike behind them, **even when force-placed**. They are waterlogged automatically when they replace water and never replace lava. Sulfur spikes require Minecraft 26.2.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
@@ -334,7 +317,7 @@ Weighting air into the palette is a useful trick. The column still wins the buck
 
 Snippet key: `deposit`. Declared on **dimension**, **region**, and **biome**. All three lists run. Biome deposits add to regional and global ones rather than replacing them.
 
-Clump preparation can run in parallel, retaining at most 32 prepared clumps before placement. All configured attempts still run. Placement follows dimension, region, then biome order, preserving each list's configured order. Each later deposit checks the host blocks left by earlier deposits. Worker completion order does not decide which overlapping deposit wins. A preparation failure aborts the chunk after all submitted workers finish. Iris retains the original failure and concurrent causes instead of completing the chunk with a missing deposit batch.
+Placement follows dimension, region, then biome order, preserving each list's configured order, and each later deposit sees the host blocks left by earlier ones.
 
 ### What a deposit actually does
 
@@ -346,7 +329,7 @@ For each generator, once per chunk:
 4. Pick a random position in the chunk and sample the center Y using `heightDistribution`.
 5. Apply the placement scope, biome filter, host-block filter and air-exposure rule while stamping the clump.
 
-A block is written only when the target is solid host rock. It must not be air, fluid, or a cavern mark, and it must be inside the selected placement scope. Buried and cave-wall candidates use `replaceableBlocks`. When an ore candidate occupies the terrain top or touches exterior ordinary air, `surfaceReplaceableBlocks` replaces that buried-host rule. `minecraft:cave_air` does not identify a terrain surface, so cave walls retain the normal host rules. The surface biome at each candidate may replace the deposit's surface list through `surfaceOreReplaceableBlocks`. Unless `replaceBedrock` is set, the target must not be bedrock. Deposits therefore never overwrite cave air or water. `ABOVE_TERRAIN` still requires an existing solid host. It can mineralize a floating island without creating a floating ore block.
+A block is written only when the target is solid host rock inside the selected placement scope — never air, fluid, or a cavern mark, and never bedrock unless `replaceBedrock` is set. Buried and cave-wall candidates use `replaceableBlocks`; an ore candidate at the terrain top or touching exterior air uses `surfaceReplaceableBlocks` instead, which the surface biome can override through `surfaceOreReplaceableBlocks`. Cave walls keep the normal host rules. `ABOVE_TERRAIN` still requires an existing solid host, so it can mineralize a floating island without creating a floating ore block.
 
 **Legacy depth limits remain the default.** `placementScope: TERRAIN`, `heightDistribution: CLIPPED_UNIFORM` and `surfaceClearance: 7` preserve the old behavior. The center band is clipped to terrain and individual cells stay below their column surface limit. Vanilla-like definitions normally use `UNIFORM` or `TRIANGLE` with clearance `0`. Those sample the authored band before rejecting out-of-world cells. A distribution can taper naturally into the build floor.
 
@@ -444,7 +427,7 @@ Do these one at a time, on a focused biome that already produces correct height.
 
 ## Practical notes
 
-- Decorators place blocks only. Trees, boulders, and structures come from object placements ([20 - Object Placement](/iris/20-object-placement)) and procedural objects ([17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)).
+- Decorators place blocks only. Trees, boulders, and structures come from object placements ([20 - Object Placement](/iris/20-object-placement)) and procedural objects ([17 - Procedural Objects](/iris/17-procedural-objects)).
 - One decorator per `partOf` bucket places per column. More decorators in a bucket means each appears less often, not more total coverage.
 - Deposit `varience` is not `variance`. Generator styles use `multiplicitive`, not `multiplicative`. Both spellings are the actual field names.
 - Deposit palettes ignore `weight`. Every other palette in the pack honors it.

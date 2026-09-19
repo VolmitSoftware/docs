@@ -2,7 +2,7 @@
 title: "Protection & Region Policy"
 description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -67,7 +67,7 @@ The prune only fires when the bonus actually went down and the player no longer 
 
 Give it a set of adaptation registry ids, or the single entry `*` for every registered adaptation. Values are trimmed and lowercased. The union of every applicable region's set is used.
 
-On the one-second tick, Adapt walks each named adaptation the player currently has at level 0. It checks that the adaptation and its skill are both enabled and that the skill line exists. Then it grants the adaptation at level 1 through the normal `setAdaptation` path. Attributes apply, the learned index updates, and the adaptation becomes active. This bypasses the learning transaction: there is no knowledge cost, Vault charge, or refund receipt. The `PlayerAdaptation` is stamped `regionGranted`.
+Inside the region, each listed adaptation is granted at level 1 within a second, as long as it and its skill are enabled. It is free — no knowledge cost, no Vault charge, no refund receipt — and it is marked `regionGranted`.
 
 Grants are free in every sense. Used power skips region-granted adaptations and so does the power-budget pruner. A wildcard region cannot bankrupt a player's power budget.
 
@@ -77,7 +77,7 @@ An adaptation the player learned normally is never marked `regionGranted`. It is
 
 Buying a region-granted adaptation makes it permanently yours, at the full price from zero.
 
-The learning transaction reads `paidLevel = 0` when the current level is region-granted, rather than the actual level. So the knowledge and power cost is computed from level 0 to the target. The free level 1 is charged for. Learning to level 1 is a real purchase rather than a no-op. On success the `regionGranted` marker is cleared. The adaptation now consumes power and survives leaving the region, quitting, and reloading. If the transaction throws, the marker is restored along with the previous level.
+Buying a region-granted adaptation for real is priced from level 0, so you pay for the free level 1 too. Once bought it costs power and it survives leaving the region, quitting and reloading. A failed purchase leaves you exactly as you were.
 
 Unlearning is symmetric. `paidLevel = 0` for a region-granted adaptation. The refund floor is `0`. No knowledge or currency comes back for a level that was never paid for. A player-initiated unlearn of a still-granted adaptation is allowed. It re-grants on the next tick while they remain inside.
 
@@ -103,17 +103,19 @@ An override cannot activate a protector whose plugin was absent when Adapt enabl
 
 ## Bukkit action-event checks
 
-Adapt asks Bukkit listeners for permission before it performs container and item work that vanilla would normally route through a player event. These marked checks supplement the active protector set rather than replacing it. WorldGuard's Adapt-specific flag and per-adaptation protector overrides still apply.
+Adapt asks other plugins for permission before it performs container and item work that vanilla
+would normally route through a player event, so an event-driven protection plugin can deny the same
+action without implementing anything Adapt-specific. Which features dispatch which events is in
+[46 - API - Protection](/adapt/46-api-protection#bukkit-checks-adapt-dispatches).
 
-Adapt's own gameplay handlers ignore marked interaction, break, and place authorization checks to prevent recursive activation. Pickup handlers and other plugins receive the ordinary Bukkit events.
+Adapt ignores its own marked checks so an adaptation cannot trigger itself. Other plugins receive the ordinary Bukkit events.
 
-A marked interaction asks listeners whether the action is allowed. It does not execute vanilla block use. Remote inventories therefore do not simulate reach, obstructed-chest, spectator, or vanilla `Lockable` key behavior. Use a supported protection plugin when those rules must govern remote access.
+A marked interaction asks other plugins whether the action is allowed. It does not perform the vanilla block use itself. Remote inventories therefore do not simulate reach, obstructed-chest, spectator, or vanilla `Lockable` key behavior. Use a supported protection plugin when those rules must govern remote access.
 
 ## Failure behavior
 
-The first `Throwable` out of the WorldGuard query quarantines the source permanently for the session. One warning is logged with the stack trace. Every later lookup returns the default policy without calling WorldGuard again. Only a plugin reload reinstalls the source.
-
-Quarantine is safe by construction. The default policy grants nothing. The next tick revokes outstanding grants and zeroes the power bonus.
+If WorldGuard errors, Adapt stops using its region flags for the rest of the session and falls back
+to the default policy, which grants nothing. The next tick revokes anything it had granted.
 
 ## Reference
 
@@ -133,26 +135,10 @@ A non-finite multiplier resolves to `1.0`. Max power itself floors at `0`. A lar
 maxPower = max(0, (int)(masterLevel * powerPerLevel) + regionPowerBonus)
 ```
 
-### XP entry points and region policy
-
-| Entry point | Carries a location | Region policy applies |
-|---|---|---|
-| `Skill.xp(player, ...)` | yes, the player's own position | yes |
-| `Skill.xp(player, at, ...)` / `xpS(player, at, ...)` | yes, the given position | yes |
-| `Skill.xpSilent(player, xp)` | no | no |
-| `Skill.xp(at, xp, rad, duration)` spatial pulses | the pulse has one, the award does not use it | no |
-
 ### Region-grant lifecycle
 
-| Event | Result |
-|---|---|
-| Tick inside a qualifying region | Missing grants are created. Existing ones are left untouched |
-| Tick where the flag no longer names it | Revoked via `setAdaptation(..., 0)`, which strips its attribute modifiers |
-| Policy source faults and quarantines | Policy falls back to default, so the next tick revokes everything and zeroes the power bonus |
-| Player quits | `AdaptPlayer.unregister` strips every region-granted adaptation and zeroes the power bonus before saving |
-| Player data loads | `PlayerData.fromJson` sweeps every `regionGranted` entry out |
-
-The marker lives in the adaptation's storage map, which is serialized. The quit strip and the load sweep are two independent guards. A crash between them cannot leak a temporary grant into permanent data.
+A region grant disappears when you leave the region, when you quit, and again when your profile
+loads. It can never become permanent, and it never costs power.
 
 ### Default policy triggers
 
@@ -161,40 +147,8 @@ The marker lives in the adaptation's storage map, which is serialized. The quit 
 | No installed policy source | Default policy |
 | Missing player or missing location | Default policy |
 | `protectorSupport.worldguard = false` | Default policy |
-| Folia lookup for a player not owned by the calling region thread | Default policy |
+| Folia cannot resolve the player's region in time | Default policy |
 | Source quarantined | Default policy, WorldGuard not called again |
-
-### Console messages
-
-That one flag is disabled for the session:
-
-```
-WorldGuard flag <name> is owned by another plugin with a different type; Adapt will not use it.
-```
-
-Falling back to reflection injection:
-
-```
-WorldGuard flag <name> was not registered in time. Injecting it now...
-```
-
-Injection failed. The flag is unavailable:
-
-```
-Failed to inject WorldGuard flag <name>: <type> - <message>
-```
-
-Source quarantined for the session:
-
-```
-Region policy source WorldGuard failed; Adapt region flags are now inert: <type> - <message>
-```
-
-`protectionOverrides` named a protector that is not registered:
-
-```
-Could not find protector <name> for adaptation <id>. Skipping...
-```
 
 ### Protector settings
 
@@ -222,29 +176,11 @@ The WorldGuard protector maps its checks onto stock WorldGuard flags. Every one 
 | `canInteract` | `use-adaptations` + `INTERACT` |
 | `canAccessChest` | `use-adaptations` + `CHEST_ACCESS` |
 
-### Marked Bukkit checks by feature
-
-| Feature | Events dispatched |
-|---|---|
-| Rift Access and deferred Rift Conduit actions | Marked `RIGHT_CLICK_BLOCK` for every physical container block, including both halves of a double chest. Refused when a listener denies block use |
-| Initial Rift Conduit gesture | Uses its real clicked-block event and probes any other physical half |
-| Indirect item-entity transfers | `PlayerAttemptPickupItemEvent` first on Paper. When capacity allows, `PlayerPickupItemEvent` then `EntityPickupItemEvent` on both Paper and Spigot |
-| Veinminer | Waits for the original block to finish breaking, then uses the player's native break action for every sibling |
-| Time In A Bottle | Plans a sapling tree without changing the world, authorizes the complete footprint, then fires `StructureGrowEvent` before generation |
-| Chronos crop acceleration, Compost Cascade, Builders Wand, Magic Foundation, Seed Sower, Coral Gardener | Marked `BlockBreakEvent` or `BlockPlaceEvent` authorization checks as applicable, before committing |
-| Deconstruction | The normal pickup-event sequence before it replaces a dropped item |
-
-Cancellation stops the transfer and leaves the entity or block drop in its normal world path.
-
 ### Folia constraints
 
-| Situation | Behavior |
-|---|---|
-| Marked player event | Dispatched only while the player and every target block or item share the current owning region |
-| Indirect actions without established ownership | Fail closed, so deferred Rift Conduit binds and flows do not cross Folia regions or worlds |
-| Air-click ray-target variants | Disabled, because resolving a ray across a region boundary is not owner-thread safe. Direct block-click variants remain available |
-| Nearby-entity adaptations | Run their query only when the complete horizontal search footprint belongs to the current region |
-| Region policy lookup off the owning thread | Resolves to the default policy rather than crossing threads |
+On Folia, an adaptation whose targets span more than one region is skipped rather than crossing it,
+and air-click variants that resolve a target by ray trace are disabled. Direct block clicks still
+work.
 
 ## See also
 

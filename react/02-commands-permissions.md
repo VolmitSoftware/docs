@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,11 +63,15 @@ Every `/react language ...` form also accepts `/react languages ...`, including 
 
 Configuration and language changes apply automatically after their files are saved. See [Installation & Configuration](/react/01-installation-configuration) for live settings and the JVM instrumentation restart requirement.
 
-Distance values must be from `2` through `32`. Player settings and server/world/player send distance also accept `-1` to inherit their parent setting. The server scope changes every currently loaded world; server configuration remains authoritative for worlds loaded later. Players may omit a world or player target to use themselves or their current world; console must name targets for those two scopes. Client-selected view distance is read-only, and the retired no-tick name is the same setting as view distance. An enabled `dynamic-view-distance` feature can later govern world view and simulation values, while `afk-view-shedding` can govern player send distance.
+Distance values are `2` to `32`. Player and send-distance settings also accept `-1` to inherit
+their parent. The server scope changes every loaded world; worlds loaded later use the server
+configuration. Players may omit the world or player argument to mean themselves; console must name
+a target. An enabled `dynamic-view-distance` can later govern world view and simulation values, and
+`afk-view-shedding` can govern player send distance.
 
 `/react monitoring-only` does not rewrite any feature or tweak TOML. The state remains active through automatic configuration updates in the current server process and resets on a full restart. Running the command again restores every feature and tweak currently allowed by its configuration and capability gates; config edits made while the mode is active take effect during that reconciliation.
 
-`/volmit plugins languages [locale]` manages the server default for every enabled Volmit language provider. It keeps personal choices and offers only shared locales. See [Localization](/react/13-localization).
+See [Languages](/languages).
 
 ## Diagnostic reports
 
@@ -172,7 +176,10 @@ Omitting `role` creates a viewer token. Available roles are `viewer`, `operator`
 | `operator` | `read`, `op:execute` |
 | `admin` | `read`, `op:execute`, `admin`, `console:read`, `console:execute` |
 
-Only admin tokens can read the full server-console tail/stream, execute a console command, list teleportable online players, or queue a heatmap teleport through the API. Viewer and operator sessions can still select a heatmap square and copy its browser-local `world X Z` position; they receive no player list or teleport control. Every accepted Web mutation writes to `plugins/React/web/audit.log` and sends online operators a localized chat summary naming the signed token label, role, token ID, and changed target without exposing submitted values or console arguments. Rejected, rolled-back, and undispatched requests produce no success notice; a player-teleport notice records queue acceptance rather than eventual teleport completion.
+Only admin tokens can read the console, run a console command, or teleport a player. Viewer and
+operator sessions can select a heatmap square and copy its coordinates but get no player list or
+teleport control. Every accepted change is written to `plugins/React/web/audit.log` and announced to
+online operators with the token label, role, and what changed.
 
 ## Shorthand commands (tweak `shorthands`)
 

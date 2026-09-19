@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "Event and NMS tweaks with configuration defaults"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -129,7 +129,9 @@ This tweak short-circuits snow form and fade into `FastWorld` set and break.
 
 ### `hopper-index`
 
-This tweak pre-ticks hoppers using `FeatureHopperItemIndex` to short-circuit vanilla AABB scans. A rotating cursor inspects at most 64 item-bearing chunks across all worlds per tick by default, caches each world's chunk snapshot until that rotation is exhausted, and permits only one in-flight pickup task per chunk until that task completes, is rejected, or the tweak lifecycle resets. Hopper chunks adjacent to an item-bearing chunk are included when an edge pickup box crosses the chunk boundary. Each task resolves an indexed item once, maps it into only the geometrically reachable hopper pickup cells, rechecks the exact pickup boundary, and preserves hopper scan order when pickup areas overlap. Dense-chunk candidate work therefore follows reachable pickup pairs instead of multiplying every hopper by every item. Optional idle empty-hopper cooldown stretch is spread across the index, hard-capped at 256 probes per tick, and clamped below the probe interval so each hopper reaches vanilla's zero-cooldown path before React can stretch it again. **Fail-closed** without NMS bridges.
+Speeds up hoppers by keeping an index of nearby items instead of scanning for them every tick. Idle empty hoppers can also have their cooldown stretched under load.
+
+**Fail-closed** without NMS bridges: with no bridge available it does nothing rather than falling back to a slower path.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -228,7 +230,7 @@ This tweak cancels spawner and trial-spawner creature spawns when no player is w
 
 ### `vehicle-idle-brake`
 
-This tweak zeroes velocity on distant empty minecarts and boats. Evaluations are single-flight and use one rotating aggregate vehicle budget across all worlds. Paper consumes a bounded weak vehicle index populated by EntityController sampling instead of materializing every vehicle in each world. Folia rotates unique player anchors, de-duplicates vehicles seen by overlapping anchors, and applies changes only from the current activation on the owning region.
+Zeroes the velocity of distant empty minecarts and boats so they stop drifting.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

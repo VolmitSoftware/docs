@@ -2,17 +2,26 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-09-11T00:00:46.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
 ---
 
-Gloss shows segmented health above nearby living entities by default. Named entities show their custom name above the bar. Attack damage and armor appear on the last line.
+Gloss shows segmented health above nearby living entities by default.
 
 ## Default behavior
 
-The display follows the entity and uses Gloss's temporary hologram engine. One display per entity is shared by every viewer in range; rows whose values differ per viewer, such as Insight or a viewer's own recent hits, render for that viewer alone. Each viewer sees the nearest entities within their configured range, excluding themselves, invisible entities, and spectators, up to the per-viewer and server-wide limits. Gloss excludes armor stands by default. Entity death, unloading, player disconnects, and world changes remove the applicable displays. On Folia an overlay can appear one refresh interval after the viewer comes into range.
+**What you see.** A pane that follows the entity, with segmented health and, on a named entity, its
+custom name above the bar. Attack damage and armor appear on the last line.
+
+**Who sees it.** Each viewer sees the nearest entities within `range`, up to `maxEntitiesPerViewer`
+and `maxActiveOverlays`. One display per entity is shared by everyone in range, except rows whose
+values differ per viewer, such as Insight or that viewer's own recent hits.
+
+**What is excluded.** The viewer themselves, invisible entities, spectators, armor stands by default,
+and anything in `blacklistWorlds` or `excludedEntityTypes`. Death, chunk unloading, disconnects and
+world changes remove the display.
 
 The health bar uses ten segments. A living entity retains at least one filled segment. Green means at least half health, yellow means at least one quarter, and red means less than one quarter. Empty segments are dark gray. A hit updates health, briefly marks lost segments red, and adds the damage amount. Healing updates the bar on the next refresh.
 
@@ -75,9 +84,9 @@ For example, this layout puts combat statistics above health and adds a conditio
 
 ## Style and decorations
 
-`style` uses the same fields as Gloss text icons: billboard, text alignment, background ARGB, opacity, shadow, see-through, line width, block and sky light, view range, shadow radius and strength, culling dimensions, glow color, and independent X/Y/Z scale. Supply block and sky light together. Center billboard keeps the default pane facing its viewer.
-
-Enable `box` for an automatically sized panel behind the text. Padding and border width are measured in Minecraft text pixels. The complete border surrounds the panel on every side and follows the same movement, scale, orientation, and visibility as the pane. Background and border parts stay behind the foreground text after rotation and scaling, preserving the colors of health bars and other text.
+`style` and `box` are the shared display contract documented on
+[Icons](/gloss/11-icons#display-style-and-boxes). The overlay default is a center billboard at `0.75`
+on each scale axis, with the box disabled.
 
 ```json
 "box": {
@@ -89,7 +98,9 @@ Enable `box` for an automatically sized panel behind the text. Padding and borde
 }
 ```
 
-Padding accepts `0` to `64`; border width accepts `0` to `16`. Colors use `#AARRGGBB`. A zero border width leaves the panel background. With no visible content, Gloss removes both the text and its decorations.
+The box follows the pane's movement, scale, orientation and visibility, and stays behind the
+foreground text so health-bar colors survive rotation and scaling. With no visible content, Gloss
+removes the text and its decorations together.
 
 `particleLayers` uses the shared particle contract. Target the pane, a rendered line, or a named `<particles:name>text</particles>` span. Particle emission remains subject to Gloss's normal feature switches and budgets. See [Particles](/gloss/25-particle-layers).
 
@@ -105,10 +116,12 @@ By default, players who learn Discovery Insight get extra information when they 
 
 Set `restrictGlossToInsight = true` in Adapt's Discovery Insight adaptation configuration to restrict Gloss overlays to learned Insight viewers and their current eligible target. This option is false by default. React counts remain part of eligible displays. The restriction does not enable a disabled Gloss overlay document. Disabling Adapt releases its restriction.
 
-Adapt owns learning, target selection, range, and XP. Its selected target can appear beyond the ordinary overlay radius. Gloss owns rendering, health segments, name placement, hit updates, and combat statistics. The hologram engine's `viewRange` also limits display visibility. See [Adapt Discovery](/adapt/18-skill-discovery).
+An Insight target can appear beyond the ordinary overlay radius, and the hologram engine's
+`viewRange` still limits visibility. See [Adapt Discovery](/adapt/18-skill-discovery).
 
 ## Web editor
 
-The HUI editor provides ordered rows, text formatting, show expressions, full display styling, box decorations, and particle controls. Its sample preview can show damage, a named entity, a React stack, and Adapt Insight with or without the exclusive restriction, against a textured rig where the sample entity has one and a catalog sprite otherwise, over the same rendered world every stage shares. Sample controls do not change Adapt or React configuration.
-
-Import, export, undo, and live sync use the singleton ID `default`. The exported server path is `entity-overlays/default.json`. Check text size and placement in a Minecraft client. A browser preview does not reproduce the client renderer.
+Import, export, undo and live sync use the singleton id `default`, exported to
+`entity-overlays/default.json`. Sample controls change the preview only, never Adapt or React
+configuration. Check text size and placement in a Minecraft client — the browser preview does not
+reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).

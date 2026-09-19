@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -29,7 +29,7 @@ Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, V
 2. Start the server. Gloss creates `plugins/Gloss/` and its default files.
 3. Edit `gloss.toml`. A save reloads Gloss in place.
 
-Gloss downloads external libraries, including bStats, before plugin enable. The first start needs access to the library repositories. SlimJar keeps original and relocated libraries under `plugins/Gloss/.libs/` for later starts.
+The first start needs internet access to download Gloss's own libraries.
 
 ## What the first boot creates
 
@@ -88,41 +88,21 @@ Gloss extracts a bundled default only when its target file is missing. Existing 
 | `tablist.json` | one singleton document | `[features] tablist` |
 | `motd.json` | one singleton document | `[features] motd` |
 
-Enabling a document-backed feature extracts its defaults on reload. Enabling `previews` requires a restart before `previews/` appears.
-
-Gloss does not create default holograms, panels, or images. Reset commands are listed on [Data Files & Hot Reload](/gloss/03-data-files).
+Enabling a document-backed feature extracts its defaults on reload; `previews` needs a restart before `previews/` appears. Gloss creates no default holograms, panels or images. Document paths, schema versions and reset commands are on [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Feature toggles
 
-The `[features]` table in `gloss.toml` controls each subsystem. Most changes apply on reload. Enabling `panels` or `previews` after startup requires a restart.
-
-| Key | Default | Gates |
-|---|---|---|
-| `holograms` | `true` | The hologram engine |
-| `boards` | `true` | Scoreboard sidebars |
-| `tablist` | `true` | Tablist header/footer and list-name management |
-| `emoji` | `true` | Emoji replacement in chat and rendered content |
-| `animations` | `true` | Text animations |
-| `chatBubbles` | `true` | Chat bubbles above players |
-| `damageIndicators` | `true` | Floating damage and heal indicators |
-| `drops` | `true` | Custom names on dropped item stacks |
-| `realDrops` | `true` | Display-backed dropped-item models, motion and labels |
-| `menus` | `true` | Holographic menus |
-| `panels` | `true` | World-anchored panels |
-| `previews` | `true` | Look-at container previews |
-| `motd` | `false` | The custom server list MOTD |
-
-`motd` is the only feature disabled by default. See [Tablist & Server List MOTD](/gloss/06-tablist-motd) before enabling it alongside another MOTD plugin.
+The `[features]` table in `gloss.toml` switches each subsystem on or off. `motd` and `connections`
+are the only features off by default, and enabling `panels` or `previews` after startup requires a
+restart. The full table is on [Configuration](/gloss/02-configuration). Read
+[Server List MOTD](/gloss/06b-server-list-motd) before enabling `motd` alongside another MOTD
+plugin.
 
 ## Coming from HoloUi
 
-On first boot, Gloss can import menus, images, panels, preview definitions, preview scales and settings from `plugins/holoui` or `plugins/HoloUi`. It does not change the source folder or copy session secrets. The one-time result is recorded in `holoui-import.json`.
+On first boot, Gloss can import menus, images, panels, preview definitions, preview scales and settings from `plugins/holoui` or `plugins/HoloUi`. It does not change the source folder or copy session secrets.
 
-Use `/gloss`, `gloss.*`, and `%gloss_*%` instead of the old HoloUI names. HoloUI boards are called panels; Gloss uses "board" for scoreboards. See [Data Files & Hot Reload](/gloss/03-data-files).
-
-## Current conditional document versions
-
-Holograms use schema 3. Boards, tablist, and entity overlays use schema 2. Bubble styles use schema 5. Damage indicators and Real Drops use schema 4. See [Data Files & Hot Reload](/gloss/03-data-files) for document paths and [Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents) for conditions.
+Use `/gloss`, `gloss.*` and `%gloss_*%` instead of the old HoloUi names. HoloUi boards are called panels; Gloss uses "board" for scoreboards. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Next steps
 

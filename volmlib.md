@@ -2,15 +2,22 @@
 title: "VolmLib"
 description: "The shared library behind the Volmit Software plugin suite"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "volmlib"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
 ---
 
-VolmLib provides scheduling, commands, localization, diagnostics, PlaceholderAPI support, NBT and region-file I/O, and common Bukkit utilities for Volmit plugins. It is a library, not a server plugin. Each plugin shades its own copy into its jar.
+VolmLib is a library, not a server plugin. There is no jar to install: every Volmit plugin shades its own copy into its own jar.
 
-These pages are for plugin developers who use VolmLib.
+These pages are for plugin developers building against it.
+
+| | |
+|---|---|
+| What it is | A shaded Java library |
+| Install | Nothing to install. It ships inside each plugin |
+| Provides | Scheduling, commands, localization, diagnostics, PlaceholderAPI, NBT and region-file I/O, Bukkit utilities |
+| Source | [github.com/VolmitSoftware/VolmLib](https://github.com/VolmitSoftware/VolmLib) |
 
 - [API overview *Packages, dependencies, and threading*](/volmlib/api)
 - [Noise and procedural streams *Seeded fields and interpolation*](/volmlib/api/noise)

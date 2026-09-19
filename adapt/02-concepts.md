@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Learning an adaptation costs knowledge and ability power. Servers may also charg
 
 ## Skills
 
-A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. Skills share a 50 ms dispatcher, but each callback runs only when its own interval is due and it reports runtime demand. That lets skills pay for ongoing states like sprinting without running every skill's work every server tick. A skill also tracks stats and advancements and owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/skills/<id>.toml`.
+A skill is a named line such as `agility`, `pickaxe`, or `chronos`. It listens for its own gameplay events and pays XP for them. A skill also tracks stats and advancements and owns a list of adaptations. Every skill has an enable flag and a config file at `plugins/Adapt/skills/<id>.toml`.
 
 Each enabled skill owns one advancement tab. Advancement branches use compact leaf rows with every parent centered over its children. Normal entries follow vanilla visibility and appear when they, their parent, or their grandparent are complete; intentionally hidden entries appear only after they are earned.
 
@@ -30,7 +30,9 @@ Holding an adaptation at level `L` costs `L` power. A move from level `m` to lev
 
 Each adaptation gets its own file at `plugins/Adapt/adaptations/<id>.toml`. The file has its own knobs plus the shared `enabled`, `permanent`, `showParticles`, and `showSounds` flags. Some adaptations also carry a tick interval, cooldowns, or per-use hunger, item, and durability costs.
 
-Learning and unlearning both run through `AdaptationLearningTransaction`. That path covers a click from the menu and a click from an admin command. If a step fails partway, the transaction rolls back. That covers Vault taking the money when the level cannot be applied. The rollback restores the level, the knowledge, and the money. An adaptation marked `permanent` refuses to unlearn at all unless an admin forces it.
+If a purchase fails partway through, nothing is charged: the level, the knowledge and any currency
+are all restored together. An adaptation marked `permanent` refuses to unlearn unless an admin
+forces it.
 
 ## Knowledge
 
@@ -74,18 +76,8 @@ Mutations are a separate, opt-in track: two slots, paired domains, a combat lock
 
 ### Progression formulas
 
-| Quantity | Formula | Notes |
-|---|---|---|
-| Skill XP for level `L` | `100 * L^2 + 1200 * L` | Default `ADAPT_BALANCED` curve. Other curves listed in [05 - Configuration Math](/adapt/05-configuration-math) |
-| Skill level for XP | `(sqrt(1440000 + 400 * xp) - 1200) / 200` | Inverse of the default curve |
-| Knowledge per skill level crossed | `(previousLevel / 13) + 1` | Integer division |
-| Master XP per skill level crossed | `playerXpPerSkillLevelUpBase + previousLevel * playerXpPerSkillLevelUpLevelMultiplier` | |
-| Master level | Same `xpCurve` applied to master XP | |
-| Max power | `floor(masterLevel * powerPerLevel) + regionPowerBonus`, floored at 0 | |
-| Used power | Sum of learned adaptation levels, region-granted excluded | |
-| Knowledge cost for level `L` | `max(1, baseCost + baseCost * L * costFactor)` plus `initialCost` when `L = 1` | Result floored at 1 and capped at `Integer.MAX_VALUE` |
-| Knowledge cost for a multi-level jump | Sum of the per-level cost of every step | Refunds use the same sum |
-| Power cost for a jump | `targetLevel - currentLevel` | |
+The formulas live on [05 - Configuration Math](/adapt/05-configuration-math), which owns the
+progression maths.
 
 ### Progression config defaults
 
@@ -110,16 +102,6 @@ Mutations are a separate, opt-in track: two slots, paired domains, a combat lock
 | `permanent` | Cannot be unlearned once learned, unless an admin forces it |
 | `showParticles` | Adaptation may spawn its particle effects |
 | `showSounds` | Adaptation may play its sounds |
-
-### Types worth knowing
-
-| Type | Role |
-|---|---|
-| `SimpleSkill` / `SimpleAdaptation` | Base classes for skill lines and adaptations |
-| `AdaptationLearningTransaction` | Single path for learn and unlearn, including the Vault charge and rollback |
-| `AbilityUsePolicy` / `AbilityCostProvider` | Third-party allow-deny decisions and third-party cost quoting |
-| `AdaptAbilityActivateEvent` / `AdaptAbilityActivatedEvent` | Cancellable event before costs are collected, and the result event after settlement |
-| `PlayerData` / `AdaptPlayer` | Persistent and runtime player state |
 
 ## See also
 

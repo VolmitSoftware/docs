@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -92,10 +92,6 @@ The receiver secret and password-bearing deployment target list are deliberately
 
 ## Language selection
 
-`/bile language` opens the personal picker in game and the server picker from console. Use `self reset` to return to the server default. If a selected catalog cannot be prepared, BileTools keeps English active.
+`/bile language` picks a language. Personal selection needs `biletools.language.self`; server
+selection needs `biletools.config` or `volmit.language.admin`. See [Languages](/languages).
 
-Personal language selection requires both `biletools.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. BileTools server selection requires `biletools.config` or `volmit.language.admin` (default `op`).
-
-`/volmit plugins languages [locale]` manages the server default for all enabled Volmit language providers. It keeps personal choices and offers only locales shared by every provider.
-
-`/bile language server edit [locale]` opens the message editor. Editing requires `biletools.config` or `volmit.language.admin` and does not change anyone's selected language. See [Configuration](/biletools/configuration) for file behavior.

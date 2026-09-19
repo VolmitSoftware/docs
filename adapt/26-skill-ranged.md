@@ -2,7 +2,7 @@
 title: "Skill - Ranged"
 description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,24 +21,47 @@ Individual adaptations grant their own XP on top of that. Ricochet Bolt pays per
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation (level 1 or higher). The skill and the adaptation are both enabled. You are not in a blacklisted world or a blocked game mode. You hold the `adapt.use.<adaptation>` permission. The protection plugins and region policy allow the action against that target or block. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions). Learn and level everything from the Adapt menu (`/adapt`).
+All of this needs the adaptation learned to level 1 or higher from the Adapt menu (`/adapt`), the skill and the adaptation enabled, a world and game mode that are not blocked, and the `adapt.use.<adaptation>` permission. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions).
 
 Adaptations that modify a projectile skip Heartseeker's seeking arrows, which run their own flight and damage logic.
 
 ### Force Shot (`ranged-force`)
 
-Every projectile you launch leaves at higher velocity, which means flatter arcs and less lead on moving targets. It works on its own once learned. Landing a hit gives a small XP kick. Your first hit from over 30 blocks away
+7 levels · 5 knowledge, then 2 per level
+
+Every projectile you launch leaves at higher velocity, which means flatter arcs and less lead on moving targets. Landing a hit gives a small XP kick. Your first hit from over 30 blocks away
 grants a one-time bonus and a Long Shot advancement.
+
+Launch velocity is multiplied by `1 + (levelPercent * speedFactor)`. Each hit grants a flat 5 XP, and a long-range hit is anything past 30 blocks of ground distance.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `speedFactor` | `1.135` | Extra launch speed at max level, as a fraction of the normal velocity. |
+| `challengeRewardLongShotReward` | `2000` | One-time XP granted with the Long Shot advancement. |
 
 ### Arrow Piercing (`ranged-piercing`)
 
-Your arrows get extra vanilla pierce levels equal to your adaptation level, so they punch through targets instead of stopping at the first one. Line up a corridor of mobs and one shot hits all of them. It works on its own once learned.
+5 levels · 8 knowledge, then 3 per level
+
+Your arrows get extra vanilla pierce levels equal to your adaptation level, so they punch through targets instead of stopping at the first one. Line up a corridor of mobs and one shot hits all of them.
+
+Pierce is raised once at launch, by the adaptation level. Each launch grants a flat 5 XP, and `ranged.piercing.extra-hits` counts only the second and later hits of an arrow. No adaptation-specific config knobs.
 
 ### Arrow Recovery (`ranged-recovery`)
 
-When one of your arrows hits a living target, there is a chance to get an arrow back in your inventory. The chance is a flat per-level table, reaching 80% at level 8. Arrows fired from an Infinity bow are excluded, since those are free already. It works on its own once learned.
+8 levels · 5 knowledge
+
+When one of your arrows hits a living target, there is a chance to get an arrow back in your inventory. The chance is a flat per-level table, reaching 80% at level 8. Arrows fired from an Infinity bow are excluded, since those are free already.
+
+Only `Arrow` projectiles from a bow without Infinity are eligible. A recovered arrow goes to your inventory, or drops at your feet when there is no room.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `hitChance` | `[10, 20, 30, 40, 50, 60, 70, 80]` | Recovery chance per level, in percent. Entry index is the level, clamped to the last entry. |
 
 ### Lunge Shot (`ranged-lunge-shot`)
+
+3 levels · 8 knowledge, then 3 per level
 
 Firing an arrow while airborne shoves you backward, opposite your aim. Look down and it launches you up, look at a wall and it kicks you off it. It is a mobility tool built out of recoil.
 
@@ -46,7 +69,15 @@ Firing an arrow while airborne shoves you backward, opposite your aim. Look down
 2. Get off the ground: jump, or fire mid-fall.
 3. Fire an arrow. The kick scales with your level.
 
+Only `AbstractArrow` launches count, and only while you are off the ground. Your look direction times `levelPercent * factor` is subtracted from your velocity.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `factor` | `0.935` | Recoil speed at max level, in blocks per tick. |
+
 ### Web Snare (`ranged-webshot`)
+
+5 levels · 1 knowledge, then 5 per level
 
 Web Snare gives you a crafted throwable that cages what it hits. Cobwebs appear at the impact point and around it, hold for a few seconds, then clean themselves up. While they are active they cannot be broken, exploded, or pushed by pistons, so nobody can farm free cobwebs off it.
 
@@ -54,7 +85,11 @@ Web Snare gives you a crafted throwable that cages what it hits. Cobwebs appear 
 2. Craft eight cobwebs around one snowball to make a bound snowball.
 3. Throw it at a target or a surface. The webs land just above the impact point and last about one second per adaptation level.
 
+Footprint is 7 blocks: one above the impact plus its six neighbors. Cage lifetime is `level * 20` ticks, and every web has to pass a block-place check, so it does nothing where you cannot build. Webs are still cleaned up if the server restarts before they expire. No adaptation-specific config knobs.
+
 ### Trajectory Sight (`ranged-trajectory-sight`)
+
+5 levels · 4 knowledge
 
 Trajectory Sight draws your shot before you take it: a dotted line through the air and a ring where it would land. It reads the weapon you are holding. It previews arrows, crossbow bolts,
 tridents, snowballs, eggs, pearls, potions, and experience bottles with the
@@ -65,217 +100,6 @@ right arc for each. The predicted target entity glows so you know what you are a
 3. Aim. The line updates as you move. Releasing the shot, changing item, dropping it, or standing up ends the preview.
 
 Higher levels stretch the prediction further out and add detail to the line. Kills made with a previewed shot are tracked for a challenge.
-
-### Floaters (`ranged-floaters`)
-
-Your projectiles can hit with Levitation, lifting the target off the ground where it cannot chase or fight back well. The chance, duration, and strength all scale with level, and at max level the effect reaches Levitation II. It works on its own once learned, and never applies to a protected target or to your own tamed animals.
-
-### Pinning Shot (`ranged-pinning-shot`)
-
-A pinned target loses most of its movement speed and, by default, has its horizontal momentum cut immediately, so a charging mob stops dead. Each target has a reapply cooldown so you cannot chain-lock one victim forever, and higher levels shorten it. It works on its own once learned.
-
-### Ricochet Bolt (`ranged-ricochet-bolt`)
-
-Shots that hit a block bounce off instead of sticking, and every bounce makes the projectile faster and adds flat damage to its next hit. Bank a shot around a corner and it lands harder than the straight one would have. Arrows always bounce. Snowballs and eggs bounce too unless you turn that off. It works on its own once learned. Bounce count, speed gain, and damage gain all scale with level, and each bounce pays XP.
-
-### Fetch Shot (`ranged-fetch-shot`)
-
-Shoot a pile of dropped items and they come to you. It is for the lava-edge drop, the item over a ravine, and the loot on the wrong side of a mob pack.
-
-1. Learn it and hold any projectile weapon.
-2. Shoot at or near the dropped items.
-3. Whatever fits goes into your inventory. Anything you have no room for stays on the ground.
-
-The pickup radius grows with level. Each impact inspects a limited number of item entities and transfers a limited number of them, so shooting into a huge item pile stays cheap.
-
-### Heavy Draw (`ranged-heavy-draw`)
-
-Heavy Draw slows your projectiles down and makes them hit much harder. At level 1 the trade is bad on purpose: half your speed for a small damage bump. By max level the speed penalty has mostly gone away and the damage bonus is large. It applies to arrows, snowballs, and eggs, and it works on its own once learned.
-
-Vanilla arrow damage already scales with speed. The code divides the bonus back
-out for arrows. Slowing them down does not cancel the gain.
-
-### Heartseeker (`ranged-heartseeker`)
-
-Heartseeker is a manual lock-on. Point a bow at a creature and right-click to mark it: it glows red for you alone. Fire and the arrow leaves normally. It then bends toward the mark, weaving
-around blocks in its way. It keeps chasing until it connects or runs out of
-flight time. Every seeking shot puts your bow on a cooldown that shrinks as you level.
-
-1. Learn it and hold a bow that is not on cooldown.
-2. Look at a creature within lock range and right-click to lock. It starts glowing red for you.
-3. Fire within the lock timeout. The arrow whistles and curves to the target.
-
-With Arrow Piercing learned, or with Ricochet Bolt bounce capacity left, the arrow chains. It punches through the target, exits the far side, and bends toward a fresh nearby target. Without a new target it keeps flying straight. Ricochet passes keep their reflection, speed, damage, and rewards when a seeking arrow strikes a block.
-
-## Reference
-
-### Skill configuration defaults
-
-Written to `plugins/Adapt/skills/ranged.toml` on first load.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `enabled` | `true` | Turns the whole Ranged skill off when false. |
-| `skillColor` | `"&2"` | Legacy ampersand color code used for this skill in menus and text. |
-| `shootXP` | `5` | XP granted per arrow, spectral arrow, or trident launched. |
-| `cooldownDelay` | `1250` | Milliseconds between XP awards from shots and hits. |
-| `hitDamageXPMultiplier` | `1.75` | XP granted per point of projectile damage dealt. |
-| `hitDistanceXPMultiplier` | `1.2` | XP granted per block of distance between shooter and target on a hit. |
-| `challengeRangedReward` | `500` | Base XP reward for the shots-fired challenge chain. |
-| `challengeRangedDmgReward` | `500` | Base XP reward for the projectile-damage challenge chain. |
-| `challengeRangedDistReward` | `500` | Base XP reward for the hit-distance challenge chain. |
-| `challengeRangedKillsReward` | `500` | Base XP reward for the ranged-kills challenge chain. |
-| `challengeRangedLongshotReward` | `500` | Base XP reward for the longshot challenge chain. |
-
-### Skill milestones
-
-| Advancement key | Stat key | Threshold | XP reward |
-|-----------------|----------|-----------|-----------|
-| `challenge_ranged_100` | `ranged.shotsfired` | 100 | `challengeRangedReward` |
-| `challenge_ranged_1k` | `ranged.shotsfired` | 1000 | `challengeRangedReward` x 2 |
-| `challenge_ranged_10k` | `ranged.shotsfired` | 10000 | `challengeRangedReward` x 5 |
-| `challenge_ranged_dmg_1k` | `ranged.damage` | 1000 | `challengeRangedDmgReward` |
-| `challenge_ranged_dmg_10k` | `ranged.damage` | 10000 | `challengeRangedDmgReward` x 3 |
-| `challenge_ranged_dist_5k` | `ranged.distance` | 5000 | `challengeRangedDistReward` |
-| `challenge_ranged_dist_50k` | `ranged.distance` | 50000 | `challengeRangedDistReward` x 3 |
-| `challenge_ranged_kills_50` | `ranged.kills` | 50 | `challengeRangedKillsReward` |
-| `challenge_ranged_kills_500` | `ranged.kills` | 500 | `challengeRangedKillsReward` x 3 |
-| `challenge_longshot_25` | `ranged.longshots` | 25 | `challengeRangedLongshotReward` |
-| `challenge_longshot_250` | `ranged.longshots` | 250 | `challengeRangedLongshotReward` x 3 |
-
-Skill-level stats follow. `ranged.shotsfired` and
-`ranged.shotsfired.<projectile_type>` increment per launch. `ranged.damage` and
-`ranged.damage.<projectile_type>` increment per hit. `ranged.distance` and
-`ranged.distance.<projectile_type>` increment per hit. `ranged.longshots` counts
-hits beyond 30 blocks. `ranged.kills` counts kills made while holding a `BOW` or
-`CROSSBOW`.
-
-### Shared adaptation keys
-
-Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
-
-### Force Shot
-
-| Property | Value |
-|----------|-------|
-| Icon | `TIPPED_ARROW` |
-| Max level | 7 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 2 |
-| Cost factor | 0.225 |
-| Tick interval (ms) | 4900 |
-| Config file | `plugins/Adapt/adaptations/ranged-force.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL). `EntityDamageByEntityEvent` (`on`, NORMAL) |
-| Stats | `ranged.force.long-range-hits` |
-| Milestones | `challenge_ranged_force_500` at 500 long-range hits, 500 XP. `challenge_force_30` ("Long Shot") granted once on the first hit past 30 blocks |
-| Menu lore | Projectile Speed |
-
-Launch velocity is multiplied by `1 + (levelPercent * speedFactor)` for any projectile the player shoots. Each hit grants a flat 5 XP. A long-range hit is one where the horizontal distance squared exceeds 900, so more than 30 blocks of ground distance.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `speedFactor` | `1.135` | Extra launch speed at max level, as a fraction of the normal velocity. |
-| `challengeRewardLongShotReward` | `2000` | One-time XP granted with the Long Shot advancement. |
-
-### Arrow Piercing
-
-| Property | Value |
-|----------|-------|
-| Icon | `FLETCHING_TABLE` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.5 |
-| Tick interval (ms) | 4791 |
-| Config file | `plugins/Adapt/adaptations/ranged-piercing.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL). `EntityDamageByEntityEvent` (`on`, HIGHEST) |
-| Stats | `ranged.piercing.extra-hits` |
-| Milestones | `challenge_ranged_piercing_500` at 500 extra hits, 400 XP. `challenge_ranged_piercing_4` granted once when a single arrow lands 4 hits |
-| Menu lore | Pierce Targets |
-
-The arrow's existing pierce level is increased by the adaptation level at launch. The arrow is marked so the bonus is applied only once. Each launch grants a flat 5 XP. `ranged.piercing.extra-hits` counts only the second and later hits of an arrow. No adaptation-specific config knobs.
-
-### Arrow Recovery
-
-| Property | Value |
-|----------|-------|
-| Icon | `ARROW` |
-| Max level | 8 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.78 |
-| Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adaptations/ranged-recovery.toml` |
-| Listened events | `EntityShootBowEvent` (`onEntityShootBow`, NORMAL). `ProjectileHitEvent` (`onProjectileHit`, NORMAL) |
-| Stats | `ranged.arrow-recovery.arrows-recovered` |
-| Milestones | `challenge_ranged_arrow_500` at 500 arrows, 300 XP. `challenge_ranged_arrow_10k` at 10000 arrows, 1000 XP |
-| Menu lore | Chance to Recover Arrows on Hit/Kill. Chance: {chance} |
-
-Only `Arrow` projectiles fired from a bow without Infinity are eligible, and the roll happens when the arrow hits an entity. The recovered arrow goes to the inventory, and drops at the player's feet when there is no room.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `hitChance` | `[10, 20, 30, 40, 50, 60, 70, 80]` | Recovery chance per level, in percent. Entry index is the level, clamped to the last entry. |
-
-### Lunge Shot
-
-| Property | Value |
-|----------|-------|
-| Icon | `RABBIT_HIDE` |
-| Max level | 3 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.5 |
-| Tick interval (ms) | 4859 |
-| Config file | `plugins/Adapt/adaptations/ranged-lunge-shot.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, NORMAL) |
-| Stats | `ranged.lunge-shot.lunges` |
-| Milestones | `challenge_ranged_lunge_200` at 200 lunges, 300 XP. `challenge_ranged_lunge_2500` at 2500 lunges, 1000 XP |
-| Menu lore | Recoil Burst Speed |
-
-Only fires for `AbstractArrow` launches while the player is off the ground. The player's look direction times `levelPercent * factor` is subtracted from their velocity.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `factor` | `0.935` | Recoil speed at max level, in blocks per tick. |
-
-### Web Snare
-
-| Property | Value |
-|----------|-------|
-| Icon | `COBWEB` |
-| Max level | 5 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.9 |
-| Tick interval (ms) | 4900 |
-| Config file | `plugins/Adapt/adaptations/ranged-webshot.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `ProjectileHitEvent` (`on`, NORMAL). `EntityRemoveEvent` (`on`, MONITOR). `ChunkLoadEvent` (`on`, MONITOR). `BlockPistonExtendEvent` (`on`, HIGHEST). `BlockPistonRetractEvent` (`on`, HIGHEST). `BlockExplodeEvent` (`on`, HIGHEST). `BlockBreakEvent` (`on`, HIGHEST). `EntityExplodeEvent` (`on`, HIGHEST) |
-| Stats | `ranged.web-bomb.mobs-trapped` |
-| Milestone | `challenge_ranged_web_200` at 200 mobs trapped, 300 XP |
-| Menu lore | 8 Cobwebs around a Snowball, and throw!. Seconds of a cage, roughly. |
-| Recipe | Shaped `ranged-web-bomb`: 8 `COBWEB` around 1 `SNOWBALL`, produces a bound snowball item |
-
-Placement footprint is 7 blocks: the impact block one above the hit, plus its six direct neighbors. Cage lifetime is `level * 20` ticks. Every cobweb target must pass a block-place probe at commit. On Folia the whole
-footprint must belong to the current region or the impact is dropped. Placed webs are journaled into chunk persistent data, up to 4096 per chunk. They
-are still removed after a restart. Recovery processes at most 32 chunks per
-tick. Active webs cancel `BlockBreakEvent` and piston moves, and are stripped out of explosion block lists. No adaptation-specific config knobs.
-
-### Trajectory Sight
-
-| Property | Value |
-|----------|-------|
-| Icon | `SPYGLASS` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.75 |
-| Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adaptations/ranged-trajectory-sight.toml` |
-| Listened events | `PlayerQuitEvent`, `PlayerChangedWorldEvent`, `PlayerDeathEvent`, `PlayerDropItemEvent`, `PlayerInteractEvent`, `PlayerItemHeldEvent`, `PlayerSwapHandItemsEvent`, `PlayerToggleSneakEvent`, `EntityShootBowEvent`, `ProjectileLaunchEvent`, `EntityDeathEvent` (all `on`). `PlayerStopUsingItemEvent` via a companion listener registered only when the Paper class exists |
-| Stats | `ranged.trajectory-sight.kills-while-aiming` |
-| Milestone | `challenge_ranged_trajectory_100` at 100 kills while aiming, 400 XP |
-| Menu lore | Prediction Range. Prediction Detail |
 
 Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, `SNOWBALL`, `EGG`, `ENDER_PEARL`, `SPLASH_POTION`, `LINGERING_POTION`, or `EXPERIENCE_BOTTLE` in either hand. Bow previews use the actual draw charge. When the hand is not raised and the player is sneaking, `sneakPreviewChargeTicks` is assumed instead.
 
@@ -317,24 +141,13 @@ Preview triggers: drawing a bow, or sneaking with `BOW`, `CROSSBOW`, `TRIDENT`, 
 | `previewHighLoadPercent` | `42` | Ticker load percentage above which segment count is scaled down. |
 | `previewHighLoadSegmentScale` | `0.7` | Segment multiplier applied while high-load shedding is active. |
 
-### Floaters
+### Floaters (`ranged-floaters`)
 
-| Property | Value |
-|----------|-------|
-| Icon | `SHULKER_SHELL` |
-| Max level | 6 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.78 |
-| Tick interval (ms) | 2400 |
-| Config file | `plugins/Adapt/adaptations/ranged-floaters.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `EntityDamageByEntityEvent` (`on`, MONITOR) |
-| Stats | `ranged.floaters.targets-levitated` |
-| Milestone | `challenge_ranged_floaters_200` at 200 targets, 300 XP |
-| Menu lore | Levitation Chance. Levitation Duration. Levitation Strength |
+6 levels · 4 knowledge
 
-The level and owner are stamped onto the projectile's persistent data at launch.
-The effect follows that shot even if the shooter changes level or logs out. Protected targets and the shooter's own tamed animals are skipped.
+Your projectiles can hit with Levitation, lifting the target off the ground where it cannot chase or fight back well. The chance, duration, and strength all scale with level, and at max level the effect reaches Levitation II. It works on its own once learned, and never applies to a protected target or to your own tamed animals.
+
+Level and owner are stamped onto the projectile at launch, so the effect follows that shot even if you change level or log out.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -346,23 +159,13 @@ The effect follows that shot even if the shooter changes level or logs out. Prot
 | `maxAmplifier` | `1.0` | Highest Levitation amplifier. Amplifier is `floor(levelPercent * maxAmplifier)`, so Levitation I below max level and Levitation II at max level. |
 | `skillXpOnProc` | `8.0` | Ranged XP granted to the shooter each time levitation lands. |
 
-### Pinning Shot
+### Pinning Shot (`ranged-pinning-shot`)
 
-| Property | Value |
-|----------|-------|
-| Icon | `TRIPWIRE_HOOK` |
-| Max level | 6 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.74 |
-| Tick interval (ms) | 2200 |
-| Config file | `plugins/Adapt/adaptations/ranged-pinning-shot.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `EntityDamageByEntityEvent` (`on`, MONITOR) |
-| Stats | `ranged.pinning-shot.targets-pinned` |
-| Milestone | `challenge_ranged_pinning_300` at 300 targets, 400 XP |
-| Menu lore | Pin Chance. Pin Duration. Reapply Cooldown |
+6 levels · 4 knowledge
 
-The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion effect. The scalar is `-min(1.0, 0.15 * (amplifier + 1))`, so -30% at level 1 and -60% at level 6 with the defaults. Level and owner are stamped onto the projectile at launch. Protected targets and the shooter's own tamed animals are skipped.
+A pinned target loses most of its movement speed and, by default, has its horizontal momentum cut immediately, so a charging mob stops dead. Each target has a reapply cooldown so you cannot chain-lock one victim forever, and higher levels shorten it.
+
+The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion effect. The scalar is `-min(1.0, 0.15 * (amplifier + 1))`, so -30% at level 1 and -60% at level 6 on the defaults. Protected targets and your own tamed animals are skipped.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -381,23 +184,13 @@ The pin is a timed negative `MOVEMENT_SPEED` modifier, not a Slowness potion eff
 | `entryTtlMillis` | `60000` | Age at which a tracked pin timestamp is dropped during a sweep, in milliseconds. |
 | `xpOnProc` | `12` | Ranged XP granted to the shooter each time a pin lands. |
 
-### Ricochet Bolt
+### Ricochet Bolt (`ranged-ricochet-bolt`)
 
-| Property | Value |
-|----------|-------|
-| Icon | `SPECTRAL_ARROW` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.74 |
-| Tick interval (ms) | 1400 |
-| Config file | `plugins/Adapt/adaptations/ranged-ricochet-bolt.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, MONITOR). `ProjectileHitEvent` (`on`, HIGHEST). `EntityDamageByEntityEvent` (`on`, HIGHEST). `EntityDeathEvent` (`on`, NORMAL) |
-| Stats | `ranged.ricochet-bolt.total-ricochets`, `ranged.ricochet-bolt.ricochet-kills` |
-| Milestones | `challenge_ranged_ricochet_kills_50` at 50 kills, 500 XP. `challenge_ranged_ricochet_kills_500` at 500 kills, 2000 XP |
-| Menu lore | Max Ricochets. Speed Bonus Per Ricochet. Bonus Damage Per Ricochet |
+5 levels · 4 knowledge
 
-Bounces are capped at 12 regardless of config. A bounce replaces the projectile with a new one carrying the accumulated count, speed, and bonus damage. Heartseeker's seeking arrows are excluded. XP per bounce is `xpPerRicochet + (count * xpPerRicochetStep)`.
+Shots that hit a block bounce off instead of sticking, and every bounce makes the projectile faster and adds flat damage to its next hit. Bank a shot around a corner and it lands harder than the straight one would have. Arrows always bounce. Snowballs and eggs bounce too unless you turn that off. Bounce count, speed gain, and damage gain all scale with level, and each bounce pays XP.
+
+Bounces are capped at 12 regardless of config, and Heartseeker's seeking arrows are excluded. XP per bounce is `xpPerRicochet + (count * xpPerRicochetStep)`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -426,23 +219,19 @@ Bounces are capped at 12 regardless of config. A bounce replaces the projectile 
 | `xpPerRicochetStep` | `2` | Extra XP per bounce already made by that projectile. |
 | `applyToAllProjectiles` | `true` | When true, snowballs and eggs bounce as well. Arrows always bounce. |
 
-### Fetch Shot
+### Fetch Shot (`ranged-fetch-shot`)
 
-| Property | Value |
-|----------|-------|
-| Icon | `FISHING_ROD` |
-| Max level | 3 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.3 |
-| Tick interval (ms) | 2751 |
-| Config file | `plugins/Adapt/adaptations/ranged-fetch-shot.toml` |
-| Listened events | `ProjectileHitEvent` (`on`, MONITOR) |
-| Stats | `ranged.fetch-shot.items-fetched` |
-| Milestones | `challenge_ranged_fetch_500` at 500 items, 400 XP. `challenge_ranged_fetch_5k` at 5000 items, 1500 XP |
-| Menu lore | Fetch Radius |
+3 levels · 4 knowledge, then 3 per level
 
-Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the normal pickup event sequence with the player's real remaining capacity. A cancelled pickup leaves the item entity alone. On Folia the scan runs only when the whole footprint belongs to the current region. Radius is `radiusBase + (levelPercent * radiusFactor)` blocks.
+Shoot a pile of dropped items and they come to you. It is for the lava-edge drop, the item over a ravine, and the loot on the wrong side of a mob pack.
+
+1. Learn it and hold any projectile weapon.
+2. Shoot at or near the dropped items.
+3. Whatever fits goes into your inventory. Anything you have no room for stays on the ground.
+
+The pickup radius grows with level. Each impact inspects a limited number of item entities and transfers a limited number of them, so shooting into a huge item pile stays cheap.
+
+Fish hooks and Heartseeker arrows never fetch, and anything you could not pick up by hand stays on the ground. Radius is `radiusBase + (levelPercent * radiusFactor)` blocks.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -453,23 +242,13 @@ Fish hooks and Heartseeker arrows never fetch. Each candidate must pass the norm
 | `maxAffectedPerActivation` | `8` | Item entities transferred per impact. Hard cap 16, and never above the candidate limit. |
 | `maxTargetFxPerActivation` | `3` | Successful fetches that get their own trail effect. Hard cap 8. |
 
-### Heavy Draw
+### Heavy Draw (`ranged-heavy-draw`)
 
-| Property | Value |
-|----------|-------|
-| Icon | `ANVIL` |
-| Max level | 5 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.5 |
-| Tick interval (ms) | 3277 |
-| Config file | `plugins/Adapt/adaptations/ranged-heavy-draw.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`, HIGH). `EntityDamageByEntityEvent` (`on`, HIGHEST) |
-| Stats | `ranged.heavy-draw.heavy-hits` |
-| Milestones | `challenge_ranged_heavy_hits_250` at 250 hits, 500 XP. `challenge_ranged_heavy_hits_2500` at 2500 hits, 2000 XP |
-| Menu lore | Bonus Damage. Projectile Speed |
+5 levels · 6 knowledge, then 4 per level
 
-Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penalty and the damage bonus interpolate linearly from the level 1 value to the max level value. Damage multiplier is `1 + damageBonus`, divided by the velocity factor for arrows other than tridents so the vanilla speed-scaled damage does not eat the bonus.
+Heavy Draw slows your projectiles down and makes them hit much harder. At level 1 the trade is bad on purpose: half your speed for a small damage bump. By max level the speed penalty has mostly gone away and the damage bonus is large. Vanilla arrow damage already scales with speed, but the bonus is divided back out for arrows, so slowing them down does not cancel the gain.
+
+Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penalty and the damage bonus interpolate from the level 1 value to the max level value. The damage multiplier is `1 + damageBonus`, divided by the velocity factor for arrows other than tridents.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -479,25 +258,21 @@ Applies to `AbstractArrow`, `Snowball`, and `Egg` launches. Both the speed penal
 | `damageBonusEnd` | `1.5` | Damage bonus at max level, as a fraction of base damage. |
 | `xpPerHeavyHit` | `4` | Ranged XP granted per heavy hit landed. |
 
-### Heartseeker
+### Heartseeker (`ranged-heartseeker`)
 
-| Property | Value |
-|----------|-------|
-| Icon | `TARGET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 6 |
-| Cost factor | 0.6 |
-| Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adaptations/ranged-heartseeker.toml` |
-| Listened events | `PlayerInteractEvent` (`on`, MONITOR). `EntityShootBowEvent` (`on`, LOWEST). `EntityAddToWorldEvent` (`on`). `ProjectileHitEvent` (`on`). `EntityDamageByEntityEvent` (`on`). `EntityRemoveEvent` (`on`). `PlayerQuitEvent` (`on`) |
-| Stats | `ranged.heartseeker.seeks`, `ranged.heartseeker.hits` |
-| Milestones | `challenge_ranged_heartseeker_100` at 100 hits, 500 XP. `challenge_ranged_heartseeker_1k` at 1000 hits, 2000 XP |
-| Menu lore | Draw a bow while looking at a creature to lock on. Bow cooldown after a seeking shot. Piercing and Ricochet Bolt bounce capacity add seeking passes |
+5 levels · 8 knowledge, then 6 per level
 
-Locking requires a `BOW` in hand that is not on cooldown. Tridents never seek. Ray traces, target snapshots, launches, and steering updates all run against
-per-owner and global work budgets. Heavy use degrades gracefully rather than
-stalling the server.
+Heartseeker is a manual lock-on. Point a bow at a creature and right-click to mark it: it glows red for you alone. Fire and the arrow leaves normally. It then bends toward the mark, weaving
+around blocks in its way. It keeps chasing until it connects or runs out of
+flight time. Every seeking shot puts your bow on a cooldown that shrinks as you level.
+
+1. Learn it and hold a bow that is not on cooldown.
+2. Look at a creature within lock range and right-click to lock. It starts glowing red for you.
+3. Fire within the lock timeout. The arrow whistles and curves to the target.
+
+With Arrow Piercing learned, or with Ricochet Bolt bounce capacity left, the arrow chains. It punches through the target, exits the far side, and bends toward a fresh nearby target. Without a new target it keeps flying straight. Ricochet passes keep their reflection, speed, damage, and rewards when a seeking arrow strikes a block.
+
+Locking requires a `BOW` in hand that is not on cooldown. Tridents never seek.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -530,11 +305,43 @@ stalling the server.
 | `xpPerSeek` | `8` | Ranged XP granted when a seeking shot is admitted. |
 | `xpPerHit` | `4` | Ranged XP granted per seeking arrow connection. |
 
-### Support classes (not player adaptations)
+## Reference
 
-- `HeartseekerRuntime` coordinates queued arrows, per-owner and global work budgets, chain passes, and chunk traversal for Heartseeker.
-- `RicochetRuntime` calculates ricochet transitions and preserves projectile state across projectile replacement and Folia region handoff.
-- `TrajectorySightRuntime` limits concurrent trajectory previews and invalidates stopped or replaced preview sessions.
+### Skill configuration defaults
+
+Written to `plugins/Adapt/skills/ranged.toml` on first load.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `enabled` | `true` | Turns the whole Ranged skill off when false. |
+| `skillColor` | `"&2"` | Legacy ampersand color code used for this skill in menus and text. |
+| `shootXP` | `5` | XP granted per arrow, spectral arrow, or trident launched. |
+| `cooldownDelay` | `1250` | Milliseconds between XP awards from shots and hits. |
+| `hitDamageXPMultiplier` | `1.75` | XP granted per point of projectile damage dealt. |
+| `hitDistanceXPMultiplier` | `1.2` | XP granted per block of distance between shooter and target on a hit. |
+| `challengeRangedReward` | `500` | Base XP reward for the shots-fired challenge chain. |
+| `challengeRangedDmgReward` | `500` | Base XP reward for the projectile-damage challenge chain. |
+| `challengeRangedDistReward` | `500` | Base XP reward for the hit-distance challenge chain. |
+| `challengeRangedKillsReward` | `500` | Base XP reward for the ranged-kills challenge chain. |
+| `challengeRangedLongshotReward` | `500` | Base XP reward for the longshot challenge chain. |
+
+### Challenges
+
+| Challenge | Threshold | Reward knob |
+|---|---|---|
+| `challenge_ranged_100` | 100 | `challengeRangedReward` |
+| `challenge_ranged_1k` | 1000 | `challengeRangedReward` x 2 |
+| `challenge_ranged_10k` | 10000 | `challengeRangedReward` x 5 |
+| `challenge_ranged_dmg_1k` | 1000 | `challengeRangedDmgReward` |
+| `challenge_ranged_dmg_10k` | 10000 | `challengeRangedDmgReward` x 3 |
+| `challenge_ranged_dist_5k` | 5000 | `challengeRangedDistReward` |
+| `challenge_ranged_dist_50k` | 50000 | `challengeRangedDistReward` x 3 |
+| `challenge_ranged_kills_50` | 50 | `challengeRangedKillsReward` |
+| `challenge_ranged_kills_500` | 500 | `challengeRangedKillsReward` x 3 |
+| `challenge_longshot_25` | 25 | `challengeRangedLongshotReward` |
+| `challenge_longshot_250` | 250 | `challengeRangedLongshotReward` x 3 |
+
+Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
 
 ## See also
 

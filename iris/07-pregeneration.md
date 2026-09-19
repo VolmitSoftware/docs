@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-16T02:07:57.737Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -119,11 +119,9 @@ The command root is `/iris pregen` with alias `/iris pregenerate`.
 
 ## Area model
 
-`PregenTask` validates every block edge at `center ± radius` against Minecraft's safe ±29,999,984 limit before any runtime mutation. It converts the accepted bounds to chunk and region ranges, then iterates regions in a spiral from the center. The region containing the center uses a contiguous chunk spiral so nearby playable terrain completes first. Later regions use four-chunk-spaced lattices to reduce overlapping mantle work while preserving center-directed order inside each lattice.
+Every block edge at `center ± radius` is validated against Minecraft's safe ±29,999,984 limit before anything is started, then regions are walked in a spiral from the center so nearby playable terrain completes first.
 
-Bounds are inclusive on both edges. The minimum block floors to a chunk, the maximum ceils. For radius 352 at `0,0` that gives chunks `-22..22` on each axis: 45 per axis, 2,025 total.
-
-Iris calculates the total directly from these chunk bounds before generation starts. It does not traverse every requested chunk just to count them. The count and generation order remain unchanged.
+Bounds are inclusive on both edges: the minimum block floors to a chunk and the maximum ceils. For radius 352 at `0,0` that gives chunks `-22..22` on each axis — 45 per axis, 2,025 total.
 
 | Limit | Value |
 |---|---|
@@ -134,16 +132,9 @@ Iris calculates the total directly from these chunk bounds before generation sta
 
 ## Generation methods
 
-| Situation | Method used |
-|---|---|
-| Iris world, parallel (default) | `HybridPregenMethod(world, threadCount)` |
-| Iris world, `serial=true` | `HybridPregenMethod.strictSerial(world)` |
-| Non-Iris world | The same hybrid method with a null engine |
-| Caching enabled, engine present, scheduler not Folia | `CachedPregenMethod` wrapped around whichever of the above applies |
+Generation is always chunk by chunk, never region at a time. Paper-family servers use an asynchronous path; everything else uses a slower synchronous one. `serial=true` forces strict one-at-a-time generation and requires Paper. A cache wrapper is added when caching is enabled, the world has an engine, and the scheduler is not Folia.
 
-`HybridPregenMethod` delegates to `AsyncOrMedievalPregenMethod`, which picks `AsyncPregenMethod` on Paper and `MedievalPregenMethod` elsewhere. Region-at-a-time generation is not supported on this path. It is always chunk by chunk.
-
-The `threadCount` argument is vestigial. `AsyncPregenMethod` ignores it. On Paper-like servers Iris sizes admission from the larger of the detected chunk-system pool and the world-gen pool Iris provisions during initialization. CPU count is the fallback when pool detection is unavailable. Folia also includes its broader runtime capacity. `MedievalPregenMethod` takes no thread count at all. Tune concurrency through the settings in [33 - Performance Tuning](/iris/33-performance-tuning), not by expecting that parameter to do something.
+Concurrency is sized from the server's own chunk-system pool, not from anything you pass to the command. Tune it through the settings in [33 - Performance Tuning](/iris/33-performance-tuning).
 
 ## Cache
 
@@ -164,7 +155,7 @@ Modded pregen keeps its cache in the equivalent `<worldFolder>/iris/pregen`.
 
 Pregen generates faster than chunks get saved, so Iris throttles itself against tectonic plate residency and heap use. These are the knobs that decide whether a large run finishes or thrashes.
 
-Pregen's per-chunk cleanup keeps retained mantle slices. Marker spawn points and tree-feller materials survive in pregenerated chunks the same way they do in normally generated ones. Ambient marker spawning and custom tree drops work identically in pregenerated terrain. The retained data lives in the mantle region files, which grow accordingly.
+Marker spawn points and tree-feller materials survive in pregenerated chunks exactly as they do in normally generated ones, so ambient marker spawning and custom tree drops work identically there. That retained data lives in the mantle region files, which grow accordingly.
 
 | Control | Default and rule | Why you would change it |
 |---|---|---|
@@ -193,47 +184,35 @@ Full settings reference: [03 - Configuration](/iris/03-configuration). Tuning gu
 
 | Action | What happens |
 |---|---|
-| Pause | `PregeneratorJob.pauseResume()` flips the flag. The generator loop spins while paused, and also while heap high-water is engaged |
-| Stop | `shutdownInstance()` requests cancellation asynchronously. Active chunk work settles first, then Iris flushes tracked chunk I/O, reclaims and saves mantle plates, closes protocol state, and releases the singleton job. The worker interrupt is consumed as a cancellation signal rather than reported as a failure |
-| Status | `progressSnapshot()` returns percent, generated, total chunks, remaining chunks, rates, ETA, elapsed time, method name, paused flag, failed count, world name, and world identity. Rates include overall plus 10-, 30-, and 60-second chunk rates |
+| Pause | Flips the paused flag. The loop also spins while the heap high-water gate is engaged |
+| Stop | Requests cancellation asynchronously. Active chunk work settles, then Iris flushes chunk I/O, saves mantle plates, and releases the job |
+| Status | Percent, generated, total and remaining chunks, ETA, elapsed time, method name, paused flag, failed count, and world. Rates include overall plus 10-, 30-, and 60-second chunk rates |
 
-Failed chunks are counted separately from generated ones and only appear in the status line when the count is above zero. Traversal can finish with failed chunks. Check the failed count and final generated total.
+**Failed chunks are counted separately from generated ones and only appear in the status line when the count is above zero.** A traversal can finish with failures, so check the failed count as well as the final generated total.
 
-Pregeneration releases chunk tickets and saves and unloads chunks on their owning threads. It then drains native chunk I/O on Iris's I/O pool, so disk completion does not block the server or region thread. Job close waits for outstanding drains.
-
-During Paper-family shutdown without Folia threading, the server thread processes native chunk tasks while waiting for pregeneration to drain. Final chunk unloads and flushes belong to the server's subsequent world close. Ordinary pregen stops retain Iris's unload and flush path. Shutdown callbacks check Iris's enabled state without acquiring the plugin-manager lock; scheduling failures retain their full console trace.
-
-Console progress is emitted every 30 seconds instead of every 10 seconds, followed by a forced completion or cancellation summary. Each line labels the actual wall-clock overall, 10-second, 30-second, and 60-second averages. Short runs use their available elapsed time, so the startup sample no longer dilutes a five-second run with an artificial zero.
-
-The final progress snapshot and terminal event include chunks completed during shutdown. A successful final batch therefore reports the full generated count and `COMPLETED`, even if the preceding periodic snapshot was incomplete.
+Console progress is emitted every 30 seconds, followed by a completion or cancellation summary that includes chunks finished during shutdown.
 
 ## HUD, GUI, and protocol
 
 | Surface | Behavior |
 |---|---|
-| Desktop GUI | `PregenRenderer` opens on Bukkit and mod loaders when `gui=true` and a GUI host is available. The window separates the chunk map from progress, controls, a status legend, and the four labeled rates. Closing it disposes only the renderer; generation and the server continue. Noise Explorer and Vision use the same close lifecycle, and macOS application Quit is cancelled while these server-launched windows are active |
+| Desktop GUI | Opens on Bukkit and mod loaders when `gui=true` and a GUI host is available. Closing it disposes only the renderer; generation and the server continue |
 | Boss bar | **`/iris pregen` on Bukkit shows no boss bar.** Only creation-time pregen retains a Bukkit boss bar, and it stays up for the whole run — it is persistent background status, not an overflow surface. Modded pregen does show a boss bar — green while running, yellow while paused — and skips it entirely for players running the Iris client mod |
-| Client HUD | `IrisProtocolServer.broadcastPregenProgress` sends progress once per second to connected Iris client sessions that hold the pregen capability, plus per-region deltas. This is the only path client HUDs are fed on any platform |
+| Client HUD | Progress is sent once per second to connected Iris client sessions. This is the only path a client HUD is fed, on any platform |
 
 GUI toggles live at `settings.gui.useServerLaunchedGuis` and `settings.gui.maximumPregenGuiFPS`. Client HUD detail: [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
 
-The desktop window shows the world name, current phase, completed and total chunks, percentage, and a progress bar. Click **Pause** or press **P** to pause; click **Resume** or press **P** again to continue. The button also supports keyboard focus and Space. Controls are disabled while initializing, stopping, or displaying a terminal state. The metrics panel shows the current 10-second rate, overall rate, 30- and 60-second averages, remaining time, elapsed time, heap usage, allocation rate, and generation method. Remaining time stays **Pending** until an estimate is available. Cached generation is labeled beside the method.
+The desktop window shows the world name, current phase, completed and total chunks, percentage, and a progress bar. Click **Pause** or press **P** to toggle. The metrics panel shows the 10-second, overall, 30- and 60-second rates, remaining and elapsed time, heap usage, allocation rate, and generation method; remaining time stays **Pending** until an estimate exists.
 
-The map preserves the target area's aspect ratio when resized. Its legend identifies waiting chunks, amber generating chunks, green ready chunks, dark-green existing chunks, and purple network work. For an Iris world, a bounded background worker replaces finished status colors with biome and height colors when saved biome information is ready. A saturated queue keeps the status color. Pending saved reads do not block generation or emit loading stacktraces; failed saved reads retain their full console error.
+The map legend identifies waiting chunks, amber generating chunks, green ready chunks, dark-green existing chunks, and purple network work. On an Iris world finished chunks are recoloured by biome and height once saved biome data is ready. Normal completion and requested cancellation close the window automatically; a startup failure leaves an error window open with the cause in its tooltip.
 
-Minimizing the window stops its refresh timer and skips new biome reads while retaining coalesced chunk-status updates. Restoring it displays those updates. Normal completion and requested cancellation close the preview automatically. A startup failure leaves an error window open with guidance to check the server log and a tooltip containing the failure cause.
-
-The existing public API, PlaceholderAPI value, integration telemetry, boss bar, and client protocol carry one rate and expose the corrected 10-second average. The desktop popup, Bukkit and modded status commands, console progress, and terminal summary expose all four rates.
+The public API, PlaceholderAPI value, boss bar, and client protocol carry the 10-second average only. The desktop window, status commands, console progress, and terminal summary expose all four rates.
 
 ## Performance profile
 
-Starting pregeneration applies Iris's pregen performance settings on the pregenerator worker. `performance.noiseCacheSize` is raised to at least 4096 in memory. Iris grows the underlying natural-height and resolved-height caches in place, preserving larger existing capacities and the main-thread query wrapper. The resolved terrain stream and its boundary transition state remain active; cache resizing does not rebuild the engine. The raised noise cache size is not lowered again for the life of the process. The burst pool parallelism is the one thing that does return when the job ends.
+Starting a job raises `performance.noiseCacheSize` to at least 4096 in memory for the rest of the process's life, and temporarily raises the shared worker pool's parallelism, returning it when the last job finishes.
 
-On the asynchronous Paper-family path, Iris requests only a bounded hydrology lookahead around the pregen center before submitting chunks, then keeps the neighboring ring planned as generation moves. Iris does not enqueue every hydrology tile in the requested area at startup. Iris discards queued speculative plans outside the initial lookahead and admits the new frontier in one queue update, so concurrent spawn-area prefetch cannot enter between those operations; active plans and requested tiles still complete. A Standard Studio world can load its validated entry and initial-pregen tiles from the pack-local Studio cache described in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
-
-Stopping or completing a job unloads its tracked chunks with saving enabled and waits for the resulting chunk I/O flush. Iris does not issue a plugin-induced whole-world save, so servers with automatic saving enabled do not emit the manual-save performance warning during normal pregen cleanup.
-
-Pregeneration raises the shared burst pool's parallelism while a job runs and returns it to its previous size when the last concurrent job finishes, so a server that pregenerates once no longer keeps the enlarged pool for the rest of its uptime.
+Stopping or completing a job unloads its tracked chunks with saving enabled and waits for the chunk I/O flush. Iris never issues a whole-world save, so servers with automatic saving do not see the manual-save performance warning during pregen cleanup.
 
 ## Operator notes
 

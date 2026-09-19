@@ -2,7 +2,7 @@
 title: "Sulfur Galleries — Cave Biome"
 description: "Sulfur Galleries and Sulfur Hollows, with native sulfur pools, spikes and cube ecology"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
@@ -82,4 +82,4 @@ Use an updated local pack on a 26.2 server. Validate it before opening a studio 
 
 Descend to the selected cave volume if the locator leaves the player above it. Inspect both the galleries and hollows; the latter have fewer floor spikes and more pool attempts. If a custom biome id is missing, restart after installing the pack so its biome registrations are available before world creation.
 
-For the general placement and ecology contracts, see [15 - Caves & Carving](/iris/15-caves-carving), [16 - Surfaces, Decorators, Deposits](/iris/16-surfaces-decorators-deposits), and [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
+For the general placement and ecology contracts, see [15 - Caves & Carving](/iris/15-caves-carving), [16 - Surfaces, Decorators, Deposits](/iris/16-surfaces-decorators-deposits), and [23b - Entities & Spawners](/iris/23b-entities-spawners).

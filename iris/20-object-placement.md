@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,11 +38,9 @@ Use dimension `staticObjects` for a landmark, spawn building, or other object th
 3. Validate with `/iris pack validate pack=<pack>` on Bukkit or `/iris pack validate <pack>` on modded, then open Studio or create a test world.
 4. Visit world coordinates `100 100 -100`. That coordinate is the object's saved origin, usually its center, rather than its bottom or a terrain sample. Check the footprint on both sides of any chunk boundary.
 
-Static objects generate after Iris terrain and decoration, regardless of biome, slope, water, caves, density, or chance. Later native structures and imported features cannot overwrite blocks written by static objects. Each destination chunk receives its own portion; visiting the far side first does not omit the rest. Entries apply in array order, and the later entry wins wherever their written blocks overlap. Saved air writes air; unsaved space stays unchanged unless `bore` or `smartBore` fills it. This can replace terrain, including the bedrock layer.
+Static objects generate after terrain and decoration, regardless of biome, slope, water, caves, density, or chance, and later native structures cannot overwrite them. Entries apply in array order and the later entry wins where they overlap. Saved air writes air; unsaved space stays unchanged unless `bore` or `smartBore` fills it. **This can replace terrain, including the bedrock layer.**
 
-Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles are supported; angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. Directional block states use the existing object rotation rules. Saved block-entity data, such as container or sign data, accompanies its transformed blocks. Edits apply before block-state rotation and leave the source `.iob` unchanged. Changing a block's material discards incompatible saved block-entity data.
-
-A non-solid directional block that cannot represent its rotated orientation is skipped. Its tile data and placement callback are skipped with it; the remaining object still places.
+Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles work, but angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. Saved block-entity data accompanies its transformed blocks; edits apply before rotation, leave the source `.iob` unchanged, and changing a block's material discards incompatible block-entity data. A non-solid directional block that cannot represent its rotated orientation is skipped along with its tile data; the rest of the object still places.
 
 | Field | Default | Meaning |
 |-------|---------|---------|
@@ -56,9 +54,9 @@ A non-solid directional block that cannot represent its rotated orientation is s
 | `smartBore` | `false` | Fill enclosed rooms and pockets with air on a copy of the object |
 | `seed` | `0` | Fixed seed for probabilistic edits and replacement palettes, independent of chunk order and world seed |
 
-Missing objects and invalid settings are errors. The origin and the full transformed object must fit inside the dimension's build height; the runtime rejects an overflowing object instead of placing only a clipped fragment. Validate catches origin errors; full transformed bounds are checked while the world runtime loads the object.
+Missing objects and invalid settings are errors. The origin and the full transformed object must fit inside the dimension's build height; an overflowing object is rejected outright rather than placed as a clipped fragment.
 
-These settings affect newly generated chunks. They do not repair objects players break, paste into existing chunks, or rewrite existing buildings after a reload. Test changes in fresh chunks or a newly created disposable world. Production worlds use immutable activations; see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout). A new-activation object footprint is rejected when it would cross historical or transition terrain.
+These settings affect newly generated chunks only. They do not repair objects players break, paste into existing chunks, or rewrite existing buildings after a reload — test in fresh chunks or a disposable world. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
 
 ## Tutorial: get one object into the world
 
@@ -160,7 +158,7 @@ By default a placement is surface-only, unlimited in height, unlimited in slope,
 { "carvingSupport": "CARVING_ONLY", "caveAnchorMode": "FLOOR" }
 ```
 
-`SURFACE_ONLY` (the default) rejects any anchor that lands in carved space. `CARVING_ONLY` requires carved space at the anchor or within three blocks below it. The engine hunts for an anchor Y inside the cave column instead of using the terrain surface. A biome-owned cave placement accepts only cells owned by that exact cave biome. A region-owned cave placement intentionally spans every cave biome in the region. Unless `underwater: true` explicitly opts into fluid anchors, the anchor must be dry carved air above the dimension default cave-lava height. `ANYWHERE` sits in both lists. That means it rolls `chance` twice per chunk: once for the surface pass and once for the cave pass. Cave passes resolve their biome by sampling 48, 80, and 112 blocks below the surface. They take the deepest sample that differs from the surface biome and has carving objects. If none does, the surface biome is used.
+`SURFACE_ONLY` (the default) rejects any anchor in carved space. `CARVING_ONLY` requires carved space at the anchor or within three blocks below it, and hunts for an anchor Y inside the cave column instead of using the terrain surface. A biome-owned cave placement accepts only cells owned by that exact cave biome; a region-owned one spans every cave biome in the region. Unless `underwater: true` opts into fluid anchors, the anchor must be dry carved air above the dimension cave-lava height. `ANYWHERE` sits in both lists, so it rolls `chance` **twice** per chunk, once for each pass. A cave pass resolves its biome by sampling 48, 80, and 112 blocks down and taking the deepest sample that differs from the surface biome.
 
 `caveAnchorMode` picks which carved cells count. `FLOOR` needs solid support below. `CEILING` needs solid above. `CENTER` needs neither. `ANY` takes anything carved. `PROFILE_DEFAULT` defers to the cave profile ([15 - Caves & Carving](/iris/15-caves-carving)). `CEILING_HANG` overrides this to `CEILING` regardless of what you wrote.
 
@@ -188,7 +186,7 @@ The default (`0` to `10`) is treated as "no condition" and skips the check entir
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
-Natural biome and region scatter also rejects an automatic surface placement when any transformed support column intersects accepted surface-river water or lava. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` do not bypass this river exclusion. It applies only while world generation is choosing the surface Y. An explicit-Y call such as `/iris object paste` remains allowed inside a river so authors can intentionally build there.
+Natural scatter also rejects a surface placement whose support columns intersect accepted river water or lava. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` **do not** bypass that river exclusion; only an explicit-Y call such as `/iris object paste` can build in a river.
 
 ```json
 { "requireSurfaceSupport": true, "surfaceSupportBuffer": 2, "surfaceSupportDepth": 2 }
@@ -212,7 +210,7 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 { "mode": "MAX_HEIGHT" }
 ```
 
-`MAX_HEIGHT` samples every column in the transformed footprint and takes the highest. The footprint includes rotation, rotated translation, and warp reach. Nothing gets buried but the object floats off cliffs. `MIN_HEIGHT` takes the lowest. Nothing overhangs but slopes swallow it. The `FAST_` variants sample representative edge points instead of the full footprint. `PAINT` follows a connected surface from the placement anchor. Neighboring columns may rise or fall by up to four blocks, and gradual slopes can accumulate larger height changes across the object. Beneath an overhang it follows the nearby exposed ledge instead of jumping to the highest roof. The patch stops where no nearby surface connects, so it does not project onto a distant valley floor. Iris resolves the surface before writing any object blocks. Vines retain their hanging behavior.
+`MAX_HEIGHT` samples every column in the transformed footprint and takes the highest: nothing gets buried, but the object floats off cliffs. `MIN_HEIGHT` takes the lowest: nothing overhangs, but slopes swallow it. The `FAST_` variants sample representative edge points instead of the full footprint. `PAINT` follows a connected surface from the anchor, allowing up to four blocks of change per step; beneath an overhang it follows the nearby exposed ledge rather than jumping to the roof, and the patch stops where no nearby surface connects.
 
 **Stilts.** Stilt modes take a height mode, then repeat the object bottom blocks downward until they hit ground.
 
@@ -225,7 +223,7 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 
 `STILT` is `MAX_HEIGHT` plus columns. `MIN_STILT` is `MIN_HEIGHT` plus columns. `CENTER_STILT` is `CENTER_HEIGHT` plus columns and is the cheapest one worth using. The `FAST_` variants are cheaper and less accurate, so pair them with `overStilt` to drive the legs further under the surface. `ERODE_STILT` tapers the legs like a cone: deepest at the footprint centroid, dropping off toward the edges, with the lower portion randomly broken up.
 
-Occluding blocks and full ice or glass blocks can stilt. Containers, block entities, stairs, slabs, and dirt paths are excluded. Authored containers remain in place and keep their saved data. `stiltSettings.exclude` adds material keys to the exclusion list. Iris checks the original base and the resulting support material after palette selection and edits. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns. A `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
+Occluding blocks and full ice or glass blocks can stilt; containers, block entities, stairs, slabs, and dirt paths cannot, and `stiltSettings.exclude` adds more material keys to that list. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns, and a `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
 
 `ORGANIC_STILT` and `CEILING_HANG` are for caves. `ORGANIC_STILT` scans down to the first solid block and fills the gap with noise-varied roots. `CEILING_HANG` flips the object vertically, anchors its top to the roof, and grows the same organic column up into the ceiling. Both read `organicMaxScan`, `organicJitter`, and `organicScratch`.
 
@@ -353,7 +351,7 @@ Iris fills these chests during the post-generation chunk update pass, reading th
 
 Candidate blocks are shuffled, so which ones get marked varies per placement. `maximumMarkers` (default 8, hard max 16) caps the count. `markers/camp-spawns.json` lists the spawner resources. Its `emptyAbove` (default true) requires two air blocks above the marked block inside the object.
 
-**Saplings.** When a sapling grows, Iris scans the biome `objects[]` for placements whose `trees[]` matches the grown tree type and the sapling square size. It falls back to the region list if the biome had no match. It picks one and stamps it. A single placement can serve both natural generation and sapling override. Procedural tree generation (`proceduralObjects`) is a separate system. See [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins).
+**Saplings.** When a sapling grows, Iris scans the biome `objects[]` for placements whose `trees[]` matches the grown tree type and the sapling square size. It falls back to the region list if the biome had no match. It picks one and stamps it. A single placement can serve both natural generation and sapling override. Procedural tree generation (`proceduralObjects`) is a separate system. See [17b - Procedural Trees](/iris/17b-procedural-trees).
 
 ## 8. Reference
 

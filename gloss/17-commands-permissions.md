@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,11 +12,8 @@ Gloss uses `/gloss`, with `/hologram` and `/board` as shortcuts. Optional argume
 
 ## Language selection
 
-`/gloss language` opens the shared picker. `/gloss language self <locale>` sets your language, and `self reset` returns to the server default. Personal language selection requires both `gloss.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. `/gloss language server <locale>` changes the default with `gloss.admin` or `volmit.language.admin`.
-
-`/gloss language server edit [locale]` opens the inventory message editor with `gloss.admin` or `volmit.language.admin`. Omit the locale to choose one. Edits update that locale without changing any server default or player preference; see [Localization](/gloss/19-localization) for storage and validation.
-
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. See [Localization](/gloss/19-localization) for persistence and downloaded files.
+`/gloss language` picks a language. Personal selection needs `gloss.language.self`; server
+selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/languages).
 
 ## Plugin version
 

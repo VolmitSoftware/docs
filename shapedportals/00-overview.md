@@ -79,9 +79,7 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 
 {.dense}
 
-`/sp tp` is an alias for `/sp teleport`. Configuration files reload automatically by default.
-
-`/sp debug version` prints `ShapedPortals v<version>` with one regular-weight gradient across the whole line matching the help menu and requires `shapedportals.command`. `/sp version` runs the same command but is hidden from help and suggestions. Editing `runtime.prefix` in the viewer's language changes the displayed name in both commands; version output uses its text with the version-line gradient.
+`/sp tp` is an alias for `/sp teleport`, and `/sp version` for `/sp debug version`. Configuration files reload automatically by default.
 
 ### Find and visit a portal
 
@@ -98,17 +96,9 @@ Use an ID from the list. Teleportation looks for clear standing space over a sol
 > **Unsafe teleport confirmation:** If no safe spot exists, players with the additional unsafe permission can repeat the same teleport within 10 seconds. This can place the player inside blocks or over a drop. It does not clear space, create a platform, bypass an unavailable world, reactivate a portal, or override another plugin's teleport cancellation.
 {.is-warning}
 
-### Change the language
-
-```text
-/sp language self de_DE
-```
-
-This selects German for you. Use `/sp language self reset` to follow the server default or `/sp language server de_DE` to change the server default. See [Language files](/shapedportals/01-installation-configuration#language-files) for available locales and message editing.
-
 ### Create a diagnostic report
 
-`/sp debug dump` requires `shapedportals.debug` (default `op`) and saves a report under `plugins/ShapedPortals/debug/`. Reports upload to the public mclo.gs service by default. Use `upload=false` for a local-only report, or disable `debug.uploadEnabled` to block all uploads. A failed upload does not remove the local file. See [Diagnostic reports](/shapedportals/03-compatibility-operations#diagnostic-reports) for report contents and the shared `/volmit plugins debug` command.
+`/sp debug dump` saves a report under `plugins/ShapedPortals/debug/` and uploads it to mclo.gs by default. Use `upload=false` for a local-only report, or set `debug.uploadEnabled = false` to block all uploads. A failed upload leaves the local file in place. See [Diagnostic reports](/shapedportals/03-compatibility-operations#diagnostic-reports).
 
 ## Permissions
 
@@ -130,17 +120,15 @@ This selects German for you. Use `/sp language self reset` to follow the server 
 
 {.dense}
 
-Denying `shapedportals.language.self` or `volmit.language.self` blocks the personal picker, direct locale selection, and `self reset`.
+Operators get update notices even when a permission plugin denies `shapedportals.update`. Grant that node to let non-operators receive them, or set `general.updateNotifications = false` to turn the checks off for everyone. See [Update notifications](/shapedportals/03-compatibility-operations#update-notifications).
 
-Operators receive update notices even if a permission plugin denies `shapedportals.update`. Grant that permission to let non-operators receive them. Set `general.updateNotifications = false` to disable the checks and notices for everyone. See [Update notifications](/shapedportals/03-compatibility-operations#update-notifications).
+Administrative subcommands check their own permission and do not also need `shapedportals.command`. World restrictions, shape rules, and protection plugins still apply to a player who has creation permission.
 
-`/volmit plugins languages` manages the server language for all enabled Volmit providers. It preserves personal overrides and requires permission to administer every provider being changed.
-
-Administrative subcommands check their own permission and do not also require `shapedportals.command`. World restrictions, shape rules, and protection-plugin decisions still apply when a player has creation permission.
+For the language picker and message editing, see [Languages](/languages).
 
 ## Creation lifecycle
 
-Minecraft gets the first chance to create a normal portal. Shaped Nether proposals use a cancellable `PortalCreateEvent`; shaped End proposals start after the final eye placement is accepted. See [Portal behavior](/shapedportals/02-portal-behavior-events) for protection plugins, repairs, and saved data.
+Minecraft gets the first chance to make a normal portal. A shaped Nether proposal then fires a cancellable `PortalCreateEvent`, so protection plugins can refuse it; a shaped End proposal starts once the final eye is accepted. See [Portal behavior](/shapedportals/02-portal-behavior-events).
 
 ## Related pages
 
@@ -148,4 +136,5 @@ Minecraft gets the first chance to create a normal portal. Shaped Nether proposa
 - [Installation and configuration *Requirements, editor, and settings*](/shapedportals/01-installation-configuration)
 - [Troubleshooting *Portal creation, integrity, and travel checks*](/shapedportals/02-portal-behavior-events#troubleshooting)
 - [Developer reference *Geometry, persistence, and build details*](/shapedportals/04-architecture-limits)
+- [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}

@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -100,7 +100,7 @@ Use `setLines` for authored MiniMessage, functions, animations, player expressio
 
 `bindPosition` and `bindPresentation` sample on their declared entity owner's scheduler. The presentation contains XYZ scale, XYZ rotation in degrees, and opacity. Its scale multiplies `IconDisplayStyle` scale; its opacity multiplies style text opacity. Presentation scales clamp to `0`–`16`, opacity to `0`–`1`, and finite rotations wrap through 360 degrees. Text, boxes, and particle transforms follow the same presentation. A null binder removes that binding.
 
-All appearance types above are in `art.arcane.gloss.api` and ship in the API jar. `IconDisplayStyle.defaults()` uses fixed billboard and opaque glyphs; `hologramDefaults()` selects center billboard and see-through text. A partial style object uses the shared member defaults. `HologramBox.defaults()` disables decoration, and a null box restores that disabled default. See [Display style and boxes](/gloss/04-holograms#display-style-and-boxes) for every field and range.
+All appearance types above are in `art.arcane.gloss.api` and ship in the API jar. `IconDisplayStyle.defaults()` uses fixed billboard and opaque glyphs; `hologramDefaults()` selects center billboard and see-through text. A partial style object uses the shared member defaults. `HologramBox.defaults()` disables decoration, and a null box restores that disabled default. See [Display style and boxes](/gloss/11-icons#display-style-and-boxes) for every field and range.
 
 ## Scoreboards and tablist
 

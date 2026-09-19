@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-09-10T01:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,17 +39,9 @@ Keys are matched exactly first, then case-insensitively. A value Adapt cannot tu
 
 ### When models.toml wins
 
-`plugins/Adapt/models.toml` is the resource-pack side of icons. It outranks `gui.skillIcons` and `gui.adaptationIcons` whenever it actually overrides something. Your configured material is folded into the model before the model becomes an item. The test for "actually overrides" is narrow:
-
-- No configured material, or one equal to the class's hardcoded default, leaves the model untouched.
-- A model with a non-zero `model` number, or with a `material` different from the hardcoded default, wins outright and your configured material is ignored.
-- Anything else takes your configured material and keeps the model's `modelKey`.
-
-That middle case matters because `models.toml` populates itself. The first lookup for a path writes an entry holding the hardcoded default and `model = 0`. A placeholder like that is not an override, so `gui.skillIcons` still applies over it.
-
-With `customModels = false`, model lookups return the hardcoded fallback with no model number and no key. That is never an override, so the `gui.*Icons` material always applies.
-
-Missing `models.toml` paths are created with defaults on first read. The file is rewritten on a background thread. Adapt reads model mappings only from the root `plugins/Adapt/models.toml` file.
+`models.toml` wins whenever it names a real model. A generated placeholder entry does not count, so
+your `gui.skillIcons` material still applies. With `customModels = false`, `models.toml` is ignored
+entirely.
 
 ## Reordering menus
 
@@ -114,39 +106,10 @@ Two more keys affect these menus. See [01 - Installation & Configuration](/adapt
 | `< 0` | Treated as `0` (auto) with a warning |
 | `> 6` | Clamped to `6` with a warning |
 
-### Skills menu layout math
+### Skills menu layout
 
-Constants: grid width `5`, maximum window height `6`, one navigation row always reserved. Usable content rows are `rows - 1`.
-
-Fixed height `n` (`n >= 2`) uses `contentRows = n - 1` and `itemsPerPage = 5 * contentRows`. The window is `n` rows on every page. That is true no matter how many cards that page holds. Anything past `itemsPerPage` moves to the next page.
-
-| `skillsGuiRows` | Content rows | Skills per page |
-|---|---|---|
-| `2` | 1 | 5 |
-| `3` | 2 | 10 |
-| `4` | 3 | 15 |
-| `5` | 4 | 20 |
-| `6` | 5 | 25 |
-
-Auto (`0`): `contentRows = min(5, ceil(visibleSkills / 5))`, so a page holds up to 25 cards and the rest page. The viewport is then re-derived per page from the cards on it as `max(2, min(6, ceil(pageItems / 5) + 1))`.
-
-Navigation is left-click page step and right-click 5-page jump. That jump applies in the skills menu and the 9-wide menus.
-
-### 9-wide menu layout
-
-Adaptation lists and adaptation level pickers use `GuiLayout.plan` at width `9`. They reserve a navigation row when `guiBackButton` is on. They force one on once the content exceeds what the window can hold without it. Content rows are `ceil(items / 9)` capped at the available rows, and `itemsPerPage = contentRows * 9` with a floor of `9`.
-
-### Background decorator
-
-The checkerboard decorator reads the live viewport height:
-
-| Row | Condition | Material |
-|---|---|---|
-| `0` | height >= 3 | Alternating `GRAY_STAINED_GLASS_PANE` / `LIGHT_GRAY_STAINED_GLASS_PANE` |
-| `1` | height >= 4 | `BLACK_STAINED_GLASS_PANE` |
-| any other | always | Alternating `BLACK_STAINED_GLASS_PANE` / `GRAY_STAINED_GLASS_PANE` |
-
-Below 3 rows the top gradient row is dropped. Below 4 rows the black separator row is dropped. Short windows keep a clean alternating background instead of a truncated pattern.
+Five cards per row, one navigation row always reserved, six rows maximum. Left-click steps a page
+and right-click jumps five.
 
 ### Icon precedence
 

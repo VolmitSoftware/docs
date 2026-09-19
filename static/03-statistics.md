@@ -2,7 +2,7 @@
 title: Static - Statistics
 description: Counter identifiers, units, calculated values, and tracking boundaries
 published: true
-date: 2026-09-10T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: static, statistics
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -29,7 +29,7 @@ Static starts recording when installed; it does not import Minecraft's existing 
 | `votes` | Votifier events matched to recorded players, including known offline profiles |
 | `joins`, `quits` | Eligible connection events; enabling or disabling the plugin does not synthesize connections |
 
-Cancelled events are ignored. Creative and spectator play are excluded by default and can be enabled independently. Excluded worlds and globally disabled tracking do not accumulate eligible counters or online time. Movement uses actual coordinates rather than block crossings and ignores teleport events and world changes. Vehicle movement is not assigned to walking, swimming, or flight categories. Values describe events while Static is active, not reconstructed lifetime totals.
+Cancelled events are ignored. Creative and spectator play are excluded by default, and can be re-enabled independently. An excluded world accumulates nothing, including online time. Movement measures actual distance, not block crossings, and ignores teleports and world changes; movement in a vehicle is not filed under walking, swimming, or flight.
 
 | Calculated identifier | Formula |
 |---|---|
@@ -40,7 +40,7 @@ Cancelled events are ignored. Creative and spectator play are excluded by defaul
 | `arrow_accuracy` | Player-hit arrows / arrows fired, clamped to 0–1; displayed as a percentage |
 | `votes_per_day` | Votes / eligible online days |
 
-Zero denominators produce zero. “Arrows without a player hit” includes arrows still in flight and arrows that hit mobs or blocks. Tracked projectile attribution expires after five minutes or plugin shutdown. Piercing cannot increase a single arrow's accuracy contribution beyond one player hit. Shooter and victim filters apply independently; a filtered impact does not consume that player's hit credit if tracking becomes eligible before a later impact from the same piercing arrow.
+A zero denominator produces zero. “Arrows without a player hit” includes arrows still in flight and arrows that hit a mob or a block. An arrow stops being tracked after five minutes. A piercing arrow can contribute at most one player hit to accuracy.
 
 Rankings sort values descending, then names case-insensitively and UUIDs for stable ties. Ratios can favor small samples; they are direct ratios without a minimum-activity threshold.
 

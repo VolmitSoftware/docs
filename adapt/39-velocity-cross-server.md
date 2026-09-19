@@ -2,7 +2,7 @@
 title: "Cross-Server SQL & Redis"
 description: "Fenced SQL storage and Redis handoff across backend servers"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,13 +13,10 @@ This path is active only when `sql.enabled` and `redis.enabled` are both true. E
 
 ## Ownership and handoff
 
-`ADAPT_DATA` stores canonical player JSON. `ADAPT_DATA_FENCE` stores the current owner token, epoch, committed sequence, and any effective predecessor. Both tables must use InnoDB. A backend claims a player before constructing the runtime. When claim or adoption cannot be verified, the Minecraft login continues but Adapt remains unavailable instead of creating an unfenced SQL-backed player.
-
-When a claimed row has a predecessor, the destination subscribes to a request-specific reply channel and publishes the same request up to three times during a 250 ms window. The request names the player, request id, predecessor owner token, and predecessor epoch. Only a snapshot matching that exact fence can participate in adoption. At most eight candidate fences are retained, the highest sequence for the expected fence wins, and equal-sequence conflicting JSON is rejected.
-
-The source handles the request on the player's owning entity scheduler. If its live runtime owns the requested fence, it freezes that runtime, removes transient region grants, advances the snapshot sequence, and stages the snapshot in Redis for 60 seconds before publishing the direct reply. Repeated requests reuse the retired snapshot. The destination also checks the exact staged key after the reply window, so a completed stage survives lost pub/sub replies or a source failure. Successful SQL adoption writes the new owner at sequence 1 and asynchronously deletes the staged predecessor record.
-
-SQL adoption also considers a matching in-process pending write and a valid `ADAPT_SQL_RECOVERY_V1` file. Those sources still require the claimed predecessor fence. Old raw-JSON `.pending-sql` files and every pre-fence `.pending-delete` file found in SQL mode are preserved and rejected for operator reconciliation. `.pending-delete` is valid only in local JSON mode.
+SQL holds the authoritative profile. When you switch servers, the destination asks the previous
+owner for your live state; Redis carries that handoff. If it cannot be verified, your Minecraft
+login still succeeds but Adapt stays inactive until you reconnect, rather than creating a second
+profile.
 
 ## Reset and purge
 
@@ -45,8 +42,6 @@ The `Adapt:data:v2` format is a hard break. Stop the whole network and replace e
 | `Adapt:data:v2:stage:<player>:<owner>:<epoch>` | Exact-fence staged snapshot with a 60-second TTL |
 
 The channel family and staging prefix are fixed. Separate Adapt networks sharing one Redis service can observe each other's traffic even though fence validation rejects unrelated player ownership. Use separate Redis services or network boundaries.
-
-Snapshot JSON is strict UTF-8 and may contain at most 16,777,215 encoded bytes, matching MySQL `MEDIUMTEXT`. The staged record adds a fixed 60-byte binary header. Staged reads check the Redis length before fetching and then validate the header, player, owner, epoch, sequence, payload length, and UTF-8. Invalid or unavailable staging reads leave Adapt unavailable instead of silently accepting uncertain state; they do not reject the Minecraft session.
 
 ## Failure boundaries
 

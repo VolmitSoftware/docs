@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,11 +19,13 @@ Damaging endermen, endermites, and the ender dragon pays XP scaled by the damage
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation (level 1 or higher). The skill and the adaptation are both enabled. You are not in a blacklisted world or a blocked game mode. You hold the `adapt.use.<adaptation>` permission. The protection plugins and region policy allow the action. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions). Learn and level everything from the Adapt menu (`/adapt`).
+All of this needs the adaptation learned to level 1 or higher from the Adapt menu (`/adapt`), the skill and the adaptation enabled, a world and game mode that are not blocked, and the `adapt.use.<adaptation>` permission. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions).
 
 Anti-Levitation, Rift Visage, and Inflated Pocket Dimension are marked permanent. The menu asks for a confirmation click before you learn them. After that they cannot be unlearned or refunded.
 
 ### Rift Resistance (`rift-resist`)
+
+1 level · 5 knowledge
 
 Using an ender item gives you a short burst of Resistance. That burst covers the
 moment right after a pearl lands, when you are usually most exposed.
@@ -34,21 +36,31 @@ moment right after a pearl lands, when you are usually most exposed.
 
 Easy Enderchest also grants a brief, stronger Resistance pulse when you open your chest from hand, if you have learned this adaptation too.
 
+Triggers only on right-click air with `ENDER_EYE` or `ENDER_PEARL` in the main hand, granting Resistance at amplifier `amplitude` for `duration` ticks plus 3 XP. The Easy Enderchest pulse is 10 ticks at amplifier 2, despite what the menu lore says.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `amplitude` | `1` | Resistance amplifier granted, so 1 means Resistance II. |
+| `duration` | `80` | Resistance duration in ticks. |
+| `activationCooldownMillis` | `4000` | Milliseconds between right-click-air activations and the XP they grant. |
+
 ### Remote Access (`rift-access`)
+
+1 level · 15 knowledge
 
 Remote Access gives you a crafted portkey bound to one container. After that you can open that container from anywhere, so a base chest is always one right-click away.
 
 1. Learn it, then craft an ender pearl with a compass to get a Reliquary Portkey.
-2. Sneak-left-click the container you want to bind. Left-clicking air binds the container you are looking at within 5 blocks, except on Folia.
+2. Sneak-left-click the container you want to bind. Left-clicking air binds the container you are looking at within 5 blocks.
 3. Right-click the portkey anywhere to open that container remotely.
 
 Gloss container previews work while holding a Portkey. Looking at the preview does not bind or activate it; use the gestures above.
 
-Binding and every remote open run the full container permission checks,
-including both halves of a double chest. It never opens something you could not
-open by hand. On Folia the player and every physical container block must be in the same region, so a remote open fails when the target is elsewhere.
+Binding and every remote open run the full container permission checks, including both halves of a double chest, so it never opens something you could not open by hand. Breaking, burning, pushing, or blowing up the container closes an open session. No adaptation-specific config knobs.
 
 ### Easy Enderchest (`rift-enderchest`)
+
+1 level · 10 knowledge
 
 Hold an ender chest and click to open it without placing the block. That is the whole feature, and it saves a placement and a pickup every single time.
 
@@ -56,7 +68,11 @@ Hold an ender chest and click to open it without placing the block. That is the 
 2. Right-click air, left-click air, or left-click a block.
 3. Your ender chest opens. The item goes on a five second cooldown afterward.
 
+Triggers on right-click air, left-click air, or left-click block with `ENDER_CHEST` in the main hand. A successful use sets a 100 tick cooldown on the ender chest item. Clicking during the cooldown cancels the interaction. If `rift-resist` is learned, a 10 tick amplifier 2 Resistance pulse is applied. No adaptation-specific config knobs.
+
 ### Rift Gate (`rift-gate`)
+
+1 level · 30 knowledge
 
 Rift Gate is a recall stone. Bind a location to a crafted eye, then use it later to channel back there. The channel is slow and blinds you on purpose. You float in place, visible and
 vulnerable. If something kills you during it you die normally.
@@ -68,7 +84,16 @@ vulnerable. If something kills you during it you die normally.
 
 By default the eye is consumed on use, so each gate is a one-shot ticket. Turn that off and the eye survives, with a cooldown between uses instead.
 
+Channel length is 85 ticks, with Blindness for 100 ticks and Levitation for 85. The eye and the cooldown are both spent the moment the channel starts, so stowing or dropping the eye mid-channel does not refund it. A plain eye of ender can still be thrown to locate a stronghold. Cooldown when `consumeOnUse` is false is 150 ticks.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `consumeOnUse` | `true` | When true the bound eye is consumed by a completed teleport. When false the eye survives and a 150 tick cooldown gates reuse. |
+| `requireCraftedEye` | `true` | When true only the crafted bound eye works and the recipe is registered. When false any eye of ender can be bound. |
+
 ### Rift Blink (`rift-blink`)
+
+5 levels · 1 knowledge, then 7 per level
 
 Blink is a free short-range teleport on a double jump. Aim at the ground to land there, at a ledge to pull yourself onto it, or at open air to dash. It costs no pearl, but you take the normal pearl landing damage, which drops as you level. It only works in survival mode.
 
@@ -76,7 +101,24 @@ Blink is a free short-range teleport on a double jump. Aim at the ground to land
 2. Press jump again in mid-air while looking where you want to go.
 3. Hold sneak as you do it to phase straight through walls and land in the farthest open space in range.
 
+Distance is `baseDistance + (levelPercent * distanceFactor)`. Self damage is `pearlDamageBase - ((level - 1) * pearlDamageReductionPerLevel)`, floored at `minimumPearlDamage`.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `cooldownMillis` | `2000` | Milliseconds between successful blinks. |
+| `pearlDamageBase` | `5.0` | Self damage at level 1, in health points (2 = 1 heart). |
+| `pearlDamageReductionPerLevel` | `1.0` | Self damage removed per level past the first. |
+| `minimumPearlDamage` | `1.0` | Floor on blink self damage. |
+| `baseDistance` | `12` | Blink distance in blocks before the level bonus. |
+| `distanceFactor` | `20` | Blink distance in blocks added at max level. |
+| `groundSnapDepth` | `5` | Blocks searched downward from the aimed point to prefer solid ground. |
+| `momentumCarry` | `0.35` | Velocity carried along your look direction after landing, in blocks per tick. |
+| `minBlinkDistance` | `1.5` | Shortest distance that still counts as a blink, in blocks. |
+| `phaseWhileSneaking` | `true` | Lets a blink started while sneaking pass through walls and land in the farthest open space in range. |
+
 ### Anti-Levitation (`rift-descent`)
+
+1 level · 3 knowledge
 
 Shulker hits are annoying because the levitation lifts you and the fall afterward hurts. Tap sneak while levitating and Anti-Levitation strips the effect. It shields you
 from fall damage for the next few seconds. You come straight back down safely.
@@ -85,13 +127,23 @@ from fall damage for the next few seconds. You come straight back down safely.
 2. While levitating, tap sneak.
 3. Levitation ends and your fall damage is nullified for the duration of the cooldown.
 
-The fall protection is an attribute change, not Slow Falling, so you drop at normal speed and take no damage from the landing.
+Removes Levitation and applies a `FALL_DAMAGE_MULTIPLIER` modifier of -1.0 for `cooldown * 20` ticks, nullifying fall damage for that window. It is not Slow Falling and does not change your fall speed, despite what the adaptation description says.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `cooldown` | `5.0` | Seconds between uses, and also the length of the fall damage protection. |
 
 ### Rift Visage (`rift-visage`)
 
+1 level · 2 knowledge
+
 While you have at least one ender pearl anywhere in your inventory, endermen never take you as a target. Look at them all you like. It works on its own once learned, and it is permanent.
 
+An enderman cannot target a player carrying at least one `ENDER_PEARL`. No adaptation-specific config knobs.
+
 ### Ender Taglock (`rift-ender-taglock`)
+
+3 levels · 7 knowledge
 
 Taglock inverts the ender pearl. Instead of teleporting yourself, you bind a pearl to something else and throw it to move that thing. The tagging hit deals no damage.
 
@@ -101,7 +153,23 @@ Taglock inverts the ender pearl. Instead of teleporting yourself, you bind a pea
 
 Level 1 tags passive and hostile mobs. Level 2 adds villagers and large targets. Level 3 tags anything, including players. By default the thrower eats the pearl teleport damage rather than the victim.
 
+Tagging needs a plain `ENDER_PEARL` in the main hand. Target eligibility by level: 1 covers passive and hostile mobs, 2 adds villagers and targets above the large size thresholds, 3 covers everything including players. Throw cooldown is `throwCooldownTicksBase - (levelPercent * throwCooldownTicksFactor)` with a floor of 4 ticks. Your own vanilla pearl teleport is suppressed briefly after a taglocked pearl lands.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `throwCooldownTicksBase` | `30` | Cooldown between tagged pearl throws before the level reduction, in ticks. |
+| `throwCooldownTicksFactor` | `14` | Cooldown ticks removed at max level. |
+| `suppressPearlTeleportWindowMillis` | `250` | How long the thrower's own vanilla pearl teleport stays suppressed after a taglocked pearl lands. |
+| `largeWidthThreshold` | `1.3` | Hitbox width in blocks at or above which a target counts as large for level 2. |
+| `largeHeightThreshold` | `2.35` | Hitbox height in blocks at or above which a target counts as large for level 2. |
+| `xpOnTag` | `8` | Rift XP granted for tagging an entity. |
+| `xpOnThrow` | `5` | Rift XP granted for throwing a tagged pearl. |
+| `xpOnTeleport` | `14` | Rift XP granted when a tagged target is relocated. |
+| `damageSender` | `true` | When true the thrower takes the pearl teleport damage. When false the teleported target takes it instead. |
+
 ### Inflated Pocket Dimension (`rift-inflated-pocket-dimension`)
+
+1 level · 7 knowledge
 
 Your ender chest becomes a live building supply. It is the difference between one trip to build a bridge and six.
 
@@ -110,7 +178,17 @@ Your ender chest becomes a live building supply. It is the difference between on
 3. Keep building. When a stack in your hand runs low, placing blocks refills it from the ender chest automatically.
 4. Sneak and drop an item to send it into the ender chest instead of the ground.
 
+The pull needs an empty main hand and works on right-click block, right-click air, or left-click air; air variants use the block you are looking at within 5 blocks. Build refill tops the held stack back up to `buildRefillAmount` or the material's max stack size, whichever is smaller.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `buildRefillAmount` | `64` | Items pulled from the ender chest to top up the held stack while building. |
+| `rightClickPullAmount` | `64` | Items pulled per right-click on a block. |
+| `xpPerTransferredItem` | `0.08` | Rift XP granted per item stored into the ender chest by a sneak-drop. Pulls and build refills award no XP. |
+
 ### Void Magnet (`rift-void-magnet`)
+
+5 levels · 4 knowledge
 
 Hold sneak and nearby item drops start flowing to you on a pulse, straight into your ender chest. It is built for mining, farming, and mob grinders where the drops are spread over a wide area. Leveling widens the radius, raises the items per pulse, and shortens the pulse delay.
 
@@ -118,18 +196,60 @@ Hold sneak and nearby item drops start flowing to you on a pulse, straight into 
 2. Sneak and stay sneaking. The magnet pulses on a timer while you hold it.
 3. Items land in your ender chest. By default anything that does not fit stays on the ground. A config switch lets the leftovers spill into your normal inventory.
 
+Radius caps at 16 blocks and 32 items per pulse, and the pulse delay floors at 2 ticks. Anything you could not pick up by hand stays on the ground.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `allowEnderChestOverflow` | `false` | When true, items that do not fit in the ender chest go to your normal inventory. When false they stay on the ground. |
+| `radiusBase` | `5` | Magnet radius in blocks before the level bonus. |
+| `radiusFactor` | `9` | Magnet radius in blocks added at max level. |
+| `maxItemsBase` | `10` | Item drops pulled per pulse before the level bonus. |
+| `maxItemsFactor` | `22` | Item drops per pulse added at max level. |
+| `pulseTicksBase` | `20` | Ticks between pulses before the level reduction. |
+| `pulseTicksFactor` | `12` | Ticks removed from the pulse delay at max level. |
+| `xpPerMovedItem` | `0.7` | Rift XP granted per item moved. |
+
 ### Void Skin (`rift-void-skin`)
 
-Void Skin is a death save. Any hit that would kill you is cancelled. You are blinked to a nearby safe spot
-instead. Brief Resistance helps you survive whatever comes next. It costs one plain ender pearl from your inventory and has a long cooldown that shortens as you level.
+4 levels · 6 knowledge, then 8 per level
 
-It works on its own once learned. If no safe spot is found nearby it falls back to the current world's spawn. With no plain pearl on you, or with the cooldown still running, the hit lands normally.
+Void Skin is a death save. Any hit that would kill you is cancelled. You are blinked to a nearby safe spot
+instead. Brief Resistance helps you survive whatever comes next. It costs one plain ender pearl from your inventory and has a long cooldown that shortens as you level. If no safe spot is found nearby it falls back to the current world's spawn. With no plain pearl on you, or with the cooldown still running, the hit lands normally.
+
+Triggers when the damage would exceed your current health plus absorption, and consumes a plain ender pearl from your inventory. The safe-spot search radius is clamped to 3-16 blocks. With no safe spot it falls back to the world spawn, and with no usable world spawn the escape is skipped and the damage lands.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `cooldownBaseMillis` | `120000` | Milliseconds between escapes at level 1. |
+| `cooldownReductionPerLevelMillis` | `18000` | Cooldown milliseconds removed per level past the first. |
+| `minimumCooldownMillis` | `45000` | Floor on the escape cooldown, in milliseconds. |
+| `resistanceTicksBase` | `60` | Resistance duration after an escape before the level bonus, in ticks. |
+| `resistanceTicksPerLevel` | `20` | Resistance ticks added per level. |
+| `resistanceAmplifier` | `2` | Resistance amplifier applied after an escape, so 2 means Resistance III. |
+| `searchRadius` | `9` | Horizontal search radius for a safe blink spot, in blocks. |
+| `minRadius` | `4` | Shortest horizontal blink distance, in blocks. |
+| `xpOnEscape` | `40` | Rift XP granted when an escape triggers. |
 
 ### Pearl Rebound (`rift-pearl-rebound`)
 
-A thrown pearl no longer commits at the first thing it hits. The first block it strikes bounces it off the surface, steered toward wherever you are looking, and the pearl teleports you at its next impact. That lets you bank pearls around corners and through gaps you cannot see through. Pearl landing damage is also reduced, and both the reduction and the steering improve with level. It works on its own once learned.
+4 levels · 3 knowledge, then 5 per level
+
+A thrown pearl no longer commits at the first thing it hits. The first block it strikes bounces it off the surface, steered toward wherever you are looking, and the pearl teleports you at its next impact. That lets you bank pearls around corners and through gaps you cannot see through. Pearl landing damage is also reduced, and both the reduction and the steering improve with level.
+
+Only plain ender pearls rebound, and only once each: pearls already claimed by another Rift adaptation, or already rebounded, teleport normally. The bounce reflects the pearl off the struck block face, biases it toward the thrower's look direction, and relaunches it at `reboundSpeed`. Damage reduction and aim bias are both capped at 0.9 in code.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `damageReductionBase` | `0.3` | Fraction of pearl teleport damage removed at level 1, 0-1. |
+| `damageReductionPerLevel` | `0.15` | Extra damage reduction fraction per level past the first. |
+| `aimBiasBase` | `0.3` | Fraction the rebounded pearl steers toward your look direction at level 1, 0-1. |
+| `aimBiasPerLevel` | `0.15` | Extra steering fraction per level past the first. |
+| `reboundSpeed` | `1.5` | Launch speed of the rebounded pearl, in blocks per tick. Floor is 0.4. |
+| `xpOnRebound` | `6` | Rift XP granted each time a pearl rebounds. |
 
 ### Rift Conduit (`rift-conduit`)
+
+4 levels · 8 knowledge
 
 Conduit links two containers so items move between them on their own. Dump loot into the chest by your farm and it appears in the sorting chest at your base.
 
@@ -138,7 +258,19 @@ Conduit links two containers so items move between them on their own. Dump loot 
 3. Right-click a second container with the taglock to link the pair.
 4. Put items in one container and close it. They flow to the partner.
 
-Binding range grows a long way with level, and at max level the two containers can sit in different dimensions. Both ends re-check container permissions on every flow, and anything the partner cannot accept comes straight back to the source. On Folia the player and the endpoint have to share a region, so cross-region and cross-dimension links do not work there.
+Binding range grows a long way with level, and at max level the two containers can sit in different dimensions. Both ends re-check container permissions on every flow, and anything the partner cannot accept comes straight back to the source.
+
+A taglock in hand binds when it clicks a container and prints a hint when it does not. A plain pearl only captures when you sneak-click a container. A taglock held by someone without the adaptation cannot be thrown. Throughput is clamped to 1-1152 items and binding range to at most 512 blocks.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `throughputBase` | `48` | Items moved per flow before the level bonus. |
+| `throughputFactor` | `336` | Items per flow added at max level. |
+| `rangeBase` | `24` | Binding range in blocks before the level bonus. |
+| `rangeFactor` | `200` | Binding range in blocks added at max level. |
+| `crossDimensionAtMax` | `true` | Allows linking containers in different worlds once the adaptation is at max level. |
+| `xpOnLink` | `30` | Rift XP granted when a new link is formed. |
+| `xpPerFlow` | `0.4` | Rift XP granted per item flowed between linked containers. |
 
 ## Reference
 
@@ -160,370 +292,23 @@ Written to `plugins/Adapt/skills/rift.toml` on first load.
 | `damageEnderdragonXPMultiplier` | `8` | XP per point of damage dealt to the ender dragon. |
 | `challengeRiftReward` | `500` | Base XP reward for every Rift challenge chain. |
 
-### Skill milestones
+### Challenges
 
-| Advancement key | Stat key | Threshold | XP reward |
-|-----------------|----------|-----------|-----------|
-| `challenge_rift_50` | `rift.teleports` | 50 | `challengeRiftReward` |
-| `challenge_rift_500` | `rift.teleports` | 500 | `challengeRiftReward` x 2 |
-| `challenge_rift_5k` | `rift.teleports` | 5000 | `challengeRiftReward` x 5 |
-| `challenge_rift_pearls_50` | `rift.ender.pearls` | 50 | `challengeRiftReward` |
-| `challenge_rift_pearls_500` | `rift.ender.pearls` | 500 | `challengeRiftReward` x 2 |
-| `challenge_rift_enderman_50` | `rift.enderman.kills` | 50 | `challengeRiftReward` |
-| `challenge_rift_enderman_500` | `rift.enderman.kills` | 500 | `challengeRiftReward` x 2 |
-| `challenge_rift_dragon_500` | `rift.dragon.damage` | 500 | `challengeRiftReward` |
-| `challenge_rift_dragon_5k` | `rift.dragon.damage` | 5000 | `challengeRiftReward` x 2 |
-| `challenge_rift_crystal_10` | `rift.crystals.destroyed` | 10 | `challengeRiftReward` |
-| `challenge_rift_crystal_100` | `rift.crystals.destroyed` | 100 | `challengeRiftReward` x 2 |
+| Challenge | Threshold | Reward knob |
+|---|---|---|
+| `challenge_rift_50` | 50 | `challengeRiftReward` |
+| `challenge_rift_500` | 500 | `challengeRiftReward` x 2 |
+| `challenge_rift_5k` | 5000 | `challengeRiftReward` x 5 |
+| `challenge_rift_pearls_50` | 50 | `challengeRiftReward` |
+| `challenge_rift_pearls_500` | 500 | `challengeRiftReward` x 2 |
+| `challenge_rift_enderman_50` | 50 | `challengeRiftReward` |
+| `challenge_rift_enderman_500` | 500 | `challengeRiftReward` x 2 |
+| `challenge_rift_dragon_500` | 500 | `challengeRiftReward` |
+| `challenge_rift_dragon_5k` | 5000 | `challengeRiftReward` x 2 |
+| `challenge_rift_crystal_10` | 10 | `challengeRiftReward` |
+| `challenge_rift_crystal_100` | 100 | `challengeRiftReward` x 2 |
 
-`rift.enderman.kills` counts kills where the enderman's killer is the player. `rift.teleports` is also incremented by Rift Blink and Void Skin.
-
-### Shared adaptation keys
-
-Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries `enabled`, `permanent`, `showParticles`, `showSounds`, plus the cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` listed per adaptation below.
-
-### Rift Resistance
-
-| Property | Value |
-|----------|-------|
-| Icon | `SCULK_VEIN` |
-| Max level | 1 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 3 |
-| Cost factor | 1 |
-| Tick interval (ms) | 10288 |
-| Config file | `plugins/Adapt/adaptations/rift-resist.toml` |
-| Listened events | `PlayerInteractEvent` (`on`, HIGHEST) |
-| Stats | `rift.resist.activations` |
-| Milestone | `challenge_rift_resist_200` at 200 activations, 300 XP |
-| Menu lore | Passive: Provides resistance when you use rift abilities, or Ender Items. NOT Including Portable Enderchest, only things you can Consume |
-
-Triggers only on right-click air with `ENDER_EYE` or `ENDER_PEARL` in the main hand, granting Resistance at amplifier `amplitude` for `duration` ticks plus 3 XP. Despite the menu lore, `RiftEnderchest` also calls into this adaptation. It
-grants a 10 tick, amplifier 2 Resistance pulse when Easy Enderchest opens a
-chest and Rift Resistance is learned.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `amplitude` | `1` | Resistance amplifier granted, so 1 means Resistance II. |
-| `duration` | `80` | Resistance duration in ticks. |
-| `activationCooldownMillis` | `4000` | Milliseconds between right-click-air activations and the XP they grant. |
-
-### Remote Access
-
-| Property | Value |
-|----------|-------|
-| Icon | `NETHER_STAR` |
-| Max level | 1 |
-| Initial knowledge cost | 15 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.2 |
-| Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adaptations/rift-access.toml` |
-| Listened events | `PlayerInteractEvent`, `BlockBurnEvent`, `BlockPistonRetractEvent`, `BlockPistonExtendEvent`, `BlockExplodeEvent`, `EntityExplodeEvent`, `BlockBreakEvent`, `InventoryCloseEvent`, `PlayerQuitEvent`, `ChunkUnloadEvent` (all `on`) |
-| Stats | `rift.access.remote-opens` |
-| Milestones | `challenge_rift_access_100` at 100 remote opens, 300 XP. `challenge_rift_access_2500` at 2500 remote opens, 1000 XP |
-| Menu lore | Ender Pearl + Compass = Reliquary Portkey. This item allows you to access containers remotely. Once crafted look at item to see usage |
-| Recipe | Shapeless `rift-remote-access`: 1 `ENDER_PEARL` + 1 `COMPASS`, produces a bound ender pearl (Reliquary Portkey) |
-
-Binding and every remote open must pass native container protectors plus Bukkit
-right-click-block events for every physical container block. Either half can
-deny a double chest. A remote double-chest session indexes both blocks and every unique chunk, holding those chunk tickets only until the view closes or the attempt fails. On Folia the player and every physical container block must share the current owning region, and binding requires a direct block click. Block break, burn, piston, and explosion handlers invalidate open sessions when the container is destroyed. No adaptation-specific config knobs.
-
-### Easy Enderchest
-
-| Property | Value |
-|----------|-------|
-| Icon | `ENDER_CHEST` |
-| Max level | 1 |
-| Initial knowledge cost | 10 |
-| Base knowledge cost | 0 |
-| Cost factor | 0.0 |
-| Tick interval (ms) | 9248 |
-| Config file | `plugins/Adapt/adaptations/rift-enderchest.toml` |
-| Listened events | `PlayerInteractEvent` (`on`, NORMAL) |
-| Stats | `rift.enderchest.opens` |
-| Milestone | `challenge_rift_enderchest_200` at 200 opens, 300 XP |
-| Menu lore | Click an Ender Chest in your hand to open it (just do not place it) |
-
-Triggers on right-click air, left-click air, or left-click block with `ENDER_CHEST` in the main hand. A successful use sets a 100 tick cooldown on the ender chest item. Clicking during the cooldown cancels the interaction. If `rift-resist` is learned, a 10 tick amplifier 2 Resistance pulse is applied. No adaptation-specific config knobs.
-
-### Rift Gate
-
-| Property | Value |
-|----------|-------|
-| Icon | `RESPAWN_ANCHOR` |
-| Max level | 1 |
-| Initial knowledge cost | 30 |
-| Base knowledge cost | 0 |
-| Cost factor | 0.0 |
-| Tick interval (ms) | 1322 |
-| Config file | `plugins/Adapt/adaptations/rift-gate.toml` |
-| Listened events | `PlayerInteractEvent` (`on`). `PlayerQuitEvent` (`on`). `PlayerJoinEvent` (`on`) |
-| Stats | `rift.gate.teleports`, `rift.gate.total-distance` |
-| Milestones | `challenge_rift_gate_100` at 100 gate teleports, 400 XP. `challenge_rift_gate_50k_dist` at 50000 blocks travelled, 1500 XP |
-| Menu lore | CRAFTING: Emerald + Amethyst shard + Ender Pearl. Read before using!. 5s delay, you can die while you are in this animation |
-| Recipe | Shapeless `rift-recall-gate`: 1 `ENDER_PEARL` + 1 `AMETHYST_SHARD` + 1 `EMERALD`, produces a bound eye of ender. Registered only when `requireCraftedEye` is true |
-
-Channel length is 85 ticks. During the channel the player gets Blindness for 100 ticks and Levitation for 85 ticks. The eye reservation and the cooldown are both committed when the channel starts, so stowing or dropping the eye mid-channel does not refund it. The gate's cooldown lives in the bound eye's own cooldown group. A plain eye of ender can still be thrown to locate a stronghold. Cooldown when `consumeOnUse` is false is 150 ticks.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `consumeOnUse` | `true` | When true the bound eye is consumed by a completed teleport. When false the eye survives and a 150 tick cooldown gates reuse. |
-| `requireCraftedEye` | `true` | When true only the crafted bound eye works and the recipe is registered. When false any eye of ender can be bound. |
-
-### Rift Blink
-
-| Property | Value |
-|----------|-------|
-| Icon | `FEATHER` |
-| Max level | 5 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 7 |
-| Cost factor | 0.12 |
-| Tick interval (ms) | 9288 |
-| Config file | `plugins/Adapt/adaptations/rift-blink.toml` |
-| Listened events | `PlayerMoveEvent` (`on`, MONITOR) |
-| Stats | `rift.blink.blinks`, `rift.blink.distance-blinked`, `rift.teleports` |
-| Milestones | `challenge_rift_blink_500` at 500 blinks, 400 XP. `challenge_rift_blink_5k` at 5000 blocks blinked, 1500 XP |
-| Menu lore | Blink Range. Self-Damage (hearts). Sneak while blinking to phase through walls |
-
-Requires survival game mode. The gesture is a double jump detected from movement. Distance is `baseDistance + (levelPercent * distanceFactor)`. Self damage is `pearlDamageBase - ((level - 1) * pearlDamageReductionPerLevel)`, floored at `minimumPearlDamage`. The teleport fires an `AdaptAdaptationTeleportEvent` that other plugins can cancel.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `cooldownMillis` | `2000` | Milliseconds between successful blinks. |
-| `pearlDamageBase` | `5.0` | Self damage at level 1, in health points (2 = 1 heart). |
-| `pearlDamageReductionPerLevel` | `1.0` | Self damage removed per level past the first. |
-| `minimumPearlDamage` | `1.0` | Floor on blink self damage. |
-| `baseDistance` | `12` | Blink distance in blocks before the level bonus. |
-| `distanceFactor` | `20` | Blink distance in blocks added at max level. |
-| `groundSnapDepth` | `5` | Blocks searched downward from the aimed point to prefer solid ground. |
-| `momentumCarry` | `0.35` | Velocity carried along your look direction after landing, in blocks per tick. |
-| `minBlinkDistance` | `1.5` | Shortest distance that still counts as a blink, in blocks. |
-| `phaseWhileSneaking` | `true` | Lets a blink started while sneaking pass through walls and land in the farthest open space in range. |
-
-### Anti-Levitation
-
-| Property | Value |
-|----------|-------|
-| Icon | `SHULKER_BOX` |
-| Max level | 1 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 1 |
-| Cost factor | 0.95 |
-| Tick interval (ms) | 9544 |
-| Config file | `plugins/Adapt/adaptations/rift-descent.toml` |
-| Listened events | `PlayerToggleSneakEvent` (`on`, HIGHEST) |
-| Stats | `rift.descent.levitation-cancelled` |
-| Milestones | `challenge_rift_descent_100` at 100 cancels, 300 XP. `challenge_rift_descent_1k` at 1000 cancels, 1000 XP |
-| Menu lore | Just Sneak to descend, and you will fall at a less than normal rate!. Cooldown: {duration} |
-| Permanent | `permanent = true` by default, so it cannot be unlearned once learned |
-
-Removes the Levitation effect and applies a `FALL_DAMAGE_MULTIPLIER` modifier of -1.0 for `cooldown * 20` ticks. That nullifies fall damage for the cooldown window. It does not apply Slow Falling and does not change your fall speed, despite what the adaptation description says.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `cooldown` | `5.0` | Seconds between uses, and also the length of the fall damage protection. |
-
-### Rift Visage
-
-| Property | Value |
-|----------|-------|
-| Icon | `POPPED_CHORUS_FRUIT` |
-| Max level | 1 |
-| Initial knowledge cost | 2 |
-| Base knowledge cost | 8 |
-| Cost factor | 0 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/rift-visage.toml` |
-| Listened events | `EntityTargetEvent` (`onEntityTarget`, NORMAL) |
-| Stats | `rift.visage.stares-survived` |
-| Milestones | `challenge_rift_visage_100` at 100 stares, 300 XP. `challenge_rift_visage_1k` at 1000 stares, 1000 XP |
-| Menu lore | Endermen will not become aggressive if you have Ender Pearls in your inventory. |
-| Permanent | `permanent = true` by default, so it cannot be unlearned once learned |
-
-Cancels the target event whenever an enderman tries to target a player carrying at least one `ENDER_PEARL`. The stat is credited at most once per enderman per 10 seconds, and the effect emits an interruption utility signal to the mutation runtime. No adaptation-specific config knobs.
-
-### Ender Taglock
-
-| Property | Value |
-|----------|-------|
-| Icon | `ENDER_PEARL` |
-| Max level | 3 |
-| Initial knowledge cost | 7 |
-| Base knowledge cost | 7 |
-| Cost factor | 0.95 |
-| Tick interval (ms) | 1200 |
-| Config file | `plugins/Adapt/adaptations/rift-ender-taglock.toml` |
-| Listened events | `EntityDamageByEntityEvent` (`on`, HIGHEST). `PlayerInteractEvent` (`on`, HIGHEST, receives cancelled events). `PlayerTeleportEvent` (`on`). `ProjectileHitEvent` (`on`). `PlayerQuitEvent` (`on`) |
-| Stats | `rift.ender-taglock.entities-tagged`, `rift.ender-taglock.taglocked-teleports` |
-| Milestones | `challenge_rift_taglock_100` at 100 tags, 400 XP. `challenge_rift_taglock_500` at 500 taglocked teleports, 1000 XP |
-| Menu lore | Level 1: Passive and hostile mobs. Level 2: Villagers and large targets. Level 3: Any target, including players. Tagged Pearl Throw Cooldown |
-
-Tagging requires a sneaking melee hit with a plain `ENDER_PEARL` in the main hand. The damage event is cancelled so the tag deals no damage. Target eligibility by level: 1 covers passive and hostile mobs, 2 adds villagers and targets above the large size thresholds, 3 covers everything including players. Throw cooldown is `throwCooldownTicksBase - (levelPercent * throwCooldownTicksFactor)` with a floor of 4 ticks. The thrower's own vanilla pearl teleport is suppressed briefly after a taglocked pearl lands.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `throwCooldownTicksBase` | `30` | Cooldown between tagged pearl throws before the level reduction, in ticks. |
-| `throwCooldownTicksFactor` | `14` | Cooldown ticks removed at max level. |
-| `suppressPearlTeleportWindowMillis` | `250` | How long the thrower's own vanilla pearl teleport stays suppressed after a taglocked pearl lands. |
-| `largeWidthThreshold` | `1.3` | Hitbox width in blocks at or above which a target counts as large for level 2. |
-| `largeHeightThreshold` | `2.35` | Hitbox height in blocks at or above which a target counts as large for level 2. |
-| `xpOnTag` | `8` | Rift XP granted for tagging an entity. |
-| `xpOnThrow` | `5` | Rift XP granted for throwing a tagged pearl. |
-| `xpOnTeleport` | `14` | Rift XP granted when a tagged target is relocated. |
-| `damageSender` | `true` | When true the thrower takes the pearl teleport damage. When false the teleported target takes it instead. |
-
-### Inflated Pocket Dimension
-
-| Property | Value |
-|----------|-------|
-| Icon | `ENDER_EYE` |
-| Max level | 1 |
-| Initial knowledge cost | 7 |
-| Base knowledge cost | 7 |
-| Cost factor | 1 |
-| Tick interval (ms) | 600 |
-| Config file | `plugins/Adapt/adaptations/rift-inflated-pocket-dimension.toml` |
-| Listened events | `PlayerInteractEvent` (`on`). `BlockPlaceEvent` (`on`). `PlayerDropItemEvent` (`on`) |
-| Stats | `rift.inflated-pocket.items-pulled`, `rift.inflated-pocket.items-stored` |
-| Milestones | `challenge_rift_pocket_5k` at 5000 items pulled, 400 XP. `challenge_rift_pocket_store_10k` at 10000 items stored, 1000 XP |
-| Menu lore | Right-click block to pull stack. Building auto-refill from ender chest. Sneak-drop stores item in ender chest |
-| Permanent | `permanent = true` by default, so it cannot be unlearned once learned |
-
-The pull requires an empty main hand. It works on right-click block, right-click
-air, or left-click air. Air variants use the block you are looking at within 5
-blocks. Build refill tops the held stack back up to `buildRefillAmount` or the material's max stack size, whichever is smaller. Storing requires sneaking while dropping.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `buildRefillAmount` | `64` | Items pulled from the ender chest to top up the held stack while building. |
-| `rightClickPullAmount` | `64` | Items pulled per right-click on a block. |
-| `xpPerTransferredItem` | `0.08` | Rift XP granted per item stored into the ender chest by a sneak-drop. Pulls and build refills award no XP. |
-
-### Void Magnet
-
-| Property | Value |
-|----------|-------|
-| Icon | `HOPPER_MINECART` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.72 |
-| Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adaptations/rift-void-magnet.toml` |
-| Listened events | `PlayerToggleSneakEvent` (`on`). `PlayerQuitEvent` (`on`) |
-| Stats | `rift.void-magnet.items-pulled` |
-| Milestones | `challenge_rift_void_magnet_5k` at 5000 items, 400 XP. `challenge_rift_void_magnet_50k` at 50000 items, 1500 XP |
-| Menu lore | Magnet Radius. Max Items Per Pulse. Pulse Delay |
-
-Hard caps in code follow. Radius is 16 blocks. Items per pulse are 32. Active
-sessions are 1024. Candidate inspections per scan are 64. Per-window budgets
-cover session visits, scans, and item handoffs. Pulse delay has a floor of 2 ticks. Each candidate must pass the normal pickup event sequence using the combined remaining capacity of the ender chest plus any permitted inventory overflow. A cancelled pickup leaves the item entity alone. On Folia a pulse scans only when its whole footprint belongs to the current region.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `allowEnderChestOverflow` | `false` | When true, items that do not fit in the ender chest go to your normal inventory. When false they stay on the ground. |
-| `radiusBase` | `5` | Magnet radius in blocks before the level bonus. |
-| `radiusFactor` | `9` | Magnet radius in blocks added at max level. |
-| `maxItemsBase` | `10` | Item drops pulled per pulse before the level bonus. |
-| `maxItemsFactor` | `22` | Item drops per pulse added at max level. |
-| `pulseTicksBase` | `20` | Ticks between pulses before the level reduction. |
-| `pulseTicksFactor` | `12` | Ticks removed from the pulse delay at max level. |
-| `xpPerMovedItem` | `0.7` | Rift XP granted per item moved. |
-
-### Void Skin
-
-| Property | Value |
-|----------|-------|
-| Icon | `ECHO_SHARD` |
-| Max level | 4 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 8 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adaptations/rift-void-skin.toml` |
-| Listened events | `EntityDamageEvent` (`on`, HIGHEST). `PlayerQuitEvent` (`on`). `PlayerJoinEvent` (`on`) |
-| Stats | `rift.void-skin.escapes`, `rift.teleports` |
-| Milestones | `challenge_rift_void_skin_50` at 50 escapes, 400 XP. `challenge_rift_void_skin_500` at 500 escapes, 1500 XP |
-| Menu lore | Any lethal damage triggers the escape. Escape Cooldown. Costs an Ender Pearl |
-
-Triggers when the final damage would exceed current health plus absorption. Requires a plain ender pearl in the inventory, which is reserved and consumed. The safe spot search radius is clamped to 3-16 blocks. With no safe spot found it falls back to the current world's spawn. With no
-usable world spawn the escape is skipped and the damage lands.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `cooldownBaseMillis` | `120000` | Milliseconds between escapes at level 1. |
-| `cooldownReductionPerLevelMillis` | `18000` | Cooldown milliseconds removed per level past the first. |
-| `minimumCooldownMillis` | `45000` | Floor on the escape cooldown, in milliseconds. |
-| `resistanceTicksBase` | `60` | Resistance duration after an escape before the level bonus, in ticks. |
-| `resistanceTicksPerLevel` | `20` | Resistance ticks added per level. |
-| `resistanceAmplifier` | `2` | Resistance amplifier applied after an escape, so 2 means Resistance III. |
-| `searchRadius` | `9` | Horizontal search radius for a safe blink spot, in blocks. |
-| `minRadius` | `4` | Shortest horizontal blink distance, in blocks. |
-| `xpOnEscape` | `40` | Rift XP granted when an escape triggers. |
-
-### Pearl Rebound
-
-| Property | Value |
-|----------|-------|
-| Icon | `SLIME_BALL` |
-| Max level | 4 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.35 |
-| Tick interval (ms) | 1000 (framework default, never overridden) |
-| Config file | `plugins/Adapt/adaptations/rift-pearl-rebound.toml` |
-| Listened events | `ProjectileLaunchEvent` (`on`). `ProjectileHitEvent` (`on`, HIGH). `EntityDamageEvent` (`on`, LOWEST) |
-| Stats | `rift.pearl-rebound.rebounds` |
-| Milestones | `challenge_rift_rebound_100` at 100 rebounds, 400 XP. `challenge_rift_rebound_1k` at 1000 rebounds, 1500 XP |
-| Menu lore | Pearl Damage Reduction. Aim Control |
-
-Only plain ender pearls rebound, and only once each: pearls already claimed by another Rift adaptation, or already rebounded, teleport normally. The bounce reflects the pearl off the struck block face, biases it toward the thrower's look direction, and relaunches it at `reboundSpeed`. Damage reduction and aim bias are both capped at 0.9 in code.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `damageReductionBase` | `0.3` | Fraction of pearl teleport damage removed at level 1, 0-1. |
-| `damageReductionPerLevel` | `0.15` | Extra damage reduction fraction per level past the first. |
-| `aimBiasBase` | `0.3` | Fraction the rebounded pearl steers toward your look direction at level 1, 0-1. |
-| `aimBiasPerLevel` | `0.15` | Extra steering fraction per level past the first. |
-| `reboundSpeed` | `1.5` | Launch speed of the rebounded pearl, in blocks per tick. Floor is 0.4. |
-| `xpOnRebound` | `6` | Rift XP granted each time a pearl rebounds. |
-
-### Rift Conduit
-
-| Property | Value |
-|----------|-------|
-| Icon | `CONDUIT` |
-| Max level | 4 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 8 |
-| Cost factor | 0.6 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/rift-conduit.toml` |
-| Listened events | `PlayerInteractEvent` (`on`). `InventoryCloseEvent` (`on`, MONITOR). `PlayerQuitEvent` (`on`). `PlayerJoinEvent` (`on`) |
-| Stats | `rift.conduit.links-formed`, `rift.conduit.items-flowed` |
-| Milestones | `challenge_rift_conduit_10` at 10 links, 500 XP. `challenge_rift_conduit_10k` at 10000 items flowed, 1500 XP |
-| Menu lore | Items Per Flow. Binding Range. Links across dimensions |
-
-Gesture table: a taglock in hand binds when it clicks a container and prints a hint when it does not. A plain pearl captures only when sneaking on a container. Taglocks held by a player without the adaptation are cancelled rather than thrown. Throughput is clamped to 1-1152 items and binding range to at most 512 blocks. Capture and binding honor the original click denial and both physical halves of a double chest. Deferred bind writes and each flow source and destination reauthorize container use on their owning region. If the partner is denied, cannot load, or cannot accept a delivery, the items return to the source. On Folia a deferred bind or flow fails closed unless the player and endpoint
-share the current owning region. Cross-region and cross-dimension transfers are
-unavailable there.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `throughputBase` | `48` | Items moved per flow before the level bonus. |
-| `throughputFactor` | `336` | Items per flow added at max level. |
-| `rangeBase` | `24` | Binding range in blocks before the level bonus. |
-| `rangeFactor` | `200` | Binding range in blocks added at max level. |
-| `crossDimensionAtMax` | `true` | Allows linking containers in different worlds once the adaptation is at max level. |
-| `xpOnLink` | `30` | Rift XP granted when a new link is formed. |
-| `xpPerFlow` | `0.4` | Rift XP granted per item flowed between linked containers. |
-
-### Support classes (not player adaptations)
-
-- `RiftAccessViewRegistry` owns remote-container sessions and the block and chunk references held for every physical container part while each view stays open.
-- `RiftPearls` distinguishes plain ender pearls from pearls already claimed by a Rift adaptation.
+Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
 
 ## See also
 

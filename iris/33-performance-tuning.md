@@ -2,204 +2,64 @@
 title: "Performance Tuning"
 description: "Iris documentation: Performance Tuning"
 published: true
-date: 2026-09-15T21:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris throughput is bounded by four things. First, how many chunks the
-platform will let Iris generate at once. Second, how much mantle stays
-resident in heap. Third, how often pack resources are reloaded from disk.
-Fourth, whether the JVM has the incubator Vector API. This page is organized by the symptom you are
-looking at, not by settings file order. Iris settings live in
-`iris.json` under the Iris data directory
-([03 - Configuration](/iris/03-configuration)); platform settings live in the server configuration. Pregeneration operations
-are in [07 - Pregeneration](/iris/07-pregeneration).
+Iris throughput is bounded by four things: how many chunks the platform will let Iris generate at once, how much mantle stays resident in heap, how often pack resources are reloaded from disk, and whether the JVM has the incubator Vector API. This page is organized by symptom, not by settings file order.
+
+Iris settings live in `iris.json` ([03 - Configuration](/iris/03-configuration)), which carries the full `performance` and `pregen` key reference. Platform settings live in the server configuration. Pregeneration operations are in [07 - Pregeneration](/iris/07-pregeneration).
 
 ## Change one setting at a time
 
-Generation waits for cache warming to finish. A warming failure logs its cause and blocks generation for that engine; correct the reported pack or resource error and reopen the world.
-
 Compare chunk rate, tick latency, and memory use under the same workload. Thread-pool, cache, and SIMD changes require a restart. Restore the previous value if a change causes errors or worse performance.
 
-## LEAF entity RNG
-
-On LEAF 26.2-99 with the faster random generator disabled, set `world-settings.default.settings.entity.shared-random: false` in `purpur.yml` before parallel pregeneration and restart. The enabled shared RNG uses an unsynchronized seed update when entity constructors generate UUIDs; concurrent creation can repeat UUIDs and cause entities to be rejected. Disabling sharing gives each entity its own RNG without disabling spawns or structures. Check world-specific overrides if present.
+Generation waits for cache warming to finish. A warming failure logs its cause and blocks generation for that engine; correct the reported pack or resource error and reopen the world.
 
 ## Symptom: pregeneration is slow
 
-Work through these in order. The first two are free. The rest trade
-something.
+Work through these in order. The first two are free; the rest trade something.
 
-1. **Give Paper enough chunk workers.** Paper sizes its chunk-system
-   worker pool automatically and often lands on 4 threads even on a
-   16-core machine; the startup log prints `Paper is using N worker
-   threads`. Every chunk generation runs on one of those workers, so a
-   small pool caps pregeneration long before the CPU is busy. Set
-   `chunk-system.worker-threads` in `config/paper-global.yml` to about
-   the number of physical cores for a pregeneration box and restart.
-   Iris spreads each chunk's stages and mantle work across its own burst
-   pool during pregeneration (and doubles that pool to two workers per
-   core for the run), so the chunk workers mostly coordinate; they still
-   need to exist.
-2. **Check whether the platform is the limit, not Iris**. On Fabric,
-   Forge, and NeoForge without a parallel chunk system, pregeneration
-   uses the vanilla main-thread chunk pipeline. Throughput is capped
-   there regardless of settings. Iris logs this at pregeneration
-   start and names the fix: install C2ME on Fabric, or run Paper if you
-   want Bukkit-level throughput. No Iris setting recovers that gap.
-3. **Confirm SIMD is on.** On Bukkit, the startup log prints one of
-   `SIMD: vector kernels enabled (…)`,
-   `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector …`,
-   or `SIMD: vector kernels disabled (performance.simdKernels=false)`.
-   If you see the scalar message, add the JVM flag and restart. See the
-   SIMD section for what it actually accelerates and how small that
-   surface is. Mod loaders never print this line, so check the JVM flag
-   directly there.
-4. **Leave concurrency alone unless it is warning at you.** Bukkit
-   pregeneration concurrency is derived, not configured. Paper-like
-   admission uses the larger of the detected chunk-system pool and the
-   world-gen pool Iris provisions during initialization. Folia also
-   includes its broader runtime capacity. The effective worker count is
-   multiplied by 8 and clamped to 16–256 on Paper-like servers or 64–192
-   on Folia. Raising it is not an option, and the adaptive limiter lowers
-   it when requests stay pending or mantle backpressure engages. The only
-   concurrency lever on Bukkit is `serial=true`, which drops to one chunk
-   in flight. Use it for profiling and determinism isolation, never for
-   throughput.
-5. **On mod loaders, size `pregen.moddedPregenInFlight` to the chunk
-   system.** Default `0` resolves to `clamp(16, cpu*2, 48)`, and whatever
-   value comes out is floored at 8. Raise it only if the loader has a
-   parallel chunk system and the CPU is not saturated. Lower it if you
-   see chunk-load timeouts. Positive values are capped at 512.
-6. **Raise the object cache if the same objects keep reloading.**
-   `performance.objectLoaderCacheSize` (default 4096) bounds the loader
-   caches for `.iob` objects, matter objects, and images. Object-heavy
-   packs on large pregenerations hit this. The tradeoff is retained heap,
-   so only do this if heap has room. See the memory section.
-7. **Give the process more heap before touching mantle caps.** Resident
-   mantle plates are budgeted against process memory. A bigger heap
-   raises the effective plate count without any settings change.
+1. **Give Paper enough chunk workers.** Paper sizes its chunk-system worker pool automatically and often lands on 4 threads even on a 16-core machine; the startup log prints `Paper is using N worker threads`. Every chunk generation runs on one of those workers, so a small pool caps pregeneration long before the CPU is busy. Set `chunk-system.worker-threads` in `config/paper-global.yml` to about the number of physical cores for a pregeneration box and restart.
+2. **Check whether the platform is the limit, not Iris.** On Fabric, Forge, and NeoForge without a parallel chunk system, pregeneration uses the vanilla main-thread chunk pipeline and throughput is capped there regardless of settings. Iris logs this at pregeneration start and names the fix: install C2ME on Fabric, or run Paper. No Iris setting recovers that gap.
+3. **Confirm SIMD is on.** The Bukkit startup log prints a `SIMD:` line. If it says scalar kernels are active, add `--add-modules jdk.incubator.vector` and restart. Mod loaders never print this line, so check the JVM flag directly there. See [SIMD](#simd) for how small that surface actually is.
+4. **Leave concurrency alone unless it is warning at you.** Bukkit pregeneration concurrency is derived from the detected chunk-system and world-gen pools, not configured, and the adaptive limiter lowers it when requests stay pending or mantle backpressure engages. Raising it is not an option. The only concurrency lever on Bukkit is `serial=true`, which drops to one chunk in flight — an isolation tool for profiling and determinism, never a throughput setting.
+5. **On mod loaders, size `pregen.moddedPregenInFlight` to the chunk system.** Default `0` resolves to `clamp(16, cpu*2, 48)`, floored at 8, and positive values cap at 512. Raise it only if the loader has a parallel chunk system and the CPU is not saturated. Lower it if you see chunk-load timeouts.
+6. **Raise the object cache if the same objects keep reloading.** `performance.objectLoaderCacheSize` (default 4096) bounds the loader caches for `.iob` objects, matter objects, and images. Object-heavy packs on large pregenerations hit this. The tradeoff is retained heap.
+7. **Give the process more heap before touching mantle caps.** Resident mantle plates are budgeted against process memory, so a bigger heap raises the effective plate count without any settings change.
 
-`performance.noiseCacheSize` controls terrain noise retention. Larger caches
-can reduce repeated hydrology terrain sampling at the cost of more heap.
-Dimensions without region or biome image maps reuse the procedural cache
-for that field; they do not allocate a second mapping cache.
-When uncached hydrology planning begins, normal worlds can expand up to five final
-biome, region, ocean-classification, and natural-height caches to 32,768
-chunks each. Additional capacity shares an allowance of one eighth of
-the maximum JVM heap across runtimes, charged at 4 KiB per added cache
-chunk. A limited remaining allowance produces smaller increases.
-Explicit configured capacities and Studio's existing larger caches are
-kept; detached historical runtimes keep their configured capacities.
-Loading worlds and restoring cached hydrology tiles reserve no allowance.
-Unloading releases the allowance after active hydrology work drains.
-
-Starting a pregeneration raises it to at least 4096 in memory and resizes
-the engine's natural-height and raw-height caches in place. The engine is
-not rebuilt, and the raised value is not lowered again for the life of
-the process. The `iris.cache.fast` system property is separate: the
-Bukkit plugin sets it in its class initializer, before anything else
-runs. Mod loaders never set it, so pass `-Diris.cache.fast=true` on the
-JVM command line there if you want it.
-
-Normal creation and Studio check the selected dimension against already loaded registry definitions before deciding whether datapack installation is needed. Registry housekeeping checks storage presence without hashing every saved pack; explicit pack resolution still validates frozen content. Fresh creation passes its verified generation history directly to the generator, whose startup retains the final active-pack verification. Player-issued normal creation requests the native entry footprint concurrently with its canonical spawn chunk, so teleport does not start a second round of chunk generation.
-
-Large-pack fingerprint checks buffer at most 64 small files, up to 16 MiB, through up to four readers. They hash the bytes in the original sorted order, preserving existing fingerprints. Larger files and small packs retain streaming reads. Failure and interruption drain the readers before cleanup.
+`performance.noiseCacheSize` controls terrain noise retention; larger caches reduce repeated hydrology terrain sampling at the cost of heap. Starting a pregeneration raises it to at least 4096 in memory for the life of the process and does not lower it again. Normal worlds also expand their biome, region, ocean-classification, and natural-height caches when uncached hydrology planning begins, within a shared allowance of one eighth of the maximum JVM heap; explicit configured capacities are kept as written.
 
 ### Hydrology-heavy packs
 
-A pregeneration requests a bounded one-tile lookahead around its centre, nearest first, then keeps the ring around the generation front planned as it moves. It does not flood the planner with the whole requested area at startup. The center region uses a contiguous spiral so the first playable chunks complete promptly; later regions use four-chunk-spaced lattices to reduce overlapping mantle work. Height bounds at grid corners are shared between threads and from planning into generation.
+A cold hydrology tile is the expensive unit: the planner samples the tile's natural terrain and its neighbours, routes every candidate river, and resolves the neighbouring tiles its rivers and caves reach into. Warm generation reuses accepted column footprints from a cache bounded to 64 tiles, and Standard Studio also persists completed entry tiles. A planner revision starts a fresh cache scope, so its first visit is cold again.
 
-Hydrology planning is paid once per cold immutable tile; warm generation reuses exact accepted column footprints from a cache bounded to 64 tiles. Standard Studio also persists completed entry tiles with their regional course ownership. A planner revision starts a fresh cache scope, so its first visit requires cold planning. Restoring those tiles reconstructs local owner state directly, without repeating terrain sampling or regional route planning. Cold work grows with `hydrology.rivers.routing.tileSize / sampleSpacing`, `maximumRouteLength`, the sum of the independent surface and underground source budgets, and the maximum surface valley, grotto, drop-basin, and deep-fluid footprint. Smaller source spacing, higher density or quotas, longer routes, more sources, and wider envelopes all increase work; `surface.banks.maximumBlendWidth` bounds how far a surface course can affect terrain and therefore the cross-tile publication radius. `routing.minimumSurfaceCourseLength` and `minimumUndergroundCourseLength` reject short complete routes before their footprints are retained. A deep-fluid short channel derives its maximum length from `spacing / 3` and caps that reach at half `tileSize`; the derived containment-volume bound may shorten it further. Validation caps the coarse lattice at 65,536 nodes and enforces footprint/spacing and containment relationships before generation. Preserve outlet proof, ocean ownership, falling-fluid continuity, receiving basins, and containment; reduce density, route length, resolution, or footprint instead.
+Cold work grows with:
 
-Exact routing-grid rows are sampled concurrently. Surface-course search uses that grid only to rank provisional candidates, then resolves exact terrain, bank, and transition costs along the currently selected path. If one route layer has no viable candidate, Iris adds only that layer's exact guide fallback instead of rebuilding every route candidate. These optimizations preserve the full terrain-safety validation contract.
+| Setting | Effect on cold planning cost |
+|---|---|
+| `hydrology.rivers.routing.tileSize` / `sampleSpacing` | Smaller source spacing means more lattice nodes per tile |
+| `maximumRouteLength` | Longer routes search further |
+| Surface and underground source budgets | More sources, more routes. The two budgets are independent |
+| Surface valley, grotto, drop-basin, and deep-fluid footprints | Wider envelopes touch more neighbouring tiles |
+| `surface.banks.maximumBlendWidth` | Bounds how far a surface course affects terrain, and therefore the cross-tile publication radius |
+| `routing.minimumSurfaceCourseLength` / `minimumUndergroundCourseLength` | Reject short complete routes before their footprints are retained |
 
-Drainage routes reuse completed downstream distances instead of walking each shared suffix again. Footprint construction sorts primitive coordinate keys and retains the same signed coordinate order. Cave containment uses one ordered membership set. Cold-query diagnostic history is bounded to the tile-cache limit.
+A deep-fluid short channel derives its maximum length from `spacing / 3`, capped at half `tileSize` and possibly shorter from the containment-volume bound. Validation caps the coarse lattice at 65,536 nodes and enforces footprint, spacing, and containment relationships before generation.
 
-Cold hydrology tile planning, regional basin planning, and chunk-column composition run outside cache insertion locks. Concurrent requests for one key share its result, while unrelated keys can proceed together even when their hashes select the same cache bucket. Cache invalidation prevents older work from repopulating the cleared cache. The scheduler defers queued speculative neighbors until required tile batches finish. Active plans and cross-tile owner dependencies continue. During shutdown, Iris rejects new planning and cancels queued work. Started tile plans and column composition finish before the engine releases mantle data. A failed drain keeps dependent resources available for a shutdown retry.
-
-Regional basin requests run concurrently on the hydrology worker pool. Requests for the same basin share one calculation. Independent regional source trials and alternative local outlets also plan concurrently, with results applied in the original selection order. Fine route searches evaluate neighboring steps inline to avoid scheduling a task for each small step. Search and hydraulic budgets remain unchanged. The hydrology pool replaces workers blocked on managed waits to maintain its configured runnable target while planning tasks remain. Plugin unload and server shutdown close this pool; the next enable or integrated-world start reopens it. River corridor checks sample at most 128 columns per batch with up to eight workers, then apply validation in the original order.
-
-Terrain sampling and reach refinement run outside cache insertion locks. Routing terrain caches distribute reads and updates across independent sections while preserving their total capacity. Shared terrain retention fills on demand and scales with the JVM maximum heap: one entry per 8 KiB, bounded from 65,536 to 4,194,304 entries. A 16 GiB heap permits 2,097,152 entries. Each route search still admits at most 65,536 coordinates. These changes preserve route selection, generation settings, and player view distance.
-
-Before fine regional searches run, Iris bounds every eligible route using the coarse drainage plan. A basin outside the terrain required by a tile can skip refinement. Full neighboring-basin plans still participate in course conflict checks. Rejected regional candidates are calculated when diagnostics are requested, so distant diagnostic work does not delay world entry. Opening a cold diagnostic view can therefore take longer than reading an already generated tile.
-
-The JVM property `iris.mantle.componentTimeout` defaults to 120,000 milliseconds. When the wait detects that threshold, it reports the timeout and requests cancellation. A queued component cannot start after cancellation. A running component retains its shared task entry and writer until it exits. Work that does not exit leaves generation and shutdown incomplete instead of releasing storage beneath active writes.
-
-Each generation caller outside Iris's worker pool submits at most eight mantle components at a time, reduced to the processor count on smaller machines. It drains that batch before submitting more. Shared work retains its pass barrier, and recursive generation on an Iris worker runs its own claims inline. This bounds the backlog retained while native structure queries wait without omitting components or limiting the worker pool's ability to complete dependencies.
-
-Height-bound interpolation samples each coordinate once and reuses its recorded maximum in the second interpolation pass. Nested noise keeps its original arithmetic. Deep fixed two-dimensional fracture chains reuse identical samples within one evaluation; shallow chains, expressions, and custom callbacks keep their existing paths. Signed noise checks mutable generator state once before entering its fast sampling path; cache invalidation and nested mutation behavior are unchanged. Surface-corner samples use a bounded cache without locks or recency updates. Collisions recompute the exact sample; key, seed, loader, and engine identity checks remain in place. Finite constant generator bounds skip noise evaluation. Accumulation still adds the bound once per generator before division, preserving floating-point rounding. Custom biome registry keys that already follow registry syntax bypass regex normalization. Other inputs retain the same normalization. When built-in child-biome noise selects the current biome again, selection stops without repeating the same noise. Child styles that use expressions retain their existing evaluation order.
-
-Each hydrology runtime reuses resolved river policies and profile lists for up to 1,024 region, biome, and loader identities. Coordinate-dependent geometry and biome selection still run for each sample. Failed reference loads remain retryable. Reloads rebuild this cache with the runtime.
-
-Height, policy, and footprint basis queries skip slope calculations when the result does not use slope. This avoids two neighboring height samples for each such uncached query. Forward-slope queries reuse a retained terrain basis when its separate height-cache entry has been evicted. Route scoring and terrain checks that use slope retain those calculations. Repeated centerline refinement reuses its geometric turn costs and completed guides within the current owner draft.
-
-Large cave-density passes divide independent samples among up to four workers in the current pool. Fixed noise styles also calculate aquifer eligibility in those tasks. Expression styles keep their serial evaluation order. Mantle writes and final fluid-support resolution remain on the calling generation worker. Workers claim pending density tasks themselves and drain started tasks before returning, including on failure or interruption.
-
-Carving resolution checks runtime, dimension, and data identity at each public entry, then reuses that bound data during the traversal. Nested runtime changes still invalidate the resolver state. Wall palette application also reuses the current invocation’s dimension data instead of resolving it for each wall block. Natural cave decoration reads the fixed chunk dimensions once before its column scans.
-
-Terrain scans avoid rereading each occupied mantle cell. Object-placement journals still restore original terrain, including removed cells, and preserve callback order. Cave composition reads the section and original-cell journal once under the chunk lock. Hydrology takes precedence, and its presence skips the unused baseline cave read.
-
-Cave-biome blending resolves the center and makes its existing deterministic weighted choice before sampling a neighbor. It queries only the selected neighbor, retaining the same coordinate, weight, and null-to-center fallback. The selected query keeps normal runtime routing, and the parent random generator is unchanged.
-
-Child-biome and carving-child selection plans store cumulative rarity counts. Plan storage scales with the number of choices, without allocating repeated entries for each rarity slot. Existing authored rarity ranges and ordinary selection results remain unchanged.
-
-Object smart boring scans its occupied bounds directly in X, Y, then Z order under the volume write lock. It uses no queued tasks or atomic cell counter. Negative-only object bounds no longer add empty scans toward the origin.
-
-Generation-history routing leases a ready runtime in one metadata-lock acquisition. Repeated coordinate queries read an attached router without acquiring its attachment monitor. Missing routers still pass synchronized publication and detach checks. Routing and generation admission use nonfair lock handoffs to reduce contention between generation workers. Waiting cutovers explicitly block later stage admission until existing stages drain and publication finishes. Coordinate ownership, activation boundaries, and shutdown drains retain their existing checks. These changes require no configuration changes.
-
-Transition blending evaluates the saved geometry's compact runs directly. It avoids expanding each contributing column into full-height distance and material arrays while retaining the same material ties, protected blocks, fluid handling, and saved format.
-
-Native structure height queries reuse up to 65,536 resolved transition heights per generator. Each entry includes the routed runtime, signed coordinates, native heightmap predicate, and vertical bounds. Runtime retirement removes its entries. Ordinary height queries remain live, including hydrology that is still being planned.
-
-Bukkit world-save events queue native structure ownership serialization as tracked background work. Mantle and world-manager hooks and engine metadata stay on the calling owner thread. Reload and shutdown drain admitted ownership writes before releasing their runtime, including a save accepted just before background admission closes.
-
-Opening a generation stage reads its activation and epoch from one immutable manifest snapshot under the manifest store's lock. Unrelated semantic journal flushes do not block this metadata read or the manifest, active-activation, and active-epoch lookups used by native structures and saved-biome readers. Durable claims still prevent activation promotion from overtaking their writes. The stage retains its admission lease, so activation changes still wait for active stages to drain. Semantic claims enter a bounded queue before acquiring the history lock. A writer validates up to 32 waiting claims and shares one durable flush per region journal. Full queues apply backpressure without rejecting claims. Publication and successful returns wait for durable storage; each claim keeps its duplicate, conflict, and failure result. Journal frames and activation admission rules are unchanged. Point queries read the last durable semantic snapshot while an append flushes. The writing region’s prior snapshot remains available through cache eviction, so readers cannot replay unflushed bytes. Mutation, bulk-query, and activation-cutover ordering remain serialized.
-
-Mantle cleanup rechecks a previously missing neighbor before rescanning an overlapping coverage halo. A still-missing neighbor rules out that candidate immediately; successful cleanup still requires a full current coverage scan. Cleanup order, retained slices, and chunk locking are unchanged.
-
-Semantic cave capture tracks duplicate coordinates with a chunk-local bitset. It retains the first cave biome at each position and still collects hydrology fluid profiles from overlapping cells. This removes per-voxel coordinate objects during capture without changing saved records. Semantic builders validate each distinct resource key once while accumulating it, then sort keys when creating the immutable record. Duplicate samples skip repeated UTF-8 encoding; key validation, limits, and saved ordering remain unchanged.
-
-Saved-biome records are encoded outside the region write lock. The four regions meeting at the world origin use separate write locks, allowing their saves to proceed concurrently. A writer processes up to 64 already-queued claims, sharing one durable flush among records in the same region. Each record retains its length, payload, and checksum. Claims become visible only after that flush completes, and duplicate and conflict checks remain under the region lock. A failed batch rolls back all its appended records. No configuration or file-format change is required.
-
-Saved-biome and semantic journal writes retain the original failure and any rollback failure. If an append cannot confirm either durable success or durable rollback, the affected store rejects further writes and uncached reads until it is reopened. Resolve the storage failure before restarting generation.
-
-World column caches compare the current thread’s last chunk before calculating its map key. Repeated reads across several chunks update access order periodically to reduce contention. These reads still check shared cache membership; the recent-key table retains no additional chunks. Configured capacity and resolved values remain unchanged.
-
-Ore variant conversion reuses mapped materials instead of copying the full material array for each converted block. Each converted ore still receives fresh block data with the target material’s default state; unchanged ores retain their original state.
-
-Natural-terrain receipts buffer field writes before compression and reuse encoded biome and block names within each receipt. The string cache has fixed entry and byte limits. Complete and boundary-only receipts retain identical encoded bytes, biome identities, geometry, and provenance. No format or configuration change is required.
-
-Native volume-cache invalidation transfers the runtime-retirement listener to the replacement index. Retirement removes pending build registrations under the same locks that publish cache entries, so an older build cannot restore its retired entry after eviction. Queries with a pinned matching generation runtime reuse cached origins without opening another coordinate scope for each cache hit. Cache misses and unpinned or mismatched runtimes retain coordinate routing. Origin-window locking and cache capacities retain their existing behavior.
-
-Bukkit terrain capture reuses biome wrappers in one cache bounded to 4,096 native handles. The wrapper reads the typed registry key only when inserted. Identity-based lookup keeps replacement registry handles distinct and removes repeated reflective key lookup from terrain capture.
-
-The desktop pregen map coalesces chunk updates into a raster capped at 1,024 pixels per axis. Inclusive bounds keep the outermost chunks visible, including areas wider than the raster. Bounds are calculated directly from the target area without scanning its chunks. Unchanged map pixels do not trigger repaints, and minimizing the window stops refreshes while retaining cheap status updates. Biome previews remain on a bounded background worker.
+**To cut hydrology cost, reduce density, route length, resolution, or footprint.** Do not weaken outlet proof, ocean ownership, falling-fluid continuity, receiving basins, or containment — those are what keep rivers physically valid.
 
 ## Symptom: the first chunks pause while strongholds initialize
 
-Minecraft 26.2 prepares its concentric stronghold rings before ordinary
-structure generation can settle. Iris answers that exact ring search at
-chunk-center granularity: 225 biome evaluations per task instead of 3,249
-quart-column evaluations. Other biome searches keep their normal
-resolution. In a live bundled-Overworld test, an 81-chunk cold frontier
-fell from 27–33 seconds to 9–10 seconds with zero failed chunks.
+Minecraft 26.2 prepares its concentric stronghold rings before ordinary structure generation can settle. Iris answers that ring search at chunk-center granularity — 225 biome evaluations per task instead of 3,249 quart-column evaluations — while other biome searches keep their normal resolution. In a live bundled-Overworld test an 81-chunk cold frontier fell from 27–33 seconds to 9–10 seconds with zero failed chunks.
 
-This is a current generation-contract change, not a migration. The same
-seed, pack, and Iris build remains deterministic. Stronghold ring
-coordinates can still differ from earlier Iris builds. Each candidate
-chunk now has one vote, and the random selection sequence is shorter.
-Strongholds already stored in generated chunks remain physically present.
-Current `/locate` results and Eyes of Ender follow the newly computed
-rings and may not lead back to those older starts. Iris does not retain
-or reconstruct the earlier ring layout.
+> This is a generation-contract change. The same seed, pack, and Iris build stays deterministic, but **stronghold ring coordinates can differ from earlier Iris builds.** Strongholds already stored in generated chunks remain physically present, while current `/locate` results and Eyes of Ender follow the newly computed rings and may not lead back to those older starts. Iris does not retain or reconstruct the earlier ring layout.
+{.is-warning}
 
 ## Symptom: TPS dips or chunk-load timeouts while generating
 
-Generation competing with the server tick shows up as timeout warnings,
-region scheduler complaints, or players reporting lag near the
-pregeneration frontier.
+Generation competing with the server tick shows up as timeout warnings, region scheduler complaints, or players reporting lag near the pregeneration frontier.
 
 | Do this | Effect | Cost |
 |---|---|---|
@@ -209,248 +69,93 @@ pregeneration frontier.
 | Raise `pregen.timeoutWarnIntervalMs` (default 500, minimum 250) | Spaces out repeated slow-request warnings in console | Log noise only. Changes nothing about the stall |
 | Raise `pregen.saveIntervalMs` (default 30000, clamped 5000–900000) | Less frequent pregeneration state flushing, so less periodic IO | More work replayed if the job is interrupted |
 
-`pregen.runtimeSchedulerMode` (`AUTO`, `PAPER_LIKE`, `FOLIA`) and
-`pregen.paperLikeBackendMode` (`AUTO`, `TICKET`, `SERVICE`) exist for
-platform mismatches, not throughput. A Folia runtime always resolves to
-Folia scheduling regardless of the setting, and `AUTO` on Paper-like
-servers resolves to the ticket backend. Change these only when
-diagnosing a scheduler-specific defect.
+Iris sizes its generation, hydrology, and IO pools from the CPU count and there is no `concurrency` section in `iris.json` to override that. `pregen.runtimeSchedulerMode` (`AUTO`, `PAPER_LIKE`, `FOLIA`) and `pregen.paperLikeBackendMode` (`AUTO`, `TICKET`, `SERVICE`) exist for platform mismatches, not throughput — change them only when diagnosing a scheduler-specific defect.
 
 ## Symptom: heap pressure, long GC pauses, or OOM risk
 
-Mantle is the largest thing Iris keeps in heap. Iris already reacts to
-heap pressure on its own. As used heap climbs from 82% to 92%, the idle
-window before a mantle plate is trimmed shrinks linearly to zero. At 92%
-pregeneration pauses, trims mantle, and begins one reclaim episode with a
-normal GC request. If pressure remains after 10 seconds, Iris asks the
-current HotSpot JVM for a diagnostic full GC. Successful diagnostic
-attempts are at least 60 seconds apart, and failures back off from 1 to
-15 minutes with a full error report. Generation resumes immediately at
-82%, or after heap stays below 92% for 60 seconds. A collector that
-settles between the thresholds cannot wedge the run indefinitely. If you are seeing pressure, that machinery is already
-running. You are deciding how much less mantle to hold.
+Mantle is the largest thing Iris keeps in heap, and Iris already reacts to heap pressure on its own. As used heap climbs from 82% to 92%, the idle window before a mantle plate is trimmed shrinks linearly to zero. At 92% pregeneration pauses, trims mantle, and starts one reclaim episode; generation resumes at 82%, or after heap stays below 92% for 60 seconds. If you are seeing pressure, that machinery is already running and you are deciding how much less mantle to hold.
 
-First make sure the JVM fits inside its container. Pterodactyl charges
-the Java heap, metaspace, code cache, thread stacks, native buffers,
-memory-mapped files, and often the operating-system overhead against the
-same memory limit. Do not set `-Xmx` or `MaxRAMPercentage` to 95% of that
-limit. Leave at least 20–25%, and at least 1.5–2 GiB on a large Iris
-server, outside the Java heap as a starting point. For a 10,000 MiB
-container, start around `-Xmx7G` to `-Xmx7500M`, measure peak resident
-memory, and adjust from evidence. `-XX:+AlwaysPreTouch` makes the
-committed heap visible in resident memory immediately. A process can then
-appear close to the panel limit even while most of that heap is empty.
+> First make sure the JVM fits inside its container. Pterodactyl charges the Java heap, metaspace, code cache, thread stacks, native buffers, memory-mapped files, and often the OS overhead against the same limit. **Do not set `-Xmx` or `MaxRAMPercentage` to 95% of that limit.** Leave at least 20–25%, and at least 1.5–2 GiB on a large Iris server, outside the Java heap. For a 10,000 MiB container start around `-Xmx7G` to `-Xmx7500M`, measure peak resident memory, and adjust from evidence. `-XX:+AlwaysPreTouch` makes the committed heap visible in resident memory immediately, so a process can look close to the panel limit while most of that heap is empty.
+{.is-warning}
 
-1. **Raise heap first if the machine has it.** The resident-plate budget
-   is computed from process memory: roughly 60% of the heap. Each plate
-   costs about 48 MB at a 384-block world height, scaled by your actual
-   dimension height. More heap means more plates without changing a
-   setting.
-2. **Lower `pregen.maxResidentTectonicPlates`** (default 96). This is a
-   soft cap on how many mantle tectonic plates stay resident. The
-   effective number is the smaller of that cap, a height-scaled version
-   of it, and the heap budget above, with a hard floor of 16. Taller
-   worlds get fewer plates automatically. Lowering it cuts retained heap
-   at the cost of more mantle reload work.
-3. **Lower `performance.mantleKeepAlive`** (default 30). This is how many
-   seconds an idle mantle plate survives before maintenance trims it.
-   Lower means memory comes back sooner. It also means recently-touched
-   regions get re-read more often.
-4. **Lower the loader caches** if a heap dump shows retained pack data
-   rather than mantle: `performance.objectLoaderCacheSize` (default 4096)
-   and `performance.resourceLoaderCacheSize` (default 1024).
-5. **Slow the pregeneration down.** Backpressure knobs decide how long a
-   generation thread waits when the mantle plate budget is full.
-   `pregen.mantleBackpressureWaitMs` (default 25, clamped 5–1000) is the
-   upper bound on one wait; it ends early as soon as a chunk completes
-   and frees pressure. `pregen.mantleBackpressureTimeoutMs` (default
-   60000, clamped 5000–600000) is how long the wait can accumulate before
-   Iris gives up on waiting. On timeout it warns, lowers the adaptive
-   in-flight limit, and proceeds with the chunk anyway; nothing is failed
-   and the run never deadlocks. Neither knob reduces memory use.
+1. **Raise heap first if the machine has it.** The resident-plate budget is roughly 60% of the heap, and each plate costs about 48 MB at a 384-block world height, scaled by your actual dimension height. More heap means more plates without changing a setting.
+2. **Lower `pregen.maxResidentTectonicPlates`** (default 96). A soft cap on resident mantle plates; the effective number is the smaller of that cap, a height-scaled version of it, and the heap budget, with a hard floor of 16. Taller worlds get fewer plates automatically. Lowering it cuts retained heap at the cost of more mantle reload work.
+3. **Lower `performance.mantleKeepAlive`** (default 30). Seconds an idle mantle plate survives before maintenance trims it. Lower means memory comes back sooner and recently-touched regions get re-read more often.
+4. **Lower the loader caches** if a heap dump shows retained pack data rather than mantle: `performance.objectLoaderCacheSize` (default 4096) and `performance.resourceLoaderCacheSize` (default 1024).
+5. **Slow the pregeneration down.** `pregen.mantleBackpressureWaitMs` (default 25, clamped 5–1000) is the upper bound on one wait when the plate budget is full; it ends early as soon as a chunk completes. `pregen.mantleBackpressureTimeoutMs` (default 60000, clamped 5000–600000) is how long the wait can accumulate before Iris warns, lowers the adaptive in-flight limit, and proceeds with the chunk anyway. Nothing is failed and the run never deadlocks. Neither knob reduces memory use.
 
-`performance.engineSVC.forceMulticoreWrite` (default false) does two
-things. It makes mantle plate unloading use the parallel path all the
-time instead of only under heap pressure, which returns memory faster
-during sustained generation. It also makes every world fan chunk
-generation across the burst pool, which otherwise happens only while a
-pregeneration is active. Both cost CPU that would otherwise go to the
-rest of the server. See [03 - Configuration](/iris/03-configuration).
+`performance.engineSVC.forceMulticoreWrite` (default false) unloads mantle plates on the parallel path all the time instead of only under heap pressure, and makes every world fan chunk generation across the burst pool, which otherwise happens only during a pregeneration. Both cost CPU that would otherwise go to the rest of the server.
 
-## Symptom: Entering a fresh world or a new Studio takes tens of seconds
+## Symptom: entering a fresh world or a new Studio takes tens of seconds
 
-The first chunks of a hydrology world cannot generate until their hydrology
-tiles are planned, and a cold tile is expensive: the planner samples the
-natural terrain of the tile and its neighbours, routes every candidate
-river, and then resolves the lower-ranked neighbouring tiles its rivers and
-caves reach into before it can publish. A spawn on a tile corner needs four
-tiles at once. The first chunks also initialize terrain, caves, and native
-structure reference windows after their required hydrology tiles are ready.
+The first chunks of a hydrology world cannot generate until their hydrology tiles are planned, and a spawn on a tile corner needs four tiles at once. Iris plans only the exact entry columns first and defers speculative neighbour tiles until the initial teleport finishes; a pregeneration keeps a bounded one-tile lookahead that advances with the generation front rather than planning the whole area up front.
 
-At generator injection, Iris asynchronously checks for an existing initial spawn chunk without generating it. This check lets saved worlds finish Folia startup without waiting for region ticks. If the chunk is absent, Normal Studio and worlds opened by the create command start tracked planning for the exact entry columns. Normal creation defers speculative neighbor tiles until its initial player teleport finishes, or until spawn preparation finishes for a console request. Required chunk and native structure requests remain available throughout. Failure and generator close end the deferral. Other runtime world startup retains its half-tile spawn prefetch. A completion from a closed or replaced runtime cannot start planning. Pregeneration adds a bounded one-tile lookahead around its center, then advances that lookahead with the generation front instead of planning the whole area. Starting a new pregen removes queued speculative plans outside its initial lookahead; plans already running and required tile requests still complete. The chunk system
-generates a few hundred blocks around the player and each chunk's mantle
-window reaches further, so a spawn touches its neighbouring tiles no matter
-where on a tile it sits; the cold entry is bounded by the deepest chain of
-neighbour drafts among them. With `debug` on
-in `iris.json` every tile and every owner draft logs its timing:
+With `debug` on in `iris.json`, every tile and every owner draft logs its timing:
 
 ```text
 Hydrology tile -1,-1 planned in 20155ms: owners=8 resolve=20151ms materialize=3ms courses=2 on Iris Hydrology 2
 Hydrology owner -1,-2 rank=1 drafted in 9420ms: context=3635ms select=155ms settle=1077ms publish=4551ms deps=2 wait=2739ms admissions=2 on Iris 8
 ```
 
-`context` is terrain sampling and routing, `select` and `settle` are source
-selection, `publish` is the publication passes including `wait`, the time
-spent waiting for lower-ranked neighbour drafts (`deps`). A tile with a
-large `wait` is bounded by its neighbours; a tile with a large `context` is
-bounded by terrain sampling, which scales with the burst pool. Owner logs also report the number of early neighboring drafts (`earlyOwners`), centerline solve counts and time (`routes`, `reuses`, `routeSolve`), validation raster counts and time (`rasters`, `raster`), and cave-filter counts and time (`filters`, `filter`). These measurements separate local work from dependency waits.
+| Field | Meaning |
+|---|---|
+| `context` | Terrain sampling and routing. A large value means the tile is bounded by terrain sampling, which scales with the burst pool |
+| `select` / `settle` | Source selection |
+| `publish` | The publication passes |
+| `wait` / `deps` | Time spent waiting for lower-ranked neighbour drafts, and how many. A large `wait` means the tile is bounded by its neighbours |
+| `earlyOwners`, `routes`, `reuses`, `routeSolve`, `rasters`, `raster`, `filters`, `filter` | Early neighbouring drafts, centerline solve counts and time, validation raster counts and time, cave-filter counts and time |
 
-When owner tiles use two colors on each axis, selected river candidates start lower-ranked neighboring drafts before local validation finishes. Higher-ranked dependencies enter the queue first. Terrain routing contexts compute outside cache mapping locks, so unrelated tiles can initialize concurrently; requests for the same tile share the calculation. Hydrology also reuses the terrain generator's cached base-biome selection when selection noise has no expressions and no chunk context is bound; shore selection still uses the requested natural height.
-
-A plugin that asks Iris for heights or biomes on the server thread (map
-overlays, statistics, teleport helpers) never waits for planning: for a
-column whose tiles are not planned yet it gets the natural terrain answer
-and the tiles are planned in the background, so a later query returns the
-river-shaped answer. With `debug` on, the first such query per tile logs
-`Hydrology tile x,z queried before it was planned`. Chunk generation always
-waits for the real plan, so this never changes the world itself.
+A plugin that asks Iris for heights or biomes on the server thread (map overlays, statistics, teleport helpers) never waits for planning: for a column whose tiles are not planned yet it gets the natural terrain answer and the tiles are planned in the background, so a later query returns the river-shaped answer. With `debug` on, the first such query per tile logs `Hydrology tile x,z queried before it was planned`. Chunk generation always waits for the real plan, so this never changes the world itself.
 
 ## Symptom: Studio memory keeps growing during editing
 
-Studio worlds skip routine mantle maintenance by default, so a long
-authoring session can retain more data than a normal world. Emergency
-maintenance still runs after heap crosses Iris's high-water threshold.
-Studio no longer disables that safety path. Set
-`performance.trimMantleInStudio` to `true` to run routine maintenance as
-well. The cost is that hotloaded pack edits regenerate more from scratch
-because less remains cached. A/B this in Studio only. It has no effect on
-production worlds.
+Studio worlds skip routine mantle maintenance by default, so a long authoring session can retain more data than a normal world. Emergency maintenance still runs after heap crosses Iris's high-water threshold — Studio cannot disable that safety path. Set `performance.trimMantleInStudio` to `true` to run routine maintenance as well. The cost is that hotloaded pack edits regenerate more from scratch because less remains cached. A/B this in Studio only; it has no effect on production worlds.
 
 ## Symptom: Studio entry is slow or times out
 
-Player `open` and `tpstudio` wait for destination readiness and teleport completion. Studio has no fixed overall arrival deadline. Cold pack preparation and hydrology planning can therefore delay arrival beyond ten seconds.
+Studio has no fixed arrival deadline, so cold pack preparation and hydrology planning can delay arrival well beyond ten seconds.
 
-Benchmark with one artifact, pack, seed, player, and machine. Record cold
-and warm library, pack, and chunk-cache states separately. On Bukkit use
-the `Studio player <name> arrived in <milliseconds>` line together with
-the `[Studio timing]` phase lines; on modded measure command admission to
-the observed dimension change. Ordinary Bukkit Studio runs its canonical
-generation-cache warm as lifecycle-tracked asynchronous work overlapped
-with native structure-ring activation. Fresh normal world creation also
-warms caches asynchronously, allowing destination hydrology and world setup
-to proceed together. Restored runtime worlds retain synchronous warming.
-Generation and Matter generation wait for warmup; Studio hotload and entry
-teleport also wait for it. Uncaught task failures propagate through readiness, and reload or shutdown
-drains the tracked work.
-`generation_cache_warm` must report `skipped=false`. Treat overlapping phase
-durations as one wall-clock interval rather than adding them.
+Benchmark with one artifact, pack, seed, player, and machine, and record cold and warm library, pack, and chunk-cache states separately. On Bukkit use the `Studio player <name> arrived in <milliseconds>` line together with the `[Studio timing]` phase lines; on modded, measure command admission to the observed dimension change. `generation_cache_warm` must report `skipped=false`. Treat overlapping phase durations as one wall-clock interval rather than adding them.
 
-Object and Jigsaw Studio use flat authoring floors and a plains biome. They skip normal generation-cache warmup, spawn hydrology prefetch, native structure activation, and imported-feature placement. Their opens still require pack validation, runtime construction, and object loading. These authoring modes and `OBJECT_BUFFET` derive native heightmaps from actual blocks and skip native structure and imported-feature placement. Measure them separately from Standard Studio without `OBJECT_BUFFET`, which retains full pack generation.
+Object and Jigsaw Studio use flat authoring floors and a plains biome, and skip generation-cache warmup, spawn hydrology prefetch, native structure activation, and imported-feature placement. Those modes and `OBJECT_BUFFET` derive native heightmaps from actual blocks. Measure them separately from Standard Studio without `OBJECT_BUFFET`, which retains full pack generation.
 
-Iris never changes a player's view distance, and never changes a world's view
-or simulation distance. Those settings belong to the server and to the player's
-own client; entry works within whatever they are.
+Standard Studio stores successfully completed entry and initial-pregeneration hydrology tiles under `packs/<key>/.iris/studio-hydrology/<identity>/`. The identity covers the visible pack snapshot, validation context, dimension, seed, height, and hydrology settings, so a process-cold reopen of an unchanged identity loads those final tiles instead of repeating the cross-tile plan. A changed pack or seed is cold again.
 
-Standard Studio stores successfully completed entry and initial-pregeneration
-hydrology tiles under `packs/<key>/.iris/studio-hydrology/<identity>/`. The
-identity covers the visible pack snapshot, validation context, dimension, seed,
-height, and hydrology settings. A process-cold reopen of the unchanged identity
-loads those final tiles and their resolved owner state instead of repeating the
-cross-tile plan. A changed pack or seed is cold again, and the first successful
-plan for that identity must finish before there is anything to reuse.
-
-Capture JProfiler around any slow pack
-preparation, runtime construction, structure activation, destination-chunk
-generation, or scheduler queue. Do not accelerate entry by changing its
-output: Standard Studio must generate the same blocks, biomes, structures, and
-terrain as a normal world with the same pack and seed, without blank chunks
-or a landing pad.
+Iris never changes a player's view distance, and never changes a world's view or simulation distance. Capture JProfiler around any slow pack preparation, runtime construction, structure activation, destination-chunk generation, or scheduler queue. **Do not accelerate entry by changing its output** — Standard Studio must generate the same blocks, biomes, structures, and terrain as a normal world with the same pack and seed, without blank chunks or a landing pad.
 
 ## Symptom: the same pack resources reload constantly
 
-`performance.resourceLoaderCacheSize` (default 1024) bounds the cache of
-parsed JSON pack resources. `performance.objectLoaderCacheSize` (default
-4096) bounds `.iob`, matter, and image loaders. If profiling shows
-repeated parse or disk work for resources in use, raise the cache that
-is actually missing, one at a time. Both trade heap for fewer
-reloads, and neither changes generation output.
+`performance.resourceLoaderCacheSize` (default 1024) bounds the cache of parsed JSON pack resources. `performance.objectLoaderCacheSize` (default 4096) bounds `.iob`, matter, and image loaders. If profiling shows repeated parse or disk work for resources in use, raise the cache that is actually missing, one at a time. Both trade heap for fewer reloads, and neither changes generation output.
 
-Iris also keeps a current-format first-access prefetch file for generic
-JSON loaders. Each loader admits at most the smaller of its cache
-capacity and 1,024 resource keys. An overflowing history is skipped
-instead of being replayed at the next startup. Entries and loaders are
-admitted sequentially to bound parse-time memory, and the identity
-includes the exact pack root, seed, dimension version/key, and loader
-folder. Old cache identities are ignored, not migrated. `.iob`, image,
-and matter bodies do not use this history.
+Iris also keeps a first-access prefetch file for generic JSON loaders, keyed to the exact pack root, seed, dimension version and key, and loader folder. Old cache identities are ignored, not migrated. `.iob`, image, and matter bodies do not use this history.
 
-## Reference: `performance` section
+## LEAF entity RNG
 
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `performance.simdKernels` | `true` | Allows vector kernels when `jdk.incubator.vector` is on the module path. `false` forces scalar. Read once at class initialization, so a restart is required |
-| `performance.mantleKeepAlive` | `30` | Seconds an idle mantle plate survives before maintenance trims it. Shrinks toward zero as used heap climbs from 82% to 92% |
-| `performance.mantleCleanupDelay` | `200` | Ticks a loaded chunk waits before its mantle cleanup runs (200 = 10 s). Raising it keeps mantle data resident longer after chunk loads. See [03 - Configuration](/iris/03-configuration) |
-| `performance.trimMantleInStudio` | `false` | Whether studio worlds get routine mantle maintenance. Emergency high-water maintenance runs regardless |
-| `performance.noiseCacheSize` | `1024` | Noise cache capacity per stream in 16×16 chunks. Starting a pregeneration raises it to at least 4096 for the rest of the process |
-| `performance.resourceLoaderCacheSize` | `1024` | Parsed pack resource entries held before eviction |
-| `performance.objectLoaderCacheSize` | `4096` | `.iob`, matter, and image loader entries held before eviction |
-| `performance.engineSVC.useVirtualThreads` | `true` | Maintenance workers run on virtual threads. `false` uses platform threads |
-| `performance.engineSVC.forceMulticoreWrite` | `false` | Always unload mantle plates on the parallel path instead of only under heap pressure |
-| `performance.engineSVC.priority` | `5` (`Thread.NORM_PRIORITY`) | Priority of maintenance platform threads, clamped to the legal Java range. Ignored entirely when virtual threads are on |
-| `performance.engineSVC.parallelism` | `-1` | Size of the engine maintenance worker pool. A positive value is capped at `2 × CPU`. Zero or negative means `ceil(sqrt(CPU))` |
-
-`engineSVC` sizes the maintenance service (mantle trimming, plate
-unloading, and periodic saves), not chunk generation. Raising `parallelism`
-will not generate chunks faster. It makes mantle housekeeping finish
-sooner and take more CPU while it does. Generation parallelism is derived
-separately (see below).
-
-## Reference: `pregen` section
-
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `pregen.runtimeSchedulerMode` | `AUTO` | Which scheduler the Bukkit pregen driver uses: `AUTO`, `PAPER_LIKE`, `FOLIA`. A Folia runtime always resolves to Folia |
-| `pregen.paperLikeBackendMode` | `AUTO` | How Paper-like pregen acquires chunks: `AUTO`, `TICKET`, `SERVICE`. `AUTO` resolves to `TICKET` |
-| `pregen.chunkLoadTimeoutSeconds` | `15` | Bukkit slow-request warning and adaptive-throttle age. It does not terminate the Paper future. Clamped 5–120. Modded pregen uses it as a terminal timeout and raises anything below 120 to 120 |
-| `pregen.timeoutWarnIntervalMs` | `500` | Minimum gap between repeated slow-request warnings. Minimum 250 |
-| `pregen.saveIntervalMs` | `30000` | Gap between pregen progress flushes. Clamped 5000–900000 |
-| `pregen.maxResidentTectonicPlates` | `96` | Ceiling on resident mantle plates before the height and heap budgets narrow it further. Never drops below 16 |
-| `pregen.mantleBackpressureWaitMs` | `25` | Upper bound on one backpressure wait when the plate budget is full; a completing chunk ends it early. Clamped 5–1000 |
-| `pregen.mantleBackpressureTimeoutMs` | `60000` | How long backpressure waits before it warns, lowers the adaptive in-flight limit, and proceeds anyway. The chunk is not failed. Clamped 5000–600000 |
-| `pregen.moddedPregenInFlight` | `0` | Concurrent pregen chunks on mod loaders. `0` resolves to `clamp(16, cpu*2, 48)`. Positive values cap at 512. The result is floored at 8 |
-
-Related: `world.globalPregenCache` (default `false`); see
-[03 - Configuration](/iris/03-configuration) and
-[07 - Pregeneration](/iris/07-pregeneration).
-
-## Reference: derived concurrency
-
-There is no `concurrency` section in `iris.json`. The values are
-computed from CPU count at runtime and cannot be overridden from the
-file:
-
-- Generation burst pool: `max(2, availableProcessors)`, raised to
-  `max(4, availableProcessors × 2)` while a pregeneration runs and
-  returned to its previous size when the last concurrent job finishes
-- Hydrology planning pool: `max(2, availableProcessors)`, kept separate
-  so long tile plans never occupy generation workers
-- IO burst pool: `max(2, availableProcessors / 2)`
-- Bukkit pregen in-flight cap: effective worker threads × 8, clamped
-  16–256 on Paper-like servers and 64–192 on Folia. Paper-like effective
-  workers are the larger of the detected chunk-system pool and the
-  world-gen pool provisioned during initialization. CPU is the fallback
-  when detection is unavailable. The cap is then lowered adaptively for
-  slow requests or mantle backpressure down to
-  `max(4, min(16, cap / 4))`
-
-If you need less generation concurrency, use `serial=true` (Bukkit) or
-`sync` (modded) rather than looking for a knob that does not exist.
+On LEAF 26.2-99 with the faster random generator disabled, set `world-settings.default.settings.entity.shared-random: false` in `purpur.yml` before parallel pregeneration and restart. The enabled shared RNG uses an unsynchronized seed update when entity constructors generate UUIDs, so concurrent creation can repeat UUIDs and cause entities to be rejected. Disabling sharing gives each entity its own RNG without disabling spawns or structures. Check world-specific overrides if present.
 
 ## SIMD
 
-The kernel interface has three operations — `roundToInt`, `sum`, and `max` — and generation calls two of them from exactly two places: the array rounding path in the chunked double data cache, and one array max in mantle carving. `sum` has no generation call site, and the vector implementation of it is deliberately scalar anyway, because lane-wise accumulation reassociates floating-point addition and would make reductions differ between the two kernel sets. There are no vector noise kernels; a 2D fractal noise vector kernel was measured at 0.07x scalar on 2-lane NEON and removed. Do not size hardware around noise SIMD.
+The vector kernel surface is small. The kernel interface has three operations — `roundToInt`, `sum`, and `max` — and generation calls two of them, from the array rounding path in the chunked double data cache and one array max in mantle carving. **There are no vector noise kernels** — a 2D fractal noise vector kernel measured at 0.07x scalar on 2-lane NEON and was removed, so do not size hardware around noise SIMD. On a 2-lane CPU such as Apple Silicon NEON the array kernels are roughly a wash: rounding is slower, max is faster.
 
-Selection happens once, at class initialization: `performance.simdKernels` false selects scalar; otherwise, if `jdk.incubator.vector` is present and the vector kernel class loads, vector kernels are used; otherwise scalar. On a 2-lane CPU such as Apple Silicon NEON, the array kernels are roughly a wash: rounding is slower, max is faster.
+Selection happens once at class initialization. `performance.simdKernels` false selects scalar; otherwise vector kernels are used when `jdk.incubator.vector` is present and the vector kernel class loads. The Bukkit startup log prints exactly one line, in this precedence order:
 
-The startup log prints one of five SIMD lines: `SIMD: vector kernels enabled (<description>)`; `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector to JVM flags to enable vectorized generation kernels`; `SIMD: scalar kernels active; vector kernel initialization failed: <class>: <message>`; `SIMD: vector kernels disabled (performance.simdKernels=false)`; or `SIMD: scalar kernels active; the Vector API reported no usable vector shape on this CPU`. Those reasons are reported in that order, so a JVM without the module reports the missing module even when `performance.simdKernels` is also false. A load failure is reported as a load failure instead of being labelled `performance.simdKernels=false`. The line comes from the Bukkit plugin's enable; mod loaders never print it.
+| Line | Meaning |
+|---|---|
+| `SIMD: vector kernels enabled (<description>)` | Working |
+| `SIMD: scalar kernels active; add --add-modules jdk.incubator.vector to JVM flags to enable vectorized generation kernels` | The JVM module is missing. Reported even when `performance.simdKernels` is also false |
+| `SIMD: scalar kernels active; vector kernel initialization failed: <class>: <message>` | The module is present but the kernel class did not load |
+| `SIMD: vector kernels disabled (performance.simdKernels=false)` | Turned off in `iris.json` |
+| `SIMD: scalar kernels active; the Vector API reported no usable vector shape on this CPU` | Hardware has no usable vector shape |
+
+Mod loaders never print this line.
+
+## JVM properties
+
+These are command-line properties, not `iris.json` keys.
+
+| Property | Default | What it does |
+|---|---|---|
+| `iris.cache.fast` | set automatically by the Bukkit plugin | Enables the fast cache path. Mod loaders never set it, so pass `-Diris.cache.fast=true` on the JVM command line there if you want it |
+| `iris.mantle.componentTimeout` | `120000` ms | How long a mantle component wait runs before Iris reports the timeout and requests cancellation. A running component keeps its writer until it exits, so work that never exits leaves generation and shutdown incomplete rather than releasing storage beneath active writes |
+
+Full `performance` and `pregen` key reference: [03 - Configuration](/iris/03-configuration). Related: `world.globalPregenCache` (default `false`), and [07 - Pregeneration](/iris/07-pregeneration).

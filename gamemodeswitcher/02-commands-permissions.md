@@ -2,13 +2,13 @@
 title: "GamemodeSwitcher: Commands and permissions"
 description: "Command syntax, player controls, and operator permissions"
 published: true
-date: 2026-09-11T01:30:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gamemodeswitcher, commands, permissions"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
 ---
 
-`/gsw` aliases `/gamemodeswitcher`. The root command opens localized Director help; commands support tab completion. Mode changes affect the invoking player only.
+`/gsw` aliases `/gamemodeswitcher`. The root command opens help. A mode change only ever affects the player who ran it.
 
 | Command | Behavior |
 | --- | --- |
@@ -29,7 +29,7 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | `/gsw debug version` | Show `GamemodeSwitcher v<version>` using the help title gradient |
 | `/gsw debug dump upload=true` | Save a report and request upload if server configuration permits it |
 
-`/gsw set mode=creative` and positional boolean values such as `/gsw toggle false` also work. Omitting the debug upload argument requests an upload by default; use `upload=false` to save only locally. Console users can use help, status, language administration, and diagnostics; player controls require a player. Settings and installed language files apply changes automatically; use `/gsw status` to inspect the active settings.
+`/gsw set mode=creative` and positional values such as `/gsw toggle false` also work. `/gsw version` is the same as `/gsw debug version` but hidden from help. Console can use help, status, language administration, and diagnostics; the rest needs a player.
 
 | Permission | Default | Allows |
 | --- | --- | --- |
@@ -46,10 +46,10 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | `volmit.language.admin` | Operators | Server language selection and editing across suite plugins |
 | `gamemodeswitcher.debug` | Operators | Diagnostic reports |
 
-A player needs both `gamemodeswitcher.use` and permission for the destination mode. The menu displays unavailable destinations and checks permissions again when clicked. Global disable, world restrictions, and successful-change cooldowns also apply to commands and the selector.
+A player needs both `gamemodeswitcher.use` and permission for the destination mode. The selector shows destinations you cannot use and rechecks permission when you click.
 
-The selector uses the same 54-slot filled frame as the configuration editor. Its four gamemodes occupy one row, with the current mode marked by a check and a Selected label. Gesture, language, and configuration controls form a second row; the configuration control appears only with its permission. Close stays in the bottom-right corner. Configuration and translation-editor Back controls return through their parent menus.
+`general.enabled`, `restrictions.disabled-worlds`, and `gestures.cooldown-millis` apply to commands and the selector too, not just gestures.
 
-Version is listed under `/gsw debug` in help. `/gsw version` and `/gamemodeswitcher version` provide the same output and are hidden from help and completion. Both paths require `gamemodeswitcher.command` and work for players and console without a message prefix.
+See [Languages](/languages) for the language commands and their permissions.
 
 [Installation and configuration](/gamemodeswitcher/01-installation-configuration) · [Gestures and operations](/gamemodeswitcher/03-gestures-operations)

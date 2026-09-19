@@ -2,7 +2,7 @@
 title: "Mutations Overview"
 description: "Enable Mutations and manage slots, qualifications, and effects"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -90,8 +90,6 @@ Two different types can always be worn together unless a profile's `conflicts` l
 | `worldBlacklist` | `[]` | World keys where no Mutation works |
 | `domainMembership` | Table below | Skill ids assigned to each domain |
 
-Normalization runs on load and after every reload. It enforces `slotOneUnlockLevel >= 0`, `slotTwoUnlockLevel >= slotOneUnlockLevel`, `perfectAdaptationLevel >= slotTwoUnlockLevel`, and `minimumAdaptationLevel >= 1`. Switch and combat durations clamp to 0 through 31,536,000,000 ms. The bookshelf token clamps to 1,000 through 300,000 ms. Bookshelf distance clamps to 2 through 32 blocks. World lists keep at most 256 normalized world keys. Each domain list keeps at most 64 unique lowercase skill ids.
-
 ### Per-type profile keys
 
 Every type has these keys under its camel-case TOML section, such as `galeLung` or `resonantFormula`. Type-specific keys and their clamps are listed per entry in [35 - Mutations Catalog](/adapt/35-mutations-catalog).
@@ -132,15 +130,9 @@ At most 64 candidate adaptations per domain are scanned per player.
 
 ### Shared-resource pairs
 
-| Pair | Exclusive claims | Resolution |
-|------|------------------|------------|
-| Umbral Echo + Resonant Formula | utility echo | Only the first legal utility echo is scheduled |
-| Temperbound + Masterwork Bond | item preservation | Only one preservation result applies to a durability event |
-| Packmind + Mycelial Nerve | cooperative link | Each recipient consents independently, and propagation does not chain |
-| Living Lattice + Gravebloom | world state | Each temporary structure stays separately owned and bounded |
-| Gale Lung + Bastion Spine | movement, posture | The most recent deliberate movement or posture action owns the result |
-| Deepblood + Gravebloom | recovery | Recovery evaluates once in deterministic slot order |
-| Paradox Scar + Umbral Echo | movement, utility echo | Movement resolves before control echoes |
+Seven pairs of Mutations compete for the same runtime effect — moving you, saving an item, or
+placing temporary blocks. Each pair resolves in a fixed order, so nothing applies twice.
+
 ## See also
 
 - [35 - Mutations Catalog](/adapt/35-mutations-catalog)

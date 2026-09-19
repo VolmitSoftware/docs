@@ -2,7 +2,7 @@
 title: "HiddenOre"
 description: "Mining drop-control and anti-xray plugin"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "hiddenore"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,34 +13,35 @@ deepslate instead. An xray client finds nothing in the world.
 
 | | |
 |---|---|
-| Command | `/hiddenore` |
-| Folia | Supported |
+| Server software | Paper, Purpur, or Folia |
+| Java | 25 |
+| Main command | `/hiddenore` |
+| Config file | `plugins/HiddenOre/hiddenore.toml` |
 | Permission | `hiddenore.admin` |
-| Integrations | PlaceholderAPI, Adapt |
+| Integrations | PlaceholderAPI, Adapt, Iris |
 
 ## How it works
 
-Configured stone and deepslate blocks can award hidden items, experience, or command rewards when mined, or when a qualifying explosion destroys them and [blast mining](/hiddenore/configuration) is on.
+Mine stone or deepslate and you may get an ore reward. Explosions can pay too, once you turn [blast mining](/hiddenore/configuration#blast-mining) on.
 
-For mining, the pipeline skips creative players, non-pickaxe breaks, unmanaged blocks, and
-cancelled block-break events. Rewards commit only after Bukkit accepts the block
-break. For explosions, it runs once the server has accepted the explosion and pays the
-share of destroyed managed blocks set by `blast_mining.yield`. `HiddenOreDropsEvent`
-fires before HiddenOre delivers anything.
+Choose `seeded` mode for repeatable hidden veins that each pay once, or `pure_random` for fresh odds on every block. HiddenOre never places an ore block in the world.
 
-In `seeded` mode, rewards occupy repeatable virtual vein positions and each position pays once, including across restarts.
+See [Configuration](/hiddenore/configuration) for drop modes, vein stability, and limits.
 
-In `pure_random` mode, every eligible block rolls fresh odds.
-
-HiddenOre never places ore blocks. See [Configuration](/hiddenore/configuration) for drop modes, vein stability, and limits.
+## Start here
 
 - [Installation *Requirements and first-run setup*](/hiddenore/installation)
 - [Commands and permissions *Commands and access*](/hiddenore/commands)
 - [Configuration *Every `hiddenore.toml` key and default*](/hiddenore/configuration)
-- [API Overview *Developer API index*](/hiddenore/api)
-- [API events *`HiddenOreDropsEvent` and related events*](/hiddenore/api/events)
-- [API service *Block and vein queries*](/hiddenore/api/service)
-- [API placeholders *PlaceholderAPI integration*](/hiddenore/api/placeholders)
+- [Languages *Choosing a language and editing messages*](/languages)
+{.links-list}
+
+## Developer API
+
+- [API overview *Developer API index*](/hiddenore/api)
+- [Events *`HiddenOreDropsEvent` and related events*](/hiddenore/api/events)
+- [Service *Block and vein queries*](/hiddenore/api/service)
+- [Placeholders *PlaceholderAPI integration*](/hiddenore/api/placeholders)
 {.links-list}
 
 ## Support

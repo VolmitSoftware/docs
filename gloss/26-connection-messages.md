@@ -2,7 +2,7 @@
 title: "Connection Messages"
 description: "Replace the vanilla join and leave lines with conditional Gloss text"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -14,7 +14,7 @@ Gloss replaces the vanilla join and leave lines with text from `plugins/Gloss/co
 
 ## Turning it on
 
-`[features] connections` defaults to `false`. Set it to `true` in `gloss.toml`. Gloss extracts `connections.json` and starts using it without a restart, so a server that never enables the feature keeps the file out of its data folder. Turning it off again also hot-reloads.
+`[features] connections` defaults to `false`. Set it to `true` in `gloss.toml` and Gloss extracts `connections.json` and starts using it without a restart. Turning it off again also hot-reloads.
 
 ## The document
 
@@ -69,14 +69,16 @@ Both `show` gates are evaluated once, for the connecting player. The text is the
 
 Variants are evaluated per recipient, so staff-only wording is a variant whose `when` is a permission check. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
-When a section applies, Gloss cancels the vanilla message, sends its own line to everyone online, and logs the line to the console with colors stripped. A recipient whose text renders empty is skipped, and a section whose text renders empty for everyone still cancels the vanilla line.
+When a section applies, Gloss cancels the vanilla message and sends its own line to everyone online. A recipient whose text renders empty is skipped, and a section whose text renders empty for everyone still cancels the vanilla line.
 
 ## Behind a Velocity proxy
 
-While a Gloss Velocity proxy holds a live connection-messages claim from any connected player, this server clears the vanilla join and quit lines and sends nothing of its own. The proxy announces for the whole network. See [Velocity Proxy](/gloss/27-velocity).
+While a Gloss proxy is announcing for the network, this server stays quiet: it clears the vanilla
+join and quit lines and sends nothing of its own, whether or not `[features] connections` is on
+here. A backend holds its join line for up to three seconds waiting for the proxy's claim, then
+announces late if none arrives.
 
-That claim is a per-player lease, and it arrives one handshake after a player joins, so a join into an empty server can land before any lease exists. If Gloss has already seen a proxy claim connection messages during this server's uptime, it holds that join line back for up to three seconds, rechecking every five ticks. If the claim arrives the line stays unsent. If it does not, Gloss announces late, using this document when the feature and the section apply and otherwise replaying the vanilla line it withheld.
-
-The first join after a server restart is announced immediately, because nothing has been seen yet. That one join can produce both this server's line and the proxy's. A server behind a proxy without Gloss, or with connection messages turned off on the proxy, never waits.
-
-Gloss silences the vanilla lines for a proxy-owned network whether or not `[features] connections` is on here.
+The first join after a server restart is announced immediately, because nothing has been seen yet,
+so that one join can produce both this server's line and the proxy's. A server behind a proxy
+without Gloss, or with connection messages turned off on the proxy, never waits. See
+[Velocity Proxy](/gloss/27-velocity).

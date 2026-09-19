@@ -2,7 +2,7 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - A framed map uses the item frame as the renderer's spatial anchor. A held map falls back to the viewer location. Then it uses the map world's spawn if no viewer is available.
 - Chunk heatmaps are literal north-up grids rather than player-yaw blobs. Chunk cells stay aligned to absolute X/Z coordinates, show the complete surrounding grid even where no sample is loaded, distinguish quiet and active chunks, emphasize MCA region boundaries, and identify the center coordinate with a complete perimeter.
 
-Every built-in sampler and every feature implementing `ReactRenderer` is considered for the map registry. The feature's `enabled` field does not change that. Monitoring-only mode keeps configured renderer features active while it pauses other features and tweaks, so map collection and rendering continue. Integration-prefixed renderers are omitted until their peer capability is present. The `iris-biome-chunk-share-pie-map` renderer is selectable while the Iris capability is present; its sampling feature uses the same capability gate, so it schedules no owner work on non-Iris servers.
+Every built-in sampler offers a map, whether or not its feature is `enabled`, and monitoring-only mode keeps them collecting while it pauses everything else. A map belonging to another plugin only appears once that plugin is present. The `iris-biome-chunk-share-pie-map` renderer is selectable while the Iris capability is present; its sampling feature uses the same capability gate, so it schedules no owner work on non-Iris servers.
 
 ## Item-frame delivery and megamaps
 

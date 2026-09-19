@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -248,15 +248,17 @@ Pass `target=<iris-path>` for a deliberate key.
 
 ### What conversion changes about pools
 
-A native list pool entry stays one weighted choice. Iris keeps its recursively first physical template and outer connectors. It omits later colocated children and their processors with a `LIST_ELEMENTS` warning. It does not turn them into separate alternatives.
+A native list pool entry becomes one weighted choice: Iris keeps its first physical template and outer connectors and omits later colocated children with a `LIST_ELEMENTS` warning. Every start-pool member stays a physical piece even with no connectors, and an all-air template with a connector stays a non-collidable scaffold.
 
-Every start-pool member stays a physical Iris piece even when it has no connectors. An all-air template with at least one connector stays a non-collidable scaffold so its bounds may overlap attached physical pieces. Every non-start connectorless member in a pool with a distinct fallback also stays physical. Pool size and air content do not matter. Weighted primary no-match attempts still reach that fallback.
-A retained all-air member stays non-collidable.
+Some pool members cannot be represented and are recorded as named fidelity losses in the conversion report:
 
-A singleton all-air connectorless member with no fallback or a self-fallback becomes an explicit empty entry, recorded as `connectorless_all_air_member_normalized_empty`. The observed waystone form is the self-fallback case. The same member in a mixed no/self-fallback pool is omitted instead. It is recorded as `connectorless_all_air_mixed_member_omitted`. Converting it to empty could terminate the branch before later candidates get a chance.
-That loss records the changed selection weights and RNG consumption. Other connectorless nonempty members in no/self-fallback non-start pools are omitted as unattachable with `connectorless_non_air_member_omitted`. That block loss also records exact fallback context plus selection-weight and RNG-consumption drift.
+| Warning | What happened |
+|---|---|
+| `connectorless_all_air_member_normalized_empty` | A lone all-air connectorless member with no fallback or a self-fallback became an explicit empty entry |
+| `connectorless_all_air_mixed_member_omitted` | The same member in a mixed no/self-fallback pool was omitted, because an empty entry could cut off later candidates |
+| `connectorless_non_air_member_omitted` | An unattachable connectorless member in a no/self-fallback non-start pool was dropped |
 
-Converted graphs explicitly use `branchFailurePolicy: TERMINATE_BRANCH`: once ordinary primary and direct-fallback candidates are exhausted only that optional branch ends, while required physical fallbacks still fail. Explicit empty members and empty optional primary pools end the branch before the direct fallback is tried.
+Each of those changes the pool's selection weights. Converted graphs use `branchFailurePolicy: TERMINATE_BRANCH`, so exhausting ordinary candidates ends only that optional branch.
 
 Native placement settings beyond start pool, maximum depth, and maximum distance may not survive conversion. Feature pool elements, alternate palettes, processors, entities, and other native-only behavior may also be lost.
 
@@ -266,8 +268,8 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
 
-Minecraft 26.2 stronghold rings are the one explicit placement-contract exception across Iris versions. Iris evaluates the preferred-biome search once at each candidate chunk center instead of once per quart column, uses the underlying natural biome rather than accepted surface-hydrology content, and shares one generation context plus a dedicated natural-biome cache across each search. Each ring task drops from 3,249 biome evaluations to 225 unique candidate columns. This remains deterministic for the same seed, pack, and Iris build, but it intentionally changes ring coordinates from earlier builds. Existing stronghold blocks remain in saved chunks.
-`/locate` and Eyes of Ender use the current rings, and Iris does not migrate or preserve the old ring layout. All other biome searches retain their normal resolution.
+> Minecraft 26.2 stronghold rings are the one placement-contract exception across Iris versions. Ring coordinates are still deterministic for a given seed, pack, and Iris build, but they intentionally **differ from earlier builds**. Existing stronghold blocks remain in saved chunks; `/locate` and Eyes of Ender use the current rings, and Iris does not migrate the old ring layout.
+{.is-warning}
 
 ### 1.2 Biome mapping for structure filters
 
@@ -377,9 +379,7 @@ Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding`
 
 For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Support beneath projected solid path columns uses the same `flattenRange` limit and stops at fluids.
 
-Native terrain fitting and placement keep chunk access inside the active generation region. Distant piece references use deterministic terrain samples. In ordinary worlds, local height queries use the fitted terrain heightmaps.
-
-Dimension stacks still supply the original layer surface to native height queries. Igloos, swamp huts, and terrain-matching village paths can therefore retain their original projected elevations after `FLATTEN`.
+Dimension stacks supply the original layer surface to native height queries, so igloos, swamp huts, and terrain-matching village paths can retain their original projected elevations after `FLATTEN`.
 
 The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils retain their existing placement rules.
 
@@ -477,10 +477,9 @@ Run `/iris datapack ingest` to check for updates. Local ZIP changes are detected
 
 ### 2.3 Optional Dungeons & Taverns caveat on Folia 26.2
 
-The built-in Iris packs do not include Dungeons & Taverns. If a custom pack imports Dungeons & Taverns 5.3.0, Folia 26.2 cannot execute its function set completely. Folia's command dispatcher omits `tag` and `data`. It does not expose a usable `item` command in this context. It accepts `ride` while rejecting nested forms used by the pack. The unchanged datapack bytes therefore produce 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries on Folia.
-Function-backed Dungeons & Taverns behavior is incomplete even though Iris world loading and chunk generation continue.
+The built-in Iris packs do not include Dungeons & Taverns. If a custom pack imports Dungeons & Taverns 5.3.0, Folia 26.2 cannot execute its function set: its command dispatcher omits `tag` and `data`, exposes no usable `item` command here, and rejects the nested `ride` forms the pack uses. The result is 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries. World loading and chunk generation continue, but function-backed behavior is incomplete.
 
-This is an upstream Folia 26.2 command compatibility limitation, reproduced on a clean Folia server with no Iris plugin installed. Paper, Leaf, and Canvas load the same datapack bytes without those function errors. Iris does not rewrite or silently remove third-party functions. Use a server implementation that supports the pack commands when complete Dungeons & Taverns behavior is required.
+This is an upstream Folia 26.2 limitation, reproduced on a clean Folia server with no Iris installed. Paper, Leaf, and Canvas load the same bytes without those errors. Iris does not rewrite third-party functions. **Use a server implementation that supports the pack's commands when complete Dungeons & Taverns behavior is required.**
 
 ### 2.4 Modded installation
 
@@ -566,20 +565,9 @@ Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`,
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
-On Java 26.2 Paper-family servers, Iris confines native structure placement and its heightmap priming to the current FEATURES step's writable 3×3-chunk region. Statusless chunk access inside that region retains `WorldGenRegion`'s current-stage lookup instead of being converted into a `FULL`-status request.
-This lets ordinary native piece placement, including mineshaft supports, read the generation chunk without asking Paper for a status that is unavailable during FEATURES. A native feature-pool element that probes farther receives deterministic Iris base-column terrain for block and height reads. If it explicitly requires a distant chunk, it receives an empty ephemeral chunk.
-Distant block changes, entities, events, and scheduled ticks are rejected before they reach Paper. This keeps placement inside Paper write-radius contract. It does not widen the radius or suppress Leaf/Paper diagnostics. It removes the repeated distance-two unsafe-terrain and far-`setBlock` warnings. It prevents the unavailable-chunk exception that Leaf and Paper treat as an unrecoverable generation failure.
+On every platform, native placement is confined to the writable 3x3-chunk area around the generation chunk. A structure that probes farther reads deterministic Iris terrain instead, and distant block changes, entities, events, and scheduled ticks never reach the live level. Villager workstations and other point-of-interest blocks are reconciled when the affected chunk next loads; no pack setting is required.
 
-On Java 26.2 Paper-family servers, native structure changes to point-of-interest (POI) blocks record the affected chunk sections before placement. Iris reconciles those sections on the owning chunk-load thread, adding missing POIs and removing stale ones while retaining matching records and their occupied tickets. Pending repairs persist with the chunk across shutdown and clear only after successful reconciliation. No pack setting is required.
-
-Fabric, Forge, and NeoForge apply the equivalent boundary around the generation chunk. Native post-processing can read and write only the current 3×3-chunk area.
-Reads beyond it receive deterministic Iris surface/floor terrain or an empty ephemeral chunk. Far block changes, entities, events, and scheduled ticks never reach the live level. The modded structure-template palette lazy block lookup is also concurrent and boot-audited. Parallel native-volume inspection cannot mutate one vanilla cache through an unsafe `HashMap` path.
-
-Before modded native placement, Iris registers every POI-bearing block already present in the target protochunk. The subsequent structure block transition can then unregister or replace that POI normally after a vertical shift.
-
-External datapacks can produce content warnings for unresolved `minecraft:grass` forms, invalid block properties, empty third-party pools, stale replacement identifiers, or stale block-attached-entity `block_pos` values. Iris reports those inputs and uses only Minecraft's safe fallback where one exists. It does not rewrite or migrate third-party source bytes. They are distinct from an Iris unsafe-read, far-write, POI, or native-volume failure.
-
-The managed Overworld pack authors big dripleaf stems with Minecraft 26.2's `facing` and `waterlogged` properties and mature beetroots at age 3. Normal worlds and Studio consume those same pack bytes, so Studio does not substitute a simplified block state or special landing-area content.
+External datapacks can produce content warnings for unresolved `minecraft:grass` forms, invalid block properties, empty third-party pools, stale replacement identifiers, or stale block-attached-entity `block_pos` values. Iris reports those inputs and uses Minecraft's safe fallback where one exists rather than rewriting third-party source bytes.
 
 ### 3.2 `disabled` and `disabledExact` never block an explicit placement
 
@@ -751,8 +739,4 @@ Related dimension fields: `datapackImports`, `importedStructures`, `structures[]
 
 ## Native content beside generation updates
 
-Generation updates use saved natural terrain as their boundary. New native structure starts require their complete footprint to avoid historical chunks. The new transition band permits structure placement. Native feature decoration checks its surrounding 3×3 chunk write area and skips the pass when that area contains a completed historical chunk.
-
-Native structure starts carry their activation in native chunk storage, including starts saved before `noise`. After an update, those older starts can finish remaining chunk-local placement without the new-start footprint check. Completed stages are not rerun.
-
-Height and base-column queries in the transition band use the same resolved geometry as terrain placement. The current native pipeline completes permitted later work without reconstructing an archived Iris generator. See [generation updates and retained terrain](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+A generation update uses saved natural terrain as its boundary. New native structure starts require their complete footprint to avoid historical chunks, and native feature decoration skips its pass when the surrounding 3x3 chunk area contains a completed historical chunk. Starts saved from an earlier activation can finish their remaining chunk-local placement without the new-start footprint check, and completed stages are not rerun. See [generation updates and retained terrain](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).

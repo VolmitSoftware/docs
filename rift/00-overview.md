@@ -2,7 +2,7 @@
 title: "Rift: Overview"
 description: "World states, lifecycle behavior, and the Rift safety model"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "rift, world-management, lifecycle, safety"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -27,13 +27,11 @@ Use `/rift list [page]` to browse known worlds and `/rift info <name>` to inspec
 
 The built-in `void` generator creates an empty world with a small bedrock spawn platform.
 
-`/rift language` manages personal and server-default locales. Rift also participates in `/volmit plugins languages`.
-
-During startup, Rift stops managing an unloaded, unprotected world when both supported storage locations are conclusively absent. Its profile is moved to `plugins/Rift/worlds/retired/` instead of deleted. Loaded or protected worlds remain managed, and existing but incomplete, inaccessible, conflicting, or unsafe storage is preserved for operator review with the full failure logged.
+If a managed world's directory disappears, Rift retires its profile rather than deleting it. See [Externally removed worlds](/rift/03-storage-operations#externally-removed-worlds).
 
 ## Diagnostics
 
-`/rift debug dump` saves a support report under `plugins/Rift/debug/` and uploads it to mclo.gs by default. Set `debugUploadEnabled` to `false` or pass `upload=false` for a local-only report. Rift is also available through `/volmit plugins debug`. See [Shared diagnostic reports](/volmlib/api/diagnostics).
+`/rift debug dump` saves a support report under `plugins/Rift/debug/` and uploads it to mclo.gs by default. Set `debugUploadEnabled` to `false`, or pass `upload=false`, for a local-only report. See [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 ## Safe removal
 

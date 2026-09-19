@@ -2,17 +2,15 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, decorations, toggles, and their click areas"
 published: true
-date: 2026-09-04T16:31:36.767Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-The `components` array holds a menu's buttons, decorations, and toggles. See [Hologram Menus](/gloss/09-menus), [Icons](/gloss/11-icons), and [Actions](/gloss/12-actions).
+The `components` array holds a menu's buttons, decorations and toggles. See [Hologram Menus](/gloss/09-menus), [Icons](/gloss/11-icons) and [Actions](/gloss/12-actions).
 
 ## The component entry
-
-Every entry of `components` is an object with three required keys and optional `show`.
 
 | Key | Type | Required | Notes |
 |---|---|---|---|
@@ -21,57 +19,23 @@ Every entry of `components` is an object with three required keys and optional `
 | `data` | object | yes | The type-discriminated component body |
 | `show` | boolean or expression | no | Defaults to `true`; combines with menu and panel visibility |
 
-`vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted.
+`vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted. A missing `offset` or `data` value is reported when the menu opens.
 
-`id`, `offset`, and `data` are required. A missing `offset` or `data` value is reported when the menu opens.
+`show` applies to buttons, decorations and toggles. A hidden component has no visible icon and no active click target, and returns when its condition passes during a session tick. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
-Place `show` beside `id`, `offset`, and `data`. It applies to buttons, decorations, and toggles.
-Hidden components have no visible icon or active click target and return when their condition
-passes during a session tick. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Component offsets use menu-relative axes: positive X moves to the viewer's right, positive Y up, and positive Z away from the viewer. Personal menus scale them by `[menus] uiScale`; panels multiply their own scale by `uiScale`. Only component offsets, icon geometry and hitbox geometry scale — the menu-level `offset` does not.
 
-Gloss transforms each local component offset into the menu's position, scale, and rotation:
-
-```java
-Vector worldOffset = new Vector(-offset.getX() * scale, offset.getY() * scale, offset.getZ() * scale)
-    .rotateAroundZ(Math.toRadians(roll))
-    .rotateAroundX(Math.toRadians(pitch))
-    .rotateAroundY(Math.toRadians(-facingYaw));
-Location componentPosition = menuOrigin.clone().add(worldOffset);
-```
-
-Personal menus use `[menus] uiScale`. Panels multiply their own scale by `uiScale`. Positive X moves toward the viewer's right.
-
-The menu-level `offset` is mirrored on X the same way but is **not** scaled. Only component offsets, icon geometry and hitbox geometry scale.
-
-### Duplicate ids
-
-Duplicate IDs do not reject the file. Gloss keeps the first component and logs each later duplicate with
-
-```
-Menu "<menuId>" declares duplicate component id "<componentId>"; keeping the first component.
-```
-
-A duplicate that is dropped does not render or receive clicks.
+Duplicate ids do not reject the file. Gloss keeps the first component, logs each later duplicate, and the dropped one neither renders nor receives clicks.
 
 ### The `data` discriminator
 
-The `data.type` value is exact and case-sensitive.
+`data.type` is exact and case-sensitive. A missing, non-string or unrecognised value rejects the menu file with `Missing type`, `Type must be a string` or `Unknown type: <value>`.
 
-| Failure | Message |
+| `type` | Clickable |
 |---|---|
-| No `type` key | `Missing type` |
-| `type` is not a string | `Type must be a string` |
-| Unrecognised `type` | `Unknown type: <value>` |
-
-Any of these errors rejects the menu file and logs the reason.
-
-| `type` | Java record | Clickable |
-|---|---|---|
-| `button` | `ButtonComponentData` | yes |
-| `decoration` | `DecoComponentData` | no |
-| `toggle` | `ToggleComponentData` | yes |
-
-The JSON spelling is `decoration`. The enum constant is `DECO`.
+| `button` | yes |
+| `decoration` | no |
+| `toggle` | yes |
 
 Icons and actions use their own `type` fields inside `data`.
 
@@ -103,15 +67,11 @@ Icons and actions use their own `type` fields inside `data`.
 | `actions` | array of action objects | yes in the schema | `null` |
 | `hitbox` | hitbox object | no | `null`, meaning a fully automatic hitbox |
 
-The `Required` column reflects `schema/gloss.schema.json`, which is advisory. A button decoded with no `hitbox` simply has a null hitbox. Parsed `highlightModifier` must be finite and `hoverDurationTicks`, when present, must be between 0 and 40 or the document is rejected.
+The `Required` column reflects the advisory `schema/gloss.schema.json`; a button decoded with no `hitbox` simply has a null one. `highlightModifier` must be finite and `hoverDurationTicks`, when present, must be 0 to 40, or the document is rejected.
 
-Gloss drops an invalid action, logs the menu and component, and keeps the rest of the action list. A missing action list creates a button that does nothing.
+An invalid action is dropped with a log line naming the menu and component, and the rest of the list still runs. A missing action list creates a button that does nothing. An icon that fails to resolve becomes the missing-icon checkerboard rather than dropping the component.
 
-`icon` is resolved through the icon factory. A failure logs the exception and uses the built-in "missing" icon, an eight-row black and magenta checkerboard, instead of dropping the component.
-
-### Click behavior
-
-A click runs matching actions in list order. `any` matches every supported click. A `navigate` action stops the rest of that action chain.
+A click runs matching actions in list order. `any` matches every supported click, and a `navigate` action stops the rest of that chain.
 
 ## Decoration
 
@@ -167,32 +127,18 @@ A decoration is not clickable and has no hitbox or hover effect. Animated images
 | `falseIcon` | icon object | yes in the schema | `null` |
 | `hitbox` | hitbox object | no | `null`, meaning the active icon supplies the automatic plane |
 
-A toggle accepts the same optional hitbox as a button. An explicit size gives both states one stable click plane even when the true and false icons have different dimensions. Without one, each state uses the active icon automatic geometry.
+An explicit `hitbox` gives both states one stable click plane even when the true and false icons differ in size. Without one, each state uses its active icon's automatic geometry.
 
-### State
-
-Toggle state is per player and lasts only for the open session. Reopening the menu evaluates the initial state again.
-
-`condition` is expanded through PlaceholderAPI against the viewing player and compared case-insensitively to `expectedValue`. It is never re-evaluated on tick. An external change to the underlying placeholder does not update an open toggle.
+Toggle state is per player and lasts only for the open session; reopening the menu evaluates the initial state again. `condition` is expanded through PlaceholderAPI against the viewing player and compared case-insensitively to `expectedValue`. It is never re-evaluated on tick, so an external change to the underlying placeholder does not update an open toggle.
 
 > Omitting `condition` prevents the menu from opening. Omitting only `expectedValue` starts the toggle in the false state.
 {.is-warning}
 
-### Click behavior
-
-`trueActions` and `trueIcon` belong to the state being **entered**, not the state being left. If you click a toggle that is currently false, Gloss runs `trueActions` and shows `trueIcon`.
-
-Switching state replaces the icon and updates the click area.
-
-If a matching `navigate` action runs, the toggle does not change state.
+`trueActions` and `trueIcon` belong to the state being **entered**, not the one being left: clicking a toggle that is currently false runs `trueActions` and shows `trueIcon`. Switching state replaces the icon and updates the click area. If a matching `navigate` action runs, the toggle does not change state.
 
 ## The hitbox system
 
-Buttons and toggles use a rectangular hitbox. Gloss sizes it from the icon unless the component supplies a `hitbox` object.
-
-### `hitbox` keys
-
-Buttons and toggles accept these hitbox fields:
+Buttons and toggles use a rectangular hitbox, sized from the icon unless the component supplies a `hitbox` object.
 
 | Key | Type | Required | Default when absent |
 |---|---|---|---|
@@ -201,18 +147,7 @@ Buttons and toggles accept these hitbox fields:
 | `offset` | `vector3` | no | `null`, treated as `[0, 0, 0]` |
 | `anchor` | `"button"` or `"menu"` | no | `null`, treated as `button` |
 
-`width` and `height` are blocks at scale 1. They are multiplied by the live effective scale when the plane is built. `offset` is likewise a pre-scale value. It goes through the same local-vector transform as everything else.
-
-Invalid hitbox values reject the file:
-
-| Condition | Message |
-|---|---|
-| Exactly one of `width` / `height` supplied | `Button hitbox width and height must be supplied together.` |
-| `width` non-finite or `<= 0` | `Button hitbox width must be finite and greater than zero.` |
-| `height` non-finite or `<= 0` | `Button hitbox height must be finite and greater than zero.` |
-| Any component of `offset` non-finite | `Button hitbox offset must contain only finite values.` |
-
-A hitbox with only `offset` or `anchor` keeps automatic dimensions and moves the click area.
+`width` and `height` are blocks at scale 1, multiplied by the live effective scale when the plane is built. `offset` is likewise a pre-scale value on the same menu-relative axes. A hitbox with only `offset` or `anchor` keeps automatic dimensions and moves the click area.
 
 ```json
 {
@@ -225,6 +160,15 @@ A hitbox with only `offset` or `anchor` keeps automatic dimensions and moves the
 }
 ```
 
+Invalid hitbox values reject the file:
+
+| Condition | Message |
+|---|---|
+| Exactly one of `width` / `height` supplied | `Button hitbox width and height must be supplied together.` |
+| `width` non-finite or `<= 0` | `Button hitbox width must be finite and greater than zero.` |
+| `height` non-finite or `<= 0` | `Button hitbox height must be finite and greater than zero.` |
+| Any component of `offset` non-finite | `Button hitbox offset must contain only finite values.` |
+
 ### Anchor
 
 | Value | Origin the `offset` is measured from |
@@ -232,51 +176,17 @@ A hitbox with only `offset` or `anchor` keeps automatic dimensions and moves the
 | `button` | The center of the collision plane the icon produced at this component's location. Moves with the component |
 | `menu` | The menu origin resolved through the session's current anchor, facing and offset. Independent of where the icon is drawn |
 
-`button` anchors the hitbox to the component. `menu` anchors it to the menu origin, independently of the icon.
-
-### Offset axis convention
-
-```java
-new Vector(-offset.x * scale, offset.y * scale, offset.z * scale)
-    .rotateAroundZ(Math.toRadians(roll))
-    .rotateAroundX(Math.toRadians(pitch))
-    .rotateAroundY(Math.toRadians(-facingYaw))
-```
-
-Hitbox offsets use menu-relative axes: positive X moves right, positive Y moves up, and positive Z moves away from the viewer.
-
 ### Automatic sizing
 
-When `hitbox` is absent, or present without `width`, the plane dimensions and center come entirely from the icon bounding box. With `S` the effective scale, `X = style.scaleX`, `Y = style.scaleY` and `NAMETAG_SIZE = 3.5 / 16 = 0.21875`, so that `lineWidth = NAMETAG_SIZE * S * X` and `lineHeight = NAMETAG_SIZE * S * Y`:
+Without a `hitbox`, or with one that has no `width`, the plane's size and center are measured from the icon: text and image icons from their rendered lines and rows, item, block and custom-item icons from a fixed square, and entity icons from their declared `width` and `height`.
 
-| Icon type | Plane width | Plane height | Plane center |
-|---|---|---|---|
-| `text` | `max over lines of (plainTextLength * lineWidth / 2)` | `lineCount * lineHeight` | `location - (0, 0.325 * S * Y, 0)` |
-| `textImage` | same formula, over the rendered rows | `rowCount * lineHeight` | same as `text` |
-| `animatedTextImage` | same formula, over the first frame | `firstFrameRowCount * lineHeight` | same as `text` |
-| `item`, `customItem`, `itemStack` | `0.75 * S * X` | `0.75 * S * Y` | `location - (0, 0.05 * S, 0)` |
-| `block` | `0.75 * S * X` | `0.75 * S * Y` | `location - (0, 0.05 * S, 0)` |
-| `entity` | `width * S` | `height * S` | `location + (0, (height / 2) * S, 0)` |
+Automatic dimensions are multiplied by the icon's `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox is not** — only the effective session scale applies to it. Entity icons have no display style, so their planes use the declared `width` and `height`, defaulting to `1` and bounded to `(0, 64]`.
 
-For image icons the line length is the rendered row width in characters. The plane width tracks image width. A one-row image is one line tall, not zero. Entity icons have no display style. Their planes use the declared `width` and `height`, which default to `1`, are bounded to `(0, 64]`, and are not multiplied by a style scale.
-
-Automatic dimensions multiply by the icon `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox does not.** `width` and `height` are configured plane dimensions. Only the effective scale applies to them.
 ## Hover highlighting
 
-Highlighting runs once per tick per open clickable component:
-
-1. The plane is re-oriented for the live eye position, following the icon billboard.
-2. The ray test decides whether the component is selected.
-3. Hover progress advances toward 1 while selected and retreats toward 0 after exit over `hoverDurationTicks`. Zero changes state instantly.
-4. The selected easing curve converts that progress into visual travel: `plane.normal * highlightModifier * effectiveScale * easing(progress)`.
-
-`highlightModifier` controls how far the icon moves on hover. The hitbox stays in place. Easing options are `linear`, `ease_out`, `ease_in_out`, and `back_out`.
-
-Hover selection is visual only and is not required for a click.
+`highlightModifier` sets how far the icon moves along its plane normal when a player looks at it, over `hoverDurationTicks` and shaped by `hoverEasing`. The click area does not move. Hover selection is visual only and is not required for a click.
 
 ## Click routing
-
-### Which inputs reach components
 
 Gloss accepts uncancelled main-hand clicks:
 
@@ -287,15 +197,9 @@ Gloss accepts uncancelled main-hand clicks:
 | Left click, sneaking | `LEFT_CLICK_AIR`, `LEFT_CLICK_BLOCK` | `shift_left_click` |
 | Right click, sneaking | `RIGHT_CLICK_AIR`, `RIGHT_CLICK_BLOCK` | `shift_right_click` |
 
-Off-hand and physical interactions are ignored. Entity icons use the same hitbox and obstruction checks as other icons.
-
-### Obstruction
-
-Solid blocks between the player and component block the click. Passable blocks, fluids, and entities do not. An accepted menu click does not also perform the vanilla interaction.
+Off-hand and physical interactions are ignored. Solid blocks between the player and the component block the click; passable blocks, fluids and entities do not. An accepted menu click does not also perform the vanilla interaction.
 
 ## Debug overlays
-
-Menu particle layers are separate from debug overlays. See [Particle Layers](/gloss/25-particle-layers).
 
 Two `gloss.toml` settings draw debug particles. Both default to `false` and apply on reload.
 
@@ -304,6 +208,4 @@ Two `gloss.toml` settings draw debug particles. Both default to `false` and appl
 | `[debug] hitbox` | For every clickable component of every open session: the four edges and four corners of its collision plane in blue, plus a red segment from the plane center out along the normal for two blocks |
 | `[debug] position` | For every open session: the menu center in yellow, and each component's resolved location in orange |
 
-Debug overlays cover personal menus only. Everyone nearby can see their particles, so leave them off during normal use.
-
-There is no hover outline in normal operation. Without `[debug] hitbox` the only feedback that a component is selected is its `highlightModifier` displacement.
+Debug overlays cover personal menus only, and everyone nearby can see their particles, so leave them off during normal use. Without `[debug] hitbox` the only feedback that a component is selected is its `highlightModifier` displacement. Menu particle layers are a separate feature; see [Particle Layers](/gloss/25-particle-layers).

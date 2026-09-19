@@ -2,13 +2,13 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-09-05T23:50:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-A menu is a JSON document under `plugins/Gloss/menus/`. It can contain text, images, items, buttons, and particle layers. Personal menus are visible only to the player who opens them; panels can show the same menu in the world.
+A menu is a JSON document under `plugins/Gloss/menus/`. It can contain text, images, items, buttons and particle layers. Personal menus are visible only to the player who opens them; panels can show the same menu in the world.
 
 ## Where menu documents live
 
@@ -19,19 +19,11 @@ plugins/Gloss/images/    image assets referenced by textImage and animatedTextIm
 
 When menus are enabled, Gloss creates `menus/default.json` if it is missing. The `images/` folder appears when you add an image or import one through the editor.
 
-Menus are discovered recursively. A file is accepted when every one of these holds:
-
-- the file name ends in `.json`, matched case-insensitively, so `Shop.JSON` is accepted
-- it resolves inside `menus/` after normalisation
-- it is a regular file and every directory above it is a real directory
-- no path segment starts with `.`
-- neither the file nor any directory on the way to it is a symbolic link
-
-Files that do not meet these rules are ignored.
+Menus are discovered recursively. Anything that is not a plain `.json` file inside `menus/` is ignored, including files under a dot-folder and anything reached through a symbolic link.
 
 ### The menu id
 
-The id is the file path relative to `menus/` with the final five characters (`.json`) removed. The platform separator is rewritten to `/`. Case is preserved.
+The id is the file path relative to `menus/` with `.json` removed, using `/` as the separator. Case is preserved and ids are case-sensitive.
 
 | File | Menu id |
 |---|---|
@@ -40,22 +32,11 @@ The id is the file path relative to `menus/` with the final five characters (`.j
 | `menus/Shop.JSON` | `Shop` |
 | `menus/shops/weapons/main.json` | `shops/weapons/main` |
 
-IDs are case-sensitive. Commands, panels, navigation actions, and the API all use this path-based ID.
+There is no `id` key in the document, so renaming or moving the file changes the menu id. Commands, panels, navigation actions and the API all use this path-based id.
 
-There is no `id` key in the document. Renaming or moving the file changes the menu ID.
+An id may be at most 255 characters, in slash-separated segments of at most 64 characters that each match `[A-Za-z0-9][A-Za-z0-9._-]*`. A file with an invalid id is skipped and logged, so use plain ASCII names without spaces.
 
-Every id must satisfy the portable id contract. This is enforced at load, not merely by the writers:
-
-- at most 255 characters in total
-- slash-separated segments of at most 64 characters each
-- every segment matching `[A-Za-z0-9][A-Za-z0-9._-]*`
-- no backslashes, no empty segment, no `.` and no `..` segment
-
-A file with an invalid ID is skipped and logged. Use plain ASCII names without spaces.
-
-### Saving and revision conflicts
-
-Menu files do not use `schemaVersion` or `revision` fields. Gloss still rejects a stale write when another editor changed the same menu first.
+Menu files have no `schemaVersion` or `revision`, but Gloss still rejects a stale write when another editor changed the same menu first.
 
 ## The menu document
 
@@ -95,18 +76,15 @@ Menu files do not use `schemaVersion` or `revision` fields. Gloss still rejects 
 | `closeOnDeath` | boolean | no | `false` | Close on `PlayerDeathEvent` |
 | `closeOnTeleport` | boolean | no | `false` | Close on `PlayerTeleportEvent` |
 
-`offset` and `components` are required to open the menu. A missing value is logged when the menu is opened.
+`offset` and `components` are required to open the menu; a missing value is logged when the menu is opened.
 
 ### Visibility
 
-Document-level `show` and `components[].show` use the session viewer. Gloss reevaluates them
-during session ticks. A hidden menu retains its session but hides its components and particles,
-blocks clicks, and releases `lockPosition` while hidden. It reappears if the condition becomes true
-before the session closes. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Document-level `show` and `components[].show` use the session viewer and are reevaluated during session ticks. A hidden menu keeps its session but hides its components and particles, blocks clicks, and releases `lockPosition` while hidden. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ### Offset semantics
 
-`offset` is read in the menu own frame, not in world axes:
+`offset` is read in the menu's own frame, not in world axes:
 
 | Axis | Direction |
 |---|---|
@@ -114,63 +92,35 @@ before the session closes. See [Show conditions](/gloss/13-expressions-placehold
 | `+Y` | up |
 | `+Z` | forward, away from the viewing side |
 
-Gloss transforms the local offset into the menu's world position:
+A personal menu starts at the player's feet and uses their view direction; a panel supplies its stored position and rotation.
 
-```java
-Vector worldOffset = new Vector(-offset.getX(), offset.getY(), offset.getZ())
-    .rotateAroundZ(Math.toRadians(roll))
-    .rotateAroundX(Math.toRadians(pitch))
-    .rotateAroundY(Math.toRadians(-facingYaw));
-Location menuOrigin = anchor.clone().add(worldOffset);
-```
-
-A personal menu starts at the player's feet and uses their view direction. A panel supplies its stored position and rotation.
-
-The menu offset is **not** multiplied by `uiScale`. Component offsets are. If you raise `uiScale`, the components spread apart around a center that does not move.
+The menu `offset` is **not** multiplied by `uiScale`, but component offsets are. Raising `uiScale` spreads the components apart around a center that does not move.
 
 ### Range, freezing and following
 
-`lockPosition` constrains the player. `followPlayer` constrains the menu. They are independent axes. A document may set neither, either or both.
+`lockPosition` constrains the player; `followPlayer` constrains the menu. They are independent, and a document may set neither, either or both. A locked player can still look around and is never closed for distance.
 
-With `lockPosition` enabled, the player cannot move but can still look around. A locked player is not closed for distance.
+With neither flag set the menu stays where it is while the player walks away, up to `maxDistance`. Crossing that limit or changing worlds closes the menu, as do `closeOnDeath` and `closeOnTeleport` for their events.
 
-With neither flag set the menu stays put in the world while the player walks away from it, up to `maxDistance`. The check is
-
-```
-menuOrigin.distanceSquared(playerLocation) <= maxDistance * maxDistance + offsetLengthSquared
-```
-
-Crossing the distance limit or changing worlds closes the menu.
-
-`closeOnDeath` and `closeOnTeleport` close the menu for those events. A cross-world or out-of-range destination closes it regardless.
-
-`/gloss menu move` re-anchors an open session to your current position. It is translation only. It does not change the facing. It does not change either flag. It does not write anything into the file.
+`/gloss menu move` re-anchors an open session to your current position. It is translation only: it does not change the facing, either flag, or the file.
 
 These lifecycle settings apply only to personal menus. Panels use their own placement and range settings. See [Panels](/gloss/16-panels).
 
 ## The session model
 
-Each player can have one personal menu open. Opening another replaces it. Personal menu displays are sent only to that player and are not saved in the world.
+Each player can have one personal menu open, and opening another replaces it. Personal menu displays are sent only to that player and are never saved in the world.
 
-Navigation keeps a per-player history stack and a recorded root menu. A `navigate` action can push, replace, go back or go home. `/gloss menu back` reopens the previous entry. If the player quits, Gloss closes the session and clears the history.
+Navigation keeps a per-player history stack and a recorded root menu. A `navigate` action can push, replace, go back or go home, and `/gloss menu back` reopens the previous entry. Quitting closes the session and clears the history.
 
-With `[features] menus = false`, personal menus cannot open. Documents remain editable, and panels keep their separate feature switch.
+With `[features] menus = false`, personal menus cannot open. Documents stay editable, and panels keep their separate feature switch.
 
 ## Text inside menus
 
-Menu and panel text uses the same viewer-aware text pipeline as scoreboards before the menu subsystem converts it to a MiniMessage component.
+Menu and panel text runs through the shared viewer-aware pipeline — functions, inline expressions, PlaceholderAPI, emoji, colors, then MiniMessage — before the menu subsystem converts it to a component. Each line of a text icon's `text` is split on `\n`. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
-For a text icon, each line of the `text` value is split on `\n` and rendered in this order:
+Text resolves for each viewer. `refreshTicks` controls dynamic refreshes from `0` to `1200`, and `0` disables them. A failed refresh keeps the previous text and logs the error.
 
-1. **Functions**, including `|animation.<id>|` and `|metric.<key>|`, when `[text] functions` is on.
-2. **Inline expressions**, including direct `player.*`/`server.*` getters and `papi`, `papiNumber` and `metric` calls.
-3. **PlaceholderAPI**, resolved against the viewing player when `[text] placeholders` is on.
-4. **Emoji.** `:heart:` and configured triggers are replaced with their glyphs.
-5. **Legacy and bracket-hex colors**, followed by MiniMessage parsing.
-
-Text resolves for each viewer. `refreshTicks` controls dynamic refreshes from `0` to `1200`; `0` disables them. If a refresh fails, Gloss keeps the previous text and logs the error.
-
-A text icon also accepts `box`, using the same [measured panel and perimeter settings](/gloss/04-holograms#display-style-and-boxes) as holograms. The box surrounds the text block, resizes after text or animation changes, and follows menu movement, rotation, scale, component visibility, and session closure. Padding and border width are in Minecraft text pixels. Transparent parts allocate no display.
+A text icon also accepts `box`, using the shared [display style and box contract](/gloss/11-icons#display-style-and-boxes). The box surrounds the text block, resizes after text or animation changes, and follows menu movement, rotation, scale, component visibility and session closure.
 
 ```json
 "icon": {
@@ -182,7 +132,7 @@ A text icon also accepts `box`, using the same [measured panel and perimeter set
 }
 ```
 
-A toggle `condition` uses the same full viewer-aware renderer, but only once when the session is constructed. A `message` action renders through the same pipeline each time it fires. See [Components & Hitboxes](/gloss/10-components-hitboxes).
+A toggle `condition` uses the same renderer, but only once when the session is constructed. A `message` action renders through the pipeline each time it fires. See [Components & Hitboxes](/gloss/10-components-hitboxes).
 
 ## Particle layers
 
@@ -190,30 +140,13 @@ The top-level `particleLayers` field can target the full menu, one component, te
 
 ## Parsing
 
-Use standard JSON. The runtime also accepts these forms:
+Use standard JSON. Unknown keys are ignored, so a `"$schema"` member added for editor tooling is harmless. A single object is accepted where an array is expected, so `"components": {…}` parses the same as `"components": [{…}]`; the same holds for `actions`, `trueActions` and `falseActions`.
 
-- Unquoted keys and single-quoted strings are accepted. A trailing comma in an object is rejected. A
-  trailing separator in an array is read as a `null` element, so use standard JSON rather than relying
-  on that lenient edge case.
-- Unknown keys are silently ignored, so a `"$schema"` member added for editor tooling is harmless.
-- A single object is accepted where an array is expected, for `components`, `actions`, `trueActions` and `falseActions`. `"components": {…}` parses the same as `"components": [{…}]`.
-
-Gloss validates IDs, type values, hitboxes, refresh intervals, icon dimensions, and display styles at load. Some missing required fields are reported only when the menu opens.
-
-### Parse failures
-
-An invalid edit never replaces the working menu. Gloss logs the file and reason after confirming the failed write is stable.
+Gloss validates ids, type values, hitboxes, refresh intervals, icon dimensions and display styles at load. Some missing required fields are reported only when the menu opens. An invalid edit never replaces the working menu — Gloss logs the file and the reason.
 
 ## Hot reload
 
-Gloss watches `menus/` and `images/` for changes.
-
-| Entry | Effect |
-|---|---|
-| `menus` | Changed, created and deleted files are reported by one folder walk. A file whose content hash actually differs is re-parsed and its registry entry replaced, matching personal sessions close with `DEFINITION_RELOADED`, the viewer gets an action-bar notice, and any panel showing that menu reloads it. A deletion enters a 3-second grace period before its id is unregistered and matching sessions close silently |
-| `images` | A changed, added or removed image refreshes the visuals of open sessions and panel views |
-
-Successful reloads notify online administrators. `[commands] sounds` controls the chime. Image changes refresh open menu and panel visuals without reloading the menu document.
+Gloss watches `menus/` and `images/`. A changed menu file is re-parsed and replaces its registry entry: matching personal sessions close with `DEFINITION_RELOADED` and an action-bar notice, and any panel showing that menu reloads it. A changed, added or removed image refreshes open sessions and panel views without reloading the menu document. Successful reloads notify online administrators, and `[commands] sounds` controls the chime.
 
 > If you delete a menu file, Gloss waits 3 seconds before unregistering it and closing anyone viewing it. Restoring the path during that grace cancels the unload; after the grace there is no backup for a hand-deleted file.
 {.is-warning}
@@ -225,11 +158,9 @@ Successful reloads notify online administrators. `[commands] sounds` controls th
 | `[features] menus` | `true` | When `false`, no menu can be opened by command, action or API |
 | `[menus] uiScale` | `1.0` | Global render scale multiplier for menus and panels. Clamped to `0.25` – `4.0` |
 
-`uiScale` multiplies component offsets, icon geometry and hitbox dimensions. It does not multiply the menu-level `offset`. If you change it in `gloss.toml`, the change takes effect on the next hot reload without reopening. Open sessions and panel views rebuild their visuals in place.
+`uiScale` multiplies component offsets, icon geometry and hitbox dimensions, but not the menu-level `offset`. Changing it in `gloss.toml` applies on the next hot reload without reopening; open sessions and panel views rebuild in place.
 
-`[debug] hitbox` and `[debug] position` draw particle overlays for open sessions and are also applied live. They are described in [Components & Hitboxes](/gloss/10-components-hitboxes).
-
-See [Configuration](/gloss/02-configuration) for the whole knob surface.
+`[debug] hitbox` and `[debug] position` draw particle overlays for open sessions and also apply live. See [Components & Hitboxes](/gloss/10-components-hitboxes) and [Configuration](/gloss/02-configuration).
 
 ## Editing menus in game
 
@@ -258,12 +189,9 @@ Use `/gloss menu` or `/gloss menus`. See [Commands & Permissions](/gloss/17-comm
 | `create <hologram> [text=]` | Creates a **panel** plus a same-id menu at your position |
 | `list`, `open`, `back`, `close`, `move` | Session and navigation control. They do not write |
 
-Row numbers are one-based and count components in document order. `seticon` with an image type verifies the file exists under `images/` before writing. `style` writes into the icon `style` object and removes the object entirely when the last property is cleared.
+Row numbers are one-based and count components in document order. `seticon` with an image type verifies the file exists under `images/` before writing. `style` writes into the icon `style` object and removes the object entirely when the last property is cleared. If the file changes between reading and saving, Gloss reports a revision conflict and writes nothing.
 
-If the file changes between reading and saving, Gloss reports a revision conflict and writes nothing.
-
-`/gloss web edit menu <menu>` opens one menu in a restricted live web session.
-`/gloss web workspace` opens every editable runtime document and image.
+`/gloss web edit menu <menu>` opens one menu in a restricted live web session. `/gloss web workspace` opens every editable runtime document and image.
 
 > `/gloss menu create` and `/gloss menu new` are different commands. `create` makes a persistent world-anchored panel plus its root menu, is player only, and is gated by `gloss.panels`. `new` makes a blank menu document only and is gated by `gloss.menus.edit`.
 {.is-info}
@@ -313,7 +241,7 @@ Gloss extracts `plugins/Gloss/menus/default.json` when menus are enabled and the
 }
 ```
 
-`/gloss menu create` does not use this baseline. It writes a smaller document with one vertical-billboard decoration at `offset` `[0, 1.7, 0]` because a panel supplies its own placement. If you pass no `text=`, the label is `&f` followed by the panel id.
+`/gloss menu create` does not use this baseline. It writes a smaller document with one vertical-billboard decoration at `offset` `[0, 1.7, 0]`, because a panel supplies its own placement. With no `text=`, the label is `&f` followed by the panel id.
 
 ## Permissions
 
@@ -328,32 +256,19 @@ Gloss extracts `plugins/Gloss/menus/default.json` when menus are enabled and the
 
 ### `gloss.open.<menuId>`
 
-Opening a menu also requires `gloss.open.<menuId>`. It defaults to operators. A menu ID containing `/` produces a node such as `gloss.open.shops/weapons/main`.
+Opening a menu also requires `gloss.open.<menuId>`, which defaults to operators. A menu id containing `/` produces a node such as `gloss.open.shops/weapons/main`.
 
-It is checked on:
+It is checked on `/gloss menu open` (after `gloss.menus.open`), on a `navigate` action in a personal session or on a panel, on `GlossAPI` open calls, and when opening a submenu from a panel. It is not checked by `/gloss menu list` or for a panel's own root menu.
 
-- `/gloss menu open`, after `gloss.menus.open`
-- a `navigate` action, in a personal session and on a panel alike
-- `GlossAPI` open calls
-- opening a submenu from a panel
-
-The node is not checked by `/gloss menu list` or for a panel's own root menu. Submenus reached from a panel still require it.
-
-Grant `gloss.open.*` to a group to let it open everything. Grant individual nodes to gate menus one by one.
+Grant `gloss.open.*` to let a group open everything, or grant individual nodes to gate menus one by one.
 
 ## The JSON schema
 
-`schema/gloss.schema.json` in the plugin repository is an editor schema with `$id` `https://volmit.com/gloss/schema.json`. The server does not read it. Map it in your IDE or add a `"$schema"` key, which the runtime ignores.
-
-Its top-level `required` is `["offset", "components"]` and its properties are `offset`, `lockPosition`, `followPlayer`, `maxDistance`, `closeOnDeath`, `closeOnTeleport` and `components`.
-
-The schema is advisory. The server remains the authority for accepted menu data.
-
-`schema/gloss-preview.schema.json` sits beside it and is unrelated. It describes container preview documents, covered in [Container Previews](/gloss/15-container-previews).
+`schema/gloss.schema.json` is an editor schema with `$id` `https://volmit.com/gloss/schema.json`. The server does not read it — map it in your IDE or add a `"$schema"` key, which the runtime ignores. `schema/gloss-preview.schema.json` sits beside it and describes [Container Previews](/gloss/15-container-previews) instead.
 
 ## Migrating from HoloUi
 
-The document format is unchanged. Menu files copied out of `plugins/holoui/menus/` load in Gloss as they are. `/gloss import holoui` copies them into `plugins/Gloss/menus/` for you.
+The document format is unchanged: menu files copied out of `plugins/holoui/menus/` load in Gloss as they are, and `/gloss import holoui` copies them into `plugins/Gloss/menus/` for you.
 
 What changed around them:
 

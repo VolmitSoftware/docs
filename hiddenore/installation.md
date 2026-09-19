@@ -2,31 +2,33 @@
 title: "HiddenOre: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-HiddenOre supports Paper, Purpur, and Folia on Java 25.
+| | |
+|---|---|
+| Server software | Paper, Purpur, or Folia |
+| Java | 25 |
+| Main command | `/hiddenore` |
+| Config file | `plugins/HiddenOre/hiddenore.toml` |
+| Optional plugins | PlaceholderAPI, Adapt, Iris |
 
 ## Install
 
 1. Put the HiddenOre jar in `plugins/`.
 2. Start the server once.
 3. Edit `plugins/HiddenOre/hiddenore.toml`.
-4. Save changes and check the server console for validation errors.
+4. Save, and check the console for validation errors.
 
-PlaceholderAPI is optional.
+Saved edits apply without a restart. An invalid file leaves the previous settings active, so check the console if a change seems to do nothing.
 
-## Choose the drop mode
+## Next
 
-HiddenOre can replace ore drops, add bonus drops, or leave vanilla drops unchanged. Configure each ore in `hiddenore.toml`.
+Decide whether HiddenOre replaces ore drops, adds bonus drops, or leaves vanilla drops alone, and set each ore up in [Configuration](/hiddenore/configuration).
 
-## Language
+If you run [Iris](/iris), set `hideOresForHiddenOre` on the Iris dimension instead of enabling `[ore-removal]`. See [Iris worlds](/hiddenore/configuration#iris-worlds).
 
-Set `language` in `hiddenore.toml` to select the server default. Edit `plugins/HiddenOre/languages/<locale>.toml` to customize individual messages. Saved edits apply automatically.
-
-## Troubleshooting
-
-Check the server console for configuration errors. Invalid configuration updates keep the previous settings active.
+Set the server language with the `language` key, or see [Languages](/languages).

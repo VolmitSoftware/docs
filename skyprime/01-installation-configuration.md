@@ -1,8 +1,8 @@
 ---
-title: 01 - Installation & Configuration
+title: SkyPrime - Installation and configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-09-14T00:37:41.702Z
+date: 2026-09-19T00:00:00.000Z
 tags: skyprime, installation, configuration, folia
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -10,11 +10,11 @@ dateCreated: 2026-09-05T04:30:00.000Z
 
 SkyPrime targets Spigot, Paper and Folia APIs from Minecraft 1.20.1 through 26.2. Its plugin classes target Java 17; newer servers need newer Java, including Java 25 for Paper 26.2. VolmLib is shaded into the plugin, and PlaceholderAPI is optional.
 
-## Build and install
+## Install
 
-Build the independent `SkyPrime/` project with JDK 25 using `./gradlew build` or `gradlew.bat build`. The build writes `SkyPrime.jar` to the workspace's `BUILDS` directory. `-PbuildsDirectory=<path>` changes that staging directory.
+Put the SkyPrime jar in `plugins/` and restart. The first start writes the configuration and all 18 language files.
 
-Place the shaded jar in the intended server's plugin directory and restart. Initial startup creates the configuration and all 18 language files locally. The plugin enables at startup to provide its void generator; managed-world initialization runs after server worlds load. It disables itself if configuration, island storage or world prerequisites are invalid.
+SkyPrime enables at startup so its void generator is available, then initializes its managed worlds once server worlds have loaded. If the configuration, the island store or a world prerequisite is invalid, it disables itself rather than starting in a half-configured state.
 
 ## Worlds
 
@@ -114,6 +114,8 @@ Base team capacity is two including the owner; base home capacity is one includi
 
 ## Languages
 
-The bundled locales are `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN` and `zh_TW`.
+All 18 locales ship with the plugin, so nothing is downloaded. The server default is `general.language`, and personal choices live under `languages/players/`.
 
-Use `/sky language self <locale>` for a personal selection, or `self reset` to follow the server default. Administrators use `/sky language server <locale>` and `/sky language server edit [locale]`. The shared language editor presents nested message categories and preserves required placeholders. Personal preferences live beneath `languages/players/`. Configured mission names and custom starter descriptions, material identifiers and diagnostic details are operator content rather than translated interface labels.
+Mission names, custom starter descriptions, material identifiers and diagnostic details are operator content, not translated interface labels, so they read the same in every language.
+
+See [Languages](/languages).

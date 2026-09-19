@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,79 +10,51 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Gloss uses one text pipeline for holograms, scoreboards, tablists, menu text, bubble prefixes, drop labels, and the MOTD. Emoji files live in `plugins/Gloss/emoji/`; animation files live in `plugins/Gloss/animations/`.
 
-`/gloss web edit emoji <id>` and `/gloss web edit animation <id>` open focused live editor
-sessions; `/gloss web workspace` includes both document families.
+`/gloss web edit emoji <id>` and `/gloss web edit animation <id>` open focused live editor sessions; `/gloss web workspace` includes both document families.
 
-The Velocity edition reads the same emoji and animation documents from its own `emoji/` and
-`animations/` folders, seeded from the ones shipped here, so the same ids resolve on both sides of a
-network. Proxy text has no PlaceholderAPI or world context, so `show` there is a proxy expression.
-See [Velocity Proxy](/gloss/27-velocity).
+The Velocity edition reads the same emoji and animation documents from its own `emoji/` and `animations/` folders, so the same ids resolve on both sides of a network. Proxy text has no PlaceholderAPI or world context, so `show` there is a proxy expression. See [Velocity Proxy](/gloss/27-velocity).
 
 ## Visibility
 
-Emoji and animation documents accept `show`, defaulting to `true`. A boolean expression uses the
-player supplied to text rendering; chat emoji uses the sender. Existing emoji `enabled` and
-permission checks still apply. A hidden emoji leaves its token or trigger unchanged; a hidden
-animation renders an empty string. Dynamic conditions are reevaluated as the containing surface
-refreshes. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Emoji and animation documents accept `show`, defaulting to `true`. A boolean expression uses the player supplied to text rendering; chat emoji uses the sender. Existing `enabled` and permission checks still apply. A hidden emoji leaves its token or trigger unchanged; a hidden animation renders an empty string. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
-For asynchronous chat, conditional emoji reads an immutable visibility snapshot for the sender.
-Gloss samples these boolean results on each player's entity scheduler every 10 server ticks
-(about half a second at 20 TPS), only while conditional emoji exist. Until a snapshot is available,
-the conditional replacement is hidden and the original token or trigger remains. Text rendered on
-the player's owning thread evaluates `show` live.
+Sender visibility for chat emoji is sampled every 10 ticks. Until the first sample, the token stays as typed.
 
 ## The text pipeline
 
 Gloss renders text in this order:
 
-1. **Functions.** `|name|` tokens are replaced by the value of the registered function `name`. Skipped entirely when `[text] functions = false`. Short-circuited when the string contains no `|`.
+1. **Functions.** `|name|` tokens are replaced by the value of the registered function `name`. Skipped when `[text] functions = false` or the string contains no `|`.
 2. **Inline expressions.** Each `{{ expression }}` block evaluates against time, server state, viewer values, PlaceholderAPI or integration metrics as available.
-3. **Placeholders.** PlaceholderAPI resolves the string. This stage runs **only when a viewer is present** and `[text] placeholders = true`. Short-circuited when the string contains no `%`.
-4. **Emoji.** `:id:` tokens and emoji triggers are replaced with their glyphs. Skipped when `[features] emoji = false`, because the emoji service is what installs this stage.
+3. **Placeholders.** PlaceholderAPI resolves the string. This runs **only when a viewer is present** and `[text] placeholders = true`. Skipped when the string contains no `%`.
+4. **Emoji.** `:id:` tokens and emoji triggers become glyphs. Skipped when `[features] emoji = false`.
 5. **Colors.** `[RRGGBB]` bracket hex first, then `&` legacy codes.
 
-A static surface has no viewer, so player expressions and PlaceholderAPI values remain unresolved. Per-player holograms, scoreboards, tablists, menus, panels, previews, and bubble prefixes use the viewing player. Chat message text is not processed a second time inside a bubble.
+A static surface has no viewer, so player expressions and PlaceholderAPI values stay unresolved. Per-player holograms, scoreboards, tablists, menus, panels, previews and bubble prefixes use the viewing player. Chat message text is not processed a second time inside a bubble.
 
 In-world text can mark ranges for particle layers. Rendered values cannot create new ranges, and range tags cannot nest. See [Particle Layers](/gloss/25-particle-layers).
 
 ### Functions
 
-A function token is a name between two pipe characters. Example: `|animation.rainbow|`.
+A function token is a name between two pipe characters, such as `|animation.rainbow|`. A name with no registered function is left in the string exactly as written, pipes included. A function that throws or returns nothing renders as an empty string, and a throwing one logs `Text function |<name>| failed: ...` once per name.
 
-- A name with no registered function is left in the string exactly as written, pipes included.
-- A function that throws renders as an empty string and logs one warning per function name (`Text function |<name>| failed: ...`). The warning is not repeated until the function is registered again or Gloss applies a change to its `[text]` settings.
-- A function that returns `null` renders as an empty string.
-
-Gloss registers two families of functions. There is no public API for registering a third:
+Gloss registers two families. There is no public API for registering a third:
 
 | Family | Registered by | One token per |
 |---|---|---|
 | `\|animation.<id>\|` | The animation service | Loaded animation document |
 | `\|metric.<key>\|` | The integration bridge | Metric another installed Volmit plugin publishes |
 
-#### `|metric.<key>|`
-
-Installed Volmit plugins can publish metric functions such as `|metric.adapt.player-sessions|`.
-
-Rendered values are formatted compactly: `42`, `3.14`, `128.5` below a thousand, then `1.2K`, `1.5M`, `2B`, `3.5T`.
-
-An unavailable metric renders as an empty string. A token from a plugin that is not installed remains unchanged.
-
-If you install a plugin mid-session, its tokens start working without a restart. If you disable one, they stop. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for the matching preview variables.
+A metric token such as `|metric.adapt.player-sessions|` renders compactly: `42`, `3.14`, `128.5` below a thousand, then `1.2K`, `1.5M`, `2B`, `3.5T`. An unavailable metric renders empty, and a token from a plugin that is not installed stays unchanged. Installing or disabling a publisher mid-session starts or stops its tokens without a restart. See [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 ### Colors
-
-Two syntaxes work anywhere colors apply:
 
 | Syntax | Rule |
 |---|---|
 | `&` codes | Standard legacy translation (`&d`, `&l`, `&r`, and the rest) |
 | `[RRGGBB]` | Exactly six hex digits with `]` immediately after. `[ff00aa]Gloss` works, `[f0a]` and `[ff00aaa]` are left untouched |
 
-Bracket hex is case-insensitive and is converted before `&` codes. Both can appear in the same line.
-
-Players receive colors, decorations, click actions, and hover text. Consoles receive readable plain text when rich formatting is unavailable.
+Bracket hex is case-insensitive and converted before `&` codes, and both can appear in the same line. Players receive colors, decorations, click actions and hover text; consoles receive readable plain text.
 
 ### Chat
 
@@ -91,28 +63,24 @@ Player chat uses only two stages:
 1. Emoji, when `[features] emoji = true` **and** the sender holds `gloss.emoji.use`.
 2. Colors, when `[chat] color = true` **and** the sender holds `gloss.chat.color`.
 
-Functions and placeholders are not applied to chat. Bubbles reuse the final formatted message, so unauthorized raw color codes remain literal.
+Functions and placeholders are not applied to chat. Bubbles reuse the final formatted message, so unauthorized raw color codes stay literal.
 
 ### Menu, panel and preview text
-
-Menu and panel text icons and `message` actions run the same five visible-text stages as scoreboards with the session player as viewer. Toggle conditions use the same renderer before their case-insensitive comparison. Text icons re-render complete placeholder, function and inline-expression sources at their configured `refreshTicks` cadence. Menu and panel particle layers also retain configured particle ranges on text icons; message actions do not create an in-world particle surface.
-
-Container preview fields use whole-field expressions rather than `{{ }}` delimiters:
 
 | Surface | Stages, in order |
 |---|---|
 | Menu and panel text icons/messages | functions → inline expressions → PlaceholderAPI → emoji → colors → MiniMessage |
 | Container preview labels/card titles | preview expression evaluation → emoji → MiniMessage |
 
-Preview expressions expose their target-specific furnace, inventory, entity and provider variables plus the standard `time.*`, `server.*` and `player.*` variables and `papi`, `papiNumber` and `metric` functions. A block, entity, ender-chest or locked preview has its viewing player. A console/static diagnostic does not; player values then require an explicit fallback.
+Menu and panel text uses the session player as viewer, and toggle conditions use the same renderer before their case-insensitive comparison. Container preview fields are whole-field expressions with no `{{ }}` delimiter; see [Container Previews](/gloss/15-container-previews).
 
-Colors still come from MiniMessage tags in menu and preview documents. The color stage that runs ahead of it translates `&` codes and `[RRGGBB]` bracket hex into MiniMessage own syntax first. Both spellings work in a menu label.
+Colors in menu and preview documents end up as MiniMessage tags, and the color stage translates `&` codes and `[RRGGBB]` hex into that syntax first, so both spellings work in a menu label.
 
 ## Emoji
 
 ### The emoji document
 
-One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with `.json` removed. There is no id key inside the document. Only files directly inside `emoji/` are read, and only `.json` files.
+One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with `.json` removed, there is no id key inside, and only `.json` files directly inside `emoji/` are read.
 
 `plugins/Gloss/emoji/heart.json`:
 
@@ -136,34 +104,30 @@ One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with 
 
 Every emoji is always usable as `:<id>:`, whether or not it has a trigger. A trigger is an additional, shorter spelling.
 
-`emoji` is passed through the `U+<hex>;` escape decoder. The hex run is everything between `U+` and the next `;`, any length. An unparseable value becomes `?`. A trailing `U+<hex>` with no `;` is kept literally if it does not parse. A string with no `U` character at all is used verbatim. A pasted glyph or a resource-pack private-use character works directly.
+`emoji` is passed through the `U+<hex>;` escape decoder, where the hex run is everything between `U+` and the next `;`. An unparseable value becomes `?`, a string with no `U` at all is used verbatim, and a pasted glyph or resource-pack private-use character works directly.
 
-Emoji replacement text is a literal fragment, not executable configuration. Function, expression and placeholder-looking text introduced by an emoji value is not scanned again. This prevents player chat from using an emoji document to execute operator-side expressions or bypass permissions.
+Emoji replacement text is a literal fragment, never rescanned, so player chat cannot use an emoji document to run operator-side expressions or bypass permissions.
 
 ### Defaults
 
-Gloss includes 67 emoji documents. Missing bundled files return after a reload or restart. Set `"enabled": false` instead of deleting one. Files with your own IDs are not touched.
+Gloss includes 67 emoji documents. Missing bundled files return after a reload or restart, so set `"enabled": false` instead of deleting one. Files with your own ids are never touched.
 
 ### Replacement order
 
-Gloss applies emoji in file-ID order. This matters only when one bare trigger contains another. Rename the longer trigger's file so it sorts first. Disabled emoji do not appear in replacement, `/gloss emoji list`, or tab completion.
+Gloss applies emoji in file-id order, which matters only when one bare trigger contains another — rename the longer trigger's file so it sorts first. Disabled emoji do not appear in replacement, `/gloss emoji list`, or tab completion.
 
 ### Permissions
 
-By default a single node gates emoji in chat: `gloss.emoji.use`, granted to everyone. Emoji in holograms, boards, tablist text, drop labels and the MOTD are not permission-gated at all. They render whenever `[features] emoji` is on.
+By default one node gates emoji in chat: `gloss.emoji.use`, granted to everyone. Emoji in holograms, boards, tablist text, drop labels and the MOTD are not permission-gated at all and render whenever `[features] emoji` is on.
 
-If you set `[emoji] emojiSpecificPermissions = true`, Gloss adds a per-emoji check after `gloss.emoji.use`, only for chat. The node is the `gloss.emoji.` prefix plus the document id: `gloss.emoji.<id>`. If the sender lacks that node, Gloss skips the emoji and leaves the token or trigger unchanged.
+`[emoji] emojiSpecificPermissions = true` adds a per-emoji check after `gloss.emoji.use`, only for chat. The node is `gloss.emoji.<id>`, and a sender without it keeps the token or trigger unchanged. These nodes are operator-only until a permission plugin grants them.
 
 > `gloss.emoji.<id>` shares its namespace with the declared nodes `gloss.emoji.use` and `gloss.emoji.reset`. An emoji whose file is named `use.json` or `reset.json` would be gated by one of those. Avoid those two ids.
 {.is-warning}
 
-Per-emoji permissions are operator-only until a permission plugin grants them.
-
 ### Tab completion
 
-With `[emoji] tabComplete = true` (the default), Paper-family servers suggest enabled emoji tokens for chat words beginning with `:`. Matching is case-insensitive and does not affect command arguments. Spigot does not support this feature.
-
-Turning tab completion off applies on reload. Turning it back on requires a restart.
+With `[emoji] tabComplete = true` (the default), Paper-family servers suggest enabled emoji tokens for chat words beginning with `:`. Matching is case-insensitive and does not affect command arguments. Spigot does not support this. Turning it off applies on reload; turning it back on requires a restart.
 
 ### Commands
 
@@ -172,26 +136,24 @@ Turning tab completion off applies on reload. Turning it back on requires a rest
 /gloss emoji reset [name=*]
 ```
 
-`list` shows enabled emoji. Click a glyph to insert its `:id:` token. It needs `gloss.emoji.use`.
-
-`reset` rewrites included emoji documents from the jar and needs `gloss.emoji.reset` (op). `name=*` (the default) restores all 67. A single name restores just that one. A trailing `.json` on the name is accepted.
+`list` shows enabled emoji and needs `gloss.emoji.use`. Click a glyph to insert its `:id:` token. `reset` rewrites included emoji documents from the jar and needs `gloss.emoji.reset` (op); `name=*` restores all 67, a single name restores one, and a trailing `.json` is accepted.
 
 > `/gloss emoji reset` overwrites the target files on disk. Edits to an included emoji id are lost. Ids that are not in the included list are untouched.
 {.is-warning}
 
 ### Turning emoji off
 
-`[features] emoji = false` stops the emoji service from enabling at all. No defaults are extracted. No documents load. The replacement stage is removed from the text pipeline. Chat is not touched. `/gloss emoji list` reports an empty list. `/gloss emoji reset` still works, because it writes files rather than reading loaded state.
+`[features] emoji = false` stops the emoji service entirely: no defaults extracted, no documents loaded, no emoji stage, and `/gloss emoji list` empty. Tokens stay as written and chat is left alone. `/gloss emoji reset` still works, because it writes files rather than reading loaded state.
 
 ## Animations
 
-An animation is a list of frame strings that advances on wall-clock time. It is exposed to the text pipeline as `|animation.<id>|`.
+An animation is a list of frame strings that advances on wall-clock time, exposed to the text pipeline as `|animation.<id>|`.
 
 ### The animation document
 
 One JSON file per animation in `plugins/Gloss/animations/`. The id comes from the file name.
 
-`plugins/Gloss/animations/rainbow.json` (included):
+`plugins/Gloss/animations/rainbow.json` (included, 60 frames):
 
 ```json
 {
@@ -205,60 +167,7 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
     "[FF3300]",
     "[FF4D00]",
     "[FF6600]",
-    "[FF8000]",
-    "[FF9900]",
-    "[FFB300]",
-    "[FFCC00]",
-    "[FFE600]",
-    "[FFFF00]",
-    "[E5FF00]",
-    "[CCFF00]",
-    "[B2FF00]",
-    "[99FF00]",
-    "[7FFF00]",
-    "[66FF00]",
-    "[4CFF00]",
-    "[33FF00]",
-    "[19FF00]",
-    "[00FF00]",
-    "[00FF1A]",
-    "[00FF33]",
-    "[00FF4D]",
-    "[00FF66]",
-    "[00FF80]",
-    "[00FF99]",
-    "[00FFB3]",
-    "[00FFCC]",
-    "[00FFE6]",
-    "[00FFFF]",
-    "[00E5FF]",
-    "[00CCFF]",
-    "[00B2FF]",
-    "[0099FF]",
-    "[007FFF]",
-    "[0066FF]",
-    "[004CFF]",
-    "[0033FF]",
-    "[0019FF]",
-    "[0000FF]",
-    "[1A00FF]",
-    "[3300FF]",
-    "[4D00FF]",
-    "[6600FF]",
-    "[8000FF]",
-    "[9900FF]",
-    "[B300FF]",
-    "[CC00FF]",
-    "[E600FF]",
-    "[FF00FF]",
-    "[FF00E5]",
-    "[FF00CC]",
-    "[FF00B2]",
-    "[FF0099]",
-    "[FF007F]",
-    "[FF0066]",
-    "[FF004C]",
-    "[FF0033]",
+    "...",
     "[FF0019]"
   ]
 }
@@ -272,19 +181,13 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 | `frameIntervalMs` | yes | Milliseconds per frame, clamped to `1`..`60000` |
 | `frames` | yes | At least one string, otherwise `animation requires at least one frame`. A `null` entry becomes `""` |
 
-`rainbow.json` contains 60 color frames at 53 milliseconds per frame. `|animation.rainbow|&lONLINE` colors the text that follows it. Use `/gloss animations reset name=rainbow` to restore the bundled copy.
+`|animation.rainbow|&lONLINE` colors the text that follows it. Gloss also includes `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer` and `wave`; use their animation tokens or call the matching expression helper below. Extracted files are never overwritten — use `/gloss animations reset name=rainbow` to restore a bundled copy.
 
-Gloss also includes `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer`, and `wave`. Use their named animation tokens or call the matching expression helper.
-
-Gloss does not overwrite extracted files. Use the relevant reset command to restore a bundled example.
-
-The RGB frame expands to a full legacy hex sequence after the text pipeline. Holograms, MOTDs,
-tablists, bubbles and scoreboards all receive it as component text. Modern scoreboard titles and
-rows are sent whole rather than through the retired prefix/suffix character budget.
+An RGB frame expands to a full legacy hex sequence after the pipeline, and every surface receives it as component text.
 
 ### Reusable animation helpers
 
-Each helper receives an explicit step, elapsed time, or progress value and returns the same result for the same inputs.
+Each helper takes an explicit step, elapsed time or progress value and returns the same result for the same inputs.
 
 | Helper | Result |
 |---|---|
@@ -299,13 +202,7 @@ Each helper receives an explicit step, elapsed time, or progress value and retur
 | `odometer(from, to, progress, digits)` | Interpolates safe whole numbers and zero-pads to 1–16 digits |
 | `wave(text, styles, step)` | Chases 1–16 color/style prefixes across the characters |
 
-`align` ignores legacy and bracket-hex formatting when it counts visible Unicode code points.
-`middle` is an alias for `center`. Its padding is character-cell based, so proportional and custom
-fonts can remain visually uneven. It never provides marquee-style termination: content longer than
-the requested width is returned whole.
-
-This timeline scrolls a welcome message, flashes a boost notice, then replaces it with an event
-message:
+This timeline scrolls a welcome message, flashes a boost notice, then replaces it with an event message:
 
 ```text
 {{ timeline([
@@ -315,56 +212,32 @@ message:
 ], time.seconds) }}
 ```
 
-`marquee`, `typewriter`, `wipe`, `scanner`, `scramble` and `wave` transform characters. Their text
-argument must therefore be plain, single-line text; put color outside that argument or use the
-dedicated style arguments. Formatting tokens and common multi-code-point sequences such as flags,
-skin-tone modifiers and joined emoji are rejected instead of being split. PlaceholderAPI tokens are
-also rejected; resolve them first with `papi(...)` and pass that result to the helper. `scanner` and
-`wave` styles must start with a legacy color/reset or
-`[RRGGBB]` and may contain one additional formatting code. Text is bounded to 256 characters, or 64
-for the per-character styled helpers. Timeline duration is bounded to one hour.
+`marquee`, `typewriter`, `wipe`, `scanner`, `scramble` and `wave` transform characters, so their text argument must be plain single-line text — put color outside it or use the dedicated style arguments. Formatting tokens, multi-code-point sequences such as flags and joined emoji, and PlaceholderAPI tokens are rejected rather than split; resolve placeholders first with `papi(...)` and pass the result in. `scanner` and `wave` styles must start with a legacy color/reset or `[RRGGBB]` and may carry one more formatting code. Text is bounded to 256 characters, or 64 for the per-character helpers, and timeline duration to one hour.
 
-Legacy `&k` obfuscation works on every configured text-pipeline surface. End it with `&r` or any later
-color code. Gloss also scopes every logical line with a reset so obfuscation cannot leak into the
-next scoreboard row, hologram line or MOTD line. Keep formatting outside a character-transform
-helper, for example `&k{{ marquee('MAGIC', 5, floor(time.seconds * 4)) }}&r`; placing `&k` inside the
-helper's text argument is rejected because the helper accepts plain text.
+`align` counts visible code points and ignores legacy and bracket-hex formatting; `middle` is an alias for `center`. Padding is character-cell based, so proportional and custom fonts can still look uneven, and content longer than the requested width is returned whole.
 
-The included examples advance four steps per second. Animated boards, tablists, persistent holograms,
-and menu text with no explicit `refreshTicks` sample clock-driven expressions and named animations
-every tick, while each expression still controls when its visible state changes. The one-frame included examples use a
-nominal `frameIntervalMs` of 1000; their expression time, not that frame interval, determines the
-result.
+Legacy `&k` obfuscation works on every text-pipeline surface. End it with `&r` or a later color code. Gloss scopes every logical line with a reset so obfuscation cannot leak into the next scoreboard row, hologram line or MOTD line. Keep `&k` outside a character-transform helper, as in `&k{{ marquee('MAGIC', 5, floor(time.seconds * 4)) }}&r`.
 
-The web editor can create editable examples using the included animation helpers.
+Pass `floor(time.seconds / 2)` as the step for content that must stay visible on the default tablist cadence. Animated boards, tablists, persistent holograms and menu text with no explicit `refreshTicks` sample clock-driven expressions and named animations every tick, while each expression still decides when its visible state changes.
 
 ### Modes
-
-The `AnimationMode` constants, from `animation/AnimationMode.java`:
 
 | `mode` | Behavior |
 |---|---|
 | `ascend` | Frames play forward and wrap: `0, 1, 2, 3, 0, 1, ...` |
 | `descend` | Frames play backward and wrap: `3, 2, 1, 0, 3, 2, ...` |
 | `ascend_descend` | Ping-pong over a cycle of `2N` steps, so the first and last frame each hold for two intervals: `0, 1, 2, 3, 3, 2, 1, 0, ...` |
-| `random` | The frame index is a hash of the current interval number and the animation id. Deterministic, so every surface and every viewer agrees, but the order is scrambled and a frame can repeat |
+| `random` | Scrambled but deterministic, so every surface and viewer agrees. A frame can repeat |
 
 A single-frame animation always renders that frame, whatever the mode.
 
 ### Using an animation
 
-`|animation.<id>|` works anywhere the text pipeline runs: hologram lines, board titles and lines,
-tablist header, footer and name formats, menu and panel text, `[drops] nameFormat` and MOTD lines.
-Container-preview live labels call the expression helpers directly; they do not resolve a named
-animation token.
+`|animation.<id>|` works anywhere the text pipeline runs: hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text, `[drops] nameFormat` and MOTD lines. Container-preview labels call the expression helpers directly instead.
 
-Frames are selected from server time, so the same animation stays synchronized across surfaces. Each surface's refresh rate limits the visible frame rate.
+Frames are selected from server time, so the same animation stays synchronized across surfaces, and each surface's refresh rate limits the visible frame rate. Holograms can play clips above 20 fps; see [Holograms](/gloss/04-holograms).
 
-Holograms can display clips above 20 fps when high-frequency animations are enabled. See [Holograms](/gloss/04-holograms).
-
-Frame text is substituted before inline expressions, PlaceholderAPI, emoji and colors. `&` codes,
-bracket hex and `:emoji:` tokens inside a frame all work. Inline expressions can also animate text
-directly without a named animation document; see [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+Frame text is substituted before inline expressions, PlaceholderAPI, emoji and colors, so `&` codes, bracket hex and `:emoji:` tokens inside a frame all work. Inline expressions can animate text without a named animation document; see [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 ### Commands
 
@@ -373,18 +246,18 @@ directly without a named animation document; see [Expressions & Placeholders](/g
 /gloss animations reset [name=*]
 ```
 
-`animation` is an alias for `animations`. `list` shows the loaded animation ids and needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten included animation documents.
+`animation` is an alias for `animations`. `list` shows the loaded ids and needs no permission. `reset` needs `gloss.animations.reset` (op) and restores the ten included documents.
 
 > `/gloss animations reset` overwrites the ten included animation ids. Your own animation files are never touched.
 {.is-warning}
 
 ### Turning animations off
 
-`[features] animations = false` stops the service from enabling. No defaults are extracted. No documents load. No `|animation.<id>|` functions are registered. Those tokens then survive the function stage untouched and appear literally in rendered text. `/gloss animations list` reports an empty list.
+`[features] animations = false` stops the service, so no defaults are extracted, no documents load, and no `|animation.<id>|` functions are registered. Those tokens then appear literally in rendered text and `/gloss animations list` is empty.
 
 ## Hot reload
 
-Gloss watches both folders for changes. Invalid edits are logged while the last valid document remains active. See [Data Files & Hot Reload](/gloss/03-data-files).
+Gloss watches both folders. An invalid edit is logged and the last valid document stays active. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Reference
 
@@ -416,4 +289,4 @@ Optional arguments must be written as `key=value`. A stray positional value is r
 | `[chat] color` | `true` | Color-code translation in chat, with `gloss.chat.color` |
 | `[integration] sampleIntervalTicks` | `20` | Ticks between samples backing `\|metric.<key>\|` |
 
-Related pages: [Holograms](/gloss/04-holograms), [Scoreboards & Groups](/gloss/05-scoreboards-groups), [Tablist & Server List MOTD](/gloss/06-tablist-motd), [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops), [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+Related pages: [Holograms](/gloss/04-holograms), [Scoreboards & Groups](/gloss/05-scoreboards-groups), [Tablist](/gloss/06-tablist), [Chat Bubbles](/gloss/08-chat-bubbles), [Expressions & Placeholders](/gloss/13-expressions-placeholders).

@@ -2,13 +2,13 @@
 title: React
 description: React performance monitoring and optimization for Paper and Folia
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: react
 editor: markdown
 dateCreated: 2026-08-21T00:31:42.920Z
 ---
 
-React measures where server time goes. It then gives operators tools to act on those measurements. Monitoring comes first. Optimization comes second.
+React measures where server time goes, then gives you tools to act on it.
 
 <section class="volmit-headliner" aria-labelledby="react-web-headline">
   <p class="volmit-headliner__kicker">React / Web control plane</p>
@@ -22,12 +22,12 @@ React measures where server time goes. It then gives operators tools to act on t
 
 | | |
 |---|---|
-| Command | `/react` (`re`) |
-| Folia | Supported |
-| Permissions | 10 nodes, including opt-in shorthand commands |
+| Server software | Paper, Purpur, or Folia |
+| Java | 25 |
+| Main command | `/react` (`re`) |
+| Config files | TOML under `plugins/React/` |
+| Permission | `react.use` |
 | Integrations | PlaceholderAPI, Iris, Adapt |
-
-Permissions and command conflicts are documented on [Commands and permissions](/react/02-commands-permissions).
 
 ## Getting started
 

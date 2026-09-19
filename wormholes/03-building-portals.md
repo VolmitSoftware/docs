@@ -149,11 +149,8 @@ Shaped Portals can supply irregular Nether openings directly. Wormholes preserve
 
 Set `replace-nether-and-end-portals = false` to leave vanilla portals alone and use Shaped Portals standalone behavior.
 
-Conversion is player-authorized. Lighting a Nether portal or inserting the
-completing Ender Eye produces a managed Wormholes portal only when that player
-may construct `PORTAL` portals. Otherwise the vanilla portal stays unmanaged.
-Automatic Nether counterpart creation is accepted only when the responsible
-player carries the same permission.
+Conversion needs the player who lit the portal to hold `wormholes.portals.portal`. Without it the
+vanilla portal is left unmanaged.
 
 ## Permissions used during build
 

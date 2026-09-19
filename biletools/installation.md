@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,15 +40,11 @@ Older `plugins/BileTools/config.yml` files are not migrated. Copy any settings y
 
 ## Velocity proxies
 
-The same jar runs on a Velocity proxy. Copy `BileTools-x.x.x.jar` into the proxy's `plugins/` directory and start the proxy; it needs Velocity 3.4 or newer, including 4.x, on the JVM that proxy build requires (Velocity 4.x runs on Java 25).
-
-Proxy settings live in `plugins/biletools/biletools.json`, not in `biletools.yml`, and the proxy edition uses the libraries Velocity already provides instead of downloading its own. The proxy command set and its limits are on the [Velocity proxy](/biletools/velocity) page.
+The same jar runs on a Velocity proxy 3.4 or newer, including 4.x. Copy it into the proxy's `plugins/` directory and start the proxy. Proxy settings live in `plugins/biletools/biletools.json`, not `biletools.yml`, and the proxy edition uses the libraries Velocity already provides. See [Velocity proxy](/biletools/velocity).
 
 ## Runtime libraries
 
-BileTools downloads Gson, TOML, and Adventure before plugin startup instead of bundling them in its jar. The first start needs access to the library repositories. SlimJar caches the libraries under `plugins/BileTools/.libs/` and reuses them on later starts and self-reloads. Keep this directory when moving an installation to a server without internet access.
-
-The libraries use BileTools-specific package names to avoid conflicts with server libraries and other plugins. Missing libraries must load successfully before BileTools can enable.
+BileTools downloads Gson, TOML, and Adventure on first start rather than bundling them, so that start needs access to the library repositories. They are cached under `plugins/BileTools/.libs/` and reused afterwards; keep that directory when moving an installation to a server without internet access. BileTools will not enable until they load.
 
 ## Automatic reload
 
@@ -58,9 +54,4 @@ Temporary `.jar.part` files are ignored. A brief delete and recreate has a three
 
 ## Language
 
-Set `language` in `biletools.yml`. Bundled locales: German, Spanish, Finnish,
-French, Hebrew, Italian, Japanese, Korean, Lithuanian, Dutch, Polish,
-Portuguese, Russian, Turkish, Vietnamese, Simplified Chinese, Traditional
-Chinese.
-
-English is created on startup as editable `languages/en_US.toml` when missing. Missing or invalid messages use the built-in English text. Changes to a readable active language file reload automatically; malformed TOML leaves the current messages active.
+Set `language` in `biletools.yml`. Editing a language file reloads it automatically; malformed TOML leaves the current messages active. See [Languages](/languages).

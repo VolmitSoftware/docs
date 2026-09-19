@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,8 +10,7 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Each JSON file in `plugins/Gloss/holograms/` defines one persistent text hologram. The file name is the hologram ID, and command or file edits apply live.
 
-`/gloss web edit hologram <id>` opens one hologram in a restricted live editor session;
-`/gloss web workspace` includes every hologram. The editor previews the hologram over a rendered block world in the same WebGL2 stage every surface shares; check text size and placement in a Minecraft client, since a browser preview does not reproduce the client renderer.
+`/gloss web edit hologram <id>` opens one hologram in a restricted live editor session; `/gloss web workspace` includes every hologram. Check text size and placement in a Minecraft client, since the browser preview does not reproduce the client renderer.
 
 ## The hologram document
 
@@ -51,46 +50,24 @@ Each JSON file in `plugins/Gloss/holograms/` defines one persistent text hologra
 | `pitch` | no | Finite degrees from `-90` through `90`; defaults to `0` |
 | `particleLayers` | no | Up to 64 viewer-targeted layers; absent or `null` becomes an empty list |
 
-There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the hologram. Only files directly inside `holograms/` are read. Subfolders are ignored.
-
-If an edit is invalid, Gloss logs the reason and keeps the last valid version active.
+There is no `id` key. The document id is the file name with `.json` removed, so renaming the file renames the hologram. Only files directly inside `holograms/` are read. If an edit is invalid, Gloss logs the reason and keeps the last valid version active.
 
 > If you delete the file, Gloss despawns the hologram and unregisters it. There is no undo and no backup for a hand-deleted file.
 {.is-warning}
 
 ### Visibility
 
-Set document-level `"show": false` to hide the hologram, or use a boolean expression to decide
-per viewer. Gloss reevaluates it during updates and hides text, decorations, and particles when false.
-Dynamic `show` works even when the lines are static or `perViewerPlaceholders` is false. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Set document-level `"show": false` to hide the hologram, or use a boolean expression to decide per viewer. Gloss reevaluates it during updates and hides text, decorations and particles when false, even when the lines are static or `perViewerPlaceholders` is off. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ### The default
 
-`/gloss hologram create` starts with `&dNew hologram`, `seeThrough` enabled, scale `1.0`, `CENTER` billboard mode, and no particle layers. The baseline stays inside the jar.
+`/gloss hologram create` starts with `&dNew hologram`, `seeThrough` enabled, scale `1.0`, `CENTER` billboard mode, and no particle layers.
 
 ## Display style and boxes
 
-`style` uses the same [display contract as entity overlays](/gloss/20-entity-overlays#style-and-decorations): billboard, alignment, shadow, see-through rendering, ARGB background, text opacity, line width, paired block/sky brightness, view range, shadow size and strength, culling dimensions, glow color, and independent XYZ scale. Scale axes accept `0.01` through `64`. An explicit partial object uses the shared member defaults; include `"billboard": "center"` and `"seeThrough": true` to retain the hologram orientation and visibility defaults.
+`style` and `box` are the shared display contract documented once on [Icons](/gloss/11-icons#display-style-and-boxes): billboard, alignment, shadow, see-through, ARGB background, opacity, line width, paired brightness, view range, shadow size and strength, culling bounds, glow color, independent XYZ scale, and the box panel and border. An explicit partial `style` uses the shared defaults, so include `"billboard": "center"` and `"seeThrough": true` to keep the hologram defaults above.
 
-| Shared style field | Default inside an explicit style object | Accepted value |
-|---|---|---|
-| `billboard` | `fixed` | `fixed`, `vertical`, `horizontal`, or `center` |
-| `shadow`, `seeThrough` | `false` | Boolean; text shadow and visibility through blocks |
-| `textAlignment` | `center` | `left`, `center`, or `right` |
-| `backgroundArgb` | `#00000000` | Text background, `#AARRGGBB` |
-| `textOpacity` | `255` | Integer `0`–`255` |
-| `lineWidth` | `16384` | Integer `1`–`16384` text pixels |
-| `blockLight`, `skyLight` | Both absent | Supply both as integers `0`–`15`, or omit both for natural lighting |
-| `viewRange` | `1.0` | `0.01`–`64`; native range multiplier, with `1.0` representing 64 blocks before other visibility limits |
-| `shadowRadius` | `0` | `0`–`64` |
-| `shadowStrength` | `0` | `0`–`1` |
-| `cullingWidth`, `cullingHeight` | `0` | `0`–`4096`; zero disables the explicit culling bound |
-| `glowColor` | Absent | Optional `#AARRGGBB` outline color |
-| `scaleX`, `scaleY`, `scaleZ` | `1.0` | Independent finite scale values `0.01`–`64` |
-
-The document's `lines` array is the display order. Move entries to reorder rows, and use inline formatting or expressions within each entry. `style.backgroundArgb` controls the text display itself; `box.backgroundArgb` and `box.borderArgb` control separate decorative parts.
-
-`box.enabled` allocates the decoration. `padding` is `0`–`64` pixels and `borderWidth` is `0`–`16` pixels. `backgroundArgb` and `borderArgb` use independent `#AARRGGBB` colors, so a transparent panel can have an opaque complete perimeter. Defaults are padding `4`, border width `1`, background `#B31B1B22` and border `#FFAAAAAA`. Zero-width borders and fully transparent parts allocate no display. A box uses at most five decorative parts: its inner panel and four perimeter edges. Boxes disappear with their text, viewer conditions, unloaded worlds, or feature disablement.
+The `lines` array is the display order — move entries to reorder rows. Boxes disappear with their text, viewer conditions, unloaded worlds or feature disablement.
 
 ## Particle layers
 
@@ -146,44 +123,25 @@ Required arguments are positional in the order shown. Optional arguments must be
 | `list` | `[page=1]` | none |
 | `info` | `<id>` | none |
 
-Line numbers start at 1. `create`, `movehere`, `tp` and `rendertext` are player-only. Every node above is reachable both as `/gloss hologram ...` and through the root command `/hologram` (aliases `holo`, `h`). `/gloss holo` and `/gloss h` work as well.
+Line numbers start at 1. `create`, `movehere`, `tp` and `rendertext` are player-only. Every node is reachable as `/gloss hologram ...` and through the root command `/hologram` (aliases `holo`, `h`); `/gloss holo` and `/gloss h` work too.
 
-`orient` accepts `CENTER`, `VERTICAL`, `HORIZONTAL` or `FIXED`. Yaw must be finite and between `-180` and `180`; pitch must be finite and between `-90` and `90`. Gloss validates all three values before changing the live display or document, so a rejected command changes nothing.
+`orient` accepts `CENTER`, `VERTICAL`, `HORIZONTAL` or `FIXED`. All three values are validated before anything changes, so a rejected command changes nothing.
 
-Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the file name.
-
-Command edits save automatically. See [Data Files & Hot Reload](/gloss/03-data-files).
+Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the file name. Command edits save automatically. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
-Gloss applies style, orientation, and visibility edits to the existing display. Box geometry follows text changes, animated frames, orientation and XYZ scale; viewer-specific text gets a box measured for that viewer. A box is re-measured only when its text changes size or style, so a colour-only frame leaves it in place. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render.
+Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
-If you set `[features] holograms = false`, Gloss despawns every hologram on the next driver tick. Documents still load and hot-reload. The commands still edit them. Nothing renders.
+`[features] holograms = false` despawns every hologram on the next driver tick. Documents still load, hot-reload and accept command edits. Nothing renders.
 
-### Shared and personalized modes
+With `[holograms] perViewerPlaceholders = true`, each nearby player sees their own placeholder and viewer-expression values; viewer-independent text stays shared. Set it to `false` and player-only values stay unresolved unless a dynamic `show` needs per-viewer rendering.
 
-With `[holograms] perViewerPlaceholders = true`, player placeholders and viewer expressions render separately for each nearby player. Viewer-independent text remains shared. Setting the option to `false` keeps text shared and leaves player-only values unresolved unless a dynamic `show` condition requires per-viewer rendering. Personalized text and boxes refresh when the client starts tracking their native display again, including after respawn or a world change. This uses outgoing entity packets on Spigot, Paper, and Folia; it does not depend on player movement, and crossing a chunk border alone does not resend it. Viewer-specific text keeps the `updateIntervalTicks` cadence even when a box or particle layer holds the hologram on the per-tick driver; lines with expressions, functions or fast animation clips still refresh every tick.
-
-Persistent and temporary hologram displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap text at a smaller pixel width. Configured entries remain separate logical lines, and an explicit legacy reset between them prevents `&k` and other styles from bleeding into the next line.
-
-### The line pipeline
-
-Each line is rendered in this order:
-
-1. `|function|` tokens, including `|animation.<id>|`, when `[text] functions` is on.
-2. Inline `{{ expression }}` blocks, with the standard time, server, player, PAPI and metric facilities available for the current context.
-3. PlaceholderAPI placeholders, when `[text] placeholders` is on and the text is rendered for a viewer.
-4. Emoji replacement.
-5. Colors: `[RRGGBB]` bracket hex first, then `&` codes.
-6. MiniMessage formatting, converted to the native text representation after the pipeline resolves.
-
-Animation frames update at the refresh rate of the hologram. Clips faster than 20 fps can use the high-frequency animator below. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations) and [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+Displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap at a smaller pixel width. Configured entries stay separate logical lines, with a reset between them so `&k` and other styles cannot bleed into the next line.
 
 ### High-frequency animations
 
-With `[holograms] highFrequencyAnimations = true`, clips above 20 fps use packet updates up to `[holograms] maxAnimationFps` (default 120). `[holograms] animationPacketBudget` limits the total work across viewers. No animation work runs when nobody is in range.
-
-Set `highFrequencyAnimations` to `false` to keep every clip on the normal tick refresh. Use `[debug] animator = true` for periodic diagnostics.
+Clips above 20 fps play smoothly by default, up to `[holograms] maxAnimationFps` (default 120) and within `[holograms] animationPacketBudget`. Set `[holograms] highFrequencyAnimations = false` to cap every clip at the tick refresh. Use `[debug] animator = true` for periodic diagnostics.
 
 ## Native text scaling
 
@@ -191,26 +149,16 @@ Set `highFrequencyAnimations` to `false` to keep every clip on the normal tick r
 /gloss hologram rendertext banner "GLOSS" scale=2
 ```
 
-This creates a normal one-line hologram and applies native display scale. Scale must be between `0.05` and `16.0`; blank text or an invalid scale creates nothing.
-
-The result is an ordinary hologram document. You can edit its text, scale, position and
-orientation on disk, and move or delete it by command like any other hologram.
+This creates a normal one-line hologram and applies native display scale. Scale must be between `0.05` and `16.0`; blank text or an invalid scale creates nothing. The result is an ordinary hologram document you can edit, move or delete like any other.
 
 ## Temporary holograms
 
-Chat bubbles, damage indicators, entity overlays, and drop labels use temporary holograms. They are not saved to disk and update every `[holograms] temporaryUpdateIntervalTicks` (default 2). They can follow an entity and use viewer allowlists or denylists. With `perViewerPlaceholders` enabled, authored player expressions, placeholders, and custom functions receive the viewer context; other text stays shared. Each viewer's personalized box uses packet displays without adding world entities.
+Chat bubbles, damage indicators, entity overlays and drop labels use temporary holograms. They are never written to disk, update every `[holograms] temporaryUpdateIntervalTicks` (default 2), and can follow an entity and use viewer allowlists or denylists. With `perViewerPlaceholders` enabled, their authored placeholders and expressions receive the viewer context; other text stays shared.
 
-`[holograms] interpolatedMotion` smooths movement, scale, and rotation between updates where the server supports it. Raising the update interval still reduces how often Gloss updates the display.
+`[holograms] interpolatedMotion` smooths movement, scale and rotation between updates where the server supports it. Raising the update interval still reduces how often Gloss updates the display.
 
-Temporary holograms also accept particle layers through the inherited API. Source lines retain named span metadata. Rendered-only lines or frame sources can supply their own measured span ranges with `setRenderedParticleText`; update those ranges when the rendered text changes. Other plugins can create them directly. See [API: Getting Started](/gloss/21-api-getting-started) and [Particle Layers](/gloss/25-particle-layers). The features built on them are covered in [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Temporary holograms also accept particle layers through the API, and rendered-only lines can supply their own measured span ranges with `setRenderedParticleText`. See [API: Getting Started](/gloss/21-api-getting-started), [Particle Layers](/gloss/25-particle-layers) and [Chat Bubbles](/gloss/08-chat-bubbles).
 
 ## Migrating pre-envelope hologram files
 
-The pre-envelope hologram shape was `{"id": ..., "world": ..., "x": ..., "y": ..., "z": ..., "lines": [...]}`. Startup no longer scans or rewrites it; an unversioned document is silently ignored. Convert it only through the explicit legacy import command:
-
-- the original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/holograms/<file>`
-- `x`, `y`, `z` become `anchor.position` and `world` becomes `anchor.world`
-- the embedded `id` key is dropped, so the file name is the only id from then on
-- the rewritten file starts at `revision` 1
-
-Files that already use an envelope are skipped. Run `/gloss import legacy` to convert the older envelope-free format.
+The pre-envelope shape was `{"id": ..., "world": ..., "x": ..., "y": ..., "z": ..., "lines": [...]}`. Startup ignores it silently. Run `/gloss import legacy` to convert: `x`, `y`, `z` become `anchor.position`, `world` becomes `anchor.world`, the embedded `id` is dropped so the file name is the only id, and the rewritten file starts at `revision` 1. The original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/holograms/<file>`, and files that already use an envelope are skipped.

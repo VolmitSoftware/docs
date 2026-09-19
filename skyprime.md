@@ -2,19 +2,41 @@
 title: SkyPrime
 description: Shared-grid survival islands, teams, protection and progression
 published: true
-date: 2026-09-14T00:37:05.832Z
+date: 2026-09-19T00:00:00.000Z
 tags: skyprime, skyblock, islands
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
 ---
 
-SkyPrime gives each island a permanent identity and a reserved area in a shared void world. Players build from small, normal or big starter terrain, invite a team, control visitors, complete daily and weekly missions, and spend internal credits on island size, team slots, homes and generator tiers. Operators can add custom starter bundles. Commands and inventory menus use cyan and white.
+SkyPrime gives every island a permanent identity and a reserved square of a shared void world. Players pick a small, normal or big starter, invite a team, and decide who may visit.
 
-- [01 - Installation & Configuration](/skyprime/01-installation-configuration)
-- [02 - Commands & Permissions](/skyprime/02-commands-permissions)
-- [03 - Islands & Progression](/skyprime/03-islands-progression)
-- [04 - Operations & Recovery](/skyprime/04-operations-recovery)
-- [06 - Starter Templates](/skyprime/06-starter-templates)
-- [90 - Placeholders & API](/skyprime/90-placeholders-api)
+Daily and weekly missions pay internal credits, which buy island size, team slots, extra homes and better generator tiers. Operators can add their own starter bundles.
 
-See [Installation & Configuration](/skyprime/01-installation-configuration) for server and Java requirements.
+| | |
+|---|---|
+| Server software | Spigot, Paper or Folia on Minecraft 1.20.1 through 26.2 |
+| Java | Whatever your server version needs, at least 17 |
+| Main command | `/skyprime` (`/sky`, `/is`, `/island`) |
+| Config file | `plugins/SkyPrime/config.toml` |
+| PlaceholderAPI | Optional |
+
+## Start here
+
+- [Installation and configuration *Requirements, world setup, and every TOML file*](/skyprime/01-installation-configuration)
+- [Commands and permissions *Player commands, operator tools, and access nodes*](/skyprime/02-commands-permissions)
+- [Islands and progression *Starters, teams, protection, value, credits and missions*](/skyprime/03-islands-progression)
+{.links-list}
+
+## Reference
+
+- [Starter templates *Capture and configure custom starter bundles*](/skyprime/06-starter-templates)
+- [Operations and recovery *Storage, backups, and interrupted world jobs*](/skyprime/04-operations-recovery)
+- [Placeholders and API *PlaceholderAPI keys and the developer API*](/skyprime/90-placeholders-api)
+- [Languages *Choosing a language and editing messages*](/languages)
+{.links-list}
+
+## Support
+
+- [Discord *Support and development chat*](https://volmitsoftware.com/discord)
+- [Source *github.com/VolmitSoftware/SkyPrime*](https://github.com/VolmitSoftware/SkyPrime)
+{.links-list}

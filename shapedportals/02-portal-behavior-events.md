@@ -22,7 +22,7 @@ Shaped Portals keeps track of the portals it creates so their unusual shapes can
 
 With Wormholes installed and `replace-nether-and-end-portals` enabled, Shaped Portals submits the exact Nether interior positions and axis to Wormholes. Accepted shapes use Wormholes projections and bidirectional Nether links. Shaped Portals does not place, save, or repair native portal blocks for those shapes. Use Wormholes to list and manage them.
 
-Wormholes applies its portal creation permissions and placement policy. Its frame checks preserve irregular openings and allow intact boundaries to change material. When the integration is unavailable, the standalone creation and integrity rules below apply. A Wormholes permission or protection denial stops creation. Wormholes emits the cancellable `PortalCreateEvent` for submitted shapes before accepting them.
+Wormholes then applies its own creation permissions and placement policy, and a denial there stops creation. Without the integration, the standalone rules below apply.
 
 ## Repair-based integrity
 
@@ -37,9 +37,9 @@ Wormholes applies its portal creation permissions and placement policy. Its fram
 | Blocks change through an API or WorldEdit | A periodic check catches changes not covered by normal events |
 {.dense}
 
-Integrity must be enabled for repair and cleanup. It checks the recorded portal type, plane, and frame before refilling cells, and removes only portal blocks owned by the affected record. Managed End frames remain valid only while every recorded End Portal Frame is present and eyed.
+Integrity must be enabled for repair and cleanup, and it only ever touches portal blocks belonging to the affected record. A managed End frame stays valid only while every recorded End Portal Frame is present and eyed.
 
-Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, and chunk loads trigger checks of nearby portals. A bounded periodic sweep catches other edits. See [Integrity settings](/shapedportals/01-installation-configuration#integrity) for timing and limits.
+Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, and chunk loads all trigger a check of nearby portals, and a periodic sweep catches anything else. See [Integrity settings](/shapedportals/01-installation-configuration#integrity) for timing and limits.
 
 ## Persistent ownership
 
@@ -47,7 +47,8 @@ Managed portals are saved in `plugins/ShapedPortals/portals.json`.
 
 Each record stores its UUID, world identity, plane axis, anchor, interior and frame coordinates, frame-material snapshot, creation time, and creator. Axis `Y` identifies a horizontal End portal without changing the existing record schema.
 
-> Back up the portal store alongside your worlds. Do not edit it while the server is running. An invalid or unsupported store prevents the plugin from enabling safely and is preserved for recovery.
+> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store stops the plugin from enabling and is preserved for recovery rather than overwritten.
+{.is-warning}
 
 ## Portal listing and navigation
 
@@ -65,7 +66,7 @@ Cancelled ignition events are ignored. For standalone creation, before a shaped 
 
 Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 
-Bukkit has no `PortalCreateEvent` reason for End-frame activation, so Shaped Portals does not emit one with an unrelated reason. Integrations that need End activation should watch the placement and build events. Creation of either portal type must remain inside one Folia-owned region.
+Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is emitted; watch the placement and build events instead. On Folia, either portal type must be created inside one owned region.
 
 ## Troubleshooting
 

@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,12 +13,14 @@ Use `/react integration status` for live capability status. Global `integrationS
 
 ## Integration model
 
-- `IntegrationController` / `ReactIntegrationService` discover peer plugins and publish mirrored metrics. Prefixes: `iris-`, `adapt-`, `wormholes-`, `gloss-`, `hiddenore-`, `biletools-`. See [10 - Samplers & Metrics](/react/10-samplers-metrics).
-- `CapabilityGatedFeature` declares `requiredCapabilities()` and optional `isSecretBundle()`.
-- `ReactCapabilityFeature.autoRegister()` registers a feature only when its required plugins are installed. `integrationSecretsEnabled` controls secret-feature activation through `FeatureController`.
-- `FeatureController` re-checks activation every two seconds. With a live integration controller, capability requires an accepting or healthy metrics node. Installed-plugin detection is only the fallback when that controller is unavailable.
-- Secret feature configuration files appear under `plugins/React/feature/` when their required plugins are installed, even while `integrationSecretsEnabled = false`. Saving the global setting automatically reconciles activation.
-- Adapt ability-operation volume remains neutral telemetry and never creates an integration-timeline alert by itself. React alerts only after three consecutive samples where Adapt's measured rolling guard-check timing budget is at least 100 percent and server MSPT is at least 50 milliseconds; either signal recovering resets the streak. The current operation rate remains in the alert as context, not as a trigger.
+A feature that needs Iris or Adapt registers only when that plugin is present, and React rechecks
+every two seconds. Secret bundles also need `integrationSecretsEnabled = true`; saving that setting
+applies it without a restart. Their config files appear under `plugins/React/feature/` as soon as
+the required plugin is installed, even while secrets are off.
+
+Adapt's ability-operation rate is telemetry and never raises an alert on its own. React alerts only
+after three consecutive samples where Adapt's measured guard-check timing budget is at or above 100
+percent *and* server MSPT is at or above 50 ms. Either signal recovering resets the streak.
 
 ## Map overlays (cross-ref)
 

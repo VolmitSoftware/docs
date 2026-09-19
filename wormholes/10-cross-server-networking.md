@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-14T00:56:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -247,25 +247,8 @@ A non-forwarded server can serve local or VPN clients that can reach its private
 
 ## Handoff admission
 
-Gateway travel and `/wormholes server connect` use the same admission path. Before dispatch, the destination must grant a rate-limited lease for that player.
-
-Destination checks include:
-
-- Live destination portal is open and not mirror-only. Incoming traversals must be enabled unless the traveler has OP or `*` bypass
-- Selected transfer method is supported
-- Direct source and destination use the same authentication mode
-- Offline direct login preserves the supplied player UUID. Forwarded identities require the configured proxy path
-- Profile passes ban checks. OP and source-authorized `*` travelers bypass whitelist and player-limit restrictions for the admitted crossing
-- Other travelers fit within online players plus reservations for players not yet online. Connected arrivals do not count twice
-- Direct transfer support: native Paper transfers or compatibility path
-- Portal arrivals have loaded the destination chunk and its eight neighbors
-
-| Outcome | Result |
-|---------|--------|
-| Deny / timeout / cooldown | Traveler returned to the source-facing side of the portal (not left in-plane / not orphaned disconnect) |
-| Accept | Reservation remains active until portal placement succeeds, or the normal join completes for a server command |
-
-A trusted handoff carries the source player's OP or literal `*` privilege through destination admission and placement. This bypass applies only to that reservation. It does not grant OP or permissions on the destination. A return trip evaluates privileges on its own source server. Ban, identity, endpoint, portal availability, and placement checks remain active.
+A transfer is admitted when the destination has an open receiving portal, allows inbound travel, and
+has capacity. Anything else is refused at the source and the traveler stays put.
 
 ### Rate limits
 
@@ -288,7 +271,7 @@ Gateway placement offsets the traveler along the exit plane's normal. Vertical o
 
 Departure commitment checks movement from the captured hold position. A fast crossing recovered after a delayed portal check does not fail solely because it ended far beyond the aperture. Retreat, further drift, world changes, and expired or replaced holds still cancel departure.
 
-Departure holds use asynchronous teleports on Folia. Each hold waits for its current position correction before starting another. An acknowledged transfer waits for any pending correction, then rechecks the current attempt on the player's entity scheduler before dispatch. Rejection also waits for pending corrections, and callbacks from expired holds or queue tickets cannot cancel a newer crossing.
+An acknowledged transfer waits for any pending correction, then rechecks the current attempt on the player's entity scheduler before dispatch. Rejection also waits for pending corrections, and callbacks from expired holds or queue tickets cannot cancel a newer crossing.
 
 If a traveler reconnects while destination placement is pending, the new session can resume the active reservation. Callbacks from the retired session cannot change the new placement or its arrival receipt.
 
@@ -309,18 +292,10 @@ platform reports accepting transfers. Direct transfers fail admission with
 
 ## Wire protocol
 
-| Constant | Value |
-|----------|--------|
-| `WireCodec.PROTOCOL_VERSION` | **22** |
-| Signed status-sideband envelope | **7** |
-| Route entry format | **2** |
-
-The current wire version is 22. Raw handshakes and signed sideband envelopes require matching Minecraft, Wormholes, and wire versions. Handshake signatures bind the full Hello/Challenge transcript, including endpoints, versions, and compression fields.
-
-Upgrade all linked servers together. Export and import fresh `WHS2.` or `WHP6.` codes on both sides to populate the current endpoint format. Keep each server's identity and trust files. Existing gateway targets remain identified by peer name and portal UUID.
-
-Optional compression and dictionary negotiation ride the same wire once Hello
-succeeds (`[network.transport]`).
+Peers must agree on their Minecraft, Wormholes, and wire versions. Upgrade every linked server
+together, then export and import fresh `WHS2.` and `WHP6.` codes on both sides so each end picks up
+the current endpoint format. Keep each server's identity and trust files; gateway targets stay
+identified by peer name and portal UUID.
 
 ## Remote portal views
 
@@ -333,11 +308,8 @@ After the grace period, Wormholes releases the remote view. Raw peers can use Zs
 
 ## Non-player entity transfer
 
-Eligible non-player entities entering a `UNIVERSAL` gateway are transferred as
-Bukkit `EntitySnapshot` data rather than as player handoffs. The source
-snapshot is capped at **256 KiB**. The destination recreates the entity at the
-exit, then applies the portal's relative position, look, and velocity
-transform.
+A non-player entity crossing a gateway is sent as a snapshot capped at 256 KiB and recreated at
+the exit with the portal's position, look, and velocity transform applied.
 
 The destination must have an open receiving portal, allow inbound travel, and accept the entity type. Add blocked Bukkit entity types to `[network] entity-transfer-deny-types`. Wormholes removes the source only after the destination accepts it. Failure restores the source entity.
 

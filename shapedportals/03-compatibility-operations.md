@@ -50,21 +50,17 @@ In standalone use, Shaped Portals writes ordinary `NETHER_PORTAL` and `END_PORTA
 
 With Wormholes installed, accepted Nether shapes use its projection and bidirectional travel instead of native portal blocks. Shaped Portals supplies only the interior coordinates and axis; Wormholes owns pairing and the portal lifecycle. Enable Wormholes `replace-nether-and-end-portals` to use this integration.
 
-Standalone Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shaped End creation starts only after the Eye of Ender's `BlockPlaceEvent` or `BlockMultiPlaceEvent` is accepted, then asks `BlockCanBuildEvent` about every proposed cell. Bukkit has no End-activation `PortalCreateEvent` reason; `END_PLATFORM` identifies the End arrival platform instead. See [Ignition and protection plugins](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) for the event sequence.
+Protection plugins can cancel creation through `PortalCreateEvent`, `BlockPlaceEvent`, `BlockMultiPlaceEvent`, and `BlockCanBuildEvent`. See [Ignition and protection plugins](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins).
 
 ## Update notifications
 
-With `general.updateNotifications = true` (the default), Shaped Portals checks the latest stable release published in [VolmitSoftware/ShapedPortals on GitHub](https://github.com/VolmitSoftware/ShapedPortals/releases). It checks asynchronously at startup and caches the result for one hour. Joining players share that result rather than each making a network request.
+`general.updateNotifications` defaults to `true`. Shaped Portals then checks [its GitHub releases](https://github.com/VolmitSoftware/ShapedPortals/releases) at startup, caches the answer for an hour, and tells operators and anyone with `shapedportals.update` on join. The message carries the installed version, the new version, and a link.
 
-When a newer version is available, operators and players with `shapedportals.update` receive a localized chat message when they join. The message includes the installed version, the release version, and a clickable release link. The notifier does not send announcements to everyone already online.
+It reads release metadata from `api.github.com` and never downloads or replaces a jar. Install the update yourself.
 
-Only a newer numeric plugin version triggers a notice. Drafts and prereleases are excluded. Minecraft compatibility suffixes do not affect the comparison: an installed version of `2.0.0-1.20.1-26.2` compares as `2.0.0`, so a release with the same plugin version and a different compatibility range does not trigger an update notice.
+Only a higher numeric plugin version counts. Drafts and prereleases are skipped, and the Minecraft suffix is ignored: `2.0.0-1.20.1-26.2` compares as `2.0.0`, so a rebuild for a different Minecraft range is not an update.
 
-The notifier needs outbound HTTPS access to `api.github.com`. It reads release metadata only and never downloads release assets, replaces jars, or installs updates. Install any chosen update manually after reviewing its release notes and server compatibility.
-
-If GitHub is unavailable, rate-limits the request, or returns an invalid response, the check produces no update notice and retries after an hour. The console logs the first failure with its cause; repeated failures stay quiet until a successful check.
-
-Set `updateNotifications = false` under `[general]` in `config.toml`, or turn off GitHub update notifications in `/sp config` under General. The change takes effect as soon as the configuration applies, stops further checks, and clears cached and pending notices. Turning it on starts a fresh check.
+Set `updateNotifications = false`, or turn it off under General in `/sp config`, to stop the checks and clear pending notices.
 
 ## Diagnostic reports
 
@@ -73,8 +69,6 @@ Set `updateNotifications = false` under `[general]` in `config.toml`, or turn of
 Reports upload to the public mclo.gs service by default. Use `upload=false` for one local-only report or set `debug.uploadEnabled = false` to block all uploads. The local file remains available if an upload fails.
 
 Use `/volmit plugins debug ShapedPortals [upload=true|false]` for the same report through VolmLib. `/volmit plugins debug all [upload=true|false]` requests reports from every provider the sender can use. See [Shared diagnostic reports](/volmlib/api/diagnostics) for the common report format.
-
-Diagnostic feedback uses the `debug.*` entries in the Shaped Portals language catalog, including requests made through `/volmit plugins debug all`. The individual dump menu renders the selected language's prefix and message formatting in progress, saved, uploaded, and error rows. Copy and open controls retain exact file paths and URLs, including literal backslashes and color-like text. Missing translations use English defaults.
 
 ## React Plugin API pack
 

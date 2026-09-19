@@ -2,7 +2,7 @@
 title: "Items, Orbs & Bound Objects"
 description: "Experience orbs, backpacks, bound items, and stored item data"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -62,10 +62,6 @@ A backpack stays in one of two modes unless you cycle it. `SLOTS` is a plain con
 
 Deposits have three guards. A backpack can never go directly inside another backpack. With `denyNestedContainers` on, a shulker box or vanilla bundle holding a backpack is refused too. The scan is four levels deep. And `maxStoredBytes` refuses any deposit that would push the serialized contents past the ceiling. If the backing item disappears or cannot take a write-back while its window is
 open, Adapt hands the recoverable contents back. It does not drop them.
-
-## Data that is not an item
-
-Some persistent Adapt data looks item-shaped but is never held by a player. `ScaffoldMatter` in `content/block` stores temporary scaffold data. `BrewingStandOwner` with `BrewingStandOwnerMatter` in `content/matter` record brewing-stand ownership for the custom brewing workflow. None are giveable items.
 
 ## Reference
 

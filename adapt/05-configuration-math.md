@@ -2,7 +2,7 @@
 title: "Configuration Math"
 description: "XP multipliers, progression curves, knowledge, and ability power"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,66 +14,26 @@ The selected `xpCurve` converts both skill XP and master XP into levels. Master 
 
 ## How an XP award is calculated
 
-### Stage 1, the location gate
+Every award passes through five multipliers before it reaches the skill line:
 
-`SkillRuntimeGuards.grantXp` handles anything awarded with a `Location`. `Skill.xp(player, ...)` and `Skill.xpS(player, ...)` both go through it. `Skill.xp(player, xp)` counts too, because it fills in the player's own location. `Skill.xpSilent(player, xp)` routes through `grantXpSilent` and skips this entire stage.
+| Multiplier | What lowers it |
+|---|---|
+| Novelty | Repeating the same work in the same place |
+| Region policy | A WorldGuard region with `adapt-xp-multiplier`, or `adapt-xp deny` |
+| Monotony | Grinding one skill or one activity, from `[farmPrevention]` |
+| Line freshness and line boosts | Heavy recent use of that skill |
+| Player and global boosts, permission multipliers | Nothing — these only raise it |
 
-First the award has to be legitimate at all. The skill must be enabled. The recipient must be a real `CraftPlayer`. The number must be finite and greater than zero.
+A region that denies XP zeroes the award immediately and nothing downstream runs.
 
-Then two multipliers apply, in this order:
+Boosts add together within a bracket and multiply across brackets. `/adapt boost` and
+`/adapt global-boost` land in the player bracket; API boosts land on the line. Both brackets are
+clamped to 0.01–1000, and both are snapshots refreshed about once a second, so a permission change
+or a fresh boost can lag by that much.
 
-1. Novelty. `xp *= XpNovelty.noveltyMultiplier(player, location, rewardKey)`.
-2. Region policy. `xp = RegionPolicyService.adjustXp(...)`, which is `xp * policy.xpMultiplier()`, or `0` if the region denies XP. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
-
-The finite-and-positive check runs again on the result. A region that zeroes the award ends it right here and nothing downstream runs.
-
-### Stage 2, the skill switch
-
-`XP.xp` and `XP.xpSilent` call `PlayerData.resetMonotonyForOtherSkills(skill)` before handing the award on. If the player has switched to a different skill since the last award, every other line's accumulated staleness pressure is scaled down by `farmPrevention.crossSkillRecoveryFactor`. The line that was carrying the most pressure may be tagged as the Inspired skill.
-
-Inspired is cosmetic. It drives one action-bar popup, gated by `xpIntegrity.inspiredPopupEnabled` (off by default) and rate-limited by `inspiredCooldownMillis`. It grants no XP of its own. The real reward for switching skills is the pressure relief itself.
-
-### Stage 3, the line
-
-`PlayerSkillLine.giveXP` does three things:
-
-1. `freshness -= 0.012 + (xp * 0.00025)`, using the stage-1 result, before any stage-3 multiplication.
-2. `monotonyMultiplier = computeStalenessMultiplier(xp, rewardKey, now)`, the farm-prevention term described below.
-3. `xp = lineMultiplier * monotonyMultiplier * xp`.
-
-`lineMultiplier` is not computed here. It is a snapshot refreshed once per second by `PlayerSkillLine.updateMultiplier`. It can lag a permission change or a fresh boost by up to one player update, about a second.
-
-### The two multiplier snapshots
-
-Player updates run on a one-second cadence, staggered per player UUID. `PlayerData.update` computes the player-wide bracket first, then walks the skill lines, so both snapshots come from the same tick.
-
-Per player, `PlayerData.computeXpMultiplier`:
-
-```
-m  = 1 + sum(active player boosts) + sum(active global boosts)
-m *= permissionMultiplier
-playerMultiplier = clamp(m, 0.01, 1000)     // <= 0 becomes 0.01, > 1000 becomes 1000
-```
-
-Per line, `PlayerSkillLine.updateMultiplier`:
-
-```
-m = rfreshness + sum(active boosts on this line)
-m = clamp(m, 0.01, 1000)
-lineMultiplier = m * playerMultiplier
-```
-
-Boosts add together inside their own bracket and multiply across brackets. Expired entries are dropped while the sums are taken.
-
-The two brackets have different sources. `/adapt boost` and `/adapt global-boost` both land in the player bracket. Line boosts come from the API, `XP.boostXP(player, skill, percent, durationMillis)`, and from `AdaptPlayer.boostXPToRandom` and `boostXPToRecents`. Those duration parameters are `long`; expiry saturates rather than wrapping when a caller supplies an extreme duration.
-
-### Permission multipliers
-
-`PlayerData.resolvePermissionMultiplier` reads `[permissionXpMultipliers]`. It returns `1.0` when the player is null, the section is disabled, or the table is empty. Entries with a blank node, a null value, or a value at or below zero are skipped, as are nodes the player does not hold.
-
-With `stack = false` the single highest matched value wins. Holding a 1.5 node and a 2.0 node yields `2.0`. With `stack = true` every matched value is multiplied together. The same pair yields `3.0`. No match yields `1.0` either way.
-
-The result feeds the player bracket, so the `[0.01, 1000]` clamp still applies. Values below `1.0` work as rank penalties.
+Permission multipliers come from `[permissionXpMultipliers]`. With `stack = false` the single
+highest matched value wins; with `stack = true` every match multiplies together. Values below 1
+work as rank penalties.
 
 ### Final multiplier
 
@@ -89,50 +49,22 @@ with `final = 0` if the region denies XP.
 
 ### Payout pooling
 
-With `xpIntegrity.pooledPayoutEnabled` on, which is the default, the multiplied award goes into a pool instead of straight onto the line. The one-second tick flushes that pool once it is either older than `pooledWindowMillis` or has been idle longer than `pooledIdleFlushMillis`, whichever happens first. Flushing adds the whole pool at once and emits a single action-bar figure instead of a stream of small ones.
+With `xpIntegrity.pooledPayoutEnabled` on, awards collect in a pool and land together, which is why
+the action bar shows one figure instead of a stream of small ones. The pool flushes when it is older
+than `pooledWindowMillis` or idle longer than `pooledIdleFlushMillis`.
 
 ## Freshness
 
-`freshness` is the per-line diminishing-returns term. `rfreshness` is the smoothed value the multiplier snapshot actually reads.
-
-Once per second, before the multiplier snapshot:
-
-```
-max = 1 + (level * 0.004)
-freshness += (0.08 * freshness) + 0.003
-freshness = clamp(freshness, 0.01, max)
-
-if freshness < rfreshness:  rfreshness -= (rfreshness - freshness) * 0.003
-if freshness > rfreshness:  rfreshness += (freshness - rfreshness) * 0.265
-```
-
-Recovery is fast and decay is slow. `rfreshness` closes 26.5 percent of the gap per second going up, and 0.3 percent going down. Each award subtracts `0.012 + 0.00025 * xp` from `freshness`. Level only raises the ceiling, by 0.4 percent per level.
+Each skill line has a freshness term that falls as you use it and recovers when you stop. Recovery
+is fast and decay is slow, so a short break restores most of it. Level raises the ceiling slightly.
 
 ## Farm prevention
 
-`[farmPrevention]` produces the monotony multiplier. It tracks *pressure*, a scalar that rises with each award and decays exponentially with elapsed time.
+`[farmPrevention]` tracks *pressure*: it rises with each award and decays over time. Two trackers
+run, one per skill and one per activity, and they multiply together.
 
-For one tracker, given a pressure gain, a recovery constant, a decay curve, and a floor:
-
-```
-pressure *= e^(-elapsedMillis / recoveryMillis)          // decay since the last award
-pressure  = clamp(pressure + max(0, gain), 0, 100000)
-multiplier = clamp(floor + (1 - floor) * e^(-pressure / curve), floor, 1)
-```
-
-A `curve` at or below zero disables that tracker and returns `1.0`.
-
-Two trackers run. The skill tracker always runs, with `gain = skillBasePressure + (xp * skillXpPressure)`. The activity tracker runs when `perActivityTracking` is on and the award carries a non-blank reward key. There is one tracker per key. Each tracker has its own gain, recovery, curve, and floor. Activity keys that have been idle longer than `activityStateTtlMillis` are swept, at most once every 15 seconds.
-
-The two are multiplied and clamped against a combined floor:
-
-```
-floor = clamp(skillFloorMultiplier, 0, 1)
-if perActivityTracking: floor = clamp(floor * activityFloorMultiplier, 0, 1)
-monotony = clamp(skillMultiplier * activityMultiplier, floor, 1)
-```
-
-With default settings, that floor is `0.08 * 0.12 = 0.0096`. A fully saturated farm still pays about one percent. Awards of zero or less, and a disabled `[farmPrevention]`, both return `1.0` unconditionally.
+With the defaults the combined floor is about 0.01, so a fully saturated farm still pays about one
+percent. Setting a tracker's `decayCurve` to zero or below disables it.
 
 ## XP integrity
 
@@ -144,13 +76,13 @@ Blocks a player places are stamped so they cannot be re-harvested for XP. `place
 
 ### Novelty
 
-`noveltyMultiplier` is `spatial * entropy`, with a stillness override on top, floored at `spatialFloorMultiplier * entropyFloorMultiplier * stillnessFloorMultiplier`.
+Three things reduce a reward, multiplied together:
 
-Spatial bucketing divides the world into cubes `2^spatialCellShift` blocks on a side. The `n`-th award in a cube scores `max(spatialFloorMultiplier, 1 / (1 + spatialRepeatDecay * n))`. A cube idle longer than `spatialCellTtlMillis` resets to `n = 0`. At most `spatialCellCap` cubes are kept per player, evicted least-recently-used.
-
-Entropy watches a ring of the last `entropyWindow` reward keys. Until the ring fills, the term is `1.0`. Once full it is `entropyFloorMultiplier + (1 - entropyFloorMultiplier) * sqrt((distinct - 1) / 2)`, which saturates at 3 distinct keys.
-
-Stillness watches for a player who is not moving. If position stays inside `stillnessEpsilon` on every axis, and yaw stays inside a fixed 10 degrees, the stillness run can apply. The run needs at least `stillnessMinEvents` awards spanning `stillnessWindowMillis`. Then the combined multiplier is capped at `stillnessFloorMultiplier`. Any movement past those bounds restarts the run.
+- **Spatial** — repeating in the same small area. Resets after `spatialCellTtlMillis` idle.
+- **Entropy** — repeating one kind of action. Saturates once you have three distinct activities in
+  your recent history.
+- **Stillness** — not moving at all. Caps the combined multiplier at `stillnessFloorMultiplier`.
+  Any real movement restarts the run.
 
 ### Adjacency bonus
 
@@ -178,20 +110,6 @@ L(xp) = (sqrt(1440000 + 400 * xp) - 1200) / 200
 ```
 
 Both directions are closed form. Level 1 costs 1,300 XP, level 10 costs 22,000, level 100 costs 1,120,000.
-
-### Inverting a curve
-
-Families that declare an explicit inverse evaluate it directly and ignore `maxError`. `ADAPT_BALANCED` and `LINEAR_EXPONENTIAL_1` are exactly invertible.
-
-The `XL*` families, `LINEAR_EXPONENTIAL_2`, and `LINEAR_EXPONENTIAL_3` declare only a forward function. They fall through to `NewtonCurve`'s default `computeLevelForXP`. That method is a bisection despite the class name, not Newton's method:
-
-- the cursor starts at `0` and the jump size at `100`
-- each iteration compares `getXPForLevel(cursor)` against the target and steps the cursor by the jump size
-- the jump size halves only when the search reverses direction
-- the loop ends when the jump size drops below `maxError`, or after 100 iterations
-- the cursor is clamped to `experienceMaxLevel` and the loop breaks the moment it exceeds it
-
-Runtime lookups pass `maxError = 0.000001`, which is a few dozen forward evaluations per call. Those families therefore cost noticeably more per level lookup than the closed-form ones.
 
 ### The level cap
 
@@ -226,7 +144,9 @@ available = maxPower - usedPower
 
 The `(int)` truncates. The default `powerPerLevel = 0.65` yields one power point roughly every other master level at low levels. `regionPowerBonus` is the transient WorldGuard `adapt-power-bonus` contribution. It is refreshed on the same tick and never persisted. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
 
-`pruneAdaptationsForPowerBudget` repeatedly demotes the lowest-level non-region-granted adaptation by one level, removing it entirely at level 1, until `usedPower <= maxPower`. It runs after Trag'Oul's death drain and when a region power bonus drops while the player is over budget. Over-budget state arriving by any other route is left alone. New learning is just blocked, because `hasPowerAvailable(cost)` tests `available >= cost`. Region-bonus exit behavior is in [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
+When your power budget drops below what you hold — usually after leaving a region that granted a
+bonus — Adapt demotes your lowest-level adaptations one level at a time until it fits. Nothing is
+refunded. Region-granted adaptations cost no power and are never pruned.
 
 Debug mode (`/adapt debug mode`) short-circuits `hasPowerAvailable`, `spendKnowledge`, and the pruner entirely.
 
@@ -244,37 +164,20 @@ Debug mode (`/adapt debug mode`) short-circuits `hasPowerAvailable`, `spendKnowl
 
 ### Curve families
 
-`L` is level, `xp` is total accumulated XP on the line.
+Accepted values for `xpCurve`. `ADAPT_BALANCED` is the default and the shipped balance point; the
+rest are alternatives, from near-linear (`L1K`, `L4K`, `L8K`, `L16K`) through polynomial (`X1D2`,
+`X1D5`, `X2` through `X7`) to preset curves borrowed from other games (`SKYRIM`, `WOW`).
 
-| Family | `xp(L)` |
-|---|---|
-| `QLOG` | `L^2 * ln(L)` |
-| `ELIN` | `1000 * e^(0.001 * L)` |
-| `CUBRT` | `L^(1/3)` |
-| `HYPER` | `1000 / (2 - L)` |
-| `SIGM` | `1000 / (1 + e^(-0.01 * (L - 50)))` |
-| `X1D2` | `L^1.2` |
-| `X1D5` | `L^1.5` |
-| `X2` ... `X7` | `L^2` ... `L^7` |
-| `L1K`, `L4K`, `L8K`, `L16K` | `1000 * L`, `4000 * L`, `8000 * L`, `16000 * L` |
-| `SKYRIM` | `sum(i = 1 .. L-1) of ((i - 1)^1.95 + 300)` |
-| `WOW` | `sum(i = 1 .. L-1) of ((8i + diff(i)) * (235 + 5i) * drf(i))`, Blizzard's classic table |
-| `XL05L7` ... `XL160L7`, `XL100L7` | `(k * L + (0.95 * L)^pi) / 1.137` |
-| `ADAPT_BALANCED` | `100 * L^2 + 1200 * L` |
-| `LINEAR_EXPONENTIAL_1` | `100 * L^2 + 1000 * L` |
-| `LINEAR_EXPONENTIAL_2` | `50 * L^2.5 + 2000 * L` |
-| `LINEAR_EXPONENTIAL_3` | `200 * L^1.5 + 500 * L` |
+```
+ADAPT_BALANCED  LINEAR_EXPONENTIAL_1  LINEAR_EXPONENTIAL_2  LINEAR_EXPONENTIAL_3
+QLOG  ELIN  CUBRT  HYPER  SIGM  SKYRIM  WOW
+X1D2  X1D5  X2  X3  X4  X5  X6  X7
+L1K  L4K  L8K  L16K
+XL05L7  XL1L7  XL15L7  XL2L7  XL3L7  XL4L7  XL5L7  XL6L7  XL7L7  XL8L7  XL9L7
+XL20L7  XL40L7  XL80L7  XL100L7  XL160L7
+```
 
-`k` for the `XL*` families is the leading number in the name plus 337:
-
-| Family | `k` | Family | `k` | Family | `k` |
-|---|---|---|---|---|---|
-| `XL05L7` | 537 | `XL4L7` | 4337 | `XL9L7` | 9337 |
-| `XL1L7` | 1337 | `XL5L7` | 5337 | `XL20L7` | 20337 |
-| `XL15L7` | 1837 | `XL6L7` | 6337 | `XL40L7` | 40337 |
-| `XL2L7` | 2337 | `XL7L7` | 7337 | `XL80L7` | 80337 |
-| `XL3L7` | 3337 | `XL8L7` | 8337 | `XL160L7` | 160337 |
-| | | | | `XL100L7` | 100337 |
+The default reaches level 1 at 1,300 XP, level 10 at 22,000, and level 100 at 1,120,000.
 
 ### `[farmPrevention]`
 

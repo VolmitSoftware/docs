@@ -2,7 +2,7 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,7 +38,8 @@ Pie maps use a donut chart and a 3–32-row legend. Extra slices are grouped as 
 
 ### `chunk-load-gen-cost-map`
 
-Weighted load and gen cost per loaded chunk: `loadMS*1.0 + genMS*1.35 + loadRate*0.4 + genRate*0.7` from samplers `chunk-load-ms`, `chunk-gen-ms`, `chunks-loaded`, `chunks-generated`.
+Where chunk loading and generation is costing the most time. Built from the `chunk-load-ms`,
+`chunk-gen-ms`, `chunks-loaded`, and `chunks-generated` samplers.
 
 ### `chunk-sampler-map`
 
@@ -58,7 +59,8 @@ Score: per-chunk `hopper` sampler.
 
 ### `player-impact-overlay`
 
-Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay draws up to `maxPlayersDrawn` ranked players.
+Chunk cost with the ranked players drawn on top, so you can see who is standing in the expensive
+part of the world.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -68,7 +70,7 @@ Chunk score: `totalScore + entities*0.5 + redstone*0.3 + hopper*0.2`. Overlay dr
 
 ### `tick-spike-origin-replay-map`
 
-This feature captures spike origins when `tick-time` is at or above the threshold. Heat decays over time. The worst sample supplies only immutable world UUID/key and chunk X/Z identity. Paper queries immutable Observer coordinates only inside the configured radius instead of sweeping every loaded chunk; the Folia path resolves the live world by UUID and dispatches the capture to that chunk's owning scheduler. Neither path carries Bukkit `Chunk` handles across region boundaries, and the map does not apply per-chunk total-score weighting.
+Captures where tick spikes originate whenever `tick-time` crosses the threshold, and draws them as decaying heat, so a repeated spike shows up as a hot chunk rather than a number in a log.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -111,7 +113,8 @@ Pie of rolling measured plugin event-handler time. Call volume without measured 
 
 ### `iris-biome-chunk-share-pie-map`
 
-Loaded chunks in the map world by biome label. The feature incrementally samples immutable Observer world/chunk coordinates at the owning region, using the world's clamped sea level as a deterministic Y coordinate. Each one-second pass schedules at most 32 chunk-owner samples, reserves up to 16 of those slots for chunk-load lifecycle work, caps queued lifecycle coordinates at 8,192 and outstanding owner tasks at 128, and removes counts immediately on chunk or world unload. Rendering copies only the per-biome counters; it does not enumerate the loaded-chunk index or retain Bukkit `Chunk` handles. The distribution converges as the bounded rotation covers the loaded coordinates and remains current through load/unload events.
+Share of loaded chunks by Iris biome. The distribution fills in as React samples loaded chunks and
+stays current as they load and unload.
 
 The feature and renderer require the live `iris` capability, so non-Iris servers schedule no biome sampling and do not show the map. With Iris available, the renderer is selectable. Config: `enabled` only.
 

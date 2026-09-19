@@ -1,6 +1,6 @@
 ---
 title: "Shaped Portals: Developer reference"
-description: "Geometry, persistence, region ownership, and build instructions"
+description: "Geometry constraints, the portal registry, the Wormholes handoff, and building from source"
 published: true
 date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
@@ -10,19 +10,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 <nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Developer reference</span></nav>
 
-Shaped Portals separates geometry, region-owned world access, configuration, and persistent portal records. This page explains those boundaries for developers and integrations.
-
-- [Geometry](#geometry-engine)
-- [Persistence](#why-portal-records-are-required)
-- [Threading](#thread-and-region-model)
-- [Build](#build-from-source)
-{.grid-list}
-
-## Geometry engine
-
-The scanner classifies integer plane coordinates as interior, frame, blocked, or unowned. It uses an iterative `ArrayDeque` traversal and hash sets rather than recursion. Inclusive limits stop the search before it can grow beyond the configured bounds.
-
-Nether ignition tests both vertical axes independently. End activation tests the horizontal X/Z plane from the completed eye frame. A valid result contains immutable interior and frame-coordinate sets.
+## Geometry constraints
 
 | Constraint | Reason |
 |---|---|
@@ -32,64 +20,53 @@ Nether ignition tests both vertical axes independently. End activation tests the
 | One owning Folia region | There is no atomic multi-region block commit |
 | Revalidation before commit | Rejects changes made while integrations inspect the proposal |
 
-For standalone Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any blocks are placed. End portals start from the accepted Eye of Ender placement transaction and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
+Nether ignition tests both vertical axes independently; a shape valid in both is rejected as ambiguous. End activation tests the horizontal X/Z plane from the completed eye frame.
+
+For standalone Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any block is placed. End portals start from the accepted Eye of Ender placement and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
 
 ## Why portal records are required
 
-Neither `NETHER_PORTAL` nor `END_PORTAL` is a tile state that can hold a persistent data container. Runtime block metadata also does not survive restart. Scanning after startup cannot reliably distinguish managed portals from vanilla or other plugins' blocks.
+Neither `NETHER_PORTAL` nor `END_PORTAL` is a tile state that can hold a persistent data container, and runtime block metadata does not survive a restart. Scanning the world after startup cannot tell a managed portal from a vanilla one.
 
-The registry records ownership. Vertical axes `X` and `Z` identify Nether portals; axis `Y` identifies a horizontal End portal. This keeps both portal types in the same schema without guessing from world blocks after a restart.
+So Shaped Portals keeps its own registry. Deleting it orphans the portals. Vertical axes `X` and `Z` identify Nether portals; axis `Y` identifies a horizontal End portal, which keeps both types in one schema.
 
-Events mark nearby records for checks, and a periodic sweep reconciles loaded records. The plugin never relies on globally cancelling `BlockPhysicsEvent` to preserve an unusual shape.
+Events mark nearby records for checking and a periodic sweep reconciles loaded records. The plugin never globally cancels `BlockPhysicsEvent` to hold a shape together.
 
 See [Persistent ownership](/shapedportals/02-portal-behavior-events#persistent-ownership) for the stored fields and recovery rules.
 
-## Thread and region model
-
-| Work | Execution context |
-|---|---|
-| Automatic file reloads and GUI editor writes | Off the gameplay thread |
-| Registry persistence | Dedicated asynchronous writer |
-| Configuration and language activation | Atomic snapshot replacement |
-| Shape scans, portal placement, repairs, and removal | Owning region |
-| GUI results and player feedback | Player's owning scheduler |
-| Teleport chunk preparation | Asynchronous where available, otherwise on the owning region |
-| Landing checks | Destination region |
-| Player teleport completion | Entity scheduler |
-| Diagnostic state capture | Global scheduler, using immutable or concurrent plugin state |
-| Diagnostic formatting, file hashing, writing, and upload | Asynchronous worker |
-
-Integrity checks skip unloaded chunks. Administrative teleportation can prepare the portal and nearby landing chunks. Creation refuses shapes that span independently owned regions.
-
 ## Native mechanics boundary
 
-The plugin uses Bukkit `Orientable` block data for Nether portal axes and ordinary `END_PORTAL` block data for horizontal End surfaces. It does not need NMS, packets, or version adapters.
+Shaped Portals uses Bukkit `Orientable` block data for Nether portal axes and ordinary `END_PORTAL` data for horizontal End surfaces. No NMS, packets, or version adapters.
 
-Minecraft controls destination search, coordinate scaling, and generated destination frames. End surfaces are horizontal by native block behavior; vertical End tiles, 3D surfaces, exact pairing, and custom destinations require a separate display or teleport system.
+Minecraft controls destination search, coordinate scaling, and generated destination frames. End surfaces are horizontal because the block is. Vertical End surfaces, 3D surfaces, exact pairing, and custom destinations need a separate display or teleport system.
 
-No event set covers every possible external block mutation, which is why the periodic integrity sweep remains necessary.
+No event set covers every external block mutation, which is why the periodic integrity sweep exists.
 
 ## Shared systems
 
-VolmLib supplies TOML handling, file watching, localization, validated translation downloads, command/help presentation, HUD coordination, scheduling, and [diagnostic report collection and upload](/volmlib/api/diagnostics). ShapedPortals contributes an immutable capture of its service, settings, registry, and statistics state and retains its `debug.uploadEnabled` control.
+VolmLib supplies TOML handling, file watching, localization, command and help presentation, HUD coordination, scheduling, and [diagnostic report collection](/volmlib/api/diagnostics). Shaped Portals owns geometry, registry policy, integrity decisions, commands, presentation settings, and its configuration editor.
 
-Shaped Portals owns geometry, registry policy, integrity decisions, commands, presentation settings, and its categorized configuration editor. Optional React integration reads concurrent counts without accessing live world state during sampling.
+Optional React integration reads concurrent counts without touching live world state.
 
-`LanguageService.render`, `renderPrefixed`, and `renderWithoutPrefix` return `ComponentText`. Send these results directly through `ComponentMessenger`; use `.legacy()`, `.plain()`, or `.miniMessage()` only when an output API requires that representation. Message formatting and the editable name are resolved before delivery, so completed messages must not be passed through mixed-format parsing again.
+`LanguageService.render`, `renderPrefixed`, and `renderWithoutPrefix` all return `ComponentText`. Send that straight through `ComponentMessenger`; use `.legacy()`, `.plain()`, or `.miniMessage()` only when an output API demands one, and never re-parse a rendered message.
+
+## Wormholes geometry handoff
+
+Shaped Portals submits Nether interior block positions and their vertical axis through the Wormholes `NetherPortalShapes` service. An accepted shape belongs to Wormholes: it does not enter the Shaped Portals registry or repair loop. See [Wormholes API](/wormholes/20-api-getting-started#nether-portal-shapes).
 
 ## Build from source
 
-The Gradle wrapper uses Java 25 and produces Java 17 bytecode. Build the sibling Wormholes API first with `./gradlew apiJar` from `WormholesPlugin/`. Shaped Portals compiles against `../WormholesPlugin/build/libs/Wormholes-2.0.6-26.2-api.jar`; use `-PwormholesApiJar=/path/to/Wormholes-api.jar` to supply the current API from another location. The API is not bundled in Shaped Portals.
+The Gradle wrapper uses Java 25 and produces Java 17 bytecode.
+
+Build the sibling Wormholes API first with `./gradlew apiJar` from `WormholesPlugin/`. Shaped Portals compiles against `../WormholesPlugin/build/libs/Wormholes-2.0.6-26.2-api.jar`; pass `-PwormholesApiJar=/path/to/Wormholes-api.jar` to use another location. The API is not bundled.
 
 ```text
 ./gradlew build
 ```
 
-The shaded artifact is written to `build/libs/ShapedPortals-<version>.jar`. The build also exports the React pack to `build/distributions/react-api-packs/` and checks Java 17 class compatibility.
+The shaded artifact lands in `build/libs/ShapedPortals-<version>.jar`, and the build also exports the React pack to `build/distributions/react-api-packs/`.
 
-Shadow and [shared automatic jar thinning](/volmlib/api/building#automatic-jar-thinning) remove unused VolmLib classes and compact the final jar. SlimJar loads Gson, TOML, and Adventure at startup, using the same package relocations as the plugin. Artifact checks require the dependency bootstrap and reject bundled copies of these libraries.
-
-`./gradlew publishToMavenLocal` publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building) for shared build commands.
+`./gradlew publishToMavenLocal` publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building).
 
 ## Related pages
 
@@ -98,7 +75,3 @@ Shadow and [shared automatic jar thinning](/volmlib/api/building#automatic-jar-t
 - [Compatibility and operations *Platforms, diagnostics, and React metrics*](/shapedportals/03-compatibility-operations)
 - [Source repository *Plugin code, build files, and issue tracker*](https://github.com/VolmitSoftware/ShapedPortals)
 {.links-list}
-
-## Wormholes geometry handoff
-
-Shaped Portals submits Nether interior block positions and their vertical axis through the Wormholes `NetherPortalShapes` service. An accepted shape belongs to Wormholes and does not enter the Shaped Portals block registry or repair loop. See [Wormholes API](/wormholes/20-api-getting-started#nether-portal-shapes) for the service contract.

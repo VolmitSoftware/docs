@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-09-18T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -19,19 +19,22 @@ Requirements: Java 25 and Velocity 3.4 or newer. Proxy scoreboards require Minec
 3. Edit the generated files under `plugins/gloss/`.
 4. Run `/gloss reload` from the proxy console or an account with `gloss.admin`.
 
-Gloss loads PacketEvents itself on first start and stores it under `plugins/gloss/libraries/`. Install a PacketEvents plugin only when another proxy plugin requires that plugin.
-
 The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids are not part of the proxy edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
 
 ## Backend feature ownership
 
-Install the same jar on backend servers to use holograms, menus, and other server features. With Velocity modern forwarding enabled on Paper or Folia, Gloss automatically uses the existing forwarding secret to authenticate feature ownership. Tablists, scoreboards, and surfaces are owned one player at a time: each of those backend features stops for a connected player as soon as the proxy owns it for them. A player whose surfaces the proxy owns has the backend action bar, boss bar, and title cleared once, and the backend stops its surface sweep for that player. The MOTD and connection messages are owned server-wide instead: backend MOTD decoration and the backend's own pause-menu server links stop while at least one connected player carries an active proxy MOTD lease, and a backend under the connection-messages claim stops announcing its own joins and leaves. Other backend features remain enabled, and Gloss does not rewrite the backend configuration.
+Install the same jar on your backend servers for holograms, menus, and the other server features.
 
-The backend console reports which features are suspended by Velocity Gloss and which have returned to the local configuration. Reports appear when the set of owned features changes, including the first authenticated connection and the final release. Routine heartbeat renewals and additional players do not repeat the message.
+**Proxy settings win.** A feature enabled on the proxy turns off on the backend: tablists,
+scoreboards, and surfaces switch off per player; MOTD and connection messages switch off for the
+whole server. Everything else on the backend keeps running, and Gloss never rewrites the backend
+configuration. The backend console reports what the proxy has taken over and what it has handed back.
 
-The proxy claims features through the switches in `proxy.json`. A hidden or conditionally absent proxy board still owns the scoreboard feature, and a surface switch with no document currently selected still owns surfaces. Disabling a proxy feature and running `/gloss reload` releases it to the backend on the next handshake, normally within five seconds. If handshakes stop, backend ownership expires after about fifteen seconds. Backend MOTD remains local before the first authenticated connection and after the last player leaves; external clients still receive the proxy MOTD when pinging the proxy.
+Turn a proxy feature off in `proxy.json` and run `/gloss reload` to give it back to the backend.
 
-For servers without Paper modern forwarding, place an identical `proxy-ownership.key` file containing at least 32 bytes of random secret data in the proxy and backend Gloss data directories. This file overrides the forwarding secret. Restart both installations after changing it. Never share this file with players. Without a shared key, automatic backend suppression is unavailable. Keep server clocks synchronized for the authenticated handshake.
+On Paper or Folia with Velocity modern forwarding this works with no setup. Without it, put an
+identical `proxy-ownership.key` of at least 32 random bytes in both data folders, restart both, and
+keep the clocks in sync. Never share that file.
 
 ## Files and settings
 
@@ -86,9 +89,16 @@ Text supports legacy `&` colors, `§` colors, `[RRGGBB]` colors, tokens, and `{{
 | `$from` | The backend a connection message is leaving. Empty elsewhere |
 | `$to` | The backend a connection message is entering. Empty elsewhere |
 
-Expression player roles are `viewer`, `subject`, and `player`. `player` refers to the subject. Each role exposes `present`, `name`, `uuid`, `ping`, and `server`.
+| Expression name | Value |
+|---|---|
+| `viewer.*`, `subject.*`, `player.*` | `present`, `name`, `uuid`, `ping`, `server`. `player` means the subject |
+| `server.online`, `server.maxPlayers` | Proxy player counts |
+| `time.ms`, `time.seconds`, `time.ticks` | Server clock |
+| `connection.from`, `connection.to` | Same backend names as `$from` and `$to` |
 
-Global variables are `server.online`, `server.maxPlayers`, `time.ms`, `time.seconds`, `time.ticks`, `connection.from`, and `connection.to`. The last two carry the same backend names as `$from` and `$to`. Only these names parse. An expression naming a backend value such as `viewer.world` is rejected when the document loads. Conditions can use `hasPermission('permission')` or `hasPermission('viewer', 'permission')` with proxy permissions. String checks include `contains`, `startsWith`, `endsWith`, and `oneOf`.
+Only these names parse — a backend value such as `viewer.world` is a load error. Conditions can also
+use `hasPermission('permission')` or `hasPermission('viewer', 'permission')`, and the string checks
+`contains`, `startsWith`, `endsWith` and `oneOf`.
 
 Tablist names evaluate the listed player as the subject. Headers, footers, scoreboards, and surfaces use the viewer as the subject. Connection messages use the connecting player as the subject and the recipient as the viewer. MOTD expressions have no player context.
 
@@ -198,17 +208,15 @@ Each schema-1 document in `surfaces/` drives one action bar, boss bar, or title.
 | `bossbar` | `title` required. `progress` clamped to 0 – 1, default `1`. `color` one of `pink`, `blue`, `red`, `green`, `yellow`, `purple`, `white`, default `white`. `style` one of `solid`, `segmented_6`, `segmented_10`, `segmented_12`, `segmented_20`, default `solid` |
 | `title` | `title` required. `subtitle` default empty. `trigger` one of `select`, `once`, `repeat`, default `select`. `fadeInTicks` default `10`, `stayTicks` default `40`, `fadeOutTicks` default `10`. `repeatTicks` is raised to at least `stayTicks` |
 
-`progress` takes a bare expression or a `{{ ... }}` block. An expression that throws is logged once for that surface and treated as empty.
+`progress` takes a bare expression or a `{{ ... }}` block.
 
 Per viewer, each surface kind selects the matching document with the highest `select.priority` whose `show` and `select.when` are both true. Equal priorities use filename order. The first variant in descending priority order whose `when` is true then replaces the base presentation.
 
-Expressions here see the proxy variable set only. A document naming a backend value such as `viewer.world` is rejected when it loads.
+A server-edition surface file loads unchanged. Raise `refreshMillis` above 2000 and the action bar
+blinks between sends; title timing is also quantized to it.
 
-`slots`, the HUD `priority` name, and `ttlTicks` are accepted and ignored, so a server-edition file loads unchanged. Each viewer gets at most one boss bar, updated in place instead of resent.
-
-`refreshMillis` bounds the timing. The action bar is resent on every refresh tick; a refresh much above 2000 milliseconds lets it blink out between sends. Title `fadeInTicks`, `stayTicks`, and `fadeOutTicks` are sent as configured, but the moment a title first shows, or a `repeat` trigger fires again, is quantized to `refreshMillis`.
-
-Boss bars and action bars clear when their document stops being selected and when `surfaces` is off. Titles are never force-cleared; they run out their own timing. A `once` trigger fires a single time per document for as long as the player stays connected, and `/gloss reload` does not re-arm it. A backend switch hides the boss bar and shows it again on the next refresh.
+Boss bars and action bars clear when their document stops being selected. Titles run out their own
+timing. A `once` trigger fires once per connection, and `/gloss reload` does not re-arm it.
 
 The included `surfaces/welcome.json` uses `"when": "false"`, so nothing appears until you edit it.
 
@@ -254,11 +262,13 @@ The included `surfaces/welcome.json` uses `"when": "false"`, so nothing appears 
 | `<section>.presentation.text` | The line to send |
 | `<section>.variants` | `priority`, `when`, and `presentation`, chosen per recipient, so staff-only wording is a variant gated on `hasPermission('viewer', 'gloss.admin')` |
 
-Both `show` gates are evaluated once, for the connecting player. The text is then rendered once per recipient with that player as the subject, so `$player` and `$server` name them. `$to` names the backend being entered, on a join and on a switch; `$from` names the backend being left, on a switch and on a leave. A leaving player no longer reports a backend, so write `$from` rather than `$server` in a `leave` line. Gloss remembers each player's backend on join and on every switch, which is what a `leave` line and a `server` audience read once the player is gone.
+The text renders once per recipient with the connecting player as the subject, so `$player` and `$server` name them. `$to` is the backend being entered, `$from` the one being left.
 
-The subject receives their own join and switch lines, and never their own leave. A leave is announced only for a connection whose login completed, so a kicked, cancelled, or conflicting login is never announced.
+A leaving player no longer reports a backend — write `$from`, not `$server`, in a `leave` line.
 
-The proxy claims connection messages server-wide on every backend running Gloss. While the claim is live, a backend clears its own vanilla join and quit lines and announces nothing. That claim is a per-player lease that arrives one handshake after a player joins, so a backend that has already seen it holds a join line for up to three seconds instead of racing it. The first join after a backend restart is announced immediately, so that one join can show both the backend's line and this one. See [Connection Messages](/gloss/26-connection-messages).
+Players see their own join and switch lines but never their own leave, and a login that never completed is never announced.
+
+While the proxy owns connection messages, backends announce nothing of their own. See [Connection Messages](/gloss/26-connection-messages).
 
 ## Emoji and animations
 
@@ -269,13 +279,14 @@ The proxy reads `emoji/` and `animations/` in its data directory. Both folders a
 | `emoji/` | `trigger`, `emoji` in `U+XXXX;` notation, `enabled`, `show` |
 | `animations/` | `mode`, `frameIntervalMs` clamped to 1 to 60000, `frames`, `show` |
 
-Everywhere proxy text renders, `:id:` tokens and any non-empty `trigger` expand to the emoji, and `|animation.<id>|` expands to the clip's current frame. That covers MOTD lines and sample, tablist header, footer and list names, scoreboard titles and lines, surface text, connection messages, and link labels.
+`:id:` and `|animation.<id>|` expand anywhere proxy text renders — MOTD, tablist, scoreboards,
+surfaces, connection messages, and link labels. A token Gloss cannot resolve is left exactly as
+written; a hidden animation renders empty. `refreshMillis` bounds the visible frame rate, and the
+MOTD renders fresh on each ping.
 
-`show` on the proxy is a proxy expression, evaluated for the viewer the text is being rendered for. A hidden emoji leaves its token or trigger as written. A hidden animation renders as an empty string. An unknown animation id, a `|metric.<key>|` token, and a catalog turned off in `proxy.json` all leave the token exactly as written.
-
-Frames advance on wall-clock time. `refreshMillis` bounds the visible frame rate for tablists, scoreboards, and surfaces; the MOTD renders fresh on each ping.
-
-Emoji that point at a Gloss glyph-font codepoint render as tofu on the proxy, because the proxy serves no resource pack. Use codepoints the vanilla font carries.
+> The proxy serves no resource pack, so an emoji pointing at a Gloss glyph-font codepoint renders as
+> tofu. Use codepoints the vanilla font carries.
+{.is-warning}
 
 Set `"emoji": { "enabled": false }` or `"animations": { "enabled": false }` in `proxy.json` to turn a catalog off.
 
@@ -354,12 +365,11 @@ The toggle lasts until the player disconnects. The proxy does not expose the ser
 
 ## Troubleshooting
 
-If Gloss fails to start, check the proxy log for library download errors or invalid documents. If a reload fails, correct the reported document and repeat `/gloss reload`.
-
-If no board appears, check the client version, feature switch, `show`, and `select.when`. Check conditions against proxy values, especially backend names and proxy permissions.
-
-If no surface appears, check `select.when` first. It defaults to `false`, so a document without a condition never selects.
-
-An emoji that renders as a blank box points at a resource-pack codepoint. The proxy serves no resource pack.
-
-Use one tablist owner for consistent results. Other proxy or backend plugins can change the same list entries, headers, and footers.
+| Symptom | Check |
+|---|---|
+| Nothing appears | `select.when` defaults to `false`, so a document without one never selects |
+| A board is missing | Client version, the feature switch, `show`, and `select.when` |
+| A condition never matches | It must use proxy values — backend names and proxy permissions, not backend ones |
+| An emoji is a blank box | It points at a resource-pack codepoint; the proxy serves none |
+| Tablist entries fight | Another plugin owns the same list. Pick one owner |
+| Reload fails | Fix the document named in the log, then `/gloss reload` again |

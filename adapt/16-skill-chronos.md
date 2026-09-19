@@ -2,7 +2,7 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,227 +13,25 @@ Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind
 
 ## Adaptations
 
-Everything below only runs when you have learned the adaptation to level 1 or higher. The skill and the adaptation are both enabled in config. You hold the `adapt.use` permission. Any protection plugin or region policy allows the action. Those conditions are not repeated per entry.
+All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 ### Time In A Bottle (`chronos-time-bottle`)
 
+5 levels · 6 knowledge
+
 A craftable bottle that slowly fills with stored time while you carry it, then dumps that time into something that would otherwise take a while. Furnaces, smokers, blast furnaces, brewing stands, campfires, growable blocks, and any Ageable entity such as a baby cow are all valid targets. It is the closest thing Adapt has to a personal fast-forward button.
 
-The recipe is shapeless. The plugin rejects the craft unless the potion in the grid is an actual Swiftness Potion. The recipe itself accepts any potion item.
-
-Spending time on a sapling can grow a whole tree. Before that happens the plugin checks every block the tree would occupy. It
-fires a `StructureGrowEvent`. It cancels the entire tree if any block or any
-listening plugin says no.
+Spending time on a sapling can grow a whole tree, but only if nothing protects the space that tree would fill.
 
 **How to use it**
 
-1. Learn it in the Adapt menu.
-2. Craft the bottle: Swiftness Potion, Clock, Glass Bottle, shapeless.
-3. Carry it. It charges on its own, once per second, up to the stored-time cap for your level.
-4. Right-click the furnace, brewing stand, campfire, growable block, or baby animal you want to speed up.
+1. Craft the bottle: Swiftness Potion, Clock, Glass Bottle, shapeless.
+2. Carry it. It charges on its own, once per second, up to the stored-time cap for your level.
+3. Right-click the furnace, brewing stand, campfire, growable block, or baby animal you want to speed up.
 
-On Folia you have to click the block directly. The air-click variant that ray-traces to a block is disabled there. Off Folia, an air click that finds a block still has to pass a normal right-click-block check first. Furnaces and brewing stands also need container access, and campfires and growables need block-place permission.
+Furnaces and brewing stands need container access, campfires and growables need block-place permission, so none of it works where you cannot build.
 
-### Aberrant Touch (`chronos-aberrant-touch`)
-
-Every melee hit you land smears slowness onto the target, and the stacks build up. At 5 stacks the target is rooted in place for a moment. Each proc eats hunger, so you cannot spam it while starving, and PvP targets get much tighter duration and amplifier caps than mobs do.
-
-It works on its own once learned. Hit things.
-
-### Instant Recall (`chronos-instant-recall`)
-
-Click with a clock and you snap back to where you were a few seconds ago. Health
-and hunger restore to what they were then. The clock is consumed and you lose half your remaining health, but the recall will never kill you: health is floored at 1. Your inventory is not rolled back.
-
-**How to use it**
-
-1. Learn it in the Adapt menu.
-2. Hold a clock in either hand.
-3. Left-click or right-click, air or block. Both clicks and both target kinds are on by default.
-
-Three other triggers exist and are off by default: sprint plus click, a single sneak press, and a double-tap jump. Turn them on in the adaptation's config file if you prefer them to plain clicking.
-
-### Time Bomb (`chronos-time-bomb`)
-
-A thrown chrono bomb. It is a lingering potion item under the hood, so you throw it the vanilla way, and where it lands a temporal field opens up. Everything inside is slowed and given mining fatigue, players in the air are pinned, and projectiles entering the field stop dead. You get slowed by your own field too, just less.
-
-**How to use it**
-
-1. Learn it in the Adapt menu.
-2. Craft the bomb: Clock, Snowball, Diamond, Sand, shapeless.
-3. Right-click to throw it.
-4. Wait out the cooldown. Trying to throw early plays a reject sound and cancels the throw.
-
-### Temporal Echo (`chronos-temporal-echo`)
-
-Projectiles you fire get a second life. A short delay after the shot, the same projectile is replayed at reduced velocity. Handy for arrow volleys and for anything where a second hit at the same angle is worth having.
-
-It works on its own once learned. Fire something.
-
-### Stasis Field (`chronos-stasis-field`)
-
-Drops a bubble around you that freezes projectiles in midair and pins mobs inside it. Mobs get heavy slowness and a jump lock, so nothing walks or hops out. The amethyst shard you cast with is consumed.
-
-**How to use it**
-
-1. Learn it in the Adapt menu.
-2. Hold an amethyst shard.
-3. Sneak and right-click.
-
-By default frozen projectiles get their motion back when the bubble expires rather than being deleted.
-
-### Rewind (`chronos-rewind`)
-
-A two-press panic button. The first press marks the moment. If you press again before the window closes, you snap back to that spot with the health and hunger you had at the mark. Each completed rewind costs food.
-
-**How to use it**
-
-1. Learn it in the Adapt menu.
-2. Sneak and press the swap-hands key (F by default) to mark the moment.
-3. Sneak and press it again within the window to rewind.
-
-The cooldown after a rewind shrinks as the adaptation levels up, down to a floor.
-
-### Borrowed Time (`chronos-borrowed-time`)
-
-Part of every hit you take is deferred instead of applied immediately, then drained back out of you one pulse per second afterwards. It buys you a couple of seconds to heal or run. Damage that is already deferred cannot be deferred again, so it does not spiral.
-
-Works on its own once learned.
-
-### Overtime (`chronos-overtime`)
-
-Beneficial potion effects applied to you last longer. The extension is a fraction of the original duration and scales with level. A
-cap limits how many bonus ticks any single effect can gain. Once the adaptation is at max level, harmful effects applied to you are cut to half duration as well.
-
-Works on its own once learned.
-
-### Accelerate (`chronos-accelerate`)
-
-A quiet aura that pulses around you and nudges time forward on whatever it samples. Crops advance a growth stage, furnaces and smokers and blast furnaces and brewing stands jump forward a chunk of their remaining cook or brew time. You do not aim it. It just makes working near your farm and your furnace row faster.
-
-Each sampled block is only touched if you and the block are on the same region thread and the normal interaction checks pass. Crops also need block-place permission, and processing stations need container access.
-
-Works on its own once learned.
-
-### Hourglass Guard (`chronos-hourglass-guard`)
-
-A death save. A blow that would kill you leaves you at half a heart instead. You get a brief
-window of invulnerability. Enemies standing around you slow. The cooldown is measured in minutes and drops with level, so it is a once-per-fight lifeline, not something to plan around.
-
-Works on its own once learned. It caps at level 3 rather than 5.
-
-### Pocket Watch (`chronos-pocket-watch`)
-
-Turns any fall into a controlled drift. You get a slow-fall budget measured in seconds per airtime. It refills when you
-land. It covers a cliff drop but not an indefinite hover.
-
-**How to use it**
-
-1. Learn it in the Adapt menu.
-2. Keep a clock anywhere in your inventory.
-3. Hold sneak while falling, after you have dropped far enough for it to engage.
-
-### Deja Vu (`chronos-deja-vu`)
-
-Your body remembers recent pain. Taking the same damage cause again within a short window hurts noticeably less, and every repeat hit refreshes the memory. Good against anything that grinds you down with one repeated damage type.
-
-Works on its own once learned.
-
-## Reference
-
-Every adaptation config file also carries the shared keys `enabled`, `permanent`, `showParticles`, and `showSounds`.
-
-### XP sources
-
-| Source | Stat side effects |
-|--------|-------------------|
-| Active movement per pulse | `minutes.online`, `chronos.active.distance` |
-| Passive activity while recently active | none |
-| Survival time, checked once per minute | none |
-| Entering a bed (`PlayerBedEnterEvent`, result `OK` only) | `chronos.beds.used` |
-| Speed potion drunk, splashed, or lingering cloud applied to a player | none |
-| Ender pearl thrown (`ProjectileLaunchEvent`) | none |
-| Ender pearl teleport arrival (`PlayerTeleportEvent`) | `chronos.teleports` |
-
-Clock multipliers apply to every one of these. Lingering Speed clouds are stamped with a persistent-data key so one cloud pays once.
-
-### Milestones
-
-| Advancement key | Stat key | Threshold | Reward |
-|-----------------|----------|-----------|--------|
-| `challenge_chronos_1h` | `minutes.online` | 60 | `challengeChronosReward` |
-| `challenge_chronos_24h` | `minutes.online` | 1440 | `challengeChronosReward` x2 |
-| `challenge_active_dist_1k` | `chronos.active.distance` | 1000 | `challengeChronosReward` |
-| `challenge_active_dist_10k` | `chronos.active.distance` | 10000 | `challengeChronosReward` x2 |
-| `challenge_active_dist_100k` | `chronos.active.distance` | 100000 | `challengeChronosReward` x5 |
-| `challenge_beds_10` | `chronos.beds.used` | 10 | `challengeChronosReward` |
-| `challenge_beds_100` | `chronos.beds.used` | 100 | `challengeChronosReward` x2 |
-| `challenge_chronos_tp_50` | `chronos.teleports` | 50 | `challengeChronosReward` |
-| `challenge_chronos_tp_500` | `chronos.teleports` | 500 | `challengeChronosReward` x2 |
-
-### Skill configuration defaults
-
-Written to `plugins/Adapt/skills/chronos.toml` on first load.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `setInterval` | `5050` | Milliseconds between Chronos pulses that award movement, passive, and survival XP. |
-| `enabled` | `true` | Turns the whole skill on or off. |
-| `skillColor` | `"&b"` | Legacy ampersand color code for this skill in menus and text. |
-| `minimumMovementForActiveCheck` | `0.35` | Blocks moved since the last pulse before the pulse counts as active movement. |
-| `distancePerBonusXP` | `5` | Blocks travelled that equal one unit of `activeMovementXP`. |
-| `activeMovementXP` | `3.5` | XP per `distancePerBonusXP` blocks of active movement. |
-| `activeMovementXPCapPerTick` | `6` | Ceiling on movement XP per pulse, scaled by actual elapsed time. |
-| `clockOffhandXpMultiplier` | `3` | Multiplier on all Chronos XP while a clock is in the off hand. Takes precedence over the inventory multiplier. |
-| `clockInventoryXpMultiplier` | `2` | Multiplier on all Chronos XP while a clock is anywhere in the inventory and none is in the off hand. |
-| `positionHistorySize` | `12` | Recent positions kept for the AFK variance check. |
-| `afkVarianceThreshold` | `2.0` | Mean distance from the average position, in blocks, below which you may be judged AFK. |
-| `afkMinActionTypes` | `3` | Distinct recent action categories that keep you out of the AFK penalty. |
-| `afkPenaltyMultiplier` | `0.03` | Multiplier applied to Chronos XP while judged AFK. |
-| `passiveActiveXP` | `0.4` | Base XP per pulse for having done anything inside the activity window. |
-| `activityWindow` | `15000` | Milliseconds an action stays counted for passive XP and for the diversity bonus. |
-| `activityTypesForBonus` | `4` | Distinct action categories inside the window that trigger the diversity bonus. |
-| `activityBonusMultiplier` | `1.5` | Multiplier on passive XP once the diversity threshold is met. |
-| `nightActivityMultiplier` | `1.3` | Multiplier on passive XP while world time is between 12542 and 23460. |
-| `sleepXP` | `150` | XP for a successful bed entry. |
-| `sleepCooldown` | `30000` | Milliseconds before another bed entry can pay out. |
-| `speedPotionBaseXP` | `120` (`DEFAULT_SPEED_POTION_BASE_XP`) | Base XP for applying Speed to yourself or another player. |
-| `speedPotionLevelMultiplier` | `1.5` | Multiplier applied when the Speed amplifier is 1 or higher. |
-| `speedPotionRewardCooldown` | `1000` | Minimum milliseconds between Speed potion payouts from one player. |
-| `speedPotionDiminishingDecay` | `0.15` | Fraction shaved per consecutive Speed payout, compounding. |
-| `speedPotionDiminishingFloor` | `0.25` | Lowest multiplier the diminishing chain can reach. |
-| `speedPotionResetWindow` | `300000` | Milliseconds without a Speed payout before the consecutive counter resets. |
-| `enderPearlThrowXP` | `35` | XP for throwing an ender pearl. |
-| `enderPearlTeleportXP` | `15` | XP on arriving from an ender pearl teleport. |
-| `enderPearlCooldown` | `10000` | Milliseconds before another pearl throw can pay out. |
-| `survivalXPPerMinute` | `3` | XP per minute survived since your last death. |
-| `survivalStreakBonusPerHour` | `0.2` | Extra survival multiplier earned per continuous hour alive. |
-| `survivalStreakHourCap` | `5` | Hours counted toward the survival multiplier before it stops growing. |
-| `challengeChronosReward` | `500` | Base knowledge reward for the Chronos challenge chain. |
-
-A `speedPotionBaseXP` of exactly `45` in an existing config is rewritten to `120` on load. That value was the old default.
-
-### Time In A Bottle
-
-| Property | Default |
-|----------|---------|
-| Icon | `CLOCK` |
-| Max level | 5 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 6 |
-| Cost factor | 0.35 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/chronos-time-bottle.toml` |
-
-Recipe key `chronos-time-bottle`, shapeless: `CLOCK` + `POTION` + `GLASS_BOTTLE`, with a craft-time check that the potion is `SWIFTNESS`.
-
-Milestones: `challenge_chronos_bottle_seconds_1k` and `challenge_chronos_bottle_seconds_25k` on `chronos.time-bottle.seconds-spent` at 1000 and 25000, rewarding 500 and 2000.
-
-- `PlayerQuitEvent` (`on`): clears charge state
-- `CraftItemEvent` (`on`): rejects the craft without a Swiftness Potion
-- `PlayerItemConsumeEvent` (`on`)
-- `PlayerInteractEvent` (`on`): block or air click
-- `PlayerInteractEntityEvent` (`on`): right-click on an entity
+Recipe key `chronos-time-bottle`, shapeless: `CLOCK` + `POTION` + `GLASS_BOTTLE`. Any potion fits the grid but the craft is refused unless it is `SWIFTNESS`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -306,21 +104,11 @@ Milestones: `challenge_chronos_bottle_seconds_1k` and `challenge_chronos_bottle_
 
 The stored-second price of one growth step is `naturalSeconds / steps`, times the profile multiplier, times `growthCostMultiplier`, times the level scale, floored at `minGrowthStepSeconds`.
 
-### Aberrant Touch
+### Aberrant Touch (`chronos-aberrant-touch`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `SPIDER_EYE` |
-| Max level | 5 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 7 |
-| Cost factor | 0.38 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/chronos-aberrant-touch.toml` |
+5 levels · 6 knowledge, then 7 per level
 
-Milestone: `challenge_chronos_aberrant_500` on `chronos.aberrant-touch.slowness-stacks-applied` at 500, rewarding 400. A second advancement, `challenge_chronos_aberrant_frozen`, has no milestone threshold and is granted directly in code.
-
-- `EntityDamageByEntityEvent` (`on`): melee or projectile hit
+Every melee hit you land smears slowness onto the target, and the stacks build up. At 5 stacks the target is rooted in place for a moment. Each proc eats hunger, so you cannot spam it while starving, and PvP targets get much tighter duration and amplifier caps than mobs do.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -342,30 +130,19 @@ Milestone: `challenge_chronos_aberrant_500` on `chronos.aberrant-touch.slowness-
 | `xpPerProc` | `4` | XP per proc at level 0. |
 | `xpPerLevel` | `1.25` | Extra XP per proc per level. |
 
-### Instant Recall
+### Instant Recall (`chronos-instant-recall`)
 
-| Property | Default |
-|----------|---------|
-| Config class | `ChronosInstantRecallConfig` |
-| Icon | `RECOVERY_COMPASS` |
-| Max level | 5 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.45 |
-| Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adaptations/chronos-instant-recall.toml` |
+5 levels · 3 knowledge
 
-Milestones: `challenge_chronos_recall_50` and `challenge_chronos_recall_1k` on `chronos.instant-recall.recalls` at 50 and 1000, rewarding 300 and 1500. `challenge_chronos_recall_cheat_death` has no milestone threshold and is granted directly in code.
+Click with a clock and you snap back to where you were a few seconds ago. Health
+and hunger restore to what they were then. The clock is consumed and you lose half your remaining health, but the recall will never kill you: health is floored at 1. Your inventory is not rolled back.
 
-- `PlayerQuitEvent` (`on`)
-- `PlayerJoinEvent` (`on`)
-- `PlayerTeleportEvent` (`on`)
-- `PlayerChangedWorldEvent` (`on`)
-- `PlayerInteractEvent` (`on`): click triggers
-- `PlayerToggleSneakEvent` (`on`): single-sneak trigger
-- `EntityDamageEvent` (`on`)
-- `PlayerMoveEvent` (`on`): snapshot capture
-- `PlayerMoveEvent` (`onDoubleJumpMove`): double-jump trigger
+**How to use it**
+
+1. Hold a clock in either hand.
+2. Left-click or right-click, air or block. Both clicks and both target kinds are on by default.
+
+Three other triggers exist and are off by default: sprint plus click, a single sneak press, and a double-tap jump. Turn them on in the adaptation's config file if you prefer them to plain clicking.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -416,28 +193,19 @@ Milestones: `challenge_chronos_recall_50` and `challenge_chronos_recall_1k` on `
 | `xpRepeatTargetRadius` | `3.5` | Blocks within which a destination counts as the same destination. |
 | `xpRepeatPenaltyMultiplier` | `0.2` | Multiplier applied to XP for a repeated route. |
 
-### Time Bomb
+### Time Bomb (`chronos-time-bomb`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `TNT` |
-| Max level | 5 |
-| Initial knowledge cost | 7 |
-| Base knowledge cost | 8 |
-| Cost factor | 0.42 |
-| Tick interval (ms) | idle until a field is active, then 50 |
-| Config file | `plugins/Adapt/adaptations/chronos-time-bomb.toml` |
+5 levels · 7 knowledge, then 8 per level
+
+A thrown chrono bomb. It is a lingering potion item under the hood, so you throw it the vanilla way, and where it lands a temporal field opens up. Everything inside is slowed and given mining fatigue, players in the air are pinned, and projectiles entering the field stop dead. You get slowed by your own field too, just less.
+
+**How to use it**
+
+1. Craft the bomb: Clock, Snowball, Diamond, Sand, shapeless.
+2. Right-click to throw it.
+3. Wait out the cooldown. Trying to throw early plays a reject sound and cancels the throw.
 
 Recipe key `chronos-time-bomb`, shapeless: `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND`, producing a lingering potion item.
-
-Milestone: `challenge_chronos_bomb_freeze_50` on `chronos.time-bomb.projectiles-frozen` at 50, rewarding 500. `challenge_chronos_bomb_crowd_8` has no milestone threshold. It is granted directly in code when one field slows 8 entities.
-
-- `PlayerQuitEvent` (`on`)
-- `PlayerJoinEvent` (`on`)
-- `PlayerInteractEvent` (`on`): right-click air or block, for the cooldown gate
-- `ProjectileLaunchEvent` (`on`): arms the thrown bomb
-- `LingeringPotionSplashEvent` (`on`): opens the field
-- `EntitiesLoadEvent` (`on`): sweeps stale frozen stamps
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -483,22 +251,11 @@ Milestone: `challenge_chronos_bomb_freeze_50` on `chronos.time-bomb.projectiles-
 | `xpOnCast` | `28` | XP per bomb thrown at level 0. |
 | `xpPerLevel` | `3` | Extra XP per bomb per level. |
 
-### Temporal Echo
+### Temporal Echo (`chronos-temporal-echo`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `AMETHYST_CLUSTER` |
-| Max level | 5 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.75 |
-| Tick interval (ms) | 1600 |
-| Config file | `plugins/Adapt/adaptations/chronos-temporal-echo.toml` |
+5 levels · 5 knowledge
 
-Milestone: `challenge_chronos_echo_200` on `chronos.temporal-echo.echo-hits` at 200, rewarding 400.
-
-- `ProjectileLaunchEvent` (`on`): records the shot to replay
-- `ProjectileHitEvent` (`on`): scores the echo hit
+Projectiles you fire get a second life. A short delay after the shot, the same projectile is replayed at reduced velocity. Handy for arrow volleys and for anything where a second hit at the same angle is worth having. Fire something.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -511,23 +268,18 @@ Milestone: `challenge_chronos_echo_200` on `chronos.temporal-echo.echo-hits` at 
 | `cooldownMillisFactor` | `2600` | Milliseconds of cooldown removed as level rises. |
 | `xpPerEcho` | `12` | XP per echo produced. |
 
-### Stasis Field
+### Stasis Field (`chronos-stasis-field`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `AMETHYST_SHARD` |
-| Max level | 5 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 7 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 50 |
-| Config file | `plugins/Adapt/adaptations/chronos-stasis-field.toml` |
+5 levels · 6 knowledge, then 7 per level
 
-Milestones: `challenge_chronos_stasis_50` and `challenge_chronos_stasis_500` on `chronos.stasis-field.casts` at 50 and 500, rewarding 400 and 1500.
+Drops a bubble around you that freezes projectiles in midair and pins mobs inside it. Mobs get heavy slowness and a jump lock, so nothing walks or hops out. The amethyst shard you cast with is consumed.
 
-- `PlayerQuitEvent` (`on`)
-- `EntityRemoveEvent` (`on`): drops bookkeeping for removed frozen entities
-- `PlayerInteractEvent` (`on`): sneak plus right-click cast
+**How to use it**
+
+1. Hold an amethyst shard.
+2. Sneak and right-click.
+
+By default frozen projectiles get their motion back when the bubble expires rather than being deleted.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -549,22 +301,18 @@ Milestones: `challenge_chronos_stasis_50` and `challenge_chronos_stasis_500` on 
 | `xpOnCast` | `22` | XP per admitted cast at level 0. |
 | `xpPerLevel` | `3` | Extra XP per cast per level. |
 
-### Rewind
+### Rewind (`chronos-rewind`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `ENDER_EYE` |
-| Max level | 5 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 6 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/chronos-rewind.toml` |
+5 levels · 5 knowledge, then 6 per level
 
-Milestones: `challenge_chronos_rewind_50` and `challenge_chronos_rewind_500` on `chronos.rewind.rewinds` at 50 and 500, rewarding 350 and 1400.
+A two-press panic button. The first press marks the moment. If you press again before the window closes, you snap back to that spot with the health and hunger you had at the mark. Each completed rewind costs food.
 
-- `PlayerQuitEvent` (`on`)
-- `PlayerSwapHandItemsEvent` (`on`): mark and rewind gesture
+**How to use it**
+
+1. Sneak and press the swap-hands key (F by default) to mark the moment.
+2. Sneak and press it again within the window to rewind.
+
+The cooldown after a rewind shrinks as the adaptation levels up, down to a floor.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -577,24 +325,11 @@ Milestones: `challenge_chronos_rewind_50` and `challenge_chronos_rewind_500` on 
 | `xpOnRewind` | `18` | XP per completed rewind at level 0. |
 | `xpPerLevel` | `3` | Extra XP per rewind per level. |
 
-### Borrowed Time
+### Borrowed Time (`chronos-borrowed-time`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `SOUL_SAND` |
-| Max level | 5 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 6 |
-| Cost factor | 0.42 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/chronos-borrowed-time.toml` |
+5 levels · 5 knowledge, then 6 per level
 
-Milestone: `challenge_chronos_borrowed_2500` on `chronos.borrowed-time.damage-deferred` at 2500, rewarding 900.
-
-- `PlayerQuitEvent` (`on`)
-- `PlayerJoinEvent` (`on`)
-- `PlayerDeathEvent` (`on`): clears outstanding debt
-- `EntityDamageEvent` (`on`): defers part of the hit
+Part of every hit you take is deferred instead of applied immediately, then drained back out of you one pulse per second afterwards. It buys you a couple of seconds to heal or run. Damage that is already deferred cannot be deferred again, so it does not spiral.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -604,23 +339,12 @@ Milestone: `challenge_chronos_borrowed_2500` on `chronos.borrowed-time.damage-de
 | `minimumDeferDamage` | `1.0` | Final damage a hit must reach before any of it is deferred. |
 | `paybackPulses` | `10` | One-second pulses the deferred damage is repaid over. |
 
-### Overtime
+### Overtime (`chronos-overtime`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `GLISTERING_MELON_SLICE` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.38 |
-| Tick interval (ms) | 60000 |
-| Config file | `plugins/Adapt/adaptations/chronos-overtime.toml` |
+5 levels · 4 knowledge, then 5 per level
 
-Milestone: `challenge_chronos_overtime_1k` on `chronos.overtime.seconds-extended` at 1000, rewarding 750.
-
-- `PlayerQuitEvent` (`on`)
-- `EntityPotionEffectEvent` (`onHarmfulEffect`): shortens harmful effects at max level
-- `EntityPotionEffectEvent` (`on`): extends beneficial effects
+Beneficial potion effects applied to you last longer. The extension is a fraction of the original duration and scales with level. A
+cap limits how many bonus ticks any single effect can gain. Once the adaptation is at max level, harmful effects applied to you are cut to half duration as well.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -635,21 +359,13 @@ Milestone: `challenge_chronos_overtime_1k` on `chronos.overtime.seconds-extended
 | `halveHarmfulEffectsAtMaxLevel` | `true` | Shortens harmful effects applied to you once this adaptation is maxed. |
 | `maxLevelHarmfulDurationMultiplier` | `0.5` | Fraction of the original duration a harmful effect keeps at max level. |
 
-### Accelerate
+### Accelerate (`chronos-accelerate`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `SUGAR` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | `pulseIntervalMillis`, default 3000 |
-| Config file | `plugins/Adapt/adaptations/chronos-accelerate.toml` |
+5 levels · 4 knowledge, then 5 per level
 
-Milestone: `challenge_chronos_accelerate_1k` on `chronos.accelerate.blocks-accelerated` at 1000, rewarding 600.
+A quiet aura that pulses around you and nudges time forward on whatever it samples. Crops advance a growth stage, furnaces and smokers and blast furnaces and brewing stands jump forward a chunk of their remaining cook or brew time. You do not aim it. It just makes working near your farm and your furnace row faster.
 
-- `PlayerQuitEvent` (`on`)
+Crops need block-place permission and processing stations need container access, so the aura does nothing in an area you cannot build in.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -667,22 +383,12 @@ Milestone: `challenge_chronos_accelerate_1k` on `chronos.accelerate.blocks-accel
 | `maxCookBoostFraction` | `0.6` | Ceiling on the skipped fraction per hit. |
 | `xpPerAcceleratedBlock` | `1.2` | XP per block actually accelerated. |
 
-### Hourglass Guard
+### Hourglass Guard (`chronos-hourglass-guard`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `TOTEM_OF_UNDYING` |
-| Max level | 3 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 9 |
-| Cost factor | 0.5 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/chronos-hourglass-guard.toml` |
+3 levels · 8 knowledge, then 9 per level
 
-Milestone: `challenge_chronos_hourglass_10` on `chronos.hourglass-guard.saves` at 10, rewarding 800.
-
-- `PlayerQuitEvent` (`on`)
-- `EntityDamageEvent` (`on`): intercepts the killing blow
+A death save. A blow that would kill you leaves you at half a heart instead. You get a brief
+window of invulnerability. Enemies standing around you slow. The cooldown is measured in minutes and drops with level, so it is a once-per-fight lifeline, not something to plan around. It caps at level 3 rather than 5.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -698,21 +404,17 @@ Milestone: `challenge_chronos_hourglass_10` on `chronos.hourglass-guard.saves` a
 | `xpOnSave` | `60` | XP per save at level 0. |
 | `xpPerLevel` | `10` | Extra XP per save per level. |
 
-### Pocket Watch
+### Pocket Watch (`chronos-pocket-watch`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `FEATHER` |
-| Max level | 5 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.35 |
-| Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adaptations/chronos-pocket-watch.toml` |
+5 levels · 3 knowledge, then 4 per level
 
-Milestone: `challenge_chronos_pocket_watch_500` on `chronos.pocket-watch.slow-fall-seconds` at 500, rewarding 650.
+Turns any fall into a controlled drift. You get a slow-fall budget measured in seconds per airtime. It refills when you
+land. It covers a cliff drop but not an indefinite hover.
 
-- `PlayerQuitEvent` (`on`)
+**How to use it**
+
+1. Keep a clock anywhere in your inventory.
+2. Hold sneak while falling, after you have dropped far enough for it to engage.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -724,21 +426,11 @@ Milestone: `challenge_chronos_pocket_watch_500` on `chronos.pocket-watch.slow-fa
 | `xpPerPulse` | `0.3` | XP per slow falling pulse. |
 | `maxPlayersPerPass` | `512` | Learned players processed per pulse pass. |
 
-### Deja Vu
+### Deja Vu (`chronos-deja-vu`)
 
-| Property | Default |
-|----------|---------|
-| Icon | `ITEM_FRAME` |
-| Max level | 5 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.35 |
-| Tick interval (ms) | 60000 |
-| Config file | `plugins/Adapt/adaptations/chronos-deja-vu.toml` |
+5 levels · 3 knowledge, then 4 per level
 
-Milestone: `challenge_chronos_deja_vu_500` on `chronos.deja-vu.damage-absorbed` at 500, rewarding 700.
-
-- `EntityDamageEvent` (`on`): absorbs repeats of a familiar damage cause
+Your body remembers recent pain. Taking the same damage cause again within a short window hurts noticeably less, and every repeat hit refreshes the memory. Good against anything that grinds you down with one repeated damage type.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -749,12 +441,79 @@ Milestone: `challenge_chronos_deja_vu_500` on `chronos.deja-vu.damage-absorbed` 
 | `xpPerAbsorbedDamage` | `0.8` | XP per point of damage absorbed. |
 | `fxCooldownMillis` | `1500` | Minimum milliseconds between familiar-hit effects. |
 
-### Support classes (not player adaptations)
+## Reference
 
-- `ChronosInstantRecallConfig`: Instant Recall's trigger, rewind, cost, protection, and XP defaults.
-- `ChronosInstantRecallTypes`: recall snapshots, XP calculation context, and repeat-reward stamps.
-- `ChronosSoundFX`: schedules the clock, bottle, rewind, touch, bomb, and temporal-field sounds.
-- `ChronosWorkBudget`: bounds and rotates batch work, catch-up pulses, and per-job allocation for Chronos runtimes.
+### XP sources
+
+| Source | Stat side effects |
+|--------|-------------------|
+| Active movement per pulse | `minutes.online`, `chronos.active.distance` |
+| Passive activity while recently active | none |
+| Survival time, checked once per minute | none |
+| Entering a bed (only when it works) | `chronos.beds.used` |
+| Speed potion drunk, splashed, or lingering cloud applied to a player | none |
+| Throwing an ender pearl | none |
+| Arriving from an ender pearl | `chronos.teleports` |
+
+Clock multipliers apply to all of these. One lingering Speed cloud pays out once.
+
+### Skill configuration defaults
+
+Written to `plugins/Adapt/skills/chronos.toml` on first load.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `setInterval` | `5050` | Milliseconds between Chronos pulses that award movement, passive, and survival XP. |
+| `enabled` | `true` | Turns the whole skill on or off. |
+| `skillColor` | `"&b"` | Legacy ampersand color code for this skill in menus and text. |
+| `minimumMovementForActiveCheck` | `0.35` | Blocks moved since the last pulse before the pulse counts as active movement. |
+| `distancePerBonusXP` | `5` | Blocks travelled that equal one unit of `activeMovementXP`. |
+| `activeMovementXP` | `3.5` | XP per `distancePerBonusXP` blocks of active movement. |
+| `activeMovementXPCapPerTick` | `6` | Ceiling on movement XP per pulse, scaled by actual elapsed time. |
+| `clockOffhandXpMultiplier` | `3` | Multiplier on all Chronos XP while a clock is in the off hand. Takes precedence over the inventory multiplier. |
+| `clockInventoryXpMultiplier` | `2` | Multiplier on all Chronos XP while a clock is anywhere in the inventory and none is in the off hand. |
+| `positionHistorySize` | `12` | Recent positions kept for the AFK variance check. |
+| `afkVarianceThreshold` | `2.0` | Mean distance from the average position, in blocks, below which you may be judged AFK. |
+| `afkMinActionTypes` | `3` | Distinct recent action categories that keep you out of the AFK penalty. |
+| `afkPenaltyMultiplier` | `0.03` | Multiplier applied to Chronos XP while judged AFK. |
+| `passiveActiveXP` | `0.4` | Base XP per pulse for having done anything inside the activity window. |
+| `activityWindow` | `15000` | Milliseconds an action stays counted for passive XP and for the diversity bonus. |
+| `activityTypesForBonus` | `4` | Distinct action categories inside the window that trigger the diversity bonus. |
+| `activityBonusMultiplier` | `1.5` | Multiplier on passive XP once the diversity threshold is met. |
+| `nightActivityMultiplier` | `1.3` | Multiplier on passive XP while world time is between 12542 and 23460. |
+| `sleepXP` | `150` | XP for a successful bed entry. |
+| `sleepCooldown` | `30000` | Milliseconds before another bed entry can pay out. |
+| `speedPotionBaseXP` | `120` (`DEFAULT_SPEED_POTION_BASE_XP`) | Base XP for applying Speed to yourself or another player. |
+| `speedPotionLevelMultiplier` | `1.5` | Multiplier applied when the Speed amplifier is 1 or higher. |
+| `speedPotionRewardCooldown` | `1000` | Minimum milliseconds between Speed potion payouts from one player. |
+| `speedPotionDiminishingDecay` | `0.15` | Fraction shaved per consecutive Speed payout, compounding. |
+| `speedPotionDiminishingFloor` | `0.25` | Lowest multiplier the diminishing chain can reach. |
+| `speedPotionResetWindow` | `300000` | Milliseconds without a Speed payout before the consecutive counter resets. |
+| `enderPearlThrowXP` | `35` | XP for throwing an ender pearl. |
+| `enderPearlTeleportXP` | `15` | XP on arriving from an ender pearl teleport. |
+| `enderPearlCooldown` | `10000` | Milliseconds before another pearl throw can pay out. |
+| `survivalXPPerMinute` | `3` | XP per minute survived since your last death. |
+| `survivalStreakBonusPerHour` | `0.2` | Extra survival multiplier earned per continuous hour alive. |
+| `survivalStreakHourCap` | `5` | Hours counted toward the survival multiplier before it stops growing. |
+| `challengeChronosReward` | `500` | Base knowledge reward for the Chronos challenge chain. |
+
+An existing `speedPotionBaseXP` of `45`, the old default, is rewritten to `120` on load.
+
+### Challenges
+
+| Challenge | Threshold | Reward knob |
+|---|---|---|
+| `challenge_chronos_1h` | 60 | `challengeChronosReward` |
+| `challenge_chronos_24h` | 1440 | `challengeChronosReward` x2 |
+| `challenge_active_dist_1k` | 1000 | `challengeChronosReward` |
+| `challenge_active_dist_10k` | 10000 | `challengeChronosReward` x2 |
+| `challenge_active_dist_100k` | 100000 | `challengeChronosReward` x5 |
+| `challenge_beds_10` | 10 | `challengeChronosReward` |
+| `challenge_beds_100` | 100 | `challengeChronosReward` x2 |
+| `challenge_chronos_tp_50` | 50 | `challengeChronosReward` |
+| `challenge_chronos_tp_500` | 500 | `challengeChronosReward` x2 |
+
+Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
 
 ## See also
 

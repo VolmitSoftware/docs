@@ -2,18 +2,14 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-17T01:11:12.066Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris replaces the vanilla chunk generator. Terrain, biomes, caves, structures, objects, and entities come from editable JSON packs. The same engine is available as a Bukkit plugin and as a Fabric, Forge, or NeoForge mod. This branch targets Minecraft 26.2 and requires Java 25.
 
-The four platforms generate identical chunks when the Iris version, pack, seed, and area match. Choose the guide for your task below.
-
-## Who this documentation is for
-
-Pages `00`–`44` cover server operation and pack authoring. Pages `90`–`94` cover the Java API. Pick the outcome you need below.
+The four platforms generate identical chunks when the Iris version, pack, seed, and area match. Pages `00`–`47` cover server operation and pack authoring; pages `90`–`94` cover the Java API.
 
 ## Choose a learning path
 
@@ -22,21 +18,19 @@ Pages `00`–`44` cover server operation and pack authoring. Pages `90`–`94` c
 | Get Iris running and make one world | [01 - Installation & Platforms](/iris/01-installation-platforms) → [02 - Getting Started](/iris/02-getting-started) |
 | Write a pack from scratch | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) → [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) → [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Shape terrain and lay out biomes | [11 - Dimensions](/iris/11-dimensions) → [12 - Regions](/iris/12-regions) → [13 - Biomes](/iris/13-biomes) → [14 - Generators & Noise](/iris/14-generators-noise) → [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
-| Drive generation from PNG data | [37 - Image Map Concepts](/iris/37-image-map-concepts) → [38 - Supported Image Inputs](/iris/38-supported-image-inputs) → the relevant type guide → [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) → [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
+| Drive generation from PNG data | [37 - Image Maps](/iris/37-image-maps) → [38 - Image Map Encodings](/iris/38-image-map-encodings) → [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
 | Browse every active built-in biome | [44 - Biome Catalog](/iris/44-biome-catalog) |
-| Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
+| Add caves, surface detail, and vegetation | [15 - Caves & Carving](/iris/15-caves-carving) → [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) → [17 - Procedural Objects](/iris/17-procedural-objects) |
 | Place a building or structure | [18 - Structures Overview](/iris/18-structures-overview) → [19 - Objects](/iris/19-objects) → [20 - Object Placement](/iris/20-object-placement) → [21 - Jigsaw Structures](/iris/21-jigsaw-structures) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Control what vanilla still generates | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for structures |
 | Deploy a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) |
 | Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
-Each tutorial page ends with something you can observe. That can be a world that loads, a chunk that generates, or a hotload that lands. Confirm that result before you open the next page.
-
-Iris failures cascade in a misleading way. A biome key you type wrong in step two can show up three systems later as a cave, decorator, or structure that does not work. You then debug the wrong thing.
+Each tutorial page ends with something you can observe — a world that loads, a chunk that generates, a hotload that lands. Confirm it before opening the next page, because Iris failures cascade: a biome key typed wrong in step two surfaces three systems later as a cave or structure that does not work.
 
 ## Platforms
 
-One plugin jar covers the whole Bukkit family. Each mod loader gets its own jar. Pick by what your server runs, not by feature set. The generator is the same code on all of them.
+One plugin jar covers the whole Bukkit family; each mod loader gets its own jar. The generator is the same code on all of them.
 
 | Platform | Artifact | Minecraft | What is different |
 |---|---|---|---|
@@ -51,7 +45,7 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 
 ## Feature map
 
-Every Iris feature is on exactly one page. Find the subject, then go there.
+Every Iris feature is on exactly one page.
 
 | Area | What it covers | Doc |
 |---|---|---|
@@ -72,23 +66,22 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | Volumetric terrain | Biome `terrain3D` profile, spans and ledges, validation, terrain probe | [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Noise atlas | All style previews, 3D slices, zoom and octave comparisons, PDF | [45 - Noise Atlas](/iris/45-noise-atlas) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
-| Rivers | Terrain-first routing, hydraulic transitions, caves, deep fluids, and river policy | [36 - Rivers](/iris/36-rivers) |
-| Image-map concepts | Typed resources, applications, runtime compiler, deterministic behavior | [37 - Image Map Concepts](/iris/37-image-map-concepts) |
-| Supported image inputs | PNG dimensions, channel layouts, bit depths, and raw sample rules | [38 - Supported Image Inputs](/iris/38-supported-image-inputs) |
-| Grayscale heightmaps | 8-bit and 16-bit scalar terrain decoding | [39 - Grayscale Heightmaps](/iris/39-grayscale-heightmaps) |
-| RGB heightmaps | Canonical raw 24-bit height encoding | [40 - RGB Heightmaps](/iris/40-rgb-heightmaps) |
-| Color maps and masks | Legends, raw sRGB tolerance, alpha, and mask composition | [41 - Color Maps & Masks](/iris/41-color-maps-masks) |
-| Image Map Studio | Import, inspection, interpreted preview, presets, export, and validation | [42 - Image Map Studio Workflow](/iris/42-image-map-studio-workflow) |
+| Rivers | Terrain-first routing, hydraulic transitions, caves, and deep fluids | [36 - Rivers](/iris/36-rivers) |
+| River policy | Where rivers start, transit and end, local budgets, and river content | [36b - River Policy](/iris/36b-river-policy) |
+| River inspection | Vision, `/iris find river`, rejection reasons, validation, and probes | [36c - River Inspection](/iris/36c-river-inspection) |
+| Image maps | Typed resources, applications, accepted PNG inputs, and the Image Map Studio workflow | [37 - Image Maps](/iris/37-image-maps) |
+| Image-map encodings | Grayscale and RGB heights, color legends, tolerance, alpha, and mask composition | [38 - Image Map Encodings](/iris/38-image-map-encodings) |
 | Image-map reference | Complete JSON, axes, transforms, sampling, and `worldBoundary` | [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
 | Surfaces | Decorators, deposits, palettes | [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
-| Procedural decoration | Trees, fungi, coral, crystals, formations, ruins | [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
+| Procedural decoration | Fungi, coral, crystals, formations, ruins | [17 - Procedural Objects](/iris/17-procedural-objects) |
+| Procedural trees | Trunk, canopy, branches, roots | [17b - Procedural Trees](/iris/17b-procedural-trees) |
 | Structures overview | Objects vs jigsaw vs native | [18 - Structures Overview](/iris/18-structures-overview) |
 | Objects | Creating and importing `.iob` | [19 - Objects](/iris/19-objects) |
 | Object placement | Placing objects in biomes and regions | [20 - Object Placement](/iris/20-object-placement) |
 | Jigsaw | Iris multi-piece structures | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Native structures | Vanilla / datapack structures on Iris | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Vanilla passthrough | Enable, deny, or replace vanilla features, mobs, loot, saplings, and gameplay | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
-| Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers) |
+| Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners), [23c - Markers](/iris/23c-markers) |
 | Pack extensions | Reusable snippets and the inactive pack-mod schema | [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |
 | Minimal pack example | Walkthrough | [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
@@ -106,10 +99,9 @@ Every Iris feature is on exactly one page. Find the subject, then go there.
 | API — tree feller | Tree feller service | [93 - API - Tree Feller](/iris/93-api-tree-feller) |
 | API — modded | Modded public API (`art.arcane.iris.modded.api`) | [94 - API - Modded](/iris/94-api-modded) |
 
-
 ## Content model
 
-Seven terms carry most of the documentation. Learn them here. The rest of the set then reads faster.
+Seven terms carry most of the documentation.
 
 | Term | What it is |
 |---|---|

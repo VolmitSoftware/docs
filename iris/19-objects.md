@@ -2,24 +2,16 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 An Iris object is a sparse voxel volume: block states plus block-entity data. It is stored as a `.iob` file under a pack `objects/` folder. You build it in a world, select it with a wand, and save it into the pack. Nothing about the object itself says where it generates. Wiring it into generation is [20 - Object Placement](/iris/20-object-placement). Using objects as jigsaw pieces is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
-Custom states already present in an object palette retain their qualified
-provider IDs when serialized. CraftEngine selection capture records named
-block IDs and their properties; block paste, previews, and undo use its API.
-Rotation retains standard orientation properties. Other providers still use
-carrier states in direct previews. Normal object generation performs deferred
-provider placement. CraftEngine furniture entities are not captured or
-spawned by direct previews. See [28 - Integrations](/iris/28-integrations).
+Custom blocks from a content provider keep their qualified provider IDs when saved. CraftEngine furniture entities are not captured by direct previews. See [28 - Integrations](/iris/28-integrations).
 
 ## Capture and save an object
-
-Container previews do not activate the held Object Studio save tool. Saving requires the tool's player click or the save command.
 
 Prerequisites: a writable pack, operator access on a Bukkit-family server, and something built to capture. A Studio world is the shortest path because it hotloads pack edits; ordinary Studio starts in spectator, while Object Studio remains creative for block editing.
 
@@ -30,7 +22,7 @@ Prerequisites: a writable pack, operator access on a Bukkit-family server, and s
 
 1. **Select.** Left-click one corner of the build. Right-click the opposite corner. The selection lives on the wand item. Particles outline the box out to 256 blocks from you.
 2. **Tighten.** Run `/iris object x+y`. It walks the selection upward until the slab is empty air. It then backs off one. It pulls the four side faces in until each touches a block. Use `/iris object x&y` instead if the selection also needs to find its own floor. The saved volume is exactly the selection box. Any air you leave in it moves the object origin.
-3. **Save into the pack.** `/iris object save tutorial/lookout`. Inside an Iris world the target pack resolves automatically. Anywhere else pass `dimension=<pack>`. Add `overwrite=true` to replace an existing file. There is no backup. If the build contains chests, signs, banners, or spawners you care about, add `legacy=false` (section 3). On Bukkit, selection scanning and file writing use a foreground display while each phase lasts: a large job title with percentage and a labeled 44-cell bottom action-bar meter. Object save does not use a boss bar.
+3. **Save into the pack.** `/iris object save tutorial/lookout`. Inside an Iris world the target pack resolves automatically. Anywhere else pass `dimension=<pack>`. Add `overwrite=true` to replace an existing file. There is no backup. If the build contains chests, signs, banners, or spawners you care about, add `legacy=false` (section 3).
    Expected result: a chat line naming the pack and the object, and a new file at `<data>/packs/<dimension load key>/objects/tutorial/lookout.iob`.
 4. **Verify it loads.** `/iris object analyze tutorial/lookout` reads the file back and reports width x height x depth, total block count, and the ten most common materials. If those numbers match what you selected, the file is good.
 5. **Verify it pastes.** `/iris object paste tutorial/lookout edit=true` stamps a copy where you are looking and hands you a wand already fitted to it. Walk the copy. Check the orientation. Check that chests still have contents and signs still have text. Fix anything wrong in place. Then re-save the same key with `overwrite=true`. `/iris object undo` removes the pasted copy.
@@ -94,7 +86,7 @@ Any flat world works too. `/iris object save` only resolves the target pack auto
 | Left-click a block | Sets corner 1 |
 | Right-click a block | Sets corner 2 |
 
-Main hand only. Both clicks are cancelled so you never break or place while selecting. Setting a corner in a different world clears the other corner rather than producing a cross-world box. Outline particles appear while you hold the Iris wand in the selection's world, out to 256 blocks, with fewer particles at greater distances. Dust particle size stays within the server's `0.01` to `4.0` range.
+Main hand only. Both clicks are cancelled so you never break or place while selecting. Setting a corner in a different world clears the other corner rather than producing a cross-world box. Outline particles appear while you hold the Iris wand in the selection's world, out to 256 blocks.
 
 **WorldEdit import.** Iris selection commands, object saves, and automatic outlines require an Iris wand in your main hand. WorldEdit wands and selections stay separate. `/iris object we` copies the current WorldEdit selection into a new Iris wand. Hold that wand to edit, preview, or save the copied selection. Later WorldEdit selection changes do not change the Iris wand.
 
@@ -126,7 +118,7 @@ Rough-select the base of a build, then run `x+y` to wrap it tightly.
 
 The file lands at `<data>/packs/<dimension load key>/objects/<name>.iob`.
 
-During a real Bukkit save, the active phase is labeled `Scanning Selection` or `Saving Object` while the bottom action-bar meter advances. A completed, failed, or disconnected save retires its own display without clearing a newer Iris job. If a short foreground job temporarily takes over, the still-running earlier job resumes from its latest progress when that job ends.
+On Bukkit the active phase is labeled `Scanning Selection` or `Saving Object` while a progress meter advances.
 
 The target folder uses the **dimension load key**, not the folder the dimension came from. A pack in `packs/mypack/` whose dimension file is `dimensions/overworld.json` writes its objects into `packs/overworld/`. Keep the dimension JSON filename equal to the pack folder name and this never bites.
 
@@ -143,7 +135,7 @@ The target folder uses the **dimension load key**, not the folder the dimension 
 /iris object paste <object> [edit=false] [rotate=0] [scale=dimension]
 ```
 
-The paste lands on the block you are looking at, with the object bottom resting on it. All air variants and small foliage (grass, snow layers, vines, torches, dead bushes, poppies, dandelions) are transparent to the 256-block raycast, so flight height does not move an in-range paste anchor toward the player. If the scan reaches its limit without an opaque target, Iris asks you to look at a block and does not paste at the terminal air block. `rotate` is degrees around Y. Omit `scale` or use `scale=dimension` to inherit the current Iris world's `allObjectScaleFactor`; outside an Iris world the default is `1`. A numeric `scale`, including `1`, overrides the dimension. It accepts finite values from `0.01` to `50`. Inherited scaling uses `NONE` interpolation, matching pack object defaults; a numeric Bukkit paste uses `TRICUBIC`. Both retain the size-dependent paste limit for large objects. Iris reports when that limit reduces the requested scale. Modded paste inherits the current dimension factor and has no explicit scale argument.
+The paste lands on the block you are looking at, with the object bottom resting on it. Air and small foliage are transparent to the 256-block raycast; if the scan finds no opaque target, Iris asks you to look at a block rather than pasting in mid-air. `rotate` is degrees around Y. Omit `scale` or use `scale=dimension` to inherit the current Iris world's `allObjectScaleFactor` (outside an Iris world the default is `1`); a numeric `scale`, including `1`, overrides it and accepts finite values from `0.01` to `50`. Inherited scaling uses `NONE` interpolation and a numeric Bukkit paste uses `TRICUBIC`. Iris reports when the size-dependent paste limit reduces the requested scale. Modded paste inherits the dimension factor and has no explicit scale argument.
 
 ```
 /iris object undo [amount=1]
@@ -163,7 +155,7 @@ Inspection and maintenance:
 
 ## 5. Object studio: click-to-save
 
-Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. The gallery generator is ready before the first chunks are requested. Objects are aligned from their stored block coordinates so their lower edges stay inside their cells and above the floor. Saved block-entity data is restored when each gallery chunk loads, after Minecraft creates its block entities. Click-to-save waits for that restoration, preserving container contents and other tile data instead of overwriting the source with an empty state. A successful save invalidates the authoring resource cache so a reopened gallery reads the edited file.
+Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. Click-to-save waits for block-entity data to be restored on chunk load, so container contents and other tile data are preserved rather than overwritten with an empty state. Container previews do not trigger a save; it needs a real click or the save command.
 
 - The saved volume retains the object dimensions and original signed block coordinates; saving reverses the gallery placement offset without shrinkwrapping. Tile data is always written in full, unlike `/iris object save`.
 - Reopening checks cached cell dimensions against the current object files and rebuilds the layout if they changed.
@@ -212,13 +204,13 @@ Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-d
 
 **Rotation is never baked in.** A `.iob` stores exactly one orientation. Rotation ranges belong to the placement. `paste rotate=90` rotates a throwaway copy and does not touch the file.
 
-When a non-solid directional block cannot represent the rotated orientation, rotation omits that block and its tile data. Other blocks still rotate. Scaling reads dimensions, center, blocks, and tile data under one volume read lock, so a concurrent transform cannot mix geometry snapshots.
+When a non-solid directional block cannot represent the rotated orientation, rotation omits that block and its tile data. Other blocks still rotate.
 
 **Two separate loot mechanisms.** A chest saved into the `.iob` with a vanilla loot table on it keeps that table. Pack loot tables are attached by the placement instead (`loot`, `vanillaLoot`, `overrideGlobalLoot`). See [20 - Object Placement](/iris/20-object-placement).
 
 **Blocks the running Minecraft does not have.** An object saved on a newer version can hold blocks an older server lacks. Iris reads the object's palette header when a placement builds its pool and drops the object from that pool if any block in the final placed result is missing. It stays in the pool when the placement's `edit` rules type-replace the block (a rule with `chance: 1` whose `find` matches it), or when a dimension `blockFallbacks` entry or a per-entry `backup` covers it. The `.iob` file is never rewritten and the object remains usable on a server that has the block. An emptied pool means the placement is skipped. See [20 - Object Placement](/iris/20-object-placement) and [25 - Pack Management](/iris/25-pack-management).
 
-**Caches and hotload.** Objects are cached per pack. Copying holds the source volume's read lock, so transforms cannot change it during the copy. Upscaling writes expanded cells directly without temporary voxel lists. Studio worlds watch the pack folder for `.iob` and `.json` changes. They hotload at most once a second. They back off to about four seconds while the world is busy generating or running maintenance. A hotload swaps the engine whole pack runtime. Already generated chunks are untouched. Only later ones see the edit. Ordinary worlds never hotload. They serve the cached copy until the pack reloads.
+**Caches and hotload.** Objects are cached per pack. Studio worlds watch the pack folder for `.iob` and `.json` changes and hotload at most once a second, backing off to about four seconds while the world is busy. Already generated chunks are untouched; only later ones see the edit. Ordinary worlds never hotload and serve the cached copy until the pack reloads.
 
 ## 8. Common failure modes
 

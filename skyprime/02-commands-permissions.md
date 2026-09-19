@@ -1,14 +1,14 @@
 ---
-title: 02 - Commands & Permissions
+title: SkyPrime - Commands and permissions
 description: Island commands, confirmation flows and operator permissions
 published: true
-date: 2026-09-05T16:24:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: skyprime, commands, permissions
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
 ---
 
-The root command is `/skyprime`, with `/sky`, `/is` and `/island` aliases. A player using the root without arguments opens the island menu. `/sky help`, `/sky admin` and `/sky debug` show Director command help. Inventory actions belong to the viewer's current team; if membership changes while a menu is open, the next queued action opens the current island menu without applying the old action.
+The root command is `/skyprime`, with `/sky`, `/is` and `/island` aliases. Running it with no arguments opens the island menu. `/sky help`, `/sky admin` and `/sky debug` list their commands.
 
 ## Player commands
 
@@ -55,9 +55,11 @@ Destructive requests expire after 30 seconds and are bound to the requesting pla
 
 Player-name arguments resolve online players; `untrust` also accepts a stored guest name. Otherwise, UUIDs support offline targets without blocking name lookup. Visit and vote accept exact island names containing spaces, for example `/sky visit Garden Market`; use the UUID when names are ambiguous. Director also supports named optional arguments such as `starter=big`, `home=visitor`, `limit=20`, `track=team` and `access=containers,pickup`. Built-in starters are `small`, `normal` and `big`; custom IDs are configured through [Starter Templates](/skyprime/06-starter-templates).
 
-Island settings expose `PUBLIC_ACCESS`, `PVP`, `PICKUP`, `BUILD`, `CONTAINERS`, `INTERACT`, `KILL_MOBS` and `ENTITY_INTERACT`. The five visitor action flags default to false and require public visitor access. Named grants can permit the same actions on a private island without granting team membership. For example, `/sky trust Gardener containers,pickup` grants those two actions, while `/sky coop Builder build` grants temporary building. Use `visit` or a comma-separated list of `build`, `containers`, `pickup`, `interact`, `kill_mobs` and `entity_interact`. Reissuing `trust` replaces that guest's flags; revoke a permanent grant before creating a temporary grant. Temporary access ends after the configured duration, issuer disconnect, restart, issuer loss of management authority, reset or deletion. Bans override guest access.
+`/sky flag` takes `PUBLIC_ACCESS`, `PVP`, `PICKUP`, `BUILD`, `CONTAINERS`, `INTERACT`, `KILL_MOBS` or `ENTITY_INTERACT`. See [Protection](/skyprime/03-islands-progression#protection) for what each one covers.
 
-Island chat selects the accessible island the player is standing on, or their own team when outside an island. The channel reaches online teammates and visitors currently on that island. With channel mode enabled, ordinary chat stays private until `/sky chat off`, another `/sky chat`, disconnect, or lost access. Access is rechecked before sending and delivery. Configuration-editor chat prompts take precedence over channel mode.
+`trust` and `coop` take `visit`, or a comma-separated list of `build`, `containers`, `pickup`, `interact`, `kill_mobs` and `entity_interact`. For example `/sky trust Gardener containers,pickup`, or `/sky coop Builder build` for temporary building. Reissuing `trust` replaces that guest's flags; revoke a permanent grant before making a temporary one. Temporary access also ends when the issuer disconnects, loses management authority, or the island is reset or deleted. Bans override every grant.
+
+Island chat picks the island you are standing on, or your own team when you are elsewhere, and reaches teammates and visitors currently on it. With channel mode on, ordinary chat stays private until `/sky chat off`, another `/sky chat`, or disconnect. A configuration-editor chat prompt takes precedence over channel mode.
 
 ## Operator commands
 
@@ -77,4 +79,6 @@ Island chat selects the accessible island the player is standing on, or their ow
 
 `skyprime.use` and `skyprime.create` default to all players. `skyprime.config`, `skyprime.debug`, `skyprime.admin` and `skyprime.bypass` default to operators. The bypass permission allows protected-world interaction; it does not grant island ownership for team mutations.
 
-The shared language provider registers `skyprime.language.self` and `volmit.language.self` for personal selections. Server language selection requires `skyprime.config` or the suite-wide `volmit.language.admin` permission. Operator credit grants are recorded in the island ledger and written to the console audit log after persistence completes. Diagnostic uploads are disabled by default and also require `general.debugUploadEnabled = true`.
+Personal language selection needs `skyprime.language.self`; changing the server default needs `skyprime.config` or `volmit.language.admin`. See [Languages](/languages).
+
+Operator credit grants go into the island ledger and the console audit log. Diagnostic uploads are off by default and also need `general.debugUploadEnabled = true`.

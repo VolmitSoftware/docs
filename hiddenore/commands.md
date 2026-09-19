@@ -2,7 +2,7 @@
 title: "HiddenOre: Commands and Permissions"
 description: "The /hiddenore command tree and permission nodes"
 published: true
-date: 2026-09-11T01:30:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "hiddenore, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,12 +57,6 @@ only Fortune, tool tiers, or experience does not.
 
 ## Language selection
 
-`/hiddenore language` opens the personal picker in game and the server picker from console. Use `self reset` to return to the server default. If a selected catalog cannot be prepared, HiddenOre displays English and keeps the requested language choice saved.
+`/hiddenore language` picks a language. Personal selection needs `hiddenore.language.self`; server
+selection needs `hiddenore.admin` or `volmit.language.admin`. See [Languages](/languages).
 
-HiddenOre server selection requires `hiddenore.admin` or `volmit.language.admin` (default `op`).
-
-Changing the server default preserves comments and surrounding formatting in `hiddenore.toml`.
-
-`/volmit plugins languages [locale]` manages the server default for all enabled Volmit language providers. It keeps personal choices and offers only locales shared by every provider.
-
-`/hiddenore language server edit [locale]` opens the message editor. Editing requires `hiddenore.admin` or `volmit.language.admin` and does not change anyone's selected language. See [Configuration](/hiddenore/configuration) for file behavior.

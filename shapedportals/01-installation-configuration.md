@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-14T00:37:05.834Z
+date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -200,56 +200,10 @@ Reports contain server, plugin, configuration, portal, performance, and system d
 
 ## Language files
 
-Run `/sp language` to open the language controls. Use `/sp language server edit [locale]` or Languages inside `/sp config` to edit messages. The active-language control under General changes the server default.
+Shaped Portals' server default is `general.language`. `runtime.prefix` sets the displayed plugin
+name and its formatting per locale; remove `{prefix}` from a message to hide the label there.
 
-Available locales:
-
-`en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, `zh_TW`.
-
-The 17 repository translations cover the complete ShapedPortals, Director, and shared VolmLib language-picker and editor catalog. Layout templates containing only formatting and placeholders remain identical across locales because they contain no natural-language text.
-
-### Select a language
-
-The picker supports a server default and persistent per-player overrides. `/sp language self de_DE` selects German for you; `/sp language self reset` returns to the server default. Personal language selection requires both `shapedportals.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Choices are saved by UUID in `languages/language-preferences.properties`.
-
-`/sp language server de_DE` changes `general.language` for players without an override. This requires `shapedportals.config` or `volmit.language.admin`.
-
-`/volmit plugins languages` changes the server default across enabled Volmit plugins. It preserves personal overrides and requires permission to administer every provider being changed.
-
-Missing translations download when first selected or opened for editing. Installed files work offline and are not replaced automatically. Missing or invalid entries fall back to English without preventing the remaining translations from downloading or being selected. Unreadable files use English and remain unchanged on disk. You can also create a custom locale from the English file.
-
-### Edit messages
-
-The message editor requires `shapedportals.config` or `volmit.language.admin`. Opening a locale for editing does not select it or change a personal override.
-
-1. Run `/sp language server edit`, or open `/sp config` and choose Languages. Add a locale, such as `/sp language server edit en_US`, to open that locale directly.
-2. Select a locale, then choose the Runtime, Command, Portal, HUD, GUI, or Director group.
-3. Use Search to find a key or value across the language file, then select the message.
-4. Type the replacement in private chat, keeping its required placeholders. Use `\n` for a line break or `\\` for a backslash. Inputs are limited to 512 characters; type `cancel` or wait 60 seconds to return without saving.
-5. The editor saves the change and returns to the same group and page.
-
-Editing the active locale applies immediately. Editing a different locale updates its file and cached player translations without switching the server default. Changes are written directly to `languages/<locale>.toml`; there is no separate overrides file or folder. If the message changed after it was opened, the stale edit is rejected so the newer contents remain intact.
-
-Installed incomplete languages can be opened for repair, with English shown for missing messages. A missing remote language downloads before editing; a failed download leaves language selections and existing files unchanged.
-
-### Colors and placeholders
-
-Language files use grouped TOML sections: `[command.feedback]` with `saved = "..."` represents `command.feedback.saved`. Generated English and downloaded catalogs share four localized header sections: file editing, prefix behavior, formatting, and individual variable definitions. Editor saves keep the existing leading comments and group message keys; other valid local files are not rewritten just to change their layout.
-
-Messages accept classic colors such as `&c`, formatting such as `&l`, RGB colors, and MiniMessage. Each language file starts with a localized, sectioned reference for file behavior, formatting, escaping, and every available placeholder.
-
-`runtime.prefix` sets the displayed plugin name and its formatting for that locale. Ordinary chat messages use a bold purple name matching ShapedPortals' help gradient (`#6f35c5` to `#35135f`), a gray `›` separator, and gray body text, with colors reserved for results, warnings, failures, and highlighted values. Localized plugin-name references in messages, help, and menus use `{prefix}` so one edit changes their displayed name together. Version output uses the name's text in a single regular-weight help gradient across `ShapedPortals v<version>`.
-
-The separator belongs to each message template, outside `runtime.prefix`. Remove `{prefix}` and its separator from a message to hide its leading label. An empty `runtime.prefix` hides the name wherever it is referenced; any separator or surrounding text remains in its template. Other placeholders required by that message must stay intact. Prefix formatting is isolated from the surrounding message.
-
-```toml
-[runtime]
-prefix = "<bold><gradient:#6f35c5:#35135f>ShapedPortals</gradient></bold>"
-```
-
-A chat template starts with `{prefix}&r &7› &7`; an inline name or menu heading can use `{prefix}` without the separator. Command and portal overlays omit that default leading chat label while retaining plugin names that are part of the message itself.
-
-Missing or invalid file entries fall back to English while valid translations remain active. Invalid in-game replacements are rejected before saving. `languages/en_US.toml` is created at startup even when another language is selected, and existing edits are preserved.
+See [Languages](/languages).
 
 ## Related pages
 

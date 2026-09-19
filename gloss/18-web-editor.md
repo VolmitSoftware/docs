@@ -2,15 +2,13 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-19T02:28:50.496Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Use the Gloss web editor to edit menus, holograms, boards, chat surfaces, and the other Gloss JSON documents.
-
-A screenshot walkthrough is in [Web editor tutorial](/gloss/18-web-editor-tutorial). Open the hosted editor at [gloss.volmitsoftware.com](https://gloss.volmitsoftware.com/).
+Use the Gloss web editor to edit menus, holograms, boards, chat surfaces and the other Gloss JSON documents. A screenshot walkthrough is in [Web editor tutorial](/gloss/18-web-editor-tutorial). The hosted editor is at [gloss.volmitsoftware.com](https://gloss.volmitsoftware.com/).
 
 ## Open it
 
@@ -19,8 +17,6 @@ A screenshot walkthrough is in [Web editor tutorial](/gloss/18-web-editor-tutori
 | `/gloss web open` | Open an empty editor |
 | `/gloss web edit <kind> <id>` | Edit one document |
 | `/gloss web workspace` | Edit all supported documents and images |
-
-Examples:
 
 ```text
 /gloss web edit menu shop
@@ -34,98 +30,67 @@ Examples:
 
 The command gives you a link with temporary access to the selected content. Do not share it with someone you do not trust.
 
-## Tutorial
-
-1. Open [gloss.volmitsoftware.com](https://gloss.volmitsoftware.com/) or a `/gloss web` link.
-2. Follow the first-run tour, or skip it.
-3. Select **New document** or **More actions** then **Templates**.
-4. Edit in Visual, check Preview, and fix issues in Code.
-5. Export the JSON, or publish a live session.
-
-The [Web editor tutorial](/gloss/18-web-editor-tutorial) shows each of those screens.
+Once it is open: follow the first-run tour or skip it, pick **New document** or **More actions → Templates**, edit in Visual, check Preview, fix issues in Code, then export the JSON or publish the live session.
 
 ## Editing
 
-The editor provides forms, JSON editing, undo and redo, image import, and 2D or 3D previews where supported. Preview exact Minecraft rendering, occlusion, sounds, particles, and interaction in game before publishing.
+The editor provides forms, JSON editing, undo and redo, image import, and 2D or 3D previews where supported. Visual inspectors edit the same fields Gloss reads, and Code and Split views expose the JSON with validation and field completion. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
 
-Use the image manager for PNG, GIF, and supported Minecraft skins. Imported assets are saved under `plugins/Gloss/images/`.
+Preview exact Minecraft rendering, occlusion, sounds, particles and interaction in game before publishing.
 
-## Customization by surface
+### What you can edit
 
-Visual inspectors edit the same document fields used by Gloss. Code and Split views expose the JSON alongside validation and field completion. Display controls apply to the TextDisplay surfaces that support them; scoreboard, tablist, MOTD, and chat previews use their own client formats.
-
-| Surface | Authoring controls | Preview and runtime reference |
+| Kind | Where it lands | Reference |
 |---|---|---|
-| Menus | Components, icons, actions, toggles, layout, interaction limits, visibility conditions, shared icon styles, text boxes, and particles | Menu canvas and [components and hitboxes](/gloss/10-components-hitboxes) |
-| World panels | Root menu, world binding, position, rotation, scale, follow behavior, visibility, ranges, and `show` | Linked menu flow map and [panels](/gloss/16-panels) |
-| Container previews | Target matching, all element types, expressions, root text/item styles, per-element styles, label boxes, card geometry and colors, and particles | Container card and [container previews](/gloss/15-container-previews) |
-| Holograms | Ordered text, world placement, visibility, shared display style, box, and particles | Hologram over the rendered world and [holograms](/gloss/04-holograms) |
-| Entity overlays | Ordered text, Insight and spacer rows, root/row `show`, health segments, hit duration, range and exclusions, full display style, box, and particles | Named, damaged, React stack and Adapt Insight samples over the rendered world; [entity overlays](/gloss/20-entity-overlays) |
-| Bubble styles | Selection, trusted prefix, wrapping, lifetime, motion, follow/hide settings, visibility, display style, box, and particles | Chat sample over the rendered world and [bubbles](/gloss/08-bubbles-indicators-drops) |
-| Damage indicators | Damage/healing admission, conditional variants, audience, text, offset, lifetime, motion, display style, box, and particles | Damage, healing and critical-hit samples on the Minecraft stage; [indicators](/gloss/08-bubbles-indicators-drops) |
-| Real Drops | Display limits, conditional plans and audience, models, label placement/style/box, physics, animation timelines, modifier expressions, and particles | Drop stage over the rendered world and [Real Drops](/gloss/08-bubbles-indicators-drops) |
-| Inventories | Chest GUI resolution, mask, keys, and slots | Export to `plugins/Gloss/inventories/` |
-| Nameplates | Holographic text lines, display style, box, offset, and visibility | Export to `plugins/Gloss/nameplates/` |
-| Nametags | Name prefixes and suffixes, selection, visibility, and collision | Export to `plugins/Gloss/nametags/` |
-| Markers | World, player, or entity targets, labels, beams, trails, and edge indicators | Export to `plugins/Gloss/markers/` |
-| Animations | Frames, timing, playback settings, and visibility | Animated text and [text animations](/gloss/07-emoji-text-animations) |
-| Scoreboards | Conditional presentations, title and line formats, update rates, and visibility | Sidebar and [scoreboards](/gloss/05-scoreboards-groups) |
-| Tablist | Header/footer rows, list-name presentations, selection, update rates, and root/channel visibility | Player list and [tablist](/gloss/06-tablist-motd) |
-| Surfaces | Surface kind, lane and eligibility, default presentation, conditional variants, slots, HUD priority, timing, trigger, and visibility | Action bar, boss bar and title in the game frame; [surfaces](/gloss/27-velocity#surfaces) |
-| MOTD | Text entries, document and per-entry server-list icons, pause-menu server links, hover sample, player counts, version label, and visibility | Server list and [MOTD](/gloss/06-tablist-motd) |
-| Connection messages | Join and leave blocks, per-recipient conditional variants, audience, and visibility | Chat sample and [connection messages](/gloss/26-connection-messages) |
-| Emoji | Text/image definition, aliases, permission, and visibility | Chat sample and [emoji](/gloss/07-emoji-text-animations) |
+| Menus | `menus/` | [Hologram Menus](/gloss/09-menus), [Components & Hitboxes](/gloss/10-components-hitboxes) |
+| World panels | `panels/` | [Panels](/gloss/16-panels) |
+| Container previews | `previews/` | [Container Previews](/gloss/15-container-previews) |
+| Holograms | `holograms/` | [Holograms](/gloss/04-holograms) |
+| Entity overlays | `entity-overlays/default.json` | [Entity Overlays](/gloss/20-entity-overlays) |
+| Bubble styles | `bubble-styles/` | [Chat Bubbles](/gloss/08-chat-bubbles) |
+| Damage indicators | `damage-indicators/default.json` | [Damage Indicators](/gloss/08b-damage-indicators) |
+| Real Drops | `real-drops/default.json` | [Drop Labels](/gloss/08c-drop-labels) |
+| Inventories | `inventories/` | Chest GUI resolution, mask, keys and slots |
+| Nameplates | `nameplates/` | Holographic text lines, style, box, offset and visibility |
+| Nametags | `nametags/` | Name prefixes and suffixes, selection, visibility and collision |
+| Markers | `markers/` | World, player or entity targets, labels, beams, trails and edge indicators |
+| Animations | `animations/` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
+| Emoji | `emoji/` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
+| Scoreboards | `boards/` | [Scoreboards & Groups](/gloss/05-scoreboards-groups) |
+| Tablist | `tablist.json` | [Tablist](/gloss/06-tablist) |
+| MOTD | `motd.json` | [Server List MOTD](/gloss/06b-server-list-motd) |
+| Connection messages | `connections.json` | [Connection Messages](/gloss/26-connection-messages) |
+| Surfaces | `surfaces/`, one per action bar, boss bar or title | [Velocity Proxy](/gloss/27-velocity#surfaces) |
 
-The 3D previews draw the client's own block and item models and textures in WebGL2, over a rendered block world, with a shared orbit camera: drag to orbit, wheel to dolly, right-drag to pan, and WASD (with space and shift for height) to fly while the stage is focused. Entities are textured rigs for the player and for zombies, skeletons, creepers, pigs, cows, and sheep, and a catalog sprite billboard for every other mob. Text — holograms, drop labels, bubbles, damage numbers, and overlay lines — is drawn by the browser in a layer that shares the same camera, so it is never hidden behind geometry. A browser without WebGL2 shows a rendered still of the world and sprites instead of models.
+Creating a singleton — entity overlays, damage indicators, Real Drops, tablist, MOTD, connections — opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
 
-The shared display style includes billboard, alignment, shadow, see-through rendering, ARGB background, opacity, line width, paired block/sky light, view range, culling dimensions, glow color, and independent XYZ scale. Box controls add padding, background, and a complete border. A partial style object uses shared field defaults; an omitted style uses the surface's documented defaults. See the [display contract](/gloss/20-entity-overlays#style-and-decorations).
+Display style, boxes and card geometry use the same fields as the server documents; see [Display style and boxes](/gloss/11-icons#display-style-and-boxes) and [Container Previews](/gloss/15-container-previews).
 
-Container cards also expose padding, border width, tray padding, title height and gap, background and tray colors, and optional border/title color overrides. Root text and item styles supply defaults to elements; an element can supply its own style. A label's explicit background overrides its resolved style background.
+Visibility fields accept a boolean or a Gloss expression, evaluated in the preview against sample player, server, time and surface values. Live permissions, regions, metrics and PlaceholderAPI results still depend on the server. See [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
-Visibility fields accept a boolean or a Gloss expression. The preview evaluates them against sample player, server, time, and surface-specific values. `false` is retained through editing and export. Live permissions, regions, metrics, and PlaceholderAPI results still depend on the server. See [expressions and placeholders](/gloss/13-expressions-placeholders).
+Text previews support authored MiniMessage, legacy colors, expressions, emoji and animations. Entity names, Adapt Insight details and player chat stay literal data. Particle controls cover the applicable whole-surface, component, line and named-span targets; see [Particle Layers](/gloss/25-particle-layers).
 
-TextDisplay previews support authored MiniMessage, legacy colors, expressions, emoji, and text animations. Entity names and Adapt Insight details remain literal data. Bubble prefixes use authored formatting, while player chat remains literal. Particle controls support the applicable whole-surface, component, line, and named-text-span targets; see [particles](/gloss/25-particle-layers).
+Global feature switches, service limits and defaults stay in `gloss.toml`. The document editors do not replace it; see [Configuration](/gloss/02-configuration).
 
-Global feature switches, service limits, and defaults remain in `gloss.toml`. The document editors do not replace that configuration file; see [configuration](/gloss/02-configuration).
+### 3D previews
 
-## Document IDs and files
-
-Menus, holograms, animations, scoreboards, surfaces, emoji, bubble styles, and container previews can have separate named documents; surfaces live under `surfaces/`, one document per action bar, boss bar, or title. These runtime settings have one canonical document:
-
-| Surface | Runtime ID | Export path under `plugins/Gloss/` |
-|---|---|---|
-| Entity overlays | `default` | `entity-overlays/default.json` |
-| Damage indicators | `default` | `damage-indicators/default.json` |
-| Real Drops | `default` | `real-drops/default.json` |
-| Tablist | `tablist` | `tablist.json` |
-| MOTD | `motd` | `motd.json` |
-| Connection messages | `connections` | `connections.json` |
-
-Creating a singleton opens its existing workspace document. Importing or applying a template updates that document, and singleton duplication and renaming are unavailable. This prevents editing a second file the server would not load. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [data files](/gloss/03-data-files).
+The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world, with one shared camera: drag to orbit, wheel to zoom, right-drag to pan, and WASD (with space and shift for height) to fly while the stage is focused. Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. Text is drawn in a layer sharing that camera, so it is never hidden behind geometry. A browser without WebGL2 shows a rendered still instead of models.
 
 ## World panels and flow maps
 
-A menu flow map stores the workspace layout and can hold a linked runtime world panel. Use **Create world panel** to provide its ID, root menu, world key, and world UUID, or **Import world panel** to read an existing definition. **Export world panel** writes the runtime panel without the local flow-map layout.
-
-Panel edits support undo and redo. Duplicating a linked panel gives the copy a separate runtime ID and UUID. A flow map alone is editor data and has no in-game preview. See [panel authoring](/gloss/16-panels#browser-authoring).
+A menu flow map stores the workspace layout and can hold a linked runtime world panel. **Create world panel** supplies its id, root menu, world key and world UUID; **Import world panel** reads an existing definition; **Export world panel** writes the runtime panel without the local flow-map layout. Duplicating a linked panel gives the copy a separate runtime id and UUID. A flow map alone is editor data with no in-game preview. See [panel authoring](/gloss/16-panels#browser-authoring).
 
 ## Seeded randomizer
 
-**Randomize document** generates a complete editable sample for the selected surface. Enter a seed and choose **Generate**, or use **Next seed** for another sample. The same seed, current document identity, and workspace assets reproduce the same result. Each generated document is one undoable edit; menu and container canvases fit the generated content automatically.
+**Randomize document** generates a complete editable sample for the selected surface. Enter a seed and choose **Generate**, or use **Next seed** for another sample. The same seed, document identity and workspace assets reproduce the same result, and each generated document is one undoable edit.
 
-Across seeds, samples vary text effects, conditions, display styles, boxes, particle shapes and targets, component/icon/action types, preview elements, and the surface's motion or selection settings. Entity samples also vary row order and Insight placement. Real Drops samples vary model, label, animation, and modifier settings. These examples are ordinary authored JSON and can be edited or exported.
+Samples exercise the supported finite choices across seeds but do not enumerate every expression, numeric combination, custom asset or provider value. A linked world panel can be randomized while keeping its identity, world binding and root menu; a flow map with no linked panel cannot be randomized.
 
-Samples exercise the supported finite choices across multiple seeds. They do not enumerate every text expression, numeric combination, custom asset, provider, or plugin value. Use the inspectors and Code view to author combinations beyond the generated examples.
-
-Linked world panels can be randomized while retaining their identity, world binding, and root-menu reference. A flow map without a linked runtime panel cannot be randomized. Component and preview-element randomization also remain available in their inspectors.
-
-Sample damage, health, viewer state, React counts, and Adapt Insight controls affect the preview only. Configure Adapt's `restrictGlossToInsight` option in Adapt itself; the editor does not change that adaptation setting.
+Sample damage, health, viewer state, React counts and Adapt Insight controls affect the preview only. Configure Adapt's `restrictGlossToInsight` option in Adapt itself.
 
 ## Publish
 
-Publishing validates the changed documents and images, then writes them to `plugins/Gloss/`. Invalid content is refused and the current server files stay unchanged.
-
-If the server file changed after the editor opened, refresh the session before publishing so you do not overwrite newer work.
+Publishing validates the changed documents and images, then writes them to `plugins/Gloss/`. Invalid content is refused and the current server files stay unchanged. If the server file changed after the editor opened, refresh the session before publishing so you do not overwrite newer work.
 
 ## Sessions
 
@@ -136,9 +101,7 @@ If the server file changed after the editor opened, refresh the session before p
 | `/gloss web sessions pull <session>` | Check for pending editor changes now |
 | `/gloss web sessions revoke <session>` | End access immediately |
 
-Session IDs may be shortened to a unique prefix of at least 12 characters.
-Only one pull or revoke operation can run for a session at a time. After a pull command completes,
-the session is immediately available for revocation.
+Session ids may be shortened to a unique prefix of at least 12 characters. Only one pull or revoke can run for a session at a time.
 
 ## Security
 
@@ -150,11 +113,6 @@ the session is immediately available for revocation.
 
 ## Recovery
 
-If publishing fails:
-
-1. Read the validation message in the editor.
-2. Fix the named document or field.
-3. Refresh if the server reports a revision conflict.
-4. Publish again.
+If publishing fails, read the validation message in the editor, fix the named document or field, refresh if the server reports a revision conflict, and publish again.
 
 Restored config and watched content files, including panel files, apply automatically. Panel restores must satisfy the current revision and identity rules in [Panels](/gloss/16-panels).

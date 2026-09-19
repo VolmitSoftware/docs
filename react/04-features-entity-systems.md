@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -85,7 +85,9 @@ When entity counts exceed soft caps, this feature removes lowest-priority eligib
 
 ### `item-super-stacker`
 
-This feature merges nearby dropped items into flagged bundles. Pickup explodes the bundle into inventory. Matching ordinary stacks consolidate directly up to their native stack limit instead of waiting for Minecraft's item-merge timer. Spawn and sampled signals feed a capped weak chunk index and one queued flight per bucket instead of starting a nearby-entity enumeration for every item; at most 64 buckets dispatch per 50 ms evaluation, and one owner pass acquires no more than the configured merge budget plus its collector, hard-capped at 65 candidates. Adjacent indexed chunks preserve radius coverage, while Folia filters ownership before reading a target. One pass can consume several nearby entities but stops at its configured budget; only its first merge emits the particle trail. Merge sounds use the immutable nearby-player index, reach at most 64 recipients within a 32-block horizontal radius, and run each send on that player's owner. When Gloss is present, React immediately refreshes the surviving entity after creating a bundle or changing a hopper residual bundle, so the visible label describes the current contents instead of retaining the previous target item. React removes the Gloss presentation before deleting a bundle, republishes loaded flagged bundles, and reconciles sampled bundles through a 30-second per-entity cache. Gloss owns display creation and renders the React-configured bundle header, material rows, and remainder row vertically while real drops are active.
+Merges nearby dropped items into one bundle. Picking it up gives you everything inside, and matching ordinary stacks consolidate immediately instead of waiting for Minecraft's merge timer.
+
+With Gloss installed, the bundle's label lists its contents and updates as they change. Without Gloss, bundling and pickup still work with no label.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -183,7 +185,9 @@ This feature zeroes velocity on minecart entity types when no player is within `
 
 ### `portal-traffic-smoother`
 
-This feature atomically throttles player and non-player portal traffic per destination chunk over a window. When over caps, it first claims global delayed capacity, then cancels the portal and starts an asynchronous teleport after a short entity-owned delay, allowing Paper or Folia to marshal cross-region and cross-world traversal safely. A full queue, zero capacity, or duplicate entity claim leaves the event uncancelled for vanilla handling. An accepted claim stays held until the teleport future settles; expired, retired, failed, or completed work releases its exact claim. Delayed callbacks are generation-gated and cannot start traversal after the feature is deactivated or restarted.
+Throttles how many players and entities may use portals into the same destination chunk over a rolling window. Over the cap, the portal is delayed by a few ticks rather than refused.
+
+When the delay queue is full the event is left alone and vanilla handles it.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -204,7 +208,7 @@ This feature atomically throttles player and non-player portal traffic per desti
 
 ### `explosion-packet-batching`
 
-This feature collects pressure-gated explosions and clusters them by `mergeRadius`. Cluster lookup uses a three-dimensional spatial index, so a full per-world buffer does not compare every explosion with every other explosion. The NMS hook binds its suppression decision to the exact packet object and marks which candidates actually had their vanilla packets intercepted; only those candidates can produce a merged broadcast. Suppression admission reserves one slot from the global `maxSuppressedExplosionDebt`; saturation leaves additional packets vanilla. Merged clusters are retained and a Paper main-thread task successfully broadcasts at most `maxMergedBroadcastsPerTick` across all worlds each server tick, so a worst-case 4096-cluster debt takes at most 64 successful ticks to flush with the defaults. A failed send stays at the head for a later tick without releasing its debt. A collected world is resolved again by UUID if its weak reference expires; transient resolution failures retain the batch, while a world that Bukkit confirms is no longer loaded records the affected suppressed-explosion count, emits a full contextual error, and releases only that world's remaining debt so later worlds can continue. Deactivation serializes against an in-flight drain and attempts every retained replacement broadcast for at most `shutdownDrainTimeoutMS`; a send failure, unresolved world or bridge, or timeout fails deactivation while retaining all unsent debt for an exact retry. Near-player candidates, buffer overflow, hook mismatches, and lifecycle races keep vanilla packets.
+Under load, explosions close together are merged into one packet instead of one each. Explosions near a player are never merged, and anything the merge cannot admit is sent the vanilla way.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

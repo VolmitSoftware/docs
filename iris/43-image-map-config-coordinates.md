@@ -2,12 +2,12 @@
 title: "Image Map Configuration & Coordinates"
 description: "Complete Iris image-map, binding, coordinate, sampling, and world-boundary reference"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
 ---
-Image maps are typed JSON resources under `image-maps/`, bound to dimensions through an `imageMaps` list, and optionally referenced by generator styles. This page is the complete field and coordinate contract, including native world-boundary configuration.
+Image maps are typed JSON resources under `image-maps/`, bound to dimensions through an `imageMaps` list, and optionally referenced by generator styles. This page is the complete field and coordinate contract, including native world-boundary configuration. The model and the Studio workflow are on [37 - Image Maps](/iris/37-image-maps); per-type decoding is on [38 - Image Map Encodings](/iris/38-image-map-encodings).
 
 ## Complete example
 
@@ -125,7 +125,7 @@ A generator style references the first-class resource key, not an embedded objec
 | `unknownColor` | enum | `ERROR` | `ERROR`, `FALLBACK`, or `IGNORE` |
 | `colors` | object | `{}` | Exact `#RRGGBB` to Iris resource or Minecraft block key map |
 
-Fields that do not apply to the selected `type` remain inert, but they must still be well formed. Validation enforces type-specific combinations such as `COLOR_MAP` plus `NEAREST` and `ALPHA_MASK` plus an alpha-bearing source.
+Fields that do not apply to the selected `type` stay inert but must still be well formed. Validation enforces type-specific combinations such as `COLOR_MAP` plus `NEAREST` and `ALPHA_MASK` plus an alpha-bearing source.
 
 ## Dimension binding fields
 
@@ -157,9 +157,9 @@ source +X  ─────────────► Minecraft +X (east)
 source +Y / JSON +Z      Minecraft +Z (south)
 ```
 
-`origin` is a Minecraft block-space X/Z coordinate. `sourceOrigin` is the source pixel-space X/Y anchor written with `x` and `z`. Studio schema tooltips identify the nested `x` value as world X or source pixel X and the nested `z` value as world Z or source image Y according to the containing field. With no mirror or rotation, world `origin` samples exactly source `sourceOrigin`.
+`origin` is a Minecraft block-space X/Z coordinate. `sourceOrigin` is the source pixel-space X/Y anchor, written with `x` and `z`. With no mirror or rotation, world `origin` samples exactly source `sourceOrigin`.
 
-At `blocksPerPixel: 4`, moving four blocks east advances one source X unit; moving four blocks south advances one source Y unit. Rectangular images retain their authored width and height.
+At `blocksPerPixel: 4`, moving four blocks east advances one source X unit and moving four blocks south advances one source Y unit. Rectangular images retain their authored width and height.
 
 ## Transform order
 
@@ -173,7 +173,7 @@ The configured placement is evaluated in one fixed order:
 
 Runtime sampling applies the exact inverse of that placement from world X/Z back into continuous source coordinates. A `DEG_90` forward rotation maps a source-relative vector `(x,z)` to `(-z,x)` in the east/south coordinate plane.
 
-`NEAREST` uses mathematical floor to choose the containing source pixel. This matters west or north of the anchor: `floor(-0.25)` is `-1`, never `0`. Bilinear and bicubic sampling use the same floor-based cell and neighboring decoded scalar values. Negative coordinates therefore reach the configured out-of-bounds policy deterministically instead of being truncated toward zero.
+`NEAREST` uses mathematical floor to choose the containing source pixel, which matters west or north of the anchor: `floor(-0.25)` is `-1`, never `0`. Bilinear and bicubic sampling use the same floor-based cell. Negative coordinates therefore reach the configured out-of-bounds policy deterministically instead of being truncated toward zero.
 
 ## Sampling rules
 
@@ -216,10 +216,11 @@ For `TERRAIN_HEIGHT`, validation also calculates the minimum and maximum output 
 
 `size` is the full diameter, matching Minecraft terminology. The covered interval is `center - size/2` through `center + size/2` on each axis.
 
-When `worldBoundary` is absent, Iris does not apply or reset the native world border during initialization or reload. The world's current native border remains unchanged, including operator changes or a boundary applied by an earlier pack revision.
+When `worldBoundary` is absent, Iris does not apply or reset the native world border during initialization or reload. The world's current native border stays unchanged, including operator changes or a boundary applied by an earlier pack revision.
 
-The boundary limits player movement; it does not change image-map out-of-bounds behavior. Configure both explicitly. Studio overlays the boundary and warns when source coverage and the border do not align.
+> The boundary limits player movement. **It does not change image-map out-of-bounds behavior** — configure both explicitly. Studio overlays the boundary and warns when source coverage and the border do not align.
+{.is-warning}
 
 ## Validate the configuration
 
-Run `/iris pack validate` to find invalid image formats, unresolved resources, mask cycles, and coverage errors. See [Image Map Studio Workflow](/iris/42-image-map-studio-workflow) for authoring and preview tools.
+Run `/iris pack validate` to find invalid image formats, unresolved resources, mask cycles, and coverage errors. See [37 - Image Maps](/iris/37-image-maps#image-map-studio) for authoring and preview tools.

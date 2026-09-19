@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-14T23:29:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,14 +41,9 @@ The modded split is real and easy to get wrong. The engine data folder is `<conf
 
 ## Changing a setting safely
 
-1. Start Iris once so it writes the current schema and defaults.
-2. Copy `iris.json` outside the server directory as a rollback file.
-3. Change one key. Keep its JSON type. Quoted values such as `"false"` are strings, not booleans.
-4. Save the file. Then run `/iris reload` or wait for automatic hotload. Both platforms drain filesystem events about every 500 ms, wait for a stable snapshot, and apply automatic batches no more than once every 3 seconds.
-5. Confirm the reload success message, or enable `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders to see passive hotload success, with no parse error.
-6. Exercise the affected feature. If nothing changed, check the "Takes effect" column below. Several keys are captured when a service, pool, or cache is constructed and need a restart.
+Copy `iris.json` outside the server directory first. Then change one key, keeping its JSON type (`"false"` is a string, not a boolean), save, and run `/iris reload` or wait for automatic hotload. **An invalid file keeps the current settings** and leaves your edit on disk; fix the JSON and save again. Deleting `iris.json` while the server is running keeps the live settings and does not recreate the file.
 
-If automatic parsing fails, Iris keeps the previously active settings and leaves the edited file untouched. Fix the JSON or restore the backup, then save again. Deleting `iris.json` during automatic watching retains the live settings and does not recreate the file; a later manual reload or restart recreates defaults.
+If the reload succeeds but nothing changed, check the "Takes effect" column below — several keys are captured when a service, pool, or cache is built and need a restart.
 
 To change only the server locale, edit the existing `general` object in place:
 
@@ -61,17 +56,7 @@ To change only the server locale, edit the existing `general` object in place:
 }
 ```
 
-That fragment shows the field location. Do not replace a populated settings file with it. After `/iris reload`, run `/iris help` and confirm the selected locale is active. The manual command rewrites the complete settings file after a successful load, including defaults for fields that were absent; automatic hotload does not.
-
-### Validation and rollback
-
-| Result | Meaning | Action |
-|---|---|---|
-| Reload succeeds and the feature changes | The file parsed and the setting is read live | Keep the backup until the next clean restart |
-| Reload succeeds but behavior is unchanged | The value was captured when a service, pool, or cache was built | Restart, then retest the same workload |
-| Automatic parse error in console, file unchanged | The immutable snapshot was rejected, so the broken edit stays on disk and the previous runtime settings remain active | Fix the JSON and save again. Restore the backup if you cannot |
-| File is rewritten with defaults | Missing or unknown fields were normalized by `IrisSettings` | Reapply only intentional overrides. Do not restore an obsolete full file over new defaults |
-| Modded and Bukkit paths differ | The wrong data root was edited | Use the path table above and confirm the file timestamp changed before reloading |
+That fragment shows the field location; do not replace a populated settings file with it. After `/iris reload`, run `/iris help` and confirm the selected locale is active. A manual reload rewrites the complete settings file including defaults for absent fields; automatic hotload does not.
 
 ## Load, save, hotload
 
@@ -81,9 +66,8 @@ That fragment shows the field location. Do not replace a populated settings file
 | Load | Parse with Gson into `IrisSettings`. On failure, log `Configuration Error in iris.json!` and run on built-in defaults for that boot — the bad file is left untouched, because the rewrite never runs |
 | After a successful startup or manual load | Rewrite `iris.json` as pretty JSON so current keys and defaults persist. Comments and hand formatting are lost |
 | `/iris reload` | Invalidate the cached settings, re-read the file, reload the locale. On modded it also schedules a forced datapack regeneration. It does not restart services, reload packs, or rebuild engines |
-| Hotload (Bukkit) | The shared core `SettingsHotloadWatch` drains native events about every 500 ms for `iris.json` and `languages/overrides/`. Bounded exact-content reconciliation detects silent, atomic, FTP, and same-metadata saves. A stable strict-UTF-8 snapshot of at most 2 MiB is applied without rewriting the file, at most once every 3 seconds with one latest-state trailing batch. Successful passive hotloads are debug-only; invalid or rejected changes remain normal console errors |
-| Hotload (modded) | `ModdedSettingsHotloadService` schedules the same core watcher and therefore has the same event-first checks, 2 MiB immutable snapshot ceiling, content reconciliation, and completion-anchored 3-second queue. It does not rewrite a passive save. Successful passive hotloads are debug-only; invalid or rejected changes remain normal console errors |
-| Locale refresh | Native directory events queue locale overrides without rereading the active file every 500 ms while idle. Only the configured locale applies; inactive overrides are tracked without changing the runtime. Deleting the active override falls back to its bundled translation or the code-owned English catalog, invalid bytes keep the last-good catalog, and `/iris reload` remains immediate |
+| Hotload (both platforms) | `iris.json` and `languages/overrides/` are watched. A saved file is applied at most once every 3 seconds, without rewriting it. Silent, atomic, and FTP saves are all detected, and files over 2 MiB are rejected. Successful passive hotloads are debug-only; invalid or rejected changes are normal console errors |
+| Locale refresh | Only the configured locale applies. Deleting the active override falls back to its bundled translation or the built-in English catalog, and invalid bytes keep the last-good catalog |
 | `forceSave()` | Only `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders writes settings back from memory |
 
 ## Root object
@@ -97,13 +81,13 @@ Top-level Gson fields on `IrisSettings`. Every nested object is created with def
 | `gui` | `IrisSettingsGUI` | Server-launched desktop GUIs |
 | `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot timeout and Paper watchdog fixups applied at boot |
 | `generator` | `IrisSettingsGenerator` | Default pack, generation transitions, leaf decay |
-| `concurrency` | (not serialized) | Nothing configurable — see below |
+| `concurrency` | (not serialized) | Nothing configurable. Values derive from CPU count at runtime; an old `concurrency` key is ignored and dropped on the next rewrite |
 | `studio` | `IrisSettingsStudio` | Studio world behavior |
 | `performance` | `IrisSettingsPerformance` | Mantle residency, loader caches, SIMD, engine service pool |
 | `pregen` | `IrisSettingsPregen` | Pregen scheduling, mantle backpressure, timeouts |
 | `treeFeller` | `IrisSettingsTreeFeller` | Survival tree feller |
 
-Static helper `IrisSettings.getThreadCount(int c)`: for `c` in `{-1, -2, -4}` it returns `max(availableProcessors / -c, 1)`. Otherwise `max(c, 2)`, floored at 1.
+Thread-count keys accept `-1`, `-2`, or `-4` to mean "all, half, or a quarter of the available processors". Any other value is used as written, with a floor of 2.
 
 ## `general` — locale, diagnostics, and console output
 
@@ -130,7 +114,7 @@ This group decides what Iris says and how loudly. `language`, `debug`, and `stri
 | `spins` | `7` | Live | Saturation factor of the same gradient |
 | `spinb` | `8` | Live | Brightness factor of the same gradient |
 
-The early library-loader trace is separate from `general.debug` and is silent by default. `-Diris.debug-slimjar=true` enables it through the Iris plugin logger only for loader investigation; it never writes those debug lines through the process streams or triggers Paper's direct-stream warning.
+The early library-loader trace is separate from `general.debug` and silent by default. `-Diris.debug-slimjar=true` enables it for loader investigation.
 
 ### `strictContentKeys` and the version content gate
 
@@ -190,19 +174,9 @@ These keys are no-ops on mod loaders.
 | `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** The pack key used whenever a world, studio, or command omits one — including a bare `Iris` generator string in `bukkit.yml` and `/iris create name=<name>` with no `type`. The accepted `type=default` sentinel resolves the same way but is not advertised by completion. Mod loaders use `defaultPack` in `modded.json` instead |
 | `preventLeafDecay` | `true` | Effectively **restart** | Marks generated leaves persistent so they do not decay. The flag is baked into resolved block data that is then cached, so already-resolved leaf blocks keep the old behavior after a reload. Unrelated to the per-dimension `preventLeafDecay` field in pack JSON |
 
-## `concurrency` — nothing to configure
-
-There is no `concurrency` block in `iris.json`. The values are derived from CPU count at runtime. Older files that still carry a `concurrency` key are ignored on load and dropped on the next rewrite:
-
-| Method | Result | Used by |
-|--------|--------|---------|
-| `getParallelism()` | `max(2, availableProcessors)` | Default `MultiBurst` pools, hybrid pregen thread count, locator searches |
-| `getIoParallelism()` | `max(2, availableProcessors / 2)` | The shared IO burst pool |
-| `getWorldGenThreads()` | `max(2, availableProcessors)` | Fallback input for async pregen concurrency when Iris cannot detect the active chunk-system worker pool |
-
 ## `performance` — caches, mantle residency, and the engine service pool
 
-This is the memory-versus-rework group. Larger loader caches trade heap for fewer pack reloads. Mantle keys decide how long generated region data stays resident before being written out. Most keys here are captured when a pool or cache is built, so plan on a restart. Use [33 - Performance Tuning](/iris/33-performance-tuning) for the measurement procedure. Changing these blind usually makes things worse.
+Larger loader caches trade heap for fewer pack reloads; mantle keys decide how long generated region data stays resident before being written out. Most keys here are captured when a pool or cache is built, so plan on a restart. Use [33 - Performance Tuning](/iris/33-performance-tuning) for the measurement procedure. Changing these blind usually makes things worse.
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
@@ -216,7 +190,7 @@ This is the memory-versus-rework group. Larger loader caches trade heap for fewe
 
 ### `performance.engineSVC`
 
-The engine maintenance service is a small scheduled pool that trims and unloads mantle plates. Its thread-factory and sizing keys are read once at enable, so a restart is required for those to matter. `forceMulticoreWrite` is the exception and is read live.
+Sizing keys here are read once at enable, so they need a restart. `forceMulticoreWrite` is the exception and is read live.
 
 | Key | Default | Takes effect | What it does |
 |-----|---------|--------------|--------------|
@@ -288,7 +262,7 @@ Built-in mappings always stay active. Entries read from `compat.json` are append
 
 A block substitution logs `Compat: Using '<supplement>' in place of '<when>' since this server doesnt support '<when>'` as a warning. Item substitutions log the same at debug level. Invalid JSON logs the failure and leaves the built-in mappings active.
 
-One quirk to know: when `compat.json` is absent, Iris seeds it with a copy of the entire built-in table. On the next boot those entries are appended to the built-ins again, so the runtime list holds every default twice. It is harmless because the first match wins, but if you are editing the file, delete the entries you did not add.
+One quirk to know: when `compat.json` is absent, Iris seeds it with a copy of the entire built-in table, so on the next boot the runtime list holds every default twice. That is harmless because the first match wins, but if you are editing the file, delete the entries you did not add.
 
 ## Modded-only: `modded.json`
 

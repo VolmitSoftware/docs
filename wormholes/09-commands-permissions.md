@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,7 +71,7 @@ The toggle lasts until the next settings hot-reload or server restart. To keep d
 
 Personal language selection requires both `wormholes.language.self` and `volmit.language.self`. Both are granted by default.
 
-`/volmit plugins languages` manages the server default for every enabled Volmit plugin. It only offers locales supported by all providers and does not change personal selections.
+See [Languages](/languages).
 
 | Permission | Purpose |
 |---|---|

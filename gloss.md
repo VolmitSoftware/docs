@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-18T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-21T00:31:30.433Z
 
 For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
-Gloss manages holograms, entity health overlays, menus, panels, container previews, scoreboards, tablist text, chat effects, item displays, connection messages, and the server-list MOTD.
+Gloss draws text, menus, and item displays in the world and on the HUD: holograms, panels, scoreboards, tablists, chat effects, and the server-list MOTD.
 
 <section class="volmit-headliner" aria-labelledby="gloss-editor-headline">
   <p class="volmit-headliner__kicker">Gloss / Web editor</p>
@@ -38,7 +38,6 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 
 - [Velocity Proxy *Install proxy tablists, scoreboards, surfaces, connection messages, and MOTD management*](/gloss/27-velocity)
 - [Getting Started *Install Gloss and check the generated files*](/gloss/01-getting-started)
-- [Web editor tutorial *Open the editor and export a document*](/gloss/18-web-editor-tutorial)
 - [Configuration *Change feature switches and runtime settings*](/gloss/02-configuration)
 - [Commands & Permissions *Find commands and access nodes*](/gloss/17-commands-permissions)
 {.links-list}
@@ -47,10 +46,13 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 
 - [Holograms](/gloss/04-holograms)
 - [Scoreboards & Groups](/gloss/05-scoreboards-groups)
-- [Tablist & Server List MOTD](/gloss/06-tablist-motd)
+- [Tablist](/gloss/06-tablist)
+- [Server List MOTD](/gloss/06b-server-list-motd)
 - [Connection Messages](/gloss/26-connection-messages)
 - [Emoji, Text & Animations](/gloss/07-emoji-text-animations)
-- [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops)
+- [Chat Bubbles](/gloss/08-chat-bubbles)
+- [Damage Indicators](/gloss/08b-damage-indicators)
+- [Drop Labels](/gloss/08c-drop-labels)
 - [Entity Overlays](/gloss/20-entity-overlays)
 {.links-list}
 
@@ -82,7 +84,6 @@ Gloss manages holograms, entity health overlays, menus, panels, container previe
 - [API: Placeholders](/gloss/23-api-placeholders)
 - [API: Previews](/gloss/24-api-previews)
 {.links-list}
-
 
 ## Support
 

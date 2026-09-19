@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -93,42 +93,27 @@ fallback. The fallback is a safe location near a loaded non-pocket world spawn.
 
 ## Resizing an existing pocket
 
-`/wormholes pocket resize` rebuilds the pocket the operator is standing in.
-`/wormholes pocket resizeall` applies the same change to every allocated pocket.
-Both take `size=`, `material=`, `door=`, and `confirm=`; omitted values keep what
-the pocket already has. See
-[09 - Commands & Permissions](/wormholes/09-commands-permissions) for the exact
-syntax.
+`/wormholes pocket resize` rebuilds the pocket you are standing in; `/wormholes pocket resizeall`
+applies the same change to every pocket. Both take `size=`, `material=`, `door=`, and `confirm=`,
+and anything you omit keeps its current value.
 
-Because the room is anchored at its minimum corner:
+The room is anchored at its minimum corner, so:
 
-- **Growing** adds space beyond the old maximum walls and ceiling. Nothing
-  already built moves. The old walls and ceiling are carved back to open space
-  where they are still the pocket's own shell material, so player blocks placed
-  against them survive.
-- **Shrinking** destroys everything left outside the new walls, and the new walls
-  are laid through what used to be interior.
+- **Growing** adds space beyond the old walls and ceiling. Nothing already built moves, and blocks
+  players placed against the old walls survive.
+- **Shrinking destroys everything left outside the new walls.**
 
-Before touching anything, a resize counts what it would destroy: placed blocks
-that are neither air nor the pocket's shell material, non-empty containers, and
-entities that would be displaced. Any non-empty container makes the resize
-refuse even with `confirm=true`; empty those containers first. Other destructive
-changes are refused and reported until the operator re-runs with `confirm=true`.
+A resize counts what it would destroy first and refuses until you re-run it with `confirm=true`.
+**A non-empty container refuses the resize even with `confirm=true`** — empty those containers
+first. Nothing is ever dropped or emptied for you. Displaced entities, players included, are
+teleported to the room entry.
 
-A confirmed resize destroys the eligible blocks in the removed volume and
-teleports every displaced entity, players included, to the room entry. It never
-empties or drops stored container items because a non-empty container blocks the
-operation before world mutation begins.
+Changing only the material or door relays the shell in place at the same size. Either way the exit
+keeps working without a restart.
 
-Changing only materials relays the shell in place at the same size and replaces
-the exit door. A resize also moves the stored return-door endpoint to its new
-wall position, so the exit keeps working without a restart.
-
-Before changing the world, Wormholes records the resize under `doors/pending-resizes/`. Interrupted work resumes on startup. On Folia, a resize is refused if the old and new rooms cannot be handled by one region.
-
-A resize is refused when the requested room would not fit the pocket
-dimension's build height, when the pocket world is not loaded, or when the size
-falls outside 8 to 128 blocks.
+A resize is refused when the new room would not fit the pocket dimension's build height, when the
+pocket world is not loaded, or when the size is outside 8 to 128 blocks. Interrupted work resumes on
+startup. On Folia it is refused if the old and new rooms span more than one region.
 
 ## Escape and lethal damage
 

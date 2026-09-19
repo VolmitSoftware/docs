@@ -2,7 +2,7 @@
 title: "Custom Items & Item Providers"
 description: "Use items from supported plugins in Gloss menus and panels"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -32,10 +32,8 @@ are the JSON keys.
 | `count` | int | no | `0`, rendered as `1` | Stack size. The icon applies `count > 0 ? count : 1` |
 | `style` | object | no | icon defaults | The shared display-style block every icon type accepts |
 
-Gloss passes `item` to the provider with its case preserved. The provider decides how namespaces and
-letter case work.
-
-`item` is the same key the vanilla `item` icon uses. The two icon types read alike.
+`item` is passed to the provider with its case preserved, and the provider decides how namespaces
+and letter case work. It is the same key the vanilla `item` icon uses.
 
 ### Setting one by command
 
@@ -50,19 +48,15 @@ provider@item`. The written icon always gets `"count": 1`. Edit the document to 
 The type token is matched after lowercasing and stripping `-` and `_`. `customItem`, `customitem` and
 `custom_item` all work.
 
-### `auto` resolution
-
-`auto` uses the first active provider that recognizes the item. Name the provider when more than one installed plugin may use the same id.
-
-### When an item cannot be resolved
-
-Unknown, disabled, or not-yet-loaded items use the missing-icon checker and log a warning. The menu still opens.
+`auto` uses the first active provider that recognizes the item, so name the provider when more than
+one installed plugin may use the same id. An unknown, disabled or not-yet-loaded item shows the
+missing-icon checker and logs a warning; the menu still opens.
 
 ## The providers
 
 Every adapter clones each stack it successfully resolves.
 
-| Provider id | Plugin | Id format | `isReady()` gate | Main thread only |
+| Provider id | Plugin | Id format | Ready when | Main thread only |
 |---|---|---|---|---|
 | `craftengine` | CraftEngine | `namespace:id`. A bare id is also accepted and resolved by a cross-namespace path search | always ready | no |
 | `itemsadder` | ItemsAdder | `namespace:id`, lowercase by ItemsAdder's own validation | items finished loading | no |
@@ -73,32 +67,17 @@ Every adapter clones each stack it successfully resolves.
 | `ecoitems` | EcoItems | `ecoitems:my_item`. A bare id is namespaced for you, and eco lowercases keys so ids are case insensitive | always ready | no |
 | `slimefun` | Slimefun | bare `UPPER_SNAKE_CASE` id, exact map lookup, case sensitive | always ready | no |
 | `mythicmobs` | MythicMobs | bare item config name, no namespace | item manager present | no |
-| `headdatabase` | HeadDatabase | numeric head id string, for example `7129` | always ready, but see below | no |
+| `headdatabase` | HeadDatabase | numeric head id string, for example `7129` | its head database has downloaded | no |
 
-Provider-specific behavior:
-
-| Provider | Behavior |
-|---|---|
-| `craftengine` | Enumeration maps loaded item keys to their fully namespaced form, so the catalog always lists `namespace:id` even though bare ids resolve |
-| `itemsadder` | Items load asynchronously long after startup. Until they have loaded the provider is active but not ready and every lookup is skipped. Display names come from the host stack |
-| `nexo` | Nexo builds lazily, so a malformed yml entry only throws at build time, not at lookup. That failure is caught and treated as a miss |
-| `mmoitems` | Declared main-thread-only. Off-thread lookups are skipped, never blocked. Enumeration is every type crossed with its template names, joined as `TYPE:ID` |
-| `executableitems` | The API classes are part of SCore, which ExecutableItems hard depends on, so the ExecutableItems presence check covers both |
-| `ecoitems` | The eco lookup never returns null. It returns an empty testable item whose stack is `AIR`, which the adapter treats as a miss. Enumeration filters to the `ecoitems` namespace and re-emits ids as `ecoitems:key` |
-| `slimefun` | Enumeration covers **enabled** items only, so a disabled Slimefun item still resolves in a menu but never appears in the catalog. Display names come from the host item |
-| `mythicmobs` | The Mythic instance is null between class load and MythicMobs finishing its own enable, which is what the readiness gate covers |
-| `headdatabase` | HeadDatabase dereferences its head map instead of reporting a miss until the database has downloaded, so those failures are caught and treated as "not loaded". Enumeration walks every category except online-player and disabled heads, and returns nothing until the database has landed |
+Each adapter waits for its own plugin to finish loading, so lookups miss until then. ItemsAdder
+loads its items asynchronously long after startup, and HeadDatabase returns nothing until its
+database has downloaded.
 
 Only ItemsAdder and Slimefun override the display name used by the catalog. Every other provider
 reports the id itself.
 
-### When a provider's plugin is absent
-
-The status row reports it as not installed. You do not need to remove it from the configuration.
-
-### Extending the provider set
-
-Other plugins cannot add providers at runtime.
+A provider whose plugin is absent reports as not installed in `/gloss item status`. You do not need
+to remove it from the configuration.
 
 ## Configuration
 
@@ -149,6 +128,10 @@ See [Web Editor & Sync](/gloss/18-web-editor).
 
 ### Shape
 
+`version` is the format version, `generated` is wall-clock milliseconds at export, `providers` lists
+the ids that contributed an entry, and each item carries its provider, the provider's own id, a
+display name with color codes stripped, and the resolved vanilla material for an editor sprite.
+
 ```json
 {
   "version": 1,
@@ -160,23 +143,11 @@ See [Web Editor & Sync](/gloss/18-web-editor).
 }
 ```
 
-| Field | Source |
-|---|---|
-| `version` | Catalog format version, currently `1` |
-| `generated` | Wall-clock milliseconds at export |
-| `providers` | Provider ids that contributed at least one entry. A ready provider whose ids all failed to resolve is absent |
-| `items[].provider` | The provider id |
-| `items[].id` | The provider's own id, trimmed, case preserved |
-| `items[].name` | The provider's display name with legacy section color codes stripped and trimmed, falling back to the id when it is null, blank or throws |
-| `items[].material` | The resolved stack's lowercase vanilla key path without `minecraft:`, used for an approximate editor sprite |
-
 The catalog includes up to 10,000 ready items per provider. Unresolved items are omitted, but they can still work in menus when entered manually. Only one export runs at a time. An export with no items still writes an empty catalog.
 
 > `custom-items.json` is generated. After deleting it, run `/gloss item export` again. It
 > is also the one file the HoloUi importer deliberately refuses to copy, for the same reason.
 {.is-info}
 
-## Container previews
-
-Item providers do not affect container-preview access. See
-[Container Previews](/gloss/15-container-previews) for its permissions and protection checks.
+Item providers do not affect container-preview access; see
+[Container Previews](/gloss/15-container-previews).

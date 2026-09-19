@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -180,9 +180,14 @@ This feature scores hot chunks from spawns, redstone, physics, and hoppers. It q
 
 ### `circuit-manager`
 
-This feature tracks components of adjacent blocks that produced redstone or piston events. It is an observed-activity model rather than a claim that React reconstructed Minecraft's complete electrical graph. One Bukkit callback counts as one event. Adjacent active components merge completely, a successful block break splits disconnected components, and inactive topology expires deterministically instead of being sampled or randomly discarded.
+Tracks groups of adjacent blocks that fire redstone or piston events, and throttles the busiest one when the server's total redstone time crosses `maxCircuitMS`. Redstone is held at its current state and piston events are cancelled until the throttle expires.
 
-Once per second React rolls the component event window. If the global `redstone-event-span` exceeds `maxCircuitMS`, React temporarily throttles the busiest unblocked component from that same current window. Redstone current changes are restored and piston events are cancelled until `throttleDurationMS` expires. Attempted events never extend that deadline. The world, representative coordinate, bounds, active-node count, event count, measured span, threshold, and throttle action are stored as a structured incident for React Web.
+This is an observed-activity model, not a reconstruction of Minecraft's full redstone graph.
+
+When total redstone time passes `maxCircuitMS`, React throttles the single busiest component for
+`throttleDurationMS`: its redstone is held at its current state and its piston events are cancelled.
+Further activity does not extend the throttle. Each one is recorded as an incident in React Web,
+with the world, coordinate, event count and measured time.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -193,7 +198,7 @@ Once per second React rolls the component event window. If the global `redstone-
 
 ### `hopper-chain-coalescing`
 
-This feature detects linear hopper chains and projects savings. Default mode is measurement-only. `featureActMode` plus an NMS hopper hook skips intermediate ticks. Chunk load, unload, and hopper movement events maintain an incremental chain index. Maintenance admits at most `repairChunksPerTick` deduplicated coordinates from an 8,192-entry queue, reads each chunk only on its owner, and never performs a full-world rebuild. Act mode submits at most 128 synthesized transfer tasks per tick. When `featureBucketBypass` is `false`, a synthesized transfer consumes the active hopper token bucket's source-chunk budget; a rejected or incomplete transfer leaves that chain on vanilla ticking.
+Detects linear hopper chains and reports what skipping their intermediate ticks would save. Measurement-only by default; set `featureActMode` and supply an NMS hopper hook to actually skip them.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -267,7 +272,11 @@ When a chunk wakes after long dormancy, this feature advances crop and sapling g
 
 ### `farm-burst-smoother`
 
-When farm growth events burst, this feature cancels only growth changes that it successfully queues, then reapplies them on a delayed budgeted schedule. Lowering `maxPendingUpdates` stops new intake until the queue falls below the new cap; it does not prune already-cancelled growth. A stale entry becomes immediately eligible and bypasses the nearby-player delay instead of being discarded. A successful world unload retires that world's queued changes and any owner-task claims because their blocks are leaving runtime; a cancelled unload preserves them. Deactivation stops intake first and force-applies valid pending changes on the Paper server thread or Folia owning regions for up to `shutdownDrainTimeoutMS`; failed or temporarily unavailable changes are retried during that drain and retained if it cannot finish. A nonempty remainder throws a deactivation failure so shutdown cannot report success after losing cancelled growth.
+When farm growth bursts, this feature defers the growth instead of dropping it and reapplies it on
+a budget. Nothing is lost: lowering `maxPendingUpdates` only stops new intake until the queue drains
+below the cap, and turning the feature off force-applies whatever is still queued, waiting up to
+`shutdownDrainTimeoutMS`. A shutdown that cannot finish that drain fails loudly rather than
+silently losing growth.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -289,7 +298,7 @@ When farm growth events burst, this feature cancels only growth changes that it 
 
 ### `furnace-brew-batching`
 
-This feature tracks furnaces and brewing stands. With NMS hooks, it skips intermediate ticks away from players under pressure. Without a bridge it stays measurement-only. Load and unload events maintain a world-qualified block-entity index; startup and repair consume at most `reseedChunksPerTick` Observer coordinates per tick, clamped to `1..256`. One measurement tick inspects at most 512 indexed entries through at most 32 owner-region tasks, so activation and dense worlds cannot create an unbounded chunk or task fan-out.
+Skips intermediate furnace and brewing-stand ticks away from players while the server is under pressure. Without an NMS bridge it stays measurement-only.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -306,7 +315,9 @@ This feature tracks furnaces and brewing stands. With NMS hooks, it skips interm
 
 ### `fast-leaf-decay`
 
-This feature accelerates leaf decay around break and decay events. It drains a bounded number of roots per evaluation, groups each radius scan by owning chunk, and de-duplicates overlapping block coordinates inside each chunk batch. One shared `maxSyncSpikeMS` budget bounds the combined owned-thread work admitted by that evaluation, including across Folia regions. Every root and chunk task is tied to the activation that claimed it, so deactivation prevents queued scans from breaking more leaves. Cancelled break and decay events are ignored. Fast block removal is optional. Decay sounds use the world's native localized sound delivery rather than one send per online player.
+Decays leaves around a break instead of waiting for vanilla's timer. Work is budgeted per evaluation, so a large tree spreads over several ticks rather than spiking one.
+
+Cancelled break and decay events are ignored, and fast block removal is optional.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

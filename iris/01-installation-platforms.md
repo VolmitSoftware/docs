@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ Whichever path you take, you are done when all three of these are true:
 
 On a modded client, the Iris keybind category shows that the client mod loaded. It does not prove that the server can generate chunks. Always check the server.
 
-Keep the old jar and complete world backups until you finish the upgrade checks. A changed generation build revision activates the current generator for future chunks at startup. It keeps the selected pack unless you stage a pack update. Existing terrain supplies the transition boundary. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+Keep the old jar and complete world backups until you finish the upgrade checks. A new Iris build generates future chunks with the current generator and keeps the selected pack unless you stage a pack update; existing terrain is untouched. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
 
 ## Requirements
 
@@ -52,11 +52,8 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 2. Start the server once.
 3. Install or download a pack, then restart before creating a world.
 
-Upgrading is a hard break. Back up any values you need, delete the obsolete
-`plugins/Iris/settings.json` file (or `<configDir>/iris/settings.json` on a mod
-loader), and restart to generate `iris.json` in the same data directory.
-Deleting the old file removes its local changes; reapply required values
-manually. Iris does not read or migrate `settings.json`.
+> Upgrading from an older Iris is a hard break: back up any values you need, delete the obsolete `plugins/Iris/settings.json` (or `<configDir>/iris/settings.json` on a mod loader), and restart to generate `iris.json` in the same directory. **Iris does not read or migrate `settings.json`, and deleting it discards your local changes** — reapply them by hand.
+{.is-warning}
 
 Then verify from the server console:
 
@@ -66,7 +63,7 @@ Then verify from the server console:
 /iris pack validate pack=underworld
 ```
 
-`/iris debug version` prints exactly one line: `Iris v<version>`, using the Director help heading gradient. `/iris version` is a shortcut hidden from help and suggestions. This checks the installed plugin version and command routing. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
+`/iris version` prints `Iris v<version>` and proves command routing. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
 
 `/iris pack validate` with no argument validates every installed pack. Name one with `pack=<key>` to check a single pack.
 
@@ -80,9 +77,7 @@ A failed **runtime initialization** keeps login locked and blocks world and Stud
 
 A failed or restart-pending **external datapack** state keeps login locked. It also blocks all Iris world creation until you fix it and restart. Iris tells you when a restart is what is required.
 
-When validated external datapacks change, Iris completes its initialization and then invokes the server's immediate restart capability, when present, before default worlds begin loading. Plain Spigot has no such API, so Iris stops at that startup boundary instead; if an available restart API throws or returns unexpectedly, Iris also requests shutdown. Every configured Iris default world remains bound to a non-generating refusal, so CraftBukkit cannot substitute vanilla terrain.
-
-Unchanged, already-validated datapacks and packs reuse their persisted results. Pack-validation reuse also requires the same Iris generation build revision. Iris still reads the local authored bytes to confirm the exact fingerprint. It skips remote resolution, semantic revalidation, copying, installation, and pack compilation.
+When validated external datapacks change, Iris restarts the server before default worlds load. Plain Spigot has no restart API, so Iris stops at that startup boundary instead. Either way, configured Iris worlds are bound to a non-generating refusal so the server cannot substitute vanilla terrain.
 
 A **dimension pack** with blocking errors does *not* lock the server. That one pack is refused for world and Studio creation. An error listing the reasons is printed at startup. Every healthy pack stays usable.
 
@@ -102,7 +97,7 @@ java -javaagent:plugins/Iris/agent.jar -jar server.jar nogui
 5. Check for `Injecting Bukkit` and confirm no Java Agent or Code Injection failure follows it.
 6. Complete any pack or datapack restart requirement before creating a world.
 
-`-XX:+EnableDynamicAgentLoading` permits dynamic agent loading, but host restrictions can still prevent attachment. Loading the extracted agent at JVM startup avoids that attachment step. If injection still fails, retain the complete startup stack trace and check the Iris/server version combination.
+`-XX:+EnableDynamicAgentLoading` permits dynamic agent loading, but host restrictions can still prevent attachment; loading the extracted agent at JVM startup avoids that step entirely. If injection still fails, keep the complete startup stack trace and check the Iris/server version combination.
 
 The agent and injection failures are two of the startup checks behind the Stable, Warning, and Danger mode banner. See [46 - Startup Safeguard](/iris/46-startup-safeguard) for the full check list and what each failure locks.
 
@@ -129,7 +124,7 @@ None of these are bundled or required. When present they load before Iris so Iri
 
 ### Installing the first pack
 
-Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve through GitHub's latest-release asset URLs, so a fresh install receives the newest stable Overworld or Underworld release available when the command runs. A custom link must use HTTP or HTTPS and have a path ending in `.zip`. When the archive contains multiple dimensions, Iris uses the shortest dimension key, then alphabetical order, as the install folder. Downloads are size-bounded, validated, and published atomically. A successful command leaves the server running and tells you to restart before using the pack. The current built-in pair has no external datapack imports, so that one registry-loading restart is sufficient before ordinary world creation.
+Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/path/pack.zip`. The two pack names resolve to the newest stable release. A custom link must use HTTP or HTTPS and end in `.zip`; when the archive contains multiple dimensions, the shortest dimension key becomes the install folder. A successful command leaves the server running and tells you to restart before using the pack. The built-in pair has no external datapack imports, so that one restart is enough.
 
 Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
@@ -144,7 +139,10 @@ Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
 Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The accepted 26.2 runtime is the official Youer build at commit `4eb14c90`, which bundles NeoForge 26.2.0.67.
 
-Youer stores the primary world's current generation settings at `<level-name>/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`. If startup reports `Unable to read or access the world gen settings file` followed by `Overworld settings missing`, the save is already incomplete or that path is inaccessible before Iris receives a server-start callback. Stop the process and back up the complete save before changing anything. Restore the complete save from one known-good backup, or restore that exact file from the same save's known-good backup. Never copy it from another world because it contains the authoritative seed and dimension registry settings. If no valid backup exists, move the damaged save aside and let Youer create a fresh save under `level-name`; do not fabricate the NBT file. `--safeMode` disables datapacks but does not reconstruct missing Overworld settings.
+Youer stores the primary world's generation settings at `<level-name>/dimensions/minecraft/overworld/data/minecraft/world_gen_settings.dat`. If startup reports `Unable to read or access the world gen settings file` followed by `Overworld settings missing`, that save is already incomplete before Iris is involved.
+
+> Stop the process and back up the complete save before changing anything. Restore that file from the **same** save's known-good backup, never from another world — it holds the authoritative seed and dimension registry settings. With no valid backup, move the damaged save aside and let Youer create a fresh one; do not fabricate the NBT file. `--safeMode` disables datapacks but does not reconstruct missing Overworld settings.
+{.is-warning}
 
 Verify server-side:
 
@@ -188,9 +186,9 @@ The HUD talks to both modded Iris servers and Bukkit/Paper Iris over channel `ir
 | `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>/` | Storage for a managed `iris:<name>` world on plain Spigot/CraftBukkit |
 | `<dimension-root>/iris/generation/` | The per-world generation history: immutable pack epochs, activation mantles, ownership, boundaries, semantics, and manifest. Production never reads `plugins/Iris/packs/` directly |
 
-`<level-root>` is the server's selected level directory. That is the folder named by `level-name` in `server.properties`. Plain Spigot gives each created `iris:*` world its configured outer root next to that level. It then keeps the canonical dimension chunks, generation history, and pregen cache together under the nested `dimensions/iris/<name>/` root.
+`<level-root>` is the folder named by `level-name` in `server.properties`. Plain Spigot gives each created `iris:*` world its own outer root next to that level, keeping chunks, generation history, and the pregen cache under the nested `dimensions/iris/<name>/` root.
 
-That last row is worth internalizing early. Editing `plugins/Iris/packs/overworld/` has no immediate effect on an existing world. Validate it, stage a new activation, and restart. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
+That last row is worth internalizing early: **editing `plugins/Iris/packs/overworld/` has no immediate effect on an existing world.** Validate it, stage a new activation, and restart. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
 
 ### Mod
 
@@ -243,13 +241,13 @@ Full key list: [03 - Configuration](/iris/03-configuration).
 
 Manual install is `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<http(s)-zip-url>` (alias `dl`). There is no repository listing, arbitrary pack-name lookup, branch selector, or overwrite option. Built-in pack values are normalized case-insensitively. Custom ZIPs are selected only through `link=`.
 
-Successful downloads update only the pack directory and validation result. Iris does not rebuild the live registry datapack, stop the server, or schedule a restart. Restart once so Minecraft loads the downloaded pack's registry data. If a custom pack declares external datapacks, Bukkit can ingest them at startup; modded operators install them in the save manually because ingest is unavailable there. See [25 - Pack Management](/iris/25-pack-management).
+A download updates only the pack directory; it does not rebuild the live registry datapack or schedule a restart, so restart once yourself so Minecraft loads the pack's registry data. If a custom pack declares external datapacks, Bukkit can ingest them at startup; modded operators install them in the save manually. See [25 - Pack Management](/iris/25-pack-management).
 
 ## Running a pack authored on a newer Minecraft
 
 One plugin jar covers 26.1.2 and 26.2, and the built-in packs are authored against the newest game, so a pack can reference registry content the running server does not have. Iris checks every block, item, entity, biome, structure, enchantment, and potion effect key against the live registry when the pack loads. Content that composes a missing key is left out of generation, the rest of the pack generates normally, and the complete list is printed to the console once at startup.
 
-There is nothing to configure. No pack declares a supported version, nothing compares version numbers, and the check is identical on the plugin and on Fabric, Forge, and NeoForge for the same Minecraft version. Installing a pack on an older supported version is expected to work; the startup listing tells you what it costs. `/iris pack compat` reprints it in full. See [25 - Pack Management](/iris/25-pack-management).
+There is nothing to configure: no pack declares a supported version and nothing compares version numbers. Installing a pack on an older supported version is expected to work, and the startup listing tells you what it costs. `/iris pack compat` reprints it in full. See [25 - Pack Management](/iris/25-pack-management).
 
 The one failure case is a pack whose dimension itself needs missing content, or whose regions are all excluded. That is a blocking validation error and world creation is refused, the same as any other broken pack.
 

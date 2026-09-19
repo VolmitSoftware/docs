@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,16 +13,17 @@ Its 14 adaptations add timed guards, counters, projectile reflection, stationary
 
 ## Earning XP
 
-Every hit you take while blocking pays a flat XP award. A shared cooldown means a burst of arrows does not pay ten times. The same event records four stats. Those stats are total blocked hits, total
-blocked damage, projectile versus melee, and whether it was a heavy hit. A heavy hit means more than 5 damage in one blow.
+Every hit you take while blocking pays a flat XP award. A shared cooldown means a burst of arrows does not pay ten times. It also records total blocked hits, total blocked damage, projectile versus melee, and whether it was a heavy hit, meaning more than 5 damage in one blow.
 
 There is a second, off-by-default source. If you set `passiveXpForUsingShield` above zero, you also earn a trickle every skill tick just for having a shield in either hand. It is scaled by how much time actually elapsed. It is awarded silently, so it never spams your screen.
 
 ## Adaptations
 
-All of these need the same things before they do anything. The adaptation is learned at level 1 or higher. The Blocking skill and the adaptation are both enabled. The player holds the matching `adapt.use.` permission (or the `adapt.use.*` wildcard). Any protection or region plugin on the server allows the action. Anything that hurts another entity also runs the normal PvP and PvE checks first.
+All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled, the matching `adapt.use.` permission (or the `adapt.use.*` wildcard), and protection and region policy that allow the action. Anything that hurts another entity also runs the normal PvP and PvE checks first.
 
 ### Multi-Armor (`blocking-multiarmor`)
+
+1 level · 3 knowledge
 
 Merge an elytra into a chestplate and get one item that switches between the two by itself. On the ground it is your chestplate. Jump off something. Once you have fallen more than four blocks it becomes an elytra. It is a travel adaptation more than a combat one.
 
@@ -33,9 +34,15 @@ How to use it:
 3. Wear the merged item. It swaps itself as you move.
 4. To take it apart, sneak and drop it. The parts come back out with their names, enchantments and damage intact.
 
-Swaps are throttled so it does not flicker. The merged item keeps a MultiArmor lore tag, which is how Adapt recognizes it. Destroying the merged item destroys everything inside it.
+Swaps are throttled to once every 3000 ms so it does not flicker, and the elytra form takes over once your fall distance passes 4 blocks. The merged item keeps a MultiArmor lore tag, which is how Adapt recognizes it. Destroying the merged item destroys everything inside it.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `startingSlots` | `1` | Items that can be merged into one MultiArmor before level is added. The cap is this plus your level. |
 
 ### Chains of Mephistopheles (`blocking-chainarmorer`)
+
+1 level · 1 knowledge
 
 Adds the four chainmail armor recipes, which vanilla does not give you. The shapes are the normal armor shapes, made from iron nuggets instead of ingots.
 
@@ -46,7 +53,11 @@ How to use it:
 
 This one has `permanent` set to `true` by default, so learning it is one-way.
 
+Recipes: `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `blocking-chainarmorer-leggings`, `blocking-chainarmorer-boots`, all from `IRON_NUGGET`. `permanent` defaults to `true`. No adaptation-specific config keys.
+
 ### Craftable Saddle (`blocking-saddlecrafter`)
+
+1 level · 1 knowledge
 
 Adds a saddle recipe so you are not waiting on a dungeon chest or a fishing rod. Five leather in an upside-down U.
 
@@ -57,7 +68,11 @@ How to use it:
 
 Also `permanent` by default.
 
+Recipe `blocking-saddlecrafter`: five `LEATHER` shaped as `I I` over `III`. `permanent` defaults to `true`. No adaptation-specific config keys.
+
 ### Craftable Horse Armor (`blocking-horsearmorer`)
+
+1 level · 1 knowledge
 
 Adds leather, iron, gold and diamond horse armor recipes. Surround a saddle with eight of whichever material you want.
 
@@ -69,13 +84,30 @@ How to use it:
 
 Also `permanent` by default.
 
+Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-horsearmorergold` and `blocking-horsearmorerdiamond`: a `SADDLE` in the center ringed by eight of `LEATHER`, `IRON_INGOT`, `GOLD_INGOT` or `DIAMOND`. `permanent` defaults to `true`. No adaptation-specific config keys.
+
 ### Counter Guard (`blocking-counter-guard`)
 
-Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on. A long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow. Stack gains and confirmed spends briefly show `Counter Guard current/max` on the action bar.
+5 levels · 4 knowledge, then 5 per level
 
-Works on its own once learned. Keep your shield up and stacks build themselves.
+Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on. A long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow. Stack gains and confirmed spends briefly show `Counter Guard current/max` on the action bar. Keep your shield up and stacks build themselves.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `baseStacks` | `2` | Stack cap at level 1. |
+| `stackFactor` | `8` | Extra stack cap added across the full level range. |
+| `reflectChanceBase` | `0.08` | Chance per incoming hit to reflect at level 1, 0 to 1. |
+| `reflectChanceFactor` | `0.27` | Extra reflect chance added across the full level range. |
+| `maxReflectChance` | `0.6` | Ceiling on reflect chance no matter the level. |
+| `baseReflectDamage` | `1` | Health points reflected at level 1 before the per-stack bonus. |
+| `reflectDamageFactor` | `3.5` | Extra reflected health points added across the full level range. |
+| `damagePerStack` | `0.28` | Extra reflected health points per stack you currently hold. |
+| `stackCostOnReflect` | `1` | Stacks spent per reflect. |
+| `xpPerReflectedDamage` | `5.0` | Skill XP per health point reflected. |
 
 ### Bastion Stance (`blocking-bastion-stance`)
+
+5 levels · 4 knowledge
 
 Sneak while actively blocking with a shield and you plant yourself. You gain knockback resistance and explosion knockback resistance while the stance holds. Incoming projectile damage is cut. Each projectile also rolls a chance to be blocked outright for zero damage.
 
@@ -85,15 +117,50 @@ How to use it:
 2. Hold a shield in either hand and raise it.
 3. Hold sneak.
 
-The stance re-checks itself on a short timer. It drops the moment you stop sneaking, stop blocking, lose the shield, or leave survival or adventure mode.
+The stance drops the moment you stop sneaking, stop blocking, lose the shield, or leave survival or adventure mode.
+
+Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBACK_RESISTANCE` attribute modifiers while the stance is held.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `knockbackReductionBase` | `0.18` | Knockback resistance at level 1, 0 to 1. |
+| `knockbackReductionFactor` | `0.52` | Extra knockback resistance added across the full level range. |
+| `maxKnockbackReduction` | `0.75` | Ceiling on knockback resistance. |
+| `projectileReductionBase` | `0.12` | Fraction of projectile damage removed at level 1. |
+| `projectileReductionFactor` | `0.5` | Extra projectile damage reduction added across the full level range. |
+| `maxProjectileReduction` | `0.7` | Ceiling on projectile damage reduction. |
+| `projectileNegateChanceBase` | `0.05` | Chance to cancel a projectile hit outright at level 1, 0 to 1. |
+| `projectileNegateChanceFactor` | `0.22` | Extra negate chance added across the full level range. |
+| `maxProjectileNegateChance` | `0.35` | Ceiling on negate chance. |
+| `xpPerMitigatedDamage` | `2.5` | Skill XP per health point of projectile damage removed. |
+| `xpOnNegate` | `8.0` | Skill XP for a full projectile negate. |
 
 ### Mirror Block (`blocking-mirror-block`)
 
-While you are blocking with a shield, an incoming projectile can be sent back at whoever fired it instead of hitting you. The reflected shot carries a fraction of the original damage. It flies at a fraction of the original speed. Each reflect starts a cooldown. A projectile that was already reflected cannot be reflected again.
+5 levels · 4 knowledge
 
-Works on its own once learned. Just block projectiles.
+While you are blocking with a shield, an incoming projectile can be sent back at whoever fired it instead of hitting you. The reflected shot carries a fraction of the original damage. It flies at a fraction of the original speed. Each reflect starts a cooldown. A projectile that was already reflected cannot be reflected again. Just block projectiles.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `reflectChanceBase` | `0.1` | Chance to reflect an incoming projectile at level 1, 0 to 1. |
+| `reflectChanceFactor` | `0.35` | Extra reflect chance added across the full level range. |
+| `maxReflectChance` | `0.7` | Ceiling on reflect chance. |
+| `reflectedDamageFactorBase` | `0.45` | Fraction of the original damage the reflected shot carries at level 1. |
+| `reflectedDamageFactorIncrease` | `0.35` | Extra damage fraction added across the full level range. |
+| `maxReflectedDamageFactor` | `0.95` | Ceiling on reflected damage fraction. |
+| `reflectVelocityFactorBase` | `0.42` | Fraction of the original speed the reflected shot flies at, at level 1. |
+| `reflectVelocityFactor` | `0.45` | Extra speed fraction added across the full level range. |
+| `maxReflectVelocityFactor` | `1.1` | Ceiling on reflected speed fraction. |
+| `cooldownMillisBase` | `2000` | Milliseconds between reflects at level 1. |
+| `cooldownMillisFactor` | `1200` | Milliseconds of that cooldown removed at max level. |
+| `minReflectedVelocitySquared` | `0.08` | Squared speed below which the incoming shot is too slow to bounce meaningfully. |
+| `fallbackReflectedSpeed` | `0.95` | Speed given to a reflected shot when the incoming velocity was under that threshold. |
+| `xpOnReflect` | `8` | Skill XP per projectile reflected. |
 
 ### Bulwark Bash (`blocking-bulwark-bash`)
+
+5 levels · 4 knowledge
 
 Sprint, jump, and hit something on the way down while a shield is in your off hand. The target takes bonus damage and gets thrown back. Everything else in range is knocked away and slowed. It is the shield player's opener and gap-closer at the same time.
 
@@ -107,9 +174,35 @@ How to use it:
 
 Only the entity you actually hit takes the extra damage. The rest of the shockwave is knockback and stun. Each bash puts your shield on cooldown.
 
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `baseDamage` | `1.0` | Health points added to the primary hit before the level bonus. |
+| `damageBonusBase` | `0.3` | Extra health points on the primary hit at level 1. |
+| `damageBonusFactor` | `2.2` | Extra health points added across the full level range. |
+| `rangeBase` | `2.4` | Shockwave radius in blocks at level 1. |
+| `rangeFactor` | `1.8` | Extra radius in blocks added across the full level range. |
+| `knockbackBase` | `0.6` | Horizontal launch strength at level 1. |
+| `knockbackFactor` | `0.6` | Extra horizontal launch added across the full level range. |
+| `upwardKnockbackBase` | `0.18` | Vertical launch strength at level 1. |
+| `upwardKnockbackFactor` | `0.14` | Extra vertical launch added across the full level range. |
+| `stunTicksBase` | `18` | Slowness duration in ticks at level 1. Never less than 10. |
+| `stunTicksFactor` | `24` | Extra slowness ticks added across the full level range. |
+| `stunAmplifierBase` | `2` | Slowness amplifier at level 1. |
+| `stunAmplifierFactor` | `1` | Extra amplifier added across the full level range. |
+| `cooldownTicksBase` | `220` | Shield cooldown in ticks applied at level 1. Never less than 20. |
+| `cooldownTicksFactor` | `120` | Ticks of that cooldown removed at max level. |
+| `minFallDistanceForCrit` | `0.08` | Blocks you must have fallen for the hit to count as a jump crit. |
+| `recentSprintWindowMillis` | `900` | How long after you stop sprinting the bash still counts you as sprinting. |
+| `xpPerTargetHit` | `8` | Skill XP per target affected by the bash. |
+| `maxCandidatesPerActivation` | `16` | Nearby living entities inspected per bash. |
+| `maxAffectedPerActivation` | `12` | Targets actually affected per bash, primary included. |
+| `maxTargetFxPerActivation` | `6` | Affected targets that get their own impact particles. |
+
 ### Shield Wall (`blocking-shield-wall`)
 
-Stand in front of your team with your shield up and facing the incoming fire. Projectiles that hit players behind you land softer. Adapt looks at every blocking player near the target. It keeps only the ones inside range, inside the protection arc, and actually facing into the shot. It applies the strongest reduction it finds.
+5 levels · 4 knowledge
+
+Stand in front of your team with your shield up and facing the incoming fire. Projectiles that hit players behind you land softer. Of every blocking player near the target, only those in range, inside the protection arc, and facing into the shot count, and the strongest reduction wins.
 
 How to use it:
 
@@ -119,7 +212,21 @@ How to use it:
 
 Only players are shielded this way. The XP goes to the blocker, not the ally.
 
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `rangeBase` | `3.0` | Blocks between blocker and ally allowed at level 1. |
+| `rangeFactor` | `4.0` | Extra range in blocks added across the full level range. |
+| `arcDegreesBase` | `60` | Width of the protection cone in degrees at level 1. |
+| `arcDegreesFactor` | `90` | Extra cone degrees added across the full level range. |
+| `damageReductionBase` | `0.18` | Fraction of the projectile's damage removed at level 1. |
+| `damageReductionFactor` | `0.5` | Extra damage reduction added across the full level range. |
+| `maxDamageReduction` | `0.6` | Ceiling on damage reduction. |
+| `minFacingAlignment` | `0.1` | How squarely the blocker must face into the incoming shot to count. |
+| `xpPerDamageShielded` | `3.0` | Skill XP per health point of damage taken off the ally. |
+
 ### Perfect Guard (`blocking-perfect-guard`)
+
+5 levels · 5 knowledge, then 4 per level
 
 Raise your shield in the last fraction of a second before a hit lands. The hit is cancelled outright. The attacker eats a stagger. It is a parry, not a block. The window is short. There is a cooldown between successful guards.
 
@@ -132,19 +239,55 @@ How to use it:
 
 It negates melee and projectiles alike. If the source is a living attacker you are allowed to hurt, they get slowed and shoved back.
 
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `windowMillisBase` | `120` | Milliseconds after raising the shield in which a hit is parried, at level 1. |
+| `windowMillisFactor` | `240` | Extra window milliseconds added across the full level range. |
+| `staggerTicksBase` | `20` | Slowness duration in ticks put on the attacker at level 1. |
+| `staggerTicksFactor` | `40` | Extra stagger ticks added across the full level range. |
+| `staggerAmplifierBase` | `1` | Slowness amplifier at level 1. |
+| `staggerAmplifierFactor` | `2` | Extra amplifier added across the full level range. |
+| `staggerKnockback` | `0.55` | Shove strength applied to the staggered attacker. |
+| `minFacingAlignment` | `0.15` | How squarely you must face the attacker for the parry to count. |
+| `cooldownMillis` | `1500` | Milliseconds between successful parries. |
+| `xpOnNegate` | `14` | Skill XP per hit negated. |
+
 ### Tempered Guard (`blocking-tempered-guard`)
 
-Whenever a blocked hit actually deals positive durability damage to your shield, Tempered Guard rolls a chance to repair gear. One tick later, after vanilla applies that shield wear, it repairs the shield first. Then it repairs the first damaged armor piece it finds. It will not carry you through a long fight. Over a session it slows how fast your kit wears out.
+5 levels · 3 knowledge, then 4 per level
 
-Works on its own once learned.
+Whenever a blocked hit actually costs your shield durability, Tempered Guard rolls a chance to repair gear: the shield first, then the first damaged armor piece it finds. It will not carry you through a long fight, but over a session it slows how fast your kit wears out.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `repairChanceBase` | `0.15` | Chance per blocked hit to repair something at level 1, 0 to 1. |
+| `repairChanceFactor` | `0.4` | Extra repair chance added across the full level range. |
+| `maxRepairChance` | `0.55` | Ceiling on repair chance. |
+| `repairAmountBase` | `2` | Durability points restored per proc at level 1. |
+| `repairAmountFactor` | `6` | Extra durability points added across the full level range. |
+| `xpPerDurabilityRepaired` | `2.0` | Skill XP per durability point restored. |
 
 ### Shieldbearer's Resolve (`blocking-shieldbearers-resolve`)
 
-Getting your shield axed is normally a death sentence. With this, the moment an axe disables your shield you get Resistance. The shield cooldown is cut down. You are back behind cover much sooner.
+5 levels · 4 knowledge
 
-Works on its own once learned. It only fires when the attacker was actually swinging an axe and your shield really went on cooldown.
+Getting your shield axed is normally a death sentence. With this, the moment an axe disables your shield you get Resistance. The shield cooldown is cut down. You are back behind cover much sooner. It only fires when the attacker was actually swinging an axe and your shield really went on cooldown.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `recoverySpeedBase` | `0.2` | Fraction of the remaining shield cooldown removed at level 1. |
+| `recoverySpeedFactor` | `0.45` | Extra fraction removed across the full level range. |
+| `maxRecoverySpeed` | `0.7` | Ceiling on how much of the cooldown can be removed. |
+| `resistanceAmplifierBase` | `0` | Resistance amplifier granted at level 1. |
+| `resistanceAmplifierFactor` | `2.2` | Extra amplifier added across the full level range. |
+| `minResistanceTicks` | `40` | Shortest Resistance duration in ticks, whatever the cooldown was. |
+| `minCooldownTicks` | `20` | Shortest shield cooldown the recovery can leave behind. |
+| `reprocessGuardMillis` | `500` | Milliseconds before another disable can be processed, so one axe hit does not fire twice. |
+| `xpOnResolve` | `12` | Skill XP per recovery. |
 
 ### Phalanx Crafter (`blocking-phalanx-crafter`)
+
+2 levels · 2 knowledge, then 3 per level
 
 Two levels unlock two shaped crafting-table recipes. Level 1 adds an alternate way to make an ordinary shield. Level 2 upgrades an existing shield into a Netherite-Reinforced Shield. The reinforced shield blocks exactly like a normal shield. Its special benefit is 1,200 maximum durability instead of normal shield durability. It is fully repaired during the upgrade. It keeps the input shield's enchantments and banner face. Its display name becomes gold.
 
@@ -175,7 +318,11 @@ This consumes four netherite ingots and the center shield. It produces one fully
 
 Crafting the netherite recipe below level 2 is cancelled with a deny sound. Any existing banner base color or pattern on the input shield, including an explicitly white face, is preserved. A shield with no banner face receives a black face with an orange border and light-gray rhombus so the reinforced result is visually distinct.
 
+Recipe keys are `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, giving a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only). No adaptation-specific config keys.
+
 ### Interpose (`blocking-interpose`)
+
+5 levels · 4 knowledge
 
 Sneak-block near a hurt ally and part of the damage they take gets pulled onto your shield instead. It only kicks in once the ally is below the low-health threshold. It saves
 people who are about to die rather than leaking your durability all fight.
@@ -188,6 +335,18 @@ How to use it:
 4. Stay within range of the ally.
 
 The redirected damage does not hit your health. It costs your shield durability and adds exhaustion, so you get hungry doing it. If several blockers qualify, the closest one takes the hit.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `redirectShareBase` | `0.22` | Fraction of the ally's damage pulled onto your shield at level 1. |
+| `redirectShareFactor` | `0.4` | Extra redirect fraction added across the full level range. |
+| `maxRedirectShare` | `0.6` | Ceiling on the redirect fraction. |
+| `rangeBase` | `3.5` | Blocks between you and the ally allowed at level 1. |
+| `rangeFactor` | `4.5` | Extra range in blocks added across the full level range. |
+| `lowHealthThreshold` | `0.4` | Fraction of max health the ally must be at or below before Interpose fires. |
+| `durabilityPerDamage` | `1.0` | Shield durability spent per health point redirected, rounded up, minimum 1. |
+| `exhaustionPerRedirect` | `1.0` | Exhaustion added to you per redirect. |
+| `xpPerDamageRedirected` | `3.0` | Skill XP per health point redirected. |
 
 ## Reference
 
@@ -205,380 +364,43 @@ Written to `plugins/Adapt/skills/blocking.toml` on first load.
 | `cooldownDelay` | `1500` | Milliseconds between blocked-hit XP awards. |
 | `passiveXpForUsingShield` | `0` | XP per skill interval just for holding a shield in either hand. 0 turns it off. Awarded silently under the `blocking:shield-hold` source tag. |
 
-### Milestones and stat keys
+### Challenges
 
-| Milestone key | Stat key | Threshold |
-|---------------|----------|-----------|
-| `challenge_block_1k` | `blocked.hits` | 1000 |
-| `challenge_block_5k` | `blocked.hits` | 5000 |
-| `challenge_block_50k` | `blocked.hits` | 50000 |
-| `challenge_block_dmg_1k` | `blocked.damage` | 1000 |
-| `challenge_block_dmg_10k` | `blocked.damage` | 10000 |
-| `challenge_block_proj_100` | `blocked.projectiles` | 100 |
-| `challenge_block_proj_1k` | `blocked.projectiles` | 1000 |
-| `challenge_block_melee_500` | `blocked.melee` | 500 |
-| `challenge_block_melee_5k` | `blocked.melee` | 5000 |
-| `challenge_block_heavy_50` | `blocked.heavy` | 50 |
-| `challenge_block_heavy_500` | `blocked.heavy` | 500 |
-| `challenge_blocking_multi_200` | `blocking.multi-armor.swaps` | 200 |
-| `challenge_blocking_multi_5k` | `blocking.multi-armor.swaps` | 5000 |
-| `challenge_blocking_chain_25` | `blocking.chain-armorer.pieces-crafted` | 25 |
-| `challenge_blocking_saddle_25` | `blocking.saddlecrafter.saddles-crafted` | 25 |
-| `challenge_blocking_horse_armor_10` | `blocking.horse-armorer.armor-crafted` | 10 |
-| `challenge_blocking_counter_500` | `blocking.counter-guard.damage-reflected` | 500 |
-| `challenge_blocking_bastion_500` | `blocking.bastion-stance.projectiles-softened` | 500 |
-| `challenge_blocking_mirror_100` | `blocking.mirror-block.projectiles-reflected` | 100 |
-| `challenge_blocking_bulwark_500` | `blocking.bulwark-bash.mobs-bashed` | 500 |
-| `challenge_blocking_shieldwall_500` | `blocking.shield-wall.damage-shielded` | 500 |
-| `challenge_blocking_shieldwall_5k` | `blocking.shield-wall.damage-shielded` | 5000 |
-| `challenge_blocking_perfect_100` | `blocking.perfect-guard.hits-negated` | 100 |
-| `challenge_blocking_perfect_1k` | `blocking.perfect-guard.hits-negated` | 1000 |
-| `challenge_blocking_tempered_500` | `blocking.tempered-guard.durability-repaired` | 500 |
-| `challenge_blocking_tempered_5k` | `blocking.tempered-guard.durability-repaired` | 5000 |
-| `challenge_blocking_resolve_100` | `blocking.shieldbearers-resolve.recoveries` | 100 |
-| `challenge_blocking_resolve_1k` | `blocking.shieldbearers-resolve.recoveries` | 1000 |
-| `challenge_blocking_phalanx_25` | `blocking.phalanx-crafter.items-crafted` | 25 |
-| `challenge_blocking_interpose_250` | `blocking.interpose.damage-redirected` | 250 |
-| `challenge_blocking_interpose_2k` | `blocking.interpose.damage-redirected` | 2000 |
+| Challenge | Threshold |
+|---|---|
+| `challenge_block_1k` | 1000 |
+| `challenge_block_5k` | 5000 |
+| `challenge_block_50k` | 50000 |
+| `challenge_block_dmg_1k` | 1000 |
+| `challenge_block_dmg_10k` | 10000 |
+| `challenge_block_proj_100` | 100 |
+| `challenge_block_proj_1k` | 1000 |
+| `challenge_block_melee_500` | 500 |
+| `challenge_block_melee_5k` | 5000 |
+| `challenge_block_heavy_50` | 50 |
+| `challenge_block_heavy_500` | 500 |
+| `challenge_blocking_multi_200` | 200 |
+| `challenge_blocking_multi_5k` | 5000 |
+| `challenge_blocking_chain_25` | 25 |
+| `challenge_blocking_saddle_25` | 25 |
+| `challenge_blocking_horse_armor_10` | 10 |
+| `challenge_blocking_counter_500` | 500 |
+| `challenge_blocking_bastion_500` | 500 |
+| `challenge_blocking_mirror_100` | 100 |
+| `challenge_blocking_bulwark_500` | 500 |
+| `challenge_blocking_shieldwall_500` | 500 |
+| `challenge_blocking_shieldwall_5k` | 5000 |
+| `challenge_blocking_perfect_100` | 100 |
+| `challenge_blocking_perfect_1k` | 1000 |
+| `challenge_blocking_tempered_500` | 500 |
+| `challenge_blocking_tempered_5k` | 5000 |
+| `challenge_blocking_resolve_100` | 100 |
+| `challenge_blocking_resolve_1k` | 1000 |
+| `challenge_blocking_phalanx_25` | 25 |
+| `challenge_blocking_interpose_250` | 250 |
+| `challenge_blocking_interpose_2k` | 2000 |
 
-Five advancements are granted directly instead of by a stat threshold.
-`challenge_blocking_bastion_10` fires after ten projectiles in one stance
-session. `challenge_blocking_counter_max` fires on a Counter Guard reflect at
-full stacks. `challenge_blocking_mirror_3in5` fires on three Mirror Block
-reflects inside one window. `challenge_blocking_bulwark_4` fires when one bash
-affects four or more targets. `challenge_blocking_phalanx_netherite` fires on
-the first netherite shield crafted.
-
-### Shared adaptation config keys
-
-Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` carries these keys on top of its own.
-
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `enabled` | `true` | Turns this adaptation off when false. |
-| `permanent` | `false` | When true, learning it is one-way and it cannot be unlearned. |
-| `showParticles` | `true` | Plays this adaptation's particle effects. |
-| `showSounds` | `true` | Plays this adaptation's sound effects. |
-| `baseCost` | per adaptation | Knowledge cost per level past the first. |
-| `costFactor` | per adaptation | Growth applied to level-to-level knowledge cost. |
-| `maxLevel` | per adaptation | Highest level a player can buy. |
-| `initialCost` | per adaptation | Knowledge cost of level 1. |
-
-The tick interval below is the adaptation's background tick rate. Only Bastion Stance does work on that tick, clearing stale stance sessions. For every other Blocking adaptation the interval is idle bookkeeping.
-
-### Multi-Armor
-
-| Property | Value |
-|----------|-------|
-| Icon | `ELYTRA` |
-| Max level | 1 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 1 |
-| Cost factor | 1 |
-| Tick interval (ms) | 20202 |
-| Config file | `plugins/Adapt/adaptations/blocking-multiarmor.toml` |
-
-Swap cooldown is a hard-coded 3000 ms. The elytra form takes over once fall distance passes 4 blocks.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `startingSlots` | `1` | Items that can be merged into one MultiArmor before level is added. The cap is this plus your level. |
-
-### Chains of Mephistopheles
-
-| Property | Value |
-|----------|-------|
-| Icon | `CHAINMAIL_CHESTPLATE` |
-| Max level | 1 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 1 |
-| Cost factor | 0 |
-| Tick interval (ms) | 17774 |
-| Config file | `plugins/Adapt/adaptations/blocking-chainarmorer.toml` |
-
-Recipes: `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `blocking-chainarmorer-leggings`, `blocking-chainarmorer-boots`, all from `IRON_NUGGET`. `permanent` defaults to `true`. No adaptation-specific config keys.
-
-### Craftable Saddle
-
-| Property | Value |
-|----------|-------|
-| Icon | `LEATHER_HORSE_ARMOR` |
-| Max level | 1 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 5 |
-| Cost factor | 0 |
-| Tick interval (ms) | 17774 |
-| Config file | `plugins/Adapt/adaptations/blocking-saddlecrafter.toml` |
-
-Recipe `blocking-saddlecrafter`: five `LEATHER` shaped as `I I` over `III`. `permanent` defaults to `true`. No adaptation-specific config keys.
-
-### Craftable Horse Armor
-
-| Property | Value |
-|----------|-------|
-| Icon | `GOLDEN_HORSE_ARMOR` |
-| Max level | 1 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 5 |
-| Cost factor | 0 |
-| Tick interval (ms) | 17774 |
-| Config file | `plugins/Adapt/adaptations/blocking-horsearmorer.toml` |
-
-Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-horsearmorergold` and `blocking-horsearmorerdiamond`: a `SADDLE` in the center ringed by eight of `LEATHER`, `IRON_INGOT`, `GOLD_INGOT` or `DIAMOND`. `permanent` defaults to `true`. No adaptation-specific config keys.
-
-### Counter Guard
-
-| Property | Value |
-|----------|-------|
-| Icon | `IRON_BARS` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.75 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-counter-guard.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `baseStacks` | `2` | Stack cap at level 1. |
-| `stackFactor` | `8` | Extra stack cap added across the full level range. |
-| `reflectChanceBase` | `0.08` | Chance per incoming hit to reflect at level 1, 0 to 1. |
-| `reflectChanceFactor` | `0.27` | Extra reflect chance added across the full level range. |
-| `maxReflectChance` | `0.6` | Ceiling on reflect chance no matter the level. |
-| `baseReflectDamage` | `1` | Health points reflected at level 1 before the per-stack bonus. |
-| `reflectDamageFactor` | `3.5` | Extra reflected health points added across the full level range. |
-| `damagePerStack` | `0.28` | Extra reflected health points per stack you currently hold. |
-| `stackCostOnReflect` | `1` | Stacks spent per reflect. |
-| `xpPerReflectedDamage` | `5.0` | Skill XP per health point reflected. |
-
-### Bastion Stance
-
-| Property | Value |
-|----------|-------|
-| Icon | `SHIELD` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.68 |
-| Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adaptations/blocking-bastion-stance.toml` |
-
-Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBACK_RESISTANCE` attribute modifiers while the stance is held.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `knockbackReductionBase` | `0.18` | Knockback resistance at level 1, 0 to 1. |
-| `knockbackReductionFactor` | `0.52` | Extra knockback resistance added across the full level range. |
-| `maxKnockbackReduction` | `0.75` | Ceiling on knockback resistance. |
-| `projectileReductionBase` | `0.12` | Fraction of projectile damage removed at level 1. |
-| `projectileReductionFactor` | `0.5` | Extra projectile damage reduction added across the full level range. |
-| `maxProjectileReduction` | `0.7` | Ceiling on projectile damage reduction. |
-| `projectileNegateChanceBase` | `0.05` | Chance to cancel a projectile hit outright at level 1, 0 to 1. |
-| `projectileNegateChanceFactor` | `0.22` | Extra negate chance added across the full level range. |
-| `maxProjectileNegateChance` | `0.35` | Ceiling on negate chance. |
-| `xpPerMitigatedDamage` | `2.5` | Skill XP per health point of projectile damage removed. |
-| `xpOnNegate` | `8.0` | Skill XP for a full projectile negate. |
-
-### Mirror Block
-
-| Property | Value |
-|----------|-------|
-| Icon | `LIGHT_WEIGHTED_PRESSURE_PLATE` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.7 |
-| Tick interval (ms) | 1200 |
-| Config file | `plugins/Adapt/adaptations/blocking-mirror-block.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `reflectChanceBase` | `0.1` | Chance to reflect an incoming projectile at level 1, 0 to 1. |
-| `reflectChanceFactor` | `0.35` | Extra reflect chance added across the full level range. |
-| `maxReflectChance` | `0.7` | Ceiling on reflect chance. |
-| `reflectedDamageFactorBase` | `0.45` | Fraction of the original damage the reflected shot carries at level 1. |
-| `reflectedDamageFactorIncrease` | `0.35` | Extra damage fraction added across the full level range. |
-| `maxReflectedDamageFactor` | `0.95` | Ceiling on reflected damage fraction. |
-| `reflectVelocityFactorBase` | `0.42` | Fraction of the original speed the reflected shot flies at, at level 1. |
-| `reflectVelocityFactor` | `0.45` | Extra speed fraction added across the full level range. |
-| `maxReflectVelocityFactor` | `1.1` | Ceiling on reflected speed fraction. |
-| `cooldownMillisBase` | `2000` | Milliseconds between reflects at level 1. |
-| `cooldownMillisFactor` | `1200` | Milliseconds of that cooldown removed at max level. |
-| `minReflectedVelocitySquared` | `0.08` | Squared speed below which the incoming shot is too slow to bounce meaningfully. |
-| `fallbackReflectedSpeed` | `0.95` | Speed given to a reflected shot when the incoming velocity was under that threshold. |
-| `xpOnReflect` | `8` | Skill XP per projectile reflected. |
-
-### Bulwark Bash
-
-| Property | Value |
-|----------|-------|
-| Icon | `BELL` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.72 |
-| Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adaptations/blocking-bulwark-bash.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `baseDamage` | `1.0` | Health points added to the primary hit before the level bonus. |
-| `damageBonusBase` | `0.3` | Extra health points on the primary hit at level 1. |
-| `damageBonusFactor` | `2.2` | Extra health points added across the full level range. |
-| `rangeBase` | `2.4` | Shockwave radius in blocks at level 1. |
-| `rangeFactor` | `1.8` | Extra radius in blocks added across the full level range. |
-| `knockbackBase` | `0.6` | Horizontal launch strength at level 1. |
-| `knockbackFactor` | `0.6` | Extra horizontal launch added across the full level range. |
-| `upwardKnockbackBase` | `0.18` | Vertical launch strength at level 1. |
-| `upwardKnockbackFactor` | `0.14` | Extra vertical launch added across the full level range. |
-| `stunTicksBase` | `18` | Slowness duration in ticks at level 1. Never less than 10. |
-| `stunTicksFactor` | `24` | Extra slowness ticks added across the full level range. |
-| `stunAmplifierBase` | `2` | Slowness amplifier at level 1. |
-| `stunAmplifierFactor` | `1` | Extra amplifier added across the full level range. |
-| `cooldownTicksBase` | `220` | Shield cooldown in ticks applied at level 1. Never less than 20. |
-| `cooldownTicksFactor` | `120` | Ticks of that cooldown removed at max level. |
-| `minFallDistanceForCrit` | `0.08` | Blocks you must have fallen for the hit to count as a jump crit. |
-| `recentSprintWindowMillis` | `900` | How long after you stop sprinting the bash still counts you as sprinting. |
-| `xpPerTargetHit` | `8` | Skill XP per target affected by the bash. |
-| `maxCandidatesPerActivation` | `16` | Nearby living entities inspected per bash. |
-| `maxAffectedPerActivation` | `12` | Targets actually affected per bash, primary included. |
-| `maxTargetFxPerActivation` | `6` | Affected targets that get their own impact particles. |
-
-### Shield Wall
-
-| Property | Value |
-|----------|-------|
-| Icon | `SHIELD` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.65 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-shield-wall.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `rangeBase` | `3.0` | Blocks between blocker and ally allowed at level 1. |
-| `rangeFactor` | `4.0` | Extra range in blocks added across the full level range. |
-| `arcDegreesBase` | `60` | Width of the protection cone in degrees at level 1. |
-| `arcDegreesFactor` | `90` | Extra cone degrees added across the full level range. |
-| `damageReductionBase` | `0.18` | Fraction of the projectile's damage removed at level 1. |
-| `damageReductionFactor` | `0.5` | Extra damage reduction added across the full level range. |
-| `maxDamageReduction` | `0.6` | Ceiling on damage reduction. |
-| `minFacingAlignment` | `0.1` | How squarely the blocker must face into the incoming shot to count. |
-| `xpPerDamageShielded` | `3.0` | Skill XP per health point of damage taken off the ally. |
-
-### Perfect Guard
-
-| Property | Value |
-|----------|-------|
-| Icon | `SHIELD` |
-| Max level | 5 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.78 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-perfect-guard.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `windowMillisBase` | `120` | Milliseconds after raising the shield in which a hit is parried, at level 1. |
-| `windowMillisFactor` | `240` | Extra window milliseconds added across the full level range. |
-| `staggerTicksBase` | `20` | Slowness duration in ticks put on the attacker at level 1. |
-| `staggerTicksFactor` | `40` | Extra stagger ticks added across the full level range. |
-| `staggerAmplifierBase` | `1` | Slowness amplifier at level 1. |
-| `staggerAmplifierFactor` | `2` | Extra amplifier added across the full level range. |
-| `staggerKnockback` | `0.55` | Shove strength applied to the staggered attacker. |
-| `minFacingAlignment` | `0.15` | How squarely you must face the attacker for the parry to count. |
-| `cooldownMillis` | `1500` | Milliseconds between successful parries. |
-| `xpOnNegate` | `14` | Skill XP per hit negated. |
-
-### Tempered Guard
-
-| Property | Value |
-|----------|-------|
-| Icon | `ANVIL` |
-| Max level | 5 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.6 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-tempered-guard.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `repairChanceBase` | `0.15` | Chance per blocked hit to repair something at level 1, 0 to 1. |
-| `repairChanceFactor` | `0.4` | Extra repair chance added across the full level range. |
-| `maxRepairChance` | `0.55` | Ceiling on repair chance. |
-| `repairAmountBase` | `2` | Durability points restored per proc at level 1. |
-| `repairAmountFactor` | `6` | Extra durability points added across the full level range. |
-| `xpPerDurabilityRepaired` | `2.0` | Skill XP per durability point restored. |
-
-### Shieldbearer's Resolve
-
-| Property | Value |
-|----------|-------|
-| Icon | `NETHERITE_AXE` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.7 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-shieldbearers-resolve.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `recoverySpeedBase` | `0.2` | Fraction of the remaining shield cooldown removed at level 1. |
-| `recoverySpeedFactor` | `0.45` | Extra fraction removed across the full level range. |
-| `maxRecoverySpeed` | `0.7` | Ceiling on how much of the cooldown can be removed. |
-| `resistanceAmplifierBase` | `0` | Resistance amplifier granted at level 1. |
-| `resistanceAmplifierFactor` | `2.2` | Extra amplifier added across the full level range. |
-| `minResistanceTicks` | `40` | Shortest Resistance duration in ticks, whatever the cooldown was. |
-| `minCooldownTicks` | `20` | Shortest shield cooldown the recovery can leave behind. |
-| `reprocessGuardMillis` | `500` | Milliseconds before another disable can be processed, so one axe hit does not fire twice. |
-| `xpOnResolve` | `12` | Skill XP per recovery. |
-
-### Phalanx Crafter
-
-| Property | Value |
-|----------|-------|
-| Icon | `SHIELD` |
-| Max level | 2 |
-| Initial knowledge cost | 2 |
-| Base knowledge cost | 3 |
-| Cost factor | 0 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-phalanx-crafter.toml` |
-
-Recipes follow. `blocking-phalanx-field-shield` uses `WHITE_WOOL` x3 on top,
-`OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, and one `OAK_PLANKS`
-below center. It gives a plain `SHIELD`. `blocking-phalanx-netherite-shield`
-uses four `NETHERITE_INGOT` around a `SHIELD` at level 2 only. It gives a fully
-repaired shield with max durability 1200 named "Netherite-Reinforced Shield". The netherite preview and output clone the input shield, preserving any existing banner base color or pattern. A shield without banner metadata instead receives a black base, orange border, and light-gray rhombus. No adaptation-specific config keys.
-
-### Interpose
-
-| Property | Value |
-|----------|-------|
-| Icon | `SHIELD` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.7 |
-| Tick interval (ms) | 1000 |
-| Config file | `plugins/Adapt/adaptations/blocking-interpose.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `redirectShareBase` | `0.22` | Fraction of the ally's damage pulled onto your shield at level 1. |
-| `redirectShareFactor` | `0.4` | Extra redirect fraction added across the full level range. |
-| `maxRedirectShare` | `0.6` | Ceiling on the redirect fraction. |
-| `rangeBase` | `3.5` | Blocks between you and the ally allowed at level 1. |
-| `rangeFactor` | `4.5` | Extra range in blocks added across the full level range. |
-| `lowHealthThreshold` | `0.4` | Fraction of max health the ally must be at or below before Interpose fires. |
-| `durabilityPerDamage` | `1.0` | Shield durability spent per health point redirected, rounded up, minimum 1. |
-| `exhaustionPerRedirect` | `1.0` | Exhaustion added to you per redirect. |
-| `xpPerDamageRedirected` | `3.0` | Skill XP per health point redirected. |
+Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
 
 ## See also
 

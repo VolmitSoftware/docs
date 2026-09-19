@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,8 +64,6 @@ For each bucket, at each column:
 
 Bucket results are then added together to give the column height. `fluidHeight` plus any dimension `overlayNoise` is added on top before the final clamp to the dimension usable range.
 
-Iris rejects nonfinite interpolated bounds or active generator noise before the result enters the terrain-height cache. The error identifies the generator, column, and height bounds. A constant-height bucket skips its inactive noise sampling.
-
 Two practical consequences:
 
 - **Generators that share an interpolator blend into one averaged shape.** If `plain` and `rare-hills` both use `BILINEAR_STARCAST_9` with `horizontalScale: 12`, they share a bucket. A biome that references only `plain` still gets the average of both shapes inside its own band. The bundled overworld deliberately spreads generators across distinct `horizontalScale` values (`12`, `15`, `23`, `26`, `52`, ...) so that most of them stay independent.
@@ -81,16 +79,7 @@ Generators control shape and smoothing radius; biomes control the height range. 
 
 ### Volumetric shaping after height generation
 
-Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around that height. It can produce overhangs, covered ledges and fissures that a single height per column cannot represent. Generator cliffs and cell fracture remain height-map operations.
-
-The profile consumes two `IrisGeneratorStyle` values, both defaulting to `SIMPLEX` and both sampled signed in three dimensions:
-
-| Profile field | Role | Sampling |
-|---|---|---|
-| `densityStyle` | Displaces terrain density above and below the base height | `64 / horizontalScale` per block in X and Z, `64 / verticalScale` per block in Y |
-| `crackStyle` | Its zero crossings define tall narrow fissures | `64 / crackScale` per block in X and Z, a quarter of that in Y |
-
-Style `zoom` multiplies the configured feature sizes, and each style is seeded independently from the profile seed. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain) for the full profile reference.
+Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around it, producing overhangs, covered ledges and fissures that a single height per column cannot represent. It consumes two `IrisGeneratorStyle` values: `densityStyle` displaces density above and below the base height, and `crackStyle`'s zero crossings become tall narrow fissures. Generator cliffs and cell fracture remain height-map operations. Full reference: [47 - Volumetric Terrain](/iris/47-volumetric-terrain).
 
 ## Reduce block-scale surface detail
 
@@ -246,15 +235,11 @@ Built-in noise uses a common 64-block base scale at `zoom: 1`. This describes th
 | `SIERPINSKI_TRIANGLE` | 64-block equilateral root triangle, four subdivisions, 4-block smallest triangle side |
 | Interpolated styles | 32-block interpolation grid over the corresponding scaled source |
 
-Simplex, Perlin, and the patterns below sample octave frequencies `1, 2, 4, ...` with amplitudes `1, 0.5, 0.25, ...`, normalized once when their octave count is set. More octaves add finer detail without moving the base scale or changing the base seed. Choosing a two-octave preset uses the same source seed as setting its one-octave counterpart to two octaves. Fractal presets and layer octave multipliers reach the underlying generator through offsets and interpolation. Octave counts are bounded to 1..16; hexagon and Sierpinski presets apply octaves to their color field while keeping cell boundaries fixed. The fifteen pattern styles below instead superimpose smaller copies of their complete geometry.
+More octaves add finer detail without moving the base scale or changing the base seed; a two-octave preset is identical to its one-octave counterpart with `octaves: 2`. Octave counts are bounded to `1..16`. Hexagon and Sierpinski presets apply octaves to their color field while keeping cell boundaries fixed, and the fifteen pattern styles below superimpose smaller copies of their complete geometry instead.
 
-`HEXAGON` and `HEX_SIMPLEX` form complete regular hexagonal tilings with neighboring colors sampled from a coherent simplex field. `HEX_JAMES` and `HEX_RANDOM_SIZE` recursively place contained child hexagons. Sierpinski removes the middle triangle at each level of an equilateral triangle and tiles the result across positive and negative coordinates. These patterns use the X/Z plane; height changes their color field continuously without blending different cell grids.
+Shape notes worth knowing when picking a style: `VASCULAR` peaks at cell borders and `VASCULAR_THIN` narrows those veins, while `CELLULAR_HEIGHT` is their interior-peaking counterpart rather than a flat cell value. `HEXAGON` and `HEX_SIMPLEX` are complete regular tilings; `HEX_JAMES` and `HEX_RANDOM_SIZE` place child hexagons recursively. `STATIC` has no repeating tile at any distance from origin.
 
-`PERLIN` and billow Perlin use quintic smoothing at lattice boundaries. `CUBIC` uses the seed in all dimensions. Ridged simplex normalizes its actual octave-dependent range, so a single octave is not restricted to the upper half of the palette. `VASCULAR` peaks at cell borders; `VASCULAR_THIN` narrows those bright veins. `CELLULAR_HEIGHT` is their interior-peaking counterpart, not a flat cell value. `STATIC` hashes full double coordinates and the full seed without an 8192-block repeating tile.
-
-One-, two-, and three-coordinate calls use the corresponding native noise kernels. Terrain and previews use the same two-coordinate path. Interpolated noise retains fractional coordinates across the origin, fractional grid spacing stays exact, starcast taps and accumulation use double precision, and `BICUBIC` uses its sixteen-sample cubic kernel. Catmull-Rom preserves linear slopes and parametric interpolation remains symmetric around 0.5. Interpolated noise presets clamp cubic and Hermite overshoot to 0..1; general interpolation of arbitrary values retains overshoot. Their three-coordinate calls remain horizontal X/Z fields. Cellular noise also keeps double coordinates near the world border. Distance-based cell styles include outer neighbors when they can be closer than the current candidates, preventing search-grid seams. Style creation rejects non-finite or nonpositive zooms and exponents, invalid active cellular zooms, and non-finite or negative cellular frequencies.
-
-Noise changes affect generated terrain and placement. World seed derivation also uses `STATIC`, so its corrected coordinate hashing changes the derived seeds used by generation systems, including styles whose geometry is unchanged. Compare on a fixed seed in a fresh Studio world; existing chunks retain their saved blocks. Cached styles use the current generation implementation's identity. Only integer coordinates inside the baked two-dimensional cache area use stored samples; negative, out-of-range, fractional, and three-dimensional coordinates evaluate the generator directly.
+Noise changes affect generated terrain and placement, including derived seeds. Always compare on a fixed seed in a fresh Studio world; existing chunks keep their saved blocks.
 
 ### Choosing a `NoiseStyle`
 
@@ -479,7 +464,7 @@ A style references a reusable typed resource by its key under `image-maps/`:
 
 The resource selects its PNG source, scalar map type, coordinate transform, raw decoding, sampling, height range, alpha, and out-of-bounds behavior. PNGs remain under `images/`; generator JSON does not embed those settings. `COLOR_MAP` is not a scalar source and is rejected here. Direct generator styles may transform coordinates before callers transform them again, so their map must use `FALLBACK`, `CLAMP`, `REPEAT`, or `MIRROR`; `ERROR` is rejected because a finite sampling domain cannot be proved. Studio, validation, runtime generation, and packaging preflight compile the same resource definition.
 
-Use [37 - Image Map Concepts](/iris/37-image-map-concepts) for the model, [38 - Supported Image Inputs](/iris/38-supported-image-inputs) for source limits, and [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for the complete reference.
+Use [37 - Image Maps](/iris/37-image-maps) for the model and source limits, [38 - Image Map Encodings](/iris/38-image-map-encodings) for per-type decoding, and [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for the complete reference.
 
 ## Dimension-level noise
 

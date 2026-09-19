@@ -2,7 +2,7 @@
 title: "HiddenOre: Configuration"
 description: "Every hiddenore.toml key and default"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,9 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Configuration lives at `plugins/HiddenOre/hiddenore.toml`; the tables below show its defaults. All settings in `hiddenore.toml` and message edits in `languages/<locale>.toml` apply automatically when saved. Invalid mining rules or runtime settings leave the current configuration active. Use the in-game picker or the `language` key to select the server default.
 
-The watcher covers `hiddenore.toml` and locale TOML files directly inside `languages/`, including locale file creation and deletion. It waits for 250 ms without further edits and enforces a 3-second cooldown between reloads. Periodic scans detect changes missed by file events, including files saved by replacing the original.
-
-Automatic reloads notify online operators with a message and the HiddenOre command theme's success sound from VolmLib. The sound uses the `MASTER` category at volume `0.8` and pitch `1.2`.
+An automatic reload notifies online operators with a message and a sound.
 
 ## Top level
 
@@ -236,15 +234,9 @@ Commands can use `%player%`, `%uuid%`, `%world%`, and the mined block's `%x%`, `
 
 ## Language files
 
-Startup creates editable `plugins/HiddenOre/languages/en_US.toml` when missing. Selected non-English catalogs download only when their local language file is missing. Existing files preserve local changes and work offline. Missing or invalid message values fall back to built-in English individually while valid translations stay active and the selected locale remains saved. If the whole file is unreadable or its download fails, messages use English while the requested language choice remains saved. Saving a repaired locale file refreshes it automatically.
+The server default is the `language` key. Catalogs live at `plugins/HiddenOre/languages/<locale>.toml`, and personal choices in `languages/language-preferences.properties`. Saving a file applies it automatically.
 
-Player preferences are stored by UUID in `plugins/HiddenOre/languages/language-preferences.properties`. `self reset` removes a personal override. The server default applies to console output and players without an override.
-
-Automatic language updates retain personal choices and refresh their messages. A player may briefly receive server-default text while the selected locale loads.
-
-HiddenOre reads and edits catalogs at `plugins/HiddenOre/languages/<locale>.toml`. Each uses grouped TOML sections and starts with translated comments explaining color codes, the chat `prefix`, and runtime variables. The filename selects the locale; root keys such as `prefix` remain at the top level. `/hiddenore language` opens the picker. Debug messages and command feedback use each recipient's selected locale.
-
-Use `&0` through `&f` for colors, `&k` through `&o` for text decorations, `&r` to reset formatting, and `&#RRGGBB` for hex colors. Keep runtime variables such as `{block}` unchanged. End the prefix's formatting with `&r` before its trailing space.
+HiddenOre keeps its chat `prefix` as a root key rather than under `runtime`, and its messages use `{block}`-style runtime variables that must be preserved. End the prefix's formatting with `&r` before its trailing space.
 
 ```toml
 prefix = "&a[HiddenOre]&r "
@@ -253,10 +245,6 @@ prefix = "&a[HiddenOre]&r "
 player_placed = "&cPlayer-placed {block}, no hidden drops.&r"
 ```
 
-### In-game language editor
+`/hiddenore language` opens the picker, and `/hiddenore language server edit` the message editor, which needs `hiddenore.admin` or `volmit.language.admin`. Debug output and command feedback each use the recipient's own locale.
 
-`/hiddenore language server edit [locale]` opens the inventory editor for a language. Omit the locale to choose one; browsing and editing leave the server default and every personal selection unchanged. Access requires `hiddenore.admin` or `volmit.language.admin`.
-
-Select a message and enter its replacement in private chat. Enter `cancel` or wait 60 seconds to stop. HiddenOre validates placeholders, message shape, and stale edits before saving.
-
-Edits are saved atomically to `plugins/HiddenOre/languages/<locale>.toml`, including `en_US.toml`. Saving refreshes users of that locale without changing language selections.
+See [Languages](/languages).

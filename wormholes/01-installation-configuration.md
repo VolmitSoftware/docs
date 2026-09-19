@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,14 +81,11 @@ Startup rewrites the file with every known key. This removes custom comments and
 Unknown profile names fail the load. `enable-particles` remains an independent
 global particle switch. `quality` controls the projection and render profile.
 
-## Runtime clamps (`Settings.refresh`)
+## Value ranges
 
-Wormholes clamps config values when it applies them to runtime. Network port,
-handoff, and replication bounds are normalized before startup or explicit
-reload writes the canonical file, so those corrected values persist. Other
-`Settings.refresh` clamps occur after canonical rewriting. Those source values
-can remain on disk while the live value is bounded. Passive hotload never writes
-the watched file.
+Out-of-range values are corrected when Wormholes applies them. Network, handoff, and replication
+bounds are written back to the file; the rest are corrected in memory, so the file can keep a value
+the runtime does not use.
 
 | Runtime field source | Clamp |
 |----------------------|--------|
@@ -347,8 +344,6 @@ Projection behavior detail:
 ## Hot reload
 
 `wormholes.toml` reloads automatically after a complete save. The console confirms a successful update with `Configuration hot-reloaded.` Invalid files leave the current settings active and report the problem.
-
-Canonical settings preserve string arrays, literal backslashes, and escaped control characters. Integer overflow rejects the update instead of wrapping into another value.
 
 If a reload leaves portals or projections in an inconsistent state, restart the server. Back up Wormholes data before a reset or manual restoration.
 

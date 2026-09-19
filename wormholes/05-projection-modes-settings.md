@@ -17,25 +17,15 @@ Per-portal mode and render mode combine with global `[projection]` and
 
 ## What projection does for a viewer
 
-When a player is inside the portal's viewing range, Wormholes sends that player a view of the destination or mirror. Entity spoofing can add destination-side entities. Projection does not move the player.
+When you are inside a portal's viewing range, Wormholes sends your client a view of the destination
+or mirror. Only your client changes; nothing moves, and no other player sees your view. Entity
+spoofing can add destination-side entities to it.
 
-Player reflections use the skin supplied by the server, including skins applied after login. Local mirror views refresh when that skin changes.
+Player reflections use the skin the server supplies, including skins applied after login. Local
+mirror views refresh when that skin changes.
 
-Changing or removing a portal's destination retires its existing projections.
-Nearby observers receive a fresh view of the new destination even when they
-remain stationary.
-
-Observer movement reuses unchanged local and cross-server block claims while recalculating visibility. Matching portal transforms also reuse claim coordinates. Recursive views still resample when movement can change their contents. Destination updates, local content changes, and settings changes invalidate reuse.
-
-When the previous claim set still matches, arbitration applies only changed and removed cells. Priority changes still resolve overlapping portals. Full resends, replacements, and observer lifecycle changes retain complete reconciliation.
-
-Scans skip cached runs of empty or buried cells that produce no visible claims. This optimization preserves projection depth and detail. Blackout shells and intersecting recursive views use the complete scan. Client chunk updates revisit only affected chunks when restoring or replaying projected blocks.
-
-When a stationary view exhausts its visibility budget, later passes continue the unfinished checks without rebuilding the complete block volume. This requires unchanged content, loaded geometry, and matching view settings. Equivalent detail settings retain the fitted view between passes. Movement rebuilds visibility while reusing valid content and empty-cell runs. Invalidation requires fresh content sampling. Projection depth and detail remain unchanged.
-
-Irregular apertures use indexed face and block lookups during camera movement. The index limits its storage and preserves the same aperture boundaries. Aperture rows reuse plane-intersection constants and membership checks for repeated hit cells. Eligible view rows combine each face's exact accepted interval in a bounded bit mask. Short, oversized, or unsupported rows retain individual cell checks. Aperture holes remain intact. Venticular visibility skips rays whose bounds cannot reach any projected blocker. These checks preserve depth, detail, and the visibility budget.
-
-Lighting retains projected cells by chunk section and updates membership from changed claims. Pending sections use the latest claims when their budget permits delivery. Local lighting restoration remains active.
+Changing or removing a portal's destination retires its existing projections, so nearby observers
+get a fresh view of the new destination even if they do not move.
 
 ## ProjectionMode (ON / OFF)
 
@@ -89,9 +79,9 @@ Projection budgets (from `[projection]`, refreshed into `Settings`):
 
 If a view exceeds `max-projected-cells`, Wormholes reduces side padding first and then depth. A view that still cannot fit remains empty. A nearer portal can temporarily hide a fully covered portal behind it.
 
-The time budget uses recent observer costs to decide whether another observer's block work fits. Long geometry scans yield at the frame deadline and resume on later admitted ticks, including ticks between scheduled refreshes. Observer order rotates so expensive views still make progress. Folia execution threads have independent budgets.
-
-Pending scans retain the last committed blocks, including the blackout shell, and entity visibility. A completed geometry scan finalizes on a later turn before publishing its new view. Camera movement queues the next view instead of restarting unfinished work. Content changes require a subsequent refresh; changes to the portal, world, viewing side, or presentation settings cancel stale work. Depth and detail remain unchanged, while complete block updates can arrive less often under load. Entity updates and traversal continue. Finalization and required cleanup can exceed the budget, so this is not a hard server tick limit.
+A geometry scan that runs out of time resumes on a later tick
+rather than restarting, so an expensive view still converges; under load its block updates simply
+arrive less often.
 
 ## Blackout background
 

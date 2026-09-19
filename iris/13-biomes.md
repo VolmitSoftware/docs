@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-15T12:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,10 +15,11 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
-- [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [23 - Loot](/iris/23-loot)
+- [23b - Entities & Spawners](/iris/23b-entities-spawners)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [44 - Biome Catalog](/iris/44-biome-catalog)
 
@@ -56,7 +57,7 @@ Three of those steps regularly surprise people.
 
 ### Children
 
-`children` lets one biome dissolve into variants without adding entries to the region. At each column, Iris runs a second noise pass over the parent children **plus the parent itself**. It then repeats on whatever it picked, up to four times in total. The chain usually ends early because re-picking the parent stops it.
+`children` lets one biome dissolve into variants without adding entries to the region. At each column Iris runs a second noise pass over the parent's children **plus the parent itself**, repeating on whatever it picked, up to four hops. The chain usually ends early because re-picking the parent stops it.
 
 Child weighting is not the same as list rarity. Each candidate gets `(highestRarityInTheGroup + 1) - rarity` slots:
 
@@ -136,57 +137,15 @@ Observable result: rolling dunes 5-12 above water, with occasional hills adding 
 
 ## Volumetric biome terrain
 
-`terrain3D` shapes solid volume around the height supplied by `generators`. It can add rock above that height and remove rock below it. A column can contain several solid spans, with air between a lower ledge and an overhang. The original generator still controls the broad landform.
-
-Add an inline profile to a biome, or reference `snippet/terrain-3d/<key>.json` with `"terrain3D": "snippet/terrain-3d/<key>"`:
+`terrain3D` is an optional per-biome profile that shapes solid volume around the height `generators` produced: extra rock above it, removed rock below it, several solid spans in one column with air between a ledge and an overhang. Declare it inline or reference a snippet:
 
 ```json
-{
-  "terrain3D": {
-    "amplitude": 40,
-    "horizontalScale": 72,
-    "verticalScale": 20,
-    "densityStyle": { "style": "SIMPLEX" },
-    "crackDepth": 20,
-    "crackWidth": 3,
-    "crackScale": 96,
-    "minimumSlope": 0.15,
-    "slopeFade": 0.35,
-    "fluidClearance": 8,
-    "fluidFade": 24
-  }
-}
+{ "terrain3D": "snippet/terrain-3d/cliff" }
 ```
 
-| Field | Default | Effect |
-|---|---|---|
-| `enabled` | `true` | Enables this profile; omitting `terrain3D` leaves the biome without a profile |
-| `seed` | `0` | Adds a repeatable profile seed to the world seed |
-| `amplitude` | `32` | Maximum density displacement in blocks; range `0..128` |
-| `horizontalScale`, `verticalScale` | `96`, `24` | Horizontal and vertical noise scales in blocks; each accepts `8..4096` |
-| `densityStyle` | `SIMPLEX` | Three-dimensional noise that shapes solid spans |
-| `crackDepth` | `0` | Strength of the subtractive fissure field in blocks; range `0..128` |
-| `crackWidth` | `4` | Fissure width control in blocks; range `0.25..64` |
-| `crackScale` | `96` | Fissure spacing scale in blocks; range `8..4096` |
-| `crackStyle` | `SIMPLEX` | Three-dimensional noise that places fissures |
-| `minimumSlope` | `0.15` | Base-terrain slope below which shaping fades out; `0` disables the slope gate |
-| `slopeFade` | `0.35` | Slope interval over which shaping reaches full strength |
-| `fluidClearance` | `8` | Protected vertical clearance above the dimension fluid level |
-| `fluidFade` | `24` | Height interval above that clearance over which shaping reaches full strength |
+The resulting highest solid block becomes the natural height used by hydrology and ordinary surface placement. Additional exposed floors receive biome surface layers and decorators, overhang undersides use `caveCeilingLayers` or dimension rock, and trees, objects and structures keep their existing placement rules. Inspect a side cut in fresh Studio chunks when tuning — a top-down height preview cannot show covered ledges.
 
-Noise style `zoom` multiplies the corresponding scale. Smaller vertical scales allow more folds within the displacement band. A large amplitude alone can produce a taller hill without an overhang. Crack width and scale control the field, so they do not guarantee a fixed visible opening width at every height.
-
-Increase the horizontal and vertical scales to make broader shelves with fewer repeated openings. Reduce `crackDepth` and increase `crackScale` for shallower, less frequent fissures.
-
-Iris removes disconnected density fragments of up to 512 blocks before surface placement. Connectivity follows shared block faces, including across chunk boundaries. Thin ledges that connect to the terrain remain. Larger disconnected forms and the separate floating-biome and object systems retain their geometry.
-
-Iris selects each profile from the biome before volumetric shaping, then blends nearby profile contributions. This avoids a feedback loop between the new height and the profile that produces it. A missing profile contributes zero displacement at its sample points, so neighboring shaped terrain fades across the boundary. When a dimension has no enabled profiles, Iris skips the volumetric runtime.
-
-Shaping samples a bounded vertical band around the base height. Larger `amplitude` and `crackDepth` values widen that band and increase generation work. Density samples and solid columns use bounded caches. Repeated queries on one generation thread reuse its last column. Clearing the runtime invalidates that reuse across threads.
-
-The resulting highest solid block becomes the natural height used by hydrology and ordinary surface placement. Accepted river-owned columns retain the river plan's continuous bed. Additional exposed floors receive biome surface layers and decorators. Overhang undersides use `caveCeilingLayers` or dimension rock. Ordinary trees, objects and structures keep their existing placement rules.
-
-For the bundled profiles and each biome's numeric settings, see [Terrain shaping](/iris/biomes/terrain-shaping). Inspect a side cut in fresh Studio chunks when tuning: a top-down height preview cannot show covered ledges. Changes to saved worlds follow [world lifecycle rules](/iris/06-worlds-lifecycle).
+All fourteen fields, their ranges, the fade rules, and the validator errors are in [47 - Volumetric Terrain](/iris/47-volumetric-terrain). Bundled profiles and each biome's numbers are in [Terrain shaping](/iris/biomes/terrain-shaping).
 
 ## Walkthrough: turn it into an ocean floor
 
@@ -251,7 +210,7 @@ Raise the child `rarity` to shrink its share. Raise `childShrinkFactor` to break
 
 A `derivative`, `vanillaDerivative`, or scatter entry naming a biome the running Minecraft does not have is handled by the version content gate: a missing `derivative` excludes the biome, while a missing `vanillaDerivative` or scatter entry is dropped and the biome keeps generating. See [When a biome uses content this version does not have](#when-a-biome-uses-content-this-version-does-not-have).
 
-Where the split between "underground" and "surface" applies depends on the generation path. On platforms where Iris supplies a 3D biome source to native worldgen, positions below the terrain surface resolve through the cave biome and `biomeScatter`. Positions above resolve through `biomeSkyScatter`. On the path where Iris writes biomes into the chunk itself, one biome is written for the whole column using the sky resolution. Either way, setting only `biomeSkyScatter` changes what players see. Setting only `biomeScatter` may not.
+**Setting only `biomeSkyScatter` changes what players see; setting only `biomeScatter` may not.** Where a 3D biome source is supplied, positions below the terrain surface resolve through the cave biome and `biomeScatter` and positions above through `biomeSkyScatter`. Where Iris writes biomes into the chunk itself, one biome is written for the whole column using the sky resolution.
 
 ### Structure eligibility
 
@@ -330,11 +289,7 @@ The stacks:
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |
 | `lockLayersMax` | Depth cap, in blocks, for locked layers. Default `7`. |
 
-Locked layers sample active thicknesses, then resolve only the requested positions in the repeating band stack. Repeated cycles reuse those resolved blocks. Surface and locked layers test `slopeCondition` before sampling thickness noise.
-
-`caveCeilingLayers` uses its own thickness generators. Its entry count is independent of `layers`, and every entry can contribute within the requested ceiling depth. Ceiling layers do not apply `slopeCondition`.
-
-The surface wall pass skips shore biomes, preserving their beach material beside coastal drops. Cave wall painting remains available.
+`caveCeilingLayers` uses its own thickness generators, so its entry count is independent of `layers`, and it does not apply `slopeCondition`. The surface wall pass skips shore biomes, preserving their beach material beside coastal drops.
 
 Slabs and walls only appear when the dimension has `postProcessing`, `postProcessingSlabs` and `postProcessingWalls` enabled. See [11 - Dimensions](/iris/11-dimensions).
 
@@ -396,7 +351,7 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 |-------|------|--------------|
 | `decorators` | `IrisDecorator[]` | Grass, flowers, cactus, kelp and similar surface scatter, bucketed by `partOf` (surface, ceiling, shore line, sea surface, sea floor). See [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits). |
 | `objects` | `IrisObjectPlacement[]` | `.iob` placements. Split at runtime into surface and carving sets by each placement `carvingSupport`. See [20 - Object Placement](/iris/20-object-placement). |
-| `proceduralObjects` | `IrisProceduralObjects` | Trees, coral, fungi, crystals, ruins and formations generated from parameters. See [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins). |
+| `proceduralObjects` | `IrisProceduralObjects` | Trees, coral, fungi, crystals, ruins and formations generated from parameters. See [17 - Procedural Objects](/iris/17-procedural-objects). |
 | `structures` | `IrisStructurePlacement[]` | Jigsaw and native placements evaluated where this biome owns the chunk center. |
 | `floatingChildBiomes` | `IrisFloatingChildBiomes[]` | Floating islands above this biome columns, drawn using another biome materials. See below. |
 | `mergeFloatingChildBiomes` | boolean | When true every floating entry samples independently and islands can overlap. When false (default) one entry is chosen per column. |
@@ -429,7 +384,7 @@ A pack authored on a newer Minecraft can name blocks, entities, and vanilla biom
 | A `biomeScatter` or `biomeSkyScatter` entry | That entry is dropped from the list. Remaining entries still disperse; an emptied list falls through to `biomeScatter`, then to `derivative` |
 | An entity in a `customDerivitives` spawn | The spawn is dropped before the custom-biome datapack JSON is written, so the datapack stays loadable and the custom biome keeps generating |
 | A potion effect in `effects` | The effect is dropped individually. The biome keeps generating |
-| An entity in a referenced `IrisEntity`, or a spawner with nothing left | The entity is excluded, spawns naming it are dropped, and a spawner left with no spawns is excluded and its references dropped. See [23 - Loot, Entities, Spawners & Markers](/iris/23-loot-entities-spawners-markers) |
+| An entity in a referenced `IrisEntity`, or a spawner with nothing left | The entity is excluded, spawns naming it are dropped, and a spawner left with no spawns is excluded and its references dropped. See [23b - Entities & Spawners](/iris/23b-entities-spawners) |
 | A block only used by an object palette | The object is dropped from that placement's pool, not the biome. See [20 - Object Placement](/iris/20-object-placement) |
 
 The exclusion cascades upward. A region left with no land biomes is excluded in turn, and a dimension left with no regions makes the pack unusable on that version.
@@ -438,9 +393,9 @@ Declaring a `blockFallbacks` entry on the dimension turns a missing block into a
 
 ## Floating child biomes (`IrisFloatingChildBiomes`)
 
-`floatingChildBiomes` builds islands in the air above columns owned by this biome. Each entry names a target biome whose generators, layers, derivative, decorators and objects supply the island look. The entry own fields control size, shape, altitude, rarity and internal water. With `mergeFloatingChildBiomes: false` (the default), `pickerStyle` and `rarity` choose one entry per column. With it true, every entry samples independently and islands may intersect.
+`floatingChildBiomes` builds islands in the air above columns owned by this biome. Each entry names a target biome whose generators, layers, derivative, decorators and objects supply the island look; the entry's own fields control size, shape, altitude, rarity and internal water. With `mergeFloatingChildBiomes: false` (the default), `pickerStyle` and `rarity` choose one entry per column. With it true, every entry samples independently and islands may intersect.
 
-Reachability follows region roots, dimension carving biomes, ordinary children, carving replacements, floating targets and floating `carving` references. The walk is recursive and deduplicated. Every biome that generation can reach is registered for spawns, placements, structures and lookups. Custom-biome datapack installation still scans the pack complete authored biome set, not just the reachable ones.
+A floating target does not need to be listed in a region. Iris registers every biome generation can reach — through region roots, carving biomes, `children`, carving replacements, and floating targets — for spawns, placements, structures and lookups.
 
 ### Target, footprint and altitude
 
@@ -569,21 +524,6 @@ A shallow 4-10 band. Four layers ending in a thick speckled dirt/stone blend so 
 ```
 
 The custom derivative only changes colors. `derivative` and `vanillaDerivative` stay on `minecraft:forest` so forest structures and forest tags still apply.
-
-### Color-only custom biome — `biomes/vanilla/sunflower_plains.json` (excerpt)
-
-```json
-{
-  "customDerivitives": [{
-    "category": "plains",
-    "id": "sunflower_plains",
-    "grassColor": "#91BD59",
-    "foliageColor": "#77AB2F",
-    "waterColor": "#44AFF5",
-    "downfallType": "none"
-  }]
-}
-```
 
 ## Minimal biome JSON
 

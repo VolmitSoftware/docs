@@ -13,13 +13,8 @@ See [30 - Platform Differences](/iris/30-platform-differences) for the platform 
 
 ## Language selection
 
-`/iris language` opens the clickable picker. Bukkit-family servers expose `/iris language self <locale|reset>` and `/iris language server <locale>`. Personal language selection requires both `iris.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Server selection needs `iris.all` or `volmit.language.admin`.
-
-On Bukkit-family servers, `/iris language server edit [locale]` opens the player inventory editor for individual messages. Omit the locale to choose one. It requires `iris.all` or `volmit.language.admin`, saves only the chosen locale, and preserves all language selections.
-
-On Bukkit-family servers, `/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change.
-
-Mod loaders use `/iris language self <locale|reset>` and `/iris language server <locale>` with gamemaster permission for the server default. See [08 - Localization](/iris/08-localization).
+`/iris language` picks a language. See [Languages](/languages). Iris's server default is `general.language` in
+`iris.json`; see [08 - Localization](/iris/08-localization) for its override files and platform notes.
 
 ## Diagnostics
 
@@ -239,7 +234,7 @@ Biome completion and parsing are scoped to the active Iris dimension's reachable
 | `hand` | Both | — | Held item |
 | `markers` | Both | `<marker>` | Reveal nearby markers (for example `cave_floor`, `cave_ceiling`, `object`) |
 
-Biome and region inspection resolve saved identities through their owning activation's retained pack definitions. A later pack can reuse a key without changing the older location's definition. If an older chunk lacks an unambiguous saved identity, inspection reports unavailable instead of predicting a biome from the current generator. See [saved biome environments](/iris/06-worlds-lifecycle#saved-biome-environments).
+Biome and region inspection resolve saved identities through their owning activation's retained pack definitions. A later pack can reuse a key without changing the older location's definition. If an older chunk lacks an unambiguous saved identity, inspection reports unavailable instead of predicting a biome from the current generator. See [saved biome environments](/iris/06-worlds-lifecycle#retained-world-data).
 
 ---
 

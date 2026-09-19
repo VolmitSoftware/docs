@@ -2,7 +2,7 @@
 title: "Incident Mode & Playbooks"
 description: "React documentation: Incident Mode & Playbooks"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ The `incident-score` sampler combines eight pressure signals into a 0–100 valu
 
 ## Incident score
 
-React captures all eight inputs once into one immutable score snapshot. The API score, current contributor list, and incident entry decision use that same snapshot. Each available input is linearly normalized between the listed minimum and maximum, clamped to 0–1, and multiplied by its effective weight. If a sampler is unavailable, React marks it unavailable and renormalizes the remaining weights instead of treating an unsupported value as a healthy zero. React uses positive backlog growth; negative growth contributes zero.
+Each input is scaled between its listed minimum and maximum, clamped to 0–1, and multiplied by its weight. An unavailable sampler is dropped and the remaining weights are renormalized, so a missing reading never scores as healthy. Only positive backlog growth counts.
 
 | Sampler | Normalization range | Weight |
 |---|---:|---:|

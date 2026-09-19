@@ -2,13 +2,21 @@
 title: Static - Installation and configuration
 description: Runtime files, editable settings, and tracking filters
 published: true
-date: 2026-09-10T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: static, configuration
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
 ---
 
-Install `Static.jar` on a Bukkit-compatible Minecraft 1.20.1+ server. Static targets Java 17 bytecode; use the Java version required by the server itself. VolmLib is included in the jar, and no database or companion plugin is required.
+| | |
+|---|---|
+| Server software | Any Bukkit-compatible server on Minecraft 1.20.1 or newer |
+| Java | Whatever your server version needs, at least 17 |
+| Main command | `/static` |
+| Config file | `plugins/Static/config.toml` |
+| Required plugins | None. No database either |
+
+Put `Static.jar` in `plugins/` and restart.
 
 The plugin directory contains:
 
@@ -24,7 +32,7 @@ Static/
 
 Only `en_US.toml` is generated at startup. Additional language files appear when installed from the repository or supplied by the operator. The preference file is created when a personal selection is saved. The statistics file is written asynchronously during operation and at shutdown. Diagnostic files are created on request.
 
-Open `/static config` to edit settings. Boolean settings toggle on click; numeric settings accept left/right adjustments, Shift multipliers, and exact chat input. Text/list settings accept private chat input with `cancel` and a 60-second timeout. Lists use commas; `none` clears a list.
+`/static config` edits settings in game. Click a boolean to toggle it; numbers take left and right clicks, Shift for bigger steps, or an exact value typed in chat. Text and list settings use a chat prompt with `cancel` and a 60-second timeout. Lists are comma-separated, and `none` clears one.
 
 | TOML setting | Default | Behavior |
 |---|---|---|
@@ -43,6 +51,9 @@ Open `/static config` to edit settings. Boolean settings toggle on click; numeri
 | `presentation.commandSounds` | `true` | Enables brief success/failure sounds |
 | `debug.uploadEnabled` | `true` | Allows explicit diagnostic uploads to mclo.gs |
 
-Invalid configuration syntax or structure keeps the last valid runtime settings active during reload. Saving an editor change validates the candidate and replaces the file atomically. Back up `data/players.json` while the server is stopped; do not edit it while Static is saving.
+An invalid file keeps the last valid settings active.
+
+> Back up `data/players.json` with the server stopped. Do not edit it while Static is running.
+{.is-warning}
 
 [Commands and languages](/static/02-commands-languages) · [Statistics](/static/03-statistics)

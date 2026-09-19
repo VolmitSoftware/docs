@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,8 +10,6 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Use objects for single builds, jigsaws for multi-piece Iris structures, and native structures for Minecraft or datapack structures.
 
 ## The short version
-
-Ask what the thing you want actually is.
 
 - **One build, repeated.** A rock, a tree, a ruined tower, a bandit camp. Always the same geometry, scattered around. That is an **object**.
 - **A build that is different every time.** A village that grows its own road network, a stronghold with rooms and corridors, a fort whose towers vary. That is an **Iris jigsaw structure**.
@@ -165,7 +163,7 @@ An Iris structure and a native structure both arrive through the same `structure
 
 **Only new chunks change.** Editing a placement or a structure control never rewrites terrain that already generated. Every check you run has to happen in chunks generated after the edit.
 
-**Worlds retain every pack epoch they use.** World creation records the first immutable epoch under `iris/generation/`. Editing `packs/<pack>` changes nothing until an operator stages an activation and restarts. Existing structures and chunks keep their recorded ownership. New structure footprints are held outside the protected transition boundary. Studio worlds read the live pack and hotload JSON and `.iob` edits into newly generated chunks.
+**Production worlds run from a frozen pack copy.** Editing `packs/<pack>` changes nothing until an operator stages an activation and restarts; existing structures and chunks keep the pack they were generated with. Studio worlds read the live pack and hotload JSON and `.iob` edits into newly generated chunks. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 **Placement scope is explicit.** `structures[]` can sit on a dimension, a region, or a biome. Scope is sampled at the center of the start chunk. Cave-biome entries only participate when the placement resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, or `CAVE_ANY`. An optional `caveBiomes` allowlist is rechecked at the anchor Iris actually picked. See [15 - Caves & Carving](/iris/15-caves-carving).
 
@@ -173,7 +171,7 @@ An Iris structure and a native structure both arrive through the same `structure
 
 **Command shape.** On Bukkit, Director optional parameters are always `key=value`. Use `/iris structure verify overworld radius=200`. Never use a bare trailing number. The modded loaders use brigadier literals instead.
 
-**Validate before release.** `/iris pack validate` covers every pack on both platforms. Check one with `pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a modded loader. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
+**Validate before release.** `/iris pack validate` covers every pack; check one with `pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a modded loader. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
 
 ## Proving a structure path works
 

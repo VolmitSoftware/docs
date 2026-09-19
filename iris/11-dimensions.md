@@ -2,12 +2,12 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-15T12:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A dimension is the root object of a pack. It sets world height, sea level, the regions that supply biomes, and the engine stages that run. The file lives at `dimensions/<loadKey>.json`. Every other pack resource hangs off this file. Some fields form a permanent contract with the world folder. Other fields can change on every save. This page splits those two groups and shows what each field does to generated terrain.
+A dimension is the root object of a pack. It sets world height, sea level, the regions that supply biomes, and the engine stages that run. The file lives at `dimensions/<loadKey>.json`, and every other pack resource hangs off it. Some fields form a permanent contract with the world folder; the rest can change on every save. This page splits those two groups.
 
 Related:
 
@@ -17,7 +17,7 @@ Related:
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [36 - Rivers](/iris/36-rivers)
-- [37 - Image Map Concepts](/iris/37-image-map-concepts)
+- [37 - Image Maps](/iris/37-image-maps)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
@@ -26,7 +26,10 @@ Related:
 
 ## Decide these before you create a world
 
-When a world binds to an engine, Iris pins the dimension type key, the exact `environment`, and the effective generated dimension type. The generated type contains the minimum Y, total height (`max - min`), `logicalHeight`, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Hotload compares that contract before every pack reload and refuses a change. Close and reopen Studio after a contract edit in a running Studio world. On a production world, Minecraft stores the generated type in its registry. If you change the contract, recreate the world.
+When a world binds to an engine, Iris pins the dimension type key, the exact `environment`, and the effective generated dimension type: minimum Y, total height (`max - min`), `logicalHeight`, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Hotload refuses a change to any of them. Close and reopen Studio after a contract edit.
+
+> On a production world the generated type is stored in Minecraft's registry. **Changing the contract means recreating the world.**
+{.is-warning}
 
 | Field | Why it is a contract |
 |-------|----------------------|
@@ -37,13 +40,13 @@ When a world binds to an engine, Iris pins the dimension type key, the exact `en
 | `dimensionOptions` | Overrides the generated type's portal scale, light, time, clouds, spawning limits, and gameplay flags |
 | `fullbright` | Forces the generated type's effective ambient light to `1.0` |
 
-Everything outside that registry contract reloads live in Studio and applies to newly generated chunks. That set includes regions, zooms, noise styles, image-map resources and bindings, palettes, ores, deposits, caves, structures, decoration, loot, and `worldBoundary`. Iterate on those freely. Already generated chunks keep the content they were built with. A boundary reload updates the native border but does not regenerate terrain. An edit from an inherited `dimensionOptions` value to the same explicit effective value does not change the contract.
+Everything else reloads live in Studio and applies to newly generated chunks: regions, zooms, noise styles, image-map resources and bindings, palettes, ores, deposits, caves, structures, decoration, loot, and `worldBoundary`. Iterate on those freely. Already generated chunks keep the content they were built with. A boundary reload updates the native border without regenerating terrain.
 
 ## File location and load key
 
 The load key is the path under `dimensions/` with `.json` removed. `dimensions/overworld.json` is key `overworld`. `dimensions/foo/bar.json` is key `foo/bar`. The world create and studio open commands take that key.
 
-Iris also sanitizes the key into the dimension type key. It lowercases the key. It replaces path separators and any character outside `a-z0-9_-./` with `_`. Two dimensions whose keys sanitize to the same string collide on the same generated dimension type. Keep keys distinct in more than punctuation.
+The dimension type key is the load key lowercased, with path separators and any character outside `a-z0-9_-./` replaced by `_`. Two keys that sanitize to the same string collide, so keep keys distinct in more than punctuation.
 
 `/iris studio create name=mypack` writes `dimensions/mypack.json` with a matching `name`. Keep the file name and the load key stable once a world exists.
 
@@ -57,9 +60,7 @@ Dimension → regions[] → Region → land/sea/shore/cave biomes[] → Biome �
           → loot, entitySpawners, blockDrops
 ```
 
-A focused biome retains its authored region, including when reached through children, carving replacements, floating biomes, or river-policy targets. Region cave and hydrology settings therefore still apply. A biome with no authored region uses a neutral focus region whose identity is stable in saved generation history.
-
-The dimension never names a biome directly, except in `focus` and carving entries. Biomes are reached through regions. An unreferenced region file is dead weight. A biome that is missing from every region list never generates.
+The dimension never names a biome directly, except in `focus` and carving entries. Biomes are reached through regions. An unreferenced region file is dead weight, and a biome missing from every region list never generates.
 
 ## Engine mode
 
@@ -78,16 +79,14 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 | `ENCLOSURE` | Terrain and biome only | Nothing yet. The nether-style ceiling and floor treatment is not implemented |
 | `ISLANDS` | Terrain and biome only | Nothing yet. Floating-island terrain comes from biome `floatingChildBiomes` in `OVERWORLD` mode, not from this |
 
-`mode` is marked required in the schema. Gson supplies a default `IrisDimensionMode` when the field is absent. An omitted `mode` runs `OVERWORLD`. The bundled overworld pack omits it. If the mode factory throws, the engine logs the failure once. It warns that it is falling back. It then builds `OVERWORLD` instead.
-
-`IrisDimensionMode` is a snippet type (`dimension-mode`). `"mode": "snippet/dimension-mode/overworld"` is also valid.
+An omitted `mode` runs `OVERWORLD`; the bundled overworld pack omits it. `mode` is a snippet type (`dimension-mode`), so `"mode": "snippet/dimension-mode/overworld"` is also valid.
 
 ## Vertical layout: height, sea level, bedrock
 
 Iris generates internally from `0` to `dimensionHeight.max - dimensionHeight.min`. It then shifts the finished chunk down by `dimensionHeight.min` on output. Almost every Y number the engine handles internally is in that shifted space. The numbers you write in the dimension JSON are not all in the same space. That is the most common source of confusion in this file.
 
 - `dimensionHeight.min` / `dimensionHeight.max` are **world Y**.
-- `fluidHeight` is **world Y**. `IrisDimension.getFluidHeight()` returns `fluidHeight - dimensionHeight.min`. That is what the engine uses internally. Sea level ends up back at the world Y you wrote. The bundled overworld sets `fluidHeight` 50 with `min` -256. Its ocean surface is at world Y 50.
+- `fluidHeight` is **world Y**. Sea level ends up at the world Y you wrote. The bundled overworld sets `fluidHeight` 50 with `min` -256, so its ocean surface is at world Y 50.
 - `caveLavaHeight` is **internal Y**. World Y = `caveLavaHeight + dimensionHeight.min`. The default 8 with a min of -64 puts the cave lava ceiling at world Y -56.
 - Bedrock is written at internal Y 0, which is world Y `dimensionHeight.min`.
 
@@ -103,15 +102,15 @@ Biome generator heights are relative to sea level. A biome generator entry with 
 }
 ```
 
-That fragment is a vanilla-shaped world. The build floor is at -64. The ceiling is at 320. The sea is at 63. Bedrock is at -64. Cave lava is below -56.
+That fragment is a vanilla-shaped world: floor -64, ceiling 320, sea 63, bedrock -64, cave lava below -56.
 
-Minecraft imposes hard rules on the generated dimension type. Iris fails when they are broken. Iris does not clamp them.
+Minecraft imposes hard rules on the generated dimension type. Iris fails when they are broken; it does not clamp them.
 
 - `dimensionHeight.max - dimensionHeight.min` must be a multiple of 16, and between 16 and 4064.
 - `dimensionHeight.min` must be a multiple of 16, and between -2032 and 2031.
 - `logicalHeight` must be between 0 and the total height.
 
-`/iris pack validate` checks all three rules and reports them as blocking errors before world creation or Studio open. Dimension-type compilation enforces the same contract again as a runtime safeguard.
+`/iris pack validate` reports all three as blocking errors before world creation or Studio open.
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
@@ -125,7 +124,7 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 
 ## Environment and dimension-type options
 
-`environment` picks which vanilla dimension template Iris starts from when it generates this dimension type. `dimensionOptions` then overrides individual attributes of that template. Together they control sky, fog, ambient light, portal scale, whether beds work, whether raids can start, and the rest of the dimension-type surface. They do not change terrain. Pack-author recipes are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
+`environment` picks the vanilla dimension template Iris starts from; `dimensionOptions` overrides individual attributes of it. Together they control sky, fog, ambient light, portal scale, whether beds work, whether raids can start, and the rest of the dimension-type surface. **They do not change terrain.** Recipes are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ```json
 {
@@ -205,7 +204,7 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 
 ## Terrain-first hydrology
 
-`hydrology` owns physical surface rivers, underground rivers, grottos, mouths, and independent deep fluids for the dimension. The planner freezes one deterministic drainage graph before terrain, carving, biome, decorator, object, renderer, and locator stages consume it. Existing chunks do not change when this configuration reloads.
+`hydrology` owns physical surface rivers, underground rivers, grottos, mouths, and independent deep fluids for the dimension. Existing chunks do not change when this configuration reloads.
 
 ```json
 {
@@ -239,9 +238,7 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 
 Source `density` is the expected natural headwater count per qualifying planning tile, not a per-chunk chance. Surface and underground sources have independent budgets. `minimumPerTile` backfills required headwaters only while legal candidates and outlets remain. `maximumOutletsPerTile` limits selected drainage roots after source admission: lower values make more headwaters converge into longer shared trunks, while higher values produce more independent trees.
 
-Accepted graph edges are refined into endpoint-pinned, two-scale Simplex paths with continuous downstream tangents, curvature smoothing, bounded terrain fallbacks, and contained hairpin removal. Tributaries publish their unique approach once and then share one canonical downstream trunk and outlet continuation. The route remains terrain bounded, but does not expose the cardinal or diagonal sampling lattice. Surface channels carve below the complete swept terrain corridor, publish rough asymmetric U-shaped beds, and grade the parent terrain beyond a separate shore band. Uncontained horizontal fluid cells are omitted, including low coastal cells, so accepted surface water remains below natural terrain until its ocean apron. Solved head loss becomes pools, riffles, cascades, or exponentially graded waterfalls with connected receiving reaches. Every adjacent wetted face respects `geometry.drops.maximumFaceDrop`; no vertical falling-fluid throat is generated. A compatible surface spill remains authoritative where it intersects cave headroom.
-
-Underground channels with `connectToExistingCaves: false` own and seal their complete generated passage. Planning validates that transactional volume without materializing surrounding cave terrain, while intentional grotto and sinkhole openings remain explicit. Enabling `connectToExistingCaves` instead samples the observed cave field and accepts a connection only when the completed wet component remains contained.
+Surface water stays below natural terrain until its ocean apron, and head loss becomes pools, riffles, cascades, or graded waterfalls rather than a vertical falling-fluid throat; `geometry.drops.maximumFaceDrop` bounds every wetted face. Underground channels with `connectToExistingCaves: false` seal their own passage apart from explicit grotto and sinkhole openings; setting it true permits a connection to an observed cave only when the wet component stays contained.
 
 | River key | Runtime behavior |
 |-----------|------------------|
@@ -397,7 +394,7 @@ These fields gate the passes that run after terrain and carving. All of them hot
 | `requireObjectSurfaceSupport` | boolean | `true` | Refuses to place surface objects and trees that would hang over a carved opening. If you turn it off, floating buildings appear above caves. The per-placement flag can only opt out further. It never overrides this on |
 | `objectSurfaceSupportBuffer` | int | `2` | Minimum solid blocks required beneath a surface placement, 0 to 16. The effective value is the larger of this and the placement own buffer. Raising it hardens every placement in the dimension at once |
 | `preventLeafDecay` | boolean | `false` | Marks generated leaves persistent so they never decay when the supporting log is removed. Turn it on for packs whose custom trees have unusual leaf-to-log distances |
-| `treeSettings` | `IrisTreeSettings` | disabled default | Overrides vanilla sapling growth with pack objects. Off until `enabled` is true. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). Fields in [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins) |
+| `treeSettings` | `IrisTreeSettings` | disabled default | Overrides vanilla sapling growth with pack objects. Off until `enabled` is true. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). Fields in [17b - Procedural Trees](/iris/17b-procedural-trees) |
 
 ## Default object scale
 
@@ -430,9 +427,7 @@ Jigsaw structures are excluded. Their pieces, connectors, and assembly dimension
 }
 ```
 
-The position is the saved object's origin, usually its center, in absolute world X/Y/Z. Placements bypass random-object restrictions and span chunk boundaries. Later entries overwrite earlier entries at overlapping blocks. `edit` changes materials and states for this copy; `bore` clears its bounding box, `smartBore` clears enclosed interiors, and `seed` fixes randomized edits. All generation modes support static objects. The full transformed object must fit within the dimension's build height.
-
-Changes apply to newly generated chunks and do not rewrite existing chunks on reload. The complete workflow, supported fields, and a replacement example are in [20 - Object Placement](/iris/20-object-placement).
+The position is the saved object's origin, usually its center, in absolute world X/Y/Z. Placements bypass random-object restrictions and span chunk boundaries, later entries overwrite earlier ones, and the full transformed object must fit within the build height. `edit` changes materials and states for this copy; `bore` clears its bounding box, `smartBore` clears enclosed interiors, and `seed` fixes randomized edits. Changes apply to newly generated chunks only. Full field reference in [20 - Object Placement](/iris/20-object-placement).
 
 ## Structures and datapacks
 
@@ -493,7 +488,7 @@ If the referenced key cannot be loaded, Iris warns and skips upper terrain. It d
 | `upperDimensionObjects` | boolean | `false` | Lets mantle objects place in the upper zone. False protects the ceiling from trees and structures |
 | `upperObjectsForcePlace` | boolean | `false` | Upper objects ignore slope, underwater, clamp, collision, and carving restrictions. Lower-dimension objects always place first. If you enable this, upper objects can clip through them |
 
-Biome `terrain3D` also shapes the referenced upper terrain. Iris mirrors the resulting solid spans, including their openings, into the ceiling space. Each span uses its source height and slope to select surface layers and locked layer patterns. Upper object anchors and terrain support queries follow the solid faces after gap and world-height clipping.
+Biome `terrain3D` also shapes the referenced upper terrain: Iris mirrors the solid spans, openings included, into the ceiling space, and each span uses its source height and slope to select surface layers and locked layer patterns.
 
 ## Upright dimension stacks
 
@@ -510,7 +505,7 @@ Biome `terrain3D` also shapes the referenced upper terrain. Iris mirrors the res
 
 `spacer` accepts `0..256` blocks and defaults to `32`. Without `blend`, the configured air gap is constant. Optional `blend` supplies a noise `style` and an `amplitude` in `0..256` blocks. Its default amplitude is `8`, with `SIMPLEX` noise. Each adjacent boundary uses an independent noise seed.
 
-Each extra layer supplies base terrain, biome `terrain3D` spans, surface and sea materials, rock, fluid, bedrock, image maps and biome identity. Surface palettes use each span's source height and slope, including locked layer patterns. Regions selected only by an image map contribute their biomes and terrain profiles. The owning dimension's generation pipeline runs once. Referenced-layer caves, hydrology, decorators, objects and structures do not receive separate generation passes. The stack fits inside the owning world's height limits. Clipped height and support queries follow the actual remaining solid spans.
+Each extra layer supplies base terrain, biome `terrain3D` spans, surface and sea materials, rock, fluid, bedrock, image maps and biome identity. The owning dimension's pipeline runs once: referenced-layer caves, hydrology, decorators, objects and structures get **no** separate generation pass. The stack is clipped to the owning world's height limits.
 
 ## Loot, spawners, and block drops
 
@@ -550,7 +545,7 @@ These are dimension-wide fallbacks. Regions and biomes layer on top of them.
 
 Applications are `TERRAIN_HEIGHT`, `BIOME`, `REGION`, `SURFACE_BLOCK`, `MASK`, and `CUSTOM`. A mask reference names another binding key in this same list, and that binding must use `MASK`. Missing resources, duplicate keys, incompatible map types, invalid targets, and cyclic or non-mask references are blocking validation errors.
 
-Generator styles reference the first-class `image-maps` resource key directly through `imageMap`; the resource is not embedded in the style. The source PNG remains under `images/`. Read [37 - Image Map Concepts](/iris/37-image-map-concepts) before authoring and use [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for every field and coordinate rule.
+Generator styles reference the first-class `image-maps` resource key directly through `imageMap`; the resource is not embedded in the style. The source PNG remains under `images/`. Read [37 - Image Maps](/iris/37-image-maps) before authoring and use [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for every field and coordinate rule.
 
 ## World boundary
 
@@ -568,9 +563,9 @@ Generator styles reference the first-class `image-maps` resource key directly th
 }
 ```
 
-`size` is the full diameter. Iris applies the boundary at initialization and after a successful reload on the platform's correct scheduling context. Omitting `worldBoundary` leaves the world's current native border unchanged, including operator changes or a boundary applied by an earlier pack revision.
+`size` is the full diameter, not a radius. Omitting `worldBoundary` leaves the world's current native border unchanged, including operator changes or a boundary set by an earlier pack revision.
 
-The border does not crop, clamp, or repeat an image map. Configure the map's `outOfBounds` rule separately. Image Map Studio and Vision display the border over source coverage. Complete limits and extent calculations are in [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
+The border does not crop, clamp, or repeat an image map — configure the map's `outOfBounds` rule separately. Limits and extent calculations are in [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
 
 ## Version content fallbacks (`blockFallbacks`)
 
@@ -622,7 +617,7 @@ These exist to help you inspect the generator, not for production. `studioMode` 
 
 ## Annotations are editor hints, not runtime validation
 
-`@Required`, `@MinNumber`, and `@MaxNumber` do not enforce themselves at load time. A subsystem needs an explicit validator. Dimension-type constraints, `staticObjects`, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators and fail before generation when their enforced contract is invalid. For other fields, treat the ranges in the tables above as design guidance backed by editor warnings and verify unusual values in Studio.
+Schema ranges underline bad values in your editor but do not reject them at load. Only dimension-type constraints, `staticObjects`, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators. Treat every other range in the tables above as design guidance and verify unusual values in Studio. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ## A complete minimal dimension
 

@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Hot reload for proxy plugins on Velocity"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "biletools, velocity"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -28,17 +28,13 @@ Backend servers need nothing. A backend BileTools installation keeps its own sep
 
 ## What a reload does
 
-BileTools has no proxy API to lean on, so it drives Velocity's own plugin machinery directly.
-
-On unload, BileTools sends the plugin a shutdown event scoped to that plugin only, unregisters its event listeners, cancels its scheduled tasks, removes its commands, drops it from the plugin manager, and closes its class loader. On load, it registers the plugin and sends it an initialize event scoped to it. Other plugins never see either event.
+Unloading sends the plugin a shutdown event scoped to it alone, then unregisters its listeners, cancels its tasks, removes its commands, drops it from the plugin manager, and closes its class loader. Loading registers it and sends a scoped initialize event. No other plugin sees either event.
 
 Plugins that depend on the target are unloaded first and reloaded afterwards, in dependency order.
 
 ## Startup capability report
 
-At startup BileTools reports which proxy internals it could resolve and logs one summary line. On a proxy build it fully understands, the summary says so and every operation is available.
-
-If the proxy build differs and something BileTools needs is missing, the log names the missing member, and any operation that needs it is refused with a message instead of being partly applied. A refused reload leaves the plugin exactly as it was. Check this line first after updating the proxy.
+BileTools logs one summary line at startup saying which proxy internals it could resolve. If your proxy build is missing something it needs, the log names it and any operation that depends on it is refused outright rather than half-applied. Check that line first after updating the proxy.
 
 ## Commands
 
@@ -55,7 +51,7 @@ The root command is `/biletools`, with one alias, `bile`. Every subcommand requi
 
 `biletools` and `bile` are the only two aliases on the proxy. A proxy command takes precedence over a backend command with the same name, so the short server-edition aliases are not registered there; they would shadow backend commands for every connected player.
 
-Every command result is also written to the proxy console. Automatic reload results go to the console too, and with `notifications.players` enabled to every player holding `bile.use`.
+Command results go to the proxy console. With `notifications.players` enabled, automatic reload results also reach every player holding `bile.use`.
 
 ## Settings
 
@@ -82,9 +78,9 @@ Plugin ids are matched without case. Manual commands ignore `watcher.ignore` and
 
 Manual commands run immediately. Automatic work waits.
 
-When a jar changes, BileTools waits for it to stop changing, takes a copy, and applies queued changes in one batch a few seconds later. A jar whose contents are identical to what is already loaded is skipped. Deleting a jar unloads that plugin after a three-second grace period; if the file reappears first, nothing happens.
+When a jar changes, BileTools waits for it to stop changing, then applies queued changes in one batch. A jar identical to what is already loaded is skipped. Deleting a jar unloads that plugin after a three-second grace period, unless the file reappears first.
 
-A plugin whose automatic reload fails is marked dirty. The watcher then leaves it alone until a manual `/bile load`, `/bile unload`, or `/bile reload` on that plugin succeeds. This keeps a broken build from being retried on every save.
+A plugin whose automatic reload fails is marked dirty and left alone until a manual `/bile load`, `/bile unload`, or `/bile reload` succeeds, so a broken build is not retried on every save.
 
 Jars without a `velocity-plugin.json` descriptor are ignored, including Bukkit-only jars left in the proxy's plugins directory.
 
@@ -98,9 +94,9 @@ Remote deploy is not available on the proxy. The listener and the push side are 
 
 Proxy output is English only. There are no language files and no language commands.
 
-Plugin message channels a plugin registered are not removed when it unloads. Registering the same channel again on load is harmless, so this costs nothing in practice, but the channel stays registered while the plugin is unloaded.
+Plugin message channels stay registered after their plugin unloads. Re-registering on load is harmless, so this costs nothing in practice.
 
-A plugin that treats its shutdown event as the proxy shutting down may misbehave after a reload, for example by saving state it then refuses to reload, or by stopping work it never restarts. Plugins that hold static state, keep threads running, or hook packets are poor reload candidates, the same as on a backend server.
+A plugin that reads its shutdown event as "the proxy is stopping" can misbehave after a reload. Plugins holding static state, running threads, or hooking packets are poor reload candidates, the same as on a backend server.
 
 ## When to restart the proxy
 

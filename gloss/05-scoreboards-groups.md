@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -88,35 +88,24 @@ When boards are enabled, Gloss extracts `boards/default.json` and `boards/animat
 
 The default has `"when": "false"`, so it does not appear automatically. Replace that condition or use `"true"`.
 
-`animation-showcase.json` demonstrates the included text animations and alignment helpers:
+`animation-showcase.json` demonstrates every included text animation and alignment helper as a
+board line:
 
 ```json
-{
-  "schemaVersion": 2,
-  "revision": 1,
-  "select": {"priority": 0, "when": "false"},
-  "presentation": {
-    "title": "&d&lANIMATION LAB",
-    "lines": [
-      "{{ select(['&c', '&6', '&e', '&a', '&b', '&d'], floor(time.seconds * 4)) }}&lRAINBOW",
-      "&b{{ marquee('MARQUEE', 7, floor(time.seconds * 4)) }}",
-      "{{ timeline([['&aTIMELINE', 2], ['&eNEXT SCENE', 2]], time.seconds) }}",
-      "&f{{ typewriter('TYPEWRITER', floor(time.seconds * 4) + 9, 1) }}",
-      "{{ flash('&d&lFLASH', '&7FLASH', floor(time.seconds * 4)) }}",
-      "&d{{ wipe('WIPE', floor(time.seconds * 4) + 4) }}",
-      "{{ scanner('SCANNER', '&7', '&a', floor(time.seconds * 4)) }}",
-      "&5{{ scramble('DECODE', floor(time.seconds * 4)) }}",
-      "&6ODO {{ odometer(0, 999, mod(time.seconds, 10) / 10, 3) }}",
-      "{{ wave('WAVE', ['&a', '&7'], floor(time.seconds * 4)) }}",
-      "&d&kMAGIC&r",
-      "&a{{ align('GLOSS', 20, 'left') }}",
-      "&e{{ align('GLOSS', 20, 'center') }}",
-      "&c{{ align('GLOSS', 20, 'right') }}"
-    ],
-    "hideNumbers": true
-  },
-  "variants": []
-}
+"lines": [
+  "{{ select(['&c', '&6', '&e', '&a', '&b', '&d'], floor(time.seconds * 4)) }}&lRAINBOW",
+  "&b{{ marquee('MARQUEE', 7, floor(time.seconds * 4)) }}",
+  "{{ timeline([['&aTIMELINE', 2], ['&eNEXT SCENE', 2]], time.seconds) }}",
+  "&f{{ typewriter('TYPEWRITER', floor(time.seconds * 4) + 9, 1) }}",
+  "{{ flash('&d&lFLASH', '&7FLASH', floor(time.seconds * 4)) }}",
+  "&d{{ wipe('WIPE', floor(time.seconds * 4) + 4) }}",
+  "{{ scanner('SCANNER', '&7', '&a', floor(time.seconds * 4)) }}",
+  "&5{{ scramble('DECODE', floor(time.seconds * 4)) }}",
+  "&6ODO {{ odometer(0, 999, mod(time.seconds, 10) / 10, 3) }}",
+  "{{ wave('WAVE', ['&a', '&7'], floor(time.seconds * 4)) }}",
+  "&d&kMAGIC&r",
+  "&a{{ align('GLOSS', 20, 'left') }}"
+]
 ```
 
 Use `/gloss board show animation-showcase` to inspect it, or edit its `select` condition to show it automatically. `middle` is an alias for `center`.
@@ -135,13 +124,10 @@ Gloss reevaluates selection every `[boards] updateIntervalTicks` (default 20) an
 
 ### Manual selection
 
-`/gloss board show <id>` and `/gloss board hide` override the automatic board id and mark the player
-sticky. A shown board still re-evaluates its `show` condition and variants on the ordinary selection
-pass. A false `show` removes the sidebar but preserves that sticky id; it returns when `show` becomes
-true. Manual selection bypasses `select.when`, but does not bypass `show`. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions). Sticky
-state is dropped when the player quits, or when the board they are showing is deleted.
-
-`/gloss board hide` is also sticky. It leaves the player with no board and no automatic re-selection until they log out.
+`/gloss board show <id>` pins a board until the player logs out; `/gloss board hide` pins no board.
+Pinning bypasses `select.when` but not `show`, and the pinned board still re-evaluates its `show`
+condition and variants on each selection pass. The pin is also dropped if that board is deleted. See
+[Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ## Editing by command
 
@@ -179,17 +165,14 @@ Command edits save the document and increment its revision. See [Data Files & Ho
 
 ## Rendering
 
-Ordinary sidebars update at `[boards] updateIntervalTicks` (default 20), with each player's refresh spread across that interval rather than every board landing on one tick. On a board with a clock expression or named animation, only the rows that carry one update every tick; its other dynamic rows keep the configured interval. Gloss sends rows only when their rendered value changes.
+Sidebars update at `[boards] updateIntervalTicks` (default 20). On a board with a clock expression or named animation, only the rows carrying one update every tick; the other dynamic rows keep the configured interval.
 
 Titles and lines support functions, PlaceholderAPI, emoji, colors, and viewer expressions. Minecraft displays at most 15 sidebar rows. Newlines inside one JSON row become spaces.
 
 Use `align(text, width, mode)` for character-cell alignment. Modes are `left`, `center`, `middle`, and `right`; `middle` is an alias for `center`. Formatting codes do not count toward width.
 
-`"hideNumbers": true` applies Minecraft's blank score number format per board on native 1.20.3+
-servers and clients. It removes the red score column without changing the internal 15-to-1 values
-that keep the rows ordered. On a server older than 1.20.3, ViaVersion's global
-`hide-scoreboard-numbers: true` option provides the equivalent translation for 1.20.3+ clients;
-that ViaVersion setting affects every scoreboard on the server rather than one Gloss document.
+`"hideNumbers": true` removes the red score column without changing the internal 15-to-1 values that
+keep the rows ordered.
 
 With `[features] boards = false`, no Gloss sidebar renders. Board documents remain editable.
 
@@ -197,23 +180,14 @@ The web editor can edit board selection, the base presentation, and complete var
 
 ## Groups
 
-Gloss has no group files or `/gloss group` command. It reads the player's current primary group from Vault:
+Gloss has no group files or `/gloss group` command. It reads the player's current primary group from
+Vault, trimmed and lowercased, and exposes it as `viewer.group`, `subject.group`, `source.group`
+where that role is a player, and through `inGroup(role, name)`.
 
-- `[groups] useVault` defaults to `true`.
-- Group names are trimmed, lowercased, and cached for 5 seconds.
-- A failed lookup behaves as though the player has no group.
+Without Vault, with `[groups] useVault = false` (default `true`), or with no Vault permission
+provider registered, the group value is empty and `inGroup` is false. Other conditions such as
+`viewer.op`, permissions, world and health are unaffected. Changing `[groups] useVault` applies on
+reload.
 
-The resolved name is exposed as `viewer.group`, `subject.group`, `source.group` where that role is a
-player, and through `inGroup(role, name)`.
-
-### Without Vault
-
-If Vault is not installed, or `[groups] useVault = false`, or Vault has no permission provider
-registered, the group value is empty and `inGroup` is false. Other conditions such as `viewer.op`,
-permissions, world and health are unaffected.
-
-If the Vault hook fails, Gloss logs the reason and treats group values as empty. Changing `[groups] useVault` applies on reload.
-
-## Coming from the pre-merge layout
-
-Gloss ignores schema-1 board documents. Rewrite custom files to schema 2 or use `/gloss board reset` for a bundled default. See [Data Files & Hot Reload](/gloss/03-data-files).
+Gloss ignores schema-1 board documents: rewrite custom files as schema 2, or use `/gloss board reset`
+for a bundled default. See [Data Files & Hot Reload](/gloss/03-data-files).

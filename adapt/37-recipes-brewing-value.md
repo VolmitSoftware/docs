@@ -2,7 +2,7 @@
 title: "Recipes, Brewing & Value"
 description: "Crafting recipes, custom brewing, and material value settings"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,11 +43,9 @@ A finished brew fires `AdaptBrewCompleteEvent` when at least one bottle converte
 
 ## Material values
 
-Every material resolves to a number. Adapt starts at `value.baseValue`. It asks Bukkit for every recipe that produces the material. For each of those recipes it adds `baseValue` plus the resolved value of each ingredient. Then it divides by how many items the recipe outputs. Those per-recipe numbers are averaged and added to the base. Recipes already visited on the current walk are skipped so a crafting loop cannot recurse forever.
-
-Two clamps sit on the result. If the running total passes `maxRecipeListPrecaution`, it collapses to `total / 10 + 1`. That keeps deep recipe chains from exploding. Any block whose hardness is zero reads back as `0` regardless of what was computed. The last step is `value.valueMultipliers`. Adapt looks it up case insensitively on the Bukkit material name. Anything absent uses `1`.
-
-Adapt recalculates material values after a restart or relevant config reload.
+Adapt estimates what each material is worth by walking its vanilla recipes backwards. Override any
+of them in `value.valueMultipliers`; a block with zero hardness is always worth zero. Values are
+recalculated after a restart or a relevant config reload.
 
 Material value feeds Architect XP and Placement, Axes XP and its value
 statistics, and Crafting XP and Deconstruction. It also feeds Discovery XP and

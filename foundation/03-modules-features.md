@@ -1,75 +1,82 @@
 ---
 title: "Modules and Behavior"
-description: "Foundation module lifecycle and implemented player-facing behavior"
+description: "What each Foundation module does, and the rules its commands follow"
 published: true
-date: 2026-09-06T03:30:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "foundation, modules, features"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Each Foundation module can be enabled or disabled separately. During startup or a BileTools hot-load, enabled modules remain visibly `PREPARING` until every player who is already online has had their JSON profile loaded on the asynchronous scheduler; their static command labels return a preparation message without running module code. Disabling a module unregisters its runtime routes and listeners and restores temporary player state where needed; its static command label remains declared and reports that the module is unavailable.
+Every module turns on and off on its own. A disabled module keeps its command labels registered; running one reports that the module is unavailable. During startup and after a BileTools hot-load, modules stay `PREPARING` until the profiles of everyone already online have loaded.
 
-Administration and moderation are independent of the player-request module. Reconciliation still starts declared dependencies first and stops dependents first; a failed activation releases that module's tracked resources and blocks only its actual dependents while unrelated active modules continue running.
+`administration` and `moderation` do not need the `teleport` module.
 
-## Teleport behavior
+## Teleport
 
-The `teleport` module owns consent requests, request preferences, `/back`, and back-history capture. Disabling it stops those features without removing the shared travel engine used by spawn, homes, warps, Administration, and moderation jail movement. That engine rejects missing worlds, non-finite coordinates, world-border exits, unloaded destination state, restricted suite-owned worlds, and unsafe landings unless the player being moved has the applicable bypass permission. Safe-landing scans preserve the requested horizontal coordinates, inspect the player's actual scaled footprint and height, reject liquids, waterlogged or collapsible support, leaves, damaging and portal materials, occupied body collision, and require sufficient stable collision support within that footprint. The same restricted-world admission protects configured respawn placement and the creation of spawn and warp anchors. Every chunk touched by the footprint is prepared asynchronously when Paper exposes asynchronous loading; on Spigot, the same bounded set is loaded synchronously only after work reaches the destination-region task. All touched chunks must belong to that execution context before inspection, and the final move runs through the player's entity scheduler. Warmups can cancel on movement or damage, pending work is cancelled on quit or world unload, and cooldown and request expiration use monotonic time. Operations explicitly marked as forced, including Administration teleports, jail lifecycle moves, and first-join placement, bypass an existing player cooldown as well as warmup while preserving destination admission and safety checks.
+The `teleport` module owns consent requests, request preferences, `/back`, and back-history capture. Turning it off does not affect spawn, homes, warps, administration travel, or jail movement — those share the same travel engine.
 
-First-join and configured respawn routing use only Foundation's persisted spawn anchor. When that anchor has not been set, Foundation leaves vanilla join and respawn placement untouched, and `/spawn` reports that Foundation spawn is unset.
+That engine refuses a destination in a missing world, outside the world border, in a restricted suite-owned world, or on an unsafe landing. Safe-landing keeps your requested X and Z, then checks the block you would actually occupy: liquids, waterlogged or collapsible support, leaves, damaging blocks, portals, and an occupied space are all rejected. The bypass permissions are on [Commands and permissions](/foundation/02-commands-permissions), and they are checked against the player being moved.
 
-While the `teleport` module is active, Foundation-owned successful teleports and death locations enter the bounded `/back` history. Teleports initiated by another plugin or the server enter that history only when `teleport.rememberExternalTeleports` is enabled; it is disabled by default. No shared-engine travel or event capture mutates back history while the module is inactive.
+Warmups cancel if you move or take damage.
 
-## Profiles and social state
+Foundation-owned teleports and death locations go into `/back` history. Teleports from another plugin or the server go in only when `teleport.rememberExternalTeleports` is enabled, which it is not by default.
 
-Foundation stores homes, back history, social choices, balances, moderation state, mail, kit cooldowns, logout state, identity timestamps, last-known names, and cosmetic choices by UUID in JSON profiles. The core profile repository records join and quit identity independently of optional modules, so offline lookup remains available when Information and Player State are disabled. Historical or reused names claimed by multiple UUID profiles are marked ambiguous: offline mail, moderation, seen, and logout-location commands refuse to guess and report that nothing changed. Private messages respect visibility, recipient choices, ignores, and configured length limits. `social.revealVanishedTargets` controls whether message targeting may reveal players the sender cannot see; social spy is permission-gated and opt-in. Ignore, spy, message-toggle, and option mutations fail without changing state when the profile repository is read-only or unavailable.
+First-join and respawn routing use Foundation's own spawn anchor. If you have not run `/setspawn`, Foundation leaves vanilla join and respawn placement alone and `/spawn` reports that spawn is unset.
 
-Home-name expression and maximum-length edits replace the compiled validation policy during the same accepted configuration reload; they do not require the homes module or server to restart.
+> If you run Wormholes as well, a cross-server arrival can land a player before or after Foundation's configured first-join placement. There is no shared ordering between the two.
+{.is-info}
 
-Shared warp access can be segmented without duplicating destinations. The disabled-by-default `warps.requirePerWarpPermissions` switch makes use, listing, and player completion require `foundation.warp.<lowercase-name>` or `foundation.warp.*`; administrator management completion continues to expose every stored warp, and malformed hand-edited names cannot be converted into dynamic permission checks. The static suffixes `use` and `manage` are reserved from warp creation to prevent a command permission from becoming a destination grant.
+## Profiles and social
 
-AFK activity tracking clears state on configured player actions. Queued AFK and vanish work is generation-bound, so disabling or restarting Player State retires callbacks before they can mutate a profile or visibility. Remote vanish completion requires `foundation.state.vanish.others` and omits players the sender cannot see. When `utilities.recheckFlightOnWorldChange` is enabled, a world change rechecks contextual `foundation.utility.fly` permission and restores the player's prior flight state when permission is no longer available. Vanish only manages Foundation's own hide/show layer and does not claim ownership of another plugin's hidden-player state or guarantee suppression in another plugin's displays.
+Foundation keys everything to a UUID: homes, back history, social choices, balances, moderation state, mail, kit cooldowns, logout location, last-known name, and cosmetic choices.
 
-Gloss chat bubbles honor Bukkit's per-viewer player visibility, including Foundation vanish, while retaining the bubble style's own visibility conditions. Live bubbles reevaluate that visibility during their normal updates. This integration does not suppress unrelated displays from other plugins.
+If two UUID profiles have claimed the same name, offline mail, moderation, `/seen`, and `/tpoffline` refuse to guess and report that nothing changed.
+
+`social.revealVanishedTargets` decides whether `/msg` may reveal a player the sender cannot see. Social spy is opt-in and permission-gated.
+
+Foundation vanish is Foundation's own hide layer; it does not control another plugin's hidden-player state. Gloss chat bubbles do honor it, because they follow Bukkit per-viewer visibility.
+
+With `utilities.recheckFlightOnWorldChange` enabled, changing world rechecks `foundation.utility.fly` and restores your previous flight state if you no longer have it there.
+
+Changing the home-name pattern or maximum length applies on reload; no restart needed.
 
 ## Economy and worth
 
-Economy is disabled by default. It enforces configured balance limits and validates both accounts before a transfer. At activation it builds a complete UUID balance index asynchronously, bounded by `economy.maximumIndexedAccounts`; economy commands and mutations remain unavailable, and Foundation does not publish its Vault provider, unless that load completes successfully. Vault-facing reads and transactions use only this memory index, so they never load JSON on the calling thread. `/balance <player>` and `/economy` resolve uniquely indexed offline accounts from that same completed memory index, avoiding synchronous profile or network lookups; exact offline names are accepted while tab completion remains limited to online players. When multiple UUID accounts claim the same historical name, command targeting and Vault's legacy string-name methods fail closed; UUID and `OfflinePlayer` Vault methods remain unambiguous.
+Economy is off by default. When you enable it, Foundation builds a balance index of every account in the background, bounded by `economy.maximumIndexedAccounts`. Economy commands stay unavailable and the Vault provider is not published until that finishes.
 
-Single-account mutations use striped account locks, and transfers acquire both stripes in deterministic order so concurrent opposing payments remain atomic without a global economy lock. Successful changes enter one coalescing I/O lane that applies the latest balance to the resident canonical profile and uses the profile repository's atomic JSON writer. Consecutive failures receive at most four attempts with bounded backoff even when newer writes are coalesced; the newest intent remains queued and that account rejects further mutations after the limit instead of silently diverging. A rejected I/O schedule closes mutation acceptance globally until the module restarts, retaining the committed in-memory intent and preventing a rejection storm. Shutdown stops new transactions, makes one final pass over retained intents, then the profile repository performs its normal final dirty flush.
+`/balance <player>` and `/economy` accept an exact offline name; tab completion only offers online players. If two accounts share a historical name, name-based targeting fails rather than guessing. `/balancetop` obeys `economy.maximumLeaderboardProfiles`.
 
-The save queue retains each account's latest accepted revision after draining its pending write. A delayed older transaction cannot replace that balance on disk. Profiles already loaded in read-only corruption mode are also rejected during economy initialization; their placeholder values never seed the balance index.
+`/sell` credits the amount after rounding to `economy.decimalPlaces`. If a positive total rounds to zero the sale is refused and nothing leaves your inventory. Selling your whole inventory needs `/sell all confirm`.
 
-`/balancetop` asynchronously sorts an immutable, bounded snapshot of the authoritative in-memory balance index. It includes accounts created or changed since the last disk write, uses stored player names without a blocking lookup, and obeys `economy.maximumLeaderboardProfiles`.
-
-Item prices live in the complete categorized `worth.toml`. Every current non-legacy item is represented, but only a conservative commodity set is sellable by default; recipe outputs, spawn eggs, and operator-only or unobtainable items default to zero. Unknown future `minecraft:` item identifiers survive canonical rewrites and appear as a preserved-count diagnostic in the catalog GUI until the running server recognizes them. `/worth` is available independently of the economy module and opens a paged category browser; when menus are disabled, the request falls back through `/foundation worth <held-material>` to show the held item's value without risking another plugin's `/worth` label. Administrators with `foundation.economy.setworth` can right-click an item and enter its price. Worth chat edits recheck that the module is active before committing, and stale completion, cancellation, or validation callbacks do not reopen a menu after the module stops. `/sell` belongs to economy. Held-item sales are immediate, while whole-inventory sales require confirmation before items are removed.
-
-Sales check the actual credited amount after applying `economy.decimalPlaces`. If a positive catalog total rounds to zero, the sale is rejected and every item remains in the inventory. Successful receipts display the rounded amount credited to the account.
+`/worth` works whether or not the economy module is on. With `foundation.economy.setworth` you can right-click an item in the browser and type its price. If menus are disabled, `/foundation worth <material>` prints one value.
 
 ## Moderation, mail, and kits
 
-Foundation moderation owns chat and command enforcement only for its persisted mutes, freezes, and jails. When Adapt is present, the active moderation module also publishes an optional ability-use policy that denies Adapt abilities for frozen players and active jail sentences using the affected player's Foundation locale. Punishment durations accept compound `s`, `m`, `h`, `d`, `w`, `mo`, and `y` units or `permanent`; configured maximums, reason lengths, exemptions, and command allowlists are enforced before mutation. Warning deletion accepts a complete ID or a unique prefix of at least eight characters and refuses ambiguous prefixes. Jails use named locations, remember the first return point, and confine a player to a three-block radius in the jail world through movement and teleport checks. A failed initial jail teleport rolls the new state back; expiration or `/unjail` releases the profile and uses a forced return that cannot be refused by the cooldown created during jail placement. Jail deletion is refused while an active sentence references that jail or when the bounded profile scan cannot prove the jail is empty; concurrent jail assignments and location updates are serialized against deletion.
+Durations accept compound `s`, `m`, `h`, `d`, `w`, `mo`, and `y` units, or `permanent`.
 
-Mail delivery resolves offline Foundation profiles asynchronously, caps each mailbox, tracks unread messages, and refuses writes in profile read-only mode. `/mail read <page>` marks only the exact messages captured and displayed for that page; messages on other pages and concurrent new deliveries remain unread, including when mailbox-cap eviction shifts list indexes before the read state is committed. Kits are saved atomically in `data/kits.yml`, retain complete Bukkit item metadata, enforce configured kit-count, cooldown, and per-kit stack limits both for commands and hand-edited data loaded from disk, enforce kit-specific permission nodes and persisted cooldowns, filter player-facing completion and lists through the same kit permissions, preflight inventory space, and either reject or drop overflow according to configuration. Values beyond a reloaded limit are bounded in memory immediately and queued for canonical persistence.
+`/clearwarnings` takes a full warning ID or a unique prefix of at least eight characters, and refuses an ambiguous prefix.
 
-## Administration and item tools
+A jail is a named location. Foundation remembers where the player came from, confines them to a three-block radius in the jail world, and returns them on expiry or `/unjail`. `/deljail` is refused while any profile still has an active sentence there.
 
-Direct travel, coordinate travel, mass travel, `/jump`, `/bottom`, and offline-location travel all route through entity, region, and teleport safety ownership. `/world` remains available when Rift or Iris is installed, but only targets an already-loaded world's spawn and never creates, discovers, unloads, repairs, or generates worlds. `/sudo` rejects line breaks, oversized input, exempt targets, and configured command roots before using the target player's dispatcher.
+Mail delivers to offline profiles, caps each mailbox, and tracks unread state. `/mail read <page>` marks only the messages on that page.
 
-Vanilla item grants validate registry entries, item eligibility, amount caps, policy approval, and complete inventory capacity before mutation. Repair, enchantment, experience, burn, rest, kill, and portable workstation actions remain permission-separated; unsafe enchantment levels require both configuration opt-in and a dedicated permission. `/kill` and `/suicide` use a generic-kill damage source instead of directly setting health, allowing normal damage events and protection observers to participate.
+Kits live in `data/kits.yml` and keep full item metadata. Kit count, cooldown, and per-kit stack limits apply to hand-edited data as well as to `/createkit`. Overflow is either rejected or dropped, depending on configuration.
 
-Foundation publishes an `ItemOperationPolicy` Bukkit service for `CLONE`, `RESIZE`, `SELL`, `REPAIR`, `ENCHANT`, `STORE`, `GRANT`, and `DELETE`. It recursively inspects container contents and persistent data with depth and item-count bounds, denies unknown foreign namespaces unless their provider explicitly allows them, and fails closed if a provider fails. `/clearinventory` performs an all-or-nothing `DELETE` preflight. Disposal blocks protected click and drag actions, and protected items still present on close are returned to inventory or dropped safely.
+When Adapt is installed, an active `moderation` module denies Adapt ability use to frozen and jailed players.
 
-## Interfaces and cosmetics
+## Item tools
 
-The control center shows whether modules are preparing, active, disabled, blocked, or failed. During startup preload it remains an informational surface and leaves every state-changing module, configuration, language-editing, cosmetics, and worth control inactive. Its Language Studio links the Director personal/server locale selectors and the permission-gated 54-slot message editor back into the same interface once the runtime is ready. Menu colors, sounds, particles, and teleport effects can be changed through `branding` settings; successful hot reloads immediately refresh the control, language, editor, help, and debug menu palettes.
+Item grants check the registry entry, the amount cap, and that your inventory actually has room before anything is given.
 
-The same framework supplies the arrival-flair picker. A player can choose from the hot-reloadable particle allowlist, preview the choice, restore the server default, and reuse it for successful teleports and `/celebrate`; count, spread, and monotonic cooldown are operator-controlled. Selection and celebration-preview clicks recheck the active module, menus setting, and permission, while selection also rechecks the current allowlist, so a retained stale inventory cannot mutate a profile or emit a preview after any of those conditions changes.
+`/kill` and `/suicide` deal a generic-kill damage source rather than setting health to zero, so death events and protection plugins still see it.
 
-Teleport feedback can use titles, action bars, and boss bars independently. Foundation uses VolmLib's cooperative title and action-bar claims plus its own bounded teleport boss-bar lane, so it does not clear a newer shared display. Inventory inspection and kit previews open read-only snapshots protected by a plugin-lifetime inventory guard rather than a module-local listener. Hot-disabling Utilities, Kits, or Items immediately makes retained module inventories inert and queues their closure on each viewer's entity scheduler; disposal close cleanup continues to preserve items denied by the item-operation policy.
-
-Sounds and particles resolve lazily from the server registry. Canonical namespaced keys and uppercase Bukkit constants are accepted, and renamed particle constants are mapped between the 1.20.1 and current forms. Missing or temporarily unavailable values fall back or skip the effect with throttled diagnostics, so cosmetic feedback cannot abort its command or GUI action.
+Other plugins can veto item operations through Foundation's [item operation policy](/foundation/05-integrations-api). `/clearinventory` runs that check over every item first and clears nothing if any item is denied. The disposal inventory returns protected items to you on close.
 
 ## Destructive actions
 
-`/suicide` and `/clearinventory` require an exact follow-up confirmation by the same sender within `gameplay.confirmationSeconds`. Inventory clearing also binds the confirmation to the original target, preventing a confirmation from being reused against another player, and no item is removed when any item fails the `DELETE` policy.
+`/suicide` and `/clearinventory` require an exact follow-up confirmation from the same sender within `gameplay.confirmationSeconds`.
+
+`/clearinventory` also binds the confirmation to the original target, so a confirmation cannot be reused against a different player. No item is removed when any item fails the delete check.
+
+Continue with [Operations and safety](/foundation/04-operations-safety).

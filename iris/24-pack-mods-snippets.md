@@ -2,7 +2,7 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-09-14T00:40:00.440Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ Related:
 
 Most of a pack is nested objects: a decorator inside a biome, a noise style inside a generator, a palette inside a decorator. When two biomes want the same decorator you would normally copy the JSON. Then you have two copies to keep in sync.
 
-Snippets fix that at the deserializer level. Iris registers a Gson type adapter for every class carrying `@Snippet("some-name")`. When that adapter reads a field and finds a **string** instead of an object, it treats the string as a path. It opens `snippet/some-name/<path>.json`. It parses the file contents as the field value. Nothing else changes. The biome still ends up holding a real decorator object. The engine never knows the difference. The value is resolved once at load time rather than looked up per chunk.
+Snippets fix that. When a snippet-typed field holds a **string** instead of an object, Iris reads it as a path and parses `snippet/<type>/<path>.json` as the field value. The biome still ends up holding a real decorator object, resolved once at load time rather than looked up per chunk.
 
 Two consequences worth internalising:
 
@@ -133,7 +133,7 @@ Biome decorator lists take snippet strings as array elements, mixed freely with 
 
 Use a snippet when the same value appears in several places and should change in lockstep. The bundled Overworld pack uses them for decorators shared by several climate biomes, noise styles reused by several generators, and the palette that defines pack stone.
 
-Skip it when a value appears once. A snippet reference costs a file open and adds a place to look when something goes wrong. It buys nothing if there is a single call site. It also makes the failure mode worse. A wrong-type or missing snippet resolves to null after logging. A field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
+Skip it when a value appears once. A snippet buys nothing at a single call site and makes the failure mode worse: **a wrong-type or missing snippet resolves to null**, so a field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
 
 ## Packaging and snippets
 
@@ -230,7 +230,7 @@ Whole-file registrants (dimensions, regions, biomes, generators, loot tables, en
 
 ## Pack mods (`IrisMod`) — schema only, not applied
 
-Folder: `mods/`. The load key is the path under `mods/` without `.json`. `IrisData` registers a loader for these files. They parse, appear in tooling, and show up in generated schemas. No engine path reads them. Neither world creation nor Studio hotload consumes an `IrisMod`. A `mods/*.json` file that looks correct will change nothing about the terrain you generate.
+Folder: `mods/`. The load key is the path under `mods/` without `.json`. These files parse, appear in tooling, and show up in generated schemas, but **no engine path reads them**. A `mods/*.json` file that looks correct will change nothing about the terrain you generate.
 
 To get the same effect, edit the target dimension, region, biome, generator, or object placement directly. If you need the same edit applied to several packs, keep the edits in version control. Do not expect the mod schema to layer them at runtime.
 

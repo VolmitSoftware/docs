@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install Adapt and configure progression, storage, integrations, and Mutations"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,9 @@ Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutat
 
 ## Sharing player data across servers
 
-By default a player's progression lives in `data/players/<uuid>.json`. SQL mode moves authority into two InnoDB tables: `ADAPT_DATA` holds JSON and `ADAPT_DATA_FENCE` holds the current owner, epoch, and committed sequence. Use the same SQL schema on every backend that shares a player base. Redis carries request-correlated handoff snapshots for the exact preceding SQL owner and stages them for 60 seconds; it is not a cache or a second storage backend. No proxy plugin is required.
+By default a player's progression is a JSON file per player. Turning SQL on makes the database
+authoritative instead, and Redis hands live state between backends during a server switch. No proxy
+plugin is needed. Use the same schema on every backend that shares a player base.
 
 1. Create the database schema yourself and give the account SELECT, INSERT, UPDATE, DELETE, and CREATE TABLE on it. Adapt creates both tables inside the schema but never the schema.
 2. Fill in the `sql.*` host, port, database, username, and password keys, then set `sql.enabled = true`.
@@ -316,20 +318,9 @@ Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server t
 
 ### Reload matrix
 
-The watcher drains native events every 500 ms and runs bounded exact-content fallback reconciliation about every 2.5 seconds. It watches `adapt.toml`, `models.toml`, `mutations.toml`, the locale override folder, and every TOML directly inside `skills/` and `adaptations/`. Automatic snapshots are capped at 2 MiB and normalized into one latest-state batch, with at most one application every 3 seconds and one trailing batch when more saves arrive during the cooldown. Passive automatic loads never rewrite or recreate the source file.
-
-| Change | Hot reload | Restart required |
-|---|---|---|
-| Skill and adaptation config, including enabled flags | yes | no |
-| GUI, effects, progression math, conflicts, protection overrides | yes | no |
-| Language, model mappings, advancements | yes | no |
-| Mutation config | yes, and online players are reconciled | no |
-| Ability API policy, failure, watchdog, and throttle settings | yes | no |
-| `protectorSupport.*` default-active membership | yes | no |
-| SQL or Redis endpoint, or their enabled state | no | yes |
-| Metrics enabled state | no | yes |
-| Installing or removing an optional plugin, and protector registration | no | yes |
-| Startup banner or update check | takes effect next enable | yes |
+Skill, adaptation, GUI, effects, progression, mutation, language, model and protection settings all
+hot-reload on save. SQL, Redis, metrics, and installing or removing an optional plugin need a
+restart. The full table is in [40 - Updates and Recovery](/adapt/40-operator-runbooks).
 
 ## See also
 

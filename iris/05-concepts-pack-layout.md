@@ -2,12 +2,12 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-09-06T00:32:42.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris loads it through `IrisData`, which registers one loader per resource type. It turns short string keys into files on disk and caches what it reads. Production worlds and Bukkit Studio generate from immutable pack snapshots. Bukkit Studio watches the separate folder you edit and activates accepted changes for new chunks.
+A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris registers one loader per resource type, turning short string keys into files on disk. Production worlds and Bukkit Studio generate from immutable pack snapshots. Bukkit Studio watches the separate folder you edit and activates accepted changes for new chunks.
 
 See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
 
@@ -80,7 +80,7 @@ dimension  ->  regions  ->  biomes  ->  generators   (terrain height/noise)
 - **Object** — a `.iob` block model with its own placement rules.
 - **Structure / jigsaw pool / jigsaw piece** — multi-piece assemblies, either Iris-native or bridged to vanilla structures.
 
-The practical consequence: **a file that nothing references is inert.** It parses. It validates. It never generates. When a resource you wrote is not showing up, the first question is not "is the JSON wrong." Ask whether it is reachable from the dimension. Work forward from `dimensions/<key>.json` and find where the chain breaks.
+The practical consequence: **a file that nothing references is inert.** It parses, it validates, it never generates. When a resource is not showing up, the first question is not whether the JSON is wrong — ask whether it is reachable from the dimension, working forward from `dimensions/<key>.json` until the chain breaks.
 
 ## Trace one reference end to end
 
@@ -123,9 +123,9 @@ The bundled overworld uses `snippet/decorator/*` and `snippet/style/*`.
 
 ## Authoring packs and generation snapshots
 
-Edit the source pack under `packs/<key>/`. Production worlds and Bukkit Studio capture immutable copies under `<world>/iris/generation/epochs/<epoch>/pack/`. The manifest selects the active epoch and references immutable epoch metadata. Epoch metadata records the pack fingerprint, implementation revision, registry definitions, and dimension contract. Selecting an earlier pack later creates another activation with its own saved boundary.
+Edit the source pack under `packs/<key>/`. Production worlds and Bukkit Studio generate from immutable copies under `<world>/iris/generation/epochs/<epoch>/pack/`, not from your authoring folder. Selecting an earlier pack later adds another copy rather than reverting the world.
 
-Historical pack definitions remain on disk so saved biome and region identities can resolve their original content. Iris does not bundle historical generator code. Include the complete `iris/generation` directory in world backups.
+Historical pack definitions remain on disk so saved biome and region identities can resolve their original content. **Include the complete `iris/generation` directory in world backups.**
 
 | Mode | Generation source | How changes apply |
 |---|---|---|
@@ -134,9 +134,9 @@ Historical pack definitions remain on disk so saved biome and region identities 
 | Production | Immutable world-local epochs | Explicit update staging and restart |
 | Benchmark without Studio | `<world>/iris/pack` | Disposable copied pack |
 
-Bukkit Studio editors, exports, presets, and schemas use the authoring folder. Generation reads the active snapshot. Invalid edits leave the active generation unchanged. A failure after durable activation stops generation and requires repair before reopening Studio.
+Studio editors, exports, presets, and schemas read the authoring folder while generation reads the active snapshot, so an invalid edit leaves the active generation unchanged.
 
-Existing chunks keep their saved terrain and recorded generation semantics. New chunks use the current generator and reconcile terrain, caves, materials, and fluids against saved natural edge columns. The transition has a finite width. It does not reconstruct an old generator.
+Existing chunks keep their saved terrain. New chunks use the current generator and reconcile against the saved edges over a finite transition width; no old generator is reconstructed.
 
 See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the edit loop and [25 - Pack Management](/iris/25-pack-management) for production updates. Physical height, dimension type, and coordinate-scale changes require a new world. Generation modes, fluid baselines, and upper-terrain content can change within that fixed layout.
 
@@ -152,11 +152,11 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the edit 
 
 On mod loaders the pack root and the platform data dir are two different folders. Packs go under `config/irisworldgen/`. Everything else goes under `config/iris/`. If you are hand-placing a pack on a modded server, `config/irisworldgen/packs/` is the one that matters.
 
-Folders whose names start with `.` are skipped when Iris lists packs, which is why `.iris/` inside a pack is invisible to the pack listing. Pack listing itself follows symbolic links. The stricter check (`requireSafePackTree`) is used when installing a pack into a world. It refuses a symlinked root, any symlink in the tree, and any non-regular file. It also skips hidden subtrees.
+Folders whose names start with `.` are skipped when Iris lists packs, which is why `.iris/` inside a pack is invisible to the listing. Listing follows symbolic links, but installing a pack into a world uses a stricter check that refuses a symlinked root, any symlink in the tree, and any non-regular file. It also skips hidden subtrees.
 
 ## Registrant folders
 
-`IrisData` registers 17 loaders. Each one owns exactly one folder name and one file extension.
+Iris registers 17 loaders. Each one owns exactly one folder name and one file extension.
 
 | Folder | Extension | What lives here and when you touch it |
 |---|---|---|
@@ -180,17 +180,17 @@ Folders whose names start with `.` are skipped when Iris lists packs, which is w
 
 Anything else in a pack directory is not a resource type. The bundled Overworld pack contains empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
 
-A reduced init path used by the datapack compiler registers `biomes`, `regions`, `dimensions`, `generators`, `expressions`, `images`, and `image-maps` so validation can inspect the complete reachable image-driven generation graph. That is internal and not something a pack author configures.
+The datapack compiler loads a reduced set (`biomes`, `regions`, `dimensions`, `generators`, `expressions`, `images`, `image-maps`) so validation can inspect the reachable image-driven graph. Nothing about that is configurable.
 
 ## What makes a pack loadable
 
-`PackValidator` fails fast on three structural problems, in order:
+Validation fails fast on three structural problems, in order:
 
 1. The pack folder is missing or is not a directory.
 2. There is no `dimensions/` directory.
 3. There are no `*.json` files **directly inside** `dimensions/`. Nested dimension files do not count toward this check.
 
-Passing those three does not mean the pack is loadable. `PackValidator` then runs roughly ten content validators: dimension, cave profile, loot, object/surface, structure graph, native structure, spawn, and content-key checks. Any blocking error from those also makes the pack not loadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one. The rest are usually downstream.
+Passing those three does not make a pack loadable. Content validators for dimensions, cave profiles, loot, objects and surfaces, structure graphs, native structures, spawns, and content keys run next, and any blocking error from those also makes the pack unloadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one. The rest are usually downstream.
 
 Presence on disk is a weaker notion than loadability. A pack "exists" if its directory is safe and holds at least one non-symlink `dimensions/*.json`.
 
@@ -230,4 +230,4 @@ For orientation when reading `packs/overworld/`:
 | `images/*.png` | Noise and map images |
 | `snippet/decorator/**`, `snippet/style/**` | Shared fragments referenced across biomes |
 
-Feature-level detail: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [14 - Generators & Noise](/iris/14-generators-noise), [18 - Structures Overview](/iris/18-structures-overview), [19 - Objects](/iris/19-objects), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
+Feature-level detail: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [14 - Generators & Noise](/iris/14-generators-noise), [18 - Structures Overview](/iris/18-structures-overview), [19 - Objects](/iris/19-objects), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners).

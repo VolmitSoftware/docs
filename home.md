@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-09-10T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -123,7 +123,7 @@ Pick a project to open its documentation.
           <img src="/home-assets/riftworldmanager.jpg" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">Rift World Manager</strong>
-            <span class="d-block text--secondary">Legacy world creation and management for 1.19</span>
+            <span class="d-block text--secondary">World creation, loading, quarantine, and restore</span>
           </span>
         </a>
       </li>
@@ -142,11 +142,63 @@ Pick a project to open its documentation.
       </li>
     </ul>
   </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/skyprime" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">SP</span>
+          <span>
+            <strong class="title">SkyPrime</strong>
+            <span class="d-block text--secondary">Shared-grid survival islands, teams, and progression</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/static" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">ST</span>
+          <span>
+            <strong class="title">Static</strong>
+            <span class="d-block text--secondary">Player statistics, profiles, and rankings</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/gamemodeswitcher" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">GM</span>
+          <span>
+            <strong class="title">GamemodeSwitcher</strong>
+            <span class="d-block text--secondary">Gamemode gestures, a selector menu, and commands</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
 
-## Furnace progression
+## Shared across every plugin
 
-[Cinder](/cinder) provides claimed furnaces, blast furnaces, and smokers with upgrades, protected access, custom recipes, and per-player languages.
+<div class="layout wrap">
+  <div class="flex xs12 sm6 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/languages" class="d-flex align-center">
+          <span>
+            <strong class="title">Languages</strong>
+            <span class="d-block text--secondary">Pick a language, edit messages, and translate any Volmit plugin</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
 
 ## Developer tools
 
@@ -213,7 +265,3 @@ Pick a project to open its documentation.
     </ul>
   </div>
 </div>
-
-> Compatibility and support vary by project. Check a plugin's installation page
-> before adding it to a server.
-{.is-info}

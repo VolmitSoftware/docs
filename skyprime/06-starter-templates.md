@@ -1,8 +1,8 @@
 ---
-title: 06 - Starter Templates
+title: SkyPrime - Starter templates
 description: Custom starter bundles, bounded capture, block data and recovery
 published: true
-date: 2026-09-05T16:22:45.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: skyprime, templates, islands, configuration
 editor: markdown
 dateCreated: 2026-09-05T16:22:45.000Z
@@ -14,7 +14,7 @@ Custom starter bundles add administrator-defined islands alongside the procedura
 
 Use `/sky template list` to list available custom starters. Players can select an available starter in the creation menu or use `/sky create garden`, replacing `garden` with its ID. `/sky reset garden` selects it for a confirmed terrain reset.
 
-Each bundle has a display name, item icon, description and optional permission. SkyPrime checks the permission in the command flow and again on the selecting player's owning thread before admitting a custom creation or reset. Custom selection requires an online player. Administrative recovery may explicitly select a replacement starter.
+Each bundle has a display name, item icon, description and an optional permission. Choosing a custom starter requires an online player.
 
 ## Capture a bundle
 
@@ -25,11 +25,11 @@ Capture requires `skyprime.admin`. Build the source terrain, then select its opp
 3. Stand at the intended landing position and use `/sky template origin`. The origin is the block beneath your feet.
 4. Use `/sky template capture garden normal` to create the bundle.
 
-All three points must be in the same world. The selection expires after ten minutes. Stay online in that world until capture finishes, and keep every selected chunk loaded. Capture reads one chunk snapshot at a time on its owning region, then processes the snapshot away from world state. It does not generate or load missing chunks.
+All three points must be in the same world, and the selection expires after ten minutes. Stay online in that world until capture finishes and keep every selected chunk loaded; capture never loads or generates a missing chunk.
 
 To attach a Nether or End template, select that source build and its origin, then use `/sky template capture garden nether` or `/sky template capture garden end`. The normal template must already exist. Capture refuses to replace an existing dimension or overwrite an existing normal bundle. Edit the canonical file and reload to replace existing content. If the file changes during an attachment capture, publication is rejected; reload before retrying.
 
-Capture copies non-air blocks and installs a default starter supply list. It does not read the original containers' inventories. Only one capture or catalog reload can run at a time. A capture covers successive chunk snapshots, so avoid editing the source build while it is being captured.
+Capture copies non-air blocks and installs a default starter supply list; it does not read the original containers' inventories. Only one capture or catalog reload runs at a time, and it reads chunk by chunk, so do not edit the source build while it runs.
 
 ## Landing and supplies
 
@@ -113,8 +113,9 @@ If the custom catalog cannot load during startup, SkyPrime logs the full failure
 
 ## Interrupted operations
 
-Before editing island terrain, SkyPrime saves the selected custom bundle's complete content in that island's world-job descriptor and waits for island-state persistence. The operation uses this immutable content throughout generation and automatic recovery. Editing, removing or reloading the catalog cannot change an already admitted operation.
+A creation or reset copies the whole bundle into the island's world job before touching terrain, so editing or reloading the catalog cannot change an operation already running. World-job descriptors have their own 8 MiB limit, separate from the 4 MiB template-file limit.
 
-World-job descriptors have an 8 MiB read and write limit, separate from the 4 MiB template-file limit. Cancelling a custom creation or reset through its API future reaches the admitted job and stops remaining work at operation checks. An interrupted operation retains its descriptor and island reservation for recovery; cancellation does not undo a completed activation.
+> Recovery repeats the saved operation. It does not restore the terrain that existed before a reset.
+{.is-warning}
 
-Recovery repeats the saved generation or reset operation. It does not restore the terrain that existed before a reset. Administrative replacement recovery deliberately uses the newly selected starter. See [04 - Operations & Recovery](/skyprime/04-operations-recovery) for world-operation controls.
+See [Operations and recovery](/skyprime/04-operations-recovery).

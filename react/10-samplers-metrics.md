@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-09-13T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,23 +11,21 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
 
 ## Observation model
 
-- Registered samplers start with the sample controller. Cached samplers perform their measurement when sampled. They reuse that measurement for their cache interval. Ticked samplers update on their own schedule.
-- The history controller is the authoritative whole-registry sampling pump. By default it evaluates each sampler once every 500 ms, attaches one capture timestamp and sequence, and shares the resulting scalar snapshot with live HTTP, WebSocket, in-process graph, and one-second persistence consumers. The web push rate no longer multiplies sampler evaluations or sends a history array per metric.
-- Durable sampler history is stored under `plugins/React/history/` in exact one-second segments and spike-preserving aggregate tiers. Unavailable values are gaps. The historical catalog keeps metrics discoverable after a dynamic or cross-plugin sampler stops publishing. Retention, compression, recovery, and bounded query behavior are documented in [01 - Installation & Configuration](/react/01-installation-configuration#metric-history).
-- Capability-dependent local samplers report unavailable after an unsupported or failed platform query instead of publishing a valid-looking zero. Collection-health samplers expose unavailable and failed counts directly.
-- PlaceholderAPI demand controls which sampler values its once-per-second publisher requests. It does not enable or disable sampler objects.
-- Built-in cross-plugin samplers are registered even when their source plugin is absent. Their renderer formatting is `---` until data arrives. Raw sampler reads return zero before the first value. They retain the last received value afterward.
-- Metrics published through `ReactMetrics` create dynamic samplers while their source is registered. They disappear when that source unregisters or its plugin disables.
-- React's VolmLib integration service advertises every public global sampler as `react.sampler.<id>`. Consumers request a batch of those keys, and React reads only the requested samplers. This bridge never invokes chunk or player-context sampling; the internal `unknown` fallback is not advertised.
-- Gloss can consume those keys directly in any conditional document. For example, `metric('react.sampler.ticks-per-second', 20) < 18` can select a low-TPS board, tablist, bubble, damage style or drop presentation. The explicit fallback is used until React publishes a finite sample; see [Gloss Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
-- A sampler's `sample(Chunk)` path uses observer data when the metric has chunk samples. Otherwise it resolves to zero. Its map renderer graphs the sampler history.
-- Observer chunk samples retain only immutable world UUID, canonical world key, and chunk X/Z identity. `SampledChunk` and `SampledWorld` retain no Bukkit `Chunk` or `World` handle, and coordinate lookup never calls `World#getChunkAt` or loads a chunk. Worst-chunk maps, commands, and action queue builders consume that identity; any later live world or chunk access is resolved at dispatch and performed through the owning chunk scheduler.
-- `entities` and `chunks` use event-maintained totals corrected from Paper's per-world counters every ten seconds. They do not fan out one scan per player. Entity chunk attribution follows load, spawn, explicit movement, teleport, unload, and removal events; the shared census also reconciles entities that cross a chunk without a Bukkit move event so later removal closes the current bucket instead of leaving a source-chunk residue.
-- The seven category samplers (`ground-items`, `entities-hostile`, `entities-animals`, `villagers`, `projectiles`, `physics-entities`, and `entity-ai-active-count`) share UUID-deduplicated event-maintained counts across loaded worlds. Paper and Spigot reconcile at most 128 weakly referenced entities per world during each two-second refresh instead of copying whole-world entity arrays. Their startup repair consumes one loaded coordinate and at most 256 entities per tick until the event-maintained index converges. Folia rotates through the observer's immutable loaded-coordinate index, including chunks without players, with a limit of 32 owned chunks and 128 entities per chunk per refresh. The observer captures each world's startup loaded-chunk array once and converts at most 256 entries per one-second wave into coordinates; unload events suppress late seed entries, and the temporary arrays are released when drained or stopped. After seeding, the nominal Folia rotation for 1,000 loaded chunks is 64 seconds; a chunk above 128 entities needs one additional full chunk rotation per 128-entity slice. Reads never wait for reconciliation and receive the latest event-maintained value.
+- Every sampler is evaluated once per 500 ms. That one reading feeds the HUD, the web UI, graphs,
+  and stored history, so a faster web refresh does not cost extra sampling.
+- History is kept on disk under `plugins/React/history/`. Retention per tier is in
+  [01 - Installation & Configuration](/react/01-installation-configuration#metric-history).
+- A sampler that cannot measure reports unavailable rather than a healthy-looking zero.
+- Samplers for other Volmit plugins are registered even when that plugin is absent. They render
+  `---` until data arrives, then keep the last value.
+- Gloss can read any global sampler as `react.sampler.<id>` in a conditional document, for example
+  `metric('react.sampler.ticks-per-second', 20) < 18`. See
+  [Gloss Expressions & Placeholders](/gloss/13-expressions-placeholders#conditional-documents).
 
-## Built-in sampler count
+## Built-in samplers
 
-The package scan registers **155** built-in sampler ids. The telemetry controller adds **41** runtime samplers for collection health, host/JVM state, and player activity, producing **196** built-in ids: the **195** operator-facing ids below plus the internal `unknown` fallback. `unknown` backs unresolved monitor configuration, returns zero as a raw sample, renders `---`, and is omitted from the sampler picker and public metric catalog.
+About 195 samplers ship built in, listed below by group. One internal `unknown` fallback is not
+listed: it backs unresolved monitor configuration, reads zero, and renders `---`.
 
 ### adapt
 

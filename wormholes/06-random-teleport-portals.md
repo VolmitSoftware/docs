@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-09-14T00:56:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -173,47 +173,24 @@ identity: existing destinations are discarded and resampled.
 
 ## Sampling and retry limits
 
-Horizontal coordinates are sampled uniformly by area within the configured
-annulus, not uniformly by radius. The sampled integer block column is produced
-by flooring X/Z, so its block center can differ from a configured radius
-boundary by less than one block. Pocket worlds are excluded from the target-world
-list. In `SAFE` mode, `PREFERRED_AVERAGE` probes the preferred Y first, then
-alternates upward and downward inside the bounds. In `UNSAFE` mode, it uses only
-the literal preferred Y. `SURFACE` in `SAFE` mode ignores leaves while resolving
-terrain; in `UNSAFE` mode it includes tree canopies and fluid surfaces, so an
-ocean column resolves on top of the water. Surface mode uses a separate Nether
-scan that avoids the roof band.
+Wormholes tries up to 32 candidate destinations over 30 seconds, publishes the first safe one, then
+prepares spares in the background. A failed search retries after a delay that grows from one second
+to 30.
 
-Wormholes tries up to 32 candidates over 30 seconds. It publishes the first valid destination, then prepares spare destinations in the background. Failed searches retry after a delay that grows from one to 30 seconds.
+In `SAFE` mode a `PREFERRED_AVERAGE` search probes your preferred Y first, then alternates up and
+down inside the bounds; `SURFACE` ignores leaves. In `UNSAFE` mode `SURFACE` includes tree canopies
+and fluid surfaces, so an ocean column lands on top of the water. Pocket worlds are never chosen.
 
-On Folia, a departure hold corrects the traveler's position with one asynchronous teleport at a time. Departure and rejection wait for any pending correction, then recheck the current attempt on the traveler's entity scheduler. Expired holds and replaced player sessions cannot resume from an old callback or cancel a newer attempt.
-
-The previous ready projection can remain visible while a replacement is prepared. `leaseIdleMillis`, default 30 seconds, prevents brief departures from immediately releasing it.
+The previously ready destination stays visible while a replacement is prepared, so a brief departure
+does not blank the portal. `leaseIdleMillis`, default 30 seconds, is how long that hold lasts.
 
 ## Runtime behavior notes
 
-- New RTP portals with default rotation **ON_TRAVERSAL** reroll the shared
-  destination after a successful trip.
-- Shared routing becomes READY when its active destination is retained, then
-  prepares a distinct standby in the background. A successful ON_TRAVERSAL trip
-  promotes that standby when present; if the first trip consumes a lone active,
-  the portal returns to warming until the next validated destination arrives.
-- A route edit is not treated as active until its runtime registration succeeds.
-  Failed registration stays closed and retries, so the editor cannot show new
-  radii while travel continues through an older route.
-- Per-player allocation rotates reservations on the cycle duration and uses
-  private release timing for reservation teardown. The saved shared rotation
-  choice remains available if allocation switches back to SHARED.
-- Per-player routing keeps at most 16 prepared or assigned destinations, assigns
-  the first safe destination without waiting, and replenishes up to two free
-  spares when capacity permits. All 16 slots may be assigned under load.
-- Rim feedback and portal-specific sounds are independently togglable. Muting
-  sounds does not disable particles.
-- Rim feedback is yellow while preparing. It is red for closing or a
-  two-second failure indication. It is green for ready static/on-traversal
-  routes. Timed routes use a green-to-yellow-to-red timer. Per-player routes
-  use their actual timed runtime mode for this display.
-- Travelers keep look/movement orientation from the side they entered.
+- With the default **ON_TRAVERSAL** rotation, a successful trip rerolls the shared destination.
+- Rim feedback is yellow while preparing, red for closing or a failure, and green when ready. A
+  timed route runs green to yellow to red as its timer expires.
+- Rim feedback and portal sounds toggle independently; muting sounds does not disable particles.
+- Travelers keep the look and movement orientation they entered with.
 
 ## WorldGuard destination access
 

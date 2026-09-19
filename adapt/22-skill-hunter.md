@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,174 +13,26 @@ Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-t
 
 ## Adaptations
 
-Everything below needs the same conditions. The adaptation is learned at level 1 or higher. The Hunter skill and that adaptation are both enabled in config. You hold the `adapt.use.*` permission (or the matching per-adaptation node). Any protection plugin on your server allows the action where you are standing.
+All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and protection and region policy that allow the action.
 
 The seven "when struck" buffs share a few more rules. They fire on most damage. They never fire on fall, void, lava, hot floor, suffocation, cramming, melting, wither damage, thorns, sonic boom, flying into a wall, or `/kill`. If you already have the Hunger effect on you they stay quiet. That is what `preventHunterSkillsWhenHungerApplied` in the main Adapt config controls. With food in your bar you get the buff and a Hunger effect on top. With an empty bar you get Poison and no buff. Set `useConsumable` to true on any of them and they eat one rotten flesh from your inventory per activation instead of applying Hunger. None of them re-trigger while their own effect is still running unless you turn `stackBuff` on.
 
 ### Adrenaline (`hunter-adrenaline`)
 
-Your melee swings hit harder the lower your health is. At full health it does nothing at all. The bonus scales up as your health falls, so at half health you get half of the listed maximum. It reads melee only, meaning you have to be the one swinging, not a bow. Kills you land below 35 percent health count toward its challenges. Works on its own once learned.
+5 levels · 8 knowledge, then 4 per level
 
-### Hunter's Regen (`hunter-regen`)
-
-Taking a hit gives you Regeneration at an amplifier equal to your adaptation level, running 1.5 seconds per level. The cost is a Hunger effect for 2.5 seconds per level. Good pick if you keep getting chipped down in long fights. Works on its own once learned.
-
-### Vanishing Step (`hunter-invis`)
-
-Taking a hit turns you invisible for 5 seconds per level, at the same Hunger cost as the other struck buffs. Useful for breaking off a fight you are losing. Works on its own once learned.
-
-### Hunter's Heights (`hunter-jumpboost`)
-
-Taking a hit raises your jump strength and your safe fall distance for 5 seconds per level. It uses attributes rather than the Jump Boost potion, and it will not fire while you already have a Jump Boost potion on you. Works on its own once learned.
-
-### Hunter's Luck (`hunter-luck`)
-
-Taking a hit raises your Luck attribute for 5 seconds per level, which improves loot table rolls on fishing and chests. Starving instead applies Poison and a matching negative Luck penalty, so fighting on empty actively hurts your drops. Dying clears both timers. Works on its own once learned.
-
-### Hunter's Speed (`hunter-speed`)
-
-Taking a hit shoves you along whatever direction you are steering, for 5 seconds per level. It is a forced velocity burst rather than the Speed potion. It accelerates you toward a target speed while you hold a movement key. It brakes when you let go. Higher levels raise the target speed, up to the configured cap. Works on its own once learned.
-
-### Hunter's Strength (`hunter-strength`)
-
-Taking a hit adds a flat chunk of attack damage for a short burst, 1.25 seconds per level. The damage bonus is large and the window is short, so it rewards swinging back immediately. It will not fire while you already have a Strength potion on you. Works on its own once learned.
-
-### Hunter's Resistance (`hunter-resistance`)
-
-Taking a hit gives you Resistance at an amplifier equal to your level, for half a second per level. It is meant to blunt the follow-up hit in a chain, not to carry you through a whole fight. Works on its own once learned.
-
-### Items Drop-To-Inventory (`hunter-drop-to-inventory`)
-
-Loot goes into your inventory instead of onto the ground. It works two ways. Any mob you kill sends its drops straight to you, whatever you are holding. Block drops only route to you while a sword is in your main hand. They still have to pass the server's normal pickup checks first. A protection plugin that denies the pickup leaves the item on the floor as usual. An already-cancelled block-drop event is treated as owned by another plugin and is not transferred again. Anything that does not fit in your inventory drops at your feet. This one caps at level 1.
-
-**How to use it**
-
-1. Learn Items Drop-To-Inventory in the Adapt menu.
-2. Kill mobs normally. Their drops arrive in your inventory.
-3. Hold a sword while breaking blocks if you want block drops routed the same way.
-
-### Trophy Skinner (`hunter-trophy-skinner`)
-
-Clean kills pay extra. A kill counts as clean if you shot the mob from at least the listed distance. It
-also counts if you were sneaking when you landed the blow. Clean kills then roll two separate chances. One chance is bonus trophy materials matched to the mob. Examples are gunpowder
-from creepers, bone from skeletons, and string from spiders. Leather is the
-fallback. A much rarer chance is the mob's head. Heads only exist for creepers, the skeleton family, the zombie family, and piglins. Bow kills add one to the trophy stack, and each trophy also pays Hunter XP. Higher levels shorten the shot distance you need.
-
-**How to use it**
-
-1. Learn Trophy Skinner in the Adapt menu.
-2. Either shoot the mob from at least the distance shown in the menu, or stay sneaking as you land the killing blow.
-3. Collect the trophies and heads from the mob's normal death drop.
-
-### Predator Focus (`hunter-predator-focus`)
-
-Hitting the same target over and over ramps your melee damage. The first hit sets one stack and gives nothing. Every hit after that adds a flat percentage, up to a stack cap that grows with level. Switch targets or go quiet for longer than the decay window and the ramp resets to one. Melee only. Works on its own once learned.
-
-### Big Game Hunter (`hunter-big-game`)
-
-You hit harder against the six heavyweight mobs (ravager, iron golem, warden, wither, ender dragon, elder guardian) and their kills drop more. On a big-game kill each item already in the drop list gets a chance to be duplicated, up to a per-kill cap. You get a large flat XP payout on top. Melee only for the damage bonus. The drop bonus applies to any kill you are credited with. Works on its own once learned.
-
-### Blood Trail (`hunter-blood-trail`)
-
-Wound a mob down to half health or lower with a melee hit and it starts bleeding a glowing red line as it runs. Only you see it. The trail redraws four times a second along the mob's actual path. It fades when
-the mob leaves your tracking range, changes world, or the wound times out. Both the duration and the tracking range grow with level. Works on its own once learned.
-
-### Snare Line (`hunter-snare-line`)
-
-Learning this unlocks a crafting recipe for the Hunter's Snare, a tripwire hook you can plant on the ground. Hostile monsters that walk near a planted snare are pinned in place and have their momentum zeroed. Each snare holds a number of trigger charges and expires on its own after a couple of minutes. Good for choke points, mob farms, and buying yourself an escape.
-
-**How to use it**
-
-1. Learn Snare Line in the Adapt menu.
-2. Craft Hunter's Snares: string in every slot of the grid except the middle, one iron ingot in the middle. Each craft gives you two.
-3. Hold a snare and right-click the top of a block where mobs will walk. The snare sits one block above what you clicked and consumes one item.
-4. Leave it. Every monster that comes within the trigger radius spends one charge and gets pinned.
-
-## Reference
-
-### Skill configuration defaults
-
-Written to `plugins/Adapt/skills/hunter.toml` on first load.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `enabled` | `true` | Turns the whole Hunter skill on or off. |
-| `skillColor` | `"&c"` | Legacy ampersand color code used for Hunter in menus and text. |
-| `getXpForAttackingWithTools` | `true` | Master switch for the kill handler. False means no kill XP, no kill stats, and no boss celebration. |
-| `creeperKillMultiplier` | `2` | Extra multiplier applied to XP from creeper kills only. |
-| `killMaxHealthXPMultiplier` | `3.0` | XP per point of the victim's max health. |
-| `cooldownDelay` | `1000` | Milliseconds that must pass between two kill XP awards for the same player. |
-| `spawnerMobReductionXpMultiplier` | `0.3` | Multiplier applied when the victim spawned from a monster spawner. |
-| `killsChallengeReward` | `500` | Base XP paid by the kill-count challenges. Some tiers pay 2x or 5x this. |
-| `bossKillReward` | `1000` | Base XP paid by the boss challenges. The 10-boss tier pays 5x this. |
-
-### Milestones and challenges
-
-| Challenge key | Stat key | Threshold | Reward |
-|---------------|----------|-----------|--------|
-| `challenge_novice_hunter` | `killed.monsters` | 100 | `killsChallengeReward` |
-| `challenge_intermediate_hunter` | `killed.monsters` | 500 | `killsChallengeReward` x2 |
-| `challenge_advanced_hunter` | `killed.monsters` | 5000 | `killsChallengeReward` x5 |
-| `challenge_creeper_conqueror` | `killed.creepers` | 50 | `killsChallengeReward` |
-| `challenge_creeper_annihilator` | `killed.creepers` | 200 | `killsChallengeReward` x2 |
-| `challenge_kills_500` | `killed.kills` | 500 | `killsChallengeReward` |
-| `challenge_kills_5k` | `killed.kills` | 5000 | `killsChallengeReward` x5 |
-| `challenge_boss_1` | `hunter.boss.kills` | 1 | `bossKillReward` |
-| `challenge_boss_10` | `hunter.boss.kills` | 10 | `bossKillReward` x5 |
-
-Boss kills counted by `hunter.boss.kills`: `ENDER_DRAGON`, `WITHER`, `ELDER_GUARDIAN`, `WARDEN`.
-
-Skill-level events: `EntityDeathEvent` (kill XP, stats, boss celebration) and `CreatureSpawnEvent` (tags spawner mobs with the `adapt:hunter-spawner-mob` persistent key).
-
-### Shared adaptation keys
-
-Every adaptation TOML carries these on top of its own knobs: `enabled`, `permanent`, `showParticles`, `showSounds`, `baseCost`, `costFactor`, `maxLevel`, `initialCost`. TOML overrides live at `plugins/Adapt/adaptations/<id>.toml`.
-
-The seven struck buffs also share this knob set:
-
-| Key | Behavior / units |
-|-----|------------------|
-| `useConsumable` | When true, activation eats one `consumable` item instead of applying Hunger. |
-| `consumable` | Material name consumed when `useConsumable` is true. |
-| `poisonPenalty` | When true, activating on an empty food bar applies Poison. |
-| `stackHungerPenalty` | When true, repeat triggers raise the Hunger amplifier instead of refreshing it. |
-| `stackPoisonPenalty` | When true, repeat starve triggers raise the Poison amplifier instead of refreshing it. |
-| `stackBuff` | When true, repeat triggers extend or raise the buff while it is still running. |
-| `baseEffectbyLevel` | Buff duration in ticks per adaptation level (20 ticks = 1 second). |
-| `baseHungerFromLevel` | Hunger amplifier is this minus your level. |
-| `baseHungerDuration` | Hunger duration in ticks per level. Also the flat Poison duration when starving. |
-| `basePoisonFromLevel` | Poison amplifier is this minus your level. |
-
-### Adrenaline
-
-| Property | Default |
-|----------|---------|
-| Icon | `LEATHER_HELMET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 1911 |
-| Config file | `plugins/Adapt/adaptations/hunter-adrenaline.toml` |
+Your melee swings hit harder the lower your health is. At full health it does nothing at all. The bonus scales up as your health falls, so at half health you get half of the listed maximum. It reads melee only, meaning you have to be the one swinging, not a bow. Kills you land below 35 percent health count toward its challenges.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `damageBase` | `0.12` | Damage bonus fraction at 0 health before level scaling. |
 | `damageFactor` | `0.21` | Extra bonus fraction added across levels, so the level 5 maximum is 0.33. |
 
-Milestones: `challenge_hunter_adrenaline_100` and `challenge_hunter_adrenaline_2500` on `hunter.adrenaline.low-health-kills` (100 kills for 400 XP, 2500 for 1500 XP). The stat only counts kills landed below 35 percent health.
+### Hunter's Regen (`hunter-regen`)
 
-### Hunter's Regen
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `AXOLOTL_BUCKET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 9744 |
-| Config file | `plugins/Adapt/adaptations/hunter-regen.toml` |
+Taking a hit gives you Regeneration at an amplifier equal to your adaptation level, running 1.5 seconds per level. The cost is a Hunger effect for 2.5 seconds per level. Good pick if you keep getting chipped down in long fights.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -195,20 +47,11 @@ Milestones: `challenge_hunter_adrenaline_100` and `challenge_hunter_adrenaline_2
 | `basePoisonFromLevel` | `6` | Poison amplifier is 6 minus your level. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_regen_500` on `hunter.regen.health-regened`, 500 activations for 400 XP.
+### Vanishing Step (`hunter-invis`)
 
-### Vanishing Step
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `TROPICAL_FISH_BUCKET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 9444 |
-| Localization key | `hunter.invisibility` |
-| Config file | `plugins/Adapt/adaptations/hunter-invis.toml` |
+Taking a hit turns you invisible for 5 seconds per level, at the same Hunger cost as the other struck buffs. Useful for breaking off a fight you are losing.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -223,20 +66,11 @@ Milestone: `challenge_hunter_regen_500` on `hunter.regen.health-regened`, 500 ac
 | `basePoisonFromLevel` | `6` | Poison amplifier is 6 minus your level. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_invis_200` on `hunter.invis.activations`, 200 activations for 300 XP.
+### Hunter's Heights (`hunter-jumpboost`)
 
-### Hunter's Heights
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `PUFFERFISH_BUCKET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 9544 |
-| Localization key | `hunter.jump_boost` |
-| Config file | `plugins/Adapt/adaptations/hunter-jumpboost.toml` |
+Taking a hit raises your jump strength and your safe fall distance for 5 seconds per level. It uses attributes rather than the Jump Boost potion, and it will not fire while you already have a Jump Boost potion on you.
 
 Applies two timed attribute modifiers rather than a potion: jump strength `+0.1 * (level + 1)` and safe fall distance `+(level + 1)` blocks. Blocked while a Jump Boost potion effect is present, or if either attribute is missing on the running server version.
 
@@ -253,19 +87,11 @@ Applies two timed attribute modifiers rather than a potion: jump strength `+0.1 
 | `basePoisonFromLevel` | `6` | Poison amplifier is 6 minus your level. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_jump_200` on `hunter.jump-boost.activations`, 200 activations for 300 XP.
+### Hunter's Luck (`hunter-luck`)
 
-### Hunter's Luck
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `TADPOLE_BUCKET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 9644 |
-| Config file | `plugins/Adapt/adaptations/hunter-luck.toml` |
+Taking a hit raises your Luck attribute for 5 seconds per level, which improves loot table rolls on fishing and chests. Starving instead applies Poison and a matching negative Luck penalty, so fighting on empty actively hurts your drops. Dying clears both timers.
 
 Applies a timed Luck attribute modifier of `+(level + 1)`. The starve path adds a negative Luck modifier of `-(basePoisonFromLevel - level + 1)` for `baseHungerDuration` ticks.
 
@@ -282,22 +108,13 @@ Applies a timed Luck attribute modifier of `+(level + 1)`. The starve path adds 
 | `basePoisonFromLevel` | `6` | Poison amplifier is 6 minus your level, and sets the size of the Luck penalty. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_luck_200` on `hunter.luck.activations`, 200 activations for 300 XP.
+### Hunter's Speed (`hunter-speed`)
 
-### Hunter's Speed
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `SUGAR` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Config file | `plugins/Adapt/adaptations/hunter-speed.toml` |
+Taking a hit shoves you along whatever direction you are steering, for 5 seconds per level. It is a forced velocity burst rather than the Speed potion. It accelerates you toward a target speed while you hold a movement key. It brakes when you let go. Higher levels raise the target speed, up to the configured cap.
 
-No tick interval is set. Listened events: `EntityDamageEvent`.
-
-Runs through `VelocityBurstRuntime` instead of the Speed potion. Target speed is `baseHorizontalSpeed * (1 + (level + 1) * 0.2)`, clamped to `maxHorizontalSpeed`.
+Target speed is `baseHorizontalSpeed * (1 + (level + 1) * 0.2)`, clamped to `maxHorizontalSpeed`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -319,19 +136,11 @@ Runs through `VelocityBurstRuntime` instead of the Speed potion. Target speed is
 | `fallbackInputVelocityThreshold` | `0.0008` | Movement threshold used to infer steering on runtimes without the player input API. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_speed_200` on `hunter.speed.activations`, 200 activations for 300 XP.
+### Hunter's Strength (`hunter-strength`)
 
-### Hunter's Strength
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `COD_BUCKET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 9044 |
-| Config file | `plugins/Adapt/adaptations/hunter-strength.toml` |
+Taking a hit adds a flat chunk of attack damage for a short burst, 1.25 seconds per level. The damage bonus is large and the window is short, so it rewards swinging back immediately. It will not fire while you already have a Strength potion on you.
 
 Applies a timed attack damage modifier of `+3.0 * (level + 1)`. Blocked while a Strength potion effect is present.
 
@@ -348,19 +157,11 @@ Applies a timed attack damage modifier of `+3.0 * (level + 1)`. Blocked while a 
 | `baseHungerDuration` | `50` | Hunger lasts 50 ticks per level. Poison lasts a flat 50 ticks. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_strength_200` on `hunter.strength.activations`, 200 activations for 300 XP.
+### Hunter's Resistance (`hunter-resistance`)
 
-### Hunter's Resistance
+5 levels · 8 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `POWDER_SNOW_BUCKET` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 9844 |
-| Config file | `plugins/Adapt/adaptations/hunter-resistance.toml` |
+Taking a hit gives you Resistance at an amplifier equal to your level, for half a second per level. It is meant to blunt the follow-up hit in a chain, not to carry you through a whole fight.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -375,44 +176,31 @@ Milestone: `challenge_hunter_strength_200` on `hunter.strength.activations`, 200
 | `basePoisonFromLevel` | `6` | Poison amplifier is 6 minus your level. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-Milestone: `challenge_hunter_resistance_500` on `hunter.resistance.activations`, 500 activations for 400 XP.
+### Items Drop-To-Inventory (`hunter-drop-to-inventory`)
 
-### Items Drop-To-Inventory
+1 level · 2 knowledge
 
-| Property | Default |
-|----------|---------|
-| Icon | `TRAPPED_CHEST` |
-| Max level | 1 |
-| Initial knowledge cost | 2 |
-| Base knowledge cost | 1 |
-| Cost factor | 1 |
-| Tick interval (ms) | 18440 |
-| Config file | `plugins/Adapt/adaptations/hunter-drop-to-inventory.toml` |
+Loot goes into your inventory instead of onto the ground. Any mob you kill sends its drops straight to you, whatever you are holding. Block drops only route to you while a sword is in your main hand, and a protection plugin that denies the pickup leaves the item on the floor as usual. Anything that does not fit drops at your feet. This one caps at level 1.
 
-`BlockDropItemEvent` requires a sword from
-`ItemListings.toolSwords` in the main hand, an allowed interact context, and a
-passing block-break check. `EntityDeathEvent` covers any mob you killed, with no
-held-item requirement.
+**How to use it**
 
-Block drops are probed through `ProtectionEventProbe` first, so a denied pickup leaves the item on the normal world-drop path. Entity death stacks are not live pickup entities and go straight to the inventory. Overflow is dropped at the player's location.
+1. Kill mobs normally. Their drops arrive in your inventory.
+2. Hold a sword while breaking blocks if you want block drops routed the same way.
 
 No adaptation-specific knobs. Shared keys only.
 
-Milestone: `challenge_hunter_dti_10k` on `hunter.drop-to-inv.items-caught`, 10000 items for 500 XP.
+### Trophy Skinner (`hunter-trophy-skinner`)
 
-### Trophy Skinner
+5 levels · 5 knowledge
 
-| Property | Default |
-|----------|---------|
-| Icon | `ZOMBIE_HEAD` |
-| Max level | 5 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.8 |
-| Tick interval (ms) | 2000 |
-| Config file | `plugins/Adapt/adaptations/hunter-trophy-skinner.toml` |
+Clean kills pay extra. A kill is clean if you shot the mob from at least the listed distance, or if you were sneaking when you landed the blow. A clean kill rolls two chances: bonus trophy materials matched to the mob (gunpowder from creepers, bone from skeletons, string from spiders, leather as the fallback), and, much more rarely, the mob's head. Bow kills add one to the trophy stack, each trophy pays Hunter XP, and higher levels shorten the shot distance you need.
 
-A kill counts as precise when it was a projectile kill at or beyond the minimum range, or when the killer was sneaking. Trophy material is chosen by entity type (`GUNPOWDER`, `BONE`, `ROTTEN_FLESH`, `STRING`, `BLAZE_POWDER`, `ENDER_PEARL`, `REDSTONE`, `PORKCHOP`, with `LEATHER` as the fallback). Head drops exist only for creepers, skeletons, strays, bogged, wither skeletons, zombies, husks, drowned, zombified piglins, piglins, and piglin brutes.
+**How to use it**
+
+1. Either shoot the mob from at least the distance shown in the menu, or stay sneaking as you land the killing blow.
+2. Collect the trophies and heads from the mob's normal death drop.
+
+Trophy material is chosen by entity type: `GUNPOWDER`, `BONE`, `ROTTEN_FLESH`, `STRING`, `BLAZE_POWDER`, `ENDER_PEARL`, `REDSTONE`, `PORKCHOP`, with `LEATHER` as the fallback. Heads exist only for creepers, skeletons, strays, bogged, wither skeletons, zombies, husks, drowned, zombified piglins, piglins, and piglin brutes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -428,20 +216,11 @@ A kill counts as precise when it was a projectile kill at or beyond the minimum 
 | `minimumRangeFactor` | `10` | Blocks subtracted from that requirement across levels, floored at 4. |
 | `xpPerTrophy` | `16` | Hunter XP paid per trophy drop. |
 
-Milestones: `challenge_hunter_trophy_50` on `hunter.trophy-skinner.trophies-collected` (50 for 400 XP) and `challenge_hunter_trophy_heads_100` on `hunter.trophy-skinner.heads-collected` (100 for 1000 XP).
+### Predator Focus (`hunter-predator-focus`)
 
-### Predator Focus
+5 levels · 6 knowledge, then 5 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `TARGET` |
-| Max level | 5 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.45 |
-| Config file | `plugins/Adapt/adaptations/hunter-predator-focus.toml` |
-
-No tick interval is set. Listened events: `EntityDamageByEntityEvent` (player is the direct damager).
+Hitting the same target over and over ramps your melee damage. The first hit sets one stack and gives nothing. Every hit after that adds a flat percentage, up to a stack cap that grows with level. Switch targets or go quiet for longer than the decay window and the ramp resets to one. Melee only.
 
 Stack cap is `3 + round(levelPercent * 6)`, so 4 at level 1 and 9 at level 5. Bonus damage is `perStackBonus * (stacks - 1)`, meaning 21 percent at a full level 1 ramp and 56 percent at a full level 5 ramp.
 
@@ -453,20 +232,11 @@ Stack cap is `3 + round(levelPercent * 6)`, so 4 at level 1 and 9 at level 5. Bo
 | `decayMillis` | `3500` | Milliseconds of no hits before the ramp resets to one stack. |
 | `xpPerRampedHit` | `2` | Silent Hunter XP per hit that actually gained a bonus. |
 
-Milestones: `challenge_hunter_predator_focus_500` and `challenge_hunter_predator_focus_5k` on `hunter.predator-focus.ramped-hits` (500 for 400 XP, 5000 for 1500 XP).
+### Big Game Hunter (`hunter-big-game`)
 
-### Big Game Hunter
+5 levels · 7 knowledge, then 6 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `NETHERITE_SWORD` |
-| Max level | 5 |
-| Initial knowledge cost | 7 |
-| Base knowledge cost | 6 |
-| Cost factor | 0.6 |
-| Config file | `plugins/Adapt/adaptations/hunter-big-game.toml` |
-
-No tick interval is set. Listened events: `EntityDamageByEntityEvent` (player is the direct damager) and `EntityDeathEvent`.
+You hit harder against the six heavyweight mobs (ravager, iron golem, warden, wither, ender dragon, elder guardian) and their kills drop more. On a big-game kill each item already in the drop list gets a chance to be duplicated, up to a per-kill cap. You get a large flat XP payout on top. Melee only for the damage bonus. The drop bonus applies to any kill you are credited with.
 
 Big game is exactly `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`, `ELDER_GUARDIAN`.
 
@@ -480,21 +250,14 @@ Big game is exactly `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`,
 | `maxExtraDropsPerKill` | `6` | Hard cap on duplicated stacks from one kill. |
 | `xpPerBigGameKill` | `45` | Hunter XP paid per big-game kill. |
 
-Milestones: `challenge_hunter_big_game_100` and `challenge_hunter_big_game_1k` on `hunter.big-game.big-game-slain` (100 for 600 XP, 1000 for 2000 XP).
+### Blood Trail (`hunter-blood-trail`)
 
-### Blood Trail
+5 levels · 5 knowledge, then 4 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `REDSTONE` |
-| Max level | 5 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 4 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adaptations/hunter-blood-trail.toml` |
+Wound a mob down to half health or lower with a melee hit and it starts bleeding a glowing red line as it runs. Only you see it. The trail redraws four times a second along the mob's actual path. It fades when
+the mob leaves your tracking range, changes world, or the wound times out. Both the duration and the tracking range grow with level.
 
-Trail duration is `100 + round(levelPercent * 200)` ticks, so 7 seconds at level 1 and 15 at level 5. Tracking range is `16 + levelPercent * 32` blocks, so 22.4 at level 1 and 48 at level 5. Segments are drawn per viewer through `ViewerDisplayDirector` and never render for other players.
+Trail duration is `100 + round(levelPercent * 200)` ticks, so 7 seconds at level 1 and 15 at level 5. Tracking range is `16 + levelPercent * 32` blocks, so 22.4 at level 1 and 48 at level 5.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -508,25 +271,21 @@ Trail duration is `100 + round(levelPercent * 200)` ticks, so 7 seconds at level
 | `displayDurationTicks` | `30` | How long each drawn segment stays visible, in ticks. |
 | `xpPerWound` | `3` | Silent Hunter XP the first time you wound a given target. |
 
-Milestones: `challenge_hunter_blood_trail_250` and `challenge_hunter_blood_trail_2500` on `hunter.blood-trail.trails-followed` (250 for 400 XP, 2500 for 1500 XP). The stat increments the first time a wound renders in range for its owner.
+### Snare Line (`hunter-snare-line`)
 
-### Snare Line
+5 levels · 6 knowledge, then 5 per level
 
-| Property | Default |
-|----------|---------|
-| Icon | `TRIPWIRE_HOOK` |
-| Max level | 5 |
-| Initial knowledge cost | 6 |
-| Base knowledge cost | 5 |
-| Cost factor | 0.5 |
-| Tick interval (ms) | 250 |
-| Config file | `plugins/Adapt/adaptations/hunter-snare-line.toml` |
+Learning this unlocks a crafting recipe for the Hunter's Snare, a tripwire hook you can plant on the ground. Hostile monsters that walk near a planted snare are pinned in place and have their momentum zeroed. Each snare holds a number of trigger charges and expires on its own after a couple of minutes. Good for choke points, mob farms, and buying yourself an escape.
 
-Recipe `hunter-snare` is shaped `S S` / `SIS` / `S S` with `S` = `STRING` and
-`I` = `IRON_INGOT`. It produces 2 tripwire hooks named "Hunter's Snare". They
-are tagged with the `adapt:hunter-snare-item` persistent key. Only tagged items place snares.
+**How to use it**
 
-Root duration is `max(1, 30 + round(levelPercent * 50))` ticks, so 2 seconds at level 1 and 4 at level 5. Charges are `max(1, 3 + round(levelPercent * 5))`, so 4 at level 1 and 8 at level 5. Rooting applies a `MULTIPLY_SCALAR_1` movement speed modifier of `-min(1, 0.15 * (rootAmplifier + 1))`, which at the default amplifier is a full stop, and zeroes the mob's velocity. Only `Monster` entities are affected, and mobs protected as friendly to the snare owner are skipped.
+1. Craft Hunter's Snares: string in every slot of the grid except the middle, one iron ingot in the middle. Each craft gives you two.
+2. Hold a snare and right-click the top of a block where mobs will walk. The snare sits one block above what you clicked and consumes one item.
+3. Leave it. Every monster that comes within the trigger radius spends one charge and gets pinned.
+
+Recipe `hunter-snare` is shaped `S S` / `SIS` / `S S` with `S` = `STRING` and `I` = `IRON_INGOT`, producing 2 tripwire hooks named "Hunter's Snare" tagged `adapt:hunter-snare-item`. Only tagged items place snares.
+
+Root duration is `max(1, 30 + round(levelPercent * 50))` ticks, so 2 seconds at level 1 and 4 at level 5. Charges are `max(1, 3 + round(levelPercent * 5))`, so 4 at level 1 and 8 at level 5. Rooting applies a `MULTIPLY_SCALAR_1` movement speed modifier of `-min(1, 0.15 * (rootAmplifier + 1))`, a full stop at the default amplifier. Only `Monster` entities are affected, and mobs friendly to the snare owner are skipped.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -543,7 +302,56 @@ Root duration is `max(1, 30 + round(levelPercent * 50))` ticks, so 2 seconds at 
 | `maxTargetsPerScan` | `8` | Monsters one snare will schedule for rooting per scan. |
 | `xpPerSnare` | `6` | Hunter XP paid per mob snared. |
 
-Milestones: `challenge_hunter_snare_200` and `challenge_hunter_snare_2k` on `hunter.snare-line.mobs-snared` (200 for 400 XP, 2000 for 1500 XP).
+## Reference
+
+### Skill configuration defaults
+
+Written to `plugins/Adapt/skills/hunter.toml` on first load.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `enabled` | `true` | Turns the whole Hunter skill on or off. |
+| `skillColor` | `"&c"` | Legacy ampersand color code used for Hunter in menus and text. |
+| `getXpForAttackingWithTools` | `true` | Master switch for the kill handler. False means no kill XP, no kill stats, and no boss celebration. |
+| `creeperKillMultiplier` | `2` | Extra multiplier applied to XP from creeper kills only. |
+| `killMaxHealthXPMultiplier` | `3.0` | XP per point of the victim's max health. |
+| `cooldownDelay` | `1000` | Milliseconds that must pass between two kill XP awards for the same player. |
+| `spawnerMobReductionXpMultiplier` | `0.3` | Multiplier applied when the victim spawned from a monster spawner. |
+| `killsChallengeReward` | `500` | Base XP paid by the kill-count challenges. Some tiers pay 2x or 5x this. |
+| `bossKillReward` | `1000` | Base XP paid by the boss challenges. The 10-boss tier pays 5x this. |
+
+### Shared knobs
+
+The seven struck buffs also share this knob set:
+
+| Key | Behavior / units |
+|-----|------------------|
+| `useConsumable` | When true, activation eats one `consumable` item instead of applying Hunger. |
+| `consumable` | Material name consumed when `useConsumable` is true. |
+| `poisonPenalty` | When true, activating on an empty food bar applies Poison. |
+| `stackHungerPenalty` | When true, repeat triggers raise the Hunger amplifier instead of refreshing it. |
+| `stackPoisonPenalty` | When true, repeat starve triggers raise the Poison amplifier instead of refreshing it. |
+| `stackBuff` | When true, repeat triggers extend or raise the buff while it is still running. |
+| `baseEffectbyLevel` | Buff duration in ticks per adaptation level (20 ticks = 1 second). |
+| `baseHungerFromLevel` | Hunger amplifier is this minus your level. |
+| `baseHungerDuration` | Hunger duration in ticks per level. Also the flat Poison duration when starving. |
+| `basePoisonFromLevel` | Poison amplifier is this minus your level. |
+
+### Challenges
+
+| Challenge | Threshold | Reward knob |
+|---|---|---|
+| `challenge_novice_hunter` | 100 | `killsChallengeReward` |
+| `challenge_intermediate_hunter` | 500 | `killsChallengeReward` x2 |
+| `challenge_advanced_hunter` | 5000 | `killsChallengeReward` x5 |
+| `challenge_creeper_conqueror` | 50 | `killsChallengeReward` |
+| `challenge_creeper_annihilator` | 200 | `killsChallengeReward` x2 |
+| `challenge_kills_500` | 500 | `killsChallengeReward` |
+| `challenge_kills_5k` | 5000 | `killsChallengeReward` x5 |
+| `challenge_boss_1` | 1 | `bossKillReward` |
+| `challenge_boss_10` | 10 | `bossKillReward` x5 |
+
+Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
 
 ## See also
 

@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Restart after installing, removing, enabling, or disabling an integration. Prote
 
 If PlaceholderAPI is enabled when Adapt enables, Adapt registers a persistent expansion under the identifier `adapt`. Placeholder paths are dot-separated segments after `%adapt_`. You get things like `%adapt_player.level%`, `%adapt_skill.agility.level%` and `%adapt_mutation.slot-1%`.
 
-Values come from a snapshot, not a live read. That keeps placeholder-heavy scoreboards off Adapt's data structures. Each ready online player's snapshot is republished about once per second on that player's owning thread. When a player leaves normally, their last snapshot stays readable for sixty seconds and then resolves to `---`. When a profile cannot be loaded safely or loses its SQL fence, the snapshot is removed immediately: `%adapt_available%` is `false` and per-player values are `---` while the Minecraft session remains connected. The complete key and result table is in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
+Values refresh about once a second, so a scoreboard full of Adapt placeholders costs nothing. A player's values stay readable for sixty seconds after they leave, then become `---`. If their profile cannot be loaded, `%adapt_available%` is `false` and every value is `---` straight away. The complete key and result table is in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
 
 ## Vault
 
@@ -101,15 +101,8 @@ Protection registration and default-enable settings are defined in [08 - Protect
 
 ### PlaceholderAPI behavior
 
-| Item | Value |
-|---|---|
-| Identifier | `adapt` |
-| Author / version | `Volmit Software` / `1.0.0` |
-| Persistent | Yes, survives a PlaceholderAPI reload |
-| Player snapshot refresh | About once per second, on the player's owning thread |
-| Offline grace before eviction | 60000 ms |
-| Value when the snapshot is missing, or the resolver throws | `---` |
-| Value for a key the expansion does not publish | `null`, so PlaceholderAPI leaves the placeholder text unchanged |
+Values refresh about once a second per player. A player who just left reads their last values for a
+minute, then `---`. A key the expansion does not publish is left in the text unchanged.
 
 ### Vault settings
 
@@ -122,15 +115,9 @@ Protection registration and default-enable settings are defined in [08 - Protect
 
 Skill-line storage keys used by the economy: `vault-learning-refund-<adaptation>-level-<n>` for per-level receipts, and `vault-learning-pending-refund` for a deposit that failed and is awaiting retry.
 
-### HiddenOre bridge
-
-The bridge listens to `HiddenOreDropsEvent`, returns without acting when `getCause()` is `EXPLODED`, and otherwise applies Autosmelt, Drop to Inventory, and the ore XP award in that order. Autosmelt covers `RAW_IRON`, `RAW_GOLD` and `RAW_COPPER`. The XP award uses the vein's display material against the Pickaxes value table, credited at the block's location. The bridge records `pickaxe.autosmelt.ores-smelted`; it has no Trophy Polish reward path.
-
-Outside that event the bridge also answers nearest-vein and vein-radius queries for Quarry Sense and Seismic Ping. It also answers vein-sibling lookups for Pickaxe Veinminer.
-
 ### Iris tree feller
 
-`axe-iris-feller` is registered only when Iris is enabled, and delegates to `art.arcane.iris.api.tree.IrisTreeFellerService` from the Bukkit services manager. Max level 3, tick interval 6127 ms, durability preservation chance 0% / 25% / 75% by level. It triggers on `BlockBreakEvent` at `HIGH` priority and ignores cancelled events. It skips any break that is already vein-mined or already managed by the Iris service.
+`axe-iris-feller` is registered only when Iris is enabled, and delegates to `art.arcane.iris.api.tree.IrisTreeFellerService` from the Bukkit services manager. Max level 3, tick interval 6127 ms, durability preservation chance 0% / 25% / 75% by level. It skips any break that is already vein-mined or already managed by the Iris service.
 
 ## See also
 

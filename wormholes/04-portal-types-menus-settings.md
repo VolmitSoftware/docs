@@ -72,12 +72,8 @@ Settings Sync copies supported changes to linked local portals and gateways. Whe
 
 Node: `wormholes.portal.<key>`. The access key starts from the sanitized portal name and remains stable when the portal is renamed. Set it with `/wh access key <portal> <key>` or the Access menu. With `[access] legacy-name-node-enabled = true` (default), the current name-derived node is also accepted as an alias.
 
-Sanitization works as follows:
-
-1. Convert the portal name to lower case.
-2. Keep `a-z`, `0-9`, `.`, `-`, and `_`.
-3. Collapse other characters to `_`.
-4. Trim leading and trailing underscores. If the result is empty, use `unnamed`.
+The key is the portal name lowercased, with anything outside `a-z`, `0-9`, `.`, `-` and `_`
+replaced by an underscore. An empty result becomes `unnamed`.
 
 | Mode | Effect without OP or `*` bypass |
 |------|---------------------------|
@@ -155,7 +151,9 @@ Cross-server handoff detail:
 
 Linked frame arrivals place the traveler 1.25 blocks clear of the exit plane along its normal. Jumping, falling, or strafing does not change that clearance axis. The configured momentum policy still controls the outgoing velocity.
 
-Player capture checks the movement segment since the previous portal check, including players who have just left its capture area. Several movement packets in one slow tick cannot skip a straight crossing. Teleports, reconnects, respawns, portal closure, and destination changes invalidate that history. The outgoing momentum uses the latest movement packet rather than the accumulated capture distance.
+Crossing is tested against your whole movement since the last check, so a laggy tick cannot carry
+you through without triggering. Teleports, reconnects, respawns, and destination changes reset that
+history.
 
 ## Type menu
 

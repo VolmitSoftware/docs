@@ -2,23 +2,25 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-09-09T06:54:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
 ---
-Iris replaces the chunk generator. It does not replace every vanilla system. Native structures still generate unless you deny them. Placed features stay off unless you opt in. Carvers never run. Mob spawning, loot, saplings, and dimension-type gameplay each have their own default. This page is the pack-author recipe book for those switches.
+Iris replaces the chunk generator, not every vanilla system. Native structures still generate unless you deny them, placed features stay off unless you opt in, carvers never run, and mob spawning, loot, saplings, and dimension-type gameplay each have their own default. This page is the pack-author recipe book for those switches.
 
 Related:
 
 - [11 - Dimensions](/iris/11-dimensions)
 - [13 - Biomes](/iris/13-biomes)
 - [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [17 - Trees, Fungi, Coral, Crystals, Formations, Ruins](/iris/17-trees-fungi-coral-crystals-formations-ruins)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
+- [17b - Procedural Trees](/iris/17b-procedural-trees)
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [20 - Object Placement](/iris/20-object-placement)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
-- [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [23 - Loot](/iris/23-loot)
+- [23b - Entities & Spawners](/iris/23b-entities-spawners)
 
 Every task below changes newly generated chunks only. Production worlds read an active immutable epoch. Stage edits with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart, or open a fresh world.
 
@@ -36,7 +38,7 @@ Every task below changes newly generated chunks only. Production worlds read an 
 
 ## What vanilla still does
 
-Iris replaces the chunk generator outright. Vanilla and mod worldgen run only where Iris runs them.
+Vanilla and mod worldgen run only where Iris runs them.
 
 | System | Default | Control |
 |---|---|---|
@@ -55,7 +57,7 @@ The bundled overworld leaves `importedFeatures` off, keeps native structures on 
 
 ## Task 1: Import selected vanilla features
 
-Use this when Iris terrain should also run Minecraft's placed-feature pass: ores, geodes, monster rooms, lava lakes, freeze/snow layers. The pass is **off** until you set `enabled: true`. Features come from the biome's `vanillaDerivative`, not from Iris biome files. Carvers are never imported.
+Use this when Iris terrain should also run Minecraft's placed-feature pass: ores, geodes, monster rooms, lava lakes, freeze/snow layers. The pass is **off** until you set `enabled: true`. Features come from the biome's `vanillaDerivative`, not from Iris biome files, and carvers are never imported.
 
 ### Keep Iris trees, import vanilla ores and snow
 
@@ -86,15 +88,15 @@ Use this when Iris terrain should also run Minecraft's placed-feature pass: ores
 
 Vanilla step order: `RAW_GENERATION`, `LAKES`, `LOCAL_MODIFICATIONS`, `UNDERGROUND_STRUCTURES`, `SURFACE_STRUCTURES`, `STRONGHOLDS`, `UNDERGROUND_ORES`, `UNDERGROUND_DECORATION`, `FLUID_SPRINGS`, `VEGETAL_DECORATION`, `TOP_LAYER_MODIFICATION`.
 
-The feature pass runs on the worldgen thread after Iris structures. Early-step features can cut into placed structures. Feature seeds match vanilla derivation, so denying one key does not shift another key's seed. A feature-order cycle at bind degrades `importedFeatures` to off with an ERROR log rather than failing the chunk.
+The pass runs after Iris structures, so early-step features can cut into placed structures. Feature seeds match vanilla derivation, so denying one key does not shift another key's seed.
 
-A cold `derivative` tints grass and can freeze water. It does **not** stamp snow layers. Snow layers need Iris decorators, object `snow`, or this task with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls from biome palettes.
+A cold `derivative` tints grass and can freeze water but does **not** stamp snow layers. Snow layers need Iris decorators, object `snow`, or this task with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls from biome palettes.
 
-The bundled overworld does not enable this. It places ores with `deposits` using `shape: VANILLA_ELLIPSOID`. Deposit `minHeight` / `maxHeight` are engine-local Y (`worldY - dimensionHeight.min`). `depositVariants` bands are absolute world Y. `biomeScope` defaults to `CAVE`. Palette `weight` is ignored on deposits; duplicate the block entry instead.
+The bundled overworld does not enable this. It places ores with `deposits` using `shape: VANILLA_ELLIPSOID`. Deposit `minHeight` / `maxHeight` are engine-local Y (`worldY - dimensionHeight.min`), `depositVariants` bands are absolute world Y, and `biomeScope` defaults to `CAVE`. Palette `weight` is ignored on deposits; duplicate the block entry instead.
 
 ## Task 2: Control mob spawning
 
-Three pipelines can run at once. Filling one does not turn the others off.
+Three pipelines can run at once, and filling one does not turn the others off.
 
 | Pipeline | Default | What it does |
 |---|---|---|
@@ -131,15 +133,7 @@ There is no `importedStructures.disabled` equivalent for mobs.
 
 **Success:** the vanilla derivative's cows and zombies are gone. Only the listed custom entries (and any Iris spawners you kept) appear.
 
-Runtime merge rules, once a custom biome is the visible biome:
-
-- Custom list empty → vanilla table.
-- Vanilla table empty → custom list.
-- Both nonempty → merged.
-
-Adding custom colors or fog without `spawns` does **not** stop vanilla mobs.
-
-Iris spawners do not replace vanilla. `maxEntitiesPerChunk` on an Iris spawner defaults to `1`. `world.forcePersistEntities` (default true) marks Iris-spawned mobs persistent, so they do not despawn like vanilla.
+Adding custom colors or fog without `spawns` does **not** stop vanilla mobs, and Iris spawners never replace vanilla. `maxEntitiesPerChunk` on an Iris spawner defaults to `1`. `world.forcePersistEntities` (default true) marks Iris-spawned mobs persistent, so they do not despawn like vanilla.
 
 Studio worlds freeze noon and clear weather when `studio.disableTimeAndWeather` is true (the default). Night and storm Iris spawners never fire there until you set that false or test in a production world.
 
@@ -180,7 +174,7 @@ Loot ownership depends on what created the container.
 }
 ```
 
-4. Open a native village chest, an Iris clutter chest with no baked table, and the dungeon object. Chests fill during `world.postLoadBlockUpdates` (default true). If that setting is off, generated chests stay empty.
+4. Open a native village chest, an Iris clutter chest with no baked table, and the dungeon object. Chests fill during `world.postLoadBlockUpdates` (default true); with that setting off, generated chests stay empty.
 
 **Success:** the village chest still has vanilla village loot. The clutter chest rolled `global-clutter`. The dungeon chest rolled the vanilla dungeon table and nothing from the dimension fallback.
 
@@ -188,7 +182,7 @@ Loot ownership depends on what created the container.
 
 ## Task 4: Replace grown saplings with pack trees
 
-Vanilla sapling growth continues until you opt in. Pack procedural trees and `objects[]` trees do not change what a player grows. During a generation cutover, Iris defers the growth event so the owning thread can complete the terrain checkpoint; the sapling remains available for a later growth attempt.
+Vanilla sapling growth continues until you opt in. Pack procedural trees and `objects[]` trees do not change what a player grows.
 
 1. Enable the dimension gate:
 
@@ -219,13 +213,13 @@ Vanilla sapling growth continues until you opt in. Pack procedural trees and `ob
 
 **Success:** the sapling becomes one of the placement objects, not a vanilla oak.
 
-`mode: FIRST` uses biome matches and only falls back to region matches when the biome has none. `ALL` pools both and picks randomly. Dimension-level object placements are never consulted. `anyTree` and `anySize` were never read and are gone. Matching is case-insensitive on `treeTypes` only.
+`mode: FIRST` uses biome matches and falls back to region matches only when the biome has none; `ALL` pools both and picks randomly. Dimension-level object placements are never consulted. `anyTree` and `anySize` were never read and are gone. Matching is case-insensitive on `treeTypes` only.
 
 This is unrelated to the tree feller (`iris.json` `treeFeller.enabled`, permission `iris.treefeller`).
 
 ## Task 5: Dimension-type gameplay
 
-`environment` picks the vanilla dimension template (`NORMAL`, `NETHER`, `THE_END`). `CUSTOM` uses the overworld template. `dimensionOptions` then overrides individual attributes. These fields do not change terrain.
+`environment` picks the vanilla dimension template (`NORMAL`, `NETHER`, `THE_END`); `CUSTOM` uses the overworld template. `dimensionOptions` then overrides individual attributes. None of these change terrain.
 
 ```json
 {

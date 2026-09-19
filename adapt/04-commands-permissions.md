@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-09-11T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,15 +12,8 @@ Use `/adapt` for menus, progression, configuration, and player-data administrati
 
 ## Language selection
 
-`/adapt language` opens the clickable picker. Personal language selection requires both `adapt.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. `/adapt language self <locale|reset>` selects a personal language; `/adapt language server <locale>` changes the default with `adapt.configurator` or `volmit.language.admin`.
-
-`/adapt language server edit [locale]` opens the player inventory editor for individual messages. Omit the locale to choose one. It requires `adapt.configurator` or `volmit.language.admin`, saves only the chosen locale, and preserves all language selections.
-
-`/volmit plugins languages` opens the picker for every enabled provider's server default; `/volmit plugins languages de_DE` changes those defaults to German. It preserves all personal overrides and offers only locales common to every provider. Access requires `volmit.language.admin` (default `op`) or each enabled plugin's server-language administration permission. If any required permission is denied, no defaults change. See [07 - Localization](/adapt/07-localization).
-
-## Plugin version
-
-`/adapt debug version` displays `Adapt vVERSION`, using the installed plugin version and the Director help heading gradient. `/adapt version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
+`/adapt language` opens the picker. See [07 - Localization](/adapt/07-localization) for the full
+command set and permissions.
 
 ## Diagnostic reports
 

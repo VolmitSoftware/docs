@@ -2,12 +2,12 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-14T01:41:00.322Z
+date: 2026-09-19T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The built-in `overworld` pack is what most Iris servers generate from after an operator installs it with `/iris download pack=overworld` and restarts. This is a guided build. You will fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises references, hotload, immutable world epochs, and rollback. It does not touch height or registries.
+A guided build on the built-in `overworld` pack: fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises references, hotload, immutable world epochs, and rollback. It does not touch height or registries.
 
 Related:
 
@@ -18,7 +18,9 @@ Related:
 - [12 - Regions](/iris/12-regions)
 - [13 - Biomes](/iris/13-biomes)
 - [14 - Generators & Noise](/iris/14-generators-noise)
-- [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers)
+- [23 - Loot](/iris/23-loot)
+- [23b - Entities & Spawners](/iris/23b-entities-spawners)
+- [23c - Markers](/iris/23c-markers)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [44 - Biome Catalog](/iris/44-biome-catalog)
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
@@ -26,14 +28,7 @@ Related:
 - [04 - Commands & Permissions](/iris/04-commands-permissions)
 - [02 - Getting Started](/iris/02-getting-started)
 
-Prerequisites:
-
-- The `overworld` pack is installed and validates.
-- Operator access on Bukkit, or gamemaster access on a mod loader.
-- The keys `my-overworld`, `overworld-test`, and `tutorial/meadow` are unused.
-- The fork is in source control or has a filesystem backup before you rely on it.
-
-The current pack sets nonflat terrain generators to `surfaceDetail: 0.5` to reduce local surface roughness. This retains half the variation around an interpolated six-block grid without changing generator seeds or broad terrain settings. Mirror this control into the paired Underworld generators.
+Prerequisites: the `overworld` pack installed and validating, operator access on Bukkit or gamemaster on a mod loader, the keys `my-overworld`, `overworld-test` and `tutorial/meadow` unused, and the fork under source control or backed up.
 
 ## Where everything lives before you start
 
@@ -42,9 +37,9 @@ The current pack sets nonflat terrain generators to `surfaceDetail: 0.5` to redu
 | Bukkit / Paper / Folia / Purpur | `plugins/Iris/packs/overworld/` |
 | Fabric / Forge / NeoForge | `config/irisworldgen/packs/overworld/` |
 
-A world created from a pack stores its first immutable epoch under `<dimensionRoot>/iris/generation/`. Normal world generation reads the active epoch and never looks at the global `packs/` tree. Later updates add epochs instead of replacing them. Studio worlds run directly off `packs/<key>/`, which is why Studio is where authoring happens.
+A world created from a pack stores its first immutable epoch under `<dimensionRoot>/iris/generation/` and generates from that, never from the global `packs/` tree. Later updates add epochs instead of replacing them. Studio worlds run directly off `packs/<key>/`, which is why Studio is where authoring happens.
 
-Iris does not download packs at startup. `/iris download pack=overworld` installs the latest stable Overworld release ZIP into `packs/`. Restart afterward before you open Studio or create a world (see [02 - Getting Started](/iris/02-getting-started), [25 - Pack Management](/iris/25-pack-management)).
+Iris does not download packs at startup. `/iris download pack=overworld` installs the latest stable Overworld release ZIP into `packs/`; restart afterwards before you open Studio or create a world.
 
 The pack shape:
 
@@ -64,25 +59,21 @@ overworld/
 
 ## 1. Fork the pack
 
-**What you do.**
-
 - Bukkit: `/iris studio create name=my-overworld template=overworld`
 - Modded: `/iris studio create my-overworld overworld`
 
-Wait for the command to report the completed project path. Pack creation runs asynchronously and may report that a restart is required before the new pack can be opened.
-
-Then validate and open:
+Pack creation is asynchronous and may report that a restart is required before the new pack can be opened. Then validate and open:
 
 - Bukkit: `/iris pack validate pack=my-overworld`, then `/iris studio open my-overworld seed=1337`
 - Modded: `/iris pack validate my-overworld`, then `/iris studio open my-overworld 1337`
 
-**Why.** Forking copies the whole tree under a new pack key so upstream Overworld updates cannot clobber your work. A mistake is then one folder deletion away from being undone. Create your worlds from the fork, not from `overworld`.
+Forking copies the whole tree under a new pack key so upstream Overworld updates cannot clobber your work, and a mistake is one folder deletion away from being undone. Create your worlds from the fork, not from `overworld`.
 
-**What you should see.** A `my-overworld` folder next to `overworld` with the same structure, a loadable validation result, and a Studio world that looks exactly like the bundled overworld.
+Expect a `my-overworld` folder next to `overworld` with the same structure, a loadable validation result, and a Studio world identical to the bundled overworld.
 
 ## 2. Add the biome file
 
-**What you do.** Save this complete biome as `packs/my-overworld/biomes/tutorial/meadow.json`:
+Save this complete biome as `packs/my-overworld/biomes/tutorial/meadow.json`:
 
 ```json
 {
@@ -109,20 +100,20 @@ Then validate and open:
 }
 ```
 
-**Why.** Every piece of this is chosen so the result is unmistakable in game:
+Every piece of this is chosen so the result is unmistakable in game:
 
-- `generators` reuses the fork existing `generators/plain.json`. That file is an `IRIS_DOUBLE` composite behind a `BILINEAR_STARCAST_9` interpolator. This biome uses `min` 18 / `max` 24 instead of the 4-to-10 band the bundled plains uses. Those numbers are offsets from `fluidHeight`, which the overworld sets to 50. This meadow sits roughly 68 to 74 blocks up while ordinary plains sit around 54 to 60. The height difference is what makes it visible from a distance.
+- `generators` reuses the fork's existing `generators/plain.json`, an `IRIS_DOUBLE` composite behind a `BILINEAR_STARCAST_9` interpolator. `min` 18 / `max` 24 instead of the 4-to-10 band the bundled plains uses. Those are offsets from `fluidHeight`, which the overworld sets to 50, so this meadow sits roughly 68 to 74 blocks up against ordinary plains at 54 to 60. The height difference is what makes it visible from a distance.
 - `layers` are **thicknesses**, not Y coordinates: one block of grass over three blocks of dirt, with the dimension rock palette filling everything below.
-- `decorators` uses a snippet reference. Any field whose type is a snippet type accepts the string form `snippet/<type>/<name>`. Iris loads `snippet/decorator/wildflowers.json` in its place at parse time. The fork already contains that file.
-- `rarity` 1 makes it as common as the region other biomes so you do not have to search for it later.
+- `decorators` uses a snippet reference. Any field whose type is a snippet type accepts the string form `snippet/<type>/<name>`, and the fork already contains `snippet/decorator/wildflowers.json`.
+- `rarity` 1 makes it as common as the region's other biomes so you do not have to search for it later.
 
 Do not copy this file into the original `overworld` folder.
 
-**What you should see.** With the workspace open, the editor should autocomplete `generator` values against the fork real generator keys and flag a typo in `derivative` immediately. If it does not, run `/iris studio update dimension=my-overworld` (see [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
+With the workspace open, the editor should autocomplete `generator` values against the fork's real generator keys and flag a typo in `derivative` immediately. If it does not, run `/iris studio update dimension=my-overworld` ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
 
 ## 3. Attach it and focus on it
 
-**What you do.** Append `"tutorial/meadow"` to `landBiomes` in `regions/temperate.json`. Then merge these two fields into the existing object in `dimensions/my-overworld.json`:
+Append `"tutorial/meadow"` to `landBiomes` in `regions/temperate.json`. Then merge these two fields into the existing object in `dimensions/my-overworld.json`:
 
 ```json
 {
@@ -131,39 +122,31 @@ Do not copy this file into the original `overworld` folder.
 }
 ```
 
-These are field excerpts. Merge them into the existing files. Do not replace either file with the fragment. Validate again after both edits.
+These are field excerpts. Merge them into the existing files; do not replace either file with the fragment. Validate again after both edits.
 
-**Why.** A biome file that no region lists never generates. Nothing warns you about it. It just never gets picked. `regions/temperate.json` already carries 28 land biomes, so a new one would be rare enough to be annoying to find. The two focus fields force the entire world to that region and biome. You can confirm the biome itself is correct before worrying about selection frequency.
+**A biome file that no region lists never generates, and nothing warns you about it.** `regions/temperate.json` already carries 28 land biomes, so a new one would be rare enough to be annoying to find — the two focus fields force the entire world to that region and biome so you can confirm the biome is correct before worrying about selection frequency.
 
-**What you should see.** Validation still loadable. If it cannot resolve the biome, compare `tutorial/meadow` against the actual path and the region entry character for character. The folder prefix is part of the key.
+If validation cannot resolve the biome, compare `tutorial/meadow` against the actual path and the region entry character for character. The folder prefix is part of the key.
 
 ## 4. Prove the authoring result
 
-**What you do.** Generate untouched Studio chunks and run `/iris what region` and `/iris what biome`.
-
-**What you should see.** Region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding bundled plains, wildflower decoration, and no missing-key errors in console.
+Generate untouched Studio chunks and run `/iris what region` and `/iris what biome`. Expect region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding bundled plains, wildflower decoration, and no missing-key errors.
 
 If terrain is empty, confirm `generators/plain.json` still exists in the fork. If flowers are missing, confirm `snippet/decorator/wildflowers.json` exists and remove the decorator reference until the terrain baseline passes. One variable at a time.
 
 ## 5. Prove natural selection and restart behavior
 
-**What you do.**
-
 1. Remove `focus` and `focusRegion`. Close Studio. Reopen on seed `1337`.
-2. Locate the biome naturally: `/iris find biome tutorial/meadow` (available on Bukkit and on mod loaders. `/iris goto biome <key>` is the same command on modded).
+2. Locate the biome naturally: `/iris find biome tutorial/meadow` (`/iris goto biome <key>` is the same command on modded).
 3. Create a disposable world: Bukkit `/iris create name=overworld-test type=my-overworld seed=1337`, modded `/iris create overworld-test my-overworld 1337`.
-4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`. Folia creates the world in the current process, so it is immediately available for teleport after creation completes.
+4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`. Folia creates the world in the current process, so it is available immediately.
 5. Generate new chunks. Stop the server cleanly. Restart. Verify another new area.
 
-**Why.** Focus mode proves the biome renders. Only unfocused generation proves it is reachable through region selection. The disposable world proves the immutable epoch works outside Studio. The restart proves the generated dimension type and custom biomes survive a registry reload.
-
-**What you should see.** The meadow appearing naturally in temperate regions, `iris/generation/` present in the dimension root, and a clean restart with no pack or registry errors.
+Focus mode proves the biome renders; only unfocused generation proves it is reachable through region selection. The disposable world proves the immutable epoch works outside Studio, and the restart proves the generated dimension type and custom biomes survive a registry reload.
 
 ## 6. Package or recover
 
-**What you do.** Package with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris studio package my-overworld`.
-
-**Why.** The validated fork under `packs/` is the authoring source. The `.iris` export and each immutable world epoch are outputs with exact content fingerprints.
+Package with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris studio package my-overworld`. The validated fork under `packs/` is the authoring source; the `.iris` export and each immutable world epoch are outputs.
 
 | Failure | Recovery |
 |---------|----------|
@@ -182,11 +165,11 @@ From `dimensions/overworld.json`:
 | `name` / `version` | `"Overworld"` / `4000` | Bump `version` on your fork so pack generations stay distinguishable |
 | `dimensionHeight` | `min` -256, `max` 512 | 768 blocks tall. Contract field. Do not change it on a fork that already has worlds |
 | `logicalHeight` | `512` | Contract field |
-| `fluidHeight` | `50` | World Y of sea level, and the baseline every biome generator band is measured from. Change it and every biome apparent height moves |
+| `fluidHeight` | `50` | World Y of sea level, and the baseline every biome generator band is measured from. Change it and every biome's apparent height moves |
 | `environment` | `NORMAL` | Contract field |
 | `landChance` | `0.69` | Land-heavy world |
 | `regionZoom` | `16.15` | Continent-sized climate regions |
-| `coordFractureZoom` | `0.15` | Aggressive coordinate warping. This is the source of the swirled borders |
+| `coordFractureZoom` | `0.15` | Aggressive coordinate warping. The source of the swirled borders |
 | `dimensionAngleDeg` | `69` | Off-axis rotation that hides grid artifacts |
 | `regions` | `frozen`, `hot`, `terralost`, `mushroom`, `forests`, `tundra`, `magnetics`, `temperate`, `estranged`, `tropical`, `swamp`, `prismatics` | The twelve climate regions your biome must be attached to one of |
 | `loot` | mode `FALLBACK`, tables `["global-clutter"]` | Fallback only. Objects that declare their own loot keep it |
@@ -196,25 +179,11 @@ From `dimensions/overworld.json`:
 | `carving` | one deep-dark band at world Y -250 to -175 | Depth-banded cave biome |
 | `mode` | omitted | Runs `OVERWORLD` |
 
-Also present: region/continental/biome noise styles, 11 terrain-band generators, and 23 dimension deposits. Ore height bands preserve Minecraft 26.2 normalized vertical positions by mapping its 384-block Overworld span into the pack 768-block span. Vein shapes, exposure rules and biome exceptions remain vanilla-shaped. Every subterranean ore pass keeps 70% of its configured clump attempts. Specialized high, ultra-low, badlands, and mountain passes therefore average 1.4 times vanilla attempts, while the 13 ordinary passes intersecting world Y -175 through 0 average 2.8 times vanilla attempts. All ore passes set `surfaceReplaceableBlocks` to `minecraft:stone`: buried and cave-wall candidates retain their full host lists, but an exterior terrain-surface candidate cannot replace soil, themed stone, glass, ice, or decorative strata. A biome may replace that list through `surfaceOreReplaceableBlocks`; `["minecraft:stone", "minecraft:sand"]`, for example, permits sand exposure only in that biome. Magnetics uses seven full-height-ratio above-terrain ore families across engine-local Y 224–736, plus a frozen-island emerald pass. Their authored attempt counts are unchanged, but their exterior terrain cells follow the same stone-only rule. Rough Plains owns the same seven-family above-terrain suite for its two floating-biome forms. Magnetics selects between the redesigned vascular `magnetic-hollows`, warped `flux-crystal-caverns`, and narrower `polarity-grotto` below its terrain. Magnetic Hollows now forms connected narrow galleries with occasional cellular polarity vaults, calcite and amethyst accents, and sparse crystal or monolith landmarks instead of broad merged rooms. Its nine floating entries use variable vascular or crystalline tails, coherently varied edge taper and restrained wall warp instead of fixed-depth slabs. The managed Underworld mirrors those terrain and cave shapes at the same seed. It uses Nether-safe palettes, derivatives, and object keys. It retains its independent ore table. Host-aware automatic deepslate conversion, imported-structure adjustments for stronghold, trial chambers, mineshaft and village, and one ancient-city structure placement with `nativeSuppression: REPLACE_SOURCE` are also configured here.
+Also present: region/continental/biome noise styles, 11 terrain-band generators, 23 dimension deposits, the `deep_lava` and `deep_lava_small` deep-fluid profiles, and a large body of per-biome tuning. Non-flat terrain generators set `surfaceDetail: 0.5` to halve local surface roughness without touching generator seeds; mirror that into the paired Underworld generators if you fork both.
 
-Frozen surface and cave biomes use deterministic procedural formations in place of the former fixed ice-cluster library. Surface pools contain compact crooked spires, drift boulders, separated shard fans, frost blooms, and sprigs. Icebergs, fissures, spirals, overhangs, and arches add larger forms.
+Ore passes set `surfaceReplaceableBlocks` to `minecraft:stone`, so buried and cave-wall candidates keep their full host lists but an exterior terrain-surface candidate cannot replace soil, themed stone, glass, ice, or decorative strata. A biome can widen that with `surfaceOreReplaceableBlocks` — `["minecraft:stone", "minecraft:sand"]` permits sand exposure in that biome only.
 
-Ice Spikes uses the denser pool. Its crooked spires are 14 to 24 blocks tall at `chance: 0.3` and `density: 1`. Its drift boulders are 3 to 5 blocks tall at `chance: 0.4` and `density: 2`. Every entry has a chance below one. Large forms use organic supports with a 96-block terrain scan.
-
-Overworld supplies the geometry, chances, variant seeds, placement modes, and support settings. Underworld applies soul-soil and bone palettes, or blackstone and crying obsidian palettes. Magnetic glass formations and frozen cave formations retain their separate procedural pools.
-
-Both packs use `scale.size: 0.375` for rocks and boulders in five frozen cave families: `ice`, `ice-lite`, `ice-ravine`, `frost-shards`, and `glacial`. Their procedural formations bake directly at cave scale. Those cave formations require an anchor owned by their exact frozen cave biome. They reject fluid or default-lava cells. They cannot leak into the global Deep Dark band or its lava layer.
-
-Pallid Necropolis contains no Denmyre objects. It places only a broad, cohesive procedural willow at `chance: 0.24` and a narrow clustered spindle at `chance: 0.14`. Both use `density: 1`. The pale-oak Denmyre object family instead belongs exclusively to `temperate/pale-denmyre`. The Underworld keeps the same biome placement and tree geometry with warped materials.
-
-Swamp Beach uses one `chance: 0.004` turtle-egg decorator. The decorator has weighted one-, two-, and three-egg nest states. It averages about one compact nest per full biome chunk instead of three independent default-chance carpets. Field-by-field meanings are in [11 - Dimensions](/iris/11-dimensions).
-
-Both packs disable standalone cave aquifers and retain contained hydrology, natural surface fluids, and separate deep-lava controls. They share the `deep_lava` and `deep_lava_small` profiles. The smaller profile uses density `1.5`, spacing `320`, and contained lava pools across Y `-160..40`.
-
-Jungle cave trees use `scale.size: 0.375` and `density: 2`. Lush, Moss Pillars, and Swamp cave trees use `density: 2`, as do the two Mushroom cave fungi placements. These settings also apply to each child. Amethyst Rainforest large trees use `FAST_STILT` in both packs, with no random vertical translation.
-
-The 13 compensated ordinary ore passes use Iris's unrestricted solid-host mode while buried or facing `minecraft:cave_air`: themed sandstone, organic, ice, amethyst, volcanic, and prismatic cave bodies can receive ore, while air and fluids remain ineligible. The independent surface allowlist narrows only exterior terrain candidates to exact `minecraft:stone`. Specialized high, ultra-low, badlands, and mountain passes retain their explicit stone-family host allowlists.
+The managed Underworld mirrors the Overworld's terrain and cave shapes at the same seed with Nether-safe palettes, derivatives and object keys, and its own ore table. Per-biome content, including the procedural frozen and magnetic formation pools, is listed in [44 - Biome Catalog](/iris/44-biome-catalog) and the per-biome pages under `/iris/biomes`.
 
 Do not invent region or biome keys. List the directories under `regions/` and `biomes/` and use what is actually there.
 
@@ -254,13 +223,13 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 ### Do not edit world epochs
 
-Files below `<dimensionRoot>/iris/generation/` are immutable runtime state. Never edit or replace them. Author under `packs/`, validate there, and stage an activation.
+Files below `<dimensionRoot>/iris/generation/` are immutable runtime state. **Never edit or replace them.** Author under `packs/`, validate there, and stage an activation.
 
 ## Practical recipes
 
 ### Change sea level
 
-Set `fluidHeight` in `dimensions/my-overworld.json`. Default value `50`. It is world Y. Every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact. Raising it drowns low biomes. Existing chunks remain unchanged; a staged update blends new surface terrain from the frozen edge and starts new hydrology outside the protected band.
+Set `fluidHeight` in `dimensions/my-overworld.json`. Default `50`, in world Y, and every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact; raising it drowns low biomes. Existing chunks are unchanged; a staged update blends new surface terrain from the frozen edge and starts new hydrology outside the protected band.
 
 ### Add a biome to a region
 
@@ -272,7 +241,7 @@ Region lists must match real biome load keys. A key that does not resolve is a b
 
 ### Change plains height
 
-Edit `generators` `min`/`max` on `biomes/temperate/plains.json` to affect only that biome. Or edit `generators/plain.json` to affect every biome that references `plain`, which is a lot of them. Prefer the biome-level change unless you mean the global one.
+Edit `generators` `min`/`max` on `biomes/temperate/plains.json` to affect only that biome, or edit `generators/plain.json` to affect every biome that references `plain`, which is a lot of them. Prefer the biome-level change unless you mean the global one.
 
 ### Loot
 
@@ -288,25 +257,19 @@ Reuse `snippet/decorator/*` and `snippet/style/*` by string reference as in [24 
 
 ### Entities and spawners
 
-The pack includes `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23 - Loot, Entities, Spawners, Markers](/iris/23-loot-entities-spawners-markers).
+The pack includes `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23b - Entities & Spawners](/iris/23b-entities-spawners) and [23c - Markers](/iris/23c-markers).
 
 ## Pushing changes into an existing world
 
 World creation records the first pack epoch. Changing `packs/` does **not** update an existing world until you stage and restart it.
 
-### `/iris dev update-world` (Bukkit)
-
 ```
 /iris dev update-world world=<world> pack=my-overworld confirm=true
 ```
 
-1. Without `confirm=true` it prints the warning and does nothing.
-2. Adds a content-addressed immutable epoch and pending activation. It never overwrites an epoch that owns chunks.
-3. Requests a restart. Already generated chunks keep their old activation; new chunks blend to the new pack. Back up the complete dimension root first.
+Without `confirm=true` it prints the warning and does nothing. It adds a content-addressed immutable epoch and pending activation, never overwriting an epoch that owns chunks, and requests a restart. Already generated chunks keep their old activation; new chunks blend to the new pack. **Back up the complete dimension root, including `iris/generation/`, first.**
 
-On Fabric, Forge, and NeoForge use `/iris world update <dimension> my-overworld`. It stages the same history transition and keeps the current runtime active until restart.
-
-### Choosing between update-world and a new world
+On Fabric, Forge, and NeoForge use `/iris world update <dimension> my-overworld`, which stages the same transition and keeps the current runtime active until restart.
 
 | Goal | Approach |
 |------|----------|
@@ -325,10 +288,6 @@ An in-place update cannot change the seed, `dimensionHeight`, `logicalHeight`, `
 | Preview unused-resource cleanup | Bukkit `/iris pack cleanup my-overworld mode=preview`, then `mode=apply`. Modded uses the same `preview`/`apply` literals |
 | Package for distribution | Bukkit `/iris pack package dimension=my-overworld`. Modded `/iris studio package my-overworld` |
 | Version stamp | The dimension `version` field. The bundled pack uses large integers such as `4000` |
-
-## Update an existing world
-
-Back up the complete target dimension, including `iris/generation/`, then stage the pack and restart. See [Pack Management](/iris/25-pack-management) for the platform-specific commands.
 
 ## Cross-links
 

@@ -2,14 +2,12 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Agility gains XP from movement, sprinting, swimming, airtime, and climbing. Its 13 adaptations add sprint speed, wall jumps, charged jumps, slides, air dashes, safer landings, projectile dodging, and movement protections.
-
-The skill uses a green `FEATHER` icon. Its passive XP pulse runs every 975 ms.
 
 ## How you earn Agility XP
 
@@ -18,17 +16,32 @@ Two paths, both automatic.
 1. Every movement credits distance to the `move` stat and pays `moveXpPassive` for each block travelled. The same distance is also credited to exactly one of `move.sneak`, `move.fly`, `move.swim`, or `move.sprint`, checked in that order. Those four stats are what the challenge milestones count.
 2. Every 975 ms a pulse looks at what you are doing and pays for each thing that applies. Sprinting pays `sprintXpPassive`. Swimming pays `swimXpPassive`. Being off the ground pays `jumpXpPassive`. Climbing pays `climbXpPassive`. Sneaking or flying blocks all four. Sprinting and swimming exclude each other.
 
-The pulse scales its payout by how much real time actually elapsed. A laggy tick does not shortchange you.
+The pulse scales its payout by how much real time actually elapsed, so a laggy tick does not shortchange you.
 
 ## Adaptations
 
-All of these need the same four things before they do anything. You have learned the adaptation to level 1 or higher in the Adapt menu. Both the Agility skill and that adaptation are enabled in config. You hold the matching `adapt.use` permission. Protection plugins or region policy allow the action where you are standing. Most also require Survival or Adventure mode. That list is not repeated below.
+All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the matching `adapt.use` permission, and protection and region policy that allow the action. Most also require Survival or Adventure mode.
 
 ### Wind Up (`agility-wind-up`)
 
-Hold a sprint and you keep accelerating. The speed builds over a fixed number of ticks. It settles well above vanilla sprint speed. It eases in rather than snapping on. Break the sprint, sneak, start flying, start gliding, mount or dismount anything, or leave Survival and Adventure mode, and the buildup resets to zero. It works on its own once learned. Just run.
+5 levels · 8 knowledge, then 2 per level
+
+Hold a sprint and you keep accelerating. The speed builds over a fixed number of ticks. It settles well above vanilla sprint speed. It eases in rather than snapping on. Break the sprint, sneak, start flying, start gliding, mount or dismount anything, or leave Survival and Adventure mode, and the buildup resets to zero.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `windupTicksSlowest` | `180` | Ticks of unbroken sprinting needed to reach top speed at the lowest level. 20 ticks = 1 second. |
+| `windupTicksFastest` | `60` | Ticks needed to reach top speed at max level. |
+| `windupSpeedBase` | `0.22` | Speed target reached at the lowest level, before the per-level bonus. |
+| `windupSpeedLevelMultiplier` | `0.225` | Extra speed target added at max level. |
+| `walkSpeedBonusScalar` | `0.75` | Fraction of the speed target converted into the relative movement-speed modifier. |
+| `walkSpeedLerpPerTick` | `0.45` | How quickly the applied modifier eases toward its target each tick, 0-1. |
+| `maxWalkSpeed` | `0.35` | Walk-speed ceiling measured against the 0.2 vanilla base. The relative bonus is capped at maxWalkSpeed / 0.2 - 1. |
+| `movementVelocityThreshold` | `0.015` | Minimum horizontal speed before top-speed ticks count toward the milestone stat. |
 
 ### Wall Jump (`agility-wall-jump`)
+
+5 levels · 8 knowledge, then 2 per level
 
 Turns any flat wall into a ladder you can chain. Use it on shafts, cliffs, and holes you dug yourself into.
 
@@ -38,9 +51,21 @@ Turns any flat wall into a ladder you can chain. Use it on shafts, cliffs, and h
 4. Repeat until you run out of air jumps. Touching the ground refills them.
 
 If you are steering away from the wall as you release, you get an extra push backward off it. Levels raise both the launch strength and how many latches you get per airtime.
-While latched, stored fall distance stays cleared. Releasing shift or losing wall contact starts a fresh fall, so descending along the wall does not become delayed landing damage.
+While latched your fall distance stays cleared, and letting go starts a fresh fall, so climbing down a wall never turns into delayed landing damage.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `maxJumpsLevelBonusDivisor` | `2` | Latches per airtime are level plus level divided by this number. Lower values give more latches. |
+| `jumpHeightBase` | `0.625` | Launch strength off the wall at the lowest level. |
+| `jumpHeightBonusLevelMultiplier` | `0.225` | Extra launch strength added at max level. |
+| `backwardPushSpeed` | `0.22` | Horizontal speed pushing you away from the wall when you release while steering backward. |
+| `backwardIntentDotThreshold` | `0.35` | How directly your steering must oppose your facing, as a dot product, to count as a backward release. |
+| `inputMovementThreshold` | `0.0025` | Minimum horizontal movement in one move event before it is recorded as a steering input. |
+| `inputWindowMs` | `450` | How long a recorded steering input stays valid, in milliseconds. |
 
 ### Super Jump (`agility-super-jump`)
+
+4 levels · 5 knowledge, then 2 per level
 
 A charged standing jump for crossing gaps and reaching ledges.
 
@@ -49,24 +74,74 @@ A charged standing jump for crossing gaps and reaching ledges.
 
 The configured levels scale the apex from 1.5 blocks up to 2.5 blocks.
 
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `minimumJumpHeight` | `1.5` | Jump apex in blocks at level 1. Values below the vanilla jump height are clamped up. |
+| `maximumJumpHeight` | `2.5` | Jump apex in blocks at the configured maximum level. |
+
 ### Armor-Up (`agility-armor-up`)
 
-Sprinting plates you in temporary armor. The plating builds while you run. It drains back off after you stop. It rewards committing to a charge instead of poking. Sneaking, swimming, flying, or gliding all stop it building. It works on its own once learned.
+5 levels · 8 knowledge, then 2 per level
+
+Sprinting plates you in temporary armor. The plating builds while you run. It drains back off after you stop. It rewards committing to a charge instead of poking. Sneaking, swimming, flying, or gliding all stop it building.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `windupTicksSlowest` | `180` | Ticks of unbroken sprinting needed for full plating at the lowest level. |
+| `windupTicksFastest` | `60` | Ticks needed for full plating at max level. |
+| `windupArmorBase` | `0.22` | Plating target at the lowest level. Multiplied by 10 to get armor points, so this alone is 2.2 armor. |
+| `windupArmorLevelMultiplier` | `0.525` | Extra plating target added at max level, also multiplied by 10 for armor points. |
+| `decaySecondsBase` | `5.0` | Seconds for full plating to drain away at the lowest level. |
+| `decaySecondsMaxLevelBonus` | `5.0` | Extra drain seconds added at max level, so the plating lingers longer. |
 
 ### Ladder Slide (`agility-ladder-slide`)
 
+1 level · 1 knowledge
+
 Turns ladders and vines into express lanes. Look up to climb fast. Look down to drop fast. Level your view back toward the horizon to hand control back to vanilla. Sneaking stops directional movement outright. The first and last two climbable blocks of a column always use normal control. You do not overshoot the top or slam into the floor. Scaffolding is deliberately excluded. Fall damage caused directly by a fast descent is cancelled while `safeLanding` is on.
 
+Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAFFOLDING`.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `descentSpeedBase` | `0.30` | Downward speed in blocks per tick before per-level scaling. |
+| `descentSpeedPerLevel` | `0.30` | Extra downward speed granted at max level. |
+| `climbAssistBase` | `0.28` | Upward speed in blocks per tick before per-level scaling. |
+| `climbAssistPerLevel` | `0.22` | Extra upward speed granted at max level. |
+| `lookActivationDegrees` | `30.0` | Degrees above or below the horizon at which gaze-directed movement switches on. |
+| `lookReleaseDegrees` | `15.0` | Degrees at which an active gaze direction hands control back to vanilla. |
+| `safeLanding` | `true` | Cancels fall damage that came directly out of a fast ladder descent. |
+
 ### Roll Landing (`agility-roll-landing`)
+
+5 levels · 3 knowledge
 
 A timed crouch that turns a bad landing into a hungry one.
 
 1. While falling, tap or hold shift shortly before you hit the ground. A soft click confirms the input is armed.
 2. Land. Part of the fall damage is absorbed and paid for in food points instead.
 
-The absorbed damage scales with level and is capped. You go briefly prone on the landing. A cooldown is stamped on the hay-block item slot so you cannot chain rolls. Rolling out of a fall of 30 blocks or more grants a hidden challenge.
+The absorbed damage scales with level and is capped. You go briefly prone on the landing, and the cooldown is stamped on your `HAY_BLOCK` item cooldown slot so you cannot chain rolls. Rolling out of a fall of 30 blocks or more grants a hidden challenge.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `reductionBase` | `0.22` | Fraction of fall damage absorbed at the lowest level. |
+| `reductionFactor` | `0.43` | Extra fraction absorbed at max level. |
+| `maxReduction` | `0.8` | Hard cap on the absorbed fraction regardless of level. |
+| `inputWindowMillisBase` | `450` | How long a crouch input stays armed before landing, in milliseconds, before level scaling. |
+| `inputWindowMillisFactor` | `350` | Extra armed window in milliseconds granted at max level. |
+| `hungerPerDamageBase` | `1.4` | Food points charged per point of damage absorbed, at the lowest level. |
+| `hungerPerDamageReduction` | `0.75` | How much of that food cost is removed across the level range. |
+| `cooldownTicksBase` | `22` | Ticks between rolls at the lowest level. 20 ticks = 1 second. |
+| `cooldownTicksFactor` | `12` | Ticks removed from the roll cooldown at max level. |
+| `maxVerticalVelocityForRollInput` | `-0.08` | You must be falling at least this fast for a crouch to arm a roll. |
+| `proneTicksBase` | `4` | Ticks you stay prone after a roll at the lowest level. |
+| `proneTicksFactor` | `5` | Extra prone ticks at max level. |
+| `xpPerDamagePrevented` | `4.2` | Skill XP paid per point of fall damage absorbed. |
 
 ### Slipstream Slide (`agility-slipstream-slide`)
+
+4 levels · 4 knowledge, then 3 per level
 
 A baseball slide that keeps its speed. Use it to shoot a one-block gap you would normally have to crouch-walk through.
 
@@ -75,32 +150,109 @@ A baseball slide that keeps its speed. Use it to shoot a one-block gap you would
 
 You drop into a prone pose. Ground friction mostly disappears. You carry your momentum until the slide runs out. Each slide costs hunger. Each slide puts you on a cooldown that shrinks as you level. At max level, mobs you slide through get slowed.
 
+A sprint that ended within the last 350 ms still counts as sprinting for the purpose of starting a slide.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `slideForceBase` | `0.5` | Horizontal slide velocity in blocks per tick before level scaling. |
+| `slideForceFactor` | `0.45` | Extra slide velocity in blocks per tick at max level. |
+| `cooldownMillisBase` | `4000` | Milliseconds between slides before level scaling. |
+| `cooldownMillisReduction` | `2500` | Milliseconds removed from that cooldown at max level. |
+| `cooldownMillisFloor` | `1300` | Shortest cooldown allowed after all reductions, in milliseconds. |
+| `slideTicksBase` | `14` | Ticks the prone slide pose lasts before level scaling. |
+| `slideTicksFactor` | `10` | Extra prone ticks granted at max level. |
+| `slideFrictionReduction` | `0.9` | Fraction of ground friction removed while sliding, 0-1. |
+| `hungerCost` | `1.8` | Saturation, then food points, charged per slide. |
+| `slowAmplifier` | `1` | Slowness amplifier applied to mobs you slide through at max level. |
+| `slowDurationTicks` | `40` | Duration in ticks of that max-level slow. |
+| `xpPerSlide` | `3` | Skill XP paid per successful slide. |
+
 ### Air Dash (`agility-air-dash`)
+
+4 levels · 5 knowledge, then 3 per level
 
 A mid-air correction for jumps you misjudged.
 
 1. Sprint, then jump. That arms the dash.
 2. While still in the air, left-click empty air.
 
-You snap forward along your look direction with a small lift so you do not lose the airtime. Landing rearms it. Each dash costs hunger. At max level you get two charges per sprint-jump. It does nothing while flying, gliding, swimming, climbing, riding, or already on the ground.
+You snap forward along your look direction with a small lift so you do not lose the airtime. Landing rearms it. Each dash costs hunger, and at max level you get two charges per sprint-jump. It does nothing while flying, gliding, swimming, climbing, riding, on an empty food bar, or already on the ground.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `dashForceBase` | `0.85` | Dash velocity in blocks per tick before level scaling. |
+| `dashForceFactor` | `0.6` | Extra dash velocity in blocks per tick at max level. |
+| `upwardLift` | `0.12` | Upward velocity added on a dash so you keep airtime. |
+| `maxLevelCharges` | `2` | Dashes available per sprint-jump at max level. |
+| `debounceMillis` | `250` | Minimum milliseconds between dash inputs, to swallow double clicks. |
+| `hungerCost` | `2` | Saturation, then food points, charged per dash. |
+| `xpPerDash` | `3` | Skill XP paid per successful dash. |
 
 ### Cat Reflexes (`agility-cat-reflexes`)
 
-While you are sprinting, incoming projectiles have a chance to miss entirely. The hit is cancelled. You get a small sidestep nudge. It only fires while sprinting. It only fires against projectiles. It works on its own once learned.
+5 levels · 4 knowledge, then 3 per level
+
+While you are sprinting, incoming projectiles have a chance to miss entirely. The hit is cancelled. You get a small sidestep nudge. It only fires while sprinting. It only fires against projectiles.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `dodgeChanceBase` | `0.08` | Chance to dodge a projectile while sprinting before level scaling, 0-1. |
+| `dodgeChanceFactor` | `0.3` | Extra dodge chance granted at max level. |
+| `maxDodgeChance` | `0.35` | Hard cap on dodge chance regardless of level. |
+| `xpPerDodge` | `4` | Skill XP paid per dodged projectile. |
 
 ### Featherfoot (`agility-featherfoot`)
 
-Stops the ground from punishing you for running across it. Farmland unlocks first. Then pressure plates. Then sweet berry bushes. Then powder snow. One per level. By default it only applies while you are sprinting. Server owners can turn that off. It works on its own once learned.
+4 levels · 1 knowledge
+
+Stops the ground from punishing you for running across it. Farmland unlocks first. Then pressure plates. Then sweet berry bushes. Then powder snow. One per level. By default it only applies while you are sprinting. Server owners can turn that off.
+
+`maxLevel` is independent of the surface unlock levels, so a surface whose minimum level is above the configured cap stays unreachable until you change one of them.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `requireSprint` | `true` | When true, none of the protections apply unless you are sprinting. |
+| `farmlandEnabled` | `true` | Turns the farmland protection off entirely when false. |
+| `farmlandMinLevel` | `1` | Level at which farmland stops being trampled. |
+| `farmlandMaterials` | `["FARMLAND"]` | Blocks covered by the trample protection. |
+| `pressurePlateEnabled` | `true` | Turns the pressure-plate protection off entirely when false. |
+| `pressurePlateMinLevel` | `2` | Level at which pressure plates stop triggering under you. |
+| `pressurePlateUseVanillaTag` | `true` | Also covers every block in the vanilla pressure plate tag. |
+| `pressurePlateMaterials` | `[]` | Extra blocks treated as pressure plates. |
+| `berryBushEnabled` | `true` | Turns the sweet-berry protection off entirely when false. |
+| `berryBushMinLevel` | `3` | Level at which sweet-berry slowdown and contact damage are ignored. |
+| `berryBushMaterials` | `["SWEET_BERRY_BUSH"]` | Blocks whose slowdown and contact damage are ignored. |
+| `powderSnowEnabled` | `true` | Turns the powder-snow protection off entirely when false. |
+| `powderSnowMinLevel` | `4` | Level at which powder-snow freezing is cleared on contact. |
+| `powderSnowMaterials` | `["POWDER_SNOW"]` | Blocks whose freezing effect is cleared. |
 
 ### Vault (`agility-vault`)
 
+1 level · 4 knowledge
+
 Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. The default cap is one level; the vault effect itself does not scale if the cap is raised.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `jumpHeight` | `1.75` | Jump apex in blocks when clearing a fence. Values below the built-in minimum are clamped up. |
+| `xpPerVault` | `3` | Skill XP paid per successful vault. |
 
 ### Marathoner (`agility-marathoner`)
 
-Cuts the saturation drain from sprinting and sprint-jumping. It does not make you faster. You can keep running longer before hunger stops you. It works on its own once learned.
+5 levels · 3 knowledge, then 2 per level
+
+Cuts the saturation drain from sprinting and sprint-jumping. It does not make you faster. You can keep running longer before hunger stops you.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `drainReductionBase` | `0.15` | Fraction of sprint exhaustion removed before level scaling, 0-1. |
+| `drainReductionFactor` | `0.45` | Extra fraction removed at max level. |
+| `maxDrainReduction` | `0.6` | Hard cap on the removed fraction regardless of level. |
+| `xpPerSaturationSaved` | `0.6` | Skill XP paid per unit of exhaustion saved. |
 
 ### Kip-Up (`agility-kip-up`)
+
+4 levels · 4 knowledge, then 3 per level
 
 Turns getting knocked around into momentum you keep.
 
@@ -108,6 +260,18 @@ Turns getting knocked around into momentum you keep.
 2. Jump within the recovery window.
 
 You are re-launched in the direction you were steering. If you were not moving, you launch where you were looking. You also get a short speed burst. There is a flat cooldown between recoveries.
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `recoveryWindowMillisBase` | `350` | Milliseconds after a hit during which a jump counts as a recovery, before level scaling. |
+| `recoveryWindowMillisFactor` | `550` | Extra milliseconds of recovery window at max level. |
+| `speedAmplifierBase` | `0` | Speed effect amplifier granted on a recovery before level scaling. |
+| `speedAmplifierFactor` | `1.6` | Extra amplifier granted at max level. |
+| `speedDurationTicks` | `40` | Duration in ticks of the recovery speed burst. |
+| `recoverySpeed` | `0.5` | Horizontal velocity applied toward your intended direction on recovery. |
+| `jumpVelocityThreshold` | `0.2` | Minimum upward velocity treated as a jump when checking for a recovery. |
+| `cooldownMillis` | `3000` | Milliseconds between recoveries. |
+| `xpPerRecovery` | `5` | Skill XP paid per successful recovery. |
 
 ## Reference
 
@@ -128,355 +292,23 @@ Written to `plugins/Adapt/skills/agility.toml` on first load.
 | `climbXpPassive` | `0.4` | Skill XP per pulse while climbing, scaled by elapsed time. |
 | `moveXpPassive` | `0.05` | Skill XP per block travelled, paid on every movement. |
 
-### Skill milestones
+### Challenges
 
-| Advancement key | Stat tracked | Threshold | Reward source |
-|-----------------|--------------|-----------|---------------|
-| `challenge_move_1k` | `move` | 1000 | `challengeMove1kReward` |
-| `challenge_sprint_marathon` | `move.sprint` | 42195 | `challengeSprintMarathonReward` |
-| `challenge_sprint_dist_5k` | `move.sprint` | 5000 | `challengeSprint5kReward` |
-| `challenge_sprint_dist_50k` | `move.sprint` | 50000 | `challengeSprint5kReward` x 2 |
-| `challenge_agility_swim_1k` | `move.swim` | 1000 | `challengeSprint5kReward` |
-| `challenge_agility_swim_10k` | `move.swim` | 10000 | `challengeSprint5kReward` x 2 |
-| `challenge_fly_1k` | `move.fly` | 1000 | `challengeSprint5kReward` |
-| `challenge_fly_10k` | `move.fly` | 10000 | `challengeSprint5kReward` x 2 |
-| `challenge_agility_sneak_500` | `move.sneak` | 500 | `challengeSprint5kReward` |
-| `challenge_agility_sneak_5k` | `move.sneak` | 5000 | `challengeSprint5kReward` x 2 |
+| Challenge | Threshold | Reward knob |
+|---|---|---|
+| `challenge_move_1k` | 1000 | `challengeMove1kReward` |
+| `challenge_sprint_marathon` | 42195 | `challengeSprintMarathonReward` |
+| `challenge_sprint_dist_5k` | 5000 | `challengeSprint5kReward` |
+| `challenge_sprint_dist_50k` | 50000 | `challengeSprint5kReward` x 2 |
+| `challenge_agility_swim_1k` | 1000 | `challengeSprint5kReward` |
+| `challenge_agility_swim_10k` | 10000 | `challengeSprint5kReward` x 2 |
+| `challenge_fly_1k` | 1000 | `challengeSprint5kReward` |
+| `challenge_fly_10k` | 10000 | `challengeSprint5kReward` x 2 |
+| `challenge_agility_sneak_500` | 500 | `challengeSprint5kReward` |
+| `challenge_agility_sneak_5k` | 5000 | `challengeSprint5kReward` x 2 |
 
-### Shared adaptation keys
+Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
 
-Every adaptation TOML at `plugins/Adapt/adaptations/<id>.toml` also
-carries `enabled`, `permanent`, `showParticles`, and `showSounds`. The
-learn-cost fields `baseCost`, `costFactor`, `maxLevel`, and `initialCost` are
-listed per adaptation below.
-
-### Wind Up
-
-| Property | Default |
-|----------|---------|
-| Icon | `POWERED_RAIL` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 2 |
-| Cost factor | 0.65 |
-| Tick interval (ms) | 50 |
-| Menu lines | Max Speed. Windup Time |
-| Milestone | `challenge_agility_wind_up_10min` on `agility.wind-up.max-speed-ticks` at 12000, reward 400 |
-| Config file | `plugins/Adapt/adaptations/agility-wind-up.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `windupTicksSlowest` | `180` | Ticks of unbroken sprinting needed to reach top speed at the lowest level. 20 ticks = 1 second. |
-| `windupTicksFastest` | `60` | Ticks needed to reach top speed at max level. |
-| `windupSpeedBase` | `0.22` | Speed target reached at the lowest level, before the per-level bonus. |
-| `windupSpeedLevelMultiplier` | `0.225` | Extra speed target added at max level. |
-| `walkSpeedBonusScalar` | `0.75` | Fraction of the speed target converted into the relative movement-speed modifier. |
-| `walkSpeedLerpPerTick` | `0.45` | How quickly the applied modifier eases toward its target each tick, 0-1. |
-| `maxWalkSpeed` | `0.35` | Walk-speed ceiling measured against the 0.2 vanilla base. The relative bonus is capped at maxWalkSpeed / 0.2 - 1. |
-| `movementVelocityThreshold` | `0.015` | Minimum horizontal speed before top-speed ticks count toward the milestone stat. |
-
-### Wall Jump
-
-| Property | Default |
-|----------|---------|
-| Icon | `VINE` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 2 |
-| Cost factor | 0.65 |
-| Tick interval (ms) | 50 |
-| Menu lines | Max Jumps. Jump Height |
-| Milestone | `challenge_agility_wall_jump_500` on `agility.wall-jump.air-jumps` at 500, reward 500. A hidden `challenge_agility_parkour_master` advancement is also registered. |
-| Config file | `plugins/Adapt/adaptations/agility-wall-jump.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `maxJumpsLevelBonusDivisor` | `2` | Latches per airtime are level plus level divided by this number. Lower values give more latches. |
-| `jumpHeightBase` | `0.625` | Launch strength off the wall at the lowest level. |
-| `jumpHeightBonusLevelMultiplier` | `0.225` | Extra launch strength added at max level. |
-| `backwardPushSpeed` | `0.22` | Horizontal speed pushing you away from the wall when you release while steering backward. |
-| `backwardIntentDotThreshold` | `0.35` | How directly your steering must oppose your facing, as a dot product, to count as a backward release. |
-| `inputMovementThreshold` | `0.0025` | Minimum horizontal movement in one move event before it is recorded as a steering input. |
-| `inputWindowMs` | `450` | How long a recorded steering input stays valid, in milliseconds. |
-
-### Super Jump
-
-| Property | Default |
-|----------|---------|
-| Icon | `LEATHER_BOOTS` |
-| Max level | 4 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 2 |
-| Cost factor | 0.55 |
-| Tick interval (ms) | 9999 |
-| Menu lines | Jump apex (blocks). Sneak + Jump to Super Jump! |
-| Milestones | `challenge_agility_super_jump_100` on `agility.super-jump.jumps` at 100, reward 300. `challenge_agility_super_jump_5k` at 5000, reward 1500 |
-| Config file | `plugins/Adapt/adaptations/agility-super-jump.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `minimumJumpHeight` | `1.5` | Jump apex in blocks at level 1. Values below the vanilla jump height are clamped up. |
-| `maximumJumpHeight` | `2.5` | Jump apex in blocks at the configured maximum level. |
-
-### Armor-Up
-
-| Property | Default |
-|----------|---------|
-| Icon | `IRON_CHESTPLATE` |
-| Max level | 5 |
-| Initial knowledge cost | 8 |
-| Base knowledge cost | 2 |
-| Cost factor | 0.65 |
-| Tick interval (ms) | 50 |
-| Menu lines | Max Armor. Armor-Up Time. Armor Decay Time |
-| Milestone | `challenge_agility_armor_up_30min` on `agility.armor-up.ticks-armored` at 36000, reward 500 |
-| Config file | `plugins/Adapt/adaptations/agility-armor-up.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `windupTicksSlowest` | `180` | Ticks of unbroken sprinting needed for full plating at the lowest level. |
-| `windupTicksFastest` | `60` | Ticks needed for full plating at max level. |
-| `windupArmorBase` | `0.22` | Plating target at the lowest level. Multiplied by 10 to get armor points, so this alone is 2.2 armor. |
-| `windupArmorLevelMultiplier` | `0.525` | Extra plating target added at max level, also multiplied by 10 for armor points. |
-| `decaySecondsBase` | `5.0` | Seconds for full plating to drain away at the lowest level. |
-| `decaySecondsMaxLevelBonus` | `5.0` | Extra drain seconds added at max level, so the plating lingers longer. |
-
-### Ladder Slide
-
-| Property | Default |
-|----------|---------|
-| Icon | `LADDER` |
-| Max level | 1 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 1 |
-| Cost factor | 0.12 |
-| Tick interval (ms) | 50 |
-| Menu lines | Ladder descent speed (blocks/sec). Ladder climb speed (blocks/sec). Look activation / release angles |
-| Milestones | `challenge_agility_ladder_500` on `agility.ladder-slide.blocks-climbed` at 500, reward 300. `challenge_agility_ladder_10k` at 10000, reward 1000 |
-| Config file | `plugins/Adapt/adaptations/agility-ladder-slide.toml` |
-
-Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAFFOLDING`. The two blocks at each end of a climbable column always use normal control.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `descentSpeedBase` | `0.30` | Downward speed in blocks per tick before per-level scaling. |
-| `descentSpeedPerLevel` | `0.30` | Extra downward speed granted at max level. |
-| `climbAssistBase` | `0.28` | Upward speed in blocks per tick before per-level scaling. |
-| `climbAssistPerLevel` | `0.22` | Extra upward speed granted at max level. |
-| `lookActivationDegrees` | `30.0` | Degrees above or below the horizon at which gaze-directed movement switches on. |
-| `lookReleaseDegrees` | `15.0` | Degrees at which an active gaze direction hands control back to vanilla. |
-| `safeLanding` | `true` | Cancels fall damage that came directly out of a fast ladder descent. |
-
-### Roll Landing
-
-| Property | Default |
-|----------|---------|
-| Icon | `HAY_BLOCK` |
-| Max level | 5 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.62 |
-| Tick interval (ms) | 1200 |
-| Menu lines | Fall Damage Conversion. Input Timing Window. Roll Cooldown |
-| Milestones | `challenge_agility_roll_100` on `agility.roll-landing.damage-prevented` at 100, reward 300. `challenge_agility_roll_1000` at 1000, reward 1000. A hidden `challenge_agility_fearless` advancement is granted for rolling a fall of 30 blocks or more. |
-| Config file | `plugins/Adapt/adaptations/agility-roll-landing.toml` |
-
-The roll cooldown is stamped on the player's `HAY_BLOCK` item cooldown slot.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `reductionBase` | `0.22` | Fraction of fall damage absorbed at the lowest level. |
-| `reductionFactor` | `0.43` | Extra fraction absorbed at max level. |
-| `maxReduction` | `0.8` | Hard cap on the absorbed fraction regardless of level. |
-| `inputWindowMillisBase` | `450` | How long a crouch input stays armed before landing, in milliseconds, before level scaling. |
-| `inputWindowMillisFactor` | `350` | Extra armed window in milliseconds granted at max level. |
-| `hungerPerDamageBase` | `1.4` | Food points charged per point of damage absorbed, at the lowest level. |
-| `hungerPerDamageReduction` | `0.75` | How much of that food cost is removed across the level range. |
-| `cooldownTicksBase` | `22` | Ticks between rolls at the lowest level. 20 ticks = 1 second. |
-| `cooldownTicksFactor` | `12` | Ticks removed from the roll cooldown at max level. |
-| `maxVerticalVelocityForRollInput` | `-0.08` | You must be falling at least this fast for a crouch to arm a roll. |
-| `proneTicksBase` | `4` | Ticks you stay prone after a roll at the lowest level. |
-| `proneTicksFactor` | `5` | Extra prone ticks at max level. |
-| `xpPerDamagePrevented` | `4.2` | Skill XP paid per point of fall damage absorbed. |
-
-### Slipstream Slide
-
-| Property | Default |
-|----------|---------|
-| Icon | `ICE` |
-| Max level | 4 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.55 |
-| Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Slide speed (blocks/sec). Slide cooldown. Max level: mobs you slide through are slowed |
-| Milestones | `challenge_agility_slipstream_500` on `agility.slipstream-slide.slides` at 500, reward 400. `challenge_agility_slipstream_5k` at 5000, reward 1500 |
-| Config file | `plugins/Adapt/adaptations/agility-slipstream-slide.toml` |
-
-A sprint that ended within the last 350 ms still counts as sprinting for the purpose of starting a slide.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `slideForceBase` | `0.5` | Horizontal slide velocity in blocks per tick before level scaling. |
-| `slideForceFactor` | `0.45` | Extra slide velocity in blocks per tick at max level. |
-| `cooldownMillisBase` | `4000` | Milliseconds between slides before level scaling. |
-| `cooldownMillisReduction` | `2500` | Milliseconds removed from that cooldown at max level. |
-| `cooldownMillisFloor` | `1300` | Shortest cooldown allowed after all reductions, in milliseconds. |
-| `slideTicksBase` | `14` | Ticks the prone slide pose lasts before level scaling. |
-| `slideTicksFactor` | `10` | Extra prone ticks granted at max level. |
-| `slideFrictionReduction` | `0.9` | Fraction of ground friction removed while sliding, 0-1. |
-| `hungerCost` | `1.8` | Saturation, then food points, charged per slide. |
-| `slowAmplifier` | `1` | Slowness amplifier applied to mobs you slide through at max level. |
-| `slowDurationTicks` | `40` | Duration in ticks of that max-level slow. |
-| `xpPerSlide` | `3` | Skill XP paid per successful slide. |
-
-### Air Dash
-
-| Property | Default |
-|----------|---------|
-| Icon | `PHANTOM_MEMBRANE` |
-| Max level | 4 |
-| Initial knowledge cost | 5 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.55 |
-| Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Dash speed (blocks/sec). Mid-air dash charges |
-| Milestones | `challenge_agility_air_dash_500` on `agility.air-dash.dashes` at 500, reward 400. `challenge_agility_air_dash_5k` at 5000, reward 1500 |
-| Config file | `plugins/Adapt/adaptations/agility-air-dash.toml` |
-
-A dash is refused when you are on the ground, flying, gliding, swimming, or
-climbing. It is also refused when you ride a vehicle, have zero food, or leave
-Survival and Adventure mode.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `dashForceBase` | `0.85` | Dash velocity in blocks per tick before level scaling. |
-| `dashForceFactor` | `0.6` | Extra dash velocity in blocks per tick at max level. |
-| `upwardLift` | `0.12` | Upward velocity added on a dash so you keep airtime. |
-| `maxLevelCharges` | `2` | Dashes available per sprint-jump at max level. |
-| `debounceMillis` | `250` | Minimum milliseconds between dash inputs, to swallow double clicks. |
-| `hungerCost` | `2` | Saturation, then food points, charged per dash. |
-| `xpPerDash` | `3` | Skill XP paid per successful dash. |
-
-### Cat Reflexes
-
-| Property | Default |
-|----------|---------|
-| Icon | `RABBIT_HIDE` |
-| Max level | 5 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.5 |
-| Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Projectile dodge chance |
-| Milestones | `challenge_agility_cat_reflexes_100` on `agility.cat-reflexes.dodges` at 100, reward 300. `challenge_agility_cat_reflexes_1k` at 1000, reward 1200 |
-| Config file | `plugins/Adapt/adaptations/agility-cat-reflexes.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `dodgeChanceBase` | `0.08` | Chance to dodge a projectile while sprinting before level scaling, 0-1. |
-| `dodgeChanceFactor` | `0.3` | Extra dodge chance granted at max level. |
-| `maxDodgeChance` | `0.35` | Hard cap on dodge chance regardless of level. |
-| `xpPerDodge` | `4` | Skill XP paid per dodged projectile. |
-
-### Featherfoot
-
-| Property | Default |
-|----------|---------|
-| Icon | `RABBIT_FOOT` |
-| Max level | 4 |
-| Initial knowledge cost | 1 |
-| Base knowledge cost | 1 |
-| Cost factor | 0.2 |
-| Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Surfaces ignored while sprinting. Farmland > pressure plates > sweet berries > powder snow |
-| Milestones | `challenge_agility_featherfoot_500` on `agility.featherfoot.surfaces-ignored` at 500, reward 300. `challenge_agility_featherfoot_5k` at 5000, reward 1000 |
-| Config file | `plugins/Adapt/adaptations/agility-featherfoot.toml` |
-
-`maxLevel` is independent of the surface unlock levels. An enabled surface whose minimum level is above the configured cap remains unreachable until either value is adjusted.
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `requireSprint` | `true` | When true, none of the protections apply unless you are sprinting. |
-| `farmlandEnabled` | `true` | Turns the farmland protection off entirely when false. |
-| `farmlandMinLevel` | `1` | Level at which farmland stops being trampled. |
-| `farmlandMaterials` | `["FARMLAND"]` | Blocks covered by the trample protection. |
-| `pressurePlateEnabled` | `true` | Turns the pressure-plate protection off entirely when false. |
-| `pressurePlateMinLevel` | `2` | Level at which pressure plates stop triggering under you. |
-| `pressurePlateUseVanillaTag` | `true` | Also covers every block in the vanilla pressure plate tag. |
-| `pressurePlateMaterials` | `[]` | Extra blocks treated as pressure plates. |
-| `berryBushEnabled` | `true` | Turns the sweet-berry protection off entirely when false. |
-| `berryBushMinLevel` | `3` | Level at which sweet-berry slowdown and contact damage are ignored. |
-| `berryBushMaterials` | `["SWEET_BERRY_BUSH"]` | Blocks whose slowdown and contact damage are ignored. |
-| `powderSnowEnabled` | `true` | Turns the powder-snow protection off entirely when false. |
-| `powderSnowMinLevel` | `4` | Level at which powder-snow freezing is cleared on contact. |
-| `powderSnowMaterials` | `["POWDER_SNOW"]` | Blocks whose freezing effect is cleared. |
-
-### Vault
-
-| Property | Default |
-|----------|---------|
-| Icon | `OAK_FENCE` |
-| Max level | 1 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 3 |
-| Cost factor | 0 |
-| Tick interval (ms) | 1000 |
-| Menu lines | Fence jump apex (blocks) |
-| Milestones | `challenge_agility_vault_250` on `agility.vault.vaults` at 250, reward 300. `challenge_agility_vault_2500` at 2500, reward 1200 |
-| Config file | `plugins/Adapt/adaptations/agility-vault.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `jumpHeight` | `1.75` | Jump apex in blocks when clearing a fence. Values below the built-in minimum are clamped up. |
-| `xpPerVault` | `3` | Skill XP paid per successful vault. |
-
-### Marathoner
-
-| Property | Default |
-|----------|---------|
-| Icon | `LEATHER_BOOTS` |
-| Max level | 5 |
-| Initial knowledge cost | 3 |
-| Base knowledge cost | 2 |
-| Cost factor | 0.4 |
-| Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Sprint saturation drain reduction |
-| Milestones | `challenge_agility_marathoner_5k` on `agility.marathoner.saturation-saved` at 5000, reward 400. `challenge_agility_marathoner_50k` at 50000, reward 1500 |
-| Config file | `plugins/Adapt/adaptations/agility-marathoner.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `drainReductionBase` | `0.15` | Fraction of sprint exhaustion removed before level scaling, 0-1. |
-| `drainReductionFactor` | `0.45` | Extra fraction removed at max level. |
-| `maxDrainReduction` | `0.6` | Hard cap on the removed fraction regardless of level. |
-| `xpPerSaturationSaved` | `0.6` | Skill XP paid per unit of exhaustion saved. |
-
-### Kip-Up
-
-| Property | Default |
-|----------|---------|
-| Icon | `SHIELD` |
-| Max level | 4 |
-| Initial knowledge cost | 4 |
-| Base knowledge cost | 3 |
-| Cost factor | 0.55 |
-| Tick interval (ms) | 1000 (framework default) |
-| Menu lines | Recovery window. Recovery speed boost tier |
-| Milestones | `challenge_agility_kip_up_100` on `agility.kip-up.recoveries` at 100, reward 300. `challenge_agility_kip_up_1k` at 1000, reward 1200 |
-| Config file | `plugins/Adapt/adaptations/agility-kip-up.toml` |
-
-| Key | Code default | What it does |
-|-----|--------------|--------------|
-| `recoveryWindowMillisBase` | `350` | Milliseconds after a hit during which a jump counts as a recovery, before level scaling. |
-| `recoveryWindowMillisFactor` | `550` | Extra milliseconds of recovery window at max level. |
-| `speedAmplifierBase` | `0` | Speed effect amplifier granted on a recovery before level scaling. |
-| `speedAmplifierFactor` | `1.6` | Extra amplifier granted at max level. |
-| `speedDurationTicks` | `40` | Duration in ticks of the recovery speed burst. |
-| `recoverySpeed` | `0.5` | Horizontal velocity applied toward your intended direction on recovery. |
-| `jumpVelocityThreshold` | `0.2` | Minimum upward velocity treated as a jump when checking for a recovery. |
-| `cooldownMillis` | `3000` | Milliseconds between recoveries. |
-| `xpPerRecovery` | `5` | Skill XP paid per successful recovery. |
 ## See also
 
 - [02 - Concepts](/adapt/02-concepts)

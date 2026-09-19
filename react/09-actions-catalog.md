@@ -2,7 +2,7 @@
 title: "Actions Catalog"
 description: "Operator actions, parameters, and safety rules"
 published: true
-date: 2026-09-08T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ This action requests JVM garbage collection. It reports reclaimed heap.
 
 ### `purge-chunks`
 
-This action attempts a saved unload of selected chunks in a world or area. It does not delete the entities stored in those chunks. All-world selection waits for Observer's startup coordinate seed, then streams loaded coordinates in waves of at most 256, retains no `Chunk` handles, and rechecks loaded state on each owning region without loading missing chunks. If a pending React kill countdown retires during unload, reload reconciliation removes only React's marker or temporary countdown name and preserves an existing player-assigned name.
+Attempts a saved unload of the selected chunks. It does not delete the entities stored in them, and it never loads a chunk that is not already loaded.
 
 - **Config:** `plugins/React/action/purge-chunks.toml`
 - **CLI:** `/react action purge-chunks [world=ALL]` (alias `pc`)
@@ -41,7 +41,7 @@ This action attempts a saved unload of selected chunks in a world or area. It do
 
 ### `purge-entities`
 
-This action purges matching entities in an area. Type, named-entity, and protection guards apply. All-world traversal waits for Observer's startup coordinate seed, streams loaded coordinates in waves of at most 256, and resolves each chunk only on its owner without retaining chunk handles or loading missing chunks.
+Purges matching entities in an area. Type, named-entity, and protection guards apply, and it never loads a chunk that is not already loaded.
 
 Ender Dragons are always excluded, including when a saved blacklist omits them or an execution filter explicitly includes them. They receive no purge countdown or removal, preserving the dragon fight and its boss bar.
 

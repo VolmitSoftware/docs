@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -25,8 +25,6 @@ The `type` key selects the icon.
 | `customItem` | Item supplied by another plugin |
 | `entity` | Living-entity model visible only to the viewer |
 
-One further enum constant, `itemStack`, exists but has no JSON form. See [The API-only type](#the-api-only-type).
-
 These errors reject the menu file:
 
 | Condition | Message |
@@ -35,11 +33,13 @@ These errors reject the menu file:
 | `type` is not a JSON primitive | `Type must be a string` |
 | `type` is not a known discriminator | `Unknown type: <value>` |
 
-An invalid edit keeps the previous menu active. Unknown keys are ignored. A missing or `null` icon uses the fallback below.
+An invalid edit keeps the previous menu active. Unknown keys are ignored, and a missing or `null` icon shows the missing-icon checkerboard.
 
-## The display style block
+## Display style and boxes
 
-Every JSON icon except `entity` accepts the optional `style` object below.
+This is the shared display contract. Holograms, entity overlays, previews, indicators and drop labels all use the same `style` and `box` objects.
+
+Every JSON icon except `entity` accepts the optional `style` object:
 
 ```json
 {
@@ -78,38 +78,20 @@ Every JSON icon except `entity` accepts the optional `style` object below.
 | `textOpacity` | integer 0 – 255 | `255` | Text opacity metadata |
 | `lineWidth` | integer 1 – 16384 | `16384` | Client text-wrap width; the default is effectively full width |
 | `blockLight`, `skyLight` | paired integers 0 – 15, or both omitted | omitted | Packed brightness override. Supplying only one rejects the file with `blockLight and skyLight must be supplied together` |
-| `viewRange` | finite number 0.01 – 64 | `1` | Display view-range metadata |
+| `viewRange` | finite number 0.01 – 64 | `1` | Display view-range metadata; `1.0` is 64 blocks before other visibility limits |
 | `shadowRadius` | finite number 0 – 64 | `0` | Entity shadow radius |
 | `shadowStrength` | finite number 0 – 1 | `0` | Entity shadow strength |
 | `cullingWidth`, `cullingHeight` | finite number 0 – 4096 | `0` | Render-culling box. These do not define the click plane |
 | `glowColor` | `#AARRGGBB` or `null` | `null` | Sets the glowing entity flag and supplies its color override |
 | `scaleX`, `scaleY`, `scaleZ` | finite number 0.01 – 64 | `1` | Multiplies the session scale per axis. Automatic click geometry uses X and Y. Z is visual only |
 
-Text style fields apply to `text`, `textImage`, and `animatedTextImage`. Item, head, block, and custom-item icons use the shared display fields; text fields apply only to an item's count label.
+A style object is a whole override, not a field-by-field merge: an explicit partial object uses the shared defaults above for everything it omits. Surfaces with their own documented defaults, such as a hologram's `center` billboard and see-through text, only apply them when `style` is omitted entirely.
 
-Invalid ranges, colors, brightness pairs, or enum values reject the menu file. ARGB colors use `#AARRGGBB`.
+Text style fields apply to `text`, `textImage` and `animatedTextImage`. Item, head, block and custom-item icons use the shared display fields, and text fields reach only an item's count label. `entity` icons support no `style` at all. Invalid ranges, colors, brightness pairs or enum values reject the file.
 
-`entity` icons do not support `style`.
+### Boxes
 
-## `text`
-
-```json
-{ "type": "text", "text": "&6Balance:\n<gold>%vault_eco_balance%" }
-```
-
-| Key | Type | Required | Default | Notes |
-|---|---|---|---|---|
-| `text` | string | yes (schema) | `null` | `null` is treated as `""` and renders as one empty line |
-| `refreshTicks` | integer 0 – 1200 | no | automatic | Explicit ticks between live re-renders. `0` freezes after the first render. When omitted, ordinary dynamic text uses 10 ticks and clock-driven or named-animation text uses 1 tick |
-| `box` | object | no | disabled | Shared background and complete border around the rendered text block |
-
-`text` splits on `\n`, with one display per line. `refreshTicks` must be from 0 to 1200.
-
-The default `lineWidth` of `16384` avoids wrapping. Smaller values use the client's font-pixel width; automatic hitboxes still measure the configured line.
-
-### Text boxes
-
-The optional `box` object adds a panel around the complete text icon. It follows the icon's position, rotation, scale, and visibility. Text refreshes resize the box to the rendered content. The box does not enlarge the component's click plane.
+A `box` adds a measured panel and a complete perimeter around a text block. It follows the icon's position, rotation, scale and visibility, resizes when the rendered text changes size, and does not enlarge the component's click plane.
 
 ```json
 {
@@ -133,17 +115,25 @@ The optional `box` object adds a panel around the complete text icon. It follows
 | `backgroundArgb` | `#B31B1B22` | Panel color in `#AARRGGBB` format. Zero alpha hides the panel fill |
 | `borderArgb` | `#FFAAAAAA` | Border color in `#AARRGGBB` format. Zero alpha hides the border |
 
-The box uses the shared [hologram decoration contract](/gloss/20-entity-overlays#style-and-decorations). The icon's `style.backgroundArgb` remains a separate text-display background. Boxes apply to `text` icons; image icons retain their pixel-based presentation.
+`style.backgroundArgb` is the text display's own background and stays separate from the box colors, so a transparent panel can carry an opaque border. A box uses at most five parts — the inner panel and four perimeter edges — and transparent or zero-width parts allocate none. Boxes apply to text; image icons keep their pixel presentation.
+
+## `text`
+
+```json
+{ "type": "text", "text": "&6Balance:\n<gold>%vault_eco_balance%" }
+```
+
+| Key | Type | Required | Default | Notes |
+|---|---|---|---|---|
+| `text` | string | yes (schema) | `null` | `null` is treated as `""` and renders as one empty line |
+| `refreshTicks` | integer 0 – 1200 | no | automatic | Explicit ticks between live re-renders. `0` freezes after the first render. When omitted, ordinary dynamic text uses 10 ticks and clock-driven or named-animation text uses 1 tick |
+| `box` | object | no | disabled | Panel and border around the rendered text block |
+
+`text` splits on `\n`, with one display per line. The default `lineWidth` of `16384` avoids wrapping; smaller values use the client's font-pixel width, and automatic hitboxes still measure the configured line.
 
 ### Text formatting
 
-Text icons support functions, expressions, PlaceholderAPI, emoji, legacy colors, bracket hex, and MiniMessage. Both `&` and `§` work as legacy prefixes.
-
-A configured `<particles:name>...</particles>` range can select part of a `text` icon for a menu
-particle layer. `letterBounds`, `glyphOutline` and `glyphFill` use formatting-aware rectangular text
-cells, not Minecraft font pixels or resource-pack glyph contours. Other icon types expose only their
-component plane or configured local geometry; particle layers do not trace image alpha, item models,
-block meshes or entity silhouettes. See [Particle Layers](/gloss/25-particle-layers).
+Text icons support functions, expressions, PlaceholderAPI, emoji, legacy colors, bracket hex and MiniMessage. Both `&` and `§` work as legacy prefixes, the two can be mixed, and placeholder output goes through the same formatting pass.
 
 | Legacy | MiniMessage tag |
 |---|---|
@@ -155,35 +145,15 @@ block meshes or entity silhouettes. See [Particle Layers](/gloss/25-particle-lay
 | `&o` | `<italic>` |
 | `&r` | `<reset>` |
 
-Legacy formatting and MiniMessage can be mixed. Placeholder output is converted through the same formatting pass.
+A configured `<particles:name>...</particles>` range can select part of a `text` icon for a menu particle layer. `letterBounds`, `glyphOutline` and `glyphFill` use formatting-aware rectangular text cells, not font pixels or resource-pack glyph contours. Other icon types expose only their component plane or configured local geometry. See [Particle Layers](/gloss/25-particle-layers).
 
-### Emoji
-
-Emoji tokens work in menu and panel text. Per-emoji permissions apply when enabled; disabling emoji leaves tokens unchanged.
-
-Function tokens and inline expressions use the same facilities as a scoreboard. `|animation.rainbow|`, `{{ player.name }}` and `{{ papi('vault_prefix', '&7Member') }}` are valid text-icon content. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) and [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
+Emoji tokens, function tokens and inline expressions work exactly as they do on a scoreboard: `|animation.rainbow|`, `{{ player.name }}` and `{{ papi('vault_prefix', '&7Member') }}` are all valid text-icon content. Per-emoji permissions apply when enabled, and disabling emoji leaves tokens unchanged. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) and [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 
 ### Dynamic text refresh
 
-PlaceholderAPI tokens stay unchanged when PlaceholderAPI is unavailable or a lookup fails.
+Dynamic text re-renders at `refreshTicks` while visible; plain text never refreshes periodically. A failed refresh leaves the previous text on screen, and unresolved PlaceholderAPI tokens stay as written. Changed text updates the click area with it.
 
-Dynamic text refreshes at `refreshTicks` while visible. Plain text does not refresh periodically.
-
-A failed refresh leaves the previous text on screen.
-
-Text also rerenders after:
-
-| Trigger | What happens |
-|---|---|
-| Component open | A new `TextMenuIcon` is built from the document |
-| Visual refresh | Every open component is closed, the session rescales, then every component reopens. Fired by a `[menus] uiScale` or `[preview] scale` change and by image asset add, change or delete |
-| Menu file change | Personal sessions showing that menu are destroyed. Panel views showing it reload in place and close if that fails |
-| Toggle click | The toggle swaps to its other pre-built icon |
-| API | `HoloIcon.Text` applied to an open component calls `updateText` |
-
-`updateText` replaces the rendered lines and updates the click area when the text size changes.
-
-A toggle refreshes only its visible icon. Its initial condition is checked when the toggle opens; later changes happen on click.
+Text also re-renders when the component opens, when the session rescales after a `[menus] uiScale` or `[preview] scale` change, when an image asset is added or changed, when the menu file changes, and when the API applies a new icon. A toggle refreshes only its visible icon: its condition is read when it opens, and later changes happen on click.
 
 ## `textImage`
 
@@ -195,26 +165,9 @@ A toggle refreshes only its visible icon. Its initial condition is checked when 
 |---|---|---|---|---|
 | `path` | string | yes (schema) | `null` | Record component is `relativePath`, bound to the JSON key `path`. Must resolve to a regular file inside the images folder |
 
-### Where images live
+Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder and cannot be URLs. Blank, absolute, missing, directory, traversal and symlink-escape paths are rejected, and API paths are limited to 256 characters with no control characters or `:`. Adding, replacing or removing an image refreshes open menus and panels automatically.
 
-Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder and cannot be URLs.
-
-Paths must name a file inside `plugins/Gloss/images/`. Blank, absolute, missing, directory, traversal, and symlink-escape paths are rejected. API paths are limited to 256 characters and cannot contain control characters or `:`.
-
-Adding, replacing, or removing an image refreshes open menus and panels automatically. Decoded images stay cached in memory; a changed file is picked up when its size or modification time changes or when the images folder reports it.
-
-### Pixels to characters
-
-Gloss converts each pixel row into text:
-
-| Pixel | Emitted |
-|---|---|
-| Format is not JPEG and alpha is below 255 | A bold `" "` followed by a plain `" "` (two characters), the transparent spacer |
-| Otherwise | One `█` glyph colored with the pixel's RGB, alpha discarded |
-
-Transparency is binary: an alpha value below 255 is transparent. JPEG has no alpha channel.
-
-Text images are limited to 16 by 16 pixels and work best for small pixel art. Larger images use the missing-image checkerboard.
+Images are limited to 16 by 16 pixels; anything larger shows the missing-image checkerboard. Transparency is binary — any pixel below full alpha becomes a transparent spacer, and JPEG has no alpha channel at all.
 
 ## `animatedTextImage`
 
@@ -227,9 +180,7 @@ Text images are limited to 16 by 16 pixels and work best for small pixel art. La
 | `source` | array of string, or a single string | yes (schema) | `null` | Each entry is a separate image file. There is no GIF frame extraction |
 | `speed` | integer from 2 through 1200 | yes | none | Ticks between frame advances |
 
-Animated images use the same pixel mapping. Short frames are padded at the bottom to keep a stable size.
-
-The two-tick minimum limits animations to ten frames per second. Shorter frames are padded at the bottom so the icon keeps a stable size. Changed image files are reloaded automatically.
+Animated images use the same pixel mapping, so the two-tick minimum caps them at ten frames per second. Short frames are padded at the bottom to keep a stable size, and changed files reload automatically.
 
 ## `item`
 
@@ -243,23 +194,9 @@ The two-tick minimum limits animations to ten frames per second. Shorter frames 
 | `count` | integer | no | `0` | `0` and negatives become `1` at icon construction |
 | `customModelValue` | integer | no | `0` | Applied unconditionally, including `0` |
 
-Item IDs must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed IDs use the missing icon without breaking the rest of the menu.
+Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. A count above 1 adds a white bold count label above the item.
 
-The stack uses the configured count or `1`. An omitted `customModelValue` becomes `0`.
-
-### Item layout
-
-Both item types use the same layout.
-
-| Aspect | Behavior |
-|---|---|
-| Block test | The material reports `isBlock()` and is not on the blacklist below |
-| Block blacklist | `BARRIER`, `LIGHT`, `HOPPER`, `TURTLE_EGG`, grass (`grass` / `short_grass`), `TALL_GRASS`, all sixteen stained glass panes, `GLASS_PANE`, `POPPY`, `DANDELION` |
-| Block placement | Transform-local `(0, -0.95, 0.3)` from the icon position |
-| Non-block placement | Transform-local `(0, -(1.0 + countOffset), 0)`, where `countOffset` is `0.0` when the amount is above 1 and `0.09` otherwise |
-| Count label | Only when the amount is above 1: the number in white bold at transform-local `(0, -lineHeight - 0.37, 0)` from the icon position |
-| Count changes | Adding or removing the label shifts the item display by `±0.09` in local space. Otherwise the existing label is renamed |
-| Orientation | Fixed item displays follow the session transform. Display yaw and the block depth orbit are reapplied together whenever the transform changes |
+A material that reports `isBlock()` renders as a block model, except for `BARRIER`, `LIGHT`, `HOPPER`, `TURTLE_EGG`, grass (`grass` / `short_grass`), `TALL_GRASS`, `GLASS_PANE` and the sixteen stained glass panes, `POPPY` and `DANDELION`, which stay flat.
 
 ## `playerHead`
 
@@ -275,21 +212,15 @@ Both item types use the same layout.
 |---|---|---|---|---|
 | `player` | string | yes | none | Literal Minecraft username or a viewer-aware text-pipeline value. Blank fails icon construction |
 | `refreshTicks` | integer 0 – 1200 | no | `20` | Ticks between re-reading the configured value and profile cache. `0` never refreshes |
-| `style` | display style | no | defaults | The generic item-display style described above |
+| `style` | display style | no | defaults | The shared display style above |
 
-The configured `player` value is trimmed and runs through the viewer-aware text pipeline.
-`%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without
-PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders
-need the integration that provides them. A result is eligible for a profile request only when it is
-1–16 ASCII letters, digits or underscores. An invalid name or unresolved placeholder uses the
-configured fallback without making an outbound request.
+The `player` value is trimmed and run through the viewer-aware text pipeline. `%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders need the integration that provides them.
 
-Head textures resolve asynchronously and are cached without case sensitivity. Unknown names use `[playerHeads] unknownFallbackItem`. See [Configuration](/gloss/02-configuration).
+A result is eligible for a profile request only when it is 1–16 ASCII letters, digits or underscores. An invalid name or unresolved placeholder uses `[playerHeads] unknownFallbackItem` without making an outbound request, as does `[playerHeads] enabled = false`. See [Configuration](/gloss/02-configuration).
 
-A literal name stops refreshing after it resolves. Dynamic or unresolved names follow `refreshTicks`. Setting `[playerHeads] enabled = false` uses the fallback without making profile requests.
+A literal name stops refreshing once it resolves; dynamic or unresolved names follow `refreshTicks`.
 
-`playerHead` is configured in JSON or the web editor. The `seticon` command has no player-head type,
-and the public `HoloIcon` API has no player-head factory.
+`playerHead` is configured in JSON or the web editor. The `seticon` command has no player-head type, and the public `HoloIcon` API has no player-head factory.
 
 ## `block`
 
@@ -297,11 +228,7 @@ and the public `HoloIcon` API has no player-head factory.
 { "type": "block", "block": "minecraft:stone" }
 ```
 
-`block` must be a lowercase namespaced material id whose resolved material reports `isBlock()`. The icon renders that material **default** block state as one packet-only block display. It does not create or alter a world block. There is no way to express directional or other block-state properties.
-
-Block icons are centered at the component and use a matching automatic click area. Generic display styles apply.
-
-Unknown IDs and non-block materials use the missing icon.
+`block` must be a lowercase namespaced material id whose material reports `isBlock()`. The icon renders that material's **default** block state as one packet-only block display. It does not create or alter a world block, and there is no way to express directional or other block-state properties. Block icons are centered on the component with a matching automatic click area, and unknown or non-block ids use the missing icon.
 
 ## `customItem`
 
@@ -315,11 +242,9 @@ Unknown IDs and non-block materials use the missing icon.
 | `item` | string | yes in practice | `null` | Provider-specific id, passed through verbatim |
 | `count` | integer | no | `0` | `0` and negatives become `1` after resolution |
 
-`provider` is trimmed and lower-cased. `item` is neither trimmed nor case-folded. Provider-native syntaxes such as `myitems:ruby` (ItemsAdder) or `SWORD:CUTLASS` (MMOItems) remain unchanged.
+`provider` is trimmed and lower-cased. `item` is neither trimmed nor case-folded, so provider-native syntaxes such as `myitems:ruby` (ItemsAdder) or `SWORD:CUTLASS` (MMOItems) stay as written. Missing or invalid items use the configured fallback icon.
 
-Custom-item icons use the first enabled provider that recognizes the item ID. Missing or invalid items use the configured fallback icon.
-
-Provider ids, activation order, the `[items] customItemProviders` allowlist and the individual adapters are on [Custom Items & Item Providers](/gloss/14-custom-items).
+Provider ids, activation order and the `[items] customItemProviders` allowlist are on [Custom Items & Item Providers](/gloss/14-custom-items).
 
 ## `entity`
 
@@ -333,19 +258,13 @@ Provider ids, activation order, the `[items] customItemProviders` allowlist and 
 | `width` | finite number greater than 0, at most 64 | no | `1` | Editor silhouette and button/toggle click-plane width in blocks at session scale 1 |
 | `height` | finite number greater than 0, at most 64 | no | `1` | Editor silhouette and button/toggle click-plane height in blocks at session scale 1 |
 
-A `width` or `height` outside that range throws `width must be finite, greater than 0, and at most 64` during deserialization and rejects the menu file.
+A `width` or `height` outside that range throws `width must be finite, greater than 0, and at most 64` and rejects the menu file. They size only the click area — they do not resize the entity or create collision.
 
-The component anchor is the entity's **feet**, not its center. The entity is visible only to the viewer and cannot push or collide with players.
+The component anchor is the entity's **feet**, not its center. The entity is visible only to the viewer and cannot push or collide with players. Yaw and pitch follow the menu, and living entities stay upright when a panel uses roll, though the anchor and hitbox still rotate.
 
-Entity yaw and pitch follow the menu. Living entities stay upright when a panel uses roll, though the anchor and hitbox still rotate.
-
-`width` and `height` size only the click area. They do not resize the entity or create physical collision.
-
-Because the icon is a raw entity rather than a display entity, none of the display-style metadata applies. Billboard, brightness, culling, glow, opacity and per-axis scale are all unavailable here.
+Because this is a raw entity rather than a display entity, none of the display-style metadata applies: no billboard, brightness, culling, glow, opacity or per-axis scale.
 
 ## Scale
-
-`uiScale` is the one knob that scales an entire menu.
 
 | Layer | Source |
 |---|---|
@@ -353,15 +272,13 @@ Because the icon is a raw entity rather than a display entity, none of the displ
 | Panel multiplier | A panel's own `scale`, applied on top: a panel's menu renders at `panelScale × uiScale` |
 | Per-icon scale | `style.scaleX` / `scaleY` / `scaleZ`, each 0.01 – 64, multiplied onto the session scale for that icon only |
 
-Personal menus opened by command or by the API use `uiScale` directly. Panels multiply their own scale into it. If you raise `uiScale`, every panel grows in proportion without touching the panel documents. See [Panels](/gloss/16-panels).
+Personal menus opened by command or API use `uiScale` directly, so raising it grows every panel in proportion without touching the panel documents. Changing `[menus] uiScale` hot-reloads open menus and scales visuals and click areas together. See [Panels](/gloss/16-panels).
 
-Changing `[menus] uiScale` hot-reloads open menus and scales their visuals and click areas together.
-
-The `scale` command property sets all three scale axes. `brightness` sets both light values. Use `value=*` to clear a property.
+The `scale` command property sets all three scale axes and `brightness` sets both light values. Use `value=*` to clear a property.
 
 ## Setting icons by command
 
-`/gloss menu seticon <menu> <row> <type> <value>` and `/gloss panel seticon <board> <row> <type> <value>` rewrite one row icon in place. Rows are one-based. Only `button` and `decoration` rows have a single editable icon. A toggle row is refused because it owns two.
+`/gloss menu seticon <menu> <row> <type> <value>` and `/gloss panel seticon <board> <row> <type> <value>` rewrite one row icon in place. Rows are one-based. Only `button` and `decoration` rows have a single editable icon; a toggle row is refused because it owns two.
 
 | `type` argument | Aliases | `value` is | Written as |
 |---|---|---|---|
@@ -373,39 +290,25 @@ The `scale` command property sets all three scale axes. `brightness` sets both l
 | `entity` | | An entity id, lower-cased for you | `{"type":"entity","entity":...}` |
 | `customItem` | `customitem` | `provider@item` | `{"type":"customItem","provider":...,"item":...,"count":1}` |
 
-Type names ignore case, hyphens, and underscores. Replacing an icon keeps its style unless the new type is `entity`. `/gloss menu image <menu> <path>` replaces the component list with one centered image.
+Type names ignore case, hyphens and underscores. Replacing an icon keeps its style unless the new type is `entity`. `/gloss menu image <menu> <path>` replaces the component list with one centered image.
 
 ## When an icon fails
 
-An invalid icon becomes the missing icon without breaking the menu. Check:
+An invalid icon becomes a black-and-magenta checkerboard and the rest of the menu still opens. A missing or `null` `icon` shows the same checkerboard without logging an error. Check that:
 
-- `item` and `block` IDs are valid lowercase material keys.
+- `item` and `block` ids are valid lowercase material keys.
 - `entity` names a living entity available on the server version.
 - `customItem` names an item available from an enabled provider.
 - `playerHead` has a non-blank player name.
-- Image paths stay inside `plugins/Gloss/images/` and name readable files.
-- Animated images contain at least one valid frame.
-
-### The missing icon
-
-An invalid icon becomes a black-and-magenta checkerboard. Other components in the menu still open.
-
-A missing or `null` `icon` shows the checkerboard without logging an error.
+- image paths stay inside `plugins/Gloss/images/` and name readable files.
+- animated images contain at least one valid frame.
 
 ## The API-only type
 
-`itemStack` is available only through the API.
-
-Use `HoloIcon.item(ItemStack)` to display an existing item stack.
-
-`{"type":"itemStack"}` fails with `Unknown type: itemStack`. Serializing one fails the same way. There is no NBT or serialized-stack JSON form of an icon. See [API: Menus](/gloss/22-api-menus).
-
-API icon factories use the matching JSON behavior and default styles. `animatedImage` requires 2 to 1200 ticks. JSON `customItem` and `playerHead` icons have no public `HoloIcon` factory.
+One further enum constant, `itemStack`, exists with no JSON form: `{"type":"itemStack"}` fails with `Unknown type: itemStack`. Use `HoloIcon.item(ItemStack)` to display an existing stack, and `updateText` on an open text component to replace its lines and resize its click area. API icon factories otherwise match the JSON behavior and default styles; `animatedImage` requires 2 to 1200 ticks, and JSON `customItem` and `playerHead` icons have no public `HoloIcon` factory. See [API: Menus](/gloss/22-api-menus).
 
 ## Schema
 
-`schema/gloss.schema.json` describes the JSON icon fields and validation used by the web editor. `itemStack` is not listed because it has no JSON form.
+`schema/gloss.schema.json` describes the JSON icon fields and powers validation in the web editor. `itemStack` is not listed because it has no JSON form, and the server ignores unknown icon keys. See [Web Editor & Sync](/gloss/18-web-editor).
 
-The schema describes the JSON format and powers validation in the web editor. The server ignores unknown icon keys. See [Web Editor & Sync](/gloss/18-web-editor).
-
-In the menu preview, `item`, `block`, `entity`, and `playerHead` icons render as 3D models drawn from the client's own asset pack; an entity with no rig shows its catalog sprite instead.
+In the menu preview, `item`, `block`, `entity` and `playerHead` icons render as 3D models drawn from the client's own asset pack; an entity with no rig shows its catalog sprite instead.

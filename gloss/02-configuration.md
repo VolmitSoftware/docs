@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -117,7 +117,7 @@ These ceilings are shared by particle layers on holograms, temporary holograms, 
 |---|---|---|---|
 | `updateIntervalTicks` | `40` | 1 – 400 | Ticks between ordinary tablist condition evaluation and refreshes. Animated header/footer text samples all recipients every tick; animated selected list-name formats and API overrides fast-tick only their players |
 
-The conditional header, footer and list-name presentations are not here. They are in schema-2 `tablist.json`. See [Tablist & Server List MOTD](/gloss/06-tablist-motd).
+The conditional header, footer and list-name presentations are not here. They are in schema-2 `tablist.json`. See [Tablist](/gloss/06-tablist).
 
 ## `[groups]`
 
@@ -155,7 +155,7 @@ Stage gates for the rendering pipeline. Neither applies to chat messages.
 |---|---|---|
 | `blacklistWorlds` | `[]` | World folder names where chat bubbles never appear. Null entries are dropped. No case folding is applied, so match the folder name exactly |
 
-Bubble wrapping, appearance, lifetime, conditional selection, expression-driven motion and particle layers are per-style, in schema-5 `bubbles/<id>.json`. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops).
+Bubble wrapping, appearance, lifetime, conditional selection, expression-driven motion and particle layers are per-style, in schema-5 `bubbles/<id>.json`. See [Chat Bubbles](/gloss/08-chat-bubbles).
 
 ## `damage-indicators/default.json`
 
@@ -194,7 +194,7 @@ affected entity.
 | `presentation.offset` | `[0, 0.7, 0]` | `[0, -0.1, 0]` | Spawn offset from the entity; each finite component is clamped to -32 – 32 |
 | `variants` | `[]` | `[]` | Complete presentations selected by `priority` and `when` |
 
-Each presentation accepts the shared `style` and `box` objects for display settings and decorations. Motion scale and opacity multiply those authored settings. See [Display styling](/gloss/08-bubbles-indicators-drops#damage-indicators).
+Each presentation accepts the shared `style` and `box` objects for display settings and decorations. Motion scale and opacity multiply those authored settings. See [Display styling](/gloss/08b-damage-indicators).
 
 Each presentation also carries `motion`:
 
@@ -240,105 +240,11 @@ Damage conditions can use applied-delta event values plus immutable affected-ent
 
 ## `real-drops/default.json`
 
-Real Drops settings live in `plugins/Gloss/real-drops/default.json`. The schema-4 file contains a base
-`presentation`, conditional `variants`, and `audience.when`. It reloads automatically and is available
-in the web editor. The headings below describe fields inside `presentation`.
+Real Drops settings live in `plugins/Gloss/real-drops/default.json`, a schema-4 file with a base
+`presentation`, conditional `variants` and an `audience.when`. It reloads automatically and opens
+in the web editor with `/gloss web edit real-drops default`.
 
-### `limits`
-
-| Key | Default | Range | Meaning |
-|---|---:|---|---|
-| `updateIntervalTicks` | `2` | 1 – 20 | Airborne carrier-position and transformation cadence; client interpolation smooths the interval |
-| `settledPollIntervalTicks` | `20` | 2 – 200 | Movement and stack-change poll cadence after consecutive stable ground samples; landing slides retain the moving cadence |
-| `maxVisualsPerStack` | `3` | 1 – 5 | Maximum one-count display models used to suggest stack size |
-| `maxVisualsPerChunk` | `128` | 8 – 1024 | Shared chunk budget for item models and labels; an item stays vanilla-visible if its complete presentation cannot fit |
-| `viewRange` | `32.0` | 4 – 128 | Item-model tracking range in blocks |
-| `spread` | `0.18` | 0 – 1 | Separation in blocks between additional stack models |
-
-The chunk budget is complemented by a fixed server-wide ceiling of 2,048 active presentations.
-An item rejected by either bound keeps its native model and visible fallback name and receives no
-real-drop update loop.
-
-### `scale`
-
-| Key | Default | Range | Meaning |
-|---|---:|---|---|
-| `defaultScale` | `0.4` | 0.05 – 2 | Ordinary three-dimensional block model scale |
-| `flatItems` | `0.65` | 0.05 – 2 | Non-block ItemDisplay scale |
-| `thinBlocks` | `0.45` | 0.05 – 2 | Slab, carpet, pressure-plate, and snow-layer model scale |
-
-### `motion`
-
-| Key | Default | Range | Meaning |
-|---|---:|---|---|
-| `tumble` | `true` | Not applicable | Rotate airborne models |
-| `speedMultiplier` | `1.35` | 0.1 – 4 | Multiplier applied to all three configured tumble speeds; `1` uses the axis values unchanged |
-| `degreesPerSecondX` | `160.0` | -1440 – 1440 | Base X-axis tumble speed |
-| `degreesPerSecondY` | `120.0` | -1440 – 1440 | Base Y-axis tumble speed |
-| `degreesPerSecondZ` | `100.0` | -1440 – 1440 | Base Z-axis tumble speed |
-| `variance` | `0.2` | 0 – 1 | Stable per-item variation applied to each configured speed |
-| `changeOnBounce` | `true` | Not applicable | Select another deterministic spin after an upward bounce |
-| `velocityInfluence` | `0.35` | 0 – 4 | Increase angular speed from the authoritative item's real throw velocity |
-| `submergedSpinMultiplier` | `0.35` | 0 – 1 | Angular-speed multiplier while submerged |
-| `groundRollMultiplier` | `1.0` | 0 – 4 | Rotation generated from actual supported travel; `0` slides and `1` rolls at the model radius |
-
-### `landing`
-
-| Key | Default | Range | Meaning |
-|---|---:|---|---|
-| `mode` | `"NATURAL"` | `NATURAL`, `FLAT`, `UPRIGHT` | Grounded pose policy; NATURAL block models may settle on any of six faces |
-| `tiltDegrees` | `10.0` | 0 – 45 | Maximum in-face variation for stationary/rebuilt NATURAL block models; momentum landings preserve their physical heading |
-| `randomYaw` | `true` | Not applicable | Give direct landing modes and stationary/rebuilt models a stable UUID-derived yaw |
-| `transitionTicks` | `4` | 0 – 20 | Client interpolation duration between continuous animation samples |
-| `faceAttraction` | `0.55` | 0 – 1 | Portion of the remaining face-alignment angle removed per nearly-still sample |
-| `movingFaceAttraction` | `0.15` | 0 – 1 | Face attraction retained while rolling; lower values preserve momentum longer |
-| `alignmentDegrees` | `0.5` | 0.05 – 10 | Subvisual tolerance for the final exact face alignment |
-| `settleDelayTicks` | `4` | 0 – 100 | Stable ticks required before sparse settled polling |
-
-### `labels`
-
-| Key | Default | Range | Meaning |
-|---|---:|---|---|
-| `enabled` | `true` | Not applicable | Render the effective item name with the shared hologram engine |
-| `yOffset` | `0.55` | -4 – 16 | Label height above the item in blocks |
-| `style` | Centered, shadowed, see-through text at 0.85 XYZ scale | Shared display-style limits | Scale, alignment, background, opacity, light, billboard, view range, culling, and glow |
-| `box` | Disabled | Shared box limits | Padding, background, border width, and border color |
-
-The default text background is `#50000000`; `style.viewRange` defaults to `0.5` (32 blocks). See [Drop label styling](/gloss/08-bubbles-indicators-drops#real-drops) for all defaults and ranges. The label and up to five box parts count toward the chunk budget. Viewer-specific boxes use packet displays, so they add no server entities per viewer.
-
-Labels use `[features] holograms` and the shared `[holograms]` refresh and placeholder settings. When Real Drops models are disabled, Gloss-owned labels retain the same style and box.
-
-### `filters`
-
-| Key | Default | Meaning |
-|---|---|---|
-| `disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla item rendering |
-| `materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla item rendering |
-| `onlyPlayerDrops` | `false` | Require the item entity to carry a non-null thrower UUID |
-
-### `physics`
-
-| Key | Default | Range | Meaning |
-|---|---:|---|---|
-| `enabled` | `false` | Not applicable | Permit Gloss to modify the authoritative item entity |
-| `gravityMultiplier` | `1.0` | 0 – 4 | Gravity scale; `0` clears vertical velocity and gravity while active |
-| `bounce` | `0.0` | 0 – 0.9 | Restitution applied from the measured downward impact speed |
-| `waterBuoyancy` | `0.0` | 0 – 1 | Additional upward velocity while submerged |
-| `waterDrag` | `0.0` | 0 – 1 | Fraction of velocity removed per submerged tick |
-
-### `script`
-
-The optional advanced modifier compiles expression-driven `offset`, `rotation`, `scale`, `glow`, and `visible` outputs. It exposes `phase`, `stateTime`, and `impactSpeed` alongside motion, fluid, material, light, and stack inputs. Script output composes over the typed animation timeline: offsets and rotations add, scales multiply, visibility combines, and a non-zero script glow overrides the timeline glow. Expressions without `index` evaluate once per stack sample; static settled plans are not reevaluated until animation state changes. Scripted offsets remain visual-only and do not move the pickup entity.
-
-### `animation`
-
-`animation.enabled` activates ordered animation profiles. Each profile has an `id`, integer `priority`, material glob list, and clips. Higher priority profiles match first; declaration order resolves equal priority.
-
-Clips specify a `trigger`, `durationTicks`, `loop`, and ordered tracks. Triggers include `SPAWN`, every runtime phase, and `IMPACT`, `BOUNCE`, `ENTER_FLUID`, `EXIT_FLUID`, `START_ROLL`, `SETTLE`, and `WAKE`. Targets are `OFFSET_X/Y/Z`, `ROTATION_X/Y/Z`, `SCALE_X/Y/Z`, `GLOW`, `VISIBLE`, `PHYSICS`, and `LIGHT_LEVEL`. Every track carries scalar keyframes with `tick`, numeric `value`, optional `materialMap`, and `LINEAR`, `HOLD`, `EASE_IN`, `EASE_OUT`, `EASE_IN_OUT`, or `BACK_OUT` easing. `REPLACE` works on every target, `ADD` is valid for offsets and rotations, and `MULTIPLY` is valid for scales.
-
-`materialProperties` is a map of named material maps. Each exact or glob material entry supplies `glow` as numeric ARGB and `lightLevel` from 0 through 15; `GLOW` and `LIGHT_LEVEL` keyframes can name the map and retain their literal value as the fallback. `PHYSICS` values below `0.5` hold the item and preserve its incoming velocity, while values at or above `0.5` release it. `LIGHT_LEVEL` applies display brightness and an air-only temporary light block, capped at eight active lights per chunk and moved no faster than every four ticks.
-
-Real drops use non-persistent `BlockDisplay` models for placeable materials and `ItemDisplay` models for other items. On ordinary servers, additional models ride one carrier. Folia moves each display on its owning scheduler. Labels follow the item through the shared temporary-hologram engine. Turning the feature off removes Gloss-owned displays, temporary lights, and restores native item and name visibility. See [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) for lifecycle, performance, and React bundle integration details.
+Every key, default and range is on [Drop Labels](/gloss/08c-drop-labels#real-drops).
 
 ## `[commands]`
 
@@ -452,9 +358,9 @@ Three groups of settings moved out of configuration. They are now content docume
 
 | Was a config key | Now lives in | Documented on |
 |---|---|---|
-| `tablist.header`, `tablist.footer`, `tablist.use-header-footers`, `tablist.group-list-names` | `tablist.json` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
-| `motd.texts` | `motd.json` | [Tablist & Server List MOTD](/gloss/06-tablist-motd) |
-| `chat-bubbles.message.*`, `word-wrap-break-chars`, `max-time-alive`, `follow-players`, `hide-own-messages` | `bubbles/<id>.json` | [Chat Bubbles, Indicators & Drops](/gloss/08-bubbles-indicators-drops) |
+| `tablist.header`, `tablist.footer`, `tablist.use-header-footers`, `tablist.group-list-names` | `tablist.json` | [Tablist](/gloss/06-tablist) |
+| `motd.texts` | `motd.json` | [Tablist](/gloss/06-tablist) |
+| `chat-bubbles.message.*`, `word-wrap-break-chars`, `max-time-alive`, `follow-players`, `hide-own-messages` | `bubbles/<id>.json` | [Chat Bubbles](/gloss/08-chat-bubbles) |
 
 The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Board schema 2 and tablist schema 2 express group-dependent behavior as ordinary conditions; `/gloss import legacy` does not convert old boards, groups or tablist formats.
 
