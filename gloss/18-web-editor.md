@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-18T00:00:00.000Z
+date: 2026-09-19T02:28:50.496Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -29,7 +29,6 @@ Examples:
 /gloss web edit surface welcome
 /gloss web edit motd motd
 /gloss web edit connections connections
-/gloss web edit dialog example
 /gloss web edit inventory example
 ```
 
@@ -65,14 +64,10 @@ Visual inspectors edit the same document fields used by Gloss. Code and Split vi
 | Bubble styles | Selection, trusted prefix, wrapping, lifetime, motion, follow/hide settings, visibility, display style, box, and particles | Chat sample over the rendered world and [bubbles](/gloss/08-bubbles-indicators-drops) |
 | Damage indicators | Damage/healing admission, conditional variants, audience, text, offset, lifetime, motion, display style, box, and particles | Damage, healing and critical-hit samples on the Minecraft stage; [indicators](/gloss/08-bubbles-indicators-drops) |
 | Real Drops | Display limits, conditional plans and audience, models, label placement/style/box, physics, animation timelines, modifier expressions, and particles | Drop stage over the rendered world and [Real Drops](/gloss/08-bubbles-indicators-drops) |
-| Dialogs | Title, body, buttons, and native dialog fallback | Export to `plugins/Gloss/dialogs/` |
 | Inventories | Chest GUI resolution, mask, keys, and slots | Export to `plugins/Gloss/inventories/` |
-| Nameplates | Selection, presentation prefix and suffix, variants | Export to `plugins/Gloss/nameplates/` |
-| Nametags | Selection, presentation, name-tag visibility, collision | Export to `plugins/Gloss/nametags/` |
-| Motion | Tracks with bone, channel, and keyframes | Export to `plugins/Gloss/motion/` |
-| Rigs | Bones, attachments, and display-entity models | Export to `plugins/Gloss/rigs/` |
-| Markers | World anchor and outline | Export to `plugins/Gloss/markers/` |
-| Zones | World bounds and outline | Export to `plugins/Gloss/zones/` |
+| Nameplates | Holographic text lines, display style, box, offset, and visibility | Export to `plugins/Gloss/nameplates/` |
+| Nametags | Name prefixes and suffixes, selection, visibility, and collision | Export to `plugins/Gloss/nametags/` |
+| Markers | World, player, or entity targets, labels, beams, trails, and edge indicators | Export to `plugins/Gloss/markers/` |
 | Animations | Frames, timing, playback settings, and visibility | Animated text and [text animations](/gloss/07-emoji-text-animations) |
 | Scoreboards | Conditional presentations, title and line formats, update rates, and visibility | Sidebar and [scoreboards](/gloss/05-scoreboards-groups) |
 | Tablist | Header/footer rows, list-name presentations, selection, update rates, and root/channel visibility | Player list and [tablist](/gloss/06-tablist-motd) |

@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Depend on the API jar, acquire services, and follow the threading contract"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,3 +38,9 @@ if (plugin != null && plugin.isEnabled()) {
 ```
 
 Traversal callbacks run on the traveler's owning thread. Placeholder and metric reads use snapshots and may run from any thread.
+
+## Nether portal shapes
+
+Load `art.arcane.wormholes.api.portal.NetherPortalShapes` from Bukkit’s services manager after Wormholes enables. Call `submit(World, Set<BlockVector>, Axis, Entity)` on the region that owns the complete shape. Positions are absolute interior block coordinates in a single vertical plane; use `Axis.X` or `Axis.Z` to describe the direction along the opening. Supply the responsible entity when available so player creation permissions and placement policies apply.
+
+An `ACCEPTED` result transfers ownership to Wormholes, including pending destination creation. Do not place native portal blocks or run a repair loop for an accepted shape. `UNAVAILABLE` means the integration cannot accept the shape, such as when replacement is disabled, no paired world exists, or the cells are outside the current region. `REJECTED` means permissions, placement policy, overlap checks, or a cancelled `PortalCreateEvent` denied creation; do not fall back to placing a native portal. `owns(World, Set<BlockVector>)` checks whether one managed Nether portal or pending request owns the exact cell set. Wormholes persists accepted portals and manages their frames, projection, and bidirectional traversal.

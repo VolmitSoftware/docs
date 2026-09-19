@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry, persistence, region ownership, and build instructions"
 published: true
-date: 2026-09-14T00:37:05.833Z
+date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -32,7 +32,7 @@ Nether ignition tests both vertical axes independently. End activation tests the
 | One owning Folia region | There is no atomic multi-region block commit |
 | Revalidation before commit | Rejects changes made while integrations inspect the proposal |
 
-For Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any blocks are placed. End portals start from the accepted Eye of Ender placement transaction and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
+For standalone Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any blocks are placed. End portals start from the accepted Eye of Ender placement transaction and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
 
 ## Why portal records are required
 
@@ -79,7 +79,7 @@ Shaped Portals owns geometry, registry policy, integrity decisions, commands, pr
 
 ## Build from source
 
-The Gradle wrapper uses Java 25 and produces Java 17 bytecode.
+The Gradle wrapper uses Java 25 and produces Java 17 bytecode. Build the sibling Wormholes API first with `./gradlew apiJar` from `WormholesPlugin/`. Shaped Portals compiles against `../WormholesPlugin/build/libs/Wormholes-2.0.6-26.2-api.jar`; use `-PwormholesApiJar=/path/to/Wormholes-api.jar` to supply the current API from another location. The API is not bundled in Shaped Portals.
 
 ```text
 ./gradlew build
@@ -98,3 +98,7 @@ Shadow and [shared automatic jar thinning](/volmlib/api/building#automatic-jar-t
 - [Compatibility and operations *Platforms, diagnostics, and React metrics*](/shapedportals/03-compatibility-operations)
 - [Source repository *Plugin code, build files, and issue tracker*](https://github.com/VolmitSoftware/ShapedPortals)
 {.links-list}
+
+## Wormholes geometry handoff
+
+Shaped Portals submits Nether interior block positions and their vertical axis through the Wormholes `NetherPortalShapes` service. An accepted shape belongs to Wormholes and does not enter the Shaped Portals block registry or repair loop. See [Wormholes API](/wormholes/20-api-getting-started#nether-portal-shapes) for the service contract.

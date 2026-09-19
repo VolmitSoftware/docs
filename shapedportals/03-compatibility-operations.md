@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-09-11T16:41:06.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -46,9 +46,11 @@ Integrity checks skip unloaded chunks. Administrative teleport commands can prep
 
 ## Native portal compatibility
 
-Shaped Portals writes ordinary `NETHER_PORTAL` and `END_PORTAL` blocks. Minecraft controls travel, Nether coordinate scaling, destination search, and generated destination frames. The plugin does not use NMS, packets, or a client mod.
+In standalone use, Shaped Portals writes ordinary `NETHER_PORTAL` and `END_PORTAL` blocks. Minecraft controls travel, Nether coordinate scaling, destination search, and generated destination frames. The plugin does not use NMS, packets, or a client mod.
 
-Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shaped End creation starts only after the Eye of Ender's `BlockPlaceEvent` or `BlockMultiPlaceEvent` is accepted, then asks `BlockCanBuildEvent` about every proposed cell. Bukkit has no End-activation `PortalCreateEvent` reason; `END_PLATFORM` identifies the End arrival platform instead. See [Ignition and protection plugins](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) for the event sequence.
+With Wormholes installed, accepted Nether shapes use its projection and bidirectional travel instead of native portal blocks. Shaped Portals supplies only the interior coordinates and axis; Wormholes owns pairing and the portal lifecycle. Enable Wormholes `replace-nether-and-end-portals` to use this integration.
+
+Standalone Nether proposals fire a cancellable `PortalCreateEvent` with reason `FIRE`. Shaped End creation starts only after the Eye of Ender's `BlockPlaceEvent` or `BlockMultiPlaceEvent` is accepted, then asks `BlockCanBuildEvent` about every proposed cell. Bukkit has no End-activation `PortalCreateEvent` reason; `END_PLATFORM` identifies the End arrival platform instead. See [Ignition and protection plugins](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) for the event sequence.
 
 ## Update notifications
 

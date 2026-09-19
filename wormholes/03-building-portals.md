@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-09-17T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -145,7 +145,9 @@ Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 
 When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination, type, and travel settings. Nether pairs work both ways. End sources are outbound-only, with a hidden inbound receiver at the destination.
 
-Set `replace-nether-and-end-portals = false` to leave vanilla portals alone.
+Shaped Portals can supply irregular Nether openings directly. Wormholes preserves their exact interior shape, creates or reuses a counterpart, and owns projection and travel in both directions. Shaped Portals does not refill these openings with native Nether portal blocks. The source boundary may use Shaped Portals frame materials; generated counterparts use obsidian.
+
+Set `replace-nether-and-end-portals = false` to leave vanilla portals alone and use Shaped Portals standalone behavior.
 
 Conversion is player-authorized. Lighting a Nether portal or inserting the
 completing Ender Eye produces a managed Wormholes portal only when that player

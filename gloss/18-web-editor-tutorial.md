@@ -2,7 +2,7 @@
 title: "Web editor tutorial"
 description: "Open the Gloss web editor and export a document"
 published: true
-date: 2026-09-18T00:00:00.000Z
+date: 2026-09-19T02:47:16.273Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-18T00:00:00.000Z
@@ -60,9 +60,8 @@ When you open a file from the rail or the document switcher, this control moves 
 
 ## Create a document
 
-Select **New document** in the rail. Pick the kind you want. The editor opens a blank valid file and leaves the other files alone.
+Select **New document** in the rail. In the **All** view, a full-screen picker shows the available document kinds. Scroll the picker if needed, then choose a kind to create a blank valid file. Use **Cancel**, the close button, or **Escape** to return without creating a file. When the library is scoped to one kind, its New button creates that kind directly.
 
-![The New document menu listing each Gloss kind the editor can create](/gloss-assets/14-new-document.png)
 
 For a finished sample instead of a blank file, open **More actions** and choose **Templates**.
 

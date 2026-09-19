@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-09-14T00:37:05.834Z
+date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 <nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Getting started</span></nav>
 
-Shaped Portals places native Nether and End portal blocks, so Minecraft still handles travel and destination creation.
+Shaped Portals places native portal blocks for Minecraft to handle travel. When Wormholes accepts a Nether shape, Shaped Portals supplies its interior positions and Wormholes handles the projection, destination, and travel.
 
 - [Build a portal](#build-your-first-portal)
 - [Shape rules](#valid-shapes)
@@ -27,7 +27,7 @@ Install Shaped Portals first, then choose the portal type.
 1. Build a closed, upright frame using a configured frame material. Obsidian and crying obsidian are allowed by default.
 2. Leave a connected interior of 2 to 256 blocks by default.
 3. Light an interior block with an allowed ignition source. Flint and steel, fireballs, and directly placed fire are enabled by default.
-4. Wait for the native Nether portal blocks to appear, then walk through.
+4. Wait for the portal surface or Wormholes projection to appear, then walk through.
 
 ### End portal
 

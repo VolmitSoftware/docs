@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-17T06:30:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,6 +11,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Each frame portal has menus for its type, orientation, destination, settings, cost, and appearance. The defaults below apply to new portals. Concepts:
 [02 - Concepts](/wormholes/02-concepts). Construction:
 [03 - Building Portals](/wormholes/03-building-portals).
+
+Atlas records nearby portal discoveries silently, without sending chat announcements.
 
 ## Default settings
 

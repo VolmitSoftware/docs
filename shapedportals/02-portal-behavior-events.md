@@ -2,7 +2,7 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,13 +10,19 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 <nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Portal behavior and troubleshooting</span></nav>
 
-Shaped Portals keeps track of the portals it creates so their unusual shapes can survive block updates and restarts. Minecraft still handles travel and destination portals.
+Shaped Portals keeps track of the portals it creates so their unusual shapes can survive block updates and restarts. Minecraft handles travel and destination portals unless Wormholes accepts the Nether shape.
 
 - [Portal changes](#repair-based-integrity)
 - [Saved data](#persistent-ownership)
 - [Protection plugins](#ignition-and-protection-plugins)
 - [Troubleshooting](#troubleshooting)
 {.grid-list}
+
+## Wormholes integration
+
+With Wormholes installed and `replace-nether-and-end-portals` enabled, Shaped Portals submits the exact Nether interior positions and axis to Wormholes. Accepted shapes use Wormholes projections and bidirectional Nether links. Shaped Portals does not place, save, or repair native portal blocks for those shapes. Use Wormholes to list and manage them.
+
+Wormholes applies its portal creation permissions and placement policy. Its frame checks preserve irregular openings and allow intact boundaries to change material. When the integration is unavailable, the standalone creation and integrity rules below apply. A Wormholes permission or protection denial stops creation. Wormholes emits the cancellable `PortalCreateEvent` for submitted shapes before accepting them.
 
 ## Repair-based integrity
 
@@ -55,7 +61,7 @@ An unsafe landing requires a separate permission and confirmation. Read the [uns
 
 ## Ignition and protection plugins
 
-Cancelled ignition events are ignored. Before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A cancelled event or changed frame stops creation.
+Cancelled ignition events are ignored. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A cancelled event or changed frame stops creation.
 
 Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 

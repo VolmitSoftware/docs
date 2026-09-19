@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-17T06:30:00.000Z
+date: 2026-09-19T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,8 @@ Per-portal mode and render mode combine with global `[projection]` and
 ## What projection does for a viewer
 
 When a player is inside the portal's viewing range, Wormholes sends that player a view of the destination or mirror. Entity spoofing can add destination-side entities. Projection does not move the player.
+
+Player reflections use the skin supplied by the server, including skins applied after login. Local mirror views refresh when that skin changes.
 
 Changing or removing a portal's destination retires its existing projections.
 Nearby observers receive a fresh view of the new destination even when they
