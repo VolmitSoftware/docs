@@ -2,13 +2,15 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-09-14T00:38:00.000Z
+date: 2026-09-20T02:14:29.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 React supports Paper, Purpur, and Folia on Java 25.
+
+The same jar includes Minecraft 26.1.2, 26.2, and 26.3 support. Paper 26.3 currently uses alpha server builds; Folia 26.3 support has not been validated against a published server build.
 
 ## Install
 

@@ -2,7 +2,7 @@
 title: "HiddenOre: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:20:00.000Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,11 +10,13 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 | | |
 |---|---|
-| Server software | Paper, Purpur, or Folia |
+| Server software | Paper, Purpur, or Folia for Minecraft 26.1.2 through 26.2; Paper 26.3 |
 | Java | 25 |
 | Main command | `/hiddenore` |
 | Config file | `plugins/HiddenOre/hiddenore.toml` |
 | Optional plugins | PlaceholderAPI, Adapt, Iris |
+
+Folia 26.3 support awaits a published server build.
 
 ## Install
 

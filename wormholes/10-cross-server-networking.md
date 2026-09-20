@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -267,7 +267,7 @@ After dispatch, the source waits up to 60 seconds for an arrival receipt. Only a
 
 Portal placement retries transient failures up to five times. Destination access is checked again after the asynchronous teleport. A denied arrival requests a new admitted return trip when possible. Otherwise, the player remains at the destination and receives a failure notice.
 
-Gateway placement offsets the traveler along the exit plane's normal. Vertical or lateral momentum cannot redirect this offset into the floor or frame. The outgoing velocity still follows the configured momentum policy.
+Gateway placement applies the linked frames' coordinate transform to the traveler's captured position, including movement beyond the source plane. Outgoing velocity follows the same frame transform and the configured momentum policy.
 
 Departure commitment checks movement from the captured hold position. A fast crossing recovered after a delayed portal check does not fail solely because it ended far beyond the aperture. Retreat, further drift, world changes, and expired or replaced holds still cancel departure.
 

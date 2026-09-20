@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-20T05:50:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -126,3 +126,11 @@ The standalone audit uses the same policy catalog and also lists the SlimJar run
 The packaging plugin also registers `verifyLoggingPolicy` and wires it into `check`. It scans every main source directory line by line for `System.out`, `System.err`, `printStackTrace(`, `Throwable::printStackTrace`, `Bukkit.getLogger(`, `getServer().getLogger(`, and `getConsoleSender().sendMessage(`. A match fails the build and prints the file path, line number, pattern, and offending text, and the task writes `build/reports/logging-policy.txt`.
 
 Exemptions live in `logging-policy-allowlist.txt` at the project root, one `<path>` or `<path> <pattern>` per line. A trailing `/` on the path exempts a subtree and `#` starts a comment. An entry that no longer matches anything fails the build, so exemptions only shrink. A plugin appends patterns with `forbid(...)` or replaces them with `forbiddenPatterns` inside `pluginPackaging { loggingPolicy { ... } }`, and can point `allowlistFile` or `sourceDirectories` elsewhere.
+
+## Native access check
+
+`verifyNativeBoundary` runs as part of `check`. It scans main Java sources in the project and its subprojects. Native Minecraft, CraftBukkit, Moonrise, and server-configuration references must live in VolmLib native implementation packages.
+
+Use [Native server access](/volmlib/api/native-access) interfaces from plugin code. The check also accepts native sources supplied by VolmLib for mod-loader compilation. Test fixtures are outside this check.
+
+The packaging plugin retains version providers declared by bundled `NativeBinding` capability interfaces during shrinking and dependency pruning. Relocated native packages are supported. Broad keep rules for the entire native library are unnecessary.

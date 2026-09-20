@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -149,11 +149,9 @@ create B→A.
 Cross-server handoff detail:
 [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
 
-Linked frame arrivals place the traveler 1.25 blocks clear of the exit plane along its normal. Jumping, falling, or strafing does not change that clearance axis. The configured momentum policy still controls the outgoing velocity.
+Linked frame arrivals preserve the traveler's position relative to the portal, including movement beyond the plane during the crossing. Position and velocity rotate with the linked frames. The configured momentum policy controls outgoing velocity, including very slow movement.
 
-Crossing is tested against your whole movement since the last check, so a laggy tick cannot carry
-you through without triggering. Teleports, reconnects, respawns, and destination changes reset that
-history.
+Crossing occurs when movement passes through the portal plane inside its aperture. It is tested against your whole movement since the last check, so a laggy tick cannot carry you through without triggering. Teleports, reconnects, respawns, and destination changes reset that history.
 
 ## Type menu
 

@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T03:09:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -64,7 +64,7 @@ The Real Drops document accepts `show`, defaulting to `true`. It gates the displ
 per viewer together with `audience.when` and the selected presentation settings. It does not
 remove the underlying dropped item. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
-`[features] realDrops` defaults to `true`. The real item entity still controls physics, merging, pickup, and despawn. Gloss hides its vanilla model and shows `BlockDisplay` or `ItemDisplay` models instead.
+`[features] realDrops` defaults to `true`. The real item entity still controls physics, merging, pickup, and despawn. Gloss hides its vanilla model and shows `BlockDisplay` or `ItemDisplay` models instead. Landing and resting animations are available on supported 26.1.2, 26.2, and 26.3 servers.
 
 Presentation settings live in the schema-4 file `plugins/Gloss/real-drops/default.json`. A stack shows one to five models, subject to the configured per-chunk limit and a server-wide limit of 2,048 presentations. Items above a limit keep their vanilla model and name.
 

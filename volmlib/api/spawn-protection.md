@@ -2,30 +2,31 @@
 title: "Native spawn-protection checks"
 description: "Query the server's spawn-protection decision across Bukkit implementation boundaries"
 published: true
-date: 2026-09-14T00:37:05.833Z
+date: 2026-09-20T04:21:21.395Z
 tags: "volmlib, api, bukkit, protection, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T14:10:53.000Z
 ---
 
-`art.arcane.volmlib.util.bukkit.BukkitSpawnProtection` in the optional `native-bukkit` module queries the server's native spawn-protection decision. It binds CraftBukkit accessors and the native protection method once, then uses cached method handles. Delegating the decision preserves the server version's dimension rules, operator handling, and configured radius.
+`art.arcane.volmlib.nativelib.protection.SpawnProtection` queries the server's native spawn-protection decision. It binds CraftBukkit accessors and the native protection method once, then uses cached method handles. Delegating the decision preserves the server version's dimension rules, operator handling, and configured radius.
 
 ## Dependency
 
-This utility is separate from `shared`, so plugins using only the shared module do not package its native-server references. Add `com.github.VolmitSoftware.VolmLib:native-bukkit` with the same version as the shared dependency, or substitute that coordinate with `project(':native-bukkit')` in a local VolmLib composite build. Shade and relocate it alongside the shared module when needed. Bukkit itself remains a server-provided dependency.
+Bundle `native-api`, `native-common`, and the version modules your plugin supports. Use the same VolmLib release for each module. See [Native server access](/volmlib/api/native-access) for dependency coordinates, shading, and capability selection.
 
 ## Use
 
 Create one instance for the consuming plugin or service:
 
 ```java
-BukkitSpawnProtection protection = BukkitSpawnProtection.create(server);
+SpawnProtectionAccess access = NativeAdapters.require(SpawnProtectionAccess.class);
+SpawnProtection protection = access.create(server);
 ```
 
 On the thread owning both the player and target block, query the decision before changing a block:
 
 ```java
-BukkitSpawnProtection.Decision decision = protection.check(player, block);
+SpawnProtection.Decision decision = protection.check(player, block);
 ```
 
 | Result | Meaning |
@@ -38,7 +39,7 @@ This checks native spawn protection only. Consumers must still apply their own p
 
 ## Capability and failure handling
 
-`supported()` reports whether the native binding remains available. Always use `check(...)` for the actual permission decision: a disabled spawn radius, operator player, or empty operator list still permits the verified bypass when binding is unavailable.
+`NativeAdapters.find(SpawnProtectionAccess.class)` checks whether a version provider is available. On a created instance, `supported()` reports whether the native binding remains available. Always use `check(...)` for the actual permission decision: a disabled spawn radius, operator player, or empty operator list still permits the verified bypass when binding is unavailable.
 
 Missing accessors, incompatible signatures, and native invocation failures mark that instance unavailable and log one contextual failure with the full cause through the server logger. Consumers should pause affected block changes on `UNSUPPORTED` and expose that state to operators. They may keep unrelated features available.
 

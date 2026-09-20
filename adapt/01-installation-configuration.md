@@ -2,13 +2,13 @@
 title: "Installation & Configuration"
 description: "Install Adapt and configure progression, storage, integrations, and Mutations"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:20:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt 2.0.3-26.2 is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 and Java 25. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
+Adapt is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 through 26.2, plus Paper 26.3, on Java 25. Folia 26.3 support awaits a published server build. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
 
 Most settings hot-reload. Valid edits refresh open Adapt menus; invalid TOML is rejected while the current settings stay active.
 
@@ -20,7 +20,7 @@ Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutat
 
 ## Installing
 
-1. Run Paper, Purpur, or Folia for Minecraft 26.1 on Java 25.
+1. Run Paper, Purpur, or Folia for Minecraft 26.1 through 26.2, or Paper 26.3, on Java 25.
 2. Copy `Adapt-<version>.jar` into each backend server's `plugins/` folder, not the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
 4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads that locale from the current `master` language sources and installs it directly as `languages/<locale>.toml` only when the file is missing, then activates it without a restart. Existing files work offline and preserve local edits.

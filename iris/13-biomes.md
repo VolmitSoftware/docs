@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -297,7 +297,7 @@ Slabs and walls only appear when the dimension has `postProcessing`, `postProces
 
 The JSON key really is `customDerivitives`. The misspelling is baked into the engine field. `customDerivatives` is silently ignored.
 
-Type: `IrisBiomeCustom`, available as the `custom-biome` snippet. Iris compiles these into a datapack and registers them as `<dimensionLoadKey>:<id>`.
+Type: `IrisBiomeCustom`, available as the `custom-biome` snippet. Existing custom-biome definitions work on Minecraft 26.3 without changing their pack fields. Iris compiles these into a datapack and registers them as `<dimensionLoadKey>:<id>`.
 
 When a biome has any custom derivative, that custom biome becomes the visible biome for the column. `derivative` / `biomeScatter` / `biomeSkyScatter` stop driving what players see. `vanillaDerivative` still drives structure eligibility and tag inheritance. With several entries, `biomeStyle` picks between them per position.
 
@@ -308,7 +308,7 @@ When a biome has any custom derivative, that custom biome becomes the visible bi
 | `temperature` | double -3..3 | `0.8` | Vanilla temperature: drives snow versus rain, water freezing and some mob behavior. |
 | `humidity` | double -3..3 | `0.4` | Written as vanilla `downfall`. Affects foliage tint and fire spread. |
 | `downfallType` | `IrisBiomeCustomPrecipType` | `rain` | `none`, `rain` or `snow`. `none` also clears the `has_precipitation` flag. |
-| `spawnRarity` | int 0-20 | `0` | Written straight into `creature_spawn_probability`. Leave at `0` unless you are also supplying `spawns`. |
+| `spawnRarity` | int 0-20 | `0` | Controls initial creature spawning probability. Leave at `0` unless you are also supplying `spawns`. |
 | `spawns` | `IrisBiomeCustomSpawn[]` | empty | Mob spawn entries grouped by category. Only meaningful together with `spawnRarity`. Nonempty lists are **merged** with the vanilla derivative table, not a replace. An empty list leaves vanilla in charge. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). |
 | `tags` | string[] | empty | Extra biome tags, e.g. `minecraft:allows_surface_slime_spawns`. |
 | `ambientParticle` | `IrisBiomeCustomParticle` | `null` | Client-rendered ambient particle. No server cost. |

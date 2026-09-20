@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:38:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
@@ -26,7 +26,7 @@ Gloss draws text, menus, and item displays in the world and on the HUD: hologram
 
 | Requirement | Value |
 |---|---|
-| Server | Paper, Purpur, Leaf, Folia, Canvas, or Spigot on Minecraft 26.1.2 to 26.2 |
+| Server | Minecraft 26.1.2 through 26.3; see [Getting Started](/gloss/01-getting-started) for server-platform requirements |
 | Java | 25 |
 | Commands | `/gloss`, `/hologram`, and `/board` |
 | Files | `plugins/Gloss/gloss.toml` and JSON documents under `plugins/Gloss/` |

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:20:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,7 @@ Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `
 | Item | Value |
 |------|--------|
 | Runtime | Paper, Paper-compatible derivatives such as Purpur, and Folia (`folia-supported: true`) |
+| Minecraft | 26.1.2, 26.2, and 26.3; use a server build available for your chosen platform |
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
 | Soft depends | PlaceholderAPI, Iris, Vault, Citizens (optional). Paper loads them before Wormholes when present |

@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-20T04:21:21.395Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -18,13 +18,14 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 |---|---|
 | `util.scheduling` | Paper/Folia-safe global, region, and entity tasks |
 | `util.event` | Shared permission-check interaction events |
-| `util.bukkit` | Inventory-view access and entity initialization; native spawn-protection checks require the optional `native-bukkit` module |
+| `util.bukkit` | Inventory-view access and entity initialization |
 | `util.bukkit.papi` | PlaceholderAPI expansions and snapshot stores |
 | `util.director` | Commands, help, and completion |
 | `util.localization` | Message catalogs, on-demand translations, and player language preferences |
 | `util.diagnostics` | Shared Bukkit diagnostic reports, plugin snapshots, and uploads |
 | `util.plugin` | Rich text, messages, titles, and logging |
 | `util.board` | Scoreboard sidebars |
+| `nativelib` | Versioned native capabilities from the optional native modules |
 | `util.inventorygui` | Inventory menus |
 | `util.config` | Typed TOML configuration |
 | `util.io` | File and directory change detection |
@@ -34,6 +35,14 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `integration` | Vault economy availability, charging, and settlement |
 
 For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
+
+## Block-state NBT
+
+`MCABlockStateCodecSupport.encodeBlockState` and `decodeBlockStateString` require an explicit `Format`. Use `CAPITALIZED` for the `Name` and `Properties` fields used through Minecraft 26.2, or `LOWERCASE` for the `id` and `properties` fields used by Minecraft 26.3. Select the format from the target server version when writing and the source data version when reading.
+
+Decoders and MCA palette reader functions accept `Tag<?>`. The `LOWERCASE` format also reads propertyless states stored as strings, including the empty-key wrappers used in mixed palettes. Encoding returns a compound tag in the selected format.
+
+`NBTWorldSupport.blockStateCodec` accepts a `BlockStateCodecOptions` record containing the resolver, fallback supplier, block-data string function, material-key function, and format. Each codec caches encoded states for its selected format; use separate codec instances for different formats.
 
 ## Region access and interruption
 
@@ -77,7 +86,7 @@ Aliases remain executable, while help and completion show canonical command name
 
 ## Block support
 
-The optional `native-bukkit` module provides `BukkitSpawnProtection.create(server)` to bind the native spawn-protection decision once. `check(player, block)` reports `ALLOWED`, `PROTECTED`, or `UNSUPPORTED`; consumers retain region-ownership and third-party protection checks. See [Native spawn protection](/volmlib/api/spawn-protection) for dependency setup, bypasses, capability handling, and failure behavior.
+`NativeAdapters.require(SpawnProtectionAccess.class).create(server)` creates native spawn-protection checks. `check(player, block)` reports `ALLOWED`, `PROTECTED`, or `UNSUPPORTED`. Consumers retain region-ownership and third-party protection checks. See [Native spawn protection](/volmlib/api/spawn-protection) for the decision contract and [Native server access](/volmlib/api/native-access) for dependencies and version selection.
 
 `BSupport.isUpdatable(...)` recognizes exposed pointed-dripstone and sulfur-spike tips through the server’s speleothem API; body and merged-tip segments are excluded. On the supported Bukkit 26.1.2 boundary, pointed-dripstone detection uses that version’s API.
 

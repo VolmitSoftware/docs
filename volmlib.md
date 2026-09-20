@@ -2,7 +2,7 @@
 title: "VolmLib"
 description: "The shared library behind the Volmit Software plugin suite"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T04:21:21.395Z
 tags: "volmlib"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -30,5 +30,6 @@ These pages are for plugin developers building against it.
 - [GitHub release checks *Cached update detection and lifecycle*](/volmlib/api/github-releases)
 - [Inventory-view access *Top inventories and viewers across Bukkit versions*](/volmlib/api/inventory-views)
 - [Shared action bars and titles *Overlay priorities and claim lifecycle*](/volmlib/api/hud)
+- [Native server access *Version selection, capabilities, and dependencies*](/volmlib/api/native-access)
 - [Native spawn protection *Server decisions and capability handling*](/volmlib/api/spawn-protection)
 {.links-list}

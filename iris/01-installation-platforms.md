@@ -2,14 +2,14 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T07:34:44.395Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris is distributed as one Bukkit-family plugin jar and three self-contained mod jars (Fabric, Forge, NeoForge). This page puts the right artifact on your server and shows how to prove the install worked. Java 25 is required on every platform.
 
-First boot never downloads a world pack. Install one with `/iris download`. A fresh Bukkit installation does provision its four runtime libraries before Iris starts; later unchanged boots use the local library cache. Satisfy the pack's declared external datapacks and complete the registry-loading restart sequence before you create an Iris world.
+First boot never downloads a world pack. Install one with `/iris download`. A fresh Bukkit installation provisions its runtime libraries and the VolmLib native provider for the running server version before Iris starts. Later unchanged boots use the verified local library cache. Satisfy the pack's declared external datapacks and complete the registry-loading restart sequence before you create an Iris world.
 
 Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is already installed and you want a world, skip ahead.
 
@@ -30,12 +30,12 @@ Keep the old jar and complete world backups until you finish the upgrade checks.
 | Requirement | Value |
 |---|---|
 | Java | 25. The mod jars declare `java >= 25` and refuse to load on anything older |
-| Minecraft (plugin) | 26.1.2 – 26.2. One jar covers both. `api-version` is pinned to 26.1 so it loads on the older line too |
+| Minecraft (plugin) | 26.1.2, 26.2 and 26.3. One jar covers all three. `api-version` is pinned to 26.1 so it loads on the older line too |
 | Minecraft (mod) | 26.2 only |
 | Fabric Loader | 0.19.3+ |
 | Forge | 65.x |
 | NeoForge | 26.2.x |
-| Network | Outbound HTTP or HTTPS for `/iris download`, Bukkit ingest of unresolved `datapackImports`, and the first uncached Bukkit runtime-library provision. Once those four libraries and all declared imports are cached and verified, an unchanged startup is network-free. Mod jars remain self-contained |
+| Network | Outbound HTTP or HTTPS for `/iris download`, Bukkit ingest of unresolved `datapackImports`, and the first uncached Bukkit runtime-library provision. Once the runtime libraries, matching native provider, and declared imports are cached and verified, an unchanged startup is network-free. Mod jars remain self-contained |
 
 Before you replace an existing installation:
 
@@ -232,6 +232,12 @@ Only `/iris world replace-overworld`, `/iris world disable|delete` on the primar
 
 Full key list: [03 - Configuration](/iris/03-configuration).
 
+## Native runtime dependencies
+
+The CraftBukkit jar loads `native-common` and the matching versioned VolmLib provider through its runtime dependency loader. Each Iris build pins their versions and SHA-256 checksums. First startup requires access to the dependency repositories, including JitPack, and write access to `plugins/Iris/cache/libraries/`. Keep that cache for subsequent offline starts; changing Iris or the Minecraft version can require another download. Do not install provider jars as separate plugins.
+
+Fabric, Forge, and NeoForge jars include their native implementation.
+
 ## Pack download policy
 
 | Platform | What happens |
@@ -245,7 +251,7 @@ A download updates only the pack directory; it does not rebuild the live registr
 
 ## Running a pack authored on a newer Minecraft
 
-One plugin jar covers 26.1.2 and 26.2, and the built-in packs are authored against the newest game, so a pack can reference registry content the running server does not have. Iris checks every block, item, entity, biome, structure, enchantment, and potion effect key against the live registry when the pack loads. Content that composes a missing key is left out of generation, the rest of the pack generates normally, and the complete list is printed to the console once at startup.
+One plugin jar covers 26.1.2, 26.2 and 26.3, and the built-in packs are authored against the newest game, so a pack can reference registry content the running server does not have. Iris checks every block, item, entity, biome, structure, enchantment, and potion effect key against the live registry when the pack loads. Content that composes a missing key is left out of generation, the rest of the pack generates normally, and the complete list is printed to the console once at startup.
 
 There is nothing to configure: no pack declares a supported version and nothing compares version numbers. Installing a pack on an older supported version is expected to work, and the startup listing tells you what it costs. `/iris pack compat` reprints it in full. See [25 - Pack Management](/iris/25-pack-management).
 

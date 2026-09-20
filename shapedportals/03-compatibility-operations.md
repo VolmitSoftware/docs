@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:20:00.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -24,7 +24,7 @@ Shaped Portals supports Spigot 1.20.1 and newer compatible servers. It does not 
 
 | Platform | Requirement or limit |
 |---|---|
-| Spigot, Paper, and compatible servers | Version 1.20.1 or newer |
+| Spigot, Paper, and compatible servers | Version 1.20.1 or newer, including Paper 26.3 |
 | Folia | Supported; a portal cannot cross independently owned regions |
 | Client | No mod or resource pack required |
 
@@ -34,7 +34,7 @@ Shaped Portals supports Spigot 1.20.1 and newer compatible servers. It does not 
 |---|---|
 | 1.20.1 to 1.20.4 | Java 17 or the version required by your server |
 | 1.20.5 to 1.21.11 | Java 21 or newer as required by your server |
-| 26.1 to 26.2 | Java 25 |
+| 26.1 to 26.3 | Java 25 |
 
 Check [Paper's system requirements](https://docs.papermc.io/paper/getting-started/) and the [Minecraft 1.20.5 release notes](https://www.minecraft.net/article/minecraft-java-edition-1-20-5) for server runtime requirements.
 

@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:20:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 | | |
 |---|---|
-| Runtime JVM | Java 17+ |
+| Runtime JVM | Java 17+; Minecraft 26.1 through 26.3 requires Java 25 |
 | Compile target | Bukkit/Paper API 1.20.1 |
 | `api-version` | `1.20` |
 
@@ -20,7 +20,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 | Runtime | Support | Notes |
 |---|---|---|
-| Paper | Primary | Public PluginManager load path |
+| Paper | Primary | Minecraft 1.20.1 through 26.3; public PluginManager load path |
 | Purpur | Primary | Paper-family. Same load and unload paths |
 | Leaf | Primary | Paper-family fork. Treated like Paper |
 | Folia | Supported | GlobalRegionScheduler only. Hot-reload is best-effort |

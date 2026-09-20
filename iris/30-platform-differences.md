@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -117,7 +117,7 @@ Full command tables and stubs: [04 - Commands & Permissions](/iris/04-commands-p
 
 "Message only" means the command exists and prints an explanation of where to run it instead. It is not a silent failure.
 
-Jigsaw pack resources are shared runtime data; only the in-game authoring surface is Bukkit-only. Bukkit exposes one global Studio project and world and one owning Jigsaw session, and non-owner block, inventory, interaction, and mutating-command changes are cancelled across that Studio world. A strict `VANILLA_PORTABLE` export targets unmodded Minecraft 26.2.
+Jigsaw pack resources are shared runtime data; only the in-game authoring surface is Bukkit-only. Bukkit exposes one global Studio project and world and one owning Jigsaw session, and non-owner block, inventory, interaction, and mutating-command changes are cancelled across that Studio world. A strict `VANILLA_PORTABLE` export targets Minecraft 26.3 on 26.3 servers and Minecraft 26.2 on earlier supported servers.
 
 ## Platform-sensitive settings
 

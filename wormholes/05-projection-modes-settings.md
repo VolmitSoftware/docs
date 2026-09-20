@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -214,6 +214,8 @@ Entity projection covers players, living entities, and supported non-living
 entities. It carries position, pose, velocity, metadata, equipment, passengers,
 leash relationships, animations, hurt state, item-frame contents, and map data
 where the platform supports them. Range, refresh cadence, and the entity cap come from `[render]`. Partially exposed entities remain visible.
+
+Entities also appear through nested local portal views. Their position and motion follow each linked frame, and visibility is restricted by the apertures along the view. Nested views share the primary view's entity cap and follow `recursive-portal-depth`.
 
 ## Arrival warmer vs chunk pre-send
 

@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ An Iris jigsaw structure is a set of objects (pieces). The assembler snaps them 
 
 - **Planar** mode is a constrained grid for village-like layouts.
 - **Spatial** mode is freeform for strongholds, towers, and multi-level rooms.
-- A project created with `compatibility=vanilla` can also be exported as a strict Minecraft 26.2 vanilla datapack.
+- A project created with `compatibility=vanilla` can also be exported as a strict vanilla datapack for Minecraft 26.3 on 26.3 servers, or Minecraft 26.2 on earlier supported servers.
 
 The JSON schema, the assembly rules, natural placement, and datapack export are on [21b - Jigsaw Resources](/iris/21b-jigsaw-resources). General Studio behavior is in [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas). Placement context is in [18 - Structures Overview](/iris/18-structures-overview). Native and datapack structures are in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
@@ -366,7 +366,7 @@ The create/open `<key>` is the root structure's internal lowercase resource path
 | `rules fallback <poolKey> <fallbackPoolKey\|none>` | Atomically set or clear one owned pool's direct fallback after compiling the complete graph |
 | `preview goto` | Teleport above the permanent seed-`1337` block preview. Alias `teleport` |
 | `preview assemble [seed=1337]` | Compute a deterministic read-only assembly at the player coordinates and show its bounds as purple particles for 10 seconds. Places no blocks |
-| `export [namespace=iris] [output=jigsaw-export] [format=zip] [replace=false]` | Start a background strict export of the clean on-disk graph as a Minecraft 26.2 directory or zip |
+| `export [namespace=iris] [output=jigsaw-export] [format=zip] [replace=false]` | Start a background strict export of the clean on-disk graph as a directory or zip for Minecraft 26.3 on 26.3 servers, or Minecraft 26.2 on earlier supported servers |
 | `delete [confirm=false]` | With `confirm=true`, inspect reverse references, close Studio, and atomically remove the complete owned project. External references or changed ownership bytes block deletion. Alias `remove` |
 
 The control chest is the primary workflow. Its six-row GUI manages workcell capacities and labels, per-variant dimensions and labels, enabled states, rotation, pool-entry weights and chances, themes, piece rules, mandatory caps, preview navigation, toolbox sticks, and deletion. Accepted asynchronous actions close the GUI while work runs; wait for the player message, then reopen the chest.

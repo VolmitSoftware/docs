@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T02:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -17,9 +17,11 @@ Put the Gloss jar in `plugins/` and start the server once. Settings live in `plu
 | Item | Value |
 |---|---|
 | Server | Paper, Purpur, Leaf, Folia, Canvas or Spigot |
-| Minecraft | `26.1.2 - 26.2` |
+| Minecraft | `26.1.2 - 26.3` |
 | Java | 25 |
-| Plugin version | `3.0.1-26.2`, api-version `26.1` |
+| Plugin version | `3.0.3-26.2`, api-version `26.1` |
+
+Use a build of your chosen server software that supports your Minecraft version.
 
 Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, Vault adds group conditions, and supported item plugins provide custom item icons.
 
