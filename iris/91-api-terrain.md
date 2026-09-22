@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-14T00:56:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -118,3 +118,13 @@ Recorded cave facts include only cells that remain open after terrain reconcilia
 `EngineMantle.cleanupChunk(x, z)` and `forceCleanupChunk(x, z)` validate coverage before removing temporary slices. `cleanupChunksCoveredBy(x, z, force, callback)` visits candidates affected by a completed chunk and calls back only for newly cleaned chunks. Coordinates are chunk coordinates.
 
 `cleanupCoveredChunk(x, z, force)` requires the caller to have already verified the complete coverage halo. It performs the atomic cleaned-flag and slice update without checking coverage itself. Prefer the coverage-checking methods for ordinary callers. Retained mantle slices survive both normal and forced cleanup.
+
+## Hydrology core sampling
+
+`HydrologyRoutingTerrainSampler.supportsSharedGridSamples()` defaults to `false`. Return `true` only when matching coordinates and spacing produce identical terrain samples across grid requests, including grid edges. This permits reuse of neighboring grid samples during source selection.
+
+Custom `HydrologyNaturalTerrainSampler` implementations can override `sampleLandHeight(x, z)` to return the same natural land height as `sampleBasisWithoutSlope(x, z)` without constructing a full terrain sample. Return `Double.NaN` for ocean or unavailable terrain. The default implementation delegates to the basis sampler.
+
+`HydrologyCavePlan.estimatedRetainedBytes()` returns a conservative byte estimate for its compact storage and spatial index. Use it for cache weighting; it is not a JVM heap measurement.
+
+For repeated surface windows of one course, call `SurfaceFootprintCompiler.prepare(course)` once and pass the returned `PreparedCourse` to `compile(prepared, bounds)`. Reuse it sequentially with the same compiler instance.

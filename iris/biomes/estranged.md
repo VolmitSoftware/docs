@@ -2,14 +2,14 @@
 title: "Estranged Biomes"
 description: "Navigation for the built-in estranged biomes across Overworld and Underworld"
 published: true
-date: 2026-09-13T17:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, estranged"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Unusual woodland, wetland, and sculptural land biomes selected by the Estranged region.
 
-This family has no child-only reachable variants.
+This family has **1 child-only reachable variant**, Emberbark Poplar Grove, documented with [Emberbark Woods](/iris/biomes/estranged/emberbark-woods#emberbark-poplar-grove).
 
 Estranged cave decoration includes Frostspar with three to five tapered shards, each five to nine blocks long, on continuous organic supports. Overworld uses solid quartz and calcite. Underworld retains its separate base and crying-obsidian tips.
 
@@ -37,4 +37,4 @@ Return to [44 - Biome Catalog](/iris/44-biome-catalog).
 
 ## 3D terrain coverage
 
-The paired packs explicitly configure 15 terrain identities in this family: 7 hills, 1 lowland, 4 protected, 3 sculptural. Each entry lists the numeric `terrain3D` settings for its root and children.
+The paired packs explicitly configure 16 terrain identities in this family: 8 hills, 1 lowland, 4 protected, 3 sculptural. Each entry lists the numeric `terrain3D` settings for its root and children.

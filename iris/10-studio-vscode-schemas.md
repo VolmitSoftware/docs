@@ -2,23 +2,23 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-22T04:03:45.933Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Studio opens a pack in a temporary world and applies accepted pack edits to new chunks. It generates the same blocks, biomes, structures, and terrain as a normal world with the same pack and seed. Existing chunks keep the terrain they were generated with.
+Studio previews a pack in a temporary world with a chosen seed. Saved pack edits apply to new chunks; existing chunks keep their terrain.
 
 Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Rivers](/iris/36-rivers).
 
 ## The edit loop
 
-Prerequisites: a writable packs directory, operator access on Bukkit or gamemaster access on a mod loader, and VSCode/Cursor (or IntelliJ) on the machine that holds the pack folder. Keep the server console visible. Hotload failures are always reported there; routine success and timing detail need `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders.
+Prerequisites: a writable packs directory, operator access on Bukkit or gamemaster access on a mod loader, and VSCode/Cursor (or IntelliJ) on the machine that holds the pack folder. Keep the server console visible for validation errors.
 
 ### Bukkit-family
 
 1. **Create a project.** `/iris studio create name=tutorial`
-   Writes `packs/tutorial/` with a dimension, region, biome, generator, and a `tutorial.code-workspace`. Creation runs asynchronously and may report that a restart is needed before the pack can be opened.
+   Writes `packs/tutorial/` with a dimension, region, biome, generator, and a `tutorial.code-workspace`. Follow any restart prompt before opening the pack.
 2. **Open it as a world.** `/iris studio open tutorial seed=1337`
    You enter the transient world in spectator mode at its fixed generator anchor, centered on `0,0` near Y 96. A fixed seed matters because you will be comparing the same coordinates across reloads.
 3. **Open the editor workspace.** `/iris studio vscode dimension=tutorial`
@@ -41,54 +41,44 @@ Same loop, positional arguments, and the modded studio create always copies a te
 5. Wait for the hotload result, then enter newly generated terrain and check it with `/iris what biome`.
 6. `/iris pack validate tutorial`, then `/iris studio close`.
 
-The loop passes when the editor binds the generated schema, hotload succeeds, validation reports no blocking errors, and newly generated chunks show the change. Create a production world only after that gate.
+Validate your changes and inspect new chunks before using the pack in a production world.
 
-A rejected height or dimension-type change is not evidence that hotload is broken. Those changes are refused by design; see **Hotload rules**.
+### Opening requirements
 
-### When something goes wrong
+Complete any requested server restart and resolve blocking pack-validation errors before opening Studio. Bukkit ordinary Studio accepts `force=true` when only a registry restart is pending; it does not bypass pack validation or native-integration failures.
 
-On Bukkit, a Java agent or server code injection failure blocks every Studio world opening, including `force=true`. Follow [Java agent recovery](/iris/01-installation-platforms#recover-from-a-java-agent-failure) and restart completely before retrying.
+Changes to height or dimension type require closing and reopening Studio, and may require a restart. See [Hotload rules](/iris/10-studio-vscode-schemas#hotload-rules). Studio worlds are temporary: reopening after a restart creates a new world from the saved pack.
 
-| Symptom | Meaning | Recovery |
-|---|---|---|
-| Ordinary or Jigsaw `open` reports startup validation pending, missing, failed, restart-required, or blocking pack errors | Datapacks or the pack graph cannot safely build the transient world | Complete the requested restart or run the platform's `pack validate` form, fix the first blocking error, and retry. Bukkit ordinary Studio alone accepts `force=true` to attempt the currently loaded registry state when only the restart boundary remains; it never bypasses blocking pack validation |
-| Save reports hotload failure | Validation rejected the edit, or generation activation failed | Fix the first console error. Rejected edits keep the current generation. If activation stopped the engine, close and reopen Studio after repair |
-| Height, environment, or generated dimension-type change is rejected | The edit violates the Studio runtime contract | Close Studio and reopen. On modded, restart when regenerated dimension-type datapacks require a registry reload |
-| A valid change is invisible | The chunks you are standing in are already materialized, or the edited resource is unreachable from the active dimension | Move to new chunks. Trace dimension → region → biome to confirm the resource is actually referenced. Use `focus`/`focusRegion` or a buffet studio mode to isolate |
-| No autocomplete, or resource keys are stale | Schemas were not generated or refreshed, or the editor never opened the workspace | Run `/iris studio update`, then open the pack's `.code-workspace`. On headless servers open it manually |
-| The Studio world disappears after a restart | Studio worlds are transient and purged on purpose | Reopen the pack. `packs/<key>/` is the source of truth, not the world folder |
-
-If Studio cleanup fails outright, Iris blocks further world mutations and keeps the temporary world folder. Resolve the reported error, then restart manually to clear that state.
+Studio opening automatically prepares the entry area’s hydrology before generating its terrain, then takes you into the world. Matching saved plans are reused automatically, including after a server restart. Normal Studio and production worlds can share plans when the pack, seed, generator, and relevant world settings match; biome-buffet layouts remain separate.
 
 ## What Studio is
 
 | Concept | Behavior |
 |---------|----------|
 | Pack workspace | Packs live under the platform data directory in the folder named `packs` |
-| Studio world | On Bukkit, generation reads an immutable snapshot of the pack while the watcher reads your authoring folder. Identical bytes create no new activation |
-| Hotload | Accepted JSON, IOB, and PNG edits become a new generation activation. Existing chunks keep their earlier generation |
-| Hotload contract | Iris refuses hotload if the dimension type key, exact environment, or effective generated dimension type changes. The generated type includes min height, total height, logical height, resolved `dimensionOptions`, and the `fullbright` ambient-light override |
-| Non-studio worlds | No pack file watcher. Production worlds retain immutable pack definitions per generation epoch |
+| Studio world | Temporary world opened from the selected pack and seed |
+| Hotload | Accepted JSON, IOB and PNG edits apply to new terrain |
+| Non-studio worlds | Pack edits require the production world-update workflow in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 
 Studio settings live in `iris.json` under `studio`:
 
 | Key | Default | Meaning |
 |-----|---------|---------|
-| `openVSCode` | `true` | When true and the JVM is not headless, `open`/`vscode` may launch the desktop opener on the pack's `*.code-workspace`. Set false on servers where a desktop launch would be pointless or unwanted |
-| `entitySpawning` | `true` | Only affects Studio worlds. False stops Iris ambient entity spawning there. Production worlds always spawn regardless of this key |
+| `openVSCode` | `true` | Allows `open`/`vscode` to launch the editor on the server machine. Set false on remote or headless hosts |
+| `entitySpawning` | `true` | Enables Iris ambient spawning in Studio. Does not change production-world spawning settings |
 | `disableTimeAndWeather` | `true` | Freezes weather and the day cycle in studio worlds and sets noon where the runtime clock allows. Set false to let them run while authoring. Night and storm Iris spawners do not fire here until this is false or you test in a production world |
-| `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot, which warms the hydrology reused by a later open of the same pack and seed |
+| `autoStartDefaultStudio` | `false` | Opens a Studio world for the default pack automatically at startup |
 
 ## Hotload rules
 
-- The watcher runs only in a Studio world that is not closing, and Jigsaw Studio suppresses it entirely.
+- Automatic pack hotload is available in ordinary Studio. Close and reopen Jigsaw Studio to apply external pack edits.
 - Edit the active server's authoring folder under `plugins/Iris/packs/<pack>` on Bukkit. A separate checkout or another server's pack copy is not watched. Normal editor saves, file replacements, and FTP uploads are detected; temporary files and `.iris` output are ignored.
 - Invalid edits leave the current pack active and are reported in the console. Fix the first error and save again.
 - Height, environment, dimension key, generated dimension type, and coordinate scale cannot hotload. Close and reopen Studio after changing them. New or changed required registry definitions can require a server restart. See [11 - Dimensions](/iris/11-dimensions).
-- Existing chunks keep their terrain. New terrain reconciles against the frozen boundary over `generator.generationTransitionWidthBlocks`, so a large edit can still leave a visible seam. Inspect new chunks beyond that band to judge the replacement pack alone.
+- Existing chunks keep their terrain. Changes blend across `generator.generationTransitionWidthBlocks`; inspect new chunks beyond that transition to see the edited pack.
 - Dimension `allObjectScaleFactor` edits do hotload. New object placements use the accepted factor; existing objects keep their blocks, explicit placement scales still override it, and jigsaw pieces are excluded.
 
-Saved biome and region identities keep the pack definitions they were generated with, so position inspection, ambient spawns, and effects stay consistent with the terrain around them. Repeated edits increase disk use because those definitions are retained. Closing Studio deletes its temporary world and history; reopening starts fresh from the latest authoring pack.
+Previously generated chunks keep their original biome names, spawns and effects. Close and reopen Studio to start a fresh temporary world from the latest pack.
 
 ## Commands (Bukkit)
 
@@ -100,7 +90,7 @@ Root: `/iris studio`, aliases `std` and `s`. Keyed arguments. The first column s
 | `close` | `x` | Closes the active studio project and world |
 | `create [name=studio] [template=<dimension>]` | `+` | Creates a pack under `packs/<name>` after startup validation is ready. A named template must already be installed and validate as loadable. Without one, Iris writes the starter skeleton below |
 | `vscode [dimension=default]` | `vsc` | Opens the pack's VSCode workspace, generating it if missing |
-| `update [dimension=default]` | | Rewrites `<pack>/<name>.code-workspace` and queues regeneration of `.iris/schema/*` |
+| `update [dimension=default]` | | Refreshes the workspace and JSON schemas |
 | `version [dimension=default]` | | Prints the dimension's `version` field |
 | `pkg [dimension=default] [obfuscate=false] [minify=true]` | `package` | Compiles the pack into a distributable archive |
 | `importvanilla <dimension> [variants=3] [structures=true]` | `importv`, `iv` | Captures vanilla features and structures into the pack |
@@ -116,7 +106,7 @@ Root: `/iris studio`, aliases `std` and `s`. Keyed arguments. The first column s
 
 Permissions and the full `/iris` tree: see [04 - Commands & Permissions](/iris/04-commands-permissions).
 
-The Studio scoreboard shows the region and biome under you, including saved cave and flooded-biome overrides. `Loading...` rows retry on the normal 20-tick refresh; `Unavailable` means the saved read failed and the cause was logged once.
+The Studio scoreboard shows the region and biome under you, including cave and flooded-biome overrides.
 
 ## Commands (Modded)
 
@@ -130,17 +120,17 @@ These subcommands are registered on modded but only report why they are unavaila
 
 The Vision map, Noise Explorer, and Image Map Studio open on the **server's own desktop**. On a headless server their commands report that no display is available and return. They never create a window on a remote player's computer. On macOS, Command-Q or Dock Quit closes every Iris desktop window but does not terminate the server JVM.
 
-All three pan by dragging and zoom with the mouse wheel or trackpad, about 5.7% per notch, keeping the world coordinate under the pointer fixed.
+Drag to pan and use the mouse wheel or trackpad to zoom.
 
 **Vision map** (`/iris studio map`) shows a render-mode selector, world coordinates, scale, render progress, and contextual Height and River legends. The `Entities` toggle beside `Grid` shows or hides red living-entity markers; player markers always stay. Clicking teleports the player who opened the map, deriving the landing Y from the authored terrain and fluid field. Manual pan or zoom disables Follow. Hover reads the same biome domain the map draws.
 
-The **River network** mode reads the accepted hydrology footprint. Its labels are `headwater / source`, `surface pool`, `riffle`, `cascade`, `waterfall`, `sinkhole`, `underground pool`, `underground drop`, `coastal grotto`, `inland grotto`, `mouth`, `deep pool`, and `deep channel`. Rejected candidates appear only in a separate diagnostic channel as `projected source`, `projected outlet`, or `projected deep fluid`, with their rejection reason. The normal **Biome** view composites accepted surface hydrology over the natural biome domain. Vision also exposes compiled named image-map layers, using the same coordinate transform as generation.
+The **River network** mode labels rivers, pools, cascades, waterfalls, sinkholes, grottos and mouths. Its diagnostic view also shows rejected candidates and their reasons. The **Biome** view includes river biomes. Vision can display named image-map layers.
 
-**Noise Explorer** (`/iris studio noise`) loads a pack generator when you select it. Its seed field starts from the command seed; **Apply** rebuilds the selected sampler deterministically. Choose the signed, terrain, or grayscale palette from the toolbar. The status strip reports source, coordinates, scale, sampled range, and render progress, including invalid or out-of-range values. Slow sources deliberately stay coarser rather than forcing an exact-pixel pass.
+**Noise Explorer** (`/iris studio noise`) previews a selected pack generator. Enter a seed and click **Apply**, then choose a signed, terrain or grayscale palette. The status strip shows coordinates, scale, sampled range and render progress.
 
-**Image Map Studio** imports a canonical PNG, reports its dimensions and channel layout, assigns a typed resource, configures coordinates and decoding, previews interpreted height, target, or mask data with chunk, region, and world-boundary overlays, and exports the source, `image-maps/<key>.json`, and the dimension binding. Presets retain decoding and transform settings; replacing the source reruns inspection without rebuilding the binding. See [37 - Image Maps](/iris/37-image-maps).
+**Image Map Studio** imports PNGs, configures their coordinates and interpretation, and previews height, biome targets or masks. Export saves the image and its pack configuration. See [37 - Image Maps](/iris/37-image-maps).
 
-> On Paper-family servers, a vanilla `/tp` into an unloaded Studio chunk is reissued as an asynchronous teleport. Plugin integrations are not rewritten and must use Paper's asynchronous teleport API when targeting an unloaded Studio chunk.
+> On Paper-family servers, `/tp` into new Studio terrain waits for the destination chunks to load.
 {.is-info}
 
 ## Creating a pack (starter skeleton)
@@ -176,62 +166,36 @@ With a template (`/iris studio create name=mypack template=overworld`), Iris req
 
 ## Studio open workflow
 
-1. Resolve pack folder `packs/<dimensionKey>/` with a loadable `dimensions/<key>.json`.
-2. Pack validation must not report blocking errors. An unvalidated pack fails closed.
-3. Close the existing studio if one is open.
-4. Create a studio world bound to that pack folder, not to a production install copy.
-5. Optionally launch VSCode when `studio.openVSCode` is true.
-6. Datapack installation requires a restart only when the selected pack needs new or changed dimension-type, custom-biome, or biome-tag registry content. The message tells you to re-run `open` after restarting.
+Install the pack, validate it, then run `/iris studio open <pack> seed=1337` on Bukkit or `/iris studio open <pack> 1337` on mod loaders. Opening a pack closes the current Studio.
 
-Object, structure, jigsaw, pool, and other non-registry edits never force that restart. Creating a persistent world from the same pack does not either.
+If the pack adds or changes dimension types, custom biomes or biome tags, follow the restart prompt and repeat `open` afterward. Object, structure, jigsaw and pool edits do not require that registry restart.
 
-Object and Jigsaw Studio use flat authoring floors and the `minecraft:plains` biome, so their biome and base-height queries do not sample the pack's terrain or hydrology. Standard Studio keeps the complete terrain and hydrology pipeline for the selected pack and seed.
+Object and Jigsaw Studio use flat authoring floors and the plains biome. Ordinary Studio previews the pack's terrain and hydrology.
 
 ## VSCode workspace
 
-Iris writes `<pack>/<packName>.code-workspace`:
+Open `<pack>/<packName>.code-workspace` in VSCode or Cursor. It enables JSON suggestions, hover descriptions and validation, and saves files when you switch focus. Iris also configures IntelliJ schemas in `<pack>/.idea/jsonSchemas.xml`.
 
-| Workspace setting | Value / purpose |
-|-------------------|-----------------|
-| `folders` | `[{ "path": "." }]` — the pack root |
-| `workbench.colorTheme` | `Monokai` (dark preference `Solarized Dark`) |
-| `files.autoSave` | `onFocusChange` — so switching windows triggers a hotload |
-| `[json]` editor options | Bracket indent, smart accept-on-enter, trim trailing whitespace and final newlines, quick suggestions inside strings, replace-mode insert, keyword/snippet/word suggestions off so only schema entries are offered |
-| `json.maxItemsComputed` | `30000` — large enough that big registry enums still complete |
-| `json.schemas` | Array of `{ fileMatch, url }` entries, sorted by url |
-
-The same call merges the mappings into `<pack>/.idea/jsonSchemas.xml` so IntelliJ picks up the schemas. IntelliJ mapping failures are reported but cannot suppress the VSCode workspace or schemas. The workspace file is only rewritten when its rendered content changes. If it is unparseable, Iris deletes and recreates it, losing hand-edited workspace settings but never pack content.
+Run `/iris studio update dimension=<pack>` on Bukkit or `/iris studio update <pack>` on mod loaders to refresh the workspace. If the workspace file is invalid, Iris recreates it; custom workspace settings are lost, but pack content is preserved.
 
 ## Schema generation
 
-Iris reflects each registrant or snippet class and emits JSON Schema draft-07:
-
-- `$schema` is `http://json-schema.org/draft-07/schema#`.
-- `$id` is `https://volmit.com/iris-schema/<lowercased class simple name>.json`.
-- Every property's `description` is assembled from the field name, its `@Desc` text, the type name, and the type's own `@Desc`. It also includes a snippet hint where applicable and the field's **default value**, read by instantiating the owning class. That is why hovering a field in the editor tells you what it defaults to without opening the source.
-- `@MinNumber`/`@MaxNumber` become `minimum`/`maximum` on numeric fields and `minLength`/`maxLength` on string fields. `@Required` fills the `required` array. `@ArrayType` supplies the array item schema.
-- Registry annotations become `enum` lists. `@RegistryListResource` covers pack resource keys of a given type. `@RegistryListFunction` covers computed lists such as mantle component flags. Platform registry annotations cover live server registries: `@RegistryListBlockType`, `@RegistryListBiome`, `@RegistryListEntityType`, `@RegistryListItemType`, `@RegistryListStructure`, `@RegistryListVanillaStructure`, `@RegistryListVanillaStructureSet`, `@RegistryListNativeJigsawPool`, `@RegistryListPotionEffect`, `@RegistryListEnchantment`, `@RegistryListSpecialEntity`, `@RegistryListFont`, `@RegistryMapBlockState`.
-- A field with no `@Desc` still emits, with the description `No Field Description`, and logs a warning naming the field and class.
-
-> **These annotations are editor hints only.** Nothing validates `@Required`, `@MinNumber` or `@MaxNumber` at load time by itself. The schema underlines an out-of-range value in your editor, but a feature needs an explicit runtime validator to reject it. Dimension-type height and world-boundary rules in [11 - Dimensions](/iris/11-dimensions), the hydrology and `riverPolicy` contracts in [36 - Rivers](/iris/36-rivers), and the image-map contract in [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) have explicit runtime validation.
-{.is-warning}
+Generated schemas provide field names, descriptions, defaults, allowed values and resource-key suggestions. Hover a field for its description. Use `/iris pack validate` to check the pack before opening a world; editor hints do not replace pack validation.
 
 ### Snippets
 
-Classes annotated `@Snippet("<type>")` get their own schema at `.iris/schema/snippet/<type>-schema.json`. Every field of a snippet type is emitted as an `anyOf` of the inline object and a string. The string alternative is itself an `anyOf` of an enum of the snippet files that currently exist and the pattern `^snippet/<type>/`. Both existing and not-yet-created snippet paths validate.
-
-At load time a string in a snippet-typed position is resolved as a file: `"snippet/decorator/wildflowers"` reads `<pack>/snippet/decorator/wildflowers.json` and parses it in place. This works anywhere the type appears, including inside arrays. A string that does not start with `snippet/` resolves to null. A missing snippet file logs an error naming the reference and the JSON path.
+Where a field supports snippets, supply either an inline object or a reference such as `"snippet/decorator/wildflowers"`. Create the referenced file at `<pack>/snippet/decorator/wildflowers.json`. References also work inside arrays.
 
 ### File matching
 
-Each loader that supports schemas emits seven glob patterns per folder so nested resource keys are covered:
+The workspace applies schemas to JSON files up to seven folder levels deep:
 
 | Pack folder pattern | Schema URL (relative to pack) |
 |---------------------|--------------------------------|
 | `/<folder>/*.json` through `/<folder>/*/*/*/*/*/*/*.json` (7 depth levels) | `./.iris/schema/<folder>-schema.json` |
 | `/snippet/<type>/*.json` through 7 levels | `./.iris/schema/snippet/<type>-schema.json` |
 
-Folders with schemas: `dimensions`, `regions`, `biomes`, `generators`, `image-maps`, `loot`, `entities`, `spawners`, `markers`, `blocks`, `expressions`, `mods`, `structures`, `jigsaw-pools`, `jigsaw-pieces`. The object, source-image, and matter loaders hold binary content, so `objects/`, `images/` and `matter/` get no schema. Typed JSON under `image-maps/` does.
+Folders with schemas: `dimensions`, `regions`, `biomes`, `generators`, `image-maps`, `loot`, `entities`, `spawners`, `markers`, `blocks`, `expressions`, `mods`, `structures`, `jigsaw-pools`, `jigsaw-pieces`. Binary files under `objects/`, `images/` and `matter/` have no JSON schema.
 
 Files under `.iris/schema/` are generated editor artifacts. They are safe to delete and are rewritten on the next workspace update. Pack content is the JSON under the type folders.
 
@@ -239,33 +203,33 @@ Files under `.iris/schema/` are generated editor artifacts. They are safe to del
 
 | Trigger | Effect |
 |---------|--------|
-| `/iris studio update dimension=<dim>` | Rewrites the workspace and queues schema writes |
-| `/iris studio open` | Refreshes the canonical workspace and writes every referenced schema before an optional desktop launch |
-| `/iris studio create` | Builds the workspace config and queues schema writes |
-| Successful hotload | The platform hook may refresh the workspace |
+| `/iris studio update dimension=<dim>` | Refreshes the workspace and schemas |
+| `/iris studio open` | Refreshes the workspace and schemas before opening the editor |
+| `/iris studio create` | Creates the workspace and schemas |
+| Successful hotload | May refresh the workspace; use `update` to refresh explicitly |
 
-Registry-backed enums are captured from the live server. **A schema generated on a server without a mod installed will not offer that mod's blocks.** Regenerate after changing the server's mod or datapack set. On Bukkit-family servers, block and item enum discovery excludes legacy `Material` constants.
+Block, item and other content suggestions reflect what is installed on the server. Refresh schemas after changing mods or datapacks.
 
 ## Studio dimension modes
 
-The dimension field `studioMode` swaps in a debug generator. It is applied by the Bukkit chunk generator only. Fabric, Forge and NeoForge ignore it.
+Set the dimension field `studioMode` to preview biomes or objects on Bukkit. Fabric, Forge and NeoForge ignore this field.
 
 | Value | Effect |
 |-------|--------|
 | `NORMAL` | Default generation |
 | `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` | Lays every biome out in a grid of that cell size so palettes and decorators can be compared side by side |
 | `OBJECT_BUFFET` | Object studio generator. Also forced automatically while an object studio session is active |
-| `REGION_BUFFET` | Deprecated alias of `NORMAL`. It installs no studio generator and will be removed in a future release |
+| `REGION_BUFFET` | Behaves as `NORMAL` |
 
-Biome Buffet sorts supported pack biomes by load key and places them from chunk `(0, 0)` along positive X, then positive Z. Each cell treats its selected biome as land and uses its authored owner region, or a deterministic neutral owner when no region references it. Cells outside the layout contain a barrier floor. Changing cells neither changes `focus` nor hotloads the pack.
+Biome Buffet sorts supported pack biomes by load key and places them from chunk `(0, 0)` along positive X, then positive Z. Cells display land biomes; areas outside the layout have a barrier floor.
 
 These are testing fields, not production world modes; the production engine mode is `mode.type` (see [11 - Dimensions](/iris/11-dimensions)). Remove `studioMode` before packaging.
 
-Jigsaw Studio does not add a `studioMode` value. `/iris jigsaw open` and `create` select its generator transiently for one Studio activation.
+Use `/iris jigsaw open` or `/iris jigsaw create` for Jigsaw Studio.
 
 ## Jigsaw Studio
 
-`/iris jigsaw` opens one structure graph through the same transient Studio lifecycle, with its own generator, workcell layout, control GUI, and autosave. It suppresses ordinary pack-file hotload, so close and reopen it to pick up unrelated external pack edits. Bukkit has one global Studio world and one owning Jigsaw session; non-owner edits are cancelled.
+Use `/iris jigsaw` to edit a structure graph with a control GUI and autosave. Close and reopen it to apply external pack edits. Only the session owner can edit the active Jigsaw Studio world.
 
 The whole workflow, commands, marker rules, portability blockers, and recovery steps are in [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The JSON is in [21b - Jigsaw Resources](/iris/21b-jigsaw-resources).
 
@@ -276,6 +240,6 @@ The whole workflow, commands, marker rules, portability blockers, and recovery s
 | Paper / Purpur / Folia (Bukkit plugin) | Full studio command set plus file-watch hotload on studio worlds. `studioMode` honored. Jigsaw Studio available |
 | Fabric / Forge / NeoForge | Studio open/create/workspace/package and a subset of tooling. No Bukkit-only importers or inventory GUIs. `studioMode` ignored. No Jigsaw Studio authoring commands |
 
-Pack JSON contracts are shared across every platform, and schemas are built from the same core models, so a pack authored on one platform loads on all of them.
+Pack JSON is shared across platforms. Install any content the pack requires on the destination server.
 
-Hydrology is authored through the ordinary dimension, region, and biome schemas: `hydrology` owns `rivers` and `deepFluids`, and `riverPolicy` resolves dimension → region → biome. Regenerate schemas, validate the pack, then use Vision's **River network** mode to inspect accepted feature footprints. The complete field contract is in [36 - Rivers](/iris/36-rivers).
+Edit `hydrology` and `riverPolicy` through the dimension, region and biome schemas. Refresh schemas, validate the pack, then inspect rivers in Vision's **River network** mode. See [36 - Rivers](/iris/36-rivers).

@@ -2,7 +2,7 @@
 title: "Image Maps"
 description: "Drive Iris generation from PNG data: the resource model, accepted source images, and the Image Map Studio workflow"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -158,7 +158,7 @@ The guided desktop workflow writes canonical PNG assets, `image-maps` resources,
 | Binary mask | Threshold footprint, falloff, and configured smoothing |
 | Grayscale or alpha mask | Continuous zero-through-one weight; composed threshold and falloff are visible on the target preview |
 
-Composed previews follow runtime application semantics. Biome, region, and surface-block targets select the mapped value at a final mask weight of at least `0.5` and leave the ordinary pipeline in control below it. Terrain-height masks blend from the active engine's procedural height baseline at weight `0` to the mapped height at weight `1`; they are not previewed against a synthetic zero-height plane.
+Previews show the map's effect on generation. Biome, region, and surface-block targets use the mapped value at a final mask weight of at least `0.5` and normal generation below it. Terrain-height masks blend from normal terrain at weight `0` to the mapped height at weight `1`.
 
 ### Grid and coverage overlays
 

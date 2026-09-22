@@ -1,72 +1,46 @@
 ---
-title: "ServerMultiplexor"
-description: "Local Minecraft server instances and automated gameplay checks"
+title: Multiplexor
+description: Local and Pterodactyl Minecraft servers, remote profiling, and gameplay tools
 published: true
-date: 2026-09-19T00:00:00.000Z
-tags: "servermultiplexor, testing"
+date: 2026-09-22T00:00:00.000Z
+tags: servermultiplexor, tools
 editor: markdown
 dateCreated: 2026-09-10T02:40:32.975Z
 ---
 
-ServerMultiplexor runs local Minecraft server instances, caches server builds, and drives Mineflayer bots against them. An isolated instance leaves out shared plugin drop-ins, Iris packs, and operator data, so a check starts from a known state.
+Multiplexor manages local Minecraft servers and Pterodactyl fleets from one terminal dashboard or command line. It provides builds, backups, content management, Velocity networks, remote JProfiler captures, and automated gameplay tools.
 
 | | |
 |---|---|
 | Platforms | Windows, macOS, Linux |
-| Launcher | `.\start.ps1` on Windows, `./start.sh` on macOS and Linux |
-| Gameplay harness | Mineflayer, needs Node.js 22 or newer |
-| Minecraft support | Through 26.1. 26.2 is not supported by the pinned harness |
-| Reports | `consumers/plugin-consumers/state/gameplay-tests/<instance>/` |
+| Source launchers | `./start.sh` on macOS/Linux; `.\start.ps1` on Windows |
+| Consumers | Plugin, Forge, Fabric, NeoForge; each has separate instances, drop-ins, and builds |
+| Remote profiling | Requires Pterodactyl API access and SSH to the Wings host with Docker permissions |
+| Gameplay tools | Node.js 22+ and npm; pinned Mineflayer supports Minecraft through 26.1, not 26.2 |
 
-> A gameplay report proves protocol-visible behavior. It says nothing about client rendering, sound, or resource packs.
-{.is-info}
+## Server management
 
-## Start it
+- [00 - Visual guide *Screenshots, downloads, first server, remote setup, and updates*](/servermultiplexor/00-visual-guide)
+- [01 - Installation and updates *Requirements, launchers, global options, and release updates*](/servermultiplexor/01-installation-and-updates)
+- [02 - Dashboard and wizard *Monitoring, keyboard controls, and guided actions*](/servermultiplexor/02-dashboard)
+- [03 - Local servers *Consumers, instances, runtime settings, backups, and diagnostics*](/servermultiplexor/03-local-servers)
+- [04 - Builds and content *Server builds, drop-ins, addons, and managed downloads*](/servermultiplexor/04-builds-and-content)
+- [05 - Remote servers *Accounts, Pterodactyl commands, file transfers, and Multiplexor Drive*](/servermultiplexor/05-remote-servers)
+- [06 - Remote profiling *SSH setup, startup captures, runtime attachment, and live JProfiler sessions*](/servermultiplexor/06-remote-profiling)
+- [09 - Proxy networks *Velocity, backend routing, and proxy plugins*](/servermultiplexor/09-proxy-networks)
+{.links-list}
 
-On Windows, run `.\start.ps1` from the ServerMultiplexor checkout in PowerShell. It compiles `multiplexor.exe` when the source changes. No WSL, Git Bash, or tmux required.
+## Gameplay and development
 
-On macOS and Linux, run `./start.sh`. It builds the `multiplexor` executable and uses tmux for interactive runtime consoles; if tmux is missing and Homebrew is installed, it installs tmux for you.
+- [07 - Gameplay checks *Scenarios, assertions, reports, and the live viewer*](/servermultiplexor/07-gameplay-checks)
+- [08 - Swarms and sessions *Coordinated bots, workloads, and persistent players*](/servermultiplexor/08-swarms-and-sessions)
+- [10 - Workspace and source *Storage layout, source builds, and validation commands*](/servermultiplexor/10-workspace-and-source)
+- [11 - Scenario suites *Plugin fixtures, acceptance modules, and coverage*](/servermultiplexor/11-scenario-suites)
+- [12 - Session observer *Optional Paper, Folia, and Velocity measurements*](/servermultiplexor/12-session-observer)
+{.links-list}
 
-```bash
-./start.sh --version
-./start.sh --consumer plugin gameplay doctor --json
-```
+## Downloads and source
 
-## Set up Mineflayer
-
-Node.js 22 or newer and npm are required. Both launchers repair a missing or outdated installation before any gameplay command, and a failed install stops the command with a nonzero exit code.
-
-```powershell
-.\start.ps1 gameplay setup
-.\start.ps1 gameplay doctor --json
-```
-
-The harness pins Mineflayer 4.38.0 at commit `f603758e4228a7e61d1337526e6066e79308b976`, which supports protocol versions through Minecraft 26.1. A passing `doctor` result means the dependencies are present, not that they match your server version.
-
-## Run an isolated gameplay check
-
-Use a fresh instance name for each investigation. These commands create a Paper server, run bounded checks, and delete the instance afterwards.
-
-```powershell
-.\start.ps1 --consumer plugin server create gameplay-qa --type paper --mc 1.21.11 --auto-build --isolated
-.\start.ps1 --consumer plugin gameplay run connect gameplay-qa --prepare --start --stop-after --json
-.\start.ps1 --consumer plugin gameplay run command gameplay-qa --prepare --start --stop-after --command '/say qa-ready' --expect 'qa-ready' --json
-.\start.ps1 --consumer plugin gameplay run effect gameplay-qa --prepare --start --stop-after --command '/effect give @s speed 10 0 true' --effect speed --json
-.\start.ps1 --consumer plugin instance delete gameplay-qa
-```
-
-`--prepare` requires a stopped, isolated instance and enables offline authentication on loopback. `--stop-after` only stops a server the same command started. Do not run this against a shared instance.
-
-Set a custom port with `.\start.ps1 --consumer plugin instance port gameplay-qa 25579`. Startup keeps it when it is free; a conflict picks another free port starting at 25565.
-
-Each run prints a temporary loopback Prismarine Viewer URL, also recorded in the JSON report and in `viewer-<port>.json`. Reports land under `consumers/plugin-consumers/state/gameplay-tests/<instance>/` and the matching runtime log under `state/runtime/`. Read both: the report assertions and the server log.
-
-## Source tests
-
-From `MultiplexorApp`, run `dart pub get`, `dart analyze`, and `dart test`. If the Flutter `dart` launcher stalls, call its cached `bin/cache/dart-sdk/bin/dart` directly.
-
-From `MultiplexorApp/tool/mineflayer`, run `npm ci`, `npm test`, and `npm run doctor`.
-
-From the repository root, run `/bin/bash MultiplexorApp/tool/test_launcher.sh` to exercise the shell launcher against isolated tools and fixtures.
-
-None of these start Minecraft. They do not replace running a scenario against an actual server.
+- [Releases](https://github.com/VolmitSoftware/ServerMultiplexor/releases/latest)
+- [Source](https://github.com/VolmitSoftware/ServerMultiplexor)
+{.links-list}

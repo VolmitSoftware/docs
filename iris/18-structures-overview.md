@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,7 +45,7 @@ Objects attach to biomes and regions only. A dimension has no `objects[]`.
 
 ## 2. Iris jigsaw structures
 
-A jigsaw structure is a set of pieces. Each piece is itself an object. The assembler snaps them together through matching connectors until it runs out of depth, space, or candidate pieces. Villages, forts, and strongholds are the shape of the problem. You author the pieces and the graph in Jigsaw Studio. The saved resources run on every platform through the shared core assembler.
+A jigsaw structure is a set of pieces. Each piece is itself an object. The assembler snaps them together through matching connectors until it runs out of depth, space, or candidate pieces. Villages, forts, and strongholds are the shape of the problem. You author the pieces and the graph in Jigsaw Studio. Saved jigsaw structures generate on every supported platform.
 
 Two layout modes:
 
@@ -167,7 +167,7 @@ An Iris structure and a native structure both arrive through the same `structure
 
 **Placement scope is explicit.** `structures[]` can sit on a dimension, a region, or a biome. Scope is sampled at the center of the start chunk. Cave-biome entries only participate when the placement resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, or `CAVE_ANY`. An optional `caveBiomes` allowlist is rechecked at the anchor Iris actually picked. See [15 - Caves & Carving](/iris/15-caves-carving).
 
-**Objects never write into native structure pieces.** If any block of an object placement would land inside a live native structure volume, the whole placement is dropped. `forcePlace: true` does not override this. Pieces of an Iris structure are exempt, because they route through the internal structure path.
+**Objects never write into native structure pieces.** If any block of an object placement would land inside a live native structure volume, the whole placement is dropped. `forcePlace: true` does not override this. This restriction does not apply to pieces of an Iris jigsaw structure.
 
 **Command shape.** On Bukkit, Director optional parameters are always `key=value`. Use `/iris structure verify overworld radius=200`. Never use a bare trailing number. The modded loaders use brigadier literals instead.
 

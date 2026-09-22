@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -153,7 +153,7 @@ Package with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris
 | Fork creation fails or is partial | Move only the newly created incomplete `my-overworld` folder aside, confirm the source pack validates, then rerun |
 | Studio still shows old content | Generate untouched chunks. Close and reopen after a dimension-contract or registry change |
 | Natural selection cannot find the biome | Confirm it is still in `regions/temperate.json`, that both focus fields are gone, and sample a broader new area |
-| Disposable world differs from Studio | Inspect the active epoch and its manifest fingerprint. Recreate the disposable world from the current validated fork |
+| Disposable world differs from Studio | Check which pack version the world uses. Recreate the disposable world from the current validated fork |
 | A production update would change seed, height, environment, or dimension type | Create a new world and migrate deliberately |
 
 ## What the bundled dimension actually sets

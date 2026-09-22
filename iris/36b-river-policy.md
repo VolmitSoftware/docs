@@ -2,7 +2,7 @@
 title: "River Policy"
 description: "riverPolicy: where rivers may start, transit and end, their local budgets and geometry scales, and what content they carry"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-22T01:02:51.164Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -60,7 +60,7 @@ A non-null field at the later scope replaces the inherited value. Omitted or `nu
 
 `outletAdmission` is a nullable Boolean independent of transit. `false` prevents a coastal or inland outlet from being anchored in that policy area without necessarily blocking a course through it.
 
-A viable `REQUIRED_HEADWATER` site intrinsically requests at least one source. `sources.minimumPerTile` may raise that required quota and may override ordinary source spacing when enough policy-owned routes remain legal; it does not impose a floor on tiles that contain only natural candidates. Density selects the bounded accepted-source target, and when containment or route publication rejects a selected course Iris tries the remaining admitted candidates until that target is restored or no viable candidate remains.
+`REQUIRED_HEADWATER` requests at least one source where terrain permits a complete river. `sources.minimumPerTile` raises that minimum and may override ordinary source spacing. It does not impose a minimum on areas using only `NATURAL` placement.
 
 ## Fields
 
@@ -79,7 +79,7 @@ A viable `REQUIRED_HEADWATER` site intrinsically requests at least one source. `
 | `surfaceInlandOutlets` | Surface inland outlet budget per fully covered tile, `0..256`; unset inherits `routing.maximumOutletsPerTile` |
 | `surfaceCoastalOutlets` | Surface coastal outlet budget per fully covered tile, `0..64`; unset inherits `routing.maximumCoastalOutletsPerTile` |
 | `surfaceMinimumCourseLength` | Minimum complete surface course length from this area, `16..4096` blocks; unset inherits `routing.minimumSurfaceCourseLength` |
-| `surfaceMaximumIncision` | Maximum surface channel cut at this terrain column, `1..32` blocks; unset inherits `surface.channel.maximumIncision`. Ocean inlets retain their separately configured incision allowance |
+| `surfaceMaximumIncision` | Maximum surface channel cut at this terrain column, `1..32` blocks; also caps bank fill. Unset inherits `surface.channel.maximumIncision`. Ocean inlets retain their separately configured incision allowance |
 | `widthMultiplier` | Channel-width scale, greater than zero through `16` |
 | `depthMultiplier` | Channel-depth scale, greater than zero through `16` |
 | `incisionMultiplier` | Local scale on the resolved surface incision cap, `0..16`; it may tighten the permitted cut but cannot exceed that cap |
@@ -92,7 +92,7 @@ A viable `REQUIRED_HEADWATER` site intrinsically requests at least one source. `
 
 ## Local surface budgets
 
-The `surfaceSource*`, `surfaceTributaries`, and `surface*Outlets` controls replace inherited values for one policy area. Mixed tiles apportion budgets by owned area, and an area spends its allocation only on candidates inside it; adjacent source pairs respect both areas' spacing. `surfaceMinimumCourseLength` and `surfaceMaximumIncision` control local course geometry without dividing those budgets into new areas. Underground source and tributary settings remain independent.
+The `surfaceSource*`, `surfaceTributaries`, and `surface*Outlets` controls override surface river density, spacing, tributaries, and outlet limits for this area. Counts scale with the area covered. `surfaceMinimumCourseLength` and `surfaceMaximumIncision` control course length and channel depth. These settings do not change underground source or tributary settings.
 
 **Density is a target, not a guaranteed river count** — terrain, minimum course length, and containment still limit acceptance.
 
@@ -102,23 +102,23 @@ The `surfaceSource*`, `surfaceTributaries`, and `surface*Outlets` controls repla
 
 `shoreBiomeWidth` sizes the band of `shoreBiomes` content beside the water without touching that geometry. The flattened shore and the eroded valley keep following `banks.shoreWidth` and the bank settings while the shore biome reaches as far as the policy says — over untouched ground when the band is wider than the valley, and not at all when it is `0`, which leaves the geometric shore carrying the bank biome.
 
-The two are independent: a wide `shoreWidth` with `shoreBiomeWidth` at `0` gives a broad bench made of the bank biome, and a narrow `shoreWidth` with a wide `shoreBiomeWidth` gives a thin bench with shore content running out over untouched ground. **The widest bench and band any policy in the dimension configures widen the publication envelope, so both cost planning reach.**
+The two are independent: a wide `shoreWidth` with `shoreBiomeWidth` at `0` gives a broad bench made of the bank biome, and a narrow `shoreWidth` with a wide `shoreBiomeWidth` gives a thin bench with shore content running out over untouched ground.
 
 ## `erosion`
 
-The per-area form of `surface.erosion.enabled`. Where it resolves to `false`, a station's valley band is dropped entirely: the river crosses the area in a bare cut with its channel and its bench and nothing beyond them, and the terrain outside the bench keeps its natural height. Everything else about the course is unchanged, so a river may erode a valley across one region and cross the next in a slot.
+The per-area form of `surface.erosion.enabled`. Set it to `false` to keep only the channel and shore bench, with no eroded valley beyond them. Terrain outside the bench keeps its natural height.
 
 ## `confined`
 
 `confined` turns an area into a closed drainage basin. A course whose source lies in a confined region keeps its whole route inside that region, up to and including its outlet: a sea it reaches must lie in the same region, an inland outlet must sit inside it, and a source with no outlet reachable inside the area is rejected with the `CONFINED_NO_OUTLET` diagnostic instead of borrowing an outlet elsewhere. Set on a biome, the confines are that biome.
 
-The rule is enforced on the routing lattice and on the refined route between lattice nodes, so a course follows the area boundary to the resolution of `routing.sampleSpacing` and its refinement, and it applies to underground courses as well.
+Containment applies to both surface and underground rivers.
 
 Water that enters a confined area from outside stays there too: an unconfined river may flow into a confined region, but from that point it must end at one of that region's own outlets, **so an area with no outlet also blocks rivers from passing through it.**
 
 ## Content selection
 
-The planner selects and stores the exact profile and biome keys in each accepted column layer, and later generation stages do not reselect them. Referenced biomes, their children, and carving references join the active dimension's reachable closure, so retained river-only surface content is available to biome find/goto commands.
+Biome find/goto commands also support river-only surface biomes.
 
 ## Managed pack policies
 
@@ -126,7 +126,7 @@ The built-in tropical region uses density `8`, spacing `160`, tributaries `3`, i
 
 Volcanic Plains and Volcanoes select `volcanic_lava`, density `6`, spacing `128`, tributaries `2`, inland outlets `3`, and no coastal outlets. Their courses require 128 blocks, allow a 24-block incision cap, and use width multiplier `0.5` and depth multiplier `1.25`. Both use lava in both packs, with independent `volcanic_pool` bowls of radius `6..12` and depth `3`, and their empty content-biome lists retain volcanic layers along channels. The ambient tropical profile remains water in Overworld and lava in Underworld.
 
-Region policies tune headwater and transit preference; biome policies provide specific source, routing, profile, and content behavior without duplicating the dimension's physical solver.
+Region and biome policies override the dimension's defaults for their own areas.
 
 ## Authoring a policy
 

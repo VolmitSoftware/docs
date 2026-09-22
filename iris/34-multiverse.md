@@ -2,7 +2,7 @@
 title: "Multiverse"
 description: "Iris documentation: Multiverse"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -15,19 +15,13 @@ Multiverse-Core can list, inspect, teleport to, and configure Iris worlds. **It 
 |---|---|
 | Tested and compiled against | Multiverse-Core **5.8.0** |
 | Server | Paper and Leaf 26.2 |
-| Multiverse 4.x | Not supported. Iris targets the Multiverse 5 API (`org.mvplugins.multiverse.core`) |
+| Multiverse 4.x | Not supported; use Multiverse 5 |
 
-Parts of this integration use reflection because Multiverse 5 has no public setter for state Iris must correct. If a Multiverse update moves it, Iris logs one warning and carries on rather than failing. If you update Multiverse and world creation, removal, or listing starts behaving differently, check the startup log for that warning before changing anything in your packs.
+## World names and storage
 
-## Why Iris worlds are not ordinary Multiverse worlds
+Iris worlds live under `<level>/dimensions/iris/<key>/`. Back up the complete world, including its `iris/generation` directory. Use Iris commands for creation and removal; Multiverse's create, clone, regenerate, and delete operations are blocked.
 
-Multiverse manages worlds as **folders**, and its create, clone, regenerate, and delete operations all work on a directory. An Iris world is a **dimension inside the level**, at `<level>/dimensions/iris/<key>/`, carrying a world-local generation history at `.../iris/generation` that holds the immutable packs, kernels, ownership, boundaries, and recorded facts making each coordinate reproducible. **Delete part of it and Iris refuses generation.**
-
-Three consequences:
-
-- Multiverse's folder operations would destroy generation history, so Iris blocks them.
-- Iris worlds use the `CUSTOM` environment, which the server refuses to create through the normal world-creation call, so Multiverse cannot load one on its own. `/mv info` showing `Environment: CUSTOM` after the first restart is correct.
-- An Iris world has two names: the Bukkit name `<level>_iris_<key>` and the level key `iris:<key>`. Use the `<level>_iris_<key>` form with Multiverse commands.
+Use the Bukkit world name `<level>_iris_<key>` with Multiverse commands, rather than the dimension key `iris:<key>`. An Iris world showing `Environment: CUSTOM` in `/mv info` is expected.
 
 There is no Iris equivalent of `/mv clone` for a generated world. Create a second world from the same pack instead — two Iris worlds from one pack with the same seed generate the same terrain.
 
@@ -56,31 +50,20 @@ A refusal prints the reason and the command to use instead. Nothing is modified 
 
 ## Settings Iris controls
 
-Iris writes and re-asserts three values on its own worlds in Multiverse's config, on every startup.
+Iris sets these values for its worlds at startup. Leave them unchanged.
 
 | Setting | Value | Reason |
 |---|---|---|
-| `auto-load` | `false` | Iris loads its own worlds from `bukkit.yml` before Multiverse enables. If Multiverse also loaded them, the two would race |
+| `auto-load` | `false` | Iris manages world loading |
 | `adjust-spawn` | `false` | Multiverse would otherwise relocate the spawn point it considers unsafe and persist the change |
 | `generator` | `Iris:<pack>` | Multiverse must record the generator that actually produced the world |
 
-Multiverse imports third-party worlds on its own by default (`world.auto-import-3rd-party-worlds`), which is how an Iris world can appear in Multiverse with the wrong settings before Iris corrects them. Leaving that option enabled is fine.
+You can leave Multiverse's `world.auto-import-3rd-party-worlds` option enabled.
 
-## Load order
+## Restart requirements
 
-Iris declares `load: STARTUP` and `loadbefore: Multiverse-Core`. Iris enables first, loads its worlds during level preparation, and Multiverse enables afterwards and adopts them.
+Keep the default plugin load order. Restart the server fully after updating Iris; plugin-manager hot reloads are unsupported.
 
-> Do not reorder this, and do not use a plugin manager to reload Iris. **Iris does not support hot reloading.** A reloaded Iris no longer recognizes the worlds the previous instance loaded and logs `World "iris:<key>" is loaded, but it is not an Iris world.` Restart the server fully after any Iris update.
-{.is-warning}
-
-## When something looks wrong
-
-| Symptom | Cause |
-|---|---|
-| A world shows as `UNLOADED` in `/mv list` but works in game | Multiverse did not adopt it. Harmless. Check the log for an Iris warning about Multiverse |
-| `/mv load` fails with `Illegal dimension (CUSTOM)` | Iris did not intercept the command. Confirm Iris is enabled and check for a Multiverse warning at startup |
-| A world reappears after `/mv remove` | Expected. `/mv remove` clears only the Multiverse entry. Use `/iris remove` to remove the world |
-| `World "iris:<key>" is loaded, but it is not an Iris world` | Iris was hot reloaded. Restart the server |
-| A world is missing after you deleted its folder by hand | Iris reports it once at startup and leaves the `bukkit.yml` and Multiverse entries in place, so restoring the folder from a backup brings the world back. Use `/iris remove` if you meant to remove it |
+Use `/iris remove` for intentional removal rather than deleting a world folder by hand. `/mv remove` only removes the Multiverse entry, so the world returns on the next restart.
 
 See also [28 - Integrations](/iris/28-integrations) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).

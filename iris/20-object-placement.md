@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -180,6 +180,8 @@ The default (`0` to `10`) is treated as "no condition" and skips the check entir
 
 **Neighbors.** `forbiddenCollisions` lists object keys this object refuses to intersect. If any block of an already-placed object with that key falls inside this object transformed bounding box, the attempt is dropped. Rotation, rotated translation, warp reach, ceiling inversion, and random Y translation are included. `allowedCollisions` names exceptions that win over the forbidden list. Both are empty by default. The check only runs when at least one of them is non-empty.
 
+Overlapping surface and cave objects on the main terrain use a repeatable placement order for the same pack and seed, including parallel chunk generation. Empty collision lists permit overlaps without making their result depend on which chunk generates first.
+
 **Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the automatic surface-river veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
 
 ## 4. Surface support: the silent rejection
@@ -240,7 +242,7 @@ They anchor like `CENTER_HEIGHT`. They then raise or carve every column out to a
 
 **Two cases where Iris overrides your `mode`.** An object whose key contains `imports/` (anything brought in by `/iris structure import` or `/iris studio importvanilla`) is forced to `FAST_MIN_STILT` unless you asked for `FLOATING` or `STRUCTURE_PIECE`. And a cave placement left at the default `CENTER_HEIGHT` takes the active cave profile `defaultObjectPlaceMode` instead, if the profile sets one. Write any other mode and it is honored as-is.
 
-**Special.** `FLOATING` ignores terrain entirely. Y comes from the rotated object center plus `translate.y` and `translate.yRandom`. The terrain, water, cave-anchor, and surface-support checks are all skipped. Use it for sky islands and anything that must not fall to the ground. `STRUCTURE_PIECE` is a raw stamp at caller-supplied coordinates used internally for native structure pieces. Do not write it into `objects[]`.
+**Special.** `FLOATING` ignores terrain entirely. Y comes from the rotated object center plus `translate.y` and `translate.yRandom`. The terrain, water, cave-anchor, and surface-support checks are all skipped. Use it for sky islands and anything that must not fall to the ground. `STRUCTURE_PIECE` is reserved for native structures; do not use it in `objects[]`.
 
 **Fine positioning.** `translate` shifts the object after rotation, so the offsets rotate with it.
 
@@ -266,7 +268,7 @@ Jigsaw structure pieces are excluded from `allObjectScaleFactor` and retain thei
 { "scale": { "size": 1, "minimumScale": 0.75, "maximumScale": 1.25, "variations": 7, "interpolation": "TRILINEAR" } }
 ```
 
-`size` is a fixed multiplier and overrides the range when it is not 1. With `size: 1` and a min/max spread, Iris pre-builds `variations` evenly spaced copies across the range and picks one per placement. The copies are cached and shared, so a large `variations` costs memory. `interpolation` only matters when scaling up. `NONE` gives blocky output. `TRILINEAR` smooths it. `TRICUBIC` and `TRIHERMITE` are smoother and much slower.
+`size` is a fixed multiplier and overrides the range when it is not 1. With `size: 1` and a min/max spread, each placement uses one of `variations` evenly spaced sizes across the range. `interpolation` only matters when scaling up. `NONE` gives blocky output. `TRILINEAR` smooths it. `TRICUBIC` and `TRIHERMITE` are smoother and much slower.
 
 `heightmap` replaces terrain height sampling with a noise generator, so the object seats against a virtual surface. Surface support still samples the real terrain.
 
@@ -294,7 +296,7 @@ The value scales to vanilla eight layers. Each column gets a random count from 0
 { "bore": true, "boreExtendMaxY": 4, "boreExtendMinY": 0 }
 ```
 
-`bore: true` clears the whole transformed bounding cuboid to air before the object writes, which is blunt but predictable. The cuboid follows rotation, rotated translation, warp reach, ceiling inversion, and random Y translation. `boreExtendMaxY` and `boreExtendMinY` grow that final box upward and downward. `smartBore: true` instead raytraces the volume on three axes and fills only the enclosed interior. A house keeps its rooms clear without erasing the trees around it. Smart boring is a one-time cost per object at load, not per placement. Debug rendering changes only the current placement and does not alter the loader-cached object.
+`bore: true` clears the object's entire bounding box to air, including its rotation, translation, warp, and inversion. `boreExtendMaxY` and `boreExtendMinY` extend that box upward and downward. `smartBore: true` clears only the enclosed interior, so a house keeps its rooms clear without erasing the trees around it. Debug rendering affects only the current placement.
 
 `meld: true` inverts the rule. The object only writes where a solid block already exists, which carves the object into terrain rather than adding to it. It is expensive. The placer samples the world per block.
 
@@ -389,7 +391,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `translate.yRandom` | `0` | Random vertical spread per placement, downward if negative |
 | `rotation` | Y free, 90 degree steps | Random orientation per placement |
 | `rotateTowardsSlope` | `false` | Turns the object to face downhill, in 90 degree steps |
-| `scale` | Dimension factor | An explicit scale overrides `allObjectScaleFactor`. A min/max spread pre-builds `variations` cached copies |
+| `scale` | Dimension factor | An explicit scale overrides `allObjectScaleFactor`. A min/max spread offers `variations` evenly spaced sizes |
 | `bottom` | `false` | On explicit-Y paths (cave, structure, sapling), seats the object bottom-up instead of centered |
 | `fromBottom` | `false` | Anchors near the world floor. An unfinished code path. Avoid it |
 | `warp` | flat | Noise displacement of each block X and Z. Inert until `multiplier` is raised |
@@ -452,7 +454,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `VACUUM_ORGANIC` | Same with a per-column jittered edge, so the bowl reads as natural ground |
 | `VACUUM_WAVY` | Same with a smooth wave rolling across the slope, flat under the object and at the rim |
 | `FLOATING` | Placed in mid-air at an absolute height. Terrain, water, cave, and support checks all skipped |
-| `STRUCTURE_PIECE` | Raw stamp at caller coordinates. Internal to native structure routing, not for `objects[]` |
+| `STRUCTURE_PIECE` | Reserved for native structures; do not use in `objects[]` |
 
 ## 9. Worked examples
 
@@ -526,38 +528,34 @@ Ground-hugging mushroom carpet:
 }
 ```
 
-## 10. Troubleshooting
+## 10. Placement checks
 
-**It never appears.** Work these in order.
+Use `/iris object paste` to inspect the object's saved geometry, then test its placement settings in new Studio terrain. Studio applies JSON and `.iob` edits to new chunks; existing chunks keep their blocks.
 
-1. Wrong key. `place` paths are case-sensitive and relative to `objects/`. A miss logs `Couldn't find Object: <key>` and burns the attempt.
-2. Chance too low to see. Prove the wiring with `"chance": 1, "density": 4` first, then dial back.
-3. Not actually in that biome. The chunk-center sample decides, not what you are standing on.
-4. Wrong list. `CARVING_ONLY` never places on the surface. The default `SURFACE_ONLY` never places in caves.
-5. Surface support (section 4). This one is silent. If the object appears with `force: true` but not without, a guard rejected it, and surface support is the likely one.
-6. Water. A submerged surface placement needs `underwater` or `onwater`.
-7. `clamp` too tight, or written in world Y instead of engine-internal Y.
-8. `slopeCondition` too strict. `maximumSlope` under about 1 excludes most terrain.
-9. Native structure overlap. Objects never write into a vanilla or datapack structure piece, not even with `force`. The broad overlap check uses transformed object bounds, including oblique rotations and saved origins.
-10. Console lines worth grepping: `Implausible object placement rejected` (bedrock-row anchor) and `Couldn't find loot table`.
+| Setting | Authoring guidance |
+|---------|--------------------|
+| `place` | Use case-sensitive paths relative to `objects/`, without `.iob` |
+| `chance` / `density` | Start with `"chance": 1, "density": 4` to make test placements easy to find, then reduce them |
+| Biome | Test in the biome containing the placement. Selection uses the biome at the chunk center |
+| `carvingSupport` | Use `SURFACE_ONLY` for surface objects or `CARVING_ONLY` for cave objects |
+| Surface support | Provide a supported base; see section 4 |
+| Water | Enable `underwater` or `onwater` for water placements |
+| `clamp` | Use the engine-relative Y range described in section 3 |
+| `slopeCondition` | Choose a slope range that includes the terrain where you want the object |
 
-**It appears but sits wrong.**
+Objects cannot overwrite vanilla or datapack structure pieces, including with `force: true`.
 
-- Floating off a cliff: you are on `MAX_HEIGHT`. Switch to a stilt mode or a `VACUUM` mode.
-- Buried in a hillside: `MIN_HEIGHT`, or too much negative `translate.y`.
-- Hovering in a cave: `ORGANIC_STILT` for the floor or `CEILING_HANG` for the roof, with `carvingSupport: "CARVING_ONLY"`.
-- Standing on a flat disc of stilt blocks: use `VACUUM`, `VACUUM_ORGANIC`, or `VACUUM_WAVY` instead.
-- Riding one block above the grass: `translate.y: -1`, or `PAINT` for clutter.
-- Interior packed with terrain: `bore` for a blunt clear, `smartBore` to keep only the rooms.
-- `warp` does nothing: raise `warp.multiplier`. At the default of 1 the displacement truncates to roughly nothing.
+| Desired placement | Settings to use |
+|-------------------|-----------------|
+| Support on uneven ground | A stilt mode or `VACUUM` mode |
+| Shallower burial | Reduce negative `translate.y` or choose a mode other than `MIN_HEIGHT` |
+| Cave floor | `ORGANIC_STILT` with `carvingSupport: "CARVING_ONLY"` |
+| Cave ceiling | `CEILING_HANG` with `carvingSupport: "CARVING_ONLY"` |
+| Ground clutter | `PAINT`; use `translate.y: -1` when the object's saved origin sits above the surface |
+| Clear terrain from interiors | `bore` for a full clearing or `smartBore` for enclosed rooms |
+| Stronger warping | Increase `warp.multiplier` |
 
-**Loot never fills.** Only storage chests receive placement loot. Check the console for `Couldn't find loot table`. Drop `exact: true` if the filter block data does not match the saved block exactly.
-
-**Iterating quickly.**
-
-- Studio worlds hotload both JSON and `.iob` edits within about a second, into newly generated chunks only. Non-studio worlds do not hotload at all.
-- Separate the object from the placement. `/iris object paste` proves geometry. Natural generation proves the placement.
-- Deep forensics: write `chunkX,chunkZ[,radius]` into `plugins/Iris/goldendebug.txt` (or set `-Diris.goldendebug=`), enable `/iris debug toggle`, then restart. The target is read once at startup. Every attempt, height query, pick, and rejection in those chunks is logged at debug level. Extremely verbose. Use radius 0.
+Placement loot fills storage chests. Reference an existing loot table, and use `exact: true` only when the filter matches the saved block state exactly.
 
 ## 11. Content unavailable on this Minecraft version
 

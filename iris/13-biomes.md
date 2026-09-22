@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -446,7 +446,7 @@ A floating target does not need to be listed in a region. Iris registers every b
 
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `inheritDecorators` | `true` | Apply the target biome decorators to the island top. |
+| `inheritDecorators` | `true` | Apply the target biome decorators to the island top only where an actual solid supporting block remains. |
 | `inheritObjects` | `true` | Allow the target biome surface objects on the island top. |
 | `objectShrinkFactor` | `1` (0.01-1) | Uniform scale for inherited, extra and free-floating objects. Drop it to about `0.5` so full-size trees do not dwarf a small island. |
 | `extraObjects` | `[]` | Extra placements anchored to the island top. |

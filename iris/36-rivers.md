@@ -1,15 +1,15 @@
 ---
 title: "Rivers"
-description: "Valley-first surface rivers, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
+description: "Surface rivers, shaped valleys, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-22T01:02:51.164Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
 ---
-Iris hydrology plans surface rivers that sit in eroded valleys, independently sourced underground rivers, coastal and inland grottos, and independent deep-fluid bodies. Each course is resolved once — route, water head, channel and bank shape, segment labels, outlet, fluid profile, and biome ownership — and terrain, mantle carving, biome selection, decorators, Vision, and feature locators all read that immutable accepted plan. `hydrology.rivers.enabled` defaults to `false`.
+Iris hydrology adds surface rivers in eroded valleys, underground rivers, coastal and inland grottos, and deep-fluid bodies. Enable rivers with `hydrology.rivers.enabled`; the default is `false`.
 
-A surface river never raises terrain and never writes the ocean. It cuts a channel into the natural surface, holds its water flush with the ground beside it unless `channel.sink` lowers it, and blends the cut back out to natural terrain across a valley whose width grows with the depth of the cut. Water flows downhill in one-block steps; where the land falls faster than the channel can follow the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. It reaches the sea through a drowned inlet rather than stopping at the shoreline. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
+Surface rivers shape their channels and banks around descending water levels. They cut high ground and can fill low banks within the configured terrain limits, then blend back into the surrounding terrain. `channel.sink` sets the water level below the shaped banks. Rivers never write ocean terrain or raise ocean water. Water flows downhill in one-block steps; where the land falls faster than the channel can follow the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. It reaches the sea through a drowned inlet rather than stopping at the shoreline. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
 
 Hydrology is per-activation state: each production activation keeps its own plan, so a staged pack update never retrofits generated chunks and surface hydrology tapers inside the transition band beside saved terrain.
 
@@ -26,12 +26,11 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [25 - Pack Management](/iris/25-pack-management)
-- [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
 - [33 - Performance Tuning](/iris/33-performance-tuning)
 
 The dimension owns the physical system under `hydrology` and supplies the default `riverPolicy`. Region and biome files may contain only their own `riverPolicy` overrides. A [complete worked example](#complete-hydrology-example) is at the end of this page.
 
-Every object with `min` and `max` is an `IrisStyledRange`. `style` is optional; when present it selects a deterministic value between the endpoints in world space. Channel width and depth are resolved at every station along an accepted course, underground fluid level, headroom and deep-fluid elevation are resolved only for selected geometry, and every resolved value is stored in the accepted plan rather than resampled later.
+For fields with `min` and `max`, set the allowed range. The optional `style` controls how values vary across the terrain.
 
 ## `hydrology.rivers.routing`
 
@@ -53,17 +52,11 @@ Every object with `min` and `max` is an `IrisStyledRange`. `style` is optional; 
 | `lengthPreference` | `1` | How strongly longer source-to-outlet routes win when sources are chosen, `0..8`; `0` ranks sources by elevation alone |
 | `tributaries` | `1` | Extra surface courses an outlet may accept as tributaries of its main river, `0..4`, budgeted on top of `sources.density`. See [Tributaries](#tributaries) |
 
-At least one outlet family must be enabled. `tileSize`, `sampleSpacing`, route length, and both source budgets form a bounded planning envelope, and cold planning cost scales with all of them — see [33 - Performance Tuning](/iris/33-performance-tuning#hydrology-heavy-packs).
+Enable at least one outlet family: direct ocean outlets or an inland outlet type.
 
 ### Tributaries
 
-An outlet's longest viable route becomes its main stem, and the next longest routes to the same outlet become its tributaries up to `routing.tributaries` (surface) or `underground.tributaries` (underground).
-
-A surface tributary is cut where its centerline first comes within a stem width of the stem, or first enters drainage the stem already owns. It joins the lowest stem water it can reach there and is graded down to the river's level where the two channels touch, so its mouth never stands above the stem's shore. A tail arriving up to three blocks below the stem backs up to the stem's level as a still reach; a deeper shortfall slides the junction downstream to the first stem station whose water is low enough. A tributary reach may bend once where it leaves its own valley for the stem's.
-
-An underground tributary is cut at the first node its route shares with the stem's and solved to the stem's fluid level there.
-
-A tributary owns only the drainage upstream of its junction, so the stem's discharge and width below the junction include it.
+Set `routing.tributaries` for surface tributaries and `underground.tributaries` for underground tributaries. Each adds tributaries to a main river within the configured limit. Their water levels meet the main river at the junction, and their flow contributes to the main river downstream.
 
 ## `hydrology.rivers.geometry`
 
@@ -81,7 +74,7 @@ Geometry shapes what routing and the surface and underground sections have alrea
 | `smoothingPasses` | `1` | Terrain-safe centerline smoothing passes after route solving, `0..4` |
 | `maximumTurnDegrees` | `82` | Largest retained centerline turn angle in degrees, `10..150` |
 
-Valley anchors stay within the local permitted cut, and steep surface routes can make bounded sideways detours. Terrain admission and rendered-channel containment still apply.
+Meanders remain within the permitted terrain cut and containment limits.
 
 ### `geometry.surface`, `geometry.underground` and `geometry.grottos`
 
@@ -138,8 +131,8 @@ The channel is the wet part of the river. Its cross-section is a broad bowl: nea
 |-------|---------|---------|
 | `width` | `4..8` | Wet channel width in blocks, endpoints in `1..64`; resolved along the course, so a river widens and narrows as it goes |
 | `depth` | `2..4` | Water depth at the channel center, endpoints in `1..32` |
-| `sink` | `0` | How far the water surface sinks below the lowest natural ground beside the channel, `0..3`; `0` keeps the water flush with the ground, and the bank beside the water always meets it at its own height |
-| `maximumIncision` | `10` | Deepest cut the channel may make into a hillside before the course is rejected, `1..32` |
+| `sink` | `0` | How far the water surface sits below the shaped bank top, `0..3`; `0` keeps water flush with its banks |
+| `maximumIncision` | `10` | Maximum channel cut below natural terrain, `1..32`; also limits bank fill together with `banks.excavation.maximumDepth` |
 | `roughness` | `0.25` | Strength of the coherent wobble applied to the channel outline, `0..1`; `0` gives a perfectly smooth outline |
 | `roughnessWavelength` | `16` | Wavelength of that wobble in blocks, `4..64` |
 | `springWidthRatio` | `2.5` | Width of the spring pool at the headwater relative to the channel width, `1..4`; `1` starts the river at its normal width |
@@ -157,7 +150,7 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 |-------|---------|---------|
 | `shoreWidth` | `1.5` | Width of the flattened shore bench beside the water, cut level with the bank top, `0..16` blocks; it is also the default width of the shore biome band, and `0` removes the bench so the eroded valley side begins at the waterline |
 | `shoreRise` | `0` | Blocks the bench rises from the waterline to its landward edge, `0..4`, so the beach climbs instead of lying level; `0` keeps a flat bench, and the valley side starts from the raised edge |
-| `blendSlope` | `3` | Horizontal run per block of rise from the bank top back to natural terrain, `0.5..12`; the blend width is `cut x blendSlope` |
+| `blendSlope` | `3` | Horizontal blend per block of terrain cut or fill from the bank top back to surrounding terrain, `0.5..12` |
 | `blendBaseWidth` | `0` | Blocks added to every valley width before the blend limits apply, `0..32`, so even a shallow cut erodes this far beyond the shore; `0` leaves the width proportional to the cut alone |
 | `minimumBlendWidth` | `4` | Narrowest blend band even for a shallow cut, `1..maximumBlendWidth` |
 | `maximumBlendWidth` | `32` | Widest blend band even for a deep cut, up to `64`; this also bounds how far a river can affect terrain from its centerline |
@@ -165,7 +158,7 @@ The banks are everything the river erodes outside the wet channel. Their shape f
 | `shoreMaterial` | enabled, sand, depth 2 | Palette painted over the shore bench columns instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
 | `bankMaterial` | disabled | Palette painted over the eroded bank columns outside the bench instead of the biome's own layers; same three fields |
 
-> Increasing `channel.sink` lowers the head and leaves less of `channel.maximumIncision` available for the bed, so a route near that limit can disappear when sink increases. A wider `shoreWidth` expands the bank probe band but does not guarantee more accepted rivers. **Accepted river counts need not increase with either setting.**
+> Increasing `channel.sink` lowers the head and leaves less of `channel.maximumIncision` available for the bed, so a route near that limit can disappear when sink increases. A wider `shoreWidth` expands the shaped shore but does not guarantee more accepted rivers. **Accepted river counts need not increase with either setting.**
 {.is-info}
 
 `shoreMaterial` and `bankMaterial` paint over the layers the shore and bank biomes would otherwise supply, down `depth` blocks from the surface, and change nothing while `enabled` is `false`. The bed padding rule still runs after the paint, so a falling block from one of these palettes is replaced by `bed.paddingPalette` unless `bed.allowGravityBlocks` is set. Content that should vary with the surrounding terrain belongs in policy `shoreBiomes` or `bankBiomes` instead; these palettes are for one fixed material along every river in the dimension.
@@ -190,7 +183,7 @@ Erosion shapes the valley the banks describe. The reach of the valley comes from
 
 `erosion.style` decides the shape of the valley side across the blend band. `SMOOTH` is an eased S-curve, flat at the shore and at the top and steepest across the middle, and it is the shape Iris cut before the field existed. `LINEAR` is a straight slope with a sharp shoulder at the shore and a sharp lip at the top. `CONCAVE` climbs fast beside the shore and flattens toward natural terrain, hollowing the valley. `TERRACED` cuts the eased curve into `terraceSteps` level steps. `CLIFF` holds the band level at the bank top for `cliffFraction` of its width and then rises in one vertical wall. `blendCurve` skews all of them except `CLIFF`.
 
-`erosion.bedProfile` decides the cross-section of the wet bed. `BOWL` holds full depth over `thalwegFraction` of the half-width and eases up to a one-block edge, and it is the profile Iris cut before the field existed. `FLAT` holds full depth to the waterline, so the channel edge drops straight to the bed. `V` slopes straight from full depth at the centerline to one block at the edge and ignores `thalwegFraction`. `U` holds the thalweg deep almost to the edge and then rises steeply, giving a trough with steep sides.
+`erosion.bedProfile` decides the cross-section of the wet bed. `BOWL` holds full depth over `thalwegFraction` of the half-width and eases up to a one-block edge. `FLAT` holds full depth to the waterline, so the channel edge drops straight to the bed. `V` slopes straight from full depth at the centerline to one block at the edge and ignores `thalwegFraction`. `U` holds the thalweg deep almost to the edge and then rises steeply, giving a trough with steep sides.
 
 To turn the valley off for one area without touching the rest of the dimension, use `riverPolicy.erosion` on [36b](/iris/36b-river-policy).
 
@@ -273,7 +266,7 @@ Fluid level, depth, basin depth, and headroom must fit strictly inside `dimensio
 
 ## Grottos
 
-`grottos.coastal` and `grottos.inland` have separate admission and geometry:
+Configure coastal and inland grottos separately with `grottos.coastal` and `grottos.inland`:
 
 | Field | Coastal default | Inland default | Contract |
 |-------|-----------------|----------------|----------|
@@ -300,7 +293,7 @@ With `grottos.inland.connectSurfaceRivers` set to `true`, an eligible surface so
 | Field | Default | Contract |
 |-------|---------|----------|
 | `enabled` | `true` | Plan sea caves along the coast |
-| `maximumPerTile` | `3` | `0..64` sea caves accepted per planning tile; the steepest owned coast is taken first |
+| `maximumPerTile` | `3` | Maximum sea caves per tile, `0..64` |
 | `minimumSpacing` | `160` | `16..8192` blocks between two sea caves, and at least twice `horizontalRadius` |
 | `minimumCoastHeight` | `8` | `1..128`; the coast must stand this many blocks above the sea at the shoreline, at the back of the chamber and along its flanks |
 | `depth` | `12` | `0..128` blocks the chamber is swept inland from the shoreline; `0` leaves a single chamber at the shore |
@@ -378,26 +371,23 @@ Standing pools are bowls cut into open ground and filled with their own fluid: l
 
 A pool is shaped like a river reach with no course: the fluid sits `channel.sink` below the lowest ground around the bowl, the rim holds it level with the ground beside it, and the cut blends back out to natural ground the same way a river bank does. A site is skipped where the ground falls away more than `channel.maximumIncision` allows, on or below sea level, where the policy does not list the pool, or within one river width plus the bank blend of an accepted course. The bed padding rule applies to pools as well.
 
-Named probe selectors use `STANDING_POOL@<pool-id>` for these pools and `SURFACE_POOL@<river-profile>` for river reaches.
+Use the [river locator commands](/iris/36c-river-inspection) to find pools in a world.
 
-## How a surface river is shaped
+## Surface appearance
 
-A surface course is shaped in four steps, all working on the refined centerline one block at a time.
+Use `channel.width` and `channel.depth` to size the channel, `channel.roughness` to vary its outline, and `erosion.bedProfile` to choose the bed shape. `springWidthRatio` and `springLength` control the wider source pool. Mouth width and depth are controlled by `mouths.flareRatio`, `mouths.inletLength`, and `mouths.inletDepth`.
 
-1. **Channel profile.** Width and depth are resolved at every station from `channel.width` and `channel.depth`, the effective policy multipliers, and the coherent outline wobble from `channel.roughness`. The headwater opens as a spring pool `springWidthRatio` times the channel width and one block deeper, narrowing to the cruise width over `springLength` blocks. Over the last `mouths.inletLength` blocks before a coast the width grows toward `mouths.flareRatio` times the upstream width and the depth grows by `mouths.inletDepth`.
-2. **Water head.** For each station the planner reads the natural ground on a ring just outside the channel outline on both banks, takes the lowest bank sample across that station and the two after it, and subtracts `channel.sink`. Heads are then made non-rising downstream: a value that would rise is held at the previous head, and a value that would fall is limited to one block per `flow.cascadeRun` blocks of run unless the pair straddles a natural cliff of at least `flow.waterfallMinimumDrop`, where the head drops by the cliff in one step. Heads inside the inlet are sea level as far inland as the ground can be cut to sea level within `mouths.maximumIncision`, and the reach above it grades down one block per station into the inlet wherever that cut fits. A station whose head would need a cut deeper than `channel.maximumIncision` rejects the course, except in the inlet and its approach where `mouths.maximumIncision` is the limit. There are no bores under ridges for surface rivers, so a route that cannot stay open on the surface is not published.
-3. **Erosion field.** Every column near the centerline receives a target height. Inside the channel the target is the bed below the head, shaped by `erosion.bedProfile`. The bank top on both sides sits at `head + channel.sink`, so with the default sink the ground beside the water is level with its surface. The shore bench runs from the waterline out to `banks.shoreWidth`, or to `riverPolicy.shoreWidth` where the area sets one, climbing `banks.shoreRise` blocks over that distance. From the landward edge of the bench the target rises back to the natural height across a blend band whose width is `cut x banks.blendSlope + banks.blendBaseWidth`, clamped to `minimumBlendWidth..maximumBlendWidth`, and the shape of that rise is `erosion.style`. The published terrain is `min(natural, target)` — the field only ever lowers ground. Water is published only where the bed sits below the head and the surrounding bank tops contain it.
-4. **Labels.** Each reach is labelled from its head gradient: a level reach is a `SURFACE_POOL`, a single one-block step is a `RIFFLE`, consecutive one-block steps are a `CASCADE`, and a cliff-sized step is a `WATERFALL`. Labels do not change the geometry; they drive Vision, locators, and rendering.
+Set `channel.sink` to `0` for water level with its banks. `banks.shoreWidth` and `banks.shoreRise` size the shore bench; `banks.blendSlope`, `banks.blendBaseWidth`, and the blend-width limits control how far the valley extends into surrounding ground. Rivers cut or fill their banks within the configured terrain limits and require contained water.
 
-The head is derived from the banks rather than the centerline so a river running along a hillside is cut into the slope with the bank on the uphill side, instead of sitting on a shelf above the downhill side. Because every step is one block, a river descending a hill leaves no chips, ledges, or floating water. Because the blend width follows the depth of the cut, a shallow crossing of flat ground erodes only a few blocks either side while a deep cut through a ridge opens into a wide valley.
+`flow.cascadeRun` controls the spacing of descending steps. `flow.waterfallMinimumDrop` sets the minimum cliff height for a waterfall. A course that would require a cut deeper than `channel.maximumIncision` is rejected; the inlet uses `mouths.maximumIncision`.
 
-When `banks.exposeCutStrata` is `true`, eroded bank columns offset the biome palette by the erosion depth. The offset stops at the deepest authored layer, so a cut deeper than the layer stack repeats that last material within the original stack thickness; below that thickness, dimension rock and ore rules resume. Uncut columns keep their original layers.
+With `banks.exposeCutStrata: true`, eroded banks reveal deeper biome layers. After the deepest authored layer is reached, its material repeats through the remaining layer stack. Below that stack, the dimension's rock and ore settings apply.
 
 ## Terrain, oceans, caves, and decoration
 
 ### Surface shaping and banks
 
-Every surface write is carve-only: no column is ever raised above its natural height. Water only ever meets solid ground at its own level and never spreads, and where the natural ground beside the channel is already lower than the intended bank top the planner lowers the head instead of building a bank.
+Surface rivers can cut high terrain and fill low banks to contain their planned water level. Bank fill is limited by both `surface.channel.maximumIncision` and `surface.banks.excavation.maximumDepth`, including local incision-policy limits. A course that cannot be contained within these limits is rejected. Existing natural depressions under the channel can remain deeper than the configured bed profile.
 
 The post-generation passes that place slabs, fill potholes, remove floating nibs, and dress walls skip every column inside a river footprint and its immediate neighbours. Automatic surface object placement is rejected when any transformed support column intersects an accepted river channel or shore band, **even with `forcePlace`, `underwater`, or `onwater`**, so biome and region scatter cannot bridge a channel or stand in the shore. Explicit-Y placement, including `/iris object paste`, still works for intentional authoring inside a river.
 
@@ -416,9 +406,9 @@ Any active river or deep-fluid configuration requires:
 - `CARVED` absent from `disabledComponents`
 - `RIVER_HYDROLOGY` absent from `disabledComponents`
 
-Iris validates the complete subterranean footprint of each underground course, surface course with a sinkhole continuation, grotto course, and deep-fluid body as **one all-or-nothing containment transaction** against carved mantle matter. A surface sinkhole's falling throat, receiving wet pool, and dry headroom therefore succeed or fail with the rest of that course. An unapproved opening to the surface or another cavern, a world-boundary or volume escape, existing or incompatible fluid, or overlap with a winning plan rejects the entire course before terrain, Vision, or locators can observe it.
+Underground rivers, sinkhole continuations, grottos, and deep-fluid bodies must fit within their containment limits. A feature is rejected if it would spill into an unapproved opening, cross the world boundary, or conflict with another fluid or river. A sinkhole and its receiving pool are accepted or rejected together.
 
-Each transaction is limited to 262,144 planned mutation positions across its complete course. A larger candidate receives `VOLUME_LIMIT`. The configured grotto `maximumVolume` remains the smaller, feature-specific chamber limit.
+A complete feature may affect at most 262,144 blocks; larger candidates receive `VOLUME_LIMIT`. A grotto must also fit its configured `maximumVolume`.
 
 With `connectToExistingCaves` enabled, a planned dry boundary may open into suitable cave air without exposing the wet volume. Hydrology-owned cells and their seal guards stay protected from later object or structure writes, so the cave network never becomes a shared reservoir. Dry headroom above an underground river uses the `floodedCaveBiomes` content of the course.
 
@@ -435,10 +425,8 @@ Exposed water is published as ordinary water, and the standard freezing pass dec
 1. Enable `hydrology.rivers` on the dimension and set `routing.tileSize`, `sampleSpacing`, and at least one outlet family. Start from the [complete example](#complete-hydrology-example) and keep the defaults for everything you do not have an opinion about yet.
 2. Give the dimension a `riverPolicy` with `placement: NATURAL`, `routing: ALLOW`, a profile, and the content pools you want everywhere by default.
 3. In regions and biomes, override only what differs. See [36b - River Policy](/iris/36b-river-policy).
-4. Run `/iris pack validate`, then the river transect probe on a few tiles to look at the valleys before opening a world ([36c](/iris/36c-river-inspection#probes)).
+4. Run `/iris pack validate`, then inspect the rivers in Studio with Vision and the [river locator commands](/iris/36c-river-inspection).
 5. Create a new world, or stage an existing-world pack update and restart. **Existing chunks are never retrofitted.** New terrain reconciles with saved natural boundaries within the finite transition band.
-
-Hydrology output is a deterministic function of pack bytes, world seed, and coordinates — tile, chunk, platform, and worker order must not change the accepted result. Use GoldenHash plus fresh-world feature inspection to verify that contract. Planning cost and its knobs are in [33 - Performance Tuning](/iris/33-performance-tuning#hydrology-heavy-packs).
 
 ## Managed pack profiles
 

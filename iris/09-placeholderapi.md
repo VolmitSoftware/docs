@@ -2,14 +2,14 @@
 title: "PlaceholderAPI"
 description: "Iris documentation: PlaceholderAPI"
 published: true
-date: 2026-09-14T00:56:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris registers a PlaceholderAPI expansion with id `iris` on Bukkit-family servers. It publishes twenty-nine read-only values: one service flag, nineteen world readings scoped to a player's position, and nine global pregeneration readings. Scoreboard, chat, and HUD plugins can show Iris state without writing Java.
 
-Plugins that need the same data with real types and no string parsing should use the API pages instead. Start at [90 - API - Getting Started](/iris/90-api-getting-started). Then see [91 - API - Terrain](/iris/91-api-terrain) and [92 - API - World Events](/iris/92-api-world-events). There is no PlaceholderAPI on Fabric/Forge/NeoForge. See [07 - Pregeneration](/iris/07-pregeneration) and [28 - Integrations](/iris/28-integrations) for the surrounding runtime.
+Plugins that need the same data with real types and no string parsing should use the API pages instead. Start at [90 - API - Getting Started](/iris/90-api-getting-started). Then see [91 - API - Terrain](/iris/91-api-terrain) and [92 - API - World Events](/iris/92-api-world-events). There is no PlaceholderAPI on Fabric/Forge/NeoForge. See [07 - Pregeneration](/iris/07-pregeneration) and [28 - Integrations](/iris/28-integrations) for related configuration.
 
 ## Put an Iris value on a scoreboard
 
@@ -19,17 +19,6 @@ Add a placeholder such as `%iris_world.biome%` to your scoreboard plugin's forma
 
 To inspect a value directly, run `/papi parse me %iris_world.biome%`. If it resolves there but differs on the scoreboard, check the scoreboard format and refresh interval. `/papi info iris` lists all available keys.
 
-### Recovery
-
-| Symptom | What actually happened | Fix |
-|---|---|---|
-| `/papi info iris` reports no such expansion | PlaceholderAPI was not enabled at the moment Iris ran its registration task, one tick after enable | Full server restart with both plugins present. There is no late retry on `PluginEnableEvent`, and `/papi reload` will not make Iris try again |
-| The placeholder renders literally as `%iris_...%` | The path is not one Iris publishes. Unknown paths return null to PlaceholderAPI, which leaves the text alone | Copy an exact path from `/papi info iris` or the table below. Pre-2.0 underscore names are gone |
-| A `world.*` key reads `---` | No player context (console or offline player). The player has no tracked position yet. The player is not in an Iris world. Or the terrain service returned nothing for that column | Parse as a named online player who is standing in a loaded Iris world |
-| `world.available` is `true` but the biome lags your movement | The per-player world view has a one-second TTL | Wait a second, or teleport — teleports publish immediately. Do not go looking for a bug in the consumer first |
-| A `pregen.*` key reads `---` | No job snapshot is currently published | Guard the board template on `pregen.available` rather than testing the value keys for `---` |
-| The board shows `47.5%%` or `47.5` with no sign | `pregen.percent` deliberately returns a bare number | Put the literal `%` in the consumer's format string |
-
 ## Registration
 
 | Item | Value |
@@ -38,11 +27,9 @@ To inspect a value directly, run `/papi parse me %iris_world.biome%`. If it reso
 | Version | `2.0.0` |
 | Author | `Volmit Software` |
 | Required plugin | `Iris` |
-| `persist()` | `true` — the expansion survives `/papi reload` without restarting Iris |
+| `/papi reload` | The expansion remains registered |
 
-Iris checks `isPluginEnabled("PlaceholderAPI")` inside a task scheduled just after its own enable, and gives up silently if the answer is no. Registration also installs a listener. If that listener fails to attach, Iris unregisters the expansion again and logs a warning. You never end up with an expansion publishing stale positions.
-
-Soft-depend only affects load order. It does not install or load PlaceholderAPI.
+Install both plugins before starting the server. Installing PlaceholderAPI alone does not enable Iris integration until Iris starts.
 
 ## Value grammar
 
@@ -60,8 +47,6 @@ Every key answers in one of three ways:
 | The value | Known path, data available | The value |
 | `---` | Known path, nothing to report right now | `---` |
 | Null | Unknown path | The literal `%iris_...%` |
-
-Unknown paths stay visible on purpose. There is no blanket empty-string fallback that would hide a typo.
 
 ## Key reference
 
@@ -102,11 +87,11 @@ For a biome file `biomes/desert/hot-dunes.json` with `"name": "Hot Desert Dunes"
 - `%iris_world.biome-key%`: `desert/hot-dunes`.
 - `%iris_world.biome-custom-id%`: `golden-dunes`.
 
-Minecraft's physical custom biome registry key is separate and can contain a content hash. `%iris_world.biome-custom-key%` exposes that mapping. The plural placeholders list all configured derivatives; the singular placeholders return `---` when more than one is defined. These are surface-biome definitions, not a lookup of the randomly selected physical biome at the player's exact Y. Iris does not rerun random selection to guess that value.
+Minecraft's physical custom biome registry key is separate and can contain a content hash. `%iris_world.biome-custom-key%` exposes that mapping. The plural placeholders list all configured derivatives; the singular placeholders return `---` when more than one is defined. These are surface-biome definitions, not a lookup of the randomly selected physical biome at the player's exact Y.
 
 Biome names, region names, and custom mappings use the retained generation definitions for saved columns. Editing the active pack does not relabel an already recorded column. Missing registry mappings leave authored IDs available while the affected key placeholders return `---`.
 
-While saved biome data loads, biome and region placeholders return `---`. Iris retries on the next request after its one-second cache expires, even if the player stays still. Normal loading does not log a terrain API error; actual read failures still do.
+Biome and region placeholders can temporarily return `---` while saved data loads. They update on a later display refresh, including while the player stands still.
 
 For MythicMobs RandomSpawns, use the location-based `irisbiome` condition with the biome load key. Player placeholders do not describe an arbitrary spawn point. See [28 - Integrations](/iris/28-integrations).
 
@@ -126,7 +111,7 @@ One job runs per server, so these are global. Every player and the console see i
 | `%iris_pregen.chunks-per-second%` | Current generation rate, two decimals |
 | `%iris_pregen.paused%` | `true` while the job is paused |
 
-The snapshot is republished on the `STARTED`, `TICK`, `PAUSED`, `RESUMED`, and `SAVING` pregen phases, and cleared on `COMPLETED` and `CANCELLED`. After the clear, `pregen.available` is `false` and every value key is `---`. Before the job has run long enough to estimate, `eta` reads `0` and `eta-text` reads `0s`.
+After a job completes or is cancelled, `pregen.available` is `false` and every value key is `---`. Before enough progress exists to estimate the remaining time, `eta` reads `0` and `eta-text` reads `0s`.
 
 ### Paths as `/papi info iris` prints them
 
@@ -164,64 +149,12 @@ world.region-key
 
 Prefix each with `%iris_` and suffix with `%`.
 
-## What "surface" means, and what a board costs
+## Surface readings and refresh timing
 
-All `world.biome*` values, `world.region`, and `world.region-key` are **surface column** readings: whatever the generator places at ground level for that X/Z. Y is not part of the query. A player 60 blocks down in a cave still reads the surface biome overhead, not the cave biome. If you need the biome at an actual Y, that is a terrain API call, not a placeholder. See [91 - API - Terrain](/iris/91-api-terrain).
+All `world.biome*`, `world.region`, and `world.region-key` values describe the surface at the player's X/Z position. A player in a cave still reads the surface biome overhead. For a biome at a specific Y, use the [Terrain API](/iris/91-api-terrain).
 
-### When a position is published
-
-| Event | Timing |
-|---|---|
-| Walking (`PlayerMoveEvent`) | At most once per second, and skipped entirely while the player stays inside the same block column |
-| Join, respawn, world change, portal, and every teleport — `/iris goto`, `/tp`, ender pearls, random-TP plugins | Immediately, bypassing the one-second interval |
-| Quit | The player's tracked position and cached view are released |
-
-Because teleports publish immediately, a player who arrives somewhere and stands still never reads a stale column from where they came from.
-
-### View rebuild cost
-
-A player's world view is rebuilt at most once per second (`VIEW_TTL_MS = 1000`), and only when something actually reads a `world.*` key. This has three effects on a board:
-
-- All `world.*` keys share one cached view. A rebuild queries one biome environment and one world-info snapshot per player.
-- Values can trail a sprinting player by up to a second.
-- A board nobody is reading costs nothing. Iris does not poll terrain in the background for this.
-
-Pregen values are not polled per player either. They come from one global snapshot updated by `IrisPregenerationEvent`.
+World readings can trail a walking player by up to one second. Joining, respawning, changing worlds, or teleporting updates the position immediately; the display plugin's own refresh interval still applies.
 
 ## Permissions
 
 No placeholder is permission-gated. Anything sensitive is simply not published. There is no seed key, no file path key, and no key that mutates engine state on read.
-
-## Failure policy
-
-| Situation | Result |
-|---|---|
-| Unknown path | Null to PlaceholderAPI, so the literal `%iris_...%` stays on screen |
-| Known path, no data | `---` |
-| No player context on a `world.*` key | `---`, and `world.available` is `false` |
-| Player outside an Iris world | `---`, and `world.available` is `false` |
-| Terrain service not registered | `---`, `world.available` is `false`, `%iris_available%` is `false` |
-| No pregen job | `---`, and `pregen.available` is `false` |
-| A resolver throws | `---`, plus one logged warning for that path. Logging stops after 64 distinct paths have warned |
-
-A key that threw is not quarantined. It keeps being called and keeps answering `---` until whatever was wrong resolves itself.
-
-## Migration from pre-2.0 keys
-
-The old underscore keys are gone with no aliases and no dual-accept window. They now render literally, which is deliberate. A silently empty scoreboard line is worse than a visibly broken one.
-
-| Old key | New key | Why |
-|---|---|---|
-| `%iris_biome_name%` | `%iris_world.biome%` | Dot grammar |
-| `%iris_biome_id%` | `%iris_world.biome-key%` | `id` was always the load key. The name now says so |
-| `%iris_region_name%` | `%iris_world.region%` | Dot grammar |
-| `%iris_region_id%` | `%iris_world.region-key%` | Same as `biome_id` |
-| `%iris_biome_file%` | removed | Leaked absolute server paths, and threw whenever the biome had no backing file |
-| `%iris_region_file%` | removed | Same problem |
-| `%iris_world_seed%` | removed | A scoreboard has no permission context. Read `IrisWorldInfo.seed()` from the terrain API if a plugin genuinely needs it |
-| `%iris_terrain_height%` | removed | Reported generated height before objects and player edits, so it regularly disagreed with the block under the player's feet |
-| `%iris_terrain_slope%` | removed | A pack-authoring diagnostic, far too expensive to run once per player per board refresh |
-| `%iris_world_mode%` | removed | Studio versus production is not something a live board needs |
-| `%iris_world_speed%` | removed | Mutated engine rate-window state as a side effect of being read. Use `%iris_pregen.chunks-per-second%` |
-
-One behavior change hides inside the renames. The old biome and region keys sampled two blocks above the player's feet, so they picked up cave and overhang biomes. The new keys are always the surface column. `%iris_world.dimension%` has no pre-2.0 equivalent.

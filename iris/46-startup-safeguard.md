@@ -2,96 +2,67 @@
 title: "Startup Safeguard"
 description: "Iris documentation: Startup Safeguard"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T00:00:00.000Z
 ---
-On Bukkit-family servers Iris runs a fixed list of startup checks while it enables, then prints a mode banner summarizing them. It also tints the `[Iris]` log prefix and the startup splash, so **the console color is a symptom, not the diagnosis** — read the banner and the check output above it.
-
-The safeguard is Bukkit-only. Fabric, Forge, and NeoForge run no startup checks and have no mode.
+Iris reports a startup mode on Bukkit-family servers. Check the console for any required configuration change or restart before opening worlds. Fabric, Forge and NeoForge do not use this safeguard.
 
 ## Modes
 
-| Mode | Banner | Meaning |
-|---|---|---|
-| Stable | `0 Conflicts found` then `Iris is running Stable` | Every check passed |
-| Warning | `<n> Issues found` then `Iris is running in Warning Mode` | At least one check reported a non-fatal problem. Iris continues startup normally with reduced guarantees |
-| Danger | `<n> Issues found` then `Iris is running in Danger Mode` | At least one check failed at error severity |
+| Mode | Console banner | Effect |
+|------|----------------|--------|
+| Stable | `Iris is running Stable` | Startup checks passed |
+| Warning | `Iris is running in Warning Mode` | Startup continues; review the listed issues |
+| Danger | `Iris is running in Danger Mode` | Iris locks world operations until the reported problem is corrected and the server restarts |
 
-`<n>` counts checks that did not return Stable, not printed lines — a check that prints advice while still returning Stable is not counted. The mode is the highest severity any single check reached, so one Danger result puts the whole boot in Danger Mode.
+Warning Mode does not block commands or generation. A Stable startup does not guarantee that later world loading will succeed; follow any subsequent error or restart prompt.
 
 ## The checks
 
-Checks run in this order. Each prints a heading line and indented detail lines; the headings below are the exact strings to search the console or `logs/latest.log` for.
+| Console heading | Required action |
+|-----------------|-----------------|
+| `Server Version` | Use a Minecraft and server version supported by your Iris build. See [01 - Installation & Platforms](/iris/01-installation-platforms) |
+| `NMS Disabled` | Set `general.disableNMS` to `false` in `iris.json`, then restart |
+| `Java Agent` | Follow the agent setup in [01 - Installation & Platforms](/iris/01-installation-platforms). When instructed, add `-javaagent:plugins/Iris/agent.jar` before `-jar` in the startup command |
+| `Code Injection` | Check that your Iris build supports the server version and resolve the reported startup error before restarting |
+| `Dimension Types` | Restart after installing or changing the pack's required datapack content |
+| `Unsupported Java version` or `Java Runtime` | Use Java 25; see the installation requirements |
+| `Low Memory` or `Memory Recommendation` | Review the server requirements in [01 - Installation & Platforms](/iris/01-installation-platforms) |
+| `Insufficient Disk Space` | Free space on the drive containing the world save |
+| `Dynmap` | Review the compatibility warning; Iris recommends BlueMap |
+| `Stratos` | Remove the conflicting world generator |
+| `Unsupported Server Software` | Use a supported server listed in the installation guide |
 
-| Check | Console heading | Mode | What the failure means |
-|---|---|---|---|
-| Memory | `Low Memory` | Warning | The JVM maximum heap is 2 GB or less. Iris asks for 3 GB or more. Between 2 GB and 3 GB the check stays Stable and prints `Memory Recommendation` as advice. The detail line reads `- JVM maximum heap: <n> MB`; it is not host RAM |
-| Incompatibilities | `Dynmap` | Warning | Dynmap is installed. Iris recommends BlueMap instead. Matched against every registered plugin name without regard to case |
-| Incompatibilities | `Stratos` | Warning | Another world generator is installed. Iris does not run alongside one. Matched against every registered plugin name without regard to case |
-| Software | `Unsupported Server Software` | Warning | The server is not Canvas, Folia, Purpur, Pufferfish, Leaf, Paper, Spigot, or Bukkit. Iris runs but the platform is untested |
-| Version | `Server Version` | Danger | The NMS binding for this Minecraft version could not be bound. The detail line carries the bind failure and the versions this jar supports |
-| Version | `NMS Disabled` | Danger | `general.disableNMS` is `true`, so Iris holds a no-op binding and cannot create or initialize a world. See [03 - Configuration](/iris/03-configuration) |
-| Injection | `Runtime Injection` | Stable | `general.eagerRuntimeInjection` is `false` (the default), so the agent and code injection install on the first world load instead. Nothing is verified at startup |
-| Injection | `Java Agent` | Danger | With `general.eagerRuntimeInjection` on: the bundled `agent.jar` could not be prepared, or attaching it to the running JVM failed |
-| Injection | `Code Injection` | Danger | With `general.eagerRuntimeInjection` on: the agent attached but server code injection returned failure, or Iris has no usable NMS binding |
-| Dimension Types | `Dimension Types` | Danger | The dimension types the installed packs need were not registered. Usually a missing restart after a pack or datapack change. The same heading with `- Dimension types could not be checked because Iris has no NMS binding.` instead locks with the NMS reason |
-| Disk Space | `Insufficient Disk Space` | Warning | The level root has 3 GB or less free. Iris needs 3 GB to operate |
-| Java | `Unsupported Java version` | Warning | The runtime is older than Java 25. Java 26 and newer stay Stable with a `Java Runtime` note that Iris is tested primarily on Java 25 |
-| Java | `Java Runtime` | Warning | `java.version` could not be parsed at all |
-
-A check that throws prints `Error while running task <id>` with the exception. A throw in `memory`, `incompatibilities`, `software`, `diskSpace` or `java` is Warning; a throw in `version`, `injection` or `dimensionTypes` is Danger.
-
-> With the default deferred injection there is no `Java Agent` or `Code Injection` heading in the banner block, because nothing was attempted yet. The install runs when the first Iris world loads, and a failure there logs `Iris runtime injection is unavailable: <reason>` and locks the runtime from that moment. **The banner is already printed by then, so a boot that looked Stable can still end up locked** — the deferred line, not the banner, is what tells you.
-{.is-warning}
+`general.eagerRuntimeInjection=true` checks native server integration during startup. With the default `false`, Iris prepares it when the first Iris world loads. Changing this setting requires a restart; see [03 - Configuration](/iris/03-configuration).
 
 ## What Danger Mode blocks
 
-Danger is the lock. Any check that reaches Danger marks the runtime invalid, and the first one to do so supplies the reason:
+While Iris reports a locked runtime:
 
-| Reason | Lock message |
-|---|---|
-| NMS binding unusable (`Server Version`, `NMS Disabled`, injection skipped for want of a binding, the dimension-type check finding no binding, or the version check throwing) | `Iris cannot use this server's NMS runtime. Resolve the Server Version or NMS Disabled error above and restart the server.` |
-| Agent unavailable | `Iris Java agent is unavailable. Add -javaagent:<path to plugins/Iris/agent.jar> to the JVM arguments before -jar and restart the server.` |
-| Injection returned failure, or the injection check threw | `Iris runtime injection failed. Resolve the startup errors and restart the server.` |
-| Dimension types missing, or the dimension-type check threw | `Iris dimension types were not registered. Restart the server so the registries reload.` |
+- Player login is refused with the lock reason.
+- World creation and replacement are refused.
+- Studio opening is refused, including `force=true`.
+- Existing Iris worlds cannot generate new terrain.
 
-While the runtime is invalid:
+Iris leaves the server running so you can read the errors and correct its configuration. Datapack validation can also lock world loading. Follow the reason shown in the console, then perform a full server restart. `/iris reload` does not clear the lock or rerun startup checks.
 
-- **Player login is refused.** Every login is disallowed with the lock reason plus `Check the server console, correct the reported Iris state, and restart.`
-- **World creation is refused.** `/iris create` and world replacement staging fail with `Iris world creation is locked: <reason>`.
-- **Studio open is refused.** `force=true` does not bypass a runtime failure.
-- **Existing Iris worlds do not generate.** Each logs `Keeping configured Iris world '<world>' generation-locked: <reason>` and throws on any generation call. The refusal is deliberate: it stops CraftBukkit substituting the vanilla generator and writing vanilla terrain into that world's region files.
+## View status and save a report
 
-A boot that enables into a locked runtime states it once more after the banner: `Iris enabled with a locked runtime: <reason>`. Iris does not stop the server; the non-generating refusal already prevents vanilla terrain.
+Read the startup banner and the issues printed above it. To save a local support report, run:
 
-Warning Mode gates nothing.
+```text
+/iris debug dump upload=false
+```
 
-The same lock is shared with external datapack and dimension-pack validation, so a login kick or a locked world can also come from those. See [01 - Installation & Platforms](/iris/01-installation-platforms).
+The report is written under `plugins/Iris/debug/`. Omitting `upload=false` uploads the report to mclo.gs. This command requires `iris.debugdump`, checked separately from `iris.all`. See [04 - Commands & Permissions](/iris/04-commands-permissions).
 
-## Diagnose
+## Applying changes
 
-1. Read the banner for the mode and the number of checks involved, then the check output printed immediately above it.
-2. Look for `Injecting Bukkit`, logged when code injection begins. A `Java Agent` heading means Iris never got that far; a `Code Injection` heading after it means injection itself failed.
-3. `Installing Java Agent...` appears only when Iris has to attach the agent dynamically. A server started with `-javaagent` skips that step.
-4. `[Attach Listener/ERROR]` and `[STDERR]` lines around a dynamic attach come from the JVM, not from Iris.
-5. Run `/iris debug dump` for a support report. It uploads to mclo.gs by default; `upload=false` writes it to `plugins/Iris/debug/` only. It requires `iris.debugdump`, checked independently of `iris.all`. The report carries a `Startup safeguard: <mode> (<n> issues)` line and one `<check id>: <mode>` line per check with its diagnostic lines. The ids are `memory`, `incompatibilities`, `software`, `version`, `injection`, `dimensionTypes`, `diskSpace`, and `java`.
+Stop the server, apply the configuration or startup-command changes requested by the error, then start it again. If a pack change requires new dimension types, complete that restart before retrying world creation or Studio.
 
-The banner is printed once per enable. It is not re-evaluated on `/iris reload` and no command re-prints it — restart the server to re-run the checks.
-
-## Recover
-
-- **Java Agent.** Stop the server, confirm `plugins/Iris/agent.jar` exists, and add `-javaagent:plugins/Iris/agent.jar` before `-jar` in the startup command. Dynamic attachment also needs `-XX:+EnableDynamicAgentLoading` and a host that permits JVM attachment; loading the agent at JVM startup avoids the attachment step entirely. Full procedure in [01 - Installation & Platforms](/iris/01-installation-platforms).
-- **Code Injection.** Keep the complete startup stack trace and check the Iris and server version combination before retrying.
-- **Server Version.** Use a Minecraft version this Iris build binds. The detail line names the supported range.
-- **NMS Disabled.** Set `general.disableNMS` to `false` and restart. It is a diagnostic escape hatch, not a compatibility switch.
-- **Dimension Types.** Restart once so the registries reload. If it survives a clean restart, treat it as a defect and collect the console output.
-- **Low Memory, Insufficient Disk Space, Unsupported Java version.** Fix the host: raise the heap, free space on the level root volume, or move to Java 25.
-- **Dynmap, Stratos, Unsupported Server Software.** Remove the conflicting plugin or move to a supported server, or accept that Iris runs unverified against it.
-
-> Never work around a lock by deleting files from a dimension root. Restore from backup instead.
-{.is-warning}
+Do not delete dimension files to bypass a lock. Keep world backups before changing server versions or replacing world content.
 
 ## Related
 

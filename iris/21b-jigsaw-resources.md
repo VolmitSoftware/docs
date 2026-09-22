@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -261,7 +261,7 @@ Export reads the committed graph, not pending workcell blocks. Wait for autosave
 /iris jigsaw export namespace=demo output=village-demo format=zip replace=false
 ```
 
-Output is written under `<Iris data>/packs/exports/`. Export runs off the server thread, so wait for the final result and do not treat the background-start message as success. One player cannot start a second export while their first is running.
+Output is written under `<Iris data>/packs/exports/`. Wait for the export's completion message before using the files. One player cannot start a second export while their first is running.
 
 `output` is one direct artifact name: 1-128 characters, starting with a letter, number, `_`, or `-`, then only letters, numbers, `.`, `_`, or `-`. Whitespace, leading `.`, absolute paths, slashes, nested paths, and traversal names are rejected. `format=zip` adds `.zip` when needed. The destination is replaced atomically only when `replace=true`; an existing output is otherwise rejected.
 

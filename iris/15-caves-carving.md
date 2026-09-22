@@ -2,12 +2,12 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris carves its own caves during mantle generation. It never runs the vanilla noise carvers. A cave profile 3D density field marks which cells become carved space. A later terrain pass turns those marks into air, dimension fluid, or lava. It also paints cave-biome floors, ceilings, walls, and decorators into the hollow. Everything is JSON on dimensions, regions, and biomes. There is no `caves/` or `ravines/` registrant type.
+Configure cave shape with `caveProfile` on a dimension, region or biome. Cave biomes provide floor, ceiling and wall materials, decorations and objects. Iris uses these settings instead of vanilla carvers; there are no separate `caves/` or `ravines/` resource folders.
 
 Related:
 
@@ -29,29 +29,25 @@ The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/b
 
 Dimension `focus` preserves the owning region when targeting a child or cave biome, including flooded cave targets. Its regional cave profile remains active in focused Studio previews.
 
-Biome [`terrain3D`](/iris/47-volumetric-terrain) creates solid spans and open gaps during terrain generation. It works independently of `carvingEnabled` and can add volume as well as remove it. Cave profiles operate on the resulting terrain. Natural gaps beneath overhangs retain their surface biome and receive surface decoration on their ledges. Ordinary cave intent does not fill these gaps with cave fluid. Accepted hydrology retains its planned terrain and fluid ownership.
+Biome [`terrain3D`](/iris/47-volumetric-terrain) creates solid spans and open gaps during terrain generation. It works independently of `carvingEnabled` and can add volume as well as remove it. Cave profiles operate on the resulting terrain. Natural gaps beneath overhangs retain their surface biome and receive surface decoration on their ledges. Cave aquifers do not fill these gaps. Hydrology channels keep their terrain and fluids.
 
-## The mental model
+## Cave shape and content
 
-Carving happens in two separate passes. Knowing which one you are looking at explains almost every "why did nothing change" question.
+A cave profile controls the shape, depth, surface openings and liquids of caves. Cave biomes supply `layers` and floor decorators, `caveCeilingLayers` and `CEILING` decorators, and the `wall` palette. Floors, ceilings and walls can use different cave biomes where a cave crosses a biome boundary.
 
-**Pass 1: mark.** Iris resolves which cave profile applies to each column, samples a 3D density field, and for every cell below the carve threshold records a *cavern mark* carrying an intent: plain air, dimension fluid, lava, or forced air. No blocks are touched yet. The marks outlive the chunk, which is why caves line up across chunk borders and why cave objects can be anchored before terrain exists.
-
-**Pass 2: carve.** After the column has been filled with stone and biome layers, the marks are turned into real blocks: air marks become `cave_air`, fluid marks become the dimension `fluidPalette` block, lava marks become lava, and forced-air marks become air even below the lava line. Each column's carved cells are then grouped into contiguous runs. The floor biome is resolved at the lowest carved Y and paints `layers` plus floor decorators; the ceiling biome is resolved independently at the highest carved Y and paints `caveCeilingLayers` plus `CEILING` decorators. Walls resolve their cave biome at each Y.
-
-Deposits and surface decorators both run **after** carving. Deposits skip any cell carrying a cavern mark, so ore veins never dangle inside a cave, and a surface-breaking cave hole does not leave grass floating over the opening.
+Deposits do not fill carved openings, and surface decorators require ground beneath them.
 
 ### Two different Y coordinates
 
-This trips up nearly everyone. Iris generates internally from `0` to `(maxHeight - minHeight)` and shifts down on output. Fields split into two groups:
+Some settings measure height from the build floor; others use absolute world Y:
 
-| Engine-local Y (0 = bottom of the world) | Absolute world Y |
+| Height above the build floor | Absolute world Y |
 |---|---|
 | `caveProfile.verticalRange` | `carving[].worldYRange` |
 | `IrisCaveFieldModule.verticalRange` | structure placement `minHeight` / `maxHeight` |
-| dimension `caveLavaHeight`, `fluidHeight` | `depositVariants[].minHeight` / `maxHeight` |
+| dimension `caveLavaHeight` | dimension `fluidHeight`; `depositVariants[].minHeight` / `maxHeight` |
 
-With the default `dimensionHeight` of `-64..320`, engine-local `0` is world `-64` and engine-local `64` is world `0`. A profile `verticalRange` of `{ "min": 0, "max": 64 }` therefore covers the deepslate band, not the surface.
+With the default `dimensionHeight` of `-64..320`, height `0` above the build floor is world Y `-64`, and height `64` is world Y `0`. A profile `verticalRange` of `{ "min": 0, "max": 64 }` therefore covers the deepslate band, not the surface.
 
 ## Walkthrough: prove carving works before you tune it
 
@@ -74,7 +70,7 @@ Start from a validating `OVERWORLD` pack whose surface height and fluid level ar
 }
 ```
 
-3. Validate the pack and reopen Studio. Carving is written into the mantle. Only **freshly generated** chunks change. Fly out past your previously generated area or use a new Studio world.
+3. Validate the pack and reopen Studio. Only **freshly generated** chunks change. Fly out past your previously generated area or use a new Studio world.
 4. Dig down between world Y `-48` and `32` (engine-local 16 to 96 with the default height range). Success is open cave volume with intact grass overhead, no water pockets, and no lava at the bottom of the band.
 5. If nothing is carved, work down this list before you touch noise values. Confirm dimension `mode.type` is `OVERWORLD`. Confirm `carvingEnabled` and `useMantle` are both true. Confirm `CARVED` is not listed in `disabledComponents`. Confirm the profile you edited is the one that actually wins for those columns (see resolution order below). Confirm the chunks are new.
 
@@ -86,7 +82,7 @@ Profiles resolve per column. The **last enabled profile in the chain wins**:
 dimension.caveProfile → region.caveProfile → surface biome.caveProfile → cave biome.caveProfile
 ```
 
-A disabled profile (`enabled: false`, which is the Java default) is skipped entirely rather than blocking the level above it. A biome only overrides the dimension when its own profile is explicitly enabled.
+A disabled profile (`enabled: false`, the default) is skipped entirely rather than blocking the level above it. A biome only overrides the dimension when its own profile is explicitly enabled.
 
 To give one surface biome tight, dense tunnels while the rest of the world keeps the dimension caverns, put an enabled profile on that biome:
 
@@ -115,7 +111,7 @@ At most **two** blended profiles run per chunk. When more than two are present, 
 
 Carving produces empty space and nothing else. Materials, plants, and props come from a **cave biome**. That is an ordinary biome JSON that Iris happens to look up underground.
 
-1. Write `biomes/carving/mossy.json` as a normal biome. Cave biomes typically omit height generators. The carve step already removed solid. Nothing reads their terrain height.
+1. Write `biomes/carving/mossy.json` as a normal biome. Omit height generators; they have no effect on cave terrain.
 
 ```json
 {
@@ -156,7 +152,7 @@ Carving produces empty space and nothing else. Materials, plants, and props come
 
 Two rules decide whether any of this appears:
 
-- **A carved run must be at least 3 blocks tall.** A zone is only processed when its air thickness (`ceiling - floor - 1`) is greater than zero. Two-block-tall crawlspaces get carved but keep raw stone and no decoration.
+- **A cave opening must be at least 3 blocks tall to receive cave materials and decoration.** Two-block-tall crawlspaces keep raw stone.
 - **Floor layers only overwrite solid blocks.** They descend from the block below the lowest carved cell. Where the layer stack runs into existing air, it stops. Ore blocks in the floor are converted to the deepslate variant matching the layer instead of being erased. An iron vein exposed in a deepslate cave floor stays iron.
 
 ### How Iris picks the cave biome at a point
@@ -167,11 +163,11 @@ For a given `(x, y, z)`, in order:
 2. Otherwise the region `caveBiomes` pool is sampled by `caveBiomeStyle` and biome `rarity`, zoomed by the dimension `biomeZoom` multiplied by the region `caveBiomeZoom`. An omitted or empty pool uses the surface biome for biome queries and saved generation history. It does not enable cave generation.
 3. If the sampled cave biome `caveMinDepthBelowSurface` is deeper than the point, the **surface** biome is used instead. The same fallback applies if the point is at or above the surface.
 
-Results are blended: where neighboring samples disagree the resolver mixes them per block position, producing a speckled transition band rather than a hard edge between two cave biomes.
+Neighboring cave biomes blend through a speckled transition band.
 
-`carvingBiome` on a surface biome is **not** part of this lookup. At runtime it only pulls the referenced biome into the pack reachable-biome closure so its custom biome identity and spawn mappings get registered. It never selects a cave biome during generation. Use region `caveBiomes` or a dimension `carving` band instead.
+`carvingBiome` on a surface biome does not select underground cave content. Use region `caveBiomes` or a dimension `carving` band instead.
 
-Enabled dimension `carving` biomes are likewise included in the recursive reachable-biome closure even when no region lists them. Their identities are available wherever the Y band selects them.
+A biome used by an enabled dimension `carving` band does not also need to appear in a region list.
 
 ## Fluids and lava inside caves
 
@@ -179,30 +175,21 @@ Aquifers and deep lava are two independent mechanisms. Neither changes cave geom
 
 Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
-**Deep lava** is a straight Y test done while the carve marks are written. Any carved cell at or below the dimension `caveLavaHeight` (engine-local, default `8`) is marked lava when `allowLava` is true. When `allowLava` is false those cells are marked *forced air*, which the carve modifier honors explicitly. That is how a dry lava-level cave stays dry. A cavern mark with plain air intent that reaches the carve modifier from some other source (structure boring, for example) below `caveLavaHeight` becomes lava. Plain air is the "use the default for this depth" intent.
+**Deep lava** fills profile-carved space at or below `caveLavaHeight`, measured above the build floor (default `8`). Set the profile's `allowLava` to false to keep those caves dry. This setting does not prevent other features, such as structure boring, from creating lava-filled openings below that height.
 
-**Aquifers** use the dimension `fluidPalette`, which accepts any weighted block palette and defaults to water. Swapping it for lava turns identical Overworld caverns into lava lakes without touching a single density value. A carved cell becomes fluid only when all of the following hold:
+**Aquifers** use the dimension `fluidPalette`, which defaults to water and accepts a weighted block palette. Change it to lava for lava aquifers. Aquifers stay below both `fluidHeight` and the depth required by `fluidMinDepthBelowSurface`, do not replace deep lava, and become less frequent at greater depths. With `fluidRequiresFloor: true`, they require a supported, mostly enclosed pocket.
 
-- it is at or below `min(fluidHeight, columnSurfaceY - fluidMinDepthBelowSurface)`
-- it is not already a lava cell
-- a detail-noise sample at that point clears a cutoff that **rises with depth**. The cutoff is about `0.35` at the fluid line and `0.55` some 48 blocks below it. It tops out at `0.65` around 72 blocks down. Shallow aquifers are common. Deep ones are rare
-- with `fluidRequiresFloor` on (the default), the cell sits in a cup. Solid is required directly below and two below. At least four of the five remaining neighbors (four horizontal plus above) must also be solid
+Caves preserve the seabed and the solid boundaries of generated surface water. They can continue below those boundaries or open above the waterline.
 
-Natural surface bodies are separate from aquifers. A surface-breaking cave is never allowed to remove the seabed or a block beside a generated surface reservoir: Iris protects that wet interface at the column's actual fluid head (`fluidHeight` for an ordinary ocean, the accepted layer's `fluidHeadY` for a hydrology channel). The cave may continue below the protected band and may open again above the fluid line.
+Underground rivers, grottos and deep-fluid bodies remain contained and protected from object and structure placements. Their settings are separate from cave aquifers. See [36 - Rivers](/iris/36-rivers).
 
-An underground course, grotto, or deep-fluid body is only accepted after its complete planned volume is checked against the carved space, and accepted cells and their seal boundary stay protected from later object and structure stamps. None of this changes the ordinary aquifer setting. See [36 - Rivers](/iris/36-rivers).
-
-Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid. Combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava. `allowWater`, `waterMinDepthBelowSurface`, and `waterRequiresFloor` were removed. Pack validation rejects them by name in inline dimension, region, and biome profiles and in `snippet/cave-profile` files. An old dry-cave setting cannot silently fall back to the new `allowFluid: true` default.
+Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid. Combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava. Use `allowFluid`, `fluidMinDepthBelowSurface` and `fluidRequiresFloor`; the former `allowWater`, `waterMinDepthBelowSurface` and `waterRequiresFloor` names are rejected by validation.
 
 ## Surface openings
 
-Whether a cave can reach daylight is decided per column before any density sampling:
+Set `allowSurfaceBreak: true` to allow cave mouths. `surfaceBreakStyle` controls their distribution; lower `surfaceBreakNoiseThreshold` values create more openings. `surfaceBreakDepth` and `surfaceBreakThresholdBoost` control how widely caves open near the surface.
 
-```
-breakColumn = allowSurfaceBreak && surfaceBreakNoise2D(x, z) >= surfaceBreakNoiseThreshold
-```
-
-In a break column, carving is allowed all the way up to the terrain surface, and within `surfaceBreakDepth` blocks of it the carve threshold is relaxed by `surfaceBreakThresholdBoost` so the opening punches through instead of pinching shut. In every other column `surfaceY - surfaceClearance` is the highest legal carve position, with a 12-block taper below that boundary so large caves close at varied heights instead of being sliced into a flat ceiling. `surfaceClearance` is therefore the guaranteed minimum roof thickness. The surface-fluid boundary stays solid even in a break column, so oceans and lakes are contained at their generated level.
+Elsewhere, `surfaceClearance` sets the minimum roof thickness. Oceans and lakes retain a solid boundary so surface openings do not drain them.
 
 After materials are applied, an ore block sitting on the surface directly above a carved, unsupported cell is deleted. That prevents a floating ore cap over a cave mouth. Supported surface ores and underground ores are untouched.
 
@@ -212,11 +199,11 @@ For sealed caves: `allowSurfaceBreak: false` plus a larger `surfaceClearance`. F
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `carvingEnabled` | boolean | `true` | Master switch. False adds `CARVED` to the disabled mantle components, so no profile anywhere carves. Use it to A/B a world against a solid version |
+| `carvingEnabled` | boolean | `true` | Master switch. Set false to disable cave carving throughout the dimension |
 | `caveProfile` | `IrisCaveProfile` | disabled | The fallback profile for every column no region or biome overrides. This is where most packs put their cave system |
 | `carving` | `IrisDimensionCarvingEntry[]` | `[]` | Absolute-world-Y bands that force a specific cave biome regardless of surface biome. Use for a global deep dark or a magma layer |
 | `caveBiomeStyle` | `IrisGeneratorStyle` | cellular iris double | Shape of the patches that pick between a region `caveBiomes`. Cellular gives blobby cave regions. Wispy styles give streaks |
-| `caveLavaHeight` | int 0..318 | `8` | Engine-local Y at or below which carved cells fill with lava (or forced air when `allowLava` is false). Raise it for a hellish lower world |
+| `caveLavaHeight` | int 0..318 | `8` | Height above the build floor at or below which caves fill with lava when `allowLava` is true |
 | `requireObjectSurfaceSupport` | boolean | `true` | Refuses to place surface objects and trees over a carve opening. Turn off only if you want trees hanging over cave mouths |
 | `objectSurfaceSupportBuffer` | int 0..16 | `2` | Blocks of solid ground required around a surface object footprint. A placement can ask for more but never less |
 | `upperDimensionCarving` | boolean | `false` | Lets caves cut into the inverted ceiling terrain of an `upperDimension`. Off leaves the canopy a solid slab |
@@ -230,7 +217,7 @@ Snippet key: `cave-profile`. Valid on **dimension**, **region**, and **biome**.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `enabled` | boolean | `false` | Nothing carves until this is true. A listed but disabled profile is invisible to the resolver |
+| `enabled` | boolean | `false` | Set true to enable this profile. Disabled profiles do not override enabled dimension, region or biome profiles |
 | `verticalRange` | `IrisRange` | `0..384` | Engine-local Y window this profile may carve in. Clamp it to keep caves out of the deepslate floor or the sky |
 | `verticalEdgeFade` | int 0..128 | `20` | Blocks of smoothstep taper at both ends of `verticalRange`. Without it caves are sliced off flat at the boundary |
 | `verticalEdgeFadeStrength` | double 0..1 | `0.18` | How hard the taper pushes toward solid. Raise it if the top and bottom of your cave band still look cut |
@@ -239,7 +226,7 @@ Snippet key: `cave-profile`. Valid on **dimension**, **region**, and **biome**.
 | `warpStyle` | `IrisGeneratorStyle` | flat | Domain warp applied to the sample coordinates. Only has an effect when `warpStrength` is above zero |
 | `baseWeight` | double >= 0 | `1` | Contribution of the base field. All weights are normalized, so raising this is equivalent to lowering the others |
 | `detailWeight` | double >= 0 | `0.35` | Contribution of the detail field. Above about `0.5` the base layout stops being readable |
-| `warpStrength` | double >= 0 | `0` | Block distance the warp displaces samples. Small values (0.2 to 1) bend straight tunnels. Large values scramble everything and cost a second noise lookup per sample |
+| `warpStrength` | double >= 0 | `0` | Block distance the warp displaces samples. Small values (0.2 to 1) bend straight tunnels. Large values create more distorted cave shapes |
 | `densityThreshold` | `IrisStyledRange` | `-0.2..0.2`, cellular iris double | The carve cutoff, itself noise-varied across the world so cave size differs region to region. Set `min` equal to `max` for a constant threshold. Writing `{}` is rejected by validation. It would resolve to the shared 16..32 default and hollow the whole vertical range |
 | `thresholdBias` | double 0..1 | `0.16` | Subtracted from the sampled threshold before the test. Lower it for more carved space. Raise it for less. This is the single knob to reach for when caves are globally too big or too small |
 
@@ -247,10 +234,10 @@ Snippet key: `cave-profile`. Valid on **dimension**, **region**, and **biome**.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `sampleStep` | int 1..8 | `1` | 1 and 2 use exact per-cell evaluation. **3 or higher switches to a lattice pass** that samples one column per 2x2 tile and stamps only two vertical blocks per sample. Values above 2 leave uncarved horizontal bands and blocky 2x2 walls. Treat 3+ as a deliberate low-fidelity mode, not a free speedup |
-| `adaptiveSampling` | boolean | `true` | With `sampleStep` 1 or 2, classifies a coarse grid first and only evaluates exactly where the plane is ambiguous. Leave it on. It is the main reason carving is affordable |
-| `adaptiveSampleStep` | int 2..4 | `2` | The runtime predictor grid is always 8 regardless of this value. What this field actually changes is the ambiguity margin: each step below 8 adds `0.015` to the margin. `2` is the most conservative (widest margin, most exact fallback) and `4` is the loosest |
-| `adaptiveThresholdMargin` | double 0..1 | `0.04` | Base ambiguity band around the threshold where the predictor refuses to guess. Raise it if adaptive sampling is visibly clipping thin tunnels |
+| `sampleStep` | int 1..8 | `1` | Keep at 1 or 2 for detailed cave shapes. Values of 3 or higher produce blocky 2x2 walls and uncarved horizontal bands |
+| `adaptiveSampling` | boolean | `true` | Reduces generation work when `sampleStep` is 1 or 2. Leave enabled for normal use |
+| `adaptiveSampleStep` | int 2..4 | `2` | Controls how conservatively adaptive sampling preserves detail: 2 favors detail, while 4 permits more approximation |
+| `adaptiveThresholdMargin` | double 0..1 | `0.04` | Raise to preserve more detail near cave edges when adaptive sampling clips thin tunnels |
 
 ### Surface interaction
 
@@ -283,8 +270,8 @@ Biome-owned cave objects anchor only in cells owned by that exact cave biome. Re
 |-------|------|---------|--------------|
 | `allowFluid` | boolean | `true` | Enables generated cave aquifers from the dimension `fluidPalette`. It does not control natural surface bodies |
 | `fluidMinDepthBelowSurface` | int 0..64 | `12` | Aquifers stay at least this far below the terrain surface, which keeps water from bleeding out of a hillside |
-| `fluidRequiresFloor` | boolean | `true` | Requires the cave-aquifer cup test described above. Turning it off gives far more aquifer fluid and far more of it pouring down shafts |
-| `allowLava` | boolean | `true` | When false, carved cells at or below `caveLavaHeight` are marked forced air rather than lava |
+| `fluidRequiresFloor` | boolean | `true` | Requires a supported, mostly enclosed pocket. Turning it off allows more aquifer fluid, including flows down shafts |
+| `allowLava` | boolean | `true` | When false, caves carved by this profile remain dry below `caveLavaHeight` |
 
 ### Density module (`IrisCaveFieldModule`)
 
@@ -312,14 +299,14 @@ A placement using `ObjectPlaceMode.CEILING_HANG` is forced to the `CEILING` anch
 
 ## Dimension carving entries (`IrisDimensionCarvingEntry`)
 
-Snippet key: `dimension-carving-entry`. These override the cave biome inside an absolute world-Y band, independent of what the surface biome above is. Every enabled entry whose biome has an enabled `caveProfile` adds that profile as an extra carving pass. The pass is restricted to the band. It sits on top of the two-blended-profile budget.
+Snippet key: `dimension-carving-entry`. These override the cave biome inside an absolute world-Y band, independent of what the surface biome above is. If the selected biome has an enabled `caveProfile`, that profile also shapes caves within the band, in addition to the surrounding profiles.
 
-If the version-content gate excludes a cave biome on the running Minecraft version, Iris removes that biome from dimension carving selection and from the reachable-biome closure. Its derivative is not registered for native structure eligibility, and the rest of the cave pools continue without it.
+Cave biomes excluded on the running Minecraft version do not generate or enable their associated native structures. Other cave biomes remain available.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `id` | string | `""` | Stable identifier. Other entries reference it through `children`, and floating child biomes can reference it by id |
-| `enabled` | boolean | `true` | Disabled entries are skipped and drop out of the reachable-biome closure |
+| `enabled` | boolean | `true` | Set false to disable this cave-biome band |
 | `biome` | biome key | `""` | The cave biome applied throughout the band |
 | `worldYRange` | `IrisRange` | `-64..320` | **Absolute** world Y, unlike everything else on the profile |
 | `children` | string[] | `[]` | Ids of entries that carve patches inside this one. Cycles back to a parent id are allowed and bounded by depth |
@@ -362,7 +349,7 @@ Gravity-affected cave-floor layers are written only when the block beneath them 
 
 ## Cave-anchored jigsaw structures
 
-Editable Iris jigsaws can resolve their start against carved space in the mantle instead of the surface or a blind Y band. Put the placement in `structures[]` on a dimension, region, surface biome, or cave biome and use one of the explicit cave anchors. A cave-biome `structures[]` list contributes cave anchors only.
+Editable Iris jigsaws can be placed on cave floors, ceilings or within open cave space. Put the placement in `structures[]` on a dimension, region, surface biome, or cave biome and use one of the explicit cave anchors. A cave-biome `structures[]` list contributes cave anchors only.
 
 ```json
 {
@@ -392,10 +379,10 @@ Editable Iris jigsaws can resolve their start against carved space in the mantle
 | `anchor` | `LEGACY` | `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, or `CAVE_ANY` search carved cells instead of terrain height |
 | `minHeight` / `maxHeight` | `-2032` / `2032` | Inclusive absolute world-Y scan band, clipped to one block inside the dimension usable height |
 | `caveBiomes` | empty | Allowlist rechecked against the cave biome at each candidate anchor. Keys are trimmed, case-normalized, and may include or omit the namespace |
-| `caveAnchorAttempts` | `8` | Unique columns tested inside the start chunk, clamped to `1..64`. Columns are visited by a seeded odd stride so no column repeats |
+| `caveAnchorAttempts` | `8` | Number of locations checked inside the start chunk, clamped to `1..64` |
 | `caveAnchorScanStep` | `1` | Vertical scan increment, clamped to `1..16`. Above one it can skip valid single-block anchors |
 | `caveMinimumClearance` | `3` | Required contiguous vertical carved run, clamped to `1..64` |
-| `underwater` | `false` | Cave anchors require a dry cavern cell. Ordinary cavern air must be above `caveLavaHeight`. Explicit fluid and lava cells are rejected. Forced-air cavern matter counts as dry even below that line. `true` permits fluid cavern cells |
+| `underwater` | `false` | False requires a dry cave location, including caves kept dry by `allowLava: false`. True also permits locations containing cave fluid |
 
 Geometry and alignment:
 
@@ -406,18 +393,18 @@ Geometry and alignment:
 | `CAVE_CENTER` | Candidate is a midpoint of its contiguous carved run, and that run meets the clearance requirement | Bounding-box midpoint shifted to the anchor Y |
 | `CAVE_ANY` | A clearance-sized carved run is centered on the candidate | Bounding-box midpoint shifted to the anchor Y |
 
-Selection is deterministic for the world seed, placement identity, and start chunk. Iris visits at most 64 of the chunk's 256 columns and stops at the first column with a match. When no candidate passes, **the placement is skipped** — there is no fallback to a surface or height-band start.
+When no location meets the cave-anchor requirements, the placement is skipped. It does not fall back to a surface or height-band placement.
 
-> The test reads a single vertical cavern column. It proves local clearance, not that the assembled footprint fits, so `SOURCE` and `PRESERVE` can leave pieces embedded in surrounding rock. Use `BORE` or `FORCE_CARVE` when the structure must make its own room.
+> `caveMinimumClearance` applies at the anchor and does not guarantee room for the whole structure. `SOURCE` and `PRESERVE` can leave pieces embedded in surrounding rock. Use `BORE` or `FORCE_CARVE` when the structure must clear its own space.
 {.is-warning}
 
 Scope is decided at chunk center, and surface-biome, cave-biome, region, and dimension lists all contribute candidates there. A locator cannot resolve a distant ungenerated cave anchor until terrain generation has produced that carved space.
 
-Cave anchors count as underground placement. Iris skips the surface-burial shift and does not clear intersecting surface trees. Piece placement resolves to `STRUCTURE_PIECE` underground except for authored `ORGANIC_STILT` and `CEILING_HANG` modes. The `anchor` field is rejected on `nativeStructures`. Full authoring detail is in [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+Cave anchors place structures underground without surface burial adjustments or tree clearing. Authored `ORGANIC_STILT` and `CEILING_HANG` placement modes remain active. The `anchor` field is unavailable for `nativeStructures`. Full authoring detail is in [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 ## Vanilla carvers never run
 
-Iris never runs Minecraft's noise carvers, and the biome definitions it emits carry empty carver entries on every platform. **Datapack carver features have no effect on Iris terrain.** Use `caveProfile` and cave biomes instead. See [30 - Platform Differences](/iris/30-platform-differences).
+**Vanilla and datapack carvers have no effect on Iris terrain.** Use `caveProfile` and cave biomes instead. See [30 - Platform Differences](/iris/30-platform-differences).
 
 ## Tuning quick reference
 
@@ -434,7 +421,7 @@ Iris never runs Minecraft's noise carvers, and the biome definitions it emits ca
 
 ## Practical notes
 
-- `enabled: false` is the Java default on every cave profile, including the dimension. Listing cave biomes without enabling a profile produces no caves at all.
-- Carving is written into the mantle. Existing chunks never gain caves from a settings change. Only fresh chunks do.
+- `enabled: false` is the default on every cave profile, including the dimension. Listing cave biomes without enabling a profile produces no caves at all.
+- Cave settings affect newly generated chunks only. Existing chunks do not change.
 - Cave biome layers do not create voids. They only replace blocks that carving already exposed.
 - Upper-dimension carving is off by default. That leaves an `upperDimension` ceiling as an untouched solid mass.

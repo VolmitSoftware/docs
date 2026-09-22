@@ -2,7 +2,7 @@
 title: "Image Map Encodings"
 description: "How each Iris image-map type decodes its pixels: grayscale height, RGB height, color legends, and masks"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -183,7 +183,7 @@ distance = sqrt((r - R)^2 + (g - G)^2 + (b - B)^2)
 - An exact legend match wins immediately.
 - With no exact match and tolerance above zero, a legend color is eligible when its distance is at most the configured tolerance.
 - No eligible entry is an unknown color.
-- **More than one eligible entry is ambiguous and is a blocking validation error.** Iris never chooses one by map order, hash order, or platform behavior.
+- **More than one eligible entry is a blocking validation error.** Configure exactly one matching entry.
 
 Tolerance uses raw sRGB channel values. It is not Delta E, HSV distance, gamma-linear distance, or a display-profile comparison. Keep it at zero for authored data maps whenever possible, and keep legend colors far enough apart that the selected tolerance cannot overlap their acceptance radii.
 

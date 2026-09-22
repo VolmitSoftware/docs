@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -98,7 +98,7 @@ On a Paper-family server with early plugin bootstrap, the built-in `overworld` a
 /iris download pack=underworld
 ```
 
-Downloads are single-flight, so wait for each to report success. Restart, then stage both replacements:
+Wait for each download to finish before starting the next. Restart, then stage both replacements:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789

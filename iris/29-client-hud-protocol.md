@@ -2,7 +2,7 @@
 title: "Client HUD & Protocol"
 description: "Iris documentation: Client HUD & Protocol"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,12 +20,7 @@ There is no separate client download. The Fabric, Forge, and NeoForge mod jars e
 3. Look at the top-left of your screen. Success is a dark panel at 6,6 with a green title, a `done / total (percent%)` line, a green progress bar, and a rate-and-ETA line. If region deltas arrive you also get a small region grid below the panel.
 4. Press `M`. The Vision map should open full-screen. Drag to pan, scroll to zoom, Esc to close.
 5. Press `J` to toggle the What overlay, then look at a block. It should list the biome, the region, the cave biome if there is one, and the height.
-6. Walk into a non-Iris world. Vision and What stop reporting Iris data and the client clears its cached tiles and markers.
-7. Disconnect and reconnect, then repeat step 3. This proves the handshake reruns and the UI shows no stale state.
-
-If the panel never appears: confirm the versions match on both sides, reconnect to force a fresh handshake, then read the server log. A protocol version mismatch and a rejected frame both leave a trace there.
-
-One thing that is not evidence: a working boss bar on a modded server proves the pregeneration job is running and that the server can talk to your client's *vanilla* surface. It does not prove the Iris payload path works. If the boss bar appears at all, the payload path did **not** come up for you.
+6. Vision and What show Iris data only while you are in an Iris world.
 
 ## What each combination gives you
 
@@ -87,7 +82,7 @@ Bukkit-family servers have no equivalent boss bar. Players without the mod get `
 | Studio toasts | The client advertises `CAPABILITY_STUDIO` | One hotload frame renders one toast. A successful hotload for the current pack also clears Vision tiles, markers, and What data |
 | Dimension status | Only a completed handshake | Carries pack key, dimension key, seed, and height bounds. A world that is not Iris-generated clears the client's tiles and markers |
 
-Zoom level is part of the tile cache key, so changing zoom invalidates every cached tile and the map repaints as new tiles arrive under the 8-per-second request budget. That is expected, not a stall. One client at saturation cannot exclude other connected clients.
+After changing zoom, the map fills in progressively as tiles arrive.
 
 ## Protocol
 
@@ -103,7 +98,7 @@ Zoom level is part of the tile cache key, so changing zoom invalidates every cac
 | Max cursor lookups per second | 4 |
 | Max queryable block coordinate | ±29,999,999 |
 
-Cursor lookups get their own budget rather than a slice of the frame budget. Each resolves biome, region, cave biome, and height, so a client at the four-per-second limit performs at most 16 column resolves per second.
+The cursor and tile limits apply separately per client, alongside the overall inbound-frame limit.
 
 Message types (`IrisProtocol.TYPE_*`):
 
@@ -143,7 +138,7 @@ On joining a world the client clears its world-local state and sends `ClientHell
 | Versions match | `READY` | Dimension status and feature frames follow |
 | Disconnect | reset | Pregeneration job, tiles, markers, cursor, toasts, and region grid are all cleared |
 
-Frames that arrive before a successful hello, exceed the per-second budget, are oversized or malformed, or query a coordinate outside ±29,999,999 are counted and dropped rather than served. **If client features are absent, check the server log before you suspect the client.**
+Frames that arrive before a successful hello, exceed the per-second budget, are oversized or malformed, or query a coordinate outside ±29,999,999 are rejected.
 
 ## Localization
 

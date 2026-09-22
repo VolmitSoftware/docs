@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -271,7 +271,7 @@ An existing Iris graph with no ownership manifest must be inspected and claimed 
 
 Plans belong to the inspecting player, live in memory for 15 minutes, and are consumed once. Close any active or opening Jigsaw Studio before `apply`. A stale or expired plan is rejected without writes; success opens the owned target at seed `1337`.
 
-> Adoption records source and target hashes for provenance. It gives you **no rollback command and no restorable preimage**. Back the pack up first.
+> Back up the pack before adoption. There is no rollback command or automatic backup of the previous files.
 {.is-warning}
 
 Automatic datapack imports carry `MANAGED_DATAPACK` ownership because refreshing the source may replace them. Iris forbids in-place adoption of those and plans a private clone while leaving the managed graph untouched:
@@ -335,7 +335,7 @@ The create/open `<key>` is the root structure's internal lowercase resource path
 |---|---|
 | `create <dimension> <key> [mode=planar] [compatibility=iris] [width=15] [height=15] [depth=15] [seed=1337]` | Add-only atomic creation of a complete owned graph followed by an open request. `mode` completes `planar`/`spatial`. `compatibility` completes `iris`/`vanilla`. Planar X/Z are `3..128`. Spatial X/Z are `1..128`. Y is `1..192`. One workcell volume is at most `2,097,152` |
 | `convert <dimension> <registered-key> [target=auto] [seed=1337]` | Add-only conversion of one live registered vanilla/datapack jigsaw into an owned Iris graph, followed by Studio open. Aliases `import`, `import-vanilla` |
-| `adopt inspect <dimension> <source> [target=auto] [strategy=auto]` | Inspect an existing Iris closure and issue a 15-minute, hash-pinned `IN_PLACE`, `CLONE_REQUIRED`, or `BLOCKED` plan. `strategy` completes `auto`, `in-place`, or `clone` |
+| `adopt inspect <dimension> <source> [target=auto] [strategy=auto]` | Inspect an existing structure and receive an `IN_PLACE`, `CLONE_REQUIRED`, or `BLOCKED` plan, valid for 15 minutes while its files remain unchanged. `strategy` accepts `auto`, `in-place`, or `clone` |
 | `adopt apply <planId>` | Revalidate and atomically apply a plan owned by that player, then open the target with seed `1337`. No Studio may be active or opening |
 | `open <dimension> <key> [seed=1337]` | Map an existing graph into compact workcells. Aliases `edit` and `reopen`. Another owner, dirty work, or a conflicting lifecycle operation blocks replacement |
 | `close [discard=false]` | Close the transient Studio. Refuses active autosave/load/graph work or a pending dirty capture unless `discard=true` deliberately abandons it |
@@ -373,7 +373,7 @@ The control chest is the primary workflow. Its six-row GUI manages workcell capa
 
 Rules with no in-game control (`branchFailurePolicy`, `placeMode`, structure `edit`, structure `loot`, pool `mandatoryFallback`, and empty entries) stay schema-backed JSON fields.
 
-> **Do not hand-edit a project's files while Studio has it open.** Studio pins the files it owns by hash, and an outside edit blocks the next mutation rather than being overwritten. One player owns the active Studio; wait for a clean status before reloading, shutting down, or closing.
+> **Do not hand-edit a project's files while Studio has it open.** Outside edits block further Studio changes. One player owns the active Studio; wait for a clean status before reloading, shutting down, or closing.
 {.is-warning}
 
 ## Failure recovery
@@ -402,7 +402,7 @@ Rules with no in-game control (`branchFailurePolicy`, `placeMode`, structure `ed
 | Evaluation is `INVALID` | Compilation or the seed-`1337` assembly failed | Fix the displayed first diagnostic. Wrong pool, name, or facing, impossible rules, or an uncappable required fallback are the common causes |
 | Permanent preview is empty | Evaluation is pending or invalid, or seed `1337` intentionally produced no structure | Read the evaluation detail. Fix invalid data, or change chance/start rules if an empty result was not intended |
 | Project deletion is blocked | Another JSON resource or ownership manifest still references a resource owned by the project | Remove or repoint the reported external reference, let autosave finish, then inspect deletion again |
-| Studio closes but project deletion fails | The hash-pinned removal failed after a successful close | The project files remain on disk. Reopen or back them up before retrying |
+| Studio closes but project deletion fails | The project could not be removed | The project files remain on disk. Reopen or back them up before retrying |
 | Transaction reports cleanup required | The authored graph committed but staging cleanup failed | Preserve console output and remove or recover only the named transaction with operator care. Do not re-author blindly |
 | Export is rejected | At least one strict portability blocker remains | Fix each reported diagnostic. Iris runtime success does not prove vanilla fidelity |
 | Export output name is rejected | The value is not one direct safe artifact name | Remove whitespace, separators, traversal, and unsupported characters, and keep the name within 128 characters |

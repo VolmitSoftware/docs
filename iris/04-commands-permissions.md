@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-22T04:03:45.933Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ On Bukkit-family servers, `/iris debug` opens diagnostic help. `/iris debug vers
 
 On Bukkit-family servers, `/iris debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/iris debug dump upload=false` to save it locally without uploading. The command appears in debug help and requires `iris.debugdump` (default `op`), independently of the root administration permission. On mod loaders, the report command remains `/iris debugdump`.
 
-Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
+Reports are saved under the plugin data folder's `debug/` directory. The local file remains available if uploading fails. The command provides the file path and, after a successful upload, a public link.
 
 ## Everyday commands
 
@@ -37,11 +37,11 @@ Four workflows cover most operator use. The Bukkit and modded forms are separate
 /iris create tutorial overworld 1337                  # modded
 ```
 
-`type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`. Completion lists installed pack/dimension values and does not advertise the internal `default` sentinel. Bukkit refuses the names `iris` and `benchmark`. It also refuses any name whose dimension folder already exists.
+`type` (aliases `dimension`, `pack`) takes a pack key or `pack:dimensionKey`. Omit it to resolve `generator.defaultWorldType`. Bukkit refuses the names `iris` and `benchmark`. It also refuses any name whose dimension folder already exists.
 
-On Bukkit-family servers, including Folia, create immediately opens the standard Iris foreground progress presentation: an arbitrated large title plus a labeled bottom action-bar meter, without a lifecycle boss bar. Its localized stage and overall percent cover validation, datapacks, first-epoch publication, generator/world creation, registration, automatic entry, optional creation-time pregen, and finalization. Epoch publication is represented by that lifecycle stage only; Iris does not print a separate synthetic pack/dimension identifier. The spawn-generation phase includes live chunk counts. Console receives a throttled colored text bar with the same stages. The optional creation-time pregeneration phase retains its dedicated long-running boss bar. Bukkit does not print `Successfully created your world!` until the actual initial-spawn chunk is ready and spawn placement has completed on its owning region; only then is the world registered and immediately teleportable with `/iris tp tutorial`. Folia uses the Paper-like runtime lifecycle backend without restarting. On mod loaders the dimension appears in `/iris world list`, and you enter it with `/iris tp irisworldgen:tutorial`.
+On Bukkit-family servers, creation progress appears on screen and in the console. Wait for the success message before using `/iris tp tutorial`. On mod loaders, use `/iris world list` to find the new dimension and `/iris tp irisworldgen:tutorial` to enter it.
 
-For a player-issued Bukkit create, Iris first generates the resolved entry chunk, finds a collision-free supported position, and then delegates Paper’s asynchronous teleport. This post-creation entry sequence has a 60-second watchdog. A timeout cancels only that teleport. It reports that the world was created but automatic teleport failed. It does not roll back the world or restart the server. Retry with `/iris tp tutorial`.
+A player-issued Bukkit create automatically teleports you into the new world. If automatic teleport fails, the world remains available; retry with `/iris tp tutorial`.
 
 If the pack is missing, Iris identifies the exact supported download form (`pack=overworld`, `pack=underworld`, or `link=<zip-url>`) and does not create the world. After a successful runtime pack install, `/iris create` remains locked until the requested server restart loads that pack's registry entries; it reports the restart requirement without restarting or creating a world.
 
@@ -56,7 +56,7 @@ Radius is in **blocks** and measured from the center, so `352` covers a 704x704 
 
 On Bukkit, `world` resolves from the sender's current world when omitted and is hidden from the in-game usage line, but `world=` still works. Use it from console. `center=me` uses your own position. On modded, `at` must come after the dimension, never before it. The flags `gui`, `sync`, `nocache` are literals in any order. The resumable checkpoint cache is on unless you pass `nocache`.
 
-Confirm with `/iris pregen status`. A running job prints the target world, generated and total chunks, percent, chunks/s, ETA, elapsed time, the generation method, and a failure count. No output line for failures means nothing has failed. `/iris pregen pause` toggles. `/iris pregen stop` finishes in-flight work before cancelling. Only one job runs server-wide. Detail: [07 - Pregeneration](/iris/07-pregeneration).
+Confirm ordinary chunk pregeneration with `/iris pregen status`. A running job prints the target world, generated and total chunks, percent, chunks/s, ETA, elapsed time, the generation method, and a failure count. No output line for failures means nothing has failed. `/iris pregen pause` toggles. `/iris pregen stop` finishes in-flight work before cancelling. Only one job runs server-wide. Detail: [07 - Pregeneration](/iris/07-pregeneration).
 
 ### Open a studio for pack authoring
 
@@ -65,7 +65,9 @@ Confirm with `/iris pregen status`. A running job prints the target world, gener
 /iris studio open overworld 1337             # modded
 ```
 
-A transient studio world opens and you are teleported into it in spectator mode. Player arrival for `open` and `tpstudio` waits for destination readiness and teleport completion without a fixed overall deadline. Iris never changes the entering player's view distance. Saving any pack file hotloads the change into that world. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` regenerates the `.code-workspace` and JSON schemas, and opens it in the desktop editor unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio remain creative editing workspaces. Detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+A temporary Studio world opens and you enter it in spectator mode. Saving pack files updates Studio. `/iris studio close` (alias `x`) discards the world. `/iris studio vscode` prepares the VSCode workspace and opens it unless `studio.openVSCode` is false. Object Studio and Jigsaw Studio use creative mode. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+
+Studio opening and world creation automatically prepare hydrology before generating the terrain that uses it. Matching saved plans are reused automatically, including after a server restart.
 
 ### Check a pack before you rely on it
 
@@ -106,7 +108,7 @@ If a command fails before doing work, check in this order. Check platform syntax
 - Tab completion and help render every configurable value as its canonical `key=value`, including required values and contextual overrides. Required values also accept their bare positional form. Optional and contextual values do not. `/iris pregen start 500 true` is a parse error. Write `/iris pregen start radius=500 gui=true`.
 - A blank default means the parameter is required.
 - Names and aliases match case-insensitively.
-- **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) resolve from the sender's current world or look target. Iris marks its operator-overridable contexts for keyed help and completion. Internal context injection remains hidden.
+- **Contextual** parameters (world, dimension, pack, location, generator, template on many nodes) default to the sender's current world or look target. Help and tab completion show which values you can override with `key=value`.
 
 ### Modded
 
@@ -178,14 +180,14 @@ Use the Bukkit command names shown below.
 | `pregen` | `pregenerate` | Both | see Pregen | Pregeneration control |
 | `object` | `o` | Both | see Object | Object tools |
 | `studio` | `std`, `s` | Both | see Studio | Studio / pack authoring |
-| `jigsaw` | `jig`, `jgs` | **Bukkit** | see Jigsaw | Transaction-owned planar/spatial Jigsaw Studio |
+| `jigsaw` | `jig`, `jgs` | **Bukkit** | see Jigsaw | Planar and spatial Jigsaw Studio |
 | `pack` | `pk` | Both | see Pack | Validate/package/cleanup/restore/status/compat |
 | `structure` | `struct`, `str` | Both | see Structure | Structure index/import/place |
 | `datapack` | `datapacks`, `dp` | Both | see Datapack | Datapack helpers |
 | `Developer` | `dev` | Both | see Developer | Diagnostics. The group name is registered with a capital `D`, but matching is case-insensitive |
 | `world` | `w` | **Modded** | see World | Runtime dimension enable/disable |
 
-Pack downloads are single-flight server-wide on Bukkit and modded. While one download is active, every additional built-in or direct-link request is rejected immediately instead of being queued or starting another network transfer. Bukkit reports the five install phases through an arbitrated large title and a labeled bottom action-bar meter, without a boss bar. Bounded chat and console updates also appear. A direct-link request is labeled Remote ZIP without exposing the URL or signed query parameters. Modded phase and terminal feedback is dispatched through Minecraft's server task queue. A dedicated server paused because it is empty still prints completion. A finished on-disk install does not stay queued.
+Only one pack download can run at a time. Wait for it to finish before starting another. Progress appears in chat or the console.
 
 The supported exact bundled-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The current built-in packs declare no external datapack imports. Restart once so Minecraft loads their dimension types and custom biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to publish both replacements in one cold batch. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must complete the installation and registry-loading workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
@@ -197,7 +199,7 @@ Replacement staging reports its start, current phase, and elapsed time in chat o
 
 Accepted canonical targets are a safe `iris:*` key or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`. Friendly and configured Bukkit world-name aliases resolve to those keys. Other bare names resolve to `iris:*`. Other `minecraft:*` and foreign namespaces are rejected.
 
-Iris stages and validates a fresh pack snapshot. It compare-and-swaps only that world's `bukkit.yml` generator. It retains the existing dimension folder as a rollback backup until the restarted world proves its Iris identity, pack, dimension, environment, and effective seed. The default `seed=preserve` clones the target's authoritative Paper seed. An explicit signed 64-bit seed changes only `data.seed` in the staged current-format world-generation settings.
+Replacement takes effect after a restart and keeps the previous dimension folder as a rollback backup. Omit `seed` to keep the world's saved seed, or provide a signed 64-bit integer for the replacement.
 
 Multiple distinct slots may be staged with independent seeds before one restart. Replacing both exact Overworld and Nether slots preserves vanilla portal routing between those canonical identities. Replacing an arbitrary `iris:*` world does not add it to that route. Replacing `minecraft:overworld` makes Iris the current main-world generator without changing `level-name`. The removed `main=true`, `main-world=true`, `overwrite=true`, and `force=true` create options are not accepted. Selecting a fresh whole-save level root belongs to server provisioning.
 
@@ -234,7 +236,7 @@ Biome completion and parsing are scoped to the active Iris dimension's reachable
 | `hand` | Both | — | Held item |
 | `markers` | Both | `<marker>` | Reveal nearby markers (for example `cave_floor`, `cave_ceiling`, `object`) |
 
-Biome and region inspection resolve saved identities through their owning activation's retained pack definitions. A later pack can reuse a key without changing the older location's definition. If an older chunk lacks an unambiguous saved identity, inspection reports unavailable instead of predicting a biome from the current generator. See [saved biome environments](/iris/06-worlds-lifecycle#retained-world-data).
+Biome and region inspection reports the definitions used when that location was generated. Updating a pack does not change older locations' reported biomes. If Iris cannot identify an older location, inspection reports it as unavailable. See [retained world data](/iris/06-worlds-lifecycle#retained-world-data).
 
 ---
 
@@ -328,10 +330,10 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 | Command | Params | Description |
 |---|---|---|
-| `create` | `<dimension> <key> [mode=planar] [compatibility=iris] [width=15] [height=15] [depth=15] [seed=1337]` | Add-only atomic graph creation followed by open. `key` aliases `structure` and `name`. `mode` completes `planar`/`spatial`, compatibility completes `iris`/`vanilla`. Planar X/Z `3..128`, spatial X/Z `1..128`, Y `1..192`, volume `<=2,097,152` |
+| `create` | `<dimension> <key> [mode=planar] [compatibility=iris] [width=15] [height=15] [depth=15] [seed=1337]` | Create and open a new project. `key` aliases `structure` and `name`. `mode` completes `planar`/`spatial`, compatibility completes `iris`/`vanilla`. Planar X/Z `3..128`, spatial X/Z `1..128`, Y `1..192`, volume `<=2,097,152` |
 | `convert` | `<dimension> <source> [target=auto] [seed=1337]` | Add-only conversion of one live namespaced vanilla/datapack jigsaw into an owned Iris graph, then open it. The source uses `namespace:path`; the target is an unused Iris path. Aliases `import`, `import-vanilla` |
-| `adopt inspect` | `<dimension> <source> [target=auto] [strategy=auto]` | Asynchronously inspect an existing Iris closure and issue a hash-pinned `IN_PLACE`, `CLONE_REQUIRED`, or `BLOCKED` plan. Strategy completes `auto`, `in-place`, `clone` |
-| `adopt apply` | `<planId>` | Revalidate and atomically apply that player's unexpired plan, then open the target at seed `1337`. An active or opening Jigsaw Studio is rejected |
+| `adopt inspect` | `<dimension> <source> [target=auto] [strategy=auto]` | Inspect an existing project and return an `IN_PLACE`, `CLONE_REQUIRED`, or `BLOCKED` adoption plan. Strategy completes `auto`, `in-place`, `clone` |
+| `adopt apply` | `<planId>` | Apply your unexpired adoption plan and open the target at seed `1337`. An active or opening Jigsaw Studio is rejected |
 | `open` | `<dimension> <key> [seed=1337]` | Open an existing Iris graph in compact workcells. The key is its internal `structures/<key>.json` path, not a registered `namespace:path`. Aliases `edit`, `reopen`. Existing Iris structure keys tab-complete. Owner, autosave, and operation barriers protect replacement |
 | `close` | `[discard=false]` | Close Studio. Refuse active autosave/load/graph work or a pending dirty capture unless deliberately discarded |
 | `status` | — | Show project/workcell state and the current automatic seed-`1337` evaluation, theme, piece count, and diagnostic |
@@ -340,7 +342,7 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 | `goto` | `<bay>` | Select and teleport above a stable workcell ID. Alias `teleport` |
 | `particles` | `<visible>` | Toggle player-local workcell-bound, connector, and temporary assembly-preview particle trails |
 | `save` | `[bay=selected]` | Flush the selected dirty workcell's automatic capture now. Normal block and container updates already autosave |
-| `connector channel` | `<channel\|none>` | Look at a saved marker in the active owned workcell within 8 blocks and set/clear its Iris-only channel at the inverse-mapped source position |
+| `connector channel` | `<channel\|none>` | Look at a saved marker in the active owned workcell within 8 blocks and set or clear its Iris-only channel |
 | `bounds` | `<width> <height> <depth>` | Set the selected workcell capacity without resizing any variant object. Every existing variant must fit, and the compact Studio layout regenerates in place. Aliases `cell`, `resize` |
 | `workcell capacity` | `<width> <height> <depth>` | Explicit nested form of `bounds` (group alias `cell`). Planar capacities are per canonical archetype and spatial capacity is the shared envelope for its one-row variant cells |
 | `workcell label` | `<displayName>` | Set the selected planar or spatial workcell's author label. Quote spaces. Solver identity remains canonical |
@@ -362,7 +364,7 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 | `preview goto` | — | Teleport above the permanent seed-`1337` block preview. Alias `teleport` |
 | `preview assemble` | `[seed=1337]` | Compute a deterministic read-only assembly at the player. Report its complete piece count. Show in-range bounds as purple particle boxes for 10 seconds within the shared particle budget. Places no blocks |
 | `export` | `[namespace=iris] [output=jigsaw-export] [format=zip] [replace=false]` | Start a background strict Minecraft 26.2 vanilla datapack export as one direct artifact under the Studio packs `exports/` folder |
-| `delete` | `[confirm=false]` | With `confirm=true`, scan reverse references, close Studio, and hash-pinned-delete the complete owned project. Alias `remove` |
+| `delete` | `[confirm=false]` | With `confirm=true`, close Studio and delete the complete owned project after checking its references. Alias `remove` |
 
 There is no Jigsaw Studio undo command, adoption rollback command, or mod-loader authoring command. **Undo Last Autosave** in Workcell Settings restores the newest of five previous saved graph iterations retained in one `.iris/jigsaw-history/key-<sha256>.json` file. **Reset Connector Blocks** restores the selected workcell's saved connector blocks without replacing its other edited blocks.
 
@@ -370,7 +372,7 @@ Planar Studio always has six independently capacitated/enabled canonical workcel
 
 The seed-`1337` assembly is evaluated automatically and rendered as a permanent protected block preview. Spatial previews form an elevated connected assembly. `preview assemble` remains the separate temporary arbitrary-seed particle diagnostic. See [21 - Jigsaw Structures](/iris/21-jigsaw-structures) for GUI/toolbox controls, whole-assembly theme chances, independent pool-entry chances, rules/caps, markers, ownership, placement, export, and recovery.
 
-Bukkit has one global Studio project/world and the Jigsaw session belongs to one owning player. Only that owner can control, load, or mutate it. Entering a workcell makes that physical cell the owner's next menu selection. Non-owner edits are cancelled and non-owner commands use a strict informational/communication allowlist. Block and inventory changes in loaded owned workcells autosave after a 40-tick quiet period. Duplicate-one and duplicate-family actions queue once behind pending autosave, expedite it, and continue automatically against the same request and source variants. The chest and live preview are protected. Schema-1 or otherwise stale toolbox sticks are rejected. A later mutation after capture starts remains dirty for another capture. Plugins that bypass covered events must call `JigsawStudioService.markDirty(...)` or `markAllDirty(...)`.
+Only one player can own the active Jigsaw Studio session. Other players cannot edit its workcells or preview. Block and inventory edits autosave after two seconds without changes; duplication waits for pending saves. Use the current toolbox items provided by Studio.
 
 ---
 
@@ -430,7 +432,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | Command | Aliases | Params | Description |
 |---------|---------|--------|-------------|
 | `enable` | `create` | `<dimension> <pack\|pack:dimensionKey> [seed\|random]` | Create/inject a persistent Iris dimension. Refuses if the pack is missing |
-| `update` | | `<dimension> <pack\|pack:dimensionKey>` | Stage an immutable generation activation for an existing dimension. Keeps the running pack active and requires restart |
+| `update` | | `<dimension> <pack\|pack:dimensionKey>` | Stage a pack update for an existing dimension. Restart to apply it |
 | `replace-overworld` | | `<pack\|pack:dimensionKey> [seed\|random]` | Inject primary world routing |
 | `mainworld` | | `<pack\|pack:dimensionKey\|off> [seed\|random]` | Configure the main-world preset in `modded.json` |
 | `disable` | | `<dimension>` | Evacuate and unload. Keep disk data |
@@ -446,7 +448,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 |---------|---------|-----------|--------|-------------|
 | `EngineStatus` | | **Bukkit** | — | Loaded tectonic plate count |
 | `genhash` | | **Bukkit** | `[radius=4] [centerX=0] [centerZ=0]`, contextual `world` | Hash generated blocks in a fixed area. The center parameters are `centerX`/`centerZ` here, not the hyphenated `goldenhash` names |
-| `update-world` | `^world` | **Bukkit** | `[confirm=false]`, contextual `world` and `pack` (`pack` alias `dimension`. `confirm` alias `c`) | Stage an immutable generation activation. The current pack remains active until restart |
+| `update-world` | `^world` | **Bukkit** | `[confirm=false]`, contextual `world` and `pack` (`pack` alias `dimension`. `confirm` alias `c`) | Stage a pack update. Restart to apply it |
 | `mantle` | | **Bukkit** | `[plate=false] [name=21474836474]` | Dump a mantle section or plate under the dump folder |
 | `packBenchmark` | | **Bukkit** | `[dimension=overworld] [radius=2048] [gui=false]` (`dimension` alias `pack`) | Pack benchmark |
 | `upgrade` | | **Bukkit** | `[version=latest]` | Data version upgrade helper |

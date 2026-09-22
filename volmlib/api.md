@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-20T04:21:21.395Z
+date: 2026-09-21T11:56:06.964Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -90,6 +90,8 @@ Aliases remain executable, while help and completion show canonical command name
 
 `BSupport.isUpdatable(...)` recognizes exposed pointed-dripstone and sulfur-spike tips through the server’s speleothem API; body and merged-tip segments are excluded. On the supported Bukkit 26.1.2 boundary, pointed-dripstone detection uses that version’s API.
 
+`BSupport.decodeBlockData(key)` on Bukkit and `NativeBlockResolver.decode(key)` on modded platforms load saved block-state keys without applying generation defaults such as leaf persistence. They preserve explicit state properties and registered custom-content resolution; invalid native properties throw `IllegalArgumentException`. Use the ordinary block lookup methods for pack configuration.
+
 ## Protection checks
 
 `art.arcane.volmlib.util.event.ProtectionProbe.blockInteract(player, block, hand)` and `entityInteract(player, entity)` create permission-check events. Dispatch them through Bukkit on the thread owning the player and target, then inspect their cancellation and use results. They retain the standard interaction handler lists, so protection listeners receive them.
@@ -136,7 +138,15 @@ Repeated registration of the same ID, payload type, and codec has no effect. Con
 
 Readers resolve IDs through this registry and skip unregistered slices using their declared byte length. Writers reject payload types without a registered codec. The stored format does not change when an explicit ID retains the existing value.
 
+`RawMatter<T>` subclasses register medium-specific codecs through `registerWriter(Class<W>, MatterWriter<W, T>)` and `registerReader(Class<W>, MatterReader<W, T>)`. Retrieve them with `writeInto(Class<W>)` and `readFrom(Class<W>)`; an unregistered medium returns `null`. Registering the same medium again replaces its codec for that slice instance.
+
 ## Mantle storage
+
+Runtime mantle lookups return `null` for an absent section, and removals leave absent sections unallocated. Use `getOrCreate(sectionY)` explicitly when allocating section storage.
+
+`Mantle.hasLoadedFlag(x, z, flag)` checks a chunk flag without loading or creating data. `withLoadedChunk(x, z, action)` runs a short action on an existing chunk, returning `false` when it is unavailable or its region is busy, otherwise the action's result. The action runs with the chunk and region protected from concurrent cleanup and eviction; do not load, save, or close mantle data from it, or use the chunk after the action returns.
+
+`Mantle.saveOldestIdleTectonicPlate()` saves and unloads at most one resident plate, choosing the oldest eligible last-use timestamp. Plates whose last recorded use is less than 250 ms old, pinned by active work, or locked by another operation are skipped. The method returns whether a plate was saved and unloaded; write failures propagate and retain the live plate for retry.
 
 `Mantle.saveAll()` and `close()` propagate region write failures after reporting the original exception. Failed writes retain their live region and chunk data for retry. A failed close keeps the mantle open and preserves its region locks; only a successful flush and region-IO close complete shutdown. An IO-close failure can be retried without rewriting regions already saved. Consumers must drain generation before closing storage and retain the mantle when close fails.
 

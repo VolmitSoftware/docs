@@ -2,12 +2,12 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-An Iris object is a sparse voxel volume: block states plus block-entity data. It is stored as a `.iob` file under a pack `objects/` folder. You build it in a world, select it with a wand, and save it into the pack. Nothing about the object itself says where it generates. Wiring it into generation is [20 - Object Placement](/iris/20-object-placement). Using objects as jigsaw pieces is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+An Iris object is a saved build containing blocks and block-entity data. It is stored as a `.iob` file under a pack `objects/` folder. You build it in a world, select it with a wand, and save it into the pack. Nothing about the object itself says where it generates. Wiring it into generation is [20 - Object Placement](/iris/20-object-placement). Using objects as jigsaw pieces is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 Custom blocks from a content provider keep their qualified provider IDs when saved. CraftEngine furniture entities are not captured by direct previews. See [28 - Integrations](/iris/28-integrations).
 
@@ -34,7 +34,7 @@ Use a throwaway key like `scratch/test1` until the bounds and origin are right. 
 
 ## 1. What an object is
 
-An object stores a bounding box (`w x h x d`), a sparse map of block states, and a sparse map of tile data. The origin is always the **center** of the bounding box: `w/2, h/2, d/2` with integer division. It is derived from the dimensions. It is never written to the file. It is recomputed every load.
+An object has a bounding box (`w x h x d`). Its origin is the **center** of that box: `w/2, h/2, d/2`, rounded down. Include padding only when you intend to shift that center.
 
 Stored:
 
@@ -47,7 +47,7 @@ Not stored:
 - **Biomes.**
 - **Jigsaw blocks, structure blocks, structure voids, and moving-piston placeholders.** These are filtered out when the `.iob` is read. Tile data at an omitted or missing block position is also discarded. Moving-piston placeholders are temporary animation states and cannot function as saved object blocks; ordinary and sticky pistons remain supported. Iris jigsaw connectors are JSON metadata, not blocks ([21 - Jigsaw Structures](/iris/21-jigsaw-structures)).
 
-**Air is not one thing.** `minecraft:air` is skipped at capture. `cave_air` and `void_air` are both captured. At placement time Iris skips `air` and `cave_air` blocks and only writes `void_air`. So `void_air` is the block to use when you want an object to carve terrain away. `cave_air` inside an object is dead weight in every mode except the internal `STRUCTURE_PIECE` path.
+**Clearing space.** Use `void_air` inside an object where placement should remove existing terrain. Plain `minecraft:air` is not saved. `cave_air` is saved but only clears terrain when the object is placed as an Iris jigsaw piece.
 
 ### Format limits
 
@@ -135,7 +135,7 @@ The target folder uses the **dimension load key**, not the folder the dimension 
 /iris object paste <object> [edit=false] [rotate=0] [scale=dimension]
 ```
 
-The paste lands on the block you are looking at, with the object bottom resting on it. Air and small foliage are transparent to the 256-block raycast; if the scan finds no opaque target, Iris asks you to look at a block rather than pasting in mid-air. `rotate` is degrees around Y. Omit `scale` or use `scale=dimension` to inherit the current Iris world's `allObjectScaleFactor` (outside an Iris world the default is `1`); a numeric `scale`, including `1`, overrides it and accepts finite values from `0.01` to `50`. Inherited scaling uses `NONE` interpolation and a numeric Bukkit paste uses `TRICUBIC`. Iris reports when the size-dependent paste limit reduces the requested scale. Modded paste inherits the dimension factor and has no explicit scale argument.
+The paste lands on the block you are looking at, with the object bottom resting on it. Air and small foliage are transparent to the 256-block raycast; if the scan finds no opaque target, Iris asks you to look at a block rather than pasting in mid-air. `rotate` is degrees around Y. Omit `scale` or use `scale=dimension` to inherit the current Iris world's `allObjectScaleFactor` (outside an Iris world the default is `1`); a numeric `scale`, including `1`, overrides it and accepts finite values from `0.01` to `50`. Iris reports when the size-dependent paste limit reduces the requested scale. Modded paste inherits the dimension factor and has no explicit scale argument.
 
 ```
 /iris object undo [amount=1]
@@ -150,16 +150,16 @@ Inspection and maintenance:
 - `/iris object analyze <object>`: dimensions, block count, and the top ten materials with their most common block-data variant. Read-only, and the fastest check that a file loads at all.
 - `/iris object shrink <object>`: shrinkwraps to the tightest box and **overwrites the file in place with no confirmation**. It re-centers, so any deliberate off-center padding is lost.
 - `/iris object plausibilize <target> [dryrun=false] [reach=12]`: tree-specific. It grows organic branch connections through the canopy so leaves survive vanilla decay. Leaf clusters farther than `reach` blocks from wood are pinned persistent instead. `reach=0` grows without a limit. `target` accepts an object key, a folder prefix ending in `/`, or a filesystem path. `dryrun=true` reports and writes nothing.
-- `/iris object dust` (alias `d`): gives Glowstone Dust named "Dust of Revealing". Right-click a block in an Iris world and Iris names the placement that owns it.
+- `/iris object dust` (alias `d`): gives Glowstone Dust named "Dust of Revealing". Right-click a block in an Iris world and Iris names the placement that owns it. If saved biome information is still loading, Iris asks you to reveal the block again shortly. The inspection resumes on your next click after the data is ready.
 - `/iris find object <object> [teleport=true]`: `/iris goto object` is the same command under an alias. You have to be standing in an Iris world. In an object studio it teleports to that object grid cell. Otherwise it spirals outward looking for a generated instance, giving up after 120 seconds. `teleport=false` prints the coordinates instead of moving you.
 
 ## 5. Object studio: click-to-save
 
 Inside `/iris object studio`, left- or right-clicking a block in a grid cell writes that cell straight back to its `.iob`. Click-to-save waits for block-entity data to be restored on chunk load, so container contents and other tile data are preserved rather than overwritten with an empty state. Container previews do not trigger a save; it needs a real click or the save command.
 
-- The saved volume retains the object dimensions and original signed block coordinates; saving reverses the gallery placement offset without shrinkwrapping. Tile data is always written in full, unlike `/iris object save`.
-- Reopening checks cached cell dimensions against the current object files and rebuilds the layout if they changed.
-- Each cell carries a content hash. Clicking a cell you did not change reports no changes and writes nothing. The hashes are in memory only, so the first click on any cell after a world load always writes.
+- Saving preserves the object dimensions and origin, including padding. Block-entity data is always saved in full.
+- Reopening the gallery adjusts its layout to the current object sizes.
+- Clicking an unchanged cell reports no changes. The first click after opening the gallery saves the cell.
 - The save aborts **silently** if any chunk covering the cell is unloaded. If a click seems to do nothing, walk closer and click again.
 
 ## 6. Importing existing builds
@@ -208,9 +208,9 @@ When a non-solid directional block cannot represent the rotated orientation, rot
 
 **Two separate loot mechanisms.** A chest saved into the `.iob` with a vanilla loot table on it keeps that table. Pack loot tables are attached by the placement instead (`loot`, `vanillaLoot`, `overrideGlobalLoot`). See [20 - Object Placement](/iris/20-object-placement).
 
-**Blocks the running Minecraft does not have.** An object saved on a newer version can hold blocks an older server lacks. Iris reads the object's palette header when a placement builds its pool and drops the object from that pool if any block in the final placed result is missing. It stays in the pool when the placement's `edit` rules type-replace the block (a rule with `chance: 1` whose `find` matches it), or when a dimension `blockFallbacks` entry or a per-entry `backup` covers it. The `.iob` file is never rewritten and the object remains usable on a server that has the block. An emptied pool means the placement is skipped. See [20 - Object Placement](/iris/20-object-placement) and [25 - Pack Management](/iris/25-pack-management).
+**Blocks the running Minecraft does not have.** An object saved on a newer version can hold blocks an older server lacks. Iris excludes an object from generation if its placed result would contain an unavailable block. It stays in the pool when the placement's `edit` rules type-replace the block (a rule with `chance: 1` whose `find` matches it), or when a dimension `blockFallbacks` entry or a per-entry `backup` covers it. The `.iob` file is never rewritten and the object remains usable on a server that has the block. An emptied pool means the placement is skipped. See [20 - Object Placement](/iris/20-object-placement) and [25 - Pack Management](/iris/25-pack-management).
 
-**Caches and hotload.** Objects are cached per pack. Studio worlds watch the pack folder for `.iob` and `.json` changes and hotload at most once a second, backing off to about four seconds while the world is busy. Already generated chunks are untouched; only later ones see the edit. Ordinary worlds never hotload and serve the cached copy until the pack reloads.
+**Applying edits.** Studio reloads saved object changes for newly generated chunks. Existing chunks remain unchanged. Production worlds require a staged pack update and restart; see [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 ## 8. Common failure modes
 

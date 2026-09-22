@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -230,6 +230,9 @@ Pick a project to open its documentation.
     </ul>
   </div>
 </div>
+
+- [Multiplexor *Local and Pterodactyl servers, remote profiling, and gameplay tools*](/servermultiplexor)
+{.links-list}
 
 ## Community and source
 

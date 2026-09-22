@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,45 +19,23 @@ Related:
 - [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
 - [20 - Object Placement](/iris/20-object-placement)
 
-## The mental model
+## Region and biome selection
 
-Every column in the world runs through the same chain. Regions sit in the middle of it:
+The dimension's `regions` list selects which regions can appear. Each region supplies separate `landBiomes`, `seaBiomes`, `shoreBiomes`, and `caveBiomes` lists.
 
-```
-column (x, z)
-  |
-  regionStyle noise, zoomed by regionZoom   ->  one number in 0..1
-  |
-  weighted pick over the dimension's regions ->  REGION
-  |
-  continentalStyle noise vs landChance       ->  LAND or SEA
-  |
-  <role>BiomeStyle noise, zoomed by biomeZoom * roleZoom * region's <role>BiomeZoom
-  |
-  weighted pick over that region's biome list for the role -> BIOME
-  |
-  height is computed, then the role is corrected against the water line
-  (see "The shore band" below), and children are resolved
-```
+Set the broad land and sea distribution with the dimension's `continentalStyle` and `landChance`. Regions supply the biome choices; include sea and shore biomes wherever terrain can reach the water line. See [Land-only dimensions](#land-only-dimensions) before leaving those lists empty.
 
-Two things follow from this that trip up most new pack authors.
+Region zooms multiply the dimension zooms. For example, `landBiomeZoom: 3.5` makes land biome patches in that region roughly 3.5 times wider than at the dimension's base scale.
 
-- The region does not decide *where* the sea is. The dimension `continentalStyle` and `landChance` do that. A region only supplies the candidate biomes once the role is known. If a region has no `seaBiomes`, columns that fall below the water line have nothing to pick. The world will look broken there. See "Land-only dimensions" below.
-- A region zooms multiply the dimension zooms. They do not replace them. `landBiomeZoom: 3.5` in a region means land biomes there are 3.5x the size they would be at the dimension base scale.
+### Rarity and list order
 
-### How the weighted pick works
+`rarity` controls relative frequency: a candidate with `rarity: 2` has half the selection weight of one with `rarity: 1`; `rarity: 10` has a tenth. Region rarity is capped at `128`, and biome rarity at `512`. These ratios do not guarantee an exact percentage of the map.
 
-Region selection and biome selection use the same routine. Each candidate gets a weight of `1 / rarity`. The weights are laid out as contiguous bands across the 0..1 noise value in list order. The noise value at the column picks the band.
-
-That has three practical consequences.
-
-- Rarity is a divisor, not a percentage. `rarity: 2` gets half the space of `rarity: 1`. `rarity: 10` gets a tenth. Region rarity is capped at 128. Biome rarity is capped at 512.
-- List order matters for adjacency. Entries next to each other in the array occupy neighboring noise bands. They tend to end up as neighbors in the world. Reordering a list changes which biomes border which.
-- Rarity alone cannot make a region appear where the noise never reaches its band. If a region never shows up, check `regionStyle` and `regionZoom` on the dimension before you touch rarity. `/iris studio regions` samples an area and reports the measured share per region.
+Array order affects adjacency. Nearby entries tend to become neighbors in the world, so reordering a list can change biome borders. Distribution also depends on the dimension's `regionStyle` and `regionZoom`. Use `/iris studio regions` to measure each region's share of a sample area.
 
 ### The shore band
 
-Shores are not chosen by noise. After the height for a column is known, Iris compares it to the dimension `fluidHeight` and to the region shore height at that column. It then swaps the biome role if it disagrees.
+The dimension `fluidHeight` and the region's shore-height settings determine where sea, shore, and land biomes appear along the coast.
 
 | Column height (relative to `fluidHeight`) | Resulting role |
 |---|---|
@@ -66,9 +44,11 @@ Shores are not chosen by noise. After the height for a column is known, Iris com
 | `fluidHeight - 1` up to `fluidHeight + shoreHeight` | shore |
 | above `fluidHeight + shoreHeight` | land |
 
-`shoreHeight` is per column. Noise is fitted between `shoreHeightMin` and `shoreHeightMax`. It is sampled at `x / shoreHeightZoom, z / shoreHeightZoom`. The beach is the vertical slice of the world from one block below the water line up to a few blocks above it. The width of the beach on the ground is however far that slice stretches across your terrain slope. Flat coastline plus a large `shoreHeightMax` gives wide beaches. A cliff gives almost none, because the slice is crossed in a block or two. Set `shoreMinimumWidth` above zero to buy the width back: the band then also climbs with the local slope, so the beach stays roughly that many blocks wide across the ground instead of collapsing on steep coast.
+`shoreHeightMin` and `shoreHeightMax` set the vertical beach band. `shoreHeightZoom` controls how quickly its height varies along the coast: lower values give frequent changes, while higher values give longer, more uniform stretches.
 
-The shore-height noise is seeded from the region's name length, `landBiomeZoom`, and its number of land biomes — **not** from the world seed. Renaming a region or adding a land biome changes the shoreline wobble pattern.
+Flat coastlines with a high `shoreHeightMax` produce wide beaches. Steep cliffs cross the same height band quickly, leaving narrow beaches. Set `shoreMinimumWidth` above zero to widen the band according to the local slope and preserve more beach across steep ground.
+
+Renaming a region, changing `landBiomeZoom`, or changing the number of land biomes can also alter the shore-height pattern.
 
 ## Walkthrough: add a region and prove it generates
 
@@ -129,7 +109,7 @@ Change one zoom at a time. Regenerate a fresh area between comparisons. Zooms do
 
 Observable result: the shore role now claims everything from one block under the water line up to about 5 blocks above it. Gently sloped coasts get much wider sand. If you lower `shoreHeightZoom`, the beach width varies more rapidly along the coast. If you raise it, you get long, uniform stretches.
 
-If your beaches stay one block wide no matter what, the coastline is too steep. That is a generator problem, not a shore problem. See [14 - Generators & Noise](/iris/14-generators-noise).
+For steep coastlines, set `shoreMinimumWidth` or adjust the terrain slope in the [generator](/iris/14-generators-noise).
 
 ## Land-only dimensions
 
@@ -156,14 +136,14 @@ If your beaches stay one block wide no matter what, the coastline is too steep. 
 | Example | `regions/temperate.json` -> key `temperate` |
 | Referenced from | The dimension `regions` array, using that key |
 
-## Field reference (`IrisRegion`)
+## Field reference
 
 ### Identity and selection
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `name` | string | `"A Region"` | Display name shown by `/iris what region` and the studio map. It is also mixed into the shore-height noise seed. If you rename a region, its coastline wobble shifts. Required, minimum 2 characters. |
-| `rarity` | int 1-128 | `1` | Divides this region share of the selection noise. `2` gives half the area of a `1`. `8` gives an eighth. Raise it for a region you want as an occasional surprise. Leave it at `1` for the backbone of the world. |
+| `name` | string | `"A Region"` | Display name shown by `/iris what region` and the studio map. Renaming can change the shore-height pattern. Required, minimum 2 characters. |
+| `rarity` | int 1-128 | `1` | Controls relative selection weight. `2` gives half the weight of `1`; `8` gives an eighth. Raise it for a region you want as an occasional surprise. Leave it at `1` for the backbone of the world. |
 | `color` | string | `null` | Hex color (`#9BEE61`) used by the studio map and `/iris studio map`. Set it when you are visually debugging region distribution. Without it Iris derives a color from the land biomes vanilla derivatives. |
 
 ### Biome lists
@@ -216,7 +196,7 @@ The physical drainage graph, density, channel dimensions, and legal outlet famil
 | `shoreHeightMin` | double >= 0 | `1.2` | Lower bound, in blocks above the water line, of the shore band. |
 | `shoreHeightMax` | double >= 0 | `3.2` | Upper bound of the shore band. Raise both to get taller, and therefore usually wider, beaches. |
 | `shoreHeightZoom` | double >= 0.0001 | `3.14` | Horizontal scale of the noise that picks the band height per column. Small values make the beach width vary rapidly along the coast. Large values make it uniform. |
-| `shoreMinimumWidth` | double 0-64 | `0` | Minimum beach width in blocks across the ground. `0` keeps the band purely vertical, which is the historical behaviour. Above zero the band also climbs with the local slope so a steep coast still gets a beach; the climb is capped at three blocks of height per block of width. Distinct from `riverPolicy.shoreWidth`, which is the river bench. |
+| `shoreMinimumWidth` | double 0-64 | `0` | Minimum beach width in blocks across the ground. `0` keeps the band purely vertical. Above zero the band also climbs with the local slope so a steep coast still gets a beach; the climb is capped at three blocks of height per block of width. Distinct from `riverPolicy.shoreWidth`, which is the river bench. |
 
 ### Content attached to the region
 
@@ -224,18 +204,18 @@ Everything here applies anywhere this region is selected, on top of what the bio
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `objects` | `IrisObjectPlacement[]` | empty | `.iob` placements that should exist across the whole region rather than in one biome. Regional landmarks, scattered wrecks. Split at runtime into surface and carving sets by each placement `carvingSupport`. See [20 - Object Placement](/iris/20-object-placement). |
-| `proceduralObjects` | `IrisProceduralObjects` | empty | Trees, ruins, formations, coral, fungi and crystals generated from parameters rather than `.iob` files. See [17 - Procedural Objects](/iris/17-procedural-objects). |
-| `structures` | `IrisStructurePlacement[]` | empty | Jigsaw and native structure placements evaluated where this region owns the chunk center. Use this instead of copying a placement onto every biome in the region. See [21 - Jigsaw Structures](/iris/21-jigsaw-structures). |
-| `entitySpawners` | string[] | empty | `IrisSpawner` keys that keep replenishing mobs while a player is in this region. See [23b - Entities & Spawners](/iris/23b-entities-spawners). |
-| `effects` | `IrisEffect[]` | empty | Client-side ambience (potion effects, sounds, particles) delivered per player by packet. Use for regional mood. No two players see each other effects. |
-| `loot` | `IrisLootReference` | empty | Loot tables that apply to containers generated in this region. |
-| `blockDrops` | `IrisBlockDrops[]` | empty | Overrides what blocks drop when broken inside this region. |
-| `deposits` | `IrisDepositGenerator[]` | empty | Blob-style deposits added on top of the dimension deposits. Use for regional stone variants and ore pockets. |
-| `depositVariants` | `IrisDepositVariant[]` | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
-| `ores` | `IrisOreGenerator[]` | empty | Vein-style ores. Each generator declares whether it is a surface or underground generator. Iris keeps two separate lists. |
-| `caveProfile` | `IrisCaveProfile` | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
-| `riverPolicy` | `IrisRiverPolicy` or null | inherit | Overrides the dimension hydrology policy for this region. See "River policy" above. |
+| `objects` | object-placement array | empty | `.iob` placements that should exist across the whole region rather than in one biome. Regional landmarks, scattered wrecks. Use `carvingSupport` to choose surface or cave placement. See [20 - Object Placement](/iris/20-object-placement). |
+| `proceduralObjects` | procedural-object settings | empty | Trees, ruins, formations, coral, fungi and crystals generated from parameters rather than `.iob` files. See [17 - Procedural Objects](/iris/17-procedural-objects). |
+| `structures` | structure-placement array | empty | Jigsaw and native structure placements evaluated where this region owns the chunk center. Use this instead of copying a placement onto every biome in the region. See [21 - Jigsaw Structures](/iris/21-jigsaw-structures). |
+| `entitySpawners` | string[] | empty | Keys under `spawners/` that keep replenishing mobs while a player is in this region. See [23b - Entities & Spawners](/iris/23b-entities-spawners). |
+| `effects` | effect array | empty | Client-side ambience (potion effects, sounds, particles) delivered per player by packet. Use for regional mood. No two players see each other effects. |
+| `loot` | loot settings | empty | Loot tables that apply to containers generated in this region. |
+| `blockDrops` | block-drop array | empty | Overrides what blocks drop when broken inside this region. |
+| `deposits` | deposit array | empty | Blob-style deposits added on top of the dimension deposits. Use for regional stone variants and ore pockets. |
+| `depositVariants` | deposit-variant array | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
+| `ores` | noise-ore array | empty | Vein-style ores. Use `generateSurface` to choose surface or underground placement. |
+| `caveProfile` | cave profile | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
+| `riverPolicy` | river policy or null | inherit | Overrides the dimension hydrology policy for this region. See "River policy" above. |
 
 Deposit precedence across tiers: biome variants, then region variants, then dimension variants. First match wins within each tier.
 
@@ -260,22 +240,8 @@ The file sets no `objects`, `structures`, `ores`, `entitySpawners` or `effects`.
 
 Region keys listed by the bundled overworld dimension: `frozen`, `hot`, `terralost`, `mushroom`, `forests`, `tundra`, `magnetics`, `temperate`, `estranged`, `tropical`, `swamp`, `prismatics`.
 
-## Resolution details worth knowing
+## Placement rules
 
-- A region's full biome set is the union of its four lists, expanded through each biome's `children` and `carvingBiome`. Cycles are safe.
-- Objects declared on the region are split into a surface list and a carving list by each placement's `carvingSupport`, so a carving-only placement is never evaluated on the surface.
-- Structure placements are gathered per chunk from the biome, the cave biome, the region, and the dimension, all sampled at the chunk center (block `chunkX*16+8`, `chunkZ*16+8`). Cave biomes contribute only placements whose resolved anchor is a cave anchor.
+Region objects obey each placement's `carvingSupport`; cave-only placements do not appear on the surface. Structure placements from the dimension, region, surface biome, and cave biome can all apply to a chunk. The region and biome choices use the chunk center; cave biomes contribute only structures with cave anchors.
 
-## Common mistakes
-
-| Mistake | What you will see |
-|---------|-------------------|
-| Listing a child biome as a region root | The child generates as a full-size root as well as inside its parent, so the intended nesting disappears |
-| Region file not added to the dimension `regions` array | The region never generates. Validation may still pass |
-| Empty `landBiomes` | Invalid region. Land columns have no candidates |
-| Wrong biome key path | `temperate/plains` must be `biomes/temperate/plains.json`, case and folder included |
-| Tuning region `rarity` when the region never appears | Selection also depends on the dimension `regionStyle` and `regionZoom`. Measure first with `/iris studio regions` |
-| Putting physical hydrology settings on a region | Regions expose only `riverPolicy`. Put routing, sources, channel and bank shape, grottos, profiles, and deep fluids on the dimension `hydrology` object |
-| Expecting `riverStyle` / `lakeStyle` to do something | The fields were removed (they were read by nothing). Rivers come from the dimension `hydrology` object; make lakes as sea biomes with negative generator heights |
-| Empty `seaBiomes` in a dimension whose terrain dips below `fluidHeight` | Sea columns have no candidate biome |
-| Comparing changes in already generated chunks | Region and zoom changes only affect newly generated chunks. Always fly to fresh terrain |
+Region changes affect newly generated chunks. Use fresh terrain when comparing rarity, zoom, or content settings.

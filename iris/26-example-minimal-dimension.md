@@ -2,7 +2,7 @@
 title: "Example - Minimal Dimension"
 description: "Iris documentation: Example - Minimal Dimension"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -218,19 +218,18 @@ Add one thing at a time and re-validate after each, so a broken key is always at
 | Objects | Biome or region `objects` placements plus `objects/*.iob` ([19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement)) |
 | Entity spawning | `entities/`, `spawners/`, then `entitySpawners` on the dimension, region or biome |
 
-## Troubleshooting
+## Pack requirements
 
-| Symptom | Check |
-|---------|-------|
-| Pack is not listed | Platform packs root, the `minimal/` folder name, and `dimensions/minimal.json` |
-| Validation reports a missing region | `dimensions/minimal.json` must reference `starter` and `regions/starter.json` must exist |
-| Validation reports a missing biome | Every region list entry must match a file under `biomes/` with the `.json` removed, including any folder prefix |
-| Terrain is empty or at the wrong height | Confirm the biome generator key is `flat`, that `generators/flat.json` parses, and that `min`/`max` are the offsets from `fluidHeight` you intended |
-| The world is all void | `derivative` is probably still the `minecraft:the_void` default on some biome |
-| Studio shows old terrain | Move to untouched chunks. Close and reopen after a contract change |
-| Dimension type fails to compile | `dimensionHeight` span or minimum is not a multiple of 16, or `logicalHeight` exceeds the span |
-| Production world ignores your edits | It runs from its active immutable epoch. Follow the backed-up staged update in [25 - Pack Management](/iris/25-pack-management) |
-| Baseline stops working | Restore these exact four files and validate before reintroducing extensions |
+| Item | Required value or reference |
+|------|-----------------------------|
+| Pack directory | `minimal/` under the platform's packs root, containing `dimensions/minimal.json` |
+| Dimension region | `starter`, matching `regions/starter.json` |
+| Region biomes | File keys relative to `biomes/`, without `.json`; include any folder prefix |
+| Biome generator | `flat`, matching `generators/flat.json`. Set the biome's `min` and `max` as offsets from `fluidHeight` |
+| Biome derivative | Use the example's `minecraft:plains` rather than `minecraft:the_void` |
+| Dimension height | Minimum and total span must be multiples of 16; `logicalHeight` must not exceed that span |
+
+Inspect edits in new Studio chunks. Close and reopen Studio after changing height or dimension type, and follow any restart prompt. To apply pack edits to an existing production world, use [Pack Management](/iris/25-pack-management).
 
 ## Next steps
 

@@ -2,7 +2,7 @@
 title: "Procedural Trees"
 description: "Iris documentation: Procedural Trees"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -69,7 +69,9 @@ Variant heights are not random per variant. Iris spreads them evenly across `hei
 | `trunkWidth` | `1` | Base thickness. 1 is a single column, 2 is a 2x2, 3 a 3x3 |
 | `profile` | `OAK` | Named silhouette driving default crown radii and layer placement |
 
-`IrisTreeProfile`: `OAK`, `BIRCH`, `SPRUCE`, `JUNGLE`, `ACACIA`, `DARK_OAK`, `DARK_OAK_FLAT`, `DARK_OAK_FLAT_WIDE`, `CHERRY`, `PALM`, `WILLOW`, `COLUMNAR`, `BUSH`, `MEGA_SPRUCE`.
+`IrisTreeProfile`: `OAK`, `BIRCH`, `POPLAR`, `SPRUCE`, `JUNGLE`, `ACACIA`, `DARK_OAK`, `DARK_OAK_FLAT`, `DARK_OAK_FLAT_WIDE`, `CHERRY`, `PALM`, `WILLOW`, `COLUMNAR`, `BUSH`, `MEGA_SPRUCE`.
+
+`POPLAR` provides an upright broadleaf crown. Use `canopy.branches` for separate limbs and leaf clusters, and the lean and fork fields for asymmetric forms. The profile controls shape. `trunk` and `leaves` select materials.
 
 **What `plausible` actually does.** With `true`, leaves within 6 steps of wood get `persistent=false` and their real `distance`, so vanilla decay works exactly as it would on a grown tree; leaves 7 or more steps away, or unreachable entirely, get `persistent=true` and `distance=7` so they never vanish. A support pass also prunes orphaned leaf clumps. With `false`, every leaf is forced `persistent=true, distance=1`, which never decays and reads as built rather than grown.
 
@@ -180,11 +182,52 @@ Snippet key: `tree-decorator`.
 | `palette` | unset | Noise palette, wins over `block` |
 | `chance` | `0.5` | Per eligible position. Use low values for sparse fruit, 1 for full coverage such as snow on the crown |
 | `length` | `1` | Maximum downward strand length for `CANOPY_HANG`. Each column picks 1 to `length` |
-| `axisAware` | `false` | Orients the block facing away from the trunk, for fences, gates and banners mounted on wood |
+| `axisAware` | `false` | Orients horizontal surface accents away from their supporting block. Use with `TRUNK_SURFACE` for shelf mushrooms |
 
 Targets: `BRANCH_TIP`, `TRUNK_SURFACE`, `CANOPY_TOP`, `CANOPY_BOTTOM`, `TRUNK_BASE`, `LEAF_SURFACE`, `CANOPY_HANG`, `BRANCH_SURFACE`, `TRUNK_TOP`, `GROUND_SCATTER`.
 
 An empty `decorators` list costs nothing, because branch endpoints are only collected when at least one decorator exists. `BRANCH_TIP` accents occupy the first free block outside the terminal leaf cluster in the branch's outward direction, preserving branch wood and leaves; repeated application stops at an existing accent instead of extending a chain.
+
+## Poplar biomes
+
+Overworld 4011 and Underworld 1013 include four naturally selected poplar biome pairs. Each biome defines its authored objects, procedural trees, fallen trunks, stumps, ground cover, climate, and ecology directly.
+
+| Biome key | Selected within | Overworld foliage | Underworld counterpart |
+|-----------|-----------------|-------------------|------------------------|
+| `temperate/golden-poplar-grove` | Birch Forest | Yellow | Nether Wastes, crimson stems and nether wart canopies |
+| `tundra/amber-poplar-forest` | Autumn | Orange and yellow | Soul Sand Valley, warped hyphae and warped wart canopies |
+| `tundra/russet-poplar-woods` | Taiga | Red and orange | Soul Sand Valley, warped hyphae and warped wart canopies |
+| `estranged/emberbark-poplar-grove` | Emberbark Woods | Orange and red | Warped Forest, warped stems and warped wart canopies |
+
+The paired biomes share terrain, selection settings, object shapes, tree seeds, roots, and rotations. Underworld supplies Nether ground materials, plants, particles, and mobs. Its shroomlights replace shelf mushrooms, and its wart canopies have no leaf-decay properties.
+
+Find a biome in an updated Iris world:
+
+```text
+/iris find biome temperate/golden-poplar-grove
+/iris what biome
+```
+
+Overworld poplar blocks, red shrubs, and shelf mushrooms require Minecraft 26.3. Existing chunks retain their generated content. Install the updated pack and generate new chunks to find the new biomes.
+
+The biome files contain placement density and chance settings under `objects` and `proceduralObjects.trees`. Edit those entries to change the mix of authored and procedural trees. Each biome includes young, mature, leaning, and forked procedural trees, plus authored living trees and deadwood.
+
+Authored Overworld objects use `trees/poplar/<form>-<color>`. Forms are `young`, `mature`, `leaning`, `forked`, and `broken`. Colors are `yellow`, `orange`, and `red`. Fallen trunks and stumps use `fallen-1`, `fallen-2`, `stump-1`, and `stump-2`. Underworld objects use `underworld/<palette>/trees/poplar/<basename>`, where the palette is `soul`, `wastes`, or `warped`. Color suffixes identify the matching Overworld shape, while each Nether palette supplies its own canopy color.
+
+See the paired atlas entries for [Golden Poplar Grove](/iris/biomes/temperate/birch-forest#golden-poplar-grove), [Amber Poplar Forest](/iris/biomes/tundra/autumn#amber-poplar-forest), [Russet Poplar Woods](/iris/biomes/tundra/taiga#russet-poplar-woods), and [Emberbark Poplar Grove](/iris/biomes/estranged/emberbark-woods#emberbark-poplar-grove).
+
+To add shelf mushrooms to a procedural trunk, use this tree decorator:
+
+```json
+{
+  "target": "TRUNK_SURFACE",
+  "block": "minecraft:shelf_mushroom[age=1]",
+  "chance": 0.03,
+  "axisAware": true
+}
+```
+
+The mushroom faces away from the adjacent log. Its supporting block sits opposite its `facing` direction. Use trunk surfaces for these mushrooms. Leaf surfaces do not provide the required solid support.
 
 ## A complete tree
 

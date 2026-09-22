@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -254,7 +254,7 @@ Folder: `spawners/`.
 
 The biome check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass it, so a `CAVE`-group spawner listed on a surface biome still looks for cave floor markers and quietly does nothing if there are none.
 
-> On Folia, `CAVE` group spawners never fire on Bukkit: the cave-floor marker lookup returns nothing off the region thread and the spawn is skipped.
+> `CAVE` group spawners are unavailable on Folia.
 {.is-warning}
 
 `IrisRate` (snippet type `rate`):

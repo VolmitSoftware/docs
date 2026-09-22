@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-09-14T00:37:56.518Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,6 +28,6 @@ Run the command twice in a disposable Iris world. The first run captures a basel
 
 ## Generation updates
 
-A new Iris implementation revision creates a new activation for future terrain, even when the pack is unchanged. Existing terrain remains the saved boundary. See [Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+An Iris update can change newly generated terrain even when the pack is unchanged. Existing chunks keep their saved terrain. See [Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
 
-Cross-chunk object overlaps can depend on generation order when no object collision rules apply. GoldenHash can report that difference even when biome hashes match.
+Surface and cave object overlaps on the main terrain resolve consistently across chunk generation orders, including when collision lists are empty and chunks generate in parallel.

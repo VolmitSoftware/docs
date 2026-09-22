@@ -2,12 +2,12 @@
 title: "Pack Mods & Snippets"
 description: "Iris documentation: Pack Mods & Snippets"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Snippets let you write a nested JSON value once and reference it by path from as many places as you like. Any pack type annotated `@Snippet` accepts either an inline object or a string pointing at a file under `snippet/<type>/`. Iris also still loads the older `IrisMod` schema from `mods/`. Nothing in the engine applies those injectors or replacers. Treat that folder as dead weight.
+Snippets let you reuse nested JSON values by referencing files under `snippet/<type>/`. Supported fields accept an inline object or a snippet path. Files under `mods/` do not affect generation; edit pack resources directly instead.
 
 Related:
 
@@ -21,22 +21,17 @@ Related:
 - [25 - Pack Management](/iris/25-pack-management)
 - [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
 
-## The mental model
+## Reusing a definition
 
-Most of a pack is nested objects: a decorator inside a biome, a noise style inside a generator, a palette inside a decorator. When two biomes want the same decorator you would normally copy the JSON. Then you have two copies to keep in sync.
+A decorator, noise style, or palette used in several places can live in one snippet file. Each reference uses the same definition, so you only need to edit it once.
 
-Snippets fix that. When a snippet-typed field holds a **string** instead of an object, Iris reads it as a path and parses `snippet/<type>/<path>.json` as the field value. The biome still ends up holding a real decorator object, resolved once at load time rather than looked up per chunk.
-
-Two consequences worth internalising:
-
-- **Snippets are load-time only.** Editing a snippet file does nothing until the pack reloads: Studio hotload, world reload, or a restart. There is no live indirection.
-- **Snippets vanish on serialization.** When Iris writes a pack back out (Studio saves, the Bukkit packager), the adapter writes the resolved object, not the string. Snippet references get inlined. See "Packaging" below.
+Use Studio hotload to apply edits to new chunks while authoring. Production worlds require the [pack update workflow](/iris/25-pack-management#stage-a-production-world-update). Saved or exported JSON can contain the snippet's contents directly; see [Packaging and snippets](#packaging-and-snippets).
 
 ## Walkthrough: share a palette across biomes
 
 The goal is one decorator definition placing wildflowers in several biomes, with a single file to edit. Prerequisites: a validating pack and a biome that already generates.
 
-**1. Write the snippet.** The folder name must match the `@Snippet` value of the field you will use it in. A decorator field wants `snippet/decorator/`. Save `snippet/decorator/tutorial-wildflowers.json`:
+**1. Write the snippet.** The folder name must match the field's snippet type. A decorator field wants `snippet/decorator/`. Save `snippet/decorator/tutorial-wildflowers.json`:
 
 ```json
 {
@@ -69,18 +64,13 @@ The goal is one decorator definition placing wildflowers in several biomes, with
 
 Generate the VSCode workspace (`/iris studio vscode`) so schema completion offers valid snippet paths for each field. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
-## How resolution works
+## Reference format
 
-1. Iris registers a type adapter for every class annotated `@Snippet("type-name")`.
-2. On read, if the JSON token is an object, the adapter parses it normally. Nothing snippet-specific happens.
-3. If the token is a **string**, the adapter treats it as a path:
-   - The string must start with `snippet/`. If it does not, the field resolves to **null with no error message**. This is the failure mode that looks like the field was ignored.
-   - The literal `snippet/` prefix is stripped and replaced with `snippet/<type-name>/` for the field being read. Only the prefix is rewritten. The rest of the path is kept verbatim. So writing `"snippet/style/bedrock"` in a `decorator` field becomes a lookup for `snippet/decorator/style/bedrock.json`, which will not exist. The rewrite is a convenience for the common `snippet/<correct-type>/…` case, not a search across type folders.
-   - The file is read from the pack root. A missing file logs `Couldn't find snippet <path>` and the field resolves to null.
-4. Snippet files are parsed with the same adapters, so a snippet can reference other snippets in its own nested fields.
-5. Files may sit in subfolders under the type folder. The path in the reference is everything after `snippet/<type>/`, with forward slashes.
+Use `snippet/<type>/<name>` without `.json`, matching the field's type in the table below. The file belongs at `<pack>/snippet/<type>/<name>.json`. The folder is singular `snippet/`.
 
-Studio schema generation exposes every snippet type as an `anyOf` of "object or string". It fills the string branch enum from the files actually present under `snippet/<type>/`.
+References must begin with `snippet/`. Use the correct type: `snippet/style/bedrock` in a decorator field looks for `snippet/decorator/style/bedrock.json`, not the style file. Missing or incorrect references leave the field without a value.
+
+Subfolders are allowed, using `/` in the reference. A snippet can contain further snippet references in its nested fields. Studio completions list the available files for each supported field.
 
 ### Disk layout
 
@@ -97,7 +87,7 @@ pack/
       deepslate.json
 ```
 
-The folder is singular `snippet/`, not `snippets/`. Subfolder names must match the `@Snippet` value exactly.
+The folder is singular `snippet/`, not `snippets/`. Type folder names must match the table below exactly.
 
 ### Overworld usage
 
@@ -133,108 +123,106 @@ Biome decorator lists take snippet strings as array elements, mixed freely with 
 
 Use a snippet when the same value appears in several places and should change in lockstep. The bundled Overworld pack uses them for decorators shared by several climate biomes, noise styles reused by several generators, and the palette that defines pack stone.
 
-Skip it when a value appears once. A snippet buys nothing at a single call site and makes the failure mode worse: **a wrong-type or missing snippet resolves to null**, so a field that should have had a value silently has none. Treat pack validation and a clean console as required gates whenever you add or move snippet files.
+Inline JSON is simpler for a value used once. Validate the pack after adding or moving snippet files.
 
 ## Packaging and snippets
 
-Because the adapter writes resolved objects rather than strings, exported packs handle snippets differently per platform:
+Exports include snippet content differently on each platform:
 
-- **Bukkit `/iris pack package`** re-serializes the loaded object graph. Snippet references are inlined into the dimension, region, biome, and generator JSON. The export has no `snippet/` folder and does not need one.
+- **Bukkit `/iris pack package`** includes snippet contents directly in dimension, region, biome, and generator JSON. The export has no `snippet/` folder and does not need one.
 - **Modded `/iris studio package`** preserves source references and copies all JSON files under `snippet/`, including subfolders. Terrain profiles and their nested style snippets remain available in the exported pack. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain).
 
-See [25 - Pack Management](/iris/25-pack-management) for the full export contents and the gaps in both compilers.
+See [25 - Pack Management](/iris/25-pack-management) for the full export contents.
 
-## `@Snippet` type names
+## Snippet type names
 
 Each value is the folder name under `snippet/` and the required prefix for references to that field.
 
-| Snippet value | Class |
+| Snippet type | Content |
 |---------------|-------|
-| `attribute-modifier` | `IrisAttributeModifier` |
-| `axis-rotation` | `IrisAxisRotationClamp` |
-| `biome-injector` | `IrisModBiomeInjector` |
-| `biome-palette` | `IrisBiomePaletteLayer` |
-| `biome-replacer` | `IrisModBiomeReplacer` |
-| `block-drops` | `IrisBlockDrops` |
-| `cave-field-module` | `IrisCaveFieldModule` |
-| `cave-profile` | `IrisCaveProfile` |
-| `color` | `IrisColor` |
-| `command` | `IrisCommand` |
-| `command-registry` | `IrisCommandRegistry` |
-| `coral` | `IrisCoral` |
-| `crystal` | `IrisCrystal` |
-| `custom-biome` | `IrisBiomeCustom` |
-| `custom-biome-particle` | `IrisBiomeCustomParticle` |
-| `custom-biome-spawn` | `IrisBiomeCustomSpawn` |
-| `decorator` | `IrisDecorator` |
-| `deposit` | `IrisDepositGenerator` |
-| `deposit-variant` | `IrisDepositVariant` |
-| `dimension-carving-entry` | `IrisDimensionCarvingEntry` |
-| `dimension-mode` | `IrisDimensionMode` |
-| `duration` | `IrisDuration` |
-| `effect` | `IrisEffect` |
-| `enchantment` | `IrisEnchantment` |
-| `entity-spawn` | `IrisEntitySpawn` |
-| `expression-function` | `IrisExpressionFunction` |
-| `expression-load` | `IrisExpressionLoad` |
-| `floating-child-biome` | `IrisFloatingChildBiomes` |
-| `formation` | `IrisFormation` |
-| `fungus` | `IrisFungus` |
-| `generator` | `IrisNoiseGenerator` |
-| `generator-layer` | `IrisBiomeGeneratorLink` |
-| `image-map` | `IrisImageMap` |
-| `loot` | `IrisLoot` |
-| `loot-registry` | `IrisLootReference` |
-| `noise-style-replacer` | `IrisModNoiseStyleReplacer` |
-| `object-block-replacer` | `IrisObjectReplace` |
-| `object-limit` | `IrisObjectLimit` |
-| `object-loot` | `IrisObjectLoot` |
-| `object-marker` | `IrisObjectMarker` |
-| `object-placement-biome-injector` | `IrisModObjectPlacementBiomeInjector` |
-| `object-placement-region-injector` | `IrisModObjectPlacementRegionInjector` |
-| `object-placer` | `IrisObjectPlacement` |
-| `object-replacer` | `IrisModObjectReplacer` |
-| `object-rotator` | `IrisObjectRotation` |
-| `object-scale` | `IrisObjectScale` |
-| `object-translator` | `IrisObjectTranslate` |
-| `object-vanilla-loot` | `IrisObjectVanillaLoot` |
-| `palette` | `IrisMaterialPalette` |
-| `position-3d` | `IrisPosition` |
-| `potion-effect` | `IrisPotionEffect` |
-| `procedural-objects` | `IrisProceduralObjects` |
-| `procedural-tree` | `IrisProceduralTree` |
-| `range` | `IrisRange` |
-| `rate` | `IrisRate` |
-| `region-replacer` | `IrisModRegionReplacer` |
-| `ruin` | `IrisRuin` |
-| `ruin-decorator` | `IrisRuinDecorator` |
-| `shaped-style` | `IrisShapedGeneratorStyle` |
-| `slope-clip` | `IrisSlopeClip` |
-| `stilt-settings` | `IrisStiltSettings` |
-| `style` | `IrisGeneratorStyle` |
-| `style-range` | `IrisStyledRange` |
-| `terrain-3d` | `IrisTerrain3D` — see [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
-| `time-block` | `IrisTimeBlock` |
-| `tree` | `IrisTree` |
-| `tree-branches` | `IrisTreeBranches` |
-| `tree-canopy` | `IrisTreeCanopy` |
-| `tree-decorator` | `IrisTreeDecorator` |
-| `tree-layer` | `IrisTreeLayer` |
-| `tree-secondary-leaf` | `IrisTreeSecondaryLeaf` |
-| `tree-settings` | `IrisTreeSettings` |
-| `tree-size` | `IrisTreeSize` |
-| `tree-sub-branches` | `IrisTreeSubBranches` |
-| `vacuum-settings` | `IrisVacuumSettings` |
+| `attribute-modifier` | Attribute modifier |
+| `axis-rotation` | Axis rotation clamp |
+| `biome-injector` | Mod biome injector |
+| `biome-palette` | Biome palette layer |
+| `biome-replacer` | Mod biome replacer |
+| `block-drops` | Block drops |
+| `cave-field-module` | Cave field module |
+| `cave-profile` | Cave profile |
+| `color` | Color |
+| `command` | Command |
+| `command-registry` | Command registry |
+| `coral` | Coral |
+| `crystal` | Crystal |
+| `custom-biome` | Biome custom |
+| `custom-biome-particle` | Biome custom particle |
+| `custom-biome-spawn` | Biome custom spawn |
+| `decorator` | Decorator |
+| `deposit` | Deposit generator |
+| `deposit-variant` | Deposit variant |
+| `dimension-carving-entry` | Dimension carving entry |
+| `dimension-mode` | Dimension mode |
+| `duration` | Duration |
+| `effect` | Effect |
+| `enchantment` | Enchantment |
+| `entity-spawn` | Entity spawn |
+| `expression-function` | Expression function |
+| `expression-load` | Expression load |
+| `floating-child-biome` | Floating child biomes |
+| `formation` | Formation |
+| `fungus` | Fungus |
+| `generator` | Noise layer |
+| `generator-layer` | Biome generator entry |
+| `image-map` | Image map |
+| `loot` | Loot |
+| `loot-registry` | Loot reference |
+| `noise-style-replacer` | Mod noise style replacer |
+| `object-block-replacer` | Object replace |
+| `object-limit` | Object limit |
+| `object-loot` | Object loot |
+| `object-marker` | Object marker |
+| `object-placement-biome-injector` | Mod object placement biome injector |
+| `object-placement-region-injector` | Mod object placement region injector |
+| `object-placer` | Object placement |
+| `object-replacer` | Mod object replacer |
+| `object-rotator` | Object rotation |
+| `object-scale` | Object scale |
+| `object-translator` | Object translate |
+| `object-vanilla-loot` | Object vanilla loot |
+| `palette` | Material palette |
+| `position-3d` | Position |
+| `potion-effect` | Potion effect |
+| `procedural-objects` | Procedural objects |
+| `procedural-tree` | Procedural tree |
+| `range` | Range |
+| `rate` | Rate |
+| `region-replacer` | Mod region replacer |
+| `ruin` | Ruin |
+| `ruin-decorator` | Ruin decorator |
+| `shaped-style` | Shaped generator style |
+| `slope-clip` | Slope clip |
+| `stilt-settings` | Stilt settings |
+| `style` | Generator style |
+| `style-range` | Styled range |
+| `terrain-3d` | Terrain3d — see [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
+| `time-block` | Time block |
+| `tree` | Tree |
+| `tree-branches` | Tree branches |
+| `tree-canopy` | Tree canopy |
+| `tree-decorator` | Tree decorator |
+| `tree-layer` | Tree layer |
+| `tree-secondary-leaf` | Tree secondary leaf |
+| `tree-settings` | Tree settings |
+| `tree-size` | Tree size |
+| `tree-sub-branches` | Tree sub branches |
+| `vacuum-settings` | Vacuum settings |
 
-Whole-file registrants (dimensions, regions, biomes, generators, loot tables, entities, spawners, markers, mods, objects, and structures) are not snippet types. They already have their own folders and are referenced by key. Only nested field types appear above.
+Whole-file resources (dimensions, regions, biomes, generators, loot tables, entities, spawners, markers, mods, objects, and structures) are not snippet types. They already have their own folders and are referenced by key. Only nested field types appear above.
 
-## Pack mods (`IrisMod`) — schema only, not applied
+## Pack mods (inactive)
 
-Folder: `mods/`. The load key is the path under `mods/` without `.json`. These files parse, appear in tooling, and show up in generated schemas, but **no engine path reads them**. A `mods/*.json` file that looks correct will change nothing about the terrain you generate.
+Files under `mods/` do not change generated terrain, even when Studio offers completions for them. Edit the target dimension, region, biome, generator, or object placement directly.
 
-To get the same effect, edit the target dimension, region, biome, generator, or object placement directly. If you need the same edit applied to several packs, keep the edits in version control. Do not expect the mod schema to layer them at runtime.
-
-The fields below are documented because they still appear in schema completion and because packs in the wild contain them, not because they work.
+The following fields remain visible in the schema but are inactive:
 
 | Field | Type | Default | Intended meaning |
 |-------|------|---------|------------------|
@@ -245,14 +233,14 @@ The fields below are documented because they still appear in schema completion a
 | `removeObjects` | string[] | `[]` | Object keys to strip |
 | `removeRegions` | string[] | `[]` | Region keys to strip |
 | `injectRegions` | string[] | `[]` | Region keys to add to the dimension |
-| `biomeInjectors` | `IrisModBiomeInjector[]` | `[]` | Add biomes to a region |
-| `biomeReplacers` | `IrisModBiomeReplacer[]` | `[]` | Swap one biome for another |
-| `objectReplacers` | `IrisModObjectReplacer[]` | `[]` | Swap object keys |
-| `biomeObjectPlacementInjectors` | `IrisModObjectPlacementBiomeInjector[]` | `[]` | Add object placements to a biome |
-| `regionObjectPlacementInjectors` | `IrisModObjectPlacementRegionInjector[]` | `[]` | Add object placements to a region |
-| `regionReplacers` | `IrisModRegionReplacer[]` | `[]` | Swap regions |
-| `blockReplacers` | `IrisObjectReplace[]` | `[]` | Block find/replace, same shape as object material replacers |
-| `styleReplacers` | `IrisModNoiseStyleReplacer[]` | `[]` | Replace `NoiseStyle` usages |
+| `biomeInjectors` | object array | `[]` | Add biomes to a region |
+| `biomeReplacers` | object array | `[]` | Swap one biome for another |
+| `objectReplacers` | object array | `[]` | Swap object keys |
+| `biomeObjectPlacementInjectors` | object array | `[]` | Add object placements to a biome |
+| `regionObjectPlacementInjectors` | object array | `[]` | Add object placements to a region |
+| `regionReplacers` | object array | `[]` | Swap regions |
+| `blockReplacers` | object array | `[]` | Block find/replace, same shape as object material replacers |
+| `styleReplacers` | object array | `[]` | Replace `NoiseStyle` usages |
 
 Shapes of the nested types, all of which are also registered snippet types:
 
@@ -272,7 +260,8 @@ Shapes of the nested types, all of which are also registered snippet types:
 { "biome": "temperate/plains", "place": [{ "chance": 0.01, "place": ["clutter/camp1"] }] }
 ```
 
-`IrisModObjectPlacementRegionInjector` uses the field name `biome` even though the value is a region load key. `IrisModNoiseStyleReplacer` takes `find` (a `NoiseStyle` enum value). It takes `replace` (a full `IrisGeneratorStyle`). It takes `replaceTypeOnly` (swap only the style type and keep the rest of the style fields).
+In the inactive `regionObjectPlacementInjectors` schema, `biome` holds a region key. The `styleReplacers` schema contains `find` (a noise style name), `replace` (a style object), and `replaceTypeOnly` (whether to replace just the style name).
+
 ## Related commands
 
 - Pack validation: `/iris pack validate`: see [25 - Pack Management](/iris/25-pack-management) and [04 - Commands & Permissions](/iris/04-commands-permissions).

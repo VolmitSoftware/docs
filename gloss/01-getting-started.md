@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-20T02:20:00.000Z
+date: 2026-09-20T22:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -11,6 +11,8 @@ dateCreated: 2026-08-18T00:00:00.000Z
 For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
 Put the Gloss jar in `plugins/` and start the server once. Settings live in `plugins/Gloss/gloss.toml`; display content lives in JSON files under `plugins/Gloss/`. Most edits reload automatically.
+
+Reloading the Gloss plugin jar through BileTools disconnects existing players while the bundled packet library initializes. Wait for the reload to finish, then reconnect. Configuration and document hotloads keep players connected.
 
 ## Requirements
 

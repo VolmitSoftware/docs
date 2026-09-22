@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -22,7 +22,7 @@ Related:
 - [23 - Loot](/iris/23-loot)
 - [23b - Entities & Spawners](/iris/23b-entities-spawners)
 
-Every task below changes newly generated chunks only. Production worlds read an active immutable epoch. Stage edits with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart, or open a fresh world.
+Generation changes apply to new chunks. For a production world, stage edits with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart, or open a fresh world.
 
 ## Pick a task
 
@@ -34,7 +34,7 @@ Every task below changes newly generated chunks only. Production worlds read an 
 | Keep vanilla chest loot, replace it, or fill only empty chests | Task 3 |
 | Make grown saplings become pack trees | Task 4 |
 | Change beds, raids, piglins, portals, compasses, or clouds | Task 5 |
-| Understand a leftover vanilla surprise | [Traps](#traps) |
+| Check setting interactions and limits | [Compatibility notes](#compatibility-notes) |
 
 ## What vanilla still does
 
@@ -96,13 +96,13 @@ The bundled overworld does not enable this. It places ores with `deposits` using
 
 ## Task 2: Control mob spawning
 
-Three pipelines can run at once, and filling one does not turn the others off.
+These three sources can spawn mobs together. Configuring one does not disable the others.
 
-| Pipeline | Default | What it does |
+| Source | Default | What it does |
 |---|---|---|
 | Vanilla natural spawning | **On** | Spawn tables of `vanillaDerivative`, else `derivative` |
 | `customDerivitives.spawns` | Empty | **Merged** with vanilla when both lists are nonempty. An empty custom list leaves vanilla in charge |
-| `entitySpawners` | Empty unless listed | Independent Iris ambient loop, gated by `world.ambientEntitySpawningSystem` (default true) |
+| `entitySpawners` | Empty unless listed | Additional pack spawns; requires `world.ambientEntitySpawningSystem` (default true) |
 
 There is no `importedStructures.disabled` equivalent for mobs.
 
@@ -213,7 +213,7 @@ Vanilla sapling growth continues until you opt in. Pack procedural trees and `ob
 
 **Success:** the sapling becomes one of the placement objects, not a vanilla oak.
 
-`mode: FIRST` uses biome matches and falls back to region matches only when the biome has none; `ALL` pools both and picks randomly. Dimension-level object placements are never consulted. `anyTree` and `anySize` were never read and are gone. Matching is case-insensitive on `treeTypes` only.
+`mode: FIRST` uses biome matches and falls back to region matches only when the biome has none; `ALL` pools both and picks randomly. Dimension-level object placements are never consulted. Matching is case-insensitive on `treeTypes` only.
 
 This is unrelated to the tree feller (`iris.json` `treeFeller.enabled`, permission `iris.treefeller`).
 
@@ -251,18 +251,18 @@ This is unrelated to the tree feller (`iris.json` `treeFeller.enabled`, permissi
 | `cloudHeight` | `-1` (unset) | Cloud Y. `null` disables clouds |
 | `monsterSpawnBlockLightLimit` | `-1` (unset) | Maximum block light at which hostile mobs may spawn |
 
-Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the template. Numeric `-1` means unset. `fullbright: true` copies `dimensionOptions` and forces `ambientLight` to `1.0`.
+Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the template. Numeric `-1` means unset. `fullbright: true` sets `ambientLight` to `1.0`.
 
 `logicalHeight` is what nether-portal search and chorus fruit respect. The bundled overworld is 768 blocks tall (`-256` to `512`) with `logicalHeight: 512`.
 
 `/iris replace` of `minecraft:overworld` keeps vanilla portal pairing with `minecraft:the_nether`. A separately created `iris:*` world is outside that pair. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
-## Traps
+## Compatibility notes
 
 | Surprise | What actually happens |
 |---|---|
 | `underwater` on objects vs structures | Object `underwater: true` seats on the seafloor and refuses above water. Structure `underwater: true` **allows** submerged starts; `false` skips underwater columns |
-| `carvingBiome` on a surface biome | Does not pick caves. It only registers the referenced biome as reachable. Runtime cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
+| `carvingBiome` on a surface biome | Does not select cave biomes. Use region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | Dimension `focus` | Forces the biome into the **land** role for the whole world. A sea biome under `focus` generates as land, so sea/shore structure eligibility never runs |
 | `carvingSupport: ANYWHERE` | The placement is in both the surface list and the cave list, so `chance` rolls twice per chunk |
 | Missing mineshafts or trial chambers | Iris buries underground-step structures below the lowest solid column unless `preserveSourceY` is true. The bundled overworld already pins mineshafts. Precedence: `preserveSourceY` > `yBand` > burial > `yShift`. Ocean monuments, desert pyramids, and jungle pyramids ignore `yBand`. Monuments sit 24 below Iris `fluidHeight` |
@@ -272,21 +272,20 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 | `datapackOverrides: false` | If **any** loaded dimension sets this false, `minecraft:` datapack overrides are stripped from every installed copy, server-wide |
 | `frequencyOverrides` | Keys are registered **structure-set** ids (`minecraft:ruined_portals`), not structure ids (`minecraft:ruined_portal`) |
 | Sea biome with a land `vanillaDerivative` | Iris hands structure selection `minecraft:the_void`. Ocean monuments need an ocean-like key. See [13 - Biomes](/iris/13-biomes) |
-| `#minecraft:has_structure/*` tags | Not inherited onto custom biomes. Native placement already uses the structure derivative. Inheriting them would double-place |
+| `#minecraft:has_structure/*` tags | Not inherited onto custom biomes. Use `vanillaDerivative` to control native structure eligibility |
 | `customDerivitives` | That spelling is the engine key. `customDerivatives` is silently ignored |
-| Two `preventLeafDecay` flags | `iris.json` `generator.preventLeafDecay` defaults **true** and bakes persistent into resolved leaf data. Dimension `preventLeafDecay` defaults **false**. The bundled overworld sets the dimension flag true. They are unrelated |
+| Two `preventLeafDecay` flags | `iris.json` `generator.preventLeafDecay` defaults **true** and makes generated leaves persistent. Dimension `preventLeafDecay` defaults **false**. The bundled overworld sets the dimension flag true. They are unrelated |
 | `hideOresForHiddenOre` | Replaces every ore the generator would write — terrain ores, deposits, and ores inside objects — with host stone |
 | `forcePlace: true` | Skips slope, carving, surface support, water, clamp, bedrock, and collision gates. It never skips the native-structure volume veto. Trees still vanish inside villages |
 | `isDolphinTarget` | Only works with `underwater`. Marks placed storage chests as buried-treasure points of interest |
 | `caveProfile.enabled` | Defaults **false**. Carving is off until some winning profile sets `enabled: true`. `carvingEnabled: false` is the same as listing `CARVED` in `disabledComponents` |
-| `mode.type` `ISLANDS` / `ENCLOSURE` | Stubs. They generate like `SUPERFLAT` (terrain and biome only). Real floating islands are biome `floatingChildBiomes` in `OVERWORLD` mode. A nether-like ceiling is `upperDimension` |
-| `mods/` | The old pack-mod injectors load and never apply. Use snippets. A snippet string must start with `snippet/` or the field becomes null with no error. The prefix is rewritten to the **field's** snippet type |
+| `mode.type` `ISLANDS` / `ENCLOSURE` | Generate like `SUPERFLAT` (terrain and biome only). For floating islands, use biome `floatingChildBiomes` in `OVERWORLD` mode. A nether-like ceiling is `upperDimension` |
+| `mods/` | Does not affect generation. Use snippets with the full `snippet/<type>/<name>` reference matching the field |
 | Minecraft `generateStructures` | The world option still gates native structures even if the pack allows them |
 | `world.forcePersistEntities` | Default true. Iris-spawned mobs do not despawn like vanilla |
-| Pack file edits on a live world | The world reads its active immutable epoch. Studio reads the live folder. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
+| Pack file edits on a live world | Production worlds require a staged update and restart. Studio applies compatible authoring edits to new chunks. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 | Deposit biome filters | `includedBiomes` accepts Iris load keys **or** vanilla derivative ids. The bundled overworld mixes both: emerald extra veins use `minecraft:cherry_grove`-style ids, copper dripstone bonus uses Iris paths such as `carving/drip`. `biomeScope` defaults to `CAVE` |
-| Stronghold rings on 26.2 | Iris evaluates preferred biomes once per chunk center, not per quart. Eyes of Ender follow the new rings. Old chunks keep old strongholds |
 
 ## Field details already on other pages
 
-Structures, datapack ingest, `adjustments`, and `nativeSuppression` stay on [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). The loader-level `importedFeatures` contract is also restated for mod authors on [94 - API - Modded](/iris/94-api-modded).
+See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Mod authors can find the `importedFeatures` API contract on [94 - API - Modded](/iris/94-api-modded).

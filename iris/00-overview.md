@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,8 +26,6 @@ The four platforms generate identical chunks when the Iris version, pack, seed, 
 | Deploy a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) |
 | Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
-Each tutorial page ends with something you can observe — a world that loads, a chunk that generates, a hotload that lands. Confirm it before opening the next page, because Iris failures cascade: a biome key typed wrong in step two surfaces three systems later as a cave or structure that does not work.
-
 ## Platforms
 
 One plugin jar covers the whole Bukkit family; each mod loader gets its own jar. The generator is the same code on all of them.
@@ -36,7 +34,7 @@ One plugin jar covers the whole Bukkit family; each mod loader gets its own jar.
 |---|---|---|---|
 | Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing. This is the reference plugin target |
 | Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
-| Folia | plugin jar | 26.1.2 – 26.2 | Region-safe scheduling. `/iris create` builds the managed world live through Iris's Paper-like runtime backend without an ordinary restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Folia | plugin jar | 26.1.2 – 26.2 | `/iris create` creates managed worlds without a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 | Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD. Requires Fabric Loader 0.19.3+ and Java 25 |
 | Forge | mod jar | 26.2 | Same. Forge 65.x |
 | NeoForge | mod jar | 26.2 | Same. NeoForge 26.2.x |
@@ -55,9 +53,9 @@ Every Iris feature is on exactly one page.
 | Commands and permissions | Full `/iris` tree, Bukkit vs modded argument style | [04 - Commands & Permissions](/iris/04-commands-permissions) |
 | Pack layout | Roots, keys, snippets, generation history vs Studio | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 | Worlds | create / update / load / unload / remove, main world, Folia, generation history | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
-| Pregeneration | Jobs, cache, mantle, HUD | [07 - Pregeneration](/iris/07-pregeneration) |
+| Pregeneration | Starting, pausing, stopping, and viewing jobs | [07 - Pregeneration](/iris/07-pregeneration) |
 | Localization | Locales, overrides, client lang | [08 - Localization](/iris/08-localization) |
-| PlaceholderAPI | `%iris_…%` keys and migration | [09 - PlaceholderAPI](/iris/09-placeholderapi) |
+| PlaceholderAPI | `%iris_…%` keys and display formats | [09 - PlaceholderAPI](/iris/09-placeholderapi) |
 | Studio and schemas | Studio worlds, VSCode workspace, hotload | [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) |
 | Dimensions | Dimension JSON, modes, height, imports | [11 - Dimensions](/iris/11-dimensions) |
 | Regions | Region-level content | [12 - Regions](/iris/12-regions) |
@@ -91,7 +89,7 @@ Every Iris feature is on exactly one page.
 | Platform matrix | Bukkit vs Fabric / Forge / NeoForge differences | [30 - Platform Differences](/iris/30-platform-differences) |
 | Startup safeguard | Stable, Warning, and Danger modes and what they lock | [46 - Startup Safeguard](/iris/46-startup-safeguard) |
 | Determinism | Compare generation output | [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash) |
-| Performance | Threads, mantle, SIMD, pregen caps | [33 - Performance Tuning](/iris/33-performance-tuning) |
+| Performance | Iris settings and server configuration | [33 - Performance Tuning](/iris/33-performance-tuning) |
 | Multiverse | What Multiverse may and may not do with Iris worlds | [34 - Multiverse](/iris/34-multiverse) |
 | API — setup | Bukkit public API dependency | [90 - API - Getting Started](/iris/90-api-getting-started) |
 | API — terrain | Terrain query service | [91 - API - Terrain](/iris/91-api-terrain) |
@@ -111,4 +109,4 @@ Seven terms carry most of the documentation.
 | Object / structure | Placed content. An object is a single saved build (`.iob`). A structure is either an Iris jigsaw of several objects, or a vanilla/datapack/mod structure Iris allows through |
 | Image map | A typed `image-maps/<key>.json` resource that decodes and places one canonical PNG as height, categorical, or mask data. Dimensions bind maps to generation applications |
 | Studio | A throwaway authoring world that reads the live pack folder and hotloads your edits into new chunks. Deleted when you close it, and any leftovers are purged at startup |
-| Generation history | A production world keeps every pack epoch it has used under `<dimensionRoot>/iris/generation/`. Existing chunks stay owned by their original activation; staged updates apply only to new chunks after restart — see [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
+| Generation history | A production world stores its pack history under `<dimensionRoot>/iris/generation/`. Include it in backups. Staged pack updates apply to new chunks after restart. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |

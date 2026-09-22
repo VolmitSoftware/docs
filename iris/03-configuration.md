@@ -2,31 +2,12 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris keeps its shared runtime settings in `iris.json` under the platform data folder. On first boot Iris writes a full defaults file if one is missing. Startup and manual loads rewrite a valid file so new keys appear with defaults; passive automatic hotload parses an immutable snapshot and never writes it back. Bukkit adds `compat.json`. Mod loaders add `modded.json`.
-
-See [01 - Installation & Platforms](/iris/01-installation-platforms) for data paths. See [33 - Performance Tuning](/iris/33-performance-tuning) for how to measure a tuning change.
-
-The shared in-game language picker writes `general.language` for the server default. Personal language choices are stored separately in `languages/players.properties`; see [08 - Localization](/iris/08-localization). Non-English server catalogs download when selected and remain outside the jar.
-
-## What you actually need to change
-
-The defaults are correct for almost every server. Most operators only ever touch a handful of keys:
-
-| You want to | Change |
-|---|---|
-| Run the server in another language | `general.language` |
-| See why generation is behaving oddly | `general.debug`, or `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders |
-| Stop Iris opening desktop windows on the host | `gui.useServerLaunchedGuis`, `studio.openVSCode` |
-| Survive pregen on a memory-constrained box | `pregen.maxResidentTectonicPlates`, the `performance.*CacheSize` keys |
-| Turn on the survival tree feller | `treeFeller.enabled` |
-| Catch broken pack keys instead of silently ignoring them | `general.strictContentKeys` |
-
-Everything else is either already right, only meaningful while diagnosing a specific problem, or inert on your platform. Each table below marks which is which.
+Edit `iris.json` in your platform's data folder to configure Iris. Run `/iris reload` or save the file and wait for automatic hotload. Settings marked **Restart** take effect after a server restart.
 
 ## File locations
 
@@ -35,17 +16,11 @@ Everything else is either already right, only meaningful while diagnosing a spec
 | Bukkit / Paper / Folia | `plugins/Iris/iris.json` | `plugins/Iris/packs/` | `plugins/Iris/compat.json` |
 | Fabric / Forge / NeoForge | `<configDir>/iris/iris.json` | `<configDir>/irisworldgen/packs/` | `<configDir>/irisworldgen/modded.json` |
 
-`<configDir>` is the loader config directory (game `config/` on Fabric, Forge, and NeoForge). Both surfaces use the same `IrisSettings` schema for `iris.json`.
+`<configDir>` is the loader's `config/` directory. On mod loaders, install packs under `irisworldgen/packs/`; the separate `iris/packs/` directory is unused. See [01 - Installation & Platforms](/iris/01-installation-platforms).
 
-The modded split is real and easy to get wrong. The engine data folder is `<configDir>/iris`. Installed packs, the generated datapack, and `modded.json` live under `<configDir>/irisworldgen`. Iris also creates an empty `<configDir>/iris/packs` directory. That is not the pack root. A pack there will not load.
+## Changing settings
 
-## Changing a setting safely
-
-Copy `iris.json` outside the server directory first. Then change one key, keeping its JSON type (`"false"` is a string, not a boolean), save, and run `/iris reload` or wait for automatic hotload. **An invalid file keeps the current settings** and leaves your edit on disk; fix the JSON and save again. Deleting `iris.json` while the server is running keeps the live settings and does not recreate the file.
-
-If the reload succeeds but nothing changed, check the "Takes effect" column below — several keys are captured when a service, pool, or cache is built and need a restart.
-
-To change only the server locale, edit the existing `general` object in place:
+Back up `iris.json`, edit the existing fields, and save valid JSON. For example, to change the server language, set `general.language` to `"de_DE"` in the existing `general` object:
 
 ```json
 {
@@ -56,192 +31,167 @@ To change only the server locale, edit the existing `general` object in place:
 }
 ```
 
-That fragment shows the field location; do not replace a populated settings file with it. After `/iris reload`, run `/iris help` and confirm the selected locale is active. A manual reload rewrites the complete settings file including defaults for absent fields; automatic hotload does not.
+This example shows where the fields belong; keep the other settings in your file. Run `/iris reload`, then `/iris help` to check the language. Personal language choices are separate; see [08 - Localization](/iris/08-localization).
 
-## Load, save, hotload
+| Action | Result |
+|--------|--------|
+| First boot | Creates `iris.json` with defaults if it is missing |
+| Startup | Loads the file. Invalid JSON leaves the file untouched and uses defaults for that boot |
+| Successful startup or `/iris reload` | Adds missing defaults and rewrites the complete file. Custom formatting is replaced |
+| `/iris reload` | Reloads settings and the locale. On mod loaders, also regenerates the datapack. Does not reload packs or restart services |
+| Automatic hotload | Applies saved settings without rewriting the file. Files over 2 MiB are rejected |
+| Invalid edit while running | Keeps the current settings. Correct the file and save again |
+| File deleted while running | Keeps current settings without recreating the file |
+| Debug command | `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders changes debug mode and saves the settings |
 
-| Action | Behavior |
-|--------|----------|
-| First boot | Create `iris.json` with current defaults if the file is absent |
-| Load | Parse with Gson into `IrisSettings`. On failure, log `Configuration Error in iris.json!` and run on built-in defaults for that boot — the bad file is left untouched, because the rewrite never runs |
-| After a successful startup or manual load | Rewrite `iris.json` as pretty JSON so current keys and defaults persist. Comments and hand formatting are lost |
-| `/iris reload` | Invalidate the cached settings, re-read the file, reload the locale. On modded it also schedules a forced datapack regeneration. It does not restart services, reload packs, or rebuild engines |
-| Hotload (both platforms) | `iris.json` and `languages/overrides/` are watched. A saved file is applied at most once every 3 seconds, without rewriting it. Silent, atomic, and FTP saves are all detected, and files over 2 MiB are rejected. Successful passive hotloads are debug-only; invalid or rejected changes are normal console errors |
-| Locale refresh | Only the configured locale applies. Deleting the active override falls back to its bundled translation or the built-in English catalog, and invalid bytes keep the last-good catalog |
-| `forceSave()` | Only `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders writes settings back from memory |
+## Settings groups
 
-## Root object
+Missing groups use their defaults.
 
-Top-level Gson fields on `IrisSettings`. Every nested object is created with defaults when missing.
+| Field | Covers |
+|-------|--------|
+| `general` | Language, logging, colors, datapacks and pack validation |
+| `world` | Entity spawning, effects and pregeneration cache |
+| `gui` | Desktop windows opened on the server machine |
+| `autoConfiguration` | Bukkit server timeout settings |
+| `generator` | World creation defaults and generation transitions |
+| `concurrency` | Not configurable; any existing field is ignored |
+| `studio` | Studio world behavior |
+| `performance` | Caches and background maintenance |
+| `pregen` | Pregeneration scheduling, limits and timeouts |
+| `treeFeller` | Survival tree felling |
 
-| Field | Nested class | Covers |
-|-------|--------------|--------|
-| `general` | `IrisSettingsGeneral` | Locale, debug output, console colors, datapack ingest, strict keys, splash |
-| `world` | `IrisSettingsWorld` | Entity systems, async world tick, pregen cache |
-| `gui` | `IrisSettingsGUI` | Server-launched desktop GUIs |
-| `autoConfiguration` | `IrisSettingsAutoconfiguration` | Spigot timeout and Paper watchdog fixups applied at boot |
-| `generator` | `IrisSettingsGenerator` | Default pack, generation transitions, leaf decay |
-| `concurrency` | (not serialized) | Nothing configurable. Values derive from CPU count at runtime; an old `concurrency` key is ignored and dropped on the next rewrite |
-| `studio` | `IrisSettingsStudio` | Studio world behavior |
-| `performance` | `IrisSettingsPerformance` | Mantle residency, loader caches, SIMD, engine service pool |
-| `pregen` | `IrisSettingsPregen` | Pregen scheduling, mantle backpressure, timeouts |
-| `treeFeller` | `IrisSettingsTreeFeller` | Survival tree feller |
+## `general`
 
-Thread-count keys accept `-1`, `-2`, or `-4` to mean "all, half, or a quarter of the available processors". Any other value is used as written, with a floor of 2.
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `language` | `"en_US"` | Live | Server language. Non-English catalogs download when selected |
+| `metrics` | `true` | **Restart** | **Bukkit only.** Enables bStats reporting |
+| `commandSounds` | `true` | Live | **Bukkit only.** Plays sounds for command completion and command results |
+| `debug` | `false` | Live | Enables detailed console logging and chunk error dumps under `debug/chunk-errors/`. Leave off during normal operation |
+| `dumpMantleOnError` | `false` | Live | Saves a region dump under `dump/` when stored generation data cannot be read correctly |
+| `disableNMS` | `false` | **Restart** | **Bukkit only.** Disables native server integration and prevents Iris world creation. Leave false for normal use |
+| `eagerRuntimeInjection` | `false` | **Restart** | **Bukkit only.** Prepares and checks native server integration during startup instead of when the first Iris world loads |
+| `splashLogoStartup` | `true` | **Restart** | Shows the Iris logo and version at startup |
+| `useConsoleCustomColors` | `true` | Live | Enables gradient and hex colors in console messages |
+| `useCustomColorsIngame` | `true` | Live | Enables gradient and hex colors in player messages |
+| `progressBossBar` | `true` | Live | Shows boss bars for supported jobs, Studio opens and downloads. Ordinary world creation uses an action bar |
+| `adjustVanillaHeight` | `false` | **Restart** | **Bukkit only.** Applies Iris height to the vanilla Overworld, Nether and End dimension types when generating the datapack |
+| `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Imports configured datapack sources and ZIPs in `plugins/Iris/datapacks/imports/` at startup. Drop-folder imports apply to all Iris dimensions |
+| `autoImportDatapackStructures` | `false` | Live, next import | **Bukkit only.** Copies registered datapack structures into editable pack files. Use `/iris structure import <dimension>` for a manual import |
+| `strictContentKeys` | `false` | Live | Rejects packs with unresolved content keys or invalid block-state properties. Useful while authoring. The JVM property `-Diris.strictContent=true` or `false` overrides this setting |
+| `spinh` | `-20` | Live | Hue adjustment for animated Iris text |
+| `spins` | `7` | Live | Saturation adjustment for animated Iris text |
+| `spinb` | `8` | Live | Brightness adjustment for animated Iris text |
 
-## `general` — locale, diagnostics, and console output
+`strictContentKeys` does not change how Iris handles content unavailable on your Minecraft version. Use `/iris pack compat` to review version compatibility; see [25 - Pack Management](/iris/25-pack-management).
 
-This group decides what Iris says and how loudly. `language`, `debug`, and `strictContentKeys` are the ones worth touching. The color and spin keys are cosmetic. The datapack keys change startup work on Bukkit only.
+## `world`
 
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `language` | `"en_US"` | Live | Selects the locale catalog for all Iris messages. Reloaded by `/iris reload` and by the shared Bukkit/modded hotload watcher |
-| `metrics` | `true` | **Restart** | **Bukkit only.** Registers the bStats reporter at enable |
-| `commandSounds` | `true` | Live | **Bukkit only.** Plays the amethyst chime on `/iris` tab completion and success/failure sounds after a command. Turn off if the noise annoys staff |
-| `debug` | `false` | Live | Enables verbose engine tracing on the console, including passive hotload success, Studio timing, adapter discovery, object-placement and structure diagnostics, and writes per-chunk crash dumps under `debug/chunk-errors/`. Failures remain visible when debug is off. Toggle with `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders rather than editing by hand. Leave off in production because it is loud |
-| `dumpMantleOnError` | `false` | Live | When a tectonic plate read reports an error, dump the decoded region to `dump/<name>.bin` instead of logging a timing line. Turn on only when investigating mantle corruption |
-| `disableNMS` | `false` | **Restart** | **Bukkit only.** Forces the no-op NMS binding. Iris logs a warning and world creation stops working entirely, so this is a diagnostic escape hatch, not a compatibility switch. Read in a class initializer, so a reload will not change it |
-| `eagerRuntimeInjection` | `false` | **Restart** | **Bukkit only.** Attaches the Java agent and installs the server-code injection while Iris enables instead of the first time a world Iris generates is about to load. Off, a boot costs about a second less and the `injection` check reports Stable with nothing to verify; a server that never loads an Iris world never pays for either step, and an install that fails later locks the runtime with the same reason. On, the startup safeguard verifies both during startup |
-| `splashLogoStartup` | `true` | **Restart** | Prints the ASCII logo and version block at startup. Set false for quieter console logs |
-| `useConsoleCustomColors` | `true` | Live | Gradient/hex coloring for console output. Set false if your log viewer mangles it — you still get legacy color codes. Iris also forces both color keys off in memory if Adventure fails to bind |
-| `useCustomColorsIngame` | `true` | Live | Same, for messages sent to players |
-| `progressBossBar` | `true` | Live | Enables boss-bar progress for supported jobs, Studio opens, chunk jobs, and pack downloads. Ordinary `/iris create` always uses its action-bar lifecycle meter instead; creation-time pregeneration retains its dedicated long-running boss bar |
-| `adjustVanillaHeight` | `false` | **Restart** | **Bukkit only.** Overwrites the vanilla `overworld`/`the_nether`/`the_end` dimension-type JSON with Iris height when compiling the datapack. It is part of the datapack fingerprint, so flipping it forces a datapack rebuild |
-| `autoIngestDatapacks` | `true` | **Restart** | **Bukkit only.** Installs or updates configured HTTP(S)/`file:` sources and ZIPs discovered under `plugins/Iris/datapacks/imports/` during the startup admission gate. Unchanged committed content reuses its persisted result instead of revalidating; local archive bytes are still fingerprinted. Explicit sources stay scoped to declaring dimensions, while drop-folder sources apply to every Iris dimension |
-| `autoImportDatapackStructures` | `false` | Live (next ingest) | **Bukkit only.** Converts every registered datapack structure into editable Iris pools, pieces, and objects — thousands of files in your pack folder. Native generation never needs those copies, so leave it off and run `/iris structure import <dimension>` when you actually want them |
-| `strictContentKeys` | `false` | Live | Promotes unresolved pack content keys and bad block-state properties from warnings to blocking pack errors. Worth turning on while developing a pack. `-Diris.strictContent` overrides it in both directions, and the bare property with no value counts as true. Keys already handled by the version content gate are excluded from this check, so it never turns a gated key into a second error |
-| `spinh` | `-20` | Live | Hue factor of the animated "aura" gradient on Iris text |
-| `spins` | `7` | Live | Saturation factor of the same gradient |
-| `spinb` | `8` | Live | Brightness factor of the same gradient |
+These settings control Iris spawning and effects. Vanilla spawning has its own server settings.
 
-The early library-loader trace is separate from `general.debug` and silent by default. `-Diris.debug-slimjar=true` enables it for loader investigation.
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `postLoadBlockUpdates` | `true` | Live | Updates blocks near players after generation so placed objects settle and receive waterlogging updates |
+| `forcePersistEntities` | `true` | Live | Prevents normal despawning of Iris-spawned entities |
+| `ambientEntitySpawningSystem` | `true` | Live | Enables biome and region ambient spawn lists |
+| `asyncTickIntervalMS` | `700` | Live, next tick | Milliseconds between Iris spawning, effects and cleanup passes |
+| `targetSpawnEntitiesPerChunk` | `0.95` | Live | Stops Iris spawning when entities per loaded chunk exceed this value |
+| `markerEntitySpawningSystem` | `true` | Live | Enables mobs placed at pack-defined feature markers |
+| `effectSystem` | `true` | Live | Applies biome and region potion effects, particles and sounds to players |
+| `globalPregenCache` | `false` | Following world-init or chunk-load event | **Bukkit only.** Saves generated-chunk records so pregeneration can skip completed chunks across restarts |
 
-### `strictContentKeys` and the version content gate
+## `gui`
 
-These are two different checks with one overlap. The version content gate asks the live registry whether a key exists and decides what to leave out of generation. `strictContentKeys` decides how loudly the separate unresolved-key check complains about keys the validator could not resolve at all.
+These windows open on the machine running the server. Set `useServerLaunchedGuis` to false on remote or headless hosts.
 
-| Situation | `strictContentKeys` off | `strictContentKeys` on |
-|-----------|------------------------|------------------------|
-| A key exists on a newer Minecraft but not this one | Reported once by the version content gate, as excluded, dropped, or substituted. Not reported as an unresolved key | Identical. The gate's findings are suppressed in the unresolved-key check, so the key does not also become a blocking error |
-| A typo or a key from a mod that is not installed and never was | Warning from the unresolved-key check | Blocking pack error |
-| The version content gate's cascade reaches the dimension | Blocking pack error. World creation refused | Identical. This does not depend on the setting |
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `useServerLaunchedGuis` | `true` | Live | Allows the noise explorer, vision map and pregeneration viewer to open desktop windows |
+| `maximumPregenGuiFPS` | `false` | Next window open | Refreshes the local pregeneration preview more frequently |
+| `colorMode` | `true` | Next window open | Shows the noise explorer in color instead of grayscale |
 
-Turn `strictContentKeys` on while authoring so typos fail fast. It is not a way to make missing-on-this-version content fail loudly; that is what the startup listing and `/iris pack compat` are for. See [25 - Pack Management](/iris/25-pack-management).
+## `autoConfiguration`
 
-## `world` — entity systems and the async world tick
+These settings apply only to Bukkit servers. Disable them if you manage the corresponding server timeout settings yourself.
 
-Iris runs its own spawning and effects pass on a background loop, separate from vanilla mob spawning. These keys decide whether that loop does anything and how often. Turning the spawn systems off makes Iris worlds feel emptier but removes an entire class of tick cost. The defaults are the intended experience.
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `configureSpigotTimeoutTime` | `true` | **Restart** | Raises `timeout-time` in `spigot.yml` to allow longer generation tasks |
+| `configurePaperWatchdogDelay` | `true` | **Restart** | Raises Paper's watchdog warning and timeout limits |
 
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `postLoadBlockUpdates` | `true` | Live | Runs a block-update pass over freshly generated chunks near players so placed objects settle (physics and waterlogging fixups). Turning it off is faster but leaves floating or unwatered blocks from some objects |
-| `forcePersistEntities` | `true` | Live | Marks every Iris-spawned entity persistent so vanilla mob-cap and distance rules do not despawn it. Turn off if pack-spawned mobs are accumulating |
-| `ambientEntitySpawningSystem` | `true` | Live | Enables the biome/region ambient spawn lists on the async tick |
-| `asyncTickIntervalMS` | `700` | Live (next tick) | Milliseconds between world-manager passes that handle spawning, effects, and cleanup. Raise it to cut background cost on a busy server. Lower it only if pack spawns feel too sparse |
-| `targetSpawnEntitiesPerChunk` | `0.95` | Live | Entity saturation ceiling. Once entities per loaded chunk exceed this, Iris stops spawning (the Bukkit path also backs off for 5 seconds). Lower it on servers already near their entity budget |
-| `markerEntitySpawningSystem` | `true` | Live | Enables spawning driven by mantle marker blocks, which is how packs place specific mobs at specific generated features |
-| `effectSystem` | `true` | Live | Applies per-biome and per-region `IrisEffect`s (potion effects, particles, sounds) to players |
-| `globalPregenCache` | `false` | Live, one event late | **Bukkit only.** Maintains a persistent per-world bitmap of already-generated chunks so pregen can skip finished work across restarts. The enable/disable flip is observed on the following world-init or chunk-load event, not the current one |
+## `generator`
 
-With both `markerEntitySpawningSystem` and `ambientEntitySpawningSystem` false, the world manager skips all related entity work.
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `generationTransitionWidthBlocks` | `256` | Next generation activation | Width of transitions beside saved terrain after generation updates. Range: 16–8192 blocks. Existing transitions keep their previous width |
+| `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** Pack used when a world or Studio command omits one, or `bukkit.yml` uses the bare `Iris` generator. Mod loaders use `modded.json`'s `defaultPack` |
+| `preventLeafDecay` | `true` | **Restart** | Makes generated leaves persistent. Separate from the dimension's `preventLeafDecay` pack setting |
 
-## `gui` — desktop windows launched by the server
+## `performance`
 
-Iris can open AWT windows on the machine running the server: the noise explorer, the vision map, and the pregen viewer. That is useful on a local dev box and wrong on a headless host, which is the only reason to touch this group.
+These are advanced settings. Restart requirements are listed for each key. See [33 - Performance Tuning](/iris/33-performance-tuning).
 
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `useServerLaunchedGuis` | `true` | Live | Allows server-side GUI hosts to open windows. Set false on any remote or headless server. The commands then report that GUIs are unavailable instead of trying |
-| `maximumPregenGuiFPS` | `false` | Per window open | Checks desktop pregen updates every 4 ms instead of every 250 ms. Only changed map pixels and status values trigger updates. Minimizing the window stops its refresh timer. This setting controls the local preview, not generation concurrency |
-| `colorMode` | `true` | Per window open | Color rendering in the noise explorer instead of grayscale. It is captured when the window opens, so close and reopen the explorer to apply a change |
-
-## `autoConfiguration` — Bukkit server-file fixups
-
-Iris edits a couple of server config files at boot. Long chunk generation then does not look like a hang to the server's own watchdogs. Leave these on unless you manage those files yourself. They are all Bukkit-only and all read once during enable.
-
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `configureSpigotTimeoutTime` | `true` | **Restart** | Raises `timeout-time` in `spigot.yml` so a long generation stall does not kill the server |
-| `configurePaperWatchdogDelay` | `true` | **Restart** | Raises Paper's watchdog early-warning and timeout for the same reason |
-
-These keys are no-ops on mod loaders.
-
-## `generator` — defaults for world creation
-
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `generationTransitionWidthBlocks` | `256` | Next generation activation | Finite width of the transition beside saved terrain. Clamped to 16–8192 blocks. Applies to pack updates, changed generation build revisions, and ordinary Bukkit Studio updates. Changing it does not alter an existing transition |
-| `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** The pack key used whenever a world, studio, or command omits one — including a bare `Iris` generator string in `bukkit.yml` and `/iris create name=<name>` with no `type`. The accepted `type=default` sentinel resolves the same way but is not advertised by completion. Mod loaders use `defaultPack` in `modded.json` instead |
-| `preventLeafDecay` | `true` | Effectively **restart** | Marks generated leaves persistent so they do not decay. The flag is baked into resolved block data that is then cached, so already-resolved leaf blocks keep the old behavior after a reload. Unrelated to the per-dimension `preventLeafDecay` field in pack JSON |
-
-## `performance` — caches, mantle residency, and the engine service pool
-
-Larger loader caches trade heap for fewer pack reloads; mantle keys decide how long generated region data stays resident before being written out. Most keys here are captured when a pool or cache is built, so plan on a restart. Use [33 - Performance Tuning](/iris/33-performance-tuning) for the measurement procedure. Changing these blind usually makes things worse.
-
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `trimMantleInStudio` | `false` | Live | Enables routine mantle maintenance in studio worlds. With the default `false`, routine trimming stays off for responsive editing. Emergency maintenance still runs when heap crosses Iris's high-water threshold. Studio cannot disable memory-pressure recovery |
-| `mantleKeepAlive` | `30` | Live | Seconds a mantle plate stays resident before it is eligible for trimming. Scaled down automatically as reclaim pressure rises. Lower it when heap is tight, raise it if the same regions are reloaded repeatedly |
-| `noiseCacheSize` | `1024` | Mixed | Base capacity of the noise caches. Engine caches count 16×16 chunks per stream; normal hydrology runtimes expand selected terrain caches on uncached planning demand within a shared heap allowance. Loading a world alone reserves no allowance. The terrain query API picks this setting up live. Engine caches need a hotload or restart. Pregen raises it to at least 4096 in memory and does not lower it again or persist the change |
-| `resourceLoaderCacheSize` | `1024` | **Restart / pack reload** | How many loaded pack resources stay cached per loader. Captured when a pack's `IrisData` is opened |
-| `objectLoaderCacheSize` | `4096` | **Restart / pack reload** | Same, for `.iob` objects, matter objects, and images. Raise it for object-heavy packs when heap allows. Lower it first when profiling shows retained pack data |
-| `mantleCleanupDelay` | `200` | Live | Delay in **ticks** before a loaded chunk's mantle cleanup runs — the default is 10 seconds. Read from the raw field with no clamping, so a negative value is floored at 0 ms and a huge value really does postpone cleanup |
-| `simdKernels` | `true` | **Restart** | Uses Vector API noise kernels when `jdk.incubator.vector` is on the module path, otherwise scalar fallbacks. Chosen once during class initialization, so toggling it and reloading does nothing, and it is silently inert without the JVM module flag |
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `trimMantleInStudio` | `false` | Live | Enables routine cleanup of stored generation data in Studio worlds |
+| `mantleKeepAlive` | `30` | Live | Requested retention time, in seconds, for generation data in memory |
+| `noiseCacheSize` | `1024` | Engine hotload or restart; live for terrain queries | Base noise cache capacity |
+| `resourceLoaderCacheSize` | `1024` | **Restart / pack reload** | Number of pack resources retained per loader |
+| `objectLoaderCacheSize` | `4096` | **Restart / pack reload** | Cache capacity for objects and images |
+| `mantleCleanupDelay` | `200` | Live | Delay in ticks before loaded-chunk generation data cleanup. Default: 10 seconds |
+| `simdKernels` | `true` | **Restart** | Enables vectorized noise calculations when the JVM starts with `--add-modules=jdk.incubator.vector` |
 
 ### `performance.engineSVC`
 
-Sizing keys here are read once at enable, so they need a restart. `forceMulticoreWrite` is the exception and is read live.
+| Key | Default | Takes effect | Use |
+|-----|---------|--------------|-----|
+| `useVirtualThreads` | `true` | **Restart** | Uses virtual threads for background maintenance |
+| `forceMulticoreWrite` | `false` | Live | Enables parallel generation outside pregeneration and more frequent saving of eligible generation data |
+| `priority` | `5` | **Restart** | Background thread priority, from 1 to 10. Applies only when `useVirtualThreads` is false |
+| `parallelism` | `-1` | **Restart** | Background maintenance worker count. Nonpositive values choose automatically; positive values are limited by available processors |
 
-| Key | Default | Takes effect | What it does |
-|-----|---------|--------------|--------------|
-| `useVirtualThreads` | `true` | **Restart** | Builds the maintenance thread factory from virtual threads instead of platform threads |
-| `forceMulticoreWrite` | `false` | Live | Two effects. Every world fans chunk generation stages and mantle components across the burst pool, which otherwise happens only while a pregeneration is active. Every maintenance pass also unloads all eligible tectonic plates instead of only unloading under heap pressure. Trades steadier memory for more write work and fewer cores left for the rest of the server |
-| `priority` | `5` (`Thread.NORM_PRIORITY`) | **Restart** | Thread priority, clamped to `[MIN_PRIORITY, MAX_PRIORITY]`. It is applied only when `useVirtualThreads` is false, so with the defaults this key does nothing |
-| `parallelism` | `-1` | **Restart** | Maintenance pool size. `>0` is capped at `processors * 2`. `<=0` uses `ceil(sqrt(processors))`, at least 1 |
+## `pregen`
 
-## `pregen` — scheduling, timeouts, and mantle backpressure
+Changes apply to the next pregeneration job. See [07 - Pregeneration](/iris/07-pregeneration) for commands.
 
-These keys bound how aggressively pregeneration pushes the server. They are read when a pregen job is constructed, so a change applies to the *next* job, not a running one. The two that matter in practice are `maxResidentTectonicPlates` (the memory ceiling) and, on mod loaders, `moddedPregenInFlight` (the concurrency ceiling). The rest exist for diagnosing a specific failure mode.
+| Key | Default | Applies to | Use |
+|-----|---------|------------|-----|
+| `runtimeSchedulerMode` | `AUTO` | Bukkit | Scheduler selection: `AUTO`, `PAPER_LIKE` or `FOLIA`. Leave `AUTO` for normal use; Folia uses its region scheduler |
+| `paperLikeBackendMode` | `AUTO` | Bukkit, non-Folia | Backend selection: `AUTO`, `TICKET` or `SERVICE`. `AUTO` uses `TICKET`; ignored on Folia |
+| `chunkLoadTimeoutSeconds` | `15` | Both | Bukkit slow-request warning threshold, clamped to 5–120 seconds; slow requests continue waiting. Mod loaders use a 120-second timeout |
+| `timeoutWarnIntervalMs` | `500` | Bukkit | Minimum interval between slow-request and failed-release warnings. Minimum: 250 ms |
+| `saveIntervalMs` | `30000` | Both | Progress-save interval, clamped to 5000–900000 ms |
+| `maxResidentTectonicPlates` | `96` | Both | Requested limit on resident generation regions. Minimum: 16. Iris may use a lower limit for the world and server |
+| `mantleBackpressureWaitMs` | `25` | Both | How often pregeneration checks whether it can resume after reaching its region limit. Range: 5–1000 ms |
+| `mantleBackpressureTimeoutMs` | `60000` | Both | Wait limit before a region-limit warning. Range: 5000–600000 ms |
+| `moddedPregenInFlight` | `0` | Modded | Concurrent chunk limit. Positive values are capped at 512; nonpositive values choose automatically. Ignored on Bukkit |
 
-| Key | Default | Applies to | What it does and how it resolves |
-|-----|---------|------------|----------------------------------|
-| `runtimeSchedulerMode` | `AUTO` | Bukkit | `AUTO`, `PAPER_LIKE`, `FOLIA`. A regionized (Folia) runtime resolves to `FOLIA` before the setting is consulted, and off Folia a configured `FOLIA` is downgraded to `PAPER_LIKE`. Since `AUTO` also lands on `PAPER_LIKE` for every recognized and unrecognized fork, this key changes nothing in practice. The one exception is a non-regionized server that still identifies itself as Folia by name or version. There `AUTO` picks `FOLIA` and an explicit `PAPER_LIKE` does not |
-| `paperLikeBackendMode` | `AUTO` | Bukkit, non-Folia | `AUTO`, `TICKET`, `SERVICE`. `SERVICE` uses the service executor (`paper-service`). `TICKET` and `AUTO` both use the ticket executor (`paper-ticket`). Ignored entirely on Folia. Try `SERVICE` only if ticket-based chunk loading is producing timeouts |
-| `chunkLoadTimeoutSeconds` | `15` | Both | Clamped to `[5, 120]`. On Bukkit this is the slow-request warning and adaptive-throttle threshold. Iris keeps waiting for Paper's real chunk future. It does not count the request as failed at this age. On mod loaders it remains a terminal timeout and the effective value is floored at 120, so any lower value is ignored there |
-| `timeoutWarnIntervalMs` | `500` | Bukkit | Minimum 250. Rate-limits slow-request and failed-release warnings so a bad run does not flood the log. Not read on mod loaders |
-| `saveIntervalMs` | `30000` | Both | Clamped to `[5000, 900000]`. How often a running pregen flushes progress. Lower it if you expect to lose the process and want a closer resume point. The cost is more IO |
-| `maxResidentTectonicPlates` | `96` | Both | Minimum 16. The mantle memory ceiling, and the first knob to lower on an out-of-memory pregen. The effective cap is also scaled by world height. It is also scaled by roughly 60% of the heap budget against a ~48 MB reference plate at height 384. The floor is 16. On a small heap you may already run below the configured number |
-| `mantleBackpressureWaitMs` | `25` | Both | Clamped to `[5, 1000]`. Sleep granularity while pregen waits for resident plates to drop below the cap |
-| `mantleBackpressureTimeoutMs` | `60000` | Both | Clamped to `[5000, 600000]`. How long that wait may last before Iris logs a backpressure warning and lowers its adaptive in-flight limit. Seeing this warning repeatedly means `maxResidentTectonicPlates` is too high for your heap, not too low |
-| `moddedPregenInFlight` | `0` | Modded | Concurrent chunk budget for modded pregen. `>0` is capped at 512. `<=0` derives `max(16, min(48, cpu * 2))`. Lower it when modded pregen causes chunk-load timeouts or memory growth. Inert on Bukkit |
+## `treeFeller`
 
-## `treeFeller` — survival tree felling
+Both settings apply live after reload. Players need `iris.treefeller` on Bukkit or the platform's tree-feller permission on mod loaders.
 
-Off by default because it changes survival gameplay. Both keys are read live, so `/iris reload` is enough.
+| Key | Default | Use |
+|-----|---------|-----|
+| `enabled` | `false` | Enables felling an entire Iris-managed tree by breaking one log |
+| `durabilityPreservationChance` | `0` | Percentage chance per block that the axe loses no durability. Range: 0–100 |
 
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `enabled` | `false` | Master switch. With it on, a permitted player breaking one log fells the whole Iris-managed tree. Disabling it mid-run cancels an in-flight fell on mod loaders only. The Bukkit runner does not re-read the setting once a fell has started |
-| `durabilityPreservationChance` | `0` | Percent chance per block that the axe takes no durability, clamped to `[0, 100]`. An integration may override this per call |
+See [04 - Commands & Permissions](/iris/04-commands-permissions) and [28 - Integrations](/iris/28-integrations).
 
-Requires permission `iris.treefeller` on Bukkit, or the platform tree-feller node on mod loaders. See [04 - Commands & Permissions](/iris/04-commands-permissions) and [28 - Integrations](/iris/28-integrations).
+## `studio`
 
-## `studio` — authoring world behavior
+| Key | Default | Use |
+|-----|---------|-----|
+| `openVSCode` | `true` | Allows `/iris studio vscode` to launch the editor after writing its workspace file. Set false on a headless host |
+| `entitySpawning` | `true` | Allows mobs in Studio worlds. Natural spawning still requires an eligible player outside spectator mode |
+| `disableTimeAndWeather` | `true` | Freezes the day cycle at noon and disables weather when Studio opens |
+| `autoStartDefaultStudio` | `false` | Opens the default pack's Studio world automatically at startup |
 
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `openVSCode` | `true` | Whether `/iris studio vscode` launches an editor after writing the workspace file. Set false on a headless box |
-| `entitySpawning` | `true` | Whether mobs may spawn inside studio worlds. Ordinary Studio opens players in spectator, so vanilla natural spawning still requires another eligible non-spectator player. Has no effect on normal worlds |
-| `disableTimeAndWeather` | `true` | Freezes weather and the day cycle at noon in studio worlds (gamerules are set on studio open). Set false to let time and weather run while authoring |
-| `autoStartDefaultStudio` | `false` | Opens a studio world for the default pack automatically at boot. Only useful on a dedicated authoring server |
-
-Studio workflow details: see [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ## Bukkit-only: `compat.json`
 
-On Bukkit, Iris loads `plugins/Iris/compat.json` at startup and writes the complete built-in table to `compat.default.json` next to it for reference. This is how you keep a pack working on a server that lacks some block or item it references. Iris substitutes the replacement instead of failing.
-
-Built-in mappings always stay active. Entries read from `compat.json` are appended to them. Both files are read once at boot. `/iris reload` does not re-read them. Mod loaders do not use them at all.
+Use `plugins/Iris/compat.json` to substitute blocks and items unavailable on your server. Iris writes `compat.default.json` alongside it as a reference. Your entries supplement the built-in mappings. Restart after editing; `/iris reload` does not apply this file.
 
 ```json
 {
@@ -254,42 +204,33 @@ Built-in mappings always stay active. Entries read from `compat.json` are append
 }
 ```
 
-| Field | Applies to | Behavior |
-|-------|------------|----------|
-| `when` | block and item filters | The unsupported source key to match |
-| `supplement` | block and item filters | The replacement key. If the replacement is also unsupported, Iris re-runs the lookup on it, up to 16 hops, and falls back to `STONE` with an error |
-| `exact` | block filters only | When true, match the full key including namespace and block-state properties (`minecraft:some_log[axis=x]`). When false, match the bare material name. Item filters have no `exact` field |
+| Field | Applies to | Use |
+|-------|------------|-----|
+| `when` | Block and item filters | Unsupported source key to replace |
+| `supplement` | Block and item filters | Supported replacement key |
+| `exact` | Block filters only | Match the full namespace and block-state properties when true; match the bare material name when false |
 
-A block substitution logs `Compat: Using '<supplement>' in place of '<when>' since this server doesnt support '<when>'` as a warning. Item substitutions log the same at debug level. Invalid JSON logs the failure and leaves the built-in mappings active.
-
-One quirk to know: when `compat.json` is absent, Iris seeds it with a copy of the entire built-in table, so on the next boot the runtime list holds every default twice. That is harmless because the first match wins, but if you are editing the file, delete the entries you did not add.
+Invalid JSON leaves the built-in mappings active. Mod loaders do not use these files.
 
 ## Modded-only: `modded.json`
 
-Path: `<configDir>/irisworldgen/modded.json`, written with defaults on first load if missing. Not used by the Bukkit plugin. Unlike `iris.json` this file is parsed by hand rather than Gson, is cached once, and has no hotload. A restart is required except for the keys that Iris rewrites itself. Malformed JSON logs `Iris modded config at … is invalid; using defaults` and runs on defaults **without** rewriting your file.
+Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris creates the file with defaults if it is absent. Invalid JSON leaves the file untouched and uses defaults for that boot. The Bukkit plugin does not use this file.
 
-| Key | Default | What it does |
-|-----|---------|--------------|
-| `defaultPack` | `"overworld"` | Pack used by `/iris create` when none is given. Iris never downloads it automatically |
+| Key | Default | Use |
+|-----|---------|-----|
+| `defaultPack` | `"overworld"` | Pack used by `/iris create` when omitted. Install the pack separately |
 | `primaryWorld` | `""` | Iris dimension id used for player routing |
 | `routePlayersToPrimaryWorld` | `true` | Sends players to the primary world when one is set |
-| `mainWorldPack` | `""` | Pack (or `pack:dimensionKey`) for the main-world preset |
+| `mainWorldPack` | `""` | Pack or `pack:dimensionKey` for the main-world preset |
 | `mainWorldSeed` | `0` | Seed for the main-world preset |
-| `mainWorldAutoRestart` | `false` | Restarts the server automatically after a main-world inject instead of telling you to |
+| `mainWorldAutoRestart` | `false` | Restarts automatically after a main-world inject |
 
-`/iris world mainworld`, `/iris world replace-overworld`, and the primary-world clear paths write this file directly. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [30 - Platform Differences](/iris/30-platform-differences).
-
-## What is not in these files
-
-- Pack JSON (dimensions, biomes, objects) lives under `packs/<key>/`. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout).
-- Per-world studio and workspace files are generated under pack roots. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
-- Locale files and overrides: see [08 - Localization](/iris/08-localization).
+World-management commands also update this file. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [30 - Platform Differences](/iris/30-platform-differences).
 
 ## Related
 
-- [01 - Installation & Platforms](/iris/01-installation-platforms)
-- [04 - Commands & Permissions](/iris/04-commands-permissions)
-- [07 - Pregeneration](/iris/07-pregeneration)
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [08 - Localization](/iris/08-localization)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
 - [25 - Pack Management](/iris/25-pack-management)
-- [30 - Platform Differences](/iris/30-platform-differences)
 - [33 - Performance Tuning](/iris/33-performance-tuning)

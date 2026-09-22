@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -26,11 +26,14 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 | Entity overlays | `entity-overlays/default.json` | None |
 | Real Drops | `real-drops/default.json` | `/gloss drops reset [name=*]` |
 | Menus | `menus/**.json` | None |
+| Inventory menus | `inventories/<id>.json` | `/gloss inventory reset [name=*]` |
 | Images | `images/<file>` | None |
 | Container previews | `previews/<id>.json` | `/gloss preview reset [name=*]` |
 | Panels | `panels/<id>.json` | None |
 
 For most documents, the file name is the ID. Renaming the file renames the document. Menu IDs include their path below `menus/`.
+
+Inventory menu files reload automatically. Open the menu again to use changed titles, slots, and actions. New files become available without a server restart.
 
 ## Schema and revision
 

@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-20T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -117,7 +117,7 @@ startup. On Folia it is refused if the old and new rooms span more than one regi
 
 ## Escape and lethal damage
 
-Moving outside the pocket shell triggers a glitch effect and sends the player through the normal rescue route.
+Moving outside the pocket shell triggers a glitch effect and sends the player through the normal rescue route. When particles are enabled, the effect includes a white flash.
 
 Lethal damage inside `wormholes:pockets` is cancelled. The player is left at one heart, fall and fire state is cleared, and the rescue route ejects them.
 

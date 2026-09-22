@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,12 +21,12 @@ Related:
 
 ## Where files live
 
-| Path | Class | Role |
-|------|-------|------|
-| `generators/<key>.json` | `IrisGenerator` | Height-map composite that biomes reference |
-| `expressions/<key>.json` | `IrisExpression` | Math expression usable anywhere a style is accepted |
-| `images/<key>.png` | `IrisImage` | PNG sampled through `IrisImageMap` |
-| `snippet/style/<key>.json` | reusable `IrisGeneratorStyle` fragment | Shared style definitions (`snippet/style/bedrock.json` is a plain `STATIC`) |
+| Path | Role |
+|---|---|
+| `generators/<key>.json` | Height generators referenced by biomes |
+| `expressions/<key>.json` | Math expressions usable in generator styles |
+| `images/<key>.png` | PNGs used by image maps |
+| `snippet/style/<key>.json` | Reusable style definitions |
 
 Generators are never embedded in biome JSON. A biome links them:
 
@@ -45,7 +45,7 @@ Each `composite` entry is sampled at the column, then combined:
 - **Additive** (default): sum the layers outputs, divide by the sum of their `opacity` values, multiply by the generator `opacity`.
 - **Multiplicative** (`"multiplicitive": true`): start at 1, multiply each layer output, then multiply by the generator `opacity`.
 
-An empty `composite` returns 0 for every column. That is a flat world at the bottom of the biome band. That is the silent failure mode when a generator file is malformed.
+An empty `composite` produces flat terrain at the bottom of the biome band.
 
 Then two optional post-passes:
 
@@ -59,7 +59,7 @@ Iris collects every generator referenced by every biome the dimension can reach.
 For each bucket, at each column:
 
 1. The interpolator samples the surrounding columns and blends their biomes height bands for that bucket. That gives a smoothed low and high.
-2. When low and high differ, each generator is evaluated at the column and mapped into that range. Equal finite bounds contribute their constant height without sampling generator noise.
+2. When low and high differ, each generator is evaluated at the column and mapped into that range. Equal finite bounds give a constant height.
 3. The results are averaged.
 
 Bucket results are then added together to give the column height. `fluidHeight` plus any dimension `overlayNoise` is added on top before the final clamp to the dimension usable range.
@@ -79,7 +79,7 @@ Generators control shape and smoothing radius; biomes control the height range. 
 
 ### Volumetric shaping after height generation
 
-Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around it, producing overhangs, covered ledges and fissures that a single height per column cannot represent. It consumes two `IrisGeneratorStyle` values: `densityStyle` displaces density above and below the base height, and `crackStyle`'s zero crossings become tall narrow fissures. Generator cliffs and cell fracture remain height-map operations. Full reference: [47 - Volumetric Terrain](/iris/47-volumetric-terrain).
+Biome `terrain3D` uses the blended generator height as its base, then evaluates solid volume around it, producing overhangs, covered ledges and fissures that a single height per column cannot represent. Its two style fields control the shape: `densityStyle` displaces density above and below the base height, and `crackStyle`'s zero crossings become tall narrow fissures. Generator cliffs and cell fracture remain height-map operations. Full reference: [47 - Volumetric Terrain](/iris/47-volumetric-terrain).
 
 ## Reduce block-scale surface detail
 
@@ -148,27 +148,27 @@ Two different jobs, two different tools:
 
 Prefer the first when only one biome needs to be flat. Prefer the second when you are building a flat dimension.
 
-## Generator file (`IrisGenerator`)
+## Generator file
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `surfaceDetail` | double | `1` | Fraction of the detail retained between original six-block grid heights. Range `0..1`. |
 | `seed` | long | `1` | Required. Mixed with the engine height seed. Changing it re-rolls the terrain of every biome using this generator. |
-| `interpolator` | `IrisInterpolator` | `BILINEAR_STARCAST_6`, scale `7` | Required. Both the border smoothing and the bucket key. See "Step 2" above. |
-| `composite` | `IrisNoiseGenerator[]` | `[]` | The noise layers. Empty gives 0 everywhere. |
+| `interpolator` | interpolator object | `BILINEAR_STARCAST_6`, scale `7` | Required. Controls border smoothing and which generators blend together. See "Step 2" above. |
+| `composite` | noise-layer array | `[]` | The noise layers. Empty gives 0 everywhere. |
 | `zoom` | double >= 0.001 | `1` | Divides the sample coordinates before the layers see them. Higher values give larger, smoother features across the whole generator. |
 | `opacity` | double >= 0 | `1` | Multiplies the combined result. Below 1 compresses the generator into the bottom of the biome band. Above 1 pushes it past the top and clips. |
-| `multiplicitive` | boolean | `false` | Multiplies the composite layers instead of averaging them. Useful for masking one shape with another (a ridge times a mask leaves ridges only inside the mask). The field spelling is code-authoritative. The JSON must match. |
+| `multiplicitive` | boolean | `false` | Multiplies the composite layers instead of averaging them. Useful for masking one shape with another (a ridge times a mask leaves ridges only inside the mask). Use this exact field spelling. |
 | `offsetX` / `offsetZ` | double | `0` | Shifts where this generator samples the world. Use it to break the alignment between two generators that would otherwise peak in the same places. |
 | `cliffHeightMin` | double 0..8192 | `0` | Lower bound of the per-column cliff step height. |
 | `cliffHeightMax` | double 0..8192 | `0` | Upper bound. Cliffs are active whenever this is above 0. `cliffHeightMin` alone does nothing. Larger steps give taller terraces. |
-| `cliffHeightGenerator` | `IrisNoiseGenerator` | default layer | Picks the step height between min and max per column, so terrace heights can vary across the map. `CELLULAR` gives one height per cell; `CELLULAR_HEIGHT` varies smoothly toward cell interiors. |
+| `cliffHeightGenerator` | noise-layer object | default layer | Picks the step height between min and max per column, so terrace heights can vary across the map. `CELLULAR` gives one height per cell; `CELLULAR_HEIGHT` varies smoothly toward cell interiors. |
 | `cellFractureHeight` | double | `0` | `0` disables cell cracks. Non-zero multiplies the height outside cell cores. `0.2` drops the veins to a fifth of the plateau height and carves canyons. |
 | `cellFractureZoom` | double >= 0.001 | `1` | Size of the cells. |
 | `cellFractureShuffle` | double >= 0 | `12` | Randomizes the cell centers. Low values give a regular lattice. High values look organic. |
 | `cellPercentSize` | double 0..1 | `0.75` | How much of a cell is core versus vein. `0.1` means thick veins and small plateaus. |
 
-### Interpolator (`IrisInterpolator`)
+### Interpolator
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
@@ -179,13 +179,13 @@ Available methods: `NONE`, `BILINEAR`, `STARCAST_3/6/9/12`, `BILINEAR_STARCAST_3
 
 The bundled overworld uses `BILINEAR_STARCAST_9` almost everywhere and varies `horizontalScale` from 6 to 200. Higher starcast numbers cost more per column. `NONE` with scale `1` is the cheapest and gives hard borders, which is what `generators/flat.json` wants.
 
-### Noise layer (`IrisNoiseGenerator`)
+### Noise layer
 
 Available as the `generator` snippet.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `style` | `IrisGeneratorStyle` | `IRIS` | Where the raw noise comes from. Required. |
+| `style` | generator style | `IRIS` | Where the raw noise comes from. Required. |
 | `seed` | long | `0` | Required. Offsets this layer noise independently of the generator seed. |
 | `enabled` | boolean | `true` | When false the layer returns `offsetY` and nothing else. That is a cheap way to mute a layer while comparing. |
 | `zoom` | double >= 0.0001 | `1` | Divides this layer sample coordinates. Give each octave-like layer a different zoom to build detail on top of large forms. |
@@ -198,11 +198,11 @@ Available as the `generator` snippet.
 | `parametric` | boolean | `false` | Symmetric S-curve remap with exponent 2. Preserves 0, 0.5, and 1; maps 0.25 to 0.1 and 0.75 to 0.9. |
 | `bezier` | boolean | `false` | Softer S-curve remap. `generators/plain.json` uses it to keep lowlands gentle. |
 | `sinCentered` | boolean | `false` | Maps 0 and 1 to 0 and 0.5 to 1 with a sine shape, turning a gradient into a ridge. |
-| `fracture` | `IrisNoiseGenerator[]` | `[]` | Child layers whose output warps this layer input coordinates, producing the swirled, non-grid look. Each child costs a full extra noise evaluation, and children can nest. |
+| `fracture` | noise-layer array | `[]` | Child layers whose output warps this layer input coordinates, producing the swirled, non-grid look. Children can nest; longer chains increase generation cost. |
 
 Remap order inside a layer: sample the style, multiply by `opacity`, apply `negative`, apply `exponent`, add `offsetY`, then `parametric`, `bezier`, `sinCentered` in that order.
 
-## Generator style (`IrisGeneratorStyle`)
+## Generator style
 
 Available as the `style` snippet, and accepted anywhere Iris configures noise: generator layers, decorators, deposit palettes, cave profiles, biome child shapes, dimension placement noise.
 
@@ -212,12 +212,12 @@ Available as the `style` snippet, and accepted anywhere Iris configures noise: g
 | `zoom` | double >= 0.00001 | `1` | Feature scale for the complete style, including nested distortion and cellularisation. Larger zoom enlarges the existing pattern. |
 | `exponent` | double 0.01562..64 | `1` | Power curve on the style output. Compounds any preset curve; the default preserves the preset. |
 | `multiplier` | double >= 0.00001 | `1` | Only read when this style is somebody `fracture` child. It scales the coordinate displacement applied to the parent, roughly plus or minus half this value. `18` gives noticeable swirls. `55` heavily distorts. |
-| `fracture` | `IrisGeneratorStyle` | `null` | Warps the coordinates fed into this style. This is the main tool for making cellular and vascular styles look organic instead of geometric. |
+| `fracture` | generator style | `null` | Warps the coordinates fed into this style. This is the main tool for making cellular and vascular styles look organic instead of geometric. |
 | `cellularFrequency` | double | `0` | Above 0, post-processes the style into cells, so continuous noise becomes flat-valued patches. |
 | `cellularZoom` | double | `1` | Cell size after cellularising. Ignored when `cellularFrequency` is 0. |
 | `expression` | expression key | `null` | Use `expressions/<key>.json` as the noise source instead of `style`. |
 | `imageMap` | image-map key | `null` | Use a typed resource under `image-maps/` as the noise source instead of `style`. |
-| `cacheSize` | int 0..8192 | `0` | Above 0, the built noise is cached to a `.cnm` file under the pack `.cache` folder. Cache identities include the generation implementation, caller seed, layer octave multiplier, style settings, and source content. Octaves are applied before baking. Worth it for expensive expression or heavily fractured styles that are sampled repeatedly. Wasted on cheap styles. |
+| `cacheSize` | int 0..8192 | `0` | Above 0, enables a saved noise cache under the pack `.cache` folder. Useful for repeatedly sampled expressions or heavily fractured styles; leave at `0` for simple styles. |
 
 Source priority: if `expression` is set, Iris loads it and uses it. If the expression fails to load, the style falls straight back to `NoiseStyle`; `imageMap` is not tried. `imageMap` is consulted only when `expression` is unset. A missing or invalid image-map resource is a blocking pack error before world generation.
 
@@ -294,9 +294,9 @@ For example, use this complete generator in `generators/vortex.json`:
 
 Reference `vortex` from a biome's `generators` list and set its `min` and `max` height band. Replace `VORTEX` with any style in the table. `zoom: 2` doubles its feature size; set the layer's `octaves` to `3` to add finer copies. Use these same style names in palettes or cave fields for volume patterns. Validate the pack and inspect a fresh Studio world to see the configured height and material ranges.
 
-## Expressions (`IrisExpression`)
+## Expressions
 
-An expression file is a Paralithic 0.8.1 formula that can supply the raw value anywhere an `IrisGeneratorStyle` is accepted. It is still a live pack resource on every Iris platform. Put the file under `expressions/<key>.json`, then reference that key from a style's `expression` field.
+An expression file is a Paralithic 0.8.1 formula that can supply the raw value anywhere an generator style is accepted. Put the file under `expressions/<key>.json`, then reference that key from a style's `expression` field.
 
 This complete 2D example produces concentric 0..1 rings around world origin. In `expressions/tutorial/rings.json`:
 
@@ -320,8 +320,8 @@ In a terrain generator, place that style in a layer exactly as you would a built
 | Field | Type | What it does |
 |-------|------|--------------|
 | `expression` | string | Required. The formula. `x`, `y` and `z` are pre-declared. Do not redeclare them as variables. |
-| `variables` | `IrisExpressionLoad[]` | Optional named values bound before evaluation. Omit this field when unused; the schema requires at least one element when the array is present. |
-| `functions` | `IrisExpressionFunction[]` | Optional named noise functions available inside the formula. Omit this field when unused; the schema requires at least one element when the array is present. |
+| `variables` | variable array | Optional named values bound before evaluation. Omit this field when unused; the schema requires at least one element when the array is present. |
+| `functions` | function array | Optional named noise functions available inside the formula. Omit this field when unused; the schema requires at least one element when the array is present. |
 
 ### Coordinates
 
@@ -346,7 +346,7 @@ Two constants are always present:
 | `pi` | 3.141592653589793 |
 | `euler` | 2.718281828459045 |
 
-An expression cannot declare local variables. Paralithic has a `let` syntax, but Iris constructs the parser with that feature disabled. Values must come from `x`, `y`, `z`, the two constants, or the expression file's `variables` list.
+Expressions do not support local variable declarations or `let`. Values must come from `x`, `y`, `z`, the two constants, or the expression file's `variables` list.
 
 ### Operators
 
@@ -395,18 +395,16 @@ Trigonometric inputs and inverse-function outputs are radians unless `rad` or `d
 | `sigmoid(a,b)` | 2 | Exactly `1 / exp(-a*b)`, which equals `exp(a*b)`; despite the name, this is not a conventional logistic sigmoid |
 | `if(test,yes,no)` | 3 | Evaluate and return only `yes` when `test` is nonzero, otherwise only `no` |
 
-The legacy expression guide had several incorrect labels: it reversed `floor` and `ceil`, listed `atan` with two arguments, described `<` backwards, and described subtraction backwards. The table above follows the parser Iris uses.
-
-### Variable (`IrisExpressionLoad`)
+### Variable
 
 Available as the `expression-load` snippet.
 
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `name` | `""` | The identifier used in the formula. Required. Must be unique and must not be `x`, `y`, `z`, `pi`, or `euler`. |
-| `engineValue` | `null` | An engine scalar (`IrisEngineValueType`). Highest priority. Requires an active engine. |
-| `engineStreamValue` | `null` | An engine procedural stream (`IrisEngineStreamType`) sampled at the coordinates. Second priority. Requires an active engine. |
-| `styleValue` | `null` | A nested `IrisGeneratorStyle` sampled at the coordinates. Third priority. |
+| `engineValue` | `null` | A world value from the list below. Highest priority. Requires an active engine. |
+| `engineStreamValue` | `null` | A terrain value from the list below, sampled at the coordinates. Second priority. Requires an active engine. |
+| `styleValue` | `null` | A nested generator style sampled at the coordinates. Third priority. |
 | `staticValue` | `-1` | A constant. Used only when none of the above are set. Note the default is `-1`, not `0`. |
 
 The engine-backed choices are:
@@ -427,9 +425,9 @@ The engine-backed choices are:
 | `REGION_STYLE` | Region-selection style value |
 | `REGION_IDENTITY` | Region identity value |
 
-Use engine-backed variables only where the expression runs inside an active world engine. Offline or registry-only tooling has no engine and throws if it tries to evaluate one.
+World and terrain variables require a loaded Iris world; they are unavailable in offline tools.
 
-### Function (`IrisExpressionFunction`)
+### Function
 
 Available as the `expression-function` snippet.
 
@@ -440,13 +438,13 @@ Available as the `expression-function` snippet.
 | `engineStreamValue` | `null` | Backs it with an engine stream instead. Takes priority over `styleValue`. |
 | `args` | `2` (minimum 2) | Argument count. Ignored when `engineStreamValue` is set, which always takes exactly 2. |
 
-A function with neither `styleValue` nor `engineStreamValue` is skipped at parse time. Calling it fails to parse.
+Every function needs `styleValue` or `engineStreamValue` before it can be used in a formula.
 
-### Failure behavior and validation limits
+### Expression validation
 
-A missing or unloadable expression resource makes the containing style fall back to its `NoiseStyle`. A malformed formula is different: Iris logs `Script load failed` when the formula is first sampled, caches no usable expression, and generation can then fail while evaluating it. Fix the formula; do not expect the style fallback to rescue a parse error.
+A missing expression resource falls back to the configured `NoiseStyle`. A malformed formula can stop generation; correct it before using the pack in production.
 
-Pack validation resolves expression keys and follows their nested styles so it can find image-map dependencies. It does not parse the formula itself. A successful `/iris pack validate` therefore does not prove expression syntax. Exercise the expression in Studio, watch the console for the first sample, and generate fresh chunks in every sampling context that uses it.
+`/iris pack validate` checks expression references but does not check formula syntax. Test formulas in Studio with fresh chunks wherever the expression is used.
 
 ## Image-map styles
 
@@ -462,13 +460,13 @@ A style references a reusable typed resource by its key under `image-maps/`:
 }
 ```
 
-The resource selects its PNG source, scalar map type, coordinate transform, raw decoding, sampling, height range, alpha, and out-of-bounds behavior. PNGs remain under `images/`; generator JSON does not embed those settings. `COLOR_MAP` is not a scalar source and is rejected here. Direct generator styles may transform coordinates before callers transform them again, so their map must use `FALLBACK`, `CLAMP`, `REPEAT`, or `MIRROR`; `ERROR` is rejected because a finite sampling domain cannot be proved. Studio, validation, runtime generation, and packaging preflight compile the same resource definition.
+The resource selects its PNG source, scalar map type, coordinate transform, raw decoding, sampling, height range, alpha, and out-of-bounds behavior. PNGs remain under `images/`; generator JSON does not embed those settings. `COLOR_MAP` is not a scalar source and is rejected here. Use `FALLBACK`, `CLAMP`, `REPEAT`, or `MIRROR` for out-of-bounds sampling in generator styles; `ERROR` is unsupported.
 
 Use [37 - Image Maps](/iris/37-image-maps) for the model and source limits, [38 - Image Map Encodings](/iris/38-image-map-encodings) for per-type decoding, and [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) for the complete reference.
 
 ## Dimension-level noise
 
-Dimensions use styles for placement rather than height. These are listed here because they use the same `IrisGeneratorStyle` type. Their behavior belongs to [11 - Dimensions](/iris/11-dimensions).
+Dimensions also use generator styles for content placement. Their behavior belongs to [11 - Dimensions](/iris/11-dimensions).
 
 | Dimension field | Role |
 |-----------------|------|
@@ -476,7 +474,7 @@ Dimensions use styles for placement rather than height. These are listed here be
 | `continentalStyle` + `continentZoom` + `landChance` | Land versus sea |
 | `landBiomeStyle` / `seaBiomeStyle` / `shoreBiomeStyle` / `caveBiomeStyle` | Which biome within the region list for that role |
 | `biomeZoom`, `landZoom`, `seaZoom` | Global biome size multipliers applied before the region own zooms |
-| `overlayNoise` | `IrisShapedGeneratorStyle[]` height offsets added on top of every column, each with its own `generator` style and `min`/`max` |
+| `overlayNoise` | An array of height offsets added on top of every column, each with its own `generator` style and `min`/`max` |
 | `coordFractureDistance` / `coordFractureZoom` | Global coordinate warp, the source of the large-scale "Iris swirls" |
 | `rockPalette` / `fluidPalette` | Fill materials below the biome layers and in water. See [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits) |
 

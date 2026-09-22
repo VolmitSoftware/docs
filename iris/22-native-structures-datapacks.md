@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T10:36:56.240Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -379,6 +379,8 @@ Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding`
 
 For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Support beneath projected solid path columns uses the same `flattenRange` limit and stops at fluids.
 
+When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. Trees follow the structure vegetation rules.
+
 Dimension stacks supply the original layer surface to native height queries, so igloos, swamp huts, and terrain-matching village paths can retain their original projected elevations after `FLATTEN`.
 
 The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils retain their existing placement rules.
@@ -454,22 +456,22 @@ A dimension-file list of datapack sources Iris downloads and installs:
 }
 ```
 
-A `datapackImports` URL belongs to the dimension that declares it. Bukkit exposes installed resources through the server-wide registry. Before initial chunks load, Iris removes disallowed managed structure sets and structure definitions from each world generation state. Vanilla worlds, and Iris worlds whose active dimension does not declare the source, therefore neither generate nor locate those structures. Declaring the same URL in multiple dimensions deliberately shares its structures. If multiple managed sources claim the same key, every owner must be declared, because the registry winner cannot be inferred safely.
+A `datapackImports` URL enables its structures only in the dimensions that declare it. Other Iris worlds and vanilla worlds neither generate nor locate those structures. Declare the same URL in multiple dimensions to share its structures. If multiple imported datapacks define the same key, declare all of those sources in each dimension that uses it.
 
 Accepted URL forms:
 
 - **Modrinth project page** — latest datapack version for the server's Minecraft version.
 - **Pinned Modrinth version** — any `.../version/<token>` URL.
-- **Direct HTTP or HTTPS URL** — direct ZIP download, tracked by ETag and hash.
-- **Absolute local file URL** — a `file:///.../pack.zip` read from the server host and tracked by content hash.
+- **Direct HTTP or HTTPS URL** — direct ZIP download.
+- **Absolute local file URL** — a `file:///.../pack.zip` on the server host.
 
-Modrinth downloads are checksum-verified when a hash is published. Remote and local archives are capped at 256 MiB before extraction.
+Remote and local ZIP files must be no larger than 256 MiB.
 
 ### 2.2 Where files land, and when ingest runs
 
-Installed datapacks are real Minecraft datapacks at `<level root>/datapacks/<id>/`, each carrying `.iris-managed.json`. Unmanaged datapacks are never touched, and the id `iris` is reserved. Cache, staging, manifest, and the operator drop folder live under `plugins/Iris/datapacks/`; local ZIPs go in `plugins/Iris/datapacks/imports/`.
+Installed datapacks are stored at `<level root>/datapacks/<id>/`. Iris leaves unmanaged datapacks untouched, and the id `iris` is reserved. Put local ZIPs in `plugins/Iris/datapacks/imports/`.
 
-Minecraft builds worldgen registries at server start, so a **newly installed or repaired** datapack needs a clean restart before admission. After that returns, its keys are live only in the per-world structure state of declaring Iris dimensions.
+A newly installed or repaired datapack requires a clean server restart before its structures become available.
 
 For a custom pack with imports on Bukkit, the default `general.autoIngestDatapacks=true` path takes two startup passes after the pack is installed. The first boot discovers and installs the declared sources, then leaves admission restart-required. The ensuing clean restart is what makes those keys live. `/iris datapack ingest restart=true` is the explicit path when automatic ingest is disabled.
 
@@ -477,13 +479,11 @@ Run `/iris datapack ingest` to check for updates. Local ZIP changes are detected
 
 ### 2.3 Optional Dungeons & Taverns caveat on Folia 26.2
 
-The built-in Iris packs do not include Dungeons & Taverns. If a custom pack imports Dungeons & Taverns 5.3.0, Folia 26.2 cannot execute its function set: its command dispatcher omits `tag` and `data`, exposes no usable `item` command here, and rejects the nested `ride` forms the pack uses. The result is 35 `nova_structures:*` function-load failures and unresolved `minecraft:load` / `minecraft:tick` function-tag entries. World loading and chunk generation continue, but function-backed behavior is incomplete.
-
-This is an upstream Folia 26.2 limitation, reproduced on a clean Folia server with no Iris installed. Paper, Leaf, and Canvas load the same bytes without those errors. Iris does not rewrite third-party functions. **Use a server implementation that supports the pack's commands when complete Dungeons & Taverns behavior is required.**
+The built-in Iris packs do not include Dungeons & Taverns. Custom packs importing Dungeons & Taverns 5.3.0 have incomplete functionality on Folia 26.2, even though worlds and chunks still load. Use Paper, Leaf, or Canvas if you need its full behavior.
 
 ### 2.4 Modded installation
 
-Fabric, Forge, and NeoForge do not run the Bukkit ingest pipeline. Their `/iris datapack ingest` node is an explanatory stub, and they do not scan the Bukkit `datapacks/imports/` drop folder. An operator must install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory. Restart with those archives and the Iris pack already present. Installing them after the world starts is too late for that boot's registries. The current built-in Overworld and Underworld need no external datapacks.
+On Fabric, Forge, and NeoForge, install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory, then restart with both the datapacks and Iris pack present. `/iris datapack ingest` and the Bukkit import folder do not install them on these platforms. The current built-in Overworld and Underworld need no external datapacks.
 
 ### 2.5 Manual commands
 
@@ -669,7 +669,7 @@ Imports use per-bundle ownership manifests under `<pack>/.iris/structure-manifes
 Import conflict for '<name>': <path> is unowned_resource. Existing authored files were preserved.
 ```
 
-Iris found a file it did not write and refused to clobber it. `modified_resource` means Iris wrote it, you edited it, and the hash no longer matches. Rename the target, restore the exact owned bytes, or leave the key native.
+`unowned_resource` means the target already contains an authored file. `modified_resource` means an imported file has since been edited. Rename the target, restore the original imported file, or leave the key native.
 
 A successfully converted or manually imported jigsaw opens directly with `/iris jigsaw open <dimension> <key>` because its ownership manifest is editable. A pre-existing Iris graph with no manifest uses the `adopt inspect` then `adopt apply` workflow in [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 No import command is needed for that case.

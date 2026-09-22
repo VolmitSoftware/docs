@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-09-14T00:37:41.703Z
+date: 2026-09-21T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,10 +22,11 @@ pull request. File paths map to wiki paths. For example,
 
 ## Where content comes from
 
-This repository is the source of truth for plugin documentation. Plugin
-repositories do not contain separate documentation trees.
+This repository is the source of truth for plugin and Multiplexor documentation.
+Product repositories link here instead of maintaining separate guides.
+Multiplexor pages live at `servermultiplexor.md` and `servermultiplexor/NN-slug.md`.
 
-When a plugin change affects behavior, commands, permissions, configuration,
+When a plugin or Multiplexor change affects behavior, commands, permissions, configuration,
 schemas, or APIs, update the matching page here at the same time.
 
 Plugin guides cover installation, use, configuration, integrations, and

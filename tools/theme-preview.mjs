@@ -9,7 +9,7 @@ const upstreamOrigin = "https://docs.volmitsoftware.com";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const themePath = path.resolve(scriptDirectory, "../theme/minimal-brutalism.css");
 const themeScriptPath = path.resolve(scriptDirectory, "../theme/minimal-brutalism.js");
-const fontPreloadsPath = path.resolve(scriptDirectory, "../theme/font-preloads.html");
+const catalogPath = path.resolve(scriptDirectory, "../theme/projects.json");
 const fontDirectory = path.resolve(scriptDirectory, "../home-assets/fonts");
 
 const fontContentTypes = new Map([
@@ -46,7 +46,7 @@ function readBody(request) {
 async function proxy(request, response) {
   const localUrl = new URL(request.url ?? "/", `http://${host}:${port}`);
 
-  if (localUrl.pathname === "/__volmit_theme.css") {
+  if (["/__volmit_theme.css", "/theme/minimal-brutalism.css"].includes(localUrl.pathname)) {
     const css = await readFile(themePath);
     response.writeHead(200, {
       "content-type": "text/css; charset=utf-8",
@@ -56,13 +56,19 @@ async function proxy(request, response) {
     return;
   }
 
-  if (localUrl.pathname === "/__volmit_theme.js") {
+  if (["/__volmit_theme.js", "/theme/minimal-brutalism.js"].includes(localUrl.pathname)) {
     const script = await readFile(themeScriptPath);
     response.writeHead(200, {
       "content-type": "text/javascript; charset=utf-8",
       "cache-control": "no-store"
     });
     response.end(script);
+    return;
+  }
+
+  if (localUrl.pathname === "/theme/projects.json") {
+    response.writeHead(200, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
+    response.end(await readFile(catalogPath));
     return;
   }
 
@@ -113,12 +119,13 @@ async function proxy(request, response) {
     const themeScript = localUrl.searchParams.get("plain") === "1"
       ? ""
       : '<script src="/__volmit_theme.js" data-volmit-theme-preview defer></script>';
-    const fontPreloads = themeLink ? await readFile(fontPreloadsPath, "utf8") : "";
+
     const themedSource = themeLink
       ? source.replace(/<link\b[^>]*href="\/theme\/minimal-brutalism\.css[^"\s]*"[^>]*>/g, "")
+        .replace(/<script\b[^>]*data-volmit-theme[^>]*>[\s\S]*?<\/script>/g, "")
+        .replace(/<script\b[^>]*src="\/theme\/minimal-brutalism\.js[^"\s]*"[^>]*>[\s\S]*?<\/script>/g, "")
       : source;
     const html = themedSource
-      .replace("<head>", `<head>${fontPreloads}`)
       .replace("</head>", `${themeLink}${themeScript}</head>`);
     response.statusCode = upstreamResponse.status;
     response.setHeader("cache-control", "no-store");

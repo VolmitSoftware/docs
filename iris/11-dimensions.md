@@ -2,12 +2,12 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A dimension is the root object of a pack. It sets world height, sea level, the regions that supply biomes, and the engine stages that run. The file lives at `dimensions/<loadKey>.json`, and every other pack resource hangs off it. Some fields form a permanent contract with the world folder; the rest can change on every save. This page splits those two groups.
+A dimension is the root object of a pack. It sets world height, sea level, the regions that supply biomes, and which generation features are enabled. The file lives at `dimensions/<loadKey>.json`, and every other pack resource hangs off it. Some fields form a permanent contract with the world folder; the rest can change on every save. This page splits those two groups.
 
 Related:
 
@@ -34,7 +34,7 @@ When a world binds to an engine, Iris pins the dimension type key, the exact `en
 | Field | Why it is a contract |
 |-------|----------------------|
 | Dimension file name (load key) | Becomes the dimension type key `iris:<sanitized load key>`. If you rename the file, the world looks for a dimension type that no longer exists |
-| `dimensionHeight` | Min Y and total height go into the Minecraft dimension type and into every stored mantle and chunk coordinate |
+| `dimensionHeight` | Sets the build floor and ceiling for the world |
 | `logicalHeight` | Written into the same dimension type |
 | `environment` | Selects the vanilla dimension template and the Bukkit world environment. `NORMAL` and `CUSTOM` share an Overworld type template but remain distinct world environments |
 | `dimensionOptions` | Overrides the generated type's portal scale, light, time, clouds, spawning limits, and gameplay flags |
@@ -64,7 +64,7 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 
 ## Engine mode
 
-`mode.type` picks which stages the engine registers. This is the largest behavioral switch in the file. Three of the four modes register only a terrain pass and a biome pass. Caves, objects, decorations, deposits, and post-processing do not run in those modes. Do not pick `ISLANDS` or `ENCLOSURE` for a themed world. Today they generate exactly what `SUPERFLAT` does.
+`mode.type` controls which generation features are available. Use `OVERWORLD` for complete worlds, including Nether- or End-themed packs. The other modes generate only terrain and biomes.
 
 ```json
 {
@@ -72,23 +72,23 @@ The dimension never names a biome directly, except in `focus` and carving entrie
 }
 ```
 
-| Type | Stages actually registered | Use it when |
+| Type | Generated content | Use it when |
 |------|----------------------------|-------------|
-| `OVERWORLD` | Biome, mantle matter generation, terrain, carve, post-process, floating child biome solids, deposits, matter insert, decoration, floating child biome decoration, perfection, custom modifiers | Any world that needs caves, objects, structures, decorations or entities. This is the only complete mode |
-| `SUPERFLAT` | Terrain and biome only | Fast noise or biome-layout previews, or a genuinely bare world. Nothing else generates |
-| `ENCLOSURE` | Terrain and biome only | Nothing yet. The nether-style ceiling and floor treatment is not implemented |
-| `ISLANDS` | Terrain and biome only | Nothing yet. Floating-island terrain comes from biome `floatingChildBiomes` in `OVERWORLD` mode, not from this |
+| `OVERWORLD` | All configured terrain, biomes, caves, objects, structures, deposits, decoration and entities | Complete worlds |
+| `SUPERFLAT` | Terrain and biomes only | Noise or biome-layout previews, or a bare world |
+| `ENCLOSURE` | Same as `SUPERFLAT` | Does not add a Nether-style floor or ceiling; use `OVERWORLD` with `upperDimension` for ceiling terrain |
+| `ISLANDS` | Same as `SUPERFLAT` | For floating islands, use biome `floatingChildBiomes` in `OVERWORLD` mode |
 
 An omitted `mode` runs `OVERWORLD`; the bundled overworld pack omits it. `mode` is a snippet type (`dimension-mode`), so `"mode": "snippet/dimension-mode/overworld"` is also valid.
 
 ## Vertical layout: height, sea level, bedrock
 
-Iris generates internally from `0` to `dimensionHeight.max - dimensionHeight.min`. It then shifts the finished chunk down by `dimensionHeight.min` on output. Almost every Y number the engine handles internally is in that shifted space. The numbers you write in the dimension JSON are not all in the same space. That is the most common source of confusion in this file.
+Height settings use either absolute world Y or a height measured from the build floor:
 
 - `dimensionHeight.min` / `dimensionHeight.max` are **world Y**.
 - `fluidHeight` is **world Y**. Sea level ends up at the world Y you wrote. The bundled overworld sets `fluidHeight` 50 with `min` -256, so its ocean surface is at world Y 50.
-- `caveLavaHeight` is **internal Y**. World Y = `caveLavaHeight + dimensionHeight.min`. The default 8 with a min of -64 puts the cave lava ceiling at world Y -56.
-- Bedrock is written at internal Y 0, which is world Y `dimensionHeight.min`.
+- `caveLavaHeight` is **height above the build floor**. World Y = `caveLavaHeight + dimensionHeight.min`. The default 8 with a min of -64 puts the cave lava ceiling at world Y -56.
+- Bedrock is placed at world Y `dimensionHeight.min`.
 
 Biome generator heights are relative to sea level. A biome generator entry with `min` 4 / `max` 10 produces terrain 4 to 10 blocks above `fluidHeight`. Iris clamps the result to the dimension height range.
 
@@ -118,7 +118,7 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 | `logicalHeight` | int | `256` | The vanilla logical height of the generated dimension type. Gameplay teleports respect this ceiling (nether portal search, chorus fruit). Usually set it equal to the total height. Contract field |
 | `fluidHeight` | int | `63` | World Y of the ocean surface. Every biome generator height is measured from this baseline. If you lower it, the same biome generators produce taller land. If you raise it, low biomes drown. Not a fixed world-contract field. A staged update blends new surface terrain from the frozen historical edge; existing chunks remain unchanged |
 | `bedrock` | boolean | `true` | Writes a bedrock layer at the build floor. Turn it off for void-bottom or stacked-dimension packs |
-| `caveLavaHeight` | int | `8` | Internal Y at or below which carved cave space fills with lava instead of air. Raise it to flood deep caves. Set it to 0 for dry caves. Explicit fluid intent from a carver overrides this |
+| `caveLavaHeight` | int | `8` | Height above the build floor at or below which carved cave space fills with lava instead of air. Raise it to flood deep caves. Set it to 0 for dry caves. Explicit fluid intent from a carver overrides this |
 | `name` | string | `"A Dimension"` | Display name shown by commands and the studio scoreboard. Cosmetic |
 | `version` | int | `1` | A stamp you control. Iris does not act on it. It exists so pack updates can be recognized. It also helps operators avoid a silent swap of incompatible pack generations under an existing world |
 
@@ -144,9 +144,9 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 | `NORMAL` | Overworld |
 | `NETHER` | Nether |
 | `THE_END` | End |
-| `CUSTOM` | Overworld. The enum value exists but resolves through the same default branch as `NORMAL` |
+| `CUSTOM` | Overworld |
 
-`fullbright` is a shortcut. When true, Iris copies `dimensionOptions` and forces `ambientLight` to `1.0` before it generates the type. On both supported Minecraft versions (26.1.2 and 26.2 share the same datapack fixer) a resolved ambient light of `1` also emits `minecraft:visual/ambient_light_color` `#ffffff`. A fullbright world reads as flat white, not merely bright.
+`fullbright` is a shortcut. When true, it sets `ambientLight` to `1.0`. On both supported Minecraft versions, an ambient light of `1` also sets the ambient light color to white. A fullbright world reads as flat white, not merely bright.
 
 Tri-state options are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the base template. Numeric options use `-1` as "unset".
 
@@ -303,9 +303,9 @@ Automatic biome and region objects reject support footprints that intersect acce
 
 Iris has two independent ways to put ore in the ground. They behave differently.
 
-**Ores** (`ores`) are noise-threshold generators. Iris evaluates them per block while it writes terrain. Each generator declares its own Y `range` and a `generateSurface` flag. Iris keeps two separate lists and only consults the matching one. A generator with `generateSurface: false` never appears in the exposed surface layer. Ores also exist at region and biome scope. All three scopes are consulted. Dimension is last.
+**Ores** (`ores`) use noise thresholds to control distribution. Each generator declares a Y `range` and a `generateSurface` flag. Set `generateSurface: false` to keep an ore out of the exposed surface layer. Ore settings are available on biomes, regions and dimensions, with dimension rules applied last.
 
-**Deposits** (`deposits`) are blob placements written through the mantle. They are closer to vanilla ore veins. They have per-chunk counts and sizes.
+**Deposits** (`deposits`) form blobs similar to vanilla ore veins, with configurable per-chunk counts and sizes.
 
 **Deposit variants** (`depositVariants`) rewrite the block that any of the above would have placed inside a world-Y band. The bundled pack instead relies on automatic host-aware conversion. An ordinary ore becomes its deepslate form exactly when it replaces deepslate. Variants remain available for modded ores and deliberate substitutions.
 
@@ -344,7 +344,7 @@ Three fields at dimension scope decide whether caves exist and what they look li
 
 `carving` maps absolute world-Y bands to cave biomes. That is how the bundled pack puts a deep-dark biome between Y -250 and -175 without touching surface biome selection. Entries can nest through `children` for patchy sub-regions, bounded by `childRecursionDepth`.
 
-`carvingEnabled: false` is implemented by adding the `CARVED` mantle flag to the disabled set. It is exactly equivalent to listing `CARVED` in `disabledComponents`.
+Set `carvingEnabled: false` to disable cave carving throughout the dimension.
 
 ```json
 {
@@ -363,15 +363,15 @@ Three fields at dimension scope decide whether caves exist and what they look li
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
-| `carvingEnabled` | boolean | `true` | Master switch for carving. Setting it false disables the `CARVED` mantle component. No cave, canyon or carver output is written anywhere. Use it to isolate a terrain problem from a cave problem |
+| `carvingEnabled` | boolean | `true` | Master switch for cave carving throughout the dimension |
 | `caveProfile` | `IrisCaveProfile` | disabled default object | The dimension default 3D cave system: density styles, vertical range, threshold, surface clearance. Regions and biomes override it when they enable their own. Full field reference in [15 - Caves & Carving](/iris/15-caves-carving) |
 | `carving` | `IrisDimensionCarvingEntry[]` | empty | Cave-biome overrides keyed to absolute world-Y bands. Each has a stable `id`, a `biome`, a `worldYRange`, optional `children`, `childStyle`, `childShrinkFactor`, and `childRecursionDepth`. Use it for depth-banded cave themes such as a deep dark layer |
-| `useMantle` | boolean | `true` | Disables the entire mantle when false. No objects, jigsaw structures, features, entities or deferred block updates. Terrain and decoration still run. Only useful for isolating mantle cost or debugging |
-| `disabledComponents` | mantle flag strings | empty | Turns off individual mantle components by flag. The registered generation components include `OBJECT`, `JIGSAW`, `CARVED`, `RIVER_HYDROLOGY`, and `FLOATING_OBJECT`. Cheaper than `useMantle: false` when you only need to silence one subsystem |
+| `useMantle` | boolean | `true` | When false, disables caves, objects, jigsaw structures, features, entities and deferred block updates. Terrain and decoration still run |
+| `disabledComponents` | mantle flag strings | empty | Disables selected features: `OBJECT` for objects, `JIGSAW` for Iris structures, `CARVED` for caves, `RIVER_HYDROLOGY` for rivers, and `FLOATING_OBJECT` for floating-biome objects |
 
 ## Objects, decoration, and post-processing
 
-These fields gate the passes that run after terrain and carving. All of them hotload.
+These fields control decoration, terrain smoothing and object placement. All of them hotload.
 
 ```json
 {
@@ -433,7 +433,7 @@ The position is the saved object's origin, usually its center, in absolute world
 
 Dimension-level `structures` entries are Iris placements considered everywhere in the dimension. They are independent of any biome or region placement. `importedStructures` and `importedFeatures` control what vanilla, mod, and ingested-datapack content is allowed to generate on top of Iris terrain.
 
-`anchor` is what makes a placement vertical contract explicit. `LEGACY` preserves the historical `underground` boolean. The named anchors do not depend on it. Cave anchors read Iris carved-space data. They apply only to editable `structures`. They never apply to the `nativeStructures` backend.
+`anchor` is what makes a placement vertical contract explicit. `LEGACY` preserves the historical `underground` boolean. The named anchors do not depend on it. Cave anchors place editable `structures` inside caves. They are unavailable for `nativeStructures`.
 
 ```json
 {
@@ -505,7 +505,7 @@ Biome `terrain3D` also shapes the referenced upper terrain: Iris mirrors the sol
 
 `spacer` accepts `0..256` blocks and defaults to `32`. Without `blend`, the configured air gap is constant. Optional `blend` supplies a noise `style` and an `amplitude` in `0..256` blocks. Its default amplitude is `8`, with `SIMPLEX` noise. Each adjacent boundary uses an independent noise seed.
 
-Each extra layer supplies base terrain, biome `terrain3D` spans, surface and sea materials, rock, fluid, bedrock, image maps and biome identity. The owning dimension's pipeline runs once: referenced-layer caves, hydrology, decorators, objects and structures get **no** separate generation pass. The stack is clipped to the owning world's height limits.
+Each extra layer supplies base terrain, biome `terrain3D` spans, surface and sea materials, rock, fluid, bedrock, image maps and biome identity. Caves, hydrology, decorators, objects and structures use only the owning dimension's settings; referenced layers do not add their own. The stack is clipped to the owning world's height limits.
 
 ## Loot, spawners, and block drops
 

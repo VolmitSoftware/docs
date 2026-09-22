@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-09-22T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,10 +19,11 @@ File paths map to wiki page paths. For example, `shapedportals.md` is
 
 ## Where content comes from
 
-This repository is the source of truth for plugin documentation. Plugin
-repositories do not contain separate documentation trees.
+This repository is the source of truth for plugin and Multiplexor documentation.
+Product repositories link here instead of maintaining separate guides.
+Multiplexor pages live at `servermultiplexor.md` and `servermultiplexor/NN-slug.md`.
 
-When a plugin change affects behavior, commands, permissions, configuration,
+When a plugin or Multiplexor change affects behavior, commands, permissions, configuration,
 schemas, or APIs, update the matching page here at the same time. Legacy pages
 must state the version they cover.
 
@@ -45,18 +46,23 @@ See [Contributing](/contributing).
 
 ## Theme assets
 
-The wiki uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and the fonts under `home-assets/fonts/`. Serve these files at their matching root-relative URLs.
+The Graphite theme uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and `theme/projects.json`. The stylesheet and script retain their deployed asset URLs. Wiki.js Git storage imports these files when the repository syncs.
 
-In Wiki.js **Administration > Theme**, use **Code Injection > Head HTML Injection**. These fields are part of the [Wiki.js theme configuration](https://github.com/requarks/wiki/blob/main/client/components/admin/admin-theme.vue).
+The homepage lists the published projects from `home.md`. Each project’s landing page supplies its documentation navigation. After adding a project or changing landing-page links, regenerate and validate the catalog:
 
-Copy the contents of `theme/font-preloads.html` into the head field before this stylesheet and script:
-
-```html
-<link rel="stylesheet" href="/theme/minimal-brutalism.css">
-<script src="/theme/minimal-brutalism.js" defer></script>
+```sh
+node tools/build-theme-data.mjs
+node tools/build-theme-data.mjs --check
 ```
 
-Keep one copy of each theme reference and preserve unrelated head content. Updating the repository does not insert the preload snippet into Wiki.js settings. The snippet preloads the main heading and body fonts. The text fonts use `font-display: optional` to prevent a late font replacement from shifting the page.
+In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one deferred script reference. Update the version value when publishing theme changes:
+
+```html
+<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20260922">
+<script src="/theme/minimal-brutalism.js?v=graphite-20260922" defer></script>
+```
+
+Preserve unrelated head content such as favicon settings. The theme uses system fonts and the wiki’s icon set. The project picker is searchable; the homepage filters plugins and developer tools. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. Light and dark preferences persist in the browser.
 
 From this repository, run the local theme preview:
 
@@ -64,4 +70,4 @@ From this repository, run the local theme preview:
 node tools/theme-preview.mjs
 ```
 
-Open `http://127.0.0.1:4177`. Set `PORT` to use another port. The preview combines public wiki pages with local CSS, JavaScript, and font preloads. It removes the existing theme stylesheet reference before injection. Add `?plain=1` to view the upstream styling. Check desktop and mobile layouts in both color modes.
+Open `http://127.0.0.1:4177`. Set `PORT` to use another port. The preview combines public wiki pages with the local theme and catalog. Add `?plain=1` to view the upstream styling.

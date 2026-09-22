@@ -2,18 +2,18 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Every integration is optional, and Iris checks that a plugin is enabled before using it. A soft-depend only sets load order; it does not make the plugin present. Tree felling is a separate feature that runs on Bukkit and on the mod loaders.
+Install supported integrations separately to use their items, blocks, entities and tools in Iris. Tree felling is included in Iris and works on Bukkit and mod loaders.
 
 See also [04 - Commands & Permissions](/iris/04-commands-permissions), [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle), [09 - PlaceholderAPI](/iris/09-placeholderapi), [19 - Objects](/iris/19-objects), and [93 - API - Tree Feller](/iris/93-api-tree-feller).
 
 ## Install an integration
 
-Install the integration and its dependencies, then restart the server. External data providers log `Enabled ExternalDataProvider for <Plugin>.` when they load. If an integration is unavailable, check both plugin versions, dependencies, and startup errors before changing the pack.
+Install the integration and its dependencies, load its content, then restart the server before opening the Iris pack.
 
 ## WorldEdit
 
@@ -24,13 +24,13 @@ Install the integration and its dependencies, then restart the server. External 
 | `/iris object we` | Checks WorldEdit is enabled, reads your current selection, and puts a **new Iris object wand into your inventory** already carrying those two corners |
 | After import | Hold the new Iris wand to edit, preview, or save its selection. Later WorldEdit selection changes do not change the copied corners |
 
-Enabling WorldEdit after Iris works without a restart. WorldEdit is not needed to import `.schem` files — Iris parses schematic NBT itself. See [19 - Objects](/iris/19-objects).
+Enabling WorldEdit after Iris works without a restart. WorldEdit is not required to import `.schem` files. See [19 - Objects](/iris/19-objects).
 
 ## Multiverse-Core
 
 Read [34 - Multiverse](/iris/34-multiverse) before you run any Multiverse command against an Iris world.
 
-The short version: Multiverse can list, inspect, teleport to, and configure Iris worlds. It cannot create, delete, regenerate, or clone them. Those are refused, because an Iris world is a dimension inside the level carrying world-local generation history, not a folder in the world container, and Multiverse's folder operations would destroy that history.
+Use Multiverse to list, inspect, teleport to and configure Iris worlds. Use Iris commands to create, delete or replace them. Multiverse creation, deletion, regeneration and cloning are not supported for Iris worlds.
 
 | Operation | Behavior |
 |---|---|
@@ -40,28 +40,28 @@ The short version: Multiverse can list, inspect, teleport to, and configure Iris
 | `/mv load` | Iris performs the load and hands the world back to Multiverse |
 | Multiverse absent or disabled | Every Multiverse call is a no-op. Iris world creation and removal work normally |
 
-`auto-load = false` is deliberate: Iris owns the load lifecycle of its worlds, and if Multiverse also loaded them at startup the two would race.
+Keep Multiverse `auto-load` disabled for Iris worlds.
 
 ## PlotSquared
 
-PlotSquared probes every enabled plugin for a generator using the synthetic world name `CheckingPlotSquaredGenerator`. Iris recognizes that probe and returns no generator, so Iris is not offered as a base generator in PlotSquared's setup wizard. Create Iris worlds with `/iris create` and plot worlds through PlotSquared; the two can own separate worlds on the same server.
+Create Iris worlds with `/iris create` and plot worlds through PlotSquared. Both can run on the same server in separate worlds. Iris is not a base generator option in PlotSquared's setup wizard.
 
 ## External item, block, and entity plugins
 
-A provider is created for each supported plugin that is enabled, and a plugin that enables after Iris is still picked up. Packs then reference external content by namespaced id. Block lookups accept a native key or an explicit provider key; item and entity lookups keep their provider-specific identifier formats.
+Reference installed custom content by its namespaced ID. Blocks accept the plugin's native ID or an explicit provider ID as shown below.
 
-| Plugin id | Provider class | Claims | Types |
-|---|---|---|---|
-| CraftEngine | `CraftEngineDataProvider` | Exact registered item, block, and furniture keys in any namespace. Registries refresh on `CraftEngineReloadEvent` | ITEM, BLOCK |
-| Nexo | `NexoDataProvider` | Registered items, blocks, and furniture under namespace `nexo` | ITEM, BLOCK |
-| Oraxen | `OraxenDataProvider` | Registered items and blocks under namespace `oraxen`. Furniture is excluded | ITEM, BLOCK |
-| ItemsAdder | `ItemAdderDataProvider` | Exact registered block keys. Item namespaces come from the item registry. Both refresh on `ItemsAdderLoadDataEvent` | ITEM, BLOCK |
-| ExecutableItems | `ExecutableItemsDataProvider` | Namespace `executable_items` | ITEM |
-| MMOItems | `MMOItemsDataProvider` | Items: `mmoitems_<type>:<item-id>`, for example `mmoitems_sword:excalibur`. Blocks: `mmoitems:<numeric-id>` | ITEM, BLOCK |
-| EcoItems | `EcoItemsDataProvider` | Namespace `ecoitems` | ITEM |
-| MythicMobs | `MythicMobsDataProvider` | Namespace `mythicmobs` | ENTITY |
-| MythicCrucible | `MythicCrucibleDataProvider` | Items under `crucible`. Blocks require a registered block or furniture context | ITEM, BLOCK |
-| KGenerators | `KGeneratorsDataProvider` | Items under `kgenerators`. Blocks require a registered generator ID | ITEM, BLOCK |
+| Plugin | Content IDs | Types |
+|---|---|---|
+| CraftEngine | Named item, block and furniture keys in any namespace | ITEM, BLOCK |
+| Nexo | Registered items, blocks, and furniture under namespace `nexo` | ITEM, BLOCK |
+| Oraxen | Registered items and blocks under namespace `oraxen`. Furniture is excluded | ITEM, BLOCK |
+| ItemsAdder | Registered block and item keys | ITEM, BLOCK |
+| ExecutableItems | Namespace `executable_items` | ITEM |
+| MMOItems | Items: `mmoitems_<type>:<item-id>`, for example `mmoitems_sword:excalibur`. Blocks: `mmoitems:<numeric-id>` | ITEM, BLOCK |
+| EcoItems | Namespace `ecoitems` | ITEM |
+| MythicMobs | Namespace `mythicmobs` | ENTITY |
+| MythicCrucible | Items under `crucible`. Blocks require a registered block or furniture context | ITEM, BLOCK |
+| KGenerators | Items under `kgenerators`. Blocks require a registered generator ID | ITEM, BLOCK |
 
 ### Use a custom block in a pack
 
@@ -95,18 +95,18 @@ A native ID resolves only when one active provider claims that exact block. If t
 
 Block properties use the palette entry's `data` object or a state suffix, `namespace:key[property=value]`. Only properties supported by that provider have meaning: ItemsAdder and Oraxen blocks expose none and reject nonempty property maps, CraftEngine exposes its block and furniture properties, Nexo exposes its furniture properties. Malformed suffixes and duplicate properties fail resolution.
 
-Iris generates the backing block state first, then calls the provider's placement API during chunk updates near players or for force-loaded chunks, which requires the surrounding 3x3 chunks to be loaded. Pack `blocks/` aliases and object serialization retain custom IDs and provider properties, and fractional properties such as furniture yaw keep their precision.
+Custom blocks finish placement when players approach or chunks are force-loaded. Keep the surrounding 3×3 chunks loaded while inspecting them. Pack aliases and saved objects retain custom IDs and properties.
 
 An unresolved block uses the normal dimension fallback chain and the entry's `backup`. A direct unresolved entry without a fallback returns air with a warning.
 
-> Load provider content before creating a new Iris world. Iris binds its generator from the frozen dimension contract, validates the saved pack, and starts the engine when provider content is ready, rejecting generation during the wait. **A provider that remains unavailable for 120 seconds leaves generation locked and triggers shutdown.** See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+> Load custom content before creating an Iris world. If a required provider remains unavailable for 120 seconds, Iris leaves generation locked and shuts down. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 {.is-warning}
 
 Clients need the provider's resource pack to display its custom textures and models.
 
 ### CraftEngine
 
-Iris targets the CraftEngine 26.8.2 API. Use the named key from CraftEngine's content configuration; blocks also accept the qualified form `craftengine:namespace/block`, items use their native `namespace:item` key.
+Use CraftEngine 26.8.2. Use the named key from CraftEngine's content configuration; blocks also accept the qualified form `craftengine:namespace/block`, items use their native `namespace:item` key.
 
 ```json
 {
@@ -115,7 +115,7 @@ Iris targets the CraftEngine 26.8.2 API. Use the named key from CraftEngine's co
 }
 ```
 
-Unknown properties and invalid values fail resolution instead of silently using the default state, and Studio schemas list installed blocks and their allowed properties. Wand saves, including imported WorldEdit selections, store CraftEngine's named block ID and complete properties. Object rotation updates standard orientation properties such as `axis` and `facing`. Direct block paste, object previews, and block undo use CraftEngine's placement API, and work in vanilla worlds with CraftEngine installed. Other providers and native-structure terrain preparation use carrier states in those direct paths instead.
+Unknown properties and invalid values fail resolution instead of silently using the default state, and Studio schemas list installed blocks and their allowed properties. Wand saves, including imported WorldEdit selections, store CraftEngine's named block ID and complete properties. Object rotation updates standard orientation properties such as `axis` and `facing`. CraftEngine block paste, object previews and undo also work in vanilla worlds with CraftEngine installed.
 
 Use furniture IDs in generated palettes or objects with `variant`, `yaw`, `pitch`, `randomYaw`, and `randomPitch`. Angles must be finite, at least zero, and below 360 degrees. Random angles depend on the world seed and placement coordinates, and an omitted variant selects the first variant in sorted order. Furniture is placed during deferred generation updates; furniture entities are not captured by the wand or spawned by direct paste and previews.
 
@@ -124,7 +124,7 @@ Use furniture IDs in generated palettes or objects with `variant`, `yaw`, `pitch
 | Provider | Caveat |
 |---|---|
 | CraftEngine | Numbered native states such as `craftengine:custom_18` resolve only while CraftEngine has that state loaded in that runtime. They are **not portable pack identifiers** — save objects with named content keys, because Iris cannot identify an old numbered state once its original mapping is gone |
-| Oraxen | Oraxen 1.218.0 unconditionally loads its own Iris integration against the old `com.volmit.iris` API and fails during startup with this Iris build. Use an Oraxen build that removes that embedded integration; the stock release has no setting to disable the hook, and Iris ships no old-package shim ([source](https://github.com/oraxen/oraxen/blob/v1.218.0/src/main/java/io/th0rgal/oraxen/compatibilities/CompatibilitiesManager.java), [block API](https://docs.oraxen.com/developers/api)) |
+| Oraxen | Oraxen 1.218.0 is incompatible with this Iris build and has no setting to disable its conflicting integration. Use a compatible Oraxen build ([Oraxen integration source](https://github.com/oraxen/oraxen/blob/v1.218.0/src/main/java/io/th0rgal/oraxen/compatibilities/CompatibilitiesManager.java)) |
 | ItemsAdder | Its glitched-block repair can reset generated `REAL_NOTE` states before Iris registers their custom identity. The block corrects itself when Iris's deferred placement pass reaches the chunk, which can take seconds or longer for a chunk outside the nearby-player or force-loaded area. Fix below |
 | Any custom-block carrier | Unrelated custom blocks can break on the first attempt in Creative and Survival when no loaded pack drop rule can match the material. A potentially matching rule or an unloaded historical pack still requires the saved-biome check ([Custom block drops](/iris/23-loot)). ItemsAdder retains control of its own break and drop handling |
 
@@ -143,18 +143,7 @@ This disables the repair across the server, including cleanup of old vanilla not
 
 ### Add another provider
 
-A developer extension point. Implement `ExternalDataProvider` and register it through `ExternalDataSVC#registerProvider`.
-
-| Method | Contract |
-|---|---|
-| `isValidProvider(id, BLOCK)` | Return exact ownership |
-| `getTypes(BLOCK)` | Enumerate native IDs. The service qualifies them with the registered plugin name |
-| `isReady()` | Readiness for a provider with delayed content loading. Call `ExternalDataSVC#notifyContentChanged()` once the registry is ready or changes |
-| `getBlockData` | Must resolve without touching world state. Return ordinary `BlockData` when the state alone is enough, otherwise `IrisCustomData.of(base, nativeId)` with supported properties in the deferred native ID, and implement `processUpdate` to call the placement API. Let placement failures propagate so pending data survives |
-| `identifyBlock(BlockData)` | Return a named native ID with its properties when capturing a placed block, or an empty optional for unrecognized states |
-| `placeBlock(Block, Identifier)` | Optional direct placement hook for object paste, previews and undo. Return `true` only after placement succeeds, `false` when the content needs deferred placement |
-
-Registration rejects a plugin ID that belongs to a built-in provider or one already registered. A provider implementing `Listener` registers its event handlers automatically, and an activation failure logs its stack trace without taking down other providers.
+Adding an unsupported provider requires a plugin integration. See [90 - API - Getting Started](/iris/90-api-getting-started).
 
 ## MythicMobs skill conditions
 
@@ -199,40 +188,38 @@ If MythicMobs reports an unknown `irisbiome` condition, check that its Iris inte
 
 ## PlaceholderAPI
 
-Expansion id `iris`, soft-depended. Registration timing, all twenty-nine keys, and the pre-2.0 migration table are in [09 - PlaceholderAPI](/iris/09-placeholderapi).
+Use the `iris` expansion placeholders listed in [09 - PlaceholderAPI](/iris/09-placeholderapi).
 
 ## React and Wormholes
 
-Both integrations live in the consuming plugin, not in Iris's optional-dependency list.
-
-- **React** reads Iris's registered integration contract for engine, world, chunk-generation, cache, mantle, and pregeneration metrics, and uses them in Iris dashboards, samplers, pressure overlays, and surge guards. Without Iris, those metrics and features are never registered. Configuration in [React — Iris, Adapt & Integrations](/react/07-features-iris-adapt-integrations).
-- **Wormholes** asks an open Iris engine for reachable pack biomes, the biome at a candidate, authored terrain height, and fluid state before loading a random-teleport destination chunk. Without Iris it falls back to chunk-backed biome and landing-safety checks. Details in [Wormholes — Integrations](/wormholes/15-integrations).
+- React provides Iris performance dashboards and controls. See [React — Iris, Adapt & Integrations](/react/07-features-iris-adapt-integrations).
+- Wormholes supports biome-aware random teleportation in Iris worlds. See [Wormholes — Integrations](/wormholes/15-integrations).
 
 ## HiddenOre
 
-HiddenOre needs no code link; it is a pack setting. Set `hideOresForHiddenOre` to `true` on the dimension and Iris writes no vanilla ore blocks, leaving HiddenOre to pay ore rewards when a player mines plain rock.
+Enable HiddenOre support in the pack dimension. Set `hideOresForHiddenOre` to `true` on the dimension and Iris writes no vanilla ore blocks, leaving HiddenOre to pay ore rewards when a player mines plain rock.
 
 | Stage | Behavior when the flag is on |
 |---|---|
-| Terrain | Dimension, region, and biome ore generators are skipped outright, so they cost nothing to run |
-| Deposits, objects, vanilla passthrough | Any vanilla ore they still write is rewritten in the perfection pass to its host rock: stone, deepslate, netherrack, and blackstone for gilded blackstone. Modded and custom ore blocks are outside that set and pass through unchanged |
+| Terrain | Disables dimension, region and biome ore generation |
+| Deposits, objects, vanilla passthrough | Replaces vanilla ores with their host rock: stone, deepslate, netherrack or blackstone. Modded and custom ores remain unchanged |
 
-The flag applies to chunks Iris generates after you set it. Terrain already on disk keeps its ores, so regenerate or pregenerate the world to see the change.
+The flag applies to chunks Iris generates after you set it. Previously generated chunks keep their ores; inspect newly generated terrain to see the change.
 
-Leave HiddenOre's own `[ore-removal]` disabled for an Iris world — it is a block populator that rescans every generated chunk column for ores Iris has already replaced. HiddenOre's bundled `[blocks.stone]` and `[blocks.deepslate]` tables match what an overworld dimension writes; a dimension whose rock is netherrack or blackstone needs a matching `[blocks.<material>]` table, or mining it pays nothing. HiddenOre's `min_y` and `max_y` are world Y, while an Iris ore `range` is engine-local Y where 0 is the bottom of the dimension, so the two sets of numbers do not carry across.
+Leave HiddenOre's own `[ore-removal]` disabled for an Iris world — Iris already replaces the vanilla ores. HiddenOre's bundled `[blocks.stone]` and `[blocks.deepslate]` tables match what an overworld dimension writes; a dimension whose rock is netherrack or blackstone needs a matching `[blocks.<material>]` table, or mining it pays nothing. HiddenOre's `min_y` and `max_y` are world Y, while an Iris ore `range` is engine-local Y where 0 is the bottom of the dimension, so the two sets of numbers do not carry across.
 
 See [11 - Dimensions](/iris/11-dimensions), [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits), and [HiddenOre — Configuration](/hiddenore/configuration).
 
 ## Tree feller
 
-Break one log of an Iris-generated tree while sneaking with an axe and Iris removes the whole tree. This runs on Bukkit-family **and** on Fabric/Forge/NeoForge; only the permission plumbing differs.
+Enable tree felling, then break a log of an Iris-generated tree while sneaking with an axe. Iris removes the tree. This works on Bukkit, Fabric, Forge and NeoForge.
 
 ### Settings (`iris.json`)
 
 | Key | Default | Meaning |
 |---|---|---|
-| `treeFeller.enabled` | `false` | Turns the player-facing feature on. Does not affect other plugins driving the feller through the API |
-| `treeFeller.durabilityPreservationChance` | `0` | Percent chance that felling a log costs no axe durability. Clamped to `0..100` when read, so an out-of-range value in the file is harmless |
+| `treeFeller.enabled` | `false` | Enables tree felling for players |
+| `treeFeller.durabilityPreservationChance` | `0` | Percentage chance that a log costs no axe durability. Range: 0–100 |
 
 ### Permission
 
@@ -240,7 +227,7 @@ Break one log of an Iris-generated tree while sneaking with an axe and Iris remo
 |---|---|---|
 | Bukkit-family | `iris.treefeller` | `op` |
 | Fabric | `irisworldgen:treefeller` | Permission level GAMEMASTERS (op level 2) |
-| Forge / NeoForge | `irisworldgen:treefeller` (Forge `PermissionNode`) | Permission level GAMEMASTERS (op level 2) |
+| Forge / NeoForge | `irisworldgen:treefeller` | Permission level GAMEMASTERS (op level 2) |
 
 ### What has to be true to fell a tree
 
@@ -252,19 +239,19 @@ All of these, on every platform:
 - The player is sneaking
 - The broken block is in the vanilla logs tag
 - The main-hand item is in the axes tag
-- The block carries Iris tree provenance in the mantle, and that provenance is not part of a structure
+- The log belongs to an Iris-generated tree outside a structure
 
-That last condition separates a generated tree from a player-planted one: Iris stamps trees it places and clears the stamp when a player places a block, so saplings grown by players and hand-built trunks are never felled.
+Player-grown trees and hand-built trunks are not eligible.
 
-On Bukkit, other plugins can drive a fell with `TreeFellerAccess.INTEGRATION_OVERRIDE` through `IrisTreeFellerService`. That bypasses the `enabled` switch and the permission check only — every provenance and block-state requirement still applies — and an override request supersedes a standalone one on the same event. Bukkit-only. See [93 - API - Tree Feller](/iris/93-api-tree-feller).
+Bukkit plugins can also provide tree-felling integrations. See [93 - API - Tree Feller](/iris/93-api-tree-feller).
 
-### Runtime notes for operators
+### Limits and cancellation
 
-- Discovery is bounded at 131,072 members, 1,000,000 visited positions, and 256 blocks on any axis from the broken block. A tree that exceeds any bound degrades to removing only the block the player broke. An unusually large custom tree that behaves like vanilla is this, not a bug.
-- Removal is paced across ticks and does not stall the main thread on a large tree.
-- A run ends early if the player stops sneaking, changes hotbar slot, swaps hands, leaves survival or the world, breaks the axe, or swaps to a different axe item.
-- Logs consume axe durability, one point each, subject to the preservation chance and to unbreakable items. Leaves cost nothing.
-- A tree already being felled cannot be claimed twice. A second player who breaks into the same tree has their break cancelled with no drops.
+- Trees exceeding 131,072 members, 1,000,000 searched positions or 256 blocks on any axis from the broken block fall back to a normal single-block break.
+- Removal happens gradually. Keep sneaking with the same axe until it finishes.
+- Felling stops if you stop sneaking, change hotbar slots, swap hands or axes, leave survival mode or the world, or break the axe.
+- Each log costs one durability point, subject to the preservation setting and unbreakable items. Leaves cost none.
+- A second player cannot fell the same tree simultaneously; their overlapping break is cancelled without drops.
 
 ## Platforms
 

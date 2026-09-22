@@ -2,13 +2,15 @@
 title: "Shared localization"
 description: "Language downloads, server defaults, player preferences, and the in-game picker"
 published: true
-date: 2026-09-11T01:50:00.000Z
+date: 2026-09-20T22:20:00.000Z
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
 ---
 
 Volmit plugins share language downloads and player preferences through VolmLib. English message catalogs remain compiled into each plugin; bulk translation files stay in the source repository and download when requested. Each plugin retains its own message schema and validates translations before activation.
+
+On Paper and Spigot, client command suggestions reflect a shared `/volmit` owner change on the next server tick.
 
 ## Per-plugin language selection
 

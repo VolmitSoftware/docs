@@ -2,14 +2,14 @@
 title: "Temperate Biomes"
 description: "Navigation for the built-in temperate biomes across Overworld and Underworld"
 published: true
-date: 2026-09-16T03:11:58.172Z
+date: 2026-09-20T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, temperate"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Plains, meadows, birch, oak, flowering and stylized forests, temperate waters, and shared shores.
 
-This family has **11 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+This family has **12 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
 ## Direct roots
 
@@ -52,4 +52,4 @@ Return to [44 - Biome Catalog](/iris/44-biome-catalog).
 
 ## 3D terrain coverage
 
-The paired packs explicitly configure 38 terrain identities in this family: 5 forest, 10 hills, 20 lowland, 3 protected. Each entry lists the numeric `terrain3D` settings for its root and children.
+The paired packs explicitly configure 39 terrain identities in this family: 6 forest, 10 hills, 20 lowland, 3 protected. Each entry lists the numeric `terrain3D` settings for its root and children.

@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,15 +19,15 @@ See also:
 - [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
 - [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)
 
-## The mental model
+## Pack copies
 
-A pack exists in three forms, and confusing them is the usual source of "my edit did nothing":
+Keep these three copies separate:
 
 - **The authoring copy**, at `packs/<key>/`. What Studio edits and what `/iris create` copies from.
 - **Generation snapshots**, at `<world>/iris/generation/epochs/<epoch>/pack/`. Immutable. Ordinary Bukkit Studio picks up authoring edits automatically; a production world needs an explicit update.
-- **The export**, at `exports/<key>.iris`. A zip of the dimension dependency closure, for handing to somebody else.
+- **The export**, at `exports/<key>.iris`. A ZIP containing the dimension and its required resources, for distribution.
 
-Validation runs against a directory, not a key, so a pack can be valid in the workspace and stale in a world. Iris caches validation results and reuses one only when the pack bytes, platform, registries and Iris build all match, so an Iris update can force a revalidation even when the pack did not change.
+Validate the authoring pack before creating or updating a world. Editing that pack does not update an existing production world automatically.
 
 ## Walkthrough: take a pack from workspace to release
 
@@ -71,7 +71,7 @@ Preview is the default on both platforms and touches nothing. Read every candida
 /iris pack cleanup <key> apply
 ```
 
-Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. The cached validation result is dropped, so validate again afterwards. If cleanup took something you needed, `/iris pack restore <key> mode=apply` (Bukkit) or `/iris pack restore <key> apply` (modded) moves the most recent quarantine dump back.
+Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. Validate again after cleanup. If cleanup took something you needed, `/iris pack restore <key> mode=apply` (Bukkit) or `/iris pack restore <key> apply` (modded) moves the most recent quarantine dump back.
 
 **5. Package the closure.**
 
@@ -83,7 +83,7 @@ Files move into `<pack>/.iris-trash/<timestamp>/` rather than being deleted. The
 /iris studio package <key>
 ```
 
-Success is `exports/<key>.iris` plus a completion message. The source pack and every world epoch are untouched. Both package commands run the pack validator and image-map compiler first and stop on a blocking error.
+Success is `exports/<key>.iris` plus a completion message. The authoring pack and existing worlds are unchanged. Packaging requires a pack with zero blocking validation errors.
 
 **6. Update an existing world.** Back up the complete world, including generation history, then use [Stage a production world update](#stage-a-production-world-update).
 
@@ -153,14 +153,14 @@ The built-in Overworld and Underworld declare no external datapack imports. On t
 /iris download pack=underworld
 ```
 
-Restart so Minecraft loads the downloaded packs' dimension types and custom biomes into the live registries, then:
+Restart after downloading the packs, then:
 
 ```text
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once more after both replacements report staged. Omit `seed=` to keep that slot's existing saved seed. Custom packs that declare `datapackImports` must first complete the workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks); replacement validation rejects unresolved external structure keys rather than freezing a world pack that cannot load.
+Restart once more after both replacements report staged. Omit `seed=` to keep that slot's existing saved seed. Custom packs that declare `datapackImports` must first complete the workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks); all referenced structures must be available before replacement.
 
 On Fabric, Forge, and NeoForge the built-in packs need no external datapacks. For a custom pack that declares `datapackImports`, `/iris datapack ingest` cannot install those dependencies — put compatible archives in the target save's `datapacks/` directory before the Iris pack loads, then restart with every input already present.
 
@@ -199,7 +199,7 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 
 Iris ships one Bukkit jar for several Minecraft versions, and pack authors build against whatever version they run. A pack that references a block, item, entity, biome, structure, enchantment or potion effect the running server does not have is gated: the content that composes the missing key is left out, everything else keeps generating, and the decisions are printed once at startup.
 
-Detection is automatic. Iris asks the live platform registry whether each key exists — no resource carries a `since` or `minVersion` and nothing compares version numbers, so mods that add or remove registry content are covered the same way, and the same pack gates identically on Bukkit and on the mod loaders for the same Minecraft version.
+Compatibility checks include content supplied by installed mods. Use `/iris pack compat` to see which resources are unavailable on your server.
 
 | Action | Meaning |
 |--------|---------|
@@ -226,9 +226,7 @@ Pack 'overworld': content unavailable on Minecraft 26.1.2
   Update the server to a newer Minecraft to restore this content, or declare fallbacks (dimension blockFallbacks, block backup). /iris pack compat overworld lists everything.
 ```
 
-Each subject reads `<action> <unit> <key> at <detail>`. The unit is the registrant type (`biome`, `region`, `dimension`, `entity`, `spawner`, `loot`, `jigsaw piece`, `jigsaw pool`, `structure`, `mod`), `placement` for an object placement, or `object` for one object dropped from a placement. The detail is either the JSON field path that composes the key (`layers[0].palette[1]`, `edit[0].replace.palette[0]`, `type`), the cascade reason (`no land biomes remain`, `no objects remain`, `no entity spawns remain`), or the reference that was dropped (`regions[2] cave-region`). A substitution names what ran instead: `(backup minecraft:sand)` or `(fallback minecraft:stone)`.
-
-Nothing is printed when a pack has no findings. Each world logs one equivalent line when its runtime is built. When the platform registry cannot be consulted while the pack loads — an early-boot condition on the mod loaders — the report carries an `(incomplete: …)` line and nothing is excluded. An unreadable registry never counts as missing content.
+Report entries identify the affected resource and JSON field. Substitutions name the replacement block. An `(incomplete: …)` result means compatibility could not be fully checked; validate again after startup.
 
 For the full list with no per-key cap:
 
@@ -237,7 +235,7 @@ For the full list with no per-key cap:
 | Bukkit | `/iris pack compat [pack=<key>]` |
 | Modded | `/iris pack compat [<pack>]` |
 
-It reads the published validation report and does not reload the pack, so it is safe on a live server and works from the console. Omitting the pack (or passing `*` on Bukkit) covers every pack with a published result; a pack without one prints a hint to run `/iris pack validate` first. A key that produced a compat finding is suppressed in the content-key check, so `general.strictContentKeys` cannot turn a gated key into a second, blocking error.
+It reads the published validation report and does not reload the pack, so it is safe on a live server and works from the console. Omitting the pack (or passing `*` on Bukkit) covers every pack with a published result; a pack without one prints a hint to run `/iris pack validate` first. Compatibility exclusions remain advisory unless they leave the dimension unusable, including when `general.strictContentKeys` is enabled.
 
 ### Remedies
 
@@ -264,7 +262,7 @@ Folders scanned for unreferenced JSON: `biomes`, `regions`, `entities`, `spawner
 
 Excluded from the reference corpus entirely: `.iris-trash`, `datapack-imports`, `externaldatapacks`, `internaldatapacks`, `datapacks`, `cache`, `objects`, `.iris`.
 
-Applying re-scans from scratch rather than trusting an earlier preview, so a preview you ran an hour ago cannot quarantine something you have since started using. Quarantined files land under `<pack>/.iris-trash/<yyyyMMdd-HHmmss-SSS>/`. A failed apply rolls back what it can and reports any paths still quarantined so you can restore them by hand. A successful apply drops the cached validation result.
+Applying re-scans from scratch rather than trusting an earlier preview, so a preview you ran an hour ago cannot quarantine something you have since started using. Quarantined files land under `<pack>/.iris-trash/<yyyyMMdd-HHmmss-SSS>/`. A failed apply rolls back what it can and reports any paths still quarantined so you can restore them by hand.
 
 ## Restore
 
@@ -286,17 +284,17 @@ Restore operates on the **latest** dump only. It refuses the whole operation whe
 
 | Param | Default | What it does |
 |-------|---------|--------------|
-| `dimension` | contextual, else `default` | The dimension to package. The closure is walked from here |
+| `dimension` | contextual, else `default` | The dimension to package, including its referenced resources |
 | `obfuscate` | `false` | Rename every object to a random UUID in the export and rewrite placement references to match. Bukkit only |
 | `minify` | `true` | Write JSON with no indentation. Bukkit only. The modded packager always minifies |
 
-Output is `exports/<dimensionKey>.iris`, under the plugin data folder on Bukkit and under `config/irisworldgen/exports/` on modded. A blocking validation error leaves staging and the prior archive untouched. Neither the source pack nor any world epoch is modified.
+Output is `exports/<dimensionKey>.iris`, under the plugin data folder on Bukkit and under `config/irisworldgen/exports/` on modded. A blocking validation error leaves staging and the prior archive untouched. Neither the authoring pack nor an existing world is modified.
 
 **Written to the export:** `dimensions/`, `regions/`, `biomes/`, `generators/`, `expressions/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, `spawners/`, `markers/`, `image-maps/`, referenced `images/` PNGs, the structure closure, and `package.json` (content hash, timestamp, dimension `version`). The ambient-spawning graph is exported in full — object placements on regions as well as biomes are followed, and spawner entities are collected from both `spawns` and `initialSpawns`.
 
-**Not written by either compiler:** `mods/` (harmless, nothing applies them — see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)), `caves/`, and other folders outside the collected set.
+**Not included:** `mods/` (inactive; see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)), `caves/`, and other folders outside the collected set.
 
-The Bukkit compiler inlines resolved snippets into exported objects. The modded compiler preserves references and copies the complete `snippet/` JSON tree. Validate the unpacked tree before you publish an `.iris` artifact.
+Bukkit exports include snippet contents directly in the JSON. Modded exports include the `snippet/` JSON tree and keep snippet references. Validate the unpacked tree before you publish an `.iris` artifact.
 
 ## Stage a production world update
 
@@ -309,20 +307,20 @@ On Bukkit, `/iris developer update-world` and `/iris dev update-world` also run 
 
 | Param | Default | What it does |
 |-------|---------|--------------|
-| `world` | contextual | The world that receives a pending generation epoch |
+| `world` | contextual | The world to update after restart |
 | `pack` | contextual | The source dimension, resolved from the live packs root |
 | `confirm` | `false` | Required. Without it the command only prints the warning and exits |
 
 > Back up the complete world before this operation, including its `iris/generation` directory.
 {.is-warning}
 
-Iris validates the source pack, stages a pending epoch, and asks for a restart. The running world keeps its active generation until then. New chunks use the current generator and active pack, with a finite transition beside the saved natural boundary of existing chunks.
+Iris validates and stages the selected pack, then asks for a restart. The running world keeps its current pack until then. After restart, new chunks use the update with a transition beside existing terrain.
 
 Updates must preserve the world seed, physical heights, environment, dimension type, and coordinate scale. Generation mode, fluid baseline, terrain content, and upper-terrain settings can change within that layout. New custom registry definitions can require a server restart.
 
-Staging an older pack creates another activation for future terrain. **It does not undo saved blocks or recreate existing entities.** Missing historical biome records permit only [unambiguous single-biome recovery](/iris/06-worlds-lifecycle#retained-world-data); other unknown positions stay unavailable. Iris retains the immutable pack definitions used by historical chunks so position inspection, ambient spawns and effects still work there, and that retained data grows as the world expands and packs change.
+Selecting an older pack affects future terrain. **It does not undo saved blocks or recreate existing entities.** Keep the complete `iris/generation` directory: existing chunks use their historical biome definitions for inspection, ambient spawns, and effects.
 
-Ordinary Bukkit Studio uses the same history model and activates compatible authoring edits while the world is open, with no production update command. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+Ordinary Bukkit Studio applies compatible authoring edits while the world is open, without a production update command. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ## Related operations
 

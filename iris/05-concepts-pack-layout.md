@@ -2,12 +2,12 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A pack is a folder of JSON files, binary objects, and images that fully describes one or more worlds. Iris registers one loader per resource type, turning short string keys into files on disk. Production worlds and Bukkit Studio generate from immutable pack snapshots. Bukkit Studio watches the separate folder you edit and activates accepted changes for new chunks.
+A pack is a folder of JSON files, binary objects, and images that describes one or more worlds. Edit the authoring folder in Studio, then stage a pack update to apply those changes to new chunks in a production world.
 
 See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
 
@@ -54,11 +54,7 @@ There is no namespace and no type prefix. You never write `biomes/plains` or `ir
 
 ### What happens when the exact file is missing
 
-Iris first tries `<typeFolder>/<key>.json` and returns it if it exists. That is the normal path and the only one that works for nested keys.
-
-If there is no exact hit, Iris scans the type folder's own files (not subfolders) for any name whose first dot-segment equals the key. This is what makes `plains.disabled.json` still load for key `plains`. That is useful for parking a variant. It is surprising if you forgot you did it. If two files match, Iris logs `Ambiguous <type> <key> in <folder>: ...` and takes the alphabetically first one. Keep one canonical filename per key and this never bites you.
-
-The literal string `"null"` is refused with a warning by direct file lookups and by warning-enabled loads. Silent loads (the cross-pack fallback search) do not refuse it and will look for `null.json`. Do not name a file `null.json`.
+Use exact filenames, including for nested resources. At the type-folder root, a file such as `plains.disabled.json` can still match the key `plains`; adding `.disabled` does not disable it. Keep one canonical filename per key and avoid `null.json`.
 
 ## How the pieces relate
 
@@ -88,7 +84,7 @@ Do this once on a pack you did not write. It takes two minutes and makes everyth
 
 Prerequisites: a loadable pack under the packs root, `iris.all` (Bukkit) or gamemaster (modded), and an editor that will not reformat your JSON.
 
-1. Validate first, so you know a later failure is yours: `/iris pack validate pack=overworld` on Bukkit, `/iris pack validate overworld` on a mod loader.
+1. Validate the pack: `/iris pack validate pack=overworld` on Bukkit, `/iris pack validate overworld` on a mod loader.
 2. Open `dimensions/overworld.json`. Pick one key out of the `regions` array.
 3. Open `regions/<that key>.json`. Pick one key out of `landBiomes`.
 4. Open `biomes/<that key>.json`. Follow its first generator, object, decorator, or structure reference into the matching type folder.
@@ -99,7 +95,7 @@ You are done when every reference resolved without guessing at a namespace or fi
 
 ## Snippets
 
-A snippet is a JSON fragment you write once and reference from many places. Types tagged `@Snippet("<type>")` in the engine accept either an inline object or a string pointing at a snippet file.
+A snippet is a JSON fragment you write once and reference from many places. Fields that support snippets accept an inline object or a string pointing at a snippet file. Studio schemas show which fields support them.
 
 ```json
 "style": "snippet/style/soft-hills"
@@ -109,14 +105,11 @@ resolves to `<packRoot>/snippet/style/soft-hills.json`.
 
 | Rule | Actual behavior |
 |---|---|
-| Trigger | Only a JSON **string** value. Inline objects parse normally and never touch the snippet path |
-| Required prefix | The string must start with `snippet/`. Anything else resolves to `null` **with no log line at all** — the most common silent snippet failure |
+| Reference form | Use a JSON string in a snippet-compatible field, or supply the object inline |
+| Required prefix | Use `snippet/<type>/<name>`; a string without `snippet/` does not select a snippet |
 | Re-rooting | If the string starts with `snippet/` but not `snippet/<thisType>/`, Iris strips `snippet/` and re-roots the remainder under this field's own type. So `snippet/decorator/foo` on a style field becomes `snippet/style/decorator/foo`, not an error |
 | On-disk path | `<packRoot>/snippet/<type>/<name>.json`, resolved from the pack root, not from the type folder |
-| Subfolders | Allowed. `<name>` may contain `/`. Discovery walks the tree recursively |
-| Missing file | Logs `Couldn't find snippet <path> in <file>` and yields `null` for that field |
-| Unreadable file | Logs `Couldn't read snippet <path> in <file> (<message>)` and yields `null` |
-| Inline parse failure | Different path: logs `Failed to read <type>... faking objects a little`, then substitutes a **default-constructed instance**, not `null` |
+| Subfolders | Allowed. `<name>` may contain `/` |
 | Schema | Studio writes `.iris/schema/snippet/<type>-schema.json` so the editor offers completions for `snippet/<type>/…` |
 
 The bundled overworld uses `snippet/decorator/*` and `snippet/style/*`.
@@ -129,14 +122,13 @@ Historical pack definitions remain on disk so saved biome and region identities 
 
 | Mode | Generation source | How changes apply |
 |---|---|---|
-| Ordinary Bukkit Studio | Immutable world-local epochs | Watches authoring JSON, IOB, and PNG files. Accepted edits activate for new chunks with a boundary transition |
+| Ordinary Bukkit Studio | Saved world-local pack copies | Watches authoring JSON, IOB, and PNG files. Accepted edits activate for new chunks with a boundary transition |
 | Modded Studio | Live authoring pack | Uses the modded Studio hotload path |
-| Production | Immutable world-local epochs | Explicit update staging and restart |
-| Benchmark without Studio | `<world>/iris/pack` | Disposable copied pack |
+| Production | Saved world-local pack copies | Explicit update staging and restart |
 
 Studio editors, exports, presets, and schemas read the authoring folder while generation reads the active snapshot, so an invalid edit leaves the active generation unchanged.
 
-Existing chunks keep their saved terrain. New chunks use the current generator and reconcile against the saved edges over a finite transition width; no old generator is reconstructed.
+Existing chunks keep their saved terrain. New chunks use the updated pack, with a transition beside existing terrain.
 
 See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the edit loop and [25 - Pack Management](/iris/25-pack-management) for production updates. Physical height, dimension type, and coordinate-scale changes require a new world. Generation modes, fluid baselines, and upper-terrain content can change within that fixed layout.
 
@@ -147,7 +139,6 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the edit 
 | Packs you author and download into | `plugins/Iris/packs/<key>/` | `config/irisworldgen/packs/<key>/` |
 | Platform data dir (`iris.json`, languages, caches) | `plugins/Iris/` | `config/iris/` |
 | A world's generation snapshots | `<dimensionRoot>/iris/generation/epochs/<epoch>/pack/` | same, under the modded world root |
-| Prefetch key indexes | `<platform data dir>/prefetch/<dimId>/<hash>.ipfch` | same |
 | Studio schemas | `<packRoot>/.iris/schema/` | same |
 
 On mod loaders the pack root and the platform data dir are two different folders. Packs go under `config/irisworldgen/`. Everything else goes under `config/iris/`. If you are hand-placing a pack on a modded server, `config/irisworldgen/packs/` is the one that matters.
@@ -156,7 +147,7 @@ Folders whose names start with `.` are skipped when Iris lists packs, which is w
 
 ## Registrant folders
 
-Iris registers 17 loaders. Each one owns exactly one folder name and one file extension.
+Use these folders and file extensions for pack resources.
 
 | Folder | Extension | What lives here and when you touch it |
 |---|---|---|
@@ -175,24 +166,20 @@ Iris registers 17 loaders. Each one owns exactly one folder name and one file ex
 | `blocks/` | `.json` | Named custom block states you can reference instead of repeating long block data strings |
 | `expressions/` | `.json` | Math expressions callable from generators and placement rules |
 | `images/` | `.png` | PNG maps sampled as noise or as direct biome/height input |
-| `matter/` | `.mat` | Matter binaries. The loader exists and resolves keys, but no runtime system consumes them |
-| `mods/` | `.json` | Injector/replacer documents. Loaded so schemas and tooling see them. The engine has no path that applies them |
+| `matter/` | `.mat` | Reserved; does not affect generation |
+| `mods/` | `.json` | Does not affect generation. Use [snippets](/iris/24-pack-mods-snippets) for reusable definitions |
 
 Anything else in a pack directory is not a resource type. The bundled Overworld pack contains empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
 
-The datapack compiler loads a reduced set (`biomes`, `regions`, `dimensions`, `generators`, `expressions`, `images`, `image-maps`) so validation can inspect the reachable image-driven graph. Nothing about that is configurable.
-
 ## What makes a pack loadable
 
-Validation fails fast on three structural problems, in order:
+A pack needs all three of the following:
 
-1. The pack folder is missing or is not a directory.
-2. There is no `dimensions/` directory.
-3. There are no `*.json` files **directly inside** `dimensions/`. Nested dimension files do not count toward this check.
+1. A pack directory.
+2. A `dimensions/` subdirectory.
+3. At least one `*.json` file **directly inside** `dimensions/`. Nested dimension files do not meet this requirement.
 
-Passing those three does not make a pack loadable. Content validators for dimensions, cave profiles, loot, objects and surfaces, structure graphs, native structures, spawns, and content keys run next, and any blocking error from those also makes the pack unloadable. Content-key problems are blocking only under strict content mode. Read the first blocking error and fix that one. The rest are usually downstream.
-
-Presence on disk is a weaker notion than loadability. A pack "exists" if its directory is safe and holds at least one non-symlink `dimensions/*.json`.
+Run `/iris pack validate` before creating a world. The pack must have zero blocking errors. See [25 - Pack Management](/iris/25-pack-management) for validation commands and content requirements.
 
 ### Download key rules
 
@@ -200,18 +187,7 @@ Downloaded pack keys must match `[a-z0-9_-]+`. The check applies both to a calle
 
 An archive installed through `link=` has no expected key. Iris uses its shortest dimension key, then alphabetical order, as the install folder name while preserving every dimension in the pack. The built-in `overworld` and `underworld` downloads carry their exact expected key. That key picks the folder name. The whole pack is validated before publication.
 
-## When a resource does not resolve
-
-| Symptom | Likely cause | Fix |
-|---|---|---|
-| File exists, key does not resolve | You included the extension or the type folder in the key, the case differs, or you counted the path from the wrong root | Rebuild the key as the exact relative path under the type folder, extension removed |
-| Nested dotted variant not found | The dotted-name fallback only scans the type folder's own files, never subfolders | Give nested files their exact key name, or move the variant to the type folder root |
-| File validates but never generates | Nothing in the dimension → region → biome chain references it, or a chance/filter excludes it | Trace forward from the dimension root. Test with Studio focus or buffet mode |
-| Snippet silently becomes null | The string does not start with `snippet/` — this failure logs nothing | Write the full `snippet/<type>/<name>` form |
-| Snippet loaded the wrong file | A `snippet/<otherType>/…` string was re-rooted under this field's own type | Use the type that matches the field |
-| Studio does not offer a new resource in completions | Workspace schema enums are stale | `/iris studio update dimension=<pack>` on Bukkit, `/iris studio update <pack>` on modded |
-| Console warns "Ambiguous \<type\> \<key\>" | Two files share a base name before the first dot | Keep one canonical filename. Iris took the alphabetically first |
-| Production world ignores your fix | Its active generation epoch still references the previous pack | Validate in Studio, then run the explicit world-update workflow or create a new world |
+After adding resources, refresh Studio completions with `/iris studio update dimension=<pack>` on Bukkit or `/iris studio update <pack>` on modded.
 
 ## The bundled overworld pack
 
