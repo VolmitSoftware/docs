@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-22T04:03:45.933Z
+date: 2026-09-22T05:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ Install and validate the pack, then choose a world name and seed:
 
 Names are lowercased and spaces become underscores. `iris` and `benchmark` are reserved. Creation requires an unused world name.
 
-Creation automatically prepares the entry area’s hydrology before generating its terrain, reusing matching saved plans when available. A player who creates a world is teleported into it. If automatic teleport fails, the world remains loaded; wait for initial generation and use `/iris tp <world>` again. Complete any restart Iris requests before using the world.
+Creation reuses validation for unchanged packs and automatically checks changed content or validation settings before generation. It prepares the entry area’s hydrology before generating its terrain, reusing matching saved plans when available. On Bukkit, initial entry automatically uses multicore generation. A player who creates a world is teleported into it. If automatic teleport fails, the world remains loaded; wait for initial generation and use `/iris tp <world>` again. Complete any restart Iris requests before using the world.
 
 You can preview a pack before creating a permanent world:
 

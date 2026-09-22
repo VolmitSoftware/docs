@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-22T04:03:45.933Z
+date: 2026-09-22T05:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ Complete any requested server restart and resolve blocking pack-validation error
 
 Changes to height or dimension type require closing and reopening Studio, and may require a restart. See [Hotload rules](/iris/10-studio-vscode-schemas#hotload-rules). Studio worlds are temporary: reopening after a restart creates a new world from the saved pack.
 
-Studio opening automatically prepares the entry area’s hydrology before generating its terrain, then takes you into the world. Matching saved plans are reused automatically, including after a server restart. Normal Studio and production worlds can share plans when the pack, seed, generator, and relevant world settings match; biome-buffet layouts remain separate.
+Studio opening reuses validation for unchanged packs and automatically checks changed content or validation settings before generation. It prepares the entry area’s hydrology before generating its terrain, then takes you into the world. On Bukkit, opening automatically uses multicore generation during world setup. Matching saved plans are reused automatically, including after a server restart. Normal Studio and production worlds can share plans when the pack, seed, generator, and relevant world settings match; biome-buffet layouts remain separate.
 
 ## What Studio is
 
