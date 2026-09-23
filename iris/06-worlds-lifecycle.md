@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-22T05:00:00.000Z
+date: 2026-09-23T09:46:33.750Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Install the pack and restart before creating its dimension. For custom packs wit
 | `/iris remove <name> delete=false` | Unload and unregister the world; keep its files |
 | `/iris remove <name>` | Unregister the world and delete its files |
 
-Loading requires the world's saved pack and registration data. Restore the complete backup if these are missing.
+Loading requires the world's saved pack and registration data. Restore the complete backup if these are missing. Iris verifies the world's saved generation state before generation resumes. Chunk generation remains paused until these startup checks finish. Startup checks adapt to the server's available processors and Java heap without additional configuration; existing terrain remains unchanged.
 
 > `/iris remove` deletes world data by default. Back up first, and wait for unload or removal to finish before moving or deleting any world directory. If Iris requests a restart, complete it before retrying.
 {.is-warning}
