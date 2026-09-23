@@ -2,7 +2,7 @@
 title: "Biome Atlas — Cherry Grove"
 description: "Iris biome atlas entry for vanilla/cherry_grove in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -66,6 +66,8 @@ No ordinary child biomes are declared.
 
 - **Overworld 4007: `magnetics/glass-shard`:** rarity `1`, altitude `125..175` blocks above the surface, top mode `NOISE`, maximum thickness `40`, carving biome `carving/amethyst-child`; decorators inherit and objects do not inherit.
 - **Underworld 1010: `magnetics/glass-shard`:** rarity `1`, altitude `125..175` blocks above the surface, top mode `NOISE`, maximum thickness `40`, carving biome `carving/amethyst-child`; decorators inherit and objects do not inherit.
+
+Overworld places all five amethyst clutter objects on glass-shard islands at native block size (`objectShrinkFactor: 1.0`). Each bud and cluster retains its adjacent amethyst support block.
 
 ### Magnetics Glass Shard (`magnetics/glass-shard`)
 

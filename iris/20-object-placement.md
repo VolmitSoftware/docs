@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-23T05:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -160,7 +160,7 @@ By default a placement is surface-only, unlimited in height, unlimited in slope,
 
 `SURFACE_ONLY` (the default) rejects any anchor in carved space. `CARVING_ONLY` requires carved space at the anchor or within three blocks below it, and hunts for an anchor Y inside the cave column instead of using the terrain surface. A biome-owned cave placement accepts only cells owned by that exact cave biome; a region-owned one spans every cave biome in the region. Unless `underwater: true` opts into fluid anchors, the anchor must be dry carved air above the dimension cave-lava height. `ANYWHERE` sits in both lists, so it rolls `chance` **twice** per chunk, once for each pass. A cave pass resolves its biome by sampling 48, 80, and 112 blocks down and taking the deepest sample that differs from the surface biome.
 
-`caveAnchorMode` picks which carved cells count. `FLOOR` needs solid support below. `CEILING` needs solid above. `CENTER` needs neither. `ANY` takes anything carved. `PROFILE_DEFAULT` defers to the cave profile ([15 - Caves & Carving](/iris/15-caves-carving)). `CEILING_HANG` overrides this to `CEILING` regardless of what you wrote.
+`caveAnchorMode` picks which carved cells count. `FLOOR` needs solid support below. `CEILING` needs solid above. `CENTER` needs neither. `ANY` takes anything carved. `PROFILE_DEFAULT` defers to the cave profile ([15 - Caves & Carving](/iris/15-caves-carving)). `CEILING_HANG` overrides this to `CEILING` regardless of what you wrote. Later placement retains the underlying cave-fluid boundaries used to select anchors.
 
 **Height band.** `clamp` rejects placements whose resolved top or bottom leaves the band.
 

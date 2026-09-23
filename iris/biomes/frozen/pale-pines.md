@@ -2,7 +2,7 @@
 title: "Biome Atlas — Pale Pines"
 description: "Iris biome atlas entry for frozen/pale-pines in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -44,7 +44,8 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - **Minecraft identity:** derivative `minecraft:snowy_taiga`; native-structure derivative `minecraft:snowy_taiga`; custom identities `frozen_pale_pines`.
 - **Surface:** 0-1 block(s): `minecraft:snow_block`; 1 block(s): `minecraft:pale_moss_block`, `minecraft:grass_block`; 3-6 block(s): `minecraft:dirt`, `minecraft:calcite`, `minecraft:packed_ice`; 6-18 block(s): `minecraft:stone`, `minecraft:calcite`. Wall palette: `minecraft:stone`, `minecraft:calcite`, `minecraft:packed_ice`.
-- **Content:** 1 object placement rule(s) drawing from 10 object key(s), including `trees/spruce/levergreen1`, `trees/spruce/mevergreen1`, `trees/spruce/mevergreen2`, `trees/spruce/mevergreen3`, `trees/spruce/vgeneric1`, `trees/spruce/vgeneric2`, `trees/spruce/vgeneric3`, and 3 more. 2 decorator rule(s) using `minecraft:snow`, `minecraft:air`, `minecraft:pale_moss_carpet`.
+- **Content:** 2 object placement rule(s) drawing from 13 object key(s), including `trees/spruce/levergreen1`, `trees/spruce/mevergreen1`, `trees/spruce/mevergreen2`, `trees/spruce/mevergreen3`, `trees/spruce/vgeneric1`, `trees/spruce/vgeneric2`, `trees/spruce/vgeneric3`, and 6 more. 2 decorator rule(s) using `minecraft:snow`, `minecraft:air`, `minecraft:pale_moss_carpet`.
+- **Creaking encounters:** Heart-bearing pale oak trees spawn a linked Creaking at night when a player is nearby and monster spawning is enabled. Each `vanilla/trees/pale_oak_creaking` variant contains a natural heart between aligned pale oak logs. Destroying the heart removes its Creaking.
 
 ## Underworld 1010 treatment
 

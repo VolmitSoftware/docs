@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-09-20T08:38:27.413Z
+date: 2026-09-23T05:32:41.849Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -110,6 +110,8 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 
 The shared mod-loader sources provide `NativeModdedServer` for server scheduling, loaded-world lookup, player lookup, dimension storage paths, and datapack selection. `NativeWorld` identifies a loaded world and provides block, biome, height, and weather access. Use live-world lookup only on the server thread; `worlds()` uses the published world snapshot.
 
+`NativeRegistryAccess` accepts a `Configuration` containing registry and reloadable-registry suppliers plus a warning consumer. Supply `HolderLookup.Provider` instances with the required datapacks already loaded. Live integrations can use `NativeModdedServer.registryAccess()` and `reloadableRegistries()`; offline integrations can supply their own loaded registries. `NativeTileReader` likewise accepts a registry-provider supplier. Keep these providers available until the owning integration closes.
+
 `NativeCommandRegistration` registers Brigadier trees with `NativeCommandSource`. Read the command's world, player, position, and permission context through that source. Build formatted responses with `NativeCommandText`; `NativeCommandArguments` resolves native player, dimension, and identifier arguments.
 
 `NativeChunkGeneratorDefinition` associates a generator key with a factory. Implement `NativeGeneratorOwner` and supply `NativeModdedGeneratorPolicy` to `NativeModdedChunkGenerator`; terrain buffers, generation leases, biome selection, structure ownership, and completion callbacks use typed contracts. Resolve your bound owner with `NativeWorldGenerators.find(world, ownerType)`.
@@ -126,7 +128,7 @@ The shared mod-loader sources provide `NativeModdedServer` for server scheduling
 
 ## Modded client integrations
 
-The `native-minecraft26_2-sources` artifact supplies Minecraft implementation sources for mod-loader builds. Its root contains common terrain code; `modded/` contains shared mod code, and `fabric/`, `forge/`, and `neoforge/` contain loader-specific code. Compile the common sources and your selected loader sources against that loader's Minecraft dependencies. The artifact also supplies `resources/modded` and `resources/<loader>`; include those directories as resources. Register `volmlib.entity.mixins.json` and `volmlib.client.mixins.json`, plus `volmlib.fabric.mixins.json` on Fabric. Fabric uses `volmlib.accesswidener`; Forge and NeoForge use the supplied `META-INF/accesstransformer.cfg`.
+The `native-minecraft26_2-sources` artifact supplies Minecraft implementation sources for mod-loader builds. Its root contains common terrain code; `modded/` contains shared mod code, and `fabric/`, `forge/`, and `neoforge/` contain loader-specific code. Compile the common sources, the sources under `versions/<minecraft-version>/`, and your selected loader sources against that loader's Minecraft dependencies. Select exactly one matching version directory, such as `versions/26.2/` or `versions/26.3/`, and strip that directory prefix when extracting its sources. The artifact also supplies `resources/modded` and `resources/<loader>`; include those directories as resources. Register `volmlib.entity.mixins.json` and `volmlib.client.mixins.json`, plus `volmlib.fabric.mixins.json` on Fabric. Fabric uses `volmlib.accesswidener`; Forge and NeoForge use the supplied `META-INF/accesstransformer.cfg`.
 
 The neutral client contracts live under `nativelib.client`. `ClientGraphics`, `ClientScreen`, `ClientTexture`, and `ClientKeyBinding` support plugin-owned display behavior without Minecraft types in that behavior. Register a `ClientHudBinding` with the selected loader's native client hooks. Close uploaded textures when they leave your cache or the screen closes.
 

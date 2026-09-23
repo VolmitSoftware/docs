@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -22,12 +22,14 @@ Overworld 4004 reduces every subterranean ore pass by 30% and permits ore on ext
 
 The `trees/mixed/dotree1` through `trees/mixed/dotree10` objects use connected fences at matching positions in both packs. Overworld uses oak, spruce, and dark oak fences. Underworld uses warped fences in soul and warped assets. Wastes assets use both crimson and warped fences to match their branch materials. Seven biome identities share these objects, including [Tundra Magic Violet Forest](/iris/biomes/temperate/reaching-forest-violet).
 
+Overworld [Pale Oak Forest](/iris/biomes/temperate/pale-oak-forest), [Pale Denmyre](/iris/biomes/temperate/pale-denmyre), [Pale Oak Highlands](/iris/biomes/mountain/pale-oak-highlands), and [Pale Pines](/iris/biomes/frozen/pale-pines) include natural heart-bearing pale oak trees. Their Creakings appear at night near players when monster spawning is enabled; destroying a heart removes its linked Creaking. Highlands and Pines add an occasional pale oak encounter tree alongside their existing trees.
+
 > **Pack maintenance requirement:** any update to either built-in pack that changes biome files, region selectors, dimension carving, children, floating biomes, terrain, materials, decoration, ecology, or reachability must update this atlas in the same workstream. A pack update with stale atlas pages is incomplete.
 {.is-warning}
 
 Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
-Amethyst clutter retains its native block scale. Frostspar uses fewer solid tapered shards. Frozen surface formations share compact spires, drift boulders, shard fans, frost blooms, and sprigs, with matching seeds and support settings. Underworld uses the corresponding Nether palettes.
+Amethyst clutter retains its native block scale. Overworld glass-shard islands in [Magnetics Glass](/iris/biomes/magnetics/glass) and [Cherry Grove](/iris/biomes/vanilla/cherry_grove) also use native-size amethyst clutter, with buds and clusters attached to their amethyst blocks. Frostspar uses fewer solid tapered shards. Frozen surface formations share compact spires, drift boulders, shard fans, frost blooms, and sprigs, with matching seeds and support settings. Underworld uses the corresponding Nether palettes.
 
 Both packs declare `deep_lava` and `deep_lava_small` as contained lava pools with matching placement settings. Frozen cave rocks use `scale.size: 0.375`. Jungle cave trees use the same scale and `density: 2`. Lush, Moss Pillars, Swamp, and Mushroom caves also share their reduced tree or fungi densities. Amethyst Rainforest large trees share `FAST_STILT` placement. Croak omits surface pointed dripstone in Overworld and its basalt counterpart in Underworld.
 

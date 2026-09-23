@@ -2,7 +2,7 @@
 title: "Biome Atlas — Pale Oak Highlands"
 description: "Iris biome atlas entry for mountain/pale-oak-highlands in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -44,7 +44,8 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - **Minecraft identity:** derivative `minecraft:old_growth_spruce_taiga`; native-structure derivative `minecraft:pale_garden`; custom identities `pale_oak_highlands`.
 - **Surface:** 1 block(s) at slope 0-3.3: `minecraft:pale_moss_block`, `minecraft:grass_block`; 2-4 block(s) at slope >= 3.4: `minecraft:calcite`, `minecraft:diorite`, `minecraft:tuff`; 3-5 block(s) at slope 0-3.3: `minecraft:dirt`, `minecraft:rooted_dirt`. Wall palette: `minecraft:calcite`, `minecraft:stone`, `minecraft:tuff`, `minecraft:diorite`.
-- **Content:** 1 object placement rule(s) drawing from 12 object key(s), including `trees/spruce/vgeneric1`, `trees/spruce/vgeneric2`, `trees/spruce/vgeneric3`, `trees/spruce/vgeneric4`, `trees/spruce/vgeneric5`, `trees/spruce/vgeneric6`, `trees/spruce/vgeneric7`, and 5 more. 2 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`.
+- **Content:** 2 object placement rule(s) drawing from 15 object key(s), including `trees/spruce/vgeneric1`, `trees/spruce/vgeneric2`, `trees/spruce/vgeneric3`, `trees/spruce/vgeneric4`, `trees/spruce/vgeneric5`, `trees/spruce/vgeneric6`, `trees/spruce/vgeneric7`, and 8 more. 2 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`.
+- **Creaking encounters:** Heart-bearing pale oak trees spawn a linked Creaking at night when a player is nearby and monster spawning is enabled. Each `vanilla/trees/pale_oak_creaking` variant contains a natural heart between aligned pale oak logs. Destroying the heart removes its Creaking.
 
 ## Underworld 1010 treatment
 

@@ -2,7 +2,7 @@
 title: "Determinism & Goldenhash"
 description: "Iris documentation: Determinism & Goldenhash"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-23T08:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,3 +31,5 @@ Run the command twice in a disposable Iris world. The first run captures a basel
 An Iris update can change newly generated terrain even when the pack is unchanged. Existing chunks keep their saved terrain. See [Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
 
 Surface and cave object overlaps on the main terrain resolve consistently across chunk generation orders, including when collision lists are empty and chunks generate in parallel.
+
+For a fixed pack and seed, floating-biome material bands do not depend on which area is generated first. The same layer definitions can be used on ordinary terrain and floating islands without sharing their seeded thickness patterns.

@@ -2,7 +2,7 @@
 title: "Biome Atlas — Pale Denmyre"
 description: "Iris biome atlas entry for temperate/pale-denmyre in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -45,6 +45,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 - **Minecraft identity:** derivative `minecraft:dark_forest`; native-structure derivative `minecraft:pale_garden`; custom identities `pale_denmyre`.
 - **Surface:** 1 block(s): `minecraft:pale_moss_block`, `minecraft:mud`, `minecraft:rooted_dirt`; 2-4 block(s): `minecraft:dirt`, `minecraft:mud`, `minecraft:calcite`; 6-18 block(s): `minecraft:stone`, `minecraft:tuff`, `minecraft:calcite`. Wall palette: `minecraft:stone`, `minecraft:calcite`, `minecraft:tuff`.
 - **Content:** 2 object placement rule(s) drawing from 22 object key(s), including `trees/darkoak/denmyre1`, `trees/darkoak/denmyre2`, `trees/darkoak/denmyre3`, `trees/darkoak/denmyre4`, `trees/darkoak/denmyre5`, `trees/darkoak/denmyre6`, `trees/darkoak/denmyre7`, and 15 more. 3 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`.
+- **Creaking encounters:** Heart-bearing pale oak trees spawn a linked Creaking at night when a player is nearby and monster spawning is enabled. Each `vanilla/trees/pale_oak_creaking` variant contains a natural heart between aligned pale oak logs. Destroying the heart removes its Creaking.
 
 ## Underworld 1010 treatment
 

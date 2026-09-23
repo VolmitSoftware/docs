@@ -2,7 +2,7 @@
 title: "Biome Atlas — Pale Oak Forest"
 description: "Iris biome atlas entry for temperate/pale-oak-forest in Overworld 4007 and Underworld 1010"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-22T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -45,6 +45,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 - **Minecraft identity:** derivative `minecraft:forest`; native-structure derivative `minecraft:pale_garden`; custom identities `temperate_pale_oak_forest`.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:pale_moss_block`, `minecraft:coarse_dirt`; 2-3 block(s): `minecraft:dirt`, `minecraft:rooted_dirt`; 2-5 block(s): `minecraft:stone`, `minecraft:calcite`. Wall palette: `minecraft:stone`, `minecraft:andesite`, `minecraft:calcite`.
 - **Content:** 1 object placement rule(s) drawing from 9 object key(s), including `vanilla/trees/pale_oak`, `vanilla/trees/pale_oak_2`, `vanilla/trees/pale_oak_3`, `vanilla/trees/pale_oak_bonemeal`, `vanilla/trees/pale_oak_bonemeal_2`, `vanilla/trees/pale_oak_bonemeal_3`, `vanilla/trees/pale_oak_creaking`, and 2 more. 2 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:short_grass`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`.
+- **Creaking encounters:** Heart-bearing pale oak trees spawn a linked Creaking at night when a player is nearby and monster spawning is enabled. Each `vanilla/trees/pale_oak_creaking` variant contains a natural heart between aligned pale oak logs. Destroying the heart removes its Creaking.
 
 ## Underworld 1010 treatment
 

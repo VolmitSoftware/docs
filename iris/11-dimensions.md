@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T07:27:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -121,6 +121,28 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 | `caveLavaHeight` | int | `8` | Height above the build floor at or below which carved cave space fills with lava instead of air. Raise it to flood deep caves. Set it to 0 for dry caves. Explicit fluid intent from a carver overrides this |
 | `name` | string | `"A Dimension"` | Display name shown by commands and the studio scoreboard. Cosmetic |
 | `version` | int | `1` | A stamp you control. Iris does not act on it. It exists so pack updates can be recognized. It also helps operators avoid a silent swap of incompatible pack generations under an existing world |
+
+## Terrain sampling
+
+Set sampling intervals in the dimension before creating a new world:
+
+```json
+{
+  "terrainSamplingStep": 4,
+  "biomeBoundsSamplingStep": 16,
+  "caveDensitySamplingStep": 4
+}
+```
+
+`terrainSamplingStep` and `caveDensitySamplingStep` accept `1`, `2`, `4`, or `8` and default to `1`. `biomeBoundsSamplingStep` accepts `4`, `8`, `16`, or `32` and defaults to `4`. Larger intervals reduce sampling and change the generated terrain. Preview the result with your pack and seed before creating the production world.
+
+| Field | Effect |
+|---|---|
+| `terrainSamplingStep` | Interpolates procedural surface heights between shared horizontal samples. Larger values smooth small height features. Image maps retain their configured sampling, and rivers, volumetric terrain, biomes, structures, and decoration still generate |
+| `biomeBoundsSamplingStep` | Spaces horizontal samples of blended biome height ranges. Larger values smooth changes in those ranges. Each generator keeps its configured interpolation method and radius; image maps retain their configured sampling |
+| `caveDensitySamplingStep` | Interpolates cave density vertically in eligible adaptive cave profiles. Module height bounds, surface protection, and fluid rules remain active. Exact profiles and expression-driven styles keep their original evaluation |
+
+World pack snapshots retain these values. Editing the authoring pack does not change an existing production world's snapshot; use the normal [pack update workflow](/iris/25-pack-management) to adopt a changed pack.
 
 ## Environment and dimension-type options
 
