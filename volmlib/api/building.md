@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-20T05:50:00.000Z
+date: 2026-09-23T12:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -18,9 +18,9 @@ Run from the VolmitSoftware workspace:
 ./build-psycho-lt.sh
 ```
 
-The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `test buildAll buildAllToOut`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
+The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
 
-VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris retains its internal loader ordering and `--no-parallel` setting.
+VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
 
 ## Parallelism
 
@@ -40,7 +40,7 @@ React uses one test JVM because its jqwik property tests share a replay database
 ./build-psycho-lt.sh --jobs 1 --test-forks 1 --no-parallel
 ```
 
-Other arguments are forwarded to each top-level Gradle invocation. The runner controls the local dependency paths, worker limit, and Iris's `--no-parallel` setting. Use an individual project's wrapper for a build with different dependency resolution.
+Other arguments are forwarded to each top-level Gradle invocation, including `--no-parallel` when serial execution is needed. The runner controls the local dependency paths and worker limit. Use an individual project's wrapper for a build with different dependency resolution.
 
 ## Run only tests
 
@@ -110,7 +110,7 @@ Iris Bukkit release builds enable stronger compression by default:
 ./gradlew verifyBukkitArtifact
 ```
 
-Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. It verifies decompressed contents before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. This step takes longer than normal packaging. Iris development mode skips stronger compression by default. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
+Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. Verified results are reused from `caches/volmit-packaging/compression/` under the Gradle user home, including across temporary source copies. An empty cache requires the full compression pass. Decompressed contents are verified before reuse and before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. Iris development mode skips stronger compression by default. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
 
 To inspect an existing jar without building or modifying it, run from the workspace:
 
